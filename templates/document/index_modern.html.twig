@@ -2,7 +2,7 @@
 {% trans_default_domain 'documents' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 
-{% block title %}{{ 'document.title'|trans }}{% endblock %}
+{% block title %}{{ 'document.title'|trans({}, 'documents') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
@@ -10,18 +10,18 @@
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'common.dashboard'|trans({}, 'messages'), url: path('app_dashboard') },
-            { label: 'document.title'|trans }
+            { label: 'document.title'|trans({}, 'documents') }
         ]
     } %}
 
     {# Page Header #}
     {% include '_components/_page_header.html.twig' with {
-        title: 'document.title'|trans,
-        subtitle: 'document.subtitle'|trans,
+        title: 'document.title'|trans({}, 'documents'),
+        subtitle: 'document.subtitle'|trans({}, 'documents'),
         icon: 'bi-file-earmark-text',
         actions: [
             {
-                label: 'document.action.upload'|trans,
+                label: 'document.action.upload'|trans({}, 'documents'),
                 url: path('app_document_new'),
                 variant: 'primary',
                 icon: 'bi-cloud-upload'
@@ -72,7 +72,7 @@
     <div class="kpi-grid">
         {% include '_components/_kpi_card.html.twig' with {
             icon: 'bi-file-earmark-text',
-            label: 'document.kpi.total_documents'|trans,
+            label: 'document.kpi.total_documents'|trans({}, 'documents'),
             value: total,
             detail: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages')) : null,
             variant: 'primary',
@@ -81,7 +81,7 @@
 
         {% include '_components/_kpi_card.html.twig' with {
             icon: 'bi-hdd',
-            label: 'document.kpi.total_size'|trans,
+            label: 'document.kpi.total_size'|trans({}, 'documents'),
             value: totalSizeMB,
             unit: 'MB',
             variant: 'info',
@@ -90,7 +90,7 @@
 
         {% include '_components/_kpi_card.html.twig' with {
             icon: 'bi-file-pdf',
-            label: 'document.type.pdf'|trans,
+            label: 'document.type.pdf'|trans({}, 'documents'),
             value: pdfDocs,
             variant: 'danger',
             link: null
@@ -98,7 +98,7 @@
 
         {% include '_components/_kpi_card.html.twig' with {
             icon: 'bi-file-earmark-spreadsheet',
-            label: 'document.type.excel'|trans,
+            label: 'document.type.excel'|trans({}, 'documents'),
             value: excelDocs,
             variant: 'success',
             link: null
@@ -110,7 +110,7 @@
         <div class="card-header">
             <h2 class="mb-0">
                 <i class="bi bi-pie-chart" aria-hidden="true"></i>
-                {{ 'document.section.type_overview'|trans }}
+                {{ 'document.section.type_overview'|trans({}, 'documents') }}
             </h2>
         </div>
         <div class="card-body">
@@ -121,7 +121,7 @@
                         <div class="type-icon mb-3 fs-25 color-pdf">
                             <i class="bi bi-file-pdf" aria-hidden="true"></i>
                         </div>
-                        <div class="type-label text-muted mb-2">{{ 'document.type.pdf'|trans }}</div>
+                        <div class="type-label text-muted mb-2">{{ 'document.type.pdf'|trans({}, 'documents') }}</div>
                         <div class="type-count fs-2 fw-700 color-pdf">
                             {{ pdfDocs }}
                         </div>
@@ -134,7 +134,7 @@
                         <div class="type-icon mb-3 fs-25 color-image">
                             <i class="bi bi-image" aria-hidden="true"></i>
                         </div>
-                        <div class="type-label text-muted mb-2">{{ 'document.type.images'|trans }}</div>
+                        <div class="type-label text-muted mb-2">{{ 'document.type.images'|trans({}, 'documents') }}</div>
                         <div class="type-count fs-2 fw-700 color-image">
                             {{ imageDocs }}
                         </div>
@@ -147,7 +147,7 @@
                         <div class="type-icon mb-3 fs-25 color-excel">
                             <i class="bi bi-file-earmark-spreadsheet" aria-hidden="true"></i>
                         </div>
-                        <div class="type-label text-muted mb-2">{{ 'document.type.tables'|trans }}</div>
+                        <div class="type-label text-muted mb-2">{{ 'document.type.tables'|trans({}, 'documents') }}</div>
                         <div class="type-count fs-2 fw-700 color-excel">
                             {{ excelDocs }}
                         </div>
@@ -160,7 +160,7 @@
                         <div class="type-icon mb-3 fs-25 color-other">
                             <i class="bi bi-file-earmark" aria-hidden="true"></i>
                         </div>
-                        <div class="type-label text-muted mb-2">{{ 'document.type.other'|trans }}</div>
+                        <div class="type-label text-muted mb-2">{{ 'document.type.other'|trans({}, 'documents') }}</div>
                         <div class="type-count fs-2 fw-700 color-other">
                             {{ total - pdfDocs - imageDocs - excelDocs }}
                         </div>
@@ -175,7 +175,7 @@
         <div class="card-header d-flex justify-content-between align-items-center">
             <h2 class="mb-0">
                 <i class="bi bi-list-ul" aria-hidden="true"></i>
-                {{ 'document.section.all_documents'|trans }}
+                {{ 'document.section.all_documents'|trans({}, 'documents') }}
                 <span class="bulk-selected-badge" data-bulk-actions-target="countBadge" class="d-none">
                     <span data-bulk-actions-target="count">0</span> {{ 'common.selected'|trans({}, 'messages') }}
                 </span>
@@ -184,7 +184,7 @@
             {# Filter Controls #}
             <div class="d-flex gap-2">
                 <select class="form-select form-select-sm" id="categoryFilter" class="w-auto">
-                    <option value="">{{ 'document.filter.all_categories'|trans }}</option>
+                    <option value="">{{ 'document.filter.all_categories'|trans({}, 'documents') }}</option>
                 {% set categories = [] %}
                     {% for doc in documents %}
                         {% if doc.category not in categories %}
@@ -199,7 +199,7 @@
                 <input type="search"
                        class="form-control form-control-sm"
                        id="documentSearch"
-                       placeholder="{{ 'document.filter.search_placeholder'|trans }}"
+                       placeholder="{{ 'document.filter.search_placeholder'|trans({}, 'documents') }}"
                        class="w-250px">
             </div>
         </div>
@@ -220,11 +220,11 @@
                                    data-bulk-actions-target="selectAllCheckbox"
                                    aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages')|default('Alle auswählen') }}">
                         </th>
-                        <th scope="col" class="w-50px"><span class="visually-hidden">{{ 'document.table.icon'|trans|default('Dateityp') }}</span></th>
+                        <th scope="col" class="w-50px"><span class="visually-hidden">{{ 'document.table.icon'|trans({}, 'documents')|default('Dateityp') }}</span></th>
                         <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
                         <th scope="col" class="w-150px">{{ 'common.category'|trans({}, 'messages') }}</th>
                         <th scope="col" class="w-100px">{{ 'common.size'|trans({}, 'messages') }}</th>
-                        <th scope="col" class="w-150px">{{ 'document.table.uploaded_by'|trans }}</th>
+                        <th scope="col" class="w-150px">{{ 'document.table.uploaded_by'|trans({}, 'documents') }}</th>
                         <th scope="col" class="w-130px">{{ 'common.date'|trans({}, 'messages') }}</th>
                         <th scope="col" class="w-180px text-right">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
@@ -311,7 +311,7 @@
             {# No Results Message #}
             <div id="noResults" class="text-center p-5 d-none">
                 <i class="bi bi-search icon-search-empty" aria-hidden="true"></i>
-                <p class="text-muted mt-3">{{ 'document.message.no_results'|trans }}</p>
+                <p class="text-muted mt-3">{{ 'document.message.no_results'|trans({}, 'documents') }}</p>
             </div>
 
             {# Bulk Action Bar #}
@@ -322,10 +322,10 @@
             {# Empty State #}
             {% include '_components/_empty_state.html.twig' with {
                 icon: 'bi-file-earmark-text',
-                title: 'document.message.no_documents'|trans,
-                description: 'document.message.upload_first'|trans,
+                title: 'document.message.no_documents'|trans({}, 'documents'),
+                description: 'document.message.upload_first'|trans({}, 'documents'),
                 action: {
-                    label: 'document.action.upload'|trans,
+                    label: 'document.action.upload'|trans({}, 'documents'),
                     url: path('app_document_new'),
                     icon: 'bi-cloud-upload'
                 }

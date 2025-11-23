@@ -1,14 +1,14 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
 
-{% block title %}{{ 'privacy.data_breach.show.page_title'|trans({'%ref%': breach.referenceNumber}) }}{% endblock %}
+{% block title %}{{ 'privacy.data_breach.show.page_title'|trans({'%ref%': breach.referenceNumber}, 'privacy') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'privacy.breadcrumb.privacy'|trans, icon: 'bi-shield-lock' },
-            { label: 'privacy.breadcrumb.data_breaches'|trans, url: path('app_data_breach_index') },
+            { label: 'privacy.breadcrumb.privacy'|trans({}, 'privacy'), icon: 'bi-shield-lock' },
+            { label: 'privacy.breadcrumb.data_breaches'|trans({}, 'privacy'), url: path('app_data_breach_index') },
             { label: breach.referenceNumber }
         ]
     } %}
@@ -18,7 +18,7 @@
         subtitle: breach.referenceNumber ~ ' - ' ~ breach.status|replace({'_': ' '})|title,
         icon: 'bi-exclamation-triangle-fill',
         actions: [
-            { label: 'privacy.data_breach.action.export_pdf'|trans, url: path('app_data_breach_export_pdf', {id: breach.id}), variant: 'success', icon: 'bi-file-pdf' },
+            { label: 'privacy.data_breach.action.export_pdf'|trans({}, 'privacy'), url: path('app_data_breach_export_pdf', {id: breach.id}), variant: 'success', icon: 'bi-file-pdf' },
             { label: 'common.back_to_list'|trans({}, 'messages'), url: path('app_data_breach_index'), variant: 'secondary', icon: 'bi-arrow-left' }
         ]
     } %}
@@ -28,32 +28,32 @@
         {% set hours = breach.hoursUntilAuthorityDeadline %}
         {% if hours < 0 %}
             <div class="alert alert-danger" role="alert">
-                <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill"></i> {{ 'privacy.data_breach.alert.overdue_title'|trans }}</h5>
+                <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill"></i> {{ 'privacy.data_breach.alert.overdue_title'|trans({}, 'privacy') }}</h5>
                 <p>
-                    {{ 'privacy.data_breach.alert.overdue_text'|trans({'%count%': 1})|raw }}
+                    {{ 'privacy.data_breach.alert.overdue_text'|trans({'%count%': 1}, 'privacy')|raw }}
                 </p>
                 <hr>
                 <p class="mb-0">
-                    <strong>{{ 'privacy.data_breach.field.detected'|trans }}:</strong> {{ breach.incident.detectedAt|date('Y-m-d H:i') }} ·
-                    <strong>{{ 'privacy.data_breach.field.deadline'|trans }}:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
+                    <strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.incident.detectedAt|date('Y-m-d H:i') }} ·
+                    <strong>{{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
                 </p>
             </div>
         {% elseif hours < 24 %}
             <div class="alert alert-warning" role="alert">
-                <h5 class="alert-heading"><i class="bi bi-clock"></i> {{ 'privacy.data_breach.score.timeliness'|trans }}</h5>
+                <h5 class="alert-heading"><i class="bi bi-clock"></i> {{ 'privacy.data_breach.score.timeliness'|trans({}, 'privacy') }}</h5>
                 <p>
-                    {{ 'privacy.data_breach.field.notification_required'|trans }} {{ 'privacy.data_breach.field.within'|default('within') }} <strong>{{ hours|number_format }} {{ 'privacy.data_breach.field.hours'|trans }}</strong>.
+                    {{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }} {{ 'privacy.data_breach.field.within'|default('within') }} <strong>{{ hours|number_format }} {{ 'privacy.data_breach.field.hours'|trans({}, 'privacy') }}</strong>.
                 </p>
                 <p class="mb-0">
-                    <strong>{{ 'privacy.data_breach.field.detected'|trans }}:</strong> {{ breach.incident.detectedAt|date('Y-m-d H:i') }} ·
-                    <strong>{{ 'privacy.data_breach.field.deadline'|trans }}:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
+                    <strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.incident.detectedAt|date('Y-m-d H:i') }} ·
+                    <strong>{{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}
                 </p>
             </div>
         {% else %}
             <div class="alert alert-info" role="alert">
                 <i class="bi bi-info-circle"></i>
-                {{ 'privacy.data_breach.field.notification_required'|trans }} <strong>{{ hours|number_format }} {{ 'privacy.data_breach.field.hours'|trans }}</strong>
-                ({{ 'privacy.data_breach.field.deadline'|trans }}: {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}).
+                {{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }} <strong>{{ hours|number_format }} {{ 'privacy.data_breach.field.hours'|trans({}, 'privacy') }}</strong>
+                ({{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}: {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}).
             </div>
         {% endif %}
     {% endif %}
@@ -61,12 +61,12 @@
     {# Status & Workflow Actions #}
     <div class="card mb-4">
         <div class="card-header">
-            <h5 class="mb-0"><i class="bi bi-diagram-3"></i> {{ 'privacy.data_breach.section.status_workflow'|trans }}</h5>
+            <h5 class="mb-0"><i class="bi bi-diagram-3"></i> {{ 'privacy.data_breach.section.status_workflow'|trans({}, 'privacy') }}</h5>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <p><strong>{{ 'privacy.data_breach.field.status'|trans }}:</strong>
+                    <p><strong>{{ 'privacy.data_breach.field.status'|trans({}, 'privacy') }}:</strong>
                         {% set status_class = {
                             'draft': 'secondary',
                             'under_assessment': 'info',
@@ -76,22 +76,22 @@
                         }[breach.status] %}
                         <span class="badge bg-{{ status_class }}">{{ ('privacy.data_breach.status.' ~ breach.status)|trans }}</span>
                     </p>
-                    <p><strong>{{ 'privacy.data_breach.field.completeness'|trans }}:</strong> {{ breach.completenessPercentage }}%</p>
+                    <p><strong>{{ 'privacy.data_breach.field.completeness'|trans({}, 'privacy') }}:</strong> {{ breach.completenessPercentage }}%</p>
                     {% if breach.assessor %}
-                        <p><strong>{{ 'privacy.data_breach.field.assessor'|trans }}:</strong> {{ breach.assessor.firstName }} {{ breach.assessor.lastName }}</p>
+                        <p><strong>{{ 'privacy.data_breach.field.assessor'|trans({}, 'privacy') }}:</strong> {{ breach.assessor.firstName }} {{ breach.assessor.lastName }}</p>
                     {% endif %}
                 </div>
                 <div class="col-md-6">
                     {% if breach.affectedDataSubjects %}
-                        <p><strong>{{ 'privacy.data_breach.field.affected_subjects'|trans }}:</strong> {{ breach.affectedDataSubjects|number_format }}</p>
+                        <p><strong>{{ 'privacy.data_breach.field.affected_subjects'|trans({}, 'privacy') }}:</strong> {{ breach.affectedDataSubjects|number_format }}</p>
                     {% endif %}
                     {% if breach.riskLevel %}
-                        <p><strong>{{ 'privacy.data_breach.field.risk_level'|trans }}:</strong>
+                        <p><strong>{{ 'privacy.data_breach.field.risk_level'|trans({}, 'privacy') }}:</strong>
                             {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.riskLevel] %}
                             <span class="badge bg-{{ risk_class }}">{{ ('privacy.data_breach.risk.' ~ breach.riskLevel)|trans }}</span>
                         </p>
                     {% endif %}
-                    <p><strong>{{ 'privacy.data_breach.field.created'|trans }}:</strong> {{ breach.createdAt|date('Y-m-d H:i') }}</p>
+                    <p><strong>{{ 'privacy.data_breach.field.created'|trans({}, 'privacy') }}:</strong> {{ breach.createdAt|date('Y-m-d H:i') }}</p>
                 </div>
             </div>
 
@@ -101,32 +101,32 @@
                     <form action="{{ path('app_data_breach_submit_for_assessment', {id: breach.id}) }}" method="post" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('submit' ~ breach.id) }}">
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-send"></i> {{ 'privacy.data_breach.action.submit_for_assessment'|trans }}
+                            <i class="bi bi-send"></i> {{ 'privacy.data_breach.action.submit_for_assessment'|trans({}, 'privacy') }}
                         </button>
                     </form>
                 {% endif %}
 
                 {% if breach.status in ['draft', 'under_assessment'] %}
                     <a href="{{ path('app_data_breach_edit', {id: breach.id}) }}" class="btn btn-secondary">
-                        <i class="bi bi-pencil"></i> {{ 'privacy.data_breach.action.edit'|trans }}
+                        <i class="bi bi-pencil"></i> {{ 'privacy.data_breach.action.edit'|trans({}, 'privacy') }}
                     </a>
                 {% endif %}
 
                 {% if is_granted('ROLE_AUDITOR') and breach.requiresAuthorityNotification and not breach.supervisoryAuthorityNotifiedAt %}
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#authorityModal">
-                        <i class="bi bi-building"></i> {{ 'privacy.data_breach.action.notify_authority'|trans }}
+                        <i class="bi bi-building"></i> {{ 'privacy.data_breach.action.notify_authority'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
 
                 {% if is_granted('ROLE_AUDITOR') and breach.requiresSubjectNotification and not breach.dataSubjectsNotifiedAt and breach.supervisoryAuthorityNotifiedAt %}
                     <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#subjectsModal">
-                        <i class="bi bi-people"></i> {{ 'privacy.data_breach.action.notify_subjects'|trans }}
+                        <i class="bi bi-people"></i> {{ 'privacy.data_breach.action.notify_subjects'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
 
                 {% if is_granted('ROLE_AUDITOR') and not breach.requiresSubjectNotification and not breach.noSubjectNotificationReason %}
                     <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#exemptionModal">
-                        <i class="bi bi-shield-check"></i> {{ 'privacy.data_breach.action.record_exemption'|trans }}
+                        <i class="bi bi-shield-check"></i> {{ 'privacy.data_breach.action.record_exemption'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
 
@@ -134,14 +134,14 @@
                     <form action="{{ path('app_data_breach_close', {id: breach.id}) }}" method="post" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('close' ~ breach.id) }}">
                         <button type="submit" class="btn btn-success">
-                            <i class="bi bi-check-circle"></i> {{ 'privacy.data_breach.action.close_investigation'|trans }}
+                            <i class="bi bi-check-circle"></i> {{ 'privacy.data_breach.action.close_investigation'|trans({}, 'privacy') }}
                         </button>
                     </form>
                 {% endif %}
 
                 {% if is_granted('ROLE_MANAGER') and breach.status == 'closed' %}
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#reopenModal">
-                        <i class="bi bi-folder2-open"></i> {{ 'privacy.data_breach.action.reopen'|trans }}
+                        <i class="bi bi-folder2-open"></i> {{ 'privacy.data_breach.action.reopen'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
 
@@ -161,21 +161,21 @@
     {# Linked Incident #}
     <div class="card mb-4">
         <div class="card-header">
-            <h6 class="mb-0"><i class="bi bi-link-45deg"></i> {{ 'privacy.data_breach.section.linked_incident'|trans }}</h6>
+            <h6 class="mb-0"><i class="bi bi-link-45deg"></i> {{ 'privacy.data_breach.section.linked_incident'|trans({}, 'privacy') }}</h6>
         </div>
         <div class="card-body">
-            <p><strong>{{ 'privacy.data_breach.field.incident'|trans }}:</strong>
+            <p><strong>{{ 'privacy.data_breach.field.incident'|trans({}, 'privacy') }}:</strong>
                 <a href="{{ path('app_incident_show', {id: breach.incident.id}) }}">
                     {{ breach.incident.referenceNumber }} - {{ breach.incident.title }}
                 </a>
             </p>
-            <p><strong>{{ 'privacy.data_breach.field.detected'|trans }}:</strong> {{ breach.incident.detectedAt|date('Y-m-d H:i') }}</p>
-            <p><strong>{{ 'privacy.data_breach.field.severity'|trans }}:</strong>
+            <p><strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.incident.detectedAt|date('Y-m-d H:i') }}</p>
+            <p><strong>{{ 'privacy.data_breach.field.severity'|trans({}, 'privacy') }}:</strong>
                 {% set sev_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.incident.severity] %}
                 <span class="badge bg-{{ sev_class }}">{{ ('privacy.data_breach.risk.' ~ breach.incident.severity)|trans }}</span>
             </p>
             {% if breach.processingActivity %}
-                <p><strong>{{ 'privacy.data_breach.field.processing_activity'|trans }}:</strong>
+                <p><strong>{{ 'privacy.data_breach.field.processing_activity'|trans({}, 'privacy') }}:</strong>
                     <a href="{{ path('app_processing_activity_show', {id: breach.processingActivity.id}) }}">
                         {{ breach.processingActivity.name }}
                     </a>
@@ -189,43 +189,43 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h6 class="mb-0"><i class="bi bi-building"></i> {{ 'privacy.data_breach.section.authority'|trans }}</h6>
+                    <h6 class="mb-0"><i class="bi bi-building"></i> {{ 'privacy.data_breach.section.authority'|trans({}, 'privacy') }}</h6>
                 </div>
                 <div class="card-body">
-                    <p><strong>{{ 'privacy.data_breach.field.notification_required'|trans }}:</strong>
+                    <p><strong>{{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }}:</strong>
                         {% if breach.requiresAuthorityNotification %}
-                            <span class="text-warning"><i class="bi bi-exclamation-triangle"></i> {{ 'privacy.data_breach.field.yes'|trans }}</span>
+                            <span class="text-warning"><i class="bi bi-exclamation-triangle"></i> {{ 'privacy.data_breach.field.yes'|trans({}, 'privacy') }}</span>
                         {% else %}
-                            <span class="text-muted">{{ 'privacy.data_breach.field.no'|trans }}</span>
+                            <span class="text-muted">{{ 'privacy.data_breach.field.no'|trans({}, 'privacy') }}</span>
                             {% if breach.noNotificationReason %}
-                                <br><small class="text-muted">{{ 'privacy.data_breach.field.delay_reason'|trans }}: {{ breach.noNotificationReason }}</small>
+                                <br><small class="text-muted">{{ 'privacy.data_breach.field.delay_reason'|trans({}, 'privacy') }}: {{ breach.noNotificationReason }}</small>
                             {% endif %}
                         {% endif %}
                     </p>
                     {% if breach.supervisoryAuthorityNotifiedAt %}
-                        <p><strong>{{ 'privacy.data_breach.field.notified'|trans }}:</strong>
+                        <p><strong>{{ 'privacy.data_breach.field.notified'|trans({}, 'privacy') }}:</strong>
                             <span class="text-success"><i class="bi bi-check-circle"></i> {{ breach.supervisoryAuthorityNotifiedAt|date('Y-m-d H:i') }}</span>
                         </p>
-                        <p><strong>{{ 'privacy.data_breach.field.authority'|trans }}:</strong> {{ breach.supervisoryAuthorityName }}</p>
+                        <p><strong>{{ 'privacy.data_breach.field.authority'|trans({}, 'privacy') }}:</strong> {{ breach.supervisoryAuthorityName }}</p>
                         {% if breach.supervisoryAuthorityReference %}
-                            <p><strong>{{ 'privacy.data_breach.field.reference'|trans }}:</strong> {{ breach.supervisoryAuthorityReference }}</p>
+                            <p><strong>{{ 'privacy.data_breach.field.reference'|trans({}, 'privacy') }}:</strong> {{ breach.supervisoryAuthorityReference }}</p>
                         {% endif %}
-                        <p><strong>{{ 'privacy.data_breach.field.method'|trans }}:</strong> {{ breach.notificationMethod }}</p>
+                        <p><strong>{{ 'privacy.data_breach.field.method'|trans({}, 'privacy') }}:</strong> {{ breach.notificationMethod }}</p>
                         {% if breach.notificationDelayReason %}
                             <div class="alert alert-warning">
-                                <strong>{{ 'privacy.data_breach.field.delay_reason'|trans }}:</strong> {{ breach.notificationDelayReason }}
+                                <strong>{{ 'privacy.data_breach.field.delay_reason'|trans({}, 'privacy') }}:</strong> {{ breach.notificationDelayReason }}
                             </div>
                         {% endif %}
                     {% elseif breach.requiresAuthorityNotification %}
-                        <p class="text-danger"><i class="bi bi-x-circle"></i> {{ 'privacy.data_breach.field.not_yet_notified'|trans }}</p>
-                        <p><strong>{{ 'privacy.data_breach.field.deadline'|trans }}:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}</p>
-                        <p><strong>{{ 'privacy.data_breach.field.time_remaining'|trans }}:</strong>
+                        <p class="text-danger"><i class="bi bi-x-circle"></i> {{ 'privacy.data_breach.field.not_yet_notified'|trans({}, 'privacy') }}</p>
+                        <p><strong>{{ 'privacy.data_breach.field.deadline'|trans({}, 'privacy') }}:</strong> {{ breach.authorityNotificationDeadline|date('Y-m-d H:i') }}</p>
+                        <p><strong>{{ 'privacy.data_breach.field.time_remaining'|trans({}, 'privacy') }}:</strong>
                             {% set hours = breach.hoursUntilAuthorityDeadline %}
                             {% if hours < 0 %}
-                                <span class="text-danger">{{ 'privacy.data_breach.field.overdue_by'|trans }} {{ (hours * -1)|number_format }}h</span>
+                                <span class="text-danger">{{ 'privacy.data_breach.field.overdue_by'|trans({}, 'privacy') }} {{ (hours * -1)|number_format }}h</span>
                             {% else %}
                                 <span class="{% if hours < 24 %}text-warning{% else %}text-info{% endif %}">
-                                    {{ hours|number_format }} {{ 'privacy.data_breach.field.hours'|trans }}
+                                    {{ hours|number_format }} {{ 'privacy.data_breach.field.hours'|trans({}, 'privacy') }}
                                 </span>
                             {% endif %}
                         </p>
@@ -237,27 +237,27 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h6 class="mb-0"><i class="bi bi-people"></i> {{ 'privacy.data_breach.section.subjects'|trans }}</h6>
+                    <h6 class="mb-0"><i class="bi bi-people"></i> {{ 'privacy.data_breach.section.subjects'|trans({}, 'privacy') }}</h6>
                 </div>
                 <div class="card-body">
-                    <p><strong>{{ 'privacy.data_breach.field.notification_required'|trans }}:</strong>
+                    <p><strong>{{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }}:</strong>
                         {% if breach.requiresSubjectNotification %}
-                            <span class="text-warning"><i class="bi bi-exclamation-triangle"></i> {{ 'privacy.data_breach.field.high_risk'|trans }}</span>
+                            <span class="text-warning"><i class="bi bi-exclamation-triangle"></i> {{ 'privacy.data_breach.field.high_risk'|trans({}, 'privacy') }}</span>
                         {% else %}
-                            <span class="text-muted">{{ 'privacy.data_breach.field.no'|trans }}</span>
+                            <span class="text-muted">{{ 'privacy.data_breach.field.no'|trans({}, 'privacy') }}</span>
                             {% if breach.noSubjectNotificationReason %}
-                                <br><small class="text-muted">{{ 'privacy.data_breach.field.exemption_reason'|trans }}: {{ breach.noSubjectNotificationReason }}</small>
+                                <br><small class="text-muted">{{ 'privacy.data_breach.field.exemption_reason'|trans({}, 'privacy') }}: {{ breach.noSubjectNotificationReason }}</small>
                             {% endif %}
                         {% endif %}
                     </p>
                     {% if breach.dataSubjectsNotifiedAt %}
-                        <p><strong>{{ 'privacy.data_breach.field.notified'|trans }}:</strong>
+                        <p><strong>{{ 'privacy.data_breach.field.notified'|trans({}, 'privacy') }}:</strong>
                             <span class="text-success"><i class="bi bi-check-circle"></i> {{ breach.dataSubjectsNotifiedAt|date('Y-m-d H:i') }}</span>
                         </p>
-                        <p><strong>{{ 'privacy.data_breach.field.subjects_notified'|trans }}:</strong> {{ breach.subjectsNotified|number_format }}</p>
-                        <p><strong>{{ 'privacy.data_breach.field.method'|trans }}:</strong> {{ breach.subjectNotificationMethod }}</p>
+                        <p><strong>{{ 'privacy.data_breach.field.subjects_notified'|trans({}, 'privacy') }}:</strong> {{ breach.subjectsNotified|number_format }}</p>
+                        <p><strong>{{ 'privacy.data_breach.field.method'|trans({}, 'privacy') }}:</strong> {{ breach.subjectNotificationMethod }}</p>
                     {% elseif breach.requiresSubjectNotification %}
-                        <p class="text-warning"><i class="bi bi-x-circle"></i> {{ 'privacy.data_breach.field.not_yet_notified'|trans }}</p>
+                        <p class="text-warning"><i class="bi bi-x-circle"></i> {{ 'privacy.data_breach.field.not_yet_notified'|trans({}, 'privacy') }}</p>
                     {% endif %}
                 </div>
             </div>
@@ -267,29 +267,29 @@
     {# Breach Details - Art. 33(3) Content #}
     <div class="card mb-4">
         <div class="card-header">
-            <h6 class="mb-0"><i class="bi bi-info-circle"></i> {{ 'privacy.data_breach.section.nature'|trans }}</h6>
+            <h6 class="mb-0"><i class="bi bi-info-circle"></i> {{ 'privacy.data_breach.section.nature'|trans({}, 'privacy') }}</h6>
         </div>
         <div class="card-body">
             {% if breach.breachNature %}
-                <h6>{{ 'privacy.data_breach.section.nature'|trans }} (Art. 33(3)(a)):</h6>
+                <h6>{{ 'privacy.data_breach.section.nature'|trans({}, 'privacy') }} (Art. 33(3)(a)):</h6>
                 <p>{{ breach.breachNature|nl2br }}</p>
             {% endif %}
             {% if breach.dataCategories|length > 0 %}
-                <h6>{{ 'privacy.data_breach.field.data_categories'|trans }}:</h6>
+                <h6>{{ 'privacy.data_breach.field.data_categories'|trans({}, 'privacy') }}:</h6>
                 <p>{{ breach.dataCategories|join(', ') }}</p>
             {% endif %}
             {% if breach.dataSubjectCategories|length > 0 %}
-                <h6>{{ 'privacy.data_breach.field.data_subject_categories'|trans }}:</h6>
+                <h6>{{ 'privacy.data_breach.field.data_subject_categories'|trans({}, 'privacy') }}:</h6>
                 <p>{{ breach.dataSubjectCategories|join(', ') }}</p>
             {% endif %}
             {% if breach.specialCategoriesAffected %}
                 <div class="alert alert-warning">
-                    <i class="bi bi-shield-lock"></i> <strong>{{ 'privacy.data_breach.field.special_categories_affected'|trans }}</strong>
+                    <i class="bi bi-shield-lock"></i> <strong>{{ 'privacy.data_breach.field.special_categories_affected'|trans({}, 'privacy') }}</strong>
                 </div>
             {% endif %}
             {% if breach.criminalDataAffected %}
                 <div class="alert alert-warning">
-                    <i class="bi bi-exclamation-triangle"></i> <strong>{{ 'privacy.data_breach.field.criminal_data_affected'|trans }}</strong>
+                    <i class="bi bi-exclamation-triangle"></i> <strong>{{ 'privacy.data_breach.field.criminal_data_affected'|trans({}, 'privacy') }}</strong>
                 </div>
             {% endif %}
         </div>
@@ -298,19 +298,19 @@
     {# Consequences & Measures #}
     <div class="card mb-4">
         <div class="card-header">
-            <h6 class="mb-0"><i class="bi bi-shield-check"></i> {{ 'privacy.data_breach.section.consequences'|trans }}</h6>
+            <h6 class="mb-0"><i class="bi bi-shield-check"></i> {{ 'privacy.data_breach.section.consequences'|trans({}, 'privacy') }}</h6>
         </div>
         <div class="card-body">
             {% if breach.likelyConsequences %}
-                <h6>{{ 'privacy.data_breach.field.likely_consequences'|trans }}:</h6>
+                <h6>{{ 'privacy.data_breach.field.likely_consequences'|trans({}, 'privacy') }}:</h6>
                 <p>{{ breach.likelyConsequences|nl2br }}</p>
             {% endif %}
             {% if breach.measuresTaken %}
-                <h6>{{ 'privacy.data_breach.field.measures_taken'|trans }}:</h6>
+                <h6>{{ 'privacy.data_breach.field.measures_taken'|trans({}, 'privacy') }}:</h6>
                 <p>{{ breach.measuresTaken|nl2br }}</p>
             {% endif %}
             {% if breach.mitigationMeasures %}
-                <h6>{{ 'privacy.data_breach.field.measures_planned'|trans }}:</h6>
+                <h6>{{ 'privacy.data_breach.field.measures_planned'|trans({}, 'privacy') }}:</h6>
                 <p>{{ breach.mitigationMeasures|nl2br }}</p>
             {% endif %}
         </div>
@@ -320,19 +320,19 @@
     {% if breach.rootCause or breach.lessonsLearned or breach.followUpActions|length > 0 %}
         <div class="card mb-4">
             <div class="card-header">
-                <h6 class="mb-0"><i class="bi bi-search"></i> {{ 'privacy.data_breach.investigation_followup'|trans }}</h6>
+                <h6 class="mb-0"><i class="bi bi-search"></i> {{ 'privacy.data_breach.investigation_followup'|trans({}, 'privacy') }}</h6>
             </div>
             <div class="card-body">
                 {% if breach.rootCause %}
-                    <h6>{{ 'privacy.data_breach.root_cause'|trans }}:</h6>
+                    <h6>{{ 'privacy.data_breach.root_cause'|trans({}, 'privacy') }}:</h6>
                     <p>{{ breach.rootCause|nl2br }}</p>
                 {% endif %}
                 {% if breach.lessonsLearned %}
-                    <h6>{{ 'privacy.data_breach.lessons_learned'|trans }}:</h6>
+                    <h6>{{ 'privacy.data_breach.lessons_learned'|trans({}, 'privacy') }}:</h6>
                     <p>{{ breach.lessonsLearned|nl2br }}</p>
                 {% endif %}
                 {% if breach.followUpActions|length > 0 %}
-                    <h6>{{ 'privacy.data_breach.follow_up_actions'|trans }}:</h6>
+                    <h6>{{ 'privacy.data_breach.follow_up_actions'|trans({}, 'privacy') }}:</h6>
                     <ul>
                         {% for action in breach.followUpActions %}
                             <li>{{ action }}</li>
@@ -351,12 +351,12 @@
             <form action="{{ path('app_data_breach_notify_authority', {id: breach.id}) }}" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token('notify_authority' ~ breach.id) }}">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ 'privacy.data_breach.action.notify_authority'|trans }} (Art. 33 GDPR)</h5>
+                    <h5 class="modal-title">{{ 'privacy.data_breach.action.notify_authority'|trans({}, 'privacy') }} (Art. 33 GDPR)</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">{{ 'privacy.data_breach.field.authority'|trans }} *</label>
+                        <label class="form-label">{{ 'privacy.data_breach.field.authority'|trans({}, 'privacy') }} *</label>
                         <select name="authority_name" class="form-select" required>
                             <option value="">Select authority...</option>
                             <option value="BfDI">BfDI (Federal Commissioner)</option>
@@ -376,7 +376,7 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">{{ 'privacy.data_breach.field.method'|trans }} *</label>
+                        <label class="form-label">{{ 'privacy.data_breach.field.method'|trans({}, 'privacy') }} *</label>
                         <select name="notification_method" class="form-select" required>
                             <option value="email">Email</option>
                             <option value="web_portal">Web Portal</option>
@@ -385,21 +385,21 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">{{ 'privacy.data_breach.field.reference'|trans }} (optional)</label>
-                        <input type="text" name="authority_reference" class="form-control" placeholder="Case number from authority">
+                        <label class="form-label">{{ 'privacy.data_breach.field.reference'|trans({}, 'privacy') }} (optional)</label>
+                        <input type="text" name="authority_reference" class="form-control" placeholder="{{ 'common.placeholder.case_number_from_authority'|trans({}, 'messages') }}">
                     </div>
                     {% if breach.hoursUntilAuthorityDeadline < 0 %}
                         <div class="mb-3">
-                            <label class="form-label">{{ 'privacy.data_breach.field.delay_reason'|trans }} * (required for overdue notifications)</label>
+                            <label class="form-label">{{ 'privacy.data_breach.field.delay_reason'|trans({}, 'privacy') }} * (required for overdue notifications)</label>
                             <textarea name="delay_reason" class="form-control" rows="3" required
-                                      placeholder="Explain why the 72-hour deadline was exceeded..."></textarea>
+                                      placeholder="{{ 'common.placeholder.explain_deadline_exceeded'|trans({}, 'messages') }}"></textarea>
                             <small class="text-muted">Art. 33(1) GDPR requires justification for delays.</small>
                         </div>
                     {% endif %}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                    <button type="submit" class="btn btn-warning">{{ 'privacy.data_breach.action.notify_authority'|trans }}</button>
+                    <button type="submit" class="btn btn-warning">{{ 'privacy.data_breach.action.notify_authority'|trans({}, 'privacy') }}</button>
                 </div>
             </form>
         </div>
@@ -413,12 +413,12 @@
             <form action="{{ path('app_data_breach_notify_subjects', {id: breach.id}) }}" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token('notify_subjects' ~ breach.id) }}">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ 'privacy.data_breach.action.notify_subjects'|trans }} (Art. 34 GDPR)</h5>
+                    <h5 class="modal-title">{{ 'privacy.data_breach.action.notify_subjects'|trans({}, 'privacy') }} (Art. 34 GDPR)</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">{{ 'privacy.data_breach.field.method'|trans }} *</label>
+                        <label class="form-label">{{ 'privacy.data_breach.field.method'|trans({}, 'privacy') }} *</label>
                         <select name="notification_method" class="form-select" required>
                             <option value="email">Direct Email</option>
                             <option value="letter">Registered Letter</option>
@@ -428,13 +428,13 @@
                         </select>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">{{ 'privacy.data_breach.field.subjects_notified'|trans }} *</label>
+                        <label class="form-label">{{ 'privacy.data_breach.field.subjects_notified'|trans({}, 'privacy') }} *</label>
                         <input type="number" name="subjects_notified" class="form-control" min="1" required>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                    <button type="submit" class="btn btn-info">{{ 'privacy.data_breach.action.notify_subjects'|trans }}</button>
+                    <button type="submit" class="btn btn-info">{{ 'privacy.data_breach.action.notify_subjects'|trans({}, 'privacy') }}</button>
                 </div>
             </form>
         </div>
@@ -448,12 +448,12 @@
             <form action="{{ path('app_data_breach_subject_notification_exemption', {id: breach.id}) }}" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token('exemption' ~ breach.id) }}">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ 'privacy.data_breach.action.record_exemption'|trans }}</h5>
+                    <h5 class="modal-title">{{ 'privacy.data_breach.action.record_exemption'|trans({}, 'privacy') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">{{ 'privacy.data_breach.field.exemption_reason'|trans }} *</label>
+                        <label class="form-label">{{ 'privacy.data_breach.field.exemption_reason'|trans({}, 'privacy') }} *</label>
                         <select name="exemption_reason" class="form-select" required>
                             <option value="">Select reason...</option>
                             <option value="art_34_3_a">Art. 34(3)(a) - Technical/organizational protection measures applied</option>
@@ -464,7 +464,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                    <button type="submit" class="btn btn-success">{{ 'privacy.data_breach.action.record_exemption'|trans }}</button>
+                    <button type="submit" class="btn btn-success">{{ 'privacy.data_breach.action.record_exemption'|trans({}, 'privacy') }}</button>
                 </div>
             </form>
         </div>
@@ -478,19 +478,19 @@
             <form action="{{ path('app_data_breach_reopen', {id: breach.id}) }}" method="post">
                 <input type="hidden" name="_token" value="{{ csrf_token('reopen' ~ breach.id) }}">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{ 'privacy.data_breach.action.reopen'|trans }}</h5>
+                    <h5 class="modal-title">{{ 'privacy.data_breach.action.reopen'|trans({}, 'privacy') }}</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">{{ 'privacy.data_breach.reopen_reason'|trans|default('Reopen Reason') }} *</label>
+                        <label class="form-label">{{ 'privacy.data_breach.reopen_reason'|trans({}, 'privacy')|default('Reopen Reason') }} *</label>
                         <textarea name="reopen_reason" class="form-control" rows="3" required
-                                  placeholder="Explain why this breach is being reopened..."></textarea>
+                                  placeholder="{{ 'common.placeholder.explain_breach_reopened'|trans({}, 'messages') }}"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
-                    <button type="submit" class="btn btn-warning">{{ 'privacy.data_breach.action.reopen'|trans }}</button>
+                    <button type="submit" class="btn btn-warning">{{ 'privacy.data_breach.action.reopen'|trans({}, 'privacy') }}</button>
                 </div>
             </form>
         </div>

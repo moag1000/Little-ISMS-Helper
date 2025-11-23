@@ -10,8 +10,8 @@
     Usage:
         {% include '_components/_form_field.html.twig' with {
             'field': form.fieldName,
-            'label': 'form.label.fieldName'|trans,
-            'help': 'form.help.fieldName'|trans,
+            'label': 'form.label.fieldName'|trans({}, 'messages'),
+            'help': 'form.help.fieldName'|trans({}, 'messages'),
             'required': true
         } %}
 
@@ -32,7 +32,7 @@
     <label for="{{ field_id }}" class="form-label">
         {{ label|trans }}
         {% if is_required %}
-            <span class="required" aria-label="{{ 'form.required'|trans }}">*</span>
+            <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
         {% endif %}
     </label>
 

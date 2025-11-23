@@ -1,6 +1,6 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}{{ module.name }} - {{ 'admin.modules.details'|trans }}{% endblock %}
+{% block title %}{{ module.name }} - {{ 'admin.modules.details'|trans({}, 'admin') }}{% endblock %}
 
 {% block admin_content %}
 <div class="container-fluid mt-4">

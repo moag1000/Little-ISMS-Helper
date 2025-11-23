@@ -1,0 +1,31 @@
+crypto:
+  title: Kryptographische Operationen
+  name: Kryptographische Operation
+  operation_type: Operationstyp
+  algorithm: Algorithmus
+  key_length: Schlüssellänge
+  key_identifier: Schlüsselkennung
+  purpose: Zweck
+  data_classification: Datenklassifizierung
+  application_component: Anwendungskomponente
+  related_asset: Zugehöriges Asset
+  status: Status
+  error_message: Fehlermeldung
+  timestamp: Zeitstempel
+  ip_address: IP-Adresse
+  metadata: Metadaten
+  compliance_relevant: Compliance-relevant
+  type:
+    encryption: Verschlüsselung
+    decryption: Entschlüsselung
+    signing: Signierung
+    verification: Verifizierung
+    key_generation: Schlüsselgenerierung
+    key_exchange: Schlüsselaustausch
+    hashing: Hashing
+    other: Sonstiges
+  status_type:
+    success: Erfolgreich
+    failed: Fehlgeschlagen
+    pending: Ausstehend
+    in_progress: In Bearbeitung

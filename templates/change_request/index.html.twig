@@ -2,35 +2,35 @@
 {% trans_default_domain 'change_requests' %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}{{ 'change_request.title'|trans }}{% endblock %}
+{% block title %}{{ 'change_request.title'|trans({}, 'change_requests') }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <h1>{{ 'change_request.page.title'|trans }}</h1>
-        <a href="{{ path('app_change_request_new') }}" class="btn btn-primary">{{ 'change_request.action.create'|trans }}</a>
+        <h1>{{ 'change_request.page.title'|trans({}, 'change_requests') }}</h1>
+        <a href="{{ path('app_change_request_new') }}" class="btn btn-primary">{{ 'change_request.action.create'|trans({}, 'change_requests') }}</a>
     </div>
 
     {% if statistics %}
     <div class="row mb-4">
         <div class="col-md-3">
-            {{ cards.kpi_card('change_request.statistics.total'|trans, statistics.total, null, null, 'primary', null) }}
+            {{ cards.kpi_card('change_request.statistics.total'|trans({}, 'change_requests'), statistics.total, null, null, 'primary', null) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('change_request.statistics.pending_approval'|trans, statistics.pending_approval, null, null, 'warning', null) }}
+            {{ cards.kpi_card('change_request.statistics.pending_approval'|trans({}, 'change_requests'), statistics.pending_approval, null, null, 'warning', null) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('change_request.statistics.in_implementation'|trans, statistics.in_implementation, null, null, 'info', null) }}
+            {{ cards.kpi_card('change_request.statistics.in_implementation'|trans({}, 'change_requests'), statistics.in_implementation, null, null, 'info', null) }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('change_request.statistics.overdue'|trans, statistics.overdue, null, null, 'danger', null) }}
+            {{ cards.kpi_card('change_request.statistics.overdue'|trans({}, 'change_requests'), statistics.overdue, null, null, 'danger', null) }}
         </div>
     </div>
     {% endif %}
 
     {% if pending_approval|length > 0 %}
     <div class="alert alert-info">
-        <h2>📋 {{ 'change_request.alert.pending_approval'|trans }}</h2>
+        <h2>📋 {{ 'change_request.alert.pending_approval'|trans({}, 'change_requests') }}</h2>
         <ul>
             {% for change in pending_approval %}
             <li>
@@ -44,7 +44,7 @@
 
     {% if overdue|length > 0 %}
     <div class="alert alert-danger">
-        <h4>🚨 {{ 'change_request.alert.overdue'|trans }}</h4>
+        <h4>🚨 {{ 'change_request.alert.overdue'|trans({}, 'change_requests') }}</h4>
         <ul>
             {% for change in overdue %}
             <li>
@@ -67,14 +67,14 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">{{ 'change_request.table.change_number'|trans }}</th>
-                        <th scope="col">{{ 'change_request.table.title'|trans }}</th>
-                        <th scope="col">{{ 'change_request.table.type'|trans }}</th>
-                        <th scope="col">{{ 'change_request.table.priority'|trans }}</th>
-                        <th scope="col">{{ 'change_request.table.status'|trans }}</th>
-                        <th scope="col">{{ 'change_request.table.complexity'|trans }}</th>
-                        <th scope="col">{{ 'change_request.table.requested'|trans }}</th>
-                        <th scope="col">{{ 'change_request.table.actions'|trans }}</th>
+                        <th scope="col">{{ 'change_request.table.change_number'|trans({}, 'change_requests') }}</th>
+                        <th scope="col">{{ 'change_request.table.title'|trans({}, 'change_requests') }}</th>
+                        <th scope="col">{{ 'change_request.table.type'|trans({}, 'change_requests') }}</th>
+                        <th scope="col">{{ 'change_request.table.priority'|trans({}, 'change_requests') }}</th>
+                        <th scope="col">{{ 'change_request.table.status'|trans({}, 'change_requests') }}</th>
+                        <th scope="col">{{ 'change_request.table.complexity'|trans({}, 'change_requests') }}</th>
+                        <th scope="col">{{ 'change_request.table.requested'|trans({}, 'change_requests') }}</th>
+                        <th scope="col">{{ 'change_request.table.actions'|trans({}, 'change_requests') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -88,15 +88,15 @@
                         <td>{{ change.getComplexityScore() }}</td>
                         <td>{{ change.requestedDate|date('Y-m-d') }}</td>
                         <td>
-                            <a href="{{ path('app_change_request_show', {id: change.id}) }}" class="btn btn-sm btn-secondary">{{ 'change_request.action.view'|trans }}</a>
-                            <a href="{{ path('app_change_request_edit', {id: change.id}) }}" class="btn btn-sm btn-primary">{{ 'change_request.action.edit'|trans }}</a>
+                            <a href="{{ path('app_change_request_show', {id: change.id}) }}" class="btn btn-sm btn-secondary">{{ 'change_request.action.view'|trans({}, 'change_requests') }}</a>
+                            <a href="{{ path('app_change_request_edit', {id: change.id}) }}" class="btn btn-sm btn-primary">{{ 'change_request.action.edit'|trans({}, 'change_requests') }}</a>
                         </td>
                     </tr>
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
             {% else %}
-            <p>{{ 'change_request.empty.message'|trans }} <a href="{{ path('app_change_request_new') }}">{{ 'change_request.empty.create_first'|trans }}</a>.</p>
+            <p>{{ 'change_request.empty.message'|trans({}, 'change_requests') }} <a href="{{ path('app_change_request_new') }}">{{ 'change_request.empty.create_first'|trans({}, 'change_requests') }}</a>.</p>
             {% endif %}
         </div>
     </div>

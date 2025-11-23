@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk_treatment_plan' %}
 
-{% block title %}{{ plan.title }} - {{ 'risk_treatment_plan.title'|trans }}{% endblock %}
+{% block title %}{{ plan.title }} - {{ 'risk_treatment_plan.title'|trans({}, 'risks') }}{% endblock %}
 
 {% block body %}
 <div class="page-header">
     <div>
         <h1><i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ plan.title }}</h1>
         <p class="text-muted">
-            {{ 'risk_treatment_plan.show.subtitle'|trans }}
+            {{ 'risk_treatment_plan.show.subtitle'|trans({}, 'risks') }}
             {% if plan.isOverdue() %}
                 <span class="badge bg-danger ms-2">
-                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_treatment_plan.overdue'|trans }}
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_treatment_plan.overdue'|trans({}, 'risks') }}
                 </span>
             {% endif %}
         </p>
@@ -30,7 +30,7 @@
 <div class="row mb-4">
     <div class="col-md-3">
         <div class="info-card">
-            <div class="info-label">{{ 'risk_treatment_plan.field.status'|trans }}</div>
+            <div class="info-label">{{ 'risk_treatment_plan.field.status'|trans({}, 'risks') }}</div>
             <div class="info-value">
                 <span class="badge bg-{{ plan.status == 'completed' ? 'success' : (plan.status == 'in_progress' ? 'primary' : (plan.status == 'cancelled' ? 'secondary' : (plan.status == 'on_hold' ? 'warning' : 'info'))) }} fs-6">
                     {{ ('risk_treatment_plan.status.' ~ plan.status)|trans }}
@@ -40,7 +40,7 @@
     </div>
     <div class="col-md-3">
         <div class="info-card">
-            <div class="info-label">{{ 'risk_treatment_plan.field.priority'|trans }}</div>
+            <div class="info-label">{{ 'risk_treatment_plan.field.priority'|trans({}, 'risks') }}</div>
             <div class="info-value">
                 <span class="badge bg-{{ plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : (plan.priority == 'medium' ? 'info' : 'secondary')) }} fs-6">
                     {{ ('risk_treatment_plan.priority.' ~ plan.priority)|trans|upper }}
@@ -50,7 +50,7 @@
     </div>
     <div class="col-md-3">
         <div class="info-card">
-            <div class="info-label">{{ 'risk_treatment_plan.field.completion'|trans }}</div>
+            <div class="info-label">{{ 'risk_treatment_plan.field.completion'|trans({}, 'risks') }}</div>
             <div class="info-value">
                 <div class="progress" style="height: 30px;">
                     <div class="progress-bar bg-{{ plan.completionPercentage >= 75 ? 'success' : (plan.completionPercentage >= 50 ? 'info' : (plan.completionPercentage >= 25 ? 'warning' : 'danger')) }}"
@@ -67,15 +67,15 @@
     </div>
     <div class="col-md-3">
         <div class="info-card {{ plan.isOverdue() ? 'bg-danger text-white' : '' }}">
-            <div class="info-label">{{ 'risk_treatment_plan.days_until_target'|trans }}</div>
+            <div class="info-label">{{ 'risk_treatment_plan.days_until_target'|trans({}, 'risks') }}</div>
             <div class="info-value">
                 {% set daysUntil = plan.daysUntilTarget %}
                 {% if daysUntil < 0 %}
-                    <span class="text-danger fw-bold">{{ daysUntil|abs }} {{ 'risk_treatment_plan.days_overdue'|trans }}</span>
+                    <span class="text-danger fw-bold">{{ daysUntil|abs }} {{ 'risk_treatment_plan.days_overdue'|trans({}, 'risks') }}</span>
                 {% elseif daysUntil == 0 %}
-                    <span class="text-warning fw-bold">{{ 'risk_treatment_plan.due_today'|trans }}</span>
+                    <span class="text-warning fw-bold">{{ 'risk_treatment_plan.due_today'|trans({}, 'risks') }}</span>
                 {% else %}
-                    {{ daysUntil }} {{ 'risk_treatment_plan.days_remaining'|trans }}
+                    {{ daysUntil }} {{ 'risk_treatment_plan.days_remaining'|trans({}, 'risks') }}
                 {% endif %}
             </div>
         </div>
@@ -85,13 +85,13 @@
 {# Main Details #}
 <div class="card mb-4">
     <div class="card-header">
-        <h3><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.details'|trans }}</h3>
+        <h3><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.details'|trans({}, 'risks') }}</h3>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-6">
                 <div class="detail-item">
-                    <strong>{{ 'risk_treatment_plan.field.risk'|trans }}:</strong>
+                    <strong>{{ 'risk_treatment_plan.field.risk'|trans({}, 'risks') }}:</strong>
                     {% if plan.risk %}
                         <a href="{{ path('app_risk_show', {id: plan.risk.id}) }}">{{ plan.risk.title }}</a>
                         <span class="badge bg-danger ms-2">Score: {{ plan.risk.riskScore }}</span>
@@ -101,7 +101,7 @@
                 </div>
 
                 <div class="detail-item">
-                    <strong>{{ 'risk_treatment_plan.field.responsible_person'|trans }}:</strong>
+                    <strong>{{ 'risk_treatment_plan.field.responsible_person'|trans({}, 'risks') }}:</strong>
                     {% if plan.responsiblePerson %}
                         {{ plan.responsiblePerson.fullName }} ({{ plan.responsiblePerson.email }})
                     {% else %}
@@ -110,36 +110,36 @@
                 </div>
 
                 <div class="detail-item">
-                    <strong>{{ 'risk_treatment_plan.field.budget'|trans }}:</strong>
+                    <strong>{{ 'risk_treatment_plan.field.budget'|trans({}, 'risks') }}:</strong>
                     {% if plan.budget %}
                         {{ plan.budget|number_format(2, '.', ',') }} €
                     {% else %}
-                        <span class="text-muted">{{ 'common.not_set'|trans }}</span>
+                        <span class="text-muted">{{ 'common.not_set'|trans({}, 'messages') }}</span>
                     {% endif %}
                 </div>
             </div>
 
             <div class="col-md-6">
                 <div class="detail-item">
-                    <strong>{{ 'risk_treatment_plan.field.start_date'|trans }}:</strong>
+                    <strong>{{ 'risk_treatment_plan.field.start_date'|trans({}, 'risks') }}:</strong>
                     {% if plan.startDate %}
                         {{ plan.startDate|date('Y-m-d') }}
                     {% else %}
-                        <span class="text-muted">{{ 'common.not_started'|trans }}</span>
+                        <span class="text-muted">{{ 'common.not_started'|trans({}, 'messages') }}</span>
                     {% endif %}
                 </div>
 
                 <div class="detail-item">
-                    <strong>{{ 'risk_treatment_plan.field.target_completion_date'|trans }}:</strong>
+                    <strong>{{ 'risk_treatment_plan.field.target_completion_date'|trans({}, 'risks') }}:</strong>
                     {{ plan.targetCompletionDate|date('Y-m-d') }}
                 </div>
 
                 <div class="detail-item">
-                    <strong>{{ 'risk_treatment_plan.field.actual_completion_date'|trans }}:</strong>
+                    <strong>{{ 'risk_treatment_plan.field.actual_completion_date'|trans({}, 'risks') }}:</strong>
                     {% if plan.actualCompletionDate %}
                         {{ plan.actualCompletionDate|date('Y-m-d') }}
                     {% else %}
-                        <span class="text-muted">{{ 'common.not_completed'|trans }}</span>
+                        <span class="text-muted">{{ 'common.not_completed'|trans({}, 'messages') }}</span>
                     {% endif %}
                 </div>
             </div>
@@ -148,14 +148,14 @@
         <hr>
 
         <div class="detail-item">
-            <strong>{{ 'risk_treatment_plan.field.description'|trans }}:</strong>
+            <strong>{{ 'risk_treatment_plan.field.description'|trans({}, 'risks') }}:</strong>
             <div class="mt-2">{{ plan.description|nl2br }}</div>
         </div>
 
         {% if plan.implementationNotes %}
         <hr>
         <div class="detail-item">
-            <strong>{{ 'risk_treatment_plan.field.implementation_notes'|trans }}:</strong>
+            <strong>{{ 'risk_treatment_plan.field.implementation_notes'|trans({}, 'risks') }}:</strong>
             <div class="mt-2">{{ plan.implementationNotes|nl2br }}</div>
         </div>
         {% endif %}
@@ -166,7 +166,7 @@
 {% if plan.controls|length > 0 %}
 <div class="card mb-4">
     <div class="card-header">
-        <h3><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.controls'|trans }} ({{ plan.controls|length }})</h3>
+        <h3><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.controls'|trans({}, 'risks') }} ({{ plan.controls|length }})</h3>
     </div>
     <div class="card-body">
         {% embed '_components/_table.html.twig' with {
@@ -205,7 +205,7 @@
 {% if auditLogs is defined and auditLogs|length > 0 %}
 <div class="card mb-4">
     <div class="card-header">
-        <h3><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.history'|trans }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h3>
+        <h3><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.history'|trans({}, 'risks') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h3>
     </div>
     <div class="card-body">
         <div class="audit-log-list">
@@ -257,8 +257,8 @@
         <h3><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h3>
     </div>
     <div class="card-body">
-        <p>{{ 'risk_treatment_plan.delete.warning'|trans }}</p>
-        <form method="post" action="{{ path('app_risk_treatment_plan_delete', {id: plan.id}) }}" onsubmit="return confirm('{{ 'risk_treatment_plan.delete.confirm'|trans }}');">
+        <p>{{ 'risk_treatment_plan.delete.warning'|trans({}, 'risks') }}</p>
+        <form method="post" action="{{ path('app_risk_treatment_plan_delete', {id: plan.id}) }}" onsubmit="return confirm('{{ 'risk_treatment_plan.delete.confirm'|trans({}, 'risks') }}');">
             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ plan.id) }}">
             <button type="submit" class="btn btn-danger">
                 <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}

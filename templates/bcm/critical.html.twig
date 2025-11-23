@@ -2,20 +2,20 @@
 {% trans_default_domain 'bcm' %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}{{ 'bcm.title.critical'|trans }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'bcm.title.critical'|trans({}, 'bcm') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 <div class="page-header">
     <div>
-        <h1>{{ 'bcm.title.critical'|trans }}</h1>
-        <p class="text-muted">{{ 'bcm.description.critical'|trans }}</p>
+        <h1>{{ 'bcm.title.critical'|trans({}, 'bcm') }}</h1>
+        <p class="text-muted">{{ 'bcm.description.critical'|trans({}, 'bcm') }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_asset_bcm_insights') }}" class="btn btn-secondary">
-            📊 {{ 'bcm.action.view_insights'|trans }}
+            📊 {{ 'bcm.action.view_insights'|trans({}, 'bcm') }}
         </a>
         <a href="{{ path('app_bcm_export_critical') }}" class="btn btn-success" data-turbo="false">
-            📥 {{ 'bcm.action.export'|trans }}
+            📥 {{ 'bcm.action.export'|trans({}, 'bcm') }}
         </a>
     </div>
 </div>
@@ -23,91 +23,91 @@
 {# Alert Banner #}
 {% if criticalAssets|length > 0 %}
 <div class="info-box mb-4 bg-danger-light-border-left-danger">
-    <p><strong>🔴 {{ 'bcm.warning.critical_assets_count'|trans({'%count%': criticalAssets|length}) }}</strong></p>
-    <p class="mt-xs">{{ 'bcm.warning.critical_message'|trans }}</p>
+    <p><strong>🔴 {{ 'bcm.warning.critical_assets_count'|trans({'%count%': criticalAssets|length}, 'bcm') }}</strong></p>
+    <p class="mt-xs">{{ 'bcm.warning.critical_message'|trans({}, 'bcm') }}</p>
 </div>
 {% endif %}
 
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('bcm.stats.critical_assets'|trans, criticalAssets|length, null, null, 'danger', 'border-danger') }}
+        {{ cards.kpi_card('bcm.stats.critical_assets'|trans({}, 'bcm'), criticalAssets|length, null, null, 'danger', 'border-danger') }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('bcm.stats.critical_processes'|trans, criticalProcesses|length, null, null, 'primary', null) }}
+        {{ cards.kpi_card('bcm.stats.critical_processes'|trans({}, 'bcm'), criticalProcesses|length, null, null, 'primary', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('bcm.stats.avg_rto'|trans, avgRTO|round(1) ~ 'h', null, null, 'info', null) }}
+        {{ cards.kpi_card('bcm.stats.avg_rto'|trans({}, 'bcm'), avgRTO|round(1) ~ 'h', null, null, 'info', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('bcm.stats.missing_recovery_plans'|trans, assetsWithoutRecoveryPlan, null, null, 'warning', null) }}
+        {{ cards.kpi_card('bcm.stats.missing_recovery_plans'|trans({}, 'bcm'), assetsWithoutRecoveryPlan, null, null, 'warning', null) }}
     </div>
 </div>
 
 {# Business Criticality Overview #}
-<h2>{{ 'bcm.section.criticality_overview'|trans }}</h2>
+<h2>{{ 'bcm.section.criticality_overview'|trans({}, 'bcm') }}</h2>
 
 <div class="module-grid mb-4">
     <div class="card border-left-danger">
         <div class="fs-2-mb-sm">🔴</div>
-        <h2>{{ 'bcm.criticality.critical'|trans }}</h2>
+        <h2>{{ 'bcm.criticality.critical'|trans({}, 'bcm') }}</h2>
         <p class="text-muted-mt-xs-mb-md">
-            {{ 'bcm.description.critical_level'|trans }}
+            {{ 'bcm.description.critical_level'|trans({}, 'bcm') }}
         </p>
 
         <div class="stats-grid grid-col-1">
             <div class="stat-item">
                 <strong class="fs-15-danger">{{ criticalityGroups.critical|length }}</strong>
-                <span>{{ 'bcm.field.assets'|trans }}</span>
+                <span>{{ 'bcm.field.assets'|trans({}, 'bcm') }}</span>
             </div>
             <div class="stat-item">
                 <strong>{{ avgRTOByCriticality.critical ?? 0 }}h</strong>
-                <span>{{ 'bcm.field.avg_rto'|trans }}</span>
+                <span>{{ 'bcm.field.avg_rto'|trans({}, 'bcm') }}</span>
             </div>
         </div>
     </div>
 
     <div class="card border-left-warning">
         <div class="fs-2-mb-sm">🟡</div>
-        <h3>{{ 'bcm.criticality.high'|trans }}</h3>
+        <h3>{{ 'bcm.criticality.high'|trans({}, 'bcm') }}</h3>
         <p class="text-muted-mt-xs-mb-md">
-            {{ 'bcm.description.high_level'|trans }}
+            {{ 'bcm.description.high_level'|trans({}, 'bcm') }}
         </p>
 
         <div class="stats-grid grid-col-1">
             <div class="stat-item">
                 <strong class="fs-15-warning">{{ criticalityGroups.high|length }}</strong>
-                <span>{{ 'bcm.field.assets'|trans }}</span>
+                <span>{{ 'bcm.field.assets'|trans({}, 'bcm') }}</span>
             </div>
             <div class="stat-item">
                 <strong>{{ avgRTOByCriticality.high ?? 0 }}h</strong>
-                <span>{{ 'bcm.field.avg_rto'|trans }}</span>
+                <span>{{ 'bcm.field.avg_rto'|trans({}, 'bcm') }}</span>
             </div>
         </div>
     </div>
 
     <div class="card border-left-info">
         <div class="fs-2-mb-sm">🔵</div>
-        <h3>{{ 'bcm.criticality.medium'|trans }}</h3>
+        <h3>{{ 'bcm.criticality.medium'|trans({}, 'bcm') }}</h3>
         <p class="text-muted-mt-xs-mb-md">
-            {{ 'bcm.description.medium_level'|trans }}
+            {{ 'bcm.description.medium_level'|trans({}, 'bcm') }}
         </p>
 
         <div class="stats-grid grid-col-1">
             <div class="stat-item">
                 <strong class="fs-15-info">{{ criticalityGroups.medium|length }}</strong>
-                <span>{{ 'bcm.field.assets'|trans }}</span>
+                <span>{{ 'bcm.field.assets'|trans({}, 'bcm') }}</span>
             </div>
             <div class="stat-item">
                 <strong>{{ avgRTOByCriticality.medium ?? 0 }}h</strong>
-                <span>{{ 'bcm.field.avg_rto'|trans }}</span>
+                <span>{{ 'bcm.field.avg_rto'|trans({}, 'bcm') }}</span>
             </div>
         </div>
     </div>
 </div>
 
 {# Critical Assets Table #}
-<h2>{{ 'bcm.section.critical_assets_list'|trans }}</h2>
+<h2>{{ 'bcm.section.critical_assets_list'|trans({}, 'bcm') }}</h2>
 
 {% embed '_components/_table.html.twig' with {
     'class': 'table-container',
@@ -116,14 +116,14 @@
 } %}
     {% block table_head %}
         <tr>
-            <th scope="col">{{ 'bcm.field.asset_name'|trans }}</th>
-            <th scope="col">{{ 'bcm.field.type'|trans }}</th>
-            <th scope="col">{{ 'bcm.field.criticality'|trans }}</th>
-            <th scope="col">{{ 'bcm.field.rto'|trans }}</th>
-            <th scope="col">{{ 'bcm.field.rpo'|trans }}</th>
-            <th scope="col">{{ 'bcm.field.recovery_plan'|trans }}</th>
-            <th scope="col">{{ 'bcm.field.last_tested'|trans }}</th>
-            <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+            <th scope="col">{{ 'bcm.field.asset_name'|trans({}, 'bcm') }}</th>
+            <th scope="col">{{ 'bcm.field.type'|trans({}, 'bcm') }}</th>
+            <th scope="col">{{ 'bcm.field.criticality'|trans({}, 'bcm') }}</th>
+            <th scope="col">{{ 'bcm.field.rto'|trans({}, 'bcm') }}</th>
+            <th scope="col">{{ 'bcm.field.rpo'|trans({}, 'bcm') }}</th>
+            <th scope="col">{{ 'bcm.field.recovery_plan'|trans({}, 'bcm') }}</th>
+            <th scope="col">{{ 'bcm.field.last_tested'|trans({}, 'bcm') }}</th>
+            <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
     {% block table_body %}
@@ -133,7 +133,7 @@
                 <strong>{{ asset.name }}</strong>
                 {% if not asset.hasRecoveryPlan %}
                     <br><span class="badge bg-warning mt-xs">
-                        {{ 'bcm.badge.no_recovery_plan'|trans }}
+                        {{ 'bcm.badge.no_recovery_plan'|trans({}, 'bcm') }}
                     </span>
                 {% endif %}
             </td>
@@ -149,7 +149,7 @@
                 <strong>{{ asset.rto }}h</strong>
                 {% if asset.rto <= 1 %}
                     <span class="badge bg-danger ml-xs">
-                        {{ 'bcm.badge.immediate'|trans }}
+                        {{ 'bcm.badge.immediate'|trans({}, 'bcm') }}
                     </span>
                 {% endif %}
             </td>
@@ -158,9 +158,9 @@
             </td>
             <td>
                 {% if asset.hasRecoveryPlan %}
-                    <span class="badge bg-success">✓ {{ 'bcm.badge.exists'|trans }}</span>
+                    <span class="badge bg-success">✓ {{ 'bcm.badge.exists'|trans({}, 'bcm') }}</span>
                 {% else %}
-                    <span class="badge bg-danger">✗ {{ 'bcm.badge.missing'|trans }}</span>
+                    <span class="badge bg-danger">✗ {{ 'bcm.badge.missing'|trans({}, 'bcm') }}</span>
                 {% endif %}
             </td>
             <td>
@@ -169,19 +169,19 @@
                     {% set daysSinceTest = (date().timestamp - asset.lastTestedDate.timestamp) / 86400 %}
                     {% if daysSinceTest > 180 %}
                         <br><span class="badge bg-warning mt-xs">
-                            {{ 'bcm.badge.test_overdue'|trans }}
+                            {{ 'bcm.badge.test_overdue'|trans({}, 'bcm') }}
                         </span>
                     {% endif %}
                 {% else %}
-                    <span class="text-muted">{{ 'bcm.message.never_tested'|trans }}</span>
+                    <span class="text-muted">{{ 'bcm.message.never_tested'|trans({}, 'bcm') }}</span>
                 {% endif %}
             </td>
             <td class="text-center">
                 <a href="{{ path('app_asset_show', {id: asset.id}) }}" class="btn btn-sm mr-sm">
-                    👁 {{ 'common.view'|trans }}
+                    👁 {{ 'common.view'|trans({}, 'messages') }}
                 </a>
                 <a href="{{ path('app_bcm_recovery_plan', {assetId: asset.id}) }}" class="btn btn-sm btn-secondary">
-                    📋 {{ 'bcm.action.plan'|trans }}
+                    📋 {{ 'bcm.action.plan'|trans({}, 'bcm') }}
                 </a>
             </td>
         </tr>
@@ -189,7 +189,7 @@
         <tr>
             <td colspan="8" class="text-center-p-xl">
                 <div class="fs-2-mb-sm">✅</div>
-                <p><strong>{{ 'bcm.message.no_critical_assets'|trans }}</strong></p>
+                <p><strong>{{ 'bcm.message.no_critical_assets'|trans({}, 'bcm') }}</strong></p>
             </td>
         </tr>
         {% endfor %}
@@ -197,7 +197,7 @@
 {% endembed %}
 
 {# Critical Business Processes #}
-<h2 class="mt-4">{{ 'bcm.section.critical_processes'|trans }}</h2>
+<h2 class="mt-4">{{ 'bcm.section.critical_processes'|trans({}, 'bcm') }}</h2>
 
 {% embed '_components/_table.html.twig' with {
     'class': 'table-container',
@@ -206,12 +206,12 @@
 } %}
     {% block table_head %}
         <tr>
-            <th scope="col">{{ 'bcm.field.process_name'|trans }}</th>
-            <th scope="col">{{ 'bcm.field.department'|trans }}</th>
-            <th scope="col" class="text-center">{{ 'bcm.field.dependent_assets'|trans }}</th>
-            <th scope="col">{{ 'bcm.field.mtd'|trans }}</th>
-            <th scope="col">{{ 'bcm.field.impact_of_loss'|trans }}</th>
-            <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+            <th scope="col">{{ 'bcm.field.process_name'|trans({}, 'bcm') }}</th>
+            <th scope="col">{{ 'bcm.field.department'|trans({}, 'bcm') }}</th>
+            <th scope="col" class="text-center">{{ 'bcm.field.dependent_assets'|trans({}, 'bcm') }}</th>
+            <th scope="col">{{ 'bcm.field.mtd'|trans({}, 'bcm') }}</th>
+            <th scope="col">{{ 'bcm.field.impact_of_loss'|trans({}, 'bcm') }}</th>
+            <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
     {% block table_body %}
@@ -228,7 +228,7 @@
             <td>
                 <strong>{{ process.mtd }}h</strong>
                 <br><small class="text-muted">
-                    {{ 'bcm.field.maximum_tolerable_downtime'|trans }}
+                    {{ 'bcm.field.maximum_tolerable_downtime'|trans({}, 'bcm') }}
                 </small>
             </td>
             <td>
@@ -236,14 +236,14 @@
             </td>
             <td class="text-center">
                 <a href="{{ path('app_bcm_process_show', {id: process.id}) }}" class="btn btn-sm">
-                    👁 {{ 'common.view'|trans }}
+                    👁 {{ 'common.view'|trans({}, 'messages') }}
                 </a>
             </td>
         </tr>
         {% else %}
         <tr>
             <td colspan="6" class="text-center-p-xl">
-                {{ 'bcm.message.no_critical_processes'|trans }}
+                {{ 'bcm.message.no_critical_processes'|trans({}, 'bcm') }}
             </td>
         </tr>
         {% endfor %}
@@ -253,9 +253,9 @@
 {# Action Items #}
 {% if actionItems|length > 0 %}
 <div class="card mt-4">
-    <h2>{{ 'bcm.section.action_items'|trans }}</h2>
+    <h2>{{ 'bcm.section.action_items'|trans({}, 'bcm') }}</h2>
     <p class="text-muted-mt-sm-mb-md">
-        {{ 'bcm.description.action_items'|trans }}
+        {{ 'bcm.description.action_items'|trans({}, 'bcm') }}
     </p>
 
     <ul class="list-unstyled">

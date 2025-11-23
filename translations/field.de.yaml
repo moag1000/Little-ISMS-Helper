@@ -1,0 +1,27 @@
+field:
+  id: ID
+  name: Name
+  title: Titel
+  description: Beschreibung
+  status: Status
+  type: Typ
+  date: Datum
+  created_at: Erstellt am
+  updated_at: Aktualisiert am
+  tenant: Mandant
+  user: Benutzer
+  location: Standort
+  person: Person
+  responsible: Verantwortlich
+  responsible_person: Verantwortliche Person
+  contact_person: Ansprechpartner
+  notes: Notizen
+  active: Aktiv
+  email: E-Mail
+  phone: Telefon
+  address: Adresse
+  city: Stadt
+  country: Land
+  postal_code: Postleitzahl
+  company: Firma
+  department: Abteilung

@@ -394,7 +394,7 @@
                 </td>
                 <td>
                     {% if risk.status %}
-                        <span class="badge {% if risk.status == 'identified' %}badge-warning{% elseif risk.status == 'assessed' %}badge-info{% elseif risk.status == 'treated' %}badge-success{% else %}badge-secondary{% endif %}">
+                        <span class="badge {% if ... %}bg-warning{% elseif risk.status == 'assessed' %}badge-info{% elseif risk.status == 'treated' %}badge-success{% else %}bg-secondary{% endif %}">
                             {% if risk.status == 'identified' %}Identified
                             {% elseif risk.status == 'assessed' %}Assessed
                             {% elseif risk.status == 'treated' %}Treated

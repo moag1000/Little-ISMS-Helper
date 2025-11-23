@@ -2,13 +2,13 @@
 {% trans_default_domain 'compliance' %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}{{ 'compliance.title.transitive'|trans }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'compliance.title.transitive'|trans({}, 'compliance') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 <div class="page-header">
     <div>
-        <h1>🔗 {{ 'compliance.title.transitive'|trans }}</h1>
-        <p class="text-muted">{{ 'compliance.description.transitive'|trans }}</p>
+        <h1>🔗 {{ 'compliance.title.transitive'|trans({}, 'compliance') }}</h1>
+        <p class="text-muted">{{ 'compliance.description.transitive'|trans({}, 'compliance') }}</p>
     </div>
     <div class="button-group">
         <button id="createAllMappingsBtn" class="btn btn-primary">
@@ -29,17 +29,17 @@
 {# Statistics Cards - Prominently displayed #}
 <div class="kpi-grid mb-2">
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.total_relationships'|trans, total_relationships, null, null, 'primary', null) }}
+        {{ cards.kpi_card('compliance.stats.total_relationships'|trans({}, 'compliance'), total_relationships, null, null, 'primary', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.transitive_compliance'|trans, transitive_compliance, null, null, 'success', null) }}
+        {{ cards.kpi_card('compliance.stats.transitive_compliance'|trans({}, 'compliance'), transitive_compliance, null, null, 'success', null) }}
     </div>
     <div class="col-auto">
         {% set leverageRate = total_relationships > 0 ? (transitive_compliance / total_relationships * 100)|round : 0 %}
-        {{ cards.kpi_card('compliance.stats.leverage_rate'|trans, leverageRate ~ '%', null, null, 'info', null) }}
+        {{ cards.kpi_card('compliance.stats.leverage_rate'|trans({}, 'compliance'), leverageRate ~ '%', null, null, 'info', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.frameworks_leveraged'|trans, frameworks_leveraged, null, null, 'warning', null) }}
+        {{ cards.kpi_card('compliance.stats.frameworks_leveraged'|trans({}, 'compliance'), frameworks_leveraged, null, null, 'warning', null) }}
     </div>
 </div>
 
@@ -62,7 +62,7 @@
 
     {# Tab 1: Overview #}
     <div id="tab-overview" class="tab-content active">
-        <h2 class="section-title">{{ 'compliance.section.framework_relationships'|trans }}</h2>
+        <h2 class="section-title">{{ 'compliance.section.framework_relationships'|trans({}, 'compliance') }}</h2>
 
         {% if framework_relationships is empty %}
             <div class="card gradient-purple">
@@ -119,7 +119,7 @@
                     <div class="box-bg-alt-p-075-rounded-mb">
                         <div class="flex-space-between-center">
                             <span class="fs-085-text-secondary">
-                                {{ 'compliance.field.mapped'|trans }}:
+                                {{ 'compliance.field.mapped'|trans({}, 'compliance') }}:
                             </span>
                             <span class="fw-600-fs-11-primary">
                                 {{ relationship.mappedRequirements }}
@@ -138,9 +138,9 @@
 
     {# Tab 2: Matrix #}
     <div id="tab-matrix" class="tab-content d-none">
-        <h2 class="section-title">{{ 'compliance.section.compliance_matrix'|trans }}</h2>
+        <h2 class="section-title">{{ 'compliance.section.compliance_matrix'|trans({}, 'compliance') }}</h2>
         <p class="text-secondary-mb-15">
-            {{ 'compliance.description.matrix'|trans }}
+            {{ 'compliance.description.matrix'|trans({}, 'compliance') }}
         </p>
 
         <div class="overflow-auto-mb">
@@ -209,7 +209,7 @@
 
     {# Tab 3: Detailed Mappings #}
     <div id="tab-details" class="tab-content d-none">
-        <h2 class="section-title">{{ 'compliance.section.cross_framework_mappings'|trans }}</h2>
+        <h2 class="section-title">{{ 'compliance.section.cross_framework_mappings'|trans({}, 'compliance') }}</h2>
 
         {% if cross_mappings is empty %}
             <div class="card gradient-pink">
@@ -243,7 +243,7 @@
                                     {{ mapping_group.coverage.strong_mappings ?? 0 }}
                                 </div>
                                 <div class="small-text-secondary">
-                                    {{ 'compliance.mapping.type.full'|trans }}
+                                    {{ 'compliance.mapping.type.full'|trans({}, 'compliance') }}
                                 </div>
                             </div>
                             <div class="mapping-card-warning">
@@ -251,7 +251,7 @@
                                     {{ mapping_group.coverage.partial_mappings ?? 0 }}
                                 </div>
                                 <div class="small-text-secondary">
-                                    {{ 'compliance.mapping.type.partial'|trans }}
+                                    {{ 'compliance.mapping.type.partial'|trans({}, 'compliance') }}
                                 </div>
                             </div>
                             <div class="mapping-card-alt">
@@ -259,7 +259,7 @@
                                     {{ mapping_group.coverage.weak_mappings ?? 0 }}
                                 </div>
                                 <div class="small-text-secondary">
-                                    {{ 'compliance.mapping.type.weak'|trans }}
+                                    {{ 'compliance.mapping.type.weak'|trans({}, 'compliance') }}
                                 </div>
                             </div>
                         </div>
@@ -278,9 +278,9 @@
                             } %}
                                 {% block table_head %}
                                     <tr>
-                                        <th scope="col" class="th-left-fs-09">{{ 'compliance.field.source_requirement'|trans }}</th>
-                                        <th scope="col" class="th-left-fs-09">{{ 'compliance.field.target_requirements'|trans }}</th>
-                                        <th scope="col" class="td-center-fs-09">{{ 'compliance.field.mapping_strength'|trans }}</th>
+                                        <th scope="col" class="th-left-fs-09">{{ 'compliance.field.source_requirement'|trans({}, 'compliance') }}</th>
+                                        <th scope="col" class="th-left-fs-09">{{ 'compliance.field.target_requirements'|trans({}, 'compliance') }}</th>
+                                        <th scope="col" class="td-center-fs-09">{{ 'compliance.field.mapping_strength'|trans({}, 'compliance') }}</th>
                                     </tr>
                                 {% endblock %}
                                 {% block table_body %}
@@ -319,30 +319,30 @@
 
     {# Tab 4: Explanation #}
     <div id="tab-info" class="tab-content d-none">
-        <h2 class="section-title">💡 {{ 'compliance.section.mapping_explanation'|trans }}</h2>
+        <h2 class="section-title">💡 {{ 'compliance.section.mapping_explanation'|trans({}, 'compliance') }}</h2>
 
         <div class="grid-gap-15">
             <div class="card card-border-left-info-lg">
-                <h3 class="h-info-no-mt">{{ 'compliance.explanation.what_are_mappings_title'|trans }}</h3>
+                <h3 class="h-info-no-mt">{{ 'compliance.explanation.what_are_mappings_title'|trans({}, 'compliance') }}</h3>
                 <p class="lh-16">
-                    {{ 'compliance.explanation.what_are_mappings'|trans }}
+                    {{ 'compliance.explanation.what_are_mappings'|trans({}, 'compliance') }}
                 </p>
             </div>
 
             <div class="card card-border-left-success-lg">
-                <h3 class="h-success-no-mt">{{ 'compliance.explanation.mapping_types_title'|trans }}</h3>
+                <h3 class="h-success-no-mt">{{ 'compliance.explanation.mapping_types_title'|trans({}, 'compliance') }}</h3>
                 <ul class="lh-18-pl">
-                    <li><strong>{{ 'compliance.explanation.mapping_types_exceeds'|trans }}</strong></li>
-                    <li><strong>{{ 'compliance.explanation.mapping_types_full'|trans }}</strong></li>
-                    <li><strong>{{ 'compliance.explanation.mapping_types_partial'|trans }}</strong></li>
-                    <li><strong>{{ 'compliance.explanation.mapping_types_weak'|trans }}</strong></li>
+                    <li><strong>{{ 'compliance.explanation.mapping_types_exceeds'|trans({}, 'compliance') }}</strong></li>
+                    <li><strong>{{ 'compliance.explanation.mapping_types_full'|trans({}, 'compliance') }}</strong></li>
+                    <li><strong>{{ 'compliance.explanation.mapping_types_partial'|trans({}, 'compliance') }}</strong></li>
+                    <li><strong>{{ 'compliance.explanation.mapping_types_weak'|trans({}, 'compliance') }}</strong></li>
                 </ul>
             </div>
 
             <div class="card card-border-left-warning-lg">
-                <h3 class="h-warning-no-mt">{{ 'compliance.explanation.strategic_value_title'|trans }}</h3>
+                <h3 class="h-warning-no-mt">{{ 'compliance.explanation.strategic_value_title'|trans({}, 'compliance') }}</h3>
                 <p class="lh-16">
-                    {{ 'compliance.explanation.strategic_value'|trans }}
+                    {{ 'compliance.explanation.strategic_value'|trans({}, 'compliance') }}
                 </p>
             </div>
         </div>

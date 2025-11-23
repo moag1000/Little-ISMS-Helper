@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'workflows' %}
 
-{% block title %}{{ 'workflow.title.pending'|trans }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'workflow.title.pending'|trans({}, 'messages') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
 
 <div class="page-header">
     <div>
-        <h1>{{ 'workflow.title.pending'|trans }}</h1>
-        <p class="text-muted">{{ 'workflow.description.pending_detail'|trans }}</p>
+        <h1>{{ 'workflow.title.pending'|trans({}, 'messages') }}</h1>
+        <p class="text-muted">{{ 'workflow.description.pending_detail'|trans({}, 'messages') }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
@@ -21,17 +21,17 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.pending'|trans, pendingInstances|length, null, null, 'warning', null) }}
+        {{ cards.kpi_card('workflow.stats.pending'|trans({}, 'messages'), pendingInstances|length, null, null, 'warning', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.overdue'|trans, pendingInstances|filter(i => i.overdue)|length, null, null, 'danger', null) }}
+        {{ cards.kpi_card('workflow.stats.overdue'|trans({}, 'messages'), pendingInstances|filter(i => i.overdue)|length, null, null, 'danger', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.my_tasks'|trans, pendingInstances|filter(i => i.assignee and i.assignee.id == app.user.id)|length, null, null, 'success', null) }}
+        {{ cards.kpi_card('workflow.stats.my_tasks'|trans({}, 'messages'), pendingInstances|filter(i => i.assignee and i.assignee.id == app.user.id)|length, null, null, 'success', null) }}
     </div>
     <div class="col-auto">
         {% set weekEnd = 'now'|date_modify('+7 days') %}
-        {{ cards.kpi_card('workflow.stats.due_this_week'|trans, pendingInstances|filter(i => i.dueDate and i.dueDate <= weekEnd)|length, null, null, 'info', null) }}
+        {{ cards.kpi_card('workflow.stats.due_this_week'|trans({}, 'messages'), pendingInstances|filter(i => i.dueDate and i.dueDate <= weekEnd)|length, null, null, 'info', null) }}
     </div>
 </div>
 
@@ -42,12 +42,12 @@
 } %}
     {% block table_head %}
         <tr>
-            <th scope="col">{{ 'workflow.field.name'|trans }}</th>
-            <th scope="col">{{ 'workflow.field.definition'|trans }}</th>
-            <th scope="col">{{ 'workflow.field.current_step'|trans }}</th>
-            <th scope="col">{{ 'workflow.field.assignee'|trans }}</th>
-            <th scope="col">{{ 'workflow.field.due_date'|trans }}</th>
-            <th scope="col">{{ 'workflow.field.priority'|trans }}</th>
+            <th scope="col">{{ 'workflow.field.name'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'workflow.field.definition'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'workflow.field.current_step'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'workflow.field.assignee'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'workflow.field.due_date'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'workflow.field.priority'|trans({}, 'messages') }}</th>
             <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
@@ -58,7 +58,7 @@
                 <strong>{{ instance.name }}</strong>
                 {% if instance.overdue %}
                     <span class="badge bg-danger ml-xs">
-                        {{ 'workflow.badge.overdue'|trans }}
+                        {{ 'workflow.badge.overdue'|trans({}, 'messages') }}
                     </span>
                 {% endif %}
             </td>
@@ -71,11 +71,11 @@
                     {{ instance.assignee.fullName }}
                     {% if instance.assignee.id == app.user.id %}
                         <span class="badge bg-success ml-xs">
-                            {{ 'workflow.badge.my_task'|trans }}
+                            {{ 'workflow.badge.my_task'|trans({}, 'messages') }}
                         </span>
                     {% endif %}
                 {% else %}
-                    <span class="text-muted-color">{{ 'workflow.message.unassigned'|trans }}</span>
+                    <span class="text-muted-color">{{ 'workflow.message.unassigned'|trans({}, 'messages') }}</span>
                 {% endif %}
             </td>
             <td>
@@ -84,7 +84,7 @@
                     {% set daysUntilDue = (instance.dueDate.timestamp - 'now'|date('U')) / 86400 %}
                     {% if daysUntilDue < 3 and not instance.overdue %}
                         <span class="badge bg-warning ml-xs">
-                            {{ 'workflow.badge.due_soon'|trans }}
+                            {{ 'workflow.badge.due_soon'|trans({}, 'messages') }}
                         </span>
                     {% endif %}
                 {% else %}
@@ -111,7 +111,7 @@
         {% else %}
         <tr>
             <td colspan="7" class="text-center-p-xl-muted">
-                {{ 'workflow.message.no_pending'|trans }}
+                {{ 'workflow.message.no_pending'|trans({}, 'messages') }}
             </td>
         </tr>
         {% endfor %}

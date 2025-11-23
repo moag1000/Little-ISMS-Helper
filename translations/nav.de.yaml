@@ -1,0 +1,55 @@
+nav:
+  home: Startseite
+  dashboard: Dashboard
+  context: ISMS Kontext
+  analytics: Analytics
+  interested_parties: Interessierte Parteien
+  soa: SoA
+  assets: Assets
+  suppliers: Lieferanten
+  risks: Risiken
+  change_requests: Änderungsanträge
+  bcm: BCM
+  bc_plans: BC-Pläne
+  bc_exercises: BC-Übungen
+  incidents: Vorfälle
+  audits: Audits
+  compliance: Compliance
+  audit_log: Audit Log
+  nis2_dashboard: 'NIS2 Dashboard'
+  vulnerabilities: 'Schwachstellen'
+  patches: 'Patches'
+  users: Benutzer
+  documents: Dokumente
+  assets_risk_hub: 'Assets & Risiken'
+  risk_matrix: 'Risikomatrix'
+  bcm_hub: 'BCM Hub'
+  compliance_overview: 'Übersicht'
+  frameworks: 'Frameworks'
+  tools: 'Werkzeuge'
+  cross_framework: 'Framework-übergreifend'
+  compare: 'Vergleichen'
+  mapping_quality: 'Mapping-Qualität'
+  locations: 'Standorte'
+  people: 'Personen'
+  risk_appetite: 'Risikobereitschaft'
+  risk_treatment_plans: 'Behandlungspläne'
+  crisis_team: 'Krisenstab'
+  workflows: 'Workflows'
+  training: 'Schulungen'
+  management_review: 'Managementbewertung'
+  admin_portal: 'Admin Portal'
+  privacy_hub: 'Datenschutz-Kern'
+  vvt: 'VVT (Art. 30)'
+  dpia: 'DPIA (Art. 35)'
+  data_breaches: 'Datenschutzverletzungen (Art. 33/34)'
+  toggle_menu: 'Menü umschalten'
+  main_navigation: 'Hauptnavigation'
+  section:
+    isms_core: 'ISMS Kern'
+    assets_risk: 'Assets & Risiken'
+    bcm: 'Geschäftskontinuität'
+    privacy: 'Datenschutz'
+    operations: 'Betrieb'
+    compliance: 'Compliance'
+    admin: 'Administration'

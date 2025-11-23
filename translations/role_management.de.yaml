@@ -1,0 +1,55 @@
+role_management:
+  title:
+    list: 'Rollen & Berechtigungen'
+    create: 'Rolle erstellen'
+    edit: 'Rolle bearbeiten'
+    show: 'Rollendetails'
+  description:
+    overview: 'Verwalten Sie Benutzerrollen und deren Berechtigungen für die Zugriffskontrolle'
+  action:
+    create: 'Neue Rolle erstellen'
+  section:
+    basic_info: 'Grundinformationen'
+    permissions: 'Berechtigungen'
+    details: 'Rollendetails'
+    users: 'Zugewiesene Benutzer'
+  field:
+    name: 'Rollenname'
+    description: 'Beschreibung'
+    users: 'Benutzer'
+    permissions: 'Berechtigungen'
+    type: 'Typ'
+  placeholder:
+    name: 'z.B. Sicherheitsbeauftragter'
+    description: 'Beschreibung der Rolle und ihrer Verantwortlichkeiten...'
+  help:
+    active: 'Aktive Rollen können Benutzern zugewiesen werden'
+    permissions: 'Wählen Sie die Berechtigungen aus, die diese Rolle haben soll'
+  permission:
+    name: 'Berechtigung'
+    resource: 'Ressource'
+    action: 'Aktion'
+  user:
+    name: 'Name'
+    email: 'E-Mail'
+    assigned_date: 'Zugewiesen am'
+  badge:
+    system: 'System'
+    custom: 'Benutzerdefiniert'
+  type:
+    system: 'Systemrolle'
+    custom: 'Benutzerdefinierte Rolle'
+  stats:
+    total: 'Gesamt-Rollen'
+    system_roles: 'Systemrollen'
+    with_users: 'Mit Benutzern'
+    avg_permissions: 'Durchschn. Berechtigungen'
+  message:
+    no_permissions: 'Dieser Rolle sind keine Berechtigungen zugewiesen'
+    no_users: 'Dieser Rolle sind keine Benutzer zugewiesen'
+    no_roles: 'Noch keine Rollen erstellt'
+  warning:
+    system_role: 'Systemrolle'
+    system_role_desc: 'Dies ist eine Systemrolle und kann nicht gelöscht werden. Nur Berechtigungen können angepasst werden.'
+  confirm:
+    delete: 'Sind Sie sicher, dass Sie diese Rolle löschen möchten? Alle Benutzerzuweisungen werden entfernt.'

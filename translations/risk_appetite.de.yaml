@@ -55,3 +55,4 @@ risk_appetite:
   delete:
     warning: Dieser Vorgang kann nicht rückgängig gemacht werden. Bitte bestätigen Sie das Löschen.
     confirm: Wollen Sie diesen Eintrag wirklich löschen?
+  no_appetites: Keine Risikobereitschaften definiert.

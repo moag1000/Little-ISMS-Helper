@@ -44,10 +44,10 @@ soa:
     training_coverage: Training coverage
     control_effectiveness: Control effectiveness
   category:
-    Organizational: Organizational
-    People: People
-    Physical: Physical
-    Technological: Technological
+      Organizational: Organizational
+      People: People
+      Physical: Physical
+      Technological: Technological
   table:
     control_id: Control ID
     name: Name

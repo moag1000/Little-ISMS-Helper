@@ -1,13 +1,13 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}{{ 'admin.compliance.statistics'|trans }} - {{ 'admin.panel.title'|trans }}{% endblock %}
+{% block title %}{{ 'admin.compliance.statistics'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
 
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'admin.compliance.statistics'|trans }}</h1>
+        <h1><i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'admin.compliance.statistics'|trans({}, 'admin') }}</h1>
         <a href="{{ path('admin_compliance_index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans }}
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 
@@ -16,7 +16,7 @@
         <div class="col-md-3">
             <div class="card border-primary">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-1">{{ 'admin.compliance.total_available'|trans }}</h6>
+                    <h6 class="text-muted mb-1">{{ 'admin.compliance.total_available'|trans({}, 'admin') }}</h6>
                     <h2 class="mb-0">{{ statistics.total_available }}</h2>
                     <i class="bi bi-box fs-3 text-primary opacity-25" aria-hidden="true"></i>
                 </div>
@@ -25,7 +25,7 @@
         <div class="col-md-3">
             <div class="card border-success">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-1">{{ 'admin.compliance.loaded'|trans }}</h6>
+                    <h6 class="text-muted mb-1">{{ 'admin.compliance.loaded'|trans({}, 'admin') }}</h6>
                     <h2 class="mb-0 text-success">{{ statistics.total_loaded }}</h2>
                     <i class="bi bi-check-circle fs-3 text-success opacity-25" aria-hidden="true"></i>
                 </div>
@@ -34,7 +34,7 @@
         <div class="col-md-3">
             <div class="card border-secondary">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-1">{{ 'admin.compliance.not_loaded'|trans }}</h6>
+                    <h6 class="text-muted mb-1">{{ 'admin.compliance.not_loaded'|trans({}, 'admin') }}</h6>
                     <h2 class="mb-0 text-secondary">{{ statistics.total_not_loaded }}</h2>
                     <i class="bi bi-x-circle fs-3 text-secondary opacity-25" aria-hidden="true"></i>
                 </div>
@@ -43,7 +43,7 @@
         <div class="col-md-3">
             <div class="card border-danger">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-1">{{ 'admin.compliance.mandatory_missing'|trans }}</h6>
+                    <h6 class="text-muted mb-1">{{ 'admin.compliance.mandatory_missing'|trans({}, 'admin') }}</h6>
                     <h2 class="mb-0 text-danger">{{ statistics.mandatory_not_loaded }}</h2>
                     <i class="bi bi-exclamation-triangle fs-3 text-danger opacity-25" aria-hidden="true"></i>
                 </div>
@@ -56,7 +56,7 @@
         <div class="card">
             <div class="card-header bg-primary text-white">
                 <h3 class="mb-0">
-                    <i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'admin.compliance.compliance_overview'|trans }}
+                    <i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'admin.compliance.compliance_overview'|trans({}, 'admin') }}
                 </h5>
             </div>
             <div class="card-body">
@@ -67,12 +67,12 @@
                 } %}
                     {% block table_head %}
                         <tr>
-                            <th scope="col">{{ 'admin.compliance.framework'|trans }}</th>
-                            <th scope="col" class="text-center">{{ 'admin.compliance.total_requirements'|trans }}</th>
-                            <th scope="col" class="text-center">{{ 'admin.compliance.assessed'|trans }}</th>
-                            <th scope="col" class="text-center">{{ 'admin.compliance.compliant'|trans }}</th>
-                            <th scope="col" class="text-center">{{ 'admin.compliance.compliance_rate'|trans }}</th>
-                            <th scope="col" class="text-center">{{ 'admin.compliance.progress'|trans }}</th>
+                            <th scope="col">{{ 'admin.compliance.framework'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="text-center">{{ 'admin.compliance.total_requirements'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="text-center">{{ 'admin.compliance.assessed'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="text-center">{{ 'admin.compliance.compliant'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="text-center">{{ 'admin.compliance.compliance_rate'|trans({}, 'admin') }}</th>
+                            <th scope="col" class="text-center">{{ 'admin.compliance.progress'|trans({}, 'admin') }}</th>
                         </tr>
                     {% endblock %}
                     {% block table_body %}
@@ -117,7 +117,7 @@
     {% else %}
         <div class="alert alert-info">
             <i class="bi bi-info-circle" aria-hidden="true"></i>
-            {{ 'admin.compliance.no_frameworks_loaded'|trans }}
+            {{ 'admin.compliance.no_frameworks_loaded'|trans({}, 'admin') }}
         </div>
     {% endif %}
 </div>

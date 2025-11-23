@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'compliance.cross_framework.title'|trans }}{% endblock %}
+{% block title %}{{ 'compliance.cross_framework.title'|trans({}, 'compliance') }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
         <div>
-            <h1>🔗 {{ 'compliance.cross_framework.title'|trans }}</h1>
-            <p class="text-muted">{{ 'compliance.cross_framework.subtitle'|trans }}</p>
+            <h1>🔗 {{ 'compliance.cross_framework.title'|trans({}, 'compliance') }}</h1>
+            <p class="text-muted">{{ 'compliance.cross_framework.subtitle'|trans({}, 'compliance') }}</p>
         </div>
         <div class="button-group">
             <a href="{{ path('app_compliance_index') }}" class="btn btn-secondary">
-                ← {{ 'compliance.cross_framework.back'|trans }}
+                ← {{ 'compliance.cross_framework.back'|trans({}, 'compliance') }}
             </a>
         </div>
     </div>
@@ -20,8 +20,8 @@
     {% if coverage_matrix is not empty %}
         <div class="card">
             <div class="card-header">
-                <h2>📊 {{ 'compliance.cross_framework.coverage_matrix'|trans }}</h2>
-                <p class="text-muted">{{ 'compliance.cross_framework.coverage_description'|trans }}</p>
+                <h2>📊 {{ 'compliance.cross_framework.coverage_matrix'|trans({}, 'compliance') }}</h2>
+                <p class="text-muted">{{ 'compliance.cross_framework.coverage_description'|trans({}, 'compliance') }}</p>
             </div>
             <div class="card-body">
                 <div class="coverage-matrix">
@@ -31,7 +31,7 @@
                     } %}
                         {% block table_head %}
                             <tr>
-                                <th scope="col" class="matrix-corner-cell">{{ 'compliance.cross_framework.source_target_label'|trans }}</th>
+                                <th scope="col" class="matrix-corner-cell">{{ 'compliance.cross_framework.source_target_label'|trans({}, 'compliance') }}</th>
                                 {% for framework in frameworks %}
                                     <th scope="col" class="matrix-header-cell">
                                         <div class="matrix-header-content">
@@ -76,15 +76,15 @@
                 <div class="matrix-legend">
                     <div class="legend-item">
                         <span class="legend-color coverage-high"></span>
-                        <span>{{ 'compliance.cross_framework.coverage_high'|trans }}</span>
+                        <span>{{ 'compliance.cross_framework.coverage_high'|trans({}, 'compliance') }}</span>
                     </div>
                     <div class="legend-item">
                         <span class="legend-color coverage-medium"></span>
-                        <span>{{ 'compliance.cross_framework.coverage_medium'|trans }}</span>
+                        <span>{{ 'compliance.cross_framework.coverage_medium'|trans({}, 'compliance') }}</span>
                     </div>
                     <div class="legend-item">
                         <span class="legend-color coverage-low"></span>
-                        <span>{{ 'compliance.cross_framework.coverage_low'|trans }}</span>
+                        <span>{{ 'compliance.cross_framework.coverage_low'|trans({}, 'compliance') }}</span>
                     </div>
                 </div>
             </div>
@@ -109,21 +109,21 @@
                     <div class="summary-icon bg-color-success">✓</div>
                     <div class="summary-content">
                         <div class="summary-value">{{ mapping_group.coverage.strong_mappings }}</div>
-                        <div class="summary-label">{{ 'compliance.cross_framework.strong_mappings'|trans }}</div>
+                        <div class="summary-label">{{ 'compliance.cross_framework.strong_mappings'|trans({}, 'compliance') }}</div>
                     </div>
                 </div>
                 <div class="summary-stat">
                     <div class="summary-icon bg-color-warning">⚠</div>
                     <div class="summary-content">
                         <div class="summary-value">{{ mapping_group.coverage.partial_mappings }}</div>
-                        <div class="summary-label">{{ 'compliance.cross_framework.partial_mappings_label'|trans }}</div>
+                        <div class="summary-label">{{ 'compliance.cross_framework.partial_mappings_label'|trans({}, 'compliance') }}</div>
                     </div>
                 </div>
                 <div class="summary-stat">
                     <div class="summary-icon bg-color-secondary">◐</div>
                     <div class="summary-content">
                         <div class="summary-value">{{ mapping_group.coverage.weak_mappings }}</div>
-                        <div class="summary-label">{{ 'compliance.cross_framework.weak_mappings'|trans }}</div>
+                        <div class="summary-label">{{ 'compliance.cross_framework.weak_mappings'|trans({}, 'compliance') }}</div>
                     </div>
                 </div>
             </div>
@@ -134,11 +134,11 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">{{ 'compliance.cross_framework.table.source'|trans }}</th>
-                        <th scope="col">{{ 'compliance.cross_framework.table.target'|trans }}</th>
-                        <th scope="col">{{ 'compliance.cross_framework.table.type'|trans }}</th>
-                        <th scope="col">{{ 'compliance.cross_framework.table.strength'|trans }}</th>
-                        <th scope="col">{{ 'compliance.cross_framework.table.bidirectional'|trans }}</th>
+                        <th scope="col">{{ 'compliance.cross_framework.table.source'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.cross_framework.table.target'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.cross_framework.table.type'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.cross_framework.table.strength'|trans({}, 'compliance') }}</th>
+                        <th scope="col">{{ 'compliance.cross_framework.table.bidirectional'|trans({}, 'compliance') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -167,7 +167,7 @@
                             </td>
                             <td class="text-center">
                                 {% if mapping.bidirectional %}
-                                    <span class="badge bg-success">{{ 'compliance.cross_framework.yes_bidirectional'|trans }}</span>
+                                    <span class="badge bg-success">{{ 'compliance.cross_framework.yes_bidirectional'|trans({}, 'compliance') }}</span>
                                 {% else %}
                                     <span class="badge bg-secondary">→</span>
                                 {% endif %}
@@ -179,7 +179,7 @@
 
             {% if mapping_group.mappings|length > 20 %}
                 <div class="card-footer text-center">
-                    {{ 'compliance.cross_framework.showing_of'|trans({'%total%': mapping_group.mappings|length}) }}
+                    {{ 'compliance.cross_framework.showing_of'|trans({'%total%': mapping_group.mappings|length}, 'compliance') }}
                 </div>
             {% endif %}
         </div>
@@ -188,30 +188,30 @@
     {# Explanation #}
     <div class="card mt-lg">
         <div class="card-header">
-            <h2>{{ 'compliance.cross_framework.understanding_title'|trans }}</h2>
+            <h2>{{ 'compliance.cross_framework.understanding_title'|trans({}, 'compliance') }}</h2>
         </div>
         <div class="card-body">
             <div class="explanation-grid">
                 <div class="explanation-item">
-                    <h4>{{ 'compliance.cross_framework.what_title'|trans }}</h4>
-                    <p>{{ 'compliance.cross_framework.what_description'|trans }}</p>
+                    <h4>{{ 'compliance.cross_framework.what_title'|trans({}, 'compliance') }}</h4>
+                    <p>{{ 'compliance.cross_framework.what_description'|trans({}, 'compliance') }}</p>
                 </div>
                 <div class="explanation-item">
-                    <h4>{{ 'compliance.cross_framework.types_title'|trans }}</h4>
+                    <h4>{{ 'compliance.cross_framework.types_title'|trans({}, 'compliance') }}</h4>
                     <ul>
-                        <li><strong>{{ 'compliance.cross_framework.types.exceeds'|trans }}</strong></li>
-                        <li><strong>{{ 'compliance.cross_framework.types.full'|trans }}</strong></li>
-                        <li><strong>{{ 'compliance.cross_framework.types.partial'|trans }}</strong></li>
-                        <li><strong>{{ 'compliance.cross_framework.types.weak'|trans }}</strong></li>
+                        <li><strong>{{ 'compliance.cross_framework.types.exceeds'|trans({}, 'compliance') }}</strong></li>
+                        <li><strong>{{ 'compliance.cross_framework.types.full'|trans({}, 'compliance') }}</strong></li>
+                        <li><strong>{{ 'compliance.cross_framework.types.partial'|trans({}, 'compliance') }}</strong></li>
+                        <li><strong>{{ 'compliance.cross_framework.types.weak'|trans({}, 'compliance') }}</strong></li>
                     </ul>
                 </div>
                 <div class="explanation-item">
-                    <h2>{{ 'compliance.cross_framework.bidirectional_title'|trans }}</h2>
-                    <p>{{ 'compliance.cross_framework.bidirectional_description'|trans }}</p>
+                    <h2>{{ 'compliance.cross_framework.bidirectional_title'|trans({}, 'compliance') }}</h2>
+                    <p>{{ 'compliance.cross_framework.bidirectional_description'|trans({}, 'compliance') }}</p>
                 </div>
                 <div class="explanation-item">
-                    <h4>{{ 'compliance.cross_framework.strategic_title'|trans }}</h4>
-                    <p>{{ 'compliance.cross_framework.strategic_description'|trans }}</p>
+                    <h4>{{ 'compliance.cross_framework.strategic_title'|trans({}, 'compliance') }}</h4>
+                    <p>{{ 'compliance.cross_framework.strategic_description'|trans({}, 'compliance') }}</p>
                 </div>
             </div>
         </div>

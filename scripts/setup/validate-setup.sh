@@ -263,7 +263,7 @@ done
 if [ ${#DUPLICATES[@]} -eq 0 ]; then
     pass
 else
-    fail "Tables created multiple times: ${DUPLICATES[*]}"
+    fail "Tables created multiple times: ${DUPLICATES[*]} (${DUPLICATES})"
 fi
 
 echo ""

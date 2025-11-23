@@ -34,8 +34,6 @@ supplier:
   empty:
     message: No suppliers available.
     add_first: Add first supplier
-
-  # Additional keys for detail view (show)
   section:
     details: Details
     description: Description
@@ -84,3 +82,12 @@ supplier:
       critical: Critical risk – immediate action required
       high: High risk – review required
       acceptable: Acceptable risk level
+corporate:
+    stats:
+        standalone: 'Standalone'
+        total: 'Total Tenants'
+        own: 'Own'
+        inherited: 'Inherited'
+        subsidiaries: 'Subsidiaries'
+        breakdown: 'Own: %own% | Inherited: %inherited% | Subs: %subsidiaries%'
+        groups: 'Corporate Groups'

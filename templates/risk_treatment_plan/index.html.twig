@@ -1,41 +1,41 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk_treatment_plan' %}
 
-{% block title %}{{ 'risk_treatment_plan.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'risk_treatment_plan.title'|trans({}, 'risks') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
 
 <div class="page-header">
     <div>
-        <h1><i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'risk_treatment_plan.title'|trans }}</h1>
-        <p class="text-muted">{{ 'risk_treatment_plan.description'|trans }}</p>
+        <h1><i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'risk_treatment_plan.title'|trans({}, 'risks') }}</h1>
+        <p class="text-muted">{{ 'risk_treatment_plan.description'|trans({}, 'risks') }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_risk_treatment_plan_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'risk_treatment_plan.new'|trans }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'risk_treatment_plan.new'|trans({}, 'risks') }}
         </a>
     </div>
 </div>
 
 <div class="stats-grid mb-4">
     <div class="col-auto">
-        {{ cards.kpi_card('risk_treatment_plan.stats.total'|trans, stats.total, null, null, 'primary', null) }}
+        {{ cards.kpi_card('risk_treatment_plan.stats.total'|trans({}, 'risks'), stats.total, null, null, 'primary', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('risk_treatment_plan.stats.planned'|trans, stats.planned, null, null, 'secondary', null) }}
+        {{ cards.kpi_card('risk_treatment_plan.stats.planned'|trans({}, 'risks'), stats.planned, null, null, 'secondary', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('risk_treatment_plan.stats.in_progress'|trans, stats.in_progress, null, null, 'info', null) }}
+        {{ cards.kpi_card('risk_treatment_plan.stats.in_progress'|trans({}, 'risks'), stats.in_progress, null, null, 'info', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('risk_treatment_plan.stats.completed'|trans, stats.completed, null, null, 'success', null) }}
+        {{ cards.kpi_card('risk_treatment_plan.stats.completed'|trans({}, 'risks'), stats.completed, null, null, 'success', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('risk_treatment_plan.stats.overdue'|trans, overduePlans|length, null, null, 'danger', null) }}
+        {{ cards.kpi_card('risk_treatment_plan.stats.overdue'|trans({}, 'risks'), overduePlans|length, null, null, 'danger', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('risk_treatment_plan.stats.avg_completion'|trans, stats.avg_completion|number_format(0) ~ '%', null, stats.avg_completion, 'warning', null) }}
+        {{ cards.kpi_card('risk_treatment_plan.stats.avg_completion'|trans({}, 'risks'), stats.avg_completion|number_format(0) ~ '%', null, stats.avg_completion, 'warning', null) }}
     </div>
 </div>
 
@@ -50,37 +50,37 @@
     <div class="card-body" id="filter-section" tabindex="-1">
         <form method="get" action="{{ path('app_risk_treatment_plan_index') }}" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}">
             <div class="col-md-3">
-                <label for="filter-status" class="form-label">{{ 'risk_treatment_plan.field.status'|trans }}</label>
+                <label for="filter-status" class="form-label">{{ 'risk_treatment_plan.field.status'|trans({}, 'risks') }}</label>
                 <select class="form-select" id="filter-status" name="status" onchange="this.form.submit()">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    <option value="planned" {{ app.request.get('status') == 'planned' ? 'selected' : '' }}>{{ 'risk_treatment_plan.status.planned'|trans }}</option>
-                    <option value="in_progress" {{ app.request.get('status') == 'in_progress' ? 'selected' : '' }}>{{ 'risk_treatment_plan.status.in_progress'|trans }}</option>
-                    <option value="completed" {{ app.request.get('status') == 'completed' ? 'selected' : '' }}>{{ 'risk_treatment_plan.status.completed'|trans }}</option>
-                    <option value="on_hold" {{ app.request.get('status') == 'on_hold' ? 'selected' : '' }}>{{ 'risk_treatment_plan.status.on_hold'|trans }}</option>
-                    <option value="cancelled" {{ app.request.get('status') == 'cancelled' ? 'selected' : '' }}>{{ 'risk_treatment_plan.status.cancelled'|trans }}</option>
+                    <option value="planned" {{ app.request.get('status') == 'planned' ? 'selected' : '' }}>{{ 'risk_treatment_plan.status.planned'|trans({}, 'risks') }}</option>
+                    <option value="in_progress" {{ app.request.get('status') == 'in_progress' ? 'selected' : '' }}>{{ 'risk_treatment_plan.status.in_progress'|trans({}, 'risks') }}</option>
+                    <option value="completed" {{ app.request.get('status') == 'completed' ? 'selected' : '' }}>{{ 'risk_treatment_plan.status.completed'|trans({}, 'risks') }}</option>
+                    <option value="on_hold" {{ app.request.get('status') == 'on_hold' ? 'selected' : '' }}>{{ 'risk_treatment_plan.status.on_hold'|trans({}, 'risks') }}</option>
+                    <option value="cancelled" {{ app.request.get('status') == 'cancelled' ? 'selected' : '' }}>{{ 'risk_treatment_plan.status.cancelled'|trans({}, 'risks') }}</option>
                 </select>
             </div>
             <div class="col-md-3">
-                <label for="filter-priority" class="form-label">{{ 'risk_treatment_plan.field.priority'|trans }}</label>
+                <label for="filter-priority" class="form-label">{{ 'risk_treatment_plan.field.priority'|trans({}, 'risks') }}</label>
                 <select class="form-select" id="filter-priority" name="priority" onchange="this.form.submit()">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    <option value="critical" {{ app.request.get('priority') == 'critical' ? 'selected' : '' }}>{{ 'risk_treatment_plan.priority.critical'|trans }}</option>
-                    <option value="high" {{ app.request.get('priority') == 'high' ? 'selected' : '' }}>{{ 'risk_treatment_plan.priority.high'|trans }}</option>
-                    <option value="medium" {{ app.request.get('priority') == 'medium' ? 'selected' : '' }}>{{ 'risk_treatment_plan.priority.medium'|trans }}</option>
-                    <option value="low" {{ app.request.get('priority') == 'low' ? 'selected' : '' }}>{{ 'risk_treatment_plan.priority.low'|trans }}</option>
+                    <option value="critical" {{ app.request.get('priority') == 'critical' ? 'selected' : '' }}>{{ 'risk_treatment_plan.priority.critical'|trans({}, 'risks') }}</option>
+                    <option value="high" {{ app.request.get('priority') == 'high' ? 'selected' : '' }}>{{ 'risk_treatment_plan.priority.high'|trans({}, 'risks') }}</option>
+                    <option value="medium" {{ app.request.get('priority') == 'medium' ? 'selected' : '' }}>{{ 'risk_treatment_plan.priority.medium'|trans({}, 'risks') }}</option>
+                    <option value="low" {{ app.request.get('priority') == 'low' ? 'selected' : '' }}>{{ 'risk_treatment_plan.priority.low'|trans({}, 'risks') }}</option>
                 </select>
             </div>
             <div class="col-md-3">
-                <label for="filter-responsible" class="form-label">{{ 'risk_treatment_plan.field.responsible_person'|trans }}</label>
+                <label for="filter-responsible" class="form-label">{{ 'risk_treatment_plan.field.responsible_person'|trans({}, 'risks') }}</label>
                 <input type="text" class="form-control" id="filter-responsible" name="responsible_person"
                        value="{{ app.request.get('responsible_person') }}"
                        placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
             </div>
             <div class="col-md-3">
-                <label for="filter-overdue" class="form-label">{{ 'risk_treatment_plan.filter.overdue'|trans }}</label>
+                <label for="filter-overdue" class="form-label">{{ 'risk_treatment_plan.filter.overdue'|trans({}, 'risks') }}</label>
                 <select class="form-select" id="filter-overdue" name="overdue_only" onchange="this.form.submit()">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    <option value="1" {{ app.request.get('overdue_only') == '1' ? 'selected' : '' }}>{{ 'risk_treatment_plan.filter.overdue_only'|trans }}</option>
+                    <option value="1" {{ app.request.get('overdue_only') == '1' ? 'selected' : '' }}>{{ 'risk_treatment_plan.filter.overdue_only'|trans({}, 'risks') }}</option>
                 </select>
             </div>
             <div class="col-12">
@@ -98,7 +98,7 @@
 {# Treatment Plans Table #}
 <div class="card">
     <div class="card-header">
-        <h3><i class="bi bi-list" aria-hidden="true"></i> {{ 'risk_treatment_plan.list.title'|trans }} ({{ plans|length }})</h3>
+        <h3><i class="bi bi-list" aria-hidden="true"></i> {{ 'risk_treatment_plan.list.title'|trans({}, 'risks') }} ({{ plans|length }})</h3>
     </div>
     {% embed '_components/_table.html.twig' with {
         'noMargin': true

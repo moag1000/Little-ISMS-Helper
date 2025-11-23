@@ -13,17 +13,17 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-primary">
-            ✏️ {{ 'soa.action.edit'|trans }}
+            ✏️ {{ 'soa.action.edit'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_soa_by_category', {category: control.category}) }}" class="btn btn-secondary">
-            ← {{ 'soa.action.back_to_category'|trans({'%category%': ('soa.category.' ~ control.category)|trans }) }}
+            ← {{ 'soa.action.back_to_category'|trans({'%category%': ('soa.category.' ~ control.category)|trans }, 'messages') }}
         </a>
     </div>
 </div>
 
 {# Control Description #}
 <div class="card mb-4">
-    <h2>{{ 'soa.section.description'|trans }}</h2>
+    <h2>{{ 'soa.section.description'|trans({}, 'messages') }}</h2>
     <p class="text-light-mt-sm-lh">
         {{ control.description }}
     </p>
@@ -31,40 +31,40 @@
 
 {# Applicability Status #}
 <div class="card mb-4">
-    <h2>{{ 'soa.section.applicability_status'|trans }}</h2>
+    <h2>{{ 'soa.section.applicability_status'|trans({}, 'messages') }}</h2>
     <div class="stats-grid mt-2 grid-responsive-200">
         <div class="stat-item">
             <strong class="fs-15">
                 {% if control.applicable %}
-                    <span class="badge bg-success fs-12">✓ {{ 'soa.value.yes'|trans }}
-                        <span class="visually-hidden">{{ 'soa.table.applicable'|trans }}</span>
+                    <span class="badge bg-success fs-12">✓ {{ 'soa.value.yes'|trans({}, 'messages') }}
+                        <span class="visually-hidden">{{ 'soa.table.applicable'|trans({}, 'messages') }}</span>
                     </span>
                 {% else %}
-                    <span class="badge badge-neutral-lg">✗ {{ 'soa.status.not_applicable'|trans }}</span>
+                    <span class="badge badge-neutral-lg">✗ {{ 'soa.status.not_applicable'|trans({}, 'messages') }}</span>
                 {% endif %}
             </strong>
-            <span>{{ 'soa.field.applicable'|trans }}</span>
+            <span>{{ 'soa.field.applicable'|trans({}, 'messages') }}</span>
         </div>
 
         {% if control.applicable %}
         <div class="stat-item">
             <strong class="fs-15">
                 {% if control.implementationStatus == 'implemented' %}
-                    <span class="badge bg-success fs-12">✅ {{ 'soa.status.implemented'|trans }}</span>
+                    <span class="badge bg-success fs-12">✅ {{ 'soa.status.implemented'|trans({}, 'messages') }}</span>
                 {% elseif control.implementationStatus == 'in_progress' %}
-                    <span class="badge bg-warning fs-12">🔄 {{ 'soa.status.in_progress'|trans }}</span>
+                    <span class="badge bg-warning fs-12">🔄 {{ 'soa.status.in_progress'|trans({}, 'messages') }}</span>
                 {% elseif control.implementationStatus == 'not_started' %}
-                    <span class="badge bg-danger fs-12">⏸ {{ 'soa.status.not_started'|trans }}</span>
+                    <span class="badge bg-danger fs-12">⏸ {{ 'soa.status.not_started'|trans({}, 'messages') }}</span>
                 {% else %}
-                    <span class="badge badge-neutral-lg">{{ 'soa.value.na'|trans }}</span>
+                    <span class="badge badge-neutral-lg">{{ 'soa.value.na'|trans({}, 'messages') }}</span>
                 {% endif %}
             </strong>
-            <span>{{ 'soa.table.implementation_status'|trans }}</span>
+            <span>{{ 'soa.table.implementation_status'|trans({}, 'messages') }}</span>
         </div>
 
         <div class="stat-item">
             <strong class="fs-15">{{ control.implementationPercentage }}%</strong>
-            <span>{{ 'soa.field.implementation_percentage'|trans }}</span>
+            <span>{{ 'soa.field.implementation_percentage'|trans({}, 'messages') }}</span>
         </div>
         {% endif %}
     </div>
@@ -80,14 +80,14 @@
 
 {# Justification #}
 <div class="card mb-4">
-    <h2>{{ 'soa.section.justification'|trans }}</h2>
+    <h2>{{ 'soa.section.justification'|trans({}, 'messages') }}</h2>
     {% if control.justification %}
         <div class="info-box mt-2 bg-light">
             <p class="ws-pre-wrap-lh">{{ control.justification }}</p>
         </div>
     {% else %}
         <p class="text-muted mt-sm">
-            {{ 'soa.message.no_justification'|trans }}
+            {{ 'soa.message.no_justification'|trans({}, 'messages') }}
         </p>
     {% endif %}
 </div>
@@ -95,17 +95,17 @@
 {% if control.applicable %}
 {# Implementation Details #}
 <div class="card mb-4">
-    <h2>{{ 'soa.section.implementation_details'|trans }}</h2>
+    <h2>{{ 'soa.section.implementation_details'|trans({}, 'messages') }}</h2>
 
     <div class="form-group mt-3">
-        <h3 class="fs-1 mb-sm">{{ 'soa.section.implementation_notes'|trans }}</h3>
+        <h3 class="fs-1 mb-sm">{{ 'soa.section.implementation_notes'|trans({}, 'messages') }}</h3>
         {% if control.implementationNotes %}
             <div class="info-box bg-light">
                 <p class="ws-pre-wrap-lh">{{ control.implementationNotes }}</p>
             </div>
         {% else %}
             <p class="text-muted">
-                {{ 'soa.message.no_implementation_notes'|trans }}
+                {{ 'soa.message.no_implementation_notes'|trans({}, 'messages') }}
             </p>
         {% endif %}
     </div>
@@ -116,10 +116,10 @@
                 {% if control.responsiblePerson %}
                     {{ control.responsiblePerson }}
                 {% else %}
-                    <span class="text-muted">{{ 'soa.field.unassigned'|trans }}</span>
+                    <span class="text-muted">{{ 'soa.field.unassigned'|trans({}, 'messages') }}</span>
                 {% endif %}
             </strong>
-            <span>{{ 'soa.field.responsible_person'|trans }}</span>
+            <span>{{ 'soa.field.responsible_person'|trans({}, 'messages') }}</span>
         </div>
 
         <div class="stat-item">
@@ -127,10 +127,10 @@
                 {% if control.targetDate %}
                     {{ control.targetDate|date('d.m.Y') }}
                 {% else %}
-                    <span class="text-muted">{{ 'soa.field.not_set'|trans }}</span>
+                    <span class="text-muted">{{ 'soa.field.not_set'|trans({}, 'messages') }}</span>
                 {% endif %}
             </strong>
-            <span>{{ 'soa.field.target_date'|trans }}</span>
+            <span>{{ 'soa.field.target_date'|trans({}, 'messages') }}</span>
         </div>
     </div>
 </div>
@@ -139,11 +139,11 @@
 {# Data Reuse: Protected Assets #}
 {% if control.protectedAssets is defined and control.protectedAssets|length > 0 %}
 <div class="card mb-4">
-    <h2>🛡️ {{ 'soa.section.data_reuse_protected_assets'|trans({'%count%': control.protectedAssets|length}) }}</h2>
+    <h2>🛡️ {{ 'soa.section.data_reuse_protected_assets'|trans({'%count%': control.protectedAssets|length}, 'messages') }}</h2>
     <div class="alert alert-info mt-2">
-        <strong>{{ 'soa.label.control_coverage'|trans }}</strong> {{ 'soa.message.control_coverage'|trans({'%count%': control.protectedAssets|length, '%value%': control.protectedAssetValue}) }}
+        <strong>{{ 'soa.label.control_coverage'|trans({}, 'messages') }}</strong> {{ 'soa.message.control_coverage'|trans({'%count%': control.protectedAssets|length, '%value%': control.protectedAssetValue}, 'messages') }}
         {% if control.highRiskAssetCount > 0 %}
-            <br><strong>⚠️ {{ control.highRiskAssetCount }}</strong> {{ 'soa.message.high_risk_assets'|trans }}
+            <br><strong>⚠️ {{ control.highRiskAssetCount }}</strong> {{ 'soa.message.high_risk_assets'|trans({}, 'messages') }}
         {% endif %}
     </div>
     <div class="data-reuse-list">
@@ -151,7 +151,7 @@
             <div class="data-reuse-item">
                 <strong>{{ asset.name }}</strong>
                 <span class="badge bg-info">{{ asset.assetType }}</span>
-                <small>{{ 'soa.field.cia'|trans }}: {{ asset.confidentialityValue }}/{{ asset.integrityValue }}/{{ asset.availabilityValue }}</small>
+                <small>{{ 'soa.field.cia'|trans({}, 'messages') }}: {{ asset.confidentialityValue }}/{{ asset.integrityValue }}/{{ asset.availabilityValue }}</small>
             </div>
         {% endfor %}
     </div>
@@ -161,16 +161,16 @@
 {# Data Reuse: Related Risks #}
 {% if control.risks is defined and control.risks|length > 0 %}
 <div class="card mb-4">
-    <h2>⚠️ {{ 'soa.section.data_reuse_related_risks'|trans({'%count%': control.risks|length}) }}</h2>
-    <p class="text-light">{{ 'soa.message.related_risks_info'|trans }}</p>
+    <h2>⚠️ {{ 'soa.section.data_reuse_related_risks'|trans({'%count%': control.risks|length}, 'messages') }}</h2>
+    <p class="text-light">{{ 'soa.message.related_risks_info'|trans({}, 'messages') }}</p>
     <div class="data-reuse-list">
         {% for risk in control.risks %}
             <div class="data-reuse-item">
                 <strong>{{ risk.title }}</strong>
                 <span class="{{ badge_score(risk.inherentRiskLevel, 16, 9) }}">
-                    {{ 'soa.field.risk_level'|trans }}: {{ risk.inherentRiskLevel }}
+                    {{ 'soa.field.risk_level'|trans({}, 'messages') }}: {{ risk.inherentRiskLevel }}
                 </span>
-                <small>{{ 'soa.field.status'|trans }}: {{ risk.status|upper }}</small>
+                <small>{{ 'soa.field.status'|trans({}, 'messages') }}: {{ risk.status|upper }}</small>
             </div>
         {% endfor %}
     </div>
@@ -180,11 +180,11 @@
 {# Data Reuse: Related Incidents #}
 {% if control.incidents is defined and control.incidents|length > 0 %}
 <div class="card mb-4">
-    <h2>📋 {{ 'soa.section.data_reuse_related_incidents'|trans({'%count%': control.incidents|length}) }}</h2>
+    <h2>📋 {{ 'soa.section.data_reuse_related_incidents'|trans({'%count%': control.incidents|length}, 'messages') }}</h2>
     <div class="alert alert-warning">
-        <strong>⚠️ {{ control.incidents|length }} {{ 'soa.label.incidents'|trans }}</strong> {{ 'soa.message.related_incidents_count'|trans }}
+        <strong>⚠️ {{ control.incidents|length }} {{ 'soa.label.incidents'|trans({}, 'messages') }}</strong> {{ 'soa.message.related_incidents_count'|trans({}, 'messages') }}
         {% if control.isReviewNeeded %}
-            <br><strong>👉 {{ 'soa.label.review_required'|trans }}</strong> {{ 'soa.message.review_required'|trans }}
+            <br><strong>👉 {{ 'soa.label.review_required'|trans({}, 'messages') }}</strong> {{ 'soa.message.review_required'|trans({}, 'messages') }}
         {% endif %}
     </div>
     <div class="data-reuse-list">
@@ -245,29 +245,29 @@
 
 {# Metadata #}
 <div class="card">
-    <h2>{{ 'soa.section.metadata'|trans }}</h2>
+    <h2>{{ 'soa.section.metadata'|trans({}, 'messages') }}</h2>
     <div class="stats-grid mt-2 grid-responsive-250">
         <div class="stat-item">
             <strong>{{ control.createdAt|date('d.m.Y H:i') }}</strong>
-            <span>{{ 'soa.field.created_at'|trans }}</span>
+            <span>{{ 'soa.field.created_at'|trans({}, 'messages') }}</span>
         </div>
 
         <div class="stat-item">
             <strong>{{ control.updatedAt|date('d.m.Y H:i') }}</strong>
-            <span>{{ 'soa.field.updated_at'|trans }}</span>
+            <span>{{ 'soa.field.updated_at'|trans({}, 'messages') }}</span>
         </div>
 
         {% if control.lastReviewDate %}
         <div class="stat-item">
             <strong>{{ control.lastReviewDate|date('d.m.Y') }}</strong>
-            <span>{{ 'soa.field.last_review'|trans }}</span>
+            <span>{{ 'soa.field.last_review'|trans({}, 'messages') }}</span>
         </div>
         {% endif %}
 
         {% if control.nextReviewDate %}
         <div class="stat-item">
             <strong>{{ control.nextReviewDate|date('d.m.Y') }}</strong>
-            <span>{{ 'soa.field.next_review'|trans }}</span>
+            <span>{{ 'soa.field.next_review'|trans({}, 'messages') }}</span>
         </div>
         {% endif %}
     </div>
@@ -276,7 +276,7 @@
 {# Action Buttons #}
 <div class="d-flex gap-2 mt-4">
     <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-success">
-        ✏️ {{ 'soa.action.edit'|trans }}
+        ✏️ {{ 'soa.action.edit'|trans({}, 'messages') }}
     </a>
     <a href="{{ path('app_soa_index') }}" class="btn btn-secondary">
         📋 {{ 'common.back_to_list'|trans({}, 'messages') }}

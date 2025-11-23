@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'locations' %}
 
-{% block title %}{{ 'location.title.list'|trans }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'location.title.list'|trans({}, 'messages') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
 
 <div class="page-header">
     <div>
-        <h1>{{ 'location.title.list'|trans }}</h1>
-        <p class="text-muted">{{ 'location.description.overview'|trans }}</p>
+        <h1>{{ 'location.title.list'|trans({}, 'messages') }}</h1>
+        <p class="text-muted">{{ 'location.description.overview'|trans({}, 'messages') }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_location_new') }}" class="btn btn-primary">
-            ➕ {{ 'location.action.create'|trans }}
+            ➕ {{ 'location.action.create'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
@@ -21,16 +21,16 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('location.stats.total'|trans, locations|length, null, null, null, null) }}
+        {{ cards.kpi_card('location.stats.total'|trans({}, 'messages'), locations|length, null, null, null, null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('location.stats.buildings'|trans, locations|filter(l => l.locationType == 'building')|length, null, null, 'primary', null) }}
+        {{ cards.kpi_card('location.stats.buildings'|trans({}, 'messages'), locations|filter(l => l.locationType == 'building')|length, null, null, 'primary', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('location.stats.rooms'|trans, locations|filter(l => l.locationType == 'room')|length, null, null, 'info', null) }}
+        {{ cards.kpi_card('location.stats.rooms'|trans({}, 'messages'), locations|filter(l => l.locationType == 'room')|length, null, null, 'info', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('location.stats.secure'|trans, locations|filter(l => l.requiresBadgeAccess)|length, null, null, 'success', null) }}
+        {{ cards.kpi_card('location.stats.secure'|trans({}, 'messages'), locations|filter(l => l.requiresBadgeAccess)|length, null, null, 'success', null) }}
     </div>
 </div>
 
@@ -40,12 +40,12 @@
 } %}
     {% block table_head %}
         <tr>
-            <th scope="col">{{ 'location.field.name'|trans }}</th>
-            <th scope="col">{{ 'location.field.type'|trans }}</th>
-            <th scope="col">{{ 'location.field.code'|trans }}</th>
-            <th scope="col">{{ 'location.field.city'|trans }}</th>
-            <th scope="col">{{ 'location.field.security_level'|trans }}</th>
-            <th scope="col" class="text-center">{{ 'location.field.badge_access'|trans }}</th>
+            <th scope="col">{{ 'location.field.name'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'location.field.type'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'location.field.code'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'location.field.city'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'location.field.security_level'|trans({}, 'messages') }}</th>
+            <th scope="col" class="text-center">{{ 'location.field.badge_access'|trans({}, 'messages') }}</th>
             <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
@@ -94,7 +94,7 @@
                 {% endif %}
             </td>
             <td class="text-center">
-                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'location.actions.label'|trans }}">
+                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'location.actions.label'|trans({}, 'messages') }}">
                     <a href="{{ path('app_location_show', {id: location.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }} {{ location.name }}">
                         <i class="bi bi-eye" aria-hidden="true"></i>
                     </a>
@@ -107,7 +107,7 @@
         {% else %}
         <tr>
             <td colspan="7" class="text-center-p-xl-muted">
-                {{ 'location.message.no_locations'|trans }}
+                {{ 'location.message.no_locations'|trans({}, 'messages') }}
             </td>
         </tr>
         {% endfor %}

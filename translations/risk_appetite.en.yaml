@@ -54,3 +54,4 @@ risk_appetite:
   and_more_risks: And %count% more …
   delete:
     warning: This action cannot be undone. Please confirm deletion.
+  no_appetites: No risk appetite defined yet.

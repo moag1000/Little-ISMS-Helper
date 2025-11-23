@@ -79,7 +79,7 @@
                                 <th scope="col">{{ 'mfa_token.field.enrolled_at'|trans({}, 'mfa') }}</th>
                                 <th scope="col">{{ 'mfa_token.field.last_used'|trans({}, 'mfa') }}</th>
                                 <th scope="col">{{ 'mfa_token.field.usage_count'|trans({}, 'mfa') }}</th>
-                                <th scope="col" style="width: 150px;">{{ 'common.actions'|trans }}</th>
+                                <th scope="col" style="width: 150px;">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body %}
@@ -133,7 +133,7 @@
                                         <div class="btn-group btn-group-sm">
                                             <a href="{{ path('admin_mfa_show', {id: token.id}) }}"
                                                class="btn btn-outline-primary"
-                                               title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
+                                               title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                                 <i class="bi bi-eye" aria-hidden="true"></i>
                                             </a>
                                             {% if token.isActive %}
@@ -144,7 +144,7 @@
                                                     <input type="hidden" name="_token" value="{{ csrf_token('disable_' ~ token.id) }}">
                                                     <button type="submit"
                                                             class="btn btn-outline-warning"
-                                                            title="{{ 'mfa_token.action.disable'|trans({}, 'mfa') }}" aria-label="{{ 'common.view'|trans }}">
+                                                            title="{{ 'mfa_token.action.disable'|trans({}, 'mfa') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                                         <i class="bi bi-pause-circle" aria-hidden="true"></i>
                                                     </button>
                                                 </form>
@@ -156,7 +156,7 @@
                                                 <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ token.id) }}">
                                                 <button type="submit"
                                                         class="btn btn-outline-danger"
-                                                        title="{{ 'common.delete'|trans }}" aria-label="{{ 'common.delete'|trans }}">
+                                                        title="{{ 'common.delete'|trans({}, 'messages') }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
                                                     <i class="bi bi-trash" aria-hidden="true"></i>
                                                 </button>
                                             </form>

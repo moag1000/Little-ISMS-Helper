@@ -1,17 +1,17 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block title %}{{ 'user.new'|trans|default('Neuer Benutzer') }}{% endblock %}
+{% block title %}{{ 'user.new'|trans({}, 'users')|default('Neuer Benutzer') }}{% endblock %}
 
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>
             <i class="bi bi-person-plus" aria-hidden="true"></i>
-            {{ 'user.new'|trans|default('Neuer Benutzer') }}
+            {{ 'user.new'|trans({}, 'users')|default('Neuer Benutzer') }}
         </h1>
         <a href="{{ path('user_management_index') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left" aria-hidden="true"></i>
-            {{ 'common.back'|trans }}
+            {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 
@@ -19,12 +19,12 @@
         <div class="col-md-8 offset-md-2">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">{{ 'user.create'|trans|default('Benutzer erstellen') }}</h3>
+                    <h3 class="mb-0">{{ 'user.create'|trans({}, 'users')|default('Benutzer erstellen') }}</h3>
                 </div>
                 <div class="card-body">
                     {{ form_start(form) }}
                         {% include 'user_management/_form.html.twig' with {
-                            'button_label': 'user.create'|trans|default('Benutzer erstellen'),
+                            'button_label': 'user.create'|trans({}, 'users')|default('Benutzer erstellen'),
                             'button_icon': 'bi-save',
                             'is_edit_mode': false
                         } %}

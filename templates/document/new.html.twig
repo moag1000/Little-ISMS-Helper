@@ -1,20 +1,20 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'documents' %}
 
-{% block title %}{{ 'document.new'|trans }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'document.new'|trans({}, 'documents') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
         { label: 'nav.documents'|trans({}, 'nav', 'nav'), url: path('app_document_index'), icon: 'bi-file-earmark-text' },
-        { label: 'document.new'|trans }
+        { label: 'document.new'|trans({}, 'documents') }
     ]
 } %}
 
 {# Page Header #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'document.new'|trans,
+    title: 'document.new'|trans({}, 'documents'),
     icon: 'bi-plus-circle',
     actions: [
         { label: 'common.back'|trans({}, 'messages'), url: path('app_document_index'), variant: 'secondary', icon: 'bi-arrow-left' }
@@ -25,7 +25,7 @@
     <div class="card-body">
         {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
             {% include 'document/_form.html.twig' with {
-                'button_label': 'document.action.upload'|trans,
+                'button_label': 'document.action.upload'|trans({}, 'documents'),
                 'button_icon': 'bi-upload',
                 'is_edit_mode': false
             } %}

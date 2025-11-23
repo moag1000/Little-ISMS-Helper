@@ -1,0 +1,34 @@
+physical_access:
+  title: Physical Access Control
+  name: Access Log
+  person: Person
+  location: Location
+  access_type: Access Type
+  access_time: Access Time
+  exit_time: Exit Time
+  authentication_method: Authentication Method
+  purpose: Purpose
+  escorted_by: Escorted By
+  authorized: Authorized
+  notes: Notes
+  alert_level: Alert Level
+  after_hours: After Hours
+  door_or_gate: Door/Gate
+  type:
+    entry: Entry
+    exit: Exit
+    entry_exit: Entry/Exit
+  auth_method:
+    badge: Badge
+    biometric: Biometric
+    pin: PIN
+    key: Key
+    escort: Escort
+    manual: Manual
+    other: Other
+  alert:
+    none: None
+    low: Low
+    medium: Medium
+    high: High
+    critical: Critical

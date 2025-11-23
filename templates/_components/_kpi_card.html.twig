@@ -9,7 +9,7 @@
       unit: '',
       trend: '+12%',
       variant: 'primary',
-      detail: 'corporate.stats.breakdown'|trans({'%own%': 15, '%inherited%': 20, '%subsidiaries%': 7})
+      detail: 'corporate.stats.breakdown'|trans({'%own%': 15, '%inherited%': 20, '%subsidiaries%': 7}, 'tenant')
   } %}
 
   Variants: primary, success, warning, danger, info
@@ -47,7 +47,7 @@
         {% endif %}
     </div>
     {% if link %}
-        <a href="{{ link }}" class="kpi-card-link" data-turbo-action="advance" aria-label="{{ 'common.view_details'|trans }}">
+        <a href="{{ link }}" class="kpi-card-link" data-turbo-action="advance" aria-label="{{ 'common.view_details'|trans({}, 'messages') }}">
             <i class="bi bi-arrow-right" aria-hidden="true"></i>
         </a>
     {% endif %}

@@ -15,7 +15,6 @@ management_review:
   create_first: Erste Bewertung anlegen
   confirm_delete: Bewertung löschen?
   delete_warning: "Möchten Sie die Bewertung '%title%' wirklich löschen?"
-  # Aliase, die direkt in Templates verwendet werden (neben field.*)
   changes_relevant_to_isms: Änderungen mit Relevanz für das ISMS
   feedback_from_interested_parties: Rückmeldungen interessierter Parteien
   audit_results: Ergebnisse von Audits

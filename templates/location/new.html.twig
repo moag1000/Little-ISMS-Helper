@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'locations' %}
 
-{% block title %}{{ 'location.title.create'|trans }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'location.title.create'|trans({}, 'messages') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 <div class="page-header">
     <div>
-        <h1>{{ 'location.title.create'|trans }}</h1>
+        <h1>{{ 'location.title.create'|trans({}, 'messages') }}</h1>
     </div>
     <div class="button-group">
         <a href="{{ path('app_location_index') }}" class="btn btn-secondary">
@@ -20,7 +20,7 @@
 
     <div class="form-group">
         {{ form_label(form.name) }}
-        {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'location.placeholder.name'|trans}}) }}
+        {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'location.placeholder.name'|trans({}, 'messages')}}) }}
         {{ form_errors(form.name) }}
     </div>
 
@@ -29,16 +29,16 @@
         {{ form_widget(form.locationType, {'attr': {'class': 'form-select'}}) }}
         {{ form_errors(form.locationType) }}
         <small class="small-muted-block">
-            {{ 'location.help.type'|trans }}
+            {{ 'location.help.type'|trans({}, 'messages') }}
         </small>
     </div>
 
     <div class="form-group">
         {{ form_label(form.code) }}
-        {{ form_widget(form.code, {'attr': {'class': 'form-control', 'placeholder': 'location.placeholder.code'|trans}}) }}
+        {{ form_widget(form.code, {'attr': {'class': 'form-control', 'placeholder': 'location.placeholder.code'|trans({}, 'messages')}}) }}
         {{ form_errors(form.code) }}
         <small class="small-muted-block">
-            {{ 'location.help.code'|trans }}
+            {{ 'location.help.code'|trans({}, 'messages') }}
         </small>
     </div>
 
@@ -48,7 +48,7 @@
         {{ form_errors(form.description) }}
     </div>
 
-    <h2 class="h3-mt-lg">{{ 'location.section.address'|trans }}</h2>
+    <h2 class="h3-mt-lg">{{ 'location.section.address'|trans({}, 'messages') }}</h2>
 
     <div class="form-group">
         {{ form_label(form.address) }}
@@ -74,18 +74,18 @@
         {{ form_errors(form.country) }}
     </div>
 
-    <h3 class="h3-mt-lg">{{ 'location.section.hierarchy'|trans }}</h3>
+    <h3 class="h3-mt-lg">{{ 'location.section.hierarchy'|trans({}, 'messages') }}</h3>
 
     <div class="form-group">
         {{ form_label(form.parentLocation) }}
         {{ form_widget(form.parentLocation, {'attr': {'class': 'form-select'}}) }}
         {{ form_errors(form.parentLocation) }}
         <small class="small-muted-block">
-            {{ 'location.help.parent'|trans }}
+            {{ 'location.help.parent'|trans({}, 'messages') }}
         </small>
     </div>
 
-    <h3 class="h3-mt-lg">{{ 'location.section.security'|trans }}</h3>
+    <h3 class="h3-mt-lg">{{ 'location.section.security'|trans({}, 'messages') }}</h3>
 
     <div class="form-group">
         {{ form_label(form.securityLevel) }}

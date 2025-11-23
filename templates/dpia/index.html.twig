@@ -226,19 +226,19 @@
                                     <div class="btn-group btn-group-sm">
                                         <a href="{{ path('app_dpia_show', {id: dpia.id}) }}"
                                            class="btn btn-outline-primary"
-                                           title="View" aria-label="View">
+                                           title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                             <i class="bi bi-eye" aria-hidden="true"></i>
                                         </a>
                                         {% if dpia.status in ['draft', 'requires_revision'] %}
                                             <a href="{{ path('app_dpia_edit', {id: dpia.id}) }}"
                                                class="btn btn-outline-secondary"
-                                               title="Edit" aria-label="Edit">
+                                               title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                                 <i class="bi bi-pencil" aria-hidden="true"></i>
                                             </a>
                                         {% endif %}
                                         <a href="{{ path('app_dpia_export_pdf', {id: dpia.id}) }}"
                                            class="btn btn-outline-success"
-                                           title="Export PDF" aria-label="Export PDF">
+                                           title="{{ 'common.export_pdf'|trans({}, 'messages') }}" aria-label="{{ 'common.export_pdf'|trans({}, 'messages') }}">
                                             <i class="bi bi-file-pdf" aria-hidden="true"></i>
                                         </a>
                                     </div>

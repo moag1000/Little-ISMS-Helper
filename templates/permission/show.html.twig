@@ -2,11 +2,11 @@
 
 {% block admin_title %}{{ permission.name }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">{{ 'permission.show'|trans }}</p>
+    <p class="text-muted">{{ 'permission.show'|trans({}, 'messages') }}</p>
 {% endblock %}
 
 {% block breadcrumb_items %}
-    <li class="breadcrumb-item"><a href="{{ path('permission_index') }}">{{ 'admin.nav.permissions'|trans }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('permission_index') }}">{{ 'admin.nav.permissions'|trans({}, 'admin') }}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ permission.name }}</li>
 {% endblock %}
 
@@ -30,19 +30,19 @@
                 <div class="col-md-9"><code>{{ permission.name }}</code></div>
             </div>
             <div class="row mb-3">
-                <div class="col-md-3"><strong>{{ 'permission.category'|trans }}:</strong></div>
+                <div class="col-md-3"><strong>{{ 'permission.category'|trans({}, 'messages') }}:</strong></div>
                 <div class="col-md-9">
                     <span class="badge bg-primary">{{ permission.category|title }}</span>
                 </div>
             </div>
             <div class="row mb-3">
-                <div class="col-md-3"><strong>{{ 'permission.action'|trans }}:</strong></div>
+                <div class="col-md-3"><strong>{{ 'permission.action'|trans({}, 'messages') }}:</strong></div>
                 <div class="col-md-9">
                     <span class="badge bg-info">{{ permission.action|title }}</span>
                 </div>
             </div>
             <div class="row mb-3">
-                <div class="col-md-3"><strong>{{ 'permission.description'|trans }}:</strong></div>
+                <div class="col-md-3"><strong>{{ 'permission.description'|trans({}, 'messages') }}:</strong></div>
                 <div class="col-md-9">{{ permission.description }}</div>
             </div>
             <div class="row mb-3">
@@ -66,7 +66,7 @@
     <div class="card mb-4">
         <div class="card-header bg-info text-white">
             <h3 class="mb-0">
-                <i class="bi bi-people-fill" aria-hidden="true"></i> {{ 'permission.roles_using'|trans }}
+                <i class="bi bi-people-fill" aria-hidden="true"></i> {{ 'permission.roles_using'|trans({}, 'messages') }}
                 <span class="badge bg-light text-dark">{{ roles|length }}</span>
             </h5>
         </div>
@@ -111,7 +111,7 @@
 
                 <div class="alert alert-info mt-3">
                     <i class="bi bi-info-circle" aria-hidden="true"></i>
-                    <strong>{{ 'permission.affected_users'|trans }}:</strong>
+                    <strong>{{ 'permission.affected_users'|trans({}, 'messages') }}:</strong>
                     Diese Berechtigung betrifft insgesamt {{ affected_users_count }} Benutzer über {{ roles|length }} Rolle(n).
                 </div>
             {% else %}

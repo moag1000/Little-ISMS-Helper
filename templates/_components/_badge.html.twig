@@ -1,0 +1,44 @@
+{#
+/**
+ * Reusable Badge Component
+ *
+ * @param string variant - Badge color variant (primary|secondary|success|danger|warning|info|light|dark)
+ * @param string|null size - Badge size (sm|lg|null for default)
+ * @param string|null icon - Bootstrap icon class (optional, e.g., 'bi-check-circle')
+ * @param string|null class - Additional CSS classes
+ * @param string|null title - Tooltip text for accessibility
+ * @param boolean pill - Whether to use pill shape (default: false)
+ * @param string content - Badge text content (can be passed as block or parameter)
+ */
+#}
+{% set variant = variant|default('secondary') %}
+{% set size = size|default(null) %}
+{% set icon = icon|default(null) %}
+{% set additionalClass = class|default('') %}
+{% set title = title|default(null) %}
+{% set pill = pill|default(false) %}
+
+{# Build CSS classes #}
+{% set badgeClasses = ['badge', 'bg-' ~ variant] %}
+{% if size == 'sm' %}
+    {% set badgeClasses = badgeClasses|merge(['badge-sm']) %}
+{% elseif size == 'lg' %}
+    {% set badgeClasses = badgeClasses|merge(['badge-lg']) %}
+{% endif %}
+{% if pill %}
+    {% set badgeClasses = badgeClasses|merge(['rounded-pill']) %}
+{% endif %}
+{% if additionalClass %}
+    {% set badgeClasses = badgeClasses|merge([additionalClass]) %}
+{% endif %}
+
+<span class="{{ badgeClasses|join(' ') }}"{% if title %} title="{{ title }}"{% endif %}>
+    {%- if icon -%}
+        <i class="bi {{ icon }}" aria-hidden="true"></i>
+    {%- endif -%}
+    {%- if content is defined -%}
+        {{- content -}}
+    {%- else -%}
+        {%- block badge_content %}{% endblock -%}
+    {%- endif -%}
+</span>

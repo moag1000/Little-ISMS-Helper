@@ -8,15 +8,15 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-info-circle" aria-hidden="true"></i>
-        {{ 'user.section.basic_info'|trans|default('Grundinformationen') }}
+        {{ 'user.section.basic_info'|trans({}, 'users')|default('Grundinformationen') }}
     </legend>
 
     <div class="row">
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.firstName,
-                'label': 'user.field.first_name'|trans|default('Vorname'),
-                'help': 'user.help.first_name'|trans|default('Vorname des Benutzers'),
+                'label': 'user.field.first_name'|trans({}, 'users')|default('Vorname'),
+                'help': 'user.help.first_name'|trans({}, 'users')|default('Vorname des Benutzers'),
                 'required': true
             } %}
         </div>
@@ -24,8 +24,8 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.lastName,
-                'label': 'user.field.last_name'|trans|default('Nachname'),
-                'help': 'user.help.last_name'|trans|default('Nachname des Benutzers'),
+                'label': 'user.field.last_name'|trans({}, 'users')|default('Nachname'),
+                'help': 'user.help.last_name'|trans({}, 'users')|default('Nachname des Benutzers'),
                 'required': true
             } %}
         </div>
@@ -35,8 +35,8 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.email,
-                'label': 'user.field.email'|trans|default('E-Mail-Adresse'),
-                'help': 'user.help.email'|trans|default('E-Mail-Adresse für Login und Kommunikation'),
+                'label': 'user.field.email'|trans({}, 'users')|default('E-Mail-Adresse'),
+                'help': 'user.help.email'|trans({}, 'users')|default('E-Mail-Adresse für Login und Kommunikation'),
                 'required': true
             } %}
         </div>
@@ -46,16 +46,16 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.department,
-                'label': 'user.field.department'|trans|default('Abteilung'),
-                'help': 'user.help.department'|trans|default('Organisationseinheit des Benutzers')
+                'label': 'user.field.department'|trans({}, 'users')|default('Abteilung'),
+                'help': 'user.help.department'|trans({}, 'users')|default('Organisationseinheit des Benutzers')
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.jobTitle,
-                'label': 'user.field.job_title'|trans|default('Berufsbezeichnung'),
-                'help': 'user.help.job_title'|trans|default('Funktion oder Position des Benutzers')
+                'label': 'user.field.job_title'|trans({}, 'users')|default('Berufsbezeichnung'),
+                'help': 'user.help.job_title'|trans({}, 'users')|default('Funktion oder Position des Benutzers')
             } %}
         </div>
     </div>
@@ -64,8 +64,8 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.phoneNumber,
-                'label': 'user.field.phone_number'|trans|default('Telefonnummer'),
-                'help': 'user.help.phone_number'|trans|default('Kontakttelefonnummer')
+                'label': 'user.field.phone_number'|trans({}, 'users')|default('Telefonnummer'),
+                'help': 'user.help.phone_number'|trans({}, 'users')|default('Kontakttelefonnummer')
             } %}
         </div>
     </div>
@@ -74,8 +74,8 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.avatarFile,
-                'label': 'user.field.avatar'|trans|default('Profilbild'),
-                'help': 'user.help.avatar'|trans|default('Profilbild hochladen (optional)')
+                'label': 'user.field.avatar'|trans({}, 'users')|default('Profilbild'),
+                'help': 'user.help.avatar'|trans({}, 'users')|default('Profilbild hochladen (optional)')
             } %}
         </div>
     </div>
@@ -85,15 +85,15 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-building" aria-hidden="true"></i>
-        {{ 'user.section.tenant'|trans|default('Mandantenzuordnung') }}
+        {{ 'user.section.tenant'|trans({}, 'users')|default('Mandantenzuordnung') }}
     </legend>
 
     <div class="row">
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.tenant,
-                'label': 'user.field.tenant'|trans|default('Mandant'),
-                'help': 'user.help.tenant'|trans|default('Mandant, dem dieser Benutzer zugeordnet ist'),
+                'label': 'user.field.tenant'|trans({}, 'users')|default('Mandant'),
+                'help': 'user.help.tenant'|trans({}, 'users')|default('Mandant, dem dieser Benutzer zugeordnet ist'),
                 'required': true
             } %}
         </div>
@@ -104,19 +104,19 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-shield-lock" aria-hidden="true"></i>
-        {{ 'user.section.authentication'|trans|default('Authentifizierung') }}
+        {{ 'user.section.authentication'|trans({}, 'users')|default('Authentifizierung') }}
     </legend>
 
     {% if is_edit_mode|default(false) and user is defined %}
         <div class="alert alert-info" role="status">
             <i class="bi bi-info-circle" aria-hidden="true"></i>
-            <strong>{{ 'user.field.auth_provider'|trans|default('Auth Provider') }}:</strong>
+            <strong>{{ 'user.field.auth_provider'|trans({}, 'users')|default('Auth Provider') }}:</strong>
             {% if user.authProvider == 'azure_oauth' %}
                 Azure OAuth
             {% elseif user.authProvider == 'azure_saml' %}
                 Azure SAML
             {% else %}
-                {{ 'user.auth_provider.local'|trans|default('Lokal') }}
+                {{ 'user.auth_provider.local'|trans({}, 'users')|default('Lokal') }}
             {% endif %}
         </div>
     {% endif %}
@@ -125,10 +125,10 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.plainPassword,
-                'label': 'user.field.password'|trans|default('Passwort'),
+                'label': 'user.field.password'|trans({}, 'users')|default('Passwort'),
                 'help': is_edit_mode|default(false)
-                    ? ('user.help.password_edit'|trans|default('Leer lassen, um das Passwort nicht zu ändern'))
-                    : ('user.help.password'|trans|default('Sicheres Passwort für den Benutzer')),
+                    ? ('user.help.password_edit'|trans({}, 'users')|default('Leer lassen, um das Passwort nicht zu ändern'))
+                    : ('user.help.password'|trans({}, 'users')|default('Sicheres Passwort für den Benutzer')),
                 'required': not is_edit_mode|default(false)
             } %}
         </div>
@@ -139,12 +139,12 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-shield" aria-hidden="true"></i>
-        {{ 'user.section.roles'|trans|default('Rollen & Berechtigungen') }}
+        {{ 'user.section.roles'|trans({}, 'users')|default('Rollen & Berechtigungen') }}
     </legend>
 
     {# System Roles #}
     <div class="mb-3">
-        {{ form_label(form.roles, 'user.field.roles'|trans|default('Systemrollen'), {
+        {{ form_label(form.roles, 'user.field.roles'|trans({}, 'users')|default('Systemrollen'), {
             'label_attr': {'class': 'form-label'}
         }) }}
         <div role="group" aria-labelledby="{{ form.roles.vars.id }}_label">
@@ -163,7 +163,7 @@
 
     {# Custom Roles #}
     <div class="mb-3">
-        {{ form_label(form.customRoles, 'user.field.custom_roles'|trans|default('Benutzerdefinierte Rollen'), {
+        {{ form_label(form.customRoles, 'user.field.custom_roles'|trans({}, 'users')|default('Benutzerdefinierte Rollen'), {
             'label_attr': {'class': 'form-label'}
         }) }}
         {% if form.customRoles|length > 0 %}
@@ -177,7 +177,7 @@
             </div>
         {% else %}
             <p class="text-muted" role="status">
-                {{ 'user.message.no_custom_roles'|trans|default('Keine benutzerdefinierten Rollen verfügbar.') }}
+                {{ 'user.message.no_custom_roles'|trans({}, 'users')|default('Keine benutzerdefinierten Rollen verfügbar.') }}
             </p>
         {% endif %}
         {% if form.customRoles.vars.help is not empty %}
@@ -191,13 +191,13 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-toggle-on" aria-hidden="true"></i>
-        {{ 'user.section.status'|trans|default('Status') }}
+        {{ 'user.section.status'|trans({}, 'users')|default('Status') }}
     </legend>
 
     <div class="mb-3">
         <div class="form-check form-switch">
             {{ form_widget(form.isActive, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
-            {{ form_label(form.isActive, 'user.field.is_active'|trans|default('Aktiv'), {
+            {{ form_label(form.isActive, 'user.field.is_active'|trans({}, 'users')|default('Aktiv'), {
                 'label_attr': {'class': 'form-check-label'}
             }) }}
         </div>
@@ -210,7 +210,7 @@
     <div class="mb-3">
         <div class="form-check form-switch">
             {{ form_widget(form.isVerified, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
-            {{ form_label(form.isVerified, 'user.field.is_verified'|trans|default('Verifiziert'), {
+            {{ form_label(form.isVerified, 'user.field.is_verified'|trans({}, 'users')|default('Verifiziert'), {
                 'label_attr': {'class': 'form-check-label'}
             }) }}
         </div>
@@ -225,12 +225,12 @@
 {% if is_edit_mode|default(false) and user is defined %}
     <div class="alert alert-secondary" role="status">
         <small>
-            <strong>{{ 'user.field.created_at'|trans|default('Erstellt am') }}:</strong> {{ user.createdAt|date('d.m.Y H:i') }}<br>
+            <strong>{{ 'user.field.created_at'|trans({}, 'users')|default('Erstellt am') }}:</strong> {{ user.createdAt|date('d.m.Y H:i') }}<br>
             {% if user.updatedAt %}
-                <strong>{{ 'user.field.updated_at'|trans|default('Zuletzt geändert') }}:</strong> {{ user.updatedAt|date('d.m.Y H:i') }}<br>
+                <strong>{{ 'user.field.updated_at'|trans({}, 'users')|default('Zuletzt geändert') }}:</strong> {{ user.updatedAt|date('d.m.Y H:i') }}<br>
             {% endif %}
             {% if user.lastLoginAt %}
-                <strong>{{ 'user.field.last_login'|trans|default('Letzte Anmeldung') }}:</strong> {{ user.lastLoginAt|date('d.m.Y H:i') }}
+                <strong>{{ 'user.field.last_login'|trans({}, 'users')|default('Letzte Anmeldung') }}:</strong> {{ user.lastLoginAt|date('d.m.Y H:i') }}
             {% endif %}
         </small>
     </div>
@@ -241,11 +241,11 @@
     <a href="{{ back_url|default(path('user_management_index')) }}"
        class="btn btn-secondary">
         <i class="bi bi-x-circle" aria-hidden="true"></i>
-        {{ 'common.cancel'|trans }}
+        {{ 'common.cancel'|trans({}, 'messages') }}
     </a>
 
     <button type="submit" class="btn btn-primary">
         <i class="{{ button_icon|default('bi-save') }}" aria-hidden="true"></i>
-        {{ button_label|default('common.save'|trans) }}
+        {{ button_label|default('common.save'|trans({}, 'messages')) }}
     </button>
 </div>

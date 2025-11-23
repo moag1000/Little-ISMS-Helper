@@ -16,15 +16,15 @@
         </h1>
         <div class="actions">
             {% if canEdit is defined and canEdit %}
-                <a href="{{ path('app_supplier_edit', {id: supplier.id}) }}" class="btn btn-primary">{{ 'supplier.action.edit'|trans }}</a>
+                <a href="{{ path('app_supplier_edit', {id: supplier.id}) }}" class="btn btn-primary">{{ 'supplier.action.edit'|trans({}, 'messages') }}</a>
             {% else %}
                 <button class="btn btn-primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}">
-                    <i class="bi bi-lock" aria-hidden="true"></i> {{ 'supplier.action.edit'|trans }}
+                    <i class="bi bi-lock" aria-hidden="true"></i> {{ 'supplier.action.edit'|trans({}, 'messages') }}
                 </button>
             {% endif %}
             <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit) %}
-                <form method="post" action="{{ path('app_supplier_delete', {id: supplier.id}) }}" style="display:inline;" onsubmit="return confirm('{{ 'supplier.confirm.delete'|trans }}');">
+                <form method="post" action="{{ path('app_supplier_delete', {id: supplier.id}) }}" style="display:inline;" onsubmit="return confirm('{{ 'supplier.confirm.delete'|trans({}, 'messages') }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ supplier.id) }}">
                     <button type="submit" class="btn btn-danger">{{ 'common.delete'|trans({}, 'messages') }}</button>
                 </form>
@@ -46,7 +46,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h2>{{ 'supplier.section.details'|trans }}</h2>
+            <h2>{{ 'supplier.section.details'|trans({}, 'messages') }}</h2>
             <div>
                 <span class="badge badge-{{ supplier.criticality }}">{{ supplier.criticality|upper }}</span>
                 <span class="badge badge-{{ supplier.status }}">{{ supplier.status }}</span>
@@ -55,136 +55,136 @@
         <div class="card-content">
             {% set riskScore = supplier.calculateRiskScore() %}
             <div class="alert {{ riskScore > 70 ? 'alert-danger' : (riskScore > 50 ? 'alert-warning' : 'alert-info') }}">
-                <strong>{{ 'supplier.risk_score'|trans }}: {{ riskScore }}</strong>
-                - {{ riskScore > 70 ? ('supplier.risk.message.critical'|trans) : (riskScore > 50 ? ('supplier.risk.message.high'|trans) : ('supplier.risk.message.acceptable'|trans)) }}
+                <strong>{{ 'supplier.risk_score'|trans({}, 'messages') }}: {{ riskScore }}</strong>
+                - {{ riskScore > 70 ? ('supplier.risk.message.critical'|trans({}, 'messages')) : (riskScore > 50 ? ('supplier.risk.message.high'|trans({}, 'messages')) : ('supplier.risk.message.acceptable'|trans({}, 'messages'))) }}
             </div>
 
             <div class="detail-grid">
                 <div class="detail-item">
-                    <span class="label">{{ 'supplier.field.service_provided'|trans }}:</span>
+                    <span class="label">{{ 'supplier.field.service_provided'|trans({}, 'messages') }}:</span>
                     <span class="value">{{ supplier.serviceProvided }}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="label">{{ 'supplier.field.criticality'|trans }}:</span>
+                    <span class="label">{{ 'supplier.field.criticality'|trans({}, 'messages') }}:</span>
                     <span class="value">{{ supplier.criticality|upper }}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="label">{{ 'supplier.field.status'|trans }}:</span>
+                    <span class="label">{{ 'supplier.field.status'|trans({}, 'messages') }}:</span>
                     <span class="value">{{ supplier.status }}</span>
                 </div>
             </div>
 
             {% if supplier.description %}
                 <div class="detail-section">
-                    <h2>{{ 'supplier.section.description'|trans }}</h2>
+                    <h2>{{ 'supplier.section.description'|trans({}, 'messages') }}</h2>
                     <p>{{ supplier.description }}</p>
                 </div>
             {% endif %}
 
             <div class="detail-section">
-                <h3>{{ 'supplier.section.contact_info'|trans }}</h3>
+                <h3>{{ 'supplier.section.contact_info'|trans({}, 'messages') }}</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.contact_person'|trans }}:</span>
-                        <span class="value">{{ supplier.contactPerson ?? ('supplier.value.na'|trans) }}</span>
+                        <span class="label">{{ 'supplier.field.contact_person'|trans({}, 'messages') }}:</span>
+                        <span class="value">{{ supplier.contactPerson ?? ('supplier.value.na'|trans({}, 'messages')) }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.email'|trans }}:</span>
-                        <span class="value">{{ supplier.email ?? ('supplier.value.na'|trans) }}</span>
+                        <span class="label">{{ 'supplier.field.email'|trans({}, 'messages') }}:</span>
+                        <span class="value">{{ supplier.email ?? ('supplier.value.na'|trans({}, 'messages')) }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.phone'|trans }}:</span>
-                        <span class="value">{{ supplier.phone ?? ('supplier.value.na'|trans) }}</span>
+                        <span class="label">{{ 'supplier.field.phone'|trans({}, 'messages') }}:</span>
+                        <span class="value">{{ supplier.phone ?? ('supplier.value.na'|trans({}, 'messages')) }}</span>
                     </div>
                 </div>
                 {% if supplier.address %}
                     <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.address'|trans }}:</span>
+                        <span class="label">{{ 'supplier.field.address'|trans({}, 'messages') }}:</span>
                         <span class="value">{{ supplier.address }}</span>
                     </div>
                 {% endif %}
             </div>
 
             <div class="detail-section">
-                <h3>{{ 'supplier.section.security_assessment'|trans }}</h3>
+                <h3>{{ 'supplier.section.security_assessment'|trans({}, 'messages') }}</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.security_score'|trans }}:</span>
-                        <span class="value">{{ supplier.securityScore ?? ('supplier.value.not_assessed'|trans) }}</span>
+                        <span class="label">{{ 'supplier.field.security_score'|trans({}, 'messages') }}:</span>
+                        <span class="value">{{ supplier.securityScore ?? ('supplier.value.not_assessed'|trans({}, 'messages')) }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.last_assessment'|trans }}:</span>
-                        <span class="value">{{ supplier.lastSecurityAssessment ? supplier.lastSecurityAssessment|date('Y-m-d') : ('supplier.value.never'|trans) }}</span>
+                        <span class="label">{{ 'supplier.field.last_assessment'|trans({}, 'messages') }}:</span>
+                        <span class="value">{{ supplier.lastSecurityAssessment ? supplier.lastSecurityAssessment|date('Y-m-d') : ('supplier.value.never'|trans({}, 'messages')) }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.next_assessment'|trans }}:</span>
+                        <span class="label">{{ 'supplier.field.next_assessment'|trans({}, 'messages') }}:</span>
                         <span class="value {{ supplier.isAssessmentOverdue() ? 'text-danger' : '' }}">
-                            {{ supplier.nextAssessmentDate ? supplier.nextAssessmentDate|date('Y-m-d') : ('supplier.value.not_scheduled'|trans) }}
-                            {{ supplier.isAssessmentOverdue() ? ('supplier.badge.overdue'|trans) : '' }}
+                            {{ supplier.nextAssessmentDate ? supplier.nextAssessmentDate|date('Y-m-d') : ('supplier.value.not_scheduled'|trans({}, 'messages')) }}
+                            {{ supplier.isAssessmentOverdue() ? ('supplier.badge.overdue'|trans({}, 'messages')) : '' }}
                         </span>
                     </div>
                 </div>
 
                 {% if supplier.assessmentFindings %}
                     <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.assessment_findings'|trans }}:</span>
+                        <span class="label">{{ 'supplier.field.assessment_findings'|trans({}, 'messages') }}:</span>
                         <span class="value">{{ supplier.assessmentFindings }}</span>
                     </div>
                 {% endif %}
 
                 {% if supplier.nonConformities %}
                     <div class="alert alert-warning">
-                        <strong>{{ 'supplier.field.non_conformities'|trans }}:</strong>
+                        <strong>{{ 'supplier.field.non_conformities'|trans({}, 'messages') }}:</strong>
                         <p>{{ supplier.nonConformities }}</p>
                     </div>
                 {% endif %}
             </div>
 
             <div class="detail-section">
-                <h3>{{ 'supplier.section.certifications_compliance'|trans }}</h3>
+                <h3>{{ 'supplier.section.certifications_compliance'|trans({}, 'messages') }}</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.iso27001_certified'|trans }}:</span>
-                        <span class="value">{{ supplier.hasISO27001 ? ('supplier.value.yes'|trans) : ('supplier.value.no'|trans) }}</span>
+                        <span class="label">{{ 'supplier.field.iso27001_certified'|trans({}, 'messages') }}:</span>
+                        <span class="value">{{ supplier.hasISO27001 ? ('supplier.value.yes'|trans({}, 'messages')) : ('supplier.value.no'|trans({}, 'messages')) }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.iso22301_certified'|trans }}:</span>
-                        <span class="value">{{ supplier.hasISO22301 ? ('supplier.value.yes'|trans) : ('supplier.value.no'|trans) }}</span>
+                        <span class="label">{{ 'supplier.field.iso22301_certified'|trans({}, 'messages') }}:</span>
+                        <span class="value">{{ supplier.hasISO22301 ? ('supplier.value.yes'|trans({}, 'messages')) : ('supplier.value.no'|trans({}, 'messages')) }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.dpa'|trans }}:</span>
-                        <span class="value">{{ supplier.hasDPA ? ('supplier.value.signed'|trans) : ('supplier.value.not_signed'|trans) }}</span>
+                        <span class="label">{{ 'supplier.field.dpa'|trans({}, 'messages') }}:</span>
+                        <span class="value">{{ supplier.hasDPA ? ('supplier.value.signed'|trans({}, 'messages')) : ('supplier.value.not_signed'|trans({}, 'messages')) }}</span>
                     </div>
                     {% if supplier.dpaSignedDate %}
                     <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.dpa_signed_date'|trans }}:</span>
+                        <span class="label">{{ 'supplier.field.dpa_signed_date'|trans({}, 'messages') }}:</span>
                         <span class="value">{{ supplier.dpaSignedDate|date('Y-m-d') }}</span>
                     </div>
                     {% endif %}
                 </div>
                 {% if supplier.certifications %}
                     <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.other_certifications'|trans }}:</span>
+                        <span class="label">{{ 'supplier.field.other_certifications'|trans({}, 'messages') }}:</span>
                         <span class="value">{{ supplier.certifications }}</span>
                     </div>
                 {% endif %}
             </div>
 
             <div class="detail-section">
-                <h3>{{ 'supplier.section.contract_info'|trans }}</h3>
+                <h3>{{ 'supplier.section.contract_info'|trans({}, 'messages') }}</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.contract_start'|trans }}:</span>
-                        <span class="value">{{ supplier.contractStartDate ? supplier.contractStartDate|date('Y-m-d') : ('supplier.value.na'|trans) }}</span>
+                        <span class="label">{{ 'supplier.field.contract_start'|trans({}, 'messages') }}:</span>
+                        <span class="value">{{ supplier.contractStartDate ? supplier.contractStartDate|date('Y-m-d') : ('supplier.value.na'|trans({}, 'messages')) }}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.contract_end'|trans }}:</span>
-                        <span class="value">{{ supplier.contractEndDate ? supplier.contractEndDate|date('Y-m-d') : ('supplier.value.na'|trans) }}</span>
+                        <span class="label">{{ 'supplier.field.contract_end'|trans({}, 'messages') }}:</span>
+                        <span class="value">{{ supplier.contractEndDate ? supplier.contractEndDate|date('Y-m-d') : ('supplier.value.na'|trans({}, 'messages')) }}</span>
                     </div>
                 </div>
                 {% if supplier.securityRequirements %}
                     <div class="detail-item">
-                        <span class="label">{{ 'supplier.field.security_requirements'|trans }}:</span>
+                        <span class="label">{{ 'supplier.field.security_requirements'|trans({}, 'messages') }}:</span>
                         <span class="value">{{ supplier.securityRequirements }}</span>
                     </div>
                 {% endif %}
@@ -192,7 +192,7 @@
 
             {% if supplier.relatedAssets|length > 0 %}
             <div class="detail-section">
-                <h3>{{ 'supplier.section.related_assets'|trans }} ({{ supplier.relatedAssets|length }})</h3>
+                <h3>{{ 'supplier.section.related_assets'|trans({}, 'messages') }} ({{ supplier.relatedAssets|length }})</h3>
                 <ul>
                     {% for asset in supplier.relatedAssets %}
                     <li><a href="{{ path('app_asset_show', {id: asset.id}) }}">{{ asset.name }}</a></li>
@@ -203,7 +203,7 @@
 
             {% if supplier.relatedRisks|length > 0 %}
             <div class="detail-section">
-                <h3>{{ 'supplier.section.related_risks'|trans }} ({{ supplier.relatedRisks|length }})</h3>
+                <h3>{{ 'supplier.section.related_risks'|trans({}, 'messages') }} ({{ supplier.relatedRisks|length }})</h3>
                 <ul>
                     {% for risk in supplier.relatedRisks %}
                     <li><a href="{{ path('app_risk_show', {id: risk.id}) }}">{{ risk.title }}</a></li>
