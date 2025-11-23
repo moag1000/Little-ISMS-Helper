@@ -50,3 +50,5 @@ objectives:
     in_progress: in Bearbeitung
     delayed: verzögert
     at_risk: gefährdet
+    total: gesamt
+    active: aktiv

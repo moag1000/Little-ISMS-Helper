@@ -1,79 +1,79 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'home.welcome'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+{% block title %}{{ 'home.welcome'|trans({}, 'messages') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
-<h1><i class="bi bi-house-heart" aria-hidden="true"></i> {{ 'home.title'|trans }}</h1>
+<h1><i class="bi bi-house-heart" aria-hidden="true"></i> {{ 'home.title'|trans({}, 'messages') }}</h1>
 
 <div class="info-box">
-    <p><strong>{{ 'app.title'|trans }}</strong> {{ 'home.description'|trans }}</p>
+    <p><strong>{{ 'app.title'|trans({}, 'messages') }}</strong> {{ 'home.description'|trans({}, 'messages') }}</p>
 </div>
 
-<h2><i class="bi bi-grid-3x3-gap" aria-hidden="true"></i> {{ 'home.modules'|trans }}</h2>
+<h2><i class="bi bi-grid-3x3-gap" aria-hidden="true"></i> {{ 'home.modules'|trans({}, 'messages') }}</h2>
 
 <div class="module-grid">
     <div class="module-card">
         <div class="module-icon"><i class="bi bi-cpu" aria-hidden="true"></i></div>
-        <h2>{{ 'home.module.assets.title'|trans }}</h2>
-        <p>{{ 'home.module.assets.description'|trans }}</p>
+        <h2>{{ 'home.module.assets.title'|trans({}, 'messages') }}</h2>
+        <p>{{ 'home.module.assets.description'|trans({}, 'messages') }}</p>
         <a href="{{ path('app_asset_index') }}" class="btn btn-primary">
-            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.assets.action'|trans }}
+            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.assets.action'|trans({}, 'messages') }}
         </a>
     </div>
 
     <div class="module-card">
         <div class="module-icon"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></div>
-        <h3>{{ 'home.module.risks.title'|trans }}</h3>
-        <p>{{ 'home.module.risks.description'|trans }}</p>
+        <h3>{{ 'home.module.risks.title'|trans({}, 'messages') }}</h3>
+        <p>{{ 'home.module.risks.description'|trans({}, 'messages') }}</p>
         <a href="{{ path('app_risk_index') }}" class="btn btn-primary">
-            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.risks.action'|trans }}
+            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.risks.action'|trans({}, 'messages') }}
         </a>
     </div>
 
     <div class="module-card">
         <div class="module-icon"><i class="bi bi-bug" aria-hidden="true"></i></div>
-        <h3>{{ 'home.module.incidents.title'|trans }}</h3>
-        <p>{{ 'home.module.incidents.description'|trans }}</p>
+        <h3>{{ 'home.module.incidents.title'|trans({}, 'messages') }}</h3>
+        <p>{{ 'home.module.incidents.description'|trans({}, 'messages') }}</p>
         <a href="{{ path('app_incident_index') }}" class="btn btn-primary">
-            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.incidents.action'|trans }}
+            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.incidents.action'|trans({}, 'messages') }}
         </a>
     </div>
 
     <div class="module-card">
         <div class="module-icon"><i class="bi bi-check-circle" aria-hidden="true"></i></div>
-        <h3>{{ 'home.module.compliance.title'|trans }}</h3>
-        <p>{{ 'home.module.compliance.description'|trans }}</p>
+        <h3>{{ 'home.module.compliance.title'|trans({}, 'messages') }}</h3>
+        <p>{{ 'home.module.compliance.description'|trans({}, 'messages') }}</p>
         <a href="{{ path('app_compliance_index') }}" class="btn btn-primary">
-            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.compliance.action'|trans }}
+            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.compliance.action'|trans({}, 'messages') }}
         </a>
     </div>
 
     <div class="module-card">
         <div class="module-icon"><i class="bi bi-speedometer2" aria-hidden="true"></i></div>
-        <h3>{{ 'home.module.dashboard.title'|trans }}</h3>
-        <p>{{ 'home.module.dashboard.description'|trans }}</p>
+        <h3>{{ 'home.module.dashboard.title'|trans({}, 'messages') }}</h3>
+        <p>{{ 'home.module.dashboard.description'|trans({}, 'messages') }}</p>
         <a href="{{ path('app_dashboard') }}" class="btn btn-primary">
-            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.dashboard.action'|trans }}
+            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.dashboard.action'|trans({}, 'messages') }}
         </a>
     </div>
 
     <div class="module-card">
         <div class="module-icon"><i class="bi bi-file-earmark-text" aria-hidden="true"></i></div>
-        <h3>{{ 'home.module.documents.title'|trans }}</h3>
-        <p>{{ 'home.module.documents.description'|trans }}</p>
+        <h3>{{ 'home.module.documents.title'|trans({}, 'messages') }}</h3>
+        <p>{{ 'home.module.documents.description'|trans({}, 'messages') }}</p>
         <a href="{{ path('app_document_index') }}" class="btn btn-primary">
-            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.documents.action'|trans }}
+            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.documents.action'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
 
 <div class="alert alert-info mt-4">
-    <i class="bi bi-info-circle" aria-hidden="true"></i> <strong>{{ 'common.note'|trans }}:</strong> {{ 'home.development_notice'|trans }}
+    <i class="bi bi-info-circle" aria-hidden="true"></i> <strong>{{ 'common.note'|trans({}, 'messages') }}:</strong> {{ 'home.development_notice'|trans({}, 'messages') }}
 </div>
 
 <div class="text-center mt-4">
     <a href="{{ path('app_dashboard') }}" class="btn btn-lg btn-primary">
-        <i class="bi bi-speedometer2" aria-hidden="true"></i> {{ 'home.go_to_dashboard'|trans }}
+        <i class="bi bi-speedometer2" aria-hidden="true"></i> {{ 'home.go_to_dashboard'|trans({}, 'messages') }}
     </a>
 </div>
 

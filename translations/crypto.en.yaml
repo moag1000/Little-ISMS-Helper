@@ -1,0 +1,31 @@
+crypto:
+  title: Cryptographic Operations
+  name: Cryptographic Operation
+  operation_type: Operation Type
+  algorithm: Algorithm
+  key_length: Key Length
+  key_identifier: Key Identifier
+  purpose: Purpose
+  data_classification: Data Classification
+  application_component: Application Component
+  related_asset: Related Asset
+  status: Status
+  error_message: Error Message
+  timestamp: Timestamp
+  ip_address: IP Address
+  metadata: Metadata
+  compliance_relevant: Compliance Relevant
+  type:
+    encryption: Encryption
+    decryption: Decryption
+    signing: Signing
+    verification: Verification
+    key_generation: Key Generation
+    key_exchange: Key Exchange
+    hashing: Hashing
+    other: Other
+  status_type:
+    success: Success
+    failed: Failed
+    pending: Pending
+    in_progress: In Progress

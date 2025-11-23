@@ -1,23 +1,23 @@
 {% extends 'base.html.twig' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 
-{% block title %}{{ 'asset_management.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+{% block title %}{{ 'asset_management.title'|trans({}, 'assets') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="page-header">
     <div>
-        <h1><i class="bi bi-cpu" aria-hidden="true"></i> {{ 'asset_management.title'|trans }}</h1>
-        <p class="text-muted">{{ 'asset_management.description'|trans }}</p>
+        <h1><i class="bi bi-cpu" aria-hidden="true"></i> {{ 'asset_management.title'|trans({}, 'assets') }}</h1>
+        <p class="text-muted">{{ 'asset_management.description'|trans({}, 'assets') }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_asset_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'asset.new'|trans }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'asset.new'|trans({}, 'assets') }}
         </a>
     </div>
 </div>
 
 {# Skip link for filters section - WCAG 2.4.1 #}
-<a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans }}</a>
+<a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans({}, 'messages') }}</a>
 
 {% if currentTenant %}
 {% embed '_components/_card.html.twig' with {
@@ -26,25 +26,25 @@
     {% block card_body %}
         <form method="get" action="{{ path('app_asset_index') }}" class="d-flex align-items-center gap-2">
             <label for="view-filter" class="mb-0 fw-bold">
-                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans }}:
+                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
             </label>
             <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
                 <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
-                    {{ 'corporate.view.own_only'|trans }}
+                    {{ 'corporate.view.own_only'|trans({}, 'tenant') }}
                 </option>
                 {% if inheritanceInfo.hasParent %}
                 <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
-                    {{ 'corporate.view.including_inherited'|trans }}
+                    {{ 'corporate.view.including_inherited'|trans({}, 'tenant') }}
                 </option>
                 {% endif %}
                 {% if inheritanceInfo.hasSubsidiaries %}
                 <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
-                    {{ 'corporate.view.including_subsidiaries'|trans }}
+                    {{ 'corporate.view.including_subsidiaries'|trans({}, 'tenant') }}
                 </option>
                 {% endif %}
             </select>
             <noscript>
-                <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans }}</button>
+                <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
             </noscript>
         </form>
     {% endblock %}
@@ -57,10 +57,10 @@
         <div class="stat-value">{{ detailedStats.total }}</div>
         {% if currentTenant %}
             <small class="text-muted d-block mt-2" style="font-size: 11px; opacity: 0.85;">
-                {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) }}
+                {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant') }}
             </small>
         {% endif %}
-        <div class="stat-label">{{ 'asset_management.active_assets'|trans }}</div>
+        <div class="stat-label">{{ 'asset_management.active_assets'|trans({}, 'assets') }}</div>
     </div>
 
     {% if typeStats|length > 0 %}
@@ -81,12 +81,12 @@
     'class': 'mb-4'
 } %}
     {% block card_body %}
-        <form method="get" action="{{ path('app_asset_index') }}" class="row g-3" id="asset-filter-form" role="search" aria-label="{{ 'common.filters'|trans }}">
+        <form method="get" action="{{ path('app_asset_index') }}" class="row g-3" id="asset-filter-form" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}">
             <div id="filter-section" tabindex="-1"></div>
             <div class="col-md-3">
-                <label for="filter-type" class="form-label">{{ 'asset.label.type'|trans }}</label>
+                <label for="filter-type" class="form-label">{{ 'asset.label.type'|trans({}, 'assets') }}</label>
                 <select class="form-select" id="filter-type" name="type" onchange="this.form.submit()">
-                    <option value="">{{ 'common.all'|trans }}</option>
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     {% if typeStats|length > 0 %}
                         {% for stat in typeStats %}
                             <option value="{{ stat.assetType }}" {{ app.request.get('type') == stat.assetType ? 'selected' : '' }}>
@@ -97,36 +97,36 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <label for="filter-classification" class="form-label">{{ 'asset.label.data_classification'|trans }}</label>
+                <label for="filter-classification" class="form-label">{{ 'asset.label.data_classification'|trans({}, 'assets') }}</label>
                 <select class="form-select" id="filter-classification" name="classification" onchange="this.form.submit()">
-                    <option value="">{{ 'common.all'|trans }}</option>
-                    <option value="public" {{ app.request.get('classification') == 'public' ? 'selected' : '' }}>{{ 'asset.classification.public'|trans }}</option>
-                    <option value="internal" {{ app.request.get('classification') == 'internal' ? 'selected' : '' }}>{{ 'asset.classification.internal'|trans }}</option>
-                    <option value="confidential" {{ app.request.get('classification') == 'confidential' ? 'selected' : '' }}>{{ 'asset.classification.confidential'|trans }}</option>
-                    <option value="restricted" {{ app.request.get('classification') == 'restricted' ? 'selected' : '' }}>{{ 'asset.classification.restricted'|trans }}</option>
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                    <option value="public" {{ app.request.get('classification') == 'public' ? 'selected' : '' }}>{{ 'asset.classification.public'|trans({}, 'assets') }}</option>
+                    <option value="internal" {{ app.request.get('classification') == 'internal' ? 'selected' : '' }}>{{ 'asset.classification.internal'|trans({}, 'assets') }}</option>
+                    <option value="confidential" {{ app.request.get('classification') == 'confidential' ? 'selected' : '' }}>{{ 'asset.classification.confidential'|trans({}, 'assets') }}</option>
+                    <option value="restricted" {{ app.request.get('classification') == 'restricted' ? 'selected' : '' }}>{{ 'asset.classification.restricted'|trans({}, 'assets') }}</option>
                 </select>
             </div>
             <div class="col-md-3">
-                <label for="filter-owner" class="form-label">{{ 'asset.label.owner'|trans }}</label>
+                <label for="filter-owner" class="form-label">{{ 'asset.label.owner'|trans({}, 'assets') }}</label>
                 <input type="text" class="form-control" id="filter-owner" name="owner"
                        value="{{ app.request.get('owner') }}"
-                       placeholder="{{ 'common.search'|trans }}...">
+                       placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
             </div>
             <div class="col-md-3">
-                <label for="filter-status" class="form-label">{{ 'asset.label.status'|trans }}</label>
+                <label for="filter-status" class="form-label">{{ 'asset.label.status'|trans({}, 'assets') }}</label>
                 <select class="form-select" id="filter-status" name="status" onchange="this.form.submit()">
-                    <option value="">{{ 'common.all'|trans }}</option>
-                    <option value="active" {{ app.request.get('status') == 'active' ? 'selected' : '' }}>{{ 'asset.status.active'|trans }}</option>
-                    <option value="inactive" {{ app.request.get('status') == 'inactive' ? 'selected' : '' }}>{{ 'asset.status.inactive'|trans }}</option>
-                    <option value="retired" {{ app.request.get('status') == 'retired' ? 'selected' : '' }}>{{ 'asset.status.retired'|trans }}</option>
+                    <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
+                    <option value="active" {{ app.request.get('status') == 'active' ? 'selected' : '' }}>{{ 'asset.status.active'|trans({}, 'assets') }}</option>
+                    <option value="inactive" {{ app.request.get('status') == 'inactive' ? 'selected' : '' }}>{{ 'asset.status.inactive'|trans({}, 'assets') }}</option>
+                    <option value="retired" {{ app.request.get('status') == 'retired' ? 'selected' : '' }}>{{ 'asset.status.retired'|trans({}, 'assets') }}</option>
                 </select>
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans }}
+                    <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
                 </button>
                 <a href="{{ path('app_asset_index') }}" class="btn btn-secondary">
-                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans }}
+                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
                 </a>
             </div>
         </form>
@@ -136,7 +136,7 @@
 {# Assets Table #}
 <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset">
     <div class="card-header">
-        <h3><i class="bi bi-list" aria-hidden="true"></i> {{ 'asset.list.title'|trans }} ({{ assets|length }})</h3>
+        <h3><i class="bi bi-list" aria-hidden="true"></i> {{ 'asset.list.title'|trans({}, 'assets') }} ({{ assets|length }})</h3>
     </div>
     {% embed '_components/_table.html.twig' with {
         'noMargin': true
@@ -149,16 +149,16 @@
                            class="form-check-input"
                            data-action="bulk-actions#selectAll"
                            data-bulk-actions-target="selectAllCheckbox"
-                           aria-label="{{ 'common.select_all'|trans }}">
+                           aria-label="{{ 'common.select_all'|trans({}, 'messages') }}">
                 </th>
-                <th scope="col">{{ 'asset.label.name'|trans }}</th>
-                <th scope="col">{{ 'asset.label.type'|trans }}</th>
-                <th scope="col">{{ 'asset.label.owner'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'asset.label.classification'|trans }}</th>
+                <th scope="col">{{ 'asset.label.name'|trans({}, 'assets') }}</th>
+                <th scope="col">{{ 'asset.label.type'|trans({}, 'assets') }}</th>
+                <th scope="col">{{ 'asset.label.owner'|trans({}, 'assets') }}</th>
+                <th scope="col" class="text-center">{{ 'asset.label.classification'|trans({}, 'assets') }}</th>
                 <th scope="col" class="text-center">CIA</th>
-                <th scope="col" class="text-center">{{ 'asset.label.risks'|trans }}</th>
-                <th scope="col">{{ 'asset.label.status'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'common.actions'|trans }}</th>
+                <th scope="col" class="text-center">{{ 'asset.label.risks'|trans({}, 'assets') }}</th>
+                <th scope="col">{{ 'asset.label.status'|trans({}, 'assets') }}</th>
+                <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
             </tr>
         {% endblock %}
         {% block table_body %}
@@ -171,7 +171,7 @@
                            data-bulk-actions-target="item"
                            data-action="bulk-actions#selectItem"
                            value="{{ asset.id }}"
-                           aria-label="{{ 'common.select'|trans }} {{ asset.name }}">
+                           aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ asset.name }}">
                 </td>
                 <td>
                     <strong>{{ asset.name }}</strong>
@@ -208,7 +208,7 @@
                     {% if recommendations[asset.id] is defined %}
                         {% set recData = recommendations[asset.id] %}
                         {% if recData.risk_count > 0 %}
-                            <a href="{{ path('app_risk_index') }}?asset={{ asset.id }}" class="{{ badge_score(recData.risk_count, 5, 3) }}" title="{{ recData.risk_count }} {{ 'asset.label.risks'|trans }}">
+                            <a href="{{ path('app_risk_index') }}?asset={{ asset.id }}" class="{{ badge_score(recData.risk_count, 5, 3) }}" title="{{ recData.risk_count }} {{ 'asset.label.risks'|trans({}, 'assets') }}">
                                 {{ recData.risk_count }}
                             </a>
                         {% else %}
@@ -227,12 +227,12 @@
                     <div class="btn-group btn-group-sm">
                         <a href="{{ path('app_asset_show', {id: asset.id}) }}"
                            class="btn btn-outline-primary"
-                           title="{{ 'common.view'|trans }}" aria-label="{{ 'common.view'|trans }}">
+                           title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                             <i class="bi bi-eye" aria-hidden="true"></i>
                         </a>
                         <a href="{{ path('app_asset_edit', {id: asset.id}) }}"
                            class="btn btn-outline-secondary"
-                           title="{{ 'common.edit'|trans }}" aria-label="{{ 'common.edit'|trans }}">
+                           title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                             <i class="bi bi-pencil" aria-hidden="true"></i>
                         </a>
                     </div>

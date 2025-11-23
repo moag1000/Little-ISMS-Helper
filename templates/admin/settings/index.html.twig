@@ -1,12 +1,12 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block admin_title %}{{ 'admin.settings.title'|trans }}{% endblock %}
+{% block admin_title %}{{ 'admin.settings.title'|trans({}, 'admin') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">{{ 'admin.settings.subtitle'|trans }}</p>
+    <p class="text-muted">{{ 'admin.settings.subtitle'|trans({}, 'admin') }}</p>
 {% endblock %}
 
 {% block breadcrumb_items %}
-    <li class="breadcrumb-item active">{{ 'admin.settings.title'|trans }}</li>
+    <li class="breadcrumb-item active">{{ 'admin.settings.title'|trans({}, 'admin') }}</li>
 {% endblock %}
 
 {% block admin_content %}
@@ -20,23 +20,23 @@
                             <i class="bi bi-gear-fill text-primary fs-2" aria-hidden="true"></i>
                         </div>
                         <div class="flex-grow-1">
-                            <h5 class="card-title">{{ 'admin.settings.application.title'|trans }}</h5>
+                            <h5 class="card-title">{{ 'admin.settings.application.title'|trans({}, 'admin') }}</h5>
                             <p class="card-text text-muted small">
-                                {{ 'admin.settings.application.description'|trans }}
+                                {{ 'admin.settings.application.description'|trans({}, 'admin') }}
                             </p>
                         </div>
                     </div>
                     {% if settings.application is defined %}
                         <ul class="list-unstyled small">
-                            <li><strong>{{ 'admin.settings.application.locale'|trans }}:</strong> {{ settings.application.default_locale ?? 'de' }}</li>
-                            <li><strong>{{ 'admin.settings.application.timezone'|trans }}:</strong> {{ settings.application.timezone ?? 'Europe/Berlin' }}</li>
-                            <li><strong>{{ 'admin.settings.application.items_per_page'|trans }}:</strong> {{ settings.application.items_per_page ?? 25 }}</li>
+                            <li><strong>{{ 'admin.settings.application.locale'|trans({}, 'admin') }}:</strong> {{ settings.application.default_locale ?? 'de' }}</li>
+                            <li><strong>{{ 'admin.settings.application.timezone'|trans({}, 'admin') }}:</strong> {{ settings.application.timezone ?? 'Europe/Berlin' }}</li>
+                            <li><strong>{{ 'admin.settings.application.items_per_page'|trans({}, 'admin') }}:</strong> {{ settings.application.items_per_page ?? 25 }}</li>
                         </ul>
                     {% endif %}
                 </div>
                 <div class="card-footer bg-transparent">
                     <a href="{{ path('admin_settings_application') }}" class="btn btn-sm btn-primary w-100">
-                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans }}
+                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
                     </a>
                 </div>
             </div>
@@ -51,23 +51,23 @@
                             <i class="bi bi-shield-lock-fill text-danger fs-2" aria-hidden="true"></i>
                         </div>
                         <div class="flex-grow-1">
-                            <h5 class="card-title">{{ 'admin.settings.security.title'|trans }}</h5>
+                            <h5 class="card-title">{{ 'admin.settings.security.title'|trans({}, 'admin') }}</h5>
                             <p class="card-text text-muted small">
-                                {{ 'admin.settings.security.description'|trans }}
+                                {{ 'admin.settings.security.description'|trans({}, 'admin') }}
                             </p>
                         </div>
                     </div>
                     {% if settings.security is defined %}
                         <ul class="list-unstyled small">
-                            <li><strong>{{ 'admin.settings.security.session_lifetime'|trans }}:</strong> {{ (settings.security.session_lifetime ?? 3600) / 60 }} min</li>
-                            <li><strong>{{ 'admin.settings.security.max_login_attempts'|trans }}:</strong> {{ settings.security.max_login_attempts ?? 5 }}</li>
-                            <li><strong>{{ 'admin.settings.security.require_2fa'|trans }}:</strong> {{ settings.security.require_2fa ? 'Yes' : 'No' }}</li>
+                            <li><strong>{{ 'admin.settings.security.session_lifetime'|trans({}, 'admin') }}:</strong> {{ (settings.security.session_lifetime ?? 3600) / 60 }} min</li>
+                            <li><strong>{{ 'admin.settings.security.max_login_attempts'|trans({}, 'admin') }}:</strong> {{ settings.security.max_login_attempts ?? 5 }}</li>
+                            <li><strong>{{ 'admin.settings.security.require_2fa'|trans({}, 'admin') }}:</strong> {{ settings.security.require_2fa ? 'Yes' : 'No' }}</li>
                         </ul>
                     {% endif %}
                 </div>
                 <div class="card-footer bg-transparent">
                     <a href="{{ path('admin_settings_security') }}" class="btn btn-sm btn-danger w-100">
-                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans }}
+                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
                     </a>
                 </div>
             </div>
@@ -82,9 +82,9 @@
                             <i class="bi bi-toggles2 text-success fs-2" aria-hidden="true"></i>
                         </div>
                         <div class="flex-grow-1">
-                            <h5 class="card-title">{{ 'admin.settings.features.title'|trans }}</h5>
+                            <h5 class="card-title">{{ 'admin.settings.features.title'|trans({}, 'admin') }}</h5>
                             <p class="card-text text-muted small">
-                                {{ 'admin.settings.features.description'|trans }}
+                                {{ 'admin.settings.features.description'|trans({}, 'admin') }}
                             </p>
                         </div>
                     </div>
@@ -96,7 +96,7 @@
                                 {% else %}
                                     <i class="bi bi-x-circle text-muted" aria-hidden="true"></i>
                                 {% endif %}
-                                {{ 'admin.settings.features.dark_mode'|trans }}
+                                {{ 'admin.settings.features.dark_mode'|trans({}, 'admin') }}
                             </li>
                             <li>
                                 {% if settings.features.enable_global_search %}
@@ -104,7 +104,7 @@
                                 {% else %}
                                     <i class="bi bi-x-circle text-muted" aria-hidden="true"></i>
                                 {% endif %}
-                                {{ 'admin.settings.features.global_search'|trans }}
+                                {{ 'admin.settings.features.global_search'|trans({}, 'admin') }}
                             </li>
                             <li>
                                 {% if settings.features.enable_audit_log %}
@@ -112,14 +112,14 @@
                                 {% else %}
                                     <i class="bi bi-x-circle text-muted" aria-hidden="true"></i>
                                 {% endif %}
-                                {{ 'admin.settings.features.audit_log'|trans }}
+                                {{ 'admin.settings.features.audit_log'|trans({}, 'admin') }}
                             </li>
                         </ul>
                     {% endif %}
                 </div>
                 <div class="card-footer bg-transparent">
                     <a href="{{ path('admin_settings_features') }}" class="btn btn-sm btn-success w-100">
-                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans }}
+                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
                     </a>
                 </div>
             </div>
@@ -129,7 +129,7 @@
     {# Info Alert #}
     <div class="alert alert-info mt-4">
         <i class="bi bi-info-circle" aria-hidden="true"></i>
-        <strong>{{ 'admin.settings.info_title'|trans }}</strong><br>
-        {{ 'admin.settings.info_text'|trans }}
+        <strong>{{ 'admin.settings.info_title'|trans({}, 'admin') }}</strong><br>
+        {{ 'admin.settings.info_text'|trans({}, 'admin') }}
     </div>
 {% endblock %}

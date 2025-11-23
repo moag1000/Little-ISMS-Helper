@@ -1,25 +1,25 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block admin_title %}{{ 'entity_history.title'|trans }}{% endblock %}
+{% block admin_title %}{{ 'entity_history.title'|trans({}, 'messages') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">{{ 'entity_history.subtitle'|trans|default('Verlauf einer Entität') }}</p>
+    <p class="text-muted">{{ 'entity_history.subtitle'|trans({}, 'messages')|default('Verlauf einer Entität') }}</p>
 {% endblock %}
 
 {% block admin_content %}
 <p>
     <a href="{{ path('app_audit_log_index') }}" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_overview'|trans }}
+        <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_overview'|trans({}, 'messages') }}
     </a>
 </p>
 
 <div class="info-box">
     <h3>{{ entityType }} #{{ entityId }}</h3>
-    <p><strong>{{ 'entity_history.entry_count'|trans }}</strong> {{ auditLogs|length }}</p>
+    <p><strong>{{ 'entity_history.entry_count'|trans({}, 'messages') }}</strong> {{ auditLogs|length }}</p>
 </div>
 
 {% if auditLogs|length > 0 %}
 <div style="margin-top: 2rem;">
-    <h2>{{ 'entity_history.section'|trans }}</h2>
+    <h2>{{ 'entity_history.section'|trans({}, 'messages') }}</h2>
 
     <div style="margin-top: 1rem;">
     {% embed '_components/_table.html.twig' with {
@@ -28,11 +28,11 @@
     } %}
         {% block table_head %}
             <tr>
-                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.timestamp'|trans }}</th>
-                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.action'|trans }}</th>
-                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.user'|trans }}</th>
-                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.description'|trans }}</th>
-                <th scope="col" class="table-cell text-left">{{ 'common.details'|trans }}</th>
+                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.timestamp'|trans({}, 'audits') }}</th>
+                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.action'|trans({}, 'audits') }}</th>
+                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.user'|trans({}, 'audits') }}</th>
+                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.description'|trans({}, 'audits') }}</th>
+                <th scope="col" class="table-cell text-left">{{ 'common.details'|trans({}, 'messages') }}</th>
             </tr>
         {% endblock %}
         {% block table_body %}
@@ -56,7 +56,7 @@
                 <td class="table-cell">
                     <a href="{{ path('app_audit_log_detail', {id: log.id}) }}"
                        class="link-primary">
-                        {{ 'entity_history.show_details'|trans }}
+                        {{ 'entity_history.show_details'|trans({}, 'messages') }}
                     </a>
                 </td>
             </tr>
@@ -67,7 +67,7 @@
 </div>
 {% else %}
 <div class="info-box" style="margin-top: 2rem;">
-    <p>{{ 'entity_history.no_entries'|trans }}</p>
+    <p>{{ 'entity_history.no_entries'|trans({}, 'messages') }}</p>
 </div>
 {% endif %}
 

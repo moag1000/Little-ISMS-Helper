@@ -9,7 +9,7 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="{{ path('app_audit_index') }}" data-turbo-action="advance">
-                    <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'audit_management.title'|trans }}
+                    <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'audit_management.title'|trans({}, 'audits') }}
                 </a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">{{ audit.title }}</li>
@@ -31,7 +31,7 @@
                 <div class="card-body">
                     {# Scope #}
                     <div class="mb-4">
-                        <h5><i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'audit.scope'|trans }}</h5>
+                        <h5><i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'audit.scope'|trans({}, 'audits') }}</h5>
                         <p class="text-muted">{{ audit.scope|nl2br }}</p>
                         <div class="mt-2">
                             <span class="badge bg-secondary me-2">
@@ -46,7 +46,7 @@
                         {% if audit.auditedSubsidiaries|length > 0 %}
                         <div class="mt-3 p-3 border border-primary rounded bg-light">
                             <h4 class="text-primary mb-2">
-                                <i class="bi bi-building" aria-hidden="true"></i> {{ 'audit.field.audited_subsidiaries'|trans }}
+                                <i class="bi bi-building" aria-hidden="true"></i> {{ 'audit.field.audited_subsidiaries'|trans({}, 'audits') }}
                             </h4>
                             <div class="d-flex flex-wrap gap-2">
                                 {% for subsidiary in audit.auditedSubsidiaries %}
@@ -57,7 +57,7 @@
                             </div>
                             <small class="text-muted d-block mt-2">
                                 <i class="bi bi-info-circle" aria-hidden="true"></i>
-                                {{ 'audit.message.corporate_subsidiaries_info'|trans({'%count%': audit.auditedSubsidiaries|length}) }}
+                                {{ 'audit.message.corporate_subsidiaries_info'|trans({'%count%': audit.auditedSubsidiaries|length}, 'audits') }}
                             </small>
                         </div>
                         {% endif %}
@@ -68,7 +68,7 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
-                                <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'audit.framework'|trans }}
+                                <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'audit.framework'|trans({}, 'audits') }}
                             </h6>
                             <p>
                                 <span class="badge bg-primary fs-6">
@@ -77,7 +77,7 @@
                             </p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-2">{{ 'audit.standard'|trans }}</h6>
+                            <h6 class="text-muted mb-2">{{ 'audit.standard'|trans({}, 'audits') }}</h6>
                             <p>{{ audit.standard ?? '-' }}</p>
                         </div>
                     </div>
@@ -86,13 +86,13 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
-                                <i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'audit.planned_date'|trans }}
+                                <i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'audit.planned_date'|trans({}, 'audits') }}
                             </h6>
                             <p class="fs-5">{{ audit.plannedDate|date('d.m.Y') }}</p>
                         </div>
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
-                                <i class="bi bi-calendar-check" aria-hidden="true"></i> {{ 'audit.actual_date'|trans }}
+                                <i class="bi bi-calendar-check" aria-hidden="true"></i> {{ 'audit.actual_date'|trans({}, 'audits') }}
                             </h6>
                             <p class="fs-5">{{ audit.actualDate ? audit.actualDate|date('d.m.Y') : '-' }}</p>
                         </div>
@@ -102,7 +102,7 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
-                                <i class="bi bi-person-badge" aria-hidden="true"></i> {{ 'audit.lead_auditor'|trans }}
+                                <i class="bi bi-person-badge" aria-hidden="true"></i> {{ 'audit.lead_auditor'|trans({}, 'audits') }}
                             </h6>
                             <p>
                                 {% if audit.leadAuditor %}
@@ -113,7 +113,7 @@
                             </p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-2">{{ 'audit.department'|trans }}</h6>
+                            <h6 class="text-muted mb-2">{{ 'audit.department'|trans({}, 'audits') }}</h6>
                             <p>{{ audit.department ?? '-' }}</p>
                         </div>
                     </div>
@@ -121,7 +121,7 @@
                     {# Auditee & Team #}
                     {% if audit.auditee %}
                     <div class="mb-4">
-                        <h6 class="text-muted mb-2">{{ 'audit.auditee'|trans }}</h6>
+                        <h6 class="text-muted mb-2">{{ 'audit.auditee'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.auditee }}</p>
                     </div>
                     {% endif %}
@@ -129,7 +129,7 @@
                     {% if audit.auditTeam|length > 0 %}
                     <div class="mb-4">
                         <h6 class="text-muted mb-2">
-                            <i class="bi bi-people" aria-hidden="true"></i> {{ 'audit.audit_team'|trans }}
+                            <i class="bi bi-people" aria-hidden="true"></i> {{ 'audit.audit_team'|trans({}, 'audits') }}
                         </h6>
                         <div class="d-flex flex-wrap gap-2">
                             {% for member in audit.auditTeam %}
@@ -144,7 +144,7 @@
                     {# Overall Result #}
                     {% if audit.overallResult %}
                     <div class="mb-4">
-                        <h6 class="text-muted mb-2">{{ 'audit.overall_result'|trans }}</h6>
+                        <h6 class="text-muted mb-2">{{ 'audit.overall_result'|trans({}, 'audits') }}</h6>
                         <p>
                             <span class="{{ badge_status(audit.overallResult) }} fs-6">
                                 {{ ('audit.result.' ~ audit.overallResult)|trans }}
@@ -160,27 +160,27 @@
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
-                        <i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'audit.section.objectives'|trans }}
+                        <i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'audit.section.objectives'|trans({}, 'audits') }}
                     </h3>
                 </div>
                 <div class="card-body">
                     {% if audit.objectives %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.objectives'|trans }}</h6>
+                        <h6 class="text-muted">{{ 'audit.objectives'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.objectives|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.auditCriteria %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.audit_criteria'|trans }}</h6>
+                        <h6 class="text-muted">{{ 'audit.audit_criteria'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.auditCriteria|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.methodology %}
                     <div class="mb-0">
-                        <h6 class="text-muted">{{ 'audit.methodology'|trans }}</h6>
+                        <h6 class="text-muted">{{ 'audit.methodology'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.methodology|nl2br }}</p>
                     </div>
                     {% endif %}
@@ -193,27 +193,27 @@
             <div class="card shadow mb-4 border-warning">
                 <div class="card-header bg-warning">
                     <h3 class="mb-0">
-                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'audit.section.findings'|trans }}
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'audit.section.findings'|trans({}, 'audits') }}
                     </h3>
                 </div>
                 <div class="card-body">
                     {% if audit.findings %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.findings'|trans }}</h6>
+                        <h6 class="text-muted">{{ 'audit.findings'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.findings|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.nonconformities %}
                     <div class="mb-3 alert alert-danger">
-                        <h4 class="alert-heading">{{ 'audit.nonconformities'|trans }}</h4>
+                        <h4 class="alert-heading">{{ 'audit.nonconformities'|trans({}, 'audits') }}</h4>
                         <p class="mb-0">{{ audit.nonconformities|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.observations %}
                     <div class="mb-0 alert alert-info">
-                        <h4 class="alert-heading">{{ 'audit.observations'|trans }}</h4>
+                        <h4 class="alert-heading">{{ 'audit.observations'|trans({}, 'audits') }}</h4>
                         <p class="mb-0">{{ audit.observations|nl2br }}</p>
                     </div>
                     {% endif %}
@@ -226,27 +226,27 @@
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
-                        <i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'audit.section.recommendations'|trans }}
+                        <i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'audit.section.recommendations'|trans({}, 'audits') }}
                     </h3>
                 </div>
                 <div class="card-body">
                     {% if audit.recommendations %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.recommendations'|trans }}</h6>
+                        <h6 class="text-muted">{{ 'audit.recommendations'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.recommendations|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.correctiveActions %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.corrective_actions'|trans }}</h6>
+                        <h6 class="text-muted">{{ 'audit.corrective_actions'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.correctiveActions|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.followUpActions %}
                     <div class="mb-0">
-                        <h6 class="text-muted">{{ 'audit.follow_up_actions'|trans }}</h6>
+                        <h6 class="text-muted">{{ 'audit.follow_up_actions'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.followUpActions|nl2br }}</p>
                     </div>
                     {% endif %}
@@ -259,27 +259,27 @@
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
-                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'audit.section.documentation'|trans }}
+                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'audit.section.documentation'|trans({}, 'audits') }}
                     </h3>
                 </div>
                 <div class="card-body">
                     {% if audit.evidenceCollected %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.evidence_collected'|trans }}</h6>
+                        <h6 class="text-muted">{{ 'audit.evidence_collected'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.evidenceCollected|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.summary %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.summary'|trans }}</h6>
+                        <h6 class="text-muted">{{ 'audit.summary'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.summary|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.notes %}
                     <div class="mb-0">
-                        <h6 class="text-muted">{{ 'audit.notes'|trans }}</h6>
+                        <h6 class="text-muted">{{ 'audit.notes'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.notes|nl2br }}</p>
                     </div>
                     {% endif %}
@@ -307,7 +307,7 @@
                         <a href="{{ path('app_audit_export_pdf', {id: audit.id}) }}"
                            class="btn btn-outline-danger"
                            data-turbo="false">
-                            <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'audit.export_pdf'|trans }}
+                            <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'audit.export_pdf'|trans({}, 'audits') }}
                         </a>
 
                         <a href="{{ path('app_audit_index') }}"
@@ -332,25 +332,25 @@
             {# Quick Stats #}
             <div class="card shadow mb-4">
                 <div class="card-header bg-light">
-                    <h3 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'audit.quick_stats'|trans }}</h3>
+                    <h3 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'audit.quick_stats'|trans({}, 'audits') }}</h3>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0 small">
-                        <dt class="col-sm-6 text-muted">{{ 'audit.framework'|trans }}</dt>
+                        <dt class="col-sm-6 text-muted">{{ 'audit.framework'|trans({}, 'audits') }}</dt>
                         <dd class="col-sm-6 text-end">
                             <span class="badge bg-primary">{{ audit.framework|upper }}</span>
                         </dd>
 
-                        <dt class="col-sm-6 text-muted">{{ 'audit.type'|trans }}</dt>
+                        <dt class="col-sm-6 text-muted">{{ 'audit.type'|trans({}, 'audits') }}</dt>
                         <dd class="col-sm-6 text-end">
                             <span class="badge bg-info">{{ ('audit.type.' ~ audit.auditType)|trans }}</span>
                         </dd>
 
-                        <dt class="col-sm-6 text-muted">{{ 'audit.team_size'|trans }}</dt>
+                        <dt class="col-sm-6 text-muted">{{ 'audit.team_size'|trans({}, 'audits') }}</dt>
                         <dd class="col-sm-6 text-end">{{ audit.auditTeam|length + 1 }}</dd>
 
                         {% if audit.overallResult %}
-                        <dt class="col-sm-6 text-muted">{{ 'audit.result'|trans }}</dt>
+                        <dt class="col-sm-6 text-muted">{{ 'audit.result'|trans({}, 'audits') }}</dt>
                         <dd class="col-sm-6 text-end">
                             <span class="{{ badge_status(audit.overallResult) }}">
                                 {{ ('audit.result.' ~ audit.overallResult)|trans }}
@@ -389,7 +389,7 @@
     <div class="card shadow mb-4">
         <div class="card-header bg-light">
             <h3 class="mb-0">
-                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'audit.section.history'|trans }}
+                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'audit.section.history'|trans({}, 'audits') }}
                 ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'messages') }})
             </h3>
         </div>
@@ -434,7 +434,7 @@
             {% if totalAuditLogs > 10 %}
             <div class="text-center mt-3">
                 <small class="text-muted">
-                    {{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs}) }}
+                    {{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs}, 'audits') }}
                 </small>
             </div>
             {% endif %}
@@ -474,22 +474,22 @@
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title" id="deleteModalLabel">
-                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'audit.confirm_delete'|trans }}
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'audit.confirm_delete'|trans({}, 'audits') }}
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>{{ 'audit.delete_warning'|trans({'%title%': audit.title}) }}</p>
-                <p class="text-muted"><small>{{ 'common.action_irreversible'|trans }}</small></p>
+                <p>{{ 'audit.delete_warning'|trans({'%title%': audit.title}, 'audits') }}</p>
+                <p class="text-muted"><small>{{ 'common.action_irreversible'|trans({}, 'messages') }}</small></p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    {{ 'common.cancel'|trans }}
+                    {{ 'common.cancel'|trans({}, 'messages') }}
                 </button>
                 <form method="post" action="{{ path('app_audit_delete', {id: audit.id}) }}" style="display: inline;">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ audit.id) }}">
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans }}
+                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                     </button>
                 </form>
             </div>

@@ -3,7 +3,6 @@ incident_management:
   description: Erfassen, klassifizieren und verwalten Sie Sicherheitsvorfälle sowie NIS2‑Meldungen.
   open_incidents: Offene Vorfälle
   total_recorded: Insgesamt erfasste Vorfälle
-
 incident:
   new: Neuer Vorfall
   create: Vorfall erstellen

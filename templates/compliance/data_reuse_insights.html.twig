@@ -2,13 +2,13 @@
 {% trans_default_domain 'compliance' %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}{{ 'compliance.title.data_reuse'|trans }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'compliance.title.data_reuse'|trans({}, 'compliance') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 <div class="page-header">
     <div>
-        <h1>{{ 'compliance.title.data_reuse'|trans }}</h1>
-        <p class="text-muted">{{ 'compliance.description.data_reuse'|trans }}</p>
+        <h1>{{ 'compliance.title.data_reuse'|trans({}, 'compliance') }}</h1>
+        <p class="text-muted">{{ 'compliance.description.data_reuse'|trans({}, 'compliance') }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_compliance_export_reuse_pdf', {id: framework.id}) }}" class="btn btn-danger" data-turbo="false">
@@ -26,22 +26,22 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.total_data_points'|trans, totalDataPoints, null, null, null, null) }}
+        {{ cards.kpi_card('compliance.stats.total_data_points'|trans({}, 'compliance'), totalDataPoints, null, null, null, null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.reused_data'|trans, reusedDataPoints, null, null, null, null) }}
+        {{ cards.kpi_card('compliance.stats.reused_data'|trans({}, 'compliance'), reusedDataPoints, null, null, null, null) }}
     </div>
     <div class="col-auto">
         {% set reuseRate = totalDataPoints > 0 ? (reusedDataPoints / totalDataPoints * 100)|round : 0 %}
-        {{ cards.kpi_card('compliance.stats.reuse_rate'|trans, reuseRate ~ '%', null, null, null, null) }}
+        {{ cards.kpi_card('compliance.stats.reuse_rate'|trans({}, 'compliance'), reuseRate ~ '%', null, null, null, null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('compliance.stats.effort_saved'|trans, effortSavedHours ~ 'h', null, null, null, null) }}
+        {{ cards.kpi_card('compliance.stats.effort_saved'|trans({}, 'compliance'), effortSavedHours ~ 'h', null, null, null, null) }}
     </div>
 </div>
 
 {# Reuse Opportunities #}
-<h2>{{ 'compliance.section.reuse_opportunities'|trans }}</h2>
+<h2>{{ 'compliance.section.reuse_opportunities'|trans({}, 'compliance') }}</h2>
 
 <div class="module-grid mb-4">
     {% for opportunity in reuseOpportunities %}
@@ -54,39 +54,39 @@
         <div class="stats-grid grid-col-2">
             <div class="stat-item">
                 <strong>{{ opportunity.applicableFrameworks|length }}</strong>
-                <span>{{ 'compliance.field.frameworks'|trans }}</span>
+                <span>{{ 'compliance.field.frameworks'|trans({}, 'compliance') }}</span>
             </div>
             <div class="stat-item">
                 <strong>{{ opportunity.potentialSavings }}h</strong>
-                <span>{{ 'compliance.field.time_savings'|trans }}</span>
+                <span>{{ 'compliance.field.time_savings'|trans({}, 'compliance') }}</span>
             </div>
         </div>
 
         <div class="mt-2">
-            <span class="badge bg-success">{{ opportunity.reusePercentage }}% {{ 'compliance.badge.reusable'|trans }}</span>
+            <span class="badge bg-success">{{ opportunity.reusePercentage }}% {{ 'compliance.badge.reusable'|trans({}, 'compliance') }}</span>
         </div>
 
         <div class="mt-3">
             <a href="{{ path('app_compliance_opportunity_details', {id: opportunity.id}) }}" class="btn btn-sm">
-                {{ 'common.view_details'|trans }}
+                {{ 'common.view_details'|trans({}, 'messages') }}
             </a>
         </div>
     </div>
     {% else %}
     <div class="card grid-full">
         <p class="text-center-muted">
-            {{ 'compliance.message.no_opportunities'|trans }}
+            {{ 'compliance.message.no_opportunities'|trans({}, 'compliance') }}
         </p>
     </div>
     {% endfor %}
 </div>
 
 {# Data Reuse Matrix #}
-<h2>{{ 'compliance.section.reuse_matrix'|trans }}</h2>
+<h2>{{ 'compliance.section.reuse_matrix'|trans({}, 'compliance') }}</h2>
 
 <div class="card mb-4">
     <p class="text-muted-mb-md">
-        {{ 'compliance.description.reuse_matrix'|trans }}
+        {{ 'compliance.description.reuse_matrix'|trans({}, 'compliance') }}
     </p>
 
     {% embed '_components/_table.html.twig' with {
@@ -95,11 +95,11 @@
     } %}
         {% block table_head %}
             <tr>
-                <th scope="col">{{ 'compliance.field.data_element'|trans }}</th>
-                <th scope="col">{{ 'compliance.field.source'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'compliance.field.reuse_count'|trans }}</th>
-                <th scope="col">{{ 'compliance.field.used_in_frameworks'|trans }}</th>
-                <th scope="col" class="text-center">{{ 'compliance.field.quality_score'|trans }}</th>
+                <th scope="col">{{ 'compliance.field.data_element'|trans({}, 'compliance') }}</th>
+                <th scope="col">{{ 'compliance.field.source'|trans({}, 'compliance') }}</th>
+                <th scope="col" class="text-center">{{ 'compliance.field.reuse_count'|trans({}, 'compliance') }}</th>
+                <th scope="col">{{ 'compliance.field.used_in_frameworks'|trans({}, 'compliance') }}</th>
+                <th scope="col" class="text-center">{{ 'compliance.field.quality_score'|trans({}, 'compliance') }}</th>
             </tr>
         {% endblock %}
         {% block table_body %}
@@ -127,7 +127,7 @@
             {% else %}
             <tr>
                 <td colspan="5" class="text-center-p-xl-muted">
-                    {{ 'compliance.message.no_data_elements'|trans }}
+                    {{ 'compliance.message.no_data_elements'|trans({}, 'compliance') }}
                 </td>
             </tr>
             {% endfor %}
@@ -136,7 +136,7 @@
 </div>
 
 {# Framework Coverage Map #}
-<h2>{{ 'compliance.section.framework_coverage'|trans }}</h2>
+<h2>{{ 'compliance.section.framework_coverage'|trans({}, 'compliance') }}</h2>
 
 {% embed '_components/_table.html.twig' with {
     'class': 'table-container',
@@ -144,11 +144,11 @@
 } %}
     {% block table_head %}
         <tr>
-            <th scope="col">{{ 'compliance.field.framework'|trans }}</th>
-            <th scope="col" class="text-center">{{ 'compliance.field.total_requirements'|trans }}</th>
-            <th scope="col" class="text-center">{{ 'compliance.field.reused_data'|trans }}</th>
-            <th scope="col" class="text-center">{{ 'compliance.field.new_data_needed'|trans }}</th>
-            <th scope="col" class="text-center">{{ 'compliance.field.coverage'|trans }}</th>
+            <th scope="col">{{ 'compliance.field.framework'|trans({}, 'compliance') }}</th>
+            <th scope="col" class="text-center">{{ 'compliance.field.total_requirements'|trans({}, 'compliance') }}</th>
+            <th scope="col" class="text-center">{{ 'compliance.field.reused_data'|trans({}, 'compliance') }}</th>
+            <th scope="col" class="text-center">{{ 'compliance.field.new_data_needed'|trans({}, 'compliance') }}</th>
+            <th scope="col" class="text-center">{{ 'compliance.field.coverage'|trans({}, 'compliance') }}</th>
         </tr>
     {% endblock %}
     {% block table_body %}
@@ -174,7 +174,7 @@
         {% else %}
         <tr>
             <td colspan="5" class="text-center-p-xl-muted">
-                {{ 'compliance.message.no_frameworks'|trans }}
+                {{ 'compliance.message.no_frameworks'|trans({}, 'compliance') }}
             </td>
         </tr>
         {% endfor %}

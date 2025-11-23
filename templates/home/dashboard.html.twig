@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}{{ 'nav.dashboard'|trans({}, 'nav') }} - {{ 'app.title'|trans }}{% endblock %}
+{% block title %}{{ 'nav.dashboard'|trans({}, 'nav') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <h1>{{ 'dashboard.title'|trans({}, 'dashboard') }}</h1>
@@ -25,25 +25,25 @@
 <div class="info-box">
     <h2 class="mb-md">{{ 'dashboard.implementation_status'|trans({}, 'dashboard') }}</h2>
     <div class="mb-sm">
-        <strong>Clause 4 - {{ 'clause.4'|trans }}:</strong> <span class="status-in-progress">{{ 'status.in_progress'|trans }}</span>
+        <strong>Clause 4 - {{ 'clause.4'|trans({}, 'messages') }}:</strong> <span class="status-in-progress">{{ 'status.in_progress'|trans({}, 'messages') }}</span>
     </div>
     <div class="mb-sm">
-        <strong>Clause 5 - {{ 'clause.5'|trans }}:</strong> <span class="status-not-started">{{ 'status.not_started'|trans }}</span>
+        <strong>Clause 5 - {{ 'clause.5'|trans({}, 'messages') }}:</strong> <span class="status-not-started">{{ 'status.not_started'|trans({}, 'messages') }}</span>
     </div>
     <div class="mb-sm">
-        <strong>Clause 6 - {{ 'clause.6'|trans }}:</strong> <span class="status-not-started">{{ 'status.not_started'|trans }}</span>
+        <strong>Clause 6 - {{ 'clause.6'|trans({}, 'messages') }}:</strong> <span class="status-not-started">{{ 'status.not_started'|trans({}, 'messages') }}</span>
     </div>
     <div class="mb-sm">
-        <strong>Clause 7 - {{ 'clause.7'|trans }}:</strong> <span class="status-not-started">{{ 'status.not_started'|trans }}</span>
+        <strong>Clause 7 - {{ 'clause.7'|trans({}, 'messages') }}:</strong> <span class="status-not-started">{{ 'status.not_started'|trans({}, 'messages') }}</span>
     </div>
     <div class="mb-sm">
-        <strong>Clause 8 - {{ 'clause.8'|trans }}:</strong> <span class="status-not-started">{{ 'status.not_started'|trans }}</span>
+        <strong>Clause 8 - {{ 'clause.8'|trans({}, 'messages') }}:</strong> <span class="status-not-started">{{ 'status.not_started'|trans({}, 'messages') }}</span>
     </div>
     <div class="mb-sm">
-        <strong>Clause 9 - {{ 'clause.9'|trans }}:</strong> <span class="status-not-started">{{ 'status.not_started'|trans }}</span>
+        <strong>Clause 9 - {{ 'clause.9'|trans({}, 'messages') }}:</strong> <span class="status-not-started">{{ 'status.not_started'|trans({}, 'messages') }}</span>
     </div>
     <div class="mb-sm">
-        <strong>Clause 10 - {{ 'clause.10'|trans }}:</strong> <span class="status-not-started">{{ 'status.not_started'|trans }}</span>
+        <strong>Clause 10 - {{ 'clause.10'|trans({}, 'messages') }}:</strong> <span class="status-not-started">{{ 'status.not_started'|trans({}, 'messages') }}</span>
     </div>
 </div>
 
@@ -51,23 +51,23 @@
 
 <div class="d-flex gap-1 mt-md">
     <a href="#" class="btn btn-primary">
-        <i class="bi bi-plus-circle"></i> {{ 'action.new_asset'|trans }}
+        <i class="bi bi-plus-circle"></i> {{ 'action.new_asset'|trans({}, 'messages') }}
     </a>
     <a href="#" class="btn btn-secondary">
-        <i class="bi bi-shield-exclamation"></i> {{ 'action.assess_risk'|trans }}
+        <i class="bi bi-shield-exclamation"></i> {{ 'action.assess_risk'|trans({}, 'messages') }}
     </a>
     <a href="#" class="btn btn-secondary">
-        <i class="bi bi-exclamation-triangle"></i> {{ 'action.report_incident'|trans }}
+        <i class="bi bi-exclamation-triangle"></i> {{ 'action.report_incident'|trans({}, 'messages') }}
     </a>
 </div>
 
 <div class="warning-box mt-3">
     <p><strong>{{ 'dashboard.next_steps'|trans({}, 'dashboard') }}:</strong></p>
     <ul class="ml-lg mt-sm">
-        <li>{{ 'form.complete_asset_inventory'|trans }}</li>
-        <li>{{ 'form.conduct_risk_analysis'|trans }}</li>
-        <li>{{ 'form.document_policies'|trans }}</li>
-        <li>{{ 'form.plan_awareness_training'|trans }}</li>
+        <li>{{ 'form.complete_asset_inventory'|trans({}, 'messages') }}</li>
+        <li>{{ 'form.conduct_risk_analysis'|trans({}, 'messages') }}</li>
+        <li>{{ 'form.document_policies'|trans({}, 'messages') }}</li>
+        <li>{{ 'form.plan_awareness_training'|trans({}, 'messages') }}</li>
     </ul>
 </div>
 {% endblock %}

@@ -10,15 +10,15 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-info-circle" aria-hidden="true"></i>
-        {{ 'document.section.basic_info'|trans|default('Dokumentinformationen') }}
+        {{ 'document.section.basic_info'|trans({}, 'documents')|default('Dokumentinformationen') }}
     </legend>
 
     <div class="row">
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.name,
-                'label': 'document.field.name'|trans|default('Name'),
-                'help': 'document.help.name'|trans|default('Eindeutiger Name des Dokuments'),
+                'label': 'document.field.name'|trans({}, 'documents')|default('Name'),
+                'help': 'document.help.name'|trans({}, 'documents')|default('Eindeutiger Name des Dokuments'),
                 'required': true
             } %}
         </div>
@@ -28,8 +28,8 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.description,
-                'label': 'document.field.description'|trans|default('Beschreibung'),
-                'help': 'document.help.description'|trans|default('Detaillierte Beschreibung des Dokumentinhalts und Zwecks')
+                'label': 'document.field.description'|trans({}, 'documents')|default('Beschreibung'),
+                'help': 'document.help.description'|trans({}, 'documents')|default('Detaillierte Beschreibung des Dokumentinhalts und Zwecks')
             } %}
         </div>
     </div>
@@ -38,8 +38,8 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.documentType,
-                'label': 'document.field.document_type'|trans|default('Dokumenttyp'),
-                'help': 'document.help.document_type'|trans|default('Kategorie des Dokuments (Richtlinie, Verfahren, etc.)'),
+                'label': 'document.field.document_type'|trans({}, 'documents')|default('Dokumenttyp'),
+                'help': 'document.help.document_type'|trans({}, 'documents')|default('Kategorie des Dokuments (Richtlinie, Verfahren, etc.)'),
                 'required': true
             } %}
         </div>
@@ -50,13 +50,13 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-cloud-upload" aria-hidden="true"></i>
-        {{ 'document.section.file_upload'|trans|default('Datei-Upload') }}
+        {{ 'document.section.file_upload'|trans({}, 'documents')|default('Datei-Upload') }}
     </legend>
 
     {% if is_edit_mode|default(false) %}
         <div class="alert alert-info" role="status">
             <i class="bi bi-info-circle" aria-hidden="true"></i>
-            {{ 'document.help.edit_file'|trans|default('Lassen Sie das Feld leer, um die vorhandene Datei beizubehalten') }}
+            {{ 'document.help.edit_file'|trans({}, 'documents')|default('Lassen Sie das Feld leer, um die vorhandene Datei beizubehalten') }}
         </div>
     {% endif %}
 
@@ -64,10 +64,10 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.file,
-                'label': 'document.field.file'|trans|default('Datei'),
+                'label': 'document.field.file'|trans({}, 'documents')|default('Datei'),
                 'help': is_edit_mode|default(false)
-                    ? ('document.help.file_edit'|trans|default('Neue Datei hochladen (optional)'))
-                    : ('document.help.file'|trans|default('Wählen Sie eine Datei zum Hochladen')),
+                    ? ('document.help.file_edit'|trans({}, 'documents')|default('Neue Datei hochladen (optional)'))
+                    : ('document.help.file'|trans({}, 'documents')|default('Wählen Sie eine Datei zum Hochladen')),
                 'required': not is_edit_mode|default(false)
             } %}
         </div>

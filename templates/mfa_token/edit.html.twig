@@ -15,10 +15,10 @@
             {{ form_widget(form) }}
             <div class="d-flex justify-content-between pt-3 border-top">
                 <a href="{{ path('admin_mfa_show', {id: mfa_token.id}) }}" class="btn btn-outline-secondary">
-                    {{ 'common.back'|trans }}
+                    {{ 'common.back'|trans({}, 'messages') }}
                 </a>
                 <button type="submit" class="btn btn-primary">
-                    {{ 'common.save'|trans }}
+                    {{ 'common.save'|trans({}, 'messages') }}
                 </button>
             </div>
             {{ form_end(form) }}

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'setup.database.title'|trans }} - Deployment Wizard{% endblock %}
+{% block title %}{{ 'setup.database.title'|trans({}, 'messages') }} - Deployment Wizard{% endblock %}
 
 {% block head %}
     {{ parent() }}
@@ -27,8 +27,8 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h4 class="mb-0">{{ 'setup.progress.title'|trans }}</h4>
-                        <small class="text-muted">{{ 'setup.progress.step'|trans({'%current%': 2, '%total%': 11}) }}</small>
+                        <h4 class="mb-0">{{ 'setup.progress.title'|trans({}, 'messages') }}</h4>
+                        <small class="text-muted">{{ 'setup.progress.step'|trans({'%current%': 2, '%total%': 11}, 'messages') }}</small>
                     </div>
                     <div class="progress" style="height: 10px;">
                         <div class="progress-bar" role="progressbar" style="width: 18%;" aria-valuenow="18" aria-valuemin="0" aria-valuemax="100"></div>
@@ -40,12 +40,12 @@
                 <div class="card-header bg-primary text-white">
                     <h2 class="mb-0">
                         <i class="fas fa-database me-2"></i>
-                        {{ 'setup.database.header'|trans }}
+                        {{ 'setup.database.header'|trans({}, 'messages') }}
                     </h2>
                 </div>
                 <div class="card-body p-4">
                     <p class="text-muted mb-4">
-                        {{ 'setup.database.description'|trans }}
+                        {{ 'setup.database.description'|trans({}, 'messages') }}
                     </p>
 
                     {# Docker Auto-Generated Password Display #}
@@ -53,19 +53,19 @@
                         <div class="alert alert-success border-success">
                             <h5 class="alert-heading">
                                 <i class="fas fa-key me-2"></i>
-                                {{ 'setup.database.docker_password_title'|trans }}
+                                {{ 'setup.database.docker_password_title'|trans({}, 'messages') }}
                             </h5>
-                            <p class="mb-2">{{ 'setup.database.docker_password_info'|trans }}</p>
+                            <p class="mb-2">{{ 'setup.database.docker_password_info'|trans({}, 'messages') }}</p>
                             <div class="p-3 bg-light border rounded">
                                 <code class="text-primary fw-bold" style="font-size: 1.1rem;">{{ docker_password }}</code>
                                 <button type="button" class="btn btn-sm btn-outline-primary ms-3" onclick="navigator.clipboard.writeText('{{ docker_password }}')">
                                     <i class="fas fa-copy me-1"></i>
-                                    {{ 'common.copy'|trans }}
+                                    {{ 'common.copy'|trans({}, 'messages') }}
                                 </button>
                             </div>
                             <small class="text-muted mt-2 d-block">
                                 <i class="fas fa-info-circle me-1"></i>
-                                {{ 'setup.database.docker_password_location'|trans }}
+                                {{ 'setup.database.docker_password_location'|trans({}, 'messages') }}
                             </small>
                         </div>
                     {% endif %}
@@ -77,14 +77,14 @@
                         <div class="col-md-6">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.type,
-                                'label': 'setup.database.type'|trans,
+                                'label': 'setup.database.type'|trans({}, 'messages'),
                                 'required': true
                             } %}
                         </div>
                         <div class="col-md-6">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.name,
-                                'label': 'setup.database.name'|trans,
+                                'label': 'setup.database.name'|trans({}, 'messages'),
                                 'required': true
                             } %}
                         </div>
@@ -96,13 +96,13 @@
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.host,
-                                    'label': 'setup.database.host'|trans
+                                    'label': 'setup.database.host'|trans({}, 'messages')
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.port,
-                                    'label': 'setup.database.port'|trans
+                                    'label': 'setup.database.port'|trans({}, 'messages')
                                 } %}
                             </div>
                         </div>
@@ -111,13 +111,13 @@
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.user,
-                                    'label': 'setup.database.user'|trans
+                                    'label': 'setup.database.user'|trans({}, 'messages')
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.password,
-                                    'label': 'setup.database.password'|trans
+                                    'label': 'setup.database.password'|trans({}, 'messages')
                                 } %}
                             </div>
                         </div>
@@ -126,13 +126,13 @@
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.serverVersion,
-                                    'label': 'setup.database.server_version'|trans
+                                    'label': 'setup.database.server_version'|trans({}, 'messages')
                                 } %}
                             </div>
                             <div class="col-md-6" id="unix-socket-field">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.unixSocket,
-                                    'label': 'setup.database.unix_socket'|trans
+                                    'label': 'setup.database.unix_socket'|trans({}, 'messages')
                                 } %}
                             </div>
                         </div>
@@ -141,12 +141,12 @@
                     {# Info Box #}
                     <div class="alert alert-info">
                         <i class="fas fa-info-circle me-2"></i>
-                        <strong>{{ 'setup.database.info.title'|trans }}</strong>
+                        <strong>{{ 'setup.database.info.title'|trans({}, 'messages') }}</strong>
                         <ul class="mb-0 mt-2">
-                            <li>{{ 'setup.database.info.mysql'|trans }}</li>
-                            <li>{{ 'setup.database.info.postgresql'|trans }}</li>
-                            <li>{{ 'setup.database.info.sqlite'|trans }}</li>
-                            <li>{{ 'setup.database.info.special_chars'|trans }}</li>
+                            <li>{{ 'setup.database.info.mysql'|trans({}, 'messages') }}</li>
+                            <li>{{ 'setup.database.info.postgresql'|trans({}, 'messages') }}</li>
+                            <li>{{ 'setup.database.info.sqlite'|trans({}, 'messages') }}</li>
+                            <li>{{ 'setup.database.info.special_chars'|trans({}, 'messages') }}</li>
                         </ul>
                     </div>
 
@@ -155,16 +155,16 @@
                         {% if test_result.success %}
                             <div class="alert alert-success">
                                 <i class="fas fa-check-circle me-2"></i>
-                                <strong>{{ 'setup.database.test.success'|trans }}</strong>
+                                <strong>{{ 'setup.database.test.success'|trans({}, 'messages') }}</strong>
                                 <p class="mb-0">{{ test_result.message }}</p>
                                 {% if test_result.create_needed is defined and test_result.create_needed %}
-                                    <p class="mb-0 mt-2"><small>{{ 'setup.database.test.create_needed'|trans }}</small></p>
+                                    <p class="mb-0 mt-2"><small>{{ 'setup.database.test.create_needed'|trans({}, 'messages') }}</small></p>
                                 {% endif %}
                             </div>
                         {% else %}
                             <div class="alert alert-danger">
                                 <i class="fas fa-times-circle me-2"></i>
-                                <strong>{{ 'setup.database.test.failed'|trans }}</strong>
+                                <strong>{{ 'setup.database.test.failed'|trans({}, 'messages') }}</strong>
                                 <p class="mb-0">{{ test_result.message }}</p>
                             </div>
                         {% endif %}
@@ -174,16 +174,16 @@
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ path('setup_step0_welcome') }}" class="btn btn-outline-secondary">
                             <i class="fas fa-arrow-left me-2"></i>
-                            {{ 'setup.navigation.back'|trans }}
+                            {{ 'setup.navigation.back'|trans({}, 'messages') }}
                         </a>
 
                         <div>
                             <button type="submit" name="test" value="1" class="btn btn-outline-primary me-2">
                                 <i class="fas fa-vial me-2"></i>
-                                {{ 'setup.database.test_button'|trans }}
+                                {{ 'setup.database.test_button'|trans({}, 'messages') }}
                             </button>
                             <button type="submit" name="save" value="1" class="btn btn-primary">
-                                {{ 'setup.navigation.next'|trans }}
+                                {{ 'setup.navigation.next'|trans({}, 'messages') }}
                                 <i class="fas fa-arrow-right ms-2"></i>
                             </button>
                         </div>

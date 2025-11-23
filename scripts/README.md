@@ -188,6 +188,52 @@ python3 check_yaml_duplicates.py
 
 ---
 
+### quality/check_translation_issues.py
+
+**Zweck:** Umfassender Translation Quality Checker für Twig-Templates
+
+**Verwendung:**
+```bash
+cd scripts/quality
+python3 check_translation_issues.py
+
+# Report in Datei speichern
+python3 check_translation_issues.py > translation_report.txt
+```
+
+**Findet:**
+- ✅ **Hardcoded Text** - Text der übersetzt werden sollte (156 Issues)
+- ✅ **Untranslated Attributes** - title, aria-label, placeholder ohne Übersetzung (41 Issues)
+- ✅ **Missing Trans Params** - `|trans` ohne `({}, 'domain')` (4.340 Issues)
+- ✅ **Missing Domain** - Übersetzungen ohne explizite Domain (78 Issues)
+- ✅ **Invalid Domain** - Verwendung nicht existierender Domänen (4 Issues)
+
+**Output-Beispiel:**
+```
+📄 admin/dashboard.html.twig
+   Line 42: Hardcoded text: 'Dashboard'
+   💡 Suggestion: Use translation: {{ 'key'|trans({}, 'domain') }}
+
+SUMMARY BY TYPE
+  HARDCODED_TEXT..........................  156 issue(s)
+  MISSING_TRANS_PARAMS.................... 4340 issue(s)
+  NO_DOMAIN...............................   78 issue(s)
+  UNTRANSLATED_ATTRIBUTE..................   41 issue(s)
+  INVALID_DOMAIN..........................    4 issue(s)
+  TOTAL................................... 4619 issue(s)
+```
+
+**Features:**
+- Erkennt Hardcoded English text automatisch
+- Validiert gegen 49 bekannte Translation Domains
+- Prüft Accessibility-Attribute (aria-label, etc.)
+- Gibt konkrete Verbesserungsvorschläge
+- Gruppiert Issues nach Typ und Datei
+
+**Best Practices Guide:** Siehe Output für Beispiele und `CLAUDE.md` für Domain-Liste
+
+---
+
 ## 🛠️ Tools
 
 ### tools/license-report.sh

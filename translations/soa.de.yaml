@@ -42,10 +42,10 @@ soa:
     data_reuse_related_incidents: "Zugeordnete Incidents (%count%)"
     metadata: Metadaten
   category:
-    Organizational: Organisational
-    People: Personenbezogen
-    Physical: Physisch
-    Technological: Technologisch
+    Organizational: Organisatorische
+    People: Menschen
+    Physical: Physische
+    Technological: Technologische
   table:
     control_id: Control ID
     name: Name

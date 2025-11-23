@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'management_review' %}
 
-{% block title %}{{ 'management_review.edit'|trans }} - {{ review.title }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'management_review.edit'|trans({}, 'messages') }} - {{ review.title }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -9,7 +9,7 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="{{ path('app_management_review_index') }}" data-turbo-action="advance">
-                    <i class="bi bi-clipboard2-check" aria-hidden="true"></i> {{ 'management_review.title'|trans }}
+                    <i class="bi bi-clipboard2-check" aria-hidden="true"></i> {{ 'management_review.title'|trans({}, 'messages') }}
                 </a>
             </li>
             <li class="breadcrumb-item">
@@ -26,16 +26,16 @@
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
                     <h4 class="mb-0">
-                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'management_review.edit'|trans }}: {{ review.title }}
+                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'management_review.edit'|trans({}, 'messages') }}: {{ review.title }}
                     </h4>
                 </div>
                 <div class="card-body">
                     <div class="alert alert-info mb-4" role="alert">
                         <h4 class="alert-heading">
-                            <i class="bi bi-info-circle-fill" aria-hidden="true"></i> {{ 'management_review.iso_requirement'|trans }}
+                            <i class="bi bi-info-circle-fill" aria-hidden="true"></i> {{ 'management_review.iso_requirement'|trans({}, 'messages') }}
                         </h4>
                         <p class="mb-0 small">
-                            {{ 'management_review.iso_clause_93_info'|trans }}
+                            {{ 'management_review.iso_clause_93_info'|trans({}, 'messages') }}
                         </p>
                     </div>
 
@@ -45,33 +45,33 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-info-square" aria-hidden="true"></i>
-                            {{ 'management_review.section.basic_info'|trans }}
+                            {{ 'management_review.section.basic_info'|trans({}, 'messages') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-8">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.title,
-                                    'label': form.title.vars.label|default('management_review.field.title'|trans),
+                                    'label': form.title.vars.label|default('management_review.field.title'|trans({}, 'messages')),
                                     'required': true
                                 } %}
                             </div>
                             <div class="col-md-4">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.reviewDate,
-                                    'label': form.reviewDate.vars.label|default('management_review.field.review_date'|trans)
+                                    'label': form.reviewDate.vars.label|default('management_review.field.review_date'|trans({}, 'messages'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.participants,
-                                    'label': form.participants.vars.label|default('management_review.field.participants'|trans)
+                                    'label': form.participants.vars.label|default('management_review.field.participants'|trans({}, 'messages'))
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.status,
-                                    'label': form.status.vars.label|default('management_review.field.status'|trans)
+                                    'label': form.status.vars.label|default('management_review.field.status'|trans({}, 'messages'))
                                 } %}
                             </div>
                         </div>
@@ -81,32 +81,32 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-inbox" aria-hidden="true"></i>
-                            {{ 'management_review.section.inputs'|trans }}
+                            {{ 'management_review.section.inputs'|trans({}, 'messages') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.changesRelevantToISMS,
-                                    'label': form.changesRelevantToISMS.vars.label|default('management_review.field.changes_relevant_to_isms'|trans)
+                                    'label': form.changesRelevantToISMS.vars.label|default('management_review.field.changes_relevant_to_isms'|trans({}, 'messages'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.feedbackFromInterestedParties,
-                                    'label': form.feedbackFromInterestedParties.vars.label|default('management_review.field.feedback_from_interested_parties'|trans)
+                                    'label': form.feedbackFromInterestedParties.vars.label|default('management_review.field.feedback_from_interested_parties'|trans({}, 'messages'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.auditResults,
-                                    'label': form.auditResults.vars.label|default('management_review.field.audit_results'|trans)
+                                    'label': form.auditResults.vars.label|default('management_review.field.audit_results'|trans({}, 'messages'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.performanceEvaluation,
-                                    'label': form.performanceEvaluation.vars.label|default('management_review.field.performance_evaluation'|trans)
+                                    'label': form.performanceEvaluation.vars.label|default('management_review.field.performance_evaluation'|trans({}, 'messages'))
                                 } %}
                             </div>
                         </div>
@@ -116,26 +116,26 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
-                            {{ 'management_review.section.followup'|trans }}
+                            {{ 'management_review.section.followup'|trans({}, 'messages') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.previousReviewActions,
-                                    'label': form.previousReviewActions.vars.label|default('management_review.field.previous_review_actions'|trans)
+                                    'label': form.previousReviewActions.vars.label|default('management_review.field.previous_review_actions'|trans({}, 'messages'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.nonConformitiesStatus,
-                                    'label': form.nonConformitiesStatus.vars.label|default('management_review.field.non_conformities_status'|trans)
+                                    'label': form.nonConformitiesStatus.vars.label|default('management_review.field.non_conformities_status'|trans({}, 'messages'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.correctiveActionsStatus,
-                                    'label': form.correctiveActionsStatus.vars.label|default('management_review.field.corrective_actions_status'|trans)
+                                    'label': form.correctiveActionsStatus.vars.label|default('management_review.field.corrective_actions_status'|trans({}, 'messages'))
                                 } %}
                             </div>
                         </div>
@@ -145,32 +145,32 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-send" aria-hidden="true"></i>
-                            {{ 'management_review.section.outputs'|trans }}
+                            {{ 'management_review.section.outputs'|trans({}, 'messages') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.opportunitiesForImprovement,
-                                    'label': form.opportunitiesForImprovement.vars.label|default('management_review.field.opportunities_for_improvement'|trans)
+                                    'label': form.opportunitiesForImprovement.vars.label|default('management_review.field.opportunities_for_improvement'|trans({}, 'messages'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.resourceNeeds,
-                                    'label': form.resourceNeeds.vars.label|default('management_review.field.resource_needs'|trans)
+                                    'label': form.resourceNeeds.vars.label|default('management_review.field.resource_needs'|trans({}, 'messages'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.decisions,
-                                    'label': form.decisions.vars.label|default('management_review.field.decisions'|trans)
+                                    'label': form.decisions.vars.label|default('management_review.field.decisions'|trans({}, 'messages'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.actionItems,
-                                    'label': form.actionItems.vars.label|default('management_review.field.action_items'|trans)
+                                    'label': form.actionItems.vars.label|default('management_review.field.action_items'|trans({}, 'messages'))
                                 } %}
                             </div>
                         </div>

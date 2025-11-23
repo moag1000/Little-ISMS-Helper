@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block breadcrumb_items %}
-    <li class="breadcrumb-item"><a href="{{ path('session_index') }}">{{ 'admin.nav.sessions'|trans }}</a></li>
+    <li class="breadcrumb-item"><a href="{{ path('session_index') }}">{{ 'admin.nav.sessions'|trans({}, 'admin') }}</a></li>
     <li class="breadcrumb-item active" aria-current="page">{{ user_name }}</li>
 {% endblock %}
 

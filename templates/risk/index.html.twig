@@ -1,20 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'risk_management.title'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+{% block title %}{{ 'risk_management.title'|trans({}, 'risks') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
-<h1>{{ 'risk_management.title'|trans }}</h1>
+<h1>{{ 'risk_management.title'|trans({}, 'risks') }}</h1>
 
 <p class="text-muted mb-4">
-    {{ 'risk_management.description'|trans }}
+    {{ 'risk_management.description'|trans({}, 'risks') }}
 </p>
 
 <div class="warning-box">
-    <strong>{{ 'risk_management.high_risks'|trans }}:</strong> {{ highRisks|length }} {{ 'risk_management.risk_value_threshold'|trans }}
+    <strong>{{ 'risk_management.high_risks'|trans({}, 'risks') }}:</strong> {{ highRisks|length }} {{ 'risk_management.risk_value_threshold'|trans({}, 'risks') }}
 </div>
 
 <div class="info-box" style="margin-top: 1rem;">
-    <h2>{{ 'common.overview'|trans }}</h2>
-    <p><strong>{{ 'risk_management.total_identified'|trans }}:</strong> {{ risks|length }}</p>
+    <h2>{{ 'common.overview'|trans({}, 'messages') }}</h2>
+    <p><strong>{{ 'risk_management.total_identified'|trans({}, 'risks') }}:</strong> {{ risks|length }}</p>
 </div>
 {% endblock %}

@@ -1,0 +1,44 @@
+mfa:
+  title: Two-Factor Authentication
+  tokens: MFA Tokens
+  enabled: MFA Enabled
+  disabled: MFA Disabled
+  token_type: Token Type
+  device_name: Device Name
+  enrolled_at: Enrolled At
+  last_used: Last Used
+  usage_count: Usage Count
+  is_active: Active
+  is_primary: Primary
+  action:
+    reset: Reset Token
+  error:
+    token_not_found: MFA token not found
+  success:
+    token_reset: MFA token successfully reset
+  statistics:
+    active_tokens: Active Tokens
+    by_type: By Type
+  challenge:
+    title: 'Two-Factor Authentication'
+    description: 'Please enter the verification code from your authenticator.'
+    device: 'Authentication Device'
+    device_help: 'Select the device you want to use.'
+    code: 'Verification Code'
+    code_help: 'Enter the 6-digit code from your authenticator app or an 8-digit backup code.'
+    verify: 'Verify Code'
+    success: 'Two-factor authentication successful!'
+    cancel: 'Cancel and logout'
+    backup_code_hint: 'No access to your device?'
+    using_backup_code: 'Use backup code'
+    backup_code_info: 'Enter one of your 8-digit backup codes that you received during setup. Each backup code can only be used once.'
+    help_title: 'Need help?'
+    help_text: 'Contact your administrator if you don''t have access to your authentication devices.'
+    nis2_compliance: 'NIS2-compliant Multi-Factor Authentication (Art. 21.2.b)'
+    error:
+      code_required: 'Please enter a verification code.'
+      invalid_code: 'Invalid code. Please try again.'
+      invalid_token: 'Invalid or inactive authentication device.'
+  token:
+    primary: 'Primary'
+

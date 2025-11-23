@@ -1,22 +1,22 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'workflows' %}
 
-{% block title %}{{ 'workflow.title.list'|trans }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'workflow.title.list'|trans({}, 'messages') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
 
 <div class="page-header">
     <div>
-        <h1>{{ 'workflow.title.list'|trans }}</h1>
-        <p class="text-muted">{{ 'workflow.description.overview'|trans }}</p>
+        <h1>{{ 'workflow.title.list'|trans({}, 'messages') }}</h1>
+        <p class="text-muted">{{ 'workflow.description.overview'|trans({}, 'messages') }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_workflow_definitions') }}" class="btn btn-secondary">
-            📋 {{ 'workflow.action.definitions'|trans }}
+            📋 {{ 'workflow.action.definitions'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_workflow_new') }}" class="btn btn-primary">
-            ➕ {{ 'workflow.action.create'|trans }}
+            ➕ {{ 'workflow.action.create'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
@@ -24,16 +24,16 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.total'|trans, instances|length, null, null, null, null) }}
+        {{ cards.kpi_card('workflow.stats.total'|trans({}, 'messages'), instances|length, null, null, null, null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.active'|trans, instances|filter(i => i.status == 'active')|length, null, null, 'info', null) }}
+        {{ cards.kpi_card('workflow.stats.active'|trans({}, 'messages'), instances|filter(i => i.status == 'active')|length, null, null, 'info', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.pending'|trans, instances|filter(i => i.status == 'pending')|length, null, null, 'warning', null) }}
+        {{ cards.kpi_card('workflow.stats.pending'|trans({}, 'messages'), instances|filter(i => i.status == 'pending')|length, null, null, 'warning', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.overdue'|trans, instances|filter(i => i.overdue)|length, null, null, 'danger', null) }}
+        {{ cards.kpi_card('workflow.stats.overdue'|trans({}, 'messages'), instances|filter(i => i.overdue)|length, null, null, 'danger', null) }}
     </div>
 </div>
 
@@ -41,9 +41,9 @@
 <div class="module-grid mb-4">
     <div class="card">
         <div class="fs-2-mb-sm">⏳</div>
-        <h2>{{ 'workflow.section.pending'|trans }}</h2>
+        <h2>{{ 'workflow.section.pending'|trans({}, 'messages') }}</h2>
         <p class="text-muted-mt-xs">
-            {{ 'workflow.description.pending'|trans }}
+            {{ 'workflow.description.pending'|trans({}, 'messages') }}
         </p>
         <div class="mt-2">
             <strong class="fs-15">{{ instances|filter(i => i.status == 'pending')|length }}</strong>
@@ -55,9 +55,9 @@
 
     <div class="card">
         <div class="fs-2-mb-sm">🔄</div>
-        <h3>{{ 'workflow.section.active'|trans }}</h3>
+        <h3>{{ 'workflow.section.active'|trans({}, 'messages') }}</h3>
         <p class="text-muted-mt-xs">
-            {{ 'workflow.description.active'|trans }}
+            {{ 'workflow.description.active'|trans({}, 'messages') }}
         </p>
         <div class="mt-2">
             <strong class="fs-15">{{ instances|filter(i => i.status == 'active')|length }}</strong>
@@ -69,9 +69,9 @@
 
     <div class="card">
         <div class="fs-2-mb-sm">⚠️</div>
-        <h3>{{ 'workflow.section.overdue'|trans }}</h3>
+        <h3>{{ 'workflow.section.overdue'|trans({}, 'messages') }}</h3>
         <p class="text-muted-mt-xs">
-            {{ 'workflow.description.overdue'|trans }}
+            {{ 'workflow.description.overdue'|trans({}, 'messages') }}
         </p>
         <div class="mt-2">
             <strong class="fs-15-danger">{{ instances|filter(i => i.overdue)|length }}</strong>
@@ -83,7 +83,7 @@
 </div>
 
 {# Workflow Instances Table #}
-<h2>{{ 'workflow.section.recent_instances'|trans }}</h2>
+<h2>{{ 'workflow.section.recent_instances'|trans({}, 'messages') }}</h2>
 
 {% embed '_components/_table.html.twig' with {
     'wrapperClass': 'table-container',
@@ -91,12 +91,12 @@
 } %}
     {% block table_head %}
         <tr>
-            <th scope="col">{{ 'workflow.field.name'|trans }}</th>
-            <th scope="col">{{ 'workflow.field.definition'|trans }}</th>
-            <th scope="col">{{ 'workflow.field.current_step'|trans }}</th>
-            <th scope="col">{{ 'workflow.field.status'|trans }}</th>
-            <th scope="col">{{ 'workflow.field.assignee'|trans }}</th>
-            <th scope="col">{{ 'workflow.field.due_date'|trans }}</th>
+            <th scope="col">{{ 'workflow.field.name'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'workflow.field.definition'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'workflow.field.current_step'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'workflow.field.status'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'workflow.field.assignee'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'workflow.field.due_date'|trans({}, 'messages') }}</th>
             <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
@@ -125,7 +125,7 @@
                     {{ instance.dueDate|date('d.m.Y') }}
                     {% if instance.overdue %}
                         <span class="badge bg-danger ml-xs">
-                            {{ 'workflow.badge.overdue'|trans }}
+                            {{ 'workflow.badge.overdue'|trans({}, 'messages') }}
                         </span>
                     {% endif %}
                 {% else %}
@@ -141,7 +141,7 @@
         {% else %}
         <tr>
             <td colspan="7" class="text-center-p-xl-muted">
-                {{ 'workflow.message.no_instances'|trans }}
+                {{ 'workflow.message.no_instances'|trans({}, 'messages') }}
             </td>
         </tr>
         {% endfor %}

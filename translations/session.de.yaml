@@ -1,0 +1,22 @@
+session:
+  title: Sitzungen
+  list: Aktive Sitzungen
+  show: Sitzungsdetails
+  user_name: Benutzername
+  ip_address: IP-Adresse
+  user_agent: User Agent
+  last_activity: Letzte Aktivität
+  session_start: Sitzungsbeginn
+  terminate: Sitzung beenden
+  statistics:
+    total: Gesamt aktive Sitzungen
+    today: Heute
+    hours_filter: Zeitfilter (Stunden)
+  activity_timeline: Aktivitätsverlauf
+  unique_ips: Eindeutige IP-Adressen
+  unique_devices: Eindeutige Geräte
+  error:
+    invalid_token: Ungültiges CSRF-Token
+  info:
+    termination_not_implemented: Sitzungsbeendigung erfordert zusätzliche Konfiguration (Datenbank-Session-Speicherung)
+

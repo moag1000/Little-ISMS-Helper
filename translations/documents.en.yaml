@@ -41,10 +41,8 @@ document:
     upload_first: Upload your first document to get started
   confirm:
     delete: "Do you really want to delete this document? This action cannot be undone."
-  # Page titles
   new: New Document
   edit: Edit Document
-  # Form fields
   field:
     name: Name
     description: Description

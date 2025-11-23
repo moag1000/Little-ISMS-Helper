@@ -24,25 +24,25 @@
         {% block card_body %}
             <form method="get" action="{{ path('app_business_process_index') }}" class="d-flex align-items-center gap-2">
                 <label for="view-filter" class="mb-0 fw-bold">
-                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans }}:
+                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
                 </label>
                 <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
                     <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
-                        {{ 'corporate.view.own_only'|trans }}
+                        {{ 'corporate.view.own_only'|trans({}, 'tenant') }}
                     </option>
                     {% if inheritanceInfo.hasParent %}
                     <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
-                        {{ 'corporate.view.including_inherited'|trans }}
+                        {{ 'corporate.view.including_inherited'|trans({}, 'tenant') }}
                     </option>
                     {% endif %}
                     {% if inheritanceInfo.hasSubsidiaries %}
                     <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
-                        {{ 'corporate.view.including_subsidiaries'|trans }}
+                        {{ 'corporate.view.including_subsidiaries'|trans({}, 'tenant') }}
                     </option>
                     {% endif %}
                 </select>
                 <noscript>
-                    <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans }}</button>
+                    <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
                 </noscript>
             </form>
         {% endblock %}
@@ -54,7 +54,7 @@
         <div class="row mb-4">
             <div class="col-md-3">
                 {% if currentTenant %}
-                    {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}) %}
+                    {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant') %}
                     {{ cards.kpi_card('Gesamt', detailedStats.total, subtitle, null, null, null) }}
                 {% else %}
                     {{ cards.kpi_card('Gesamt', detailedStats.total, 'Geschäftsprozesse', null, null, null) }}
@@ -129,15 +129,15 @@
                                     <td>
                                         <div class="btn-group btn-group-sm" role="group">
                                             <a href="{{ path('app_business_process_show', {'id': process.id}) }}"
-                                               class="btn btn-outline-primary" title="Ansehen" data-turbo-frame="_top" aria-label="{{ 'common.view'|trans }}">
+                                               class="btn btn-outline-primary" title="Ansehen" data-turbo-frame="_top" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                                 <i class="bi bi-eye" aria-hidden="true"></i>
                                             </a>
                                             <a href="{{ path('app_business_process_edit', {'id': process.id}) }}"
-                                               class="btn btn-outline-secondary" title="Bearbeiten" data-turbo-frame="_top" aria-label="{{ 'common.edit'|trans }}">
+                                               class="btn btn-outline-secondary" title="Bearbeiten" data-turbo-frame="_top" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                                 <i class="bi bi-pencil" aria-hidden="true"></i>
                                             </a>
                                             <a href="{{ path('app_business_process_bia', {'id': process.id}) }}"
-                                               class="btn btn-outline-info" title="BIA" data-turbo-frame="_top" aria-label="{{ 'common.view_details'|trans }}">
+                                               class="btn btn-outline-info" title="BIA" data-turbo-frame="_top" aria-label="{{ 'common.view_details'|trans({}, 'messages') }}">
                                                 <i class="bi bi-graph-up" aria-hidden="true"></i>
                                             </a>
                                         </div>

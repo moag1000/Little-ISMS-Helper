@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block breadcrumb_items %}
-    <li class="breadcrumb-item active" aria-current="page">{{ 'admin.nav.sessions'|trans }}</li>
+    <li class="breadcrumb-item active" aria-current="page">{{ 'admin.nav.sessions'|trans({}, 'admin') }}</li>
 {% endblock %}
 
 {% block admin_content %}
@@ -157,7 +157,7 @@
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ path('session_show', {userName: session.user.email}) }}"
                                        class="btn btn-outline-primary"
-                                       title="Details anzeigen" aria-label="{{ 'common.view'|trans }}">
+                                       title="Details anzeigen" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                         <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
                                     <form method="post"
@@ -168,7 +168,7 @@
                                         <button type="submit"
                                                 class="btn btn-outline-danger"
                                                 title="Session beenden"
-                                                onclick="return confirm('Möchten Sie diese Sitzung wirklich beenden?')" aria-label="{{ 'common.close'|trans }}">
+                                                onclick="return confirm('Möchten Sie diese Sitzung wirklich beenden?')" aria-label="{{ 'common.close'|trans({}, 'messages') }}">
                                             <i class="bi bi-x-circle" aria-hidden="true"></i>
                                         </button>
                                     </form>

@@ -12,9 +12,9 @@
     <li class="breadcrumb-item"><a href="{{ path('tenant_management_index') }}">{{ 'tenant.title'|trans({}, 'tenant') }}</a></li>
     {% if isEdit %}
         <li class="breadcrumb-item"><a href="{{ path('tenant_management_show', {id: tenant.id}) }}">{{ tenant.code }}</a></li>
-        <li class="breadcrumb-item active">{{ 'common.edit'|trans }}</li>
+        <li class="breadcrumb-item active">{{ 'common.edit'|trans({}, 'messages') }}</li>
     {% else %}
-        <li class="breadcrumb-item active">{{ 'common.create'|trans }}</li>
+        <li class="breadcrumb-item active">{{ 'common.create'|trans({}, 'messages') }}</li>
     {% endif %}
 {% endblock %}
 
@@ -66,7 +66,7 @@
 
                         {# Corporate Structure #}
                         <fieldset class="mb-4">
-                            <legend class="h6 border-bottom pb-2 mb-3">{{ 'corporate.title'|trans }}</legend>
+                            <legend class="h6 border-bottom pb-2 mb-3">{{ 'corporate.title'|trans({}, 'tenant') }}</legend>
 
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.parent,
@@ -140,12 +140,12 @@
                         <div class="d-flex justify-content-between">
                             <a href="{% if isEdit %}{{ path('tenant_management_show', {id: tenant.id}) }}{% else %}{{ path('tenant_management_index') }}{% endif %}"
                                class="btn btn-secondary">
-                                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans }}
+                                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                             </a>
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-save" aria-hidden="true"></i>
                                 {% if isEdit %}
-                                    {{ 'common.save'|trans }}
+                                    {{ 'common.save'|trans({}, 'messages') }}
                                 {% else %}
                                     {{ 'tenant.action.create'|trans({}, 'tenant') }}
                                 {% endif %}
@@ -190,12 +190,12 @@
                         } %}
                             {% block table_body %}
                                 <tr>
-                                    <th scope="row" class="text-muted small">{{ 'common.created'|trans }}</th>
+                                    <th scope="row" class="text-muted small">{{ 'common.created'|trans({}, 'messages') }}</th>
                                     <td class="small">{{ tenant.createdAt|date('d.m.Y H:i') }}</td>
                                 </tr>
                                 {% if tenant.updatedAt %}
                                     <tr>
-                                        <th scope="row" class="text-muted small">{{ 'common.updated'|trans }}</th>
+                                        <th scope="row" class="text-muted small">{{ 'common.updated'|trans({}, 'messages') }}</th>
                                         <td class="small">{{ tenant.updatedAt|date('d.m.Y H:i') }}</td>
                                     </tr>
                                 {% endif %}

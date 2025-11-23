@@ -34,8 +34,6 @@ supplier:
   empty:
     message: Keine Lieferanten vorhanden.
     add_first: Ersten Lieferanten anlegen
-
-  # Zusätzliche Schlüssel für die Detailansicht (show)
   section:
     details: Details
     description: Beschreibung
@@ -84,3 +82,12 @@ supplier:
       critical: Kritisches Risiko – sofortige Maßnahmen erforderlich
       high: Hohes Risiko – Überprüfung erforderlich
       acceptable: Akzeptables Risikoniveau
+corporate:
+  stats:
+      standalone: 'Eigenständig'
+      total: 'Alle Tenants'
+      own: 'Eigene'
+      inherited: 'Vererbt'
+      subsidiaries: 'Töchter'
+      breakdown: 'Eigene: %own% | Geerbt: %inherited% | Töchter: %subsidiaries%'
+      groups: 'Konzerngruppen'

@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'audits' %}
 
-{% block title %}{{ 'audit.edit'|trans }} - {{ audit.title }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'audit.edit'|trans({}, 'audits') }} - {{ audit.title }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -11,7 +11,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="{{ path('app_audit_index') }}" data-turbo-action="advance">
-                            <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'audit_management.title'|trans }}
+                            <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'audit_management.title'|trans({}, 'audits') }}
                         </a>
                     </li>
                     <li class="breadcrumb-item">
@@ -26,7 +26,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="h3 mb-0">
                     <i class="bi bi-pencil" aria-hidden="true"></i>
-                    {{ 'audit.edit'|trans }}: {{ audit.title }}
+                    {{ 'audit.edit'|trans({}, 'audits') }}: {{ audit.title }}
                 </h1>
                 <div>
                     <a href="{{ path('app_audit_show', {id: audit.id}) }}" class="btn btn-outline-secondary" data-turbo-action="advance">
@@ -37,16 +37,16 @@
 
             <div class="alert alert-info mb-4" role="alert">
                 <h4 class="alert-heading h6">
-                    <i class="bi bi-info-circle-fill" aria-hidden="true"></i> {{ 'audit.iso_27001_requirement'|trans }}
+                    <i class="bi bi-info-circle-fill" aria-hidden="true"></i> {{ 'audit.iso_27001_requirement'|trans({}, 'audits') }}
                 </h4>
                 <p class="mb-0 small">
-                    {{ 'audit.iso_27001_clause_info'|trans }}
+                    {{ 'audit.iso_27001_clause_info'|trans({}, 'audits') }}
                 </p>
             </div>
 
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">{{ 'audit.edit'|trans }}</h3>
+                    <h3 class="mb-0">{{ 'audit.edit'|trans({}, 'audits') }}</h3>
                 </div>
                 <div class="card-body">
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'audit-form'}}) }}
@@ -55,33 +55,33 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-info-square" aria-hidden="true"></i>
-                            {{ 'audit.section.basic_info'|trans }}
+                            {{ 'audit.section.basic_info'|trans({}, 'audits') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.title,
-                                    'label': form.title.vars.label|default('audit.field.title'|trans),
+                                    'label': form.title.vars.label|default('audit.field.title'|trans({}, 'audits')),
                                     'required': true
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.scope,
-                                    'label': form.scope.vars.label|default('audit.field.scope'|trans)
+                                    'label': form.scope.vars.label|default('audit.field.scope'|trans({}, 'audits'))
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.scopeType,
-                                    'label': form.scopeType.vars.label|default('audit.field.scope_type'|trans)
+                                    'label': form.scopeType.vars.label|default('audit.field.scope_type'|trans({}, 'audits'))
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.auditType,
-                                    'label': form.auditType.vars.label|default('audit.field.audit_type'|trans)
+                                    'label': form.auditType.vars.label|default('audit.field.audit_type'|trans({}, 'audits'))
                                 } %}
                             </div>
                             <div class="col-md-12" id="subsidiaries-container" style="display: none;">
@@ -92,7 +92,7 @@
                                 </div>
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.auditedSubsidiaries,
-                                    'label': form.auditedSubsidiaries.vars.label|default('audit.field.audited_subsidiaries'|trans)
+                                    'label': form.auditedSubsidiaries.vars.label|default('audit.field.audited_subsidiaries'|trans({}, 'audits'))
                                 } %}
                             </div>
                         </div>
@@ -102,20 +102,20 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-shield-check" aria-hidden="true"></i>
-                            {{ 'audit.section.frameworks'|trans }}
+                            {{ 'audit.section.frameworks'|trans({}, 'audits') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.framework,
-                                    'label': form.framework.vars.label|default('audit.field.framework'|trans)
+                                    'label': form.framework.vars.label|default('audit.field.framework'|trans({}, 'audits'))
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.standard,
-                                    'label': form.standard.vars.label|default('audit.field.standard'|trans)
+                                    'label': form.standard.vars.label|default('audit.field.standard'|trans({}, 'audits'))
                                 } %}
                             </div>
                         </div>
@@ -125,20 +125,20 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-calendar-event" aria-hidden="true"></i>
-                            {{ 'audit.section.schedule'|trans }}
+                            {{ 'audit.section.schedule'|trans({}, 'audits') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.plannedDate,
-                                    'label': form.plannedDate.vars.label|default('audit.field.planned_date'|trans)
+                                    'label': form.plannedDate.vars.label|default('audit.field.planned_date'|trans({}, 'audits'))
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.actualDate,
-                                    'label': form.actualDate.vars.label|default('audit.field.actual_date'|trans)
+                                    'label': form.actualDate.vars.label|default('audit.field.actual_date'|trans({}, 'audits'))
                                 } %}
                             </div>
                         </div>
@@ -148,32 +148,32 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-people" aria-hidden="true"></i>
-                            {{ 'audit.section.team'|trans }}
+                            {{ 'audit.section.team'|trans({}, 'audits') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.leadAuditor,
-                                    'label': form.leadAuditor.vars.label|default('audit.field.lead_auditor'|trans)
+                                    'label': form.leadAuditor.vars.label|default('audit.field.lead_auditor'|trans({}, 'audits'))
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.auditTeam,
-                                    'label': form.auditTeam.vars.label|default('audit.field.audit_team'|trans)
+                                    'label': form.auditTeam.vars.label|default('audit.field.audit_team'|trans({}, 'audits'))
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.auditee,
-                                    'label': form.auditee.vars.label|default('audit.field.auditee'|trans)
+                                    'label': form.auditee.vars.label|default('audit.field.auditee'|trans({}, 'audits'))
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.department,
-                                    'label': form.department.vars.label|default('audit.field.department'|trans)
+                                    'label': form.department.vars.label|default('audit.field.department'|trans({}, 'audits'))
                                 } %}
                             </div>
                         </div>
@@ -183,20 +183,20 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-flag" aria-hidden="true"></i>
-                            {{ 'audit.section.status'|trans }}
+                            {{ 'audit.section.status'|trans({}, 'audits') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.status,
-                                    'label': form.status.vars.label|default('audit.field.status'|trans)
+                                    'label': form.status.vars.label|default('audit.field.status'|trans({}, 'audits'))
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.overallResult,
-                                    'label': form.overallResult.vars.label|default('audit.field.overall_result'|trans)
+                                    'label': form.overallResult.vars.label|default('audit.field.overall_result'|trans({}, 'audits'))
                                 } %}
                             </div>
                         </div>
@@ -206,26 +206,26 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-bullseye" aria-hidden="true"></i>
-                            {{ 'audit.section.objectives'|trans }}
+                            {{ 'audit.section.objectives'|trans({}, 'audits') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.objectives,
-                                    'label': form.objectives.vars.label|default('audit.field.objectives'|trans)
+                                    'label': form.objectives.vars.label|default('audit.field.objectives'|trans({}, 'audits'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.auditCriteria,
-                                    'label': form.auditCriteria.vars.label|default('audit.field.audit_criteria'|trans)
+                                    'label': form.auditCriteria.vars.label|default('audit.field.audit_criteria'|trans({}, 'audits'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.methodology,
-                                    'label': form.methodology.vars.label|default('audit.field.methodology'|trans)
+                                    'label': form.methodology.vars.label|default('audit.field.methodology'|trans({}, 'audits'))
                                 } %}
                             </div>
                         </div>
@@ -235,26 +235,26 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                            {{ 'audit.section.findings'|trans }}
+                            {{ 'audit.section.findings'|trans({}, 'audits') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.findings,
-                                    'label': form.findings.vars.label|default('audit.field.findings'|trans)
+                                    'label': form.findings.vars.label|default('audit.field.findings'|trans({}, 'audits'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.nonconformities,
-                                    'label': form.nonconformities.vars.label|default('audit.field.nonconformities'|trans)
+                                    'label': form.nonconformities.vars.label|default('audit.field.nonconformities'|trans({}, 'audits'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.observations,
-                                    'label': form.observations.vars.label|default('audit.field.observations'|trans)
+                                    'label': form.observations.vars.label|default('audit.field.observations'|trans({}, 'audits'))
                                 } %}
                             </div>
                         </div>
@@ -264,26 +264,26 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-lightbulb" aria-hidden="true"></i>
-                            {{ 'audit.section.recommendations'|trans }}
+                            {{ 'audit.section.recommendations'|trans({}, 'audits') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.recommendations,
-                                    'label': form.recommendations.vars.label|default('audit.field.recommendations'|trans)
+                                    'label': form.recommendations.vars.label|default('audit.field.recommendations'|trans({}, 'audits'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.correctiveActions,
-                                    'label': form.correctiveActions.vars.label|default('audit.field.corrective_actions'|trans)
+                                    'label': form.correctiveActions.vars.label|default('audit.field.corrective_actions'|trans({}, 'audits'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.followUpActions,
-                                    'label': form.followUpActions.vars.label|default('audit.field.follow_up_actions'|trans)
+                                    'label': form.followUpActions.vars.label|default('audit.field.follow_up_actions'|trans({}, 'audits'))
                                 } %}
                             </div>
                         </div>
@@ -293,26 +293,26 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
-                            {{ 'audit.section.documentation'|trans }}
+                            {{ 'audit.section.documentation'|trans({}, 'audits') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.evidenceCollected,
-                                    'label': form.evidenceCollected.vars.label|default('audit.field.evidence_collected'|trans)
+                                    'label': form.evidenceCollected.vars.label|default('audit.field.evidence_collected'|trans({}, 'audits'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.summary,
-                                    'label': form.summary.vars.label|default('audit.field.summary'|trans)
+                                    'label': form.summary.vars.label|default('audit.field.summary'|trans({}, 'audits'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.notes,
-                                    'label': form.notes.vars.label|default('audit.field.notes'|trans)
+                                    'label': form.notes.vars.label|default('audit.field.notes'|trans({}, 'audits'))
                                 } %}
                             </div>
                         </div>

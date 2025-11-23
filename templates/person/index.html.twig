@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'people' %}
 
-{% block title %}{{ 'person.title.list'|trans }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'person.title.list'|trans({}, 'messages') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
 
 <div class="page-header">
     <div>
-        <h1>{{ 'person.title.list'|trans }}</h1>
-        <p class="text-muted">{{ 'person.description.overview'|trans }}</p>
+        <h1>{{ 'person.title.list'|trans({}, 'messages') }}</h1>
+        <p class="text-muted">{{ 'person.description.overview'|trans({}, 'messages') }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_person_new') }}" class="btn btn-primary">
-            ➕ {{ 'person.action.create'|trans }}
+            ➕ {{ 'person.action.create'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
@@ -21,16 +21,16 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('person.stats.total'|trans, persons|length, null, null, null, null) }}
+        {{ cards.kpi_card('person.stats.total'|trans({}, 'messages'), persons|length, null, null, null, null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('person.stats.employees'|trans, persons|filter(p => p.personType == 'employee')|length, null, null, 'success', null) }}
+        {{ cards.kpi_card('person.stats.employees'|trans({}, 'messages'), persons|filter(p => p.personType == 'employee')|length, null, null, 'success', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('person.stats.contractors'|trans, persons|filter(p => p.personType == 'contractor')|length, null, null, 'info', null) }}
+        {{ cards.kpi_card('person.stats.contractors'|trans({}, 'messages'), persons|filter(p => p.personType == 'contractor')|length, null, null, 'info', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('person.stats.with_badge'|trans, persons|filter(p => p.badgeId)|length, null, null, 'warning', null) }}
+        {{ cards.kpi_card('person.stats.with_badge'|trans({}, 'messages'), persons|filter(p => p.badgeId)|length, null, null, 'warning', null) }}
     </div>
 </div>
 
@@ -40,12 +40,12 @@
 } %}
     {% block table_head %}
         <tr>
-            <th scope="col">{{ 'person.field.name'|trans }}</th>
-            <th scope="col">{{ 'person.field.type'|trans }}</th>
-            <th scope="col">{{ 'person.field.badge_id'|trans }}</th>
-            <th scope="col">{{ 'person.field.company'|trans }}</th>
-            <th scope="col">{{ 'person.field.email'|trans }}</th>
-            <th scope="col">{{ 'person.field.department'|trans }}</th>
+            <th scope="col">{{ 'person.field.name'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'person.field.type'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'person.field.badge_id'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'person.field.company'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'person.field.email'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'person.field.department'|trans({}, 'messages') }}</th>
             <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
@@ -88,7 +88,7 @@
             </td>
             <td>{{ person.department ?? '-' }}</td>
             <td class="text-center">
-                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'person.actions.label'|trans }}">
+                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'person.actions.label'|trans({}, 'messages') }}">
                     <a href="{{ path('app_person_show', {id: person.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }} {{ person.fullName }}">
                         <i class="bi bi-eye" aria-hidden="true"></i>
                     </a>
@@ -101,7 +101,7 @@
         {% else %}
         <tr>
             <td colspan="7" class="text-center-p-xl-muted">
-                {{ 'person.message.no_persons'|trans }}
+                {{ 'person.message.no_persons'|trans({}, 'messages') }}
             </td>
         </tr>
         {% endfor %}

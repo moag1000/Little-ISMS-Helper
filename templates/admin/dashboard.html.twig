@@ -1,8 +1,8 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block admin_title %}{{ 'admin.dashboard.title'|trans }}{% endblock %}
+{% block admin_title %}{{ 'admin.dashboard.title'|trans({}, 'admin') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">{{ 'admin.dashboard.subtitle'|trans }}</p>
+    <p class="text-muted">{{ 'admin.dashboard.subtitle'|trans({}, 'admin') }}</p>
 {% endblock %}
 
 {% block admin_content %}
@@ -12,7 +12,7 @@
             <div class="col-12">
                 <h3 class="h5 mb-3">
                     <i class="bi bi-exclamation-triangle-fill text-warning" aria-hidden="true"></i>
-                    {{ 'admin.dashboard.alerts.title'|trans }}
+                    {{ 'admin.dashboard.alerts.title'|trans({}, 'admin') }}
                 </h3>
                 {% for alert in alerts %}
                     <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert">
@@ -23,7 +23,7 @@
                             {{ (alert.count == 1 ? 'admin.dashboard.alerts.item' : 'admin.dashboard.alerts.items')|trans }}
                         {% endif %}
                         {% if alert.action %}
-                            <a href="{{ alert.action }}" class="alert-link ms-2">{{ 'admin.dashboard.alerts.view'|trans }} →</a>
+                            <a href="{{ alert.action }}" class="alert-link ms-2">{{ 'admin.dashboard.alerts.view'|trans({}, 'admin') }} →</a>
                         {% endif %}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
@@ -40,7 +40,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
-                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.users'|trans }}</h6>
+                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.users'|trans({}, 'admin') }}</h6>
                             <h2 class="card-title mb-0">{{ stats.users.total }}</h2>
                         </div>
                         <div class="bg-primary bg-opacity-10 p-3 rounded">
@@ -48,17 +48,17 @@
                         </div>
                     </div>
                     <div class="small text-muted">
-                        <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ stats.users.active }} {{ 'admin.dashboard.stats.active'|trans }}
+                        <i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ stats.users.active }} {{ 'admin.dashboard.stats.active'|trans({}, 'admin') }}
                         {% if stats.users.inactive > 0 %}
                             <span class="ms-2">
-                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ stats.users.inactive }} {{ 'admin.dashboard.stats.inactive'|trans }}
+                                <i class="bi bi-x-circle text-danger" aria-hidden="true"></i> {{ stats.users.inactive }} {{ 'admin.dashboard.stats.inactive'|trans({}, 'admin') }}
                             </span>
                         {% endif %}
                     </div>
                 </div>
                 <div class="card-footer bg-transparent border-top-0">
                     <a href="{{ path('user_management_index') }}" class="btn btn-sm btn-outline-primary w-100">
-                        {{ 'admin.dashboard.stats.manage'|trans }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                        {{ 'admin.dashboard.stats.manage'|trans({}, 'admin') }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
                     </a>
                 </div>
             </div>
@@ -70,7 +70,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
-                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.active_sessions'|trans }}</h6>
+                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.active_sessions'|trans({}, 'admin') }}</h6>
                             <h2 class="card-title mb-0">{{ stats.sessions.active_24h }}</h2>
                         </div>
                         <div class="bg-success bg-opacity-10 p-3 rounded">
@@ -78,7 +78,7 @@
                         </div>
                     </div>
                     <div class="small text-muted">
-                        <i class="bi bi-calendar-week" aria-hidden="true"></i> {{ 'admin.dashboard.stats.last_24h'|trans }}
+                        <i class="bi bi-calendar-week" aria-hidden="true"></i> {{ 'admin.dashboard.stats.last_24h'|trans({}, 'admin') }}
                     </div>
                 </div>
             </div>
@@ -90,7 +90,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
-                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.database'|trans }}</h6>
+                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.database'|trans({}, 'admin') }}</h6>
                             <h2 class="card-title mb-0">{{ stats.database.size_mb }}</h2>
                         </div>
                         <div class="bg-info bg-opacity-10 p-3 rounded">
@@ -110,7 +110,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
-                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.total_records'|trans }}</h6>
+                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.total_records'|trans({}, 'admin') }}</h6>
                             <h2 class="card-title mb-0">
                                 {{ stats.modules.assets.total + stats.modules.risks.total + stats.modules.controls.total + stats.modules.incidents.total }}
                             </h2>
@@ -120,7 +120,7 @@
                         </div>
                     </div>
                     <div class="small text-muted">
-                        <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'admin.dashboard.stats.across_modules'|trans }}
+                        <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'admin.dashboard.stats.across_modules'|trans({}, 'admin') }}
                     </div>
                 </div>
             </div>
@@ -142,20 +142,20 @@
                     } %}
                         {% block table_head %}
                             <tr>
-                                <th scope="col">{{ 'admin.dashboard.modules.module'|trans }}</th>
+                                <th scope="col">{{ 'admin.dashboard.modules.module'|trans({}, 'admin') }}</th>
                                 {% if currentTenant %}
-                                    <th scope="col" class="text-end">{{ 'corporate.view.own_only'|trans }}</th>
-                                    <th scope="col" class="text-end">{{ 'corporate.view.including_inherited'|trans }}</th>
-                                    <th scope="col" class="text-end">{{ 'corporate.view.including_subsidiaries'|trans }}</th>
+                                    <th scope="col" class="text-end">{{ 'corporate.view.own_only'|trans({}, 'tenant') }}</th>
+                                    <th scope="col" class="text-end">{{ 'corporate.view.including_inherited'|trans({}, 'tenant') }}</th>
+                                    <th scope="col" class="text-end">{{ 'corporate.view.including_subsidiaries'|trans({}, 'tenant') }}</th>
                                 {% else %}
-                                    <th scope="col" class="text-end">{{ 'admin.dashboard.modules.records'|trans }}</th>
+                                    <th scope="col" class="text-end">{{ 'admin.dashboard.modules.records'|trans({}, 'admin') }}</th>
                                 {% endif %}
-                                <th scope="col" class="text-end">{{ 'admin.dashboard.modules.action'|trans }}</th>
+                                <th scope="col" class="text-end">{{ 'admin.dashboard.modules.action'|trans({}, 'admin') }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body %}
                             <tr>
-                                <td><i class="bi bi-cpu text-primary" aria-hidden="true"></i> {{ 'admin.dashboard.modules.assets'|trans }}</td>
+                                <td><i class="bi bi-cpu text-primary" aria-hidden="true"></i> {{ 'admin.dashboard.modules.assets'|trans({}, 'admin') }}</td>
                                 {% if currentTenant %}
                                     <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets.own }}</span></td>
                                     <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets.own + stats.modules.assets.inherited }}</span></td>
@@ -164,11 +164,11 @@
                                     <td class="text-end"><span class="badge bg-primary">{{ stats.modules.assets.total }}</span></td>
                                 {% endif %}
                                 <td class="text-end">
-                                    <a href="{{ path('app_asset_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
+                                    <a href="{{ path('app_asset_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
                                 </td>
                             </tr>
                             <tr>
-                                <td><i class="bi bi-exclamation-triangle text-danger" aria-hidden="true"></i> {{ 'admin.dashboard.modules.risks'|trans }}</td>
+                                <td><i class="bi bi-exclamation-triangle text-danger" aria-hidden="true"></i> {{ 'admin.dashboard.modules.risks'|trans({}, 'admin') }}</td>
                                 {% if currentTenant %}
                                     <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks.own }}</span></td>
                                     <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks.own + stats.modules.risks.inherited }}</span></td>
@@ -177,11 +177,11 @@
                                     <td class="text-end"><span class="badge bg-danger">{{ stats.modules.risks.total }}</span></td>
                                 {% endif %}
                                 <td class="text-end">
-                                    <a href="{{ path('app_risk_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
+                                    <a href="{{ path('app_risk_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
                                 </td>
                             </tr>
                             <tr>
-                                <td><i class="bi bi-shield-check text-success" aria-hidden="true"></i> {{ 'admin.dashboard.modules.controls'|trans }}</td>
+                                <td><i class="bi bi-shield-check text-success" aria-hidden="true"></i> {{ 'admin.dashboard.modules.controls'|trans({}, 'admin') }}</td>
                                 {% if currentTenant %}
                                     <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls.own }}</span></td>
                                     <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls.own + stats.modules.controls.inherited }}</span></td>
@@ -190,11 +190,11 @@
                                     <td class="text-end"><span class="badge bg-success">{{ stats.modules.controls.total }}</span></td>
                                 {% endif %}
                                 <td class="text-end">
-                                    <a href="{{ path('app_soa_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
+                                    <a href="{{ path('app_soa_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
                                 </td>
                             </tr>
                             <tr>
-                                <td><i class="bi bi-bug text-warning" aria-hidden="true"></i> {{ 'admin.dashboard.modules.incidents'|trans }}</td>
+                                <td><i class="bi bi-bug text-warning" aria-hidden="true"></i> {{ 'admin.dashboard.modules.incidents'|trans({}, 'admin') }}</td>
                                 {% if currentTenant %}
                                     <td class="text-end"><span class="badge bg-warning">{{ stats.modules.incidents.own }}</span></td>
                                     <td class="text-end"><span class="badge bg-warning">{{ stats.modules.incidents.own + stats.modules.incidents.inherited }}</span></td>
@@ -203,11 +203,11 @@
                                     <td class="text-end"><span class="badge bg-warning">{{ stats.modules.incidents.total }}</span></td>
                                 {% endif %}
                                 <td class="text-end">
-                                    <a href="{{ path('app_incident_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
+                                    <a href="{{ path('app_incident_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
                                 </td>
                             </tr>
                             <tr>
-                                <td><i class="bi bi-clipboard-check text-info" aria-hidden="true"></i> {{ 'admin.dashboard.modules.audits'|trans }}</td>
+                                <td><i class="bi bi-clipboard-check text-info" aria-hidden="true"></i> {{ 'admin.dashboard.modules.audits'|trans({}, 'admin') }}</td>
                                 {% if currentTenant %}
                                     <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits.own }}</span></td>
                                     <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits.own + stats.modules.audits.inherited }}</span></td>
@@ -216,11 +216,11 @@
                                     <td class="text-end"><span class="badge bg-info">{{ stats.modules.audits.total }}</span></td>
                                 {% endif %}
                                 <td class="text-end">
-                                    <a href="{{ path('app_audit_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
+                                    <a href="{{ path('app_audit_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
                                 </td>
                             </tr>
                             <tr>
-                                <td><i class="bi bi-check-circle text-secondary" aria-hidden="true"></i> {{ 'admin.dashboard.modules.compliance'|trans }}</td>
+                                <td><i class="bi bi-check-circle text-secondary" aria-hidden="true"></i> {{ 'admin.dashboard.modules.compliance'|trans({}, 'admin') }}</td>
                                 {% if currentTenant %}
                                     <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements.own }}</span></td>
                                     <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements.own + stats.modules.compliance_requirements.inherited }}</span></td>
@@ -229,11 +229,11 @@
                                     <td class="text-end"><span class="badge bg-secondary">{{ stats.modules.compliance_requirements.total }}</span></td>
                                 {% endif %}
                                 <td class="text-end">
-                                    <a href="{{ path('app_compliance_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
+                                    <a href="{{ path('app_compliance_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
                                 </td>
                             </tr>
                             <tr>
-                                <td><i class="bi bi-book text-dark" aria-hidden="true"></i> {{ 'admin.dashboard.modules.trainings'|trans }}</td>
+                                <td><i class="bi bi-book text-dark" aria-hidden="true"></i> {{ 'admin.dashboard.modules.trainings'|trans({}, 'admin') }}</td>
                                 {% if currentTenant %}
                                     <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings.own }}</span></td>
                                     <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings.own + stats.modules.trainings.inherited }}</span></td>
@@ -242,7 +242,7 @@
                                     <td class="text-end"><span class="badge bg-dark">{{ stats.modules.trainings.total }}</span></td>
                                 {% endif %}
                                 <td class="text-end">
-                                    <a href="{{ path('app_training_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans }}</a>
+                                    <a href="{{ path('app_training_index') }}" class="btn btn-sm btn-outline-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
                                 </td>
                             </tr>
                         {% endblock %}
@@ -262,16 +262,16 @@
                 {% block card_body %}
                     <div class="d-grid gap-2">
                         <a href="{{ path('user_management_new') }}" class="btn btn-outline-primary">
-                            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.add_user'|trans }}
+                            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.add_user'|trans({}, 'admin') }}
                         </a>
                         <a href="{{ path('role_management_new') }}" class="btn btn-outline-success">
-                            <i class="bi bi-shield-plus" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.add_role'|trans }}
+                            <i class="bi bi-shield-plus" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.add_role'|trans({}, 'admin') }}
                         </a>
                         <a href="{{ path('app_audit_log_index') }}" class="btn btn-outline-info">
-                            <i class="bi bi-journal-text" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.view_logs'|trans }}
+                            <i class="bi bi-journal-text" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.view_logs'|trans({}, 'admin') }}
                         </a>
                         <a href="{{ path('app_compliance_index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_compliance'|trans }}
+                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.dashboard.quick_actions.manage_compliance'|trans({}, 'admin') }}
                         </a>
                     </div>
                 {% endblock %}
@@ -287,7 +287,7 @@
                     {% if recentActivity is empty %}
                         <div class="p-3 text-center text-muted">
                             <i class="bi bi-inbox fs-3" aria-hidden="true"></i>
-                            <p class="mb-0 mt-2">{{ 'admin.dashboard.activity.empty'|trans }}</p>
+                            <p class="mb-0 mt-2">{{ 'admin.dashboard.activity.empty'|trans({}, 'admin') }}</p>
                         </div>
                     {% else %}
                         <div class="list-group list-group-flush">
@@ -313,7 +313,7 @@
                     {% endif %}
                     <div class="p-3 bg-transparent border-top">
                         <a href="{{ path('app_audit_log_index') }}" class="btn btn-sm btn-outline-secondary w-100">
-                            {{ 'admin.dashboard.activity.view_all'|trans }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
+                            {{ 'admin.dashboard.activity.view_all'|trans({}, 'admin') }} <i class="bi bi-arrow-right ms-1" aria-hidden="true"></i>
                         </a>
                     </div>
                 {% endblock %}

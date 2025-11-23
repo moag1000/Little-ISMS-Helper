@@ -1,15 +1,15 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'audit_log' %}
 
-{% block admin_title %}{{ 'audit_log.page.title'|trans }}{% endblock %}
+{% block admin_title %}{{ 'audit_log.page.title'|trans({}, 'audits') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">{{ 'audit_log.page.monitoring_subtitle'|trans }}</p>
+    <p class="text-muted">{{ 'audit_log.page.monitoring_subtitle'|trans({}, 'audits') }}</p>
 {% endblock %}
 
 {% block admin_content %}
     <div class="mb-3">
         <a href="{{ path('monitoring_health') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'audit_log.action.back_to_health'|trans }}
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'audit_log.action.back_to_health'|trans({}, 'audits') }}
         </a>
     </div>
 
@@ -18,7 +18,7 @@
         <div class="col-md-4">
             <div class="card border-primary">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'audit_log.stats.total_entries'|trans }}</h5>
+                    <h5 class="card-title text-muted">{{ 'audit_log.stats.total_entries'|trans({}, 'audits') }}</h5>
                     <p class="display-6 text-primary">{{ statistics.total }}</p>
                 </div>
             </div>
@@ -26,7 +26,7 @@
         <div class="col-md-4">
             <div class="card border-success">
                 <div class="card-body">
-                    <h5 class="card-title text-muted">{{ 'audit_log.stats.top_actions'|trans }}</h5>
+                    <h5 class="card-title text-muted">{{ 'audit_log.stats.top_actions'|trans({}, 'audits') }}</h5>
                     {% for stat in statistics.action_stats|slice(0, 5) %}
                         <div class="d-flex justify-content-between">
                             <span class="badge bg-primary">{{ stat.action }}</span>
@@ -39,7 +39,7 @@
         <div class="col-md-4">
             <div class="card border-info">
                 <div class="card-body">
-                    <h5 class="card-title text-muted">{{ 'audit_log.stats.top_entities'|trans }}</h5>
+                    <h5 class="card-title text-muted">{{ 'audit_log.stats.top_entities'|trans({}, 'audits') }}</h5>
                     {% for stat in statistics.entity_stats|slice(0, 5) %}
                         <div class="d-flex justify-content-between">
                             <span>{{ stat.entityType }}</span>
@@ -55,26 +55,26 @@
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
             <h3 class="mb-0">
-                <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'audit_log.section.quick_filters'|trans }}
+                <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'audit_log.section.quick_filters'|trans({}, 'audits') }}
             </h3>
         </div>
         <div class="card-body">
             <div class="btn-group" role="group">
                 <a href="{{ path('monitoring_audit_log', {filter: 'all'}) }}"
                    class="btn btn-sm {{ current_filter == 'all' ? 'btn-primary' : 'btn-outline-primary' }}">
-                    {{ 'audit_log.filter.quick.all'|trans }}
+                    {{ 'audit_log.filter.quick.all'|trans({}, 'audits') }}
                 </a>
                 <a href="{{ path('monitoring_audit_log', {filter: 'today'}) }}"
                    class="btn btn-sm {{ current_filter == 'today' ? 'btn-primary' : 'btn-outline-primary' }}">
-                    {{ 'audit_log.filter.quick.today'|trans }}
+                    {{ 'audit_log.filter.quick.today'|trans({}, 'audits') }}
                 </a>
                 <a href="{{ path('monitoring_audit_log', {filter: 'week'}) }}"
                    class="btn btn-sm {{ current_filter == 'week' ? 'btn-primary' : 'btn-outline-primary' }}">
-                    {{ 'audit_log.filter.quick.this_week'|trans }}
+                    {{ 'audit_log.filter.quick.this_week'|trans({}, 'audits') }}
                 </a>
                 <a href="{{ path('monitoring_audit_log', {filter: 'critical'}) }}"
                    class="btn btn-sm {{ current_filter == 'critical' ? 'btn-danger' : 'btn-outline-danger' }}">
-                    {{ 'audit_log.filter.quick.critical_actions'|trans }}
+                    {{ 'audit_log.filter.quick.critical_actions'|trans({}, 'audits') }}
                 </a>
             </div>
         </div>
@@ -84,7 +84,7 @@
     <div class="card">
         <div class="card-header bg-success text-white">
             <h3 class="mb-0">
-                <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'audit_log.section.entries'|trans }} ({{ logs|length }})
+                <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'audit_log.section.entries'|trans({}, 'audits') }} ({{ logs|length }})
             </h3>
         </div>
         <div class="card-body p-0">
@@ -97,12 +97,12 @@
                 } %}
                     {% block table_head %}
                         <tr>
-                            <th scope="col">{{ 'audit_log.table.timestamp'|trans }}</th>
-                            <th scope="col">{{ 'audit_log.table.user'|trans }}</th>
-                            <th scope="col">{{ 'audit_log.table.action'|trans }}</th>
-                            <th scope="col">{{ 'audit_log.table.entity'|trans }}</th>
-                            <th scope="col">{{ 'audit_log.table.ip_address'|trans }}</th>
-                            <th scope="col" class="text-end">{{ 'audit_log.table.details'|trans }}</th>
+                            <th scope="col">{{ 'audit_log.table.timestamp'|trans({}, 'audits') }}</th>
+                            <th scope="col">{{ 'audit_log.table.user'|trans({}, 'audits') }}</th>
+                            <th scope="col">{{ 'audit_log.table.action'|trans({}, 'audits') }}</th>
+                            <th scope="col">{{ 'audit_log.table.entity'|trans({}, 'audits') }}</th>
+                            <th scope="col">{{ 'audit_log.table.ip_address'|trans({}, 'audits') }}</th>
+                            <th scope="col" class="text-end">{{ 'audit_log.table.details'|trans({}, 'audits') }}</th>
                         </tr>
                     {% endblock %}
                     {% block table_body %}
@@ -139,7 +139,7 @@
                                                 class="btn btn-sm btn-outline-primary"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#logModal{{ log.id }}">
-                                            <i class="bi bi-eye" aria-hidden="true"></i> {{ 'audit_log.table.view_details'|trans }}
+                                            <i class="bi bi-eye" aria-hidden="true"></i> {{ 'audit_log.table.view_details'|trans({}, 'audits') }}
                                         </button>
                                     {% else %}
                                         <span class="text-muted">-</span>
@@ -153,29 +153,29 @@
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">{{ 'audit_log.modal.title'|trans }}</h5>
+                                                <h5 class="modal-title">{{ 'audit_log.modal.title'|trans({}, 'audits') }}</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                                             </div>
                                             <div class="modal-body">
                                                 <dl class="row">
-                                                    <dt class="col-sm-3">{{ 'audit_log.table.timestamp'|trans }}:</dt>
+                                                    <dt class="col-sm-3">{{ 'audit_log.table.timestamp'|trans({}, 'audits') }}:</dt>
                                                     <dd class="col-sm-9">{{ log.createdAt|date('Y-m-d H:i:s') }}</dd>
 
-                                                    <dt class="col-sm-3">{{ 'audit_log.table.user'|trans }}:</dt>
+                                                    <dt class="col-sm-3">{{ 'audit_log.table.user'|trans({}, 'audits') }}:</dt>
                                                     <dd class="col-sm-9">{{ log.userName }}</dd>
 
-                                                    <dt class="col-sm-3">{{ 'audit_log.table.action'|trans }}:</dt>
+                                                    <dt class="col-sm-3">{{ 'audit_log.table.action'|trans({}, 'audits') }}:</dt>
                                                     <dd class="col-sm-9">
                                                         <span class="badge bg-primary">{{ log.action }}</span>
                                                     </dd>
 
                                                     {% if log.description %}
-                                                        <dt class="col-sm-3">{{ 'audit_log.table.description'|trans }}:</dt>
+                                                        <dt class="col-sm-3">{{ 'audit_log.table.description'|trans({}, 'audits') }}:</dt>
                                                         <dd class="col-sm-9">{{ log.description }}</dd>
                                                     {% endif %}
 
                                                     {% if log.newValues %}
-                                                        <dt class="col-sm-3">{{ 'audit_log.table.changes'|trans }}:</dt>
+                                                        <dt class="col-sm-3">{{ 'audit_log.table.changes'|trans({}, 'audits') }}:</dt>
                                                         <dd class="col-sm-9">
                                                             <pre class="bg-light p-2 rounded">{{ log.newValues }}</pre>
                                                         </dd>
@@ -192,7 +192,7 @@
             {% else %}
                 <div class="p-4 text-center">
                     <i class="bi bi-info-circle text-info fs-1" aria-hidden="true"></i>
-                    <p class="mt-2">{{ 'audit_log.message.no_entries_filtered'|trans }}</p>
+                    <p class="mt-2">{{ 'audit_log.message.no_entries_filtered'|trans({}, 'audits') }}</p>
                 </div>
             {% endif %}
         </div>
@@ -200,10 +200,10 @@
 
     {# Info Box #}
     <div class="alert alert-info mt-4">
-        <h5><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'audit_log.info.about_title'|trans }}</h5>
+        <h5><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'audit_log.info.about_title'|trans({}, 'audits') }}</h5>
         <p class="mb-0">
-            {{ 'audit_log.info.about_text'|trans }}
-            <a href="{{ path('app_audit_log_index') }}" class="alert-link">{{ 'audit_log.info.module_link'|trans }}</a>.
+            {{ 'audit_log.info.about_text'|trans({}, 'audits') }}
+            <a href="{{ path('app_audit_log_index') }}" class="alert-link">{{ 'audit_log.info.module_link'|trans({}, 'audits') }}</a>.
         </p>
     </div>
 </div>

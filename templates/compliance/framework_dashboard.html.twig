@@ -23,7 +23,7 @@
             {% if all_frameworks|length > 1 %}
             <div class="framework-switcher">
                 <select id="framework-switcher" class="form-select form-select-sm" onchange="window.location.href=this.value">
-                    <option value="" disabled>{{ 'compliance.switch_framework'|trans|default('Switch Framework') }}</option>
+                    <option value="" disabled>{{ 'compliance.switch_framework'|trans({}, 'compliance')|default('Switch Framework') }}</option>
                     {% for fw in all_frameworks %}
                     <option value="{{ path('app_compliance_framework', {id: fw.id}) }}" {% if fw.id == framework.id %}selected{% endif %}>
                         {{ fw.code }} {% if fw.mandatory %}(!){% endif %}
@@ -33,10 +33,10 @@
             </div>
             {% endif %}
             <a href="{{ path('app_compliance_index') }}" class="btn btn-secondary">
-                ← {{ 'compliance.button.back'|trans }}
+                ← {{ 'compliance.button.back'|trans({}, 'compliance') }}
             </a>
             <a href="{{ path('app_compliance_assess', {id: framework.id}) }}" class="btn btn-success">
-                {{ 'compliance.button.reassess'|trans }}
+                {{ 'compliance.button.reassess'|trans({}, 'compliance') }}
             </a>
         </div>
     </div>
@@ -44,24 +44,24 @@
     {# Quick Stats Bar - Always Visible #}
     <div class="stats-bar">
         <div class="stat-item">
-            <div class="stat-label">{{ 'compliance.label.compliance'|trans }}</div>
+            <div class="stat-label">{{ 'compliance.label.compliance'|trans({}, 'compliance') }}</div>
             <div class="stat-value">{{ dashboard.compliance_percentage }}%</div>
         </div>
         <div class="stat-item">
-            <div class="stat-label">{{ 'compliance.label.requirements'|trans }}</div>
+            <div class="stat-label">{{ 'compliance.label.requirements'|trans({}, 'compliance') }}</div>
             <div class="stat-value">{{ dashboard.statistics.applicable }}/{{ dashboard.statistics.total }}</div>
         </div>
         <div class="stat-item">
-            <div class="stat-label">{{ 'compliance.label.fulfilled'|trans }}</div>
+            <div class="stat-label">{{ 'compliance.label.fulfilled'|trans({}, 'compliance') }}</div>
             <div class="stat-value stat-value-success">{{ dashboard.statistics.fulfilled }}</div>
         </div>
         <div class="stat-item">
-            <div class="stat-label">{{ 'compliance.label.gaps'|trans }}</div>
+            <div class="stat-label">{{ 'compliance.label.gaps'|trans({}, 'compliance') }}</div>
             <div class="stat-value stat-value-danger">{{ dashboard.gaps.total }}</div>
         </div>
         <div class="stat-item">
-            <div class="stat-label">{{ 'compliance.label.time_savings'|trans }}</div>
-            <div class="stat-value">{{ dashboard.data_reuse.total_days_saved }} {{ 'compliance.label.days'|trans }}</div>
+            <div class="stat-label">{{ 'compliance.label.time_savings'|trans({}, 'compliance') }}</div>
+            <div class="stat-value">{{ dashboard.data_reuse.total_days_saved }} {{ 'compliance.label.days'|trans({}, 'compliance') }}</div>
         </div>
     </div>
 
@@ -139,7 +139,7 @@
     {% if framework.requiredModules|length > 0 %}
     <div class="card mb-4">
         <div class="card-header">
-            <h2>🔧 {{ 'compliance.required_modules'|trans }}</h2>
+            <h2>🔧 {{ 'compliance.required_modules'|trans({}, 'compliance') }}</h2>
         </div>
         <div class="card-body">
             <p class="text-muted mb-3">
@@ -166,8 +166,8 @@
                             {% if not isActive %}
                                 <a href="{{ path('admin_modules_index') }}" class="btn btn-primary btn-sm"
                                    data-bs-toggle="tooltip" data-bs-placement="top"
-                                   title="Activate this module in the module management">
-                                    Activate Module →
+                                   title="{{ 'common.tooltip.activate_module'|trans({}, 'messages') }}">
+                                    {{ 'common.activate'|trans({}, 'messages') }} Module →
                                 </a>
                             {% endif %}
                         </div>
@@ -246,16 +246,16 @@
     <div class="tabs" data-controller="toggle">
         <div class="tab-nav">
             <button class="tab-button active" data-action="click->toggle#switchTab" data-tab="overview">
-                {{ 'compliance.tab.overview'|trans }}
+                {{ 'compliance.tab.overview'|trans({}, 'compliance') }}
             </button>
             <button class="tab-button" data-action="click->toggle#switchTab" data-tab="requirements">
-                {{ 'compliance.tab.requirements'|trans }}
+                {{ 'compliance.tab.requirements'|trans({}, 'compliance') }}
             </button>
             <button class="tab-button" data-action="click->toggle#switchTab" data-tab="gaps">
-                {{ 'compliance.tab.gaps'|trans }} ({{ dashboard.gaps.total }})
+                {{ 'compliance.tab.gaps'|trans({}, 'compliance') }} ({{ dashboard.gaps.total }})
             </button>
             <button class="tab-button" data-action="click->toggle#switchTab" data-tab="data-reuse">
-                {{ 'compliance.tab.data_reuse'|trans }}
+                {{ 'compliance.tab.data_reuse'|trans({}, 'compliance') }}
             </button>
         </div>
 
@@ -263,33 +263,33 @@
         <div class="tab-content active" data-tab-content="overview">
             <div class="card">
                 <div class="card-header">
-                    <h2>{{ 'compliance.framework_info'|trans }}</h2>
+                    <h2>{{ 'compliance.framework_info'|trans({}, 'compliance') }}</h2>
                 </div>
                 <div class="card-body">
                     <div class="info-grid">
                         <div class="info-item">
-                            <span class="label">{{ 'compliance.label.code'|trans }}:</span>
+                            <span class="label">{{ 'compliance.label.code'|trans({}, 'compliance') }}:</span>
                             <span class="value">{{ framework.code }}</span>
                         </div>
                         <div class="info-item">
-                            <span class="label">{{ 'compliance.version'|trans }}:</span>
+                            <span class="label">{{ 'compliance.version'|trans({}, 'compliance') }}:</span>
                             <span class="value">{{ framework.version }}</span>
                         </div>
                         <div class="info-item">
-                            <span class="label">{{ 'compliance.industry'|trans }}:</span>
+                            <span class="label">{{ 'compliance.industry'|trans({}, 'compliance') }}:</span>
                             <span class="value">{{ framework.applicableIndustry|replace({'_': ' '})|title }}</span>
                         </div>
                         <div class="info-item">
-                            <span class="label">{{ 'compliance.regulatory_body'|trans }}:</span>
+                            <span class="label">{{ 'compliance.regulatory_body'|trans({}, 'compliance') }}:</span>
                             <span class="value">{{ framework.regulatoryBody }}</span>
                         </div>
                         <div class="info-item">
-                            <span class="label">{{ 'compliance.mandatory'|trans }}:</span>
+                            <span class="label">{{ 'compliance.mandatory'|trans({}, 'compliance') }}:</span>
                             <span class="value">
                                 {% if framework.mandatory %}
-                                    <span class="badge bg-danger">{{ 'compliance.label.yes'|trans }}</span>
+                                    <span class="badge bg-danger">{{ 'compliance.label.yes'|trans({}, 'compliance') }}</span>
                                 {% else %}
-                                    <span class="badge bg-success">{{ 'compliance.label.no'|trans }}</span>
+                                    <span class="badge bg-success">{{ 'compliance.label.no'|trans({}, 'compliance') }}</span>
                                 {% endif %}
                             </span>
                         </div>
@@ -301,7 +301,7 @@
             {% if dashboard.recommendations is not empty %}
                 <div class="card">
                     <div class="card-header">
-                        <h2>{{ 'compliance.recommendations'|trans }}</h2>
+                        <h2>{{ 'compliance.recommendations'|trans({}, 'compliance') }}</h2>
                     </div>
                     <div class="card-body">
                         {% for recommendation in dashboard.recommendations %}
@@ -327,29 +327,29 @@
         <div class="tab-content" data-tab-content="requirements">
             <div class="card">
                 <div class="card-header">
-                    <h2>{{ 'compliance.tab.requirements'|trans }}</h2>
+                    <h2>{{ 'compliance.tab.requirements'|trans({}, 'compliance') }}</h2>
                     <div class="filter-toggle">
                         <button class="btn btn-sm btn-secondary" data-action="click->toggle#toggleFilter">
-                            {{ 'compliance.filter'|trans }}
+                            {{ 'compliance.filter'|trans({}, 'compliance') }}
                         </button>
                     </div>
                 </div>
 
                 {# Filter Panel - Hidden by Default #}
                 <div class="filter-panel d-none" data-toggle-target="filterPanel">
-                    <input type="text" class="search-input" placeholder="{{ 'compliance.search'|trans }}" id="reqSearch">
+                    <input type="text" class="search-input" placeholder="{{ 'compliance.search'|trans({}, 'compliance') }}" id="reqSearch">
                     <select id="reqPriority">
-                        <option value="">{{ 'compliance.priority.all'|trans }}</option>
-                        <option value="critical">{{ 'compliance.priority.critical'|trans }}</option>
-                        <option value="high">{{ 'compliance.priority.high'|trans }}</option>
-                        <option value="medium">{{ 'compliance.priority.medium'|trans }}</option>
-                        <option value="low">{{ 'compliance.priority.low'|trans }}</option>
+                        <option value="">{{ 'compliance.priority.all'|trans({}, 'compliance') }}</option>
+                        <option value="critical">{{ 'compliance.priority.critical'|trans({}, 'compliance') }}</option>
+                        <option value="high">{{ 'compliance.priority.high'|trans({}, 'compliance') }}</option>
+                        <option value="medium">{{ 'compliance.priority.medium'|trans({}, 'compliance') }}</option>
+                        <option value="low">{{ 'compliance.priority.low'|trans({}, 'compliance') }}</option>
                     </select>
                     <select id="reqStatus">
-                        <option value="">{{ 'compliance.status.all'|trans }}</option>
-                        <option value="fulfilled">{{ 'compliance.status.fulfilled'|trans }}</option>
-                        <option value="partial">{{ 'compliance.status.partial'|trans }}</option>
-                        <option value="gap">{{ 'compliance.status.gap'|trans }}</option>
+                        <option value="">{{ 'compliance.status.all'|trans({}, 'compliance') }}</option>
+                        <option value="fulfilled">{{ 'compliance.status.fulfilled'|trans({}, 'compliance') }}</option>
+                        <option value="partial">{{ 'compliance.status.partial'|trans({}, 'compliance') }}</option>
+                        <option value="gap">{{ 'compliance.status.gap'|trans({}, 'compliance') }}</option>
                     </select>
                 </div>
 
@@ -414,7 +414,7 @@
         <div class="tab-content" data-tab-content="gaps">
             <div class="card">
                 <div class="card-header">
-                    <h2>{{ 'compliance.gaps.title'|trans }}</h2>
+                    <h2>{{ 'compliance.gaps.title'|trans({}, 'compliance') }}</h2>
                 </div>
                 <div class="card-body">
                     {% if dashboard.gaps.total > 0 %}
@@ -435,15 +435,15 @@
                                     <div class="progress-bar">
                                         <div class="progress-fill bg-danger" style="width: {{ fulfillmentPct }}%;"></div>
                                     </div>
-                                    <span>{{ fulfillmentPct }}{{ 'compliance.gaps.fulfilled_percentage'|trans }}</span>
+                                    <span>{{ fulfillmentPct }}{{ 'compliance.gaps.fulfilled_percentage'|trans({}, 'compliance') }}</span>
                                 </div>
                             </div>
                         {% endfor %}
                     {% else %}
                         <div class="text-center p-xl">
                             <div class="icon-3rem-mb-md">✅</div>
-                            <h3>{{ 'compliance.gaps.none'|trans }}</h3>
-                            <p class="text-muted">{{ 'compliance.gaps.none_description'|trans }}</p>
+                            <h3>{{ 'compliance.gaps.none'|trans({}, 'compliance') }}</h3>
+                            <p class="text-muted">{{ 'compliance.gaps.none_description'|trans({}, 'compliance') }}</p>
                         </div>
                     {% endif %}
                 </div>
@@ -454,18 +454,18 @@
         <div class="tab-content" data-tab-content="data-reuse">
             <div class="card">
                 <div class="card-header">
-                    <h2>{{ 'compliance.tab.data_reuse'|trans }}</h2>
+                    <h2>{{ 'compliance.tab.data_reuse'|trans({}, 'compliance') }}</h2>
                 </div>
                 <div class="card-body">
                     <div class="value-highlight">
                         <div class="value-icon">💎</div>
                         <div class="value-content">
-                            <h3>{{ dashboard.data_reuse.total_hours_saved }} {{ 'compliance.data_reuse.hours_saved'|trans }}</h3>
-                            <p>{{ 'compliance.data_reuse.work_days'|trans({'%days%': dashboard.data_reuse.total_days_saved}) }}</p>
+                            <h3>{{ dashboard.data_reuse.total_hours_saved }} {{ 'compliance.data_reuse.hours_saved'|trans({}, 'compliance') }}</h3>
+                            <p>{{ 'compliance.data_reuse.work_days'|trans({'%days%': dashboard.data_reuse.total_days_saved}, 'compliance') }}</p>
                         </div>
                     </div>
                     <a href="{{ path('app_compliance_data_reuse', {id: framework.id}) }}" class="btn btn-primary">
-                        {{ 'compliance.data_reuse.show_details'|trans }} →
+                        {{ 'compliance.data_reuse.show_details'|trans({}, 'compliance') }} →
                     </a>
                 </div>
             </div>

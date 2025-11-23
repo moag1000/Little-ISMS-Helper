@@ -45,3 +45,5 @@ objectives:
     in_progress: in progress
     delayed: delayed
     at_risk: at risk
+    total: total
+    active: active

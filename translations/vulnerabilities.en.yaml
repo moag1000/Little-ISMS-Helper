@@ -5,13 +5,11 @@ vulnerability:
   empty: No vulnerabilities available.
   section:
     details: Details
-
   kpi:
     total: Total Vulnerabilities
     critical: Critical Vulnerabilities
     high: High Vulnerabilities
     overdue: Overdue Remediations
-
   field:
     cve_id: CVE ID
     title: Title
@@ -22,13 +20,11 @@ vulnerability:
     description: Description
     discovered_date: Discovered Date
     responsible_person: Responsible Person
-
   severity:
     critical: Critical
     high: High
     medium: Medium
     low: Low
-
   status:
     open: Open
     in_progress: In Progress
