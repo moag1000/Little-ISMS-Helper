@@ -69,11 +69,12 @@ class ComplianceMappingType extends AbstractType
             ->add('mappingType', ChoiceType::class, [
                 'label' => 'compliance_mapping.field.mapping_type',
                 'choices' => [
-                    'Schwach (0-49%)' => 'weak',
-                    'Teilweise (50-99%)' => 'partial',
-                    'Vollständig (100%)' => 'full',
-                    'Überschreitet (101-150%)' => 'exceeds',
+                    'compliance_mapping.mapping_type.weak' => 'weak',
+                    'compliance_mapping.mapping_type.partial' => 'partial',
+                    'compliance_mapping.mapping_type.full' => 'full',
+                    'compliance_mapping.mapping_type.exceeds' => 'exceeds',
                 ],
+                'choice_translation_domain' => 'compliance',
                 'attr' => [
                     'class' => 'form-select'
                 ],
@@ -106,10 +107,11 @@ class ComplianceMappingType extends AbstractType
             ->add('confidence', ChoiceType::class, [
                 'label' => 'compliance_mapping.field.confidence',
                 'choices' => [
-                    'Niedrig' => 'low',
-                    'Mittel' => 'medium',
-                    'Hoch' => 'high',
+                    'compliance_mapping.confidence.low' => 'low',
+                    'compliance_mapping.confidence.medium' => 'medium',
+                    'compliance_mapping.confidence.high' => 'high',
                 ],
+                'choice_translation_domain' => 'compliance',
                 'attr' => [
                     'class' => 'form-select'
                 ],

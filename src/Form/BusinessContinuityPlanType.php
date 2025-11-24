@@ -47,11 +47,12 @@ class BusinessContinuityPlanType extends AbstractType
             ->add('status', ChoiceType::class, [
                 'label' => 'business_continuity_plan.field.status',
                 'choices' => [
-                    'Draft' => 'draft',
-                    'Under Review' => 'under_review',
-                    'Active' => 'active',
-                    'Archived' => 'archived',
+                    'bc_plans.status.draft' => 'draft',
+                    'bc_plans.status.under_review' => 'under_review',
+                    'bc_plans.status.active' => 'active',
+                    'bc_plans.status.archived' => 'archived',
                 ],
+                'choice_translation_domain' => 'bc_plans',
                 'required' => true,
             ])
             ->add('activationCriteria', TextareaType::class, [

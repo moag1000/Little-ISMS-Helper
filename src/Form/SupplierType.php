@@ -77,21 +77,23 @@ class SupplierType extends AbstractType
             ->add('criticality', ChoiceType::class, [
                 'label' => 'supplier.field.criticality',
                 'choices' => [
-                    'Critical' => 'critical',
-                    'High' => 'high',
-                    'Medium' => 'medium',
-                    'Low' => 'low',
+                    'supplier.criticality.critical' => 'critical',
+                    'supplier.criticality.high' => 'high',
+                    'supplier.criticality.medium' => 'medium',
+                    'supplier.criticality.low' => 'low',
                 ],
+                'choice_translation_domain' => 'suppliers',
                 'required' => true,
             ])
             ->add('status', ChoiceType::class, [
                 'label' => 'supplier.field.status',
                 'choices' => [
-                    'Active' => 'active',
-                    'Inactive' => 'inactive',
-                    'Evaluation' => 'evaluation',
-                    'Terminated' => 'terminated',
+                    'supplier.status.active' => 'active',
+                    'supplier.status.inactive' => 'inactive',
+                    'supplier.status.evaluation' => 'evaluation',
+                    'supplier.status.terminated' => 'terminated',
                 ],
+                'choice_translation_domain' => 'suppliers',
                 'required' => true,
             ])
             ->add('securityScore', IntegerType::class, [
