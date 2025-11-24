@@ -61,28 +61,28 @@
                 <div class="card-body">
                     {% if review.changesRelevantToISMS %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'management_review.changes_relevant_to_isms'|trans({}, 'messages') }}</h5>
+                        <h6 class="text-muted">{{ 'management_review.changes_relevant_to_isms'|trans({}, 'messages') }}</h6>
                         <p>{{ review.changesRelevantToISMS|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if review.feedbackFromInterestedParties %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'management_review.feedback_from_interested_parties'|trans({}, 'messages') }}</h5>
+                        <h6 class="text-muted">{{ 'management_review.feedback_from_interested_parties'|trans({}, 'messages') }}</h6>
                         <p>{{ review.feedbackFromInterestedParties|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if review.auditResults %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'management_review.audit_results'|trans({}, 'messages') }}</h5>
+                        <h6 class="text-muted">{{ 'management_review.audit_results'|trans({}, 'messages') }}</h6>
                         <p>{{ review.auditResults|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if review.performanceEvaluation %}
                     <div class="mb-0">
-                        <h6 class="text-muted">{{ 'management_review.performance_evaluation'|trans({}, 'messages') }}</h5>
+                        <h6 class="text-muted">{{ 'management_review.performance_evaluation'|trans({}, 'messages') }}</h6>
                         <p>{{ review.performanceEvaluation|nl2br }}</p>
                     </div>
                     {% endif %}
@@ -99,21 +99,21 @@
                 <div class="card-body">
                     {% if review.previousReviewActions %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'management_review.previous_review_actions'|trans({}, 'messages') }}</h5>
+                        <h6 class="text-muted">{{ 'management_review.previous_review_actions'|trans({}, 'messages') }}</h6>
                         <p>{{ review.previousReviewActions|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if review.nonConformitiesStatus %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'management_review.nonconformities_status'|trans({}, 'messages') }}</h5>
+                        <h6 class="text-muted">{{ 'management_review.nonconformities_status'|trans({}, 'messages') }}</h6>
                         <p>{{ review.nonConformitiesStatus|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if review.correctiveActionsStatus %}
                     <div class="mb-0">
-                        <h6 class="text-muted">{{ 'management_review.corrective_actions_status'|trans({}, 'messages') }}</h5>
+                        <h6 class="text-muted">{{ 'management_review.corrective_actions_status'|trans({}, 'messages') }}</h6>
                         <p>{{ review.correctiveActionsStatus|nl2br }}</p>
                     </div>
                     {% endif %}
@@ -130,21 +130,21 @@
                 <div class="card-body">
                     {% if review.opportunitiesForImprovement %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'management_review.opportunities_for_improvement'|trans({}, 'messages') }}</h5>
+                        <h6 class="text-muted">{{ 'management_review.opportunities_for_improvement'|trans({}, 'messages') }}</h6>
                         <p>{{ review.opportunitiesForImprovement|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if review.resourceNeeds %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'management_review.resource_needs'|trans({}, 'messages') }}</h5>
+                        <h6 class="text-muted">{{ 'management_review.resource_needs'|trans({}, 'messages') }}</h6>
                         <p>{{ review.resourceNeeds|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if review.decisions %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'management_review.decisions'|trans({}, 'messages') }}</h5>
+                        <h6 class="text-muted">{{ 'management_review.decisions'|trans({}, 'messages') }}</h6>
                         <div class="alert alert-warning">
                             <strong><i class="bi bi-gavel" aria-hidden="true"></i> {{ 'management_review.management_decisions'|trans({}, 'messages') }}</strong>
                             <p class="mb-0 mt-2">{{ review.decisions|nl2br }}</p>
@@ -154,7 +154,7 @@
 
                     {% if review.actionItems %}
                     <div class="mb-0">
-                        <h6 class="text-muted">{{ 'management_review.action_items'|trans({}, 'messages') }}</h5>
+                        <h6 class="text-muted">{{ 'management_review.action_items'|trans({}, 'messages') }}</h6>
                         <div class="alert alert-info">
                             <strong><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'management_review.action_items_label'|trans({}, 'messages') }}</strong>
                             <p class="mb-0 mt-2">{{ review.actionItems|nl2br }}</p>
@@ -206,12 +206,12 @@
                     <h3 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> ISO 27001:2022</h3>
                 </div>
                 <div class="card-body">
-                    <h4 class="fw-bold">{{ 'management_review.clause_93'|trans({}, 'messages') }}</h5>
+                    <h4 class="fw-bold">{{ 'management_review.clause_93'|trans({}, 'messages') }}</h4>
                     <p class="small mb-2">{{ 'management_review.clause_93_description'|trans({}, 'messages') }}</p>
 
                     <hr>
 
-                    <h6 class="fw-bold small">{{ 'management_review.inputs_label'|trans({}, 'messages') }}</h5>
+                    <h6 class="fw-bold small">{{ 'management_review.inputs_label'|trans({}, 'messages') }}</h6>
                     <ul class="small mb-2">
                         <li>{{ 'management_review.input_1'|trans({}, 'messages') }}</li>
                         <li>{{ 'management_review.input_2'|trans({}, 'messages') }}</li>
@@ -219,7 +219,7 @@
                         <li>{{ 'management_review.input_4'|trans({}, 'messages') }}</li>
                     </ul>
 
-                    <h6 class="fw-bold small">{{ 'management_review.outputs_label'|trans({}, 'messages') }}</h5>
+                    <h6 class="fw-bold small">{{ 'management_review.outputs_label'|trans({}, 'messages') }}</h6>
                     <ul class="small mb-0">
                         <li>{{ 'management_review.output_1'|trans({}, 'messages') }}</li>
                         <li>{{ 'management_review.output_2'|trans({}, 'messages') }}</li>

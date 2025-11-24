@@ -161,7 +161,7 @@
         <div class="col-lg-8 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0">{{ 'context.section.title'|trans({}, 'context') }}</h3>
+                    <h2 class="mb-0">{{ 'context.section.title'|trans({}, 'context') }}</h2>
                     {% if is_granted('ROLE_ADMIN') %}
                         {% if canEdit is defined and canEdit %}
                             <a href="{{ path('app_context_edit') }}" class="btn btn-sm btn-outline-primary">
@@ -177,27 +177,27 @@
                 <div class="card-body">
                     {% if context and context.organizationName %}
                         <div class="mb-3">
-                            <h6 class="text-muted">{{ 'context.section.organization'|trans({}, 'context') }}</h5>
+                            <h6 class="text-muted">{{ 'context.section.organization'|trans({}, 'context') }}</h6>
                             <p class="mb-0">{{ context.organizationName }}</p>
                         </div>
 
                         {% if context.ismsScope %}
                             <div class="mb-3">
-                                <h6 class="text-muted">{{ 'context_management.isms_scope'|trans({}, 'messages') }}</h5>
+                                <h6 class="text-muted">{{ 'context_management.isms_scope'|trans({}, 'messages') }}</h6>
                                 <p class="mb-0">{{ context.ismsScope|nl2br }}</p>
                             </div>
                         {% endif %}
 
                         {% if context.scopeExclusions %}
                             <div class="mb-3">
-                                <h6 class="text-muted">{{ 'context.section.exclusions'|trans({}, 'context') }}</h5>
+                                <h6 class="text-muted">{{ 'context.section.exclusions'|trans({}, 'context') }}</h6>
                                 <p class="mb-0">{{ context.scopeExclusions|nl2br }}</p>
                             </div>
                         {% endif %}
 
                         {% if context.ismsPolicy %}
                             <div class="mb-3">
-                                <h6 class="text-muted">{{ 'context.section.policy'|trans({}, 'context') }}</h5>
+                                <h6 class="text-muted">{{ 'context.section.policy'|trans({}, 'context') }}</h6>
                                 <p class="mb-0">{{ context.ismsPolicy|length > 200 ? context.ismsPolicy|slice(0, 200) ~ '...' : context.ismsPolicy|nl2br }}</p>
                             </div>
                         {% endif %}
@@ -311,15 +311,15 @@
                         </div>
                         <div class="card-body">
                             {% if context.legalRequirements %}
-                                <h6 class="text-muted small">{{ 'context.section.legal_requirements'|trans({}, 'messages') }}</h5>
+                                <h6 class="text-muted small">{{ 'context.section.legal_requirements'|trans({}, 'messages') }}</h6>
                                 <p class="mb-2">{{ context.legalRequirements|nl2br }}</p>
                             {% endif %}
                             {% if context.regulatoryRequirements %}
-                                <h6 class="text-muted small">{{ 'context.section.regulatory_requirements'|trans({}, 'messages') }}</h5>
+                                <h6 class="text-muted small">{{ 'context.section.regulatory_requirements'|trans({}, 'messages') }}</h6>
                                 <p class="mb-2">{{ context.regulatoryRequirements|nl2br }}</p>
                             {% endif %}
                             {% if context.contractualObligations %}
-                                <h6 class="text-muted small">{{ 'context.section.contractual_obligations'|trans({}, 'messages') }}</h5>
+                                <h6 class="text-muted small">{{ 'context.section.contractual_obligations'|trans({}, 'messages') }}</h6>
                                 <p class="mb-0">{{ context.contractualObligations|nl2br }}</p>
                             {% endif %}
                         </div>

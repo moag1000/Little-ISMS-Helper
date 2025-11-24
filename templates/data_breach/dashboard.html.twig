@@ -25,7 +25,7 @@
     {# Overall Compliance Score #}
     <div class="card mb-4 text-center">
         <div class="card-body">
-            <h6 class="text-muted mb-2">Overall GDPR Art. 33/34 Compliance Score</h5>
+            <h6 class="text-muted mb-2">Overall GDPR Art. 33/34 Compliance Score</h6>
             {% set score = compliance_score.overall_score %}
             <h1 class="display-1 mb-0
                 {% if score >= 80 %}text-success
@@ -36,7 +36,7 @@
             <div class="row mt-4">
                 <div class="col-md-4">
                     <small class="text-muted">Notification Compliance</small>
-                    <h4>{{ compliance_score.notification_compliance }}%</h5>
+                    <h4>{{ compliance_score.notification_compliance }}%</h4>
                     <small class="text-muted">{{ statistics.authority_notified }} / {{ statistics.requires_authority_notification }} notified</small>
                 </div>
                 <div class="col-md-4">
@@ -48,7 +48,7 @@
                 </div>
                 <div class="col-md-4">
                     <small class="text-muted">Completeness</small>
-                    <h4>{{ compliance_score.completeness_score }}%</h5>
+                    <h4>{{ compliance_score.completeness_score }}%</h4>
                     <small class="text-muted">Average breach completeness</small>
                 </div>
             </div>
@@ -123,23 +123,23 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-2">
-                            <h6 class="text-muted">Draft</h5>
-                            <h2>{{ statistics.draft }}</h3>
+                            <h6 class="text-muted">Draft</h6>
+                            <h2>{{ statistics.draft }}</h2>
                         </div>
                         <div class="col-md-3">
-                            <h6 class="text-muted">Under Assessment</h5>
+                            <h6 class="text-muted">Under Assessment</h6>
                             <h3>{{ statistics.under_assessment }}</h3>
                         </div>
                         <div class="col-md-3">
-                            <h6 class="text-muted">Authority Notified</h5>
+                            <h6 class="text-muted">Authority Notified</h6>
                             <h3 class="text-success">{{ statistics.authority_notified }}</h3>
                         </div>
                         <div class="col-md-2">
-                            <h6 class="text-muted">Subjects Notified</h5>
+                            <h6 class="text-muted">Subjects Notified</h6>
                             <h3 class="text-success">{{ statistics.subjects_notified }}</h3>
                         </div>
                         <div class="col-md-2">
-                            <h6 class="text-muted">Closed</h5>
+                            <h6 class="text-muted">Closed</h6>
                             <h3>{{ statistics.closed }}</h3>
                         </div>
                     </div>
@@ -157,19 +157,19 @@
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-3">
-                            <h6 class="text-muted">Low</h5>
+                            <h6 class="text-muted">Low</h6>
                             <h3 class="text-success">{{ statistics.low_risk }}</h3>
                         </div>
                         <div class="col-3">
-                            <h6 class="text-muted">Medium</h5>
+                            <h6 class="text-muted">Medium</h6>
                             <h3 class="text-info">{{ statistics.medium_risk }}</h3>
                         </div>
                         <div class="col-3">
-                            <h6 class="text-muted">High</h5>
+                            <h6 class="text-muted">High</h6>
                             <h3 class="text-warning">{{ statistics.high_risk }}</h3>
                         </div>
                         <div class="col-3">
-                            <h6 class="text-muted">Critical</h5>
+                            <h6 class="text-muted">Critical</h6>
                             <h3 class="text-danger">{{ statistics.critical_risk }}</h3>
                         </div>
                     </div>

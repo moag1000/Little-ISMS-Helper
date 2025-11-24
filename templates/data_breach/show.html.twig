@@ -266,15 +266,15 @@
         </div>
         <div class="card-body">
             {% if breach.breachNature %}
-                <h6>{{ 'privacy.data_breach.section.nature'|trans({}, 'privacy') }} (Art. 33(3)(a)):</h5>
+                <h6>{{ 'privacy.data_breach.section.nature'|trans({}, 'privacy') }} (Art. 33(3)(a)):</h6>
                 <p>{{ breach.breachNature|nl2br }}</p>
             {% endif %}
             {% if breach.dataCategories|length > 0 %}
-                <h6>{{ 'privacy.data_breach.field.data_categories'|trans({}, 'privacy') }}:</h5>
+                <h6>{{ 'privacy.data_breach.field.data_categories'|trans({}, 'privacy') }}:</h6>
                 <p>{{ breach.dataCategories|join(', ') }}</p>
             {% endif %}
             {% if breach.dataSubjectCategories|length > 0 %}
-                <h6>{{ 'privacy.data_breach.field.data_subject_categories'|trans({}, 'privacy') }}:</h5>
+                <h6>{{ 'privacy.data_breach.field.data_subject_categories'|trans({}, 'privacy') }}:</h6>
                 <p>{{ breach.dataSubjectCategories|join(', ') }}</p>
             {% endif %}
             {% if breach.specialCategoriesAffected %}
@@ -296,15 +296,15 @@
         </div>
         <div class="card-body">
             {% if breach.likelyConsequences %}
-                <h6>{{ 'privacy.data_breach.field.likely_consequences'|trans({}, 'privacy') }}:</h5>
+                <h6>{{ 'privacy.data_breach.field.likely_consequences'|trans({}, 'privacy') }}:</h6>
                 <p>{{ breach.likelyConsequences|nl2br }}</p>
             {% endif %}
             {% if breach.measuresTaken %}
-                <h6>{{ 'privacy.data_breach.field.measures_taken'|trans({}, 'privacy') }}:</h5>
+                <h6>{{ 'privacy.data_breach.field.measures_taken'|trans({}, 'privacy') }}:</h6>
                 <p>{{ breach.measuresTaken|nl2br }}</p>
             {% endif %}
             {% if breach.mitigationMeasures %}
-                <h6>{{ 'privacy.data_breach.field.measures_planned'|trans({}, 'privacy') }}:</h5>
+                <h6>{{ 'privacy.data_breach.field.measures_planned'|trans({}, 'privacy') }}:</h6>
                 <p>{{ breach.mitigationMeasures|nl2br }}</p>
             {% endif %}
         </div>
@@ -317,15 +317,15 @@
             </div>
             <div class="card-body">
                 {% if breach.rootCause %}
-                    <h6>{{ 'privacy.data_breach.root_cause'|trans({}, 'privacy') }}:</h5>
+                    <h6>{{ 'privacy.data_breach.root_cause'|trans({}, 'privacy') }}:</h6>
                     <p>{{ breach.rootCause|nl2br }}</p>
                 {% endif %}
                 {% if breach.lessonsLearned %}
-                    <h6>{{ 'privacy.data_breach.lessons_learned'|trans({}, 'privacy') }}:</h5>
+                    <h6>{{ 'privacy.data_breach.lessons_learned'|trans({}, 'privacy') }}:</h6>
                     <p>{{ breach.lessonsLearned|nl2br }}</p>
                 {% endif %}
                 {% if breach.followUpActions|length > 0 %}
-                    <h6>{{ 'privacy.data_breach.follow_up_actions'|trans({}, 'privacy') }}:</h5>
+                    <h6>{{ 'privacy.data_breach.follow_up_actions'|trans({}, 'privacy') }}:</h6>
                     <ul>
                         {% for action in breach.followUpActions %}
                             <li>{{ action }}</li>
