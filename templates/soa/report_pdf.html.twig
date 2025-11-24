@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>{% trans_default_domain 'soa' %}{{ 'soa.page.title'|trans({}, 'messages') }} - ISO 27001:2022</title>
+    <title>{% trans_default_domain 'soa' %}{{ 'soa.page.title'|trans({}, 'soa') }} - ISO 27001:2022</title>
     <style>
         @page {
             margin: 2cm 1.5cm;
@@ -228,43 +228,43 @@
     </style>
 </head>
 <body>
-    <h1>{{ 'soa.page.title'|trans({}, 'messages') }}</h1>
+    <h1>{{ 'soa.page.title'|trans({}, 'soa') }}</h1>
     <div class="header-info">
-        {{ 'soa.page.subtitle'|trans({}, 'messages') }}<br>
+        {{ 'soa.page.subtitle'|trans({}, 'soa') }}<br>
         {{ 'soa.report.generated_at'|trans({'%datetime%': generatedAt|date('d.m.Y H:i')}, 'messages') }}
     </div>
 
     <!-- Statistics Overview -->
-    <h2>{{ 'soa.section.implementation_overview'|trans({}, 'messages') }}</h2>
+    <h2>{{ 'soa.section.implementation_overview'|trans({}, 'soa') }}</h2>
     <div class="stats-grid">
         <div class="stats-row">
             <div class="stats-cell">
-                <div class="stats-label">{{ 'soa.kpi.total_controls'|trans({}, 'messages') }}</div>
+                <div class="stats-label">{{ 'soa.kpi.total_controls'|trans({}, 'soa') }}</div>
                 <div class="stats-value">{{ stats.total }}</div>
             </div>
             <div class="stats-cell">
-                <div class="stats-label">{{ 'soa.kpi.implemented_controls'|trans({}, 'messages') }}</div>
+                <div class="stats-label">{{ 'soa.kpi.implemented_controls'|trans({}, 'soa') }}</div>
                 <div class="stats-value stats-value-success">{{ stats.implemented }}</div>
             </div>
             <div class="stats-cell">
-                <div class="stats-label">{{ 'soa.kpi.in_progress_controls'|trans({}, 'messages') }}</div>
+                <div class="stats-label">{{ 'soa.kpi.in_progress_controls'|trans({}, 'soa') }}</div>
                 <div class="stats-value stats-value-warning">{{ stats.in_progress }}</div>
             </div>
             <div class="stats-cell">
-                <div class="stats-label">{{ 'soa.kpi.not_started_controls'|trans({}, 'messages') }}</div>
+                <div class="stats-label">{{ 'soa.kpi.not_started_controls'|trans({}, 'soa') }}</div>
                 <div class="stats-value stats-value-danger">{{ stats.not_started }}</div>
             </div>
         </div>
     </div>
 
     <!-- Category Summary -->
-    <h2>{{ 'soa.section.controls_by_category'|trans({}, 'messages') }}</h2>
+    <h2>{{ 'soa.section.controls_by_category'|trans({}, 'soa') }}</h2>
     <table class="control-table">
         <thead>
             <tr>
-                <th scope="col">{{ 'soa.table.category'|trans({}, 'messages') }}</th>
-                <th scope="col">{{ 'soa.table.name'|trans({}, 'messages') }}</th>
-                <th scope="col" class="text-center">{{ 'soa.table.count'|trans({}, 'messages') }}</th>
+                <th scope="col">{{ 'soa.table.category'|trans({}, 'soa') }}</th>
+                <th scope="col">{{ 'soa.table.name'|trans({}, 'soa') }}</th>
+                <th scope="col" class="text-center">{{ 'soa.table.count'|trans({}, 'soa') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -280,7 +280,7 @@
 
     <!-- Detailed Controls List -->
     <div class="page-break"></div>
-    <h2>{{ 'soa.section.detailed_assessment'|trans({}, 'messages') }}</h2>
+    <h2>{{ 'soa.section.detailed_assessment'|trans({}, 'soa') }}</h2>
 
     {% for category, controls in controlsByCategory %}
         <div class="category-header">
@@ -290,12 +290,12 @@
         <table class="control-table">
             <thead>
                 <tr>
-                    <th scope="col" class="w-8">{{ 'soa.table.control_id'|trans({}, 'messages') }}</th>
-                    <th scope="col" class="w-25">{{ 'soa.table.name'|trans({}, 'messages') }}</th>
-                    <th scope="col" class="w-12">{{ 'soa.table.applicable'|trans({}, 'messages') }}</th>
-                    <th scope="col" class="w-12">{{ 'soa.field.status'|trans({}, 'messages') }}</th>
-                    <th scope="col" class="w-8">{{ 'soa.table.progress'|trans({}, 'messages') }}</th>
-                    <th scope="col" class="w-35">{{ 'soa.table.justification_notes'|trans({}, 'messages') }}</th>
+                    <th scope="col" class="w-8">{{ 'soa.table.control_id'|trans({}, 'soa') }}</th>
+                    <th scope="col" class="w-25">{{ 'soa.table.name'|trans({}, 'soa') }}</th>
+                    <th scope="col" class="w-12">{{ 'soa.table.applicable'|trans({}, 'soa') }}</th>
+                    <th scope="col" class="w-12">{{ 'soa.field.status'|trans({}, 'soa') }}</th>
+                    <th scope="col" class="w-8">{{ 'soa.table.progress'|trans({}, 'soa') }}</th>
+                    <th scope="col" class="w-35">{{ 'soa.table.justification_notes'|trans({}, 'soa') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -305,20 +305,20 @@
                         <td><strong>{{ control.name }}</strong></td>
                         <td>
                             {% if control.applicable %}
-                                <span class="badge badge-applicable">{{ 'soa.value.yes'|trans({}, 'messages') }}</span>
+                                <span class="badge badge-applicable">{{ 'soa.value.yes'|trans({}, 'soa') }}</span>
                             {% else %}
-                                <span class="badge badge-not-applicable">{{ 'soa.value.no'|trans({}, 'messages') }}</span>
+                                <span class="badge badge-not-applicable">{{ 'soa.value.no'|trans({}, 'soa') }}</span>
                             {% endif %}
                         </td>
                         <td>
                             {% if control.implementationStatus == 'implemented' %}
-                                <span class="badge badge-implemented">{{ 'soa.status.implemented'|trans({}, 'messages') }}</span>
+                                <span class="badge badge-implemented">{{ 'soa.status.implemented'|trans({}, 'soa') }}</span>
                             {% elseif control.implementationStatus == 'partial' %}
-                                <span class="badge badge-partial">{{ 'soa.status.partial'|trans({}, 'messages') }}</span>
+                                <span class="badge badge-partial">{{ 'soa.status.partial'|trans({}, 'soa') }}</span>
                             {% elseif control.implementationStatus == 'planned' %}
-                                <span class="badge badge-planned">{{ 'soa.status.planned'|trans({}, 'messages') }}</span>
+                                <span class="badge badge-planned">{{ 'soa.status.planned'|trans({}, 'soa') }}</span>
                             {% else %}
-                                <span class="badge badge-not-implemented">{{ 'soa.status.not_started'|trans({}, 'messages') }}</span>
+                                <span class="badge badge-not-implemented">{{ 'soa.status.not_started'|trans({}, 'soa') }}</span>
                             {% endif %}
                         </td>
                         <td class="text-center">
@@ -326,21 +326,21 @@
                         </td>
                         <td>
                             {% if not control.applicable and control.justification %}
-                                <strong>{{ 'soa.label.not_applicable_prefix'|trans({}, 'messages') }}</strong> {{ control.justification|slice(0, 200) }}{% if control.justification|length > 200 %}...{% endif %}
+                                <strong>{{ 'soa.label.not_applicable_prefix'|trans({}, 'soa') }}</strong> {{ control.justification|slice(0, 200) }}{% if control.justification|length > 200 %}...{% endif %}
                             {% elseif control.implementationNotes %}
                                 {{ control.implementationNotes|slice(0, 200) }}{% if control.implementationNotes|length > 200 %}...{% endif %}
                             {% endif %}
 
                             {% if control.responsiblePerson %}
-                                <br><span class="text-muted">{{ 'soa.label.responsible'|trans({}, 'messages') }} {{ control.responsiblePerson }}</span>
+                                <br><span class="text-muted">{{ 'soa.label.responsible'|trans({}, 'soa') }} {{ control.responsiblePerson }}</span>
                             {% endif %}
 
                             {% if control.targetDate %}
-                                <br><span class="text-muted">{{ 'soa.table.target_date'|trans({}, 'messages') }}: {{ control.targetDate|date('d.m.Y') }}</span>
+                                <br><span class="text-muted">{{ 'soa.table.target_date'|trans({}, 'soa') }}: {{ control.targetDate|date('d.m.Y') }}</span>
                             {% endif %}
 
                             {% if control.risks|length > 0 %}
-                                <br><span class="text-muted">{{ 'soa.label.linked_risks'|trans({}, 'messages') }} {{ control.risks|length }}</span>
+                                <br><span class="text-muted">{{ 'soa.label.linked_risks'|trans({}, 'soa') }} {{ control.risks|length }}</span>
                             {% endif %}
                         </td>
                     </tr>
@@ -350,7 +350,7 @@
     {% endfor %}
 
     <div class="footer">
-        {{ 'soa.page.title'|trans({}, 'messages') }} — {{ 'soa.report.generated_at'|trans({'%datetime%': generatedAt|date('d.m.Y H:i:s')}, 'messages') }} — {{ 'soa.footer.note'|trans({}, 'messages') }}
+        {{ 'soa.page.title'|trans({}, 'soa') }} — {{ 'soa.report.generated_at'|trans({'%datetime%': generatedAt|date('d.m.Y H:i:s')}, 'messages') }} — {{ 'soa.footer.note'|trans({}, 'soa') }}
     </div>
 </body>
 </html>

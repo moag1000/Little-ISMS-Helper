@@ -248,7 +248,7 @@
                     {% if risk.supplier %}
                         <div class="subject-info card mb-3">
                             <div class="card-header bg-success text-white">
-                                <i class="bi bi-truck" aria-hidden="true"></i> {{ 'supplier.title'|trans({}, 'messages') }}
+                                <i class="bi bi-truck" aria-hidden="true"></i> {{ 'supplier.title'|trans({}, 'suppliers') }}
                             </div>
                             <div class="card-body">
                                 <h5>{{ risk.supplier.name }}</h5>
@@ -263,7 +263,7 @@
                                     </p>
                                 {% endif %}
                                 <a href="{{ path('app_supplier_show', {id: risk.supplier.id}) }}" class="btn btn-sm btn-outline-success">
-                                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> {{ 'supplier.action.view_details'|trans({}, 'messages') }}
+                                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> {{ 'supplier.action.view_details'|trans({}, 'suppliers') }}
                                 </a>
                             </div>
                         </div>
