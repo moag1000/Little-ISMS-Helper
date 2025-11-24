@@ -35,7 +35,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Kritikalität</h5>
+                    <h2 class="h6 mb-2 text-muted">Kritikalität</h2>
                     <p class="h3">
                         {% set criticality_badge = {
                             'critical': 'danger',
@@ -53,7 +53,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Business Impact Score</h5>
+                    <h2 class="h6 mb-2 text-muted">Business Impact Score</h2>
                     <p class="h3">{{ metrics.business_impact_score }}/5</p>
                     <small class="text-muted">Automatisch berechnet</small>
                 </div>
@@ -62,7 +62,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Prozess-Risikolevel</h5>
+                    <h2 class="h6 mb-2 text-muted">Prozess-Risikolevel</h2>
                     <p class="h3">
                         {% set risk_badge = {
                             'critical': 'danger',
@@ -82,7 +82,7 @@
         <div class="col-md-3">
             <div class="card {% if not metrics.criticality_aligned %}border-warning{% endif %}">
                 <div class="card-body">
-                    <h6 class="card-subtitle mb-2 text-muted">Alignment-Status</h5>
+                    <h2 class="h6 mb-2 text-muted">Alignment-Status</h2>
                     <p class="h3">
                         {% if metrics.criticality_aligned %}
                             <i class="bi bi-check-circle text-success" aria-hidden="true"></i>
@@ -155,7 +155,7 @@
             <div class="tab-content d-none" data-tab-content="bia">
                 <div class="row">
                     <div class="col-md-6">
-                        <h5>Recovery-Ziele</h5>
+                        <h2 class="h5">Recovery-Ziele</h2>
                         {% embed '_components/_table.html.twig' with {
                             'noMargin': true
                         } %}

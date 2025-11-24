@@ -25,7 +25,7 @@
             {# Navigation Sidebar #}
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title mb-0">
+                    <h2 class="h5 mb-0">
                         <i class="bi-list-ul me-2"></i>Navigation
                     </h2>
                 </div>
@@ -104,7 +104,7 @@
                         <div class="card h-100">
                             <div class="card-body text-center">
                                 <div class="display-4 mb-2 text-primary">{{ stats.total }}</div>
-                                <h6 class="text-muted mb-0">Pakete Gesamt</h5>
+                                <h3 class="h6 mb-0">Pakete Gesamt</h3>
                                 <small class="text-muted">
                                     {% if stats.generated_at %}
                                         Stand: {{ stats.generated_at }}
@@ -118,7 +118,7 @@
                         <div class="card h-100 border-success">
                             <div class="card-body text-center">
                                 <div class="display-4 mb-2 text-success">{{ stats.allowed }}</div>
-                                <h6 class="text-muted mb-0">Erlaubt</h5>
+                                <h3 class="h6 mb-0">Erlaubt</h3>
                                 <small class="text-muted">{{ (stats.allowed / stats.total * 100)|round(1) }}%</small>
                             </div>
                         </div>
@@ -130,7 +130,7 @@
                                 <div class="display-4 mb-2 {% if stats.unknown > 0 or stats.not_allowed > 0 %}text-warning{% else %}text-muted{% endif %}">
                                     {{ stats.restricted + stats.copyleft + stats.not_allowed + stats.unknown }}
                                 </div>
-                                <h6 class="text-muted mb-0">Prüfung erforderlich</h5>
+                                <h3 class="h6 mb-0">Prüfung erforderlich</h3>
                                 <small class="text-muted">
                                     {{ ((stats.restricted + stats.copyleft + stats.not_allowed + stats.unknown) / stats.total * 100)|round(1) }}%
                                 </small>
@@ -142,9 +142,9 @@
                 {# Detailed Breakdown #}
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h3 class="card-title mb-0">
+                        <h2 class="h5 mb-0">
                             <i class="bi-pie-chart me-2"></i>Lizenzverteilung
-                        </h5>
+                        </h2>
                     </div>
                     <div class="card-body">
                         {% embed '_components/_table.html.twig' with {
@@ -241,9 +241,9 @@
                 {% if stats.unknown > 0 or stats.not_allowed > 0 %}
                     <div class="card border-warning mb-4">
                         <div class="card-header bg-warning text-dark">
-                            <h3 class="card-title mb-0">
+                            <h2 class="h5 mb-0">
                                 <i class="bi-exclamation-triangle-fill me-2"></i>Handlungsbedarf
-                            </h5>
+                            </h2>
                         </div>
                         <div class="card-body">
                             <ul class="mb-0">
@@ -269,9 +269,9 @@
                 {# Next Steps #}
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title mb-0">
+                        <h2 class="h5 mb-0">
                             <i class="bi-list-check me-2"></i>Nächste Schritte
-                        </h5>
+                        </h2>
                     </div>
                     <div class="card-body">
                         <ol class="mb-0">
