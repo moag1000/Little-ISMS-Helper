@@ -77,6 +77,26 @@ compliance:
     high: Hoch
     medium: Mittel
     low: Niedrig
+compliance_mapping:
+  mapping_type:
+    weak: Schwach (0-49%)
+    partial: Teilweise (50-99%)
+    full: Vollständig (100%)
+    exceeds: Überschreitet (101-150%)
+  confidence:
+    low: Niedrig
+    medium: Mittel
+    high: Hoch
+compliance_requirement:
+  priority:
+    critical: Kritisch
+    high: Hoch
+    medium: Mittel
+    low: Niedrig
+  requirement_type:
+    core: Kern-Anforderung
+    detailed: Detaillierte Anforderung
+    sub_requirement: Unter-Anforderung
   message:
     no_gaps: Keine Gaps gefunden
     no_gaps_desc: Für das ausgewählte Framework wurden keine Umsetzungs‑Lücken identifiziert.

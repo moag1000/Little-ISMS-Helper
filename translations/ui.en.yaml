@@ -1,17 +1,16 @@
-ui:
-  location: Location
-  responsible: Responsible
-  contact: Contact
-  details: Details
-  overview: Overview
-  new: New
-  add: Add
-  remove: Remove
-  select: Select
-  none: None
-  all: All
-  'true': true
-  'false': false
-  optional: Optional
-  required: Required
-  n_a: N/A
+ui.location: Location
+ui.responsible: Responsible
+ui.contact: Contact
+ui.details: Details
+ui.overview: Overview
+ui.new: New
+ui.add: Add
+ui.remove: Remove
+ui.select: Select
+ui.none: None
+ui.all: All
+ui.true: true
+ui.false: false
+ui.optional: Optional
+ui.required: Required
+ui.n_a: N/A

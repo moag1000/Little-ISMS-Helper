@@ -1,66 +1,83 @@
-change_request:
-  title: Change Requests
-  page:
-    title: Change Requests
-    new: New Change Request
-  new: New Change Request
-  action:
-    create: Create Change Request
-    view: View
-    edit: Edit
-  statistics:
-    total: Total Requests
-    pending_approval: Pending Approval
-    in_implementation: In Implementation
-    overdue: Overdue
-  alert:
-    pending_approval: Pending approvals
-    overdue: Overdue change requests
-  list:
-    title: 'Change Requests (%count%)'
-  table:
-    change_number: Request No.
-    title: Title
-    type: Type
-    priority: Priority
-    status: Status
-    complexity: Complexity
-    requested: Requested on
-    actions: Actions
-  empty:
-    message: No change requests available.
-    create_first: Create the first request
-  section:
-    basic_info: Basic Information
-    request_details: Requester & Details
-    impact_assessment: Impact & Assessment
-    implementation: Implementation
-    approval: Approval
-    verification_closure: Verification & Closure
-  field:
-    change_number: Request No.
-    title: Title
-    change_type: Change Type
-    description: Description
-    justification: Justification
-    requested_by: Requested by
-    requested_date: Requested date
-    priority: Priority
-    status: Status
-    isms_impact: ISMS Impact
-    risk_assessment: Risk Assessment
-    implementation_plan: Implementation Plan
-    rollback_plan: Rollback Plan
-    testing_requirements: Testing Requirements
-    planned_implementation_date: Planned Implementation Date
-    actual_implementation_date: Actual Implementation Date
-    implemented_by: Implemented by
-    implementation_notes: Implementation Notes
-    approved_by: Approved by
-    approved_date: Approved date
-    approval_comments: Approval Comments
-    verified_by: Verified by
-    verified_date: Verified date
-    verification_results: Verification Results
-    closed_date: Closed date
-    closure_notes: Closure Notes
+change_request.title: 'Change Requests'
+change_request.page.title: 'Change Requests'
+change_request.page.new: 'New Change Request'
+change_request.new: 'New Change Request'
+change_request.action.create: 'Create Change Request'
+change_request.action.view: View
+change_request.action.edit: Edit
+change_request.statistics.total: 'Total Requests'
+change_request.statistics.pending_approval: 'Pending Approval'
+change_request.statistics.in_implementation: 'In Implementation'
+change_request.statistics.overdue: Overdue
+change_request.alert.pending_approval: 'Pending approvals'
+change_request.alert.overdue: 'Overdue change requests'
+change_request.list.title: 'Change Requests (%count%)'
+change_request.table.change_number: 'Request No.'
+change_request.table.title: Title
+change_request.table.type: Type
+change_request.table.priority: Priority
+change_request.table.status: Status
+change_request.table.complexity: Complexity
+change_request.table.requested: 'Requested on'
+change_request.table.actions: Actions
+change_request.empty.message: 'No change requests available.'
+change_request.empty.create_first: 'Create the first request'
+change_request.section.basic_info: 'Basic Information'
+change_request.section.request_details: 'Requester & Details'
+change_request.section.impact_assessment: 'Impact & Assessment'
+change_request.section.implementation: Implementation
+change_request.section.approval: Approval
+change_request.section.verification_closure: 'Verification & Closure'
+change_request.field.change_number: 'Request No.'
+change_request.field.title: Title
+change_request.field.change_type: 'Change Type'
+change_request.field.description: Description
+change_request.field.justification: Justification
+change_request.field.requested_by: 'Requested by'
+change_request.field.requested_date: 'Requested date'
+change_request.field.priority: Priority
+change_request.field.status: Status
+change_request.field.isms_impact: 'ISMS Impact'
+change_request.field.risk_assessment: 'Risk Assessment'
+change_request.field.implementation_plan: 'Implementation Plan'
+change_request.field.rollback_plan: 'Rollback Plan'
+change_request.field.testing_requirements: 'Testing Requirements'
+change_request.field.planned_implementation_date: 'Planned Implementation Date'
+change_request.field.actual_implementation_date: 'Actual Implementation Date'
+change_request.field.implemented_by: 'Implemented by'
+change_request.field.implementation_notes: 'Implementation Notes'
+change_request.field.approved_by: 'Approved by'
+change_request.field.approved_date: 'Approved date'
+change_request.field.approval_comments: 'Approval Comments'
+change_request.field.verified_by: 'Verified by'
+change_request.field.verified_date: 'Verified date'
+change_request.field.verification_results: 'Verification Results'
+change_request.field.closed_date: 'Closed date'
+change_request.field.closure_notes: 'Closure Notes'
+change_request.edit: __change_request.edit
+change_request.page.edit: __change_request.page.edit
+change_request.action.update: __change_request.action.update
+change_request.confirm.delete: __change_request.confirm.delete
+change_request.details.title: __change_request.details.title
+change_request.field.complexity_score: __change_request.field.complexity_score
+change_request.field.planned_implementation: __change_request.field.planned_implementation
+change_request.status.not_scheduled: __change_request.status.not_scheduled
+change_request.section.description: __change_request.section.description
+change_request.section.justification: __change_request.section.justification
+change_request.section.impact: __change_request.section.impact
+change_request.section.risk_assessment: __change_request.section.risk_assessment
+change_request.section.plan: __change_request.section.plan
+change_request.section.rollback_plan: __change_request.section.rollback_plan
+change_request.section.testing_requirements: __change_request.section.testing_requirements
+change_request.section.approval_info: __change_request.section.approval_info
+change_request.field.approval_date: __change_request.field.approval_date
+change_request.field.comments: __change_request.field.comments
+change_request.field.implementation_date: __change_request.field.implementation_date
+change_request.field.notes: __change_request.field.notes
+change_request.section.verification: __change_request.section.verification
+change_request.field.verification_date: __change_request.field.verification_date
+change_request.field.results: __change_request.field.results
+change_request.section.closure: __change_request.section.closure
+change_request.section.affected_assets: __change_request.section.affected_assets
+change_request.section.affected_controls: __change_request.section.affected_controls
+change_request.section.affected_risks: __change_request.section.affected_risks

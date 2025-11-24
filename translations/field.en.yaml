@@ -1,27 +1,26 @@
-field:
-  id: ID
-  name: Name
-  title: Title
-  description: Description
-  status: Status
-  type: Type
-  date: Date
-  created_at: Created At
-  updated_at: Updated At
-  tenant: Tenant
-  user: User
-  location: Location
-  person: Person
-  responsible: Responsible
-  responsible_person: Responsible Person
-  contact_person: Contact Person
-  notes: Notes
-  active: Active
-  email: Email
-  phone: Phone
-  address: Address
-  city: City
-  country: Country
-  postal_code: Postal Code
-  company: Company
-  department: Department
+field.id: ID
+field.name: Name
+field.title: Title
+field.description: Description
+field.status: Status
+field.type: Type
+field.date: Date
+field.created_at: 'Created At'
+field.updated_at: 'Updated At'
+field.tenant: Tenant
+field.user: User
+field.location: Location
+field.person: Person
+field.responsible: Responsible
+field.responsible_person: 'Responsible Person'
+field.contact_person: 'Contact Person'
+field.notes: Notes
+field.active: Active
+field.email: Email
+field.phone: Phone
+field.address: Address
+field.city: City
+field.country: Country
+field.postal_code: 'Postal Code'
+field.company: Company
+field.department: Department

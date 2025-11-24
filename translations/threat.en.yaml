@@ -1,36 +1,33 @@
-threat:
-  title: Threat Intelligence
-  name: Threat
-  threat_type: Threat Type
-  severity: Severity
-  source: Source
-  cve_id: CVE ID
-  affected_systems: Affected Systems
-  affected_assets: Affected Assets
-  indicators: Indicators
-  mitigation_recommendations: Mitigation Recommendations
-  status: Status
-  detection_date: Detection Date
-  mitigation_date: Mitigation Date
-  actions_taken: Actions Taken
-  affects_organization: Affects Organization
-  cvss_score: CVSS Score
-  references: References
-  assigned_to: Assigned To
-  type:
-    malware: Malware
-    phishing: Phishing
-    vulnerability: Vulnerability
-    data_breach: Data Breach
-    ddos: DDoS
-    insider_threat: Insider Threat
-    ransomware: Ransomware
-    apt: APT
-    zero_day: Zero Day
-    other: Other
-  status_type:
-    new: New
-    analyzing: Analyzing
-    mitigated: Mitigated
-    monitoring: Monitoring
-    closed: Closed
+threat.title: 'Threat Intelligence'
+threat.name: Threat
+threat.threat_type: 'Threat Type'
+threat.severity: Severity
+threat.source: Source
+threat.cve_id: 'CVE ID'
+threat.affected_systems: 'Affected Systems'
+threat.affected_assets: 'Affected Assets'
+threat.indicators: Indicators
+threat.mitigation_recommendations: 'Mitigation Recommendations'
+threat.status: Status
+threat.detection_date: 'Detection Date'
+threat.mitigation_date: 'Mitigation Date'
+threat.actions_taken: 'Actions Taken'
+threat.affects_organization: 'Affects Organization'
+threat.cvss_score: 'CVSS Score'
+threat.references: References
+threat.assigned_to: 'Assigned To'
+threat.type.malware: Malware
+threat.type.phishing: Phishing
+threat.type.vulnerability: Vulnerability
+threat.type.data_breach: 'Data Breach'
+threat.type.ddos: DDoS
+threat.type.insider_threat: 'Insider Threat'
+threat.type.ransomware: Ransomware
+threat.type.apt: APT
+threat.type.zero_day: 'Zero Day'
+threat.type.other: Other
+threat.status_type.new: New
+threat.status_type.analyzing: Analyzing
+threat.status_type.mitigated: Mitigated
+threat.status_type.monitoring: Monitoring
+threat.status_type.closed: Closed

@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="de" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="N9sTpyZ" resname="mfa.title">
+        <source>mfa.title</source>
+        <target>Zwei-Faktor-Authentifizierung</target>
+      </trans-unit>
+      <trans-unit id="LXdbz_a" resname="mfa.tokens">
+        <source>mfa.tokens</source>
+        <target>MFA-Token</target>
+      </trans-unit>
+      <trans-unit id="UVDdrg1" resname="mfa.enabled">
+        <source>mfa.enabled</source>
+        <target>MFA aktiviert</target>
+      </trans-unit>
+      <trans-unit id="trVu3yB" resname="mfa.disabled">
+        <source>mfa.disabled</source>
+        <target>MFA deaktiviert</target>
+      </trans-unit>
+      <trans-unit id="HBOVJHD" resname="mfa.token_type">
+        <source>mfa.token_type</source>
+        <target>Token-Typ</target>
+      </trans-unit>
+      <trans-unit id="WlJhx5d" resname="mfa.device_name">
+        <source>mfa.device_name</source>
+        <target>Gerätename</target>
+      </trans-unit>
+      <trans-unit id="vSW.3GT" resname="mfa.enrolled_at">
+        <source>mfa.enrolled_at</source>
+        <target>Registriert am</target>
+      </trans-unit>
+      <trans-unit id="Rx4ktE9" resname="mfa.last_used">
+        <source>mfa.last_used</source>
+        <target>Zuletzt verwendet</target>
+      </trans-unit>
+      <trans-unit id="ufUf_xK" resname="mfa.usage_count">
+        <source>mfa.usage_count</source>
+        <target>Verwendungsanzahl</target>
+      </trans-unit>
+      <trans-unit id="HjWYfzZ" resname="mfa.is_active">
+        <source>mfa.is_active</source>
+        <target>Aktiv</target>
+      </trans-unit>
+      <trans-unit id="3oaPVJJ" resname="mfa.is_primary">
+        <source>mfa.is_primary</source>
+        <target>Primär</target>
+      </trans-unit>
+      <trans-unit id="iWqkGE1" resname="mfa.action.reset">
+        <source>mfa.action.reset</source>
+        <target>Token zurücksetzen</target>
+      </trans-unit>
+      <trans-unit id="9Ygqy5D" resname="mfa.statistics.active_tokens">
+        <source>mfa.statistics.active_tokens</source>
+        <target>Aktive Token</target>
+      </trans-unit>
+      <trans-unit id="9jJMpfV" resname="mfa.statistics.by_type">
+        <source>mfa.statistics.by_type</source>
+        <target>Nach Typ</target>
+      </trans-unit>
+      <trans-unit id=".KjsIR0" resname="mfa.challenge.title">
+        <source>mfa.challenge.title</source>
+        <target>Zwei-Faktor-Authentifizierung</target>
+      </trans-unit>
+      <trans-unit id="rTjFLjc" resname="mfa.challenge.description">
+        <source>mfa.challenge.description</source>
+        <target>Bitte geben Sie den Bestätigungscode von Ihrem Authenticator ein.</target>
+      </trans-unit>
+      <trans-unit id="EK7SIpX" resname="mfa.challenge.device">
+        <source>mfa.challenge.device</source>
+        <target>Authentifizierungsgerät</target>
+      </trans-unit>
+      <trans-unit id="rIU.EyZ" resname="mfa.challenge.device_help">
+        <source>mfa.challenge.device_help</source>
+        <target>Wählen Sie das Gerät, das Sie verwenden möchten.</target>
+      </trans-unit>
+      <trans-unit id="3Gk.slM" resname="mfa.challenge.code">
+        <source>mfa.challenge.code</source>
+        <target>Bestätigungscode</target>
+      </trans-unit>
+      <trans-unit id="Cff3fOn" resname="mfa.challenge.code_help">
+        <source>mfa.challenge.code_help</source>
+        <target>Geben Sie den 6-stelligen Code von Ihrer Authenticator-App oder einen 8-stelligen Backup-Code ein.</target>
+      </trans-unit>
+      <trans-unit id="3b21eVl" resname="mfa.challenge.verify">
+        <source>mfa.challenge.verify</source>
+        <target>Code überprüfen</target>
+      </trans-unit>
+      <trans-unit id="FYZ3yv." resname="mfa.challenge.cancel">
+        <source>mfa.challenge.cancel</source>
+        <target>Abbrechen und abmelden</target>
+      </trans-unit>
+      <trans-unit id="I.lctCv" resname="mfa.challenge.backup_code_hint">
+        <source>mfa.challenge.backup_code_hint</source>
+        <target>Kein Zugriff auf Ihr Gerät?</target>
+      </trans-unit>
+      <trans-unit id="bC2hsZA" resname="mfa.challenge.using_backup_code">
+        <source>mfa.challenge.using_backup_code</source>
+        <target>Backup-Code verwenden</target>
+      </trans-unit>
+      <trans-unit id="1QWfhfg" resname="mfa.challenge.backup_code_info">
+        <source>mfa.challenge.backup_code_info</source>
+        <target>Geben Sie einen Ihrer 8-stelligen Backup-Codes ein, die Sie bei der Einrichtung erhalten haben. Jeder Backup-Code kann nur einmal verwendet werden.</target>
+      </trans-unit>
+      <trans-unit id="W8rNScv" resname="mfa.challenge.help_title">
+        <source>mfa.challenge.help_title</source>
+        <target>Hilfe benötigt?</target>
+      </trans-unit>
+      <trans-unit id="d2nEzds" resname="mfa.challenge.help_text">
+        <source>mfa.challenge.help_text</source>
+        <target>Wenden Sie sich an Ihren Administrator, wenn Sie keinen Zugriff auf Ihre Authentifizierungsgeräte haben.</target>
+      </trans-unit>
+      <trans-unit id="k.DeTLu" resname="mfa.challenge.nis2_compliance">
+        <source>mfa.challenge.nis2_compliance</source>
+        <target>NIS2-konforme Multi-Faktor-Authentifizierung (Art. 21.2.b)</target>
+      </trans-unit>
+      <trans-unit id="KCrghQd" resname="mfa.token.primary">
+        <source>mfa.token.primary</source>
+        <target>Primär</target>
+      </trans-unit>
+      <trans-unit id="1UcFH0E" resname="mfa_token.edit">
+        <source>mfa_token.edit</source>
+        <target>__mfa_token.edit</target>
+      </trans-unit>
+      <trans-unit id="vOt6IN2" resname="mfa_token.edit.subtitle">
+        <source>mfa_token.edit.subtitle</source>
+        <target>__mfa_token.edit.subtitle</target>
+      </trans-unit>
+      <trans-unit id="aPoIpiU" resname="mfa_token.new">
+        <source>mfa_token.new</source>
+        <target>__mfa_token.new</target>
+      </trans-unit>
+      <trans-unit id="vwtngTd" resname="mfa_token.new.subtitle">
+        <source>mfa_token.new.subtitle</source>
+        <target>__mfa_token.new.subtitle</target>
+      </trans-unit>
+      <trans-unit id="WN47yWv" resname="mfa_token.field.status">
+        <source>mfa_token.field.status</source>
+        <target>__mfa_token.field.status</target>
+      </trans-unit>
+      <trans-unit id="1WB.aHt" resname="mfa_token.field.token_type">
+        <source>mfa_token.field.token_type</source>
+        <target>__mfa_token.field.token_type</target>
+      </trans-unit>
+      <trans-unit id="3lKgHEz" resname="mfa_token.field.device_name">
+        <source>mfa_token.field.device_name</source>
+        <target>__mfa_token.field.device_name</target>
+      </trans-unit>
+      <trans-unit id="4JfT0zU" resname="mfa_token.field.enrolled_at">
+        <source>mfa_token.field.enrolled_at</source>
+        <target>__mfa_token.field.enrolled_at</target>
+      </trans-unit>
+      <trans-unit id="p0Uf5dp" resname="mfa_token.field.last_used">
+        <source>mfa_token.field.last_used</source>
+        <target>__mfa_token.field.last_used</target>
+      </trans-unit>
+      <trans-unit id="F9HKf6G" resname="mfa_token.field.usage_count">
+        <source>mfa_token.field.usage_count</source>
+        <target>__mfa_token.field.usage_count</target>
+      </trans-unit>
+      <trans-unit id="ZZzHPT8" resname="mfa_token.status.active">
+        <source>mfa_token.status.active</source>
+        <target>__mfa_token.status.active</target>
+      </trans-unit>
+      <trans-unit id="ooZsN0G" resname="mfa_token.status.inactive">
+        <source>mfa_token.status.inactive</source>
+        <target>__mfa_token.status.inactive</target>
+      </trans-unit>
+      <trans-unit id="wV6RhCp" resname="mfa_token.never_used">
+        <source>mfa_token.never_used</source>
+        <target>__mfa_token.never_used</target>
+      </trans-unit>
+      <trans-unit id="5pxzFUI" resname="mfa_token.confirm_disable">
+        <source>mfa_token.confirm_disable</source>
+        <target>__mfa_token.confirm_disable</target>
+      </trans-unit>
+      <trans-unit id=".VGP2Vb" resname="mfa_token.action.disable">
+        <source>mfa_token.action.disable</source>
+        <target>__mfa_token.action.disable</target>
+      </trans-unit>
+      <trans-unit id="5G_iYPB" resname="mfa_token.confirm_delete">
+        <source>mfa_token.confirm_delete</source>
+        <target>__mfa_token.confirm_delete</target>
+      </trans-unit>
+      <trans-unit id="UmSYPfq" resname="mfa_token.title">
+        <source>mfa_token.title</source>
+        <target>__mfa_token.title</target>
+      </trans-unit>
+      <trans-unit id="3Kka1iI" resname="mfa_token.subtitle">
+        <source>mfa_token.subtitle</source>
+        <target>__mfa_token.subtitle</target>
+      </trans-unit>
+      <trans-unit id="M8WedM_" resname="mfa_token.kpi.active">
+        <source>mfa_token.kpi.active</source>
+        <target>__mfa_token.kpi.active</target>
+      </trans-unit>
+      <trans-unit id="ExcyJfZ" resname="mfa_token.kpi.users">
+        <source>mfa_token.kpi.users</source>
+        <target>__mfa_token.kpi.users</target>
+      </trans-unit>
+      <trans-unit id="PDFsJ8m" resname="mfa_token.empty">
+        <source>mfa_token.empty</source>
+        <target>__mfa_token.empty</target>
+      </trans-unit>
+      <trans-unit id="WazEfKq" resname="mfa_token.setup_new">
+        <source>mfa_token.setup_new</source>
+        <target>__mfa_token.setup_new</target>
+      </trans-unit>
+      <trans-unit id="XkwtJ1H" resname="mfa_token.backup_codes.title">
+        <source>mfa_token.backup_codes.title</source>
+        <target>__mfa_token.backup_codes.title</target>
+      </trans-unit>
+      <trans-unit id="GKP6MXm" resname="mfa_token.backup_codes.subtitle">
+        <source>mfa_token.backup_codes.subtitle</source>
+        <target>__mfa_token.backup_codes.subtitle</target>
+      </trans-unit>
+      <trans-unit id="yd3ROpR" resname="mfa_token.backup_codes.warning">
+        <source>mfa_token.backup_codes.warning</source>
+        <target>__mfa_token.backup_codes.warning</target>
+      </trans-unit>
+      <trans-unit id="PV.XQ9r" resname="mfa_token.backup_codes.warning_text">
+        <source>mfa_token.backup_codes.warning_text</source>
+        <target>__mfa_token.backup_codes.warning_text</target>
+      </trans-unit>
+      <trans-unit id="t.oOrfR" resname="mfa_token.backup_codes.onetime_display">
+        <source>mfa_token.backup_codes.onetime_display</source>
+        <target>__mfa_token.backup_codes.onetime_display</target>
+      </trans-unit>
+      <trans-unit id="Zexspvu" resname="mfa_token.backup_codes.codes">
+        <source>mfa_token.backup_codes.codes</source>
+        <target>__mfa_token.backup_codes.codes</target>
+      </trans-unit>
+      <trans-unit id="loGKKq_" resname="mfa_token.backup_codes.codes_count">
+        <source>mfa_token.backup_codes.codes_count</source>
+        <target>__mfa_token.backup_codes.codes_count</target>
+      </trans-unit>
+      <trans-unit id="LcC7dy9" resname="mfa_token.field.user">
+        <source>mfa_token.field.user</source>
+        <target>__mfa_token.field.user</target>
+      </trans-unit>
+      <trans-unit id="t4_DsM." resname="mfa_token.backup_codes.copy_all">
+        <source>mfa_token.backup_codes.copy_all</source>
+        <target>__mfa_token.backup_codes.copy_all</target>
+      </trans-unit>
+      <trans-unit id="vFJ1KHg" resname="mfa_token.backup_codes.print">
+        <source>mfa_token.backup_codes.print</source>
+        <target>__mfa_token.backup_codes.print</target>
+      </trans-unit>
+      <trans-unit id="Y_jMxzb" resname="mfa_token.backup_codes.download">
+        <source>mfa_token.backup_codes.download</source>
+        <target>__mfa_token.backup_codes.download</target>
+      </trans-unit>
+      <trans-unit id="ak7ij.f" resname="mfa_token.backup_codes.usage_title">
+        <source>mfa_token.backup_codes.usage_title</source>
+        <target>__mfa_token.backup_codes.usage_title</target>
+      </trans-unit>
+      <trans-unit id="KHTtnCT" resname="mfa_token.backup_codes.usage_1">
+        <source>mfa_token.backup_codes.usage_1</source>
+        <target>__mfa_token.backup_codes.usage_1</target>
+      </trans-unit>
+      <trans-unit id="WHoRiFZ" resname="mfa_token.backup_codes.usage_2">
+        <source>mfa_token.backup_codes.usage_2</source>
+        <target>__mfa_token.backup_codes.usage_2</target>
+      </trans-unit>
+      <trans-unit id="mFlGrL6" resname="mfa_token.backup_codes.usage_3">
+        <source>mfa_token.backup_codes.usage_3</source>
+        <target>__mfa_token.backup_codes.usage_3</target>
+      </trans-unit>
+      <trans-unit id="RcZCfIF" resname="mfa_token.backup_codes.usage_4">
+        <source>mfa_token.backup_codes.usage_4</source>
+        <target>__mfa_token.backup_codes.usage_4</target>
+      </trans-unit>
+      <trans-unit id="yK8xd9k" resname="mfa_token.backup_codes.regenerate_warning">
+        <source>mfa_token.backup_codes.regenerate_warning</source>
+        <target>__mfa_token.backup_codes.regenerate_warning</target>
+      </trans-unit>
+      <trans-unit id="ATXnkZv" resname="mfa_token.details.subtitle">
+        <source>mfa_token.details.subtitle</source>
+        <target>__mfa_token.details.subtitle</target>
+      </trans-unit>
+      <trans-unit id="7iLdorF" resname="mfa_token.details.title">
+        <source>mfa_token.details.title</source>
+        <target>__mfa_token.details.title</target>
+      </trans-unit>
+      <trans-unit id="Cie1dbP" resname="mfa_token.field.is_primary">
+        <source>mfa_token.field.is_primary</source>
+        <target>__mfa_token.field.is_primary</target>
+      </trans-unit>
+      <trans-unit id="tC4dE24" resname="mfa_token.primary">
+        <source>mfa_token.primary</source>
+        <target>__mfa_token.primary</target>
+      </trans-unit>
+      <trans-unit id="9dTWH0o" resname="mfa_token.usage.title">
+        <source>mfa_token.usage.title</source>
+        <target>__mfa_token.usage.title</target>
+      </trans-unit>
+      <trans-unit id="taBz4Ft" resname="mfa_token.usage.times">
+        <source>mfa_token.usage.times</source>
+        <target>__mfa_token.usage.times</target>
+      </trans-unit>
+      <trans-unit id=".DP8_TE" resname="mfa_token.field.expires_at">
+        <source>mfa_token.field.expires_at</source>
+        <target>__mfa_token.field.expires_at</target>
+      </trans-unit>
+      <trans-unit id="snDA7lA" resname="mfa_token.status.expired">
+        <source>mfa_token.status.expired</source>
+        <target>__mfa_token.status.expired</target>
+      </trans-unit>
+      <trans-unit id="7I52e75" resname="mfa_token.backup_codes.remaining">
+        <source>mfa_token.backup_codes.remaining</source>
+        <target>__mfa_token.backup_codes.remaining</target>
+      </trans-unit>
+      <trans-unit id="PkxXoCb" resname="mfa_token.backup_codes.regenerate_confirm">
+        <source>mfa_token.backup_codes.regenerate_confirm</source>
+        <target>__mfa_token.backup_codes.regenerate_confirm</target>
+      </trans-unit>
+      <trans-unit id=".5tIGR_" resname="mfa_token.backup_codes.regenerate">
+        <source>mfa_token.backup_codes.regenerate</source>
+        <target>__mfa_token.backup_codes.regenerate</target>
+      </trans-unit>
+      <trans-unit id="VW3rbC1" resname="mfa_token.backup_codes.no_codes_left">
+        <source>mfa_token.backup_codes.no_codes_left</source>
+        <target>__mfa_token.backup_codes.no_codes_left</target>
+      </trans-unit>
+      <trans-unit id="jZoS09n" resname="mfa_token.backup_codes.low_codes">
+        <source>mfa_token.backup_codes.low_codes</source>
+        <target>__mfa_token.backup_codes.low_codes</target>
+      </trans-unit>
+      <trans-unit id="kqEyJwb" resname="mfa_token.backup_codes.description">
+        <source>mfa_token.backup_codes.description</source>
+        <target>__mfa_token.backup_codes.description</target>
+      </trans-unit>
+      <trans-unit id="mJ5nWL5" resname="mfa_token.setup_totp.title">
+        <source>mfa_token.setup_totp.title</source>
+        <target>__mfa_token.setup_totp.title</target>
+      </trans-unit>
+      <trans-unit id="I.5W3qO" resname="mfa_token.setup_totp.subtitle">
+        <source>mfa_token.setup_totp.subtitle</source>
+        <target>__mfa_token.setup_totp.subtitle</target>
+      </trans-unit>
+      <trans-unit id="Xco7o7i" resname="mfa_token.setup_totp.step1">
+        <source>mfa_token.setup_totp.step1</source>
+        <target>__mfa_token.setup_totp.step1</target>
+      </trans-unit>
+      <trans-unit id="TrqcETn" resname="mfa_token.setup_totp.scan_instructions">
+        <source>mfa_token.setup_totp.scan_instructions</source>
+        <target>__mfa_token.setup_totp.scan_instructions</target>
+      </trans-unit>
+      <trans-unit id="MSKb7Vc" resname="mfa_token.setup_totp.manual_entry">
+        <source>mfa_token.setup_totp.manual_entry</source>
+        <target>__mfa_token.setup_totp.manual_entry</target>
+      </trans-unit>
+      <trans-unit id="Qfe6o.s" resname="mfa_token.setup_totp.manual_instructions">
+        <source>mfa_token.setup_totp.manual_instructions</source>
+        <target>__mfa_token.setup_totp.manual_instructions</target>
+      </trans-unit>
+      <trans-unit id="RPwF27x" resname="mfa_token.setup_totp.step2">
+        <source>mfa_token.setup_totp.step2</source>
+        <target>__mfa_token.setup_totp.step2</target>
+      </trans-unit>
+      <trans-unit id="TjnEYjD" resname="mfa_token.setup_totp.verify_instructions">
+        <source>mfa_token.setup_totp.verify_instructions</source>
+        <target>__mfa_token.setup_totp.verify_instructions</target>
+      </trans-unit>
+      <trans-unit id="uJZ6R58" resname="mfa_token.field.verification_code">
+        <source>mfa_token.field.verification_code</source>
+        <target>__mfa_token.field.verification_code</target>
+      </trans-unit>
+      <trans-unit id="1M2Df.s" resname="mfa_token.setup_totp.code_help">
+        <source>mfa_token.setup_totp.code_help</source>
+        <target>__mfa_token.setup_totp.code_help</target>
+      </trans-unit>
+      <trans-unit id="wBr1muR" resname="mfa_token.setup_totp.verify_button">
+        <source>mfa_token.setup_totp.verify_button</source>
+        <target>__mfa_token.setup_totp.verify_button</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

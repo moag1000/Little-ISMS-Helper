@@ -1,0 +1,1134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="en" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="jRORZD." resname="compliance.title.transitive">
+        <source>compliance.title.transitive</source>
+        <target>Transitive Compliance</target>
+      </trans-unit>
+      <trans-unit id="OZXoPij" resname="compliance.title.compare">
+        <source>compliance.title.compare</source>
+        <target>Framework Comparison</target>
+      </trans-unit>
+      <trans-unit id="tIEihJG" resname="compliance.title.gap_analysis">
+        <source>compliance.title.gap_analysis</source>
+        <target>Gap Analysis</target>
+      </trans-unit>
+      <trans-unit id="7XeNS1m" resname="compliance.title.data_reuse">
+        <source>compliance.title.data_reuse</source>
+        <target>Data Reuse</target>
+      </trans-unit>
+      <trans-unit id="bfGPGPg" resname="compliance.description.transitive">
+        <source>compliance.description.transitive</source>
+        <target>Analyzes how requirements of different frameworks overlap and create leverage effects.</target>
+      </trans-unit>
+      <trans-unit id="5yTvM19" resname="compliance.description.compare">
+        <source>compliance.description.compare</source>
+        <target>Compares two compliance frameworks for overlaps and differences.</target>
+      </trans-unit>
+      <trans-unit id="UFhruAq" resname="compliance.description.gap_analysis">
+        <source>compliance.description.gap_analysis</source>
+        <target>Identifies gaps in the implementation of a framework and prioritizes remediation actions.</target>
+      </trans-unit>
+      <trans-unit id="QFRC3sj" resname="compliance.description.data_reuse">
+        <source>compliance.description.data_reuse</source>
+        <target>Analyzes reuse of data points across frameworks and highlights efficiency potential.</target>
+      </trans-unit>
+      <trans-unit id="KpK1Jfq" resname="compliance.description.critical_gaps">
+        <source>compliance.description.critical_gaps</source>
+        <target>Critical gaps with highest priority for immediate action.</target>
+      </trans-unit>
+      <trans-unit id="Mk7QuzO" resname="compliance.description.high_gaps">
+        <source>compliance.description.high_gaps</source>
+        <target>Severe gaps with high priority.</target>
+      </trans-unit>
+      <trans-unit id="eTHHnrv" resname="compliance.description.medium_gaps">
+        <source>compliance.description.medium_gaps</source>
+        <target>Medium gaps with moderate priority.</target>
+      </trans-unit>
+      <trans-unit id="GKNw1sJ" resname="compliance.description.low_gaps">
+        <source>compliance.description.low_gaps</source>
+        <target>Low gaps to be addressed later.</target>
+      </trans-unit>
+      <trans-unit id="JTh1CNZ" resname="compliance.description.reuse_matrix">
+        <source>compliance.description.reuse_matrix</source>
+        <target>Overview of where data can be reused across frameworks.</target>
+      </trans-unit>
+      <trans-unit id="Mgb0XG6" resname="compliance.section.framework_relationships">
+        <source>compliance.section.framework_relationships</source>
+        <target>Framework Relationships</target>
+      </trans-unit>
+      <trans-unit id="oMXvhPQ" resname="compliance.section.select_frameworks">
+        <source>compliance.section.select_frameworks</source>
+        <target>Select Frameworks</target>
+      </trans-unit>
+      <trans-unit id="4FpM34r" resname="compliance.section.framework_selection">
+        <source>compliance.section.framework_selection</source>
+        <target>Framework Selection</target>
+      </trans-unit>
+      <trans-unit id="9R2rMld" resname="compliance.section.reuse_opportunities">
+        <source>compliance.section.reuse_opportunities</source>
+        <target>Reuse Opportunities</target>
+      </trans-unit>
+      <trans-unit id="XJK2WTI" resname="compliance.section.reuse_matrix">
+        <source>compliance.section.reuse_matrix</source>
+        <target>Reuse Matrix</target>
+      </trans-unit>
+      <trans-unit id="ly9f2il" resname="compliance.section.framework_coverage">
+        <source>compliance.section.framework_coverage</source>
+        <target>Framework Coverage</target>
+      </trans-unit>
+      <trans-unit id="Y2AvE3k" resname="compliance.stats.total_relationships">
+        <source>compliance.stats.total_relationships</source>
+        <target>Total Relationships</target>
+      </trans-unit>
+      <trans-unit id="UWNNZB8" resname="compliance.stats.transitive_compliance">
+        <source>compliance.stats.transitive_compliance</source>
+        <target>Transitive Coverage</target>
+      </trans-unit>
+      <trans-unit id="DR_QYGG" resname="compliance.stats.leverage_rate">
+        <source>compliance.stats.leverage_rate</source>
+        <target>Leverage Rate</target>
+      </trans-unit>
+      <trans-unit id="gwXcZ2p" resname="compliance.stats.frameworks_leveraged">
+        <source>compliance.stats.frameworks_leveraged</source>
+        <target>Frameworks Leveraged</target>
+      </trans-unit>
+      <trans-unit id="f38wAbB" resname="compliance.stats.total_requirements">
+        <source>compliance.stats.total_requirements</source>
+        <target>Total Requirements</target>
+      </trans-unit>
+      <trans-unit id="vXmdpgM" resname="compliance.stats.met_requirements">
+        <source>compliance.stats.met_requirements</source>
+        <target>Met Requirements</target>
+      </trans-unit>
+      <trans-unit id="7vjjBd9" resname="compliance.stats.gaps_identified">
+        <source>compliance.stats.gaps_identified</source>
+        <target>Gaps Identified</target>
+      </trans-unit>
+      <trans-unit id="l6leNt4" resname="compliance.stats.compliance_score">
+        <source>compliance.stats.compliance_score</source>
+        <target>Compliance Score</target>
+      </trans-unit>
+      <trans-unit id="MRFLks2" resname="compliance.stats.common_requirements">
+        <source>compliance.stats.common_requirements</source>
+        <target>Common Requirements</target>
+      </trans-unit>
+      <trans-unit id="oLT7JnK" resname="compliance.stats.overlap_percentage">
+        <source>compliance.stats.overlap_percentage</source>
+        <target>Overlap Percentage</target>
+      </trans-unit>
+      <trans-unit id="Pdb_eUs" resname="compliance.stats.total_data_points">
+        <source>compliance.stats.total_data_points</source>
+        <target>Total Data Points</target>
+      </trans-unit>
+      <trans-unit id="3Lus1MM" resname="compliance.stats.reused_data">
+        <source>compliance.stats.reused_data</source>
+        <target>Reused Data</target>
+      </trans-unit>
+      <trans-unit id="9kjhcHM" resname="compliance.stats.reuse_rate">
+        <source>compliance.stats.reuse_rate</source>
+        <target>Reuse Rate</target>
+      </trans-unit>
+      <trans-unit id="boEtq7V" resname="compliance.stats.effort_saved">
+        <source>compliance.stats.effort_saved</source>
+        <target>Effort Saved</target>
+      </trans-unit>
+      <trans-unit id="j2ueyLL" resname="compliance.action.create_missing_mappings">
+        <source>compliance.action.create_missing_mappings</source>
+        <target>Create missing mappings</target>
+      </trans-unit>
+      <trans-unit id="u59F7fI" resname="compliance.action.create_mappings">
+        <source>compliance.action.create_mappings</source>
+        <target>Create mappings</target>
+      </trans-unit>
+      <trans-unit id="gHgZMZd" resname="compliance.action.compare">
+        <source>compliance.action.compare</source>
+        <target>Compare</target>
+      </trans-unit>
+      <trans-unit id=".wTMHQN" resname="compliance.action.export_pdf">
+        <source>compliance.action.export_pdf</source>
+        <target>PDF Report</target>
+      </trans-unit>
+      <trans-unit id="qiMNOgF" resname="compliance.action.export_excel">
+        <source>compliance.action.export_excel</source>
+        <target>Excel Export</target>
+      </trans-unit>
+      <trans-unit id="wW_.Oxe" resname="compliance.action.export_csv">
+        <source>compliance.action.export_csv</source>
+        <target>CSV Export</target>
+      </trans-unit>
+      <trans-unit id="NlcgvHk" resname="compliance.unit.requirements">
+        <source>compliance.unit.requirements</source>
+        <target>requirements</target>
+      </trans-unit>
+      <trans-unit id="IyqKKiM" resname="compliance.field.framework_1">
+        <source>compliance.field.framework_1</source>
+        <target>Framework 1</target>
+      </trans-unit>
+      <trans-unit id="DEktLtF" resname="compliance.field.framework_2">
+        <source>compliance.field.framework_2</source>
+        <target>Framework 2</target>
+      </trans-unit>
+      <trans-unit id="q2kkCXS" resname="compliance.field.select_framework">
+        <source>compliance.field.select_framework</source>
+        <target>Select framework</target>
+      </trans-unit>
+      <trans-unit id="K.wSk9V" resname="compliance.field.total_requirements">
+        <source>compliance.field.total_requirements</source>
+        <target>Total requirements</target>
+      </trans-unit>
+      <trans-unit id="IzN3gWE" resname="compliance.field.unique_requirements">
+        <source>compliance.field.unique_requirements</source>
+        <target>Unique requirements</target>
+      </trans-unit>
+      <trans-unit id="J63gMxY" resname="compliance.field.categories">
+        <source>compliance.field.categories</source>
+        <target>Categories</target>
+      </trans-unit>
+      <trans-unit id="AS2v9D9" resname="compliance.field.requirement">
+        <source>compliance.field.requirement</source>
+        <target>Requirement</target>
+      </trans-unit>
+      <trans-unit id="VEzchqq" resname="compliance.field.framework">
+        <source>compliance.field.framework</source>
+        <target>Framework</target>
+      </trans-unit>
+      <trans-unit id="Q.9kvwb" resname="compliance.field.severity">
+        <source>compliance.field.severity</source>
+        <target>Severity</target>
+      </trans-unit>
+      <trans-unit id="vh9h0pM" resname="compliance.field.gap_description">
+        <source>compliance.field.gap_description</source>
+        <target>Gap description</target>
+      </trans-unit>
+      <trans-unit id="tZNSqp6" resname="compliance.field.remediation">
+        <source>compliance.field.remediation</source>
+        <target>Remediation</target>
+      </trans-unit>
+      <trans-unit id="5QVZstE" resname="compliance.field.due_date">
+        <source>compliance.field.due_date</source>
+        <target>Due date</target>
+      </trans-unit>
+      <trans-unit id="Ptv6iLt" resname="compliance.field.data_element">
+        <source>compliance.field.data_element</source>
+        <target>Data element</target>
+      </trans-unit>
+      <trans-unit id="JbS2xiT" resname="compliance.field.source">
+        <source>compliance.field.source</source>
+        <target>Source</target>
+      </trans-unit>
+      <trans-unit id="5QO_B.T" resname="compliance.field.reuse_count">
+        <source>compliance.field.reuse_count</source>
+        <target>Reuse count</target>
+      </trans-unit>
+      <trans-unit id="ApNFzCq" resname="compliance.field.used_in_frameworks">
+        <source>compliance.field.used_in_frameworks</source>
+        <target>Used in frameworks</target>
+      </trans-unit>
+      <trans-unit id="imsCB.9" resname="compliance.field.quality_score">
+        <source>compliance.field.quality_score</source>
+        <target>Quality score</target>
+      </trans-unit>
+      <trans-unit id="zuLw4l1" resname="compliance.field.frameworks">
+        <source>compliance.field.frameworks</source>
+        <target>Frameworks</target>
+      </trans-unit>
+      <trans-unit id="4eDanzG" resname="compliance.field.time_savings">
+        <source>compliance.field.time_savings</source>
+        <target>Time savings</target>
+      </trans-unit>
+      <trans-unit id="539ZrH8" resname="compliance.field.reused_data">
+        <source>compliance.field.reused_data</source>
+        <target>Reused data</target>
+      </trans-unit>
+      <trans-unit id="gr6OD29" resname="compliance.field.new_data_needed">
+        <source>compliance.field.new_data_needed</source>
+        <target>New data needed</target>
+      </trans-unit>
+      <trans-unit id="aMOb_wl" resname="compliance.field.coverage">
+        <source>compliance.field.coverage</source>
+        <target>Coverage</target>
+      </trans-unit>
+      <trans-unit id="mUzUNXe" resname="compliance.option.select_framework">
+        <source>compliance.option.select_framework</source>
+        <target>Select framework…</target>
+      </trans-unit>
+      <trans-unit id="Mg.6Dqf" resname="compliance.option.all_frameworks">
+        <source>compliance.option.all_frameworks</source>
+        <target>All frameworks</target>
+      </trans-unit>
+      <trans-unit id="gct4sy6" resname="compliance.severity.critical">
+        <source>compliance.severity.critical</source>
+        <target>Critical</target>
+      </trans-unit>
+      <trans-unit id="msatUu." resname="compliance.severity.high">
+        <source>compliance.severity.high</source>
+        <target>High</target>
+      </trans-unit>
+      <trans-unit id="6sH_R95" resname="compliance.severity.medium">
+        <source>compliance.severity.medium</source>
+        <target>Medium</target>
+      </trans-unit>
+      <trans-unit id="jCZR6qY" resname="compliance.severity.low">
+        <source>compliance.severity.low</source>
+        <target>Low</target>
+      </trans-unit>
+      <trans-unit id="sXuyiQC" resname="nis2.article">
+        <source>nis2.article</source>
+        <target>__nis2.article</target>
+      </trans-unit>
+      <trans-unit id="VhLyvbG" resname="compliance.manage_frameworks">
+        <source>compliance.manage_frameworks</source>
+        <target>__compliance.manage_frameworks</target>
+      </trans-unit>
+      <trans-unit id="gioU3Ca" resname="compliance.manage_frameworks_subtitle">
+        <source>compliance.manage_frameworks_subtitle</source>
+        <target>__compliance.manage_frameworks_subtitle</target>
+      </trans-unit>
+      <trans-unit id="iIIe5m1" resname="compliance.framework_statistics">
+        <source>compliance.framework_statistics</source>
+        <target>__compliance.framework_statistics</target>
+      </trans-unit>
+      <trans-unit id="6OYBvPS" resname="compliance.total_available">
+        <source>compliance.total_available</source>
+        <target>__compliance.total_available</target>
+      </trans-unit>
+      <trans-unit id="zs2R6RQ" resname="compliance.loaded">
+        <source>compliance.loaded</source>
+        <target>__compliance.loaded</target>
+      </trans-unit>
+      <trans-unit id="fO.Qu8o" resname="compliance.not_loaded">
+        <source>compliance.not_loaded</source>
+        <target>__compliance.not_loaded</target>
+      </trans-unit>
+      <trans-unit id="4_4DTZX" resname="compliance.mandatory_missing">
+        <source>compliance.mandatory_missing</source>
+        <target>__compliance.mandatory_missing</target>
+      </trans-unit>
+      <trans-unit id="EbXq6IV" resname="compliance.available_frameworks">
+        <source>compliance.available_frameworks</source>
+        <target>__compliance.available_frameworks</target>
+      </trans-unit>
+      <trans-unit id="gfCyDuJ" resname="compliance.version">
+        <source>compliance.version</source>
+        <target>__compliance.version</target>
+      </trans-unit>
+      <trans-unit id="POpVuvg" resname="compliance.industry">
+        <source>compliance.industry</source>
+        <target>__compliance.industry</target>
+      </trans-unit>
+      <trans-unit id="5v3OMr4" resname="compliance.regulatory_body">
+        <source>compliance.regulatory_body</source>
+        <target>__compliance.regulatory_body</target>
+      </trans-unit>
+      <trans-unit id="jtQgrpe" resname="compliance.mandatory">
+        <source>compliance.mandatory</source>
+        <target>__compliance.mandatory</target>
+      </trans-unit>
+      <trans-unit id="KxocGOe" resname="compliance.required_modules">
+        <source>compliance.required_modules</source>
+        <target>__compliance.required_modules</target>
+      </trans-unit>
+      <trans-unit id="k4ZKWhy" resname="compliance.already_loaded">
+        <source>compliance.already_loaded</source>
+        <target>__compliance.already_loaded</target>
+      </trans-unit>
+      <trans-unit id="Xg_05Lx" resname="compliance.delete_framework">
+        <source>compliance.delete_framework</source>
+        <target>__compliance.delete_framework</target>
+      </trans-unit>
+      <trans-unit id="w0K9MDu" resname="compliance.load_framework">
+        <source>compliance.load_framework</source>
+        <target>__compliance.load_framework</target>
+      </trans-unit>
+      <trans-unit id="F00y76." resname="compliance.confirm_load">
+        <source>compliance.confirm_load</source>
+        <target>__compliance.confirm_load</target>
+      </trans-unit>
+      <trans-unit id="wnMeDOa" resname="compliance.loading">
+        <source>compliance.loading</source>
+        <target>__compliance.loading</target>
+      </trans-unit>
+      <trans-unit id="UmDOcq1" resname="compliance.successfully_loaded">
+        <source>compliance.successfully_loaded</source>
+        <target>__compliance.successfully_loaded</target>
+      </trans-unit>
+      <trans-unit id="c.dmqMM" resname="compliance.load_failed">
+        <source>compliance.load_failed</source>
+        <target>__compliance.load_failed</target>
+      </trans-unit>
+      <trans-unit id=".H.dfgW" resname="compliance.error">
+        <source>compliance.error</source>
+        <target>__compliance.error</target>
+      </trans-unit>
+      <trans-unit id="w2pDXNs" resname="compliance.deleting">
+        <source>compliance.deleting</source>
+        <target>__compliance.deleting</target>
+      </trans-unit>
+      <trans-unit id="7Wx7SMJ" resname="compliance.successfully_deleted">
+        <source>compliance.successfully_deleted</source>
+        <target>__compliance.successfully_deleted</target>
+      </trans-unit>
+      <trans-unit id="RSWHf9I" resname="compliance.delete_failed">
+        <source>compliance.delete_failed</source>
+        <target>__compliance.delete_failed</target>
+      </trans-unit>
+      <trans-unit id="SDAFycl" resname="compliance.mapping.create_link">
+        <source>compliance.mapping.create_link</source>
+        <target>__compliance.mapping.create_link</target>
+      </trans-unit>
+      <trans-unit id="O_xkuCV" resname="compliance.mapping.create_instruction">
+        <source>compliance.mapping.create_instruction</source>
+        <target>__compliance.mapping.create_instruction</target>
+      </trans-unit>
+      <trans-unit id="2q48K.e" resname="compliance.message.no_data_elements">
+        <source>compliance.message.no_data_elements</source>
+        <target>__compliance.message.no_data_elements</target>
+      </trans-unit>
+      <trans-unit id="fV81Nao" resname="compliance.message.no_frameworks">
+        <source>compliance.message.no_frameworks</source>
+        <target>__compliance.message.no_frameworks</target>
+      </trans-unit>
+      <trans-unit id="31G0nwk" resname="compliance.badge.reusable">
+        <source>compliance.badge.reusable</source>
+        <target>__compliance.badge.reusable</target>
+      </trans-unit>
+      <trans-unit id="0Oqdchw" resname="compliance.message.no_opportunities">
+        <source>compliance.message.no_opportunities</source>
+        <target>__compliance.message.no_opportunities</target>
+      </trans-unit>
+      <trans-unit id="zoVQPhs" resname="compliance.framework.edit.title">
+        <source>compliance.framework.edit.title</source>
+        <target>__compliance.framework.edit.title</target>
+      </trans-unit>
+      <trans-unit id="CsYgYdB" resname="compliance.framework.edit.heading">
+        <source>compliance.framework.edit.heading</source>
+        <target>__compliance.framework.edit.heading</target>
+      </trans-unit>
+      <trans-unit id="AeZoTCW" resname="compliance.framework.section.identification">
+        <source>compliance.framework.section.identification</source>
+        <target>__compliance.framework.section.identification</target>
+      </trans-unit>
+      <trans-unit id="GLg90w8" resname="compliance.framework.field.code">
+        <source>compliance.framework.field.code</source>
+        <target>__compliance.framework.field.code</target>
+      </trans-unit>
+      <trans-unit id="6ccB2DS" resname="compliance.framework.field.version">
+        <source>compliance.framework.field.version</source>
+        <target>__compliance.framework.field.version</target>
+      </trans-unit>
+      <trans-unit id="fn2cEFW" resname="compliance.framework.field.name">
+        <source>compliance.framework.field.name</source>
+        <target>__compliance.framework.field.name</target>
+      </trans-unit>
+      <trans-unit id=".lCFKLE" resname="compliance.framework.section.details">
+        <source>compliance.framework.section.details</source>
+        <target>__compliance.framework.section.details</target>
+      </trans-unit>
+      <trans-unit id="Db8z.Bv" resname="compliance.framework.field.description">
+        <source>compliance.framework.field.description</source>
+        <target>__compliance.framework.field.description</target>
+      </trans-unit>
+      <trans-unit id="jZzjU6w" resname="compliance.framework.field.industry">
+        <source>compliance.framework.field.industry</source>
+        <target>__compliance.framework.field.industry</target>
+      </trans-unit>
+      <trans-unit id="ypKs0VY" resname="compliance.framework.field.regulatory_body">
+        <source>compliance.framework.field.regulatory_body</source>
+        <target>__compliance.framework.field.regulatory_body</target>
+      </trans-unit>
+      <trans-unit id="IL81gEk" resname="compliance.framework.field.scope">
+        <source>compliance.framework.field.scope</source>
+        <target>__compliance.framework.field.scope</target>
+      </trans-unit>
+      <trans-unit id="ndw6wR4" resname="compliance.framework.section.configuration">
+        <source>compliance.framework.section.configuration</source>
+        <target>__compliance.framework.section.configuration</target>
+      </trans-unit>
+      <trans-unit id="BcuD_G4" resname="compliance.framework.field.mandatory">
+        <source>compliance.framework.field.mandatory</source>
+        <target>__compliance.framework.field.mandatory</target>
+      </trans-unit>
+      <trans-unit id="xWiZU3f" resname="compliance.framework.field.active">
+        <source>compliance.framework.field.active</source>
+        <target>__compliance.framework.field.active</target>
+      </trans-unit>
+      <trans-unit id="h_Bpzvw" resname="compliance.framework.info">
+        <source>compliance.framework.info</source>
+        <target>__compliance.framework.info</target>
+      </trans-unit>
+      <trans-unit id="7zgGY0G" resname="compliance.framework.field.requirements">
+        <source>compliance.framework.field.requirements</source>
+        <target>__compliance.framework.field.requirements</target>
+      </trans-unit>
+      <trans-unit id="GJeWGa3" resname="compliance.framework.confirm.delete">
+        <source>compliance.framework.confirm.delete</source>
+        <target>__compliance.framework.confirm.delete</target>
+      </trans-unit>
+      <trans-unit id="D1cbEKq" resname="compliance.framework.new.title">
+        <source>compliance.framework.new.title</source>
+        <target>__compliance.framework.new.title</target>
+      </trans-unit>
+      <trans-unit id="3GdY7c7" resname="compliance.framework.new.heading">
+        <source>compliance.framework.new.heading</source>
+        <target>__compliance.framework.new.heading</target>
+      </trans-unit>
+      <trans-unit id="dA6dZsD" resname="compliance.framework.help.code.title">
+        <source>compliance.framework.help.code.title</source>
+        <target>__compliance.framework.help.code.title</target>
+      </trans-unit>
+      <trans-unit id="OMa9zUY" resname="compliance.framework.help.code.text">
+        <source>compliance.framework.help.code.text</source>
+        <target>__compliance.framework.help.code.text</target>
+      </trans-unit>
+      <trans-unit id="OBmczng" resname="compliance.framework.help.mandatory.title">
+        <source>compliance.framework.help.mandatory.title</source>
+        <target>__compliance.framework.help.mandatory.title</target>
+      </trans-unit>
+      <trans-unit id="5JYTKBb" resname="compliance.framework.help.mandatory.text">
+        <source>compliance.framework.help.mandatory.text</source>
+        <target>__compliance.framework.help.mandatory.text</target>
+      </trans-unit>
+      <trans-unit id="TkwBNVU" resname="compliance.framework.help.active.title">
+        <source>compliance.framework.help.active.title</source>
+        <target>__compliance.framework.help.active.title</target>
+      </trans-unit>
+      <trans-unit id="TQtSdG4" resname="compliance.framework.help.active.text">
+        <source>compliance.framework.help.active.text</source>
+        <target>__compliance.framework.help.active.text</target>
+      </trans-unit>
+      <trans-unit id="6OdqoMP" resname="compliance.framework.field.status">
+        <source>compliance.framework.field.status</source>
+        <target>__compliance.framework.field.status</target>
+      </trans-unit>
+      <trans-unit id="7UAsU5m" resname="compliance.framework.field.compliance">
+        <source>compliance.framework.field.compliance</source>
+        <target>__compliance.framework.field.compliance</target>
+      </trans-unit>
+      <trans-unit id="8FwdjZI" resname="compliance.framework.action.dashboard">
+        <source>compliance.framework.action.dashboard</source>
+        <target>__compliance.framework.action.dashboard</target>
+      </trans-unit>
+      <trans-unit id="4I0Ca8v" resname="compliance.framework.title">
+        <source>compliance.framework.title</source>
+        <target>__compliance.framework.title</target>
+      </trans-unit>
+      <trans-unit id="l_00iOs" resname="compliance.framework.heading">
+        <source>compliance.framework.heading</source>
+        <target>__compliance.framework.heading</target>
+      </trans-unit>
+      <trans-unit id="0i6gZcd" resname="compliance.framework.description">
+        <source>compliance.framework.description</source>
+        <target>__compliance.framework.description</target>
+      </trans-unit>
+      <trans-unit id="yPxBK.H" resname="compliance.framework.action.new">
+        <source>compliance.framework.action.new</source>
+        <target>__compliance.framework.action.new</target>
+      </trans-unit>
+      <trans-unit id="f.kIN7q" resname="compliance.framework.list">
+        <source>compliance.framework.list</source>
+        <target>__compliance.framework.list</target>
+      </trans-unit>
+      <trans-unit id="649rGR." resname="compliance.framework.empty">
+        <source>compliance.framework.empty</source>
+        <target>__compliance.framework.empty</target>
+      </trans-unit>
+      <trans-unit id="IRZs6Bd" resname="compliance.framework.no_requirements">
+        <source>compliance.framework.no_requirements</source>
+        <target>__compliance.framework.no_requirements</target>
+      </trans-unit>
+      <trans-unit id="cMmQBN2" resname="compliance.requirement.action.new">
+        <source>compliance.requirement.action.new</source>
+        <target>__compliance.requirement.action.new</target>
+      </trans-unit>
+      <trans-unit id="2eY6d5p" resname="compliance.requirement.priority.critical">
+        <source>compliance.requirement.priority.critical</source>
+        <target>__compliance.requirement.priority.critical</target>
+      </trans-unit>
+      <trans-unit id="lXYiPpy" resname="compliance.requirement.priority.high">
+        <source>compliance.requirement.priority.high</source>
+        <target>__compliance.requirement.priority.high</target>
+      </trans-unit>
+      <trans-unit id="_GY0Pkz" resname="compliance.requirement.priority.medium">
+        <source>compliance.requirement.priority.medium</source>
+        <target>__compliance.requirement.priority.medium</target>
+      </trans-unit>
+      <trans-unit id="PE1vbeS" resname="compliance.requirement.priority.low">
+        <source>compliance.requirement.priority.low</source>
+        <target>__compliance.requirement.priority.low</target>
+      </trans-unit>
+      <trans-unit id="ciHHD32" resname="compliance.framework.action.gap_analysis">
+        <source>compliance.framework.action.gap_analysis</source>
+        <target>__compliance.framework.action.gap_analysis</target>
+      </trans-unit>
+      <trans-unit id="WzEYt84" resname="compliance.framework.action.assess">
+        <source>compliance.framework.action.assess</source>
+        <target>__compliance.framework.action.assess</target>
+      </trans-unit>
+      <trans-unit id="8L2iyoq" resname="compliance.framework.badge.mandatory">
+        <source>compliance.framework.badge.mandatory</source>
+        <target>__compliance.framework.badge.mandatory</target>
+      </trans-unit>
+      <trans-unit id="DQVCoAj" resname="compliance.framework.stats.total_requirements">
+        <source>compliance.framework.stats.total_requirements</source>
+        <target>__compliance.framework.stats.total_requirements</target>
+      </trans-unit>
+      <trans-unit id="igaGu7X" resname="compliance.framework.stats.applicable">
+        <source>compliance.framework.stats.applicable</source>
+        <target>__compliance.framework.stats.applicable</target>
+      </trans-unit>
+      <trans-unit id="UjNu7Ed" resname="compliance.framework.stats.fulfilled">
+        <source>compliance.framework.stats.fulfilled</source>
+        <target>__compliance.framework.stats.fulfilled</target>
+      </trans-unit>
+      <trans-unit id="6YYEyPD" resname="compliance.framework.stats.compliance">
+        <source>compliance.framework.stats.compliance</source>
+        <target>__compliance.framework.stats.compliance</target>
+      </trans-unit>
+      <trans-unit id="HkRFegW" resname="compliance.cross_framework.source_target_label">
+        <source>compliance.cross_framework.source_target_label</source>
+        <target>__compliance.cross_framework.source_target_label</target>
+      </trans-unit>
+      <trans-unit id="ksbvQN8" resname="compliance.cross_framework.table.source">
+        <source>compliance.cross_framework.table.source</source>
+        <target>__compliance.cross_framework.table.source</target>
+      </trans-unit>
+      <trans-unit id="lIrj2sY" resname="compliance.cross_framework.table.target">
+        <source>compliance.cross_framework.table.target</source>
+        <target>__compliance.cross_framework.table.target</target>
+      </trans-unit>
+      <trans-unit id="5xePAf7" resname="compliance.cross_framework.table.type">
+        <source>compliance.cross_framework.table.type</source>
+        <target>__compliance.cross_framework.table.type</target>
+      </trans-unit>
+      <trans-unit id="GeAHlFN" resname="compliance.cross_framework.table.strength">
+        <source>compliance.cross_framework.table.strength</source>
+        <target>__compliance.cross_framework.table.strength</target>
+      </trans-unit>
+      <trans-unit id="O5B5o_u" resname="compliance.cross_framework.table.bidirectional">
+        <source>compliance.cross_framework.table.bidirectional</source>
+        <target>__compliance.cross_framework.table.bidirectional</target>
+      </trans-unit>
+      <trans-unit id="s5JNKpM" resname="compliance.cross_framework.yes_bidirectional">
+        <source>compliance.cross_framework.yes_bidirectional</source>
+        <target>__compliance.cross_framework.yes_bidirectional</target>
+      </trans-unit>
+      <trans-unit id="KeWkXJ1" resname="compliance.cross_framework.title">
+        <source>compliance.cross_framework.title</source>
+        <target>__compliance.cross_framework.title</target>
+      </trans-unit>
+      <trans-unit id="iJUB2sn" resname="compliance.cross_framework.subtitle">
+        <source>compliance.cross_framework.subtitle</source>
+        <target>__compliance.cross_framework.subtitle</target>
+      </trans-unit>
+      <trans-unit id="bKj4QUz" resname="compliance.cross_framework.back">
+        <source>compliance.cross_framework.back</source>
+        <target>__compliance.cross_framework.back</target>
+      </trans-unit>
+      <trans-unit id="eDSf5Mx" resname="compliance.cross_framework.coverage_matrix">
+        <source>compliance.cross_framework.coverage_matrix</source>
+        <target>__compliance.cross_framework.coverage_matrix</target>
+      </trans-unit>
+      <trans-unit id="ftmMd7y" resname="compliance.cross_framework.coverage_description">
+        <source>compliance.cross_framework.coverage_description</source>
+        <target>__compliance.cross_framework.coverage_description</target>
+      </trans-unit>
+      <trans-unit id="6k.LrVu" resname="compliance.cross_framework.coverage_high">
+        <source>compliance.cross_framework.coverage_high</source>
+        <target>__compliance.cross_framework.coverage_high</target>
+      </trans-unit>
+      <trans-unit id="tNHBj4I" resname="compliance.cross_framework.coverage_medium">
+        <source>compliance.cross_framework.coverage_medium</source>
+        <target>__compliance.cross_framework.coverage_medium</target>
+      </trans-unit>
+      <trans-unit id="JpFXqMF" resname="compliance.cross_framework.coverage_low">
+        <source>compliance.cross_framework.coverage_low</source>
+        <target>__compliance.cross_framework.coverage_low</target>
+      </trans-unit>
+      <trans-unit id="Dul30uf" resname="compliance.cross_framework.strong_mappings">
+        <source>compliance.cross_framework.strong_mappings</source>
+        <target>__compliance.cross_framework.strong_mappings</target>
+      </trans-unit>
+      <trans-unit id="VM.uRpp" resname="compliance.cross_framework.partial_mappings_label">
+        <source>compliance.cross_framework.partial_mappings_label</source>
+        <target>__compliance.cross_framework.partial_mappings_label</target>
+      </trans-unit>
+      <trans-unit id="1DIQyKO" resname="compliance.cross_framework.weak_mappings">
+        <source>compliance.cross_framework.weak_mappings</source>
+        <target>__compliance.cross_framework.weak_mappings</target>
+      </trans-unit>
+      <trans-unit id="Gv13K55" resname="compliance.cross_framework.showing_of">
+        <source>compliance.cross_framework.showing_of</source>
+        <target>__compliance.cross_framework.showing_of</target>
+      </trans-unit>
+      <trans-unit id="Vqz9pzs" resname="compliance.cross_framework.understanding_title">
+        <source>compliance.cross_framework.understanding_title</source>
+        <target>__compliance.cross_framework.understanding_title</target>
+      </trans-unit>
+      <trans-unit id="WhHHqkN" resname="compliance.cross_framework.what_title">
+        <source>compliance.cross_framework.what_title</source>
+        <target>__compliance.cross_framework.what_title</target>
+      </trans-unit>
+      <trans-unit id="wDFcZq1" resname="compliance.cross_framework.what_description">
+        <source>compliance.cross_framework.what_description</source>
+        <target>__compliance.cross_framework.what_description</target>
+      </trans-unit>
+      <trans-unit id="13AVsA3" resname="compliance.cross_framework.types_title">
+        <source>compliance.cross_framework.types_title</source>
+        <target>__compliance.cross_framework.types_title</target>
+      </trans-unit>
+      <trans-unit id="zaXpzQu" resname="compliance.cross_framework.types.exceeds">
+        <source>compliance.cross_framework.types.exceeds</source>
+        <target>__compliance.cross_framework.types.exceeds</target>
+      </trans-unit>
+      <trans-unit id="dz44i6N" resname="compliance.cross_framework.types.full">
+        <source>compliance.cross_framework.types.full</source>
+        <target>__compliance.cross_framework.types.full</target>
+      </trans-unit>
+      <trans-unit id="gTHk_o4" resname="compliance.cross_framework.types.partial">
+        <source>compliance.cross_framework.types.partial</source>
+        <target>__compliance.cross_framework.types.partial</target>
+      </trans-unit>
+      <trans-unit id="UrY7Luo" resname="compliance.cross_framework.types.weak">
+        <source>compliance.cross_framework.types.weak</source>
+        <target>__compliance.cross_framework.types.weak</target>
+      </trans-unit>
+      <trans-unit id="l1fiZ7i" resname="compliance.cross_framework.bidirectional_title">
+        <source>compliance.cross_framework.bidirectional_title</source>
+        <target>__compliance.cross_framework.bidirectional_title</target>
+      </trans-unit>
+      <trans-unit id="gzymcRm" resname="compliance.cross_framework.bidirectional_description">
+        <source>compliance.cross_framework.bidirectional_description</source>
+        <target>__compliance.cross_framework.bidirectional_description</target>
+      </trans-unit>
+      <trans-unit id="fMdStcK" resname="compliance.cross_framework.strategic_title">
+        <source>compliance.cross_framework.strategic_title</source>
+        <target>__compliance.cross_framework.strategic_title</target>
+      </trans-unit>
+      <trans-unit id="pI6lgBc" resname="compliance.cross_framework.strategic_description">
+        <source>compliance.cross_framework.strategic_description</source>
+        <target>__compliance.cross_framework.strategic_description</target>
+      </trans-unit>
+      <trans-unit id="3cEWBfx" resname="compliance.page_title">
+        <source>compliance.page_title</source>
+        <target>__compliance.page_title</target>
+      </trans-unit>
+      <trans-unit id="o.GClax" resname="compliance.page_subtitle">
+        <source>compliance.page_subtitle</source>
+        <target>__compliance.page_subtitle</target>
+      </trans-unit>
+      <trans-unit id="z_w52qj" resname="compliance.button.cross_framework">
+        <source>compliance.button.cross_framework</source>
+        <target>__compliance.button.cross_framework</target>
+      </trans-unit>
+      <trans-unit id="p5bgN3r" resname="compliance.button.transitive">
+        <source>compliance.button.transitive</source>
+        <target>__compliance.button.transitive</target>
+      </trans-unit>
+      <trans-unit id="uLXiB.f" resname="compliance.button.compare_frameworks">
+        <source>compliance.button.compare_frameworks</source>
+        <target>__compliance.button.compare_frameworks</target>
+      </trans-unit>
+      <trans-unit id="LlzMshu" resname="compliance.quick_access">
+        <source>compliance.quick_access</source>
+        <target>__compliance.quick_access</target>
+      </trans-unit>
+      <trans-unit id="ArzIdzc" resname="compliance.quick_access_hint">
+        <source>compliance.quick_access_hint</source>
+        <target>__compliance.quick_access_hint</target>
+      </trans-unit>
+      <trans-unit id="fnF7iMY" resname="compliance.data_reuse.title">
+        <source>compliance.data_reuse.title</source>
+        <target>__compliance.data_reuse.title</target>
+      </trans-unit>
+      <trans-unit id="Wjg8jXa" resname="compliance.data_reuse.description">
+        <source>compliance.data_reuse.description</source>
+        <target>__compliance.data_reuse.description</target>
+      </trans-unit>
+      <trans-unit id="4PJ735B" resname="compliance.label.compliance">
+        <source>compliance.label.compliance</source>
+        <target>__compliance.label.compliance</target>
+      </trans-unit>
+      <trans-unit id="_XKaaXj" resname="compliance.label.fulfilled">
+        <source>compliance.label.fulfilled</source>
+        <target>__compliance.label.fulfilled</target>
+      </trans-unit>
+      <trans-unit id="Brcibff" resname="compliance.label.gaps">
+        <source>compliance.label.gaps</source>
+        <target>__compliance.label.gaps</target>
+      </trans-unit>
+      <trans-unit id="Wakkkqu" resname="compliance.button.open_dashboard">
+        <source>compliance.button.open_dashboard</source>
+        <target>__compliance.button.open_dashboard</target>
+      </trans-unit>
+      <trans-unit id="5xNlV0H" resname="compliance.no_frameworks_loaded">
+        <source>compliance.no_frameworks_loaded</source>
+        <target>__compliance.no_frameworks_loaded</target>
+      </trans-unit>
+      <trans-unit id="LBs2pqj" resname="compliance.add_frameworks">
+        <source>compliance.add_frameworks</source>
+        <target>__compliance.add_frameworks</target>
+      </trans-unit>
+      <trans-unit id="b9XcWqT" resname="compliance.contact_admin_to_add_frameworks">
+        <source>compliance.contact_admin_to_add_frameworks</source>
+        <target>__compliance.contact_admin_to_add_frameworks</target>
+      </trans-unit>
+      <trans-unit id="EozpMPj" resname="compliance.stats.total_mappings">
+        <source>compliance.stats.total_mappings</source>
+        <target>__compliance.stats.total_mappings</target>
+      </trans-unit>
+      <trans-unit id="xaxRC4d" resname="compliance.stats.full_exceeds">
+        <source>compliance.stats.full_exceeds</source>
+        <target>__compliance.stats.full_exceeds</target>
+      </trans-unit>
+      <trans-unit id="IbH6Byc" resname="compliance.stats.partial_mappings">
+        <source>compliance.stats.partial_mappings</source>
+        <target>__compliance.stats.partial_mappings</target>
+      </trans-unit>
+      <trans-unit id="2MdUvmB" resname="compliance.stats.bidirectional_mappings">
+        <source>compliance.stats.bidirectional_mappings</source>
+        <target>__compliance.stats.bidirectional_mappings</target>
+      </trans-unit>
+      <trans-unit id="joeXwkV" resname="compliance.button.explore_mappings">
+        <source>compliance.button.explore_mappings</source>
+        <target>__compliance.button.explore_mappings</target>
+      </trans-unit>
+      <trans-unit id="XAEylub" resname="compliance.benefits.title">
+        <source>compliance.benefits.title</source>
+        <target>__compliance.benefits.title</target>
+      </trans-unit>
+      <trans-unit id="EFw15c8" resname="compliance.benefits.data_reuse.title">
+        <source>compliance.benefits.data_reuse.title</source>
+        <target>__compliance.benefits.data_reuse.title</target>
+      </trans-unit>
+      <trans-unit id="oY7zgas" resname="compliance.benefits.data_reuse.description">
+        <source>compliance.benefits.data_reuse.description</source>
+        <target>__compliance.benefits.data_reuse.description</target>
+      </trans-unit>
+      <trans-unit id="E3g8VuX" resname="compliance.benefits.time_efficiency.title">
+        <source>compliance.benefits.time_efficiency.title</source>
+        <target>__compliance.benefits.time_efficiency.title</target>
+      </trans-unit>
+      <trans-unit id="G.zrwgw" resname="compliance.benefits.time_efficiency.description">
+        <source>compliance.benefits.time_efficiency.description</source>
+        <target>__compliance.benefits.time_efficiency.description</target>
+      </trans-unit>
+      <trans-unit id="3ppqzUE" resname="compliance.benefits.transparency.title">
+        <source>compliance.benefits.transparency.title</source>
+        <target>__compliance.benefits.transparency.title</target>
+      </trans-unit>
+      <trans-unit id="B2zOQ9J" resname="compliance.benefits.transparency.description">
+        <source>compliance.benefits.transparency.description</source>
+        <target>__compliance.benefits.transparency.description</target>
+      </trans-unit>
+      <trans-unit id="gm3pc2L" resname="compliance.benefits.strategic.title">
+        <source>compliance.benefits.strategic.title</source>
+        <target>__compliance.benefits.strategic.title</target>
+      </trans-unit>
+      <trans-unit id="VDAIQ0S" resname="compliance.benefits.strategic.description">
+        <source>compliance.benefits.strategic.description</source>
+        <target>__compliance.benefits.strategic.description</target>
+      </trans-unit>
+      <trans-unit id="AMhqSTw" resname="compliance.gaps.title_description">
+        <source>compliance.gaps.title_description</source>
+        <target>__compliance.gaps.title_description</target>
+      </trans-unit>
+      <trans-unit id="PDlRLFr" resname="compliance.gaps.by_priority">
+        <source>compliance.gaps.by_priority</source>
+        <target>__compliance.gaps.by_priority</target>
+      </trans-unit>
+      <trans-unit id="oJnekdF" resname="compliance.gaps.change_status_instruction">
+        <source>compliance.gaps.change_status_instruction</source>
+        <target>__compliance.gaps.change_status_instruction</target>
+      </trans-unit>
+      <trans-unit id="0dzmB5h" resname="compliance.mapping_quality.no_mappings_found">
+        <source>compliance.mapping_quality.no_mappings_found</source>
+        <target>__compliance.mapping_quality.no_mappings_found</target>
+      </trans-unit>
+      <trans-unit id="PLnBvje" resname="compliance.requirement.view_page_note">
+        <source>compliance.requirement.view_page_note</source>
+        <target>__compliance.requirement.view_page_note</target>
+      </trans-unit>
+      <trans-unit id=".OMMZUK" resname="compliance.requirement.filter_by_framework">
+        <source>compliance.requirement.filter_by_framework</source>
+        <target>__compliance.requirement.filter_by_framework</target>
+      </trans-unit>
+      <trans-unit id="zfcOSPp" resname="compliance.field.category">
+        <source>compliance.field.category</source>
+        <target>__compliance.field.category</target>
+      </trans-unit>
+      <trans-unit id="paAVuym" resname="compliance.field.mapping">
+        <source>compliance.field.mapping</source>
+        <target>__compliance.field.mapping</target>
+      </trans-unit>
+      <trans-unit id="Y21.dQX" resname="compliance.field.match_quality">
+        <source>compliance.field.match_quality</source>
+        <target>__compliance.field.match_quality</target>
+      </trans-unit>
+      <trans-unit id="YoToeOP" resname="compliance.badge.mapped">
+        <source>compliance.badge.mapped</source>
+        <target>__compliance.badge.mapped</target>
+      </trans-unit>
+      <trans-unit id="u7gp8qx" resname="compliance.badge.no_mapping">
+        <source>compliance.badge.no_mapping</source>
+        <target>__compliance.badge.no_mapping</target>
+      </trans-unit>
+      <trans-unit id="7hvLZaR" resname="compliance.message.no_comparison_data">
+        <source>compliance.message.no_comparison_data</source>
+        <target>__compliance.message.no_comparison_data</target>
+      </trans-unit>
+      <trans-unit id="dz2valI" resname="compliance.section.detailed_comparison">
+        <source>compliance.section.detailed_comparison</source>
+        <target>__compliance.section.detailed_comparison</target>
+      </trans-unit>
+      <trans-unit id="YoPDAQ1" resname="compliance.section.unique_to">
+        <source>compliance.section.unique_to</source>
+        <target>__compliance.section.unique_to</target>
+      </trans-unit>
+      <trans-unit id="JJjpbZh" resname="compliance.description.unique_requirements">
+        <source>compliance.description.unique_requirements</source>
+        <target>__compliance.description.unique_requirements</target>
+      </trans-unit>
+      <trans-unit id="DFr3Vzo" resname="compliance.message.more_requirements">
+        <source>compliance.message.more_requirements</source>
+        <target>__compliance.message.more_requirements</target>
+      </trans-unit>
+      <trans-unit id="m1FnGNI" resname="compliance.message.no_unique">
+        <source>compliance.message.no_unique</source>
+        <target>__compliance.message.no_unique</target>
+      </trans-unit>
+      <trans-unit id="p24Tl9z" resname="compliance.field.source_requirement">
+        <source>compliance.field.source_requirement</source>
+        <target>__compliance.field.source_requirement</target>
+      </trans-unit>
+      <trans-unit id="XT5MU1g" resname="compliance.field.target_requirements">
+        <source>compliance.field.target_requirements</source>
+        <target>__compliance.field.target_requirements</target>
+      </trans-unit>
+      <trans-unit id="SqyXMfA" resname="compliance.field.mapping_strength">
+        <source>compliance.field.mapping_strength</source>
+        <target>__compliance.field.mapping_strength</target>
+      </trans-unit>
+      <trans-unit id="vtEk_Rz" resname="compliance.field.mapped">
+        <source>compliance.field.mapped</source>
+        <target>__compliance.field.mapped</target>
+      </trans-unit>
+      <trans-unit id="6_LZLzH" resname="compliance.section.compliance_matrix">
+        <source>compliance.section.compliance_matrix</source>
+        <target>__compliance.section.compliance_matrix</target>
+      </trans-unit>
+      <trans-unit id="m1yXyJ7" resname="compliance.description.matrix">
+        <source>compliance.description.matrix</source>
+        <target>__compliance.description.matrix</target>
+      </trans-unit>
+      <trans-unit id="4ZSHFYX" resname="compliance.section.cross_framework_mappings">
+        <source>compliance.section.cross_framework_mappings</source>
+        <target>__compliance.section.cross_framework_mappings</target>
+      </trans-unit>
+      <trans-unit id="uMpRK5H" resname="compliance.mapping.type.full">
+        <source>compliance.mapping.type.full</source>
+        <target>__compliance.mapping.type.full</target>
+      </trans-unit>
+      <trans-unit id="2_ijdor" resname="compliance.mapping.type.partial">
+        <source>compliance.mapping.type.partial</source>
+        <target>__compliance.mapping.type.partial</target>
+      </trans-unit>
+      <trans-unit id="x0fs39x" resname="compliance.mapping.type.weak">
+        <source>compliance.mapping.type.weak</source>
+        <target>__compliance.mapping.type.weak</target>
+      </trans-unit>
+      <trans-unit id="xqQ2yuv" resname="compliance.section.mapping_explanation">
+        <source>compliance.section.mapping_explanation</source>
+        <target>__compliance.section.mapping_explanation</target>
+      </trans-unit>
+      <trans-unit id="zkyO8zt" resname="compliance.explanation.what_are_mappings_title">
+        <source>compliance.explanation.what_are_mappings_title</source>
+        <target>__compliance.explanation.what_are_mappings_title</target>
+      </trans-unit>
+      <trans-unit id="2Wp7Lmu" resname="compliance.explanation.what_are_mappings">
+        <source>compliance.explanation.what_are_mappings</source>
+        <target>__compliance.explanation.what_are_mappings</target>
+      </trans-unit>
+      <trans-unit id="JYcnxsd" resname="compliance.explanation.mapping_types_title">
+        <source>compliance.explanation.mapping_types_title</source>
+        <target>__compliance.explanation.mapping_types_title</target>
+      </trans-unit>
+      <trans-unit id="HombcJ3" resname="compliance.explanation.mapping_types_exceeds">
+        <source>compliance.explanation.mapping_types_exceeds</source>
+        <target>__compliance.explanation.mapping_types_exceeds</target>
+      </trans-unit>
+      <trans-unit id="25Lk4TP" resname="compliance.explanation.mapping_types_full">
+        <source>compliance.explanation.mapping_types_full</source>
+        <target>__compliance.explanation.mapping_types_full</target>
+      </trans-unit>
+      <trans-unit id="RdhQUax" resname="compliance.explanation.mapping_types_partial">
+        <source>compliance.explanation.mapping_types_partial</source>
+        <target>__compliance.explanation.mapping_types_partial</target>
+      </trans-unit>
+      <trans-unit id="k6R1d5J" resname="compliance.explanation.mapping_types_weak">
+        <source>compliance.explanation.mapping_types_weak</source>
+        <target>__compliance.explanation.mapping_types_weak</target>
+      </trans-unit>
+      <trans-unit id="gH2aQIi" resname="compliance.explanation.strategic_value_title">
+        <source>compliance.explanation.strategic_value_title</source>
+        <target>__compliance.explanation.strategic_value_title</target>
+      </trans-unit>
+      <trans-unit id="OTHBWhY" resname="compliance.explanation.strategic_value">
+        <source>compliance.explanation.strategic_value</source>
+        <target>__compliance.explanation.strategic_value</target>
+      </trans-unit>
+      <trans-unit id="ffuklD3" resname="compliance.switch_framework">
+        <source>compliance.switch_framework</source>
+        <target>__compliance.switch_framework</target>
+      </trans-unit>
+      <trans-unit id="wtNrwlE" resname="compliance.button.back">
+        <source>compliance.button.back</source>
+        <target>__compliance.button.back</target>
+      </trans-unit>
+      <trans-unit id="LM710XA" resname="compliance.button.reassess">
+        <source>compliance.button.reassess</source>
+        <target>__compliance.button.reassess</target>
+      </trans-unit>
+      <trans-unit id="KvdqTua" resname="compliance.label.requirements">
+        <source>compliance.label.requirements</source>
+        <target>__compliance.label.requirements</target>
+      </trans-unit>
+      <trans-unit id="Xf6FeMo" resname="compliance.label.time_savings">
+        <source>compliance.label.time_savings</source>
+        <target>__compliance.label.time_savings</target>
+      </trans-unit>
+      <trans-unit id="W0wR.Yo" resname="compliance.label.days">
+        <source>compliance.label.days</source>
+        <target>__compliance.label.days</target>
+      </trans-unit>
+      <trans-unit id="f3RAwSz" resname="compliance.framework_dashboard.compliance_steps">
+        <source>compliance.framework_dashboard.compliance_steps</source>
+        <target>__compliance.framework_dashboard.compliance_steps</target>
+      </trans-unit>
+      <trans-unit id="sy.dl7j" resname="compliance.tab.overview">
+        <source>compliance.tab.overview</source>
+        <target>__compliance.tab.overview</target>
+      </trans-unit>
+      <trans-unit id="q4HHHti" resname="compliance.tab.requirements">
+        <source>compliance.tab.requirements</source>
+        <target>__compliance.tab.requirements</target>
+      </trans-unit>
+      <trans-unit id="N2i.GKr" resname="compliance.tab.gaps">
+        <source>compliance.tab.gaps</source>
+        <target>__compliance.tab.gaps</target>
+      </trans-unit>
+      <trans-unit id="iAsxScZ" resname="compliance.tab.data_reuse">
+        <source>compliance.tab.data_reuse</source>
+        <target>__compliance.tab.data_reuse</target>
+      </trans-unit>
+      <trans-unit id="hXAtCKc" resname="compliance.framework_info">
+        <source>compliance.framework_info</source>
+        <target>__compliance.framework_info</target>
+      </trans-unit>
+      <trans-unit id="ESSwPzz" resname="compliance.label.code">
+        <source>compliance.label.code</source>
+        <target>__compliance.label.code</target>
+      </trans-unit>
+      <trans-unit id="skaN6.4" resname="compliance.label.yes">
+        <source>compliance.label.yes</source>
+        <target>__compliance.label.yes</target>
+      </trans-unit>
+      <trans-unit id="ICt5Hx6" resname="compliance.label.no">
+        <source>compliance.label.no</source>
+        <target>__compliance.label.no</target>
+      </trans-unit>
+      <trans-unit id="iX7ao0X" resname="compliance.recommendations">
+        <source>compliance.recommendations</source>
+        <target>__compliance.recommendations</target>
+      </trans-unit>
+      <trans-unit id="KezTFYT" resname="compliance.filter">
+        <source>compliance.filter</source>
+        <target>__compliance.filter</target>
+      </trans-unit>
+      <trans-unit id="h2ztEV1" resname="compliance.search">
+        <source>compliance.search</source>
+        <target>__compliance.search</target>
+      </trans-unit>
+      <trans-unit id="0BLTSYU" resname="compliance.priority.all">
+        <source>compliance.priority.all</source>
+        <target>__compliance.priority.all</target>
+      </trans-unit>
+      <trans-unit id="QTkq8md" resname="compliance.priority.critical">
+        <source>compliance.priority.critical</source>
+        <target>__compliance.priority.critical</target>
+      </trans-unit>
+      <trans-unit id="HU.Kxvm" resname="compliance.priority.high">
+        <source>compliance.priority.high</source>
+        <target>__compliance.priority.high</target>
+      </trans-unit>
+      <trans-unit id="Hs1UiZ3" resname="compliance.priority.medium">
+        <source>compliance.priority.medium</source>
+        <target>__compliance.priority.medium</target>
+      </trans-unit>
+      <trans-unit id="jHVYQkL" resname="compliance.priority.low">
+        <source>compliance.priority.low</source>
+        <target>__compliance.priority.low</target>
+      </trans-unit>
+      <trans-unit id="gFgtx_z" resname="compliance.status.all">
+        <source>compliance.status.all</source>
+        <target>__compliance.status.all</target>
+      </trans-unit>
+      <trans-unit id="igtDLdD" resname="compliance.status.fulfilled">
+        <source>compliance.status.fulfilled</source>
+        <target>__compliance.status.fulfilled</target>
+      </trans-unit>
+      <trans-unit id="S8v633I" resname="compliance.status.partial">
+        <source>compliance.status.partial</source>
+        <target>__compliance.status.partial</target>
+      </trans-unit>
+      <trans-unit id="MLHGH6i" resname="compliance.status.gap">
+        <source>compliance.status.gap</source>
+        <target>__compliance.status.gap</target>
+      </trans-unit>
+      <trans-unit id="Bmv6jM1" resname="compliance.gaps.title">
+        <source>compliance.gaps.title</source>
+        <target>__compliance.gaps.title</target>
+      </trans-unit>
+      <trans-unit id="zLFrJMA" resname="compliance.gaps.fulfilled_percentage">
+        <source>compliance.gaps.fulfilled_percentage</source>
+        <target>__compliance.gaps.fulfilled_percentage</target>
+      </trans-unit>
+      <trans-unit id="ia.wDgt" resname="compliance.gaps.none">
+        <source>compliance.gaps.none</source>
+        <target>__compliance.gaps.none</target>
+      </trans-unit>
+      <trans-unit id="3T5Pjrj" resname="compliance.gaps.none_description">
+        <source>compliance.gaps.none_description</source>
+        <target>__compliance.gaps.none_description</target>
+      </trans-unit>
+      <trans-unit id="GImKlv3" resname="compliance.data_reuse.hours_saved">
+        <source>compliance.data_reuse.hours_saved</source>
+        <target>__compliance.data_reuse.hours_saved</target>
+      </trans-unit>
+      <trans-unit id="IiwBmaD" resname="compliance.data_reuse.work_days">
+        <source>compliance.data_reuse.work_days</source>
+        <target>__compliance.data_reuse.work_days</target>
+      </trans-unit>
+      <trans-unit id="4UMglRd" resname="compliance.data_reuse.show_details">
+        <source>compliance.data_reuse.show_details</source>
+        <target>__compliance.data_reuse.show_details</target>
+      </trans-unit>
+      <trans-unit id="bIyZ0aZ" resname="compliance.badge.overdue">
+        <source>compliance.badge.overdue</source>
+        <target>__compliance.badge.overdue</target>
+      </trans-unit>
+      <trans-unit id="F91Y.ux" resname="compliance.message.no_gaps">
+        <source>compliance.message.no_gaps</source>
+        <target>__compliance.message.no_gaps</target>
+      </trans-unit>
+      <trans-unit id="Myn11uk" resname="compliance.message.no_gaps_desc">
+        <source>compliance.message.no_gaps_desc</source>
+        <target>__compliance.message.no_gaps_desc</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

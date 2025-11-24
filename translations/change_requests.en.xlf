@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="en" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="duf_AX4" resname="change_request.title">
+        <source>change_request.title</source>
+        <target>Change Requests</target>
+      </trans-unit>
+      <trans-unit id="2ejqbII" resname="change_request.page.title">
+        <source>change_request.page.title</source>
+        <target>Change Requests</target>
+      </trans-unit>
+      <trans-unit id="CuohKaw" resname="change_request.page.new">
+        <source>change_request.page.new</source>
+        <target>New Change Request</target>
+      </trans-unit>
+      <trans-unit id="239EKSu" resname="change_request.new">
+        <source>change_request.new</source>
+        <target>New Change Request</target>
+      </trans-unit>
+      <trans-unit id="Uh3KSj5" resname="change_request.action.create">
+        <source>change_request.action.create</source>
+        <target>Create Change Request</target>
+      </trans-unit>
+      <trans-unit id="zEmJCvj" resname="change_request.action.view">
+        <source>change_request.action.view</source>
+        <target>View</target>
+      </trans-unit>
+      <trans-unit id="Khwf0sW" resname="change_request.action.edit">
+        <source>change_request.action.edit</source>
+        <target>Edit</target>
+      </trans-unit>
+      <trans-unit id="I5s22uv" resname="change_request.statistics.total">
+        <source>change_request.statistics.total</source>
+        <target>Total Requests</target>
+      </trans-unit>
+      <trans-unit id="n8zsg2Z" resname="change_request.statistics.pending_approval">
+        <source>change_request.statistics.pending_approval</source>
+        <target>Pending Approval</target>
+      </trans-unit>
+      <trans-unit id="rkQVz0P" resname="change_request.statistics.in_implementation">
+        <source>change_request.statistics.in_implementation</source>
+        <target>In Implementation</target>
+      </trans-unit>
+      <trans-unit id="DC9y2TS" resname="change_request.statistics.overdue">
+        <source>change_request.statistics.overdue</source>
+        <target>Overdue</target>
+      </trans-unit>
+      <trans-unit id="Gbg4D0_" resname="change_request.alert.pending_approval">
+        <source>change_request.alert.pending_approval</source>
+        <target>Pending approvals</target>
+      </trans-unit>
+      <trans-unit id="hW5d5lQ" resname="change_request.alert.overdue">
+        <source>change_request.alert.overdue</source>
+        <target>Overdue change requests</target>
+      </trans-unit>
+      <trans-unit id="_qCD6RU" resname="change_request.list.title">
+        <source>change_request.list.title</source>
+        <target>Change Requests (%count%)</target>
+      </trans-unit>
+      <trans-unit id="jxjXbvg" resname="change_request.table.change_number">
+        <source>change_request.table.change_number</source>
+        <target>Request No.</target>
+      </trans-unit>
+      <trans-unit id="8BuzA4W" resname="change_request.table.title">
+        <source>change_request.table.title</source>
+        <target>Title</target>
+      </trans-unit>
+      <trans-unit id="1g.r5dY" resname="change_request.table.type">
+        <source>change_request.table.type</source>
+        <target>Type</target>
+      </trans-unit>
+      <trans-unit id="rcrohXa" resname="change_request.table.priority">
+        <source>change_request.table.priority</source>
+        <target>Priority</target>
+      </trans-unit>
+      <trans-unit id="kC.D_kW" resname="change_request.table.status">
+        <source>change_request.table.status</source>
+        <target>Status</target>
+      </trans-unit>
+      <trans-unit id="HrCpbzI" resname="change_request.table.complexity">
+        <source>change_request.table.complexity</source>
+        <target>Complexity</target>
+      </trans-unit>
+      <trans-unit id="Ygk03ER" resname="change_request.table.requested">
+        <source>change_request.table.requested</source>
+        <target>Requested on</target>
+      </trans-unit>
+      <trans-unit id="1LKvwxq" resname="change_request.table.actions">
+        <source>change_request.table.actions</source>
+        <target>Actions</target>
+      </trans-unit>
+      <trans-unit id="ISYTuPQ" resname="change_request.empty.message">
+        <source>change_request.empty.message</source>
+        <target>No change requests available.</target>
+      </trans-unit>
+      <trans-unit id="DJK.kbq" resname="change_request.empty.create_first">
+        <source>change_request.empty.create_first</source>
+        <target>Create the first request</target>
+      </trans-unit>
+      <trans-unit id="V20X.Ok" resname="change_request.section.basic_info">
+        <source>change_request.section.basic_info</source>
+        <target>Basic Information</target>
+      </trans-unit>
+      <trans-unit id="0Z0DeAO" resname="change_request.section.request_details">
+        <source>change_request.section.request_details</source>
+        <target><![CDATA[Requester & Details]]></target>
+      </trans-unit>
+      <trans-unit id="P7plUXU" resname="change_request.section.impact_assessment">
+        <source>change_request.section.impact_assessment</source>
+        <target><![CDATA[Impact & Assessment]]></target>
+      </trans-unit>
+      <trans-unit id="6bN1xDC" resname="change_request.section.implementation">
+        <source>change_request.section.implementation</source>
+        <target>Implementation</target>
+      </trans-unit>
+      <trans-unit id="XpaaYb1" resname="change_request.section.approval">
+        <source>change_request.section.approval</source>
+        <target>Approval</target>
+      </trans-unit>
+      <trans-unit id="UZ4HmP_" resname="change_request.section.verification_closure">
+        <source>change_request.section.verification_closure</source>
+        <target><![CDATA[Verification & Closure]]></target>
+      </trans-unit>
+      <trans-unit id="BPdbe6o" resname="change_request.field.change_number">
+        <source>change_request.field.change_number</source>
+        <target>Request No.</target>
+      </trans-unit>
+      <trans-unit id="9yne0BM" resname="change_request.field.title">
+        <source>change_request.field.title</source>
+        <target>Title</target>
+      </trans-unit>
+      <trans-unit id="uhYSdQ1" resname="change_request.field.change_type">
+        <source>change_request.field.change_type</source>
+        <target>Change Type</target>
+      </trans-unit>
+      <trans-unit id="KFU.MB3" resname="change_request.field.description">
+        <source>change_request.field.description</source>
+        <target>Description</target>
+      </trans-unit>
+      <trans-unit id="_G9C8q_" resname="change_request.field.justification">
+        <source>change_request.field.justification</source>
+        <target>Justification</target>
+      </trans-unit>
+      <trans-unit id="WQpj6hu" resname="change_request.field.requested_by">
+        <source>change_request.field.requested_by</source>
+        <target>Requested by</target>
+      </trans-unit>
+      <trans-unit id="Qdgcsdh" resname="change_request.field.requested_date">
+        <source>change_request.field.requested_date</source>
+        <target>Requested date</target>
+      </trans-unit>
+      <trans-unit id="kA9JqJG" resname="change_request.field.priority">
+        <source>change_request.field.priority</source>
+        <target>Priority</target>
+      </trans-unit>
+      <trans-unit id="Nd_upU7" resname="change_request.field.status">
+        <source>change_request.field.status</source>
+        <target>Status</target>
+      </trans-unit>
+      <trans-unit id="vkmDSXE" resname="change_request.field.isms_impact">
+        <source>change_request.field.isms_impact</source>
+        <target>ISMS Impact</target>
+      </trans-unit>
+      <trans-unit id="lpmLCmt" resname="change_request.field.risk_assessment">
+        <source>change_request.field.risk_assessment</source>
+        <target>Risk Assessment</target>
+      </trans-unit>
+      <trans-unit id="Wx3zETK" resname="change_request.field.implementation_plan">
+        <source>change_request.field.implementation_plan</source>
+        <target>Implementation Plan</target>
+      </trans-unit>
+      <trans-unit id="0YeToTV" resname="change_request.field.rollback_plan">
+        <source>change_request.field.rollback_plan</source>
+        <target>Rollback Plan</target>
+      </trans-unit>
+      <trans-unit id="MCYcKUs" resname="change_request.field.testing_requirements">
+        <source>change_request.field.testing_requirements</source>
+        <target>Testing Requirements</target>
+      </trans-unit>
+      <trans-unit id="kUuDIsR" resname="change_request.field.planned_implementation_date">
+        <source>change_request.field.planned_implementation_date</source>
+        <target>Planned Implementation Date</target>
+      </trans-unit>
+      <trans-unit id="OvglD0s" resname="change_request.field.actual_implementation_date">
+        <source>change_request.field.actual_implementation_date</source>
+        <target>Actual Implementation Date</target>
+      </trans-unit>
+      <trans-unit id="8oMBcrp" resname="change_request.field.implemented_by">
+        <source>change_request.field.implemented_by</source>
+        <target>Implemented by</target>
+      </trans-unit>
+      <trans-unit id="lR4YI4r" resname="change_request.field.implementation_notes">
+        <source>change_request.field.implementation_notes</source>
+        <target>Implementation Notes</target>
+      </trans-unit>
+      <trans-unit id="v5SawyD" resname="change_request.field.approved_by">
+        <source>change_request.field.approved_by</source>
+        <target>Approved by</target>
+      </trans-unit>
+      <trans-unit id="yOyqW2Y" resname="change_request.field.approved_date">
+        <source>change_request.field.approved_date</source>
+        <target>Approved date</target>
+      </trans-unit>
+      <trans-unit id="GAXrwo7" resname="change_request.field.approval_comments">
+        <source>change_request.field.approval_comments</source>
+        <target>Approval Comments</target>
+      </trans-unit>
+      <trans-unit id="z9E8pIn" resname="change_request.field.verified_by">
+        <source>change_request.field.verified_by</source>
+        <target>Verified by</target>
+      </trans-unit>
+      <trans-unit id="6C4QIR1" resname="change_request.field.verified_date">
+        <source>change_request.field.verified_date</source>
+        <target>Verified date</target>
+      </trans-unit>
+      <trans-unit id="EhtBsFX" resname="change_request.field.verification_results">
+        <source>change_request.field.verification_results</source>
+        <target>Verification Results</target>
+      </trans-unit>
+      <trans-unit id="tyQ4V5L" resname="change_request.field.closed_date">
+        <source>change_request.field.closed_date</source>
+        <target>Closed date</target>
+      </trans-unit>
+      <trans-unit id="OcEX6Py" resname="change_request.field.closure_notes">
+        <source>change_request.field.closure_notes</source>
+        <target>Closure Notes</target>
+      </trans-unit>
+      <trans-unit id="N8uMfeL" resname="change_request.edit">
+        <source>change_request.edit</source>
+        <target>__change_request.edit</target>
+      </trans-unit>
+      <trans-unit id="p2myPTx" resname="change_request.page.edit">
+        <source>change_request.page.edit</source>
+        <target>__change_request.page.edit</target>
+      </trans-unit>
+      <trans-unit id="NaaFvmb" resname="change_request.action.update">
+        <source>change_request.action.update</source>
+        <target>__change_request.action.update</target>
+      </trans-unit>
+      <trans-unit id="4uYGCd_" resname="change_request.confirm.delete">
+        <source>change_request.confirm.delete</source>
+        <target>__change_request.confirm.delete</target>
+      </trans-unit>
+      <trans-unit id="ZM4zPac" resname="change_request.details.title">
+        <source>change_request.details.title</source>
+        <target>__change_request.details.title</target>
+      </trans-unit>
+      <trans-unit id="HDWMpIJ" resname="change_request.field.complexity_score">
+        <source>change_request.field.complexity_score</source>
+        <target>__change_request.field.complexity_score</target>
+      </trans-unit>
+      <trans-unit id="67NovEZ" resname="change_request.field.planned_implementation">
+        <source>change_request.field.planned_implementation</source>
+        <target>__change_request.field.planned_implementation</target>
+      </trans-unit>
+      <trans-unit id=".Ykyz96" resname="change_request.status.not_scheduled">
+        <source>change_request.status.not_scheduled</source>
+        <target>__change_request.status.not_scheduled</target>
+      </trans-unit>
+      <trans-unit id="3jcu81F" resname="change_request.section.description">
+        <source>change_request.section.description</source>
+        <target>__change_request.section.description</target>
+      </trans-unit>
+      <trans-unit id="d5qpK7e" resname="change_request.section.justification">
+        <source>change_request.section.justification</source>
+        <target>__change_request.section.justification</target>
+      </trans-unit>
+      <trans-unit id="NtLn405" resname="change_request.section.impact">
+        <source>change_request.section.impact</source>
+        <target>__change_request.section.impact</target>
+      </trans-unit>
+      <trans-unit id="0kuxFrC" resname="change_request.section.risk_assessment">
+        <source>change_request.section.risk_assessment</source>
+        <target>__change_request.section.risk_assessment</target>
+      </trans-unit>
+      <trans-unit id="owmbL8n" resname="change_request.section.plan">
+        <source>change_request.section.plan</source>
+        <target>__change_request.section.plan</target>
+      </trans-unit>
+      <trans-unit id="L_8o8Ei" resname="change_request.section.rollback_plan">
+        <source>change_request.section.rollback_plan</source>
+        <target>__change_request.section.rollback_plan</target>
+      </trans-unit>
+      <trans-unit id="7W6IQdm" resname="change_request.section.testing_requirements">
+        <source>change_request.section.testing_requirements</source>
+        <target>__change_request.section.testing_requirements</target>
+      </trans-unit>
+      <trans-unit id="6WmJPui" resname="change_request.section.approval_info">
+        <source>change_request.section.approval_info</source>
+        <target>__change_request.section.approval_info</target>
+      </trans-unit>
+      <trans-unit id="31y8tit" resname="change_request.field.approval_date">
+        <source>change_request.field.approval_date</source>
+        <target>__change_request.field.approval_date</target>
+      </trans-unit>
+      <trans-unit id="PLlvmhG" resname="change_request.field.comments">
+        <source>change_request.field.comments</source>
+        <target>__change_request.field.comments</target>
+      </trans-unit>
+      <trans-unit id="mTma3ix" resname="change_request.field.implementation_date">
+        <source>change_request.field.implementation_date</source>
+        <target>__change_request.field.implementation_date</target>
+      </trans-unit>
+      <trans-unit id="R8Y3I0d" resname="change_request.field.notes">
+        <source>change_request.field.notes</source>
+        <target>__change_request.field.notes</target>
+      </trans-unit>
+      <trans-unit id="SWXrfRu" resname="change_request.section.verification">
+        <source>change_request.section.verification</source>
+        <target>__change_request.section.verification</target>
+      </trans-unit>
+      <trans-unit id="xsWBUea" resname="change_request.field.verification_date">
+        <source>change_request.field.verification_date</source>
+        <target>__change_request.field.verification_date</target>
+      </trans-unit>
+      <trans-unit id="keAJmfp" resname="change_request.field.results">
+        <source>change_request.field.results</source>
+        <target>__change_request.field.results</target>
+      </trans-unit>
+      <trans-unit id="zjaRsL9" resname="change_request.section.closure">
+        <source>change_request.section.closure</source>
+        <target>__change_request.section.closure</target>
+      </trans-unit>
+      <trans-unit id="SKaqpll" resname="change_request.section.affected_assets">
+        <source>change_request.section.affected_assets</source>
+        <target>__change_request.section.affected_assets</target>
+      </trans-unit>
+      <trans-unit id="0qk1Mlf" resname="change_request.section.affected_controls">
+        <source>change_request.section.affected_controls</source>
+        <target>__change_request.section.affected_controls</target>
+      </trans-unit>
+      <trans-unit id="fYC35tV" resname="change_request.section.affected_risks">
+        <source>change_request.section.affected_risks</source>
+        <target>__change_request.section.affected_risks</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

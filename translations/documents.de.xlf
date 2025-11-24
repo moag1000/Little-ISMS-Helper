@@ -1,0 +1,342 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="de" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="tkVJzpC" resname="document.title">
+        <source>document.title</source>
+        <target>Dokumente</target>
+      </trans-unit>
+      <trans-unit id="LnSuDkw" resname="document.subtitle">
+        <source>document.subtitle</source>
+        <target>Verwaltung und Ablage von Richtlinien, Nachweisen und ISMS‑Dokumenten</target>
+      </trans-unit>
+      <trans-unit id="38c.L7w" resname="document.action.upload">
+        <source>document.action.upload</source>
+        <target>Dokument hochladen</target>
+      </trans-unit>
+      <trans-unit id="QinWbcb" resname="document.action.update">
+        <source>document.action.update</source>
+        <target>Aktualisieren</target>
+      </trans-unit>
+      <trans-unit id="oOzziu1" resname="document.kpi.total_documents">
+        <source>document.kpi.total_documents</source>
+        <target>Gesamte Dokumente</target>
+      </trans-unit>
+      <trans-unit id="feBoYEk" resname="document.kpi.total_size">
+        <source>document.kpi.total_size</source>
+        <target>Gesamte Größe</target>
+      </trans-unit>
+      <trans-unit id="Bb0nmIf" resname="document.details.title">
+        <source>document.details.title</source>
+        <target>Details</target>
+      </trans-unit>
+      <trans-unit id="kcvl9Sj" resname="document.label.type">
+        <source>document.label.type</source>
+        <target>Typ</target>
+      </trans-unit>
+      <trans-unit id="ttNcsys" resname="document.label.file_name">
+        <source>document.label.file_name</source>
+        <target>Dateiname</target>
+      </trans-unit>
+      <trans-unit id="MFDffEe" resname="document.label.size">
+        <source>document.label.size</source>
+        <target>Größe</target>
+      </trans-unit>
+      <trans-unit id="6ASBPvY" resname="document.label.mime_type">
+        <source>document.label.mime_type</source>
+        <target>MIME‑Typ</target>
+      </trans-unit>
+      <trans-unit id="41JDgNq" resname="document.label.uploaded_by">
+        <source>document.label.uploaded_by</source>
+        <target>Hochgeladen von</target>
+      </trans-unit>
+      <trans-unit id="ecW8R4t" resname="document.label.uploaded_at">
+        <source>document.label.uploaded_at</source>
+        <target>Hochgeladen am</target>
+      </trans-unit>
+      <trans-unit id="1znFLui" resname="document.label.last_updated">
+        <source>document.label.last_updated</source>
+        <target>Zuletzt aktualisiert</target>
+      </trans-unit>
+      <trans-unit id="A_EZrJk" resname="document.label.related_entity">
+        <source>document.label.related_entity</source>
+        <target>Zugehöriges Objekt</target>
+      </trans-unit>
+      <trans-unit id="0T2KrPY" resname="document.type.pdf">
+        <source>document.type.pdf</source>
+        <target>PDF</target>
+      </trans-unit>
+      <trans-unit id="c0s6cMI" resname="document.type.images">
+        <source>document.type.images</source>
+        <target>Bilder</target>
+      </trans-unit>
+      <trans-unit id="gLOvSgq" resname="document.type.tables">
+        <source>document.type.tables</source>
+        <target>Tabellen</target>
+      </trans-unit>
+      <trans-unit id="8wpyV5A" resname="document.type.excel">
+        <source>document.type.excel</source>
+        <target>Excel</target>
+      </trans-unit>
+      <trans-unit id="cQAzzPS" resname="document.type.other">
+        <source>document.type.other</source>
+        <target>Andere</target>
+      </trans-unit>
+      <trans-unit id="37Q5PwK" resname="document.section.type_overview">
+        <source>document.section.type_overview</source>
+        <target>Typ‑Übersicht</target>
+      </trans-unit>
+      <trans-unit id="nC6MJ8J" resname="document.section.all_documents">
+        <source>document.section.all_documents</source>
+        <target>Alle Dokumente</target>
+      </trans-unit>
+      <trans-unit id="ZwZ5ca4" resname="document.section.basic_info">
+        <source>document.section.basic_info</source>
+        <target>Basisinformationen</target>
+      </trans-unit>
+      <trans-unit id="g0NCV9D" resname="document.section.file_upload">
+        <source>document.section.file_upload</source>
+        <target>Datei‑Upload</target>
+      </trans-unit>
+      <trans-unit id="NUh2T0n" resname="document.filter.all_categories">
+        <source>document.filter.all_categories</source>
+        <target>Alle Kategorien</target>
+      </trans-unit>
+      <trans-unit id="AbRRuJa" resname="document.filter.search_placeholder">
+        <source>document.filter.search_placeholder</source>
+        <target>Suche...</target>
+      </trans-unit>
+      <trans-unit id="oygtHo6" resname="document.table.icon">
+        <source>document.table.icon</source>
+        <target>Symbol</target>
+      </trans-unit>
+      <trans-unit id="34CzojZ" resname="document.table.uploaded_by">
+        <source>document.table.uploaded_by</source>
+        <target>Hochgeladen von</target>
+      </trans-unit>
+      <trans-unit id="veb5n4f" resname="document.message.no_results">
+        <source>document.message.no_results</source>
+        <target>Keine Ergebnisse gefunden</target>
+      </trans-unit>
+      <trans-unit id="zfgnX_c" resname="document.message.no_documents">
+        <source>document.message.no_documents</source>
+        <target>Noch keine Dokumente vorhanden</target>
+      </trans-unit>
+      <trans-unit id="oMnwCLs" resname="document.message.upload_first">
+        <source>document.message.upload_first</source>
+        <target>Laden Sie Ihr erstes Dokument hoch, um zu starten</target>
+      </trans-unit>
+      <trans-unit id="4ELYF_4" resname="document.confirm.delete">
+        <source>document.confirm.delete</source>
+        <target>Dieses Dokument wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.</target>
+      </trans-unit>
+      <trans-unit id="ftgVXmV" resname="document.new">
+        <source>document.new</source>
+        <target>Neues Dokument</target>
+      </trans-unit>
+      <trans-unit id="rgPPN76" resname="document.edit">
+        <source>document.edit</source>
+        <target>Dokument bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="0dQP_OD" resname="document.field.name">
+        <source>document.field.name</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="ybj4z8y" resname="document.field.description">
+        <source>document.field.description</source>
+        <target>Beschreibung</target>
+      </trans-unit>
+      <trans-unit id="V94Pz5o" resname="document.field.document_type">
+        <source>document.field.document_type</source>
+        <target>Dokumenttyp</target>
+      </trans-unit>
+      <trans-unit id="rB.xx_y" resname="document.field.file">
+        <source>document.field.file</source>
+        <target>Datei</target>
+      </trans-unit>
+      <trans-unit id="XMlJbWQ" resname="document.help.name">
+        <source>document.help.name</source>
+        <target>Eindeutiger Name des Dokuments</target>
+      </trans-unit>
+      <trans-unit id="4ohHJzs" resname="document.help.description">
+        <source>document.help.description</source>
+        <target>Detaillierte Beschreibung des Inhalts und Zwecks</target>
+      </trans-unit>
+      <trans-unit id="n_YMcWJ" resname="document.help.document_type">
+        <source>document.help.document_type</source>
+        <target>Kategorie des Dokuments (z. B. Richtlinie, Verfahren)</target>
+      </trans-unit>
+      <trans-unit id="KeVbN8Q" resname="document.help.file">
+        <source>document.help.file</source>
+        <target>Wählen Sie eine Datei zum Hochladen</target>
+      </trans-unit>
+      <trans-unit id="1uEsAjF" resname="document.help.edit_file">
+        <source>document.help.edit_file</source>
+        <target>Lassen Sie das Feld leer, um die vorhandene Datei beizubehalten</target>
+      </trans-unit>
+      <trans-unit id="tB..Eeo" resname="document.help.file_edit">
+        <source>document.help.file_edit</source>
+        <target>Neue Datei hochladen (optional)</target>
+      </trans-unit>
+      <trans-unit id="VNPBdVj" resname="document.delete_warning">
+        <source>document.delete_warning</source>
+        <target>Das Löschen dieses Dokuments kann nicht rückgängig gemacht werden.</target>
+      </trans-unit>
+      <trans-unit id="m8_qAPy" resname="document.field.title">
+        <source>document.field.title</source>
+        <target>__document.field.title</target>
+      </trans-unit>
+      <trans-unit id="tMrP3Hf" resname="document.field.version">
+        <source>document.field.version</source>
+        <target>__document.field.version</target>
+      </trans-unit>
+      <trans-unit id="zVKvodh" resname="document.field.status">
+        <source>document.field.status</source>
+        <target>__document.field.status</target>
+      </trans-unit>
+      <trans-unit id="V7Wo9pZ" resname="document.field.owner">
+        <source>document.field.owner</source>
+        <target>__document.field.owner</target>
+      </trans-unit>
+      <trans-unit id="3G_zM2v" resname="document.field.last_updated">
+        <source>document.field.last_updated</source>
+        <target>__document.field.last_updated</target>
+      </trans-unit>
+      <trans-unit id="JVn3jI4" resname="document.field.review_date">
+        <source>document.field.review_date</source>
+        <target>__document.field.review_date</target>
+      </trans-unit>
+      <trans-unit id="xlxfroj" resname="document.badge.controlled">
+        <source>document.badge.controlled</source>
+        <target>__document.badge.controlled</target>
+      </trans-unit>
+      <trans-unit id="3hqE8Z7" resname="document.badge.confidential">
+        <source>document.badge.confidential</source>
+        <target>__document.badge.confidential</target>
+      </trans-unit>
+      <trans-unit id="Bd24uFX" resname="document.badge.overdue">
+        <source>document.badge.overdue</source>
+        <target>__document.badge.overdue</target>
+      </trans-unit>
+      <trans-unit id="m3dkY9G" resname="document.badge.due_soon">
+        <source>document.badge.due_soon</source>
+        <target>__document.badge.due_soon</target>
+      </trans-unit>
+      <trans-unit id="oTh_g4e" resname="document.message.no_documents_for_type">
+        <source>document.message.no_documents_for_type</source>
+        <target>__document.message.no_documents_for_type</target>
+      </trans-unit>
+      <trans-unit id="QcVjlZP" resname="document.field.type_name">
+        <source>document.field.type_name</source>
+        <target>__document.field.type_name</target>
+      </trans-unit>
+      <trans-unit id="s96fuEk" resname="document.field.total_documents">
+        <source>document.field.total_documents</source>
+        <target>__document.field.total_documents</target>
+      </trans-unit>
+      <trans-unit id="C5VlvJv" resname="document.field.active">
+        <source>document.field.active</source>
+        <target>__document.field.active</target>
+      </trans-unit>
+      <trans-unit id="TrKsRc_" resname="document.field.draft">
+        <source>document.field.draft</source>
+        <target>__document.field.draft</target>
+      </trans-unit>
+      <trans-unit id="FiShLY5" resname="document.field.overdue_reviews">
+        <source>document.field.overdue_reviews</source>
+        <target>__document.field.overdue_reviews</target>
+      </trans-unit>
+      <trans-unit id="h7w1oxA" resname="document.message.no_types">
+        <source>document.message.no_types</source>
+        <target>__document.message.no_types</target>
+      </trans-unit>
+      <trans-unit id="feDCRgJ" resname="document.title.by_type">
+        <source>document.title.by_type</source>
+        <target>__document.title.by_type</target>
+      </trans-unit>
+      <trans-unit id="8msaen4" resname="document.description.by_type">
+        <source>document.description.by_type</source>
+        <target>__document.description.by_type</target>
+      </trans-unit>
+      <trans-unit id="497LgjA" resname="document.action.create">
+        <source>document.action.create</source>
+        <target>__document.action.create</target>
+      </trans-unit>
+      <trans-unit id=".qaV.oX" resname="document.stats.total">
+        <source>document.stats.total</source>
+        <target>__document.stats.total</target>
+      </trans-unit>
+      <trans-unit id="bV1xm2R" resname="document.stats.document_types">
+        <source>document.stats.document_types</source>
+        <target>__document.stats.document_types</target>
+      </trans-unit>
+      <trans-unit id="Ls.UXcU" resname="document.stats.expiring_soon">
+        <source>document.stats.expiring_soon</source>
+        <target>__document.stats.expiring_soon</target>
+      </trans-unit>
+      <trans-unit id="017Veu4" resname="document.stats.avg_per_type">
+        <source>document.stats.avg_per_type</source>
+        <target>__document.stats.avg_per_type</target>
+      </trans-unit>
+      <trans-unit id="xKnU6gh" resname="document.section.select_type">
+        <source>document.section.select_type</source>
+        <target>__document.section.select_type</target>
+      </trans-unit>
+      <trans-unit id="OCssyLC" resname="document.option.all_types">
+        <source>document.option.all_types</source>
+        <target>__document.option.all_types</target>
+      </trans-unit>
+      <trans-unit id="EzDLy2G" resname="document.section.types_overview">
+        <source>document.section.types_overview</source>
+        <target>__document.section.types_overview</target>
+      </trans-unit>
+      <trans-unit id="sZRGriw" resname="document.field.documents">
+        <source>document.field.documents</source>
+        <target>__document.field.documents</target>
+      </trans-unit>
+      <trans-unit id="Cb8KVDz" resname="document.section.documents">
+        <source>document.section.documents</source>
+        <target>__document.section.documents</target>
+      </trans-unit>
+      <trans-unit id="JpimH.J" resname="document.section.type_statistics">
+        <source>document.section.type_statistics</source>
+        <target>__document.section.type_statistics</target>
+      </trans-unit>
+      <trans-unit id="xhCKvFp" resname="document.stats.total_documents">
+        <source>document.stats.total_documents</source>
+        <target>__document.stats.total_documents</target>
+      </trans-unit>
+      <trans-unit id="bGTI0KT" resname="document.stats.active_documents">
+        <source>document.stats.active_documents</source>
+        <target>__document.stats.active_documents</target>
+      </trans-unit>
+      <trans-unit id="BS6Dyqa" resname="document.stats.draft_documents">
+        <source>document.stats.draft_documents</source>
+        <target>__document.stats.draft_documents</target>
+      </trans-unit>
+      <trans-unit id="n9DiDYA" resname="document.stats.overdue_reviews">
+        <source>document.stats.overdue_reviews</source>
+        <target>__document.stats.overdue_reviews</target>
+      </trans-unit>
+      <trans-unit id="6FyidMR" resname="document.section.recent_activity">
+        <source>document.section.recent_activity</source>
+        <target>__document.section.recent_activity</target>
+      </trans-unit>
+      <trans-unit id="0OiZZiM" resname="document.field.updated">
+        <source>document.field.updated</source>
+        <target>__document.field.updated</target>
+      </trans-unit>
+      <trans-unit id="DhXkN2C" resname="document.message.no_recent_activity">
+        <source>document.message.no_recent_activity</source>
+        <target>__document.message.no_recent_activity</target>
+      </trans-unit>
+      <trans-unit id="ju9YIzO" resname="document.section.all_types">
+        <source>document.section.all_types</source>
+        <target>__document.section.all_types</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

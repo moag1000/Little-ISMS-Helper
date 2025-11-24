@@ -1,22 +1,19 @@
-session:
-  title: Sessions
-  list: Active Sessions
-  show: Session Details
-  user_name: Username
-  ip_address: IP Address
-  user_agent: User Agent
-  last_activity: Last Activity
-  session_start: Session Start
-  terminate: Terminate Session
-  statistics:
-    total: Total Active Sessions
-    today: Today
-    hours_filter: Time Filter (Hours)
-  activity_timeline: Activity Timeline
-  unique_ips: Unique IP Addresses
-  unique_devices: Unique Devices
-  error:
-    invalid_token: Invalid CSRF token
-  info:
-    termination_not_implemented: Session termination requires additional configuration (database session storage)
-
+session.title: Sessions
+session.list: 'Active Sessions'
+session.show: 'Session Details'
+session.user_name: Username
+session.ip_address: 'IP Address'
+session.user_agent: 'User Agent'
+session.last_activity: 'Last Activity'
+session.session_start: 'Session Start'
+session.terminate: 'Terminate Session'
+session.statistics.total: 'Total Active Sessions'
+session.statistics.today: Today
+session.statistics.hours_filter: 'Time Filter (Hours)'
+session.activity_timeline: 'Activity Timeline'
+session.unique_ips: 'Unique IP Addresses'
+session.unique_devices: 'Unique Devices'
+session.error.invalid_token: 'Invalid CSRF token'
+session.info.termination_not_implemented: 'Session termination requires additional configuration (database session storage)'
+session.subtitle: __session.subtitle
+session.user_activity: __session.user_activity
