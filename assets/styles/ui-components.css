@@ -473,21 +473,13 @@
 }
 
 /* Font size utilities */
-.fs-09 {
-    font-size: 0.9rem;
-}
-
-.fs-1 {
-    font-size: 1rem;
-}
-
-.fs-12 {
-    font-size: 1.2rem;
-}
-
-.fs-15 {
-    font-size: 1.5rem;
-}
+/* Text size utilities removed - use Bootstrap 5 equivalents:
+   - .fs-09 (0.9rem) → use .small
+   - .fs-1 (1rem) → use .fs-6 (Bootstrap standard)
+   - .fs-12 (1.2rem) → use .fs-5 (1.25rem, close enough)
+   - .fs-15 (1.5rem) → use .fs-4 (Bootstrap standard)
+   See: TEXT_SIZE_GUIDE.md and TEXT_SIZE_MIGRATION_PLAN.md
+*/
 
 .fs-15-warning {
     font-size: 1.5rem;
@@ -504,18 +496,14 @@
     color: var(--color-danger);
 }
 
-.fs-2 {
-    font-size: 2rem;
-}
+/* .fs-2 removed - already matches Bootstrap 5 .fs-2 (2rem) */
 
 .fs-2-mb-sm {
     font-size: 2rem;
     margin-bottom: var(--spacing-sm);
 }
 
-.fs-25 {
-    font-size: 2.5rem;
-}
+/* .fs-25 removed - use Bootstrap 5 .fs-1 (2.5rem) */
 
 /* Font weight utilities */
 .fw-bold {
