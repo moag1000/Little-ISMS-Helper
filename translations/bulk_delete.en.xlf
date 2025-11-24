@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="en" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="MPjrnl8" resname="bulk_delete.confirm.title">
+        <source>bulk_delete.confirm.title</source>
+        <target>Confirm Deletion</target>
+      </trans-unit>
+      <trans-unit id="uphZCy0" resname="bulk_delete.confirm.warning">
+        <source>bulk_delete.confirm.warning</source>
+        <target>This action cannot be undone.</target>
+      </trans-unit>
+      <trans-unit id="JQh9rpu" resname="bulk_delete.selection.title">
+        <source>bulk_delete.selection.title</source>
+        <target>Selected Entries</target>
+      </trans-unit>
+      <trans-unit id=".lMgWKu" resname="bulk_delete.dependencies.title">
+        <source>bulk_delete.dependencies.title</source>
+        <target>Affected Dependencies</target>
+      </trans-unit>
+      <trans-unit id="Hi6uiRD" resname="bulk_delete.dependencies.list">
+        <source>bulk_delete.dependencies.list</source>
+        <target>List of affected dependencies</target>
+      </trans-unit>
+      <trans-unit id="FV1o_5y" resname="bulk_delete.loading">
+        <source>bulk_delete.loading</source>
+        <target>Checking dependencies...</target>
+      </trans-unit>
+      <trans-unit id="5ZPmGlw" resname="bulk_delete.warning">
+        <source>bulk_delete.warning</source>
+        <target>__bulk_delete.warning</target>
+      </trans-unit>
+      <trans-unit id="llAuHag" resname="bulk_delete.will_be_deleted">
+        <source>bulk_delete.will_be_deleted</source>
+        <target>__bulk_delete.will_be_deleted</target>
+      </trans-unit>
+      <trans-unit id="6hw0kOW" resname="bulk_delete.selected_items">
+        <source>bulk_delete.selected_items</source>
+        <target>__bulk_delete.selected_items</target>
+      </trans-unit>
+      <trans-unit id="fHsqU2V" resname="bulk_delete.understand">
+        <source>bulk_delete.understand</source>
+        <target>__bulk_delete.understand</target>
+      </trans-unit>
+      <trans-unit id="IuGyapq" resname="bulk_delete.confirm_help">
+        <source>bulk_delete.confirm_help</source>
+        <target>__bulk_delete.confirm_help</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="de" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="jYK462z" resname="asset_management.title">
+        <source>asset_management.title</source>
+        <target>Asset Management</target>
+      </trans-unit>
+      <trans-unit id="LObYWPD" resname="asset_management.description">
+        <source>asset_management.description</source>
+        <target>Verwaltung von IT-Assets und Informationswerten gemäß ISO 27001</target>
+      </trans-unit>
+      <trans-unit id="svPwALo" resname="asset_management.active_assets">
+        <source>asset_management.active_assets</source>
+        <target>Aktive Assets</target>
+      </trans-unit>
+      <trans-unit id="moShdYR" resname="asset.new">
+        <source>asset.new</source>
+        <target>Neues Asset</target>
+      </trans-unit>
+      <trans-unit id="co3w1Su" resname="asset.action.view_critical">
+        <source>asset.action.view_critical</source>
+        <target>Kritische Assets anzeigen</target>
+      </trans-unit>
+      <trans-unit id="94YrNvF" resname="asset.action.view_details">
+        <source>asset.action.view_details</source>
+        <target>Details anzeigen</target>
+      </trans-unit>
+      <trans-unit id="M.D4x56" resname="asset.badge.business_critical">
+        <source>asset.badge.business_critical</source>
+        <target>Geschäftskritisch</target>
+      </trans-unit>
+      <trans-unit id="nDKDwjM" resname="asset.classification.public">
+        <source>asset.classification.public</source>
+        <target>Öffentlich</target>
+      </trans-unit>
+      <trans-unit id="eUgHu3g" resname="asset.classification.internal">
+        <source>asset.classification.internal</source>
+        <target>Intern</target>
+      </trans-unit>
+      <trans-unit id="zp.ldVa" resname="asset.classification.confidential">
+        <source>asset.classification.confidential</source>
+        <target>Vertraulich</target>
+      </trans-unit>
+      <trans-unit id="3AnBGEY" resname="asset.classification.restricted">
+        <source>asset.classification.restricted</source>
+        <target>Eingeschränkt</target>
+      </trans-unit>
+      <trans-unit id="rKzfpbc" resname="asset.description.bcm_insights">
+        <source>asset.description.bcm_insights</source>
+        <target>BCM-basierte Empfehlungen zur Verfügbarkeit</target>
+      </trans-unit>
+      <trans-unit id="YFLyVOW" resname="asset.description.critical_impact">
+        <source>asset.description.critical_impact</source>
+        <target>Kritische Auswirkung auf Geschäftsprozesse</target>
+      </trans-unit>
+      <trans-unit id="EhmWFeT" resname="asset.description.dependencies">
+        <source>asset.description.dependencies</source>
+        <target>Abhängigkeiten zu anderen Assets</target>
+      </trans-unit>
+      <trans-unit id="YUVM7W6" resname="asset.description.high_impact">
+        <source>asset.description.high_impact</source>
+        <target>Hohe Auswirkung</target>
+      </trans-unit>
+      <trans-unit id="JY7xK2a" resname="asset.description.low_impact">
+        <source>asset.description.low_impact</source>
+        <target>Geringe Auswirkung</target>
+      </trans-unit>
+      <trans-unit id="K.T1IPV" resname="asset.description.medium_impact">
+        <source>asset.description.medium_impact</source>
+        <target>Mittlere Auswirkung</target>
+      </trans-unit>
+      <trans-unit id="11S0GZ0" resname="asset.description.rto_analysis">
+        <source>asset.description.rto_analysis</source>
+        <target>RTO-basierte Verfügbarkeitsanalyse</target>
+      </trans-unit>
+      <trans-unit id="E.cGdrh" resname="asset.field.asset_count">
+        <source>asset.field.asset_count</source>
+        <target>Anzahl Assets</target>
+      </trans-unit>
+      <trans-unit id="zfuqYi3" resname="asset.field.asset_name">
+        <source>asset.field.asset_name</source>
+        <target>Asset-Name</target>
+      </trans-unit>
+      <trans-unit id="OzlfKvm" resname="asset.field.avg_rto">
+        <source>asset.field.avg_rto</source>
+        <target>Durchschn. RTO</target>
+      </trans-unit>
+      <trans-unit id="F0Pjbq." resname="asset.field.business_criticality">
+        <source>asset.field.business_criticality</source>
+        <target>Geschäftskritikalität</target>
+      </trans-unit>
+      <trans-unit id="0OKgWHR" resname="asset.field.classification">
+        <source>asset.field.classification</source>
+        <target>Klassifizierung</target>
+      </trans-unit>
+      <trans-unit id="zzjG9Bg" resname="asset.field.examples">
+        <source>asset.field.examples</source>
+        <target>Beispiele</target>
+      </trans-unit>
+      <trans-unit id="sXG_nil" resname="asset.field.monetary_value">
+        <source>asset.field.monetary_value</source>
+        <target>Monetärer Wert</target>
+      </trans-unit>
+      <trans-unit id="1f2Zxnt" resname="asset.field.recovery_strategy">
+        <source>asset.field.recovery_strategy</source>
+        <target>Wiederherstellungsstrategie</target>
+      </trans-unit>
+      <trans-unit id="QSsrw2Y" resname="asset.field.rpo">
+        <source>asset.field.rpo</source>
+        <target>RPO</target>
+      </trans-unit>
+      <trans-unit id="kozIZXS" resname="asset.field.rto">
+        <source>asset.field.rto</source>
+        <target>RTO</target>
+      </trans-unit>
+      <trans-unit id="R8KTo8j" resname="asset.field.rto_category">
+        <source>asset.field.rto_category</source>
+        <target>RTO-Kategorie</target>
+      </trans-unit>
+      <trans-unit id="I.1f7Cu" resname="asset.field.type">
+        <source>asset.field.type</source>
+        <target>Typ</target>
+      </trans-unit>
+      <trans-unit id="XoSpgT8" resname="asset.impact.critical">
+        <source>asset.impact.critical</source>
+        <target>Kritisch</target>
+      </trans-unit>
+      <trans-unit id="AxJ6xWy" resname="asset.impact.high">
+        <source>asset.impact.high</source>
+        <target>Hoch</target>
+      </trans-unit>
+      <trans-unit id="B43Jyjz" resname="asset.impact.low">
+        <source>asset.impact.low</source>
+        <target>Niedrig</target>
+      </trans-unit>
+      <trans-unit id="cmxGhmM" resname="asset.impact.medium">
+        <source>asset.impact.medium</source>
+        <target>Mittel</target>
+      </trans-unit>
+      <trans-unit id="x.XzX9e" resname="asset.label.name">
+        <source>asset.label.name</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id=".TftS2j" resname="asset.label.type">
+        <source>asset.label.type</source>
+        <target>Typ</target>
+      </trans-unit>
+      <trans-unit id="jFRFL.V" resname="asset.label.owner">
+        <source>asset.label.owner</source>
+        <target>Eigentümer</target>
+      </trans-unit>
+      <trans-unit id="u._Vu2F" resname="asset.label.classification">
+        <source>asset.label.classification</source>
+        <target>Klassifizierung</target>
+      </trans-unit>
+      <trans-unit id="eZBh0Op" resname="asset.label.data_classification">
+        <source>asset.label.data_classification</source>
+        <target>Datenklassifizierung</target>
+      </trans-unit>
+      <trans-unit id="VkAX2V4" resname="asset.label.risks">
+        <source>asset.label.risks</source>
+        <target>Risiken</target>
+      </trans-unit>
+      <trans-unit id="zS52iwQ" resname="asset.label.status">
+        <source>asset.label.status</source>
+        <target>Status</target>
+      </trans-unit>
+      <trans-unit id="ZcfMaFF" resname="asset.list.title">
+        <source>asset.list.title</source>
+        <target>Assets</target>
+      </trans-unit>
+      <trans-unit id="mNbjPlx" resname="asset.message.no_critical_assets">
+        <source>asset.message.no_critical_assets</source>
+        <target>Keine kritischen Assets vorhanden</target>
+      </trans-unit>
+      <trans-unit id="hBR9M6L" resname="asset.rto.flexible">
+        <source>asset.rto.flexible</source>
+        <target>Flexibel</target>
+      </trans-unit>
+      <trans-unit id="8NVywMZ" resname="asset.rto.immediate">
+        <source>asset.rto.immediate</source>
+        <target>Sofort</target>
+      </trans-unit>
+      <trans-unit id="4NzadyR" resname="asset.rto.standard">
+        <source>asset.rto.standard</source>
+        <target>Standard</target>
+      </trans-unit>
+      <trans-unit id="6nUZI7n" resname="asset.rto.urgent">
+        <source>asset.rto.urgent</source>
+        <target>Dringend</target>
+      </trans-unit>
+      <trans-unit id="x2TVscu" resname="asset.section.business_impact">
+        <source>asset.section.business_impact</source>
+        <target>Geschäftsauswirkungen</target>
+      </trans-unit>
+      <trans-unit id="Yxb24yi" resname="asset.section.critical_assets">
+        <source>asset.section.critical_assets</source>
+        <target>Kritische Assets</target>
+      </trans-unit>
+      <trans-unit id="VCQeZtB" resname="asset.section.dependency_insights">
+        <source>asset.section.dependency_insights</source>
+        <target>Abhängigkeitsanalyse</target>
+      </trans-unit>
+      <trans-unit id="HIYelza" resname="asset.section.rto_analysis">
+        <source>asset.section.rto_analysis</source>
+        <target>RTO-Analyse</target>
+      </trans-unit>
+      <trans-unit id="vFXrPPc" resname="asset.stats.avg_dependencies">
+        <source>asset.stats.avg_dependencies</source>
+        <target>Durchschn. Abhängigkeiten</target>
+      </trans-unit>
+      <trans-unit id="pGSis71" resname="asset.stats.avg_rto">
+        <source>asset.stats.avg_rto</source>
+        <target>Durchschnittliche RTO</target>
+      </trans-unit>
+      <trans-unit id="caaMRI2" resname="asset.stats.critical_assets">
+        <source>asset.stats.critical_assets</source>
+        <target>Kritische Assets</target>
+      </trans-unit>
+      <trans-unit id="_zd.fMI" resname="asset.stats.high_risk_assets">
+        <source>asset.stats.high_risk_assets</source>
+        <target>Hochrisiko-Assets</target>
+      </trans-unit>
+      <trans-unit id="z4njUXP" resname="asset.stats.single_points_failure">
+        <source>asset.stats.single_points_failure</source>
+        <target>Single Points of Failure</target>
+      </trans-unit>
+      <trans-unit id="NYYSM6j" resname="asset.stats.total_assets">
+        <source>asset.stats.total_assets</source>
+        <target>Gesamt-Assets</target>
+      </trans-unit>
+      <trans-unit id="kGRXA_F" resname="asset.stats.with_dependencies">
+        <source>asset.stats.with_dependencies</source>
+        <target>Mit Abhängigkeiten</target>
+      </trans-unit>
+      <trans-unit id="JgLg_rV" resname="asset.status.active">
+        <source>asset.status.active</source>
+        <target>Aktiv</target>
+      </trans-unit>
+      <trans-unit id="tlIn1fC" resname="asset.status.inactive">
+        <source>asset.status.inactive</source>
+        <target>Inaktiv</target>
+      </trans-unit>
+      <trans-unit id="fd_CmHF" resname="asset.status.retired">
+        <source>asset.status.retired</source>
+        <target>Außer Betrieb</target>
+      </trans-unit>
+      <trans-unit id="jAJZ5iI" resname="asset.title.bcm_insights">
+        <source>asset.title.bcm_insights</source>
+        <target>BCM-Insights</target>
+      </trans-unit>
+      <trans-unit id="vrR.zCV" resname="assets.title.new">
+        <source>assets.title.new</source>
+        <target>Neues Asset</target>
+      </trans-unit>
+      <trans-unit id="uVTU_FH" resname="assets.title.edit">
+        <source>assets.title.edit</source>
+        <target>Asset bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="DA28j2b" resname="assets.action.bcm_insights">
+        <source>assets.action.bcm_insights</source>
+        <target>BCM‑Insights</target>
+      </trans-unit>
+      <trans-unit id="fFFIlbe" resname="assets.action.create">
+        <source>assets.action.create</source>
+        <target>Asset anlegen</target>
+      </trans-unit>
+      <trans-unit id="b1FA8X_" resname="assets.action.update">
+        <source>assets.action.update</source>
+        <target>Änderungen speichern</target>
+      </trans-unit>
+      <trans-unit id="yJmvvac" resname="assets.details.title">
+        <source>assets.details.title</source>
+        <target>Asset‑Details</target>
+      </trans-unit>
+      <trans-unit id="wQLeKZM" resname="assets.section.basic_info">
+        <source>assets.section.basic_info</source>
+        <target>Grundinformationen</target>
+      </trans-unit>
+      <trans-unit id="6j4OEpj" resname="assets.section.assignment">
+        <source>assets.section.assignment</source>
+        <target>Zuordnung</target>
+      </trans-unit>
+      <trans-unit id="BBLKT_o" resname="assets.section.financial">
+        <source>assets.section.financial</source>
+        <target>Finanzielle Informationen</target>
+      </trans-unit>
+      <trans-unit id="kXVisAl" resname="assets.section.cia_values">
+        <source>assets.section.cia_values</source>
+        <target>CIA‑Bewertung (Schutzbedarf)</target>
+      </trans-unit>
+      <trans-unit id="5SEKIot" resname="assets.section.valuation">
+        <source>assets.section.valuation</source>
+        <target>Bewertung</target>
+      </trans-unit>
+      <trans-unit id="kdtReS6" resname="assets.section.compliance">
+        <source>assets.section.compliance</source>
+        <target>Compliance</target>
+      </trans-unit>
+      <trans-unit id="UDRa_Iu" resname="assets.section.cia_triad">
+        <source>assets.section.cia_triad</source>
+        <target>CIA‑Triade</target>
+      </trans-unit>
+      <trans-unit id="lxG0fAj" resname="assets.section.handling_instructions">
+        <source>assets.section.handling_instructions</source>
+        <target>Umgangshinweise</target>
+      </trans-unit>
+      <trans-unit id="J96MAc9" resname="assets.section.acceptable_use_policy">
+        <source>assets.section.acceptable_use_policy</source>
+        <target>Richtlinie zur akzeptablen Nutzung</target>
+      </trans-unit>
+      <trans-unit id="02KiBK6" resname="assets.section.protection_analysis">
+        <source>assets.section.protection_analysis</source>
+        <target>Schutzbedarfsanalyse</target>
+      </trans-unit>
+      <trans-unit id="rEVAeJz" resname="assets.section.protecting_controls">
+        <source>assets.section.protecting_controls</source>
+        <target>Schutzmaßnahmen</target>
+      </trans-unit>
+      <trans-unit id="61xKl.F" resname="assets.section.related_risks">
+        <source>assets.section.related_risks</source>
+        <target>Zugehörige Risiken</target>
+      </trans-unit>
+      <trans-unit id="58OBU.g" resname="assets.section.related_incidents">
+        <source>assets.section.related_incidents</source>
+        <target>Zugehörige Incidents</target>
+      </trans-unit>
+      <trans-unit id="7QWRyCI" resname="assets.section.history">
+        <source>assets.section.history</source>
+        <target>Historie</target>
+      </trans-unit>
+      <trans-unit id="xu0vhQg" resname="assets.field.name">
+        <source>assets.field.name</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="JqGURje" resname="assets.field.type">
+        <source>assets.field.type</source>
+        <target>Asset‑Typ</target>
+      </trans-unit>
+      <trans-unit id="eOFp3qW" resname="assets.field.description">
+        <source>assets.field.description</source>
+        <target>Beschreibung</target>
+      </trans-unit>
+      <trans-unit id="dAroneS" resname="assets.field.owner">
+        <source>assets.field.owner</source>
+        <target>Eigentümer</target>
+      </trans-unit>
+      <trans-unit id="I.z1_FS" resname="assets.field.location">
+        <source>assets.field.location</source>
+        <target>Standort</target>
+      </trans-unit>
+      <trans-unit id="v.Gl7wK" resname="assets.field.acquisition_value">
+        <source>assets.field.acquisition_value</source>
+        <target>Anschaffungswert</target>
+      </trans-unit>
+      <trans-unit id="IebrejE" resname="assets.field.current_value">
+        <source>assets.field.current_value</source>
+        <target>Aktueller Wert</target>
+      </trans-unit>
+      <trans-unit id="myk9VOa" resname="assets.field.confidentiality">
+        <source>assets.field.confidentiality</source>
+        <target>Vertraulichkeit</target>
+      </trans-unit>
+      <trans-unit id="zySrOq1" resname="assets.field.integrity">
+        <source>assets.field.integrity</source>
+        <target>Integrität</target>
+      </trans-unit>
+      <trans-unit id="3z.UAE0" resname="assets.field.availability">
+        <source>assets.field.availability</source>
+        <target>Verfügbarkeit</target>
+      </trans-unit>
+      <trans-unit id="MDEY7A7" resname="assets.help.name">
+        <source>assets.help.name</source>
+        <target>Eindeutiger Name des Assets</target>
+      </trans-unit>
+      <trans-unit id="Crl975N" resname="assets.help.type">
+        <source>assets.help.type</source>
+        <target>Kategorie des Assets (Hardware, Software, Daten, etc.)</target>
+      </trans-unit>
+      <trans-unit id="Y80l1eZ" resname="assets.help.description">
+        <source>assets.help.description</source>
+        <target>Detaillierte Beschreibung des Assets und seiner Funktion</target>
+      </trans-unit>
+      <trans-unit id="FrIyA.2" resname="assets.help.owner">
+        <source>assets.help.owner</source>
+        <target>Verantwortliche Person für dieses Asset</target>
+      </trans-unit>
+      <trans-unit id="R3DXn5y" resname="assets.help.location">
+        <source>assets.help.location</source>
+        <target>Physischer oder logischer Standort des Assets</target>
+      </trans-unit>
+      <trans-unit id="NNs0iO7" resname="assets.help.acquisition_value">
+        <source>assets.help.acquisition_value</source>
+        <target>Ursprünglicher Kaufpreis oder Anschaffungskosten</target>
+      </trans-unit>
+      <trans-unit id="SiLkV2U" resname="assets.help.current_value">
+        <source>assets.help.current_value</source>
+        <target>Geschätzter aktueller Marktwert</target>
+      </trans-unit>
+      <trans-unit id="wThrIGM" resname="assets.help.confidentiality">
+        <source>assets.help.confidentiality</source>
+        <target>Schutzbedarf bzgl. Vertraulichkeit der Informationen</target>
+      </trans-unit>
+      <trans-unit id="S0uojFH" resname="assets.help.integrity">
+        <source>assets.help.integrity</source>
+        <target>Schutzbedarf bzgl. Unversehrtheit und Korrektheit der Daten</target>
+      </trans-unit>
+      <trans-unit id="z.DuJ.c" resname="assets.help.availability">
+        <source>assets.help.availability</source>
+        <target>Schutzbedarf bzgl. ständiger Erreichbarkeit und Nutzbarkeit</target>
+      </trans-unit>
+      <trans-unit id="KynRh9Z" resname="assets.cia_help">
+        <source>assets.cia_help</source>
+        <target>Bewerten Sie den Schutzbedarf nach Vertraulichkeit, Integrität und Verfügbarkeit (1=sehr niedrig, 5=sehr hoch)</target>
+      </trans-unit>
+      <trans-unit id="m1a3ha2" resname="assets.label.type">
+        <source>assets.label.type</source>
+        <target>Typ</target>
+      </trans-unit>
+      <trans-unit id="_OYyPXB" resname="assets.label.owner">
+        <source>assets.label.owner</source>
+        <target>Eigentümer</target>
+      </trans-unit>
+      <trans-unit id="2GJCoS2" resname="assets.label.location">
+        <source>assets.label.location</source>
+        <target>Standort</target>
+      </trans-unit>
+      <trans-unit id="NxNFQu6" resname="assets.label.status">
+        <source>assets.label.status</source>
+        <target>Status</target>
+      </trans-unit>
+      <trans-unit id=".EnLjM8" resname="assets.label.acquisition_value">
+        <source>assets.label.acquisition_value</source>
+        <target>Anschaffungswert</target>
+      </trans-unit>
+      <trans-unit id="G9Ig6Bn" resname="assets.label.current_value">
+        <source>assets.label.current_value</source>
+        <target>Aktueller Wert</target>
+      </trans-unit>
+      <trans-unit id="Et8qUHH" resname="assets.label.monetary_value">
+        <source>assets.label.monetary_value</source>
+        <target>Monetärer Wert</target>
+      </trans-unit>
+      <trans-unit id="eJkGRCB" resname="assets.label.total_value">
+        <source>assets.label.total_value</source>
+        <target>Gesamtwert</target>
+      </trans-unit>
+      <trans-unit id="bR12dJb" resname="assets.label.risks">
+        <source>assets.label.risks</source>
+        <target>Risiken</target>
+      </trans-unit>
+      <trans-unit id="w7JsdGn" resname="assets.label.data_classification">
+        <source>assets.label.data_classification</source>
+        <target>Datenklassifizierung</target>
+      </trans-unit>
+      <trans-unit id="VDUbdnd" resname="assets.label.return_date">
+        <source>assets.label.return_date</source>
+        <target>Rückgabedatum</target>
+      </trans-unit>
+      <trans-unit id="gaYvBTa" resname="assets.label.confidentiality">
+        <source>assets.label.confidentiality</source>
+        <target>Vertraulichkeit</target>
+      </trans-unit>
+      <trans-unit id="TydJzm3" resname="assets.label.integrity">
+        <source>assets.label.integrity</source>
+        <target>Integrität</target>
+      </trans-unit>
+      <trans-unit id="KIVl_l9" resname="assets.label.availability">
+        <source>assets.label.availability</source>
+        <target>Verfügbarkeit</target>
+      </trans-unit>
+      <trans-unit id="RV3trTI" resname="assets.confirm.delete">
+        <source>assets.confirm.delete</source>
+        <target>Dieses Asset wirklich löschen?</target>
+      </trans-unit>
+      <trans-unit id="T8l.vvi" resname="assets.warning.delete_irreversible">
+        <source>assets.warning.delete_irreversible</source>
+        <target>Das Löschen dieses Assets kann nicht rückgängig gemacht werden. Zugehörige Verknüpfungen können entfernt werden.</target>
+      </trans-unit>
+      <trans-unit id="BS6UYWK" resname="assets.modern.breadcrumb">
+        <source>assets.modern.breadcrumb</source>
+        <target>Assets</target>
+      </trans-unit>
+      <trans-unit id="89kM_Ol" resname="assets.modern.header.title">
+        <source>assets.modern.header.title</source>
+        <target>Asset Management</target>
+      </trans-unit>
+      <trans-unit id="fESLB6i" resname="assets.modern.header.subtitle">
+        <source>assets.modern.header.subtitle</source>
+        <target>Verwaltung von IT-Assets und Informationswerten gemäß ISO 27001</target>
+      </trans-unit>
+      <trans-unit id="Iz0pX6d" resname="assets.modern.header.action.new">
+        <source>assets.modern.header.action.new</source>
+        <target>Neues Asset</target>
+      </trans-unit>
+      <trans-unit id="pv9WtGF" resname="assets.modern.header.action.export">
+        <source>assets.modern.header.action.export</source>
+        <target>Export</target>
+      </trans-unit>
+      <trans-unit id="rvqYTy9" resname="assets.modern.kpi.total">
+        <source>assets.modern.kpi.total</source>
+        <target>Gesamt-Assets</target>
+      </trans-unit>
+      <trans-unit id="zpAvPVu" resname="assets.modern.kpi.critical">
+        <source>assets.modern.kpi.critical</source>
+        <target>Kritische Assets</target>
+      </trans-unit>
+      <trans-unit id="pSQrnU3" resname="assets.modern.kpi.avg_cia">
+        <source>assets.modern.kpi.avg_cia</source>
+        <target>Ø CIA-Score</target>
+      </trans-unit>
+      <trans-unit id="Q_fam5Q" resname="assets.modern.kpi.with_risks">
+        <source>assets.modern.kpi.with_risks</source>
+        <target>Assets mit Risiken</target>
+      </trans-unit>
+      <trans-unit id="aYp.P1G" resname="assets.modern.kpi.unit.out_of_5">
+        <source>assets.modern.kpi.unit.out_of_5</source>
+        <target>/ 5</target>
+      </trans-unit>
+      <trans-unit id="E3bxsIC" resname="assets.modern.chart.type_distribution">
+        <source>assets.modern.chart.type_distribution</source>
+        <target>Verteilung nach Asset-Typ</target>
+      </trans-unit>
+      <trans-unit id="zW5XyJK" resname="assets.modern.empty.title">
+        <source>assets.modern.empty.title</source>
+        <target>Noch keine Assets vorhanden</target>
+      </trans-unit>
+      <trans-unit id="ad2FBEg" resname="assets.modern.empty.description">
+        <source>assets.modern.empty.description</source>
+        <target>Legen Sie Ihr erstes Asset an, um mit dem Asset Management zu beginnen. Assets sind die Grundlage für Ihr ISMS.</target>
+      </trans-unit>
+      <trans-unit id="Iu6.ojQ" resname="assets.modern.empty.action_create_first">
+        <source>assets.modern.empty.action_create_first</source>
+        <target>Erstes Asset erstellen</target>
+      </trans-unit>
+      <trans-unit id="wnlQUNl" resname="assets.modern.table.title_all">
+        <source>assets.modern.table.title_all</source>
+        <target>Alle Assets</target>
+      </trans-unit>
+      <trans-unit id="r6TEkzP" resname="assets.modern.table.caption">
+        <source>assets.modern.table.caption</source>
+        <target>Liste aller Assets mit CIA-Bewertung, Risiken und Controls</target>
+      </trans-unit>
+      <trans-unit id="vknt4x6" resname="assets.modern.table.search_placeholder">
+        <source>assets.modern.table.search_placeholder</source>
+        <target>Suche...</target>
+      </trans-unit>
+      <trans-unit id="EXGVIdb" resname="assets.modern.table.head.name">
+        <source>assets.modern.table.head.name</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="SS5EkfC" resname="assets.modern.table.head.type">
+        <source>assets.modern.table.head.type</source>
+        <target>Typ</target>
+      </trans-unit>
+      <trans-unit id="TAAR3n9" resname="assets.modern.table.head.confidentiality">
+        <source>assets.modern.table.head.confidentiality</source>
+        <target>Vertraulichkeit</target>
+      </trans-unit>
+      <trans-unit id="xt92mOc" resname="assets.modern.table.head.integrity">
+        <source>assets.modern.table.head.integrity</source>
+        <target>Integrität</target>
+      </trans-unit>
+      <trans-unit id="CQ19xL6" resname="assets.modern.table.head.availability">
+        <source>assets.modern.table.head.availability</source>
+        <target>Verfügbarkeit</target>
+      </trans-unit>
+      <trans-unit id="WqFR3RO" resname="assets.modern.table.head.risks">
+        <source>assets.modern.table.head.risks</source>
+        <target>Risiken</target>
+      </trans-unit>
+      <trans-unit id="SGZIfes" resname="assets.modern.table.head.controls">
+        <source>assets.modern.table.head.controls</source>
+        <target>Maßnahmen</target>
+      </trans-unit>
+      <trans-unit id="XkVA8iG" resname="assets.modern.table.head.actions">
+        <source>assets.modern.table.head.actions</source>
+        <target>Aktionen</target>
+      </trans-unit>
+      <trans-unit id="zqtSbSX" resname="asset.confirm.delete">
+        <source>asset.confirm.delete</source>
+        <target>__asset.confirm.delete</target>
+      </trans-unit>
+      <trans-unit id="hJ5Lgr0" resname="asset.title">
+        <source>asset.title</source>
+        <target>__asset.title</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

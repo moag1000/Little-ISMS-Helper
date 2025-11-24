@@ -35,6 +35,11 @@ bc_plans:
     capacity: Kapazität
   badge:
     overdue: ÜBERFÄLLIG
+  status:
+    draft: Entwurf
+    under_review: In Prüfung
+    active: Aktiv
+    archived: Archiviert
   message:
     not_scheduled: Nicht geplant
     never: Nie

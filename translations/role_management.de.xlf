@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="de" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="hFtzmaC" resname="role_management.title.list">
+        <source>role_management.title.list</source>
+        <target><![CDATA[Rollen & Berechtigungen]]></target>
+      </trans-unit>
+      <trans-unit id="LPr0i4p" resname="role_management.title.create">
+        <source>role_management.title.create</source>
+        <target>Rolle erstellen</target>
+      </trans-unit>
+      <trans-unit id="QMGGJEh" resname="role_management.title.edit">
+        <source>role_management.title.edit</source>
+        <target>Rolle bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="7EVahnN" resname="role_management.title.show">
+        <source>role_management.title.show</source>
+        <target>Rollendetails</target>
+      </trans-unit>
+      <trans-unit id="ZBQBiIc" resname="role_management.description.overview">
+        <source>role_management.description.overview</source>
+        <target>Verwalten Sie Benutzerrollen und deren Berechtigungen für die Zugriffskontrolle</target>
+      </trans-unit>
+      <trans-unit id="gNTR5p9" resname="role_management.action.create">
+        <source>role_management.action.create</source>
+        <target>Neue Rolle erstellen</target>
+      </trans-unit>
+      <trans-unit id="jXXkfdp" resname="role_management.section.basic_info">
+        <source>role_management.section.basic_info</source>
+        <target>Grundinformationen</target>
+      </trans-unit>
+      <trans-unit id="g5Cc_oK" resname="role_management.section.permissions">
+        <source>role_management.section.permissions</source>
+        <target>Berechtigungen</target>
+      </trans-unit>
+      <trans-unit id="Jb_GGg8" resname="role_management.section.details">
+        <source>role_management.section.details</source>
+        <target>Rollendetails</target>
+      </trans-unit>
+      <trans-unit id="McgR7cw" resname="role_management.section.users">
+        <source>role_management.section.users</source>
+        <target>Zugewiesene Benutzer</target>
+      </trans-unit>
+      <trans-unit id="ukFFL1K" resname="role_management.field.name">
+        <source>role_management.field.name</source>
+        <target>Rollenname</target>
+      </trans-unit>
+      <trans-unit id="PUzcKJ." resname="role_management.field.description">
+        <source>role_management.field.description</source>
+        <target>Beschreibung</target>
+      </trans-unit>
+      <trans-unit id="Xbqajv3" resname="role_management.field.users">
+        <source>role_management.field.users</source>
+        <target>Benutzer</target>
+      </trans-unit>
+      <trans-unit id="0GFq6Pl" resname="role_management.field.permissions">
+        <source>role_management.field.permissions</source>
+        <target>Berechtigungen</target>
+      </trans-unit>
+      <trans-unit id="G6.Ttqu" resname="role_management.field.type">
+        <source>role_management.field.type</source>
+        <target>Typ</target>
+      </trans-unit>
+      <trans-unit id=".PYQK5Q" resname="role_management.placeholder.name">
+        <source>role_management.placeholder.name</source>
+        <target>z.B. Sicherheitsbeauftragter</target>
+      </trans-unit>
+      <trans-unit id="lke2t6h" resname="role_management.placeholder.description">
+        <source>role_management.placeholder.description</source>
+        <target>Beschreibung der Rolle und ihrer Verantwortlichkeiten...</target>
+      </trans-unit>
+      <trans-unit id="0FFXI4H" resname="role_management.help.active">
+        <source>role_management.help.active</source>
+        <target>Aktive Rollen können Benutzern zugewiesen werden</target>
+      </trans-unit>
+      <trans-unit id="FNJUAPu" resname="role_management.help.permissions">
+        <source>role_management.help.permissions</source>
+        <target>Wählen Sie die Berechtigungen aus, die diese Rolle haben soll</target>
+      </trans-unit>
+      <trans-unit id="7nMQ1r." resname="role_management.permission.name">
+        <source>role_management.permission.name</source>
+        <target>Berechtigung</target>
+      </trans-unit>
+      <trans-unit id="aAkyCOD" resname="role_management.permission.resource">
+        <source>role_management.permission.resource</source>
+        <target>Ressource</target>
+      </trans-unit>
+      <trans-unit id="W_xEXnJ" resname="role_management.permission.action">
+        <source>role_management.permission.action</source>
+        <target>Aktion</target>
+      </trans-unit>
+      <trans-unit id="VYbMZnY" resname="role_management.user.name">
+        <source>role_management.user.name</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="IKpnv.R" resname="role_management.user.email">
+        <source>role_management.user.email</source>
+        <target>E-Mail</target>
+      </trans-unit>
+      <trans-unit id="HjdAl5w" resname="role_management.user.assigned_date">
+        <source>role_management.user.assigned_date</source>
+        <target>Zugewiesen am</target>
+      </trans-unit>
+      <trans-unit id="_UZTfIH" resname="role_management.badge.system">
+        <source>role_management.badge.system</source>
+        <target>System</target>
+      </trans-unit>
+      <trans-unit id="g3xShrv" resname="role_management.badge.custom">
+        <source>role_management.badge.custom</source>
+        <target>Benutzerdefiniert</target>
+      </trans-unit>
+      <trans-unit id="Np9Ftd7" resname="role_management.type.system">
+        <source>role_management.type.system</source>
+        <target>Systemrolle</target>
+      </trans-unit>
+      <trans-unit id="UHKtWy_" resname="role_management.type.custom">
+        <source>role_management.type.custom</source>
+        <target>Benutzerdefinierte Rolle</target>
+      </trans-unit>
+      <trans-unit id="XhcbVZf" resname="role_management.stats.total">
+        <source>role_management.stats.total</source>
+        <target>Gesamt-Rollen</target>
+      </trans-unit>
+      <trans-unit id="WVjFZ0y" resname="role_management.stats.system_roles">
+        <source>role_management.stats.system_roles</source>
+        <target>Systemrollen</target>
+      </trans-unit>
+      <trans-unit id="DGrCp_q" resname="role_management.stats.with_users">
+        <source>role_management.stats.with_users</source>
+        <target>Mit Benutzern</target>
+      </trans-unit>
+      <trans-unit id="vvC6lyR" resname="role_management.stats.avg_permissions">
+        <source>role_management.stats.avg_permissions</source>
+        <target>Durchschn. Berechtigungen</target>
+      </trans-unit>
+      <trans-unit id="VDRT5mx" resname="role_management.message.no_permissions">
+        <source>role_management.message.no_permissions</source>
+        <target>Dieser Rolle sind keine Berechtigungen zugewiesen</target>
+      </trans-unit>
+      <trans-unit id=".UyTFCi" resname="role_management.message.no_users">
+        <source>role_management.message.no_users</source>
+        <target>Dieser Rolle sind keine Benutzer zugewiesen</target>
+      </trans-unit>
+      <trans-unit id="DW9rG9C" resname="role_management.message.no_roles">
+        <source>role_management.message.no_roles</source>
+        <target>Noch keine Rollen erstellt</target>
+      </trans-unit>
+      <trans-unit id="dsd1WKa" resname="role_management.warning.system_role">
+        <source>role_management.warning.system_role</source>
+        <target>Systemrolle</target>
+      </trans-unit>
+      <trans-unit id="anUzYN7" resname="role_management.warning.system_role_desc">
+        <source>role_management.warning.system_role_desc</source>
+        <target>Dies ist eine Systemrolle und kann nicht gelöscht werden. Nur Berechtigungen können angepasst werden.</target>
+      </trans-unit>
+      <trans-unit id="wavXLCb" resname="role_management.confirm.delete">
+        <source>role_management.confirm.delete</source>
+        <target>Sind Sie sicher, dass Sie diese Rolle löschen möchten? Alle Benutzerzuweisungen werden entfernt.</target>
+      </trans-unit>
+      <trans-unit id="KuO9Kua" resname="role.user">
+        <source>role.user</source>
+        <target>__role.user</target>
+      </trans-unit>
+      <trans-unit id="pAVrt2." resname="role.manager">
+        <source>role.manager</source>
+        <target>__role.manager</target>
+      </trans-unit>
+      <trans-unit id="f3H_Z65" resname="role.iso_officer">
+        <source>role.iso_officer</source>
+        <target>__role.iso_officer</target>
+      </trans-unit>
+      <trans-unit id="04qXmDx" resname="role.risk_manager">
+        <source>role.risk_manager</source>
+        <target>__role.risk_manager</target>
+      </trans-unit>
+      <trans-unit id="VC7T5Ck" resname="role.auditor">
+        <source>role.auditor</source>
+        <target>__role.auditor</target>
+      </trans-unit>
+      <trans-unit id="4_Irwhu" resname="role.admin">
+        <source>role.admin</source>
+        <target>__role.admin</target>
+      </trans-unit>
+      <trans-unit id="QoVkljv" resname="role.compare.title">
+        <source>role.compare.title</source>
+        <target>__role.compare.title</target>
+      </trans-unit>
+      <trans-unit id="J1KS3Wd" resname="role.compare.select_roles">
+        <source>role.compare.select_roles</source>
+        <target>__role.compare.select_roles</target>
+      </trans-unit>
+      <trans-unit id="3OeTzNT" resname="role.compare.permission_matrix">
+        <source>role.compare.permission_matrix</source>
+        <target>__role.compare.permission_matrix</target>
+      </trans-unit>
+      <trans-unit id="oPRwOnI" resname="role.compare.has_permission">
+        <source>role.compare.has_permission</source>
+        <target>__role.compare.has_permission</target>
+      </trans-unit>
+      <trans-unit id="EmjkBtY" resname="role.compare.no_permission">
+        <source>role.compare.no_permission</source>
+        <target>__role.compare.no_permission</target>
+      </trans-unit>
+      <trans-unit id="3WvbZfp" resname="role.templates.title">
+        <source>role.templates.title</source>
+        <target>__role.templates.title</target>
+      </trans-unit>
+      <trans-unit id="CSAetWR" resname="role.templates.description">
+        <source>role.templates.description</source>
+        <target>__role.templates.description</target>
+      </trans-unit>
+      <trans-unit id="FxcAIWK" resname="role.templates.custom_name">
+        <source>role.templates.custom_name</source>
+        <target>__role.templates.custom_name</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

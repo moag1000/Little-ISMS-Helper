@@ -1,101 +1,156 @@
-privacy:
-  breadcrumb:
-    privacy: Privacy
-    data_breaches: Data Breaches
-  data_breach:
-    title: Data Breaches
-    management: Data Breach Management
-    subtitle: Art. 33/34 GDPR – 72-hour notification requirement
-    show:
-      page_title: "Data Breach - %ref%"
-    page:
-      new_title: New Data Breach
-      new_subtitle: Register personal data breach per Art. 33/34 GDPR
-      edit_title: Edit Data Breach
-      edit_subtitle: '%ref% – %title%'
-    actions:
-      dashboard: Dashboard
-      new: New Data Breach
-    action:
-      create: Create Data Breach
-      update: Update Data Breach
-      export_pdf: Export PDF
-      submit_for_assessment: Submit for Assessment
-      edit: Edit Breach
-      notify_authority: Notify Supervisory Authority
-      notify_subjects: Notify Data Subjects
-      record_exemption: Record Exemption (Art. 34(3))
-      close_investigation: Close Investigation
-      reopen: Reopen
-      delete: Delete
-    form:
-      title: Data Breach Form
-    alert:
-      overdue_title: 'CRITICAL: Overdue Notifications'
-      overdue_text: '<strong>%count%</strong> data breach(es) exceeded the 72-hour supervisory authority notification deadline (Art. 33(1) GDPR).'
-      view_overdue: View overdue breaches immediately
-    score:
-      heading: GDPR Art. 33/34 Compliance Score
-      notification_compliance: Notification Compliance
-      timeliness: Timeliness Score
-      completeness: Completeness
-      summary: '%total% total breach(es) · %subjects% affected data subjects'
-    kpi:
-      total_breaches: Total Breaches
-      high_critical_risk: high/critical risk
-      pending_authority: Pending Authority
-      deadline_72h: 72h deadline
-      special_categories: Special Categories
-      art9_data: Art. 9 data
-    section:
-      status_workflow: Status & Workflow
-      linked_incident: Linked Security Incident
-      authority: 'Art. 33 - Supervisory Authority'
-      subjects: 'Art. 34 - Data Subjects'
-      nature: 'Art. 33(3) - Nature of the Breach'
-      consequences: 'Art. 33(3)(b-d) - Consequences & Measures'
-    field:
-      status: Status
-      completeness: Completeness
-      assessor: Assessor
-      affected_subjects: Affected Data Subjects
-      risk_level: Risk Level
-      created: Created
-      incident: Incident
-      detected: Detected
-      severity: Severity
-      processing_activity: Processing Activity (RoPA)
-      notification_required: Notification Required
-      notified: Notified
-      authority: Authority
-      reference: Reference
-      method: Method
-      delay_reason: Delay Reason
-      not_yet_notified: Not yet notified
-      deadline: Deadline
-      time_remaining: Time Remaining
-      overdue_by: OVERDUE by
-      hours: hours
-      yes: Yes
-      no: No
-      high_risk: Yes (High Risk)
-      subjects_notified: Subjects Notified
-      exemption_reason: Exemption
-      data_categories: Data Categories
-      data_subject_categories: Data Subject Categories
-      special_categories_affected: 'Special categories of data affected (Art. 9 GDPR)'
-      criminal_data_affected: 'Criminal conviction data affected (Art. 10 GDPR)'
-      likely_consequences: Likely Consequences (Art. 33(3)(b))
-      measures_taken: Measures Taken (Art. 33(3)(c))
-      measures_planned: Measures Planned to Address the Breach (Art. 33(3)(d))
-    status:
-      draft: Draft
-      under_assessment: Under Assessment
-      authority_notified: Authority notified
-      subjects_notified: Subjects notified
-      closed: Closed
-    risk:
-      low: Low
-      medium: Medium
-      high: High
-      critical: Critical
+privacy.breadcrumb.privacy: Privacy
+privacy.breadcrumb.data_breaches: 'Data Breaches'
+privacy.data_breach.title: 'Data Breaches'
+privacy.data_breach.management: 'Data Breach Management'
+privacy.data_breach.subtitle: 'Art. 33/34 GDPR – 72-hour notification requirement'
+privacy.data_breach.show.page_title: 'Data Breach - %ref%'
+privacy.data_breach.page.new_title: 'New Data Breach'
+privacy.data_breach.page.new_subtitle: 'Register personal data breach per Art. 33/34 GDPR'
+privacy.data_breach.page.edit_title: 'Edit Data Breach'
+privacy.data_breach.page.edit_subtitle: '%ref% – %title%'
+privacy.data_breach.actions.dashboard: Dashboard
+privacy.data_breach.actions.new: 'New Data Breach'
+privacy.data_breach.action.create: 'Create Data Breach'
+privacy.data_breach.action.update: 'Update Data Breach'
+privacy.data_breach.action.export_pdf: 'Export PDF'
+privacy.data_breach.action.submit_for_assessment: 'Submit for Assessment'
+privacy.data_breach.action.edit: 'Edit Breach'
+privacy.data_breach.action.notify_authority: 'Notify Supervisory Authority'
+privacy.data_breach.action.notify_subjects: 'Notify Data Subjects'
+privacy.data_breach.action.record_exemption: 'Record Exemption (Art. 34(3))'
+privacy.data_breach.action.close_investigation: 'Close Investigation'
+privacy.data_breach.action.reopen: Reopen
+privacy.data_breach.action.delete: Delete
+privacy.data_breach.form.title: 'Data Breach Form'
+privacy.data_breach.alert.overdue_title: 'CRITICAL: Overdue Notifications'
+privacy.data_breach.alert.overdue_text: '<strong>%count%</strong> data breach(es) exceeded the 72-hour supervisory authority notification deadline (Art. 33(1) GDPR).'
+privacy.data_breach.alert.view_overdue: 'View overdue breaches immediately'
+privacy.data_breach.score.heading: 'GDPR Art. 33/34 Compliance Score'
+privacy.data_breach.score.notification_compliance: 'Notification Compliance'
+privacy.data_breach.score.timeliness: 'Timeliness Score'
+privacy.data_breach.score.completeness: Completeness
+privacy.data_breach.score.summary: '%total% total breach(es) · %subjects% affected data subjects'
+privacy.data_breach.kpi.total_breaches: 'Total Breaches'
+privacy.data_breach.kpi.high_critical_risk: 'high/critical risk'
+privacy.data_breach.kpi.pending_authority: 'Pending Authority'
+privacy.data_breach.kpi.deadline_72h: '72h deadline'
+privacy.data_breach.kpi.special_categories: 'Special Categories'
+privacy.data_breach.kpi.art9_data: 'Art. 9 data'
+privacy.data_breach.section.status_workflow: 'Status & Workflow'
+privacy.data_breach.section.linked_incident: 'Linked Security Incident'
+privacy.data_breach.section.authority: 'Art. 33 - Supervisory Authority'
+privacy.data_breach.section.subjects: 'Art. 34 - Data Subjects'
+privacy.data_breach.section.nature: 'Art. 33(3) - Nature of the Breach'
+privacy.data_breach.section.consequences: 'Art. 33(3)(b-d) - Consequences & Measures'
+privacy.data_breach.field.status: Status
+privacy.data_breach.field.completeness: Completeness
+privacy.data_breach.field.assessor: Assessor
+privacy.data_breach.field.affected_subjects: 'Affected Data Subjects'
+privacy.data_breach.field.risk_level: 'Risk Level'
+privacy.data_breach.field.created: Created
+privacy.data_breach.field.incident: Incident
+privacy.data_breach.field.detected: Detected
+privacy.data_breach.field.severity: Severity
+privacy.data_breach.field.processing_activity: 'Processing Activity (RoPA)'
+privacy.data_breach.field.notification_required: 'Notification Required'
+privacy.data_breach.field.notified: Notified
+privacy.data_breach.field.authority: Authority
+privacy.data_breach.field.reference: Reference
+privacy.data_breach.field.method: Method
+privacy.data_breach.field.delay_reason: 'Delay Reason'
+privacy.data_breach.field.not_yet_notified: 'Not yet notified'
+privacy.data_breach.field.deadline: Deadline
+privacy.data_breach.field.time_remaining: 'Time Remaining'
+privacy.data_breach.field.overdue_by: 'OVERDUE by'
+privacy.data_breach.field.hours: hours
+privacy.data_breach.field.yes: 'Yes'
+privacy.data_breach.field.no: 'No'
+privacy.data_breach.field.high_risk: 'Yes (High Risk)'
+privacy.data_breach.field.subjects_notified: 'Subjects Notified'
+privacy.data_breach.field.exemption_reason: Exemption
+privacy.data_breach.field.data_categories: 'Data Categories'
+privacy.data_breach.field.data_subject_categories: 'Data Subject Categories'
+privacy.data_breach.field.special_categories_affected: 'Special categories of data affected (Art. 9 GDPR)'
+privacy.data_breach.field.criminal_data_affected: 'Criminal conviction data affected (Art. 10 GDPR)'
+privacy.data_breach.field.likely_consequences: 'Likely Consequences (Art. 33(3)(b))'
+privacy.data_breach.field.measures_taken: 'Measures Taken (Art. 33(3)(c))'
+privacy.data_breach.field.measures_planned: 'Measures Planned to Address the Breach (Art. 33(3)(d))'
+privacy.data_breach.status.draft: Draft
+privacy.data_breach.status.under_assessment: 'Under Assessment'
+privacy.data_breach.status.authority_notified: 'Authority notified'
+privacy.data_breach.status.subjects_notified: 'Subjects notified'
+privacy.data_breach.status.closed: Closed
+privacy.data_breach.risk.low: Low
+privacy.data_breach.risk.medium: Medium
+privacy.data_breach.risk.high: High
+privacy.data_breach.risk.critical: Critical
+data_breach.data_categories.personal_identification: 'Personal Identification Data'
+data_breach.data_categories.contact_information: 'Contact Information'
+data_breach.data_categories.financial_data: 'Financial Data'
+data_breach.data_categories.health_data: 'Health Data'
+data_breach.data_categories.location_data: 'Location Data'
+data_breach.data_categories.online_identifiers: 'Online Identifiers'
+data_breach.data_categories.employment_data: 'Employment Data'
+data_breach.data_categories.education_data: 'Education Data'
+data_breach.data_categories.criminal_convictions: 'Criminal Convictions'
+data_breach.data_categories.biometric_data: 'Biometric Data'
+data_breach.data_categories.genetic_data: 'Genetic Data'
+data_breach.data_categories.other: Other
+data_breach.data_subject_categories.customers: Customers
+data_breach.data_subject_categories.employees: Employees
+data_breach.data_subject_categories.applicants: 'Job Applicants'
+data_breach.data_subject_categories.visitors: 'Website Visitors'
+data_breach.data_subject_categories.patients: Patients
+data_breach.data_subject_categories.students: Students
+data_breach.data_subject_categories.suppliers: Suppliers/Partners
+data_breach.data_subject_categories.minors: 'Minors (Children)'
+data_breach.data_subject_categories.vulnerable: 'Vulnerable Individuals'
+data_breach.data_subject_categories.other: Other
+data_breach.risk_level.low: 'Low Risk'
+data_breach.risk_level.medium: 'Medium Risk'
+data_breach.risk_level.high: 'High Risk'
+data_breach.risk_level.critical: 'Critical Risk'
+processing_activity.field.name: __processing_activity.field.name
+processing_activity.field.status: __processing_activity.field.status
+processing_activity.field.description: __processing_activity.field.description
+processing_activity.field.purposes: __processing_activity.field.purposes
+processing_activity.field.legal_basis: __processing_activity.field.legal_basis
+processing_activity.field.legal_basis_details: __processing_activity.field.legal_basis_details
+processing_activity.field.data_subject_categories: __processing_activity.field.data_subject_categories
+processing_activity.field.estimated_data_subjects_count: __processing_activity.field.estimated_data_subjects_count
+processing_activity.field.personal_data_categories: __processing_activity.field.personal_data_categories
+processing_activity.field.processes_special_categories: __processing_activity.field.processes_special_categories
+processing_activity.field.processes_criminal_data: __processing_activity.field.processes_criminal_data
+processing_activity.field.special_categories_details: __processing_activity.field.special_categories_details
+processing_activity.field.legal_basis_special_categories: __processing_activity.field.legal_basis_special_categories
+processing_activity.field.recipient_categories: __processing_activity.field.recipient_categories
+processing_activity.field.has_third_country_transfer: __processing_activity.field.has_third_country_transfer
+processing_activity.field.recipient_details: __processing_activity.field.recipient_details
+processing_activity.field.third_countries: __processing_activity.field.third_countries
+processing_activity.field.transfer_safeguards: __processing_activity.field.transfer_safeguards
+processing_activity.field.retention_period: __processing_activity.field.retention_period
+processing_activity.field.retention_period_days: __processing_activity.field.retention_period_days
+processing_activity.field.retention_legal_basis: __processing_activity.field.retention_legal_basis
+processing_activity.field.technical_organizational_measures: __processing_activity.field.technical_organizational_measures
+processing_activity.field.implemented_controls: __processing_activity.field.implemented_controls
+processing_activity.field.responsible_department: __processing_activity.field.responsible_department
+processing_activity.field.contact_person: __processing_activity.field.contact_person
+processing_activity.field.data_protection_officer: __processing_activity.field.data_protection_officer
+processing_activity.field.involves_processors: __processing_activity.field.involves_processors
+processing_activity.field.is_joint_controller: __processing_activity.field.is_joint_controller
+processing_activity.field.is_high_risk: __processing_activity.field.is_high_risk
+processing_activity.field.dpia_completed: __processing_activity.field.dpia_completed
+processing_activity.field.dpia_date: __processing_activity.field.dpia_date
+processing_activity.field.risk_level: __processing_activity.field.risk_level
+processing_activity.field.has_automated_decision_making: __processing_activity.field.has_automated_decision_making
+processing_activity.field.automated_decision_making_details: __processing_activity.field.automated_decision_making_details
+processing_activity.field.data_sources: __processing_activity.field.data_sources
+processing_activity.field.start_date: __processing_activity.field.start_date
+processing_activity.field.end_date: __processing_activity.field.end_date
+processing_activity.field.next_review_date: __processing_activity.field.next_review_date
+data_breach.index.view_all_breaches: __data_breach.index.view_all_breaches
+privacy.data_breach.investigation_followup: __privacy.data_breach.investigation_followup
+privacy.data_breach.root_cause: __privacy.data_breach.root_cause
+privacy.data_breach.lessons_learned: __privacy.data_breach.lessons_learned
+privacy.data_breach.follow_up_actions: __privacy.data_breach.follow_up_actions
+privacy.data_breach.reopen_reason: __privacy.data_breach.reopen_reason

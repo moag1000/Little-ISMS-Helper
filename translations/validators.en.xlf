@@ -1,0 +1,786 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="en" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="B9r0Hn5" resname="Error">
+        <source>Error</source>
+        <target>Error</target>
+      </trans-unit>
+      <trans-unit id="QXWi6TK" resname="setup.admin.email_required">
+        <source>setup.admin.email_required</source>
+        <target>Please enter an email address.</target>
+      </trans-unit>
+      <trans-unit id="w7rzg8A" resname="setup.admin.email_invalid">
+        <source>setup.admin.email_invalid</source>
+        <target>Please enter a valid email address.</target>
+      </trans-unit>
+      <trans-unit id="J8ysshl" resname="setup.admin.first_name_required">
+        <source>setup.admin.first_name_required</source>
+        <target>Please enter a first name.</target>
+      </trans-unit>
+      <trans-unit id="zQ0uK0o" resname="setup.admin.first_name_min">
+        <source>setup.admin.first_name_min</source>
+        <target>The first name must be at least {{ limit }} characters long.</target>
+      </trans-unit>
+      <trans-unit id="04QeuOP" resname="setup.admin.last_name_required">
+        <source>setup.admin.last_name_required</source>
+        <target>Please enter a last name.</target>
+      </trans-unit>
+      <trans-unit id="I4lL5eg" resname="setup.admin.last_name_min">
+        <source>setup.admin.last_name_min</source>
+        <target>The last name must be at least {{ limit }} characters long.</target>
+      </trans-unit>
+      <trans-unit id=".8g_wVH" resname="setup.admin.password_required">
+        <source>setup.admin.password_required</source>
+        <target>Please enter a password.</target>
+      </trans-unit>
+      <trans-unit id="rYjPQr." resname="setup.admin.password_min">
+        <source>setup.admin.password_min</source>
+        <target>The password must be at least {{ limit }} characters long.</target>
+      </trans-unit>
+      <trans-unit id="XMkVH59" resname="setup.admin.password_strength">
+        <source>setup.admin.password_strength</source>
+        <target>The password must contain at least one uppercase letter, one lowercase letter, and one digit.</target>
+      </trans-unit>
+      <trans-unit id="ilqUc_." resname="setup.database.name_invalid">
+        <source>setup.database.name_invalid</source>
+        <target>The database name contains invalid characters.</target>
+      </trans-unit>
+      <trans-unit id="lADEqyg" resname="setup.organisation.name_required">
+        <source>setup.organisation.name_required</source>
+        <target>Please enter an organization name.</target>
+      </trans-unit>
+      <trans-unit id="9UWq68b" resname="setup.organisation.name_min">
+        <source>setup.organisation.name_min</source>
+        <target>The organization name must be at least {{ limit }} characters long.</target>
+      </trans-unit>
+      <trans-unit id="58Mxny5" resname="setup.organisation.employee_count_required">
+        <source>setup.organisation.employee_count_required</source>
+        <target>Please select the employee count.</target>
+      </trans-unit>
+      <trans-unit id="gYWc9sZ" resname="document.validation.mime_types">
+        <source>document.validation.mime_types</source>
+        <target>Please upload a valid document (PDF, Word, Excel, Image or Text file).</target>
+      </trans-unit>
+      <trans-unit id="3ruN5fh" resname="workflow.validation.name_required">
+        <source>workflow.validation.name_required</source>
+        <target>Please enter a workflow name.</target>
+      </trans-unit>
+      <trans-unit id="BF_DPZH" resname="workflow.validation.name_max_length">
+        <source>workflow.validation.name_max_length</source>
+        <target>The workflow name cannot exceed {{ limit }} characters.</target>
+      </trans-unit>
+      <trans-unit id="q3I2WlO" resname="workflow.validation.entity_type_required">
+        <source>workflow.validation.entity_type_required</source>
+        <target>Please select an entity type.</target>
+      </trans-unit>
+      <trans-unit id="X5Ok3y0" resname="workflow_instance.validation.workflow_required">
+        <source>workflow_instance.validation.workflow_required</source>
+        <target>Please select a workflow definition.</target>
+      </trans-unit>
+      <trans-unit id="sY93V1A" resname="workflow_instance.validation.entity_type_required">
+        <source>workflow_instance.validation.entity_type_required</source>
+        <target>Please enter an entity type.</target>
+      </trans-unit>
+      <trans-unit id="DDVrGpH" resname="workflow_instance.validation.entity_type_max_length">
+        <source>workflow_instance.validation.entity_type_max_length</source>
+        <target>The entity type cannot exceed {{ limit }} characters.</target>
+      </trans-unit>
+      <trans-unit id="2vFRBCe" resname="workflow_instance.validation.entity_id_required">
+        <source>workflow_instance.validation.entity_id_required</source>
+        <target>Please enter an entity ID.</target>
+      </trans-unit>
+      <trans-unit id="18jRXb8" resname="workflow_instance.validation.status_required">
+        <source>workflow_instance.validation.status_required</source>
+        <target>Please select a status.</target>
+      </trans-unit>
+      <trans-unit id="mBdaIER" resname="compliance_framework.validation.code_required">
+        <source>compliance_framework.validation.code_required</source>
+        <target>Please enter a framework code.</target>
+      </trans-unit>
+      <trans-unit id="Ku7ohim" resname="compliance_framework.validation.code_max_length">
+        <source>compliance_framework.validation.code_max_length</source>
+        <target>The framework code cannot exceed {{ limit }} characters.</target>
+      </trans-unit>
+      <trans-unit id="uRK8ujc" resname="compliance_framework.validation.name_required">
+        <source>compliance_framework.validation.name_required</source>
+        <target>Please enter a framework name.</target>
+      </trans-unit>
+      <trans-unit id="RgFsiAJ" resname="compliance_framework.validation.name_max_length">
+        <source>compliance_framework.validation.name_max_length</source>
+        <target>The framework name cannot exceed {{ limit }} characters.</target>
+      </trans-unit>
+      <trans-unit id="imOXF93" resname="compliance_framework.validation.version_required">
+        <source>compliance_framework.validation.version_required</source>
+        <target>Please enter a framework version.</target>
+      </trans-unit>
+      <trans-unit id="3UpOOIY" resname="compliance_framework.validation.version_max_length">
+        <source>compliance_framework.validation.version_max_length</source>
+        <target>The framework version cannot exceed {{ limit }} characters.</target>
+      </trans-unit>
+      <trans-unit id="Ot0PcBj" resname="compliance_framework.validation.applicable_industry_required">
+        <source>compliance_framework.validation.applicable_industry_required</source>
+        <target>Please select the applicable industry.</target>
+      </trans-unit>
+      <trans-unit id="w.LWrRa" resname="compliance_framework.validation.regulatory_body_required">
+        <source>compliance_framework.validation.regulatory_body_required</source>
+        <target>Please enter the regulatory body.</target>
+      </trans-unit>
+      <trans-unit id="nNxIuKP" resname="compliance_framework.validation.regulatory_body_max_length">
+        <source>compliance_framework.validation.regulatory_body_max_length</source>
+        <target>The regulatory body cannot exceed {{ limit }} characters.</target>
+      </trans-unit>
+      <trans-unit id="t6eCM9q" resname="compliance_requirement.validation.framework_required">
+        <source>compliance_requirement.validation.framework_required</source>
+        <target>Please select a compliance framework.</target>
+      </trans-unit>
+      <trans-unit id="qs_e_ka" resname="compliance_requirement.validation.requirement_id_required">
+        <source>compliance_requirement.validation.requirement_id_required</source>
+        <target>Please enter a requirement ID.</target>
+      </trans-unit>
+      <trans-unit id="nsNcS7j" resname="compliance_requirement.validation.requirement_id_max_length">
+        <source>compliance_requirement.validation.requirement_id_max_length</source>
+        <target>The requirement ID cannot exceed {{ limit }} characters.</target>
+      </trans-unit>
+      <trans-unit id="UmCHdUr" resname="compliance_requirement.validation.title_required">
+        <source>compliance_requirement.validation.title_required</source>
+        <target>Please enter a title.</target>
+      </trans-unit>
+      <trans-unit id="BfL2awQ" resname="compliance_requirement.validation.title_max_length">
+        <source>compliance_requirement.validation.title_max_length</source>
+        <target>The title cannot exceed {{ limit }} characters.</target>
+      </trans-unit>
+      <trans-unit id="_P5asQ." resname="compliance_requirement.validation.description_required">
+        <source>compliance_requirement.validation.description_required</source>
+        <target>Please enter a description.</target>
+      </trans-unit>
+      <trans-unit id="1x5Py_u" resname="compliance_requirement.validation.category_max_length">
+        <source>compliance_requirement.validation.category_max_length</source>
+        <target>The category cannot exceed {{ limit }} characters.</target>
+      </trans-unit>
+      <trans-unit id="04RxnnT" resname="compliance_requirement.validation.priority_required">
+        <source>compliance_requirement.validation.priority_required</source>
+        <target>Please select a priority.</target>
+      </trans-unit>
+      <trans-unit id="9Yt5ehT" resname="compliance_requirement.validation.requirement_type_required">
+        <source>compliance_requirement.validation.requirement_type_required</source>
+        <target>Please select a requirement type.</target>
+      </trans-unit>
+      <trans-unit id="JEvOlD1" resname="compliance_mapping.validation.source_requirement_required">
+        <source>compliance_mapping.validation.source_requirement_required</source>
+        <target>Please select a source requirement.</target>
+      </trans-unit>
+      <trans-unit id=".hsBkHz" resname="compliance_mapping.validation.target_requirement_required">
+        <source>compliance_mapping.validation.target_requirement_required</source>
+        <target>Please select a target requirement.</target>
+      </trans-unit>
+      <trans-unit id="2seycNd" resname="compliance_mapping.validation.mapping_type_required">
+        <source>compliance_mapping.validation.mapping_type_required</source>
+        <target>Please select a mapping type.</target>
+      </trans-unit>
+      <trans-unit id="tOrIm2v" resname="compliance_mapping.validation.mapping_percentage_required">
+        <source>compliance_mapping.validation.mapping_percentage_required</source>
+        <target>Please enter the mapping percentage.</target>
+      </trans-unit>
+      <trans-unit id="VNhow0o" resname="compliance_mapping.validation.mapping_percentage_range">
+        <source>compliance_mapping.validation.mapping_percentage_range</source>
+        <target>The mapping percentage must be between {{ min }} and {{ max }}.</target>
+      </trans-unit>
+      <trans-unit id="7j4DIsY" resname="compliance_mapping.validation.confidence_required">
+        <source>compliance_mapping.validation.confidence_required</source>
+        <target>Please select a confidence level.</target>
+      </trans-unit>
+      <trans-unit id="0n_H5u0" resname="compliance_mapping.validation.verified_by_max_length">
+        <source>compliance_mapping.validation.verified_by_max_length</source>
+        <target>The verified by field cannot exceed {{ limit }} characters.</target>
+      </trans-unit>
+      <trans-unit id="BVG6Mtz" resname="risk_appetite.validation.category_max_length">
+        <source>risk_appetite.validation.category_max_length</source>
+        <target>Category name cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="UqQdiPg" resname="risk_appetite.validation.max_acceptable_risk_required">
+        <source>risk_appetite.validation.max_acceptable_risk_required</source>
+        <target>Maximum acceptable risk is required</target>
+      </trans-unit>
+      <trans-unit id="7b34WLt" resname="risk_appetite.validation.max_acceptable_risk_range">
+        <source>risk_appetite.validation.max_acceptable_risk_range</source>
+        <target>Maximum acceptable risk must be between {{ min }} and {{ max }}</target>
+      </trans-unit>
+      <trans-unit id="0y_wWVu" resname="risk_appetite.validation.description_required">
+        <source>risk_appetite.validation.description_required</source>
+        <target>Description is required</target>
+      </trans-unit>
+      <trans-unit id="N4ZYAvT" resname="risk_treatment_plan.validation.risk_required">
+        <source>risk_treatment_plan.validation.risk_required</source>
+        <target>Risk is required</target>
+      </trans-unit>
+      <trans-unit id="GJjbUES" resname="risk_treatment_plan.validation.title_required">
+        <source>risk_treatment_plan.validation.title_required</source>
+        <target>Title is required</target>
+      </trans-unit>
+      <trans-unit id="1l3NESe" resname="risk_treatment_plan.validation.title_max_length">
+        <source>risk_treatment_plan.validation.title_max_length</source>
+        <target>Title cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="nv1aqXq" resname="risk_treatment_plan.validation.description_required">
+        <source>risk_treatment_plan.validation.description_required</source>
+        <target>Description is required</target>
+      </trans-unit>
+      <trans-unit id="W7t8UH_" resname="risk_treatment_plan.validation.target_completion_date_required">
+        <source>risk_treatment_plan.validation.target_completion_date_required</source>
+        <target>Target completion date is required</target>
+      </trans-unit>
+      <trans-unit id="9DJY1jk" resname="risk_treatment_plan.validation.completion_percentage_range">
+        <source>risk_treatment_plan.validation.completion_percentage_range</source>
+        <target>Completion percentage must be between {{ min }} and {{ max }}</target>
+      </trans-unit>
+      <trans-unit id="ePSt9yf" resname="training.validation.title_required">
+        <source>training.validation.title_required</source>
+        <target>Please enter a title.</target>
+      </trans-unit>
+      <trans-unit id="mWI.5gh" resname="training.validation.date_required">
+        <source>training.validation.date_required</source>
+        <target>Please select a date.</target>
+      </trans-unit>
+      <trans-unit id="AFsXhHY" resname="objective.validation.title_required">
+        <source>objective.validation.title_required</source>
+        <target>Title is required</target>
+      </trans-unit>
+      <trans-unit id="4dd1AmJ" resname="objective.validation.title_max_length">
+        <source>objective.validation.title_max_length</source>
+        <target>Title cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="wBxTt8x" resname="objective.validation.description_required">
+        <source>objective.validation.description_required</source>
+        <target>Description is required</target>
+      </trans-unit>
+      <trans-unit id="Xc3yzKe" resname="objective.validation.category_required">
+        <source>objective.validation.category_required</source>
+        <target>Category is required</target>
+      </trans-unit>
+      <trans-unit id="7FdREBs" resname="objective.validation.responsible_person_required">
+        <source>objective.validation.responsible_person_required</source>
+        <target>Responsible person is required</target>
+      </trans-unit>
+      <trans-unit id="RTf.5Dn" resname="objective.validation.name_max_length">
+        <source>objective.validation.name_max_length</source>
+        <target>Name cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="dOedtd3" resname="objective.validation.target_date_required">
+        <source>objective.validation.target_date_required</source>
+        <target>Target date is required</target>
+      </trans-unit>
+      <trans-unit id="YjMHrJH" resname="objective.validation.status_required">
+        <source>objective.validation.status_required</source>
+        <target>Status is required</target>
+      </trans-unit>
+      <trans-unit id="IqWd7Az" resname="risk.validation.category_required">
+        <source>risk.validation.category_required</source>
+        <target>A risk category must be selected</target>
+      </trans-unit>
+      <trans-unit id="VZzObPL" resname="risk.validation.category_invalid">
+        <source>risk.validation.category_invalid</source>
+        <target>Invalid risk category</target>
+      </trans-unit>
+      <trans-unit id="otBl8UB" resname="risk.validation.legal_basis_invalid">
+        <source>risk.validation.legal_basis_invalid</source>
+        <target>Invalid legal basis according to Art. 6 GDPR</target>
+      </trans-unit>
+      <trans-unit id="Il40IgW" resname="risk.validation.processing_scale_invalid">
+        <source>risk.validation.processing_scale_invalid</source>
+        <target>Invalid processing scale</target>
+      </trans-unit>
+      <trans-unit id="TIBnA6t" resname="risk.validation.risk_owner_required">
+        <source>risk.validation.risk_owner_required</source>
+        <target>A risk owner must be assigned</target>
+      </trans-unit>
+      <trans-unit id="_U1Lylk" resname="audit.validation.title_required">
+        <source>audit.validation.title_required</source>
+        <target>Please enter a title.</target>
+      </trans-unit>
+      <trans-unit id="nQn8j9K" resname="audit.validation.date_required">
+        <source>audit.validation.date_required</source>
+        <target>Please select a date.</target>
+      </trans-unit>
+      <trans-unit id="ZZdZccR" resname="tenant.validation.code_format">
+        <source>tenant.validation.code_format</source>
+        <target>Tenant code must match the required format</target>
+      </trans-unit>
+      <trans-unit id="9KZTX8E" resname="tenant.validation.azure_tenant_id_format">
+        <source>tenant.validation.azure_tenant_id_format</source>
+        <target>Azure Tenant ID must be a valid GUID</target>
+      </trans-unit>
+      <trans-unit id="fk1oUwJ" resname="tenant.validation.logo_format">
+        <source>tenant.validation.logo_format</source>
+        <target>The logo must be in JPG, PNG, GIF or WebP format</target>
+      </trans-unit>
+      <trans-unit id="8udPoOe" resname="user.validation.avatar_format">
+        <source>user.validation.avatar_format</source>
+        <target>The profile picture must be in JPG, PNG, GIF or WebP format</target>
+      </trans-unit>
+      <trans-unit id="r_peo9g" resname="context.validation.organization_name_required">
+        <source>context.validation.organization_name_required</source>
+        <target>Please enter an organization name.</target>
+      </trans-unit>
+      <trans-unit id="vOZpH1T" resname="context.validation.name_max_length">
+        <source>context.validation.name_max_length</source>
+        <target>Name cannot exceed {{ limit }} characters.</target>
+      </trans-unit>
+      <trans-unit id="TwqEaEL" resname="setup.organisation.industries_required">
+        <source>setup.organisation.industries_required</source>
+        <target>__setup.organisation.industries_required</target>
+      </trans-unit>
+      <trans-unit id="j7jEvO." resname="setup.organisation.industries_min">
+        <source>setup.organisation.industries_min</source>
+        <target>__setup.organisation.industries_min</target>
+      </trans-unit>
+      <trans-unit id="hfajkFw" resname="workflow_step.validation.name_required">
+        <source>workflow_step.validation.name_required</source>
+        <target>__workflow_step.validation.name_required</target>
+      </trans-unit>
+      <trans-unit id="JVdMaJK" resname="workflow_step.validation.name_max_length">
+        <source>workflow_step.validation.name_max_length</source>
+        <target>__workflow_step.validation.name_max_length</target>
+      </trans-unit>
+      <trans-unit id="eCWtPeu" resname="workflow_step.validation.step_type_required">
+        <source>workflow_step.validation.step_type_required</source>
+        <target>__workflow_step.validation.step_type_required</target>
+      </trans-unit>
+      <trans-unit id="Ufrf_EU" resname="workflow_step.validation.days_positive">
+        <source>workflow_step.validation.days_positive</source>
+        <target>__workflow_step.validation.days_positive</target>
+      </trans-unit>
+      <trans-unit id="SHlOHee" resname="workflow_step.validation.days_max">
+        <source>workflow_step.validation.days_max</source>
+        <target>__workflow_step.validation.days_max</target>
+      </trans-unit>
+      <trans-unit id="a6dxX80" resname="Bitte geben Sie einen Vornamen ein.">
+        <source>Bitte geben Sie einen Vornamen ein.</source>
+        <target>__Bitte geben Sie einen Vornamen ein.</target>
+      </trans-unit>
+      <trans-unit id="IYxlwdh" resname="Der Vorname darf maximal {{ limit }} Zeichen lang sein.">
+        <source>Der Vorname darf maximal {{ limit }} Zeichen lang sein.</source>
+        <target>__Der Vorname darf maximal {{ limit }} Zeichen lang sein.</target>
+      </trans-unit>
+      <trans-unit id="bu40esY" resname="Bitte geben Sie einen Nachnamen ein.">
+        <source>Bitte geben Sie einen Nachnamen ein.</source>
+        <target>__Bitte geben Sie einen Nachnamen ein.</target>
+      </trans-unit>
+      <trans-unit id="cGyFums" resname="Der Nachname darf maximal {{ limit }} Zeichen lang sein.">
+        <source>Der Nachname darf maximal {{ limit }} Zeichen lang sein.</source>
+        <target>__Der Nachname darf maximal {{ limit }} Zeichen lang sein.</target>
+      </trans-unit>
+      <trans-unit id="G3EyC8D" resname="Bitte geben Sie eine E-Mail-Adresse ein.">
+        <source>Bitte geben Sie eine E-Mail-Adresse ein.</source>
+        <target>__Bitte geben Sie eine E-Mail-Adresse ein.</target>
+      </trans-unit>
+      <trans-unit id="qXct4.t" resname="Bitte geben Sie eine gültige E-Mail-Adresse ein.">
+        <source>Bitte geben Sie eine gültige E-Mail-Adresse ein.</source>
+        <target>__Bitte geben Sie eine gültige E-Mail-Adresse ein.</target>
+      </trans-unit>
+      <trans-unit id="cGwOHHD" resname="Das Passwort muss mindestens {{ limit }} Zeichen lang sein.">
+        <source>Das Passwort muss mindestens {{ limit }} Zeichen lang sein.</source>
+        <target>__Das Passwort muss mindestens {{ limit }} Zeichen lang sein.</target>
+      </trans-unit>
+      <trans-unit id="JmbTZqA" resname="Audit number is required">
+        <source>Audit number is required</source>
+        <target>__Audit number is required</target>
+      </trans-unit>
+      <trans-unit id="3SeZhde" resname="Audit number cannot exceed {{ limit }} characters">
+        <source>Audit number cannot exceed {{ limit }} characters</source>
+        <target>__Audit number cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="Q1wKo1E" resname="Audit title is required">
+        <source>Audit title is required</source>
+        <target>__Audit title is required</target>
+      </trans-unit>
+      <trans-unit id="sEk3K7N" resname="Title cannot exceed {{ limit }} characters">
+        <source>Title cannot exceed {{ limit }} characters</source>
+        <target>__Title cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="nM84j9o" resname="Scope type must be one of: {{ choices }}">
+        <source>Scope type must be one of: {{ choices }}</source>
+        <target>__Scope type must be one of: {{ choices }}</target>
+      </trans-unit>
+      <trans-unit id="s6728Lh" resname="Planned date is required">
+        <source>Planned date is required</source>
+        <target>__Planned date is required</target>
+      </trans-unit>
+      <trans-unit id="mLsNrZu" resname="Lead auditor is required">
+        <source>Lead auditor is required</source>
+        <target>__Lead auditor is required</target>
+      </trans-unit>
+      <trans-unit id="v0a7oOo" resname="Lead auditor name cannot exceed {{ limit }} characters">
+        <source>Lead auditor name cannot exceed {{ limit }} characters</source>
+        <target>__Lead auditor name cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="DfMsB.5" resname="Status is required">
+        <source>Status is required</source>
+        <target>__Status is required</target>
+      </trans-unit>
+      <trans-unit id="TDu8Bzp" resname="Status must be one of: {{ choices }}">
+        <source>Status must be one of: {{ choices }}</source>
+        <target>__Status must be one of: {{ choices }}</target>
+      </trans-unit>
+      <trans-unit id="Gszo5Or" resname="Exercise name is required">
+        <source>Exercise name is required</source>
+        <target>__Exercise name is required</target>
+      </trans-unit>
+      <trans-unit id="GGDhYR1" resname="Scope must be defined">
+        <source>Scope must be defined</source>
+        <target>__Scope must be defined</target>
+      </trans-unit>
+      <trans-unit id="3e.TkVx" resname="Objectives must be defined">
+        <source>Objectives must be defined</source>
+        <target>__Objectives must be defined</target>
+      </trans-unit>
+      <trans-unit id="6x1ZDr9" resname="Participants must be documented">
+        <source>Participants must be documented</source>
+        <target>__Participants must be documented</target>
+      </trans-unit>
+      <trans-unit id="rP23GAd" resname="Party name is required">
+        <source>Party name is required</source>
+        <target>__Party name is required</target>
+      </trans-unit>
+      <trans-unit id="X4SLoRR" resname="Requirements must be documented">
+        <source>Requirements must be documented</source>
+        <target>__Requirements must be documented</target>
+      </trans-unit>
+      <trans-unit id="vIezSoT" resname="Control ID is required">
+        <source>Control ID is required</source>
+        <target>__Control ID is required</target>
+      </trans-unit>
+      <trans-unit id="_SffZU6" resname="Control ID cannot exceed {{ limit }} characters">
+        <source>Control ID cannot exceed {{ limit }} characters</source>
+        <target>__Control ID cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="X7_A_rs" resname="Control ID must follow ISO 27001 format (e.g., 5.1, 8.3)">
+        <source>Control ID must follow ISO 27001 format (e.g., 5.1, 8.3)</source>
+        <target>__Control ID must follow ISO 27001 format (e.g., 5.1, 8.3)</target>
+      </trans-unit>
+      <trans-unit id="wmgGq7B" resname="Control name is required">
+        <source>Control name is required</source>
+        <target>__Control name is required</target>
+      </trans-unit>
+      <trans-unit id="MPiIVKg" resname="Control name cannot exceed {{ limit }} characters">
+        <source>Control name cannot exceed {{ limit }} characters</source>
+        <target>__Control name cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="zR9vk27" resname="Control description is required">
+        <source>Control description is required</source>
+        <target>__Control description is required</target>
+      </trans-unit>
+      <trans-unit id="yAApLwg" resname="Control category is required">
+        <source>Control category is required</source>
+        <target>__Control category is required</target>
+      </trans-unit>
+      <trans-unit id="R2ZQnMi" resname="Category cannot exceed {{ limit }} characters">
+        <source>Category cannot exceed {{ limit }} characters</source>
+        <target>__Category cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="lYvKcOz" resname="Applicable flag is required">
+        <source>Applicable flag is required</source>
+        <target>__Applicable flag is required</target>
+      </trans-unit>
+      <trans-unit id="6K_qrGw" resname="Implementation status is required">
+        <source>Implementation status is required</source>
+        <target>__Implementation status is required</target>
+      </trans-unit>
+      <trans-unit id="UFmjymt" resname="Implementation status must be one of: {{ choices }}">
+        <source>Implementation status must be one of: {{ choices }}</source>
+        <target>__Implementation status must be one of: {{ choices }}</target>
+      </trans-unit>
+      <trans-unit id="nQ_lgnV" resname="Implementation percentage must be between {{ min }} and {{ max }}">
+        <source>Implementation percentage must be between {{ min }} and {{ max }}</source>
+        <target>__Implementation percentage must be between {{ min }} and {{ max }}</target>
+      </trans-unit>
+      <trans-unit id="auKPu.k" resname="Responsible person cannot exceed {{ limit }} characters">
+        <source>Responsible person cannot exceed {{ limit }} characters</source>
+        <target>__Responsible person cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="ndII4pc" resname="This setting already exists in this category">
+        <source>This setting already exists in this category</source>
+        <target>__This setting already exists in this category</target>
+      </trans-unit>
+      <trans-unit id="vsM4tSv" resname="There is already an account with this email">
+        <source>There is already an account with this email</source>
+        <target>__There is already an account with this email</target>
+      </trans-unit>
+      <trans-unit id="OZtLmDO" resname="This role name is already in use">
+        <source>This role name is already in use</source>
+        <target>__This role name is already in use</target>
+      </trans-unit>
+      <trans-unit id="hT7mk31" resname="This tenant code is already in use">
+        <source>This tenant code is already in use</source>
+        <target>__This tenant code is already in use</target>
+      </trans-unit>
+      <trans-unit id="QqOWa8U" resname="Supplier name is required">
+        <source>Supplier name is required</source>
+        <target>__Supplier name is required</target>
+      </trans-unit>
+      <trans-unit id="uavSRqa" resname="Invalid email address">
+        <source>Invalid email address</source>
+        <target>__Invalid email address</target>
+      </trans-unit>
+      <trans-unit id="9aI_6jK" resname="Service description is required">
+        <source>Service description is required</source>
+        <target>__Service description is required</target>
+      </trans-unit>
+      <trans-unit id="CIpLzT7" resname="Category name cannot exceed {{ limit }} characters">
+        <source>Category name cannot exceed {{ limit }} characters</source>
+        <target>__Category name cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id=".qs8RFz" resname="Maximum acceptable risk level is required">
+        <source>Maximum acceptable risk level is required</source>
+        <target>__Maximum acceptable risk level is required</target>
+      </trans-unit>
+      <trans-unit id="KUqvB0U" resname="Maximum acceptable risk must be between {{ min }} and {{ max }}">
+        <source>Maximum acceptable risk must be between {{ min }} and {{ max }}</source>
+        <target>__Maximum acceptable risk must be between {{ min }} and {{ max }}</target>
+      </trans-unit>
+      <trans-unit id="P4Kvact" resname="Risk appetite description is required">
+        <source>Risk appetite description is required</source>
+        <target>__Risk appetite description is required</target>
+      </trans-unit>
+      <trans-unit id="YCbzP0I" resname="Incident number is required">
+        <source>Incident number is required</source>
+        <target>__Incident number is required</target>
+      </trans-unit>
+      <trans-unit id="N7F9F7e" resname="Incident number cannot exceed {{ limit }} characters">
+        <source>Incident number cannot exceed {{ limit }} characters</source>
+        <target>__Incident number cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="NMhIXTD" resname="Incident title is required">
+        <source>Incident title is required</source>
+        <target>__Incident title is required</target>
+      </trans-unit>
+      <trans-unit id="znqsIvC" resname="Incident description is required">
+        <source>Incident description is required</source>
+        <target>__Incident description is required</target>
+      </trans-unit>
+      <trans-unit id="IGUqonT" resname="Incident category is required">
+        <source>Incident category is required</source>
+        <target>__Incident category is required</target>
+      </trans-unit>
+      <trans-unit id="SEWYYQ9" resname="Severity is required">
+        <source>Severity is required</source>
+        <target>__Severity is required</target>
+      </trans-unit>
+      <trans-unit id="jJWwUiu" resname="Severity must be one of: {{ choices }}">
+        <source>Severity must be one of: {{ choices }}</source>
+        <target>__Severity must be one of: {{ choices }}</target>
+      </trans-unit>
+      <trans-unit id="jmkvGYg" resname="Detection date is required">
+        <source>Detection date is required</source>
+        <target>__Detection date is required</target>
+      </trans-unit>
+      <trans-unit id="gfTx25y" resname="Reporter name is required">
+        <source>Reporter name is required</source>
+        <target>__Reporter name is required</target>
+      </trans-unit>
+      <trans-unit id="YB9Crk0" resname="Reporter name cannot exceed {{ limit }} characters">
+        <source>Reporter name cannot exceed {{ limit }} characters</source>
+        <target>__Reporter name cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="8fmOw24" resname="Assignee name cannot exceed {{ limit }} characters">
+        <source>Assignee name cannot exceed {{ limit }} characters</source>
+        <target>__Assignee name cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="k5cE8fi" resname="Data breach flag is required">
+        <source>Data breach flag is required</source>
+        <target>__Data breach flag is required</target>
+      </trans-unit>
+      <trans-unit id="TxUmWJ7" resname="Notification required flag is required">
+        <source>Notification required flag is required</source>
+        <target>__Notification required flag is required</target>
+      </trans-unit>
+      <trans-unit id="KVh42fG" resname="NIS2 category must be one of: {{ choices }}">
+        <source>NIS2 category must be one of: {{ choices }}</source>
+        <target>__NIS2 category must be one of: {{ choices }}</target>
+      </trans-unit>
+      <trans-unit id="BISuBuD" resname="Plan name is required">
+        <source>Plan name is required</source>
+        <target>__Plan name is required</target>
+      </trans-unit>
+      <trans-unit id="PU7.U0X" resname="Business process is required">
+        <source>Business process is required</source>
+        <target>__Business process is required</target>
+      </trans-unit>
+      <trans-unit id="woIXXT7" resname="Activation criteria must be defined">
+        <source>Activation criteria must be defined</source>
+        <target>__Activation criteria must be defined</target>
+      </trans-unit>
+      <trans-unit id="NujMw25" resname="Recovery procedures must be documented">
+        <source>Recovery procedures must be documented</source>
+        <target>__Recovery procedures must be documented</target>
+      </trans-unit>
+      <trans-unit id="EZPpltA" resname="Training title is required">
+        <source>Training title is required</source>
+        <target>__Training title is required</target>
+      </trans-unit>
+      <trans-unit id="Hqrl1_O" resname="Training type is required">
+        <source>Training type is required</source>
+        <target>__Training type is required</target>
+      </trans-unit>
+      <trans-unit id="B8FLcA2" resname="Training type cannot exceed {{ limit }} characters">
+        <source>Training type cannot exceed {{ limit }} characters</source>
+        <target>__Training type cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="dX5pJVT" resname="Scheduled date is required">
+        <source>Scheduled date is required</source>
+        <target>__Scheduled date is required</target>
+      </trans-unit>
+      <trans-unit id="keIxhDx" resname="Trainer name is required">
+        <source>Trainer name is required</source>
+        <target>__Trainer name is required</target>
+      </trans-unit>
+      <trans-unit id="v1aks_n" resname="Trainer name cannot exceed {{ limit }} characters">
+        <source>Trainer name cannot exceed {{ limit }} characters</source>
+        <target>__Trainer name cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="T6dVX8m" resname="Risk is required">
+        <source>Risk is required</source>
+        <target>__Risk is required</target>
+      </trans-unit>
+      <trans-unit id="1steDWB" resname="Title is required">
+        <source>Title is required</source>
+        <target>__Title is required</target>
+      </trans-unit>
+      <trans-unit id="UCETGE0" resname="Description is required">
+        <source>Description is required</source>
+        <target>__Description is required</target>
+      </trans-unit>
+      <trans-unit id="ZGoYUGr" resname="Priority is required">
+        <source>Priority is required</source>
+        <target>__Priority is required</target>
+      </trans-unit>
+      <trans-unit id="L6h0Wuw" resname="Priority must be one of: {{ choices }}">
+        <source>Priority must be one of: {{ choices }}</source>
+        <target>__Priority must be one of: {{ choices }}</target>
+      </trans-unit>
+      <trans-unit id="kScwe64" resname="Target completion date is required">
+        <source>Target completion date is required</source>
+        <target>__Target completion date is required</target>
+      </trans-unit>
+      <trans-unit id="z78eF89" resname="Completion percentage must be between {{ min }} and {{ max }}">
+        <source>Completion percentage must be between {{ min }} and {{ max }}</source>
+        <target>__Completion percentage must be between {{ min }} and {{ max }}</target>
+      </trans-unit>
+      <trans-unit id="Z7t1G56" resname="Change title is required">
+        <source>Change title is required</source>
+        <target>__Change title is required</target>
+      </trans-unit>
+      <trans-unit id="Fx3bNxy" resname="Justification is required">
+        <source>Justification is required</source>
+        <target>__Justification is required</target>
+      </trans-unit>
+      <trans-unit id="KlLyoJ5" resname="Risk title is required">
+        <source>Risk title is required</source>
+        <target>__Risk title is required</target>
+      </trans-unit>
+      <trans-unit id="znRbxYw" resname="Risk title cannot exceed {{ limit }} characters">
+        <source>Risk title cannot exceed {{ limit }} characters</source>
+        <target>__Risk title cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="CihPJ_z" resname="Risk description is required">
+        <source>Risk description is required</source>
+        <target>__Risk description is required</target>
+      </trans-unit>
+      <trans-unit id="V2zEP5X" resname="Probability is required">
+        <source>Probability is required</source>
+        <target>__Probability is required</target>
+      </trans-unit>
+      <trans-unit id="ExrZoNS" resname="Probability must be between {{ min }} and {{ max }}">
+        <source>Probability must be between {{ min }} and {{ max }}</source>
+        <target>__Probability must be between {{ min }} and {{ max }}</target>
+      </trans-unit>
+      <trans-unit id="uj7q1Zb" resname="Impact is required">
+        <source>Impact is required</source>
+        <target>__Impact is required</target>
+      </trans-unit>
+      <trans-unit id="ZyDTq54" resname="Impact must be between {{ min }} and {{ max }}">
+        <source>Impact must be between {{ min }} and {{ max }}</source>
+        <target>__Impact must be between {{ min }} and {{ max }}</target>
+      </trans-unit>
+      <trans-unit id="vO6TPd0" resname="Residual probability must be between {{ min }} and {{ max }}">
+        <source>Residual probability must be between {{ min }} and {{ max }}</source>
+        <target>__Residual probability must be between {{ min }} and {{ max }}</target>
+      </trans-unit>
+      <trans-unit id="RUv.sVW" resname="Residual impact must be between {{ min }} and {{ max }}">
+        <source>Residual impact must be between {{ min }} and {{ max }}</source>
+        <target>__Residual impact must be between {{ min }} and {{ max }}</target>
+      </trans-unit>
+      <trans-unit id="JPH2IwW" resname="Treatment strategy is required">
+        <source>Treatment strategy is required</source>
+        <target>__Treatment strategy is required</target>
+      </trans-unit>
+      <trans-unit id="jKijDfs" resname="Treatment strategy must be one of: {{ choices }}">
+        <source>Treatment strategy must be one of: {{ choices }}</source>
+        <target>__Treatment strategy must be one of: {{ choices }}</target>
+      </trans-unit>
+      <trans-unit id="2N7WVnv" resname="This permission name is already in use">
+        <source>This permission name is already in use</source>
+        <target>__This permission name is already in use</target>
+      </trans-unit>
+      <trans-unit id="aYcSbUG" resname="Asset name is required">
+        <source>Asset name is required</source>
+        <target>__Asset name is required</target>
+      </trans-unit>
+      <trans-unit id="YE3HZ3w" resname="Asset name cannot exceed {{ limit }} characters">
+        <source>Asset name cannot exceed {{ limit }} characters</source>
+        <target>__Asset name cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="zTNOLIa" resname="Asset type is required">
+        <source>Asset type is required</source>
+        <target>__Asset type is required</target>
+      </trans-unit>
+      <trans-unit id="DsvJpev" resname="Asset type cannot exceed {{ limit }} characters">
+        <source>Asset type cannot exceed {{ limit }} characters</source>
+        <target>__Asset type cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="o7SkCPs" resname="Asset owner is required">
+        <source>Asset owner is required</source>
+        <target>__Asset owner is required</target>
+      </trans-unit>
+      <trans-unit id="8fwlXXY" resname="Owner cannot exceed {{ limit }} characters">
+        <source>Owner cannot exceed {{ limit }} characters</source>
+        <target>__Owner cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="g4cm54i" resname="Location cannot exceed {{ limit }} characters">
+        <source>Location cannot exceed {{ limit }} characters</source>
+        <target>__Location cannot exceed {{ limit }} characters</target>
+      </trans-unit>
+      <trans-unit id="lvRjZCM" resname="Confidentiality value is required">
+        <source>Confidentiality value is required</source>
+        <target>__Confidentiality value is required</target>
+      </trans-unit>
+      <trans-unit id="hN_MbCA" resname="Confidentiality value must be between {{ min }} and {{ max }}">
+        <source>Confidentiality value must be between {{ min }} and {{ max }}</source>
+        <target>__Confidentiality value must be between {{ min }} and {{ max }}</target>
+      </trans-unit>
+      <trans-unit id="P.WUERm" resname="Integrity value is required">
+        <source>Integrity value is required</source>
+        <target>__Integrity value is required</target>
+      </trans-unit>
+      <trans-unit id="qW_nEUM" resname="Integrity value must be between {{ min }} and {{ max }}">
+        <source>Integrity value must be between {{ min }} and {{ max }}</source>
+        <target>__Integrity value must be between {{ min }} and {{ max }}</target>
+      </trans-unit>
+      <trans-unit id="gd.VeM4" resname="Availability value is required">
+        <source>Availability value is required</source>
+        <target>__Availability value is required</target>
+      </trans-unit>
+      <trans-unit id="E8CCfeo" resname="Availability value must be between {{ min }} and {{ max }}">
+        <source>Availability value must be between {{ min }} and {{ max }}</source>
+        <target>__Availability value must be between {{ min }} and {{ max }}</target>
+      </trans-unit>
+      <trans-unit id="dLuRoLq" resname="Data classification must be one of: {{ choices }}">
+        <source>Data classification must be one of: {{ choices }}</source>
+        <target>__Data classification must be one of: {{ choices }}</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

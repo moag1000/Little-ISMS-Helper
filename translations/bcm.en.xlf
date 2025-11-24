@@ -1,0 +1,870 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="en" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="NFATjxm" resname="bcm.title.critical">
+        <source>bcm.title.critical</source>
+        <target>Critical Business Continuity</target>
+      </trans-unit>
+      <trans-unit id="WsAewm1" resname="bcm.description.critical">
+        <source>bcm.description.critical</source>
+        <target>Overview of critical assets and processes including RTO/RPO and action needs</target>
+      </trans-unit>
+      <trans-unit id="7wMjTzM" resname="bcm.description.critical_level">
+        <source>bcm.description.critical_level</source>
+        <target>Immediate business outage in case of loss or failure. Highest priority for emergency actions.</target>
+      </trans-unit>
+      <trans-unit id="0mkf1zI" resname="bcm.description.high_level">
+        <source>bcm.description.high_level</source>
+        <target>Significant business impact within a short time. Rapid recovery planning required.</target>
+      </trans-unit>
+      <trans-unit id="SVsFvd4" resname="bcm.description.medium_level">
+        <source>bcm.description.medium_level</source>
+        <target>Noticeable impact with buffer. Mid-term measures sufficient.</target>
+      </trans-unit>
+      <trans-unit id="gVjIQ.S" resname="bcm.description.action_items">
+        <source>bcm.description.action_items</source>
+        <target>Recommended actions to improve recoverability and reduce downtime.</target>
+      </trans-unit>
+      <trans-unit id="r3ksmc8" resname="bcm.action.view_insights">
+        <source>bcm.action.view_insights</source>
+        <target>View insights</target>
+      </trans-unit>
+      <trans-unit id="5eBBi6J" resname="bcm.action.export">
+        <source>bcm.action.export</source>
+        <target>Export</target>
+      </trans-unit>
+      <trans-unit id="nZit_lj" resname="bcm.action.plan">
+        <source>bcm.action.plan</source>
+        <target>Recovery plan</target>
+      </trans-unit>
+      <trans-unit id="D0lAAa9" resname="bcm.warning.critical_assets_count">
+        <source>bcm.warning.critical_assets_count</source>
+        <target>%count% critical assets identified</target>
+      </trans-unit>
+      <trans-unit id="iMW43sc" resname="bcm.warning.critical_message">
+        <source>bcm.warning.critical_message</source>
+        <target>Please review RTO/RPO, recovery plans and test status of these assets.</target>
+      </trans-unit>
+      <trans-unit id="d6RjKJF" resname="bcm.stats.critical_assets">
+        <source>bcm.stats.critical_assets</source>
+        <target>Critical Assets</target>
+      </trans-unit>
+      <trans-unit id="KT9Jxgy" resname="bcm.stats.critical_processes">
+        <source>bcm.stats.critical_processes</source>
+        <target>Critical Processes</target>
+      </trans-unit>
+      <trans-unit id="GDUMao3" resname="bcm.stats.avg_rto">
+        <source>bcm.stats.avg_rto</source>
+        <target>Avg. RTO</target>
+      </trans-unit>
+      <trans-unit id="56HmJ5s" resname="bcm.stats.missing_recovery_plans">
+        <source>bcm.stats.missing_recovery_plans</source>
+        <target>Missing Recovery Plans</target>
+      </trans-unit>
+      <trans-unit id="Im1rJeD" resname="bcm.section.criticality_overview">
+        <source>bcm.section.criticality_overview</source>
+        <target>Criticality Overview</target>
+      </trans-unit>
+      <trans-unit id="iTTnF2d" resname="bcm.section.critical_assets_list">
+        <source>bcm.section.critical_assets_list</source>
+        <target>List of Critical Assets</target>
+      </trans-unit>
+      <trans-unit id="m6RC9bs" resname="bcm.section.critical_processes">
+        <source>bcm.section.critical_processes</source>
+        <target>Critical Business Processes</target>
+      </trans-unit>
+      <trans-unit id="PVO8iuQ" resname="bcm.section.action_items">
+        <source>bcm.section.action_items</source>
+        <target>Action Items</target>
+      </trans-unit>
+      <trans-unit id="5eUBuSh" resname="bcm.field.assets">
+        <source>bcm.field.assets</source>
+        <target>Assets</target>
+      </trans-unit>
+      <trans-unit id="4LZfFz7" resname="bcm.field.asset_name">
+        <source>bcm.field.asset_name</source>
+        <target>Asset Name</target>
+      </trans-unit>
+      <trans-unit id="agl2tGO" resname="bcm.field.type">
+        <source>bcm.field.type</source>
+        <target>Type</target>
+      </trans-unit>
+      <trans-unit id="sNVcXkC" resname="bcm.field.criticality">
+        <source>bcm.field.criticality</source>
+        <target>Criticality</target>
+      </trans-unit>
+      <trans-unit id="7Gwdont" resname="bcm.field.rto">
+        <source>bcm.field.rto</source>
+        <target>RTO</target>
+      </trans-unit>
+      <trans-unit id="o77S8DM" resname="bcm.field.rpo">
+        <source>bcm.field.rpo</source>
+        <target>RPO</target>
+      </trans-unit>
+      <trans-unit id="aBIQKUo" resname="bcm.field.recovery_plan">
+        <source>bcm.field.recovery_plan</source>
+        <target>Recovery Plan</target>
+      </trans-unit>
+      <trans-unit id="OUZJBVN" resname="bcm.field.last_tested">
+        <source>bcm.field.last_tested</source>
+        <target>Last tested</target>
+      </trans-unit>
+      <trans-unit id="kH_aQUH" resname="bcm.field.process_name">
+        <source>bcm.field.process_name</source>
+        <target>Process Name</target>
+      </trans-unit>
+      <trans-unit id="1DqOTy1" resname="bcm.field.department">
+        <source>bcm.field.department</source>
+        <target>Department</target>
+      </trans-unit>
+      <trans-unit id="0tbjNd7" resname="bcm.field.dependent_assets">
+        <source>bcm.field.dependent_assets</source>
+        <target>Dependent Assets</target>
+      </trans-unit>
+      <trans-unit id="GS9Qvk2" resname="bcm.field.mtd">
+        <source>bcm.field.mtd</source>
+        <target>MTD</target>
+      </trans-unit>
+      <trans-unit id="T4ULTX8" resname="bcm.field.maximum_tolerable_downtime">
+        <source>bcm.field.maximum_tolerable_downtime</source>
+        <target>Maximum tolerable downtime</target>
+      </trans-unit>
+      <trans-unit id=".cERbHu" resname="bcm.field.impact_of_loss">
+        <source>bcm.field.impact_of_loss</source>
+        <target>Impact of loss</target>
+      </trans-unit>
+      <trans-unit id="tSj7RWI" resname="bcm.field.avg_rto">
+        <source>bcm.field.avg_rto</source>
+        <target>Avg. RTO</target>
+      </trans-unit>
+      <trans-unit id="Qra1wAJ" resname="bcm.badge.no_recovery_plan">
+        <source>bcm.badge.no_recovery_plan</source>
+        <target>No recovery plan</target>
+      </trans-unit>
+      <trans-unit id="xS85Bu2" resname="bcm.badge.immediate">
+        <source>bcm.badge.immediate</source>
+        <target>Immediate</target>
+      </trans-unit>
+      <trans-unit id="M84_T4w" resname="bcm.badge.exists">
+        <source>bcm.badge.exists</source>
+        <target>exists</target>
+      </trans-unit>
+      <trans-unit id="hQwDKsV" resname="bcm.badge.missing">
+        <source>bcm.badge.missing</source>
+        <target>missing</target>
+      </trans-unit>
+      <trans-unit id="6iLbBF1" resname="bcm.badge.test_overdue">
+        <source>bcm.badge.test_overdue</source>
+        <target>Test overdue</target>
+      </trans-unit>
+      <trans-unit id="7sFuMRV" resname="bcm.message.never_tested">
+        <source>bcm.message.never_tested</source>
+        <target>Never tested</target>
+      </trans-unit>
+      <trans-unit id="F_b8elU" resname="bcm.message.no_critical_assets">
+        <source>bcm.message.no_critical_assets</source>
+        <target>No critical assets — well done!</target>
+      </trans-unit>
+      <trans-unit id="yt_HAYD" resname="bcm.message.no_critical_processes">
+        <source>bcm.message.no_critical_processes</source>
+        <target>No critical processes</target>
+      </trans-unit>
+      <trans-unit id="sVw6y8Z" resname="bcm.criticality.critical">
+        <source>bcm.criticality.critical</source>
+        <target>Critical</target>
+      </trans-unit>
+      <trans-unit id="n2xTxk4" resname="bcm.criticality.high">
+        <source>bcm.criticality.high</source>
+        <target>High</target>
+      </trans-unit>
+      <trans-unit id="Jnspi7t" resname="bcm.criticality.medium">
+        <source>bcm.criticality.medium</source>
+        <target>Medium</target>
+      </trans-unit>
+      <trans-unit id="NGGWipi" resname="bcm.data_reuse.asset_recommendations_title">
+        <source>bcm.data_reuse.asset_recommendations_title</source>
+        <target>__bcm.data_reuse.asset_recommendations_title</target>
+      </trans-unit>
+      <trans-unit id="coYaTQq" resname="bcm.data_reuse.benefits_title">
+        <source>bcm.data_reuse.benefits_title</source>
+        <target>__bcm.data_reuse.benefits_title</target>
+      </trans-unit>
+      <trans-unit id="nDbsjMI" resname="bcm.data_reuse.benefit_efficiency">
+        <source>bcm.data_reuse.benefit_efficiency</source>
+        <target>__bcm.data_reuse.benefit_efficiency</target>
+      </trans-unit>
+      <trans-unit id="_CWtyh9" resname="bcm.data_reuse.benefit_consistency">
+        <source>bcm.data_reuse.benefit_consistency</source>
+        <target>__bcm.data_reuse.benefit_consistency</target>
+      </trans-unit>
+      <trans-unit id="LBUQrMP" resname="bcm.data_reuse.benefit_compliance">
+        <source>bcm.data_reuse.benefit_compliance</source>
+        <target>__bcm.data_reuse.benefit_compliance</target>
+      </trans-unit>
+      <trans-unit id="DdBPYVC" resname="bcm.data_reuse.benefit_quality">
+        <source>bcm.data_reuse.benefit_quality</source>
+        <target>__bcm.data_reuse.benefit_quality</target>
+      </trans-unit>
+      <trans-unit id="c_336yT" resname="bcm.message.no_matching_processes">
+        <source>bcm.message.no_matching_processes</source>
+        <target>__bcm.message.no_matching_processes</target>
+      </trans-unit>
+      <trans-unit id="fU8IUhv" resname="bcm.message.rto_tooltip">
+        <source>bcm.message.rto_tooltip</source>
+        <target>__bcm.message.rto_tooltip</target>
+      </trans-unit>
+      <trans-unit id="AxlWGa5" resname="bcm.message.rpo_tooltip">
+        <source>bcm.message.rpo_tooltip</source>
+        <target>__bcm.message.rpo_tooltip</target>
+      </trans-unit>
+      <trans-unit id="KhW5PF5" resname="bcm.message.mtd_tooltip">
+        <source>bcm.message.mtd_tooltip</source>
+        <target>__bcm.message.mtd_tooltip</target>
+      </trans-unit>
+      <trans-unit id="NJloCDQ" resname="bcm.message.bcm_influences_asset_ratings">
+        <source>bcm.message.bcm_influences_asset_ratings</source>
+        <target>__bcm.message.bcm_influences_asset_ratings</target>
+      </trans-unit>
+      <trans-unit id="geEGcDt" resname="bc_plans.page.title">
+        <source>bc_plans.page.title</source>
+        <target>__bc_plans.page.title</target>
+      </trans-unit>
+      <trans-unit id="Romb3nG" resname="bc_plan.section.basic_info">
+        <source>bc_plan.section.basic_info</source>
+        <target>__bc_plan.section.basic_info</target>
+      </trans-unit>
+      <trans-unit id="ToOGvRq" resname="bc_plan.field.name">
+        <source>bc_plan.field.name</source>
+        <target>__bc_plan.field.name</target>
+      </trans-unit>
+      <trans-unit id="URGXkhY" resname="bc_plan.help.name">
+        <source>bc_plan.help.name</source>
+        <target>__bc_plan.help.name</target>
+      </trans-unit>
+      <trans-unit id="7mMBAA3" resname="bc_plan.field.business_process">
+        <source>bc_plan.field.business_process</source>
+        <target>__bc_plan.field.business_process</target>
+      </trans-unit>
+      <trans-unit id="NbUinzO" resname="bc_plan.help.business_process">
+        <source>bc_plan.help.business_process</source>
+        <target>__bc_plan.help.business_process</target>
+      </trans-unit>
+      <trans-unit id="Du3t2Y8" resname="bc_plan.field.description">
+        <source>bc_plan.field.description</source>
+        <target>__bc_plan.field.description</target>
+      </trans-unit>
+      <trans-unit id="qhwAh7E" resname="bc_plan.help.description">
+        <source>bc_plan.help.description</source>
+        <target>__bc_plan.help.description</target>
+      </trans-unit>
+      <trans-unit id="3BGHJ.R" resname="bc_plan.field.plan_owner">
+        <source>bc_plan.field.plan_owner</source>
+        <target>__bc_plan.field.plan_owner</target>
+      </trans-unit>
+      <trans-unit id="cSKBp2Y" resname="bc_plan.help.plan_owner">
+        <source>bc_plan.help.plan_owner</source>
+        <target>__bc_plan.help.plan_owner</target>
+      </trans-unit>
+      <trans-unit id="jmdv0wg" resname="bc_plan.field.status">
+        <source>bc_plan.field.status</source>
+        <target>__bc_plan.field.status</target>
+      </trans-unit>
+      <trans-unit id="UG_heFO" resname="bc_plan.help.status">
+        <source>bc_plan.help.status</source>
+        <target>__bc_plan.help.status</target>
+      </trans-unit>
+      <trans-unit id="DS49Bub" resname="bc_plan.section.team">
+        <source>bc_plan.section.team</source>
+        <target>__bc_plan.section.team</target>
+      </trans-unit>
+      <trans-unit id="hANx86I" resname="bc_plan.field.bc_team">
+        <source>bc_plan.field.bc_team</source>
+        <target>__bc_plan.field.bc_team</target>
+      </trans-unit>
+      <trans-unit id="lQ6ZPUE" resname="bc_plan.help.bc_team">
+        <source>bc_plan.help.bc_team</source>
+        <target>__bc_plan.help.bc_team</target>
+      </trans-unit>
+      <trans-unit id="4B574y2" resname="bc_plan.section.activation">
+        <source>bc_plan.section.activation</source>
+        <target>__bc_plan.section.activation</target>
+      </trans-unit>
+      <trans-unit id="WjMC67M" resname="bc_plan.field.activation_criteria">
+        <source>bc_plan.field.activation_criteria</source>
+        <target>__bc_plan.field.activation_criteria</target>
+      </trans-unit>
+      <trans-unit id="BUOWbjg" resname="bc_plan.help.activation_criteria">
+        <source>bc_plan.help.activation_criteria</source>
+        <target>__bc_plan.help.activation_criteria</target>
+      </trans-unit>
+      <trans-unit id="PJ_UfF." resname="bc_plan.field.roles_responsibilities">
+        <source>bc_plan.field.roles_responsibilities</source>
+        <target>__bc_plan.field.roles_responsibilities</target>
+      </trans-unit>
+      <trans-unit id="OLTIANk" resname="bc_plan.help.roles_responsibilities">
+        <source>bc_plan.help.roles_responsibilities</source>
+        <target>__bc_plan.help.roles_responsibilities</target>
+      </trans-unit>
+      <trans-unit id="LEOoBdq" resname="bc_plan.field.recovery_procedures">
+        <source>bc_plan.field.recovery_procedures</source>
+        <target>__bc_plan.field.recovery_procedures</target>
+      </trans-unit>
+      <trans-unit id="KphSvyA" resname="bc_plan.help.recovery_procedures">
+        <source>bc_plan.help.recovery_procedures</source>
+        <target>__bc_plan.help.recovery_procedures</target>
+      </trans-unit>
+      <trans-unit id="PfWhJIz" resname="bc_plan.section.communication">
+        <source>bc_plan.section.communication</source>
+        <target>__bc_plan.section.communication</target>
+      </trans-unit>
+      <trans-unit id="3owrN0C" resname="bc_plan.field.communication_plan">
+        <source>bc_plan.field.communication_plan</source>
+        <target>__bc_plan.field.communication_plan</target>
+      </trans-unit>
+      <trans-unit id="_BnC_eZ" resname="bc_plan.help.communication_plan">
+        <source>bc_plan.help.communication_plan</source>
+        <target>__bc_plan.help.communication_plan</target>
+      </trans-unit>
+      <trans-unit id="SHVcHhy" resname="bc_plan.field.internal_communication">
+        <source>bc_plan.field.internal_communication</source>
+        <target>__bc_plan.field.internal_communication</target>
+      </trans-unit>
+      <trans-unit id="VW9x4h4" resname="bc_plan.help.internal_communication">
+        <source>bc_plan.help.internal_communication</source>
+        <target>__bc_plan.help.internal_communication</target>
+      </trans-unit>
+      <trans-unit id="1r1Mtc0" resname="bc_plan.field.external_communication">
+        <source>bc_plan.field.external_communication</source>
+        <target>__bc_plan.field.external_communication</target>
+      </trans-unit>
+      <trans-unit id="gqqLIQe" resname="bc_plan.help.external_communication">
+        <source>bc_plan.help.external_communication</source>
+        <target>__bc_plan.help.external_communication</target>
+      </trans-unit>
+      <trans-unit id="pjYrzED" resname="bc_plan.section.alternative_site">
+        <source>bc_plan.section.alternative_site</source>
+        <target>__bc_plan.section.alternative_site</target>
+      </trans-unit>
+      <trans-unit id="8s3B7fd" resname="bc_plan.field.alternative_site">
+        <source>bc_plan.field.alternative_site</source>
+        <target>__bc_plan.field.alternative_site</target>
+      </trans-unit>
+      <trans-unit id="H7M59hk" resname="bc_plan.help.alternative_site">
+        <source>bc_plan.help.alternative_site</source>
+        <target>__bc_plan.help.alternative_site</target>
+      </trans-unit>
+      <trans-unit id="7nD8lyy" resname="bc_plan.field.alternative_site_address">
+        <source>bc_plan.field.alternative_site_address</source>
+        <target>__bc_plan.field.alternative_site_address</target>
+      </trans-unit>
+      <trans-unit id="GotGg1H" resname="bc_plan.help.alternative_site_address">
+        <source>bc_plan.help.alternative_site_address</source>
+        <target>__bc_plan.help.alternative_site_address</target>
+      </trans-unit>
+      <trans-unit id="0yhC1wp" resname="bc_plan.field.alternative_site_capacity">
+        <source>bc_plan.field.alternative_site_capacity</source>
+        <target>__bc_plan.field.alternative_site_capacity</target>
+      </trans-unit>
+      <trans-unit id="LMXAyX2" resname="bc_plan.help.alternative_site_capacity">
+        <source>bc_plan.help.alternative_site_capacity</source>
+        <target>__bc_plan.help.alternative_site_capacity</target>
+      </trans-unit>
+      <trans-unit id="N.4VEN." resname="bc_plan.section.backup_recovery">
+        <source>bc_plan.section.backup_recovery</source>
+        <target>__bc_plan.section.backup_recovery</target>
+      </trans-unit>
+      <trans-unit id="KGMMC2D" resname="bc_plan.field.backup_procedures">
+        <source>bc_plan.field.backup_procedures</source>
+        <target>__bc_plan.field.backup_procedures</target>
+      </trans-unit>
+      <trans-unit id="aHJWzef" resname="bc_plan.help.backup_procedures">
+        <source>bc_plan.help.backup_procedures</source>
+        <target>__bc_plan.help.backup_procedures</target>
+      </trans-unit>
+      <trans-unit id="w2vimh7" resname="bc_plan.field.restore_procedures">
+        <source>bc_plan.field.restore_procedures</source>
+        <target>__bc_plan.field.restore_procedures</target>
+      </trans-unit>
+      <trans-unit id="jsio7Zz" resname="bc_plan.help.restore_procedures">
+        <source>bc_plan.help.restore_procedures</source>
+        <target>__bc_plan.help.restore_procedures</target>
+      </trans-unit>
+      <trans-unit id="Pw8f9yI" resname="bc_plan.section.version_review">
+        <source>bc_plan.section.version_review</source>
+        <target>__bc_plan.section.version_review</target>
+      </trans-unit>
+      <trans-unit id="Tmxxec4" resname="bc_plan.field.version">
+        <source>bc_plan.field.version</source>
+        <target>__bc_plan.field.version</target>
+      </trans-unit>
+      <trans-unit id="_AncYnb" resname="bc_plan.help.version">
+        <source>bc_plan.help.version</source>
+        <target>__bc_plan.help.version</target>
+      </trans-unit>
+      <trans-unit id="5TONfh6" resname="bc_plan.field.last_tested">
+        <source>bc_plan.field.last_tested</source>
+        <target>__bc_plan.field.last_tested</target>
+      </trans-unit>
+      <trans-unit id="xYow4pY" resname="bc_plan.help.last_tested">
+        <source>bc_plan.help.last_tested</source>
+        <target>__bc_plan.help.last_tested</target>
+      </trans-unit>
+      <trans-unit id="Fd7_noA" resname="bc_plan.field.next_test_date">
+        <source>bc_plan.field.next_test_date</source>
+        <target>__bc_plan.field.next_test_date</target>
+      </trans-unit>
+      <trans-unit id="q57hrSE" resname="bc_plan.help.next_test_date">
+        <source>bc_plan.help.next_test_date</source>
+        <target>__bc_plan.help.next_test_date</target>
+      </trans-unit>
+      <trans-unit id="Qbp_V.k" resname="bc_plan.field.last_review_date">
+        <source>bc_plan.field.last_review_date</source>
+        <target>__bc_plan.field.last_review_date</target>
+      </trans-unit>
+      <trans-unit id="hWDFgKp" resname="bc_plan.help.last_review_date">
+        <source>bc_plan.help.last_review_date</source>
+        <target>__bc_plan.help.last_review_date</target>
+      </trans-unit>
+      <trans-unit id="v7gHDmN" resname="bc_plan.field.next_review_date">
+        <source>bc_plan.field.next_review_date</source>
+        <target>__bc_plan.field.next_review_date</target>
+      </trans-unit>
+      <trans-unit id="XOQK9YQ" resname="bc_plan.help.next_review_date">
+        <source>bc_plan.help.next_review_date</source>
+        <target>__bc_plan.help.next_review_date</target>
+      </trans-unit>
+      <trans-unit id="9K4Yx7K" resname="bc_plan.field.review_notes">
+        <source>bc_plan.field.review_notes</source>
+        <target>__bc_plan.field.review_notes</target>
+      </trans-unit>
+      <trans-unit id="dyvMhig" resname="bc_plan.help.review_notes">
+        <source>bc_plan.help.review_notes</source>
+        <target>__bc_plan.help.review_notes</target>
+      </trans-unit>
+      <trans-unit id="LuONSZH" resname="bc_plans.action.add_new">
+        <source>bc_plans.action.add_new</source>
+        <target>__bc_plans.action.add_new</target>
+      </trans-unit>
+      <trans-unit id="r_9fvZj" resname="bc_plans.table.name">
+        <source>bc_plans.table.name</source>
+        <target>__bc_plans.table.name</target>
+      </trans-unit>
+      <trans-unit id="KPDM3fG" resname="bc_plans.table.business_process">
+        <source>bc_plans.table.business_process</source>
+        <target>__bc_plans.table.business_process</target>
+      </trans-unit>
+      <trans-unit id="JpKo8jR" resname="bc_plans.table.owner">
+        <source>bc_plans.table.owner</source>
+        <target>__bc_plans.table.owner</target>
+      </trans-unit>
+      <trans-unit id="1gcCRnM" resname="bc_plans.table.status">
+        <source>bc_plans.table.status</source>
+        <target>__bc_plans.table.status</target>
+      </trans-unit>
+      <trans-unit id="lnxIxUW" resname="bc_plans.table.readiness">
+        <source>bc_plans.table.readiness</source>
+        <target>__bc_plans.table.readiness</target>
+      </trans-unit>
+      <trans-unit id="y8IrWLQ" resname="bc_plans.table.last_tested">
+        <source>bc_plans.table.last_tested</source>
+        <target>__bc_plans.table.last_tested</target>
+      </trans-unit>
+      <trans-unit id="J8s4UvC" resname="bc_plans.table.actions">
+        <source>bc_plans.table.actions</source>
+        <target>__bc_plans.table.actions</target>
+      </trans-unit>
+      <trans-unit id="JXOEj0p" resname="bc_plans.message.never">
+        <source>bc_plans.message.never</source>
+        <target>__bc_plans.message.never</target>
+      </trans-unit>
+      <trans-unit id="socyL3G" resname="bc_plans.page.header">
+        <source>bc_plans.page.header</source>
+        <target>__bc_plans.page.header</target>
+      </trans-unit>
+      <trans-unit id="5QG.Pi7" resname="bc_plans.page.subtitle">
+        <source>bc_plans.page.subtitle</source>
+        <target>__bc_plans.page.subtitle</target>
+      </trans-unit>
+      <trans-unit id="j9fpTzB" resname="bc_plans.alert.overdue_tests">
+        <source>bc_plans.alert.overdue_tests</source>
+        <target>__bc_plans.alert.overdue_tests</target>
+      </trans-unit>
+      <trans-unit id="3fB2ybx" resname="bc_plans.field.next_test">
+        <source>bc_plans.field.next_test</source>
+        <target>__bc_plans.field.next_test</target>
+      </trans-unit>
+      <trans-unit id="iMlS6OE" resname="bc_plans.message.not_scheduled">
+        <source>bc_plans.message.not_scheduled</source>
+        <target>__bc_plans.message.not_scheduled</target>
+      </trans-unit>
+      <trans-unit id="2TFJmzE" resname="bc_plans.alert.overdue_reviews">
+        <source>bc_plans.alert.overdue_reviews</source>
+        <target>__bc_plans.alert.overdue_reviews</target>
+      </trans-unit>
+      <trans-unit id="fQ.BzFg" resname="bc_plans.field.next_review">
+        <source>bc_plans.field.next_review</source>
+        <target>__bc_plans.field.next_review</target>
+      </trans-unit>
+      <trans-unit id="UZdN0kp" resname="bc_plans.message.no_plans">
+        <source>bc_plans.message.no_plans</source>
+        <target>__bc_plans.message.no_plans</target>
+      </trans-unit>
+      <trans-unit id="s5x6uSD" resname="bc_plans.message.create_first">
+        <source>bc_plans.message.create_first</source>
+        <target>__bc_plans.message.create_first</target>
+      </trans-unit>
+      <trans-unit id="KL5lNZg" resname="bc_plans.section.details">
+        <source>bc_plans.section.details</source>
+        <target>__bc_plans.section.details</target>
+      </trans-unit>
+      <trans-unit id="dUNTDAH" resname="bc_plans.message.readiness_score">
+        <source>bc_plans.message.readiness_score</source>
+        <target>__bc_plans.message.readiness_score</target>
+      </trans-unit>
+      <trans-unit id="mNAusNA" resname="bc_plans.field.business_process">
+        <source>bc_plans.field.business_process</source>
+        <target>__bc_plans.field.business_process</target>
+      </trans-unit>
+      <trans-unit id="3L45Oxh" resname="bc_plans.field.plan_owner">
+        <source>bc_plans.field.plan_owner</source>
+        <target>__bc_plans.field.plan_owner</target>
+      </trans-unit>
+      <trans-unit id="OWHH0Vh" resname="bc_plans.field.version">
+        <source>bc_plans.field.version</source>
+        <target>__bc_plans.field.version</target>
+      </trans-unit>
+      <trans-unit id="Px8ZSJ3" resname="bcm.field.activation_criteria">
+        <source>bcm.field.activation_criteria</source>
+        <target>__bcm.field.activation_criteria</target>
+      </trans-unit>
+      <trans-unit id="4sWaPvN" resname="bc_plans.section.testing_review">
+        <source>bc_plans.section.testing_review</source>
+        <target>__bc_plans.section.testing_review</target>
+      </trans-unit>
+      <trans-unit id="UbyUAmP" resname="bc_plans.field.last_tested">
+        <source>bc_plans.field.last_tested</source>
+        <target>__bc_plans.field.last_tested</target>
+      </trans-unit>
+      <trans-unit id="5SGmQqk" resname="bc_plans.badge.overdue">
+        <source>bc_plans.badge.overdue</source>
+        <target>__bc_plans.badge.overdue</target>
+      </trans-unit>
+      <trans-unit id="ompS_.J" resname="bc_plans.field.last_review">
+        <source>bc_plans.field.last_review</source>
+        <target>__bc_plans.field.last_review</target>
+      </trans-unit>
+      <trans-unit id="GzKz2Wx" resname="bc_plans.section.review_notes">
+        <source>bc_plans.section.review_notes</source>
+        <target>__bc_plans.section.review_notes</target>
+      </trans-unit>
+      <trans-unit id="ftOBVCo" resname="bc_plans.section.communication_plan">
+        <source>bc_plans.section.communication_plan</source>
+        <target>__bc_plans.section.communication_plan</target>
+      </trans-unit>
+      <trans-unit id="mROmlDL" resname="bc_plans.section.alternative_site">
+        <source>bc_plans.section.alternative_site</source>
+        <target>__bc_plans.section.alternative_site</target>
+      </trans-unit>
+      <trans-unit id="B.oVdlN" resname="bc_plans.field.address">
+        <source>bc_plans.field.address</source>
+        <target>__bc_plans.field.address</target>
+      </trans-unit>
+      <trans-unit id="ZiYctbq" resname="bc_plans.field.capacity">
+        <source>bc_plans.field.capacity</source>
+        <target>__bc_plans.field.capacity</target>
+      </trans-unit>
+      <trans-unit id="E1AFQu0" resname="bc_plans.section.related_risks">
+        <source>bc_plans.section.related_risks</source>
+        <target>__bc_plans.section.related_risks</target>
+      </trans-unit>
+      <trans-unit id="1ybfbOW" resname="bc_exercises.action.edit">
+        <source>bc_exercises.action.edit</source>
+        <target>__bc_exercises.action.edit</target>
+      </trans-unit>
+      <trans-unit id="B_MdJqn" resname="bc_exercises.page.title">
+        <source>bc_exercises.page.title</source>
+        <target>__bc_exercises.page.title</target>
+      </trans-unit>
+      <trans-unit id="exBLH9Q" resname="bc_exercises.section.details">
+        <source>bc_exercises.section.details</source>
+        <target>__bc_exercises.section.details</target>
+      </trans-unit>
+      <trans-unit id="KojjmJD" resname="bc_exercises.table.name">
+        <source>bc_exercises.table.name</source>
+        <target>__bc_exercises.table.name</target>
+      </trans-unit>
+      <trans-unit id="Tg_8uLm" resname="bc_exercises.table.type">
+        <source>bc_exercises.table.type</source>
+        <target>__bc_exercises.table.type</target>
+      </trans-unit>
+      <trans-unit id="Oon4rCK" resname="bc_exercises.section.scenario">
+        <source>bc_exercises.section.scenario</source>
+        <target>__bc_exercises.section.scenario</target>
+      </trans-unit>
+      <trans-unit id="vNbIImH" resname="bc_exercises.table.status">
+        <source>bc_exercises.table.status</source>
+        <target>__bc_exercises.table.status</target>
+      </trans-unit>
+      <trans-unit id="y_LiFpW" resname="bc_exercises.section.scope_objectives">
+        <source>bc_exercises.section.scope_objectives</source>
+        <target>__bc_exercises.section.scope_objectives</target>
+      </trans-unit>
+      <trans-unit id="QOa9ELN" resname="bc_exercises.field.exercise_date">
+        <source>bc_exercises.field.exercise_date</source>
+        <target>__bc_exercises.field.exercise_date</target>
+      </trans-unit>
+      <trans-unit id="jE9BPxK" resname="bc_exercises.field.duration_hours">
+        <source>bc_exercises.field.duration_hours</source>
+        <target>__bc_exercises.field.duration_hours</target>
+      </trans-unit>
+      <trans-unit id="esPQ5lh" resname="bc_exercises.section.participants">
+        <source>bc_exercises.section.participants</source>
+        <target>__bc_exercises.section.participants</target>
+      </trans-unit>
+      <trans-unit id="fT7KWrS" resname="bc_exercises.field.participants">
+        <source>bc_exercises.field.participants</source>
+        <target>__bc_exercises.field.participants</target>
+      </trans-unit>
+      <trans-unit id="CORypaH" resname="bc_exercises.field.facilitator">
+        <source>bc_exercises.field.facilitator</source>
+        <target>__bc_exercises.field.facilitator</target>
+      </trans-unit>
+      <trans-unit id="EcxwN2r" resname="bc_exercises.field.observers">
+        <source>bc_exercises.field.observers</source>
+        <target>__bc_exercises.field.observers</target>
+      </trans-unit>
+      <trans-unit id="3LwpuIh" resname="bc_exercises.section.results">
+        <source>bc_exercises.section.results</source>
+        <target>__bc_exercises.section.results</target>
+      </trans-unit>
+      <trans-unit id="o_aoqw9" resname="bc_exercises.section.what_went_well">
+        <source>bc_exercises.section.what_went_well</source>
+        <target>__bc_exercises.section.what_went_well</target>
+      </trans-unit>
+      <trans-unit id="AiQGD_5" resname="bc_exercises.section.improvements">
+        <source>bc_exercises.section.improvements</source>
+        <target>__bc_exercises.section.improvements</target>
+      </trans-unit>
+      <trans-unit id="CkdV72D" resname="bc_exercises.section.findings">
+        <source>bc_exercises.section.findings</source>
+        <target>__bc_exercises.section.findings</target>
+      </trans-unit>
+      <trans-unit id="rdkj6x9" resname="bc_exercises.section.action_items">
+        <source>bc_exercises.section.action_items</source>
+        <target>__bc_exercises.section.action_items</target>
+      </trans-unit>
+      <trans-unit id="XERY9kB" resname="bc_exercises.section.lessons_learned">
+        <source>bc_exercises.section.lessons_learned</source>
+        <target>__bc_exercises.section.lessons_learned</target>
+      </trans-unit>
+      <trans-unit id="bH2B6pF" resname="bc_exercises.section.plan_updates_required">
+        <source>bc_exercises.section.plan_updates_required</source>
+        <target>__bc_exercises.section.plan_updates_required</target>
+      </trans-unit>
+      <trans-unit id="4ErP8o6" resname="bc_exercises.field.success_rating">
+        <source>bc_exercises.field.success_rating</source>
+        <target>__bc_exercises.field.success_rating</target>
+      </trans-unit>
+      <trans-unit id="DPbaKYN" resname="bc_exercises.field.report_completed">
+        <source>bc_exercises.field.report_completed</source>
+        <target>__bc_exercises.field.report_completed</target>
+      </trans-unit>
+      <trans-unit id="QY5JCl3" resname="bc_exercises.field.report_date">
+        <source>bc_exercises.field.report_date</source>
+        <target>__bc_exercises.field.report_date</target>
+      </trans-unit>
+      <trans-unit id="_VtZ2qi" resname="bc_exercises.action.add_new">
+        <source>bc_exercises.action.add_new</source>
+        <target>__bc_exercises.action.add_new</target>
+      </trans-unit>
+      <trans-unit id="05FZYHK" resname="bc_exercises.field.duration">
+        <source>bc_exercises.field.duration</source>
+        <target>__bc_exercises.field.duration</target>
+      </trans-unit>
+      <trans-unit id="X5eY84x" resname="bc_exercise.section.participants">
+        <source>bc_exercise.section.participants</source>
+        <target>__bc_exercise.section.participants</target>
+      </trans-unit>
+      <trans-unit id="yVhCVFC" resname="bc_exercise.field.participants">
+        <source>bc_exercise.field.participants</source>
+        <target>__bc_exercise.field.participants</target>
+      </trans-unit>
+      <trans-unit id="ScWswrn" resname="bc_exercise.help.participants">
+        <source>bc_exercise.help.participants</source>
+        <target>__bc_exercise.help.participants</target>
+      </trans-unit>
+      <trans-unit id=".Sh28ep" resname="bc_exercise.field.facilitator">
+        <source>bc_exercise.field.facilitator</source>
+        <target>__bc_exercise.field.facilitator</target>
+      </trans-unit>
+      <trans-unit id="rg5wW1h" resname="bc_exercise.help.facilitator">
+        <source>bc_exercise.help.facilitator</source>
+        <target>__bc_exercise.help.facilitator</target>
+      </trans-unit>
+      <trans-unit id="WqdrJf2" resname="bc_exercise.field.observers">
+        <source>bc_exercise.field.observers</source>
+        <target>__bc_exercise.field.observers</target>
+      </trans-unit>
+      <trans-unit id="V966kla" resname="bc_exercise.help.observers">
+        <source>bc_exercise.help.observers</source>
+        <target>__bc_exercise.help.observers</target>
+      </trans-unit>
+      <trans-unit id="jWLhCXZ" resname="bc_exercise.section.results">
+        <source>bc_exercise.section.results</source>
+        <target>__bc_exercise.section.results</target>
+      </trans-unit>
+      <trans-unit id="Uqc9cEE" resname="bc_exercise.field.results">
+        <source>bc_exercise.field.results</source>
+        <target>__bc_exercise.field.results</target>
+      </trans-unit>
+      <trans-unit id="lr.cd2U" resname="bc_exercise.help.results">
+        <source>bc_exercise.help.results</source>
+        <target>__bc_exercise.help.results</target>
+      </trans-unit>
+      <trans-unit id="yKydbmg" resname="bc_exercise.field.what_went_well">
+        <source>bc_exercise.field.what_went_well</source>
+        <target>__bc_exercise.field.what_went_well</target>
+      </trans-unit>
+      <trans-unit id="47_TQUj" resname="bc_exercise.help.what_went_well">
+        <source>bc_exercise.help.what_went_well</source>
+        <target>__bc_exercise.help.what_went_well</target>
+      </trans-unit>
+      <trans-unit id="psw0mEq" resname="bc_exercise.field.areas_for_improvement">
+        <source>bc_exercise.field.areas_for_improvement</source>
+        <target>__bc_exercise.field.areas_for_improvement</target>
+      </trans-unit>
+      <trans-unit id="yK9ijIu" resname="bc_exercise.help.areas_for_improvement">
+        <source>bc_exercise.help.areas_for_improvement</source>
+        <target>__bc_exercise.help.areas_for_improvement</target>
+      </trans-unit>
+      <trans-unit id="LdMuT95" resname="bc_exercise.field.findings">
+        <source>bc_exercise.field.findings</source>
+        <target>__bc_exercise.field.findings</target>
+      </trans-unit>
+      <trans-unit id="iDg59FK" resname="bc_exercise.help.findings">
+        <source>bc_exercise.help.findings</source>
+        <target>__bc_exercise.help.findings</target>
+      </trans-unit>
+      <trans-unit id="CI16JDx" resname="bc_exercise.field.action_items">
+        <source>bc_exercise.field.action_items</source>
+        <target>__bc_exercise.field.action_items</target>
+      </trans-unit>
+      <trans-unit id="B4ZXr2p" resname="bc_exercise.help.action_items">
+        <source>bc_exercise.help.action_items</source>
+        <target>__bc_exercise.help.action_items</target>
+      </trans-unit>
+      <trans-unit id="c1dRGCk" resname="bc_exercise.field.lessons_learned">
+        <source>bc_exercise.field.lessons_learned</source>
+        <target>__bc_exercise.field.lessons_learned</target>
+      </trans-unit>
+      <trans-unit id="IGVfMz_" resname="bc_exercise.help.lessons_learned">
+        <source>bc_exercise.help.lessons_learned</source>
+        <target>__bc_exercise.help.lessons_learned</target>
+      </trans-unit>
+      <trans-unit id="2SaQLuO" resname="bc_exercise.field.plan_updates_required">
+        <source>bc_exercise.field.plan_updates_required</source>
+        <target>__bc_exercise.field.plan_updates_required</target>
+      </trans-unit>
+      <trans-unit id="hdvS2JE" resname="bc_exercise.help.plan_updates_required">
+        <source>bc_exercise.help.plan_updates_required</source>
+        <target>__bc_exercise.help.plan_updates_required</target>
+      </trans-unit>
+      <trans-unit id="ChLrLF." resname="bc_exercise.section.report">
+        <source>bc_exercise.section.report</source>
+        <target>__bc_exercise.section.report</target>
+      </trans-unit>
+      <trans-unit id="XDPWH8w" resname="bc_exercise.field.success_rating">
+        <source>bc_exercise.field.success_rating</source>
+        <target>__bc_exercise.field.success_rating</target>
+      </trans-unit>
+      <trans-unit id="EKExl0R" resname="bc_exercise.help.success_rating">
+        <source>bc_exercise.help.success_rating</source>
+        <target>__bc_exercise.help.success_rating</target>
+      </trans-unit>
+      <trans-unit id="bArDC5q" resname="bc_exercise.field.report_completed">
+        <source>bc_exercise.field.report_completed</source>
+        <target>__bc_exercise.field.report_completed</target>
+      </trans-unit>
+      <trans-unit id="5d77M8F" resname="bc_exercise.help.report_completed">
+        <source>bc_exercise.help.report_completed</source>
+        <target>__bc_exercise.help.report_completed</target>
+      </trans-unit>
+      <trans-unit id="VeXOMGf" resname="bc_exercise.field.report_date">
+        <source>bc_exercise.field.report_date</source>
+        <target>__bc_exercise.field.report_date</target>
+      </trans-unit>
+      <trans-unit id="dbXFoVc" resname="bc_exercise.help.report_date">
+        <source>bc_exercise.help.report_date</source>
+        <target>__bc_exercise.help.report_date</target>
+      </trans-unit>
+      <trans-unit id="Sc8Nzj3" resname="bc_exercise.create">
+        <source>bc_exercise.create</source>
+        <target>__bc_exercise.create</target>
+      </trans-unit>
+      <trans-unit id="Y79vQg0" resname="bc_exercises.table.date">
+        <source>bc_exercises.table.date</source>
+        <target>__bc_exercises.table.date</target>
+      </trans-unit>
+      <trans-unit id="vMcQLIy" resname="bc_exercises.table.effectiveness">
+        <source>bc_exercises.table.effectiveness</source>
+        <target>__bc_exercises.table.effectiveness</target>
+      </trans-unit>
+      <trans-unit id="LdYLXjg" resname="bc_exercises.message.na">
+        <source>bc_exercises.message.na</source>
+        <target>__bc_exercises.message.na</target>
+      </trans-unit>
+      <trans-unit id="8lVN4lq" resname="bc_exercises.page.header">
+        <source>bc_exercises.page.header</source>
+        <target>__bc_exercises.page.header</target>
+      </trans-unit>
+      <trans-unit id="ysFoXAV" resname="bc_exercises.stats.total">
+        <source>bc_exercises.stats.total</source>
+        <target>__bc_exercises.stats.total</target>
+      </trans-unit>
+      <trans-unit id="jHJmxyt" resname="bc_exercises.stats.completed">
+        <source>bc_exercises.stats.completed</source>
+        <target>__bc_exercises.stats.completed</target>
+      </trans-unit>
+      <trans-unit id="QkinCQu" resname="bc_exercises.stats.planned">
+        <source>bc_exercises.stats.planned</source>
+        <target>__bc_exercises.stats.planned</target>
+      </trans-unit>
+      <trans-unit id="JsRg12V" resname="bc_exercises.section.upcoming">
+        <source>bc_exercises.section.upcoming</source>
+        <target>__bc_exercises.section.upcoming</target>
+      </trans-unit>
+      <trans-unit id="e37wCum" resname="bc_exercises.section.incomplete_reports">
+        <source>bc_exercises.section.incomplete_reports</source>
+        <target>__bc_exercises.section.incomplete_reports</target>
+      </trans-unit>
+      <trans-unit id="Kr0ho4E" resname="bc_exercises.message.no_exercises">
+        <source>bc_exercises.message.no_exercises</source>
+        <target>__bc_exercises.message.no_exercises</target>
+      </trans-unit>
+      <trans-unit id="93AT1JI" resname="bc_exercises.message.schedule_first">
+        <source>bc_exercises.message.schedule_first</source>
+        <target>__bc_exercises.message.schedule_first</target>
+      </trans-unit>
+      <trans-unit id="bMuF2Jv" resname="bc_exercises.message.confirm_delete">
+        <source>bc_exercises.message.confirm_delete</source>
+        <target>__bc_exercises.message.confirm_delete</target>
+      </trans-unit>
+      <trans-unit id="ssneNmV" resname="bc_exercises.badge.yes">
+        <source>bc_exercises.badge.yes</source>
+        <target>__bc_exercises.badge.yes</target>
+      </trans-unit>
+      <trans-unit id="MFYz717" resname="bc_exercises.badge.no">
+        <source>bc_exercises.badge.no</source>
+        <target>__bc_exercises.badge.no</target>
+      </trans-unit>
+      <trans-unit id="QdQzsSc" resname="bc_exercises.section.related_plans">
+        <source>bc_exercises.section.related_plans</source>
+        <target>__bc_exercises.section.related_plans</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="de" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="6AUA.4C" resname="audit_log.section.entries">
+        <source>audit_log.section.entries</source>
+        <target>Protokolleinträge</target>
+      </trans-unit>
+      <trans-unit id="UFs261u" resname="audit_log.showing_recent">
+        <source>audit_log.showing_recent</source>
+        <target>__audit_log.showing_recent</target>
+      </trans-unit>
+      <trans-unit id="M5kQt2f" resname="audit_log.entries">
+        <source>audit_log.entries</source>
+        <target>__audit_log.entries</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,91 +1,80 @@
-monitoring:
-  title: System Monitoring
-  health:
-    title: System Health
-    overall_status: Overall Status
-    healthy: Healthy
-    warning: Warning
-    error: Error
-    last_checked: Last Checked
-  database:
-    title: Database
-    status: Status
-    response_time: Response Time
-    driver: Driver
-    error: Error
-  disk:
-    title: Disk
-    free: Free
-    used: Used
-    total: Total
-    percentage: Percentage
-  php:
-    title: PHP
-    version: Version
-    memory_limit: Memory Limit
-    max_execution_time: Max Execution Time
-    extensions: Extensions
-    loaded: Loaded
-    missing: Missing
-  symfony:
-    title: Symfony
-    version: Version
-    environment: Environment
-    debug: Debug Mode
-  cache:
-    title: Cache
-    directory: Directory
-    writable: Writable
-  logs:
-    title: Logs
-    directory: Directory
-    writable: Writable
-  performance:
-    title: Performance Metrics
-    total_requests: Total Requests
-    unique_users: Unique Users
-    memory_usage: Memory Usage
-    memory_peak: Memory Peak
-    memory_limit: Memory Limit
-    top_actions: Top Actions
-    top_entities: Most Active Entities
-    last_24h: Last 24 Hours
-    system_resources: System Resources
-    note: Note
-  errors:
-    title: Error Logs
-    total: Total Errors
-    by_level: By Level
-    file_size: File Size
-    last_modified: Last Modified
-    log_file: Log File
-    show_entries: Show Entries
-    recent: Recent Errors
-    no_errors: No errors found!
-    no_log_file: No log file found
-    show_full: Show full log entry
-  audit_log:
-    title: Audit Log
-    total_entries: Total Entries
-    top_actions: Top Actions
-    top_entities: Top Entities
-    quick_filters: Quick Filters
-    all: All
-    today: Today
-    this_week: This Week
-    critical_actions: Critical Actions
-    entries: Entries
-    timestamp: Timestamp
-    user: User
-    action: Action
-    entity: Entity
-    ip_address: IP Address
-    details: Details
-    view: View
-    description: Description
-    changes: Changes
-    about: About Audit Log
-    about_text: The audit log tracks all significant actions in the system including create, update, and delete operations.
-  related: Related Monitoring
-  refresh: Refresh
-  back_to_health: Back to Health
+monitoring.title: 'System Monitoring'
+monitoring.health.title: 'System Health'
+monitoring.health.overall_status: 'Overall Status'
+monitoring.health.healthy: Healthy
+monitoring.health.warning: Warning
+monitoring.health.error: Error
+monitoring.health.last_checked: 'Last Checked'
+monitoring.database.title: Database
+monitoring.database.status: Status
+monitoring.database.response_time: 'Response Time'
+monitoring.database.driver: Driver
+monitoring.database.error: Error
+monitoring.disk.title: Disk
+monitoring.disk.free: Free
+monitoring.disk.used: Used
+monitoring.disk.total: Total
+monitoring.disk.percentage: Percentage
+monitoring.php.title: PHP
+monitoring.php.version: Version
+monitoring.php.memory_limit: 'Memory Limit'
+monitoring.php.max_execution_time: 'Max Execution Time'
+monitoring.php.extensions: Extensions
+monitoring.php.loaded: Loaded
+monitoring.php.missing: Missing
+monitoring.symfony.title: Symfony
+monitoring.symfony.version: Version
+monitoring.symfony.environment: Environment
+monitoring.symfony.debug: 'Debug Mode'
+monitoring.cache.title: Cache
+monitoring.cache.directory: Directory
+monitoring.cache.writable: Writable
+monitoring.logs.title: Logs
+monitoring.logs.directory: Directory
+monitoring.logs.writable: Writable
+monitoring.performance.title: 'Performance Metrics'
+monitoring.performance.total_requests: 'Total Requests'
+monitoring.performance.unique_users: 'Unique Users'
+monitoring.performance.memory_usage: 'Memory Usage'
+monitoring.performance.memory_peak: 'Memory Peak'
+monitoring.performance.memory_limit: 'Memory Limit'
+monitoring.performance.top_actions: 'Top Actions'
+monitoring.performance.top_entities: 'Most Active Entities'
+monitoring.performance.last_24h: 'Last 24 Hours'
+monitoring.performance.system_resources: 'System Resources'
+monitoring.performance.note: Note
+monitoring.errors.title: 'Error Logs'
+monitoring.errors.total: 'Total Errors'
+monitoring.errors.by_level: 'By Level'
+monitoring.errors.file_size: 'File Size'
+monitoring.errors.last_modified: 'Last Modified'
+monitoring.errors.log_file: 'Log File'
+monitoring.errors.show_entries: 'Show Entries'
+monitoring.errors.recent: 'Recent Errors'
+monitoring.errors.no_errors: 'No errors found!'
+monitoring.errors.no_log_file: 'No log file found'
+monitoring.errors.show_full: 'Show full log entry'
+monitoring.audit_log.title: 'Audit Log'
+monitoring.audit_log.total_entries: 'Total Entries'
+monitoring.audit_log.top_actions: 'Top Actions'
+monitoring.audit_log.top_entities: 'Top Entities'
+monitoring.audit_log.quick_filters: 'Quick Filters'
+monitoring.audit_log.all: All
+monitoring.audit_log.today: Today
+monitoring.audit_log.this_week: 'This Week'
+monitoring.audit_log.critical_actions: 'Critical Actions'
+monitoring.audit_log.entries: Entries
+monitoring.audit_log.timestamp: Timestamp
+monitoring.audit_log.user: User
+monitoring.audit_log.action: Action
+monitoring.audit_log.entity: Entity
+monitoring.audit_log.ip_address: 'IP Address'
+monitoring.audit_log.details: Details
+monitoring.audit_log.view: View
+monitoring.audit_log.description: Description
+monitoring.audit_log.changes: Changes
+monitoring.audit_log.about: 'About Audit Log'
+monitoring.audit_log.about_text: 'The audit log tracks all significant actions in the system including create, update, and delete operations.'
+monitoring.related: 'Related Monitoring'
+monitoring.refresh: Refresh
+monitoring.back_to_health: 'Back to Health'

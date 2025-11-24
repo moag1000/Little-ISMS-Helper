@@ -82,6 +82,29 @@ supplier:
       critical: Kritisches Risiko – sofortige Maßnahmen erforderlich
       high: Hohes Risiko – Überprüfung erforderlich
       acceptable: Akzeptables Risikoniveau
+  criticality:
+    critical: Kritisch
+    high: Hoch
+    medium: Mittel
+    low: Niedrig
+  status:
+    active: Aktiv
+    inactive: Inaktiv
+    evaluation: Evaluierung
+    terminated: Beendet
+  placeholder:
+    name: Name des Lieferanten
+    description: Beschreibung des Lieferanten
+    contact_person: Name des Ansprechpartners
+    email: E-Mail-Adresse
+    phone: Telefonnummer
+    address: Vollständige Adresse
+    service_provided: Welche Dienstleistung wird erbracht?
+    security_score: 0-100
+    assessment_findings: Ergebnisse der Sicherheitsbewertung
+    non_conformities: Festgestellte Nichtkonformitäten
+    security_requirements: Sicherheitsanforderungen aus dem Vertrag
+    certifications: Weitere Zertifizierungen (z.B. SOC 2, TISAX)
 corporate:
   stats:
       standalone: 'Eigenständig'

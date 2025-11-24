@@ -99,3 +99,33 @@ privacy:
       medium: Mittel
       high: Hoch
       critical: Kritisch
+data_breach:
+  data_categories:
+    personal_identification: Persönliche Identifikationsdaten
+    contact_information: Kontaktinformationen
+    financial_data: Finanzdaten
+    health_data: Gesundheitsdaten
+    location_data: Standortdaten
+    online_identifiers: Online-Identifikatoren
+    employment_data: Beschäftigungsdaten
+    education_data: Bildungsdaten
+    criminal_convictions: Strafrechtliche Verurteilungen
+    biometric_data: Biometrische Daten
+    genetic_data: Genetische Daten
+    other: Sonstige
+  data_subject_categories:
+    customers: Kunden
+    employees: Mitarbeiter
+    applicants: Bewerber
+    visitors: Website-Besucher
+    patients: Patienten
+    students: Studenten
+    suppliers: Lieferanten/Partner
+    minors: Minderjährige (Kinder)
+    vulnerable: Schutzbedürftige Personen
+    other: Sonstige
+  risk_level:
+    low: Niedriges Risiko
+    medium: Mittleres Risiko
+    high: Hohes Risiko
+    critical: Kritisches Risiko

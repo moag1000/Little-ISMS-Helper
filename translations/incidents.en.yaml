@@ -1,54 +1,100 @@
-incident_management:
-  title: Incidents
-  description: Record, classify and manage security incidents and NIS2 notifications.
-  open_incidents: Open Incidents
-  total_recorded: Total Recorded
-
-incident:
-  action:
-    report_new: Report New Incident
-    edit: Edit
-    back_to_list: Back to List
-    delete: Delete
-    download_nis2_report: Download NIS2 Report
-  kpi:
-    nis2_attention: NIS2 Requiring Attention
-    categories: Categories
-  modern:
-    breadcrumb: Incident Management
-    header:
-      title: Incident Management
-      subtitle: Documentation and handling of information security incidents
-      action:
-        report: Report Incident
-        export: Export
-    kpi:
-      total: Total Incidents
-      open: Open Incidents
-      critical: Critical Incidents
-      avg_resolution: Avg. Resolution Time
-      unit:
-        days: Days
-  status:
-    open: Open
-    in_progress: In Progress
-    resolved: Resolved
-    closed: Closed
-  nis2_timeline:
-    title: NIS2 Reporting Timeline (Article 23)
-    description: According to the NIS2 Directive (EU 2022/2555), significant incidents must be reported within defined deadlines.
-  timeline:
-    early_warning: Early Warning (24h)
-    detailed_notification: Detailed Notification (72h)
-    final_report: Final Report (1 month)
-    deadline: Deadline
-    reported: Reported
-    reported_at: Reported at
-    overdue: Overdue
-    hours_remaining: '%hours% hours remaining'
-    days_remaining: '%days% days remaining'
-  field:
-    category: Category
-    detected: Detected
-    reported_by: Reported By
-    occurred: Occurred
+incident_management.title: Incidents
+incident_management.description: 'Record, classify and manage security incidents and NIS2 notifications.'
+incident_management.open_incidents: 'Open Incidents'
+incident_management.total_recorded: 'Total Recorded'
+incident.action.report_new: 'Report New Incident'
+incident.action.edit: Edit
+incident.action.back_to_list: 'Back to List'
+incident.action.delete: Delete
+incident.action.download_nis2_report: 'Download NIS2 Report'
+incident.kpi.nis2_attention: 'NIS2 Requiring Attention'
+incident.kpi.categories: Categories
+incident.modern.breadcrumb: 'Incident Management'
+incident.modern.header.title: 'Incident Management'
+incident.modern.header.subtitle: 'Documentation and handling of information security incidents'
+incident.modern.header.action.report: 'Report Incident'
+incident.modern.header.action.export: Export
+incident.modern.kpi.total: 'Total Incidents'
+incident.modern.kpi.open: 'Open Incidents'
+incident.modern.kpi.critical: 'Critical Incidents'
+incident.modern.kpi.avg_resolution: 'Avg. Resolution Time'
+incident.modern.kpi.unit.days: Days
+incident.status.open: Open
+incident.status.in_progress: 'In Progress'
+incident.status.resolved: Resolved
+incident.status.closed: Closed
+incident.nis2_timeline.title: 'NIS2 Reporting Timeline (Article 23)'
+incident.nis2_timeline.description: 'According to the NIS2 Directive (EU 2022/2555), significant incidents must be reported within defined deadlines.'
+incident.timeline.early_warning: 'Early Warning (24h)'
+incident.timeline.detailed_notification: 'Detailed Notification (72h)'
+incident.timeline.final_report: 'Final Report (1 month)'
+incident.timeline.deadline: Deadline
+incident.timeline.reported: Reported
+incident.timeline.reported_at: 'Reported at'
+incident.timeline.overdue: Overdue
+incident.timeline.hours_remaining: '%hours% hours remaining'
+incident.timeline.days_remaining: '%days% days remaining'
+incident.field.category: Category
+incident.field.detected: Detected
+incident.field.reported_by: 'Reported By'
+incident.field.occurred: Occurred
+incident.label.title: __incident.label.title
+incident.label.severity: __incident.label.severity
+incident.edit: __incident.edit
+incident.section.basic_info: __incident.section.basic_info
+incident.field.title: __incident.field.title
+incident.field.description: __incident.field.description
+incident.section.severity_status: __incident.section.severity_status
+incident.field.severity: __incident.field.severity
+incident.field.status: __incident.field.status
+incident.status_help: __incident.status_help
+incident.section.detection_reporting: __incident.section.detection_reporting
+incident.field.detected_at: __incident.field.detected_at
+incident.field.occurred_at: __incident.field.occurred_at
+incident.field.detected_date: __incident.field.detected_date
+incident.section.affected_systems: __incident.section.affected_systems
+incident.field.affected_systems: __incident.field.affected_systems
+incident.field.affected_assets: __incident.field.affected_assets
+incident.analysis_resolution: __incident.analysis_resolution
+incident.field.root_cause: __incident.field.root_cause
+incident.field.corrective_actions: __incident.field.corrective_actions
+incident.field.lessons_learned: __incident.field.lessons_learned
+incident.field.closed_date: __incident.field.closed_date
+incident.field.closed_at: __incident.field.closed_at
+incident.update: __incident.update
+incident.new: __incident.new
+incident.nis2_alert.title: __incident.nis2_alert.title
+incident.nis2_alert.description: __incident.nis2_alert.description
+incident.nis2_alert.early_warning: __incident.nis2_alert.early_warning
+incident.nis2_alert.detailed_notification: __incident.nis2_alert.detailed_notification
+incident.nis2_alert.final_report: __incident.nis2_alert.final_report
+incident.section.analysis: __incident.section.analysis
+incident.section.nis2_reporting: __incident.section.nis2_reporting
+incident.nis2_toggle.hide: __incident.nis2_toggle.hide
+incident.section.nis2_info: __incident.section.nis2_info
+incident.field.nis2_category: __incident.field.nis2_category
+incident.field.cross_border_impact: __incident.field.cross_border_impact
+incident.field.early_warning_reported_at: __incident.field.early_warning_reported_at
+incident.field.detailed_notification_reported_at: __incident.field.detailed_notification_reported_at
+incident.field.final_report_submitted_at: __incident.field.final_report_submitted_at
+incident.field.affected_users_count: __incident.field.affected_users_count
+incident.field.estimated_financial_impact: __incident.field.estimated_financial_impact
+incident.field.national_authority_notified: __incident.field.national_authority_notified
+incident.field.authority_reference_number: __incident.field.authority_reference_number
+incident.nis2_toggle.show: __incident.nis2_toggle.show
+incident.create: __incident.create
+incident.severity.low: __incident.severity.low
+incident.severity.medium: __incident.severity.medium
+incident.severity.high: __incident.severity.high
+incident.severity.critical: __incident.severity.critical
+incident.status.reported: __incident.status.reported
+incident.status.in_investigation: __incident.status.in_investigation
+incident.status.in_resolution: __incident.status.in_resolution
+incident.filter.data_breach: __incident.filter.data_breach
+incident.filter.data_breach_only: __incident.filter.data_breach_only
+incident.filter.nis2_only: __incident.filter.nis2_only
+incident.nis2_compliance.not_applicable: __incident.nis2_compliance.not_applicable
+incident.empty: __incident.empty
+incident.list.title: __incident.list.title
+incident.section.history: __incident.section.history
+incident.controls_should_prevent: __incident.controls_should_prevent

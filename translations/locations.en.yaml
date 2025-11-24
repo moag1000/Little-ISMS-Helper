@@ -1,60 +1,46 @@
-location:
-  title:
-    list: Locations
-    create: Create location
-    show: Location details
-    edit: Edit location
-  description:
-    overview: Overview of locations, buildings and rooms
-  action:
-    create: Create location
-  stats:
-    total: Total locations
-    buildings: Buildings
-    rooms: Rooms
-    secure: Badge access required
-  field:
-    name: Name
-    type: Type
-    code: Code
-    city: City
-    address: Address
-    postal_code: Postal code
-    country: Country
-    parent_location: Parent location
-    access_control_system: Access control system
-    access_control: Access control
-    security_level: Security level
-    badge_access: Badge access
-  section:
-    address: Address
-    hierarchy: Hierarchy
-    security: Security
-    details: Details
-    child_locations: Child locations
-    features: Features
-  placeholder:
-    name: e.g. Headquarters Munich
-    code: e.g. DE-MUC-HQ
-  help:
-    type: Select the appropriate location type (building, room, data center, …)
-    code: Internal location code for unique reference (optional)
-    parent: Optional – assign the location to a parent location
-  type:
-    building: Building
-    room: Room
-    campus: Campus
-    datacenter: Data Center
-    office: Office
-  security:
-    public: Public
-    restricted: Restricted
-    controlled: Controlled
-    secure: Secure
-    high_security: High security
-  actions:
-    label: Location Actions
-  message:
-    no_locations: No locations available.
-  confirm:
-    delete: Are you sure you want to delete this location?
+location.title.list: Locations
+location.title.create: 'Create location'
+location.title.show: 'Location details'
+location.title.edit: 'Edit location'
+location.description.overview: 'Overview of locations, buildings and rooms'
+location.action.create: 'Create location'
+location.stats.total: 'Total locations'
+location.stats.buildings: Buildings
+location.stats.rooms: Rooms
+location.stats.secure: 'Badge access required'
+location.field.name: Name
+location.field.type: Type
+location.field.code: Code
+location.field.city: City
+location.field.address: Address
+location.field.postal_code: 'Postal code'
+location.field.country: Country
+location.field.parent_location: 'Parent location'
+location.field.access_control_system: 'Access control system'
+location.field.access_control: 'Access control'
+location.field.security_level: 'Security level'
+location.field.badge_access: 'Badge access'
+location.section.address: Address
+location.section.hierarchy: Hierarchy
+location.section.security: Security
+location.section.details: Details
+location.section.child_locations: 'Child locations'
+location.section.features: Features
+location.placeholder.name: 'e.g. Headquarters Munich'
+location.placeholder.code: 'e.g. DE-MUC-HQ'
+location.help.type: 'Select the appropriate location type (building, room, data center, …)'
+location.help.code: 'Internal location code for unique reference (optional)'
+location.help.parent: 'Optional – assign the location to a parent location'
+location.type.building: Building
+location.type.room: Room
+location.type.campus: Campus
+location.type.datacenter: 'Data Center'
+location.type.office: Office
+location.security.public: Public
+location.security.restricted: Restricted
+location.security.controlled: Controlled
+location.security.secure: Secure
+location.security.high_security: 'High security'
+location.actions.label: 'Location Actions'
+location.message.no_locations: 'No locations available.'
+location.confirm.delete: 'Are you sure you want to delete this location?'

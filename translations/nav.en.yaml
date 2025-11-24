@@ -1,55 +1,53 @@
-nav:
-  home: Home
-  dashboard: Dashboard
-  context: ISMS Context
-  analytics: Analytics
-  interested_parties: Interested Parties
-  soa: SoA
-  assets: Assets
-  suppliers: Suppliers
-  risks: Risks
-  change_requests: Change Requests
-  bcm: BCM
-  bc_plans: BC Plans
-  bc_exercises: BC Exercises
-  incidents: Incidents
-  audits: Audits
-  compliance: Compliance
-  audit_log: Audit Log
-  nis2_dashboard: 'NIS2 Dashboard'
-  vulnerabilities: 'Vulnerabilities'
-  patches: 'Patches'
-  users: Users
-  documents: Documents
-  assets_risk_hub: 'Assets & Risks'
-  risk_matrix: 'Risk Matrix'
-  bcm_hub: 'BCM Hub'
-  compliance_overview: 'Overview'
-  frameworks: 'Frameworks'
-  tools: 'Tools'
-  cross_framework: 'Cross-Framework'
-  compare: 'Compare'
-  mapping_quality: 'Mapping Quality'
-  locations: 'Locations'
-  people: 'People'
-  risk_appetite: 'Risk Appetite'
-  risk_treatment_plans: 'Treatment Plans'
-  crisis_team: 'Crisis Team'
-  workflows: 'Workflows'
-  training: 'Training'
-  management_review: 'Management Review'
-  admin_portal: 'Admin Portal'
-  privacy_hub: 'Privacy Hub'
-  vvt: 'RoPA (Art. 30)'
-  dpia: 'DPIA (Art. 35)'
-  data_breaches: 'Data Breaches (Art. 33/34)'
-  toggle_menu: 'Toggle Menu'
-  main_navigation: 'Main Navigation'
-  section:
-    isms_core: 'ISMS Core'
-    assets_risk: 'Assets & Risk'
-    bcm: 'Business Continuity'
-    privacy: 'Privacy'
-    operations: 'Operations'
-    compliance: 'Compliance'
-    admin: 'Admin'
+nav.home: Home
+nav.dashboard: Dashboard
+nav.context: 'ISMS Context'
+nav.analytics: Analytics
+nav.interested_parties: 'Interested Parties'
+nav.soa: SoA
+nav.assets: Assets
+nav.suppliers: Suppliers
+nav.risks: Risks
+nav.change_requests: 'Change Requests'
+nav.bcm: BCM
+nav.bc_plans: 'BC Plans'
+nav.bc_exercises: 'BC Exercises'
+nav.incidents: Incidents
+nav.audits: Audits
+nav.compliance: Compliance
+nav.audit_log: 'Audit Log'
+nav.nis2_dashboard: 'NIS2 Dashboard'
+nav.vulnerabilities: Vulnerabilities
+nav.patches: Patches
+nav.users: Users
+nav.documents: Documents
+nav.assets_risk_hub: 'Assets & Risks'
+nav.risk_matrix: 'Risk Matrix'
+nav.bcm_hub: 'BCM Hub'
+nav.compliance_overview: Overview
+nav.frameworks: Frameworks
+nav.tools: Tools
+nav.cross_framework: Cross-Framework
+nav.compare: Compare
+nav.mapping_quality: 'Mapping Quality'
+nav.locations: Locations
+nav.people: People
+nav.risk_appetite: 'Risk Appetite'
+nav.risk_treatment_plans: 'Treatment Plans'
+nav.crisis_team: 'Crisis Team'
+nav.workflows: Workflows
+nav.training: Training
+nav.management_review: 'Management Review'
+nav.admin_portal: 'Admin Portal'
+nav.privacy_hub: 'Privacy Hub'
+nav.vvt: 'RoPA (Art. 30)'
+nav.dpia: 'DPIA (Art. 35)'
+nav.data_breaches: 'Data Breaches (Art. 33/34)'
+nav.toggle_menu: 'Toggle Menu'
+nav.main_navigation: 'Main Navigation'
+nav.section.isms_core: 'ISMS Core'
+nav.section.assets_risk: 'Assets & Risk'
+nav.section.bcm: 'Business Continuity'
+nav.section.privacy: Privacy
+nav.section.operations: Operations
+nav.section.compliance: Compliance
+nav.section.admin: Admin

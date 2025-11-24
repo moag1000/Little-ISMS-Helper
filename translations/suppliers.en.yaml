@@ -1,93 +1,96 @@
-supplier:
-  title: Suppliers
-  page:
-    title: Supplier Management
-    new_title: "Add New Supplier"
-    edit_title: "Edit Supplier: %name%"
-  action:
-    add_new: Add New Supplier
-    view: View
-    edit: Edit
-    create: Create
-    update: Update
-  statistics:
-    total: Total Suppliers
-    critical: Critical Suppliers
-    overdue_assessments: Overdue Assessments
-    non_compliant: Non-compliant
-  alert:
-    overdue_assessments: Overdue assessments
-    non_compliant: Non-compliant suppliers
-  next_assessment: Next assessment
-  not_scheduled: Not scheduled
-  risk_score: Risk Score
-  list:
-    title: 'Supplier List (%count%)'
-  table:
-    name: Name
-    service_provided: Service Provided
-    criticality: Criticality
-    status: Status
-    risk_score: Risk Score
-    iso27001: ISO 27001
-    actions: Actions
-  empty:
-    message: No suppliers available.
-    add_first: Add first supplier
-  section:
-    details: Details
-    description: Description
-    contact_info: Contact Information
-    security_assessment: Security Assessment
-    certifications_compliance: Certifications & Compliance
-    contract_info: Contract Information
-    related_assets: Related Assets
-    related_risks: Related Risks
-  field:
-    service_provided: Service Provided
-    criticality: Criticality
-    status: Status
-    contact_person: Contact Person
-    email: Email
-    phone: Phone
-    address: Address
-    security_score: Security Score
-    last_assessment: Last Assessment
-    next_assessment: Next Assessment
-    assessment_findings: Assessment Findings
-    non_conformities: Non-conformities
-    iso27001_certified: ISO 27001 Certified
-    iso22301_certified: ISO 22301 Certified
-    dpa: Data Processing Agreement (DPA)
-    dpa_signed_date: DPA Signed Date
-    other_certifications: Other Certifications
-    contract_start: Contract Start
-    contract_end: Contract End
-    security_requirements: Security Requirements
-  badge:
-    overdue: Overdue
-  value:
-    yes: Yes
-    no: No
-    signed: Signed
-    not_signed: Not signed
-    not_assessed: Not assessed
-    never: Never
-    not_scheduled: Not scheduled
-    na: N/A
-  confirm:
-    delete: Are you sure you want to delete this supplier?
-  risk:
-    message:
-      critical: Critical risk – immediate action required
-      high: High risk – review required
-      acceptable: Acceptable risk level
-corporate:
-    stats:
-        standalone: 'Standalone'
-        total: 'Total Tenants'
-        own: 'Own'
-        inherited: 'Inherited'
-        subsidiaries: 'Subsidiaries'
-        breakdown: 'Own: %own% | Inherited: %inherited% | Subs: %subsidiaries%'
-        groups: 'Corporate Groups'
+supplier.title: Suppliers
+supplier.page.title: 'Supplier Management'
+supplier.page.new_title: 'Add New Supplier'
+supplier.page.edit_title: 'Edit Supplier: %name%'
+supplier.action.add_new: 'Add New Supplier'
+supplier.action.view: View
+supplier.action.edit: Edit
+supplier.action.create: Create
+supplier.action.update: Update
+supplier.statistics.total: 'Total Suppliers'
+supplier.statistics.critical: 'Critical Suppliers'
+supplier.statistics.overdue_assessments: 'Overdue Assessments'
+supplier.statistics.non_compliant: Non-compliant
+supplier.alert.overdue_assessments: 'Overdue assessments'
+supplier.alert.non_compliant: 'Non-compliant suppliers'
+supplier.next_assessment: 'Next assessment'
+supplier.not_scheduled: 'Not scheduled'
+supplier.risk_score: 'Risk Score'
+supplier.list.title: 'Supplier List (%count%)'
+supplier.table.name: Name
+supplier.table.service_provided: 'Service Provided'
+supplier.table.criticality: Criticality
+supplier.table.status: Status
+supplier.table.risk_score: 'Risk Score'
+supplier.table.iso27001: 'ISO 27001'
+supplier.table.actions: Actions
+supplier.empty.message: 'No suppliers available.'
+supplier.empty.add_first: 'Add first supplier'
+supplier.section.details: Details
+supplier.section.description: Description
+supplier.section.contact_info: 'Contact Information'
+supplier.section.security_assessment: 'Security Assessment'
+supplier.section.certifications_compliance: 'Certifications & Compliance'
+supplier.section.contract_info: 'Contract Information'
+supplier.section.related_assets: 'Related Assets'
+supplier.section.related_risks: 'Related Risks'
+supplier.field.service_provided: 'Service Provided'
+supplier.field.criticality: Criticality
+supplier.field.status: Status
+supplier.field.contact_person: 'Contact Person'
+supplier.field.email: Email
+supplier.field.phone: Phone
+supplier.field.address: Address
+supplier.field.security_score: 'Security Score'
+supplier.field.last_assessment: 'Last Assessment'
+supplier.field.next_assessment: 'Next Assessment'
+supplier.field.assessment_findings: 'Assessment Findings'
+supplier.field.non_conformities: Non-conformities
+supplier.field.iso27001_certified: 'ISO 27001 Certified'
+supplier.field.iso22301_certified: 'ISO 22301 Certified'
+supplier.field.dpa: 'Data Processing Agreement (DPA)'
+supplier.field.dpa_signed_date: 'DPA Signed Date'
+supplier.field.other_certifications: 'Other Certifications'
+supplier.field.contract_start: 'Contract Start'
+supplier.field.contract_end: 'Contract End'
+supplier.field.security_requirements: 'Security Requirements'
+supplier.badge.overdue: Overdue
+supplier.value.yes: 'Yes'
+supplier.value.no: 'No'
+supplier.value.signed: Signed
+supplier.value.not_signed: 'Not signed'
+supplier.value.not_assessed: 'Not assessed'
+supplier.value.never: Never
+supplier.value.not_scheduled: 'Not scheduled'
+supplier.value.na: N/A
+supplier.confirm.delete: 'Are you sure you want to delete this supplier?'
+supplier.risk.message.critical: 'Critical risk – immediate action required'
+supplier.risk.message.high: 'High risk – review required'
+supplier.risk.message.acceptable: 'Acceptable risk level'
+supplier.criticality.critical: Critical
+supplier.criticality.high: High
+supplier.criticality.medium: Medium
+supplier.criticality.low: Low
+supplier.status.active: Active
+supplier.status.inactive: Inactive
+supplier.status.evaluation: Evaluation
+supplier.status.terminated: Terminated
+supplier.placeholder.name: 'Supplier name'
+supplier.placeholder.description: 'Supplier description'
+supplier.placeholder.contact_person: 'Contact person name'
+supplier.placeholder.email: 'Email address'
+supplier.placeholder.phone: 'Phone number'
+supplier.placeholder.address: 'Full address'
+supplier.placeholder.service_provided: 'What service is provided?'
+supplier.placeholder.security_score: 0-100
+supplier.placeholder.assessment_findings: 'Security assessment findings'
+supplier.placeholder.non_conformities: 'Identified non-conformities'
+supplier.placeholder.security_requirements: 'Security requirements from contract'
+supplier.placeholder.certifications: 'Other certifications (e.g., SOC 2, TISAX)'
+corporate.stats.standalone: Standalone
+corporate.stats.total: 'Total Tenants'
+corporate.stats.own: Own
+corporate.stats.inherited: Inherited
+corporate.stats.subsidiaries: Subsidiaries
+corporate.stats.breakdown: 'Own: %own% | Inherited: %inherited% | Subs: %subsidiaries%'
+corporate.stats.groups: 'Corporate Groups'
