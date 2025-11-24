@@ -237,6 +237,112 @@ Every modal MUST have these attributes:
 </div>
 ```
 
+---
+
+## Colored Modal Headers (Issue 11.2)
+
+**IMPORTANT:** Use colored headers to indicate modal purpose and urgency.
+
+### Standard Header Color Mapping
+
+| Modal Type | Header Class | Text Class | Button Class | Use Case |
+|------------|-------------|------------|--------------|----------|
+| Delete/Danger | `bg-danger` | `text-white` | `btn-close-white` | Destructive actions, deletions |
+| Warning | `bg-warning` | `text-dark` | `btn-close` | Important warnings, confirmations |
+| Success | `bg-success` | `text-white` | `btn-close-white` | Success confirmations, completions |
+| Info | `bg-info` | `text-white` | `btn-close-white` | Help, information, guidance |
+| Primary | `bg-primary` | `text-white` | `btn-close-white` | Standard actions, forms |
+
+### Examples
+
+#### Danger Modal (Delete Confirmation)
+```twig
+<div class="modal-header bg-danger text-white">
+    <h5 class="modal-title" id="deleteModalLabel">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        {{ 'modal.delete.title'|trans }}
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans }}"></button>
+</div>
+```
+
+#### Warning Modal (Important Action)
+```twig
+<div class="modal-header bg-warning text-dark">
+    <h5 class="modal-title" id="warningModalLabel">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        {{ 'modal.warning.title'|trans }}
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans }}"></button>
+</div>
+```
+
+#### Success Modal (Completion)
+```twig
+<div class="modal-header bg-success text-white">
+    <h5 class="modal-title" id="successModalLabel">
+        <i class="bi bi-check-circle-fill"></i>
+        {{ 'modal.success.title'|trans }}
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans }}"></button>
+</div>
+```
+
+#### Info Modal (Help/Guidance)
+```twig
+<div class="modal-header bg-info text-white">
+    <h5 class="modal-title" id="infoModalLabel">
+        <i class="bi bi-info-circle-fill"></i>
+        {{ 'modal.info.title'|trans }}
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans }}"></button>
+</div>
+```
+
+### ❌ Anti-Patterns
+
+```twig
+{# ❌ DON'T: Wrong close button color on dark background #}
+<div class="modal-header bg-danger text-white">
+    <h5 class="modal-title">Delete</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>  <!-- Should be btn-close-white -->
+</div>
+
+{# ❌ DON'T: Missing icon for visual recognition #}
+<div class="modal-header bg-danger text-white">
+    <h5 class="modal-title">Delete</h5>  <!-- Missing icon -->
+</div>
+
+{# ❌ DON'T: Inconsistent color usage #}
+<div class="modal-header bg-danger text-white">
+    <h5 class="modal-title">Create New Item</h5>  <!-- Wrong color for creation action -->
+</div>
+
+{# ✅ DO: Correct color for creation action #}
+<div class="modal-header bg-primary text-white">
+    <h5 class="modal-title">
+        <i class="bi bi-plus-circle"></i>
+        Create New Item
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+</div>
+```
+
+### Icon Guidelines
+
+Always include an icon in colored modal headers for visual recognition:
+
+| Modal Type | Recommended Icon | Bootstrap Icon Class |
+|------------|------------------|---------------------|
+| Delete | ⚠️ Triangle | `bi-exclamation-triangle-fill` |
+| Warning | ⚠️ Circle | `bi-exclamation-circle-fill` |
+| Success | ✓ Check | `bi-check-circle-fill` |
+| Info | ℹ️ Info | `bi-info-circle-fill` |
+| Error | ✕ X | `bi-x-circle-fill` |
+| Create | + Plus | `bi-plus-circle-fill` |
+
+---
+
 ### Information Modal
 
 ```twig

@@ -105,7 +105,7 @@
                         <div class="status-icon mb-3 audit-icon-in-progress">
                             <i class="bi bi-hourglass-split" aria-hidden="true"></i>
                         </div>
-                        <div class="status-label text-muted mb-2">In Bearbeitung</div>
+                        <div class="status-label text-muted mb-2">{{ 'audit.status_in_progress'|trans }}</div>
                         <div class="status-count audit-count-in-progress">
                             {{ inProgressAudits }}
                         </div>
@@ -267,7 +267,7 @@
                             {% endif %}
                         </td>
                         <td class="w-text-right">
-                            <div class="btn-group btn-group-sm">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
                                 <a href="{{ path('app_audit_show', {id: audit.id}) }}"
                                    class="btn btn-sm btn-outline-primary"
                                    title="Details anzeigen" aria-label="{{ 'common.view'|trans({}, 'messages') }}">

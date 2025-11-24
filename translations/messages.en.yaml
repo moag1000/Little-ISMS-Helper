@@ -2722,3 +2722,172 @@ components:
   consistency: "Consistency"
   audit_evidence: "Audit Evidence"
   informed_decisions: "Informed Decisions"
+  data_reuse: "Data Reuse"
+
+# Data breach and DPIA translations
+data_breach:
+  pdf:
+    art_33_3a_nature: "1. Art. 33(3)(a) - Nature of the Personal Data Breach"
+    categories_personal_data: "Categories of Personal Data Concerned:"
+    categories_data_subjects: "Categories of Data Subjects Concerned:"
+    approx_number_subjects: "Approximate Number of Data Subjects Concerned:"
+    art_33_3b_consequences: "2. Art. 33(3)(b) - Likely Consequences of the Breach"
+    art_33_3c_d_measures: "3. Art. 33(3)(c) & (d) - Measures Taken or Proposed"
+    measures_taken: "Measures Taken to Address the Breach:"
+    measures_mitigate: "Measures to Mitigate Possible Adverse Effects:"
+    art_34_communication: "5. Art. 34 - Communication to Data Subjects"
+  index:
+    view_all_breaches: "View all breaches"
+
+# DPIA translations  
+dpia:
+  pdf:
+    art_35_7a_description: "Art. 35(7)(a) - Systematic Description of Processing Operations"
+    purposes_processing: "Purposes of Processing"
+    art_35_7b_assessment: "Art. 35(7)(b) - Assessment of Necessity and Proportionality"
+    art_35_7c_risks: "Art. 35(7)(c) - Assessment of Risks to Rights and Freedoms"
+    specific_risks: "Specific Risks to Data Subjects"
+    art_35_7d_measures: "Art. 35(7)(d) - Measures Envisaged to Address Risks"
+    next_review_date: "Next Review Date"
+    approved_by: "Approved By"
+    footer_text: "This Data Protection Impact Assessment (DPIA) has been prepared in accordance with Article 35 of the General Data Protection Regulation (GDPR) and documents the assessment of processing operations likely to result in high risk to the rights and freedoms of natural persons."
+  index:
+    create_first_dpia: "Create your first DPIA"
+  show:
+    cancel_button: "Cancel"
+
+# Data management translations
+data_management:
+  export:
+    includes_all_records: "Exported data includes all records from selected entities"
+    sensitive_data_warning: "Sensitive data (passwords, tokens) are included - store exports securely"
+    large_exports_warning: "Large exports may cause browser timeouts - use database backups for full data exports"
+    relationships_warning: "Relationships between entities are not automatically maintained in CSV format"
+  import:
+    step_upload: "Upload your JSON export file"
+    step_preview: "Preview the data to be imported"
+    step_confirm: "Confirm import (currently shows preview only)"
+    step_validate: "Data will be validated and imported"
+    format_json: "Must be valid JSON format"
+    format_export: "Should be exported from this system's Data Export function"
+    ensure_disk_space: "Ensure you have sufficient disk space"
+    plan_downtime: "Plan for potential system downtime during large imports"
+    test_small: "Test with a small dataset first"
+    validation_required: "Full import functionality requires additional validation logic"
+    no_duplicate_detection: "Duplicate detection is not yet implemented"
+
+# Document translations
+document:
+  uploaded_by: "Uploaded By"
+  uploaded_at: "Uploaded At"
+  edit_button: "Edit"
+  drag_files: "Ziehen Sie Dateien direkt aus dem Datei-Explorer in die blaue Drop-Zone"
+
+# Audit translations
+audit:
+  status_in_progress: "In Bearbeitung"
+
+# Email translations
+email:
+  automated_reminder: "This is an automated reminder from Little ISMS Helper"
+  ensure_preparations: "Please ensure all preparations are completed before the audit date"
+  ensure_control_completion: "Please ensure the control implementation is completed before the target date"
+  new_incident_reported: "New Security Incident Reported"
+  take_appropriate_action: "Please take appropriate action based on the incident severity"
+  automated_notification: "This is an automated notification from Little ISMS Helper"
+  risk_acceptance:
+    review_reason: "Review the rejection reason carefully"
+    identify_controls: "Identify and implement additional controls to reduce the residual risk"
+    update_assessment: "Update the risk assessment to reflect the new controls"
+    reassess_risk: "Re-assess the residual risk level"
+    request_again: "If the risk is sufficiently reduced, you may request acceptance again"
+  workflow:
+    time_to_complete: "Time to Complete:"
+    login_to_process: "Please log in to the system to process this approval request"
+    deadline_warning: "Deadline Warning"
+    login_to_review: "Please log in to the system to review this workflow"
+    workflow_update: "Workflow Update"
+    login_for_details: "You can log in to the system for more details"
+    automated_alert: "This is an automated alert from Little ISMS Helper"
+    login_to_process_step: "Please log in to the system to process this workflow step"
+  training:
+    mark_calendar: "Please mark your calendar and prepare for the training session"
+
+# Incident translations
+incident:
+  controls_should_prevent: "Controls that should prevent/detect this type of incident:"
+  pdf:
+    reported_at: "Reported At"
+    reported_by: "Reported By"
+
+# PDF report translations
+pdf:
+  base:
+    define_content_block: "Bitte definieren Sie den Block 'document_content' in Ihrem Template."
+  data_reuse:
+    recommendations_title: "Recommendations for Data Reuse"
+  framework_comparison:
+    solid_mappings_minor: "Solid mappings with minor deviations"
+  gap_analysis:
+    distribution_by_severity: "Gap Distribution by Severity"
+    not_addressed: "Requirements with 0% fulfillment - not yet addressed"
+    very_low: "Very low fulfillment (<30%) - control missing or insufficient"
+    partial: "Partial fulfillment (30-80%) - implementation in progress"
+  risk_report:
+    distribution_by_level: "Distribution by Risk Level"
+    distribution_by_status: "Distribution by Status"
+  transitive_compliance:
+    from_framework: "From Framework"
+    to_framework: "To Framework"
+    establish_hub: "Establish Compliance Hub with ROI Dashboard, automated tracking, continuous optimization"
+
+# Monitoring translations
+monitoring:
+  by_level: "By Level"
+  show_entries: "Show entries:"
+  no_errors_found: "No errors found in the log file!"
+  reverse_order: "Log entries are shown in reverse chronological order (most recent first)"
+  recent_entries_only: "Only the most recent entries are displayed based on the selected limit"
+  full_log_analysis: "For full log analysis, consider downloading the log file or using log management tools"
+  large_files_warning: "Large log files may impact performance - consider log rotation"
+
+# Home page translations
+home:
+  tagline: "Alles, was Sie für ein erfolgreiches Informationssicherheits-Management benötigen"
+  quick_start: "Schnellstart in 4 Schritten"
+
+# Processing Activity (VVT) translations
+processing_activity:
+  permanently_delete: "Permanently delete this processing activity."
+  view_all_activities: "view all activities"
+  pdf:
+    art_30_title: "Art. 30 GDPR - Record of Processing Activities"
+    table_of_contents: "Table of Contents"
+    art_30_1a: "Art. 30(1)(a) - Name and Purposes"
+    purposes_processing: "Purposes of Processing"
+    art_30_1b: "Art. 30(1)(b) - Categories of Data Subjects"
+    art_30_1c: "Art. 30(1)(c) - Categories of Personal Data"
+    art_30_1d: "Art. 30(1)(d) - Categories of Recipients"
+    art_30_1e: "Art. 30(1)(e) - Transfers to Third Countries"
+    legal_basis_retention: "Legal Basis for Retention"
+    art_30_1g: "Art. 30(1)(g) - Technical and Organizational Measures"
+
+# Reports translations
+reports:
+  integrate_ci_cd: "Integrieren Sie die Report-Generierung in Ihre CI/CD-Pipeline"
+
+# Setup translations
+setup:
+  what_will_be_setup: "Was wird eingerichtet?"
+  can_delete_later: "Sie können später in einem Produktivsystem gelöscht werden"
+
+# SoA (Statement of Applicability) translations
+soa:
+  in_progress_badge: "In Arbeit"
+  in_progress_badge_emoji: "🔄 In Arbeit"
+  title: "Statement of Applicability (SoA)"
+  iso27001_full_title: "Information security, cybersecurity and privacy protection — Information security management systems — Requirements"
+
+# User Management translations
+user_management:
+  import_irreversible: "Der Import kann nicht rückgängig gemacht werden"

@@ -86,3 +86,17 @@ compliance:
   badge:
     overdue: Overdue
     reusable: reusable
+  framework_dashboard:
+    compliance_steps: "Follow these steps to achieve 100% compliance"
+  mapping:
+    create_link: "Create a mapping"
+    create_instruction: "to show how requirements relate to your controls"
+  mapping_quality:
+    no_mappings_found: "Es wurden keine Compliance-Mappings in der Datenbank gefunden."
+  gaps:
+    title_description: "Identifizierte Lücken in Compliance-Mappings"
+    by_priority: "By Priority"
+    change_status_instruction: "Ändern Sie den Gap-Status in den jeweiligen Mapping-Reviews:"
+  requirement:
+    view_page_note: "view page"
+    filter_by_framework: "Filter by Framework"

@@ -266,7 +266,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <div class="btn-group btn-group-sm">
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
                                         <a href="{{ path('app_data_breach_show', {id: breach.id}) }}"
                                            class="btn btn-outline-primary"
                                            title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
@@ -294,7 +294,7 @@
                 <div class="alert alert-info mb-0">
                     <i class="bi bi-info-circle"></i> No data breaches found for the selected filter.
                     {% if current_filter != 'all' %}
-                        <a href="{{ path('app_data_breach_index') }}" class="alert-link">View all breaches</a>.
+                        <a href="{{ path('app_data_breach_index') }}" class="alert-link">{{ 'data_breach.index.view_all_breaches'|trans }}</a>.
                     {% endif %}
                 </div>
             {% endif %}

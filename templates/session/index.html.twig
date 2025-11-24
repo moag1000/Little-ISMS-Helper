@@ -154,7 +154,7 @@
                                 <span class="badge bg-secondary">{{ session.formattedDuration }}</span>
                             </td>
                             <td class="text-end">
-                                <div class="btn-group btn-group-sm">
+                                <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
                                     <a href="{{ path('session_show', {userName: session.user.email}) }}"
                                        class="btn btn-outline-primary"
                                        title="Details anzeigen" aria-label="{{ 'common.view'|trans({}, 'messages') }}">

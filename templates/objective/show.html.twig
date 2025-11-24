@@ -14,7 +14,7 @@
 
     <div class="row">
         <div class="col-lg-8">
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-primary text-white d-flex justify-content-between"><h5 class="mb-0">{{ objective.title }}</h5>
                     <span class="badge bg-{{ objective.status == 'achieved' ? 'success' : 'info' }} fs-6">{{ ('objectives.status.' ~ objective.status)|trans }}</span>
                 </div>
@@ -54,7 +54,7 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-light"><h5 class="mb-0">{{ 'common.actions'|trans({}, 'messages') }}</h5></div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
@@ -66,7 +66,7 @@
                 </div>
             </div>
 
-            <div class="card shadow">
+            <div class="card">
                 <div class="card-header bg-light"><h5 class="mb-0">{{ 'common.metadata'|trans({}, 'messages') }}</h5></div>
                 <div class="card-body">
                     <dl class="row mb-0 small">

@@ -307,7 +307,7 @@
 
     {# Gap Distribution #}
     <div class="page-break"></div>
-    <h2>Gap Distribution by Severity</h2>
+    <h2>{{ 'pdf.gap_analysis.distribution_by_severity'|trans }}</h2>
     <table>
         <thead>
             <tr>
@@ -376,19 +376,19 @@
                 <td><span class="badge badge-critical">Not Started</span></td>
                 <td class="text-center"><strong>{{ root_cause_analysis.summary.not_started_count }}</strong></td>
                 <td class="text-center">{{ total_gaps > 0 ? ((root_cause_analysis.summary.not_started_count / total_gaps * 100)|round(1)) : 0 }}%</td>
-                <td>Requirements with 0% fulfillment - not yet addressed</td>
+                <td>{{ 'pdf.gap_analysis.not_addressed'|trans }}</td>
             </tr>
             <tr>
                 <td><span class="badge badge-high">Missing Control</span></td>
                 <td class="text-center"><strong>{{ root_cause_analysis.summary.missing_control_count }}</strong></td>
                 <td class="text-center">{{ total_gaps > 0 ? ((root_cause_analysis.summary.missing_control_count / total_gaps * 100)|round(1)) : 0 }}%</td>
-                <td>Very low fulfillment (&lt;30%) - control missing or insufficient</td>
+                <td>{{ 'pdf.gap_analysis.very_low'|trans }}</td>
             </tr>
             <tr>
                 <td><span class="badge bg-warning">Incomplete Implementation</span></td>
                 <td class="text-center"><strong>{{ root_cause_analysis.summary.incomplete_implementation_count }}</strong></td>
                 <td class="text-center">{{ total_gaps > 0 ? ((root_cause_analysis.summary.incomplete_implementation_count / total_gaps * 100)|round(1)) : 0 }}%</td>
-                <td>Partial fulfillment (30-80%) - implementation in progress</td>
+                <td>{{ 'pdf.gap_analysis.partial'|trans }}</td>
             </tr>
             <tr>
                 <td><span class="badge bg-info">Missing Evidence</span></td>

@@ -140,7 +140,7 @@
         {% endembed %}
 
         <div data-filter-target="noResults" class="no-results d-none">
-            <p>No processes match your search criteria.</p>
+            <p>{{ 'bcm.message.no_matching_processes'|trans({}, 'bcm') }}</p>
         </div>
     </div>
 
@@ -153,19 +153,19 @@
             <div class="info-grid">
                 <div class="info-item">
                     <strong>RTO (Recovery Time Objective)</strong>
-                    <p>The maximum acceptable time that a business process can be down after a disaster before unacceptable consequences occur.</p>
+                    <p>{{ 'bcm.message.rto_tooltip'|trans({}, 'bcm') }}</p>
                 </div>
                 <div class="info-item">
                     <strong>RPO (Recovery Point Objective)</strong>
-                    <p>The maximum acceptable amount of data loss measured in time before the disaster.</p>
+                    <p>{{ 'bcm.message.rpo_tooltip'|trans({}, 'bcm') }}</p>
                 </div>
                 <div class="info-item">
                     <strong>MTPD (Maximum Tolerable Period of Disruption)</strong>
-                    <p>The absolute maximum time a critical function can be unavailable before the organization faces catastrophic consequences.</p>
+                    <p>{{ 'bcm.message.mtd_tooltip'|trans({}, 'bcm') }}</p>
                 </div>
                 <div class="info-item">
-                    <strong>Data Reuse</strong>
-                    <p>BCM data automatically influences asset availability ratings. Low RTO processes suggest high availability requirements for supporting assets.</p>
+                    <strong>{{ 'common.data_reuse'|trans }}</strong>
+                    <p>{{ 'bcm.message.bcm_influences_asset_ratings'|trans({}, 'bcm') }}</p>
                 </div>
             </div>
         </div>

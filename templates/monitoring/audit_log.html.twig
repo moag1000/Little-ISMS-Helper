@@ -59,7 +59,7 @@
             </h3>
         </div>
         <div class="card-body">
-            <div class="btn-group" role="group">
+            <div class="btn-group btn-group-sm" role="group">
                 <a href="{{ path('monitoring_audit_log', {filter: 'all'}) }}"
                    class="btn btn-sm {{ current_filter == 'all' ? 'btn-primary' : 'btn-outline-primary' }}">
                     {{ 'audit_log.filter.quick.all'|trans({}, 'audits') }}

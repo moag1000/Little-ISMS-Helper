@@ -51,7 +51,7 @@
 
             {% if step.daysToComplete %}
             <div class="field">
-                <span class="label">Time to Complete:</span>
+                <span class="label">{{ 'email.workflow.time_to_complete'|trans }}</span>
                 <span class="value">{{ step.daysToComplete }} days</span>
             </div>
             {% endif %}
@@ -81,8 +81,8 @@
         </div>
 
         <div class="footer">
-            <p>This is an automated notification from Little ISMS Helper</p>
-            <p>Please log in to the system to process this approval request</p>
+            <p>{{ 'email.automated_notification'|trans }}</p>
+            <p>{{ 'email.workflow.login_to_process'|trans }}</p>
         </div>
     </div>
 </body>

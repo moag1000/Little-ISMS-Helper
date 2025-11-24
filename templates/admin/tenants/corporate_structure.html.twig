@@ -335,7 +335,7 @@
                     </span>
                 {% endif %}
             </div>
-            <div class="btn-group btn-group-sm">
+            <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
                 <button type="button"
                         class="btn btn-outline-warning"
                         onclick="showUpdateGovernanceModal({{ subsidiary.id }}, '{{ subsidiary.name|e('js') }}', '{{ subsidiary.governanceModel }}')"

@@ -42,7 +42,7 @@
                             <td><span class="badge bg-primary">{{ ('crisis_team.type.' ~ team.teamType)|trans }}</span></td>
                             <td>{{ team.teamLeader ? team.teamLeader.email : 'not_assigned'|trans({}, 'messages') }}</td>
                             <td>
-                                <div class="btn-group btn-group-sm">
+                                <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
                                     <a href="{{ path('app_crisis_team_show', {id: team.id}) }}" class="btn btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
                                     <a href="{{ path('app_crisis_team_edit', {id: team.id}) }}" class="btn btn-outline-secondary" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}"><i class="bi bi-pencil" aria-hidden="true"></i></a>
                                 </div>

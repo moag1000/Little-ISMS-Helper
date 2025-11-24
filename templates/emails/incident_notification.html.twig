@@ -20,7 +20,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚨 New Security Incident Reported</h1>
+            <h1>🚨 {{ 'email.new_incident_reported'|trans }}</h1>
         </div>
 
         <div class="content">
@@ -58,8 +58,8 @@
         </div>
 
         <div class="footer">
-            <p>This is an automated notification from Little ISMS Helper</p>
-            <p>Please take appropriate action based on the incident severity</p>
+            <p>{{ 'email.automated_notification'|trans }}</p>
+            <p>{{ 'email.take_appropriate_action'|trans }}</p>
         </div>
     </div>
 </body>
