@@ -5,7 +5,6 @@ asset_management:
 
 asset:
   new: New Asset
-  title: Asset
   action:
     view_critical: View Critical Assets
     view_details: View Details
