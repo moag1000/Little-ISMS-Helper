@@ -272,7 +272,7 @@
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
     .command-palette-container {
         width: 100%;
         max-width: calc(100vw - 32px);
