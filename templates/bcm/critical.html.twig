@@ -22,7 +22,7 @@
 
 {# Alert Banner #}
 {% if criticalAssets|length > 0 %}
-<div class="info-box mb-4 bg-danger-light-border-left-danger">
+<div class="info-box mb-4 bg-danger-light-card-border-left-danger">
     <p><strong>🔴 {{ 'bcm.warning.critical_assets_count'|trans({'%count%': criticalAssets|length}, 'bcm') }}</strong></p>
     <p class="mt-xs">{{ 'bcm.warning.critical_message'|trans({}, 'bcm') }}</p>
 </div>
@@ -48,7 +48,7 @@
 <h2>{{ 'bcm.section.criticality_overview'|trans({}, 'bcm') }}</h2>
 
 <div class="module-grid mb-4">
-    <div class="card border-left-danger">
+    <div class="card card-border-left-danger">
         <div class="fs-2-mb-sm">🔴</div>
         <h2>{{ 'bcm.criticality.critical'|trans({}, 'bcm') }}</h2>
         <p class="text-muted-mt-xs-mb-md">
@@ -67,7 +67,7 @@
         </div>
     </div>
 
-    <div class="card border-left-warning">
+    <div class="card card-border-left-warning">
         <div class="fs-2-mb-sm">🟡</div>
         <h2>{{ 'bcm.criticality.high'|trans({}, 'bcm') }}</h3>
         <p class="text-muted-mt-xs-mb-md">
@@ -86,7 +86,7 @@
         </div>
     </div>
 
-    <div class="card border-left-info">
+    <div class="card card-border-left-info">
         <div class="fs-2-mb-sm">🔵</div>
         <h3>{{ 'bcm.criticality.medium'|trans({}, 'bcm') }}</h3>
         <p class="text-muted-mt-xs-mb-md">
