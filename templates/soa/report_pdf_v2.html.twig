@@ -335,7 +335,7 @@
 
 <h3>Nicht anwendbare Controls</h3>
 {% set hasNonApplicable = false %}
-{% for control in allControls %}
+{% for control in controls %}
     {% if not control.applicable %}
         {% set hasNonApplicable = true %}
         <div class="no-break mb-medium">
@@ -352,7 +352,7 @@
 
 <h3>Geplante Implementierungen</h3>
 {% set hasPlanned = false %}
-{% for control in allControls %}
+{% for control in controls %}
     {% if control.applicable and control.implementationStatus == 'planned' %}
         {% set hasPlanned = true %}
         <div class="no-break mb-medium">
