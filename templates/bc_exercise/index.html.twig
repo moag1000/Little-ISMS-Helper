@@ -41,7 +41,7 @@
 
     {% if incomplete_reports|length > 0 %}
     <div class="alert alert-warning">
-        <h4>⚠️ {{ 'bc_exercises.section.incomplete_reports'|trans({}, 'bcm') }}</h5>
+        <h4>⚠️ {{ 'bc_exercises.section.incomplete_reports'|trans({}, 'bcm') }}</h4>
         <ul>
             {% for exercise in incomplete_reports %}
             <li>

@@ -15,7 +15,7 @@
                     <h3 class="card-title mb-0">
                         <i class="bi bi-toggles2 text-success" aria-hidden="true"></i>
                         {{ 'admin.settings.features.title'|trans({}, 'admin') }}
-                    </h5>
+                    </h3>
                 </div>
                 <div class="card-body">
                     <form method="post">
@@ -26,11 +26,11 @@
                             <div class="list-group-item">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div class="flex-grow-1">
-                                        <h4 class="mb-1">
+                                        <label for="enable_dark_mode" class="h5 mb-1">
                                             <i class="bi bi-moon-stars" aria-hidden="true"></i>
                                             {{ 'admin.settings.features.dark_mode'|trans({}, 'admin') }}
                                             <span class="badge bg-success ms-2">Recommended</span>
-                                        </h5>
+                                        </label>
                                         <p class="mb-0 small text-muted">
                                             {{ 'admin.settings.features.dark_mode_help'|trans({}, 'admin') }}
                                         </p>
@@ -50,10 +50,10 @@
                             <div class="list-group-item">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div class="flex-grow-1">
-                                        <h4 class="mb-1">
+                                        <label for="enable_global_search" class="h5 mb-1">
                                             <i class="bi bi-search" aria-hidden="true"></i>
                                             {{ 'admin.settings.features.global_search'|trans({}, 'admin') }}
-                                        </h5>
+                                        </label>
                                         <p class="mb-0 small text-muted">{{ 'admin.settings.features.global_search_help'|trans({}, 'admin') }}</p>
                                     </div>
                                     <div class="form-check form-switch">
@@ -67,10 +67,10 @@
                             <div class="list-group-item">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div class="flex-grow-1">
-                                        <h4 class="mb-1">
+                                        <label for="enable_quick_view" class="h5 mb-1">
                                             <i class="bi bi-eye-fill" aria-hidden="true"></i>
                                             {{ 'admin.settings.features.quick_view'|trans({}, 'admin') }}
-                                        </h5>
+                                        </label>
                                         <p class="mb-0 small text-muted">{{ 'admin.settings.features.quick_view_help'|trans({}, 'admin') }}</p>
                                     </div>
                                     <div class="form-check form-switch">
@@ -84,10 +84,10 @@
                             <div class="list-group-item">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div class="flex-grow-1">
-                                        <h4 class="mb-1">
+                                        <label for="enable_notifications" class="h5 mb-1">
                                             <i class="bi bi-bell-fill" aria-hidden="true"></i>
                                             {{ 'admin.settings.features.notifications'|trans({}, 'admin') }}
-                                        </h5>
+                                        </label>
                                         <p class="mb-0 small text-muted">{{ 'admin.settings.features.notifications_help'|trans({}, 'admin') }}</p>
                                     </div>
                                     <div class="form-check form-switch">
@@ -101,11 +101,11 @@
                             <div class="list-group-item">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div class="flex-grow-1">
-                                        <h4 class="mb-1">
+                                        <label for="enable_audit_log" class="h5 mb-1">
                                             <i class="bi bi-journal-text" aria-hidden="true"></i>
                                             {{ 'admin.settings.features.audit_log'|trans({}, 'admin') }}
                                             <span class="badge bg-danger ms-2">{{ 'admin.settings.required_for_iso27001'|trans({}, 'admin') }}</span>
-                                        </h5>
+                                        </label>
                                         <p class="mb-0 small text-muted">
                                             {{ 'admin.settings.features.audit_log_help'|trans({}, 'admin') }}
                                         </p>
