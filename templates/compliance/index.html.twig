@@ -74,7 +74,7 @@
             <div class="framework-card">
                 <div class="framework-header {% if framework and framework.mandatory %}bg-gradient-danger{% else %}bg-gradient-primary{% endif %}">
                     <div>
-                        <h2>{{ item.code }}</h3>
+                        <h2>{{ item.code }}</h2>
                         <p class="framework-subtitle">{{ item.name|length > 40 ? item.name|slice(0, 40) ~ '...' : item.name }}</p>
                     </div>
                     {% if framework and framework.mandatory %}

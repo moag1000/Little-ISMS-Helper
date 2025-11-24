@@ -4,7 +4,7 @@
         <h6 class="preview-section-title">
             <i class="bi-exclamation-triangle text-warning"></i>
             Risiko-Informationen
-        </h5>
+        </h6>
         <dl class="row mb-0">
             <dt class="col-sm-4">Titel:</dt>
             <dd class="col-sm-8">{{ risk.title }}</dd>
@@ -36,7 +36,7 @@
         <h6 class="preview-section-title">
             <i class="bi bi-bar-chart"></i>
             Risikobewertung
-        </h5>
+        </h6>
         <div class="row g-3">
             <div class="col-6">
                 <div class="risk-metric">
@@ -75,7 +75,7 @@
         <h6 class="preview-section-title">
             <i class="bi bi-file-text"></i>
             Beschreibung
-        </h5>
+        </h6>
         <p class="mb-0">{{ risk.description }}</p>
     </div>
 
@@ -83,7 +83,7 @@
         <h6 class="preview-section-title">
             <i class="bi bi-shield"></i>
             Behandlungsstrategie
-        </h5>
+        </h6>
         <div class="mb-2">
             <span class="badge bg-primary">{{ risk.treatmentStrategy|trans }}</span>
         </div>
@@ -96,7 +96,7 @@
         <h6 class="preview-section-title">
             <i class="bi bi-graph-up"></i>
             Maßnahmen
-        </h5>
+        </h6>
         <div class="stat-mini">
             <div class="stat-mini-value">{{ risk.controls|length }}</div>
             <div class="stat-mini-label">Verknüpfte Controls</div>

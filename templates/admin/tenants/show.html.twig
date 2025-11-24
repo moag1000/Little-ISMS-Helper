@@ -69,8 +69,8 @@
                             <i class="bi bi-people text-primary fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'tenant.stats.total_users'|trans({}, 'tenant') }}</h5>
-                            <h2 class="mb-0">{{ userCount }}</h3>
+                            <h6 class="text-muted mb-1">{{ 'tenant.stats.total_users'|trans({}, 'tenant') }}</h6>
+                            <h2 class="mb-0">{{ userCount }}</h2>
                         </div>
                     </div>
                 </div>
@@ -84,7 +84,7 @@
                             <i class="bi bi-person-check text-success fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'tenant.stats.active_users'|trans({}, 'tenant') }}</h5>
+                            <h6 class="text-muted mb-1">{{ 'tenant.stats.active_users'|trans({}, 'tenant') }}</h6>
                             <h3 class="mb-0">{{ activeUsers }}</h3>
                         </div>
                     </div>
@@ -99,7 +99,7 @@
                             <i class="bi bi-person-x text-secondary fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'tenant.stats.inactive_users'|trans({}, 'tenant') }}</h5>
+                            <h6 class="text-muted mb-1">{{ 'tenant.stats.inactive_users'|trans({}, 'tenant') }}</h6>
                             <h3 class="mb-0">{{ inactiveUsers }}</h3>
                         </div>
                     </div>
@@ -313,7 +313,7 @@
 
                     {% if tenant.settings %}
                         <hr>
-                        <h6 class="text-muted mb-2">{{ 'tenant.field.settings'|trans({}, 'tenant') }}</h5>
+                        <h6 class="text-muted mb-2">{{ 'tenant.field.settings'|trans({}, 'tenant') }}</h6>
                         <pre class="bg-light p-3 rounded small"><code>{{ tenant.settings|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</code></pre>
                     {% endif %}
                 </div>
@@ -412,7 +412,7 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h4 class="mb-1">{{ 'tenant.action.delete'|trans({}, 'tenant') }}</h5>
+                        <h4 class="mb-1">{{ 'tenant.action.delete'|trans({}, 'tenant') }}</h4>
                         <p class="text-muted small mb-0">{{ 'tenant.delete.warning'|trans({}, 'tenant') }}</p>
                     </div>
                     <form method="post" action="{{ path('tenant_management_delete', {id: tenant.id}) }}" class="d-inline">
@@ -856,7 +856,7 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h6 class="text-muted mb-2">{{ 'context.kpi.completeness'|trans({}, 'messages') }}</h5>
+                                        <h6 class="text-muted mb-2">{{ 'context.kpi.completeness'|trans({}, 'messages') }}</h6>
                                         <h2 class="mb-0">${safeCompleteness}%</h2>
                                     </div>
                                     <div>

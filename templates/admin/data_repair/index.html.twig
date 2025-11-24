@@ -148,7 +148,7 @@
 
                 {% if orphanedRisks|length > 0 %}
                 <div class="mb-4">
-                    <h4>{{ 'admin.data_repair.orphaned_risks_list'|trans({}, 'admin') }}</h5>
+                    <h4>{{ 'admin.data_repair.orphaned_risks_list'|trans({}, 'admin') }}</h4>
                     {% embed '_components/_table.html.twig' with {
                         'class': 'table-sm table-striped',
                         'responsive': true,
@@ -192,7 +192,7 @@
 
                 {% if orphanedIncidents|length > 0 %}
                 <div class="mb-4">
-                    <h4>{{ 'admin.data_repair.orphaned_incidents_list'|trans({}, 'admin') }}</h5>
+                    <h4>{{ 'admin.data_repair.orphaned_incidents_list'|trans({}, 'admin') }}</h4>
                     {% embed '_components/_table.html.twig' with {
                         'class': 'table-sm table-striped',
                         'responsive': true,
