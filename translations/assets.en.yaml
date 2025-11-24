@@ -1,3 +1,84 @@
+asset_management:
+  title: Asset Management
+  description: Management of IT assets and information values according to ISO 27001
+  active_assets: Active Assets
+
+asset:
+  new: New Asset
+  title: Asset
+  action:
+    view_critical: View Critical Assets
+    view_details: View Details
+  badge:
+    business_critical: Business Critical
+  classification:
+    public: Public
+    internal: Internal
+    confidential: Confidential
+    restricted: Restricted
+  description:
+    bcm_insights: BCM-based availability recommendations
+    critical_impact: Critical impact on business processes
+    dependencies: Dependencies to other assets
+    high_impact: High impact
+    low_impact: Low impact
+    medium_impact: Medium impact
+    rto_analysis: RTO-based availability analysis
+  field:
+    asset_count: Asset Count
+    asset_name: Asset Name
+    avg_rto: Avg. RTO
+    business_criticality: Business Criticality
+    classification: Classification
+    examples: Examples
+    monetary_value: Monetary Value
+    recovery_strategy: Recovery Strategy
+    rpo: RPO
+    rto: RTO
+    rto_category: RTO Category
+    type: Type
+  impact:
+    critical: Critical
+    high: High
+    low: Low
+    medium: Medium
+  label:
+    name: Name
+    type: Type
+    owner: Owner
+    classification: Classification
+    data_classification: Data Classification
+    risks: Risks
+    status: Status
+  list:
+    title: Assets
+  message:
+    no_critical_assets: No critical assets found
+  rto:
+    flexible: Flexible
+    immediate: Immediate
+    standard: Standard
+    urgent: Urgent
+  section:
+    business_impact: Business Impact
+    critical_assets: Critical Assets
+    dependency_insights: Dependency Analysis
+    rto_analysis: RTO Analysis
+  stats:
+    avg_dependencies: Avg. Dependencies
+    avg_rto: Average RTO
+    critical_assets: Critical Assets
+    high_risk_assets: High-Risk Assets
+    single_points_failure: Single Points of Failure
+    total_assets: Total Assets
+    with_dependencies: With Dependencies
+  status:
+    active: Active
+    inactive: Inactive
+    retired: Retired
+  title:
+    bcm_insights: BCM Insights
+
 assets:
   title:
     new: New Asset
