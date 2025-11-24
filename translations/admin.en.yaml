@@ -70,3 +70,7 @@ admin:
       title: Activity
       empty: No recent activity.
       view_all: View all
+  licensing:
+    attributions_provided: "Attributions in der Anwendung bereitstellen (erledigt ✓)"
+  settings:
+    required_for_iso27001: "Required for ISO 27001"

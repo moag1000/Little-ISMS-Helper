@@ -23,7 +23,7 @@
                 </div>
             {% endif %}
             <div>
-                <h2>{{ tenant.name }}</h2>
+                <h1>{{ tenant.name }}</h1>
                 <p class="text-muted mb-2">
                     <code class="text-primary">{{ tenant.code }}</code>
                     {% if tenant.isActive %}
@@ -70,7 +70,7 @@
                         </div>
                         <div>
                             <h6 class="text-muted mb-1">{{ 'tenant.stats.total_users'|trans({}, 'tenant') }}</h5>
-                            <h3 class="mb-0">{{ userCount }}</h3>
+                            <h2 class="mb-0">{{ userCount }}</h3>
                         </div>
                     </div>
                 </div>

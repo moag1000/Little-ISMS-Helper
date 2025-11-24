@@ -13,7 +13,7 @@
 </p>
 
 <div class="info-box">
-    <h3>{{ entityType }} #{{ entityId }}</h3>
+    <h1>{{ entityType }} #{{ entityId }}</h1>
     <p><strong>{{ 'entity_history.entry_count'|trans({}, 'messages') }}</strong> {{ auditLogs|length }}</p>
 </div>
 
@@ -38,7 +38,7 @@
         {% block table_body %}
             {% for log in auditLogs %}
             <tr>
-                <td class="table-cell text-sm">
+                <td class="table-cell small">
                     {{ log.createdAt|date('d.m.Y H:i:s') }}
                 </td>
                 <td class="table-cell">
@@ -50,7 +50,7 @@
                         {{ log.userName }}
                     </a>
                 </td>
-                <td class="table-cell text-sm">
+                <td class="table-cell small">
                     {{ log.description|default('-') }}
                 </td>
                 <td class="table-cell">

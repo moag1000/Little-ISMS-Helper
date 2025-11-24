@@ -2860,3 +2860,11 @@ Active: Aktiv
 Inactive: Inaktiv
 Evaluation: Bewertung
 Terminated: Beendigt
+
+# Component translations
+components:
+  example_isms_content: "ISMS-Umfang und Kontextinformationen..."
+  time_savings: "Zeitersparnis"
+  consistency: "Konsistenz"
+  audit_evidence: "Audit-Nachweis"
+  informed_decisions: "Fundierte Entscheidungen"

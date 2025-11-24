@@ -70,7 +70,7 @@
     {# Insights Table #}
     <div class="card">
         <div class="card-header">
-            <h2>Asset Recommendations Based on BCM Data</h2>
+            <h2>{{ 'bcm.data_reuse.asset_recommendations_title'|trans({}, 'bcm') }}</h2>
         </div>
 
         {% embed '_components/_table.html.twig' with {
@@ -181,29 +181,29 @@
     {# Benefits Section #}
     <div class="card mt-lg">
         <div class="card-header">
-            <h2>Benefits of Data Reuse</h2>
+            <h2>{{ 'bcm.data_reuse.benefits_title'|trans({}, 'bcm') }}</h2>
         </div>
         <div class="card-body">
             <div class="benefits-grid">
                 <div class="benefit-item">
                     <div class="benefit-icon">⏱️</div>
-                    <strong>Time Savings</strong>
-                    <p>No need to manually determine availability requirements - BCM data provides evidence-based suggestions.</p>
+                    <strong>{{ 'common.time_savings'|trans }}</strong>
+                    <p>{{ 'bcm.data_reuse.benefit_efficiency'|trans({}, 'bcm') }}</p>
                 </div>
                 <div class="benefit-item">
                     <div class="benefit-icon">📊</div>
-                    <strong>Consistency</strong>
-                    <p>Ensures alignment between business continuity requirements and technical protection measures.</p>
+                    <strong>{{ 'common.consistency'|trans }}</strong>
+                    <p>{{ 'bcm.data_reuse.benefit_consistency'|trans({}, 'bcm') }}</p>
                 </div>
                 <div class="benefit-item">
                     <div class="benefit-icon">✓</div>
-                    <strong>Audit Evidence</strong>
-                    <p>Demonstrates traceable links between business requirements and security controls for ISO 27001 compliance.</p>
+                    <strong>{{ 'common.audit_evidence'|trans }}</strong>
+                    <p>{{ 'bcm.data_reuse.benefit_compliance'|trans({}, 'bcm') }}</p>
                 </div>
                 <div class="benefit-item">
                     <div class="benefit-icon">💡</div>
-                    <strong>Informed Decisions</strong>
-                    <p>Data-driven recommendations based on actual business impact analysis rather than assumptions.</p>
+                    <strong>{{ 'common.informed_decisions'|trans }}</strong>
+                    <p>{{ 'bcm.data_reuse.benefit_quality'|trans({}, 'bcm') }}</p>
                 </div>
             </div>
         </div>
