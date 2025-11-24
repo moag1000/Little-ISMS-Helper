@@ -102,19 +102,19 @@
                                     <div class="text-center">
                                         <h4 class="mb-0 {% if stats.owasp_2025.critical_count > 0 %}text-danger{% else %}text-success{% endif %}">
                                             {{ stats.owasp_2025.critical_count }}
-                                        </h4>
+                                        </h5>
                                         <small class="text-muted">{{ 'security_reports.severity.p0'|trans({}, 'messages') }}</small>
                                     </div>
                                     <div class="text-center">
                                         <h4 class="mb-0 {% if stats.owasp_2025.high_count > 0 %}text-warning{% else %}text-success{% endif %}">
                                             {{ stats.owasp_2025.high_count }}
-                                        </h4>
+                                        </h5>
                                         <small class="text-muted">{{ 'security_reports.severity.p1'|trans({}, 'messages') }}</small>
                                     </div>
                                     <div class="text-center">
                                         <h4 class="mb-0 text-info">
                                             {{ stats.owasp_2025.medium_count }}
-                                        </h4>
+                                        </h5>
                                         <small class="text-muted">{{ 'security_reports.severity.p2'|trans({}, 'messages') }}</small>
                                     </div>
                                 </div>
@@ -171,19 +171,19 @@
                                     <div class="text-center">
                                         <h4 class="mb-0 {% if stats.owasp_2021.critical_count > 0 %}text-danger{% else %}text-success{% endif %}">
                                             {{ stats.owasp_2021.critical_count }}
-                                        </h4>
+                                        </h5>
                                         <small class="text-muted">{{ 'security_reports.severity.p0'|trans({}, 'messages') }}</small>
                                     </div>
                                     <div class="text-center">
                                         <h4 class="mb-0 {% if stats.owasp_2021.high_count > 0 %}text-warning{% else %}text-success{% endif %}">
                                             {{ stats.owasp_2021.high_count }}
-                                        </h4>
+                                        </h5>
                                         <small class="text-muted">{{ 'security_reports.severity.p1'|trans({}, 'messages') }}</small>
                                     </div>
                                     <div class="text-center">
                                         <h4 class="mb-0 text-info">
                                             {{ stats.owasp_2021.medium_count }}
-                                        </h4>
+                                        </h5>
                                         <small class="text-muted">{{ 'security_reports.severity.p2'|trans({}, 'messages') }}</small>
                                     </div>
                                 </div>
@@ -209,10 +209,9 @@
 
             {# Information Card #}
             <div class="card">
-                <div class="card-header">
-                    <h6 class="card-title mb-0">
+                <div class="card-header"><h5 class="card-title mb-0">
                         <i class="bi-info-circle me-2"></i>Über diese Reports
-                    </h6>
+                    </h5>
                 </div>
                 <div class="card-body">
                     <p class="mb-2">

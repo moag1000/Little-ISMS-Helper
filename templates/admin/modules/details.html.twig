@@ -87,7 +87,7 @@
                             <h4 class="mb-2">
                                 <i class="fas fa-link text-warning me-2"></i>
                                 Benötigt folgende Module:
-                            </h6>
+                            </h5>
                             <div class="mb-4">
                                 {% for dep in graph.dependencies %}
                                     <span class="badge bg-warning text-dark fs-6 me-2 mb-2">{{ dep }}</span>
@@ -99,7 +99,7 @@
                             <h4 class="mb-2">
                                 <i class="fas fa-arrow-right text-info me-2"></i>
                                 Wird benötigt von:
-                            </h6>
+                            </h5>
                             <div>
                                 {% for dep in graph.dependents %}
                                     <span class="badge bg-info fs-6 me-2 mb-2">{{ dep }}</span>
@@ -198,11 +198,10 @@
 
             {# Quick Info #}
             <div class="card border-info">
-                <div class="card-header bg-info text-white">
-                    <h6 class="mb-0">
+                <div class="card-header bg-info text-white"><h5 class="mb-0">
                         <i class="fas fa-lightbulb me-2"></i>
                         Hinweise
-                    </h6>
+                    </h5>
                 </div>
                 <div class="card-body">
                     <ul class="mb-0 small">

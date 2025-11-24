@@ -32,7 +32,7 @@
 
     {% if overdue_reviews|length > 0 %}
     <div class="alert alert-warning">
-        <h4>{{ 'bc_plans.alert.overdue_reviews'|trans({}, 'bcm') }}</h4>
+        <h4>{{ 'bc_plans.alert.overdue_reviews'|trans({}, 'bcm') }}</h5>
         <ul>
             {% for plan in overdue_reviews %}
             <li>

@@ -10,7 +10,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h4 class="mb-0">Setup-Fortschritt</h4>
+                        <h4 class="mb-0">Setup-Fortschritt</h5>
                         <small class="text-muted">Schritt 3 von 11</small>
                     </div>
                     <div class="progress" style="height: 10px;">
@@ -35,7 +35,7 @@
                         <h4 class="alert-heading">
                             <i class="fas fa-info-circle me-2"></i>
                             Backup vs. Neu-Installation
-                        </h6>
+                        </h5>
                         <ul class="mb-0">
                             <li><strong>Backup wiederherstellen:</strong> Wenn Sie eine bestehende Installation migrieren möchten, laden Sie hier Ihr Backup hoch. Alle folgenden Schritte werden übersprungen!</li>
                             <li><strong>Neu-Installation:</strong> Klicken Sie auf "Überspringen", um eine frische Installation zu erstellen und alle weiteren Setup-Schritte durchzuführen.</li>
@@ -69,7 +69,7 @@
                                         <h4 class="alert-heading">
                                             <i class="fas fa-exclamation-triangle me-2"></i>
                                             Verwaiste Entitäten gefunden
-                                        </h6>
+                                        </h5>
                                         <p>
                                             Nach der Wiederherstellung wurden <strong>{{ backup_restore_result.orphaned_entities.total }}</strong> Entitäten ohne Mandanten-Zuordnung gefunden:
                                         </p>
@@ -90,7 +90,7 @@
                                                 <h4 class="card-title">
                                                     <i class="fas fa-tools me-2"></i>
                                                     Verwaiste Entitäten reparieren
-                                                </h6>
+                                                </h5>
                                                 <p class="card-text text-muted">
                                                     Wählen Sie einen Mandanten, dem die verwaisten Entitäten zugewiesen werden sollen:
                                                 </p>
@@ -132,7 +132,7 @@
                                         <h4 class="alert-heading">
                                             <i class="fas fa-link me-2"></i>
                                             Asset-Zuordnungen reparieren
-                                        </h6>
+                                        </h5>
                                         <p>
                                             <strong>{{ backup_restore_result.risks_without_assets }}</strong> Risiken haben keine Asset-Zuordnung. Sie können diese im
                                             <a href="{{ path('admin_data_repair_index') }}" class="alert-link">Admin Data Repair Tool</a>

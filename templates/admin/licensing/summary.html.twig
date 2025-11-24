@@ -104,7 +104,7 @@
                         <div class="card h-100">
                             <div class="card-body text-center">
                                 <div class="display-4 mb-2 text-primary">{{ stats.total }}</div>
-                                <h6 class="text-muted mb-0">Pakete Gesamt</h6>
+                                <h6 class="text-muted mb-0">Pakete Gesamt</h5>
                                 <small class="text-muted">
                                     {% if stats.generated_at %}
                                         Stand: {{ stats.generated_at }}
@@ -118,7 +118,7 @@
                         <div class="card h-100 border-success">
                             <div class="card-body text-center">
                                 <div class="display-4 mb-2 text-success">{{ stats.allowed }}</div>
-                                <h6 class="text-muted mb-0">Erlaubt</h6>
+                                <h6 class="text-muted mb-0">Erlaubt</h5>
                                 <small class="text-muted">{{ (stats.allowed / stats.total * 100)|round(1) }}%</small>
                             </div>
                         </div>
@@ -130,7 +130,7 @@
                                 <div class="display-4 mb-2 {% if stats.unknown > 0 or stats.not_allowed > 0 %}text-warning{% else %}text-muted{% endif %}">
                                     {{ stats.restricted + stats.copyleft + stats.not_allowed + stats.unknown }}
                                 </div>
-                                <h6 class="text-muted mb-0">Prüfung erforderlich</h6>
+                                <h6 class="text-muted mb-0">Prüfung erforderlich</h5>
                                 <small class="text-muted">
                                     {{ ((stats.restricted + stats.copyleft + stats.not_allowed + stats.unknown) / stats.total * 100)|round(1) }}%
                                 </small>

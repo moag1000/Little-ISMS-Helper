@@ -24,8 +24,7 @@
 
     {# Status & Workflow Actions #}
     <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0"><i class="bi bi-diagram-3"></i> Status & Workflow</h5>
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-diagram-3"></i> Status & Workflow</h5>
         </div>
         <div class="card-body">
             <div class="row">
@@ -118,8 +117,7 @@
     <div class="row mb-4">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">
-                    <h6 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Risk Assessment</h6>
+                <div class="card-header"><h5 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Risk Assessment</h5>
                 </div>
                 <div class="card-body">
                     {% if dpia.riskLevel %}
@@ -145,8 +143,7 @@
 
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">
-                    <h6 class="mb-0"><i class="bi bi-people"></i> Consultations</h6>
+                <div class="card-header"><h5 class="mb-0"><i class="bi bi-people"></i> Consultations</h5>
                 </div>
                 <div class="card-body">
                     <p><strong>DPO Consultation (Art. 35(4)):</strong>
@@ -174,20 +171,19 @@
 
     {# Processing Description #}
     <div class="card mb-4">
-        <div class="card-header">
-            <h6 class="mb-0"><i class="bi bi-info-circle"></i> Art. 35(7)(a) - Description of Processing</h6>
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-info-circle"></i> Art. 35(7)(a) - Description of Processing</h5>
         </div>
         <div class="card-body">
             {% if dpia.processingDescription %}
-                <h6>Processing Description:</h6>
+                <h6>Processing Description:</h5>
                 <p>{{ dpia.processingDescription|nl2br }}</p>
             {% endif %}
             {% if dpia.processingPurposes %}
-                <h6>Purposes:</h6>
+                <h6>Purposes:</h5>
                 <p>{{ dpia.processingPurposes|nl2br }}</p>
             {% endif %}
             {% if dpia.dataCategories|length > 0 %}
-                <h6>Data Categories:</h6>
+                <h6>Data Categories:</h5>
                 <p>{{ dpia.dataCategories|join(', ') }}</p>
             {% endif %}
         </div>
@@ -195,16 +191,15 @@
 
     {# Measures #}
     <div class="card mb-4">
-        <div class="card-header">
-            <h6 class="mb-0"><i class="bi bi-shield-check"></i> Art. 35(7)(d) - Measures</h6>
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-shield-check"></i> Art. 35(7)(d) - Measures</h5>
         </div>
         <div class="card-body">
             {% if dpia.technicalMeasures %}
-                <h6>Technical Measures:</h6>
+                <h6>Technical Measures:</h5>
                 <p>{{ dpia.technicalMeasures|nl2br }}</p>
             {% endif %}
             {% if dpia.organizationalMeasures %}
-                <h6>Organizational Measures:</h6>
+                <h6>Organizational Measures:</h5>
                 <p>{{ dpia.organizationalMeasures|nl2br }}</p>
             {% endif %}
         </div>

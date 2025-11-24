@@ -261,10 +261,10 @@
     {% if high_priority_gaps is empty and low_confidence_gaps is empty %}
         {% if remediation_effort.total_gaps == 0 %}
         <div class="alert alert-info">
-            <h4>ℹ️ Keine Gaps gefunden</h4>
+            <h4>ℹ️ Keine Gaps gefunden</h5>
             <p>Es wurden noch keine Gap-Analysen durchgeführt.</p>
             <hr>
-            <h4>Nächste Schritte:</h4>
+            <h4>Nächste Schritte:</h5>
             <ol>
                 <li>Führen Sie die Qualitätsanalyse aus: <code>php bin/console app:analyze-mapping-quality</code></li>
                 <li>Gaps werden automatisch während der Analyse identifiziert</li>
@@ -288,7 +288,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
-                    <h4>📋 Priorisierung</h4>
+                    <h4>📋 Priorisierung</h5>
                     <ol>
                         <li>Critical Gaps zuerst ({{ gap_stats_by_priority[0].count ?? 0 }})</li>
                         <li>High Priority Gaps ({{ gap_stats_by_priority[1].count ?? 0 }})</li>
@@ -296,14 +296,14 @@
                     </ol>
                 </div>
                 <div class="col-md-4">
-                    <h4>⏱️ Zeitplanung</h4>
+                    <h4>⏱️ Zeitplanung</h5>
                     <p>
                         <strong>Total:</strong> {{ remediation_effort.total_effort }} Stunden<br>
                         <strong>≈ {{ (remediation_effort.total_effort / 8)|round(1) }} Tage</strong> bei einem 8h-Arbeitstag
                     </p>
                 </div>
                 <div class="col-md-4">
-                    <h4>📊 Tracking</h4>
+                    <h4>📊 Tracking</h5>
                     <p>Ändern Sie den Gap-Status in den jeweiligen Mapping-Reviews:</p>
                     <ul>
                         <li>identified → planned</li>

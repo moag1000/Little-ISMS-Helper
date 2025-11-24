@@ -88,7 +88,7 @@
     <div class="grid-2-cols mt-lg">
         {% if oldValues %}
         <div>
-            <h4 class="text-danger">{{ 'audit_log.old_values'|trans({}, 'audits') }}</h4>
+            <h4 class="text-danger">{{ 'audit_log.old_values'|trans({}, 'audits') }}</h5>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-collapse-mt',
                 'noMargin': true
@@ -111,7 +111,7 @@
 
         {% if newValues %}
         <div>
-            <h4 class="text-success">{{ 'audit_log.new_values'|trans({}, 'audits') }}</h4>
+            <h4 class="text-success">{{ 'audit_log.new_values'|trans({}, 'audits') }}</h5>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-collapse-mt',
                 'noMargin': true
