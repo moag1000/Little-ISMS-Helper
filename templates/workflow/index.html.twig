@@ -46,7 +46,7 @@
             {{ 'workflow.description.pending'|trans({}, 'messages') }}
         </p>
         <div class="mt-2">
-            <strong class="fs-15">{{ instances|filter(i => i.status == 'pending')|length }}</strong>
+            <strong class="fs-4">{{ instances|filter(i => i.status == 'pending')|length }}</strong>
         </div>
         <div class="mt-2">
             <a href="{{ path('app_workflow_pending') }}" class="btn btn-sm">{{ 'common.view'|trans({}, 'messages') }}</a>
@@ -60,7 +60,7 @@
             {{ 'workflow.description.active'|trans({}, 'messages') }}
         </p>
         <div class="mt-2">
-            <strong class="fs-15">{{ instances|filter(i => i.status == 'active')|length }}</strong>
+            <strong class="fs-4">{{ instances|filter(i => i.status == 'active')|length }}</strong>
         </div>
         <div class="mt-2">
             <a href="{{ path('app_workflow_active') }}" class="btn btn-sm">{{ 'common.view'|trans({}, 'messages') }}</a>
