@@ -70,3 +70,16 @@ bcm:
     high: High
     medium: Medium
     low: Low
+  message:
+    no_matching_processes: "No processes match your search criteria."
+    rto_tooltip: "The maximum acceptable time that a business process can be down after a disaster before unacceptable consequences occur."
+    rpo_tooltip: "The maximum acceptable amount of data loss measured in time before the disaster."
+    mtd_tooltip: "The absolute maximum time a critical function can be unavailable before the organization faces catastrophic consequences."
+    bcm_influences_asset_ratings: "BCM data automatically influences asset availability ratings. Low RTO processes suggest high availability requirements for supporting assets."
+  data_reuse:
+    asset_recommendations_title: "Asset Recommendations Based on BCM Data"
+    benefits_title: "Benefits of Data Reuse"
+    benefit_efficiency: "No need to manually determine availability requirements - BCM data provides evidence-based suggestions."
+    benefit_consistency: "Ensures alignment between business continuity requirements and technical protection measures."
+    benefit_compliance: "Demonstrates traceable links between business requirements and security controls for ISO 27001 compliance."
+    benefit_quality: "Data-driven recommendations based on actual business impact analysis rather than assumptions."

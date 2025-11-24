@@ -64,7 +64,7 @@
             {# NIS2 Article 23 Reporting Timeline #}
             {% if is_nis2_active() and incident.requiresNis2Reporting and incident.detectedAt %}
                 <div class="detail-section nis2-timeline-section">
-                    <h3>
+                    <h2>
                         <i class="bi bi-clock-history" aria-hidden="true"></i>
                         {{ 'incident.nis2_timeline.title'|trans({}, 'incidents') }}
                     </h3>

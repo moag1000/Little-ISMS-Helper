@@ -70,3 +70,16 @@ bcm:
     high: Hoch
     medium: Mittel
     low: Niedrig
+  message:
+    no_matching_processes: "Es wurden keine Prozesse gefunden, die Ihren Suchkriterien entsprechen."
+    rto_tooltip: "Die maximal akzeptable Zeit, die ein Geschäftsprozess nach einer Katastrophe ausfallen kann, bevor inakzeptable Konsequenzen eintreten."
+    rpo_tooltip: "Der maximal akzeptable Datenverlust gemessen in Zeit vor der Katastrophe."
+    mtd_tooltip: "Die absolute Maximalzeit, die eine kritische Funktion nicht verfügbar sein kann, bevor die Organisation katastrophale Folgen erleidet."
+    bcm_influences_asset_ratings: "BCM-Daten beeinflussen automatisch die Verfügbarkeitsbewertungen von Assets. Prozesse mit niedrigem RTO deuten auf hohe Verfügbarkeitsanforderungen für unterstützende Assets hin."
+  data_reuse:
+    asset_recommendations_title: "Asset-Empfehlungen basierend auf BCM-Daten"
+    benefits_title: "Vorteile der Datenwiederverwendung"
+    benefit_efficiency: "Keine manuelle Bestimmung von Verfügbarkeitsanforderungen erforderlich - BCM-Daten bieten evidenzbasierte Vorschläge."
+    benefit_consistency: "Stellt die Übereinstimmung zwischen Business-Continuity-Anforderungen und technischen Schutzmaßnahmen sicher."
+    benefit_compliance: "Demonstriert nachvollziehbare Verbindungen zwischen Geschäftsanforderungen und Sicherheitskontrollen für ISO 27001-Konformität."
+    benefit_quality: "Datenbasierte Empfehlungen auf Grundlage tatsächlicher Business-Impact-Analysen statt Annahmen."

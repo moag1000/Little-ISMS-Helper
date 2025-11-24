@@ -13,13 +13,13 @@
 </p>
 
 <div class="info-box">
-    <h3>Gesamtstatistik</h3>
+    <h1>Gesamtstatistik</h1>
     <p><strong>Gesamt Protokolleinträge:</strong> {{ totalLogs }}</p>
 </div>
 
 <div class="grid-2-col-gap-mt">
     <div class="info-box">
-        <h3>Aktionen</h3>
+        <h2>Aktionen</h3>
         {% if actionStats|length > 0 %}
         {% embed '_components/_table.html.twig' with {
             'class': 'table-stats',
