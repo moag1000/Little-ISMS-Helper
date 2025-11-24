@@ -192,7 +192,7 @@ input[type="checkbox"]:indeterminate {
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
     .bulk-action-bar {
         bottom: 16px;
         left: 16px;

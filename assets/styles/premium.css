@@ -645,7 +645,7 @@
 /* ===============================
    Responsive Design
    =============================== */
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
     .hero-title {
         font-size: 2rem;
     }
@@ -671,7 +671,7 @@
     }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 575.98px) {
     .hero-section {
         padding: 40px 0;
     }
@@ -1162,7 +1162,7 @@
 /* ===============================
    Responsive Design
    =============================== */
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
     .global-search-container {
         width: 95%;
         max-height: 80vh;
@@ -1195,7 +1195,7 @@
     }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 575.98px) {
     .global-search-modal {
         padding-top: 5vh;
     }
@@ -1578,7 +1578,7 @@
 /* ===============================
    Responsive Design
    =============================== */
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
     .notification-center {
         top: 15px;
         right: 15px;
@@ -1595,7 +1595,7 @@
     }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 575.98px) {
     .notification-bell-btn {
         width: 40px;
         height: 40px;
