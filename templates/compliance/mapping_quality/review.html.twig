@@ -22,12 +22,12 @@
     {# Mapping Overview #}
     <div class="card mb-4">
         <div class="card-header">
-            <h2 class="mb-0">📊 Mapping-Übersicht</h3>
+            <h2 class="mb-0">📊 Mapping-Übersicht</h2>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-5">
-                    <h6 class="text-muted">Source Requirement</h5>
+                    <h6 class="text-muted">Source Requirement</h6>
                     <h5><span class="badge bg-primary">{{ mapping.sourceRequirement.framework.code }}</span> {{ mapping.sourceRequirement.requirementId }}</h5>
                     <p><strong>{{ mapping.sourceRequirement.title }}</strong></p>
                     <p class="text-muted small">{{ mapping.sourceRequirement.description|slice(0, 200) }}...</p>
@@ -44,7 +44,7 @@
                     <h3>→</h3>
                 </div>
                 <div class="col-md-5">
-                    <h6 class="text-muted">Target Requirement</h5>
+                    <h6 class="text-muted">Target Requirement</h6>
                     <h2><span class="badge bg-success">{{ mapping.targetRequirement.framework.code }}</span> {{ mapping.targetRequirement.requirementId }}</h2>
                     <p><strong>{{ mapping.targetRequirement.title }}</strong></p>
                     <p class="text-muted small">{{ mapping.targetRequirement.description|slice(0, 200) }}...</p>

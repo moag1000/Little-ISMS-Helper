@@ -24,7 +24,7 @@
     {# Overall Compliance Score #}
     <div class="card mb-4 text-center">
         <div class="card-body">
-            <h6 class="text-muted mb-2">Overall VVT Compliance Score</h5>
+            <h6 class="text-muted mb-2">Overall VVT Compliance Score</h6>
             {% set score = compliance_score.overall_score %}
             <h1 class="display-1 mb-0
                 {% if score >= 80 %}text-success
@@ -46,7 +46,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">Total Activities</h5>
+                    <h6 class="text-muted">Total Activities</h6>
                     <h2>{{ statistics.total }}</h2>
                     <div class="mt-2">
                         <small class="text-success"><i class="bi bi-check-circle"></i> {{ statistics.active }} active</small>
@@ -57,7 +57,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">High Risk</h5>
+                    <h6 class="text-muted">High Risk</h6>
                     <h2 class="text-warning">{{ statistics.high_risk }}</h2>
                     <div class="mt-2">
                         <small class="text-danger"><i class="bi bi-exclamation-triangle"></i> {{ statistics.missing_dpia }} missing DPIA</small>
@@ -68,7 +68,7 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">Completeness Rate</h5>
+                    <h6 class="text-muted">Completeness Rate</h6>
                     <h2>{{ statistics.completeness_rate }}%</h2>
                     <div class="progress mt-2" style="height: 10px;">
                         <div class="progress-bar bg-success" style="width: {{ statistics.completeness_rate }}%"></div>
@@ -86,7 +86,7 @@
                 </div>
                 <div class="card-body">
                     {% if incomplete|length > 0 %}
-                        <h6>Incomplete Activities ({{ incomplete|length }})</h5>
+                        <h6>Incomplete Activities ({{ incomplete|length }})</h6>
                         <ul class="list-unstyled">
                             {% for pa in incomplete|slice(0, 5) %}
                                 <li class="mb-2">
@@ -98,7 +98,7 @@
                     {% endif %}
 
                     {% if requiring_dpia|length > 0 %}
-                        <h6 class="mt-3">Requiring DPIA ({{ requiring_dpia|length }})</h5>
+                        <h6 class="mt-3">Requiring DPIA ({{ requiring_dpia|length }})</h6>
                         <ul class="list-unstyled">
                             {% for pa in requiring_dpia|slice(0, 5) %}
                                 <li class="mb-2">
@@ -110,7 +110,7 @@
                     {% endif %}
 
                     {% if due_for_review|length > 0 %}
-                        <h6 class="mt-3">Due for Review ({{ due_for_review|length }})</h5>
+                        <h6 class="mt-3">Due for Review ({{ due_for_review|length }})</h6>
                         <ul class="list-unstyled">
                             {% for pa in due_for_review|slice(0, 5) %}
                                 <li class="mb-2">
@@ -134,7 +134,7 @@
                 <div class="card-header"><h5 class="mb-0"><i class="bi bi-bar-chart"></i> Statistics</h5>
                 </div>
                 <div class="card-body">
-                    <h6>By Legal Basis</h5>
+                    <h6>By Legal Basis</h6>
                     {% if statistics.by_legal_basis %}
                         <ul class="list-unstyled">
                             {% for basis, count in statistics.by_legal_basis %}
@@ -146,7 +146,7 @@
                         </ul>
                     {% endif %}
 
-                    <h6 class="mt-4">By Risk Level</h5>
+                    <h6 class="mt-4">By Risk Level</h6>
                     {% if statistics.by_risk_level %}
                         <ul class="list-unstyled">
                             {% for level, count in statistics.by_risk_level %}
@@ -164,7 +164,7 @@
                         </ul>
                     {% endif %}
 
-                    <h6 class="mt-4">Special Processing</h5>
+                    <h6 class="mt-4">Special Processing</h6>
                     <ul class="list-unstyled">
                         <li class="mb-2">
                             <span class="badge bg-danger">{{ statistics.special_categories }}</span>

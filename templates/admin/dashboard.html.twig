@@ -40,7 +40,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
-                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.users'|trans({}, 'admin') }}</h5>
+                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.users'|trans({}, 'admin') }}</h6>
                             <h2 class="card-title mb-0">{{ stats.users.total }}</h2>
                         </div>
                         <div class="bg-primary bg-opacity-10 p-3 rounded">
@@ -70,7 +70,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
-                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.active_sessions'|trans({}, 'admin') }}</h5>
+                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.active_sessions'|trans({}, 'admin') }}</h6>
                             <h2 class="card-title mb-0">{{ stats.sessions.active_24h }}</h2>
                         </div>
                         <div class="bg-success bg-opacity-10 p-3 rounded">
@@ -90,7 +90,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
-                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.database'|trans({}, 'admin') }}</h5>
+                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.database'|trans({}, 'admin') }}</h6>
                             <h2 class="card-title mb-0">{{ stats.database.size_mb }}</h2>
                         </div>
                         <div class="bg-info bg-opacity-10 p-3 rounded">
@@ -110,7 +110,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
-                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.total_records'|trans({}, 'admin') }}</h5>
+                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.total_records'|trans({}, 'admin') }}</h6>
                             <h2 class="card-title mb-0">
                                 {{ stats.modules.assets.total + stats.modules.risks.total + stats.modules.controls.total + stats.modules.incidents.total }}
                             </h2>
@@ -295,7 +295,7 @@
                                 <div class="list-group-item">
                                     <div class="d-flex w-100 justify-content-between align-items-start">
                                         <div>
-                                            <h6 class="mb-1 small">{{ log.action|trans }}</h5>
+                                            <h6 class="mb-1 small">{{ log.action|trans }}</h6>
                                             <p class="mb-1 small text-muted">
                                                 {{ log.entityType }} #{{ log.entityId }}
                                                 {% if log.username %}

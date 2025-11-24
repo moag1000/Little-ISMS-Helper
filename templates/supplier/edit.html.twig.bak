@@ -8,7 +8,7 @@
     <div class="page-header">
         <h1>{{ 'supplier.page.edit_title'|trans({'%name%': supplier.name}, 'messages') }}</h1>
         <div class="actions">
-            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-secondary">{{ 'supplier.action.view'|trans({}, 'suppliers') }}</a>
+            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-secondary">{{ 'supplier.action.view'|trans({}, 'messages') }}</a>
             <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
         </div>
     </div>
@@ -16,7 +16,7 @@
     <div class="card">
         <div class="card-content">
             {{ form_start(form) }}
-                <h2>{{ 'supplier.section.details'|trans({}, 'suppliers') }}</h2>
+                <h2>{{ 'supplier.section.details'|trans({}, 'messages') }}</h3>
                 <div class="form-row">
                     <div class="form-group">
                         {{ form_label(form.name) }}
@@ -47,7 +47,7 @@
                     {{ form_errors(form.serviceProvided) }}
                 </div>
 
-                <h2>{{ 'supplier.section.contact_info'|trans({}, 'suppliers') }}</h2>
+                <h2>{{ 'supplier.section.contact_info'|trans({}, 'messages') }}</h2>
                 <div class="form-row">
                     <div class="form-group">
                         {{ form_label(form.contactPerson) }}
@@ -72,7 +72,7 @@
                     {{ form_errors(form.address) }}
                 </div>
 
-                <h3>{{ 'supplier.section.security_assessment'|trans({}, 'suppliers') }}</h3>
+                <h3>{{ 'supplier.section.security_assessment'|trans({}, 'messages') }}</h3>
                 <div class="form-row">
                     <div class="form-group">
                         {{ form_label(form.securityScore) }}
@@ -109,7 +109,7 @@
                     {{ form_errors(form.securityRequirements) }}
                 </div>
 
-                <h3>{{ 'supplier.section.certifications_compliance'|trans({}, 'suppliers') }}</h3>
+                <h3>{{ 'supplier.section.certifications_compliance'|trans({}, 'messages') }}</h3>
                 <div class="form-row">
                     <div class="form-group">
                         {{ form_label(form.hasISO27001) }}
@@ -141,7 +141,7 @@
                     </div>
                 </div>
 
-                <h3>{{ 'supplier.section.contract_info'|trans({}, 'suppliers') }}</h3>
+                <h3>{{ 'supplier.section.contract_info'|trans({}, 'messages') }}</h3>
                 <div class="form-row">
                     <div class="form-group">
                         {{ form_label(form.contractStartDate) }}
@@ -156,7 +156,7 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">{{ 'supplier.action.update'|trans({}, 'suppliers') }}</button>
+                    <button type="submit" class="btn btn-primary">{{ 'supplier.action.update'|trans({}, 'messages') }}</button>
                     <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-secondary">{{ 'common.cancel'|trans({}, 'messages') }}</a>
                 </div>
             {{ form_end(form) }}
