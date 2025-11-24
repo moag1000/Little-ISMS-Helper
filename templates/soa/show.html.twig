@@ -34,7 +34,7 @@
     <h2>{{ 'soa.section.applicability_status'|trans({}, 'messages') }}</h2>
     <div class="stats-grid mt-2 grid-responsive-200">
         <div class="stat-item">
-            <strong class="fs-15">
+            <strong class="fs-4">
                 {% if control.applicable %}
                     <span class="badge bg-success fs-12">✓ {{ 'soa.value.yes'|trans({}, 'messages') }}
                         <span class="visually-hidden">{{ 'soa.table.applicable'|trans({}, 'messages') }}</span>
@@ -48,7 +48,7 @@
 
         {% if control.applicable %}
         <div class="stat-item">
-            <strong class="fs-15">
+            <strong class="fs-4">
                 {% if control.implementationStatus == 'implemented' %}
                     <span class="badge bg-success fs-12">✅ {{ 'soa.status.implemented'|trans({}, 'messages') }}</span>
                 {% elseif control.implementationStatus == 'in_progress' %}
@@ -63,7 +63,7 @@
         </div>
 
         <div class="stat-item">
-            <strong class="fs-15">{{ control.implementationPercentage }}%</strong>
+            <strong class="fs-4">{{ control.implementationPercentage }}%</strong>
             <span>{{ 'soa.field.implementation_percentage'|trans({}, 'messages') }}</span>
         </div>
         {% endif %}
