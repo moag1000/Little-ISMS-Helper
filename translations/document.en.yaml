@@ -1,0 +1,58 @@
+document:
+  title: Documents
+  subtitle: Management and storage of policies, evidence and ISMS documents
+  action:
+    upload: Upload document
+    update: Update
+  kpi:
+    total_documents: Total documents
+    total_size: Total size
+  details:
+    title: Details
+  label:
+    type: Type
+    file_name: File name
+    size: Size
+    mime_type: MIME type
+    uploaded_by: Uploaded by
+    uploaded_at: Uploaded at
+    last_updated: Last updated
+    related_entity: Related entity
+  type:
+    pdf: PDF
+    images: Images
+    tables: Tables
+    excel: Excel
+    other: Other
+  section:
+    type_overview: Type overview
+    all_documents: All documents
+    basic_info: Basic information
+    file_upload: File upload
+  filter:
+    all_categories: All categories
+    search_placeholder: Search...
+  table:
+    icon: Icon
+    uploaded_by: Uploaded by
+  message:
+    no_results: No results found
+    no_documents: No documents yet
+    upload_first: Upload your first document to get started
+  confirm:
+    delete: "Do you really want to delete this document? This action cannot be undone."
+  new: New Document
+  edit: Edit Document
+  field:
+    name: Name
+    description: Description
+    document_type: Document type
+    file: File
+  help:
+    name: Unique name of the document
+    description: Detailed description of the content and purpose
+    document_type: Category of the document (e.g. policy, procedure)
+    file: Choose a file to upload
+    edit_file: Leave the field empty to keep the existing file
+    file_edit: Upload a new file (optional)
+  delete_warning: Deleting this document cannot be undone.
