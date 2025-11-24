@@ -282,7 +282,7 @@
                             </span>
                         </td>
                         <td class="text-center">
-                            <span class="badge {% if ... %}bg-success{% elseif comparison.avg_confidence >= 60 %}badge-warning{% else %}bg-danger{% endif %}">
+                            <span class="badge {% if comparison.avg_confidence >= 80 %}bg-success{% elseif comparison.avg_confidence >= 60 %}badge-warning{% else %}bg-danger{% endif %}">
                                 {{ comparison.avg_confidence|round }}
                             </span>
                         </td>
