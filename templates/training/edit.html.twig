@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'training' %}
 
-{% block title %}{{ 'training.edit'|trans({}, 'messages') }} - {{ training.title }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'training.edit'|trans({}, 'training') }} - {{ training.title }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
@@ -11,7 +11,7 @@
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <a href="{{ path('app_training_index') }}" data-turbo-action="advance">
-                            <i class="bi bi-mortarboard" aria-hidden="true"></i> {{ 'training.title'|trans({}, 'messages') }}
+                            <i class="bi bi-mortarboard" aria-hidden="true"></i> {{ 'training.title'|trans({}, 'training') }}
                         </a>
                     </li>
                     <li class="breadcrumb-item">
@@ -26,7 +26,7 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="h3 mb-0">
                     <i class="bi bi-pencil" aria-hidden="true"></i>
-                    {{ 'training.edit'|trans({}, 'messages') }}: {{ training.title }}
+                    {{ 'training.edit'|trans({}, 'training') }}: {{ training.title }}
                 </h1>
                 <div>
                     <a href="{{ path('app_training_show', {id: training.id}) }}" class="btn btn-outline-secondary" data-turbo-action="advance">
@@ -36,12 +36,12 @@
             </div>
 
             <div class="alert alert-info mb-4" role="alert">
-                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'training.edit_help'|trans({}, 'messages') }}
+                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'training.edit_help'|trans({}, 'training') }}
             </div>
 
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0">{{ 'training.edit'|trans({}, 'messages') }}</h2>
+                    <h2 class="mb-0">{{ 'training.edit'|trans({}, 'training') }}</h2>
                 </div>
                 <div class="card-body">
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'training-form'}}) }}
@@ -50,33 +50,33 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-info-square" aria-hidden="true"></i>
-                            {{ 'training.section.basic_info'|trans({}, 'messages') }}
+                            {{ 'training.section.basic_info'|trans({}, 'training') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.title,
-                                    'label': form.title.vars.label|default('training.field.title'|trans({}, 'messages')),
+                                    'label': form.title.vars.label|default('training.field.title'|trans({}, 'training')),
                                     'required': true
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.description,
-                                    'label': form.description.vars.label|default('training.field.description'|trans({}, 'messages'))
+                                    'label': form.description.vars.label|default('training.field.description'|trans({}, 'training'))
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.trainingType,
-                                    'label': form.trainingType.vars.label|default('training.field.training_type'|trans({}, 'messages'))
+                                    'label': form.trainingType.vars.label|default('training.field.training_type'|trans({}, 'training'))
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.deliveryMethod,
-                                    'label': form.deliveryMethod.vars.label|default('training.field.delivery_method'|trans({}, 'messages'))
+                                    'label': form.deliveryMethod.vars.label|default('training.field.delivery_method'|trans({}, 'training'))
                                 } %}
                             </div>
                         </div>
@@ -86,26 +86,26 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-calendar-event" aria-hidden="true"></i>
-                            {{ 'training.section.schedule'|trans({}, 'messages') }}
+                            {{ 'training.section.schedule'|trans({}, 'training') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.scheduledDate,
-                                    'label': form.scheduledDate.vars.label|default('training.field.scheduled_date'|trans({}, 'messages'))
+                                    'label': form.scheduledDate.vars.label|default('training.field.scheduled_date'|trans({}, 'training'))
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.duration,
-                                    'label': form.duration.vars.label|default('training.field.duration'|trans({}, 'messages'))
+                                    'label': form.duration.vars.label|default('training.field.duration'|trans({}, 'training'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.location,
-                                    'label': form.location.vars.label|default('training.field.location'|trans({}, 'messages'))
+                                    'label': form.location.vars.label|default('training.field.location'|trans({}, 'training'))
                                 } %}
                             </div>
                         </div>
@@ -115,26 +115,26 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-people" aria-hidden="true"></i>
-                            {{ 'training.section.people'|trans({}, 'messages') }}
+                            {{ 'training.section.people'|trans({}, 'training') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.trainer,
-                                    'label': form.trainer.vars.label|default('training.field.trainer'|trans({}, 'messages'))
+                                    'label': form.trainer.vars.label|default('training.field.trainer'|trans({}, 'training'))
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.targetAudience,
-                                    'label': form.targetAudience.vars.label|default('training.field.target_audience'|trans({}, 'messages'))
+                                    'label': form.targetAudience.vars.label|default('training.field.target_audience'|trans({}, 'training'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.participants,
-                                    'label': form.participants.vars.label|default('training.field.participants'|trans({}, 'messages'))
+                                    'label': form.participants.vars.label|default('training.field.participants'|trans({}, 'training'))
                                 } %}
                             </div>
                         </div>
@@ -144,20 +144,20 @@
                     <fieldset class="mb-4 {% if training.mandatory %}border-warning{% endif %}" id="status-fieldset">
                         <legend class="h5 mb-3">
                             <i class="bi bi-flag" aria-hidden="true"></i>
-                            {{ 'training.section.status'|trans({}, 'messages') }}
+                            {{ 'training.section.status'|trans({}, 'training') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.status,
-                                    'label': form.status.vars.label|default('training.field.status'|trans({}, 'messages'))
+                                    'label': form.status.vars.label|default('training.field.status'|trans({}, 'training'))
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.mandatory,
-                                    'label': form.mandatory.vars.label|default('training.field.mandatory'|trans({}, 'messages'))
+                                    'label': form.mandatory.vars.label|default('training.field.mandatory'|trans({}, 'training'))
                                 } %}
                             </div>
                         </div>
@@ -167,15 +167,15 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-shield-check" aria-hidden="true"></i>
-                            {{ 'training.section.controls'|trans({}, 'messages') }}
+                            {{ 'training.section.controls'|trans({}, 'training') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.relatedControls,
-                                    'label': form.relatedControls.vars.label|default('training.field.related_controls'|trans({}, 'messages')),
-                                    'help': 'training.controls_help'|trans({}, 'messages')
+                                    'label': form.relatedControls.vars.label|default('training.field.related_controls'|trans({}, 'training')),
+                                    'help': 'training.controls_help'|trans({}, 'training')
                                 } %}
                             </div>
                         </div>
@@ -185,20 +185,20 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
-                            {{ 'training.section.materials'|trans({}, 'messages') }}
+                            {{ 'training.section.materials'|trans({}, 'training') }}
                         </legend>
 
                         <div class="row">
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.materials,
-                                    'label': form.materials.vars.label|default('training.field.materials'|trans({}, 'messages'))
+                                    'label': form.materials.vars.label|default('training.field.materials'|trans({}, 'training'))
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.feedback,
-                                    'label': form.feedback.vars.label|default('training.field.feedback'|trans({}, 'messages'))
+                                    'label': form.feedback.vars.label|default('training.field.feedback'|trans({}, 'training'))
                                 } %}
                             </div>
                         </div>
