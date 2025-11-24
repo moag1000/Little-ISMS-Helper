@@ -76,17 +76,6 @@ class DataBreachController extends AbstractController
     }
 
     /**
-     * Show data breach details
-     */
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
-    public function show(DataBreach $breach): Response
-    {
-        return $this->render('data_breach/show.html.twig', [
-            'breach' => $breach,
-        ]);
-    }
-
-    /**
      * Create new data breach
      */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
@@ -143,6 +132,17 @@ class DataBreachController extends AbstractController
 
         return $this->render('data_breach/new.html.twig', [
             'form' => $form,
+        ]);
+    }
+
+    /**
+     * Show data breach details
+     */
+    #[Route('/{id}', name: 'show', methods: ['GET'])]
+    public function show(DataBreach $breach): Response
+    {
+        return $this->render('data_breach/show.html.twig', [
+            'breach' => $breach,
         ]);
     }
 

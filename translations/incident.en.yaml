@@ -1,0 +1,54 @@
+incident_management:
+  title: Incidents
+  description: Record, classify and manage security incidents and NIS2 notifications.
+  open_incidents: Open Incidents
+  total_recorded: Total Recorded
+
+incident:
+  action:
+    report_new: Report New Incident
+    edit: Edit
+    back_to_list: Back to List
+    delete: Delete
+    download_nis2_report: Download NIS2 Report
+  kpi:
+    nis2_attention: NIS2 Requiring Attention
+    categories: Categories
+  modern:
+    breadcrumb: Incident Management
+    header:
+      title: Incident Management
+      subtitle: Documentation and handling of information security incidents
+      action:
+        report: Report Incident
+        export: Export
+    kpi:
+      total: Total Incidents
+      open: Open Incidents
+      critical: Critical Incidents
+      avg_resolution: Avg. Resolution Time
+      unit:
+        days: Days
+  status:
+    open: Open
+    in_progress: In Progress
+    resolved: Resolved
+    closed: Closed
+  nis2_timeline:
+    title: NIS2 Reporting Timeline (Article 23)
+    description: According to the NIS2 Directive (EU 2022/2555), significant incidents must be reported within defined deadlines.
+  timeline:
+    early_warning: Early Warning (24h)
+    detailed_notification: Detailed Notification (72h)
+    final_report: Final Report (1 month)
+    deadline: Deadline
+    reported: Reported
+    reported_at: Reported at
+    overdue: Overdue
+    hours_remaining: '%hours% hours remaining'
+    days_remaining: '%days% days remaining'
+  field:
+    category: Category
+    detected: Detected
+    reported_by: Reported By
+    occurred: Occurred
