@@ -71,7 +71,7 @@
                     {% if control.implementationStatus == 'implemented' %}
                         <span class="badge bg-success">✅ Implementiert</span>
                     {% elseif control.implementationStatus == 'in_progress' %}
-                        <span class="badge bg-warning">🔄 In Arbeit</span>
+                        <span class="badge bg-warning">{{ 'soa.in_progress_badge_emoji'|trans }}</span>
                     {% elseif control.implementationStatus == 'not_started' %}
                         <span class="badge bg-danger">⏸ Nicht begonnen</span>
                     {% else %}

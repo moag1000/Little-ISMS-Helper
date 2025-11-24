@@ -19,13 +19,13 @@
             <div class="card shadow-lg">
                 <div class="card-header bg-primary text-white">
                     <h1 class="mb-0">
-                        <i class="fas fa-magic me-2"></i>
+                        <i class="bi bi-magic me-2"></i>
                         {{ 'setup.welcome.header'|trans({}, 'messages') }}
                     </h1>
                 </div>
                 <div class="card-body p-5">
                     <div class="text-center mb-5">
-                        <i class="fas fa-shield-alt text-primary" style="font-size: 4rem;"></i>
+                        <i class="bi bi-shield text-primary" style="font-size: 4rem;"></i>
                         <h2 class="mt-3">{{ 'setup.welcome.greeting'|trans({}, 'messages') }}</h2>
                         <p class="lead text-muted">
                             {{ 'setup.welcome.description'|trans({}, 'messages') }}
@@ -36,16 +36,16 @@
                         <div class="col-md-6">
                             <div class="card h-100 border-primary">
                                 <div class="card-body">
-                                    <i class="fas fa-list-check text-primary fa-2x mb-3"></i>
+                                    <i class="bi bi-list-check text-primary  mb-3"></i>
                                     <h5>{{ 'setup.welcome.steps.title'|trans({}, 'messages') }}</h5>
                                     <ul class="list-unstyled">
-                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.database'|trans({}, 'messages') }}</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.admin'|trans({}, 'messages') }}</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.requirements'|trans({}, 'messages') }}</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.modules'|trans({}, 'messages') }}</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.migrations'|trans({}, 'messages') }}</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.base_data'|trans({}, 'messages') }}</li>
-                                        <li><i class="fas fa-check text-success me-2"></i>{{ 'setup.welcome.steps.sample_data'|trans({}, 'messages') }}</li>
+                                        <li><i class="bi bi-check text-success me-2"></i>{{ 'setup.welcome.steps.database'|trans({}, 'messages') }}</li>
+                                        <li><i class="bi bi-check text-success me-2"></i>{{ 'setup.welcome.steps.admin'|trans({}, 'messages') }}</li>
+                                        <li><i class="bi bi-check text-success me-2"></i>{{ 'setup.welcome.steps.requirements'|trans({}, 'messages') }}</li>
+                                        <li><i class="bi bi-check text-success me-2"></i>{{ 'setup.welcome.steps.modules'|trans({}, 'messages') }}</li>
+                                        <li><i class="bi bi-check text-success me-2"></i>{{ 'setup.welcome.steps.migrations'|trans({}, 'messages') }}</li>
+                                        <li><i class="bi bi-check text-success me-2"></i>{{ 'setup.welcome.steps.base_data'|trans({}, 'messages') }}</li>
+                                        <li><i class="bi bi-check text-success me-2"></i>{{ 'setup.welcome.steps.sample_data'|trans({}, 'messages') }}</li>
                                     </ul>
                                 </div>
                             </div>
@@ -53,13 +53,13 @@
                         <div class="col-md-6">
                             <div class="card h-100 border-info">
                                 <div class="card-body">
-                                    <i class="fas fa-clock text-info fa-2x mb-3"></i>
+                                    <i class="bi bi-clock text-info  mb-3"></i>
                                     <h5>{{ 'setup.welcome.requirements.title'|trans({}, 'messages') }}</h5>
                                     <ul class="list-unstyled">
-                                        <li><i class="fas fa-hourglass-half text-info me-2"></i>{{ 'setup.welcome.requirements.duration'|trans({}, 'messages') }}</li>
-                                        <li><i class="fas fa-database text-info me-2"></i>{{ 'setup.welcome.requirements.database'|trans({}, 'messages') }}</li>
-                                        <li><i class="fas fa-server text-info me-2"></i>{{ 'setup.welcome.requirements.php'|trans({}, 'messages') }}</li>
-                                        <li><i class="fas fa-folder text-info me-2"></i>{{ 'setup.welcome.requirements.permissions'|trans({}, 'messages') }}</li>
+                                        <li><i class="bi bi-hourglass-split text-info me-2"></i>{{ 'setup.welcome.requirements.duration'|trans({}, 'messages') }}</li>
+                                        <li><i class="bi bi-database text-info me-2"></i>{{ 'setup.welcome.requirements.database'|trans({}, 'messages') }}</li>
+                                        <li><i class="bi bi-server text-info me-2"></i>{{ 'setup.welcome.requirements.php'|trans({}, 'messages') }}</li>
+                                        <li><i class="bi bi-folder text-info me-2"></i>{{ 'setup.welcome.requirements.permissions'|trans({}, 'messages') }}</li>
                                     </ul>
                                 </div>
                             </div>
@@ -69,7 +69,7 @@
                     <div class="card bg-light mb-4">
                         <div class="card-body">
                             <h5 class="card-title">
-                                <i class="fas fa-info-circle me-2"></i>
+                                <i class="bi bi-info-circle me-2"></i>
                                 {{ 'setup.welcome.info.title'|trans({}, 'messages') }}
                             </h5>
                             <p class="text-muted mb-2">
@@ -85,7 +85,7 @@
 
                     <div class="d-grid">
                         <a href="{{ path('setup_step1_requirements') }}" class="btn btn-lg btn-primary">
-                            <i class="fas fa-play me-2"></i>
+                            <i class="bi bi-play me-2"></i>
                             {{ 'setup.welcome.start_button'|trans({}, 'messages') }}
                         </a>
                     </div>

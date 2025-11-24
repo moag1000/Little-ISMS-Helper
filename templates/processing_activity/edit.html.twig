@@ -26,7 +26,7 @@
         <div class="card mt-4">
             <div class="card-body">
                 <h5 class="text-danger">Danger Zone</h5>
-                <p>Permanently delete this processing activity.</p>
+                <p>{{ 'processing_activity.permanently_delete'|trans }}</p>
                 <form method="post" action="{{ path('app_processing_activity_delete', {id: processing_activity.id}) }}" onsubmit="return confirm('Are you sure you want to delete this processing activity?');">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ processing_activity.id) }}">
                     <button type="submit" class="btn btn-danger">
