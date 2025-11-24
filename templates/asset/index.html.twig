@@ -136,7 +136,7 @@
 {# Assets Table #}
 <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset">
     <div class="card-header">
-        <h3><i class="bi bi-list" aria-hidden="true"></i> {{ 'asset.list.title'|trans({}, 'assets') }} ({{ assets|length }})</h3>
+        <h2><i class="bi bi-list" aria-hidden="true"></i> {{ 'asset.list.title'|trans({}, 'assets') }} ({{ assets|length }})</h3>
     </div>
     {% embed '_components/_table.html.twig' with {
         'noMargin': true
