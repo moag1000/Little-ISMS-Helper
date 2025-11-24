@@ -1297,6 +1297,31 @@
     border-left: 4px solid var(--color-warning);
 }
 
+/* Card border-left variants (non-lg) */
+.card-border-left-primary {
+    border-left: 4px solid var(--color-primary);
+}
+
+.card-border-left-secondary {
+    border-left: 4px solid var(--color-secondary);
+}
+
+.card-border-left-success {
+    border-left: 4px solid var(--color-success);
+}
+
+.card-border-left-info {
+    border-left: 4px solid var(--color-info);
+}
+
+.card-border-left-warning {
+    border-left: 4px solid var(--color-warning);
+}
+
+.card-border-left-danger {
+    border-left: 4px solid var(--color-danger);
+}
+
 .legend-item {
     width: 30px;
     height: 20px;
