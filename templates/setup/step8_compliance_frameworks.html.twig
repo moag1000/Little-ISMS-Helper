@@ -39,7 +39,7 @@
             <div class="card shadow-lg">
                 <div class="card-header bg-primary text-white">
                     <h2 class="mb-0">
-                        <i class="fas fa-balance-scale me-2"></i>
+                        <i class="bi bi-balance me-2"></i>
                         {{ 'setup.compliance.header'|trans({}, 'messages') }}
                     </h2>
                 </div>
@@ -51,7 +51,7 @@
                     {# Recommended Frameworks Alert #}
                     {% if recommended_frameworks is not empty %}
                         <div class="alert alert-success">
-                            <i class="fas fa-lightbulb me-2"></i>
+                            <i class="bi bi-lightbulb me-2"></i>
                             <strong>{{ 'setup.compliance.recommended.title'|trans({}, 'messages') }}</strong>
                             <p class="mb-2">{{ 'setup.compliance.recommended.description'|trans({}, 'messages') }}</p>
                             <div class="d-flex flex-wrap gap-2">
@@ -68,7 +68,7 @@
 
                     {# ISO 27001 Mandatory Notice #}
                     <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
+                        <i class="bi bi-info-circle me-2"></i>
                         <strong>{{ 'setup.compliance.mandatory.title'|trans({}, 'messages') }}</strong>
                         <p class="mb-0">{{ 'setup.compliance.mandatory.message'|trans({}, 'messages') }}</p>
                     </div>
@@ -76,7 +76,7 @@
                     {# Critical Infrastructure Notice for NIS2 #}
                     {% if 'NIS2' in recommended_frameworks and (app.session.get('setup_organisation_employee_count', '1-10') in ['1-10', '11-50']) %}
                         <div class="alert alert-warning">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <i class="bi bi-exclamation-triangle me-2"></i>
                             <strong>{{ 'setup.compliance.critical_infrastructure.title'|trans({}, 'messages') }}</strong>
                             <p class="mb-0">{{ 'setup.compliance.critical_infrastructure.message'|trans({}, 'messages') }}</p>
                         </div>
@@ -107,7 +107,7 @@
                                             {# Show recommended badge #}
                                             {% if framework_code in recommended_frameworks %}
                                                 <span class="badge bg-success mt-2">
-                                                    <i class="fas fa-star me-1"></i>
+                                                    <i class="bi bi-star me-1"></i>
                                                     {{ 'setup.compliance.recommended_badge'|trans({}, 'messages') }}
                                                 </span>
                                             {% endif %}
@@ -115,7 +115,7 @@
                                             {# Show mandatory badge for ISO 27001 #}
                                             {% if framework_code == 'ISO27001' %}
                                                 <span class="badge bg-primary mt-2">
-                                                    <i class="fas fa-lock me-1"></i>
+                                                    <i class="bi bi-lock me-1"></i>
                                                     {{ 'setup.compliance.mandatory_badge'|trans({}, 'messages') }}
                                                 </span>
                                             {% endif %}
@@ -128,7 +128,7 @@
 
                     {# Information Box #}
                     <div class="alert alert-warning mt-4">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <i class="bi bi-exclamation-triangle me-2"></i>
                         <strong>{{ 'setup.compliance.note.title'|trans({}, 'messages') }}</strong>
                         <p class="mb-0">{{ 'setup.compliance.note.message'|trans({}, 'messages') }}</p>
                     </div>
@@ -136,13 +136,13 @@
                     {# Navigation #}
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ path('setup_step7_modules') }}" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left me-2"></i>
+                            <i class="bi bi-arrow-left me-2"></i>
                             {{ 'setup.navigation.back'|trans({}, 'messages') }}
                         </a>
 
                         <button type="submit" class="btn btn-primary">
                             {{ 'setup.navigation.next'|trans({}, 'messages') }}
-                            <i class="fas fa-arrow-right ms-2"></i>
+                            <i class="bi bi-arrow-right ms-2"></i>
                         </button>
                     </div>
 
@@ -154,7 +154,7 @@
             <div class="card mt-4 border-info">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <i class="fas fa-book text-info me-2"></i>
+                        <i class="bi bi-book text-info me-2"></i>
                         {{ 'setup.compliance.details.title'|trans({}, 'messages') }}
                     </h5>
                     <div class="row">

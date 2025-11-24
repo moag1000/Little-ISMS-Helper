@@ -284,7 +284,7 @@
                 <td class="text-center">70-89%</td>
                 <td class="text-center"><strong>{{ quality_distribution.good }}</strong></td>
                 <td class="text-center">{{ total_mappings > 0 ? ((quality_distribution.good / total_mappings * 100)|round(1)) : 0 }}%</td>
-                <td>Solid mappings with minor deviations</td>
+                <td>{{ 'pdf.framework_comparison.solid_mappings_minor'|trans }}</td>
             </tr>
             <tr>
                 <td><span class="badge bg-warning">Medium</span></td>

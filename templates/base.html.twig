@@ -7,6 +7,29 @@
     <title>{% block title %}{{ 'app.title'|trans({}, 'messages') }}{% endblock %}</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
+    {# Skip Link Styles - WCAG 2.1 AA Requirement #}
+    <style>
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            z-index: 10000;
+            padding: 0.5rem 1rem;
+            background: var(--color-primary, #0d6efd);
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 0 0 0.25rem 0;
+            transition: top 0.2s;
+        }
+
+        .skip-link:focus {
+            top: 0;
+            outline: 3px solid var(--color-warning, #ffc107);
+            outline-offset: 2px;
+        }
+    </style>
+
     {% block importmap %}
         {# Import map in head with data-turbo-permanent to prevent reload on navigation #}
         <div data-turbo-permanent id="importmap-container">
@@ -100,6 +123,11 @@
     </header>
 
     {% set current_route = app.request.get('_route') %}
+
+    {# Skip to Content Link - WCAG 2.1 AA (Issue 13.1) #}
+    <a href="#main-content" class="skip-link">
+        {{ 'accessibility.skip_to_content'|trans({}, 'messages') }}
+    </a>
 
     {# Main App Layout with Sidebar #}
     <div class="app-layout">
