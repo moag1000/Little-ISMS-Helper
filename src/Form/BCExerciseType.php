@@ -24,14 +24,15 @@ class BCExerciseType extends AbstractType
                 'attr' => ['maxlength' => 255],
             ])
             ->add('exerciseType', ChoiceType::class, [
-                'label' => 'Exercise Type',
+                'label' => 'bc_exercises.field.exercise_type',
                 'choices' => [
-                    'Tabletop (Discussion-based)' => 'tabletop',
-                    'Walkthrough (Step-by-step)' => 'walkthrough',
-                    'Simulation (Simulated incident)' => 'simulation',
-                    'Full Test (Complete activation)' => 'full_test',
-                    'Component Test (Specific component)' => 'component_test',
+                    'bc_exercises.exercise_type.tabletop' => 'tabletop',
+                    'bc_exercises.exercise_type.walkthrough' => 'walkthrough',
+                    'bc_exercises.exercise_type.simulation' => 'simulation',
+                    'bc_exercises.exercise_type.full_test' => 'full_test',
+                    'bc_exercises.exercise_type.component_test' => 'component_test',
                 ],
+                'choice_translation_domain' => 'bc_exercises',
                 'required' => true,
             ])
             ->add('description', TextareaType::class, [
@@ -80,13 +81,14 @@ class BCExerciseType extends AbstractType
                 'attr' => ['rows' => 2],
             ])
             ->add('status', ChoiceType::class, [
-                'label' => 'Status',
+                'label' => 'bc_exercises.field.status',
                 'choices' => [
-                    'Planned' => 'planned',
-                    'In Progress' => 'in_progress',
-                    'Completed' => 'completed',
-                    'Cancelled' => 'cancelled',
+                    'bc_exercises.status.planned' => 'planned',
+                    'bc_exercises.status.in_progress' => 'in_progress',
+                    'bc_exercises.status.completed' => 'completed',
+                    'bc_exercises.status.cancelled' => 'cancelled',
                 ],
+                'choice_translation_domain' => 'bc_exercises',
                 'required' => true,
             ])
             ->add('results', TextareaType::class, [

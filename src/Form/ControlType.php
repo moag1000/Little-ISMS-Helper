@@ -57,11 +57,12 @@ class ControlType extends AbstractType
             ->add('category', ChoiceType::class, [
                 'label' => 'control.field.category',
                 'choices' => [
-                    'Organizational' => 'organizational',
-                    'People' => 'people',
-                    'Physical' => 'physical',
-                    'Technological' => 'technological',
+                    'control.category.organizational' => 'organizational',
+                    'control.category.people' => 'people',
+                    'control.category.physical' => 'physical',
+                    'control.category.technological' => 'technological',
                 ],
+                'choice_translation_domain' => 'controls',
                 'attr' => ['class' => 'form-select'],
                 'constraints' => [
                     new NotBlank(),
@@ -70,9 +71,10 @@ class ControlType extends AbstractType
             ->add('applicable', ChoiceType::class, [
                 'label' => 'control.field.applicable',
                 'choices' => [
-                    'Anwendbar' => true,
-                    'Nicht anwendbar' => false,
+                    'control.applicable.yes' => true,
+                    'control.applicable.no' => false,
                 ],
+                'choice_translation_domain' => 'controls',
                 'expanded' => true,
                 'attr' => ['class' => 'form-check'],
             ])
@@ -89,12 +91,13 @@ class ControlType extends AbstractType
             ->add('implementationStatus', ChoiceType::class, [
                 'label' => 'control.field.implementation_status',
                 'choices' => [
-                    'Nicht begonnen' => 'not_started',
-                    'In Planung' => 'planned',
-                    'In Umsetzung' => 'in_progress',
-                    'Implementiert' => 'implemented',
-                    'Verifiziert' => 'verified',
+                    'control.implementation_status.not_started' => 'not_started',
+                    'control.implementation_status.planned' => 'planned',
+                    'control.implementation_status.in_progress' => 'in_progress',
+                    'control.implementation_status.implemented' => 'implemented',
+                    'control.implementation_status.verified' => 'verified',
                 ],
+                'choice_translation_domain' => 'controls',
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('implementationPercentage', IntegerType::class, [
