@@ -254,10 +254,12 @@
                 <option value="medium">Mittel</option>
                 <option value="low">Niedrig</option>
             </select>
+            <label for="risk-search" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
             <input type="search"
                    class="form-control form-control-sm w-200px"
-                   placeholder="Suche..."
-                   id="risk-search">
+                   placeholder="{{ 'common.search'|trans({}, 'messages') }}..."
+                   id="risk-search"
+                   aria-label="{{ 'common.search'|trans({}, 'messages') }}">
         </div>
     </div>
     {% embed '_components/_table.html.twig' with {
