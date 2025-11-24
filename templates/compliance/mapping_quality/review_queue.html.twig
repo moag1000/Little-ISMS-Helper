@@ -76,7 +76,7 @@
                         </td>
                         <td class="text-center">
                             {% if mapping.calculatedPercentage is not null %}
-                                <span class="badge {% if ... %}bg-success{% elseif mapping.calculatedPercentage >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
+                                <span class="badge {% if mapping.calculatedPercentage >= 70 %}bg-success{% elseif mapping.calculatedPercentage >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
                                     {{ mapping.calculatedPercentage }}%
                                 </span>
                             {% else %}
@@ -261,7 +261,7 @@
         <h2>✅ Keine Mappings benötigen Review!</h2>
         <p>Alle Mappings haben akzeptable Confidence-Scores oder wurden bereits reviewed.</p>
         <hr>
-        <h4>Status:</h4>
+        <h4>Status:</h5>
         <ul>
             <li>✅ Alle Mappings mit niedrigem Confidence (<70) wurden geprüft</li>
             <li>✅ Keine großen Diskrepanzen gefunden</li>

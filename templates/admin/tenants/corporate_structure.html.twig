@@ -35,7 +35,7 @@
                             <i class="bi bi-diagram-3 text-primary fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'corporate.stats.groups'|trans({}, 'tenant') }}</h6>
+                            <h6 class="text-muted mb-1">{{ 'corporate.stats.groups'|trans({}, 'tenant') }}</h5>
                             <h3 class="mb-0">{{ corporateGroups|length }}</h3>
                         </div>
                     </div>
@@ -50,7 +50,7 @@
                             <i class="bi bi-building text-success fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'corporate.stats.standalone'|trans({}, 'tenant') }}</h6>
+                            <h6 class="text-muted mb-1">{{ 'corporate.stats.standalone'|trans({}, 'tenant') }}</h5>
                             <h3 class="mb-0">{{ standaloneTenants|length }}</h3>
                         </div>
                     </div>
@@ -65,7 +65,7 @@
                             <i class="bi bi-list-nested text-info fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'corporate.stats.total'|trans({}, 'tenant') }}</h6>
+                            <h6 class="text-muted mb-1">{{ 'corporate.stats.total'|trans({}, 'tenant') }}</h5>
                             <h3 class="mb-0">{{ allTenants|length }}</h3>
                         </div>
                     </div>
@@ -93,7 +93,7 @@
                                         <i class="bi bi-building-fill text-primary" aria-hidden="true"></i>
                                         <strong>{{ group.name }}</strong>
                                         <code class="text-muted ms-2">{{ group.code }}</code>
-                                    </h6>
+                                    </h5>
                                     <small class="text-muted">{{ 'corporate.role.parent'|trans({}, 'tenant') }}</small>
                                 </div>
                                 <a href="{{ path('tenant_management_show', {id: group.id}) }}"

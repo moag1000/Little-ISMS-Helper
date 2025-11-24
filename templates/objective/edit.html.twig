@@ -6,8 +6,7 @@
 {% block body %}
 <div class="container-fluid py-4">
     <div class="card shadow">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">{{ 'objectives.title.edit'|trans({}, 'messages') }}: {{ objective.title }}</h4>
+        <div class="card-header bg-primary text-white"><h5 class="mb-0">{{ 'objectives.title.edit'|trans({}, 'messages') }}: {{ objective.title }}</h5>
         </div>
         <div class="card-body">
             {{ form_start(form) }}

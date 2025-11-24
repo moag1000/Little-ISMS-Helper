@@ -27,7 +27,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-5">
-                    <h6 class="text-muted">Source Requirement</h6>
+                    <h6 class="text-muted">Source Requirement</h5>
                     <h5><span class="badge bg-primary">{{ mapping.sourceRequirement.framework.code }}</span> {{ mapping.sourceRequirement.requirementId }}</h5>
                     <p><strong>{{ mapping.sourceRequirement.title }}</strong></p>
                     <p class="text-muted small">{{ mapping.sourceRequirement.description|slice(0, 200) }}...</p>
@@ -44,7 +44,7 @@
                     <h3>→</h3>
                 </div>
                 <div class="col-md-5">
-                    <h6 class="text-muted">Target Requirement</h6>
+                    <h6 class="text-muted">Target Requirement</h5>
                     <h2><span class="badge bg-success">{{ mapping.targetRequirement.framework.code }}</span> {{ mapping.targetRequirement.requirementId }}</h2>
                     <p><strong>{{ mapping.targetRequirement.title }}</strong></p>
                     <p class="text-muted small">{{ mapping.targetRequirement.description|slice(0, 200) }}...</p>
@@ -65,26 +65,25 @@
     <div class="row mb-4">
         <div class="col-md-4">
             <div class="card">
-                <div class="card-header">
-                    <h6 class="mb-0">📈 Prozentsätze</h6>
+                <div class="card-header"><h5 class="mb-0">📈 Prozentsätze</h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
                         <small class="text-muted">Original (Heuristik)</small>
-                        <h4><span class="badge bg-secondary">{{ mapping.mappingPercentage }}%</span></h4>
+                        <h4><span class="badge bg-secondary">{{ mapping.mappingPercentage }}%</span></h5>
                     </div>
                     {% if mapping.calculatedPercentage is not null %}
                     <div class="mb-3">
                         <small class="text-muted">Berechnet (Automatisch)</small>
-                        <h4><span class="badge {% if ... %}bg-success{% elseif mapping.calculatedPercentage >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
+                        <h4><span class="badge {% if mapping.calculatedPercentage >= 70 %}bg-success{% elseif mapping.calculatedPercentage >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
                             {{ mapping.calculatedPercentage }}%
-                        </span></h4>
+                        </span></h5>
                     </div>
                     {% endif %}
                     {% if mapping.manualPercentage is not null %}
                     <div>
                         <small class="text-muted">Manuell überschrieben</small>
-                        <h4><span class="badge bg-info">{{ mapping.manualPercentage }}%</span></h4>
+                        <h4><span class="badge bg-info">{{ mapping.manualPercentage }}%</span></h5>
                     </div>
                     {% endif %}
                     <hr>
@@ -98,8 +97,7 @@
 
         <div class="col-md-4">
             <div class="card">
-                <div class="card-header">
-                    <h6 class="mb-0">⭐ Quality & Confidence</h6>
+                <div class="card-header"><h5 class="mb-0">⭐ Quality & Confidence</h5>
                 </div>
                 <div class="card-body">
                     {% if mapping.qualityScore is not null %}
@@ -140,8 +138,7 @@
 
         <div class="col-md-4">
             <div class="card">
-                <div class="card-header">
-                    <h6 class="mb-0">🔬 Similarity Scores</h6>
+                <div class="card-header"><h5 class="mb-0">🔬 Similarity Scores</h5>
                 </div>
                 <div class="card-body">
                     {% if mapping.textualSimilarity is not null %}
@@ -304,8 +301,7 @@
     {# Metadata #}
     {% if mapping.reviewedBy or mapping.verifiedBy %}
     <div class="card">
-        <div class="card-header">
-            <h6 class="mb-0">ℹ️ Metadata</h6>
+        <div class="card-header"><h5 class="mb-0">ℹ️ Metadata</h5>
         </div>
         <div class="card-body">
             {% if mapping.reviewedBy %}

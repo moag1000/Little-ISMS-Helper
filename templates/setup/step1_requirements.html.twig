@@ -10,7 +10,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h4 class="mb-0">Setup-Fortschritt</h4>
+                        <h4 class="mb-0">Setup-Fortschritt</h5>
                         <small class="text-muted">Schritt 1 von 11</small>
                     </div>
                     <div class="progress" style="height: 10px;">
@@ -55,7 +55,7 @@
                                     <h4 class="mb-1">
                                         <i class="fas fa-{{ results.php.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2"></i>
                                         PHP-Version
-                                    </h6>
+                                    </h5>
                                     <p class="mb-0 text-muted">{{ results.php.message }}</p>
                                 </div>
                                 <div class="text-end">
@@ -74,7 +74,7 @@
                             <h4 class="mb-2">
                                 <i class="fas fa-{{ results.extensions.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2"></i>
                                 PHP-Extensions
-                            </h6>
+                            </h5>
                             <p class="mb-2 text-muted">{{ results.extensions.message }}</p>
                             {% if results.extensions.missing|length > 0 %}
                                 <div class="alert alert-danger mb-0">
@@ -101,7 +101,7 @@
                             <h4 class="mb-1">
                                 <i class="fas fa-database me-2 text-{{ results.database.status == 'success' ? 'success' : (results.database.status == 'warning' ? 'warning' : 'danger') }}"></i>
                                 Datenbank
-                            </h6>
+                            </h5>
                             <p class="mb-0 text-muted">{{ results.database.message }}</p>
                         </div>
                     </div>
@@ -112,7 +112,7 @@
                             <h4 class="mb-2">
                                 <i class="fas fa-{{ results.permissions.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2"></i>
                                 Verzeichnis-Berechtigungen
-                            </h6>
+                            </h5>
                             <p class="mb-2 text-muted">{{ results.permissions.message }}</p>
                             {% if results.permissions.not_writable|length > 0 %}
                                 <div class="alert alert-danger mb-0">
@@ -135,7 +135,7 @@
                                     <h4 class="mb-1">
                                         <i class="fas fa-memory me-2 text-{{ results.memory.status == 'success' ? 'success' : 'warning' }}"></i>
                                         Memory Limit
-                                    </h6>
+                                    </h5>
                                     <p class="mb-0 text-muted">{{ results.memory.current }}</p>
                                     <small class="text-muted">Empfohlen: {{ results.memory.required }}</small>
                                 </div>
@@ -147,7 +147,7 @@
                                     <h4 class="mb-1">
                                         <i class="fas fa-clock me-2 text-{{ results.execution_time.status == 'success' ? 'success' : 'warning' }}"></i>
                                         Max Execution Time
-                                    </h6>
+                                    </h5>
                                     <p class="mb-0 text-muted">{{ results.execution_time.current }}s</p>
                                     <small class="text-muted">Empfohlen: {{ results.execution_time.required }}s</small>
                                 </div>
@@ -161,7 +161,7 @@
                             <h4 class="mb-1">
                                 <i class="fas fa-{{ results.symfony.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2"></i>
                                 Symfony Version
-                            </h6>
+                            </h5>
                             <p class="mb-0 text-muted">{{ results.symfony.message }}</p>
                         </div>
                     </div>

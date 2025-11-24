@@ -24,7 +24,7 @@
     {# Overall Compliance Score #}
     <div class="card mb-4 text-center">
         <div class="card-body">
-            <h6 class="text-muted mb-2">DPIA Compliance Score</h6>
+            <h6 class="text-muted mb-2">DPIA Compliance Score</h5>
             {% set score = compliance_score.overall_score %}
             <h1 class="display-1 mb-0
                 {% if score >= 80 %}text-success
@@ -46,7 +46,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">Total DPIAs</h6>
+                    <h6 class="text-muted">Total DPIAs</h5>
                     <h2>{{ statistics.total }}</h2>
                     <div class="mt-2">
                         <small class="text-success"><i class="bi bi-check-circle"></i> {{ statistics.approved }} approved</small>
@@ -57,7 +57,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">In Review</h6>
+                    <h6 class="text-muted">In Review</h5>
                     <h2 class="text-info">{{ statistics.in_review }}</h2>
                     <div class="mt-2">
                         <small class="text-muted"><i class="bi bi-clock"></i> Awaiting approval</small>
@@ -68,7 +68,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">High Risk</h6>
+                    <h6 class="text-muted">High Risk</h5>
                     <h2 class="text-danger">{{ statistics.high_risk }}</h2>
                     <div class="mt-2">
                         <small class="text-warning"><i class="bi bi-exclamation-triangle"></i> Requires attention</small>
@@ -79,7 +79,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">Completeness</h6>
+                    <h6 class="text-muted">Completeness</h5>
                     <h2>{{ statistics.completeness_rate }}%</h2>
                     <div class="progress mt-2" style="height: 10px;">
                         <div class="progress-bar bg-success" style="width: {{ statistics.completeness_rate }}%"></div>
@@ -91,8 +91,7 @@
 
     {# Filters #}
     <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0"><i class="bi bi-filter"></i> Filter DPIAs</h5>
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-filter"></i> Filter DPIAs</h5>
         </div>
         <div class="card-body">
             <div class="btn-group flex-wrap" role="group">
@@ -134,8 +133,7 @@
 
     {# DPIA Table #}
     <div class="card">
-        <div class="card-header">
-            <h5 class="mb-0"><i class="bi bi-list-check"></i> DPIAs ({{ dpias|length }})</h5>
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-list-check"></i> DPIAs ({{ dpias|length }})</h5>
         </div>
         <div class="card-body p-0">
             {% if dpias|length > 0 %}

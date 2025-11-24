@@ -40,7 +40,7 @@
         <h2>⚠️ Keine Mappings gefunden</h2>
         <p>Es wurden keine Compliance-Mappings in der Datenbank gefunden.</p>
         <hr>
-        <h6>Nächste Schritte:</h6>
+        <h6>Nächste Schritte:</h5>
         <ol>
             <li>Prüfen Sie ob Frameworks importiert sind: <code>php bin/console app:list-frameworks</code></li>
             <li>Erstellen Sie Mappings: <code>php bin/console app:create-cross-framework-mappings</code></li>
@@ -50,10 +50,10 @@
     </div>
     {% elseif quality_stats.analyzed_mappings == 0 %}
     <div class="alert alert-info">
-        <h4>ℹ️ Noch keine Analyse durchgeführt</h4>
+        <h4>ℹ️ Noch keine Analyse durchgeführt</h5>
         <p>{{ quality_stats.total_mappings }} Mappings gefunden, aber noch nicht analysiert.</p>
         <hr>
-        <h6>Analyse starten:</h6>
+        <h6>Analyse starten:</h5>
         <ol>
             <li>Sanity Check durchführen: <code>php bin/console app:mapping-quality:sanity-check</code></li>
             <li>Analyse starten: <code>php bin/console app:analyze-mapping-quality</code></li>
@@ -158,7 +158,7 @@
             {# Progress Section (hidden initially) #}
             <div id="analysisProgress" style="display: none;">
                 <hr>
-                <h4 class="mb-3">Analyse läuft...</h4>
+                <h4 class="mb-3">Analyse läuft...</h5>
 
                 <div class="progress mb-3" style="height: 30px;">
                     <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-info"
@@ -272,12 +272,12 @@
                         <td>{{ comparison.target_framework }}</td>
                         <td class="text-center">{{ comparison.mapping_count }}</td>
                         <td class="text-center">
-                            <span class="badge {% if ... %}bg-success{% elseif comparison.avg_percentage >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
+                            <span class="badge {% if comparison.avg_percentage >= 70 %}bg-success{% elseif comparison.avg_percentage >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
                                 {{ comparison.avg_percentage|round }}%
                             </span>
                         </td>
                         <td class="text-center">
-                            <span class="badge {% if ... %}bg-success{% elseif comparison.avg_quality >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
+                            <span class="badge {% if comparison.avg_quality >= 70 %}bg-success{% elseif comparison.avg_quality >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
                                 {{ comparison.avg_quality|round }}
                             </span>
                         </td>
@@ -309,7 +309,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
-                    <h4>🎯 Confidence Score</h4>
+                    <h4>🎯 Confidence Score</h5>
                     <p class="small">Misst die Zuverlässigkeit der automatischen Analyse:</p>
                     <ul class="small">
                         <li><strong>High (≥80):</strong> Sehr zuverlässig, kann auto-approved werden</li>
@@ -318,7 +318,7 @@
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h4>⭐ Quality Score</h4>
+                    <h4>⭐ Quality Score</h5>
                     <p class="small">Gesamtqualität des Mappings basierend auf:</p>
                     <ul class="small">
                         <li>Confidence (40%)</li>
@@ -328,7 +328,7 @@
                     <p class="small mb-0"><strong>Ziel:</strong> Alle Mappings ≥75 Quality Score</p>
                 </div>
                 <div class="col-md-4">
-                    <h4>🔬 Similarity Metriken</h4>
+                    <h4>🔬 Similarity Metriken</h5>
                     <p class="small">Automatische Berechnung durch:</p>
                     <ul class="small">
                         <li><strong>Keyword Overlap (40%):</strong> Sicherheitsbegriffe</li>

@@ -66,7 +66,7 @@
 
     {% if overdueAssessments|length > 0 %}
     <div class="alert alert-warning">
-        <h4>⚠️ {{ 'supplier.alert.overdue_assessments'|trans({}, 'messages') }}</h4>
+        <h4>⚠️ {{ 'supplier.alert.overdue_assessments'|trans({}, 'messages') }}</h5>
         <ul>
             {% for supplier in overdueAssessments %}
             <li>
@@ -80,7 +80,7 @@
 
     {% if nonCompliant|length > 0 %}
     <div class="alert alert-danger">
-        <h4>🚨 {{ 'supplier.alert.non_compliant'|trans({}, 'messages') }}</h4>
+        <h4>🚨 {{ 'supplier.alert.non_compliant'|trans({}, 'messages') }}</h5>
         <ul>
             {% for supplier in nonCompliant %}
             <li>
