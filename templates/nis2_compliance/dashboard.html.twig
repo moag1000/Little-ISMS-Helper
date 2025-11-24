@@ -56,7 +56,7 @@
                     <h6 class="card-title text-muted">
                         <i class="bi bi-shield-lock" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.mfa.title'|trans({}, 'messages') }}
-                    </h6>
+                    </h5>
                     <div class="display-6 {% if mfa_adoption_rate >= 95 %}text-success{% elseif mfa_adoption_rate >= 75 %}text-warning{% else %}text-danger{% endif %}">
                         {{ mfa_adoption_rate }}%
                     </div>
@@ -75,7 +75,7 @@
                     <h6 class="card-title text-muted">
                         <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.incident_reporting.title'|trans({}, 'messages') }}
-                    </h6>
+                    </h5>
                     <div class="display-6 {% if reporting_compliance_rate >= 95 %}text-success{% elseif reporting_compliance_rate >= 75 %}text-warning{% else %}text-danger{% endif %}">
                         {{ reporting_compliance_rate }}%
                     </div>
@@ -94,7 +94,7 @@
                     <h6 class="card-title text-muted">
                         <i class="bi bi-bug" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.vulnerability.title'|trans({}, 'messages') }}
-                    </h6>
+                    </h5>
                     <div class="display-6 {% if critical_vulnerabilities + high_vulnerabilities == 0 %}text-success{% elseif critical_vulnerabilities > 0 %}text-danger{% else %}text-warning{% endif %}">
                         {{ critical_vulnerabilities + high_vulnerabilities }}
                     </div>
@@ -113,7 +113,7 @@
                     <h6 class="card-title text-muted">
                         <i class="bi bi-download" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.patch.title'|trans({}, 'messages') }}
-                    </h6>
+                    </h5>
                     <div class="display-6 {% if patch_deployment_rate >= 95 %}text-success{% elseif patch_deployment_rate >= 75 %}text-warning{% else %}text-danger{% endif %}">
                         {{ patch_deployment_rate }}%
                     </div>

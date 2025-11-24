@@ -83,7 +83,7 @@
 {% macro kpi_card(title, value, subtitle, progress_value, progress_color, border_class) %}
     <div class="card shadow-sm h-100 {{ border_class|default('') }}">
         <div class="card-body">
-            <h6 class="text-muted mb-2">{{ title }}</h6>
+            <h6 class="text-muted mb-2">{{ title }}</h5>
             <h2 class="mb-0 {{ progress_color ? 'text-' ~ progress_color : '' }}">{{ value }}</h2>
             {% if subtitle %}
                 <small class="{{ progress_color ? 'text-' ~ progress_color : 'text-muted' }}">{{ subtitle }}</small>

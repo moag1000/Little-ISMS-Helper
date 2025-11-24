@@ -60,8 +60,7 @@
 
     {# Status & Workflow Actions #}
     <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0"><i class="bi bi-diagram-3"></i> {{ 'privacy.data_breach.section.status_workflow'|trans({}, 'privacy') }}</h5>
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-diagram-3"></i> {{ 'privacy.data_breach.section.status_workflow'|trans({}, 'privacy') }}</h5>
         </div>
         <div class="card-body">
             <div class="row">
@@ -160,8 +159,7 @@
 
     {# Linked Incident #}
     <div class="card mb-4">
-        <div class="card-header">
-            <h6 class="mb-0"><i class="bi bi-link-45deg"></i> {{ 'privacy.data_breach.section.linked_incident'|trans({}, 'privacy') }}</h6>
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-link-45deg"></i> {{ 'privacy.data_breach.section.linked_incident'|trans({}, 'privacy') }}</h5>
         </div>
         <div class="card-body">
             <p><strong>{{ 'privacy.data_breach.field.incident'|trans({}, 'privacy') }}:</strong>
@@ -188,8 +186,7 @@
     <div class="row mb-4">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">
-                    <h6 class="mb-0"><i class="bi bi-building"></i> {{ 'privacy.data_breach.section.authority'|trans({}, 'privacy') }}</h6>
+                <div class="card-header"><h5 class="mb-0"><i class="bi bi-building"></i> {{ 'privacy.data_breach.section.authority'|trans({}, 'privacy') }}</h5>
                 </div>
                 <div class="card-body">
                     <p><strong>{{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }}:</strong>
@@ -236,8 +233,7 @@
 
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header">
-                    <h6 class="mb-0"><i class="bi bi-people"></i> {{ 'privacy.data_breach.section.subjects'|trans({}, 'privacy') }}</h6>
+                <div class="card-header"><h5 class="mb-0"><i class="bi bi-people"></i> {{ 'privacy.data_breach.section.subjects'|trans({}, 'privacy') }}</h5>
                 </div>
                 <div class="card-body">
                     <p><strong>{{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }}:</strong>
@@ -266,20 +262,19 @@
 
     {# Breach Details - Art. 33(3) Content #}
     <div class="card mb-4">
-        <div class="card-header">
-            <h6 class="mb-0"><i class="bi bi-info-circle"></i> {{ 'privacy.data_breach.section.nature'|trans({}, 'privacy') }}</h6>
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-info-circle"></i> {{ 'privacy.data_breach.section.nature'|trans({}, 'privacy') }}</h5>
         </div>
         <div class="card-body">
             {% if breach.breachNature %}
-                <h6>{{ 'privacy.data_breach.section.nature'|trans({}, 'privacy') }} (Art. 33(3)(a)):</h6>
+                <h6>{{ 'privacy.data_breach.section.nature'|trans({}, 'privacy') }} (Art. 33(3)(a)):</h5>
                 <p>{{ breach.breachNature|nl2br }}</p>
             {% endif %}
             {% if breach.dataCategories|length > 0 %}
-                <h6>{{ 'privacy.data_breach.field.data_categories'|trans({}, 'privacy') }}:</h6>
+                <h6>{{ 'privacy.data_breach.field.data_categories'|trans({}, 'privacy') }}:</h5>
                 <p>{{ breach.dataCategories|join(', ') }}</p>
             {% endif %}
             {% if breach.dataSubjectCategories|length > 0 %}
-                <h6>{{ 'privacy.data_breach.field.data_subject_categories'|trans({}, 'privacy') }}:</h6>
+                <h6>{{ 'privacy.data_breach.field.data_subject_categories'|trans({}, 'privacy') }}:</h5>
                 <p>{{ breach.dataSubjectCategories|join(', ') }}</p>
             {% endif %}
             {% if breach.specialCategoriesAffected %}
@@ -297,20 +292,19 @@
 
     {# Consequences & Measures #}
     <div class="card mb-4">
-        <div class="card-header">
-            <h6 class="mb-0"><i class="bi bi-shield-check"></i> {{ 'privacy.data_breach.section.consequences'|trans({}, 'privacy') }}</h6>
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-shield-check"></i> {{ 'privacy.data_breach.section.consequences'|trans({}, 'privacy') }}</h5>
         </div>
         <div class="card-body">
             {% if breach.likelyConsequences %}
-                <h6>{{ 'privacy.data_breach.field.likely_consequences'|trans({}, 'privacy') }}:</h6>
+                <h6>{{ 'privacy.data_breach.field.likely_consequences'|trans({}, 'privacy') }}:</h5>
                 <p>{{ breach.likelyConsequences|nl2br }}</p>
             {% endif %}
             {% if breach.measuresTaken %}
-                <h6>{{ 'privacy.data_breach.field.measures_taken'|trans({}, 'privacy') }}:</h6>
+                <h6>{{ 'privacy.data_breach.field.measures_taken'|trans({}, 'privacy') }}:</h5>
                 <p>{{ breach.measuresTaken|nl2br }}</p>
             {% endif %}
             {% if breach.mitigationMeasures %}
-                <h6>{{ 'privacy.data_breach.field.measures_planned'|trans({}, 'privacy') }}:</h6>
+                <h6>{{ 'privacy.data_breach.field.measures_planned'|trans({}, 'privacy') }}:</h5>
                 <p>{{ breach.mitigationMeasures|nl2br }}</p>
             {% endif %}
         </div>
@@ -319,20 +313,19 @@
     {# Investigation & Follow-up #}
     {% if breach.rootCause or breach.lessonsLearned or breach.followUpActions|length > 0 %}
         <div class="card mb-4">
-            <div class="card-header">
-                <h6 class="mb-0"><i class="bi bi-search"></i> {{ 'privacy.data_breach.investigation_followup'|trans({}, 'privacy') }}</h6>
+            <div class="card-header"><h5 class="mb-0"><i class="bi bi-search"></i> {{ 'privacy.data_breach.investigation_followup'|trans({}, 'privacy') }}</h5>
             </div>
             <div class="card-body">
                 {% if breach.rootCause %}
-                    <h6>{{ 'privacy.data_breach.root_cause'|trans({}, 'privacy') }}:</h6>
+                    <h6>{{ 'privacy.data_breach.root_cause'|trans({}, 'privacy') }}:</h5>
                     <p>{{ breach.rootCause|nl2br }}</p>
                 {% endif %}
                 {% if breach.lessonsLearned %}
-                    <h6>{{ 'privacy.data_breach.lessons_learned'|trans({}, 'privacy') }}:</h6>
+                    <h6>{{ 'privacy.data_breach.lessons_learned'|trans({}, 'privacy') }}:</h5>
                     <p>{{ breach.lessonsLearned|nl2br }}</p>
                 {% endif %}
                 {% if breach.followUpActions|length > 0 %}
-                    <h6>{{ 'privacy.data_breach.follow_up_actions'|trans({}, 'privacy') }}:</h6>
+                    <h6>{{ 'privacy.data_breach.follow_up_actions'|trans({}, 'privacy') }}:</h5>
                     <ul>
                         {% for action in breach.followUpActions %}
                             <li>{{ action }}</li>

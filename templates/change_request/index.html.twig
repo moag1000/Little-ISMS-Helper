@@ -44,7 +44,7 @@
 
     {% if overdue|length > 0 %}
     <div class="alert alert-danger">
-        <h4>🚨 {{ 'change_request.alert.overdue'|trans({}, 'change_requests') }}</h4>
+        <h4>🚨 {{ 'change_request.alert.overdue'|trans({}, 'change_requests') }}</h5>
         <ul>
             {% for change in overdue %}
             <li>

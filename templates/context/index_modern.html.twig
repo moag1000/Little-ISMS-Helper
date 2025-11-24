@@ -41,7 +41,7 @@
         <div class="d-flex align-items-center">
             <i class="bi bi-info-circle-fill icon-15-mr-md" aria-hidden="true"></i>
             <div>
-                <h6 class="mb-1"><strong>{{ 'context.info.iso_clause'|trans({}, 'messages') }}</strong></h6>
+                <h6 class="mb-1"><strong>{{ 'context.info.iso_clause'|trans({}, 'messages') }}</strong></h5>
                 <p class="mb-0 small">{{ 'context.info.iso_description'|trans({}, 'messages') }}</p>
             </div>
         </div>
@@ -103,7 +103,7 @@
         <div class="d-flex align-items-center">
             <i class="bi bi-exclamation-triangle-fill icon-15-mr-md" aria-hidden="true"></i>
             <div>
-                <h6 class="mb-1"><strong>{{ 'context.message.overdue_review_title'|trans({}, 'messages') }}</strong></h6>
+                <h6 class="mb-1"><strong>{{ 'context.message.overdue_review_title'|trans({}, 'messages') }}</strong></h5>
                 <p class="mb-0">{{ 'context.message.overdue_review_text'|trans({'%date%': context.nextReviewDate|date('d.m.Y'), '%days%': (daysUntilReview * -1)}, 'messages') }}</p>
             </div>
         </div>
@@ -113,7 +113,7 @@
         <div class="d-flex align-items-center">
             <i class="bi bi-clock-fill icon-15-mr-md" aria-hidden="true"></i>
             <div>
-                <h6 class="mb-1"><strong>{{ 'context.message.upcoming_review_title'|trans({}, 'messages') }}</strong></h6>
+                <h6 class="mb-1"><strong>{{ 'context.message.upcoming_review_title'|trans({}, 'messages') }}</strong></h5>
                 <p class="mb-0">{{ 'context.message.upcoming_review_text'|trans({'%date%': context.nextReviewDate|date('d.m.Y'), '%days%': daysUntilReview}, 'messages') }}</p>
             </div>
         </div>
@@ -133,7 +133,7 @@
                 <div class="card-body">
                     <div class="mb-3">
                         <label class="text-muted small">{{ 'context.field.organization_name'|trans({}, 'messages') }}</label>
-                        <h4 class="mb-0">{{ context.organizationName }}</h4>
+                        <h4 class="mb-0">{{ context.organizationName }}</h5>
                     </div>
 
                     {% if context.ismsScope %}
@@ -473,7 +473,7 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
-                    <h4><i class="bi bi-1-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause41_title'|trans({}, 'messages') }}</h4>
+                    <h4><i class="bi bi-1-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause41_title'|trans({}, 'messages') }}</h5>
                     <ul class="small">
                         <li>{{ 'context.info.clause41_items.external_issues'|trans({}, 'messages') }}</li>
                         <li>{{ 'context.info.clause41_items.internal_issues'|trans({}, 'messages') }}</li>
@@ -482,7 +482,7 @@
                     </ul>
                 </div>
                 <div class="col-md-6">
-                    <h4><i class="bi bi-2-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause42_title'|trans({}, 'messages') }}</h4>
+                    <h4><i class="bi bi-2-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause42_title'|trans({}, 'messages') }}</h5>
                     <ul class="small">
                         <li>{{ 'context.info.clause42_items.identify'|trans({}, 'messages') }}</li>
                         <li>{{ 'context.info.clause42_items.requirements'|trans({}, 'messages') }}</li>
@@ -493,7 +493,7 @@
             </div>
             <div class="row mt-3">
                 <div class="col-md-6">
-                    <h4><i class="bi bi-3-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause43_title'|trans({}, 'messages') }}</h4>
+                    <h4><i class="bi bi-3-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause43_title'|trans({}, 'messages') }}</h5>
                     <ul class="small">
                         <li>{{ 'context.info.clause43_items.boundaries'|trans({}, 'messages') }}</li>
                         <li>{{ 'context.info.clause43_items.locations_processes'|trans({}, 'messages') }}</li>
@@ -501,7 +501,7 @@
                     </ul>
                 </div>
                 <div class="col-md-6">
-                    <h4><i class="bi bi-4-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause44_title'|trans({}, 'messages') }}</h4>
+                    <h4><i class="bi bi-4-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause44_title'|trans({}, 'messages') }}</h5>
                     <ul class="small">
                         <li>{{ 'context.info.clause44_items.policy_objectives'|trans({}, 'messages') }}</li>
                         <li>{{ 'context.info.clause44_items.roles_responsibilities'|trans({}, 'messages') }}</li>

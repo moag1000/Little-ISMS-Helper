@@ -98,7 +98,7 @@
                                             <h4 class="mb-1">
                                                 <span class="badge bg-primary me-2">{{ step.stepOrder }}</span>
                                                 {{ step.name }}
-                                            </h6>
+                                            </h5>
                                             {% if step.description %}
                                                 <p class="mb-1 text-muted small">{{ step.description }}</p>
                                             {% endif %}
@@ -191,10 +191,9 @@
         <div class="col-md-4">
             {# Actions #}
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h6 class="mb-0">
+                <div class="card-header bg-primary text-white"><h5 class="mb-0">
                         <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'workflow.section.actions'|trans({}, 'messages') }}
-                    </h6>
+                    </h5>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
@@ -222,10 +221,9 @@
 
             {# Statistics #}
             <div class="card">
-                <div class="card-header bg-info text-white">
-                    <h6 class="mb-0">
+                <div class="card-header bg-info text-white"><h5 class="mb-0">
                         <i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'workflow.section.statistics'|trans({}, 'messages') }}
-                    </h6>
+                    </h5>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
