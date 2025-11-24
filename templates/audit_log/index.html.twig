@@ -38,7 +38,7 @@
 {% block admin_content %}
 
 <div class="info-box">
-    <h3>{{ 'audit_log.section.statistics'|trans({}, 'audits') }}</h3>
+    <h1>{{ 'audit_log.section.statistics'|trans({}, 'audits') }}</h1>
     <p><strong>{{ 'audit_log.stats.total_logs'|trans({}, 'audits') }}:</strong> {{ totalLogs }}</p>
     <p><strong>{{ 'audit_log.stats.last_24h'|trans({}, 'audits') }}:</strong> {{ recentActivity|length }} {{ 'common.activities'|trans({}, 'messages') }}</p>
 
@@ -65,7 +65,7 @@
 <a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans({}, 'messages') }}</a>
 
 <div class="filter-container" id="filter-section" tabindex="-1">
-    <h3>{{ 'audit_log.section.filters'|trans({}, 'audits') }}</h3>
+    <h2>{{ 'audit_log.section.filters'|trans({}, 'audits') }}</h3>
     <form method="get" action="{{ path('app_audit_log_index') }}" role="search" aria-label="{{ 'audit_log.section.filters'|trans({}, 'audits') }}">
         <div class="d-grid grid-responsive-200 gap-1 mb-md">
             <div>
@@ -168,7 +168,7 @@
                 {% block table_body %}
                     {% for log in auditLogs %}
                     <tr>
-                        <td class="table-cell text-sm">
+                        <td class="table-cell small">
                             {{ log.createdAt|date('d.m.Y H:i:s') }}
                         </td>
                         <td class="table-cell">
@@ -189,7 +189,7 @@
                                 {{ log.userName }}
                             </a>
                         </td>
-                        <td class="table-cell text-sm">
+                        <td class="table-cell small">
                             {{ log.description|default('-') }}
                         </td>
                         <td class="table-cell">

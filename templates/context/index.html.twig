@@ -161,7 +161,7 @@
         <div class="col-lg-8 mb-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h3 class="mb-0">{{ 'context.section.title'|trans({}, 'context') }}</h3>
+                    <h2 class="mb-0">{{ 'context.section.title'|trans({}, 'context') }}</h3>
                     {% if is_granted('ROLE_ADMIN') %}
                         {% if canEdit is defined and canEdit %}
                             <a href="{{ path('app_context_edit') }}" class="btn btn-sm btn-outline-primary">

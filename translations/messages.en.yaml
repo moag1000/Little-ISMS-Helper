@@ -2714,3 +2714,11 @@ Active: Active
 Inactive: Inactive
 Evaluation: Evaluation
 Terminated: Terminated
+
+# Component translations
+components:
+  example_isms_content: "ISMS scope and context information..."
+  time_savings: "Time Savings"
+  consistency: "Consistency"
+  audit_evidence: "Audit Evidence"
+  informed_decisions: "Informed Decisions"

@@ -14,7 +14,7 @@
 </p>
 
 <div class="info-box">
-    <h3>Benutzer: {{ userName }}</h3>
+    <h1>Benutzer: {{ userName }}</h1>
     <p><strong>Anzahl Aktivitäten:</strong> {{ auditLogs|length }}</p>
 </div>
 
@@ -40,7 +40,7 @@
         {% block table_body %}
             {% for log in auditLogs %}
             <tr>
-                <td class="table-cell text-sm">
+                <td class="table-cell small">
                     {{ log.createdAt|date('d.m.Y H:i:s') }}
                 </td>
                 <td class="table-cell">
@@ -55,7 +55,7 @@
                         </a>
                     {% endif %}
                 </td>
-                <td class="table-cell text-sm">
+                <td class="table-cell small">
                     {{ log.description|default('-') }}
                 </td>
                 <td class="table-cell">

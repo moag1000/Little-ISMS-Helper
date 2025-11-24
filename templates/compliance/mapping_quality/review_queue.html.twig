@@ -40,7 +40,7 @@
     {% if mappings_requiring_review is not empty %}
     <div class="card mb-4">
         <div class="card-header bg-warning">
-            <h3 class="mb-0">⚠️ Benötigt dringend Review ({{ mappings_requiring_review|length }})</h3>
+            <h2 class="mb-0">⚠️ Benötigt dringend Review ({{ mappings_requiring_review|length }})</h3>
         </div>
         <div class="card-body">
             {% embed '_components/_table.html.twig' with {

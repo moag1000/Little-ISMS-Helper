@@ -101,7 +101,7 @@
         <div class="card card-step{% if step.id == instance.currentStep.id %} border-left-primary{% endif %}">
             <div class="d-flex justify-between align-center">
                 <div>
-                    <h3 class="fs-11-mb-xs">
+                    <h2 class="fs-11-mb-xs">
                         {{ loop.index }}. {{ step.name }}
                         {% if step.id == instance.currentStep.id %}
                             <span class="badge bg-primary">{{ 'workflow.badge.current'|trans({}, 'messages') }}</span>

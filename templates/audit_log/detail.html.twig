@@ -14,7 +14,7 @@
 </p>
 
 <div class="info-box mt-2">
-    <h3>{{ 'audit_log.entry'|trans({'%id%': auditLog.id}, 'audits') }}</h3>
+    <h1>{{ 'audit_log.entry'|trans({'%id%': auditLog.id}, 'audits') }}</h1>
 
     {% embed '_components/_table.html.twig' with {
         'class': 'w-100 mt-lg',
@@ -83,7 +83,7 @@
 
 {% if oldValues or newValues %}
 <div class="info-box mt-2">
-    <h3>{{ 'audit_log.changes'|trans({}, 'audits') }}</h3>
+    <h2>{{ 'audit_log.changes'|trans({}, 'audits') }}</h3>
 
     <div class="grid-2-cols mt-lg">
         {% if oldValues %}
