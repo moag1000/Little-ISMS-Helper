@@ -93,10 +93,10 @@
     <div class="alert alert-warning mt-4">
         <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Important Notes</h5>
         <ul class="mb-0">
-            <li>Exported data includes all records from selected entities</li>
-            <li>Sensitive data (passwords, tokens) are included - store exports securely</li>
-            <li>Large exports may cause browser timeouts - use database backups for full data exports</li>
-            <li>Relationships between entities are not automatically maintained in CSV format</li>
+            <li>{{ 'data_management.export.includes_all_records'|trans }}</li>
+            <li>{{ 'data_management.export.sensitive_data_warning'|trans }}</li>
+            <li>{{ 'data_management.export.large_exports_warning'|trans }}</li>
+            <li>{{ 'data_management.export.relationships_warning'|trans }}</li>
             <li>For complete system backup, use the <a href="{{ path('data_backup_index') }}" class="alert-link">Database Backup</a> function</li>
         </ul>
     </div>

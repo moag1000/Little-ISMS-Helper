@@ -69,7 +69,7 @@
     <div class="workflow-steps-card">
         <div class="workflow-header">
             <h2>🎯 Your Compliance Workflow</h2>
-            <p class="text-muted">Follow these steps to achieve 100% compliance</p>
+            <p class="text-muted">{{ 'compliance.framework_dashboard.compliance_steps'|trans({}, 'compliance') }}</p>
         </div>
         <div class="workflow-steps">
             <div class="workflow-step {% if dashboard.statistics.total > 0 %}completed{% endif %}"

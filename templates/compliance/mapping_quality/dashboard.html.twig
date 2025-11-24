@@ -38,7 +38,7 @@
     {% if quality_stats.total_mappings == 0 %}
     <div class="alert alert-warning">
         <h2>⚠️ Keine Mappings gefunden</h2>
-        <p>Es wurden keine Compliance-Mappings in der Datenbank gefunden.</p>
+        <p>{{ 'compliance.mapping_quality.no_mappings_found'|trans({}, 'compliance') }}</p>
         <hr>
         <h6>Nächste Schritte:</h5>
         <ol>

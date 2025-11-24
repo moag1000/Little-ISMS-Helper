@@ -16,7 +16,7 @@
         <div class="card-body">
             <form method="get" class="row g-3">
                 <div class="col-md-6">
-                    <label for="framework" class="form-label">Filter by Framework</label>
+                    <label for="framework" class="form-label">{{ 'compliance.requirement.filter_by_framework'|trans({}, 'compliance') }}</label>
                     <select name="framework" id="framework" class="form-select" onchange="this.form.submit()">
                         <option value="">All Frameworks</option>
                         {% for framework in frameworks %}

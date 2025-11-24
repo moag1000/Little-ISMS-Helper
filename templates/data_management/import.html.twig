@@ -47,10 +47,10 @@
                 <div class="alert alert-info">
                     <h4><i class="bi bi-info-circle" aria-hidden="true"></i> Import Process</h5>
                     <ol class="mb-0">
-                        <li>Upload your JSON export file</li>
-                        <li>Preview the data to be imported</li>
-                        <li>Confirm import (currently shows preview only)</li>
-                        <li>Data will be validated and imported</li>
+                        <li>{{ 'data_management.import.step_upload'|trans }}</li>
+                        <li>{{ 'data_management.import.step_preview'|trans }}</li>
+                        <li>{{ 'data_management.import.step_confirm'|trans }}</li>
+                        <li>{{ 'data_management.import.step_validate'|trans }}</li>
                     </ol>
                 </div>
 
@@ -73,25 +73,25 @@
         <div class="card-body">
             <h4>File Format:</h5>
             <ul>
-                <li>Must be valid JSON format</li>
-                <li>Should be exported from this system's Data Export function</li>
+                <li>{{ 'data_management.import.format_json'|trans }}</li>
+                <li>{{ 'data_management.import.format_export'|trans }}</li>
                 <li>Maximum file size: 50 MB (configurable)</li>
             </ul>
 
             <h4>Before Importing:</h5>
             <ul>
                 <li><strong>Create a database backup</strong> using the <a href="{{ path('data_backup_index') }}">Backup</a> function</li>
-                <li>Ensure you have sufficient disk space</li>
-                <li>Plan for potential system downtime during large imports</li>
-                <li>Test with a small dataset first</li>
+                <li>{{ 'data_management.import.ensure_disk_space'|trans }}</li>
+                <li>{{ 'data_management.import.plan_downtime'|trans }}</li>
+                <li>{{ 'data_management.import.test_small'|trans }}</li>
             </ul>
 
             <h4>Limitations:</h5>
             <ul class="mb-0">
                 <li>This feature is currently in <strong>preview mode</strong></li>
-                <li>Full import functionality requires additional validation logic</li>
+                <li>{{ 'data_management.import.validation_required'|trans }}</li>
                 <li>Entity relationships need manual verification</li>
-                <li>Duplicate detection is not yet implemented</li>
+                <li>{{ 'data_management.import.no_duplicate_detection'|trans }}</li>
             </ul>
         </div>
     </div>

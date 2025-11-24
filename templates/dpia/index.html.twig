@@ -221,7 +221,7 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <div class="btn-group btn-group-sm">
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
                                         <a href="{{ path('app_dpia_show', {id: dpia.id}) }}"
                                            class="btn btn-outline-primary"
                                            title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
@@ -248,7 +248,7 @@
             {% else %}
                 <div class="alert alert-info mb-0">
                     <i class="bi bi-info-circle"></i> No DPIAs found for the selected filter.
-                    <a href="{{ path('app_dpia_new') }}" class="alert-link">Create your first DPIA</a>.
+                    <a href="{{ path('app_dpia_new') }}" class="alert-link">{{ 'dpia.index.create_first_dpia'|trans }}</a>.
                 </div>
             {% endif %}
         </div>

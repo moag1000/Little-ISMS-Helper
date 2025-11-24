@@ -190,12 +190,12 @@
 
     {# Art. 35(7)(a) - Description of Processing #}
     <div class="section">
-        <h2>Art. 35(7)(a) - Systematic Description of Processing Operations</h2>
+        <h2>{{ 'dpia.pdf.art_35_7a_description'|trans }}</h2>
 
         <h3>Processing Description</h3>
         <p>{{ dpia.processingDescription|nl2br }}</p>
 
-        <h3>Purposes of Processing</h3>
+        <h3>{{ 'dpia.pdf.purposes_processing'|trans }}</h3>
         <p>{{ dpia.processingPurposes|nl2br }}</p>
 
         <table>
@@ -245,7 +245,7 @@
 
     {# Art. 35(7)(b) - Necessity and Proportionality #}
     <div class="section">
-        <h2>Art. 35(7)(b) - Assessment of Necessity and Proportionality</h2>
+        <h2>{{ 'dpia.pdf.art_35_7b_assessment'|trans }}</h2>
 
         <h3>Necessity Assessment</h3>
         <p>{{ dpia.necessityAssessment|nl2br }}</p>
@@ -273,7 +273,7 @@
 
     {# Art. 35(7)(c) - Risk Assessment #}
     <div class="section">
-        <h2>Art. 35(7)(c) - Assessment of Risks to Rights and Freedoms</h2>
+        <h2>{{ 'dpia.pdf.art_35_7c_risks'|trans }}</h2>
 
         {% if dpia.identifiedRisks|length > 0 %}
             <h3>Identified Risks</h3>
@@ -302,14 +302,14 @@
         {% endif %}
 
         {% if dpia.dataSubjectRisks %}
-            <h3>Specific Risks to Data Subjects</h3>
+            <h3>{{ 'dpia.pdf.specific_risks'|trans }}</h3>
             <p>{{ dpia.dataSubjectRisks|nl2br }}</p>
         {% endif %}
     </div>
 
     {# Art. 35(7)(d) - Measures to Address Risks #}
     <div class="section">
-        <h2>Art. 35(7)(d) - Measures Envisaged to Address Risks</h2>
+        <h2>{{ 'dpia.pdf.art_35_7d_measures'|trans }}</h2>
 
         <h3>Technical Measures (Art. 32 GDPR)</h3>
         <p>{{ dpia.technicalMeasures|nl2br }}</p>
@@ -413,7 +413,7 @@
                 {% endif %}
                 {% if dpia.nextReviewDate %}
                     <tr>
-                        <td>Next Review Date</td>
+                        <td>{{ 'dpia.pdf.next_review_date'|trans }}</td>
                         <td>{{ dpia.nextReviewDate|date('Y-m-d') }}</td>
                     </tr>
                 {% endif %}
@@ -443,7 +443,7 @@
                 </tr>
                 {% if dpia.approver %}
                     <tr>
-                        <td>Approved By</td>
+                        <td>{{ 'dpia.pdf.approved_by'|trans }}</td>
                         <td>{{ dpia.approver.firstName }} {{ dpia.approver.lastName }}</td>
                     </tr>
                 {% endif %}
