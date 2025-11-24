@@ -253,10 +253,10 @@
                             <div class="card-body">
                                 <h5>{{ risk.supplier.name }}</h5>
                                 {% if risk.supplier.contactEmail %}
-                                    <p><strong>{{ 'supplier.field.contact'|trans({}, 'messages') }}:</strong> <a href="mailto:{{ risk.supplier.contactEmail }}">{{ risk.supplier.contactEmail }}</a></p>
+                                    <p><strong>{{ 'supplier.field.contact'|trans({}, 'suppliers') }}:</strong> <a href="mailto:{{ risk.supplier.contactEmail }}">{{ risk.supplier.contactEmail }}</a></p>
                                 {% endif %}
                                 {% if risk.supplier.riskLevel %}
-                                    <p><strong>{{ 'supplier.field.risk_level'|trans({}, 'messages') }}:</strong>
+                                    <p><strong>{{ 'supplier.field.risk_level'|trans({}, 'suppliers') }}:</strong>
                                         <span class="{{ badge_risk(risk.supplier.riskLevel) }}">
                                             {{ risk.supplier.riskLevel|upper }}
                                         </span>
