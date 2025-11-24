@@ -337,6 +337,7 @@
 
                 {# Filter Panel - Hidden by Default #}
                 <div class="filter-panel d-none" data-toggle-target="filterPanel">
+            <label for="reqSearch" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
                     <input type="text" class="search-input" placeholder="{{ 'compliance.search'|trans({}, 'compliance') }}" id="reqSearch">
                     <select id="reqPriority">
                         <option value="">{{ 'compliance.priority.all'|trans({}, 'compliance') }}</option>

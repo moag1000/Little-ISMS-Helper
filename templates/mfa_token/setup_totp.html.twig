@@ -29,14 +29,16 @@
                     </div>
 
                     <div class="alert alert-info">
-                        <h4><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.manual_entry'|trans({}, 'mfa') }}</h5>
+                        <h4><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_totp.manual_entry'|trans({}, 'mfa') }}</h4>
                         <p class="mb-2">{{ 'mfa_token.setup_totp.manual_instructions'|trans({}, 'mfa') }}</p>
+                        <label for="secret-key" class="form-label">{{ 'mfa.setup.secret_key'|trans({}, 'mfa') }}</label>
                         <div class="input-group">
                             <input type="text"
                                    class="form-control font-monospace"
                                    value="{{ secret }}"
                                    id="secret-key"
-                                   readonly>
+                                   readonly
+                                   aria-label="{{ 'mfa.setup.secret_key'|trans({}, 'mfa') }}">
                             <button class="btn btn-outline-secondary"
                                     type="button"
                                     onclick="copyToClipboard('secret-key')">
