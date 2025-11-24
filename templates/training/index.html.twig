@@ -2,17 +2,17 @@
 {% trans_default_domain 'training' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 
-{% block title %}{{ 'training.title'|trans({}, 'messages') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'training.title'|trans({}, 'training') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h2">
-            <i class="bi bi-mortarboard" aria-hidden="true"></i> {{ 'training.title'|trans({}, 'messages') }}
+            <i class="bi bi-mortarboard" aria-hidden="true"></i> {{ 'training.title'|trans({}, 'training') }}
         </h1>
         {% if is_granted('ROLE_USER') %}
         <a href="{{ path('app_training_new') }}" class="btn btn-primary" data-turbo-action="advance">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'training.new'|trans({}, 'messages') }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'training.new'|trans({}, 'training') }}
         </a>
         {% endif %}
     </div>
@@ -61,7 +61,7 @@
                                 <i class="bi bi-collection text-primary icon-2rem" aria-hidden="true"></i>
                             </div>
                             <div class="ms-3">
-                                <h6 class="text-muted mb-1">{{ 'training.statistics.total'|trans({}, 'messages') }}</h6>
+                                <h6 class="text-muted mb-1">{{ 'training.statistics.total'|trans({}, 'training') }}</h6>
                                 <h2 class="mb-0">
                                     <span id="training-total-count">{{ detailedStats.total }}</span>
                                 </h3>
@@ -84,7 +84,7 @@
                                 <i class="bi bi-calendar-check text-info icon-2rem" aria-hidden="true"></i>
                             </div>
                             <div class="ms-3">
-                                <h6 class="text-muted mb-1">{{ 'training.statistics.upcoming'|trans({}, 'messages') }}</h6>
+                                <h6 class="text-muted mb-1">{{ 'training.statistics.upcoming'|trans({}, 'training') }}</h6>
                                 <h3 class="mb-0">
                                     <span id="training-upcoming-count">{{ statistics.upcoming ?? 0 }}</span>
                                 </h3>
@@ -102,7 +102,7 @@
                                 <i class="bi bi-check-circle text-success icon-2rem" aria-hidden="true"></i>
                             </div>
                             <div class="ms-3">
-                                <h6 class="text-muted mb-1">{{ 'training.statistics.completed'|trans({}, 'messages') }}</h6>
+                                <h6 class="text-muted mb-1">{{ 'training.statistics.completed'|trans({}, 'training') }}</h6>
                                 <h3 class="mb-0">
                                     <span id="training-completed-count">{{ statistics.completed ?? 0 }}</span>
                                 </h3>
@@ -120,7 +120,7 @@
                                 <i class="bi bi-exclamation-triangle text-warning icon-2rem" aria-hidden="true"></i>
                             </div>
                             <div class="ms-3">
-                                <h6 class="text-muted mb-1">{{ 'training.statistics.mandatory'|trans({}, 'messages') }}</h6>
+                                <h6 class="text-muted mb-1">{{ 'training.statistics.mandatory'|trans({}, 'training') }}</h6>
                                 <h3 class="mb-0">
                                     <span id="training-mandatory-count">{{ statistics.mandatory ?? 0 }}</span>
                                 </h3>
@@ -136,7 +136,7 @@
     {% if upcoming|length > 0 %}
     <div class="card mb-4 border-info">
         <div class="card-header bg-info text-white">
-            <h3 class="mb-0"><i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'training.upcoming_trainings'|trans({}, 'messages') }}</h3>
+            <h3 class="mb-0"><i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'training.upcoming_trainings'|trans({}, 'training') }}</h3>
         </div>
         <div class="card-body">
             {% embed '_components/_table.html.twig' with {
@@ -145,11 +145,11 @@
                 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">{{ 'training.title'|trans({}, 'messages') }}</th>
-                        <th scope="col">{{ 'training.type'|trans({}, 'messages') }}</th>
-                        <th scope="col">{{ 'training.scheduled_date'|trans({}, 'messages') }}</th>
-                        <th scope="col">{{ 'training.delivery_method'|trans({}, 'messages') }}</th>
-                        <th scope="col">{{ 'training.mandatory'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'training.title'|trans({}, 'training') }}</th>
+                        <th scope="col">{{ 'training.type'|trans({}, 'training') }}</th>
+                        <th scope="col">{{ 'training.scheduled_date'|trans({}, 'training') }}</th>
+                        <th scope="col">{{ 'training.delivery_method'|trans({}, 'training') }}</th>
+                        <th scope="col">{{ 'training.mandatory'|trans({}, 'training') }}</th>
                         <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
@@ -161,7 +161,7 @@
                             {{ inheritance.small_badge(training, currentTenant) }}
                             {% if training.mandatory %}
                             <span class="badge bg-warning text-dark ms-1">
-                                <i class="bi bi-exclamation-circle" aria-hidden="true"></i> {{ 'training.mandatory_label'|trans({}, 'messages') }}
+                                <i class="bi bi-exclamation-circle" aria-hidden="true"></i> {{ 'training.mandatory_label'|trans({}, 'training') }}
                             </span>
                             {% endif %}
                         </td>
@@ -200,15 +200,15 @@
     {# All Trainings Section #}
     <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/training">
         <div class="card-header bg-primary text-white">
-            <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'training.all_trainings'|trans({}, 'messages') }}</h3>
+            <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'training.all_trainings'|trans({}, 'training') }}</h3>
         </div>
         <div class="card-body">
             {% if trainings|length == 0 %}
             <div class="alert alert-info" role="alert">
-                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'training.no_trainings'|trans({}, 'messages') }}
+                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'training.no_trainings'|trans({}, 'training') }}
                 {% if is_granted('ROLE_USER') %}
                 <a href="{{ path('app_training_new') }}" class="alert-link" data-turbo-action="advance">
-                    {{ 'training.create_first'|trans({}, 'messages') }}
+                    {{ 'training.create_first'|trans({}, 'training') }}
                 </a>
                 {% endif %}
             </div>
@@ -226,12 +226,12 @@
                                    data-bulk-actions-target="selectAllCheckbox"
                                    aria-label="Alle auswählen">
                         </th>
-                        <th scope="col">{{ 'training.title'|trans({}, 'messages') }}</th>
-                        <th scope="col">{{ 'training.type'|trans({}, 'messages') }}</th>
-                        <th scope="col">{{ 'training.scheduled_date'|trans({}, 'messages') }}</th>
-                        <th scope="col">{{ 'training.duration'|trans({}, 'messages') }}</th>
-                        <th scope="col">{{ 'training.status'|trans({}, 'messages') }}</th>
-                        <th scope="col">{{ 'training.participants_count'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'training.title'|trans({}, 'training') }}</th>
+                        <th scope="col">{{ 'training.type'|trans({}, 'training') }}</th>
+                        <th scope="col">{{ 'training.scheduled_date'|trans({}, 'training') }}</th>
+                        <th scope="col">{{ 'training.duration'|trans({}, 'training') }}</th>
+                        <th scope="col">{{ 'training.status'|trans({}, 'training') }}</th>
+                        <th scope="col">{{ 'training.participants_count'|trans({}, 'training') }}</th>
                         <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
@@ -260,7 +260,7 @@
                             </span>
                         </td>
                         <td>{{ training.scheduledDate|date('d.m.Y H:i') }}</td>
-                        <td>{{ training.duration }} {{ 'training.minutes'|trans({}, 'messages') }}</td>
+                        <td>{{ training.duration }} {{ 'training.minutes'|trans({}, 'training') }}</td>
                         <td>
                             <span class="{{ badge_status(training.status) }}">
                                 {{ ('training.status.' ~ training.status)|trans }}
@@ -320,7 +320,7 @@
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title" id="deleteModalLabel{{ training.id }}">
-                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'training.confirm_delete'|trans({}, 'messages') }}
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'training.confirm_delete'|trans({}, 'training') }}
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>

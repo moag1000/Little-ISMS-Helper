@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'crisis_team' %}
-{% block title %}{{ 'crisis_team.new'|trans({}, 'messages') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'crisis_team.new'|trans({}, 'crisis_team') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 {% block body %}
 <div class="container py-4">
     <div class="card">
-        <div class="card-header bg-primary text-white"><h5 class="mb-0">{{ 'crisis_team.new'|trans({}, 'messages') }}</h5></div>
+        <div class="card-header bg-primary text-white"><h5 class="mb-0">{{ 'crisis_team.new'|trans({}, 'crisis_team') }}</h5></div>
         <div class="card-body">
             {{ form_start(form) }}{{ form_widget(form) }}
                 <div class="d-flex justify-content-between pt-3 border-top">

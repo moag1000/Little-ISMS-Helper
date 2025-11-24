@@ -9,7 +9,7 @@
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 <a href="{{ path('app_training_index') }}" data-turbo-action="advance">
-                    <i class="bi bi-mortarboard" aria-hidden="true"></i> {{ 'training.title'|trans({}, 'messages') }}
+                    <i class="bi bi-mortarboard" aria-hidden="true"></i> {{ 'training.title'|trans({}, 'training') }}
                 </a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">{{ training.title }}</li>
@@ -32,16 +32,16 @@
                     {% if training.mandatory %}
                     <div class="alert alert-warning mb-4" role="alert">
                         <h5 class="alert-heading">
-                            <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ 'training.mandatory_training'|trans({}, 'messages') }}
+                            <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ 'training.mandatory_training'|trans({}, 'training') }}
                         </h5>
-                        <p class="mb-0">{{ 'training.mandatory_info'|trans({}, 'messages') }}</p>
+                        <p class="mb-0">{{ 'training.mandatory_info'|trans({}, 'training') }}</p>
                     </div>
                     {% endif %}
 
                     {# Description #}
                     {% if training.description %}
                     <div class="mb-4">
-                        <h5><i class="bi bi-file-text" aria-hidden="true"></i> {{ 'training.description'|trans({}, 'messages') }}</h5>
+                        <h5><i class="bi bi-file-text" aria-hidden="true"></i> {{ 'training.description'|trans({}, 'training') }}</h5>
                         <p class="text-muted">{{ training.description|nl2br }}</p>
                     </div>
                     <hr>
@@ -50,7 +50,7 @@
                     {# Training Details #}
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-2">{{ 'training.type'|trans({}, 'messages') }}</h6>
+                            <h6 class="text-muted mb-2">{{ 'training.type'|trans({}, 'training') }}</h6>
                             <p>
                                 <span class="badge bg-secondary fs-6">
                                     {{ ('training.type.' ~ training.trainingType)|trans }}
@@ -58,7 +58,7 @@
                             </p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-2">{{ 'training.delivery_method'|trans({}, 'messages') }}</h6>
+                            <h6 class="text-muted mb-2">{{ 'training.delivery_method'|trans({}, 'training') }}</h6>
                             <p>
                                 <span class="badge bg-info fs-6">
                                     {{ ('training.delivery.' ~ training.deliveryMethod)|trans }}
@@ -70,22 +70,22 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
-                                <i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'training.scheduled_date'|trans({}, 'messages') }}
+                                <i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'training.scheduled_date'|trans({}, 'training') }}
                             </h5>
                             <p class="fs-5">{{ training.scheduledDate|date('d.m.Y H:i') }}</p>
                         </div>
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
-                                <i class="bi bi-hourglass" aria-hidden="true"></i> {{ 'training.duration'|trans({}, 'messages') }}
+                                <i class="bi bi-hourglass" aria-hidden="true"></i> {{ 'training.duration'|trans({}, 'training') }}
                             </h5>
-                            <p class="fs-5">{{ training.duration }} {{ 'training.minutes'|trans({}, 'messages') }}</p>
+                            <p class="fs-5">{{ training.duration }} {{ 'training.minutes'|trans({}, 'training') }}</p>
                         </div>
                     </div>
 
                     {% if training.location %}
                     <div class="mb-3">
                         <h6 class="text-muted mb-2">
-                            <i class="bi bi-geo-alt" aria-hidden="true"></i> {{ 'training.location'|trans({}, 'messages') }}
+                            <i class="bi bi-geo-alt" aria-hidden="true"></i> {{ 'training.location'|trans({}, 'training') }}
                         </h5>
                         <p>{{ training.location }}</p>
                     </div>
@@ -93,7 +93,7 @@
 
                     <div class="mb-3">
                         <h6 class="text-muted mb-2">
-                            <i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'training.target_audience'|trans({}, 'messages') }}
+                            <i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'training.target_audience'|trans({}, 'training') }}
                         </h5>
                         <p>
                             <span class="badge bg-light text-dark border">
@@ -105,7 +105,7 @@
                     {% if training.trainer %}
                     <div class="mb-3">
                         <h6 class="text-muted mb-2">
-                            <i class="bi bi-person-badge" aria-hidden="true"></i> {{ 'training.trainer'|trans({}, 'messages') }}
+                            <i class="bi bi-person-badge" aria-hidden="true"></i> {{ 'training.trainer'|trans({}, 'training') }}
                         </h5>
                         <p>{{ training.trainer.firstName }} {{ training.trainer.lastName }}</p>
                     </div>
@@ -117,7 +117,7 @@
             <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
-                        <i class="bi bi-people" aria-hidden="true"></i> {{ 'training.participants'|trans({}, 'messages') }}
+                        <i class="bi bi-people" aria-hidden="true"></i> {{ 'training.participants'|trans({}, 'training') }}
                         <span class="badge bg-primary">{{ training.participants|length }}</span>
                     </h3>
                 </div>
@@ -147,7 +147,7 @@
                     {% endembed %}
                     {% else %}
                     <p class="text-muted mb-0">
-                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'training.no_participants'|trans({}, 'messages') }}
+                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'training.no_participants'|trans({}, 'training') }}
                     </p>
                     {% endif %}
                 </div>
@@ -158,7 +158,7 @@
             <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
-                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'training.materials'|trans({}, 'messages') }}
+                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'training.materials'|trans({}, 'training') }}
                     </h3>
                 </div>
                 <div class="card-body">
@@ -172,7 +172,7 @@
             <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
-                        <i class="bi bi-chat-left-text" aria-hidden="true"></i> {{ 'training.feedback'|trans({}, 'messages') }}
+                        <i class="bi bi-chat-left-text" aria-hidden="true"></i> {{ 'training.feedback'|trans({}, 'training') }}
                     </h3>
                 </div>
                 <div class="card-body">
@@ -222,7 +222,7 @@
             <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
-                        <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'training.covered_controls'|trans({}, 'messages') }}
+                        <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'training.covered_controls'|trans({}, 'training') }}
                         <span class="badge bg-primary">{{ training.coveredControls|length }}</span>
                     </h3>
                 </div>
@@ -333,7 +333,7 @@
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title" id="deleteModalLabel">
-                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'training.confirm_delete'|trans({}, 'messages') }}
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'training.confirm_delete'|trans({}, 'training') }}
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>

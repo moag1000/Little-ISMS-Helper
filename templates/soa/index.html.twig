@@ -3,7 +3,7 @@
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}{{ 'soa.page.title'|trans({}, 'messages') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'soa.page.title'|trans({}, 'soa') }} - Little ISMS Helper{% endblock %}
 
 {% block stylesheets %}
     {{ parent() }}
@@ -13,18 +13,18 @@
 {% block body %}
 <div class="page-header">
     <div>
-        <h1>{{ 'soa.page.title'|trans({}, 'messages') }}</h1>
-        <p class="text-muted">{{ 'soa.page.subtitle'|trans({}, 'messages') }}</p>
+        <h1>{{ 'soa.page.title'|trans({}, 'soa') }}</h1>
+        <p class="text-muted">{{ 'soa.page.subtitle'|trans({}, 'soa') }}</p>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_soa_export') }}" class="btn btn-outline-success" data-turbo="false" title="{{ 'soa.action.export_html'|trans({}, 'messages') }}">
-            <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'soa.action.export_html'|trans({}, 'messages') }}
+        <a href="{{ path('app_soa_export') }}" class="btn btn-outline-success" data-turbo="false" title="{{ 'soa.action.export_html'|trans({}, 'soa') }}">
+            <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'soa.action.export_html'|trans({}, 'soa') }}
         </a>
-        <a href="{{ path('app_soa_export_pdf') }}" class="btn btn-success" data-turbo="false" title="{{ 'soa.action.export_pdf'|trans({}, 'messages') }}">
-            <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> {{ 'soa.action.export_pdf'|trans({}, 'messages') }}
+        <a href="{{ path('app_soa_export_pdf') }}" class="btn btn-success" data-turbo="false" title="{{ 'soa.action.export_pdf'|trans({}, 'soa') }}">
+            <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i> {{ 'soa.action.export_pdf'|trans({}, 'soa') }}
         </a>
-        <a href="{{ path('app_soa_preview_pdf') }}" class="btn btn-outline-primary" title="{{ 'soa.action.preview_pdf'|trans({}, 'messages') }}" target="_blank">
-            <i class="bi bi-eye" aria-hidden="true"></i> {{ 'soa.action.preview_pdf'|trans({}, 'messages') }}
+        <a href="{{ path('app_soa_preview_pdf') }}" class="btn btn-outline-primary" title="{{ 'soa.action.preview_pdf'|trans({}, 'soa') }}" target="_blank">
+            <i class="bi bi-eye" aria-hidden="true"></i> {{ 'soa.action.preview_pdf'|trans({}, 'soa') }}
         </a>
     </div>
 </div>
@@ -67,29 +67,29 @@
     <div class="col-auto">
         {% if currentTenant %}
             {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages') %}
-            {{ cards.kpi_card(('soa.kpi.total_controls'|trans({}, 'messages')), detailedStats.total, subtitle, null, 'primary', null) }}
+            {{ cards.kpi_card(('soa.kpi.total_controls'|trans({}, 'soa')), detailedStats.total, subtitle, null, 'primary', null) }}
         {% else %}
-            {{ cards.kpi_card(('soa.kpi.total_controls'|trans({}, 'messages')), detailedStats.total, null, null, 'primary', null) }}
+            {{ cards.kpi_card(('soa.kpi.total_controls'|trans({}, 'soa')), detailedStats.total, null, null, 'primary', null) }}
         {% endif %}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card(('soa.kpi.applicable_controls'|trans({}, 'messages')), controls|filter(c => c.applicable)|length, null, null, 'success', null) }}
+        {{ cards.kpi_card(('soa.kpi.applicable_controls'|trans({}, 'soa')), controls|filter(c => c.applicable)|length, null, null, 'success', null) }}
     </div>
     <div class="col-auto">
         {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
         {% set applicable = controls|filter(c => c.applicable)|length %}
-        {{ cards.kpi_card(('soa.kpi.implemented_controls'|trans({}, 'messages')), implemented, ('soa.kpi.of'|trans({}, 'messages')) ~ ' ' ~ applicable, null, 'info', null) }}
+        {{ cards.kpi_card(('soa.kpi.implemented_controls'|trans({}, 'soa')), implemented, ('soa.kpi.of'|trans({}, 'soa')) ~ ' ' ~ applicable, null, 'info', null) }}
     </div>
     <div class="col-auto">
         {% set applicable = controls|filter(c => c.applicable)|length %}
         {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
         {% set percentage = applicable > 0 ? (implemented / applicable * 100)|round : 0 %}
-        {{ cards.kpi_card(('soa.kpi.compliance_rate'|trans({}, 'messages')), percentage ~ '%', null, percentage, 'warning', null) }}
+        {{ cards.kpi_card(('soa.kpi.compliance_rate'|trans({}, 'soa')), percentage ~ '%', null, percentage, 'warning', null) }}
     </div>
 </div>
 
 {# Category Overview #}
-<h2>{{ 'soa.section.by_category'|trans({}, 'messages') }}</h2>
+<h2>{{ 'soa.section.by_category'|trans({}, 'soa') }}</h2>
 
 <div class="module-grid">
     {% set categories = {
@@ -106,19 +106,19 @@
 
         <div class="card">
             <div class="fs-2-mb-sm">{{ icon }}</div>
-            <h2>{{ ('soa.category.' ~ category)|trans }} {{ 'soa.label.controls'|trans({}, 'messages') }}</h2>
+            <h2>{{ ('soa.category.' ~ category)|trans }} {{ 'soa.label.controls'|trans({}, 'soa') }}</h2>
             <div class="stats-grid mt-2">
                 <div class="stat-item">
                     <strong>{{ cat_controls|length }}</strong>
-                    <span>{{ 'soa.kpi.total_controls'|trans({}, 'messages') }}</span>
+                    <span>{{ 'soa.kpi.total_controls'|trans({}, 'soa') }}</span>
                 </div>
                 <div class="stat-item">
                     <strong>{{ applicable_controls|length }}</strong>
-                    <span>{{ 'soa.kpi.applicable_controls'|trans({}, 'messages') }}</span>
+                    <span>{{ 'soa.kpi.applicable_controls'|trans({}, 'soa') }}</span>
                 </div>
                 <div class="stat-item">
                     <strong>{{ implemented_controls|length }}</strong>
-                    <span>{{ 'soa.kpi.implemented_controls'|trans({}, 'messages') }}</span>
+                    <span>{{ 'soa.kpi.implemented_controls'|trans({}, 'soa') }}</span>
                 </div>
             </div>
 
@@ -130,24 +130,24 @@
             </div>
 
             <div class="mt-2">
-                <a href="{{ path('app_soa_by_category', {category: category}) }}" class="btn btn-sm">{{ 'soa.action.view_details'|trans({}, 'messages') }}</a>
+                <a href="{{ path('app_soa_by_category', {category: category}) }}" class="btn btn-sm">{{ 'soa.action.view_details'|trans({}, 'soa') }}</a>
             </div>
         </div>
     {% endfor %}
 </div>
 
 {# Filter and Table #}
-<h2>{{ 'soa.section.all_controls'|trans({}, 'messages') }}</h2>
+<h2>{{ 'soa.section.all_controls'|trans({}, 'soa') }}</h2>
 
 <div class="filter-panel" data-controller="filter">
     <div class="filter-controls">
         <div class="filter-control">
-            <label for="search">{{ 'soa.filter.search'|trans({}, 'messages') }}</label>
+            <label for="search">{{ 'soa.filter.search'|trans({}, 'soa') }}</label>
             <div class="search-box">
                 <input
                     type="text"
                     id="search"
-                    placeholder="{{ 'soa.filter.search_placeholder'|trans({}, 'messages') }}"
+                    placeholder="{{ 'soa.filter.search_placeholder'|trans({}, 'soa') }}"
                     data-filter-target="searchInput"
                     data-action="input->filter#filterRows"
                 >
@@ -155,30 +155,30 @@
         </div>
 
         <div class="filter-control">
-            <label for="category-filter">{{ 'soa.filter.category'|trans({}, 'messages') }}</label>
+            <label for="category-filter">{{ 'soa.filter.category'|trans({}, 'soa') }}</label>
             <select id="category-filter" class="form-control" data-action="change->filter#filterByCategory">
-                <option value="">{{ 'soa.filter.all_categories'|trans({}, 'messages') }}</option>
-                <option value="Organizational">{{ 'soa.category.Organizational'|trans({}, 'messages') }}</option>
-                <option value="People">{{ 'soa.category.People'|trans({}, 'messages') }}</option>
-                <option value="Physical">{{ 'soa.category.Physical'|trans({}, 'messages') }}</option>
-                <option value="Technological">{{ 'soa.category.Technological'|trans({}, 'messages') }}</option>
+                <option value="">{{ 'soa.filter.all_categories'|trans({}, 'soa') }}</option>
+                <option value="Organizational">{{ 'soa.category.Organizational'|trans({}, 'soa') }}</option>
+                <option value="People">{{ 'soa.category.People'|trans({}, 'soa') }}</option>
+                <option value="Physical">{{ 'soa.category.Physical'|trans({}, 'soa') }}</option>
+                <option value="Technological">{{ 'soa.category.Technological'|trans({}, 'soa') }}</option>
             </select>
         </div>
 
         <div class="filter-control">
-            <label for="status-filter">{{ 'soa.filter.status'|trans({}, 'messages') }}</label>
+            <label for="status-filter">{{ 'soa.filter.status'|trans({}, 'soa') }}</label>
             <select id="status-filter" class="form-control" data-action="change->filter#filterByStatus">
-                <option value="">{{ 'soa.filter.all_status'|trans({}, 'messages') }}</option>
-                <option value="implemented">{{ 'soa.status.implemented'|trans({}, 'messages') }}</option>
-                <option value="in_progress">{{ 'soa.status.in_progress'|trans({}, 'messages') }}</option>
-                <option value="not_started">{{ 'soa.status.not_started'|trans({}, 'messages') }}</option>
-                <option value="not_applicable">{{ 'soa.status.not_applicable'|trans({}, 'messages') }}</option>
+                <option value="">{{ 'soa.filter.all_status'|trans({}, 'soa') }}</option>
+                <option value="implemented">{{ 'soa.status.implemented'|trans({}, 'soa') }}</option>
+                <option value="in_progress">{{ 'soa.status.in_progress'|trans({}, 'soa') }}</option>
+                <option value="not_started">{{ 'soa.status.not_started'|trans({}, 'soa') }}</option>
+                <option value="not_applicable">{{ 'soa.status.not_applicable'|trans({}, 'soa') }}</option>
             </select>
         </div>
 
         <div class="filter-control justify-end">
             <button type="button" class="btn btn-secondary" data-action="click->filter#reset">
-                🔄 {{ 'soa.filter.reset'|trans({}, 'messages') }}
+                🔄 {{ 'soa.filter.reset'|trans({}, 'soa') }}
             </button>
         </div>
     </div>
@@ -215,24 +215,24 @@
             </td>
             <td class="text-center">
                 {% if control.applicable %}
-                    <span class="badge bg-success">✓ {{ 'soa.value.yes'|trans({}, 'messages') }}</span>
+                    <span class="badge bg-success">✓ {{ 'soa.value.yes'|trans({}, 'soa') }}</span>
                 {% else %}
-                    <span class="badge badge-neutral">✗ {{ 'soa.value.no'|trans({}, 'messages') }}</span>
+                    <span class="badge badge-neutral">✗ {{ 'soa.value.no'|trans({}, 'soa') }}</span>
                 {% endif %}
             </td>
             <td>
                 {% if control.applicable %}
                     {% if control.implementationStatus == 'implemented' %}
-                        <span class="badge bg-success">✅ {{ 'soa.status.implemented'|trans({}, 'messages') }}</span>
+                        <span class="badge bg-success">✅ {{ 'soa.status.implemented'|trans({}, 'soa') }}</span>
                     {% elseif control.implementationStatus == 'in_progress' %}
-                        <span class="badge bg-warning">🔄 {{ 'soa.status.in_progress'|trans({}, 'messages') }}</span>
+                        <span class="badge bg-warning">🔄 {{ 'soa.status.in_progress'|trans({}, 'soa') }}</span>
                     {% elseif control.implementationStatus == 'not_started' %}
-                        <span class="badge bg-danger">⏸ {{ 'soa.status.not_started'|trans({}, 'messages') }}</span>
+                        <span class="badge bg-danger">⏸ {{ 'soa.status.not_started'|trans({}, 'soa') }}</span>
                     {% else %}
-                        <span class="badge badge-neutral">{{ 'soa.value.na'|trans({}, 'messages') }}</span>
+                        <span class="badge badge-neutral">{{ 'soa.value.na'|trans({}, 'soa') }}</span>
                     {% endif %}
                 {% else %}
-                    <span class="badge badge-neutral">{{ 'soa.status.not_applicable'|trans({}, 'messages') }}</span>
+                    <span class="badge badge-neutral">{{ 'soa.status.not_applicable'|trans({}, 'soa') }}</span>
                 {% endif %}
             </td>
             <td>
@@ -258,6 +258,6 @@
 {% endembed %}
 
 <div data-filter-target="noResults" class="hidden text-center-p-xl-muted">
-    <p>{{ 'soa.message.no_controls_filtered'|trans({}, 'messages') }}</p>
+    <p>{{ 'soa.message.no_controls_filtered'|trans({}, 'soa') }}</p>
 </div>
 {% endblock %}

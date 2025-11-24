@@ -39,7 +39,7 @@
                     </button>
                 {% endif %}
                 <a href="{{ path('app_objective_new') }}" class="btn btn-success">
-                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'objective.link.new'|trans({}, 'messages') }}
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'objective.link.new'|trans({}, 'objectives') }}
                 </a>
             {% endif %}
         </div>
@@ -252,7 +252,7 @@
                     {% if is_granted('ROLE_ADMIN') %}
                         <div class="d-grid mt-3">
                             <a href="{{ path('app_objective_new') }}" class="btn btn-success">
-                                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'objective.link.create_new'|trans({}, 'messages') }}
+                                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'objective.link.create_new'|trans({}, 'objectives') }}
                             </a>
                         </div>
                     {% endif %}
