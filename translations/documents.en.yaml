@@ -1,58 +1,83 @@
-document:
-  title: Documents
-  subtitle: Management and storage of policies, evidence and ISMS documents
-  action:
-    upload: Upload document
-    update: Update
-  kpi:
-    total_documents: Total documents
-    total_size: Total size
-  details:
-    title: Details
-  label:
-    type: Type
-    file_name: File name
-    size: Size
-    mime_type: MIME type
-    uploaded_by: Uploaded by
-    uploaded_at: Uploaded at
-    last_updated: Last updated
-    related_entity: Related entity
-  type:
-    pdf: PDF
-    images: Images
-    tables: Tables
-    excel: Excel
-    other: Other
-  section:
-    type_overview: Type overview
-    all_documents: All documents
-    basic_info: Basic information
-    file_upload: File upload
-  filter:
-    all_categories: All categories
-    search_placeholder: Search...
-  table:
-    icon: Icon
-    uploaded_by: Uploaded by
-  message:
-    no_results: No results found
-    no_documents: No documents yet
-    upload_first: Upload your first document to get started
-  confirm:
-    delete: "Do you really want to delete this document? This action cannot be undone."
-  new: New Document
-  edit: Edit Document
-  field:
-    name: Name
-    description: Description
-    document_type: Document type
-    file: File
-  help:
-    name: Unique name of the document
-    description: Detailed description of the content and purpose
-    document_type: Category of the document (e.g. policy, procedure)
-    file: Choose a file to upload
-    edit_file: Leave the field empty to keep the existing file
-    file_edit: Upload a new file (optional)
-  delete_warning: Deleting this document cannot be undone.
+document.title: Documents
+document.subtitle: 'Management and storage of policies, evidence and ISMS documents'
+document.action.upload: 'Upload document'
+document.action.update: Update
+document.kpi.total_documents: 'Total documents'
+document.kpi.total_size: 'Total size'
+document.details.title: Details
+document.label.type: Type
+document.label.file_name: 'File name'
+document.label.size: Size
+document.label.mime_type: 'MIME type'
+document.label.uploaded_by: 'Uploaded by'
+document.label.uploaded_at: 'Uploaded at'
+document.label.last_updated: 'Last updated'
+document.label.related_entity: 'Related entity'
+document.type.pdf: PDF
+document.type.images: Images
+document.type.tables: Tables
+document.type.excel: Excel
+document.type.other: Other
+document.section.type_overview: 'Type overview'
+document.section.all_documents: 'All documents'
+document.section.basic_info: 'Basic information'
+document.section.file_upload: 'File upload'
+document.filter.all_categories: 'All categories'
+document.filter.search_placeholder: Search...
+document.table.icon: Icon
+document.table.uploaded_by: 'Uploaded by'
+document.message.no_results: 'No results found'
+document.message.no_documents: 'No documents yet'
+document.message.upload_first: 'Upload your first document to get started'
+document.confirm.delete: 'Do you really want to delete this document? This action cannot be undone.'
+document.new: 'New Document'
+document.edit: 'Edit Document'
+document.field.name: Name
+document.field.description: Description
+document.field.document_type: 'Document type'
+document.field.file: File
+document.help.name: 'Unique name of the document'
+document.help.description: 'Detailed description of the content and purpose'
+document.help.document_type: 'Category of the document (e.g. policy, procedure)'
+document.help.file: 'Choose a file to upload'
+document.help.edit_file: 'Leave the field empty to keep the existing file'
+document.help.file_edit: 'Upload a new file (optional)'
+document.delete_warning: 'Deleting this document cannot be undone.'
+document.field.title: __document.field.title
+document.field.version: __document.field.version
+document.field.status: __document.field.status
+document.field.owner: __document.field.owner
+document.field.last_updated: __document.field.last_updated
+document.field.review_date: __document.field.review_date
+document.badge.controlled: __document.badge.controlled
+document.badge.confidential: __document.badge.confidential
+document.badge.overdue: __document.badge.overdue
+document.badge.due_soon: __document.badge.due_soon
+document.message.no_documents_for_type: __document.message.no_documents_for_type
+document.field.type_name: __document.field.type_name
+document.field.total_documents: __document.field.total_documents
+document.field.active: __document.field.active
+document.field.draft: __document.field.draft
+document.field.overdue_reviews: __document.field.overdue_reviews
+document.message.no_types: __document.message.no_types
+document.title.by_type: __document.title.by_type
+document.description.by_type: __document.description.by_type
+document.action.create: __document.action.create
+document.stats.total: __document.stats.total
+document.stats.document_types: __document.stats.document_types
+document.stats.expiring_soon: __document.stats.expiring_soon
+document.stats.avg_per_type: __document.stats.avg_per_type
+document.section.select_type: __document.section.select_type
+document.option.all_types: __document.option.all_types
+document.section.types_overview: __document.section.types_overview
+document.field.documents: __document.field.documents
+document.section.documents: __document.section.documents
+document.section.type_statistics: __document.section.type_statistics
+document.stats.total_documents: __document.stats.total_documents
+document.stats.active_documents: __document.stats.active_documents
+document.stats.draft_documents: __document.stats.draft_documents
+document.stats.overdue_reviews: __document.stats.overdue_reviews
+document.section.recent_activity: __document.section.recent_activity
+document.field.updated: __document.field.updated
+document.message.no_recent_activity: __document.message.no_recent_activity
+document.section.all_types: __document.section.all_types

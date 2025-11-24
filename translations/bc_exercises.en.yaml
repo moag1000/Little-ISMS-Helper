@@ -1,51 +1,53 @@
-bc_exercises:
-  page:
-    title: BC Exercises & Testing
-    header: BC Exercises & Testing
-  action:
-    add_new: Add New Exercise
-    edit: Edit Exercise
-  stats:
-    total: Total Exercises
-    completed: Completed
-    planned: Planned
-  section:
-    upcoming: Upcoming Exercises
-    incomplete_reports: Incomplete Reports
-    details: Exercise Details
-    scope_objectives: Scope & Objectives
-    scenario: Exercise Scenario
-    participants: Participants
-    results: Results
-    what_went_well: What Went Well (WWW)
-    improvements: Areas for Improvement (AFI)
-    findings: Findings
-    action_items: Action Items
-    lessons_learned: Lessons Learned
-    plan_updates_required: Plan Updates Required
-    related_plans: Related BC Plans
-  table:
-    name: Name
-    type: Type
-    date: Date
-    status: Status
-    effectiveness: Effectiveness
-  field:
-    exercise_date: Exercise Date
-    duration: Duration
-    duration_hours: hours
-    facilitator: Facilitator
-    observers: Observers
-    success_rating: Success Rating
-    report_completed: Report Completed
-    report_date: Report Date
-  badge:
-    yes: Yes
-    no: No
-  message:
-    no_exercises: No BC exercises found.
-    schedule_first: Schedule your first exercise
-    incomplete_reports: Incomplete Reports
-    upcoming: Upcoming Exercises
-    confirm_delete: Are you sure you want to delete this exercise?
-    na: N/A
+bc_exercises.page.title: 'BC Exercises & Testing'
+bc_exercises.page.header: 'BC Exercises & Testing'
+bc_exercises.action.add_new: 'Add New Exercise'
+bc_exercises.action.edit: 'Edit Exercise'
+bc_exercises.stats.total: 'Total Exercises'
+bc_exercises.stats.completed: Completed
+bc_exercises.stats.planned: Planned
+bc_exercises.section.upcoming: 'Upcoming Exercises'
+bc_exercises.section.incomplete_reports: 'Incomplete Reports'
+bc_exercises.section.details: 'Exercise Details'
+bc_exercises.section.scope_objectives: 'Scope & Objectives'
+bc_exercises.section.scenario: 'Exercise Scenario'
+bc_exercises.section.participants: Participants
+bc_exercises.section.results: Results
+bc_exercises.section.what_went_well: 'What Went Well (WWW)'
+bc_exercises.section.improvements: 'Areas for Improvement (AFI)'
+bc_exercises.section.findings: Findings
+bc_exercises.section.action_items: 'Action Items'
+bc_exercises.section.lessons_learned: 'Lessons Learned'
+bc_exercises.section.plan_updates_required: 'Plan Updates Required'
+bc_exercises.section.related_plans: 'Related BC Plans'
+bc_exercises.table.name: Name
+bc_exercises.table.type: Type
+bc_exercises.table.date: Date
+bc_exercises.table.status: Status
+bc_exercises.table.effectiveness: Effectiveness
+bc_exercises.field.exercise_type: 'Exercise Type'
+bc_exercises.field.status: Status
+bc_exercises.field.exercise_date: 'Exercise Date'
+bc_exercises.field.duration: Duration
+bc_exercises.field.duration_hours: hours
+bc_exercises.field.facilitator: Facilitator
+bc_exercises.field.observers: Observers
+bc_exercises.field.success_rating: 'Success Rating'
+bc_exercises.field.report_completed: 'Report Completed'
+bc_exercises.field.report_date: 'Report Date'
+bc_exercises.exercise_type.tabletop: 'Tabletop (Discussion-based)'
+bc_exercises.exercise_type.walkthrough: 'Walkthrough (Step-by-step)'
+bc_exercises.exercise_type.simulation: 'Simulation (Simulated incident)'
+bc_exercises.exercise_type.full_test: 'Full Test (Complete activation)'
+bc_exercises.exercise_type.component_test: 'Component Test (Specific component)'
+bc_exercises.status.planned: Planned
+bc_exercises.status.in_progress: 'In Progress'
+bc_exercises.status.completed: Completed
+bc_exercises.status.cancelled: Cancelled
+bc_exercises.badge.yes: 'Yes'
+bc_exercises.badge.no: 'No'
+bc_exercises.message.no_exercises: 'No BC exercises found.'
+bc_exercises.message.schedule_first: 'Schedule your first exercise'
+bc_exercises.message.incomplete_reports: 'Incomplete Reports'
+bc_exercises.message.upcoming: 'Upcoming Exercises'
+bc_exercises.message.confirm_delete: 'Are you sure you want to delete this exercise?'
+bc_exercises.message.na: N/A

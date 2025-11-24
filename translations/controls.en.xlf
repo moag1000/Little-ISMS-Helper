@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="en" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="lQXiw1n" resname="controls.field.control_id">
+        <source>controls.field.control_id</source>
+        <target>Control ID</target>
+      </trans-unit>
+      <trans-unit id="1KM_e2g" resname="controls.field.name">
+        <source>controls.field.name</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="wbgYt_W" resname="controls.field.title">
+        <source>controls.field.title</source>
+        <target>Title</target>
+      </trans-unit>
+      <trans-unit id="UeqkveH" resname="controls.field.category">
+        <source>controls.field.category</source>
+        <target>Category</target>
+      </trans-unit>
+      <trans-unit id="va8hwhZ" resname="controls.field.implementation_status">
+        <source>controls.field.implementation_status</source>
+        <target>Implementation Status</target>
+      </trans-unit>
+      <trans-unit id="J0L89Hp" resname="controls.field.status">
+        <source>controls.field.status</source>
+        <target>Status</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

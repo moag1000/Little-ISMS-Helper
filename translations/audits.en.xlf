@@ -1,0 +1,766 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="en" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="Yv6uVGp" resname="audit_log.view_all">
+        <source>audit_log.view_all</source>
+        <target>__audit_log.view_all</target>
+      </trans-unit>
+      <trans-unit id="wRpTNmw" resname="audit_log.field.timestamp">
+        <source>audit_log.field.timestamp</source>
+        <target>__audit_log.field.timestamp</target>
+      </trans-unit>
+      <trans-unit id="5m8VY9Y" resname="audit_log.field.action">
+        <source>audit_log.field.action</source>
+        <target>__audit_log.field.action</target>
+      </trans-unit>
+      <trans-unit id="Tu3EOOj" resname="audit_log.field.user">
+        <source>audit_log.field.user</source>
+        <target>__audit_log.field.user</target>
+      </trans-unit>
+      <trans-unit id="IxaBcuY" resname="audit_log.field.description">
+        <source>audit_log.field.description</source>
+        <target>__audit_log.field.description</target>
+      </trans-unit>
+      <trans-unit id="xFyFSor" resname="audit_log.table.timestamp">
+        <source>audit_log.table.timestamp</source>
+        <target>__audit_log.table.timestamp</target>
+      </trans-unit>
+      <trans-unit id="zLJmRzD" resname="audit_log.table.action">
+        <source>audit_log.table.action</source>
+        <target>__audit_log.table.action</target>
+      </trans-unit>
+      <trans-unit id="6.G1FNi" resname="audit_log.table.entity">
+        <source>audit_log.table.entity</source>
+        <target>__audit_log.table.entity</target>
+      </trans-unit>
+      <trans-unit id="K14a5RW" resname="audit_log.table.user">
+        <source>audit_log.table.user</source>
+        <target>__audit_log.table.user</target>
+      </trans-unit>
+      <trans-unit id="UVXqVeV" resname="audit_log.table.description">
+        <source>audit_log.table.description</source>
+        <target>__audit_log.table.description</target>
+      </trans-unit>
+      <trans-unit id="0aVBriG" resname="audit_log.table.details">
+        <source>audit_log.table.details</source>
+        <target>__audit_log.table.details</target>
+      </trans-unit>
+      <trans-unit id="DxYhFNF" resname="audit_log.table.view_details">
+        <source>audit_log.table.view_details</source>
+        <target>__audit_log.table.view_details</target>
+      </trans-unit>
+      <trans-unit id="hYqvGMw" resname="audit_log.page.title">
+        <source>audit_log.page.title</source>
+        <target>__audit_log.page.title</target>
+      </trans-unit>
+      <trans-unit id=".Bp0bYt" resname="audit_log.page.subtitle">
+        <source>audit_log.page.subtitle</source>
+        <target>__audit_log.page.subtitle</target>
+      </trans-unit>
+      <trans-unit id="C4KA5rn" resname="audit_log.section.statistics">
+        <source>audit_log.section.statistics</source>
+        <target>__audit_log.section.statistics</target>
+      </trans-unit>
+      <trans-unit id="DQldv0r" resname="audit_log.stats.total_logs">
+        <source>audit_log.stats.total_logs</source>
+        <target>__audit_log.stats.total_logs</target>
+      </trans-unit>
+      <trans-unit id=".yWdktL" resname="audit_log.stats.last_24h">
+        <source>audit_log.stats.last_24h</source>
+        <target>__audit_log.stats.last_24h</target>
+      </trans-unit>
+      <trans-unit id="Izf0VHg" resname="audit_log.stats.actions">
+        <source>audit_log.stats.actions</source>
+        <target>__audit_log.stats.actions</target>
+      </trans-unit>
+      <trans-unit id="Dg3p8V." resname="audit_log.stats.entity_types">
+        <source>audit_log.stats.entity_types</source>
+        <target>__audit_log.stats.entity_types</target>
+      </trans-unit>
+      <trans-unit id="PV2t3vV" resname="audit_log.section.filters">
+        <source>audit_log.section.filters</source>
+        <target>__audit_log.section.filters</target>
+      </trans-unit>
+      <trans-unit id="hypCzrY" resname="audit_log.filter.entity_type">
+        <source>audit_log.filter.entity_type</source>
+        <target>__audit_log.filter.entity_type</target>
+      </trans-unit>
+      <trans-unit id="eLQTDd." resname="audit_log.filter.action">
+        <source>audit_log.filter.action</source>
+        <target>__audit_log.filter.action</target>
+      </trans-unit>
+      <trans-unit id="__R3wNg" resname="audit_log.filter.user">
+        <source>audit_log.filter.user</source>
+        <target>__audit_log.filter.user</target>
+      </trans-unit>
+      <trans-unit id="MLCh4_W" resname="audit_log.filter.date_from">
+        <source>audit_log.filter.date_from</source>
+        <target>__audit_log.filter.date_from</target>
+      </trans-unit>
+      <trans-unit id="MMbqvg8" resname="audit_log.filter.date_to">
+        <source>audit_log.filter.date_to</source>
+        <target>__audit_log.filter.date_to</target>
+      </trans-unit>
+      <trans-unit id="doMeteH" resname="audit_log.filter.apply">
+        <source>audit_log.filter.apply</source>
+        <target>__audit_log.filter.apply</target>
+      </trans-unit>
+      <trans-unit id="Jw8YsEx" resname="audit_log.filter.reset">
+        <source>audit_log.filter.reset</source>
+        <target>__audit_log.filter.reset</target>
+      </trans-unit>
+      <trans-unit id="CQ.Hyv_" resname="audit_log.filter.statistics">
+        <source>audit_log.filter.statistics</source>
+        <target>__audit_log.filter.statistics</target>
+      </trans-unit>
+      <trans-unit id="6AUA.4C" resname="audit_log.section.entries">
+        <source>audit_log.section.entries</source>
+        <target>__audit_log.section.entries</target>
+      </trans-unit>
+      <trans-unit id="yQkhULB" resname="audit_log.section.table">
+        <source>audit_log.section.table</source>
+        <target>__audit_log.section.table</target>
+      </trans-unit>
+      <trans-unit id="X8_mCKk" resname="audit_log.section.timeline">
+        <source>audit_log.section.timeline</source>
+        <target>__audit_log.section.timeline</target>
+      </trans-unit>
+      <trans-unit id="CjRCqYP" resname="audit_log.pagination.prev">
+        <source>audit_log.pagination.prev</source>
+        <target>__audit_log.pagination.prev</target>
+      </trans-unit>
+      <trans-unit id="YMbSjNe" resname="audit_log.pagination.page_counter">
+        <source>audit_log.pagination.page_counter</source>
+        <target>__audit_log.pagination.page_counter</target>
+      </trans-unit>
+      <trans-unit id="WrOiaaN" resname="audit_log.pagination.next">
+        <source>audit_log.pagination.next</source>
+        <target>__audit_log.pagination.next</target>
+      </trans-unit>
+      <trans-unit id="FDr82jM" resname="audit_log.message.no_entries">
+        <source>audit_log.message.no_entries</source>
+        <target>__audit_log.message.no_entries</target>
+      </trans-unit>
+      <trans-unit id="l9PWSHG" resname="audit_log.field.entity_type">
+        <source>audit_log.field.entity_type</source>
+        <target>__audit_log.field.entity_type</target>
+      </trans-unit>
+      <trans-unit id="SBqU_XN" resname="audit_log.field.entity_id">
+        <source>audit_log.field.entity_id</source>
+        <target>__audit_log.field.entity_id</target>
+      </trans-unit>
+      <trans-unit id="1Dpy1sf" resname="audit_log.field.ip_address">
+        <source>audit_log.field.ip_address</source>
+        <target>__audit_log.field.ip_address</target>
+      </trans-unit>
+      <trans-unit id="C7RCn3f" resname="audit_log.field.user_agent">
+        <source>audit_log.field.user_agent</source>
+        <target>__audit_log.field.user_agent</target>
+      </trans-unit>
+      <trans-unit id="C9giiUe" resname="audit_log.title">
+        <source>audit_log.title</source>
+        <target>__audit_log.title</target>
+      </trans-unit>
+      <trans-unit id="C2N0qXO" resname="audit_log.detail.subtitle">
+        <source>audit_log.detail.subtitle</source>
+        <target>__audit_log.detail.subtitle</target>
+      </trans-unit>
+      <trans-unit id="c9heOIl" resname="audit_log.entry">
+        <source>audit_log.entry</source>
+        <target>__audit_log.entry</target>
+      </trans-unit>
+      <trans-unit id="0D.6Jsn" resname="audit_log.changes">
+        <source>audit_log.changes</source>
+        <target>__audit_log.changes</target>
+      </trans-unit>
+      <trans-unit id="zomxarE" resname="audit_log.old_values">
+        <source>audit_log.old_values</source>
+        <target>__audit_log.old_values</target>
+      </trans-unit>
+      <trans-unit id="fUYOL.y" resname="audit_log.new_values">
+        <source>audit_log.new_values</source>
+        <target>__audit_log.new_values</target>
+      </trans-unit>
+      <trans-unit id="M5kQt2f" resname="audit_log.entries">
+        <source>audit_log.entries</source>
+        <target>__audit_log.entries</target>
+      </trans-unit>
+      <trans-unit id="UFs261u" resname="audit_log.showing_recent">
+        <source>audit_log.showing_recent</source>
+        <target>__audit_log.showing_recent</target>
+      </trans-unit>
+      <trans-unit id="Pe1K3zW" resname="audit.edit">
+        <source>audit.edit</source>
+        <target>__audit.edit</target>
+      </trans-unit>
+      <trans-unit id="kV2jNa7" resname="audit_management.title">
+        <source>audit_management.title</source>
+        <target>__audit_management.title</target>
+      </trans-unit>
+      <trans-unit id="O5WY6SO" resname="audit.iso_27001_requirement">
+        <source>audit.iso_27001_requirement</source>
+        <target>__audit.iso_27001_requirement</target>
+      </trans-unit>
+      <trans-unit id="JOjZFsH" resname="audit.iso_27001_clause_info">
+        <source>audit.iso_27001_clause_info</source>
+        <target>__audit.iso_27001_clause_info</target>
+      </trans-unit>
+      <trans-unit id="QGVHxKB" resname="audit.section.basic_info">
+        <source>audit.section.basic_info</source>
+        <target>__audit.section.basic_info</target>
+      </trans-unit>
+      <trans-unit id="05lrDen" resname="audit.field.title">
+        <source>audit.field.title</source>
+        <target>__audit.field.title</target>
+      </trans-unit>
+      <trans-unit id="57Rx6lA" resname="audit.field.scope">
+        <source>audit.field.scope</source>
+        <target>__audit.field.scope</target>
+      </trans-unit>
+      <trans-unit id="kxYKqzP" resname="audit.field.scope_type">
+        <source>audit.field.scope_type</source>
+        <target>__audit.field.scope_type</target>
+      </trans-unit>
+      <trans-unit id="5U.cdHX" resname="audit.field.audit_type">
+        <source>audit.field.audit_type</source>
+        <target>__audit.field.audit_type</target>
+      </trans-unit>
+      <trans-unit id="rsQ7nMF" resname="audit.field.audited_subsidiaries">
+        <source>audit.field.audited_subsidiaries</source>
+        <target>__audit.field.audited_subsidiaries</target>
+      </trans-unit>
+      <trans-unit id="W39F2CU" resname="audit.section.frameworks">
+        <source>audit.section.frameworks</source>
+        <target>__audit.section.frameworks</target>
+      </trans-unit>
+      <trans-unit id="9CPaShp" resname="audit.field.framework">
+        <source>audit.field.framework</source>
+        <target>__audit.field.framework</target>
+      </trans-unit>
+      <trans-unit id=".DMjQ6y" resname="audit.field.standard">
+        <source>audit.field.standard</source>
+        <target>__audit.field.standard</target>
+      </trans-unit>
+      <trans-unit id="VB6QpwS" resname="audit.section.schedule">
+        <source>audit.section.schedule</source>
+        <target>__audit.section.schedule</target>
+      </trans-unit>
+      <trans-unit id="ic9PGhn" resname="audit.field.planned_date">
+        <source>audit.field.planned_date</source>
+        <target>__audit.field.planned_date</target>
+      </trans-unit>
+      <trans-unit id="jAZCnNv" resname="audit.field.actual_date">
+        <source>audit.field.actual_date</source>
+        <target>__audit.field.actual_date</target>
+      </trans-unit>
+      <trans-unit id="mTB2Myh" resname="audit.section.team">
+        <source>audit.section.team</source>
+        <target>__audit.section.team</target>
+      </trans-unit>
+      <trans-unit id="KZm70Kh" resname="audit.field.lead_auditor">
+        <source>audit.field.lead_auditor</source>
+        <target>__audit.field.lead_auditor</target>
+      </trans-unit>
+      <trans-unit id="qarw4oR" resname="audit.field.audit_team">
+        <source>audit.field.audit_team</source>
+        <target>__audit.field.audit_team</target>
+      </trans-unit>
+      <trans-unit id="15mVEuX" resname="audit.field.auditee">
+        <source>audit.field.auditee</source>
+        <target>__audit.field.auditee</target>
+      </trans-unit>
+      <trans-unit id="cVBW5PO" resname="audit.field.department">
+        <source>audit.field.department</source>
+        <target>__audit.field.department</target>
+      </trans-unit>
+      <trans-unit id="qXMZwSX" resname="audit.section.status">
+        <source>audit.section.status</source>
+        <target>__audit.section.status</target>
+      </trans-unit>
+      <trans-unit id="ShsqMKp" resname="audit.field.status">
+        <source>audit.field.status</source>
+        <target>__audit.field.status</target>
+      </trans-unit>
+      <trans-unit id="mD28Yjg" resname="audit.field.overall_result">
+        <source>audit.field.overall_result</source>
+        <target>__audit.field.overall_result</target>
+      </trans-unit>
+      <trans-unit id="9EppLAm" resname="audit.section.objectives">
+        <source>audit.section.objectives</source>
+        <target>__audit.section.objectives</target>
+      </trans-unit>
+      <trans-unit id="w3RBNjz" resname="audit.field.objectives">
+        <source>audit.field.objectives</source>
+        <target>__audit.field.objectives</target>
+      </trans-unit>
+      <trans-unit id="2YNVAZs" resname="audit.field.audit_criteria">
+        <source>audit.field.audit_criteria</source>
+        <target>__audit.field.audit_criteria</target>
+      </trans-unit>
+      <trans-unit id="y1gX0rD" resname="audit.field.methodology">
+        <source>audit.field.methodology</source>
+        <target>__audit.field.methodology</target>
+      </trans-unit>
+      <trans-unit id="RzspghR" resname="audit.section.findings">
+        <source>audit.section.findings</source>
+        <target>__audit.section.findings</target>
+      </trans-unit>
+      <trans-unit id="MTPy2Wn" resname="audit.field.findings">
+        <source>audit.field.findings</source>
+        <target>__audit.field.findings</target>
+      </trans-unit>
+      <trans-unit id="i3RAi_T" resname="audit.field.nonconformities">
+        <source>audit.field.nonconformities</source>
+        <target>__audit.field.nonconformities</target>
+      </trans-unit>
+      <trans-unit id="cZh8gEP" resname="audit.field.observations">
+        <source>audit.field.observations</source>
+        <target>__audit.field.observations</target>
+      </trans-unit>
+      <trans-unit id="IyO1auu" resname="audit.section.recommendations">
+        <source>audit.section.recommendations</source>
+        <target>__audit.section.recommendations</target>
+      </trans-unit>
+      <trans-unit id="kqMv2XP" resname="audit.field.recommendations">
+        <source>audit.field.recommendations</source>
+        <target>__audit.field.recommendations</target>
+      </trans-unit>
+      <trans-unit id="DWWthaJ" resname="audit.field.corrective_actions">
+        <source>audit.field.corrective_actions</source>
+        <target>__audit.field.corrective_actions</target>
+      </trans-unit>
+      <trans-unit id="X_LhCUz" resname="audit.field.follow_up_actions">
+        <source>audit.field.follow_up_actions</source>
+        <target>__audit.field.follow_up_actions</target>
+      </trans-unit>
+      <trans-unit id="MUz2_vT" resname="audit.section.documentation">
+        <source>audit.section.documentation</source>
+        <target>__audit.section.documentation</target>
+      </trans-unit>
+      <trans-unit id="RuhjqlY" resname="audit.field.evidence_collected">
+        <source>audit.field.evidence_collected</source>
+        <target>__audit.field.evidence_collected</target>
+      </trans-unit>
+      <trans-unit id="Pms31u4" resname="audit.field.summary">
+        <source>audit.field.summary</source>
+        <target>__audit.field.summary</target>
+      </trans-unit>
+      <trans-unit id="cJakg0a" resname="audit.field.notes">
+        <source>audit.field.notes</source>
+        <target>__audit.field.notes</target>
+      </trans-unit>
+      <trans-unit id="1bOWZfV" resname="audit.new">
+        <source>audit.new</source>
+        <target>__audit.new</target>
+      </trans-unit>
+      <trans-unit id="ZJ78kqd" resname="audit.field.scoped_framework">
+        <source>audit.field.scoped_framework</source>
+        <target>__audit.field.scoped_framework</target>
+      </trans-unit>
+      <trans-unit id="9UHCUTK" resname="audit.corporate_audit_note_title">
+        <source>audit.corporate_audit_note_title</source>
+        <target>__audit.corporate_audit_note_title</target>
+      </trans-unit>
+      <trans-unit id="xThIh2q" resname="audit.corporate_audit_note">
+        <source>audit.corporate_audit_note</source>
+        <target>__audit.corporate_audit_note</target>
+      </trans-unit>
+      <trans-unit id="ub9vPbo" resname="audit.field.conclusion">
+        <source>audit.field.conclusion</source>
+        <target>__audit.field.conclusion</target>
+      </trans-unit>
+      <trans-unit id="u1zZC1M" resname="audit.create">
+        <source>audit.create</source>
+        <target>__audit.create</target>
+      </trans-unit>
+      <trans-unit id="V13Y16Z" resname="audit.status.planned">
+        <source>audit.status.planned</source>
+        <target>__audit.status.planned</target>
+      </trans-unit>
+      <trans-unit id="TNmv03z" resname="audit.status.in_progress">
+        <source>audit.status.in_progress</source>
+        <target>__audit.status.in_progress</target>
+      </trans-unit>
+      <trans-unit id="GgtQD.i" resname="audit.status.completed">
+        <source>audit.status.completed</source>
+        <target>__audit.status.completed</target>
+      </trans-unit>
+      <trans-unit id="UfBWY5Z" resname="audit.status.reported">
+        <source>audit.status.reported</source>
+        <target>__audit.status.reported</target>
+      </trans-unit>
+      <trans-unit id="7g26GMQ" resname="audit.scope_type.full_isms">
+        <source>audit.scope_type.full_isms</source>
+        <target>__audit.scope_type.full_isms</target>
+      </trans-unit>
+      <trans-unit id="AZMHc4b" resname="audit.scope_type.compliance_framework">
+        <source>audit.scope_type.compliance_framework</source>
+        <target>__audit.scope_type.compliance_framework</target>
+      </trans-unit>
+      <trans-unit id="gkFU18i" resname="audit.scope_type.asset">
+        <source>audit.scope_type.asset</source>
+        <target>__audit.scope_type.asset</target>
+      </trans-unit>
+      <trans-unit id="LQmf2N3" resname="audit.scope_type.asset_type">
+        <source>audit.scope_type.asset_type</source>
+        <target>__audit.scope_type.asset_type</target>
+      </trans-unit>
+      <trans-unit id="xqIdESs" resname="audit.scope_type.asset_group">
+        <source>audit.scope_type.asset_group</source>
+        <target>__audit.scope_type.asset_group</target>
+      </trans-unit>
+      <trans-unit id="jwZ_I8_" resname="audit.scope_type.location">
+        <source>audit.scope_type.location</source>
+        <target>__audit.scope_type.location</target>
+      </trans-unit>
+      <trans-unit id="LJnKtEu" resname="audit.scope_type.department">
+        <source>audit.scope_type.department</source>
+        <target>__audit.scope_type.department</target>
+      </trans-unit>
+      <trans-unit id="NI3M9J2" resname="audit.scope_type.corporate_wide">
+        <source>audit.scope_type.corporate_wide</source>
+        <target>__audit.scope_type.corporate_wide</target>
+      </trans-unit>
+      <trans-unit id="fIpvTvi" resname="audit.scope_type.corporate_subsidiaries">
+        <source>audit.scope_type.corporate_subsidiaries</source>
+        <target>__audit.scope_type.corporate_subsidiaries</target>
+      </trans-unit>
+      <trans-unit id="FnNTh5V" resname="audit.field.audit_number">
+        <source>audit.field.audit_number</source>
+        <target>__audit.field.audit_number</target>
+      </trans-unit>
+      <trans-unit id="6ujbI5x" resname="audit.actions.label">
+        <source>audit.actions.label</source>
+        <target>__audit.actions.label</target>
+      </trans-unit>
+      <trans-unit id="VLFZYps" resname="audit_management.no_audits">
+        <source>audit_management.no_audits</source>
+        <target>__audit_management.no_audits</target>
+      </trans-unit>
+      <trans-unit id="AYgiduc" resname="audit_management.description">
+        <source>audit_management.description</source>
+        <target>__audit_management.description</target>
+      </trans-unit>
+      <trans-unit id="E9pYgMD" resname="audit_management.planned_audits">
+        <source>audit_management.planned_audits</source>
+        <target>__audit_management.planned_audits</target>
+      </trans-unit>
+      <trans-unit id="PR358Eo" resname="audit_management.total_audits">
+        <source>audit_management.total_audits</source>
+        <target>__audit_management.total_audits</target>
+      </trans-unit>
+      <trans-unit id="WmtwpMc" resname="audit.help.title">
+        <source>audit.help.title</source>
+        <target>__audit.help.title</target>
+      </trans-unit>
+      <trans-unit id="5Wz70ed" resname="audit.help.scope">
+        <source>audit.help.scope</source>
+        <target>__audit.help.scope</target>
+      </trans-unit>
+      <trans-unit id="ozvOxAY" resname="audit.help.scope_type">
+        <source>audit.help.scope_type</source>
+        <target>__audit.help.scope_type</target>
+      </trans-unit>
+      <trans-unit id="mZg4zYx" resname="audit.help.scoped_framework">
+        <source>audit.help.scoped_framework</source>
+        <target>__audit.help.scoped_framework</target>
+      </trans-unit>
+      <trans-unit id="X8WGXrm" resname="audit.help.audit_type">
+        <source>audit.help.audit_type</source>
+        <target>__audit.help.audit_type</target>
+      </trans-unit>
+      <trans-unit id="K2av_ED" resname="audit.help.audited_subsidiaries">
+        <source>audit.help.audited_subsidiaries</source>
+        <target>__audit.help.audited_subsidiaries</target>
+      </trans-unit>
+      <trans-unit id="eTXTBan" resname="audit.help.framework">
+        <source>audit.help.framework</source>
+        <target>__audit.help.framework</target>
+      </trans-unit>
+      <trans-unit id="reJNa1j" resname="audit.help.standard">
+        <source>audit.help.standard</source>
+        <target>__audit.help.standard</target>
+      </trans-unit>
+      <trans-unit id="_VHHim7" resname="audit.help.planned_date">
+        <source>audit.help.planned_date</source>
+        <target>__audit.help.planned_date</target>
+      </trans-unit>
+      <trans-unit id="aakH2cT" resname="audit.help.actual_date">
+        <source>audit.help.actual_date</source>
+        <target>__audit.help.actual_date</target>
+      </trans-unit>
+      <trans-unit id="CrcBVsc" resname="audit.help.lead_auditor">
+        <source>audit.help.lead_auditor</source>
+        <target>__audit.help.lead_auditor</target>
+      </trans-unit>
+      <trans-unit id="n0Ngl3p" resname="audit.help.audit_team">
+        <source>audit.help.audit_team</source>
+        <target>__audit.help.audit_team</target>
+      </trans-unit>
+      <trans-unit id="tz7d_uY" resname="audit.help.auditee">
+        <source>audit.help.auditee</source>
+        <target>__audit.help.auditee</target>
+      </trans-unit>
+      <trans-unit id="OpDloj." resname="audit.help.department">
+        <source>audit.help.department</source>
+        <target>__audit.help.department</target>
+      </trans-unit>
+      <trans-unit id="iQjGOm." resname="audit.help.status">
+        <source>audit.help.status</source>
+        <target>__audit.help.status</target>
+      </trans-unit>
+      <trans-unit id="uxTgeTB" resname="audit.help.overall_result">
+        <source>audit.help.overall_result</source>
+        <target>__audit.help.overall_result</target>
+      </trans-unit>
+      <trans-unit id="rmIP3Kf" resname="audit.help.objectives">
+        <source>audit.help.objectives</source>
+        <target>__audit.help.objectives</target>
+      </trans-unit>
+      <trans-unit id="vCR1dAW" resname="audit.help.audit_criteria">
+        <source>audit.help.audit_criteria</source>
+        <target>__audit.help.audit_criteria</target>
+      </trans-unit>
+      <trans-unit id="Dfx63Ix" resname="audit.help.methodology">
+        <source>audit.help.methodology</source>
+        <target>__audit.help.methodology</target>
+      </trans-unit>
+      <trans-unit id="yHvxRwU" resname="audit.help.findings">
+        <source>audit.help.findings</source>
+        <target>__audit.help.findings</target>
+      </trans-unit>
+      <trans-unit id="gfZTyv5" resname="audit.help.nonconformities">
+        <source>audit.help.nonconformities</source>
+        <target>__audit.help.nonconformities</target>
+      </trans-unit>
+      <trans-unit id="TghlFBK" resname="audit.help.observations">
+        <source>audit.help.observations</source>
+        <target>__audit.help.observations</target>
+      </trans-unit>
+      <trans-unit id="4yZxW14" resname="audit.help.recommendations">
+        <source>audit.help.recommendations</source>
+        <target>__audit.help.recommendations</target>
+      </trans-unit>
+      <trans-unit id="O_QyeWB" resname="audit.help.corrective_actions">
+        <source>audit.help.corrective_actions</source>
+        <target>__audit.help.corrective_actions</target>
+      </trans-unit>
+      <trans-unit id="HLZrLnS" resname="audit.help.follow_up_actions">
+        <source>audit.help.follow_up_actions</source>
+        <target>__audit.help.follow_up_actions</target>
+      </trans-unit>
+      <trans-unit id="clbtHgr" resname="audit.help.conclusion">
+        <source>audit.help.conclusion</source>
+        <target>__audit.help.conclusion</target>
+      </trans-unit>
+      <trans-unit id="YwlS0GY" resname="audit.help.evidence_collected">
+        <source>audit.help.evidence_collected</source>
+        <target>__audit.help.evidence_collected</target>
+      </trans-unit>
+      <trans-unit id="UmcjRIX" resname="audit.help.summary">
+        <source>audit.help.summary</source>
+        <target>__audit.help.summary</target>
+      </trans-unit>
+      <trans-unit id="7p6Nd1f" resname="audit.help.notes">
+        <source>audit.help.notes</source>
+        <target>__audit.help.notes</target>
+      </trans-unit>
+      <trans-unit id="e9tKBOP" resname="audit.scope">
+        <source>audit.scope</source>
+        <target>__audit.scope</target>
+      </trans-unit>
+      <trans-unit id="9T2QhoT" resname="audit.message.corporate_subsidiaries_info">
+        <source>audit.message.corporate_subsidiaries_info</source>
+        <target>__audit.message.corporate_subsidiaries_info</target>
+      </trans-unit>
+      <trans-unit id=".lQiIiY" resname="audit.framework">
+        <source>audit.framework</source>
+        <target>__audit.framework</target>
+      </trans-unit>
+      <trans-unit id="qUv0857" resname="audit.standard">
+        <source>audit.standard</source>
+        <target>__audit.standard</target>
+      </trans-unit>
+      <trans-unit id="szKR0jG" resname="audit.planned_date">
+        <source>audit.planned_date</source>
+        <target>__audit.planned_date</target>
+      </trans-unit>
+      <trans-unit id="XSXDvUx" resname="audit.actual_date">
+        <source>audit.actual_date</source>
+        <target>__audit.actual_date</target>
+      </trans-unit>
+      <trans-unit id="4mjwWy_" resname="audit.lead_auditor">
+        <source>audit.lead_auditor</source>
+        <target>__audit.lead_auditor</target>
+      </trans-unit>
+      <trans-unit id="lgz3Bex" resname="audit.department">
+        <source>audit.department</source>
+        <target>__audit.department</target>
+      </trans-unit>
+      <trans-unit id="AMBzIty" resname="audit.auditee">
+        <source>audit.auditee</source>
+        <target>__audit.auditee</target>
+      </trans-unit>
+      <trans-unit id="i0RNam1" resname="audit.audit_team">
+        <source>audit.audit_team</source>
+        <target>__audit.audit_team</target>
+      </trans-unit>
+      <trans-unit id="nXHOdaD" resname="audit.overall_result">
+        <source>audit.overall_result</source>
+        <target>__audit.overall_result</target>
+      </trans-unit>
+      <trans-unit id="QIF3PZ0" resname="audit.objectives">
+        <source>audit.objectives</source>
+        <target>__audit.objectives</target>
+      </trans-unit>
+      <trans-unit id="PBSC7UO" resname="audit.audit_criteria">
+        <source>audit.audit_criteria</source>
+        <target>__audit.audit_criteria</target>
+      </trans-unit>
+      <trans-unit id="Dvrq8gO" resname="audit.methodology">
+        <source>audit.methodology</source>
+        <target>__audit.methodology</target>
+      </trans-unit>
+      <trans-unit id="wo2Aje4" resname="audit.findings">
+        <source>audit.findings</source>
+        <target>__audit.findings</target>
+      </trans-unit>
+      <trans-unit id="c0UrNLi" resname="audit.nonconformities">
+        <source>audit.nonconformities</source>
+        <target>__audit.nonconformities</target>
+      </trans-unit>
+      <trans-unit id="4iqnczs" resname="audit.observations">
+        <source>audit.observations</source>
+        <target>__audit.observations</target>
+      </trans-unit>
+      <trans-unit id="wMxDnLS" resname="audit.recommendations">
+        <source>audit.recommendations</source>
+        <target>__audit.recommendations</target>
+      </trans-unit>
+      <trans-unit id="C2w8kvC" resname="audit.corrective_actions">
+        <source>audit.corrective_actions</source>
+        <target>__audit.corrective_actions</target>
+      </trans-unit>
+      <trans-unit id="y_qCtRh" resname="audit.follow_up_actions">
+        <source>audit.follow_up_actions</source>
+        <target>__audit.follow_up_actions</target>
+      </trans-unit>
+      <trans-unit id="JJrgS7Q" resname="audit.evidence_collected">
+        <source>audit.evidence_collected</source>
+        <target>__audit.evidence_collected</target>
+      </trans-unit>
+      <trans-unit id="QUZavIZ" resname="audit.summary">
+        <source>audit.summary</source>
+        <target>__audit.summary</target>
+      </trans-unit>
+      <trans-unit id="M7E7hAg" resname="audit.notes">
+        <source>audit.notes</source>
+        <target>__audit.notes</target>
+      </trans-unit>
+      <trans-unit id="3uLBAM1" resname="audit.export_pdf">
+        <source>audit.export_pdf</source>
+        <target>__audit.export_pdf</target>
+      </trans-unit>
+      <trans-unit id="I.PBmAQ" resname="audit.quick_stats">
+        <source>audit.quick_stats</source>
+        <target>__audit.quick_stats</target>
+      </trans-unit>
+      <trans-unit id="ScMiXlJ" resname="audit.type">
+        <source>audit.type</source>
+        <target>__audit.type</target>
+      </trans-unit>
+      <trans-unit id="tCnBYSU" resname="audit.team_size">
+        <source>audit.team_size</source>
+        <target>__audit.team_size</target>
+      </trans-unit>
+      <trans-unit id="1jJVg1G" resname="audit.result">
+        <source>audit.result</source>
+        <target>__audit.result</target>
+      </trans-unit>
+      <trans-unit id="ztKH3EN" resname="audit.section.history">
+        <source>audit.section.history</source>
+        <target>__audit.section.history</target>
+      </trans-unit>
+      <trans-unit id="9g1JPpc" resname="audit.confirm_delete">
+        <source>audit.confirm_delete</source>
+        <target>__audit.confirm_delete</target>
+      </trans-unit>
+      <trans-unit id="VdrEm3z" resname="audit.delete_warning">
+        <source>audit.delete_warning</source>
+        <target>__audit.delete_warning</target>
+      </trans-unit>
+      <trans-unit id="NAWb4sZ" resname="audit_log.table.ip_address">
+        <source>audit_log.table.ip_address</source>
+        <target>__audit_log.table.ip_address</target>
+      </trans-unit>
+      <trans-unit id="TEqGboo" resname="audit_log.modal.title">
+        <source>audit_log.modal.title</source>
+        <target>__audit_log.modal.title</target>
+      </trans-unit>
+      <trans-unit id="qC3CGQ8" resname="audit_log.table.changes">
+        <source>audit_log.table.changes</source>
+        <target>__audit_log.table.changes</target>
+      </trans-unit>
+      <trans-unit id="5wfOciU" resname="audit_log.page.monitoring_subtitle">
+        <source>audit_log.page.monitoring_subtitle</source>
+        <target>__audit_log.page.monitoring_subtitle</target>
+      </trans-unit>
+      <trans-unit id="gNl8r89" resname="audit_log.action.back_to_health">
+        <source>audit_log.action.back_to_health</source>
+        <target>__audit_log.action.back_to_health</target>
+      </trans-unit>
+      <trans-unit id="PgCGL3x" resname="audit_log.stats.total_entries">
+        <source>audit_log.stats.total_entries</source>
+        <target>__audit_log.stats.total_entries</target>
+      </trans-unit>
+      <trans-unit id="isxIg_M" resname="audit_log.stats.top_actions">
+        <source>audit_log.stats.top_actions</source>
+        <target>__audit_log.stats.top_actions</target>
+      </trans-unit>
+      <trans-unit id="mr_7BSM" resname="audit_log.stats.top_entities">
+        <source>audit_log.stats.top_entities</source>
+        <target>__audit_log.stats.top_entities</target>
+      </trans-unit>
+      <trans-unit id="uYd0ZdH" resname="audit_log.section.quick_filters">
+        <source>audit_log.section.quick_filters</source>
+        <target>__audit_log.section.quick_filters</target>
+      </trans-unit>
+      <trans-unit id="yLQL9VZ" resname="audit_log.filter.quick.all">
+        <source>audit_log.filter.quick.all</source>
+        <target>__audit_log.filter.quick.all</target>
+      </trans-unit>
+      <trans-unit id="GUm6l6K" resname="audit_log.filter.quick.today">
+        <source>audit_log.filter.quick.today</source>
+        <target>__audit_log.filter.quick.today</target>
+      </trans-unit>
+      <trans-unit id="5Berb.H" resname="audit_log.filter.quick.this_week">
+        <source>audit_log.filter.quick.this_week</source>
+        <target>__audit_log.filter.quick.this_week</target>
+      </trans-unit>
+      <trans-unit id="nslA9k3" resname="audit_log.filter.quick.critical_actions">
+        <source>audit_log.filter.quick.critical_actions</source>
+        <target>__audit_log.filter.quick.critical_actions</target>
+      </trans-unit>
+      <trans-unit id="l0LjUXD" resname="audit_log.message.no_entries_filtered">
+        <source>audit_log.message.no_entries_filtered</source>
+        <target>__audit_log.message.no_entries_filtered</target>
+      </trans-unit>
+      <trans-unit id="43HmKbW" resname="audit_log.info.about_title">
+        <source>audit_log.info.about_title</source>
+        <target>__audit_log.info.about_title</target>
+      </trans-unit>
+      <trans-unit id="xURserK" resname="audit_log.info.about_text">
+        <source>audit_log.info.about_text</source>
+        <target>__audit_log.info.about_text</target>
+      </trans-unit>
+      <trans-unit id="1x16fU7" resname="audit_log.info.module_link">
+        <source>audit_log.info.module_link</source>
+        <target>__audit_log.info.module_link</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="de" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="itntrxu" resname="risk_appetite.new">
+        <source>risk_appetite.new</source>
+        <target>Neu anlegen</target>
+      </trans-unit>
+      <trans-unit id="oU1Hwtd" resname="risk_appetite.new_description">
+        <source>risk_appetite.new_description</source>
+        <target>Legen Sie eine neue Risikobereitschaft an (global oder für eine Kategorie).</target>
+      </trans-unit>
+      <trans-unit id="4LLDELI" resname="risk_appetite.section.definition">
+        <source>risk_appetite.section.definition</source>
+        <target>Definition</target>
+      </trans-unit>
+      <trans-unit id="jgoZ4qP" resname="risk_appetite.section.approval">
+        <source>risk_appetite.section.approval</source>
+        <target>Freigabe</target>
+      </trans-unit>
+      <trans-unit id="WlpEIHZ" resname="risk_appetite.field.category">
+        <source>risk_appetite.field.category</source>
+        <target>Kategorie</target>
+      </trans-unit>
+      <trans-unit id="ZWFW4lW" resname="risk_appetite.field.max_acceptable_risk">
+        <source>risk_appetite.field.max_acceptable_risk</source>
+        <target>Max. akzeptables Risiko</target>
+      </trans-unit>
+      <trans-unit id="h9j_.1X" resname="risk_appetite.field.description">
+        <source>risk_appetite.field.description</source>
+        <target>Beschreibung</target>
+      </trans-unit>
+      <trans-unit id="rYE_0QL" resname="risk_appetite.field.status">
+        <source>risk_appetite.field.status</source>
+        <target>Status</target>
+      </trans-unit>
+      <trans-unit id="Eh4g_xz" resname="risk_appetite.field.approved_by">
+        <source>risk_appetite.field.approved_by</source>
+        <target>Freigegeben von</target>
+      </trans-unit>
+      <trans-unit id="Or8YH7v" resname="risk_appetite.field.approved_at">
+        <source>risk_appetite.field.approved_at</source>
+        <target>Freigegeben am</target>
+      </trans-unit>
+      <trans-unit id="4j4J4m1" resname="risk_appetite.no_appetites">
+        <source>risk_appetite.no_appetites</source>
+        <target>Keine Risikobereitschaften definiert.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

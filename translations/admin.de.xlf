@@ -1,0 +1,758 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="de" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="LJ_AM5v" resname="admin.title">
+        <source>admin.title</source>
+        <target>Administration</target>
+      </trans-unit>
+      <trans-unit id="RbfxaCU" resname="admin.breadcrumb.home">
+        <source>admin.breadcrumb.home</source>
+        <target>Admin Dashboard</target>
+      </trans-unit>
+      <trans-unit id="ffDra_a" resname="admin.section.user_access">
+        <source>admin.section.user_access</source>
+        <target><![CDATA[Benutzer & Zugriff]]></target>
+      </trans-unit>
+      <trans-unit id="6D2ynnN" resname="admin.section.system_config">
+        <source>admin.section.system_config</source>
+        <target>Systemkonfiguration</target>
+      </trans-unit>
+      <trans-unit id="FdoaFll" resname="admin.section.modules">
+        <source>admin.section.modules</source>
+        <target><![CDATA[Module & Features]]></target>
+      </trans-unit>
+      <trans-unit id="lDueJHZ" resname="admin.section.monitoring">
+        <source>admin.section.monitoring</source>
+        <target><![CDATA[Überwachung & Logs]]></target>
+      </trans-unit>
+      <trans-unit id="H57ipvX" resname="admin.section.navigation">
+        <source>admin.section.navigation</source>
+        <target>Navigation</target>
+      </trans-unit>
+      <trans-unit id="DYt_Pcb" resname="admin.section.data_management">
+        <source>admin.section.data_management</source>
+        <target>Daten-Verwaltung</target>
+      </trans-unit>
+      <trans-unit id="YCQRLza" resname="admin.section.licensing">
+        <source>admin.section.licensing</source>
+        <target>Lizenzierung</target>
+      </trans-unit>
+      <trans-unit id="GabUkTg" resname="admin.nav.tenants">
+        <source>admin.nav.tenants</source>
+        <target>Mandanten</target>
+      </trans-unit>
+      <trans-unit id="Bcduqs5" resname="admin.nav.users">
+        <source>admin.nav.users</source>
+        <target>Benutzer</target>
+      </trans-unit>
+      <trans-unit id="4Ks9peG" resname="admin.nav.roles">
+        <source>admin.nav.roles</source>
+        <target>Rollen</target>
+      </trans-unit>
+      <trans-unit id="4Mf69Yk" resname="admin.nav.settings">
+        <source>admin.nav.settings</source>
+        <target>Einstellungen</target>
+      </trans-unit>
+      <trans-unit id="VXi.uC9" resname="admin.nav.audit_log">
+        <source>admin.nav.audit_log</source>
+        <target>Audit Log</target>
+      </trans-unit>
+      <trans-unit id="fTbTQAE" resname="admin.nav.back_to_app">
+        <source>admin.nav.back_to_app</source>
+        <target>Zurück zur Anwendung</target>
+      </trans-unit>
+      <trans-unit id="V.VX6hc" resname="admin.nav.dashboard">
+        <source>admin.nav.dashboard</source>
+        <target>Dashboard</target>
+      </trans-unit>
+      <trans-unit id="bYHZ8Mp" resname="admin.nav.corporate_structure">
+        <source>admin.nav.corporate_structure</source>
+        <target>Unternehmensstrukturen</target>
+      </trans-unit>
+      <trans-unit id="PQqIs8C" resname="admin.nav.permissions">
+        <source>admin.nav.permissions</source>
+        <target>Berechtigungen</target>
+      </trans-unit>
+      <trans-unit id="V.XjZwQ" resname="admin.nav.sessions">
+        <source>admin.nav.sessions</source>
+        <target>Sitzungen</target>
+      </trans-unit>
+      <trans-unit id="cuvniRI" resname="admin.nav.mfa">
+        <source>admin.nav.mfa</source>
+        <target>MFA Verwaltung</target>
+      </trans-unit>
+      <trans-unit id="EGLaJ6U" resname="admin.nav.module_management">
+        <source>admin.nav.module_management</source>
+        <target>Modul-Verwaltung</target>
+      </trans-unit>
+      <trans-unit id="ZGMB1O8" resname="admin.nav.compliance_management">
+        <source>admin.nav.compliance_management</source>
+        <target>Compliance-Verwaltung</target>
+      </trans-unit>
+      <trans-unit id="qZQ_hV3" resname="admin.nav.system_health">
+        <source>admin.nav.system_health</source>
+        <target>System-Status</target>
+      </trans-unit>
+      <trans-unit id="9l7XEj2" resname="admin.nav.backup">
+        <source>admin.nav.backup</source>
+        <target>Backup</target>
+      </trans-unit>
+      <trans-unit id="5c2qclq" resname="admin.nav.export">
+        <source>admin.nav.export</source>
+        <target>Export</target>
+      </trans-unit>
+      <trans-unit id="4XRhmod" resname="admin.nav.import">
+        <source>admin.nav.import</source>
+        <target>Import</target>
+      </trans-unit>
+      <trans-unit id="XRvdgvW" resname="admin.nav.data_repair">
+        <source>admin.nav.data_repair</source>
+        <target>Daten-Reparatur</target>
+      </trans-unit>
+      <trans-unit id="jgFRjmc" resname="admin.nav.license_management">
+        <source>admin.nav.license_management</source>
+        <target>Lizenz-Verwaltung</target>
+      </trans-unit>
+      <trans-unit id="H2kJ5lG" resname="admin.dashboard.title">
+        <source>admin.dashboard.title</source>
+        <target>Admin Dashboard</target>
+      </trans-unit>
+      <trans-unit id="a4K4ai6" resname="admin.dashboard.subtitle">
+        <source>admin.dashboard.subtitle</source>
+        <target>Zentrale Verwaltung und Systemübersicht</target>
+      </trans-unit>
+      <trans-unit id="egxLFfx" resname="admin.dashboard.alerts.title">
+        <source>admin.dashboard.alerts.title</source>
+        <target>Systemhinweise</target>
+      </trans-unit>
+      <trans-unit id="lWbu9pe" resname="admin.dashboard.alerts.view">
+        <source>admin.dashboard.alerts.view</source>
+        <target>Ansehen</target>
+      </trans-unit>
+      <trans-unit id="3hgUczu" resname="admin.dashboard.stats.users">
+        <source>admin.dashboard.stats.users</source>
+        <target>Benutzer</target>
+      </trans-unit>
+      <trans-unit id="isplSfR" resname="admin.dashboard.stats.active">
+        <source>admin.dashboard.stats.active</source>
+        <target>Aktiv</target>
+      </trans-unit>
+      <trans-unit id="q2K6YO0" resname="admin.dashboard.stats.inactive">
+        <source>admin.dashboard.stats.inactive</source>
+        <target>Inaktiv</target>
+      </trans-unit>
+      <trans-unit id="aJQ5AYH" resname="admin.dashboard.stats.manage">
+        <source>admin.dashboard.stats.manage</source>
+        <target>Verwalten</target>
+      </trans-unit>
+      <trans-unit id="B01EfDu" resname="admin.dashboard.stats.active_sessions">
+        <source>admin.dashboard.stats.active_sessions</source>
+        <target>Aktive Sitzungen</target>
+      </trans-unit>
+      <trans-unit id="MYXknkJ" resname="admin.dashboard.stats.last_24h">
+        <source>admin.dashboard.stats.last_24h</source>
+        <target>Letzte 24 Stunden</target>
+      </trans-unit>
+      <trans-unit id="ef5L5ka" resname="admin.dashboard.stats.database">
+        <source>admin.dashboard.stats.database</source>
+        <target>Datenbankgröße</target>
+      </trans-unit>
+      <trans-unit id="zvtxSKZ" resname="admin.dashboard.stats.total_records">
+        <source>admin.dashboard.stats.total_records</source>
+        <target>Gesamt-Datensätze</target>
+      </trans-unit>
+      <trans-unit id="ZW7L_Br" resname="admin.dashboard.stats.across_modules">
+        <source>admin.dashboard.stats.across_modules</source>
+        <target>Über alle Module</target>
+      </trans-unit>
+      <trans-unit id="dQg6PQa" resname="admin.dashboard.modules.module">
+        <source>admin.dashboard.modules.module</source>
+        <target>Modul</target>
+      </trans-unit>
+      <trans-unit id="HnSC08n" resname="admin.dashboard.modules.records">
+        <source>admin.dashboard.modules.records</source>
+        <target>Datensätze</target>
+      </trans-unit>
+      <trans-unit id="iHA14lN" resname="admin.dashboard.modules.action">
+        <source>admin.dashboard.modules.action</source>
+        <target>Aktion</target>
+      </trans-unit>
+      <trans-unit id="jPV1L4N" resname="admin.dashboard.modules.assets">
+        <source>admin.dashboard.modules.assets</source>
+        <target>Assets</target>
+      </trans-unit>
+      <trans-unit id="VvhGrfu" resname="admin.dashboard.modules.risks">
+        <source>admin.dashboard.modules.risks</source>
+        <target>Risiken</target>
+      </trans-unit>
+      <trans-unit id="MIbi3FV" resname="admin.dashboard.modules.compliance">
+        <source>admin.dashboard.modules.compliance</source>
+        <target>Compliance</target>
+      </trans-unit>
+      <trans-unit id="V7qbsR0" resname="admin.dashboard.modules.incidents">
+        <source>admin.dashboard.modules.incidents</source>
+        <target>Vorfälle</target>
+      </trans-unit>
+      <trans-unit id="_wMqReX" resname="admin.dashboard.modules.audits">
+        <source>admin.dashboard.modules.audits</source>
+        <target>Audits</target>
+      </trans-unit>
+      <trans-unit id="95aXSfy" resname="admin.dashboard.modules.trainings">
+        <source>admin.dashboard.modules.trainings</source>
+        <target>Schulungen</target>
+      </trans-unit>
+      <trans-unit id=".9Zud2A" resname="admin.dashboard.quick_actions.add_user">
+        <source>admin.dashboard.quick_actions.add_user</source>
+        <target>Benutzer anlegen</target>
+      </trans-unit>
+      <trans-unit id="IjQ_bsM" resname="admin.dashboard.quick_actions.add_role">
+        <source>admin.dashboard.quick_actions.add_role</source>
+        <target>Rolle hinzufügen</target>
+      </trans-unit>
+      <trans-unit id="E.bULTs" resname="admin.dashboard.quick_actions.view_logs">
+        <source>admin.dashboard.quick_actions.view_logs</source>
+        <target>Logs ansehen</target>
+      </trans-unit>
+      <trans-unit id="iCQ8Uf1" resname="admin.dashboard.quick_actions.manage_compliance">
+        <source>admin.dashboard.quick_actions.manage_compliance</source>
+        <target>Compliance verwalten</target>
+      </trans-unit>
+      <trans-unit id="Tr5ZAaP" resname="admin.dashboard.activity.empty">
+        <source>admin.dashboard.activity.empty</source>
+        <target>Keine aktuellen Aktivitäten vorhanden.</target>
+      </trans-unit>
+      <trans-unit id="Nmf_vIg" resname="admin.dashboard.activity.view_all">
+        <source>admin.dashboard.activity.view_all</source>
+        <target>Alle anzeigen</target>
+      </trans-unit>
+      <trans-unit id="jJt2_tc" resname="admin.licensing.attributions_provided">
+        <source>admin.licensing.attributions_provided</source>
+        <target>Attributionen in der Anwendung bereitstellen (erledigt ✓)</target>
+      </trans-unit>
+      <trans-unit id="EKM0GNT" resname="admin.settings.required_for_iso27001">
+        <source>admin.settings.required_for_iso27001</source>
+        <target>Erforderlich für ISO 27001</target>
+      </trans-unit>
+      <trans-unit id="TkLWiaD" resname="admin.settings.title">
+        <source>admin.settings.title</source>
+        <target>__admin.settings.title</target>
+      </trans-unit>
+      <trans-unit id="v.NOmNv" resname="admin.settings.subtitle">
+        <source>admin.settings.subtitle</source>
+        <target>__admin.settings.subtitle</target>
+      </trans-unit>
+      <trans-unit id="I3PYIJf" resname="admin.settings.application.title">
+        <source>admin.settings.application.title</source>
+        <target>__admin.settings.application.title</target>
+      </trans-unit>
+      <trans-unit id="K.FTpMm" resname="admin.settings.application.description">
+        <source>admin.settings.application.description</source>
+        <target>__admin.settings.application.description</target>
+      </trans-unit>
+      <trans-unit id="7n5a1tS" resname="admin.settings.application.locale">
+        <source>admin.settings.application.locale</source>
+        <target>__admin.settings.application.locale</target>
+      </trans-unit>
+      <trans-unit id="7KEJV2d" resname="admin.settings.application.timezone">
+        <source>admin.settings.application.timezone</source>
+        <target>__admin.settings.application.timezone</target>
+      </trans-unit>
+      <trans-unit id="YRetw8H" resname="admin.settings.application.items_per_page">
+        <source>admin.settings.application.items_per_page</source>
+        <target>__admin.settings.application.items_per_page</target>
+      </trans-unit>
+      <trans-unit id="goMSwVw" resname="admin.settings.configure">
+        <source>admin.settings.configure</source>
+        <target>__admin.settings.configure</target>
+      </trans-unit>
+      <trans-unit id="DExOFHD" resname="admin.settings.security.title">
+        <source>admin.settings.security.title</source>
+        <target>__admin.settings.security.title</target>
+      </trans-unit>
+      <trans-unit id="1qPhqM8" resname="admin.settings.security.description">
+        <source>admin.settings.security.description</source>
+        <target>__admin.settings.security.description</target>
+      </trans-unit>
+      <trans-unit id="mLvIRts" resname="admin.settings.security.session_lifetime">
+        <source>admin.settings.security.session_lifetime</source>
+        <target>__admin.settings.security.session_lifetime</target>
+      </trans-unit>
+      <trans-unit id="iq.nzKW" resname="admin.settings.security.max_login_attempts">
+        <source>admin.settings.security.max_login_attempts</source>
+        <target>__admin.settings.security.max_login_attempts</target>
+      </trans-unit>
+      <trans-unit id="aQCEHV3" resname="admin.settings.security.require_2fa">
+        <source>admin.settings.security.require_2fa</source>
+        <target>__admin.settings.security.require_2fa</target>
+      </trans-unit>
+      <trans-unit id="4GwHkuw" resname="admin.settings.features.title">
+        <source>admin.settings.features.title</source>
+        <target>__admin.settings.features.title</target>
+      </trans-unit>
+      <trans-unit id="peyoGqD" resname="admin.settings.features.description">
+        <source>admin.settings.features.description</source>
+        <target>__admin.settings.features.description</target>
+      </trans-unit>
+      <trans-unit id="W7B0fVC" resname="admin.settings.features.dark_mode">
+        <source>admin.settings.features.dark_mode</source>
+        <target>__admin.settings.features.dark_mode</target>
+      </trans-unit>
+      <trans-unit id="07NqNJN" resname="admin.settings.features.global_search">
+        <source>admin.settings.features.global_search</source>
+        <target>__admin.settings.features.global_search</target>
+      </trans-unit>
+      <trans-unit id="oUEh_.v" resname="admin.settings.features.audit_log">
+        <source>admin.settings.features.audit_log</source>
+        <target>__admin.settings.features.audit_log</target>
+      </trans-unit>
+      <trans-unit id="1wNe4No" resname="admin.settings.info_title">
+        <source>admin.settings.info_title</source>
+        <target>__admin.settings.info_title</target>
+      </trans-unit>
+      <trans-unit id="Cw3.Y3k" resname="admin.settings.info_text">
+        <source>admin.settings.info_text</source>
+        <target>__admin.settings.info_text</target>
+      </trans-unit>
+      <trans-unit id="ucyUT79" resname="admin.settings.features.intro">
+        <source>admin.settings.features.intro</source>
+        <target>__admin.settings.features.intro</target>
+      </trans-unit>
+      <trans-unit id="MTD9q4U" resname="admin.settings.features.dark_mode_help">
+        <source>admin.settings.features.dark_mode_help</source>
+        <target>__admin.settings.features.dark_mode_help</target>
+      </trans-unit>
+      <trans-unit id="ihzukhp" resname="admin.settings.features.global_search_help">
+        <source>admin.settings.features.global_search_help</source>
+        <target>__admin.settings.features.global_search_help</target>
+      </trans-unit>
+      <trans-unit id="sy1.fAr" resname="admin.settings.features.quick_view">
+        <source>admin.settings.features.quick_view</source>
+        <target>__admin.settings.features.quick_view</target>
+      </trans-unit>
+      <trans-unit id="pEF3FWW" resname="admin.settings.features.quick_view_help">
+        <source>admin.settings.features.quick_view_help</source>
+        <target>__admin.settings.features.quick_view_help</target>
+      </trans-unit>
+      <trans-unit id="sOrhJYL" resname="admin.settings.features.notifications">
+        <source>admin.settings.features.notifications</source>
+        <target>__admin.settings.features.notifications</target>
+      </trans-unit>
+      <trans-unit id="uOQLSbx" resname="admin.settings.features.notifications_help">
+        <source>admin.settings.features.notifications_help</source>
+        <target>__admin.settings.features.notifications_help</target>
+      </trans-unit>
+      <trans-unit id="s7hqZSl" resname="admin.settings.features.audit_log_help">
+        <source>admin.settings.features.audit_log_help</source>
+        <target>__admin.settings.features.audit_log_help</target>
+      </trans-unit>
+      <trans-unit id="2HoMtav" resname="admin.settings.info">
+        <source>admin.settings.info</source>
+        <target>__admin.settings.info</target>
+      </trans-unit>
+      <trans-unit id="UAEtDs_" resname="admin.settings.features.info_text">
+        <source>admin.settings.features.info_text</source>
+        <target>__admin.settings.features.info_text</target>
+      </trans-unit>
+      <trans-unit id="c9r0Ehs" resname="admin.settings.application.locale_settings">
+        <source>admin.settings.application.locale_settings</source>
+        <target>__admin.settings.application.locale_settings</target>
+      </trans-unit>
+      <trans-unit id="ZxVa9S7" resname="admin.settings.application.default_locale">
+        <source>admin.settings.application.default_locale</source>
+        <target>__admin.settings.application.default_locale</target>
+      </trans-unit>
+      <trans-unit id="aELW_7d" resname="admin.settings.application.default_locale_help">
+        <source>admin.settings.application.default_locale_help</source>
+        <target>__admin.settings.application.default_locale_help</target>
+      </trans-unit>
+      <trans-unit id="2Zys.MM" resname="admin.settings.application.supported_locales">
+        <source>admin.settings.application.supported_locales</source>
+        <target>__admin.settings.application.supported_locales</target>
+      </trans-unit>
+      <trans-unit id="ydkw5gH" resname="admin.settings.application.supported_locales_help">
+        <source>admin.settings.application.supported_locales_help</source>
+        <target>__admin.settings.application.supported_locales_help</target>
+      </trans-unit>
+      <trans-unit id="geCq9xu" resname="admin.settings.application.display_settings">
+        <source>admin.settings.application.display_settings</source>
+        <target>__admin.settings.application.display_settings</target>
+      </trans-unit>
+      <trans-unit id="56goaSQ" resname="admin.settings.application.items_per_page_help">
+        <source>admin.settings.application.items_per_page_help</source>
+        <target>__admin.settings.application.items_per_page_help</target>
+      </trans-unit>
+      <trans-unit id="S_J.e93" resname="admin.settings.application.timezone_help">
+        <source>admin.settings.application.timezone_help</source>
+        <target>__admin.settings.application.timezone_help</target>
+      </trans-unit>
+      <trans-unit id="WqGCXsi" resname="admin.settings.application.date_format">
+        <source>admin.settings.application.date_format</source>
+        <target>__admin.settings.application.date_format</target>
+      </trans-unit>
+      <trans-unit id="O_9RiK2" resname="admin.settings.application.date_format_help">
+        <source>admin.settings.application.date_format_help</source>
+        <target>__admin.settings.application.date_format_help</target>
+      </trans-unit>
+      <trans-unit id="VVnuwh8" resname="admin.settings.application.datetime_format">
+        <source>admin.settings.application.datetime_format</source>
+        <target>__admin.settings.application.datetime_format</target>
+      </trans-unit>
+      <trans-unit id="s8SNOuh" resname="admin.settings.application.datetime_format_help">
+        <source>admin.settings.application.datetime_format_help</source>
+        <target>__admin.settings.application.datetime_format_help</target>
+      </trans-unit>
+      <trans-unit id="Tc8vbDe" resname="admin.settings.help">
+        <source>admin.settings.help</source>
+        <target>__admin.settings.help</target>
+      </trans-unit>
+      <trans-unit id="OxqzBn3" resname="admin.settings.application.help_text">
+        <source>admin.settings.application.help_text</source>
+        <target>__admin.settings.application.help_text</target>
+      </trans-unit>
+      <trans-unit id="y.9AG_G" resname="admin.settings.security.session_settings">
+        <source>admin.settings.security.session_settings</source>
+        <target>__admin.settings.security.session_settings</target>
+      </trans-unit>
+      <trans-unit id=".lH2tIZ" resname="admin.settings.security.session_lifetime_help">
+        <source>admin.settings.security.session_lifetime_help</source>
+        <target>__admin.settings.security.session_lifetime_help</target>
+      </trans-unit>
+      <trans-unit id="7d7GK1o" resname="admin.settings.security.remember_me_lifetime">
+        <source>admin.settings.security.remember_me_lifetime</source>
+        <target>__admin.settings.security.remember_me_lifetime</target>
+      </trans-unit>
+      <trans-unit id=".JumktQ" resname="admin.settings.security.remember_me_help">
+        <source>admin.settings.security.remember_me_help</source>
+        <target>__admin.settings.security.remember_me_help</target>
+      </trans-unit>
+      <trans-unit id="PzKu_5j" resname="admin.settings.security.password_settings">
+        <source>admin.settings.security.password_settings</source>
+        <target>__admin.settings.security.password_settings</target>
+      </trans-unit>
+      <trans-unit id="5nVn7jE" resname="admin.settings.security.password_min_length">
+        <source>admin.settings.security.password_min_length</source>
+        <target>__admin.settings.security.password_min_length</target>
+      </trans-unit>
+      <trans-unit id="G9yhCUo" resname="admin.settings.security.password_min_length_help">
+        <source>admin.settings.security.password_min_length_help</source>
+        <target>__admin.settings.security.password_min_length_help</target>
+      </trans-unit>
+      <trans-unit id="NDFl6ES" resname="admin.settings.security.auth_settings">
+        <source>admin.settings.security.auth_settings</source>
+        <target>__admin.settings.security.auth_settings</target>
+      </trans-unit>
+      <trans-unit id="nq8zgBC" resname="admin.settings.security.max_login_attempts_help">
+        <source>admin.settings.security.max_login_attempts_help</source>
+        <target>__admin.settings.security.max_login_attempts_help</target>
+      </trans-unit>
+      <trans-unit id="KY1jD_0" resname="admin.settings.security.lockout_duration">
+        <source>admin.settings.security.lockout_duration</source>
+        <target>__admin.settings.security.lockout_duration</target>
+      </trans-unit>
+      <trans-unit id="_838kxf" resname="admin.settings.security.lockout_duration_help">
+        <source>admin.settings.security.lockout_duration_help</source>
+        <target>__admin.settings.security.lockout_duration_help</target>
+      </trans-unit>
+      <trans-unit id="zmlX1Hv" resname="admin.settings.security.require_2fa_help">
+        <source>admin.settings.security.require_2fa_help</source>
+        <target>__admin.settings.security.require_2fa_help</target>
+      </trans-unit>
+      <trans-unit id="03tDoZK" resname="admin.settings.security.warning">
+        <source>admin.settings.security.warning</source>
+        <target>__admin.settings.security.warning</target>
+      </trans-unit>
+      <trans-unit id="bU6nkmg" resname="admin.compliance.framework">
+        <source>admin.compliance.framework</source>
+        <target>__admin.compliance.framework</target>
+      </trans-unit>
+      <trans-unit id="errsWBb" resname="admin.compliance.total_requirements">
+        <source>admin.compliance.total_requirements</source>
+        <target>__admin.compliance.total_requirements</target>
+      </trans-unit>
+      <trans-unit id="LB8phow" resname="admin.compliance.assessed">
+        <source>admin.compliance.assessed</source>
+        <target>__admin.compliance.assessed</target>
+      </trans-unit>
+      <trans-unit id="sSDO5kh" resname="admin.compliance.compliant">
+        <source>admin.compliance.compliant</source>
+        <target>__admin.compliance.compliant</target>
+      </trans-unit>
+      <trans-unit id="gZmWvko" resname="admin.compliance.compliance_rate">
+        <source>admin.compliance.compliance_rate</source>
+        <target>__admin.compliance.compliance_rate</target>
+      </trans-unit>
+      <trans-unit id="LwPZYNI" resname="admin.compliance.progress">
+        <source>admin.compliance.progress</source>
+        <target>__admin.compliance.progress</target>
+      </trans-unit>
+      <trans-unit id="QfijWIS" resname="admin.compliance.statistics">
+        <source>admin.compliance.statistics</source>
+        <target>__admin.compliance.statistics</target>
+      </trans-unit>
+      <trans-unit id="bnkhcMV" resname="admin.panel.title">
+        <source>admin.panel.title</source>
+        <target>__admin.panel.title</target>
+      </trans-unit>
+      <trans-unit id="8nqAYmL" resname="admin.compliance.total_available">
+        <source>admin.compliance.total_available</source>
+        <target>__admin.compliance.total_available</target>
+      </trans-unit>
+      <trans-unit id="edOCwes" resname="admin.compliance.loaded">
+        <source>admin.compliance.loaded</source>
+        <target>__admin.compliance.loaded</target>
+      </trans-unit>
+      <trans-unit id="_YOm9ey" resname="admin.compliance.not_loaded">
+        <source>admin.compliance.not_loaded</source>
+        <target>__admin.compliance.not_loaded</target>
+      </trans-unit>
+      <trans-unit id="48dyVJg" resname="admin.compliance.mandatory_missing">
+        <source>admin.compliance.mandatory_missing</source>
+        <target>__admin.compliance.mandatory_missing</target>
+      </trans-unit>
+      <trans-unit id="woGVu4l" resname="admin.compliance.compliance_overview">
+        <source>admin.compliance.compliance_overview</source>
+        <target>__admin.compliance.compliance_overview</target>
+      </trans-unit>
+      <trans-unit id="efVU6GQ" resname="admin.compliance.no_frameworks_loaded">
+        <source>admin.compliance.no_frameworks_loaded</source>
+        <target>__admin.compliance.no_frameworks_loaded</target>
+      </trans-unit>
+      <trans-unit id="OqoaAPF" resname="admin.data_repair.current_asset">
+        <source>admin.data_repair.current_asset</source>
+        <target>__admin.data_repair.current_asset</target>
+      </trans-unit>
+      <trans-unit id="9N2nHkc" resname="admin.data_repair.assign_to_asset">
+        <source>admin.data_repair.assign_to_asset</source>
+        <target>__admin.data_repair.assign_to_asset</target>
+      </trans-unit>
+      <trans-unit id="XbNWWMc" resname="admin.data_repair.no_asset">
+        <source>admin.data_repair.no_asset</source>
+        <target>__admin.data_repair.no_asset</target>
+      </trans-unit>
+      <trans-unit id="hpZ6hQE" resname="admin.data_repair.select_asset">
+        <source>admin.data_repair.select_asset</source>
+        <target>__admin.data_repair.select_asset</target>
+      </trans-unit>
+      <trans-unit id="iAUioLJ" resname="admin.data_repair.assign_risk">
+        <source>admin.data_repair.assign_risk</source>
+        <target>__admin.data_repair.assign_risk</target>
+      </trans-unit>
+      <trans-unit id="OZi9pAi" resname="admin.data_repair.select_risk">
+        <source>admin.data_repair.select_risk</source>
+        <target>__admin.data_repair.select_risk</target>
+      </trans-unit>
+      <trans-unit id="Lvq4tTp" resname="admin.data_repair.assign_asset">
+        <source>admin.data_repair.assign_asset</source>
+        <target>__admin.data_repair.assign_asset</target>
+      </trans-unit>
+      <trans-unit id="bdtIqCi" resname="admin.data_repair.entity_type">
+        <source>admin.data_repair.entity_type</source>
+        <target>__admin.data_repair.entity_type</target>
+      </trans-unit>
+      <trans-unit id="ZnO.e0E" resname="admin.data_repair.issue">
+        <source>admin.data_repair.issue</source>
+        <target>__admin.data_repair.issue</target>
+      </trans-unit>
+      <trans-unit id="LETcBvl" resname="admin.data_repair.title">
+        <source>admin.data_repair.title</source>
+        <target>__admin.data_repair.title</target>
+      </trans-unit>
+      <trans-unit id="wvRaCbO" resname="admin.data_repair.description">
+        <source>admin.data_repair.description</source>
+        <target>__admin.data_repair.description</target>
+      </trans-unit>
+      <trans-unit id="LTWBeH4" resname="admin.data_repair.orphaned_entities">
+        <source>admin.data_repair.orphaned_entities</source>
+        <target>__admin.data_repair.orphaned_entities</target>
+      </trans-unit>
+      <trans-unit id="tGBCAbO" resname="admin.data_repair.no_orphans">
+        <source>admin.data_repair.no_orphans</source>
+        <target>__admin.data_repair.no_orphans</target>
+      </trans-unit>
+      <trans-unit id="DU87tEd" resname="admin.data_repair.orphans_found">
+        <source>admin.data_repair.orphans_found</source>
+        <target>__admin.data_repair.orphans_found</target>
+      </trans-unit>
+      <trans-unit id="UAcQci3" resname="admin.data_repair.orphaned_assets">
+        <source>admin.data_repair.orphaned_assets</source>
+        <target>__admin.data_repair.orphaned_assets</target>
+      </trans-unit>
+      <trans-unit id="XW5Ymwm" resname="admin.data_repair.orphaned_risks">
+        <source>admin.data_repair.orphaned_risks</source>
+        <target>__admin.data_repair.orphaned_risks</target>
+      </trans-unit>
+      <trans-unit id="iWVtzwk" resname="admin.data_repair.orphaned_incidents">
+        <source>admin.data_repair.orphaned_incidents</source>
+        <target>__admin.data_repair.orphaned_incidents</target>
+      </trans-unit>
+      <trans-unit id="pKucf4b" resname="admin.data_repair.assign_to_tenant">
+        <source>admin.data_repair.assign_to_tenant</source>
+        <target>__admin.data_repair.assign_to_tenant</target>
+      </trans-unit>
+      <trans-unit id="6zY8CjO" resname="admin.data_repair.select_tenant">
+        <source>admin.data_repair.select_tenant</source>
+        <target>__admin.data_repair.select_tenant</target>
+      </trans-unit>
+      <trans-unit id="cRqGCms" resname="admin.data_repair.all_orphans">
+        <source>admin.data_repair.all_orphans</source>
+        <target>__admin.data_repair.all_orphans</target>
+      </trans-unit>
+      <trans-unit id="TobuIHG" resname="admin.data_repair.assets_only">
+        <source>admin.data_repair.assets_only</source>
+        <target>__admin.data_repair.assets_only</target>
+      </trans-unit>
+      <trans-unit id="0exOGud" resname="admin.data_repair.risks_only">
+        <source>admin.data_repair.risks_only</source>
+        <target>__admin.data_repair.risks_only</target>
+      </trans-unit>
+      <trans-unit id="mQKuZHD" resname="admin.data_repair.incidents_only">
+        <source>admin.data_repair.incidents_only</source>
+        <target>__admin.data_repair.incidents_only</target>
+      </trans-unit>
+      <trans-unit id="owtEvql" resname="admin.data_repair.assign_orphans">
+        <source>admin.data_repair.assign_orphans</source>
+        <target>__admin.data_repair.assign_orphans</target>
+      </trans-unit>
+      <trans-unit id="tbOSvU." resname="admin.data_repair.orphaned_assets_list">
+        <source>admin.data_repair.orphaned_assets_list</source>
+        <target>__admin.data_repair.orphaned_assets_list</target>
+      </trans-unit>
+      <trans-unit id="HeyrLI9" resname="admin.data_repair.orphaned_risks_list">
+        <source>admin.data_repair.orphaned_risks_list</source>
+        <target>__admin.data_repair.orphaned_risks_list</target>
+      </trans-unit>
+      <trans-unit id="FI93kLr" resname="admin.data_repair.orphaned_incidents_list">
+        <source>admin.data_repair.orphaned_incidents_list</source>
+        <target>__admin.data_repair.orphaned_incidents_list</target>
+      </trans-unit>
+      <trans-unit id="ajbz5Cn" resname="admin.data_repair.tenant_statistics">
+        <source>admin.data_repair.tenant_statistics</source>
+        <target>__admin.data_repair.tenant_statistics</target>
+      </trans-unit>
+      <trans-unit id="HCrR0fB" resname="admin.data_repair.risk_asset_assignment">
+        <source>admin.data_repair.risk_asset_assignment</source>
+        <target>__admin.data_repair.risk_asset_assignment</target>
+      </trans-unit>
+      <trans-unit id="U5KJDi8" resname="admin.data_repair.risk_asset_assignment_desc">
+        <source>admin.data_repair.risk_asset_assignment_desc</source>
+        <target>__admin.data_repair.risk_asset_assignment_desc</target>
+      </trans-unit>
+      <trans-unit id="lpBGpa1" resname="admin.data_repair.incident_asset_assignment">
+        <source>admin.data_repair.incident_asset_assignment</source>
+        <target>__admin.data_repair.incident_asset_assignment</target>
+      </trans-unit>
+      <trans-unit id="OXX6_Jw" resname="admin.data_repair.incident_asset_assignment_desc">
+        <source>admin.data_repair.incident_asset_assignment_desc</source>
+        <target>__admin.data_repair.incident_asset_assignment_desc</target>
+      </trans-unit>
+      <trans-unit id="GzZEmQb" resname="admin.data_repair.controls_without_risks">
+        <source>admin.data_repair.controls_without_risks</source>
+        <target>__admin.data_repair.controls_without_risks</target>
+      </trans-unit>
+      <trans-unit id="NcbYC5N" resname="admin.data_repair.controls_without_risks_desc">
+        <source>admin.data_repair.controls_without_risks_desc</source>
+        <target>__admin.data_repair.controls_without_risks_desc</target>
+      </trans-unit>
+      <trans-unit id="L7qG6pz" resname="admin.data_repair.controls_count">
+        <source>admin.data_repair.controls_count</source>
+        <target>__admin.data_repair.controls_count</target>
+      </trans-unit>
+      <trans-unit id="_3UmPFS" resname="admin.data_repair.controls_without_assets">
+        <source>admin.data_repair.controls_without_assets</source>
+        <target>__admin.data_repair.controls_without_assets</target>
+      </trans-unit>
+      <trans-unit id="cujxBqm" resname="admin.data_repair.controls_without_assets_desc">
+        <source>admin.data_repair.controls_without_assets_desc</source>
+        <target>__admin.data_repair.controls_without_assets_desc</target>
+      </trans-unit>
+      <trans-unit id="sBnF79N" resname="admin.data_repair.broken_references">
+        <source>admin.data_repair.broken_references</source>
+        <target>__admin.data_repair.broken_references</target>
+      </trans-unit>
+      <trans-unit id="F79D.0n" resname="admin.data_repair.broken_references_desc">
+        <source>admin.data_repair.broken_references_desc</source>
+        <target>__admin.data_repair.broken_references_desc</target>
+      </trans-unit>
+      <trans-unit id="MRmsA_T" resname="admin.modules.title">
+        <source>admin.modules.title</source>
+        <target>__admin.modules.title</target>
+      </trans-unit>
+      <trans-unit id="dmQe9Xb" resname="admin.modules.dependency_graph">
+        <source>admin.modules.dependency_graph</source>
+        <target>__admin.modules.dependency_graph</target>
+      </trans-unit>
+      <trans-unit id="2mPtnpR" resname="admin.modules.stats.total">
+        <source>admin.modules.stats.total</source>
+        <target>__admin.modules.stats.total</target>
+      </trans-unit>
+      <trans-unit id="eawv4cg" resname="admin.modules.stats.active">
+        <source>admin.modules.stats.active</source>
+        <target>__admin.modules.stats.active</target>
+      </trans-unit>
+      <trans-unit id="QwxIIph" resname="admin.modules.stats.inactive">
+        <source>admin.modules.stats.inactive</source>
+        <target>__admin.modules.stats.inactive</target>
+      </trans-unit>
+      <trans-unit id="6G2Y9d_" resname="admin.modules.stats.required">
+        <source>admin.modules.stats.required</source>
+        <target>__admin.modules.stats.required</target>
+      </trans-unit>
+      <trans-unit id="_TXiVgt" resname="admin.modules.active_modules">
+        <source>admin.modules.active_modules</source>
+        <target>__admin.modules.active_modules</target>
+      </trans-unit>
+      <trans-unit id="xaH3cTz" resname="admin.modules.status.active">
+        <source>admin.modules.status.active</source>
+        <target>__admin.modules.status.active</target>
+      </trans-unit>
+      <trans-unit id="uFXzB2Y" resname="admin.modules.dependencies">
+        <source>admin.modules.dependencies</source>
+        <target>__admin.modules.dependencies</target>
+      </trans-unit>
+      <trans-unit id="H0NyLbF" resname="admin.modules.required_by">
+        <source>admin.modules.required_by</source>
+        <target>__admin.modules.required_by</target>
+      </trans-unit>
+      <trans-unit id="WM204Zx" resname="admin.modules.details">
+        <source>admin.modules.details</source>
+        <target>__admin.modules.details</target>
+      </trans-unit>
+      <trans-unit id="hZ1P7u0" resname="admin.modules.confirm_deactivate">
+        <source>admin.modules.confirm_deactivate</source>
+        <target>__admin.modules.confirm_deactivate</target>
+      </trans-unit>
+      <trans-unit id="4bW17G7" resname="admin.modules.deactivate">
+        <source>admin.modules.deactivate</source>
+        <target>__admin.modules.deactivate</target>
+      </trans-unit>
+      <trans-unit id="b_y6BJ5" resname="admin.modules.required">
+        <source>admin.modules.required</source>
+        <target>__admin.modules.required</target>
+      </trans-unit>
+      <trans-unit id="7Kcg8rB" resname="admin.modules.no_active">
+        <source>admin.modules.no_active</source>
+        <target>__admin.modules.no_active</target>
+      </trans-unit>
+      <trans-unit id="9HOybQi" resname="admin.modules.inactive_modules">
+        <source>admin.modules.inactive_modules</source>
+        <target>__admin.modules.inactive_modules</target>
+      </trans-unit>
+      <trans-unit id="PEXcews" resname="admin.modules.status.inactive">
+        <source>admin.modules.status.inactive</source>
+        <target>__admin.modules.status.inactive</target>
+      </trans-unit>
+      <trans-unit id="kuo1uFY" resname="admin.modules.activate">
+        <source>admin.modules.activate</source>
+        <target>__admin.modules.activate</target>
+      </trans-unit>
+      <trans-unit id="BUIcMkv" resname="admin.dashboard.modules.controls">
+        <source>admin.dashboard.modules.controls</source>
+        <target>__admin.dashboard.modules.controls</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

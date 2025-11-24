@@ -1,60 +1,50 @@
-audit_log:
-  page:
-    title: Audit Log
-    subtitle: Complete logging of all activities in the ISMS to ensure auditability
-    monitoring_subtitle: Security and activity log
-  section:
-    statistics: Statistics
-    filters: Filters
-    entries: Log Entries
-    table: Table
-    timeline: Timeline
-    quick_filters: Quick Filters
-  stats:
-    total_logs: Total log entries
-    last_24h: Last 24 hours
-    actions: Actions
-    entity_types: Entity types
-    total_entries: Total entries
-    top_actions: Top actions
-    top_entities: Top entities
-  filter:
-    entity_type: Entity type
-    action: Action
-    user: User
-    date_from: From date
-    date_to: To date
-    apply: Apply filters
-    reset: Reset filters
-    statistics: Statistics
-    quick:
-      all: All
-      today: Today
-      this_week: This Week
-      critical_actions: Critical Actions
-  table:
-    timestamp: Timestamp
-    action: Action
-    entity: Entity
-    user: User
-    description: Description
-    details: Details
-    view_details: View details
-    ip_address: IP Address
-    changes: Changes
-  pagination:
-    prev: « Previous
-    next: Next »
-    page_counter: Page %current% of %total%
-  message:
-    no_entries: No log entries found.
-    no_entries_filtered: No audit log entries found for the selected filter.
-  action:
-    back_to_health: Back to Health
-  modal:
-    title: Audit Log Details
-  info:
-    about_title: About Audit Log
-    about_text: The audit log tracks all significant actions in the system including create, update, and delete operations. This provides a complete audit trail for compliance and security purposes.
-    module_link: Audit Log module
-    entries: 'audit_log'
+audit_log.page.title: 'Audit Log'
+audit_log.page.subtitle: 'Complete logging of all activities in the ISMS to ensure auditability'
+audit_log.page.monitoring_subtitle: 'Security and activity log'
+audit_log.section.statistics: Statistics
+audit_log.section.filters: Filters
+audit_log.section.entries: 'Log Entries'
+audit_log.section.table: Table
+audit_log.section.timeline: Timeline
+audit_log.section.quick_filters: 'Quick Filters'
+audit_log.stats.total_logs: 'Total log entries'
+audit_log.stats.last_24h: 'Last 24 hours'
+audit_log.stats.actions: Actions
+audit_log.stats.entity_types: 'Entity types'
+audit_log.stats.total_entries: 'Total entries'
+audit_log.stats.top_actions: 'Top actions'
+audit_log.stats.top_entities: 'Top entities'
+audit_log.filter.entity_type: 'Entity type'
+audit_log.filter.action: Action
+audit_log.filter.user: User
+audit_log.filter.date_from: 'From date'
+audit_log.filter.date_to: 'To date'
+audit_log.filter.apply: 'Apply filters'
+audit_log.filter.reset: 'Reset filters'
+audit_log.filter.statistics: Statistics
+audit_log.filter.quick.all: All
+audit_log.filter.quick.today: Today
+audit_log.filter.quick.this_week: 'This Week'
+audit_log.filter.quick.critical_actions: 'Critical Actions'
+audit_log.table.timestamp: Timestamp
+audit_log.table.action: Action
+audit_log.table.entity: Entity
+audit_log.table.user: User
+audit_log.table.description: Description
+audit_log.table.details: Details
+audit_log.table.view_details: 'View details'
+audit_log.table.ip_address: 'IP Address'
+audit_log.table.changes: Changes
+audit_log.pagination.prev: '« Previous'
+audit_log.pagination.next: 'Next »'
+audit_log.pagination.page_counter: 'Page %current% of %total%'
+audit_log.message.no_entries: 'No log entries found.'
+audit_log.message.no_entries_filtered: 'No audit log entries found for the selected filter.'
+audit_log.action.back_to_health: 'Back to Health'
+audit_log.modal.title: 'Audit Log Details'
+audit_log.info.about_title: 'About Audit Log'
+audit_log.info.about_text: 'The audit log tracks all significant actions in the system including create, update, and delete operations. This provides a complete audit trail for compliance and security purposes.'
+audit_log.info.module_link: 'Audit Log module'
+audit_log.info.entries: audit_log
+audit_log.showing_recent: __audit_log.showing_recent
+audit_log.entries: __audit_log.entries

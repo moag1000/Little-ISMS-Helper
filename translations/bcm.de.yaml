@@ -70,6 +70,13 @@ bcm:
     high: Hoch
     medium: Mittel
     low: Niedrig
+business_process:
+  impact_level:
+    very_low: Sehr gering (1)
+    low: Gering (2)
+    medium: Mittel (3)
+    high: Hoch (4)
+    very_high: Sehr hoch (5)
   data_reuse:
     asset_recommendations_title: "Asset-Empfehlungen basierend auf BCM-Daten"
     benefits_title: "Vorteile der Datenwiederverwendung"

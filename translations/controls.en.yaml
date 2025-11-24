@@ -1,13 +1,21 @@
-controls:
-  field:
-    control_id: Control ID
-    name: Name
-    title: Title
-    category: Category
-    implementation_status: Implementation Status
-    status: Status
-  status:
-    implemented: Implemented
-    in_progress: In Progress
-    not_started: Not Started
-    not_applicable: Not applicable
+controls.field.control_id: 'Control ID'
+controls.field.name: Name
+controls.field.title: Title
+controls.field.category: Category
+controls.field.implementation_status: 'Implementation Status'
+controls.field.status: Status
+controls.status.implemented: Implemented
+controls.status.in_progress: 'In Progress'
+controls.status.not_started: 'Not Started'
+controls.status.not_applicable: 'Not applicable'
+control.category.organizational: Organizational
+control.category.people: People
+control.category.physical: Physical
+control.category.technological: Technological
+control.applicable.yes: Applicable
+control.applicable.no: 'Not applicable'
+control.implementation_status.not_started: 'Not started'
+control.implementation_status.planned: Planned
+control.implementation_status.in_progress: 'In progress'
+control.implementation_status.implemented: Implemented
+control.implementation_status.verified: Verified

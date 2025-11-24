@@ -1,76 +1,193 @@
-admin:
-  title: Administration
-  breadcrumb:
-    home: Admin Dashboard
-  section:
-    user_access: Users & Access
-    system_config: System Configuration
-    modules: Modules & Features
-    monitoring: Monitoring & Logs
-    navigation: Navigation
-    data_management: Data Management
-    licensing: Licensing
-  nav:
-    tenants: Tenants
-    users: Users
-    roles: Roles
-    settings: Settings
-    compliance: Compliance Frameworks
-    audit_log: Audit Log
-    back_to_app: Back to Application
-    dashboard: Dashboard
-    corporate_structure: Corporate Structures
-    permissions: Permissions
-    sessions: Sessions
-    mfa: MFA Management
-    module_management: Module Management
-    compliance_management: Compliance Management
-    system_health: System Health
-    backup: Backup
-    export: Export
-    import: Import
-    data_repair: Data Repair
-    license_management: License Management
-  dashboard:
-    title: Admin Dashboard
-    subtitle: Central administration and system overview
-    alerts:
-      title: System Alerts
-      item: item
-      items: items
-      view: View
-    stats:
-      users: Users
-      active: Active
-      inactive: Inactive
-      manage: Manage
-      active_sessions: Active Sessions
-      last_24h: Last 24 hours
-      database: Database Size
-      total_records: Total Records
-      across_modules: Across all modules
-    modules:
-      title: Modules Overview
-      module: Module
-      records: Records
-      action: Action
-      assets: Assets
-      risks: Risks
-      compliance: Compliance
-      incidents: Incidents
-      audits: Audits
-      trainings: Trainings
-    quick_actions:
-      title: Quick Actions
-      add_user: Add user
-      add_role: Add role
-      view_logs: View logs
-      manage_compliance: Manage compliance
-    activity:
-      title: Activity
-      empty: No recent activity.
-      view_all: View all
-  licensing:
-    attributions_provided: "Attributions in der Anwendung bereitstellen (erledigt ✓)"
-  settings:
-    required_for_iso27001: "Required for ISO 27001"
+admin.title: Administration
+admin.breadcrumb.home: 'Admin Dashboard'
+admin.section.user_access: 'Users & Access'
+admin.section.system_config: 'System Configuration'
+admin.section.modules: 'Modules & Features'
+admin.section.monitoring: 'Monitoring & Logs'
+admin.section.navigation: Navigation
+admin.section.data_management: 'Data Management'
+admin.section.licensing: Licensing
+admin.nav.tenants: Tenants
+admin.nav.users: Users
+admin.nav.roles: Roles
+admin.nav.settings: Settings
+admin.nav.compliance: 'Compliance Frameworks'
+admin.nav.audit_log: 'Audit Log'
+admin.nav.back_to_app: 'Back to Application'
+admin.nav.dashboard: Dashboard
+admin.nav.corporate_structure: 'Corporate Structures'
+admin.nav.permissions: Permissions
+admin.nav.sessions: Sessions
+admin.nav.mfa: 'MFA Management'
+admin.nav.module_management: 'Module Management'
+admin.nav.compliance_management: 'Compliance Management'
+admin.nav.system_health: 'System Health'
+admin.nav.backup: Backup
+admin.nav.export: Export
+admin.nav.import: Import
+admin.nav.data_repair: 'Data Repair'
+admin.nav.license_management: 'License Management'
+admin.dashboard.title: 'Admin Dashboard'
+admin.dashboard.subtitle: 'Central administration and system overview'
+admin.dashboard.alerts.title: 'System Alerts'
+admin.dashboard.alerts.item: item
+admin.dashboard.alerts.items: items
+admin.dashboard.alerts.view: View
+admin.dashboard.stats.users: Users
+admin.dashboard.stats.active: Active
+admin.dashboard.stats.inactive: Inactive
+admin.dashboard.stats.manage: Manage
+admin.dashboard.stats.active_sessions: 'Active Sessions'
+admin.dashboard.stats.last_24h: 'Last 24 hours'
+admin.dashboard.stats.database: 'Database Size'
+admin.dashboard.stats.total_records: 'Total Records'
+admin.dashboard.stats.across_modules: 'Across all modules'
+admin.dashboard.modules.title: 'Modules Overview'
+admin.dashboard.modules.module: Module
+admin.dashboard.modules.records: Records
+admin.dashboard.modules.action: Action
+admin.dashboard.modules.assets: Assets
+admin.dashboard.modules.risks: Risks
+admin.dashboard.modules.compliance: Compliance
+admin.dashboard.modules.incidents: Incidents
+admin.dashboard.modules.audits: Audits
+admin.dashboard.modules.trainings: Trainings
+admin.dashboard.quick_actions.title: 'Quick Actions'
+admin.dashboard.quick_actions.add_user: 'Add user'
+admin.dashboard.quick_actions.add_role: 'Add role'
+admin.dashboard.quick_actions.view_logs: 'View logs'
+admin.dashboard.quick_actions.manage_compliance: 'Manage compliance'
+admin.dashboard.activity.title: Activity
+admin.dashboard.activity.empty: 'No recent activity.'
+admin.dashboard.activity.view_all: 'View all'
+admin.licensing.attributions_provided: 'Attributions in der Anwendung bereitstellen (erledigt ✓)'
+admin.settings.required_for_iso27001: 'Required for ISO 27001'
+admin.settings.title: __admin.settings.title
+admin.settings.subtitle: __admin.settings.subtitle
+admin.settings.application.title: __admin.settings.application.title
+admin.settings.application.description: __admin.settings.application.description
+admin.settings.application.locale: __admin.settings.application.locale
+admin.settings.application.timezone: __admin.settings.application.timezone
+admin.settings.application.items_per_page: __admin.settings.application.items_per_page
+admin.settings.configure: __admin.settings.configure
+admin.settings.security.title: __admin.settings.security.title
+admin.settings.security.description: __admin.settings.security.description
+admin.settings.security.session_lifetime: __admin.settings.security.session_lifetime
+admin.settings.security.max_login_attempts: __admin.settings.security.max_login_attempts
+admin.settings.security.require_2fa: __admin.settings.security.require_2fa
+admin.settings.features.title: __admin.settings.features.title
+admin.settings.features.description: __admin.settings.features.description
+admin.settings.features.dark_mode: __admin.settings.features.dark_mode
+admin.settings.features.global_search: __admin.settings.features.global_search
+admin.settings.features.audit_log: __admin.settings.features.audit_log
+admin.settings.info_title: __admin.settings.info_title
+admin.settings.info_text: __admin.settings.info_text
+admin.settings.features.intro: __admin.settings.features.intro
+admin.settings.features.dark_mode_help: __admin.settings.features.dark_mode_help
+admin.settings.features.global_search_help: __admin.settings.features.global_search_help
+admin.settings.features.quick_view: __admin.settings.features.quick_view
+admin.settings.features.quick_view_help: __admin.settings.features.quick_view_help
+admin.settings.features.notifications: __admin.settings.features.notifications
+admin.settings.features.notifications_help: __admin.settings.features.notifications_help
+admin.settings.features.audit_log_help: __admin.settings.features.audit_log_help
+admin.settings.info: __admin.settings.info
+admin.settings.features.info_text: __admin.settings.features.info_text
+admin.settings.application.locale_settings: __admin.settings.application.locale_settings
+admin.settings.application.default_locale: __admin.settings.application.default_locale
+admin.settings.application.default_locale_help: __admin.settings.application.default_locale_help
+admin.settings.application.supported_locales: __admin.settings.application.supported_locales
+admin.settings.application.supported_locales_help: __admin.settings.application.supported_locales_help
+admin.settings.application.display_settings: __admin.settings.application.display_settings
+admin.settings.application.items_per_page_help: __admin.settings.application.items_per_page_help
+admin.settings.application.timezone_help: __admin.settings.application.timezone_help
+admin.settings.application.date_format: __admin.settings.application.date_format
+admin.settings.application.date_format_help: __admin.settings.application.date_format_help
+admin.settings.application.datetime_format: __admin.settings.application.datetime_format
+admin.settings.application.datetime_format_help: __admin.settings.application.datetime_format_help
+admin.settings.help: __admin.settings.help
+admin.settings.application.help_text: __admin.settings.application.help_text
+admin.settings.security.session_settings: __admin.settings.security.session_settings
+admin.settings.security.session_lifetime_help: __admin.settings.security.session_lifetime_help
+admin.settings.security.remember_me_lifetime: __admin.settings.security.remember_me_lifetime
+admin.settings.security.remember_me_help: __admin.settings.security.remember_me_help
+admin.settings.security.password_settings: __admin.settings.security.password_settings
+admin.settings.security.password_min_length: __admin.settings.security.password_min_length
+admin.settings.security.password_min_length_help: __admin.settings.security.password_min_length_help
+admin.settings.security.auth_settings: __admin.settings.security.auth_settings
+admin.settings.security.max_login_attempts_help: __admin.settings.security.max_login_attempts_help
+admin.settings.security.lockout_duration: __admin.settings.security.lockout_duration
+admin.settings.security.lockout_duration_help: __admin.settings.security.lockout_duration_help
+admin.settings.security.require_2fa_help: __admin.settings.security.require_2fa_help
+admin.settings.security.warning: __admin.settings.security.warning
+admin.compliance.framework: __admin.compliance.framework
+admin.compliance.total_requirements: __admin.compliance.total_requirements
+admin.compliance.assessed: __admin.compliance.assessed
+admin.compliance.compliant: __admin.compliance.compliant
+admin.compliance.compliance_rate: __admin.compliance.compliance_rate
+admin.compliance.progress: __admin.compliance.progress
+admin.compliance.statistics: __admin.compliance.statistics
+admin.panel.title: __admin.panel.title
+admin.compliance.total_available: __admin.compliance.total_available
+admin.compliance.loaded: __admin.compliance.loaded
+admin.compliance.not_loaded: __admin.compliance.not_loaded
+admin.compliance.mandatory_missing: __admin.compliance.mandatory_missing
+admin.compliance.compliance_overview: __admin.compliance.compliance_overview
+admin.compliance.no_frameworks_loaded: __admin.compliance.no_frameworks_loaded
+admin.data_repair.current_asset: __admin.data_repair.current_asset
+admin.data_repair.assign_to_asset: __admin.data_repair.assign_to_asset
+admin.data_repair.no_asset: __admin.data_repair.no_asset
+admin.data_repair.select_asset: __admin.data_repair.select_asset
+admin.data_repair.assign_risk: __admin.data_repair.assign_risk
+admin.data_repair.select_risk: __admin.data_repair.select_risk
+admin.data_repair.assign_asset: __admin.data_repair.assign_asset
+admin.data_repair.entity_type: __admin.data_repair.entity_type
+admin.data_repair.issue: __admin.data_repair.issue
+admin.data_repair.title: __admin.data_repair.title
+admin.data_repair.description: __admin.data_repair.description
+admin.data_repair.orphaned_entities: __admin.data_repair.orphaned_entities
+admin.data_repair.no_orphans: __admin.data_repair.no_orphans
+admin.data_repair.orphans_found: __admin.data_repair.orphans_found
+admin.data_repair.orphaned_assets: __admin.data_repair.orphaned_assets
+admin.data_repair.orphaned_risks: __admin.data_repair.orphaned_risks
+admin.data_repair.orphaned_incidents: __admin.data_repair.orphaned_incidents
+admin.data_repair.assign_to_tenant: __admin.data_repair.assign_to_tenant
+admin.data_repair.select_tenant: __admin.data_repair.select_tenant
+admin.data_repair.all_orphans: __admin.data_repair.all_orphans
+admin.data_repair.assets_only: __admin.data_repair.assets_only
+admin.data_repair.risks_only: __admin.data_repair.risks_only
+admin.data_repair.incidents_only: __admin.data_repair.incidents_only
+admin.data_repair.assign_orphans: __admin.data_repair.assign_orphans
+admin.data_repair.orphaned_assets_list: __admin.data_repair.orphaned_assets_list
+admin.data_repair.orphaned_risks_list: __admin.data_repair.orphaned_risks_list
+admin.data_repair.orphaned_incidents_list: __admin.data_repair.orphaned_incidents_list
+admin.data_repair.tenant_statistics: __admin.data_repair.tenant_statistics
+admin.data_repair.risk_asset_assignment: __admin.data_repair.risk_asset_assignment
+admin.data_repair.risk_asset_assignment_desc: __admin.data_repair.risk_asset_assignment_desc
+admin.data_repair.incident_asset_assignment: __admin.data_repair.incident_asset_assignment
+admin.data_repair.incident_asset_assignment_desc: __admin.data_repair.incident_asset_assignment_desc
+admin.data_repair.controls_without_risks: __admin.data_repair.controls_without_risks
+admin.data_repair.controls_without_risks_desc: __admin.data_repair.controls_without_risks_desc
+admin.data_repair.controls_count: __admin.data_repair.controls_count
+admin.data_repair.controls_without_assets: __admin.data_repair.controls_without_assets
+admin.data_repair.controls_without_assets_desc: __admin.data_repair.controls_without_assets_desc
+admin.data_repair.broken_references: __admin.data_repair.broken_references
+admin.data_repair.broken_references_desc: __admin.data_repair.broken_references_desc
+admin.modules.title: __admin.modules.title
+admin.modules.dependency_graph: __admin.modules.dependency_graph
+admin.modules.stats.total: __admin.modules.stats.total
+admin.modules.stats.active: __admin.modules.stats.active
+admin.modules.stats.inactive: __admin.modules.stats.inactive
+admin.modules.stats.required: __admin.modules.stats.required
+admin.modules.active_modules: __admin.modules.active_modules
+admin.modules.status.active: __admin.modules.status.active
+admin.modules.dependencies: __admin.modules.dependencies
+admin.modules.required_by: __admin.modules.required_by
+admin.modules.details: __admin.modules.details
+admin.modules.confirm_deactivate: __admin.modules.confirm_deactivate
+admin.modules.deactivate: __admin.modules.deactivate
+admin.modules.required: __admin.modules.required
+admin.modules.no_active: __admin.modules.no_active
+admin.modules.inactive_modules: __admin.modules.inactive_modules
+admin.modules.status.inactive: __admin.modules.status.inactive
+admin.modules.activate: __admin.modules.activate
+admin.dashboard.modules.controls: __admin.dashboard.modules.controls

@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="en" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="ksBOjIe" resname="incident_management.title">
+        <source>incident_management.title</source>
+        <target>Incidents</target>
+      </trans-unit>
+      <trans-unit id="smxzzLr" resname="incident_management.description">
+        <source>incident_management.description</source>
+        <target>Record, classify and manage security incidents and NIS2 notifications.</target>
+      </trans-unit>
+      <trans-unit id="fj.Tucg" resname="incident_management.open_incidents">
+        <source>incident_management.open_incidents</source>
+        <target>Open Incidents</target>
+      </trans-unit>
+      <trans-unit id="i.sDhBo" resname="incident_management.total_recorded">
+        <source>incident_management.total_recorded</source>
+        <target>Total Recorded</target>
+      </trans-unit>
+      <trans-unit id="MFrCE0i" resname="incident.action.report_new">
+        <source>incident.action.report_new</source>
+        <target>Report New Incident</target>
+      </trans-unit>
+      <trans-unit id="2f0XuVv" resname="incident.action.edit">
+        <source>incident.action.edit</source>
+        <target>Edit</target>
+      </trans-unit>
+      <trans-unit id="ZTjD1TN" resname="incident.action.back_to_list">
+        <source>incident.action.back_to_list</source>
+        <target>Back to List</target>
+      </trans-unit>
+      <trans-unit id="veKYo4." resname="incident.action.delete">
+        <source>incident.action.delete</source>
+        <target>Delete</target>
+      </trans-unit>
+      <trans-unit id="2PqOlop" resname="incident.action.download_nis2_report">
+        <source>incident.action.download_nis2_report</source>
+        <target>Download NIS2 Report</target>
+      </trans-unit>
+      <trans-unit id="IL56hSx" resname="incident.kpi.nis2_attention">
+        <source>incident.kpi.nis2_attention</source>
+        <target>NIS2 Requiring Attention</target>
+      </trans-unit>
+      <trans-unit id="rUgfGzr" resname="incident.kpi.categories">
+        <source>incident.kpi.categories</source>
+        <target>Categories</target>
+      </trans-unit>
+      <trans-unit id="5dkXp4p" resname="incident.modern.breadcrumb">
+        <source>incident.modern.breadcrumb</source>
+        <target>Incident Management</target>
+      </trans-unit>
+      <trans-unit id="Vj2ie9a" resname="incident.modern.header.title">
+        <source>incident.modern.header.title</source>
+        <target>Incident Management</target>
+      </trans-unit>
+      <trans-unit id="9yASZZ_" resname="incident.modern.header.subtitle">
+        <source>incident.modern.header.subtitle</source>
+        <target>Documentation and handling of information security incidents</target>
+      </trans-unit>
+      <trans-unit id="g81OgAC" resname="incident.modern.header.action.report">
+        <source>incident.modern.header.action.report</source>
+        <target>Report Incident</target>
+      </trans-unit>
+      <trans-unit id="_iNPIzj" resname="incident.modern.header.action.export">
+        <source>incident.modern.header.action.export</source>
+        <target>Export</target>
+      </trans-unit>
+      <trans-unit id="q9zBKMO" resname="incident.modern.kpi.total">
+        <source>incident.modern.kpi.total</source>
+        <target>Total Incidents</target>
+      </trans-unit>
+      <trans-unit id="zbFrXJt" resname="incident.modern.kpi.open">
+        <source>incident.modern.kpi.open</source>
+        <target>Open Incidents</target>
+      </trans-unit>
+      <trans-unit id="_i.LzOa" resname="incident.modern.kpi.critical">
+        <source>incident.modern.kpi.critical</source>
+        <target>Critical Incidents</target>
+      </trans-unit>
+      <trans-unit id=".skvPq7" resname="incident.modern.kpi.avg_resolution">
+        <source>incident.modern.kpi.avg_resolution</source>
+        <target>Avg. Resolution Time</target>
+      </trans-unit>
+      <trans-unit id="B8Pojwi" resname="incident.modern.kpi.unit.days">
+        <source>incident.modern.kpi.unit.days</source>
+        <target>Days</target>
+      </trans-unit>
+      <trans-unit id="H3FubzE" resname="incident.status.open">
+        <source>incident.status.open</source>
+        <target>Open</target>
+      </trans-unit>
+      <trans-unit id="r59EIWv" resname="incident.status.in_progress">
+        <source>incident.status.in_progress</source>
+        <target>In Progress</target>
+      </trans-unit>
+      <trans-unit id="hIxdSpn" resname="incident.status.resolved">
+        <source>incident.status.resolved</source>
+        <target>Resolved</target>
+      </trans-unit>
+      <trans-unit id="VRRpPDu" resname="incident.status.closed">
+        <source>incident.status.closed</source>
+        <target>Closed</target>
+      </trans-unit>
+      <trans-unit id="l_muIM9" resname="incident.nis2_timeline.title">
+        <source>incident.nis2_timeline.title</source>
+        <target>NIS2 Reporting Timeline (Article 23)</target>
+      </trans-unit>
+      <trans-unit id="C7yJMN0" resname="incident.nis2_timeline.description">
+        <source>incident.nis2_timeline.description</source>
+        <target>According to the NIS2 Directive (EU 2022/2555), significant incidents must be reported within defined deadlines.</target>
+      </trans-unit>
+      <trans-unit id="RnmeFYs" resname="incident.timeline.early_warning">
+        <source>incident.timeline.early_warning</source>
+        <target>Early Warning (24h)</target>
+      </trans-unit>
+      <trans-unit id="ovceM3o" resname="incident.timeline.detailed_notification">
+        <source>incident.timeline.detailed_notification</source>
+        <target>Detailed Notification (72h)</target>
+      </trans-unit>
+      <trans-unit id=".EMrApY" resname="incident.timeline.final_report">
+        <source>incident.timeline.final_report</source>
+        <target>Final Report (1 month)</target>
+      </trans-unit>
+      <trans-unit id="4ryWRwE" resname="incident.timeline.deadline">
+        <source>incident.timeline.deadline</source>
+        <target>Deadline</target>
+      </trans-unit>
+      <trans-unit id="_juB3lS" resname="incident.timeline.reported_at">
+        <source>incident.timeline.reported_at</source>
+        <target>Reported at</target>
+      </trans-unit>
+      <trans-unit id="rm9AHBh" resname="incident.timeline.overdue">
+        <source>incident.timeline.overdue</source>
+        <target>Overdue</target>
+      </trans-unit>
+      <trans-unit id="cG18hUj" resname="incident.timeline.hours_remaining">
+        <source>incident.timeline.hours_remaining</source>
+        <target>%hours% hours remaining</target>
+      </trans-unit>
+      <trans-unit id="xi6Tn.1" resname="incident.timeline.days_remaining">
+        <source>incident.timeline.days_remaining</source>
+        <target>%days% days remaining</target>
+      </trans-unit>
+      <trans-unit id="Qk6qVsq" resname="incident.field.category">
+        <source>incident.field.category</source>
+        <target>Category</target>
+      </trans-unit>
+      <trans-unit id="ocmbLzy" resname="incident.field.detected">
+        <source>incident.field.detected</source>
+        <target>Detected</target>
+      </trans-unit>
+      <trans-unit id="mo9dQ7U" resname="incident.field.reported_by">
+        <source>incident.field.reported_by</source>
+        <target>Reported By</target>
+      </trans-unit>
+      <trans-unit id="qg_SA1i" resname="incident.field.occurred">
+        <source>incident.field.occurred</source>
+        <target>Occurred</target>
+      </trans-unit>
+      <trans-unit id="VyT0CZK" resname="incident.label.title">
+        <source>incident.label.title</source>
+        <target>__incident.label.title</target>
+      </trans-unit>
+      <trans-unit id="NcU7VkA" resname="incident.label.severity">
+        <source>incident.label.severity</source>
+        <target>__incident.label.severity</target>
+      </trans-unit>
+      <trans-unit id="E3B_yJt" resname="incident.edit">
+        <source>incident.edit</source>
+        <target>__incident.edit</target>
+      </trans-unit>
+      <trans-unit id="YkwIPVA" resname="incident.section.basic_info">
+        <source>incident.section.basic_info</source>
+        <target>__incident.section.basic_info</target>
+      </trans-unit>
+      <trans-unit id=".Xk4ukS" resname="incident.field.title">
+        <source>incident.field.title</source>
+        <target>__incident.field.title</target>
+      </trans-unit>
+      <trans-unit id="U6UuAKm" resname="incident.field.description">
+        <source>incident.field.description</source>
+        <target>__incident.field.description</target>
+      </trans-unit>
+      <trans-unit id="F0k2aYJ" resname="incident.section.severity_status">
+        <source>incident.section.severity_status</source>
+        <target>__incident.section.severity_status</target>
+      </trans-unit>
+      <trans-unit id="0oqwLI." resname="incident.field.severity">
+        <source>incident.field.severity</source>
+        <target>__incident.field.severity</target>
+      </trans-unit>
+      <trans-unit id="XEYBKKV" resname="incident.field.status">
+        <source>incident.field.status</source>
+        <target>__incident.field.status</target>
+      </trans-unit>
+      <trans-unit id="_6VQltv" resname="incident.status_help">
+        <source>incident.status_help</source>
+        <target>__incident.status_help</target>
+      </trans-unit>
+      <trans-unit id="z90o_TO" resname="incident.section.detection_reporting">
+        <source>incident.section.detection_reporting</source>
+        <target>__incident.section.detection_reporting</target>
+      </trans-unit>
+      <trans-unit id="0oeTgMl" resname="incident.field.detected_at">
+        <source>incident.field.detected_at</source>
+        <target>__incident.field.detected_at</target>
+      </trans-unit>
+      <trans-unit id="1PAecD5" resname="incident.field.occurred_at">
+        <source>incident.field.occurred_at</source>
+        <target>__incident.field.occurred_at</target>
+      </trans-unit>
+      <trans-unit id="v7_vcbM" resname="incident.field.detected_date">
+        <source>incident.field.detected_date</source>
+        <target>__incident.field.detected_date</target>
+      </trans-unit>
+      <trans-unit id="0goEg2i" resname="incident.section.affected_systems">
+        <source>incident.section.affected_systems</source>
+        <target>__incident.section.affected_systems</target>
+      </trans-unit>
+      <trans-unit id="CyHt7vN" resname="incident.field.affected_systems">
+        <source>incident.field.affected_systems</source>
+        <target>__incident.field.affected_systems</target>
+      </trans-unit>
+      <trans-unit id="YgwP713" resname="incident.field.affected_assets">
+        <source>incident.field.affected_assets</source>
+        <target>__incident.field.affected_assets</target>
+      </trans-unit>
+      <trans-unit id="zW8Yrew" resname="incident.analysis_resolution">
+        <source>incident.analysis_resolution</source>
+        <target>__incident.analysis_resolution</target>
+      </trans-unit>
+      <trans-unit id="Do6A8.G" resname="incident.field.root_cause">
+        <source>incident.field.root_cause</source>
+        <target>__incident.field.root_cause</target>
+      </trans-unit>
+      <trans-unit id="EKP9yNK" resname="incident.field.corrective_actions">
+        <source>incident.field.corrective_actions</source>
+        <target>__incident.field.corrective_actions</target>
+      </trans-unit>
+      <trans-unit id="dt2aXXz" resname="incident.field.lessons_learned">
+        <source>incident.field.lessons_learned</source>
+        <target>__incident.field.lessons_learned</target>
+      </trans-unit>
+      <trans-unit id="w9nzNK7" resname="incident.field.closed_date">
+        <source>incident.field.closed_date</source>
+        <target>__incident.field.closed_date</target>
+      </trans-unit>
+      <trans-unit id="RVnpG4W" resname="incident.field.closed_at">
+        <source>incident.field.closed_at</source>
+        <target>__incident.field.closed_at</target>
+      </trans-unit>
+      <trans-unit id="g8sDQnW" resname="incident.update">
+        <source>incident.update</source>
+        <target>__incident.update</target>
+      </trans-unit>
+      <trans-unit id="NaHo7zy" resname="incident.new">
+        <source>incident.new</source>
+        <target>__incident.new</target>
+      </trans-unit>
+      <trans-unit id="gkjmpzV" resname="incident.nis2_alert.title">
+        <source>incident.nis2_alert.title</source>
+        <target>__incident.nis2_alert.title</target>
+      </trans-unit>
+      <trans-unit id="XbJP6yO" resname="incident.nis2_alert.description">
+        <source>incident.nis2_alert.description</source>
+        <target>__incident.nis2_alert.description</target>
+      </trans-unit>
+      <trans-unit id="k1qSeQL" resname="incident.nis2_alert.early_warning">
+        <source>incident.nis2_alert.early_warning</source>
+        <target>__incident.nis2_alert.early_warning</target>
+      </trans-unit>
+      <trans-unit id="81q7dSg" resname="incident.nis2_alert.detailed_notification">
+        <source>incident.nis2_alert.detailed_notification</source>
+        <target>__incident.nis2_alert.detailed_notification</target>
+      </trans-unit>
+      <trans-unit id="hFhhSKh" resname="incident.nis2_alert.final_report">
+        <source>incident.nis2_alert.final_report</source>
+        <target>__incident.nis2_alert.final_report</target>
+      </trans-unit>
+      <trans-unit id="zMXtcl1" resname="incident.section.analysis">
+        <source>incident.section.analysis</source>
+        <target>__incident.section.analysis</target>
+      </trans-unit>
+      <trans-unit id="EhTeiKe" resname="incident.section.nis2_reporting">
+        <source>incident.section.nis2_reporting</source>
+        <target>__incident.section.nis2_reporting</target>
+      </trans-unit>
+      <trans-unit id=".LYVOXP" resname="incident.nis2_toggle.hide">
+        <source>incident.nis2_toggle.hide</source>
+        <target>__incident.nis2_toggle.hide</target>
+      </trans-unit>
+      <trans-unit id="njAATwd" resname="incident.section.nis2_info">
+        <source>incident.section.nis2_info</source>
+        <target>__incident.section.nis2_info</target>
+      </trans-unit>
+      <trans-unit id="r.nwCug" resname="incident.field.nis2_category">
+        <source>incident.field.nis2_category</source>
+        <target>__incident.field.nis2_category</target>
+      </trans-unit>
+      <trans-unit id="mgzhjf3" resname="incident.field.cross_border_impact">
+        <source>incident.field.cross_border_impact</source>
+        <target>__incident.field.cross_border_impact</target>
+      </trans-unit>
+      <trans-unit id="u5knL3f" resname="incident.field.early_warning_reported_at">
+        <source>incident.field.early_warning_reported_at</source>
+        <target>__incident.field.early_warning_reported_at</target>
+      </trans-unit>
+      <trans-unit id="eHvHJZV" resname="incident.field.detailed_notification_reported_at">
+        <source>incident.field.detailed_notification_reported_at</source>
+        <target>__incident.field.detailed_notification_reported_at</target>
+      </trans-unit>
+      <trans-unit id="Qs0h8dT" resname="incident.field.final_report_submitted_at">
+        <source>incident.field.final_report_submitted_at</source>
+        <target>__incident.field.final_report_submitted_at</target>
+      </trans-unit>
+      <trans-unit id="F05W6ww" resname="incident.field.affected_users_count">
+        <source>incident.field.affected_users_count</source>
+        <target>__incident.field.affected_users_count</target>
+      </trans-unit>
+      <trans-unit id="vRj._b0" resname="incident.field.estimated_financial_impact">
+        <source>incident.field.estimated_financial_impact</source>
+        <target>__incident.field.estimated_financial_impact</target>
+      </trans-unit>
+      <trans-unit id="WoDYskG" resname="incident.field.national_authority_notified">
+        <source>incident.field.national_authority_notified</source>
+        <target>__incident.field.national_authority_notified</target>
+      </trans-unit>
+      <trans-unit id="k6txKm4" resname="incident.field.authority_reference_number">
+        <source>incident.field.authority_reference_number</source>
+        <target>__incident.field.authority_reference_number</target>
+      </trans-unit>
+      <trans-unit id="Tv03e9N" resname="incident.nis2_toggle.show">
+        <source>incident.nis2_toggle.show</source>
+        <target>__incident.nis2_toggle.show</target>
+      </trans-unit>
+      <trans-unit id="F0DDImc" resname="incident.create">
+        <source>incident.create</source>
+        <target>__incident.create</target>
+      </trans-unit>
+      <trans-unit id="b.Ku4JO" resname="incident.severity.low">
+        <source>incident.severity.low</source>
+        <target>__incident.severity.low</target>
+      </trans-unit>
+      <trans-unit id="Hp.IP6r" resname="incident.severity.medium">
+        <source>incident.severity.medium</source>
+        <target>__incident.severity.medium</target>
+      </trans-unit>
+      <trans-unit id="FUlHB2q" resname="incident.severity.high">
+        <source>incident.severity.high</source>
+        <target>__incident.severity.high</target>
+      </trans-unit>
+      <trans-unit id="9diopsb" resname="incident.severity.critical">
+        <source>incident.severity.critical</source>
+        <target>__incident.severity.critical</target>
+      </trans-unit>
+      <trans-unit id="H5mXALD" resname="incident.status.reported">
+        <source>incident.status.reported</source>
+        <target>__incident.status.reported</target>
+      </trans-unit>
+      <trans-unit id="0ufCpZO" resname="incident.status.in_investigation">
+        <source>incident.status.in_investigation</source>
+        <target>__incident.status.in_investigation</target>
+      </trans-unit>
+      <trans-unit id="dyBfGM5" resname="incident.status.in_resolution">
+        <source>incident.status.in_resolution</source>
+        <target>__incident.status.in_resolution</target>
+      </trans-unit>
+      <trans-unit id="1FgBHhm" resname="incident.filter.data_breach">
+        <source>incident.filter.data_breach</source>
+        <target>__incident.filter.data_breach</target>
+      </trans-unit>
+      <trans-unit id="YJ0HrWy" resname="incident.filter.data_breach_only">
+        <source>incident.filter.data_breach_only</source>
+        <target>__incident.filter.data_breach_only</target>
+      </trans-unit>
+      <trans-unit id="958.k5r" resname="incident.filter.nis2_only">
+        <source>incident.filter.nis2_only</source>
+        <target>__incident.filter.nis2_only</target>
+      </trans-unit>
+      <trans-unit id="qXTlJF." resname="incident.nis2_compliance.not_applicable">
+        <source>incident.nis2_compliance.not_applicable</source>
+        <target>__incident.nis2_compliance.not_applicable</target>
+      </trans-unit>
+      <trans-unit id="N52II5Y" resname="incident.empty">
+        <source>incident.empty</source>
+        <target>__incident.empty</target>
+      </trans-unit>
+      <trans-unit id="x4QpvbL" resname="incident.list.title">
+        <source>incident.list.title</source>
+        <target>__incident.list.title</target>
+      </trans-unit>
+      <trans-unit id="jr.03Si" resname="incident.section.history">
+        <source>incident.section.history</source>
+        <target>__incident.section.history</target>
+      </trans-unit>
+      <trans-unit id="IpI7Wkx" resname="incident.controls_should_prevent">
+        <source>incident.controls_should_prevent</source>
+        <target>__incident.controls_should_prevent</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -31,6 +31,8 @@ bc_exercises:
     status: Status
     effectiveness: Wirksamkeit
   field:
+    exercise_type: Übungstyp
+    status: Status
     exercise_date: Übungsdatum
     duration: Dauer
     duration_hours: Stunden
@@ -39,6 +41,17 @@ bc_exercises:
     success_rating: Erfolgsbewertung
     report_completed: Bericht abgeschlossen
     report_date: Berichtsdatum
+  exercise_type:
+    tabletop: Tabletop (Diskussionsbasiert)
+    walkthrough: Walkthrough (Schritt-für-Schritt)
+    simulation: Simulation (Simulierter Vorfall)
+    full_test: Vollständiger Test (Komplette Aktivierung)
+    component_test: Komponententest (Spezifische Komponente)
+  status:
+    planned: Geplant
+    in_progress: In Bearbeitung
+    completed: Abgeschlossen
+    cancelled: Abgebrochen
   badge:
     yes: Ja
     no: Nein

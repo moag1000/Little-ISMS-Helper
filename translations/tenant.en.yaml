@@ -1,148 +1,204 @@
-tenant:
-  title: Tenant Management
-  subtitle: Manage organizations and tenants
-  empty: No tenants available
-  stats:
-    total: Total
-    active: Active
-    inactive: Inactive
-    total_users: Total Users
-    active_users: Active Users
-    inactive_users: Inactive Users
-  filter:
-    all: All
-    active: Active
-    inactive: Inactive
-  field:
-    code: Tenant Code
-    code_help: Unique alphanumeric code (only a-z, 0-9, _, -)
-    code_auto_generated: Automatically generated from name
-    name: Name
-    name_help: Full organization name
-    description: Description
-    description_help: Optional tenant description
-    logo: Logo
-    logo_help: Tenant logo (max. 2MB, JPG/PNG/GIF/WebP)
-    azure_tenant_id: Azure Tenant ID
-    azure_tenant_id_help: Azure AD Tenant ID (UUID format) for SSO integration
-    is_active: Active
-    is_active_help: Only active tenants can sign in
-    settings: Settings (JSON)
-    settings_help: Tenant-specific settings in JSON format
-    users: Users
-    status: Status
-    created: Created
-    updated: Updated
-  placeholder:
-    code: e.g. acme-corp
-    name: e.g. ACME Corporation
-    description: Tenant description...
-    azure_tenant_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-    settings: "{\n  \"branding\": {...},\n  \"features\": {...}\n}"
-  validation:
-    code_format: The code may only contain letters, numbers, underscores, and hyphens
-    azure_tenant_id_format: The Azure Tenant ID must be in UUID format
-    logo_format: The logo must be in JPG, PNG, GIF or WebP format
-  status:
-    active: Active
-    inactive: Inactive
-  action:
-    create: Create New Tenant
-    create_first: Create First Tenant
-    edit: Edit
-    delete: Delete
-    activate: Activate
-    deactivate: Deactivate
-  section:
-    information: Tenant Information
-    users: Users
-    basic_info: Basic Information
-    azure_integration: Azure Integration
-    settings: Settings
-    danger_zone: Danger Zone
-  users:
-    empty: No users in this tenant
-    showing: 'Showing %count% of %total% users'
-    manage: Manage Users
-    manage_title: Manage Users
-    add_user: Add User
-    enter_email: Enter user email address
-    add: Add
-    add_help: Enter the email address of an existing user to assign them to this tenant
-    current_users: Current Users
-    confirm_remove: Do you really want to remove user %email% from this tenant?
-    flash:
-      email_required: Email address is required
-      user_not_found: User with this email address was not found
-      already_assigned: User is already assigned to this tenant
-      user_added: User successfully added to tenant
-      user_removed: User successfully removed from tenant
-      not_assigned: User is not assigned to this tenant
-      error: Error managing users
-  form:
-    create_title: Create New Tenant
-    edit_title: Edit Tenant
-  flash:
-    created: Tenant created successfully
-    updated: Tenant updated successfully
-    deleted: Tenant deleted successfully
-    activated: Tenant activated successfully
-    deactivated: Tenant deactivated successfully
-    error: Error saving tenant
-    has_users: Tenant cannot be deleted as it still has assigned users
-    organisation_context_updated: Organisation context successfully updated
-    organisation_context_error: Error updating organisation context
-  confirm:
-    delete: Are you sure you want to delete this tenant? This action cannot be undone.
-    toggle: Do you really want to change the status of this tenant?
-  delete:
-    warning: Tenants can only be deleted when they have no assigned users.
-  tabs:
-    details: Details
-    isms_context: ISMS Context
-    users: Users
-  isms_context:
-    not_configured: ISMS Context not configured
-    configure_prompt: Configure the ISMS Context for this tenant.
-    configure_now: Configure Now
-    load_error: Error loading ISMS Context
-    view_full: View Full ISMS Context
-    linked_to: Linked to Tenant
-  organisation_context:
-    title: Organisation Context
-    header: Edit Organisation Context
-    description: Edit the industry assignment, company size and location of your organisation. This data influences compliance recommendations.
-    name_info: The organisation name is taken from the tenant configuration.
-    current_config: Current Configuration
-    active_modules: Active Modules
-    active_frameworks: Active Frameworks
-    setup_date: Setup completed on
-    last_modified: Last modified
-    impact_warning:
-      title: Impact Notice
-      message: Changes to the organisation context affect future recommendations for modules and compliance frameworks. Already activated modules remain unchanged.
-    info:
-      title: About Organisation Context
-      description: The organisation context determines which regulatory requirements are relevant to your organisation.
-      industries: Multiple selection enables corporate structures with different business areas
-      size: Company size affects NIS2 and other size-dependent regulations
-      country: Location determines national regulations (e.g. KRITIS, TKG for Germany)
-      corporate: In corporate structures, subsidiaries can cover different industries
-  link:
-    view: View Tenant
-    back_to_tenant: Back to Tenant
-  info:
-    title: About Tenants
-    text: Tenants allow managing multiple organizations in a single instance. Each user belongs to a tenant.
-    metadata: Metadata
-  no_logo: No logo available
-  help:
-    title: Help
-    code_title: Tenant Code
-    code_text: The code is a unique identifier and cannot be changed after creation. Use only lowercase letters, numbers, and hyphens.
-    azure_title: Azure Integration
-    azure_text: If you use Azure AD SSO, you can store the Azure Tenant ID here for tenant-specific authentication.
-    settings_title: Settings
-    settings_text: Tenant-specific settings in JSON format can contain individual configurations such as branding, features, or limits.
-  settings:
-    example_title: Example JSON Structure
+tenant.title: 'Tenant Management'
+tenant.subtitle: 'Manage organizations and tenants'
+tenant.empty: 'No tenants available'
+tenant.stats.total: Total
+tenant.stats.active: Active
+tenant.stats.inactive: Inactive
+tenant.stats.total_users: 'Total Users'
+tenant.stats.active_users: 'Active Users'
+tenant.stats.inactive_users: 'Inactive Users'
+tenant.filter.all: All
+tenant.filter.active: Active
+tenant.filter.inactive: Inactive
+tenant.field.code: 'Tenant Code'
+tenant.field.code_help: 'Unique alphanumeric code (only a-z, 0-9, _, -)'
+tenant.field.code_auto_generated: 'Automatically generated from name'
+tenant.field.name: Name
+tenant.field.name_help: 'Full organization name'
+tenant.field.description: Description
+tenant.field.description_help: 'Optional tenant description'
+tenant.field.logo: Logo
+tenant.field.logo_help: 'Tenant logo (max. 2MB, JPG/PNG/GIF/WebP)'
+tenant.field.azure_tenant_id: 'Azure Tenant ID'
+tenant.field.azure_tenant_id_help: 'Azure AD Tenant ID (UUID format) for SSO integration'
+tenant.field.is_active: Active
+tenant.field.is_active_help: 'Only active tenants can sign in'
+tenant.field.settings: 'Settings (JSON)'
+tenant.field.settings_help: 'Tenant-specific settings in JSON format'
+tenant.field.users: Users
+tenant.field.status: Status
+tenant.field.created: Created
+tenant.field.updated: Updated
+tenant.placeholder.code: 'e.g. acme-corp'
+tenant.placeholder.name: 'e.g. ACME Corporation'
+tenant.placeholder.description: 'Tenant description...'
+tenant.placeholder.azure_tenant_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+tenant.placeholder.settings: "{\n  \"branding\": {...},\n  \"features\": {...}\n}"
+tenant.validation.code_format: 'The code may only contain letters, numbers, underscores, and hyphens'
+tenant.validation.azure_tenant_id_format: 'The Azure Tenant ID must be in UUID format'
+tenant.validation.logo_format: 'The logo must be in JPG, PNG, GIF or WebP format'
+tenant.status.active: Active
+tenant.status.inactive: Inactive
+tenant.action.create: 'Create New Tenant'
+tenant.action.create_first: 'Create First Tenant'
+tenant.action.edit: Edit
+tenant.action.delete: Delete
+tenant.action.activate: Activate
+tenant.action.deactivate: Deactivate
+tenant.section.information: 'Tenant Information'
+tenant.section.users: Users
+tenant.section.basic_info: 'Basic Information'
+tenant.section.azure_integration: 'Azure Integration'
+tenant.section.settings: Settings
+tenant.section.danger_zone: 'Danger Zone'
+tenant.users.empty: 'No users in this tenant'
+tenant.users.showing: 'Showing %count% of %total% users'
+tenant.users.manage: 'Manage Users'
+tenant.users.manage_title: 'Manage Users'
+tenant.users.add_user: 'Add User'
+tenant.users.enter_email: 'Enter user email address'
+tenant.users.add: Add
+tenant.users.add_help: 'Enter the email address of an existing user to assign them to this tenant'
+tenant.users.current_users: 'Current Users'
+tenant.users.confirm_remove: 'Do you really want to remove user %email% from this tenant?'
+tenant.users.flash.email_required: 'Email address is required'
+tenant.users.flash.user_not_found: 'User with this email address was not found'
+tenant.users.flash.already_assigned: 'User is already assigned to this tenant'
+tenant.users.flash.user_added: 'User successfully added to tenant'
+tenant.users.flash.user_removed: 'User successfully removed from tenant'
+tenant.users.flash.not_assigned: 'User is not assigned to this tenant'
+tenant.users.flash.error: 'Error managing users'
+tenant.form.create_title: 'Create New Tenant'
+tenant.form.edit_title: 'Edit Tenant'
+tenant.flash.created: 'Tenant created successfully'
+tenant.flash.updated: 'Tenant updated successfully'
+tenant.flash.deleted: 'Tenant deleted successfully'
+tenant.flash.activated: 'Tenant activated successfully'
+tenant.flash.deactivated: 'Tenant deactivated successfully'
+tenant.flash.error: 'Error saving tenant'
+tenant.flash.has_users: 'Tenant cannot be deleted as it still has assigned users'
+tenant.flash.organisation_context_updated: 'Organisation context successfully updated'
+tenant.flash.organisation_context_error: 'Error updating organisation context'
+tenant.confirm.delete: 'Are you sure you want to delete this tenant? This action cannot be undone.'
+tenant.confirm.toggle: 'Do you really want to change the status of this tenant?'
+tenant.delete.warning: 'Tenants can only be deleted when they have no assigned users.'
+tenant.tabs.details: Details
+tenant.tabs.isms_context: 'ISMS Context'
+tenant.tabs.users: Users
+tenant.isms_context.not_configured: 'ISMS Context not configured'
+tenant.isms_context.configure_prompt: 'Configure the ISMS Context for this tenant.'
+tenant.isms_context.configure_now: 'Configure Now'
+tenant.isms_context.load_error: 'Error loading ISMS Context'
+tenant.isms_context.view_full: 'View Full ISMS Context'
+tenant.isms_context.linked_to: 'Linked to Tenant'
+tenant.organisation_context.title: 'Organisation Context'
+tenant.organisation_context.header: 'Edit Organisation Context'
+tenant.organisation_context.description: 'Edit the industry assignment, company size and location of your organisation. This data influences compliance recommendations.'
+tenant.organisation_context.name_info: 'The organisation name is taken from the tenant configuration.'
+tenant.organisation_context.current_config: 'Current Configuration'
+tenant.organisation_context.active_modules: 'Active Modules'
+tenant.organisation_context.active_frameworks: 'Active Frameworks'
+tenant.organisation_context.setup_date: 'Setup completed on'
+tenant.organisation_context.last_modified: 'Last modified'
+tenant.organisation_context.impact_warning.title: 'Impact Notice'
+tenant.organisation_context.impact_warning.message: 'Changes to the organisation context affect future recommendations for modules and compliance frameworks. Already activated modules remain unchanged.'
+tenant.organisation_context.info.title: 'About Organisation Context'
+tenant.organisation_context.info.description: 'The organisation context determines which regulatory requirements are relevant to your organisation.'
+tenant.organisation_context.info.industries: 'Multiple selection enables corporate structures with different business areas'
+tenant.organisation_context.info.size: 'Company size affects NIS2 and other size-dependent regulations'
+tenant.organisation_context.info.country: 'Location determines national regulations (e.g. KRITIS, TKG for Germany)'
+tenant.organisation_context.info.corporate: 'In corporate structures, subsidiaries can cover different industries'
+tenant.link.view: 'View Tenant'
+tenant.link.back_to_tenant: 'Back to Tenant'
+tenant.info.title: 'About Tenants'
+tenant.info.text: 'Tenants allow managing multiple organizations in a single instance. Each user belongs to a tenant.'
+tenant.info.metadata: Metadata
+tenant.no_logo: 'No logo available'
+tenant.help.title: Help
+tenant.help.code_title: 'Tenant Code'
+tenant.help.code_text: 'The code is a unique identifier and cannot be changed after creation. Use only lowercase letters, numbers, and hyphens.'
+tenant.help.azure_title: 'Azure Integration'
+tenant.help.azure_text: 'If you use Azure AD SSO, you can store the Azure Tenant ID here for tenant-specific authentication.'
+tenant.help.settings_title: Settings
+tenant.help.settings_text: 'Tenant-specific settings in JSON format can contain individual configurations such as branding, features, or limits.'
+tenant.settings.example_title: 'Example JSON Structure'
+corporate.view.own_only: __corporate.view.own_only
+corporate.view.including_inherited: __corporate.view.including_inherited
+corporate.view.including_subsidiaries: __corporate.view.including_subsidiaries
+corporate.stats.breakdown: __corporate.stats.breakdown
+corporate.inheritance.inherited_from: __corporate.inheritance.inherited_from
+corporate.inherited: __corporate.inherited
+corporate.field.actions: __corporate.field.actions
+corporate.action.set_parent: __corporate.action.set_parent
+corporate.title: __corporate.title
+corporate.subtitle: __corporate.subtitle
+corporate.single_tenant.title: __corporate.single_tenant.title
+corporate.single_tenant.message: __corporate.single_tenant.message
+corporate.single_tenant.hint: __corporate.single_tenant.hint
+corporate.stats.groups: __corporate.stats.groups
+corporate.stats.standalone: __corporate.stats.standalone
+corporate.stats.total: __corporate.stats.total
+corporate.section.groups: __corporate.section.groups
+corporate.role.parent: __corporate.role.parent
+corporate.section.standalone: __corporate.section.standalone
+corporate.info.title: __corporate.info.title
+corporate.info.text: __corporate.info.text
+corporate.modal.set_parent.title: __corporate.modal.set_parent.title
+corporate.field.subsidiary: __corporate.field.subsidiary
+corporate.field.parent: __corporate.field.parent
+corporate.select.parent: __corporate.select.parent
+corporate.field.governance_model: __corporate.field.governance_model
+corporate.select.governance: __corporate.select.governance
+corporate.modal.update_governance.title: __corporate.modal.update_governance.title
+corporate.action.update_governance: __corporate.action.update_governance
+corporate.action.remove_parent: __corporate.action.remove_parent
+corporate.confirm.remove_parent: __corporate.confirm.remove_parent
+tenant.organisation_context.field.industries: __tenant.organisation_context.field.industries
+tenant.organisation_context.field.employee_count: __tenant.organisation_context.field.employee_count
+tenant.organisation_context.field.country: __tenant.organisation_context.field.country
+tenant.organisation_context.field.description: __tenant.organisation_context.field.description
+tenant.title.edit: __tenant.title.edit
+tenant.title.create: __tenant.title.create
+tenant.help.name: __tenant.help.name
+tenant.help.description: __tenant.help.description
+tenant.help.logo: __tenant.help.logo
+tenant.field.parent: __tenant.field.parent
+tenant.help.parent: __tenant.help.parent
+tenant.field.corporate_notes: __tenant.field.corporate_notes
+tenant.help.corporate_notes: __tenant.help.corporate_notes
+tenant.help.azure_tenant_id: __tenant.help.azure_tenant_id
+tenant.help.settings: __tenant.help.settings
+corporate.field.hierarchy_depth: __corporate.field.hierarchy_depth
+corporate.level: __corporate.level
+corporate.field.subsidiaries: __corporate.field.subsidiaries
+corporate.section.structure: __corporate.section.structure
+corporate.action.view_structure: __corporate.action.view_structure
+corporate.inheritance.title: __corporate.inheritance.title
+corporate.inheritance.propagate: __corporate.inheritance.propagate
+corporate.granular.title: __corporate.granular.title
+corporate.granular.add_rule: __corporate.granular.add_rule
+corporate.granular.modal.title: __corporate.granular.modal.title
+corporate.granular.field.scope: __corporate.granular.field.scope
+corporate.granular.scope.control: __corporate.granular.scope.control
+corporate.granular.scope.isms_context: __corporate.granular.scope.isms_context
+corporate.granular.scope.risk: __corporate.granular.scope.risk
+corporate.granular.scope.asset: __corporate.granular.scope.asset
+corporate.granular.scope.process: __corporate.granular.scope.process
+corporate.granular.field.scope_id: __corporate.granular.field.scope_id
+corporate.granular.help.scope_id: __corporate.granular.help.scope_id
+corporate.inheritance.no_context: __corporate.inheritance.no_context
+corporate.inheritance.organization: __corporate.inheritance.organization
+corporate.inheritance.own_context: __corporate.inheritance.own_context
+corporate.inheritance.load_error: __corporate.inheritance.load_error
+corporate.inheritance.confirm_propagate: __corporate.inheritance.confirm_propagate
+corporate.inheritance.propagate_error: __corporate.inheritance.propagate_error
+corporate.granular.no_rules: __corporate.granular.no_rules
+corporate.granular.flash.error: __corporate.granular.flash.error
+corporate.granular.confirm.delete: __corporate.granular.confirm.delete
+corporate.inheritance.isms_context_inherited: __corporate.inheritance.isms_context_inherited
+corporate.inheritance.from: __corporate.inheritance.from
+corporate.inheritance.edit_at_parent: __corporate.inheritance.edit_at_parent
+corporate.inheritance.cannot_edit_inherited: __corporate.inheritance.cannot_edit_inherited
+tenant.name: __tenant.name
+corporate.inheritance.view_only_title: __corporate.inheritance.view_only_title
+corporate.inheritance.risk_inherited_message: __corporate.inheritance.risk_inherited_message
