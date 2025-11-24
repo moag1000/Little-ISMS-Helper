@@ -216,7 +216,7 @@
                     <i class="bi bi-info-circle" aria-hidden="true"></i>
                     <strong>No processing activities found.</strong>
                     {% if current_filter != 'all' %}
-                        Try changing the filter or <a href="{{ path('app_processing_activity_index') }}">view all activities</a>.
+                        Try changing the filter or <a href="{{ path('app_processing_activity_index') }}">{{ 'processing_activity.view_all_activities'|trans }}</a>.
                     {% else %}
                         Start by <a href="{{ path('app_processing_activity_new') }}">creating your first processing activity</a>.
                     {% endif %}
