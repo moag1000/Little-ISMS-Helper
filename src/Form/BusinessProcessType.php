@@ -40,11 +40,12 @@ class BusinessProcessType extends AbstractType
             ->add('criticality', ChoiceType::class, [
                 'label' => 'business_process.field.criticality',
                 'choices' => [
-                    'Kritisch' => 'critical',
-                    'Hoch' => 'high',
-                    'Mittel' => 'medium',
-                    'Niedrig' => 'low',
+                    'bcm.criticality.critical' => 'critical',
+                    'bcm.criticality.high' => 'high',
+                    'bcm.criticality.medium' => 'medium',
+                    'bcm.impact.low' => 'low',
                 ],
+                'choice_translation_domain' => 'bcm',
                 'attr' => ['class' => 'form-select'],
                 'constraints' => [new NotBlank()],
             ])
@@ -102,36 +103,39 @@ class BusinessProcessType extends AbstractType
             ->add('reputationalImpact', ChoiceType::class, [
                 'label' => 'business_process.field.reputational_impact',
                 'choices' => [
-                    'Sehr gering (1)' => 1,
-                    'Gering (2)' => 2,
-                    'Mittel (3)' => 3,
-                    'Hoch (4)' => 4,
-                    'Sehr hoch (5)' => 5,
+                    'business_process.impact_level.very_low' => 1,
+                    'business_process.impact_level.low' => 2,
+                    'business_process.impact_level.medium' => 3,
+                    'business_process.impact_level.high' => 4,
+                    'business_process.impact_level.very_high' => 5,
                 ],
+                'choice_translation_domain' => 'bcm',
                 'attr' => ['class' => 'form-select'],
                 'constraints' => [new NotBlank()],
             ])
             ->add('regulatoryImpact', ChoiceType::class, [
                 'label' => 'business_process.field.regulatory_impact',
                 'choices' => [
-                    'Sehr gering (1)' => 1,
-                    'Gering (2)' => 2,
-                    'Mittel (3)' => 3,
-                    'Hoch (4)' => 4,
-                    'Sehr hoch (5)' => 5,
+                    'business_process.impact_level.very_low' => 1,
+                    'business_process.impact_level.low' => 2,
+                    'business_process.impact_level.medium' => 3,
+                    'business_process.impact_level.high' => 4,
+                    'business_process.impact_level.very_high' => 5,
                 ],
+                'choice_translation_domain' => 'bcm',
                 'attr' => ['class' => 'form-select'],
                 'constraints' => [new NotBlank()],
             ])
             ->add('operationalImpact', ChoiceType::class, [
                 'label' => 'business_process.field.operational_impact',
                 'choices' => [
-                    'Sehr gering (1)' => 1,
-                    'Gering (2)' => 2,
-                    'Mittel (3)' => 3,
-                    'Hoch (4)' => 4,
-                    'Sehr hoch (5)' => 5,
+                    'business_process.impact_level.very_low' => 1,
+                    'business_process.impact_level.low' => 2,
+                    'business_process.impact_level.medium' => 3,
+                    'business_process.impact_level.high' => 4,
+                    'business_process.impact_level.very_high' => 5,
                 ],
+                'choice_translation_domain' => 'bcm',
                 'attr' => ['class' => 'form-select'],
                 'constraints' => [new NotBlank()],
             ])

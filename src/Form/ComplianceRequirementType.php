@@ -90,11 +90,12 @@ class ComplianceRequirementType extends AbstractType
             ->add('priority', ChoiceType::class, [
                 'label' => 'compliance_requirement.field.priority',
                 'choices' => [
-                    'Kritisch' => 'critical',
-                    'Hoch' => 'high',
-                    'Mittel' => 'medium',
-                    'Niedrig' => 'low',
+                    'compliance_requirement.priority.critical' => 'critical',
+                    'compliance_requirement.priority.high' => 'high',
+                    'compliance_requirement.priority.medium' => 'medium',
+                    'compliance_requirement.priority.low' => 'low',
                 ],
+                'choice_translation_domain' => 'compliance',
                 'attr' => [
                     'class' => 'form-select'
                 ],
@@ -105,10 +106,11 @@ class ComplianceRequirementType extends AbstractType
             ->add('requirementType', ChoiceType::class, [
                 'label' => 'compliance_requirement.field.requirement_type',
                 'choices' => [
-                    'Kern-Anforderung' => 'core',
-                    'Detaillierte Anforderung' => 'detailed',
-                    'Unter-Anforderung' => 'sub_requirement',
+                    'compliance_requirement.requirement_type.core' => 'core',
+                    'compliance_requirement.requirement_type.detailed' => 'detailed',
+                    'compliance_requirement.requirement_type.sub_requirement' => 'sub_requirement',
                 ],
+                'choice_translation_domain' => 'compliance',
                 'attr' => [
                     'class' => 'form-select'
                 ],
