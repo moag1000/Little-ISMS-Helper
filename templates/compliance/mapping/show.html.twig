@@ -26,7 +26,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-5">
-                            <h6 class="text-muted">Source Requirement</h6>
+                            <h6 class="text-muted">Source Requirement</h5>
                             <div class="card">
                                 <div class="card-body">
                                     <span class="badge bg-secondary mb-2">{{ mapping.sourceRequirement.framework.code }}</span>
@@ -46,7 +46,7 @@
                             </div>
                         </div>
                         <div class="col-md-5">
-                            <h6 class="text-muted">Target Requirement</h6>
+                            <h6 class="text-muted">Target Requirement</h5>
                             <div class="card">
                                 <div class="card-body">
                                     <span class="badge bg-secondary mb-2">{{ mapping.targetRequirement.framework.code }}</span>
@@ -174,7 +174,7 @@
                     {% endif %}
                     {% if mapping.reviewNotes %}
                         <hr>
-                        <h4>Review Notes</h4>
+                        <h4>Review Notes</h5>
                         <p class="text-muted small">{{ mapping.reviewNotes }}</p>
                     {% endif %}
 
@@ -190,8 +190,7 @@
 
             {# Metadata #}
             <div class="card mb-4">
-                <div class="card-header">
-                    <h6 class="mb-0">Metadata</h6>
+                <div class="card-header"><h5 class="mb-0">Metadata</h5>
                 </div>
                 <div class="card-body">
                     <p><small><strong>Verified By:</strong> {{ mapping.verifiedBy|default('-') }}</small></p>
@@ -212,8 +211,7 @@
 
             {# Delete #}
             <div class="card border-danger">
-                <div class="card-header bg-danger text-white">
-                    <h6 class="mb-0">Danger Zone</h6>
+                <div class="card-header bg-danger text-white"><h5 class="mb-0">Danger Zone</h5>
                 </div>
                 <div class="card-body">
                     <form method="post" action="{{ path('app_compliance_mapping_delete', {id: mapping.id}) }}"

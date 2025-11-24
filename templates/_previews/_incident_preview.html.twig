@@ -4,7 +4,7 @@
         <h6 class="preview-section-title">
             <i class="bi-exclamation-circle text-danger"></i>
             Vorfalls-Informationen
-        </h6>
+        </h5>
         <dl class="row mb-0">
             <dt class="col-sm-4">Titel:</dt>
             <dd class="col-sm-8">{{ incident.title }}</dd>
@@ -36,7 +36,7 @@
         <h6 class="preview-section-title">
             <i class="bi bi-file-text"></i>
             Beschreibung
-        </h6>
+        </h5>
         <p class="mb-0">{{ incident.description }}</p>
     </div>
 
@@ -45,7 +45,7 @@
         <h6 class="preview-section-title">
             <i class="bi bi-server"></i>
             Betroffene Assets ({{ incident.affectedAssets|length }})
-        </h6>
+        </h5>
         <ul class="list-unstyled mb-0">
             {% for asset in incident.affectedAssets|slice(0, 3) %}
             <li class="mb-1">

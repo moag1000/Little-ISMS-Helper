@@ -43,7 +43,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Completeness</h6>
+                    <h6 class="text-muted mb-2">Completeness</h5>
                     {% set completeness = compliance_report.completeness_percentage %}
                     <h2 class="mb-0 {{ completeness == 100 ? 'text-success' : 'text-warning' }}">{{ completeness }}%</h2>
                 </div>
@@ -52,7 +52,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Status</h6>
+                    <h6 class="text-muted mb-2">Status</h5>
                     <h3 class="mb-0"><span class="{{ badge_status(processing_activity.status) }}">{{ processing_activity.status|upper }}</span></h3>
                 </div>
             </div>
@@ -60,7 +60,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Risk Level</h6>
+                    <h6 class="text-muted mb-2">Risk Level</h5>
                     {% if processing_activity.riskLevel %}
                         <h3 class="mb-0"><span class="{{ badge_risk(processing_activity.riskLevel) }}">{{ processing_activity.riskLevel|upper }}</span></h3>
                     {% else %}
@@ -72,7 +72,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">DPIA Status</h6>
+                    <h6 class="text-muted mb-2">DPIA Status</h5>
                     {% if processing_activity.requiresDPIA %}
                         {% if processing_activity.dpiaCompleted %}
                             <h3 class="mb-0 text-success"><i class="bi bi-check-circle-fill" aria-hidden="true"></i></h3>
@@ -248,7 +248,7 @@
                     <p>{{ processing_activity.technicalOrganizationalMeasures ?? 'Not documented' }}</p>
 
                     {% if processing_activity.implementedControls|length > 0 %}
-                        <h6>Linked ISO 27001 Controls:</h6>
+                        <h6>Linked ISO 27001 Controls:</h5>
                         <ul>
                             {% for control in processing_activity.implementedControls %}
                                 <li>{{ control.controlId }} - {{ control.name }}</li>

@@ -177,27 +177,27 @@
                 <div class="card-body">
                     {% if context and context.organizationName %}
                         <div class="mb-3">
-                            <h6 class="text-muted">{{ 'context.section.organization'|trans({}, 'context') }}</h6>
+                            <h6 class="text-muted">{{ 'context.section.organization'|trans({}, 'context') }}</h5>
                             <p class="mb-0">{{ context.organizationName }}</p>
                         </div>
 
                         {% if context.ismsScope %}
                             <div class="mb-3">
-                                <h6 class="text-muted">{{ 'context_management.isms_scope'|trans({}, 'messages') }}</h6>
+                                <h6 class="text-muted">{{ 'context_management.isms_scope'|trans({}, 'messages') }}</h5>
                                 <p class="mb-0">{{ context.ismsScope|nl2br }}</p>
                             </div>
                         {% endif %}
 
                         {% if context.scopeExclusions %}
                             <div class="mb-3">
-                                <h6 class="text-muted">{{ 'context.section.exclusions'|trans({}, 'context') }}</h6>
+                                <h6 class="text-muted">{{ 'context.section.exclusions'|trans({}, 'context') }}</h5>
                                 <p class="mb-0">{{ context.scopeExclusions|nl2br }}</p>
                             </div>
                         {% endif %}
 
                         {% if context.ismsPolicy %}
                             <div class="mb-3">
-                                <h6 class="text-muted">{{ 'context.section.policy'|trans({}, 'context') }}</h6>
+                                <h6 class="text-muted">{{ 'context.section.policy'|trans({}, 'context') }}</h5>
                                 <p class="mb-0">{{ context.ismsPolicy|length > 200 ? context.ismsPolicy|slice(0, 200) ~ '...' : context.ismsPolicy|nl2br }}</p>
                             </div>
                         {% endif %}
@@ -268,8 +268,7 @@
             {% if context.externalIssues %}
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm h-100">
-                        <div class="card-header bg-white">
-                            <h6 class="mb-0">{{ 'context.section.external_issues'|trans({}, 'messages') }}</h6>
+                        <div class="card-header bg-white"><h5 class="mb-0">{{ 'context.section.external_issues'|trans({}, 'messages') }}</h5>
                         </div>
                         <div class="card-body">
                             <p class="mb-0">{{ context.externalIssues|nl2br }}</p>
@@ -282,8 +281,7 @@
             {% if context.internalIssues %}
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm h-100">
-                        <div class="card-header bg-white">
-                            <h6 class="mb-0">{{ 'context.section.internal_issues'|trans({}, 'messages') }}</h6>
+                        <div class="card-header bg-white"><h5 class="mb-0">{{ 'context.section.internal_issues'|trans({}, 'messages') }}</h5>
                         </div>
                         <div class="card-body">
                             <p class="mb-0">{{ context.internalIssues|nl2br }}</p>
@@ -296,8 +294,7 @@
             {% if context.interestedParties %}
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm h-100">
-                        <div class="card-header bg-white">
-                            <h6 class="mb-0">{{ 'context.section.interested_parties'|trans({}, 'messages') }}</h6>
+                        <div class="card-header bg-white"><h5 class="mb-0">{{ 'context.section.interested_parties'|trans({}, 'messages') }}</h5>
                         </div>
                         <div class="card-body">
                             <p class="mb-0">{{ context.interestedParties|nl2br }}</p>
@@ -310,20 +307,19 @@
             {% if context.legalRequirements or context.regulatoryRequirements or context.contractualObligations %}
                 <div class="col-md-6 mb-4">
                     <div class="card shadow-sm h-100">
-                        <div class="card-header bg-white">
-                            <h6 class="mb-0">{{ 'context.section.requirements'|trans({}, 'messages') }}</h6>
+                        <div class="card-header bg-white"><h5 class="mb-0">{{ 'context.section.requirements'|trans({}, 'messages') }}</h5>
                         </div>
                         <div class="card-body">
                             {% if context.legalRequirements %}
-                                <h6 class="text-muted small">{{ 'context.section.legal_requirements'|trans({}, 'messages') }}</h6>
+                                <h6 class="text-muted small">{{ 'context.section.legal_requirements'|trans({}, 'messages') }}</h5>
                                 <p class="mb-2">{{ context.legalRequirements|nl2br }}</p>
                             {% endif %}
                             {% if context.regulatoryRequirements %}
-                                <h6 class="text-muted small">{{ 'context.section.regulatory_requirements'|trans({}, 'messages') }}</h6>
+                                <h6 class="text-muted small">{{ 'context.section.regulatory_requirements'|trans({}, 'messages') }}</h5>
                                 <p class="mb-2">{{ context.regulatoryRequirements|nl2br }}</p>
                             {% endif %}
                             {% if context.contractualObligations %}
-                                <h6 class="text-muted small">{{ 'context.section.contractual_obligations'|trans({}, 'messages') }}</h6>
+                                <h6 class="text-muted small">{{ 'context.section.contractual_obligations'|trans({}, 'messages') }}</h5>
                                 <p class="mb-0">{{ context.contractualObligations|nl2br }}</p>
                             {% endif %}
                         </div>

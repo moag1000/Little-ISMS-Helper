@@ -92,11 +92,10 @@
     {# Sidebar: Approval Level Information #}
     <div class="col-lg-4">
         <div class="card border-{{ required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') }}">
-            <div class="card-header bg-{{ required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') }}-subtle">
-                <h4 class="mb-0">
+            <div class="card-header bg-{{ required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') }}-subtle"><h5 class="mb-0">
                     <i class="bi bi-shield-check" aria-hidden="true"></i>
                     {{ 'risk.acceptance.required_approval_level'|trans({}, 'risks') }}
-                </h4>
+                </h5>
             </div>
             <div class="card-body">
                 <div class="alert alert-{{ required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') }} mb-3">
@@ -115,7 +114,7 @@
                         <div class="list-group-item {{ required_level == level ? 'active' : '' }}">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h6 class="mb-1">{{ config.label }}</h6>
+                                    <h6 class="mb-1">{{ config.label }}</h5>
                                     <small class="{{ required_level == level ? 'text-white' : 'text-muted' }}">
                                         {{ config.description }}
                                     </small>
@@ -129,7 +128,7 @@
                 </div>
 
                 <div class="mt-3">
-                    <h6>{{ 'common.info'|trans({}, 'messages') }}</h6>
+                    <h6>{{ 'common.info'|trans({}, 'messages') }}</h5>
                     <p class="small text-muted mb-0">
                         <i class="bi bi-info-circle" aria-hidden="true"></i>
                         ISO 27005:2022 Section 8.4.4 requires formal approval for risk acceptance based on residual risk level.
