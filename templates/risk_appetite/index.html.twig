@@ -146,7 +146,7 @@
                     {% endif %}
                 </td>
                 <td class="text-center">
-                    <div class="btn-group btn-group-sm">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
                         <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}"
                            class="btn btn-outline-primary"
                            title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">

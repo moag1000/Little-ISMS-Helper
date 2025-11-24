@@ -19,7 +19,7 @@
     <div class="row">
         <div class="col-lg-8">
             {# Main Training Information #}
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center"><h5 class="mb-0">
                         <i class="bi bi-mortarboard" aria-hidden="true"></i> {{ training.title }}
                     </h5>
@@ -114,7 +114,7 @@
             </div>
 
             {# Participants Section #}
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
                         <i class="bi bi-people" aria-hidden="true"></i> {{ 'training.participants'|trans({}, 'messages') }}
@@ -155,7 +155,7 @@
 
             {# Materials Section #}
             {% if training.materials %}
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
                         <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'training.materials'|trans({}, 'messages') }}
@@ -169,7 +169,7 @@
 
             {# Feedback Section #}
             {% if training.feedback %}
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
                         <i class="bi bi-chat-left-text" aria-hidden="true"></i> {{ 'training.feedback'|trans({}, 'messages') }}
@@ -184,7 +184,7 @@
 
         <div class="col-lg-4">
             {# Action Buttons #}
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h3>
                 </div>
@@ -219,7 +219,7 @@
 
             {# Data Reuse: Covered Controls #}
             {% if training.coveredControls is defined and training.coveredControls|length > 0 %}
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
                         <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'training.covered_controls'|trans({}, 'messages') }}
@@ -248,7 +248,7 @@
 
             {# Data Reuse: Compliance Coverage #}
             {% if training.complianceRequirements is defined and training.complianceRequirements|length > 0 %}
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
                         <i class="bi bi-clipboard-check" aria-hidden="true"></i> Compliance Coverage
@@ -271,7 +271,7 @@
 
             {# Data Reuse: Training Statistics #}
             {% if training.status == 'completed' %}
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
                         <i class="bi bi-graph-up" aria-hidden="true"></i> Training Statistics
@@ -308,7 +308,7 @@
             {% endif %}
 
             {# Metadata #}
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h3>
                 </div>

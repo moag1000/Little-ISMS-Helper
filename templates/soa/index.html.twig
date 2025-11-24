@@ -247,7 +247,7 @@
                 {% endif %}
             </td>
             <td class="text-center">
-                <div class="btn-group btn-group-sm">
+                <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
                     <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">👁 {{ 'common.view'|trans({}, 'messages') }}</a>
                     <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-outline-secondary" title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">✏️ {{ 'common.edit'|trans({}, 'messages') }}</a>
                 </div>

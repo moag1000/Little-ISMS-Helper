@@ -99,6 +99,103 @@ For consistency and reusability, use the `_badge.html.twig` component:
 {% endif %}
 ```
 
+---
+
+## Standard Translation Keys (Issue 5.2)
+
+**IMPORTANT:** Always use standardized translation keys for badge text to ensure consistency across the application.
+
+### Common Status Translation Keys
+
+Use these standard keys from `translations/messages.{locale}.yaml`:
+
+| English | German | Translation Key | Badge Color |
+|---------|--------|----------------|-------------|
+| Active | Aktiv | `common.active` | `bg-success` |
+| Inactive | Inaktiv | `common.inactive` | `bg-secondary` |
+| Enabled | Aktiviert | `common.enabled` | `bg-success` |
+| Disabled | Deaktiviert | `common.disabled` | `bg-secondary` |
+| Completed | Abgeschlossen | `common.completed` | `bg-success` |
+| Pending | Ausstehend | `common.pending` | `common.warning` |
+| In Progress | In Bearbeitung | `common.in_progress` | `bg-info` |
+| Draft | Entwurf | `common.draft` | `bg-secondary` |
+| Published | Veröffentlicht | `common.published` | `bg-success` |
+| Archived | Archiviert | `common.archived` | `bg-secondary` |
+
+### Risk/Severity Translation Keys
+
+Use keys from `translations/risks.{locale}.yaml`:
+
+| English | German | Translation Key | Badge Color |
+|---------|--------|----------------|-------------|
+| Critical | Kritisch | `risk.severity.critical` | `bg-danger` |
+| High | Hoch | `risk.severity.high` | `bg-warning` |
+| Medium | Mittel | `risk.severity.medium` | `bg-info` |
+| Low | Niedrig | `risk.severity.low` | `bg-secondary` |
+
+### Incident Severity Translation Keys
+
+Use keys from `translations/incidents.{locale}.yaml`:
+
+| English | German | Translation Key | Badge Color |
+|---------|--------|----------------|-------------|
+| Critical | Kritisch | `incident.severity.critical` | `bg-danger` |
+| High | Hoch | `incident.severity.high` | `bg-warning` |
+| Medium | Mittel | `incident.severity.medium` | `bg-info` |
+| Low | Niedrig | `incident.severity.low` | `bg-secondary` |
+
+### Control Implementation Status
+
+Use keys from `translations/controls.{locale}.yaml`:
+
+| English | German | Translation Key | Badge Color |
+|---------|--------|----------------|-------------|
+| Implemented | Implementiert | `controls.status.implemented` | `bg-success` |
+| In Progress | In Bearbeitung | `controls.status.in_progress` | `bg-warning` |
+| Not Started | Nicht begonnen | `controls.status.not_started` | `bg-secondary` |
+| Planned | Geplant | `controls.status.planned` | `bg-info` |
+
+### ❌ Anti-Patterns: Inconsistent Naming
+
+```twig
+{# ❌ DON'T: Hardcoded text #}
+<span class="badge bg-success">Active</span>
+
+{# ❌ DON'T: Inconsistent translations #}
+<span class="badge bg-success">{{ 'status.active'|trans }}</span>  <!-- Wrong domain -->
+<span class="badge bg-success">{{ 'entity.is_active'|trans }}</span>  <!-- Wrong key -->
+
+{# ✅ DO: Use standard translation keys #}
+<span class="badge bg-success">{{ 'common.active'|trans }}</span>
+```
+
+### Status Badge Helper Pattern
+
+For complex status logic, create a Twig macro:
+
+```twig
+{# _macros/badges.html.twig #}
+{% macro status_badge(status) %}
+    {% set badgeMap = {
+        'active': {color: 'success', key: 'common.active'},
+        'inactive': {color: 'secondary', key: 'common.inactive'},
+        'pending': {color: 'warning', key: 'common.pending'},
+        'completed': {color: 'success', key: 'common.completed'},
+        'draft': {color: 'secondary', key: 'common.draft'}
+    } %}
+
+    {% set badge = badgeMap[status] ?? {color: 'secondary', key: 'common.unknown'} %}
+
+    <span class="badge bg-{{ badge.color }}">
+        {{ badge.key|trans }}
+    </span>
+{% endmacro %}
+
+{# Usage #}
+{% import '_macros/badges.html.twig' as badges %}
+{{ badges.status_badge(entity.status) }}
+```
+
 **Risk Levels:**
 ```twig
 {# Risk Score Badge #}

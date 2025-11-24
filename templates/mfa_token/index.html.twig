@@ -57,7 +57,7 @@
                             {{ user_data.user.firstName }} {{ user_data.user.lastName }}
                             <span class="text-muted">{{ user_data.user.email }}</span>
                         </h5>
-                        <div class="btn-group">
+                        <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
                             <a href="{{ path('admin_mfa_setup_totp', {id: user_data.user.id}) }}"
                                class="btn btn-sm btn-outline-primary">
                                 <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_new'|trans({}, 'mfa') }}
@@ -130,7 +130,7 @@
                                         <span class="badge bg-info">{{ token.usageCount }}</span>
                                     </td>
                                     <td>
-                                        <div class="btn-group btn-group-sm">
+                                        <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
                                             <a href="{{ path('admin_mfa_show', {id: token.id}) }}"
                                                class="btn btn-outline-primary"
                                                title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">

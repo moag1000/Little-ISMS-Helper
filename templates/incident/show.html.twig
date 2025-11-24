@@ -449,7 +449,7 @@
             {% if incident.relatedControls is defined and incident.relatedControls|length > 0 %}
                 <div class="detail-section">
                     <h3>🛡️ Related Controls ({{ incident.relatedControls|length }})</h3>
-                    <p class="text-muted">Controls that should prevent/detect this type of incident:</p>
+                    <p class="text-muted">{{ 'incident.controls_should_prevent'|trans }}</p>
                     <div class="data-reuse-list">
                         {% for control in incident.relatedControls %}
                             <div class="data-reuse-item">

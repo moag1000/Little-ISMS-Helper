@@ -19,7 +19,7 @@
     <div class="row">
         <div class="col-lg-8">
             {# Main Audit Information #}
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center"><h5 class="mb-0">
                         <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ audit.title }}
                     </h5>
@@ -156,7 +156,7 @@
 
             {# Objectives & Criteria #}
             {% if audit.objectives or audit.auditCriteria or audit.methodology %}
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
                         <i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'audit.section.objectives'|trans({}, 'audits') }}
@@ -189,7 +189,7 @@
 
             {# Findings #}
             {% if audit.findings or audit.nonconformities or audit.observations %}
-            <div class="card shadow mb-4 border-warning">
+            <div class="card mb-4 border-warning">
                 <div class="card-header bg-warning">
                     <h3 class="mb-0">
                         <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'audit.section.findings'|trans({}, 'audits') }}
@@ -222,7 +222,7 @@
 
             {# Recommendations & Actions #}
             {% if audit.recommendations or audit.correctiveActions or audit.followUpActions %}
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
                         <i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'audit.section.recommendations'|trans({}, 'audits') }}
@@ -255,7 +255,7 @@
 
             {# Documentation #}
             {% if audit.evidenceCollected or audit.summary or audit.notes %}
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
                         <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'audit.section.documentation'|trans({}, 'audits') }}
@@ -289,7 +289,7 @@
 
         <div class="col-lg-4">
             {# Action Buttons #}
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h3>
                 </div>
@@ -329,7 +329,7 @@
             </div>
 
             {# Quick Stats #}
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'audit.quick_stats'|trans({}, 'audits') }}</h3>
                 </div>
@@ -361,7 +361,7 @@
             </div>
 
             {# Metadata #}
-            <div class="card shadow mb-4">
+            <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h3>
                 </div>
@@ -385,7 +385,7 @@
 {# Audit Log History #}
 {% if auditLogs is defined and auditLogs|length > 0 %}
 <div class="container-fluid py-4">
-    <div class="card shadow mb-4">
+    <div class="card mb-4">
         <div class="card-header bg-light">
             <h3 class="mb-0">
                 <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'audit.section.history'|trans({}, 'audits') }}
