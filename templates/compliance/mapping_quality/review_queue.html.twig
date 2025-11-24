@@ -76,7 +76,7 @@
                         </td>
                         <td class="text-center">
                             {% if mapping.calculatedPercentage is not null %}
-                                <span class="badge {% if mapping.calculatedPercentage >= 70 %}bg-success{% elseif mapping.calculatedPercentage >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
+                                <span class="badge {% if mapping.calculatedPercentage >= 70 %}bg-success{% elseif mapping.calculatedPercentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
                                     {{ mapping.calculatedPercentage }}%
                                 </span>
                             {% else %}
@@ -85,7 +85,7 @@
                         </td>
                         <td class="text-center">
                             {% if mapping.analysisConfidence is not null %}
-                                <span class="badge {% if ... %}bg-success{% elseif mapping.analysisConfidence >= 60 %}badge-warning{% else %}bg-danger{% endif %}">
+                                <span class="badge {% if mapping.analysisConfidence >= 80 %}bg-success{% elseif mapping.analysisConfidence >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
                                     {{ mapping.analysisConfidence }}
                                 </span>
                             {% else %}
@@ -94,7 +94,7 @@
                         </td>
                         <td class="text-center">
                             {% if mapping.qualityScore is not null %}
-                                <span class="badge {% if ... %}bg-success{% elseif mapping.qualityScore >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
+                                <span class="badge {% if mapping.qualityScore >= 75 %}bg-success{% elseif mapping.qualityScore >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
                                     {{ mapping.qualityScore }}
                                 </span>
                             {% else %}
@@ -225,7 +225,7 @@
                             <span class="badge bg-secondary">{{ mapping.mappingPercentage }}%</span>
                         </td>
                         <td class="text-center">
-                            <span class="badge {% if ... %}bg-success{% elseif mapping.calculatedPercentage >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
+                            <span class="badge {% if mapping.qualityScore >= 75 %}bg-success{% elseif mapping.calculatedPercentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
                                 {{ mapping.calculatedPercentage }}%
                             </span>
                         </td>
@@ -235,7 +235,7 @@
                             </strong>
                         </td>
                         <td class="text-center">
-                            <span class="badge {% if ... %}bg-success{% elseif mapping.analysisConfidence >= 60 %}badge-warning{% else %}bg-danger{% endif %}">
+                            <span class="badge {% if mapping.qualityScore >= 75 %}bg-success{% elseif mapping.analysisConfidence >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
                                 {{ mapping.analysisConfidence }}
                             </span>
                         </td>
