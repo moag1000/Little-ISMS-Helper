@@ -238,7 +238,7 @@
         </div>
         <div class="stats-cell">
             <div class="stats-label">Anwendbar</div>
-            <div class="stats-value">{{ stats.applicable }}</div>
+            <div class="stats-value">{{ stats.total }}</div>
         </div>
         <div class="stats-cell">
             <div class="stats-label">Implementiert</div>
@@ -247,7 +247,7 @@
         <div class="stats-cell">
             <div class="stats-label">Compliance-Rate</div>
             <div class="stats-value">
-                <span class="percentage">{{ ((stats.implemented / stats.applicable) * 100)|round }}%</span>
+                <span class="percentage">{% if stats.total > 0 %}{{ ((stats.implemented / stats.total) * 100)|round }}%{% else %}0%{% endif %}</span>
             </div>
         </div>
     </div>
