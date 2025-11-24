@@ -2834,6 +2834,19 @@ data_breach:
     root_cause: 'Grundursache'
     lessons_learned: 'Erkenntnisse'
     data_protection_officer: 'Datenschutzbeauftragter'
+  pdf:
+    art_33_3a_nature: "1. Art. 33(3)(a) - Art der Datenschutzverletzung"
+    categories_personal_data: "Kategorien betroffener personenbezogener Daten:"
+    categories_data_subjects: "Kategorien betroffener Personen:"
+    approx_number_subjects: "Ungefähre Anzahl betroffener Personen:"
+    art_33_3b_consequences: "2. Art. 33(3)(b) - Wahrscheinliche Folgen der Verletzung"
+    art_33_3c_d_measures: "3. Art. 33(3)(c) & (d) - Ergriffene oder vorgeschlagene Maßnahmen"
+    measures_taken: "Maßnahmen zur Behebung der Verletzung:"
+    measures_mitigate: "Maßnahmen zur Minderung möglicher nachteiliger Auswirkungen:"
+    art_34_communication: "5. Art. 34 - Benachrichtigung der betroffenen Personen"
+  index:
+    view_all_breaches: "Alle Verletzungen anzeigen"
+
 Customer: Kunde
 Shareholder: Shareholder
 Employee: Mitarbeiter
@@ -2869,21 +2882,6 @@ components:
   audit_evidence: "Audit-Nachweis"
   informed_decisions: "Fundierte Entscheidungen"
   data_reuse: "Datenwiederverwendung"
-
-# Data breach and DPIA translations
-data_breach:
-  pdf:
-    art_33_3a_nature: "1. Art. 33(3)(a) - Art der Datenschutzverletzung"
-    categories_personal_data: "Kategorien betroffener personenbezogener Daten:"
-    categories_data_subjects: "Kategorien betroffener Personen:"
-    approx_number_subjects: "Ungefähre Anzahl betroffener Personen:"
-    art_33_3b_consequences: "2. Art. 33(3)(b) - Wahrscheinliche Folgen der Verletzung"
-    art_33_3c_d_measures: "3. Art. 33(3)(c) & (d) - Ergriffene oder vorgeschlagene Maßnahmen"
-    measures_taken: "Maßnahmen zur Behebung der Verletzung:"
-    measures_mitigate: "Maßnahmen zur Minderung möglicher nachteiliger Auswirkungen:"
-    art_34_communication: "5. Art. 34 - Benachrichtigung der betroffenen Personen"
-  index:
-    view_all_breaches: "Alle Verletzungen anzeigen"
 
 # DPIA translations
 dpia:
@@ -2921,119 +2919,3 @@ data_management:
     test_small: "Testen Sie zuerst mit einem kleinen Datensatz"
     validation_required: "Vollständige Importfunktionalität erfordert zusätzliche Validierungslogik"
     no_duplicate_detection: "Duplikaterkennung ist noch nicht implementiert"
-
-# Document translations
-document:
-  uploaded_by: "Hochgeladen von"
-  uploaded_at: "Hochgeladen am"
-  edit_button: "Bearbeiten"
-  drag_files: "Ziehen Sie Dateien direkt aus dem Datei-Explorer in die blaue Drop-Zone"
-
-# Audit translations
-audit:
-  status_in_progress: "In Bearbeitung"
-
-# Email translations
-email:
-  automated_reminder: "Dies ist eine automatische Erinnerung von Little ISMS Helper"
-  ensure_preparations: "Bitte stellen Sie sicher, dass alle Vorbereitungen vor dem Audit-Datum abgeschlossen sind"
-  ensure_control_completion: "Bitte stellen Sie sicher, dass die Kontrollimplementierung vor dem Zieldatum abgeschlossen ist"
-  new_incident_reported: "Neuer Sicherheitsvorfall gemeldet"
-  take_appropriate_action: "Bitte ergreifen Sie entsprechende Maßnahmen basierend auf der Schwere des Vorfalls"
-  automated_notification: "Dies ist eine automatische Benachrichtigung von Little ISMS Helper"
-  risk_acceptance:
-    review_reason: "Prüfen Sie den Ablehnungsgrund sorgfältig"
-    identify_controls: "Identifizieren und implementieren Sie zusätzliche Kontrollen, um das Restrisiko zu reduzieren"
-    update_assessment: "Aktualisieren Sie die Risikobewertung, um die neuen Kontrollen widerzuspiegeln"
-    reassess_risk: "Bewerten Sie das Restrisiko neu"
-    request_again: "Wenn das Risiko ausreichend reduziert ist, können Sie erneut eine Akzeptanz beantragen"
-  workflow:
-    time_to_complete: "Zeit zur Fertigstellung:"
-    login_to_process: "Bitte melden Sie sich im System an, um diese Genehmigungsanfrage zu bearbeiten"
-    deadline_warning: "Fristwarnung"
-    login_to_review: "Bitte melden Sie sich im System an, um diesen Workflow zu überprüfen"
-    workflow_update: "Workflow-Aktualisierung"
-    login_for_details: "Sie können sich im System anmelden für weitere Details"
-    automated_alert: "Dies ist eine automatische Warnung von Little ISMS Helper"
-    login_to_process_step: "Bitte melden Sie sich im System an, um diesen Workflow-Schritt zu bearbeiten"
-  training:
-    mark_calendar: "Bitte markieren Sie Ihren Kalender und bereiten Sie sich auf die Schulung vor"
-
-# Incident translations
-incident:
-  controls_should_prevent: "Kontrollen, die diese Art von Vorfall verhindern/erkennen sollten:"
-  pdf:
-    reported_at: "Gemeldet am"
-    reported_by: "Gemeldet von"
-
-# PDF report translations
-pdf:
-  base:
-    define_content_block: "Bitte definieren Sie den Block 'document_content' in Ihrem Template."
-  data_reuse:
-    recommendations_title: "Empfehlungen zur Datenwiederverwendung"
-  framework_comparison:
-    solid_mappings_minor: "Solide Mappings mit kleineren Abweichungen"
-  gap_analysis:
-    distribution_by_severity: "Lückenverteilung nach Schweregrad"
-    not_addressed: "Anforderungen mit 0% Erfüllung - noch nicht adressiert"
-    very_low: "Sehr niedrige Erfüllung (<30%) - Kontrolle fehlt oder unzureichend"
-    partial: "Teilweise Erfüllung (30-80%) - Implementierung läuft"
-  risk_report:
-    distribution_by_level: "Verteilung nach Risikostufe"
-    distribution_by_status: "Verteilung nach Status"
-  transitive_compliance:
-    from_framework: "Von Framework"
-    to_framework: "Zu Framework"
-    establish_hub: "Compliance-Hub mit ROI-Dashboard, automatisiertem Tracking und kontinuierlicher Optimierung einrichten"
-
-# Monitoring translations
-monitoring:
-  by_level: "Nach Level"
-  show_entries: "Einträge anzeigen:"
-  no_errors_found: "Keine Fehler in der Log-Datei gefunden!"
-  reverse_order: "Log-Einträge werden in umgekehrter chronologischer Reihenfolge angezeigt (neueste zuerst)"
-  recent_entries_only: "Es werden nur die neuesten Einträge basierend auf dem ausgewählten Limit angezeigt"
-  full_log_analysis: "Für vollständige Log-Analyse erwägen Sie das Herunterladen der Log-Datei oder die Verwendung von Log-Management-Tools"
-  large_files_warning: "Große Log-Dateien können die Leistung beeinträchtigen - erwägen Sie Log-Rotation"
-
-# Home page translations
-home:
-  tagline: "Alles, was Sie für ein erfolgreiches Informationssicherheits-Management benötigen"
-  quick_start: "Schnellstart in 4 Schritten"
-
-# Processing Activity (VVT) translations
-processing_activity:
-  permanently_delete: "Diese Verarbeitungstätigkeit dauerhaft löschen."
-  view_all_activities: "alle Aktivitäten anzeigen"
-  pdf:
-    art_30_title: "Art. 30 DSGVO - Verzeichnis von Verarbeitungstätigkeiten"
-    table_of_contents: "Inhaltsverzeichnis"
-    art_30_1a: "Art. 30(1)(a) - Name und Zwecke"
-    purposes_processing: "Zwecke der Verarbeitung"
-    art_30_1b: "Art. 30(1)(b) - Kategorien betroffener Personen"
-    art_30_1c: "Art. 30(1)(c) - Kategorien personenbezogener Daten"
-    art_30_1d: "Art. 30(1)(d) - Kategorien von Empfängern"
-    art_30_1e: "Art. 30(1)(e) - Übermittlungen in Drittländer"
-    legal_basis_retention: "Rechtsgrundlage für Aufbewahrung"
-    art_30_1g: "Art. 30(1)(g) - Technische und organisatorische Maßnahmen"
-
-# Reports translations
-reports:
-  integrate_ci_cd: "Integrieren Sie die Report-Generierung in Ihre CI/CD-Pipeline"
-
-# Setup translations
-setup:
-  what_will_be_setup: "Was wird eingerichtet?"
-  can_delete_later: "Sie können später in einem Produktivsystem gelöscht werden"
-
-# SoA (Statement of Applicability) translations
-soa:
-  in_progress_badge: "In Arbeit"
-  in_progress_badge_emoji: "🔄 In Arbeit"
-  title: "Statement of Applicability (SoA)"
-  iso27001_full_title: "Informationssicherheit, Cybersicherheit und Schutz der Privatsphäre — Informationssicherheitsmanagementsysteme — Anforderungen"
-
-# User Management translations
-user_management:
-  import_irreversible: "Der Import kann nicht rückgängig gemacht werden"
