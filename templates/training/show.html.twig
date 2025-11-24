@@ -50,7 +50,7 @@
                     {# Training Details #}
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-2">{{ 'training.type'|trans({}, 'messages') }}</h5>
+                            <h6 class="text-muted mb-2">{{ 'training.type'|trans({}, 'messages') }}</h6>
                             <p>
                                 <span class="badge bg-secondary fs-6">
                                     {{ ('training.type.' ~ training.trainingType)|trans }}
@@ -58,7 +58,7 @@
                             </p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-2">{{ 'training.delivery_method'|trans({}, 'messages') }}</h5>
+                            <h6 class="text-muted mb-2">{{ 'training.delivery_method'|trans({}, 'messages') }}</h6>
                             <p>
                                 <span class="badge bg-info fs-6">
                                     {{ ('training.delivery.' ~ training.deliveryMethod)|trans }}
@@ -232,7 +232,7 @@
                         <div class="list-group-item px-0">
                             <div class="d-flex w-100 justify-content-between align-items-start">
                                 <div>
-                                    <h4 class="mb-1">{{ control.controlId }}</h5>
+                                    <h4 class="mb-1">{{ control.controlId }}</h4>
                                     <p class="mb-1 small text-muted">{{ control.name }}</p>
                                 </div>
                                 <span class="{{ badge_status(control.implementationStatus) }} rounded-pill">

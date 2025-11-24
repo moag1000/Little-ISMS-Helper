@@ -76,7 +76,7 @@
                             </p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-2">{{ 'audit.standard'|trans({}, 'audits') }}</h5>
+                            <h6 class="text-muted mb-2">{{ 'audit.standard'|trans({}, 'audits') }}</h6>
                             <p>{{ audit.standard ?? '-' }}</p>
                         </div>
                     </div>
@@ -112,7 +112,7 @@
                             </p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-2">{{ 'audit.department'|trans({}, 'audits') }}</h5>
+                            <h6 class="text-muted mb-2">{{ 'audit.department'|trans({}, 'audits') }}</h6>
                             <p>{{ audit.department ?? '-' }}</p>
                         </div>
                     </div>
@@ -120,7 +120,7 @@
                     {# Auditee & Team #}
                     {% if audit.auditee %}
                     <div class="mb-4">
-                        <h6 class="text-muted mb-2">{{ 'audit.auditee'|trans({}, 'audits') }}</h5>
+                        <h6 class="text-muted mb-2">{{ 'audit.auditee'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.auditee }}</p>
                     </div>
                     {% endif %}
@@ -143,7 +143,7 @@
                     {# Overall Result #}
                     {% if audit.overallResult %}
                     <div class="mb-4">
-                        <h6 class="text-muted mb-2">{{ 'audit.overall_result'|trans({}, 'audits') }}</h5>
+                        <h6 class="text-muted mb-2">{{ 'audit.overall_result'|trans({}, 'audits') }}</h6>
                         <p>
                             <span class="{{ badge_status(audit.overallResult) }} fs-6">
                                 {{ ('audit.result.' ~ audit.overallResult)|trans }}
@@ -165,21 +165,21 @@
                 <div class="card-body">
                     {% if audit.objectives %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.objectives'|trans({}, 'audits') }}</h5>
+                        <h6 class="text-muted">{{ 'audit.objectives'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.objectives|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.auditCriteria %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.audit_criteria'|trans({}, 'audits') }}</h5>
+                        <h6 class="text-muted">{{ 'audit.audit_criteria'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.auditCriteria|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.methodology %}
                     <div class="mb-0">
-                        <h6 class="text-muted">{{ 'audit.methodology'|trans({}, 'audits') }}</h5>
+                        <h6 class="text-muted">{{ 'audit.methodology'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.methodology|nl2br }}</p>
                     </div>
                     {% endif %}
@@ -198,21 +198,21 @@
                 <div class="card-body">
                     {% if audit.findings %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.findings'|trans({}, 'audits') }}</h5>
+                        <h6 class="text-muted">{{ 'audit.findings'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.findings|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.nonconformities %}
                     <div class="mb-3 alert alert-danger">
-                        <h4 class="alert-heading">{{ 'audit.nonconformities'|trans({}, 'audits') }}</h5>
+                        <h4 class="alert-heading">{{ 'audit.nonconformities'|trans({}, 'audits') }}</h4>
                         <p class="mb-0">{{ audit.nonconformities|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.observations %}
                     <div class="mb-0 alert alert-info">
-                        <h4 class="alert-heading">{{ 'audit.observations'|trans({}, 'audits') }}</h5>
+                        <h4 class="alert-heading">{{ 'audit.observations'|trans({}, 'audits') }}</h4>
                         <p class="mb-0">{{ audit.observations|nl2br }}</p>
                     </div>
                     {% endif %}
@@ -231,21 +231,21 @@
                 <div class="card-body">
                     {% if audit.recommendations %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.recommendations'|trans({}, 'audits') }}</h5>
+                        <h6 class="text-muted">{{ 'audit.recommendations'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.recommendations|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.correctiveActions %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.corrective_actions'|trans({}, 'audits') }}</h5>
+                        <h6 class="text-muted">{{ 'audit.corrective_actions'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.correctiveActions|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.followUpActions %}
                     <div class="mb-0">
-                        <h6 class="text-muted">{{ 'audit.follow_up_actions'|trans({}, 'audits') }}</h5>
+                        <h6 class="text-muted">{{ 'audit.follow_up_actions'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.followUpActions|nl2br }}</p>
                     </div>
                     {% endif %}
@@ -264,21 +264,21 @@
                 <div class="card-body">
                     {% if audit.evidenceCollected %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.evidence_collected'|trans({}, 'audits') }}</h5>
+                        <h6 class="text-muted">{{ 'audit.evidence_collected'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.evidenceCollected|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.summary %}
                     <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.summary'|trans({}, 'audits') }}</h5>
+                        <h6 class="text-muted">{{ 'audit.summary'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.summary|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.notes %}
                     <div class="mb-0">
-                        <h6 class="text-muted">{{ 'audit.notes'|trans({}, 'audits') }}</h5>
+                        <h6 class="text-muted">{{ 'audit.notes'|trans({}, 'audits') }}</h6>
                         <p>{{ audit.notes|nl2br }}</p>
                     </div>
                     {% endif %}

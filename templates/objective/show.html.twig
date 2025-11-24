@@ -22,21 +22,21 @@
                     <p class="lead">{{ objective.description }}</p>
 
                     <div class="row mb-3">
-                        <div class="col-md-6"><h6 class="text-muted">{{ 'objectives.field.category'|trans({}, 'messages') }}</h5><p>{{ objective.category }}</p></div>
-                        <div class="col-md-6"><h6 class="text-muted">{{ 'objectives.field.responsible_person'|trans({}, 'messages') }}</h5><p>{{ objective.responsiblePerson }}</p></div>
+                        <div class="col-md-6"><h6 class="text-muted">{{ 'objectives.field.category'|trans({}, 'messages') }}</h6><p>{{ objective.category }}</p></div>
+                        <div class="col-md-6"><h6 class="text-muted">{{ 'objectives.field.responsible_person'|trans({}, 'messages') }}</h6><p>{{ objective.responsiblePerson }}</p></div>
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-md-6"><h6 class="text-muted">{{ 'objectives.field.target_date'|trans({}, 'messages') }}</h5><p>{{ objective.targetDate|date('d.m.Y') }}</p></div>
-                        <div class="col-md-6"><h6 class="text-muted">{{ 'objectives.field.achieved_date'|trans({}, 'messages') }}</h5><p>{{ objective.achievedDate ? objective.achievedDate|date('d.m.Y') : '-' }}</p></div>
+                        <div class="col-md-6"><h6 class="text-muted">{{ 'objectives.field.target_date'|trans({}, 'messages') }}</h6><p>{{ objective.targetDate|date('d.m.Y') }}</p></div>
+                        <div class="col-md-6"><h6 class="text-muted">{{ 'objectives.field.achieved_date'|trans({}, 'messages') }}</h6><p>{{ objective.achievedDate ? objective.achievedDate|date('d.m.Y') : '-' }}</p></div>
                     </div>
 
                     {% if objective.measurableIndicators %}
-                    <h6 class="text-muted">{{ 'objectives.field.measurable_indicators'|trans({}, 'messages') }}</h5>
+                    <h6 class="text-muted">{{ 'objectives.field.measurable_indicators'|trans({}, 'messages') }}</h6>
                     <p>{{ objective.measurableIndicators|nl2br }}</p>
                     {% endif %}
 
-                    <h6 class="text-muted">{{ 'objectives.table.progress'|trans({}, 'messages') }}</h5>
+                    <h6 class="text-muted">{{ 'objectives.table.progress'|trans({}, 'messages') }}</h6>
                     <div class="progress mb-2" style="height: 30px;">
                         <div class="progress-bar {% if objective.progressPercentage >= 75 %}bg-success{% elseif objective.progressPercentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
                              style="width: {{ objective.progressPercentage }}%">
@@ -46,7 +46,7 @@
                     <p><strong>{{ 'objectives.label.current'|trans({}, 'messages') }}:</strong> {{ objective.currentValue }} {{ objective.unit }} / <strong>{{ 'objectives.label.target'|trans({}, 'messages') }}:</strong> {{ objective.targetValue }} {{ objective.unit }}</p>
 
                     {% if objective.progressNotes %}
-                    <h6 class="text-muted mt-3">{{ 'objectives.field.progress_notes'|trans({}, 'messages') }}</h5>
+                    <h6 class="text-muted mt-3">{{ 'objectives.field.progress_notes'|trans({}, 'messages') }}</h6>
                     <div class="alert alert-info">{{ objective.progressNotes|nl2br }}</div>
                     {% endif %}
                 </div>

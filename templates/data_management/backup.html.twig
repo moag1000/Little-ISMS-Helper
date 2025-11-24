@@ -704,7 +704,7 @@
                             html += `<div class="alert alert-info"><strong>Gesamtanzahl Datensätze:</strong> ${result.preview.total_records}</div>`;
 
                             if (result.preview.metadata) {
-                                html += `<div class="card"><div class="card-body"><h4>Metadata:</h5><pre>${JSON.stringify(result.preview.metadata, null, 2)}</pre></div></div>`;
+                                html += `<div class="card"><div class="card-body"><h4>Metadata:</h4><pre>${JSON.stringify(result.preview.metadata, null, 2)}</pre></div></div>`;
                             }
 
                             previewContent.innerHTML = html;

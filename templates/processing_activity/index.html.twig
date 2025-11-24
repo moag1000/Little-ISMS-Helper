@@ -30,7 +30,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Total Activities</h5>
+                    <h6 class="text-muted mb-2">Total Activities</h6>
                     <h2 class="mb-0">{{ statistics.total }}</h2>
                     <small class="text-success">{{ statistics.active }} active</small>
                 </div>
@@ -39,7 +39,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Compliance Score</h5>
+                    <h6 class="text-muted mb-2">Compliance Score</h6>
                     <h2 class="mb-0
                         {% if compliance_score.overall_score >= 80 %}text-success
                         {% elseif compliance_score.overall_score >= 60 %}text-warning
@@ -53,7 +53,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">High Risk</h5>
+                    <h6 class="text-muted mb-2">High Risk</h6>
                     <h2 class="mb-0">{{ statistics.high_risk }}</h2>
                     <small class="text-danger">{{ statistics.missing_dpia }} missing DPIA</small>
                 </div>
@@ -62,7 +62,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Special Categories</h5>
+                    <h6 class="text-muted mb-2">Special Categories</h6>
                     <h2 class="mb-0">{{ statistics.special_categories }}</h2>
                     <small class="text-muted">Art. 9 data</small>
                 </div>

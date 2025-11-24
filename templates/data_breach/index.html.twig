@@ -40,7 +40,7 @@
     {# Overall Compliance Score #}
     <div class="card mb-4 text-center">
         <div class="card-body">
-            <h6 class="text-muted mb-2">{{ 'privacy.data_breach.score.heading'|trans({}, 'privacy') }}</h5>
+            <h6 class="text-muted mb-2">{{ 'privacy.data_breach.score.heading'|trans({}, 'privacy') }}</h6>
             {% set score = compliance_score.overall_score %}
             <h1 class="display-1 mb-0
                 {% if score >= 80 %}text-success
@@ -51,7 +51,7 @@
             <div class="row mt-4">
                 <div class="col-md-4">
                     <small class="text-muted">{{ 'privacy.data_breach.score.notification_compliance'|trans({}, 'privacy') }}</small>
-                    <h4>{{ compliance_score.notification_compliance }}%</h5>
+                    <h4>{{ compliance_score.notification_compliance }}%</h4>
                 </div>
                 <div class="col-md-4">
                     <small class="text-muted">{{ 'privacy.data_breach.score.timeliness'|trans({}, 'privacy') }}</small>
@@ -61,7 +61,7 @@
                 </div>
                 <div class="col-md-4">
                     <small class="text-muted">{{ 'privacy.data_breach.score.completeness'|trans({}, 'privacy') }}</small>
-                    <h4>{{ compliance_score.completeness_score }}%</h5>
+                    <h4>{{ compliance_score.completeness_score }}%</h4>
                 </div>
             </div>
             <p class="text-muted mt-3">
@@ -75,7 +75,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">{{ 'privacy.data_breach.kpi.total_breaches'|trans({}, 'privacy') }}</h5>
+                    <h6 class="text-muted">{{ 'privacy.data_breach.kpi.total_breaches'|trans({}, 'privacy') }}</h6>
                     <h2>{{ statistics.total }}</h2>
                     <div class="mt-2">
                         <small class="text-danger"><i class="bi bi-exclamation-triangle"></i> {{ statistics.high_risk + statistics.critical_risk }} {{ 'privacy.data_breach.kpi.high_critical_risk'|trans({}, 'privacy') }}</small>
@@ -86,7 +86,7 @@
         <div class="col-md-3">
             <div class="card border-warning">
                 <div class="card-body">
-                    <h6 class="text-muted">{{ 'privacy.data_breach.kpi.pending_authority'|trans({}, 'privacy') }}</h5>
+                    <h6 class="text-muted">{{ 'privacy.data_breach.kpi.pending_authority'|trans({}, 'privacy') }}</h6>
                     <h2 class="text-warning">{{ statistics.requires_authority_notification - statistics.authority_notified }}</h2>
                     <div class="mt-2">
                         <small class="text-muted"><i class="bi bi-clock"></i> {{ 'privacy.data_breach.kpi.deadline_72h'|trans({}, 'privacy') }}</small>
@@ -97,7 +97,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">{{ 'privacy.data_breach.kpi.special_categories'|trans({}, 'privacy') }}</h5>
+                    <h6 class="text-muted">{{ 'privacy.data_breach.kpi.special_categories'|trans({}, 'privacy') }}</h6>
                     <h2 class="text-info">{{ statistics.special_categories_affected }}</h2>
                     <div class="mt-2">
                         <small class="text-muted"><i class="bi bi-shield-lock"></i> {{ 'privacy.data_breach.kpi.art9_data'|trans({}, 'privacy') }}</small>
@@ -108,7 +108,7 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">Affected Subjects</h5>
+                    <h6 class="text-muted">Affected Subjects</h6>
                     <h2>{{ compliance_score.total_affected_subjects }}</h2>
                     <div class="mt-2">
                         <small class="text-muted"><i class="bi bi-people"></i> Total count</small>
