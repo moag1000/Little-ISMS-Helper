@@ -221,7 +221,7 @@ body {
 }
 
 /* Header sticky only on desktop (matches nav behavior) */
-@media (min-width: 769px) {
+@media (min-width: 768px) {
     .header {
         position: sticky;
         top: 0;
@@ -308,7 +308,7 @@ body {
 }
 
 /* Mobile only */
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
     .mobile-menu-btn {
         display: flex;
         margin-right: var(--spacing-md);
@@ -1865,7 +1865,7 @@ textarea.form-control {
 
 /* Responsive */
 /* Mobile (up to 768px) - Hide Sidebar, show mobile menu */
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
     .header {
         padding: var(--spacing-sm) var(--spacing-md);
     }
@@ -1941,7 +1941,7 @@ textarea.form-control {
 }
 
 /* Tablet (769px to 1024px) - Narrower Sidebar */
-@media (min-width: 769px) and (max-width: 1024px) {
+@media (min-width: 768px) and (max-width: 1024px) {
     .app-sidebar {
         width: 220px;
     }
@@ -1996,7 +1996,7 @@ textarea.form-control {
 }
 
 /* Responsive widget sizes */
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
     .widget-size-small,
     .widget-size-medium,
     .widget-size-large,
@@ -2207,7 +2207,7 @@ input.is-valid:focus {
    Mobile Table Responsiveness - Issue 12.2
    Auto-wrap all tables in responsive containers on mobile devices
    =================================================================== */
-@media (max-width: 768px) {
+@media (max-width: 767.98px) {
     /* Make tables scrollable on mobile */
     table:not(.no-mobile-scroll) {
         display: block;
