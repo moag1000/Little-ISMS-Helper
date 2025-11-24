@@ -127,7 +127,7 @@
 <body>
     <div class="header">
         <h1>Verzeichnis von Verarbeitungstätigkeiten</h1>
-        <p style="font-size: 11pt; color: #7f8c8d;">Art. 30 GDPR - Record of Processing Activities</p>
+        <p style="font-size: 11pt; color: #7f8c8d;">{{ 'processing_activity.pdf.art_30_title'|trans }}</p>
     </div>
 
     <div class="metadata">
@@ -138,7 +138,7 @@
         <strong>Total Activities:</strong> {{ export.total_activities }}
     </div>
 
-    <h2>Table of Contents</h2>
+    <h2>{{ 'processing_activity.pdf.table_of_contents'|trans }}</h2>
     <ul>
         {% for pa in export.processing_activities %}
             <li>{{ loop.index }}. {{ pa.name }} ({{ pa.status|upper }})</li>
@@ -165,7 +165,7 @@
                 <p><strong>Description:</strong> {{ pa.description }}</p>
             {% endif %}
 
-            <h3>Art. 30(1)(a) - Name and Purposes</h3>
+            <h3>{{ 'processing_activity.pdf.art_30_1a'|trans }}</h3>
             <table>
                 <tr>
                     <th style="width: 30%;">Field</th>
@@ -176,7 +176,7 @@
                     <td>{{ pa.name }}</td>
                 </tr>
                 <tr>
-                    <td>Purposes of Processing</td>
+                    <td>{{ 'processing_activity.pdf.purposes_processing'|trans }}</td>
                     <td>
                         <ul>
                             {% for purpose in pa.purposes %}
@@ -196,7 +196,7 @@
                 </tr>
             </table>
 
-            <h3>Art. 30(1)(b) - Categories of Data Subjects</h3>
+            <h3>{{ 'processing_activity.pdf.art_30_1b'|trans }}</h3>
             <table>
                 <tr>
                     <th style="width: 30%;">Field</th>
@@ -218,7 +218,7 @@
                 </tr>
             </table>
 
-            <h3>Art. 30(1)(c) - Categories of Personal Data</h3>
+            <h3>{{ 'processing_activity.pdf.art_30_1c'|trans }}</h3>
             <table>
                 <tr>
                     <th style="width: 30%;">Field</th>
@@ -258,7 +258,7 @@
                 {% endif %}
             </table>
 
-            <h3>Art. 30(1)(d) - Categories of Recipients</h3>
+            <h3>{{ 'processing_activity.pdf.art_30_1d'|trans }}</h3>
             <table>
                 <tr>
                     <th style="width: 30%;">Field</th>
@@ -286,7 +286,7 @@
                 {% endif %}
             </table>
 
-            <h3>Art. 30(1)(e) - Transfers to Third Countries</h3>
+            <h3>{{ 'processing_activity.pdf.art_30_1e'|trans }}</h3>
             <table>
                 <tr>
                     <th style="width: 30%;">Field</th>
@@ -338,13 +338,13 @@
                 {% endif %}
                 {% if pa.retention_legal_basis %}
                     <tr>
-                        <td>Legal Basis for Retention</td>
+                        <td>{{ 'processing_activity.pdf.legal_basis_retention'|trans }}</td>
                         <td>{{ pa.retention_legal_basis }}</td>
                     </tr>
                 {% endif %}
             </table>
 
-            <h3>Art. 30(1)(g) - Technical and Organizational Measures</h3>
+            <h3>{{ 'processing_activity.pdf.art_30_1g'|trans }}</h3>
             <table>
                 <tr>
                     <th style="width: 30%;">Field</th>

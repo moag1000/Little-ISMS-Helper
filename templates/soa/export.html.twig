@@ -248,7 +248,7 @@
     </div>
 
     <div class="header">
-        <h1>Statement of Applicability (SoA)</h1>
+        <h1>{{ 'soa.title'|trans }}</h1>
         <div class="meta-info">
             <strong>Standard:</strong> ISO/IEC 27001:2022 Annex A Controls<br>
             <strong>Generiert am:</strong> {{ generatedAt|date('d.m.Y H:i') }} Uhr
@@ -344,7 +344,7 @@
                         {% if control.implementationStatus == 'implemented' %}
                             <span class="badge bg-success">Implementiert</span>
                         {% elseif control.implementationStatus == 'in_progress' %}
-                            <span class="badge bg-warning">In Arbeit</span>
+                            <span class="badge bg-warning">{{ 'soa.in_progress_badge'|trans }}</span>
                         {% elseif control.implementationStatus == 'not_started' %}
                             <span class="badge bg-danger">Nicht begonnen</span>
                         {% endif %}
@@ -402,7 +402,7 @@
                     {% if control.implementationStatus == 'implemented' %}
                         <span class="badge bg-success">✅ Implementiert</span> - {{ control.implementationPercentage }}%
                     {% elseif control.implementationStatus == 'in_progress' %}
-                        <span class="badge bg-warning">🔄 In Arbeit</span> - {{ control.implementationPercentage }}%
+                        <span class="badge bg-warning">{{ 'soa.in_progress_badge_emoji'|trans }}</span> - {{ control.implementationPercentage }}%
                     {% elseif control.implementationStatus == 'not_started' %}
                         <span class="badge bg-danger">⏸ Nicht begonnen</span> - {{ control.implementationPercentage }}%
                     {% endif %}

@@ -22,7 +22,7 @@
             <div class="card shadow-lg">
                 <div class="card-header bg-primary text-white">
                     <h2 class="mb-0">
-                        <i class="fas fa-puzzle-piece me-2"></i>
+                        <i class="bi bi-puzzle me-2"></i>
                         Schritt 7: Module auswählen
                     </h2>
                 </div>
@@ -35,7 +35,7 @@
                     {% if recommended_modules is defined and recommended_modules|length > 0 %}
                     <div class="alert alert-info mb-4">
                         <h4 class="alert-heading">
-                            <i class="fas fa-lightbulb me-2"></i>
+                            <i class="bi bi-lightbulb me-2"></i>
                             Empfehlungen basierend auf Ihren Organisationsdaten
                         </h5>
                         <p class="mb-0">
@@ -50,7 +50,7 @@
 
                         {# Required Modules #}
                         <h5 class="mb-3">
-                            <i class="fas fa-star text-warning me-2"></i>
+                            <i class="bi bi-star text-warning me-2"></i>
                             Erforderliche Module
                         </h5>
 
@@ -65,7 +65,7 @@
                                             <div class="d-flex justify-content-between align-items-start">
                                                 <div>
                                                     <h4 class="mb-1">
-                                                        <i class="fas fa-{{ module.icon }} me-2"></i>
+                                                        <i class="bi bi-{{ module.icon }} me-2"></i>
                                                         {{ module.name }}
                                                         <span class="badge bg-warning text-dark ms-2">Erforderlich</span>
                                                     </h5>
@@ -87,7 +87,7 @@
 
                         {# Optional Modules #}
                         <h5 class="mb-3 mt-4">
-                            <i class="fas fa-toggle-on text-info me-2"></i>
+                            <i class="bi bi-toggle-on text-info me-2"></i>
                             Optionale Module
                         </h5>
 
@@ -102,7 +102,7 @@
                                                 <div class="d-flex justify-content-between align-items-start">
                                                     <div class="flex-grow-1">
                                                         <h4 class="mb-1">
-                                                            <i class="fas fa-{{ module.icon }} me-2"></i>
+                                                            <i class="bi bi-{{ module.icon }} me-2"></i>
                                                             {{ module.name }}
                                                             {% if recommended_modules is defined and key in recommended_modules %}
                                                                 <span class="badge bg-info ms-2">Empfohlen</span>
@@ -118,7 +118,7 @@
                                                         {% if module.dependencies|length > 0 %}
                                                             <div class="mt-2">
                                                                 <small class="text-warning">
-                                                                    <i class="fas fa-link me-1"></i>
+                                                                    <i class="bi bi-link me-1"></i>
                                                                     <strong>Abhängigkeiten:</strong>
                                                                     {% for dep in module.dependencies %}
                                                                         <span class="badge bg-warning text-dark">{{ all_modules[dep].name }}</span>
@@ -129,7 +129,7 @@
                                                         {% if dependency_graph[key].dependents|length > 0 %}
                                                             <div class="mt-1">
                                                                 <small class="text-info">
-                                                                    <i class="fas fa-arrow-right me-1"></i>
+                                                                    <i class="bi bi-arrow-right me-1"></i>
                                                                     <strong>Wird benötigt von:</strong>
                                                                     {% for dep in dependency_graph[key].dependents %}
                                                                         <span class="badge bg-info">{{ all_modules[dep].name }}</span>
@@ -150,7 +150,7 @@
                         <div class="card bg-light mt-4 mb-4">
                             <div class="card-body">
                                 <h4 class="mb-2">
-                                    <i class="fas fa-chart-pie me-2"></i>
+                                    <i class="bi bi-pie-chart me-2"></i>
                                     Zusammenfassung
                                 </h5>
                                 <div id="module-summary">
@@ -164,12 +164,12 @@
                         {# Navigation #}
                         <div class="d-flex justify-content-between">
                             <a href="{{ path('setup_step6_organisation_info') }}" class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left me-2"></i>
+                                <i class="bi bi-arrow-left me-2"></i>
                                 Zurück
                             </a>
                             <button type="submit" class="btn btn-primary">
                                 Weiter zu Schritt 8: Compliance Frameworks
-                                <i class="fas fa-arrow-right ms-2"></i>
+                                <i class="bi bi-arrow-right ms-2"></i>
                             </button>
                         </div>
                     </form>
