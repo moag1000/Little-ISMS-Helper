@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="de" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="5DrrhXa" resname="soa.table.control_id">
+        <source>soa.table.control_id</source>
+        <target>Control ID</target>
+      </trans-unit>
+      <trans-unit id="D6nX_S2" resname="soa.table.name">
+        <source>soa.table.name</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="mkhFjSb" resname="soa.table.category">
+        <source>soa.table.category</source>
+        <target>Kategorie</target>
+      </trans-unit>
+      <trans-unit id="gWXXM_T" resname="soa.table.applicable">
+        <source>soa.table.applicable</source>
+        <target>Anwendbar</target>
+      </trans-unit>
+      <trans-unit id="71UBCrd" resname="soa.table.implementation_status">
+        <source>soa.table.implementation_status</source>
+        <target>Implementierungsstatus</target>
+      </trans-unit>
+      <trans-unit id="rXmqZ4C" resname="soa.table.progress">
+        <source>soa.table.progress</source>
+        <target>Fortschritt</target>
+      </trans-unit>
+      <trans-unit id="PW7rMyJ" resname="soa.table.actions">
+        <source>soa.table.actions</source>
+        <target>Aktionen</target>
+      </trans-unit>
+      <trans-unit id="SmRpk8d" resname="soa.title">
+        <source>soa.title</source>
+        <target>__soa.title</target>
+      </trans-unit>
+      <trans-unit id="4jGqWC_" resname="soa.iso27001_full_title">
+        <source>soa.iso27001_full_title</source>
+        <target>__soa.iso27001_full_title</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

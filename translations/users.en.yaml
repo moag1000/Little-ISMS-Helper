@@ -1,27 +1,69 @@
-users:
-  page:
-    title: User Management
-  action:
-    new_user: New User
-    view: View
-    edit: Edit
-  stats:
-    total: Total
-    users: Users
-    active: Active
-    active_users: Active Users
-    admins: Admins
-    administrators: Administrators
-    today_active: Active Today
-    logins_today: Logins today
-  table:
-    name: Name
-    email: Email
-    roles: Roles
-    auth_provider: Auth Provider
-    status: Status
-    last_login: Last Login
-    actions: Actions
-  message:
-    all_users: All Users
-    no_users: No users available.
+users.page.title: 'User Management'
+users.action.new_user: 'New User'
+users.action.view: View
+users.action.edit: Edit
+users.stats.total: Total
+users.stats.users: Users
+users.stats.active: Active
+users.stats.active_users: 'Active Users'
+users.stats.admins: Admins
+users.stats.administrators: Administrators
+users.stats.today_active: 'Active Today'
+users.stats.logins_today: 'Logins today'
+users.table.name: Name
+users.table.email: Email
+users.table.roles: Roles
+users.table.auth_provider: 'Auth Provider'
+users.table.status: Status
+users.table.last_login: 'Last Login'
+users.table.actions: Actions
+users.message.all_users: 'All Users'
+users.message.no_users: 'No users available.'
+user.name: __user.name
+user.email: __user.email
+user.department: __user.department
+user.edit: __user.edit
+user.edit_suffix: __user.edit_suffix
+user.save_changes: __user.save_changes
+user.activity.title: __user.activity.title
+user.activity.total: __user.activity.total
+user.activity.by_action: __user.activity.by_action
+user.import.title: __user.import.title
+user.import.description: __user.import.description
+user.import.format: __user.import.format
+user.new: __user.new
+user.create: __user.create
+user.section.basic_info: __user.section.basic_info
+user.field.first_name: __user.field.first_name
+user.help.first_name: __user.help.first_name
+user.field.last_name: __user.field.last_name
+user.help.last_name: __user.help.last_name
+user.field.email: __user.field.email
+user.help.email: __user.help.email
+user.field.department: __user.field.department
+user.help.department: __user.help.department
+user.field.job_title: __user.field.job_title
+user.help.job_title: __user.help.job_title
+user.field.phone_number: __user.field.phone_number
+user.help.phone_number: __user.help.phone_number
+user.field.avatar: __user.field.avatar
+user.help.avatar: __user.help.avatar
+user.section.tenant: __user.section.tenant
+user.field.tenant: __user.field.tenant
+user.help.tenant: __user.help.tenant
+user.section.authentication: __user.section.authentication
+user.field.auth_provider: __user.field.auth_provider
+user.auth_provider.local: __user.auth_provider.local
+user.field.password: __user.field.password
+user.help.password_edit: __user.help.password_edit
+user.help.password: __user.help.password
+user.section.roles: __user.section.roles
+user.field.roles: __user.field.roles
+user.field.custom_roles: __user.field.custom_roles
+user.message.no_custom_roles: __user.message.no_custom_roles
+user.section.status: __user.section.status
+user.field.is_active: __user.field.is_active
+user.field.is_verified: __user.field.is_verified
+user.field.created_at: __user.field.created_at
+user.field.updated_at: __user.field.updated_at
+user.field.last_login: __user.field.last_login

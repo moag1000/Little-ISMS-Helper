@@ -1,68 +1,61 @@
-training:
-  title: Trainings
-  new: New Training
-  edit: Edit Training
-  create: Create Training
-  create_first: Create first training
-  description: Description
-  minutes: minutes
-  type: Type
-  delivery_method: Delivery Method
-  delivery:
-    online: Online
-    on_site: On site
-    hybrid: Hybrid
-  location: Location
-  scheduled_date: Scheduled Date
-  duration: Duration
-  trainer: Trainer
-  target_audience: Target Audience
-  audience:
-    all_employees: All Employees
-    it_staff: IT Staff
-    management: Management
-  participants: Participants
-  status: Status
-  status_values:
-    planned: Planned
-    in_progress: In Progress
-    completed: Completed
-    cancelled: Cancelled
-  mandatory: Mandatory
-  mandatory_label: Mandatory training
-  mandatory_training: Mandatory Training
-  mandatory_info: This training is mandatory and must be completed by all assigned participants.
-  statistics:
-    total: Total Trainings
-    upcoming: Upcoming
-    completed: Completed
-    mandatory: Mandatory Trainings
-  upcoming_trainings: Upcoming Trainings
-  all_trainings: All Trainings
-  no_trainings: No trainings available.
-  section:
-    basic_info: Basic Information
-    schedule: Schedule & Location
-    people: Trainer & Participants
-    status: Status
-    controls: Linked Controls
-    materials: Materials
-  field:
-    title: Title
-    description: Description
-    training_type: Training Type
-    delivery_method: Delivery Method
-    scheduled_date: Scheduled Date
-    duration: Duration (minutes)
-    location: Location
-    trainer: Trainer
-    target_audience: Target Audience
-    participants: Participants
-    status: Status
-    mandatory: Mandatory
-    related_controls: Related Controls
-  new_help: Plan a new training and inform the target audience in time.
-  edit_help: Edit details, schedule or target audience of this training.
-  participants_count: Participants
-  confirm_delete: Confirm Delete Training
-  delete_warning: "Do you really want to delete the training '%title%'?"
+training.title: Trainings
+training.new: 'New Training'
+training.edit: 'Edit Training'
+training.create: 'Create Training'
+training.create_first: 'Create first training'
+training.description: Description
+training.minutes: minutes
+training.type: Type
+training.delivery_method: 'Delivery Method'
+training.delivery.online: Online
+training.delivery.on_site: 'On site'
+training.delivery.hybrid: Hybrid
+training.location: Location
+training.scheduled_date: 'Scheduled Date'
+training.duration: Duration
+training.trainer: Trainer
+training.target_audience: 'Target Audience'
+training.audience.all_employees: 'All Employees'
+training.audience.it_staff: 'IT Staff'
+training.audience.management: Management
+training.participants: Participants
+training.status: Status
+training.status_values.planned: Planned
+training.status_values.in_progress: 'In Progress'
+training.status_values.completed: Completed
+training.status_values.cancelled: Cancelled
+training.mandatory: Mandatory
+training.mandatory_label: 'Mandatory training'
+training.mandatory_training: 'Mandatory Training'
+training.mandatory_info: 'This training is mandatory and must be completed by all assigned participants.'
+training.statistics.total: 'Total Trainings'
+training.statistics.upcoming: Upcoming
+training.statistics.completed: Completed
+training.statistics.mandatory: 'Mandatory Trainings'
+training.upcoming_trainings: 'Upcoming Trainings'
+training.all_trainings: 'All Trainings'
+training.no_trainings: 'No trainings available.'
+training.section.basic_info: 'Basic Information'
+training.section.schedule: 'Schedule & Location'
+training.section.people: 'Trainer & Participants'
+training.section.status: Status
+training.section.controls: 'Linked Controls'
+training.section.materials: Materials
+training.field.title: Title
+training.field.description: Description
+training.field.training_type: 'Training Type'
+training.field.delivery_method: 'Delivery Method'
+training.field.scheduled_date: 'Scheduled Date'
+training.field.duration: 'Duration (minutes)'
+training.field.location: Location
+training.field.trainer: Trainer
+training.field.target_audience: 'Target Audience'
+training.field.participants: Participants
+training.field.status: Status
+training.field.mandatory: Mandatory
+training.field.related_controls: 'Related Controls'
+training.new_help: 'Plan a new training and inform the target audience in time.'
+training.edit_help: 'Edit details, schedule or target audience of this training.'
+training.participants_count: Participants
+training.confirm_delete: 'Confirm Delete Training'
+training.delete_warning: "Do you really want to delete the training '%title%'?"

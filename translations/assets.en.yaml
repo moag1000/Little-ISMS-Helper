@@ -1,186 +1,150 @@
-asset_management:
-  title: Asset Management
-  description: Management of IT assets and information values according to ISO 27001
-  active_assets: Active Assets
-
-asset:
-  new: New Asset
-  action:
-    view_critical: View Critical Assets
-    view_details: View Details
-  badge:
-    business_critical: Business Critical
-  classification:
-    public: Public
-    internal: Internal
-    confidential: Confidential
-    restricted: Restricted
-  description:
-    bcm_insights: BCM-based availability recommendations
-    critical_impact: Critical impact on business processes
-    dependencies: Dependencies to other assets
-    high_impact: High impact
-    low_impact: Low impact
-    medium_impact: Medium impact
-    rto_analysis: RTO-based availability analysis
-  field:
-    asset_count: Asset Count
-    asset_name: Asset Name
-    avg_rto: Avg. RTO
-    business_criticality: Business Criticality
-    classification: Classification
-    examples: Examples
-    monetary_value: Monetary Value
-    recovery_strategy: Recovery Strategy
-    rpo: RPO
-    rto: RTO
-    rto_category: RTO Category
-    type: Type
-  impact:
-    critical: Critical
-    high: High
-    low: Low
-    medium: Medium
-  label:
-    name: Name
-    type: Type
-    owner: Owner
-    classification: Classification
-    data_classification: Data Classification
-    risks: Risks
-    status: Status
-  list:
-    title: Assets
-  message:
-    no_critical_assets: No critical assets found
-  rto:
-    flexible: Flexible
-    immediate: Immediate
-    standard: Standard
-    urgent: Urgent
-  section:
-    business_impact: Business Impact
-    critical_assets: Critical Assets
-    dependency_insights: Dependency Analysis
-    rto_analysis: RTO Analysis
-  stats:
-    avg_dependencies: Avg. Dependencies
-    avg_rto: Average RTO
-    critical_assets: Critical Assets
-    high_risk_assets: High-Risk Assets
-    single_points_failure: Single Points of Failure
-    total_assets: Total Assets
-    with_dependencies: With Dependencies
-  status:
-    active: Active
-    inactive: Inactive
-    retired: Retired
-  title:
-    bcm_insights: BCM Insights
-
-assets:
-  title:
-    new: New Asset
-    edit: Edit Asset
-  action:
-    bcm_insights: BCM insights
-    create: Create asset
-    update: Save changes
-  details:
-    title: Asset details
-  section:
-    basic_info: Basic Information
-    assignment: Assignment
-    financial: Financial Information
-    cia_values: CIA assessment (protection needs)
-    valuation: Valuation
-    compliance: Compliance
-    cia_triad: CIA triad
-    handling_instructions: Handling instructions
-    acceptable_use_policy: Acceptable use policy
-    protection_analysis: Protection needs analysis
-    protecting_controls: Protecting controls
-    related_risks: Related risks
-    related_incidents: Related incidents
-    history: History
-  field:
-    name: Name
-    type: Asset type
-    description: Description
-    owner: Owner
-    location: Location
-    acquisition_value: Acquisition value
-    current_value: Current value
-    confidentiality: Confidentiality
-    integrity: Integrity
-    availability: Availability
-  help:
-    name: Unique name of the asset
-    type: Category of the asset (hardware, software, data, etc.)
-    description: Detailed description of the asset and its function
-    owner: Responsible person for this asset
-    location: Physical or logical location of the asset
-    acquisition_value: Original purchase price or acquisition costs
-    current_value: Estimated current market value
-    confidentiality: Protection need regarding confidentiality of information
-    integrity: Protection need regarding integrity and correctness of data
-    availability: Protection need regarding constant availability and usability
-  cia_help: "Assess protection needs for confidentiality, integrity and availability (1=very low, 5=very high)"
-  label:
-    type: Type
-    owner: Owner
-    location: Location
-    status: Status
-    acquisition_value: Acquisition value
-    current_value: Current value
-    monetary_value: Monetary value
-    total_value: Total value
-    risks: Risks
-    data_classification: Data classification
-    return_date: Return date
-    confidentiality: Confidentiality
-    integrity: Integrity
-    availability: Availability
-  classification:
-    public: Public
-    internal: Internal
-    confidential: Confidential
-    secret: Secret
-  confirm:
-    delete: Really delete this asset?
-  warning:
-    delete_irreversible: "Deleting this asset cannot be undone. Related links may be removed."
-  modern:
-    breadcrumb: Assets
-    header:
-      title: Asset Management
-      subtitle: Management of IT assets and information values according to ISO 27001
-      action:
-        new: New Asset
-        export: Export
-    kpi:
-      total: Total Assets
-      critical: Critical Assets
-      avg_cia: Avg. CIA Score
-      with_risks: Assets with Risks
-      unit:
-        out_of_5: '/ 5'
-    chart:
-      type_distribution: Distribution by asset type
-    empty:
-      title: No assets yet
-      description: Create your first asset to start asset management. Assets are the foundation of your ISMS.
-      action_create_first: Create first asset
-    table:
-      title_all: All Assets
-      caption: List of all assets with CIA rating, risks and controls
-      search_placeholder: Search...
-      head:
-        name: Name
-        type: Type
-        confidentiality: Confidentiality
-        integrity: Integrity
-        availability: Availability
-        risks: Risks
-        controls: Controls
-        actions: Actions
+asset_management.title: 'Asset Management'
+asset_management.description: 'Management of IT assets and information values according to ISO 27001'
+asset_management.active_assets: 'Active Assets'
+asset.new: 'New Asset'
+asset.action.view_critical: 'View Critical Assets'
+asset.action.view_details: 'View Details'
+asset.badge.business_critical: 'Business Critical'
+asset.classification.public: Public
+asset.classification.internal: Internal
+asset.classification.confidential: Confidential
+asset.classification.restricted: Restricted
+asset.description.bcm_insights: 'BCM-based availability recommendations'
+asset.description.critical_impact: 'Critical impact on business processes'
+asset.description.dependencies: 'Dependencies to other assets'
+asset.description.high_impact: 'High impact'
+asset.description.low_impact: 'Low impact'
+asset.description.medium_impact: 'Medium impact'
+asset.description.rto_analysis: 'RTO-based availability analysis'
+asset.field.asset_count: 'Asset Count'
+asset.field.asset_name: 'Asset Name'
+asset.field.avg_rto: 'Avg. RTO'
+asset.field.business_criticality: 'Business Criticality'
+asset.field.classification: Classification
+asset.field.examples: Examples
+asset.field.monetary_value: 'Monetary Value'
+asset.field.recovery_strategy: 'Recovery Strategy'
+asset.field.rpo: RPO
+asset.field.rto: RTO
+asset.field.rto_category: 'RTO Category'
+asset.field.type: Type
+asset.impact.critical: Critical
+asset.impact.high: High
+asset.impact.low: Low
+asset.impact.medium: Medium
+asset.label.name: Name
+asset.label.type: Type
+asset.label.owner: Owner
+asset.label.classification: Classification
+asset.label.data_classification: 'Data Classification'
+asset.label.risks: Risks
+asset.label.status: Status
+asset.list.title: Assets
+asset.message.no_critical_assets: 'No critical assets found'
+asset.rto.flexible: Flexible
+asset.rto.immediate: Immediate
+asset.rto.standard: Standard
+asset.rto.urgent: Urgent
+asset.section.business_impact: 'Business Impact'
+asset.section.critical_assets: 'Critical Assets'
+asset.section.dependency_insights: 'Dependency Analysis'
+asset.section.rto_analysis: 'RTO Analysis'
+asset.stats.avg_dependencies: 'Avg. Dependencies'
+asset.stats.avg_rto: 'Average RTO'
+asset.stats.critical_assets: 'Critical Assets'
+asset.stats.high_risk_assets: 'High-Risk Assets'
+asset.stats.single_points_failure: 'Single Points of Failure'
+asset.stats.total_assets: 'Total Assets'
+asset.stats.with_dependencies: 'With Dependencies'
+asset.status.active: Active
+asset.status.inactive: Inactive
+asset.status.retired: Retired
+asset.title.bcm_insights: 'BCM Insights'
+assets.title.new: 'New Asset'
+assets.title.edit: 'Edit Asset'
+assets.action.bcm_insights: 'BCM insights'
+assets.action.create: 'Create asset'
+assets.action.update: 'Save changes'
+assets.details.title: 'Asset details'
+assets.section.basic_info: 'Basic Information'
+assets.section.assignment: Assignment
+assets.section.financial: 'Financial Information'
+assets.section.cia_values: 'CIA assessment (protection needs)'
+assets.section.valuation: Valuation
+assets.section.compliance: Compliance
+assets.section.cia_triad: 'CIA triad'
+assets.section.handling_instructions: 'Handling instructions'
+assets.section.acceptable_use_policy: 'Acceptable use policy'
+assets.section.protection_analysis: 'Protection needs analysis'
+assets.section.protecting_controls: 'Protecting controls'
+assets.section.related_risks: 'Related risks'
+assets.section.related_incidents: 'Related incidents'
+assets.section.history: History
+assets.field.name: Name
+assets.field.type: 'Asset type'
+assets.field.description: Description
+assets.field.owner: Owner
+assets.field.location: Location
+assets.field.acquisition_value: 'Acquisition value'
+assets.field.current_value: 'Current value'
+assets.field.confidentiality: Confidentiality
+assets.field.integrity: Integrity
+assets.field.availability: Availability
+assets.help.name: 'Unique name of the asset'
+assets.help.type: 'Category of the asset (hardware, software, data, etc.)'
+assets.help.description: 'Detailed description of the asset and its function'
+assets.help.owner: 'Responsible person for this asset'
+assets.help.location: 'Physical or logical location of the asset'
+assets.help.acquisition_value: 'Original purchase price or acquisition costs'
+assets.help.current_value: 'Estimated current market value'
+assets.help.confidentiality: 'Protection need regarding confidentiality of information'
+assets.help.integrity: 'Protection need regarding integrity and correctness of data'
+assets.help.availability: 'Protection need regarding constant availability and usability'
+assets.cia_help: 'Assess protection needs for confidentiality, integrity and availability (1=very low, 5=very high)'
+assets.label.type: Type
+assets.label.owner: Owner
+assets.label.location: Location
+assets.label.status: Status
+assets.label.acquisition_value: 'Acquisition value'
+assets.label.current_value: 'Current value'
+assets.label.monetary_value: 'Monetary value'
+assets.label.total_value: 'Total value'
+assets.label.risks: Risks
+assets.label.data_classification: 'Data classification'
+assets.label.return_date: 'Return date'
+assets.label.confidentiality: Confidentiality
+assets.label.integrity: Integrity
+assets.label.availability: Availability
+assets.classification.public: Public
+assets.classification.internal: Internal
+assets.classification.confidential: Confidential
+assets.classification.secret: Secret
+assets.confirm.delete: 'Really delete this asset?'
+assets.warning.delete_irreversible: 'Deleting this asset cannot be undone. Related links may be removed.'
+assets.modern.breadcrumb: Assets
+assets.modern.header.title: 'Asset Management'
+assets.modern.header.subtitle: 'Management of IT assets and information values according to ISO 27001'
+assets.modern.header.action.new: 'New Asset'
+assets.modern.header.action.export: Export
+assets.modern.kpi.total: 'Total Assets'
+assets.modern.kpi.critical: 'Critical Assets'
+assets.modern.kpi.avg_cia: 'Avg. CIA Score'
+assets.modern.kpi.with_risks: 'Assets with Risks'
+assets.modern.kpi.unit.out_of_5: '/ 5'
+assets.modern.chart.type_distribution: 'Distribution by asset type'
+assets.modern.empty.title: 'No assets yet'
+assets.modern.empty.description: 'Create your first asset to start asset management. Assets are the foundation of your ISMS.'
+assets.modern.empty.action_create_first: 'Create first asset'
+assets.modern.table.title_all: 'All Assets'
+assets.modern.table.caption: 'List of all assets with CIA rating, risks and controls'
+assets.modern.table.search_placeholder: Search...
+assets.modern.table.head.name: Name
+assets.modern.table.head.type: Type
+assets.modern.table.head.confidentiality: Confidentiality
+assets.modern.table.head.integrity: Integrity
+assets.modern.table.head.availability: Availability
+assets.modern.table.head.risks: Risks
+assets.modern.table.head.controls: Controls
+assets.modern.table.head.actions: Actions
+asset.confirm.delete: __asset.confirm.delete
+asset.title: __asset.title

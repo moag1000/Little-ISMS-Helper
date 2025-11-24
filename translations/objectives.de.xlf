@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="de" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="giDnY2_" resname="objectives.status.achieved">
+        <source>objectives.status.achieved</source>
+        <target>erreicht</target>
+      </trans-unit>
+      <trans-unit id="OQJ__uC" resname="objectives.status.delayed">
+        <source>objectives.status.delayed</source>
+        <target>verzögert</target>
+      </trans-unit>
+      <trans-unit id="TMvgCRD" resname="objectives.status.at_risk">
+        <source>objectives.status.at_risk</source>
+        <target>gefährdet</target>
+      </trans-unit>
+      <trans-unit id="JWI_edE" resname="objectives.status.total">
+        <source>objectives.status.total</source>
+        <target>gesamt</target>
+      </trans-unit>
+      <trans-unit id="AJF1fOn" resname="objectives.status.active">
+        <source>objectives.status.active</source>
+        <target>aktiv</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

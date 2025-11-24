@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="de" target-language="en" datatype="plaintext" original="file.ext">
+    <header>
+      <tool tool-id="symfony" tool-name="Symfony"/>
+    </header>
+    <body>
+      <trans-unit id="nELCdwl" resname="session.list">
+        <source>session.list</source>
+        <target>Active Sessions</target>
+      </trans-unit>
+      <trans-unit id="Zjzookx" resname="session.user_name">
+        <source>session.user_name</source>
+        <target>Username</target>
+      </trans-unit>
+      <trans-unit id="vkFcjCj" resname="session.ip_address">
+        <source>session.ip_address</source>
+        <target>IP Address</target>
+      </trans-unit>
+      <trans-unit id="TPLfoZe" resname="session.last_activity">
+        <source>session.last_activity</source>
+        <target>Last Activity</target>
+      </trans-unit>
+      <trans-unit id="4F68h47" resname="session.session_start">
+        <source>session.session_start</source>
+        <target>Session Start</target>
+      </trans-unit>
+      <trans-unit id=".c0XkSA" resname="session.statistics.total">
+        <source>session.statistics.total</source>
+        <target>Total Active Sessions</target>
+      </trans-unit>
+      <trans-unit id="521seWO" resname="session.statistics.today">
+        <source>session.statistics.today</source>
+        <target>Today</target>
+      </trans-unit>
+      <trans-unit id=".giCf0N" resname="session.activity_timeline">
+        <source>session.activity_timeline</source>
+        <target>Activity Timeline</target>
+      </trans-unit>
+      <trans-unit id="arKJXZH" resname="session.unique_ips">
+        <source>session.unique_ips</source>
+        <target>Unique IP Addresses</target>
+      </trans-unit>
+      <trans-unit id="XuCCals" resname="session.unique_devices">
+        <source>session.unique_devices</source>
+        <target>Unique Devices</target>
+      </trans-unit>
+      <trans-unit id="c_1xiGe" resname="session.subtitle">
+        <source>session.subtitle</source>
+        <target>__session.subtitle</target>
+      </trans-unit>
+      <trans-unit id="oCc7xzi" resname="session.user_activity">
+        <source>session.user_activity</source>
+        <target>__session.user_activity</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
