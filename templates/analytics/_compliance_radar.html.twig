@@ -14,17 +14,17 @@
     <div class="card-header">
         <h3 class="card-title">
             <i class="bi-diagram-3 text-success"></i>
-            {{ 'analytics.card.compliance_radar'|trans({}, 'messages') }}
+            {{ 'analytics.card.compliance_radar'|trans({}, 'analytics') }}
         </h3>
         <div class="card-actions">
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->radar-chart#refresh"
-                    title="{{ 'analytics.action.refresh'|trans({}, 'messages') }}">
+                    title="{{ 'analytics.action.refresh'|trans({}, 'analytics') }}">
                 <i class="bi bi-arrow-clockwise"></i>
             </button>
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->radar-chart#exportImage"
-                    title="{{ 'analytics.action.export_png'|trans({}, 'messages') }}">
+                    title="{{ 'analytics.action.export_png'|trans({}, 'analytics') }}">
                 <i class="bi bi-image"></i>
             </button>
         </div>
@@ -33,16 +33,16 @@
         {# Loading State #}
         <div class="radar-loading d-none" data-radar-chart-target="loading">
             <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">{{ 'analytics.loading.loading'|trans({}, 'messages') }}</span>
+                <span class="visually-hidden">{{ 'analytics.loading.loading'|trans({}, 'analytics') }}</span>
             </div>
-            <p class="mt-2 text-muted">{{ 'analytics.loading.loading_compliance'|trans({}, 'messages') }}</p>
+            <p class="mt-2 text-muted">{{ 'analytics.loading.loading_compliance'|trans({}, 'analytics') }}</p>
         </div>
 
         {# Radar Chart Container #}
         <div class="radar-container" data-radar-chart-target="container">
             {# Overall Compliance Score #}
             <div class="overall-compliance mb-3" data-radar-chart-target="overall">
-                <div class="compliance-label">{{ 'analytics.overall_compliance'|trans({}, 'messages') }}</div>
+                <div class="compliance-label">{{ 'analytics.overall_compliance'|trans({}, 'analytics') }}</div>
                 <div class="compliance-value" data-radar-chart-target="overallValue">
                     <span class="value">--</span>%
                 </div>

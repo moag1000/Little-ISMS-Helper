@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'patches' %}
-{% block title %}{{ 'patch.edit'|trans({}, 'messages') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'patch.edit'|trans({}, 'patches') }} - {{ parent() }}{% endblock %}
 {% block body %}
 <div class="container py-4">
     <div class="card">
-        <div class="card-header bg-primary text-white"><h5 class="mb-0">{{ 'patch.edit'|trans({}, 'messages') }}</h5>
+        <div class="card-header bg-primary text-white"><h5 class="mb-0">{{ 'patch.edit'|trans({}, 'patches') }}</h5>
         </div>
         <div class="card-body">
             {{ form_start(form) }}

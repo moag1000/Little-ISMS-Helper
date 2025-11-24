@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'analytics' %}
 
-{% block title %}{{ 'analytics.page.title'|trans({}, 'messages') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'analytics.page.title'|trans({}, 'analytics') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="analytics-dashboard" data-controller="analytics">
@@ -10,18 +10,18 @@
         <div>
             <h1>
                 <i class="bi bi-graph-up"></i>
-                {{ 'analytics.page.title'|trans({}, 'messages') }}
+                {{ 'analytics.page.title'|trans({}, 'analytics') }}
             </h1>
-            <p class="text-muted">{{ 'analytics.page.subtitle'|trans({}, 'messages') }}</p>
+            <p class="text-muted">{{ 'analytics.page.subtitle'|trans({}, 'analytics') }}</p>
         </div>
         <div class="page-header-actions">
             {# Time Period Filter #}
             <select class="form-select"
                     data-analytics-target="periodFilter"
                     data-action="change->analytics#changePeriod">
-                <option value="6">{{ 'analytics.filter.period.last_6_months'|trans({}, 'messages') }}</option>
-                <option value="12" selected>{{ 'analytics.filter.period.last_12_months'|trans({}, 'messages') }}</option>
-                <option value="24">{{ 'analytics.filter.period.last_24_months'|trans({}, 'messages') }}</option>
+                <option value="6">{{ 'analytics.filter.period.last_6_months'|trans({}, 'analytics') }}</option>
+                <option value="12" selected>{{ 'analytics.filter.period.last_12_months'|trans({}, 'analytics') }}</option>
+                <option value="24">{{ 'analytics.filter.period.last_24_months'|trans({}, 'analytics') }}</option>
             </select>
 
             {# Export Dropdown #}
@@ -29,28 +29,28 @@
                 <button class="btn btn-outline-primary dropdown-toggle"
                         type="button"
                         data-bs-toggle="dropdown">
-                    <i class="bi bi-download"></i> {{ 'analytics.action.export'|trans({}, 'messages') }}
+                    <i class="bi bi-download"></i> {{ 'analytics.action.export'|trans({}, 'analytics') }}
                 </button>
                 <ul class="dropdown-menu">
                     <li>
                         <a class="dropdown-item"
                            href="{{ path('app_analytics_export', {type: 'risks'}) }}"
                            data-turbo="false">
-                            <i class="bi bi-exclamation-triangle"></i> {{ 'analytics.action.export_risks_csv'|trans({}, 'messages') }}
+                            <i class="bi bi-exclamation-triangle"></i> {{ 'analytics.action.export_risks_csv'|trans({}, 'analytics') }}
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item"
                            href="{{ path('app_analytics_export', {type: 'assets'}) }}"
                            data-turbo="false">
-                            <i class="bi bi-server"></i> {{ 'analytics.action.export_assets_csv'|trans({}, 'messages') }}
+                            <i class="bi bi-server"></i> {{ 'analytics.action.export_assets_csv'|trans({}, 'analytics') }}
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item"
                            href="{{ path('app_analytics_export', {type: 'compliance'}) }}"
                            data-turbo="false">
-                            <i class="bi bi-shield-check"></i> {{ 'analytics.action.export_compliance_csv'|trans({}, 'messages') }}
+                            <i class="bi bi-shield-check"></i> {{ 'analytics.action.export_compliance_csv'|trans({}, 'analytics') }}
                         </a>
                     </li>
                     <li><hr class="dropdown-divider"></li>
@@ -58,7 +58,7 @@
                         <a class="dropdown-item"
                            href="#"
                            data-action="click->analytics#printDashboard">
-                            <i class="bi bi-printer"></i> {{ 'analytics.action.print_dashboard'|trans({}, 'messages') }}
+                            <i class="bi bi-printer"></i> {{ 'analytics.action.print_dashboard'|trans({}, 'analytics') }}
                         </a>
                     </li>
                 </ul>
@@ -74,7 +74,7 @@
                     data-bs-target="#overview-tab"
                     type="button"
                     role="tab">
-                <i class="bi bi-speedometer2"></i> {{ 'analytics.tabs.overview'|trans({}, 'messages') }}
+                <i class="bi bi-speedometer2"></i> {{ 'analytics.tabs.overview'|trans({}, 'analytics') }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -83,7 +83,7 @@
                     data-bs-target="#heat-map-tab"
                     type="button"
                     role="tab">
-                <i class="bi bi-grid-3x3-gap"></i> {{ 'analytics.tabs.heat_map'|trans({}, 'messages') }}
+                <i class="bi bi-grid-3x3-gap"></i> {{ 'analytics.tabs.heat_map'|trans({}, 'analytics') }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -92,7 +92,7 @@
                     data-bs-target="#compliance-tab"
                     type="button"
                     role="tab">
-                <i class="bi bi-diagram-3"></i> {{ 'analytics.tabs.compliance_radar'|trans({}, 'messages') }}
+                <i class="bi bi-diagram-3"></i> {{ 'analytics.tabs.compliance_radar'|trans({}, 'analytics') }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -101,7 +101,7 @@
                     data-bs-target="#trends-tab"
                     type="button"
                     role="tab">
-                <i class="bi bi-graph-up-arrow"></i> {{ 'analytics.tabs.trends'|trans({}, 'messages') }}
+                <i class="bi bi-graph-up-arrow"></i> {{ 'analytics.tabs.trends'|trans({}, 'analytics') }}
             </button>
         </li>
     </ul>

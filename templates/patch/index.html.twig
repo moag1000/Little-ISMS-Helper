@@ -3,14 +3,14 @@
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}{{ 'patch.title'|trans({}, 'messages') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'patch.title'|trans({}, 'patches') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-patch-check" aria-hidden="true"></i> {{ 'patch.title'|trans({}, 'messages') }}</h1>
+        <h1><i class="bi bi-patch-check" aria-hidden="true"></i> {{ 'patch.title'|trans({}, 'patches') }}</h1>
         <a href="{{ path('app_patch_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'patch.new'|trans({}, 'messages') }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'patch.new'|trans({}, 'patches') }}
         </a>
     </div>
 
@@ -49,24 +49,24 @@
 
     <div class="row mb-4">
         <div class="col-md-4">
-            {{ cards.kpi_card('patch.kpi.pending'|trans({}, 'messages'), pending_count, null, null, 'warning', null) }}
+            {{ cards.kpi_card('patch.kpi.pending'|trans({}, 'patches'), pending_count, null, null, 'warning', null) }}
         </div>
         <div class="col-md-4">
-            {{ cards.kpi_card('patch.kpi.deployed'|trans({}, 'messages'), deployment_stats.deployed ?? 0, null, null, 'success', 'border-success') }}
+            {{ cards.kpi_card('patch.kpi.deployed'|trans({}, 'patches'), deployment_stats.deployed ?? 0, null, null, 'success', 'border-success') }}
         </div>
         <div class="col-md-4">
             {% if currentTenant %}
                 {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant') %}
-                {{ cards.kpi_card('patch.kpi.total'|trans({}, 'messages'), detailedStats.total, subtitle, null, null, null) }}
+                {{ cards.kpi_card('patch.kpi.total'|trans({}, 'patches'), detailedStats.total, subtitle, null, null, null) }}
             {% else %}
-                {{ cards.kpi_card('patch.kpi.total'|trans({}, 'messages'), detailedStats.total, null, null, null, null) }}
+                {{ cards.kpi_card('patch.kpi.total'|trans({}, 'patches'), detailedStats.total, null, null, null, null) }}
             {% endif %}
         </div>
     </div>
 
     {% if patches|length == 0 %}
         <div class="alert alert-info">
-            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'patch.empty'|trans({}, 'messages') }}
+            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'patch.empty'|trans({}, 'patches') }}
         </div>
     {% else %}
         <div class="card">
@@ -76,10 +76,10 @@
                 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">{{ 'patch.field.patch_id'|trans({}, 'messages') }}</th>
-                        <th scope="col">{{ 'patch.field.title'|trans({}, 'messages') }}</th>
-                        <th scope="col">{{ 'patch.field.patch_type'|trans({}, 'messages') }}</th>
-                        <th scope="col">{{ 'patch.field.status'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'patch.field.patch_id'|trans({}, 'patches') }}</th>
+                        <th scope="col">{{ 'patch.field.title'|trans({}, 'patches') }}</th>
+                        <th scope="col">{{ 'patch.field.patch_type'|trans({}, 'patches') }}</th>
+                        <th scope="col">{{ 'patch.field.status'|trans({}, 'patches') }}</th>
                         <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}

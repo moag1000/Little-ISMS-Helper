@@ -13,11 +13,11 @@
     <div class="card">
         <div class="card-body">
             <dl class="row">
-                <dt class="col-sm-3">{{ 'patch.field.patch_id'|trans({}, 'messages') }}</dt>
+                <dt class="col-sm-3">{{ 'patch.field.patch_id'|trans({}, 'patches') }}</dt>
                 <dd class="col-sm-9"><code>{{ patch.patchId }}</code></dd>
-                <dt class="col-sm-3">{{ 'patch.field.status'|trans({}, 'messages') }}</dt>
+                <dt class="col-sm-3">{{ 'patch.field.status'|trans({}, 'patches') }}</dt>
                 <dd class="col-sm-9"><span class="badge bg-info">{{ ('patch.status.' ~ patch.status)|trans }}</span></dd>
-                <dt class="col-sm-3">{{ 'patch.field.description'|trans({}, 'messages') }}</dt>
+                <dt class="col-sm-3">{{ 'patch.field.description'|trans({}, 'patches') }}</dt>
                 <dd class="col-sm-9">{{ patch.description|nl2br }}</dd>
             </dl>
         </div>
