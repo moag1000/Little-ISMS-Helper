@@ -41,8 +41,8 @@
                         <th scope="col">Name</th>
                         <th scope="col">Type</th>
                         <th scope="col">Size</th>
-                        <th scope="col">Uploaded By</th>
-                        <th scope="col">Uploaded At</th>
+                        <th scope="col">{{ 'document.uploaded_by'|trans }}</th>
+                        <th scope="col">{{ 'document.uploaded_at'|trans }}</th>
                         <th scope="col">Actions</th>
                     </tr>
                 {% endblock %}
@@ -69,9 +69,9 @@
                             <td>{{ document.uploadedBy ? document.uploadedBy.fullName : '-' }}</td>
                             <td>{{ document.uploadedAt|date('d.m.Y H:i') }}</td>
                             <td>
-                                <div class="btn-group btn-group-sm">
+                                <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
                                     <a href="{{ path('app_document_download', {id: document.id}) }}" class="btn btn-outline-secondary">Download</a>
-                                    <a href="{{ path('app_document_edit', {id: document.id}) }}" class="btn btn-outline-primary">Edit</a>
+                                    <a href="{{ path('app_document_edit', {id: document.id}) }}" class="btn btn-outline-primary">{{ 'document.edit_button'|trans }}</a>
                                 </div>
                             </td>
                         </tr>

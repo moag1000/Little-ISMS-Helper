@@ -112,6 +112,29 @@ Use `d-flex gap-1` for form submit/cancel button groups.
 </div>
 ```
 
+### Table Action Buttons (IMPORTANT)
+For action buttons in table cells, **ALWAYS** use Bootstrap's button group with proper sizing and accessibility attributes:
+
+```twig
+<td class="text-center">
+    <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
+        <a href="{{ path('app_entity_show', {id: entity.id}) }}" class="btn btn-sm btn-primary" title="{{ 'action.view'|trans }}">
+            <i class="bi bi-eye"></i>
+        </a>
+        <a href="{{ path('app_entity_edit', {id: entity.id}) }}" class="btn btn-sm btn-secondary" title="{{ 'action.edit'|trans }}">
+            <i class="bi bi-pencil"></i>
+        </a>
+    </div>
+</td>
+```
+
+**Required attributes:**
+- `btn-group` - Container for button group
+- `btn-group-sm` - Small sizing for tables
+- `role="group"` - Accessibility (ARIA)
+- `aria-label="Actions"` - Screen reader description
+- `title` attribute on each button - Tooltip for icon-only buttons
+
 ---
 
 ## Icon Usage

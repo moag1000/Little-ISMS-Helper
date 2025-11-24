@@ -285,7 +285,7 @@
                             <small class="text-muted">{{ document.uploadedAt|date('H:i') }}</small>
                         </td>
                         <td class="text-right">
-                            <div class="btn-group btn-group-sm">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
                                 <a href="{{ path('app_document_download', {id: document.id}) }}"
                                    class="btn btn-sm btn-outline-success"
                                    title="{{ 'common.download'|trans({}, 'messages') }}" aria-label="{{ 'common.download'|trans({}, 'messages') }}">

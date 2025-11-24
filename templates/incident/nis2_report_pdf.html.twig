@@ -225,7 +225,7 @@
             <tr>
                 <th scope="col">Reporting Stage</th>
                 <th scope="col">Deadline</th>
-                <th scope="col">Reported At</th>
+                <th scope="col">{{ 'incident.pdf.reported_at'|trans }}</th>
                 <th scope="col">Status</th>
             </tr>
             <tr>
@@ -343,7 +343,7 @@
             </div>
             {% endif %}
             <div class="impact-row">
-                <div class="impact-cell impact-label">Reported By</div>
+                <div class="impact-cell impact-label">{{ 'incident.pdf.reported_by'|trans }}</div>
                 <div class="impact-cell">{{ incident.reportedBy ?? 'N/A' }}</div>
             </div>
         </div>
