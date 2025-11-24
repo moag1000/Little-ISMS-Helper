@@ -195,7 +195,7 @@ common:
     reach_100_percent: Erreichen Sie 100%, indem Sie alle anwendbaren Anforderungen umsetzen. Verfolgen Sie Ihren Fortschritt und beheben Sie verbleibende Lücken.
     view_gap_analysis: Detaillierte Lückenanalyse mit Verbesserungsempfehlungen anzeigen
     activate_module: Aktivieren Sie dieses Modul in der Modulverwaltung
-    fulfillment_slider: Ziehen Sie, um anzupassen, wie gut diese Anforderung erfüllt ist (0-100%). Farbe zeigt Status: rot < 50% < gelb < 75% < grün.
+    fulfillment_slider: "Ziehen Sie, um anzupassen, wie gut diese Anforderung erfüllt ist (0-100%). Farbe zeigt Status: rot < 50% < gelb < 75% < grün."
     status_in_progress: In Bearbeitung - Implementierung begonnen, teilweise abgeschlossen
     status_fully_implemented: Vollständig implementiert - Alle Aspekte dieser Anforderung sind erfüllt
   placeholder:
