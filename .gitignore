@@ -49,3 +49,5 @@ PR_DESCRIPTION.md
 /docs/
 fix_specific_headings.php
 ###< temporary analysis & utility files ###
+# Ignore XLIFF translation files - we only use YAML
+translations/*.xlf
