@@ -25,19 +25,19 @@ user:
     message:
         all_users: 'Alle Benutzer'
         no_users: 'Keine Benutzer vorhanden.'
-    name: Name
-    email: Email
-    department: Department
-    edit: Bearbeiten
-    edit_suffix: Bearbeiten Suffix
-    save_changes: Speichern Changes
+    name: 'Benutzername'
+    email: 'E-Mail-Adresse'
+    department: 'Abteilung'
+    edit: 'Benutzer bearbeiten'
+    edit_suffix: 'Bearbeiten'
+    save_changes: 'Änderungen speichern'
     activity:
-        title: Titel
-        total: Total
-        by_action: By Aktion
+        title: 'Benutzeraktivität'
+        total: 'Gesamtaktionen'
+        by_action: 'Nach Aktionstyp'
     import:
-        title: Titel
-        description: Beschreibung
-        format: Format
-    new: New
-    create: Erstellen
+        title: 'Benutzer importieren'
+        description: 'CSV-Import für Massenanlage von Benutzern'
+        format: 'CSV-Format (Name, E-Mail, Rolle, Abteilung)'
+    new: 'Neuer Benutzer'
+    create: 'Benutzer erstellen'
