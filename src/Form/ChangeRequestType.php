@@ -179,6 +179,7 @@ class ChangeRequestType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ChangeRequest::class,
+            'translation_domain' => 'change_requests',
         ]);
     }
 }

@@ -128,6 +128,7 @@ class InterestedPartyType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => InterestedParty::class,
+            'translation_domain' => 'interested_parties',
         ]);
     }
 }

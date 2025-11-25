@@ -147,6 +147,7 @@ class BusinessContinuityPlanType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => BusinessContinuityPlan::class,
+            'translation_domain' => 'bc_plans',
         ]);
     }
 }

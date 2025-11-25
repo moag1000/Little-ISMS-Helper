@@ -219,6 +219,7 @@ class IncidentType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Incident::class,
+            'translation_domain' => 'incident',
         ]);
     }
 }

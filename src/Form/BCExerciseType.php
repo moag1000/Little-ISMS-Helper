@@ -19,7 +19,7 @@ class BCExerciseType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Exercise Name',
+                'label' => 'bc_exercises.field.name',
                 'required' => true,
                 'attr' => ['maxlength' => 255],
             ])
@@ -36,47 +36,47 @@ class BCExerciseType extends AbstractType
                 'required' => true,
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Description',
+                'label' => 'bc_exercises.field.description',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('scope', TextareaType::class, [
-                'label' => 'Scope',
+                'label' => 'bc_exercises.field.scope',
                 'required' => true,
                 'attr' => ['rows' => 3],
             ])
             ->add('objectives', TextareaType::class, [
-                'label' => 'Objectives',
+                'label' => 'bc_exercises.field.objectives',
                 'required' => true,
                 'attr' => ['rows' => 4],
             ])
             ->add('scenario', TextareaType::class, [
-                'label' => 'Exercise Scenario',
+                'label' => 'bc_exercises.field.scenario',
                 'required' => false,
                 'attr' => ['rows' => 4],
             ])
             ->add('exerciseDate', DateType::class, [
-                'label' => 'Exercise Date',
+                'label' => 'bc_exercises.field.exercise_date',
                 'widget' => 'single_text',
                 'required' => true,
             ])
             ->add('durationHours', IntegerType::class, [
-                'label' => 'Duration (hours)',
+                'label' => 'bc_exercises.field.duration_hours',
                 'required' => false,
                 'attr' => ['min' => 1, 'max' => 168],
             ])
             ->add('participants', TextareaType::class, [
-                'label' => 'Participants',
+                'label' => 'bc_exercises.field.participants',
                 'required' => true,
                 'attr' => ['rows' => 3],
             ])
             ->add('facilitator', TextType::class, [
-                'label' => 'Facilitator/Lead',
+                'label' => 'bc_exercises.field.facilitator',
                 'required' => true,
                 'attr' => ['maxlength' => 100],
             ])
             ->add('observers', TextareaType::class, [
-                'label' => 'Observers',
+                'label' => 'bc_exercises.field.observers',
                 'required' => false,
                 'attr' => ['rows' => 2],
             ])
@@ -92,51 +92,51 @@ class BCExerciseType extends AbstractType
                 'required' => true,
             ])
             ->add('results', TextareaType::class, [
-                'label' => 'Results',
+                'label' => 'bc_exercises.field.results',
                 'required' => false,
                 'attr' => ['rows' => 4],
             ])
             ->add('whatWentWell', TextareaType::class, [
-                'label' => 'What Went Well (WWW)',
+                'label' => 'bc_exercises.field.what_went_well',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('areasForImprovement', TextareaType::class, [
-                'label' => 'Areas for Improvement (AFI)',
+                'label' => 'bc_exercises.field.areas_for_improvement',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('findings', TextareaType::class, [
-                'label' => 'Findings',
+                'label' => 'bc_exercises.field.findings',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('actionItems', TextareaType::class, [
-                'label' => 'Action Items',
+                'label' => 'bc_exercises.field.action_items',
                 'required' => false,
                 'attr' => ['rows' => 4],
             ])
             ->add('lessonsLearned', TextareaType::class, [
-                'label' => 'Lessons Learned',
+                'label' => 'bc_exercises.field.lessons_learned',
                 'required' => false,
                 'attr' => ['rows' => 4],
             ])
             ->add('planUpdatesRequired', TextareaType::class, [
-                'label' => 'Plan Updates Required',
+                'label' => 'bc_exercises.field.plan_updates_required',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('successRating', IntegerType::class, [
-                'label' => 'Overall Success Rating (1-5)',
+                'label' => 'bc_exercises.field.success_rating',
                 'required' => false,
                 'attr' => ['min' => 1, 'max' => 5],
             ])
             ->add('reportCompleted', CheckboxType::class, [
-                'label' => 'Report Completed',
+                'label' => 'bc_exercises.field.report_completed',
                 'required' => false,
             ])
             ->add('reportDate', DateType::class, [
-                'label' => 'Report Date',
+                'label' => 'bc_exercises.field.report_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
@@ -147,6 +147,7 @@ class BCExerciseType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => BCExercise::class,
+            'translation_domain' => 'bc_exercises',
         ]);
     }
 }
