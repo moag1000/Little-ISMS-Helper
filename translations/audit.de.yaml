@@ -66,7 +66,7 @@ audit:
         notes: Notizen
         team_size: Teamgröße
         result: Ergebnis
-        overall_result: Overall Result
+        overall_result: 'Gesamtergebnis'
         nonconformities: Nichtkonformitäten
         conclusion: Schlussfolgerung
     status:
@@ -99,43 +99,43 @@ audit:
         corporate_subsidiaries_info: 'Dieses Konzernaudit umfasst %count% Tochtergesellschaft(en)'
         corporate_audit_note_title: Konzernaudit
         corporate_audit_note: "Wählen Sie die Tochtergesellschaften aus, die in dieses Audit einbezogen werden sollen. Bei 'Konzernweites Audit' sollten alle relevanten Tochtergesellschaften ausgewählt werden."
-    corporate_audit_note_title: Corporate Audit Note Title
-    corporate_audit_note: Corporate Audit Note
+    corporate_audit_note_title: 'Konzernaudit-Hinweis'
+    corporate_audit_note: 'Informationen zum konzernweiten Audit'
     help:
-        title: Titel
-        scope: Geltungsbereich
-        scope_type: Geltungsbereich Typ
-        scoped_framework: Scoped Framework
-        audit_type: Audit Typ
-        audited_subsidiaries: Auditiert Tochtergesellschaften
-        framework: Rahmenwerk
-        standard: Standard
-        planned_date: Geplant Datum
-        actual_date: Tatsächlich Datum
-        lead_auditor: Leitender Auditor
-        audit_team: 'Audit-Team'
-        auditee: Auditierter
-        department: Department
-        status: Status
-        overall_result: Overall Result
-        objectives: Zielsetzungen
-        audit_criteria: Audit Kriterien
-        methodology: Methodik
-        findings: Feststellungen
-        nonconformities: Nichtkonformitäten
-        observations: Beobachtungen
-        recommendations: Empfehlungen
-        corrective_actions: Korrekturmaßnahme Aktionen
-        follow_up_actions: Follow Up Actions
-        conclusion: Schlussfolgerung
-        evidence_collected: Gesammelte Nachweise
-        summary: Zusammenfassung
-        notes: Notizen
+        title: 'Kurze Beschreibung des Audit-Zwecks'
+        scope: 'Definiert den Umfang des Audits (z.B. gesamtes ISMS, spezifische Abteilung)'
+        scope_type: 'Art des Geltungsbereichs (ISMS, Framework, Asset, Abteilung, etc.)'
+        scoped_framework: 'Falls Audit auf ein Framework beschränkt ist (z.B. nur ISO 27001)'
+        audit_type: 'Art des Audits (intern, extern, Zertifizierung)'
+        audited_subsidiaries: 'Bei Konzernaudits: Welche Tochtergesellschaften werden einbezogen?'
+        framework: 'Gegen welches Framework/Standard wird auditiert (z.B. ISO 27001, TISAX)'
+        standard: 'Spezifischer Standard oder Version (z.B. ISO 27001:2022)'
+        planned_date: 'Geplantes Datum für die Durchführung des Audits'
+        actual_date: 'Tatsächliches Datum, an dem das Audit durchgeführt wurde'
+        lead_auditor: 'Name des leitenden Auditors (ISO 27001 Klausel 9.2.2: kompetent, unparteiisch)'
+        audit_team: 'Liste der Audit-Teammitglieder'
+        auditee: 'Der auditierte Bereich oder die auditierte Person'
+        department: 'Auditierte Abteilung oder Organisationseinheit'
+        status: 'Aktueller Status des Audits (geplant, in Bearbeitung, abgeschlossen, berichtet)'
+        overall_result: 'Gesamtergebnis und Schlussfolgerung des Audits'
+        objectives: 'Ziele und Zweck des Audits (was soll geprüft werden?)'
+        audit_criteria: 'Kriterien, gegen die auditiert wird (z.B. ISO 27001 Anforderungen)'
+        methodology: 'Angewandte Audit-Methodik (Interviews, Dokumentenprüfung, Stichproben)'
+        findings: 'Audit-Feststellungen (positive und negative Befunde)'
+        nonconformities: 'Identifizierte Nichtkonformitäten (Abweichungen von Anforderungen)'
+        observations: 'Beobachtungen und Verbesserungspotenziale'
+        recommendations: 'Empfehlungen des Audit-Teams'
+        corrective_actions: 'Geplante oder umgesetzte Korrekturmaßnahmen'
+        follow_up_actions: 'Maßnahmen zur Nachverfolgung und Verifizierung'
+        conclusion: 'Gesamtfazit und Audit-Schlussfolgerung'
+        evidence_collected: 'Liste der während des Audits gesammelten Nachweise'
+        summary: 'Kurze Zusammenfassung des Audits'
+        notes: 'Zusätzliche Notizen und Anmerkungen'
     scope: Geltungsbereich
 audit_log:
     pagination:
-        page_counter: Seite Zähler
-    showing_recent: Showing Recent
+        page_counter: 'Seite %current% von %total%'
+    showing_recent: 'Neueste %count% Einträge werden angezeigt'
 audit_management:
     title: Audits
     description: 'Planung, Durchführung und Nachverfolgung interner und externer Audits'
