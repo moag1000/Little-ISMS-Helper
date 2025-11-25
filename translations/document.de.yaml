@@ -92,13 +92,13 @@ document:
         document_types: Dokumenttypen
         expiring_soon: 'Expiring Soon'
         avg_per_type: 'Avg Per Type'
-        total_documents: 'Gesamt-Dokumente'
+        total_documents: Gesamt-Dokumente
         active_documents: 'Aktive Dokumente'
-        draft_documents: 'Entwurf-Dokumente'
+        draft_documents: Entwurf-Dokumente
         overdue_reviews: 'Überfällige Reviews'
     option:
         all_types: 'Alle Typen'
     uploaded_by: 'Hochgeladen von'
     uploaded_at: 'Hochgeladen am'
-    edit_button: 'Bearbeiten'
+    edit_button: Bearbeiten
     drag_files: 'Dateien hierher ziehen oder klicken zum Hochladen'

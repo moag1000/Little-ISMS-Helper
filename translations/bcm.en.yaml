@@ -50,11 +50,11 @@ bcm:
         never_tested: 'Never tested'
         no_critical_assets: 'No critical assets — well done!'
         no_critical_processes: 'No critical processes'
-        no_matching_processes: No Matching Processes
-        rto_tooltip: Rto Tooltip
-        rpo_tooltip: Rpo Tooltip
-        mtd_tooltip: Mtd Tooltip
-        bcm_influences_asset_ratings: Bcm Influences Asset Ratings
+        no_matching_processes: 'No Matching Processes'
+        rto_tooltip: 'Rto Tooltip'
+        rpo_tooltip: 'Rpo Tooltip'
+        mtd_tooltip: 'Mtd Tooltip'
+        bcm_influences_asset_ratings: 'Bcm Influences Asset Ratings'
     type:
         information: Information
         software: Software
@@ -76,9 +76,9 @@ bcm:
         medium: Medium
         low: Low
     data_reuse:
-        asset_recommendations_title: Asset Recommendations Title
-        benefits_title: Benefits Title
-        benefit_efficiency: Benefit Efficiency
-        benefit_consistency: Benefit Consistency
-        benefit_compliance: Benefit Compliance
-        benefit_quality: Benefit Quality
+        asset_recommendations_title: 'Asset Recommendations Title'
+        benefits_title: 'Benefits Title'
+        benefit_efficiency: 'Benefit Efficiency'
+        benefit_consistency: 'Benefit Consistency'
+        benefit_compliance: 'Benefit Compliance'
+        benefit_quality: 'Benefit Quality'

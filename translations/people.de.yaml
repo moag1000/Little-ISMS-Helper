@@ -15,13 +15,19 @@ person:
         with_badge: 'Mit Ausweis'
     field:
         name: Name
+        full_name: 'Vollständiger Name'
         type: Typ
+        person_type: Personentyp
         badge_id: Ausweis‑ID
         company: Unternehmen
         email: E‑Mail
         department: Abteilung
         job_title: Stellenbezeichnung
         phone: Telefon
+        linked_user: 'Verknüpfter Benutzer'
+        active: Aktiv
+        access_valid_from: 'Zugang gültig ab'
+        access_valid_until: 'Zugang gültig bis'
         notes: Notizen
     section:
         basic_info: Basisinformationen
@@ -32,9 +38,22 @@ person:
         notes: Notizen
     placeholder:
         name: 'z. B. Max Mustermann'
+        full_name: 'z. B. Max Mustermann'
         badge: 'z. B. 123456'
+        badge_id: 'z. B. B-12345'
+        company: 'z. B. Externe IT-Dienstleister GmbH'
+        email: 'max.mustermann@beispiel.de'
+        phone: '+49 123 456789'
+        department: 'z. B. IT-Abteilung'
+        job_title: 'z. B. Systemadministrator'
+        linked_user: '-- Benutzer auswählen --'
+        notes: 'Zusätzliche Hinweise und Bemerkungen...'
     help:
         badge: 'Interne Ausweis‑/Badge‑Nummer (optional)'
+        badge_id: 'Eindeutige Ausweis-/Badge-Nummer für Zutrittskontrolle'
+        linked_user: 'Optional: Verknüpfen Sie diese Person mit einem Benutzeraccount im System'
+        access_valid_from: 'Ab wann ist der Zutritt für diese Person gültig?'
+        access_valid_until: 'Bis wann ist der Zutritt gültig? (Leer = unbegrenzt)'
     type:
         employee: Mitarbeiter
         contractor: Auftragnehmer
@@ -42,6 +61,7 @@ person:
         vendor: Lieferant
         auditor: Auditor
         consultant: Berater
+        other: Sonstige
     actions:
         label: Personen‑Aktionen
     message:

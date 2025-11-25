@@ -32,22 +32,29 @@ bc_exercises:
         status: Status
         effectiveness: Effectiveness
     field:
+        name: 'Exercise Name'
+        exercise_type: 'Exercise Type'
+        description: Description
+        scope: Scope
+        objectives: Objectives
+        scenario: 'Exercise Scenario'
         exercise_date: 'Exercise Date'
         duration: Duration
-        duration_hours: hours
-        facilitator: Facilitator
+        duration_hours: 'Duration (hours)'
+        participants: Participants
+        facilitator: 'Facilitator/Lead'
         observers: Observers
-        success_rating: 'Success Rating'
+        status: Status
+        results: Results
+        what_went_well: 'What Went Well (WWW)'
+        areas_for_improvement: 'Areas for Improvement (AFI)'
+        findings: Findings
+        action_items: 'Action Items'
+        lessons_learned: 'Lessons Learned'
+        plan_updates_required: 'Plan Updates Required'
+        success_rating: 'Overall Success Rating (1-5)'
         report_completed: 'Report Completed'
         report_date: 'Report Date'
-        participants: Participants
-        results: Results
-        what_went_well: What Went Well
-        areas_for_improvement: Areas For Improvement
-        findings: Findings
-        action_items: Action Items
-        lessons_learned: Lessons Learned
-        plan_updates_required: Plan Updates Required
     badge:
         'yes': 'Yes'
         'no': 'No'
@@ -59,19 +66,48 @@ bc_exercises:
         confirm_delete: 'Are you sure you want to delete this exercise?'
         na: N/A
     help:
-        participants: Participants
-        facilitator: Facilitator
-        observers: Observers
-        results: Results
-        what_went_well: What Went Well
-        areas_for_improvement: Areas For Improvement
-        findings: Findings
-        action_items: Action Items
-        lessons_learned: Lessons Learned
-        plan_updates_required: Plan Updates Required
-        success_rating: Success Rating
-        report_completed: Report Completed
-        report_date: Report Date
+        name: 'Unique name for this BC exercise'
+        exercise_type: 'Type of exercise according to ISO 22301:2019 Clause 8.5'
+        description: 'Detailed description of the planned exercise'
+        scope: 'Which BC plans, processes or systems will be tested?'
+        objectives: 'What should be achieved with this exercise? (Learning objectives, processes to be tested)'
+        scenario: 'Describe the exercise scenario (e.g. "Server room fire" or "Ransomware attack")'
+        exercise_date: 'Planned date of the exercise'
+        duration_hours: 'Planned or actual duration of the exercise in hours'
+        participants: 'Which persons/teams are participating in the exercise?'
+        facilitator: 'Person leading and moderating the exercise'
+        observers: 'External observers (e.g. auditors, management)'
+        status: 'Current status of the exercise'
+        results: 'Summary of exercise results'
+        what_went_well: 'What worked well? Document strengths and successes'
+        areas_for_improvement: 'Where is there potential for improvement? Identify weaknesses'
+        findings: 'Specific observations during the exercise'
+        action_items: 'Actions derived from the exercise (who, what, by when)'
+        lessons_learned: 'Key insights for future exercises and BC planning'
+        plan_updates_required: 'Which BC plans need to be updated based on exercise results?'
+        success_rating: 'Overall rating of the exercise on a scale of 1-5'
+        report_completed: 'Has the exercise report been completed?'
+        report_date: 'Date the exercise report was created'
+    exercise_type:
+        tabletop: 'Tabletop Exercise'
+        walkthrough: 'Walkthrough Exercise'
+        simulation: Simulation
+        full_test: 'Full Test'
+        component_test: 'Component Test'
+    status:
+        planned: Planned
+        in_progress: 'In Progress'
+        completed: Completed
+        cancelled: Cancelled
+    placeholder:
+        name: 'e.g. Annual BC Test Q4 2024'
+        description: 'Describe the purpose and background of the exercise...'
+        scope: 'e.g. Emergency communication plan, data center failover'
+        objectives: 'e.g. Test response times, validate communication chains'
+        scenario: 'e.g. Power outage in main building for 24 hours'
+        participants: 'e.g. IT team, management, crisis team'
+        facilitator: 'Name of exercise leader'
+        observers: 'e.g. External auditor, ISO officer'
 bc_plans:
     message:
-        readiness_score: Readiness Score
+        readiness_score: 'Readiness Score'

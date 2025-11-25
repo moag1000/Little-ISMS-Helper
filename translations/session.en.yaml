@@ -20,4 +20,4 @@ session:
     info:
         termination_not_implemented: 'Session termination requires additional configuration (database session storage)'
     subtitle: Subtitle
-    user_activity: User Activity
+    user_activity: 'User Activity'

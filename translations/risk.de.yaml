@@ -51,10 +51,16 @@ risk:
         treatment_description: 'Beschreibung der Behandlungsmaßnahmen'
         acceptance_approved_by: 'Risikoakzeptanz genehmigt durch'
         acceptance_approved_at: 'Risikoakzeptanz genehmigt am'
+        acceptance_justification: 'Begründung der Risikoakzeptanz'
         created: 'Erstellt am'
         last_review: 'Letzte Überprüfung'
         next_review: 'Nächste Überprüfung'
+        review_date: 'Überprüfungsdatum'
         inherent_risk: 'Inhärentes Risiko (vor Maßnahmen)'
+        category: Risikokategorie
+        person: 'Betroffene Person'
+        location: 'Betroffener Standort'
+        supplier: 'Betroffener Lieferant'
     confirm:
         delete: 'Risiko wirklich löschen?'
     edit: 'Risiko bearbeiten'
@@ -109,7 +115,11 @@ risk:
         history: Änderungshistorie
     help:
         title: 'Eindeutige Bezeichnung des Risikos für interne Referenzierung'
+        category: 'Kategorisierung des Risikos (finanziell, operativ, compliance, etc.)'
         asset: 'Das von diesem Risiko betroffene Asset (Hardware, Software, Daten, Prozess)'
+        person: 'Die von diesem Risiko betroffene Person'
+        location: 'Der von diesem Risiko betroffene Standort'
+        supplier: 'Der von diesem Risiko betroffene Lieferant'
         description: 'Detaillierte Beschreibung des Risikoszenarios und möglicher Folgen'
         threat: 'Die Bedrohung bzw. Gefährdung (z.B. Cyberangriff, Naturkatastrophe, menschliches Versagen)'
         vulnerability: 'Die Schwachstelle, die durch die Gefährdung ausgenutzt werden könnte'
@@ -127,10 +137,13 @@ risk:
         residual_probability: 'Verbleibende Eintrittswahrscheinlichkeit nach Risikobehandlung (1-5)'
         residual_impact: 'Verbleibende Schadensauswirkung nach Risikobehandlung (1-5)'
         treatment_strategy: 'Strategie zur Risikobehandlung (Vermeiden, Reduzieren, Übertragen, Akzeptieren)'
+        treatment: 'Strategie zur Risikobehandlung'
         risk_owner: 'Person, die für die Risikoüberwachung und -behandlung verantwortlich ist'
         treatment_description: 'Detaillierte Beschreibung der geplanten oder umgesetzten Behandlungsmaßnahmen'
         acceptance_approved_by: 'Person, die das Restrisiko formal akzeptiert hat (erforderlich für Risikoakzeptanz)'
         acceptance_approved_at: 'Datum der formalen Risikoakzeptanz durch die verantwortliche Person'
+        acceptance_justification: 'Begründung, warum das Restrisiko akzeptiert wird'
+        review_date: 'Datum der nächsten geplanten Risikoüberprüfung'
     delete:
         confirm_message: 'Möchten Sie dieses Risiko wirklich unwiderruflich löschen?'
     not_reviewed: 'Noch nicht überprüft'
@@ -178,10 +191,54 @@ risk:
         in_progress: 'In Bearbeitung'
         mitigated: Gemindert
         closed: Abgeschlossen
+        identified: Identifiziert
+        assessed: Bewertet
+        treated: Behandelt
+        monitored: Überwacht
+        accepted: Akzeptiert
     category:
-        technical: Technical
-        organizational: Organizational
-        physical: Physical
+        financial: Finanziell
+        operational: Operativ
+        compliance: Compliance
+        strategic: Strategisch
+        reputational: Reputationsrisiko
+        security: Sicherheit
+        technical: Technisch
+        organizational: Organisatorisch
+        physical: Physisch
+    legal_basis:
+        consent: 'Art. 6(1)(a) Einwilligung'
+        contract: 'Art. 6(1)(b) Vertragserfüllung'
+        legal_obligation: 'Art. 6(1)(c) Rechtliche Verpflichtung'
+        vital_interests: 'Art. 6(1)(d) Lebenswichtige Interessen'
+        public_task: 'Art. 6(1)(e) Öffentliches Interesse'
+        legitimate_interests: 'Art. 6(1)(f) Berechtigte Interessen'
+    processing_scale:
+        small: 'Klein (wenige Betroffene)'
+        medium: 'Mittel (moderat)'
+        large_scale: 'Groß (viele Betroffene)'
+    treatment:
+        mitigate: Reduzieren
+        transfer: Übertragen
+        accept: Akzeptieren
+        avoid: Vermeiden
+    placeholder:
+        title: 'z.B. Datenverlust durch Ransomware-Angriff'
+        category: '-- Kategorie wählen --'
+        legal_basis: '-- Rechtsgrundlage wählen --'
+        processing_scale: '-- Verarbeitungsumfang wählen --'
+        data_subject_impact: 'Beschreiben Sie die möglichen Auswirkungen auf betroffene Personen...'
+        description: 'Detaillierte Beschreibung des Risikoszenarios...'
+        threat: 'Beschreiben Sie die Bedrohung (z.B. Cyberangriff, Naturkatastrophe)...'
+        vulnerability: 'Beschreiben Sie die Schwachstelle, die ausgenutzt werden könnte...'
+        asset: '-- Asset auswählen --'
+        person: '-- Person auswählen --'
+        location: '-- Standort auswählen --'
+        supplier: '-- Lieferant auswählen --'
+        risk_owner: '-- Risikoverantwortlichen auswählen --'
+        treatment_description: 'Beschreiben Sie die geplanten Behandlungsmaßnahmen...'
+        acceptance_approved_by: 'Name der genehmigenden Person'
+        acceptance_justification: 'Begründung für die Akzeptanz des Restrisikos...'
 risk_management:
     title: Titel
     description: Beschreibung

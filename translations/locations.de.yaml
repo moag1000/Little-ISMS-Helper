@@ -1,5 +1,5 @@
 location:
-    title: 'Standorte'
+    title: Standorte
     description:
         overview: 'Übersicht über Standorte, Gebäude und Räume'
     action:
@@ -14,6 +14,7 @@ location:
         name: Name
         type: Typ
         code: Code
+        location_type: Standorttyp
         city: Stadt
         address: Adresse
         postal_code: Postleitzahl
@@ -23,8 +24,16 @@ location:
         access_control: Zutrittskontrolle
         security_level: Sicherheitsniveau
         badge_access: 'Ausweiszugang erforderlich'
-        description: 'Beschreibung'
-        status: 'Status'
+        requires_badge_access: 'Ausweiszugang erforderlich'
+        requires_escort: 'Begleitung erforderlich'
+        camera_monitored: Kameraüberwacht
+        responsible_person: 'Verantwortliche Person'
+        capacity: Kapazität
+        square_meters: 'Fläche (m²)'
+        active: Aktiv
+        notes: Notizen
+        description: Beschreibung
+        status: Status
     section:
         address: Adresse
         hierarchy: Hierarchie
@@ -35,16 +44,38 @@ location:
     placeholder:
         name: 'z. B. Hauptgebäude München'
         code: 'z. B. DE-MUC-HQ'
+        description: 'Beschreiben Sie den Standort...'
+        address: 'Vollständige Adresse eingeben...'
+        city: 'z. B. München'
+        country: 'z. B. Deutschland'
+        postal_code: 'z. B. 80331'
+        parent_location: '-- Übergeordneten Standort wählen --'
+        access_control_system: 'z. B. Kaba, dormakaba, SALTO'
+        responsible_person: 'Name der verantwortlichen Person'
+        capacity: 'z. B. 50'
+        square_meters: 'z. B. 120.50'
+        notes: 'Zusätzliche Hinweise und Bemerkungen...'
     help:
         type: 'Wählen Sie den passenden Standorttyp (Gebäude, Raum, Rechenzentrum, …)'
         code: 'Interner Standort‑Code für eindeutige Referenz (optional)'
         parent: 'Optional – ordnen Sie den Standort einem übergeordneten Standort zu'
+        parent_location: 'Ordnen Sie diesen Standort einem übergeordneten Standort zu (z.B. Raum zu Gebäude)'
+        capacity: 'Maximale Personenkapazität dieses Standorts'
     type:
         building: Gebäude
+        floor: Etage
         room: Raum
-        campus: Campus
+        area: Bereich
         datacenter: Rechenzentrum
+        server_room: Serverraum
         office: Büro
+        warehouse: Lager
+        gate: Tor
+        entrance: Eingang
+        parking: Parkplatz
+        outdoor: Außenbereich
+        campus: Campus
+        other: Sonstiges
     security:
         public: Öffentlich
         restricted: Eingeschränkt

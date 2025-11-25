@@ -22,6 +22,14 @@ workflow:
         complete_step: 'Schritt abschließen'
         start: Starten
         cancel: Abbrechen
+        update: Aktualisieren
+        delete_definition: 'Definition löschen'
+        builder: Workflow-Builder
+        edit: Bearbeiten
+        deactivate: Deaktivieren
+        activate: Aktivieren
+        delete: Löschen
+        back: Zurück
     stats:
         total: Gesamt‑Workflows
         active: Aktiv
@@ -38,6 +46,8 @@ workflow:
         active_definitions: 'Aktive Definitionen'
         avg_steps: 'Ø Schritte pro Definition'
         entity_types: 'Abgedeckte Entitätstypen'
+        steps: Schritte
+        total_instances: 'Gesamte Instanzen'
     section:
         overview: Übersicht
         steps: Schritte
@@ -46,6 +56,11 @@ workflow:
         active: Aktiv
         overdue: Überfällig
         recent_instances: 'Letzte Instanzen'
+        basic_information: Grundinformationen
+        danger_zone: Gefahrenbereich
+        information: Informationen
+        actions: Aktionen
+        statistics: Statistiken
     field:
         name: Name
         definition: Definition
@@ -63,6 +78,8 @@ workflow:
         progress: Fortschritt
         priority: Priorität
         days_overdue: 'Tage überfällig'
+        entity_type: Entitätstyp
+        updated_at: 'Aktualisiert am'
     priority:
         low: Niedrig
         medium: Mittel
@@ -73,6 +90,8 @@ workflow:
         active: Aktiv
         completed: Abgeschlossen
         cancelled: Abgebrochen
+        rejected: Abgelehnt
+        inactive: Inaktiv
     badge:
         overdue: Überfällig
         my_task: 'Meine Aufgabe'
@@ -89,6 +108,7 @@ workflow:
         no_overdue_desc: 'Alle Workflow‑Instanzen liegen derzeit innerhalb ihrer Fristen.'
         no_definitions: 'Keine Workflow‑Definitionen vorhanden.'
         no_activities: 'Keine Aktivitäten vorhanden.'
+        no_steps: 'Keine Schritte definiert'
     step: Schritt
     warning:
         overdue_count: '%count% überfällige(r) Workflow(s) identifiziert'
@@ -101,3 +121,66 @@ workflow:
         details: Details
     confirm:
         cancel: 'Sind Sie sicher, dass Sie diese Workflow‑Instanz abbrechen möchten?'
+        delete: 'Sind Sie sicher, dass Sie diese Workflow-Definition löschen möchten?'
+    definition:
+        edit_title: 'Workflow-Definition bearbeiten'
+        new_title: 'Neue Workflow-Definition'
+        title: Workflow-Definitionen
+    breadcrumb:
+        home: Workflows
+        definitions: Definitionen
+        edit: Bearbeiten
+        new: Neu
+    help:
+        name: 'Eindeutiger Name für diese Workflow-Definition'
+        description: 'Beschreibung des Zwecks und Verwendung dieses Workflows'
+        delete_warning: 'Warnung: Das Löschen einer Definition betrifft alle zugehörigen Workflow-Instanzen'
+    info:
+        steps_note_title: Workflow-Schritte
+        steps_note_text: 'Definieren Sie die Schritte, die in diesem Workflow durchlaufen werden müssen'
+    instance:
+        entity: Entität
+        status: Status
+        current_step: 'Aktueller Schritt'
+        created: Erstellt
+        actions: Aktionen
+    step.requires_comment: 'Dieser Schritt erfordert einen Kommentar'
+    step.requires_file: 'Dieser Schritt erfordert einen Datei-Upload'
+    builder:
+        title: Workflow-Builder
+        breadcrumb: Builder
+        heading: 'Workflow visuell erstellen'
+        steps: Workflow-Schritte
+        drag_help: 'Ziehen Sie Schritte per Drag & Drop, um die Reihenfolge zu ändern'
+        add_step: 'Schritt hinzufügen'
+        new_step: 'Neuer Schritt'
+        templates: Workflow-Vorlagen
+        templates_help: 'Wählen Sie eine vordefinierte Vorlage für häufige Workflow-Typen (Risikobewertung, Vorfallsreaktion, etc.)'
+        info: Builder-Information
+        help: 'Workflow-Builder Hilfe'
+        help_drag: 'Ziehen & Ablegen: Ändern Sie die Reihenfolge der Schritte durch Drag & Drop'
+        help_edit: 'Bearbeiten: Klicken Sie auf einen Schritt, um Details zu ändern'
+        help_duplicate: 'Duplizieren: Erstellen Sie eine Kopie eines bestehenden Schritts'
+        help_delete: 'Löschen: Entfernen Sie einen Schritt aus dem Workflow'
+        help_template: 'Vorlage verwenden: Erstellen Sie einen Workflow aus einer vordefinierten Vorlage'
+    step.name: Schrittname
+    step.type: Schritttyp
+    step.type.approval: 'Freigabe / Genehmigung'
+    step.type.notification: Benachrichtigung
+    step.type.auto_action: 'Automatische Aktion'
+    step.description: Schrittbeschreibung
+    step.approver_role: 'Genehmigende Rolle'
+    step.days_to_complete: 'Tage bis zur Fertigstellung'
+    step.days_help: 'Anzahl der Tage, die für die Bearbeitung dieses Schritts vorgesehen sind'
+    step.is_required: Pflichtschritt
+    template:
+        risk_assessment: Risikobewertungs-Workflow
+        risk_assessment_desc: 'Strukturierter Workflow zur Durchführung von Risikobewertungen nach ISO 27005: Identifikation, Analyse, Bewertung, Behandlung'
+        control_implementation: Maßnahmen-Implementierungs-Workflow
+        control_implementation_desc: 'Workflow zur Planung, Umsetzung und Überprüfung von Sicherheitsmaßnahmen (ISO 27001 Anhang A Controls)'
+        incident_response: Vorfallsreaktions-Workflow
+        incident_response_desc: 'Incident-Response-Prozess: Erkennung, Eindämmung, Analyse, Behebung, Lessons Learned'
+        document_review: Dokumentenprüfungs-Workflow
+        document_review_desc: 'Strukturierter Review-Prozess für ISMS-Dokumente: Entwurf, Prüfung, Freigabe, Veröffentlichung'
+        change_request: Change-Request-Workflow
+        change_request_desc: 'Change-Management-Prozess: Antrag, Bewertung, Genehmigung, Umsetzung, Überprüfung'

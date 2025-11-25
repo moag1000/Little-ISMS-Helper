@@ -37,3 +37,5 @@ security_reports:
         high: 'Hoch (P1)'
         medium: 'Mittel (P2)'
         low: 'Niedrig (P3)'
+app:
+    title: 'Sicherheitsberichte'

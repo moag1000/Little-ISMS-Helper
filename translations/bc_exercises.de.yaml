@@ -32,22 +32,29 @@ bc_exercises:
         status: Status
         effectiveness: Wirksamkeit
     field:
+        name: Übungsname
+        exercise_type: Übungstyp
+        description: Beschreibung
+        scope: Umfang
+        objectives: Ziele
+        scenario: Übungsszenario
         exercise_date: Übungsdatum
         duration: Dauer
-        duration_hours: Stunden
-        facilitator: Moderator
+        duration_hours: 'Dauer (Stunden)'
+        participants: Teilnehmende
+        facilitator: 'Moderator/Leitung'
         observers: Beobachter
-        success_rating: Erfolgsbewertung
+        status: Status
+        results: Ergebnisse
+        what_went_well: 'Was lief gut (WWW)'
+        areas_for_improvement: 'Verbesserungsbereiche (AFI)'
+        findings: Feststellungen
+        action_items: Maßnahmenliste
+        lessons_learned: 'Gelernte Lektionen'
+        plan_updates_required: 'Erforderliche Planaktualisierungen'
+        success_rating: 'Gesamterfolgsbewertung (1-5)'
         report_completed: 'Bericht abgeschlossen'
         report_date: Berichtsdatum
-        participants: Teilnehmer
-        results: Ergebnisse
-        what_went_well: What Went Well
-        areas_for_improvement: Areas For Improvement
-        findings: Feststellungen
-        action_items: Action Items
-        lessons_learned: Gelernte Lektionen
-        plan_updates_required: Plan Updates Required
     badge:
         'yes': Ja
         'no': Nein
@@ -59,19 +66,48 @@ bc_exercises:
         confirm_delete: 'Soll diese Übung wirklich gelöscht werden?'
         na: 'k. A.'
     help:
-        participants: Teilnehmer
-        facilitator: Facilitator
-        observers: Observers
-        results: Ergebnisse
-        what_went_well: What Went Well
-        areas_for_improvement: Areas For Improvement
-        findings: Feststellungen
-        action_items: Action Items
-        lessons_learned: Gelernte Lektionen
-        plan_updates_required: Plan Updates Required
-        success_rating: Erfolgsbewertung
-        report_completed: Report Completed
-        report_date: Report Date
+        name: 'Eindeutiger Name für diese BC-Übung'
+        exercise_type: 'Typ der Übung gemäß ISO 22301:2019 Klausel 8.5'
+        description: 'Detaillierte Beschreibung der geplanten Übung'
+        scope: 'Welche BC-Pläne, Prozesse oder Systeme werden getestet?'
+        objectives: 'Was soll mit dieser Übung erreicht werden? (Lernziele, zu testende Prozesse)'
+        scenario: 'Beschreiben Sie das Übungsszenario (z.B. "Serverraum-Brand" oder "Ransomware-Angriff")'
+        exercise_date: 'Geplantes Datum der Übung'
+        duration_hours: 'Geplante oder tatsächliche Dauer der Übung in Stunden'
+        participants: 'Welche Personen/Teams nehmen an der Übung teil?'
+        facilitator: 'Person, die die Übung leitet und moderiert'
+        observers: 'Externe Beobachter (z.B. Auditoren, Management)'
+        status: 'Aktueller Status der Übung'
+        results: 'Zusammenfassung der Übungsergebnisse'
+        what_went_well: 'Was hat gut funktioniert? Stärken und Erfolge dokumentieren'
+        areas_for_improvement: 'Wo gibt es Verbesserungspotenzial? Schwächen identifizieren'
+        findings: 'Konkrete Feststellungen und Beobachtungen während der Übung'
+        action_items: 'Maßnahmen, die aus der Übung abgeleitet werden (wer, was, bis wann)'
+        lessons_learned: 'Wichtige Erkenntnisse für zukünftige Übungen und BC-Planung'
+        plan_updates_required: 'Welche BC-Pläne müssen aufgrund der Übungsergebnisse aktualisiert werden?'
+        success_rating: 'Gesamtbewertung der Übung auf einer Skala von 1-5'
+        report_completed: 'Wurde der Übungsbericht fertiggestellt?'
+        report_date: 'Datum, an dem der Übungsbericht erstellt wurde'
+    exercise_type:
+        tabletop: 'Planübung (Tabletop)'
+        walkthrough: 'Walkthrough-Übung'
+        simulation: Simulation
+        full_test: 'Volltest'
+        component_test: 'Komponententest'
+    status:
+        planned: Geplant
+        in_progress: 'In Durchführung'
+        completed: Abgeschlossen
+        cancelled: Abgesagt
+    placeholder:
+        name: 'z.B. Jährlicher BC-Test Q4 2024'
+        description: 'Beschreiben Sie Zweck und Hintergrund der Übung...'
+        scope: 'z.B. Notfall-Kommunikationsplan, Rechenzentrum-Failover'
+        objectives: 'z.B. Testen der Reaktionszeiten, Validierung der Kommunikationsketten'
+        scenario: 'z.B. Stromausfall im Hauptgebäude für 24 Stunden'
+        participants: 'z.B. IT-Team, Geschäftsleitung, Krisenteam'
+        facilitator: 'Name des Übungsleiters'
+        observers: 'z.B. Externer Auditor, ISO-Beauftragter'
 bc_plans:
     message:
-        readiness_score: Readiness Score
+        readiness_score: 'Readiness Score'

@@ -30,163 +30,221 @@ risk:
             physical: physical
     label:
         title: Title
-        inherent_risk: Inherent Risk
+        inherent_risk: 'Inherent Risk'
     field:
         title: Title
         score: Score
-        treatment_strategy: Treatment Strategy
+        treatment_strategy: 'Treatment Strategy'
         status: Status
         asset: Asset
         description: Description
         threat: Threat
         vulnerability: Vulnerability
-        involves_personal_data: Involves Personal Data
-        involves_special_category_data: Involves Special Category Data
-        legal_basis: Legal Basis
-        processing_scale: Processing Scale
-        requires_dpia: Requires Dpia
-        data_subject_impact: Data Subject Impact
+        involves_personal_data: 'Involves Personal Data'
+        involves_special_category_data: 'Involves Special Category Data'
+        legal_basis: 'Legal Basis'
+        processing_scale: 'Processing Scale'
+        requires_dpia: 'Requires DPIA'
+        data_subject_impact: 'Data Subject Impact'
         probability: Probability
         impact: Impact
-        residual_probability: Residual Probability
-        residual_impact: Residual Impact
-        risk_owner: Risk Owner
-        treatment_description: Treatment Description
-        acceptance_approved_by: Acceptance Approved By
-        acceptance_approved_at: Acceptance Approved At
+        residual_probability: 'Residual Probability'
+        residual_impact: 'Residual Impact'
+        risk_owner: 'Risk Owner'
+        treatment_description: 'Treatment Description'
+        acceptance_approved_by: 'Acceptance Approved By'
+        acceptance_approved_at: 'Acceptance Approved At'
+        acceptance_justification: 'Acceptance Justification'
         created: Created
-        last_review: Last Review
-        next_review: Next Review
-        inherent_risk: Inherent Risk
+        last_review: 'Last Review'
+        next_review: 'Next Review'
+        review_date: 'Review Date'
+        inherent_risk: 'Inherent Risk'
+        category: 'Risk Category'
+        person: 'Affected Person'
+        location: 'Affected Location'
+        supplier: 'Affected Supplier'
     confirm:
         delete: Delete
     edit: Edit
     update: Update
-    delete_warning: Delete Warning
+    delete_warning: 'Delete Warning'
     new: New
     create: Create
     guidance:
         scale: Scale
         description: Description
         probability:
-            very_unlikely: Very Unlikely
-            very_unlikely_desc: Very Unlikely Desc
+            very_unlikely: 'Very Unlikely'
+            very_unlikely_desc: 'Very Unlikely Desc'
             unlikely: Unlikely
-            unlikely_desc: Unlikely Desc
+            unlikely_desc: 'Unlikely Desc'
             possible: Possible
-            possible_desc: Possible Desc
+            possible_desc: 'Possible Desc'
             likely: Likely
-            likely_desc: Likely Desc
-            very_likely: Very Likely
-            very_likely_desc: Very Likely Desc
+            likely_desc: 'Likely Desc'
+            very_likely: 'Very Likely'
+            very_likely_desc: 'Very Likely Desc'
         impact:
             negligible: Negligible
-            negligible_desc: Negligible Desc
+            negligible_desc: 'Negligible Desc'
             minor: Minor
-            minor_desc: Minor Desc
+            minor_desc: 'Minor Desc'
             moderate: Moderate
-            moderate_desc: Moderate Desc
+            moderate_desc: 'Moderate Desc'
             major: Major
-            major_desc: Major Desc
+            major_desc: 'Major Desc'
             catastrophic: Catastrophic
-            catastrophic_desc: Catastrophic Desc
+            catastrophic_desc: 'Catastrophic Desc'
         title: Title
         intro: Intro
-        probability_title: Probability Title
-        impact_title: Impact Title
+        probability_title: 'Probability Title'
+        impact_title: 'Impact Title'
         tip: Tip
     section:
-        basic_info: Basic Information
-        gdpr_assessment: Gdpr Assessment
-        inherent_risk: Inherent Risk
-        residual_risk: Residual Risk
+        basic_info: 'Basic Information'
+        gdpr_assessment: 'Gdpr Assessment'
+        inherent_risk: 'Inherent Risk'
+        residual_risk: 'Residual Risk'
         treatment: Treatment
         acceptance: Acceptance
         details: Details
         description: Description
-        treatment_strategy: Treatment Strategy
-        risk_owner: Risk Owner
-        mitigating_controls: Mitigating Controls
-        realization_history: Realization History
-        risk_subject: Risk Subject
+        treatment_strategy: 'Treatment Strategy'
+        risk_owner: 'Risk Owner'
+        mitigating_controls: 'Mitigating Controls'
+        realization_history: 'Realization History'
+        risk_subject: 'Risk Subject'
         history: History
     help:
-        title: Title
-        asset: Asset
-        description: Description
-        threat: Threat
-        vulnerability: Vulnerability
-        gdpr_section: Gdpr Section
-        involves_personal_data: Involves Personal Data
-        involves_special_category_data: Involves Special Category Data
-        legal_basis: Legal Basis
-        processing_scale: Processing Scale
-        requires_dpia: Requires Dpia
-        data_subject_impact: Data Subject Impact
-        inherent: Inherent
-        probability: Probability
-        impact: Impact
-        residual: Residual
-        residual_probability: Residual Probability
-        residual_impact: Residual Impact
-        treatment_strategy: Treatment Strategy
-        risk_owner: Risk Owner
-        treatment_description: Treatment Description
-        acceptance_approved_by: Acceptance Approved By
-        acceptance_approved_at: Acceptance Approved At
+        title: 'Unique designation of the risk for internal reference'
+        category: 'Categorization of the risk (financial, operational, compliance, etc.)'
+        asset: 'The asset affected by this risk (hardware, software, data, process)'
+        person: 'The person affected by this risk'
+        location: 'The location affected by this risk'
+        supplier: 'The supplier affected by this risk'
+        description: 'Detailed description of the risk scenario and possible consequences'
+        threat: 'The threat or hazard (e.g., cyberattack, natural disaster, human error)'
+        vulnerability: 'The vulnerability that could be exploited by the threat'
+        gdpr_section: 'Does this risk apply to processing of personal data? (GDPR-relevant)'
+        involves_personal_data: 'Is personal data being processed? (Name, email, IP address, etc.)'
+        involves_special_category_data: 'Are special categories processed? (Art. 9 GDPR: Health, biometric data, etc.)'
+        legal_basis: 'Legal basis for data processing (Art. 6 GDPR: Consent, contract, legitimate interest, etc.)'
+        processing_scale: 'Scale of data processing (number of data subjects, data volume)'
+        requires_dpia: 'Is a Data Protection Impact Assessment (DPIA) required per Art. 35 GDPR?'
+        data_subject_impact: 'Impact on the rights and freedoms of data subjects'
+        inherent: 'The inherent risk (gross risk) before applying measures'
+        probability: 'Probability: How likely is it that this risk will occur? (1-5)'
+        impact: 'Impact: How severe would the consequences be if it occurs? (1-5)'
+        residual: 'The remaining residual risk (net risk) after applying measures'
+        residual_probability: 'Remaining probability after risk treatment (1-5)'
+        residual_impact: 'Remaining impact after risk treatment (1-5)'
+        treatment_strategy: 'Risk treatment strategy (Avoid, Mitigate, Transfer, Accept)'
+        treatment: 'Risk treatment strategy'
+        risk_owner: 'Person responsible for risk monitoring and treatment'
+        treatment_description: 'Detailed description of planned or implemented treatment measures'
+        acceptance_approved_by: 'Person who formally accepted the residual risk (required for risk acceptance)'
+        acceptance_approved_at: 'Date of formal risk acceptance by the responsible person'
+        acceptance_justification: 'Justification for why the residual risk is accepted'
+        review_date: 'Date of the next planned risk review'
     delete:
-        confirm_message: Confirm Message
-    not_reviewed: Not Reviewed
+        confirm_message: 'Confirm Message'
+    not_reviewed: 'Not Reviewed'
     assessment:
-        inherent_risk: Inherent Risk
+        inherent_risk: 'Inherent Risk'
         probability: Probability
         impact: Impact
         level: Level
         score: Score
-        residual_risk: Residual Risk
+        residual_risk: 'Residual Risk'
     incidents: Incidents
     realization:
         warning: Warning
-        review_suggestion: Review Suggestion
+        review_suggestion: 'Review Suggestion'
     subject:
         asset:
-            monetary_value_hint: Monetary Value Hint
+            monetary_value_hint: 'Monetary Value Hint'
         location:
-            city_country: City Country
+            city_country: 'City Country'
     matrix:
         title: Title
-        back_to_risks: Back To Risks
+        back_to_risks: 'Back To Risks'
         header: Header
         description: Description
         impact: Impact
         probability: Probability
-        legend_title: Legend Title
+        legend_title: 'Legend Title'
         level:
             critical: Critical
             high: High
             medium: Medium
             low: Low
+        cell_title: 'Risk Level: %level% (%count% risks)'
     acceptance:
         title: Title
         request: Request
-        justification_label: Justification Label
-        justification_help: Justification Help
-        submit_request: Submit Request
-        required_approval_level: Required Approval Level
-        approval_threshold_info: Approval Threshold Info
-    residual_assessment: Residual Assessment
+        justification_label: 'Justification Label'
+        justification_help: 'Justification Help'
+        submit_request: 'Submit Request'
+        required_approval_level: 'Required Approval Level'
+        approval_threshold_info: 'Approval Threshold Info'
+    residual_assessment: 'Residual Assessment'
     status:
         open: Open
-        in_progress: In Progress
+        in_progress: 'In Progress'
         mitigated: Mitigated
         closed: Closed
+        identified: Identified
+        assessed: Assessed
+        treated: Treated
+        monitored: Monitored
+        accepted: Accepted
     category:
+        financial: Financial
+        operational: Operational
+        compliance: Compliance
+        strategic: Strategic
+        reputational: Reputational
+        security: Security
         technical: Technical
         organizational: Organizational
         physical: Physical
+    legal_basis:
+        consent: 'Art. 6(1)(a) Consent'
+        contract: 'Art. 6(1)(b) Contract performance'
+        legal_obligation: 'Art. 6(1)(c) Legal obligation'
+        vital_interests: 'Art. 6(1)(d) Vital interests'
+        public_task: 'Art. 6(1)(e) Public interest'
+        legitimate_interests: 'Art. 6(1)(f) Legitimate interests'
+    processing_scale:
+        small: 'Small (few data subjects)'
+        medium: 'Medium (moderate)'
+        large_scale: 'Large scale (many data subjects)'
+    treatment:
+        mitigate: Mitigate
+        transfer: Transfer
+        accept: Accept
+        avoid: Avoid
+    placeholder:
+        title: 'e.g. Data loss due to ransomware attack'
+        category: '-- Select category --'
+        legal_basis: '-- Select legal basis --'
+        processing_scale: '-- Select processing scale --'
+        data_subject_impact: 'Describe the potential impact on data subjects...'
+        description: 'Detailed description of the risk scenario...'
+        threat: 'Describe the threat (e.g., cyberattack, natural disaster)...'
+        vulnerability: 'Describe the vulnerability that could be exploited...'
+        asset: '-- Select asset --'
+        person: '-- Select person --'
+        location: '-- Select location --'
+        supplier: '-- Select supplier --'
+        risk_owner: '-- Select risk owner --'
+        treatment_description: 'Describe the planned treatment measures...'
+        acceptance_approved_by: 'Name of approving person'
+        acceptance_justification: 'Justification for accepting the residual risk...'
 risk_management:
     title: Title
     description: Description
-    high_risks: High Risks
-    risk_value_threshold: Risk Value Threshold
-    total_identified: Total Identified
+    high_risks: 'High Risks'
+    risk_value_threshold: 'Risk Value Threshold'
+    total_identified: 'Total Identified'

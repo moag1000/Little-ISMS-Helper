@@ -89,3 +89,10 @@ monitoring:
     related: 'Verwandte Überwachung'
     refresh: Aktualisieren
     back_to_health: 'Zurück zur Gesundheit'
+    by_level: 'Nach Stufe'
+    show_entries: 'Einträge anzeigen'
+    no_errors_found: 'Keine Fehler gefunden'
+    reverse_order: 'Umgekehrte Reihenfolge'
+    recent_entries_only: 'Nur aktuelle Einträge'
+    full_log_analysis: 'Vollständige Log-Analyse'
+    large_files_warning: 'Warnung: Große Log-Dateien können lange Ladezeiten verursachen'

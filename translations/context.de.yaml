@@ -1,9 +1,9 @@
 context_management:
     title: 'ISMS Kontext'
     description: 'Überblick und Pflege des organisatorischen Kontexts gemäß ISO 27001 (Klauseln 4.1–4.3).'
-    isms_scope: 'ISMS-Geltungsbereich'
+    isms_scope: ISMS-Geltungsbereich
     no_context_defined: 'Noch kein ISMS-Kontext definiert'
-    isms_objectives: 'ISMS-Ziele'
+    isms_objectives: ISMS-Ziele
 context:
     link:
         edit: 'Kontext bearbeiten'
@@ -73,8 +73,8 @@ context:
         isms_objectives: ISMS-Ziele
         active_objectives: 'Aktive Ziele'
         no_objectives: 'Noch keine ISMS-Ziele definiert.'
-        policy: 'ISMS-Policy'
-        review: 'Kontextüberprüfung'
+        policy: ISMS-Policy
+        review: Kontextüberprüfung
         exclusions: 'Ausschlüsse vom ISMS-Scope'
         external_issues: 'Externe Themen'
         internal_issues: 'Interne Themen'
@@ -96,21 +96,34 @@ context:
     unit:
         day: Tag
         days: Tage
-    help:
+    placeholder:
         organization_name: 'Name der Organisation'
-        isms_scope: 'ISO 27001 Klausel 4.3: Grenzen und Anwendbarkeit definieren'
-        scope_exclusions: 'Bereiche, die explizit vom ISMS ausgeschlossen sind'
-        external_issues: 'ISO 27001 Klausel 4.1: Externe Einflussfaktoren'
-        internal_issues: 'ISO 27001 Klausel 4.1: Interne Einflussfaktoren'
-        interested_parties: 'ISO 27001 Klausel 4.2: Stakeholder mit ISMS‑Anforderungen'
-        interested_parties_requirements: 'Spezifische Anforderungen aus Stakeholder‑Sicht'
-        legal_requirements: 'Gesetzliche Verpflichtungen und Rahmenbedingungen'
-        regulatory_requirements: 'Branchenregulatorik und Standards'
-        contractual_obligations: 'Vertragliche Sicherheitsanforderungen'
-        isms_policy: 'ISO 27001 Klausel 5.2: Informationssicherheitspolitik'
-        roles_and_responsibilities: 'ISO 27001 Klausel 5.3: ISMS‑Rollen und Verantwortlichkeiten'
-        last_review_date: 'Wann wurde der ISMS‑Kontext zuletzt überprüft?'
-        next_review_date: 'Empfehlung: jährliche Überprüfung'
+        isms_scope: 'Definieren Sie den Geltungsbereich des ISMS (z.B. Abteilungen, Standorte, Prozesse)...'
+        scope_exclusions: 'Bereiche, die ausdrücklich vom ISMS ausgeschlossen sind...'
+        external_issues: 'Gesetzliche, technologische, wettbewerbliche, kulturelle und wirtschaftliche Themen...'
+        internal_issues: 'Organisationskultur, Werte, Wissen, Performance, Ressourcen...'
+        interested_parties: 'Kunden, Regulierungsbehörden, Lieferanten, Mitarbeiter, Aktionäre...'
+        interested_parties_requirements: 'Welche Anforderungen stellen die interessierten Parteien?'
+        legal_requirements: 'DSGVO, IT-Sicherheitsgesetz, KRITIS, etc.'
+        regulatory_requirements: 'Branchenspezifische Vorschriften, Standards, etc.'
+        contractual_obligations: 'SLAs, Vertraulichkeitsvereinbarungen, Kundenverträge...'
+        isms_policy: 'Übergeordnete Informationssicherheitsrichtlinie der Organisation...'
+        roles_and_responsibilities: 'ISMS-Verantwortlicher, Informationssicherheitsbeauftragter, etc.'
+    help:
+        organization_name: 'Dieser Name wird automatisch vom zugeordneten Mandanten übernommen. Um ihn zu ändern, bearbeiten Sie den Mandanten in der Mandantenverwaltung.'
+        isms_scope: 'ISO 27001 Clause 4.3: Definieren Sie Grenzen und Anwendbarkeit des ISMS'
+        scope_exclusions: 'Begründen Sie, warum bestimmte Bereiche ausgeschlossen werden'
+        external_issues: 'ISO 27001 Clause 4.1: Externe Faktoren, die das ISMS beeinflussen'
+        internal_issues: 'ISO 27001 Clause 4.1: Interne Faktoren, die das ISMS beeinflussen'
+        interested_parties: 'ISO 27001 Clause 4.2: Stakeholder, die Anforderungen an das ISMS stellen'
+        interested_parties_requirements: 'Spezifische Anforderungen der Stakeholder bezüglich Informationssicherheit'
+        legal_requirements: 'Gesetzliche Verpflichtungen und rechtliche Rahmenbedingungen'
+        regulatory_requirements: 'Regulatorische Vorgaben und Branchenstandards'
+        contractual_obligations: 'Vertragliche Anforderungen an Informationssicherheit'
+        isms_policy: 'ISO 27001 Clause 5.2: Festlegung der Informationssicherheitsrichtlinie'
+        roles_and_responsibilities: 'ISO 27001 Clause 5.3: Definition von Rollen und Verantwortlichkeiten im ISMS'
+        last_review_date: 'Wann wurde der ISMS-Kontext zuletzt überprüft?'
+        next_review_date: 'Wann soll die nächste Überprüfung stattfinden? (Empfohlen: jährlich)'
     action:
         edit_context: 'Kontext bearbeiten'
         create_context: 'ISMS‑Kontext erfassen'

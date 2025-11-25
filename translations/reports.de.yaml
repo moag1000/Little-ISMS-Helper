@@ -44,3 +44,12 @@ reports:
         management:
             title: 'Für Management‑Reporting:'
             items: { item_1: 'Dashboard‑Zusammenfassung für Executive‑Overviews verwenden', item_2: 'Hochrisiko‑Einträge aus dem Risikoregister hervorheben', item_3: 'Umsetzungsfortschritt der Maßnahmen zeigen', item_4: 'Abschlussraten für Pflichtschulungen berichten' }
+    overview: 'Berichtsübersicht'
+    integrate_ci_cd: 'In CI/CD-Pipeline integrieren'
+security_reports:
+    page:
+        title: 'Sicherheitsberichte'
+report:
+    document_type: 'Dokumenttyp'
+    header_center: 'Kopfzeile (Mitte)'
+    default_reviewer: 'Standard-Prüfer'

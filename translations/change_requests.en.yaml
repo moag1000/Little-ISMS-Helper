@@ -42,16 +42,16 @@ change_request:
         description: Description
         justification: Justification
         impact: Impact
-        risk_assessment: Risk Assessment
+        risk_assessment: 'Risk Assessment'
         plan: Plan
-        rollback_plan: Rollback Plan
-        testing_requirements: Testing Requirements
-        approval_info: Approval Info
+        rollback_plan: 'Rollback Plan'
+        testing_requirements: 'Testing Requirements'
+        approval_info: 'Approval Info'
         verification: Verification
         closure: Closure
-        affected_assets: Affected Assets
-        affected_controls: Affected Controls
-        affected_risks: Affected Risks
+        affected_assets: 'Affected Assets'
+        affected_controls: 'Affected Controls'
+        affected_risks: 'Affected Risks'
     field:
         change_number: 'Request No.'
         title: Title
@@ -79,13 +79,13 @@ change_request:
         verification_results: 'Verification Results'
         closed_date: 'Closed date'
         closure_notes: 'Closure Notes'
-        complexity_score: Complexity Score
-        planned_implementation: Planned Implementation
-        approval_date: Approval Date
+        complexity_score: 'Complexity Score'
+        planned_implementation: 'Planned Implementation'
+        approval_date: 'Approval Date'
         comments: Comments
-        implementation_date: Implementation Date
+        implementation_date: 'Implementation Date'
         notes: Notes
-        verification_date: Verification Date
+        verification_date: 'Verification Date'
         results: Results
     edit: Edit
     confirm:
@@ -93,4 +93,4 @@ change_request:
     details:
         title: Title
     status:
-        not_scheduled: Not Scheduled
+        not_scheduled: 'Not Scheduled'

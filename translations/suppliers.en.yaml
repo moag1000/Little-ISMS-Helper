@@ -10,7 +10,7 @@ supplier:
         edit: Edit
         create: Create
         update: Update
-        view_details: View Details
+        view_details: 'View Details'
     statistics:
         total: 'Total Suppliers'
         critical: 'Critical Suppliers'
@@ -45,6 +45,8 @@ supplier:
         related_assets: 'Related Assets'
         related_risks: 'Related Risks'
     field:
+        name: Name
+        description: Description
         service_provided: 'Service Provided'
         criticality: Criticality
         status: Status
@@ -54,19 +56,50 @@ supplier:
         address: Address
         security_score: 'Security Score'
         last_assessment: 'Last Assessment'
+        last_security_assessment: 'Last Security Assessment'
         next_assessment: 'Next Assessment'
+        next_assessment_date: 'Next Assessment Date'
         assessment_findings: 'Assessment Findings'
         non_conformities: Non-conformities
         iso27001_certified: 'ISO 27001 Certified'
         iso22301_certified: 'ISO 22301 Certified'
+        has_iso27001: 'ISO 27001 Certification'
+        has_iso22301: 'ISO 22301 Certification'
+        certifications: 'Other Certifications'
         dpa: 'Data Processing Agreement (DPA)'
+        has_dpa: 'DPA Available'
         dpa_signed_date: 'DPA Signed Date'
         other_certifications: 'Other Certifications'
         contract_start: 'Contract Start'
+        contract_start_date: 'Contract Start Date'
         contract_end: 'Contract End'
+        contract_end_date: 'Contract End Date'
         security_requirements: 'Security Requirements'
         contact: Contact
-        risk_level: Risk Level
+        risk_level: 'Risk Level'
+    placeholder:
+        name: 'e.g. Acme IT Services Inc.'
+        description: 'Describe the supplier and their services...'
+        contact_person: 'Name of contact person'
+        email: 'contact@supplier.com'
+        phone: '+1 234 567 890'
+        address: 'Street, City, Country'
+        service_provided: 'Describe the services provided...'
+        security_score: '0-100'
+        assessment_findings: 'Document the security assessment findings...'
+        non_conformities: 'List identified non-conformities...'
+        security_requirements: 'Define security requirements for the supplier...'
+        certifications: 'e.g. SOC 2 Type II, TISAX, etc.'
+    criticality:
+        critical: Critical
+        high: High
+        medium: Medium
+        low: Low
+    status:
+        active: Active
+        inactive: Inactive
+        evaluation: 'Under Evaluation'
+        terminated: Terminated
     badge:
         overdue: Overdue
     value:

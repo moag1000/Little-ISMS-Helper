@@ -26,8 +26,23 @@ risk_appetite:
         approved_by: 'Freigegeben von'
         approved_at: 'Freigegeben am'
         created_at: 'Erstellt am'
+    placeholder:
+        category: 'z.B. Finanziell, Operativ, Compliance oder leer für Global'
+        description: 'Beschreiben Sie die Risikobereitschaft und die Begründung für diesen Schwellwert...'
+        approved_by: '-- Genehmigende Person auswählen --'
     help:
         category_empty: 'Kategorie eingeben oder "Global" wählen'
+        category: 'Leer lassen für globale Risikobereitschaft, oder Kategorie angeben (z.B. Finanziell, IT, Compliance)'
+        max_acceptable_risk: 'Maximaler akzeptabler Risikowert auf einer Skala von 1-25 (Wahrscheinlichkeit × Auswirkung)'
+        description: 'Detaillierte Beschreibung und Begründung für diese Risikobereitschaft'
+        is_active: 'Ist dieser Risikoappetit aktuell gültig?'
+        approved_by: 'Person, die diese Risikobereitschaft formal genehmigt hat (ISO 27005)'
+        approved_at: 'Datum und Uhrzeit der formalen Genehmigung'
+    validation:
+        category_max_length: 'Die Kategorie darf maximal 100 Zeichen lang sein'
+        max_acceptable_risk_required: 'Bitte geben Sie den maximalen akzeptablen Risikowert an'
+        max_acceptable_risk_range: 'Der Risikowert muss zwischen 1 und 25 liegen'
+        description_required: 'Bitte geben Sie eine Beschreibung an'
     stats:
         total: 'Einträge gesamt'
         global_threshold: 'Globaler Schwellwert'
@@ -57,6 +72,6 @@ risk_appetite:
         confirm: 'Wollen Sie diesen Eintrag wirklich löschen?'
     no_appetites: 'Keine Risikobereitschaften definiert.'
     exceeding:
-        title: 'Risikoüberschreitungen'
+        title: Risikoüberschreitungen
         description: 'Risiken, die den definierten Risikoappetit überschreiten'
     and_more: 'Und weitere'

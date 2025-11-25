@@ -56,17 +56,17 @@ role_management:
 role:
     user: User
     manager: Manager
-    iso_officer: Iso Officer
-    risk_manager: Risk Manager
+    iso_officer: 'Iso Officer'
+    risk_manager: 'Risk Manager'
     auditor: Auditor
     admin: Admin
     compare:
         title: Title
-        select_roles: Select Roles
-        permission_matrix: Permission Matrix
-        has_permission: Has Permission
-        no_permission: No Permission
+        select_roles: 'Select Roles'
+        permission_matrix: 'Permission Matrix'
+        has_permission: 'Has Permission'
+        no_permission: 'No Permission'
     templates:
         title: Title
         description: Description
-        custom_name: Custom Name
+        custom_name: 'Custom Name'
