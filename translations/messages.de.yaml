@@ -2112,7 +2112,7 @@ vulnerability:
         high: Hoch
         medium: Mittel
         low: Niedrig
-        info: Info
+        info: Information
     status:
         identified: Identifiziert
         analyzing: 'In Analyse'
