@@ -73,6 +73,8 @@ audit:
         planned: Geplant
         in_progress: 'In Bearbeitung'
         completed: Abgeschlossen
+        postponed: Verschoben
+        cancelled: Abgebrochen
         reported: Berichtet
     scope_type:
         full_isms: 'Gesamtes ISMS'
@@ -101,6 +103,13 @@ audit:
         corporate_audit_note: "Wählen Sie die Tochtergesellschaften aus, die in dieses Audit einbezogen werden sollen. Bei 'Konzernweites Audit' sollten alle relevanten Tochtergesellschaften ausgewählt werden."
     corporate_audit_note_title: Konzernaudit-Hinweis
     corporate_audit_note: 'Informationen zum konzernweiten Audit'
+    placeholder:
+        title: 'z.B. ISO 27001:2022 Internes Audit Q1/2024'
+        scope: 'z.B. Alle ISMS-Prozesse und Kontrollen'
+        objectives: 'z.B. Überprüfung der Einhaltung von ISO 27001:2022'
+        lead_auditor: 'Name des leitenden Auditors'
+        audit_team: 'Namen der Teammitglieder, kommagetrennt'
+        scoped_framework: 'Framework auswählen, gegen das auditiert wird'
     help:
         title: 'Kurze Beschreibung des Audit-Zwecks'
         scope: 'Definiert den Umfang des Audits (z.B. gesamtes ISMS, spezifische Abteilung)'
@@ -133,6 +142,9 @@ audit:
         notes: 'Zusätzliche Notizen und Anmerkungen'
     scope: Geltungsbereich
     status_in_progress: 'In Bearbeitung'
+    validation:
+        title_required: 'Bitte geben Sie einen Titel für das Audit an'
+        date_required: 'Bitte wählen Sie ein geplantes Datum'
 audit_log:
     pagination:
         page_counter: 'Seite %current% von %total%'

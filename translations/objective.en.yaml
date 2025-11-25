@@ -13,6 +13,7 @@ objective:
         status_progress: 'Status & Progress'
     action:
         add_new: 'New Objective'
+        create: 'Create Objective'
     field:
         title: Title
         category: Category
@@ -25,7 +26,18 @@ objective:
         target_date: 'Target date'
         status: Status
         progress_notes: 'Progress notes'
-        achieved_date: Achieved Date
+        achieved_date: 'Achieved Date'
+    placeholder:
+        title: 'e.g. Improvement of information security'
+        description: 'Detailed description of the objective'
+        measurable_indicators: 'How is progress measured? e.g. Number of trainings conducted'
+        target_value: 'e.g. 100'
+        current_value: 'e.g. 75'
+        unit: 'Select unit'
+        responsible_person: 'Name of the responsible person'
+        progress_notes: 'Notes on current progress, obstacles, etc.'
+    help:
+        target_date: 'Target date for achieving the objective'
     stats:
         total: Total
         active: Active
@@ -42,15 +54,17 @@ objective:
     message:
         no_objectives: 'No objectives defined yet.'
     status:
-        achieved: achieved
-        in_progress: 'in progress'
-        delayed: delayed
-        at_risk: 'at risk'
-        total: total
-        active: active
+        not_started: 'Not started'
+        in_progress: 'In progress'
+        achieved: Achieved
+        delayed: Delayed
+        cancelled: Cancelled
+        at_risk: 'At risk'
+        total: Total
+        active: Active
     link:
         new: New
-        create_new: Create New
+        create_new: 'Create New'
     label:
         current: Current
         target: Target

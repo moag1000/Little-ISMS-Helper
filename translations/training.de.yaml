@@ -64,8 +64,25 @@ training:
         status: Status
         mandatory: Verpflichtend
         related_controls: 'Zugeordnete Maßnahmen'
+        covered_controls: 'Abgedeckte ISO 27001 Controls'
+        compliance_requirements: 'Compliance-Anforderungen'
         materials: 'Schulungsmaterialien und Unterlagen'
         feedback: 'Teilnehmer-Feedback und Bewertungen'
+    placeholder:
+        title: 'z.B. ISO 27001 Awareness Training'
+        description: 'Beschreiben Sie Inhalt und Ziele der Schulung...'
+        duration: 'z.B. 60'
+        location: 'z.B. Konferenzraum A oder Zoom-Link'
+    help:
+        duration: 'Dauer in Minuten (15-480)'
+        participants: 'STRG gedrückt halten um mehrere Teilnehmer auszuwählen'
+        covered_controls: 'Welche ISO 27001 Controls werden durch diese Schulung adressiert?'
+        compliance_requirements: 'Welche Compliance-Anforderungen werden durch diese Schulung erfüllt? (z.B. DORA, TISAX, NIS2)'
+        materials: 'Links oder Beschreibungen von Schulungsmaterialien'
+        feedback: 'Feedback von Teilnehmern oder Trainer-Notizen'
+    validation:
+        title_required: 'Bitte geben Sie einen Titel ein'
+        date_required: 'Bitte wählen Sie ein Datum'
     new_help: 'Planen Sie eine neue Schulung und informieren Sie die Zielgruppe rechtzeitig (ISO 27001 Klausel 7.2: Kompetenz).'
     edit_help: 'Bearbeiten Sie Details, Termin oder Zielgruppe dieser Schulung (ISO 27001 Klausel 7.3: Bewusstsein).'
     participants_count: 'Anzahl Teilnehmer'
@@ -77,3 +94,36 @@ training:
     status.completed: Abgeschlossen
     status.cancelled: Abgebrochen
     no_participants: 'Keine Teilnehmer zugewiesen'
+    types:
+        security_awareness: 'Security Awareness'
+        technical: 'Technisches Training'
+        compliance: 'Compliance Training'
+        emergency_drill: Notfallübung
+        phishing_simulation: Phishing-Simulation
+        data_protection: Datenschutz
+        cyber_security: 'Cyber Security'
+        other: Sonstiges
+    delivery_methods:
+        in_person: Präsenz
+        online_live: 'Online (Live)'
+        e_learning: 'E-Learning (Selbststudium)'
+        hybrid: Hybrid
+        workshop: Workshop
+    target_audiences:
+        all_employees: 'Alle Mitarbeiter'
+        it_department: IT-Abteilung
+        management: Management
+        developers: Entwickler
+        hr: HR
+        contractors: 'Externe Dienstleister'
+        new_employees: 'Neue Mitarbeiter'
+        specific_departments: 'Spezifische Abteilungen'
+    statuses:
+        planned: Geplant
+        confirmed: Bestätigt
+        completed: Durchgeführt
+        cancelled: Abgesagt
+        postponed: Verschoben
+    mandatory_options:
+        yes: 'Ja, verpflichtend'
+        no: 'Nein, optional'

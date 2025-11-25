@@ -31,29 +31,29 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             ->add('name', TextType::class, [
                 'label' => 'processing_activity.form.name',
-                'help' => 'Name/title of the processing activity (e.g., "Customer Management", "Payroll")',
+                'help' => 'processing_activity.help.name',
                 'required' => true,
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'processing_activity.form.description',
-                'help' => 'Detailed description of the processing activity',
+                'help' => 'processing_activity.help.description',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('purposes', ChoiceType::class, [
                 'label' => 'processing_activity.form.purposes',
-                'help' => 'Purpose(s) of processing (Art. 30(1)(a))',
+                'help' => 'processing_activity.help.purposes',
                 'choices' => [
-                    'Contract fulfillment' => 'contract_fulfillment',
-                    'Marketing' => 'marketing',
-                    'Legal obligation' => 'legal_obligation',
-                    'Customer relationship management' => 'crm',
-                    'Human resources management' => 'hr_management',
-                    'Financial accounting' => 'accounting',
-                    'IT security' => 'it_security',
-                    'Quality assurance' => 'quality_assurance',
-                    'Research and development' => 'research',
-                    'Other' => 'other',
+                    'processing_activity.purpose.contract_fulfillment' => 'contract_fulfillment',
+                    'processing_activity.purpose.marketing' => 'marketing',
+                    'processing_activity.purpose.legal_obligation' => 'legal_obligation',
+                    'processing_activity.purpose.crm' => 'crm',
+                    'processing_activity.purpose.hr_management' => 'hr_management',
+                    'processing_activity.purpose.accounting' => 'accounting',
+                    'processing_activity.purpose.it_security' => 'it_security',
+                    'processing_activity.purpose.quality_assurance' => 'quality_assurance',
+                    'processing_activity.purpose.research' => 'research',
+                    'processing_activity.purpose.other' => 'other',
                 ],
                 'multiple' => true,
                 'required' => true,
@@ -65,17 +65,17 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             ->add('dataSubjectCategories', ChoiceType::class, [
                 'label' => 'processing_activity.form.data_subject_categories',
-                'help' => 'Categories of data subjects (Art. 30(1)(b))',
+                'help' => 'processing_activity.help.data_subject_categories',
                 'choices' => [
-                    'Customers' => 'customers',
-                    'Employees' => 'employees',
-                    'Job applicants' => 'applicants',
-                    'Suppliers/Partners' => 'suppliers',
-                    'Website visitors' => 'visitors',
-                    'Newsletter subscribers' => 'subscribers',
-                    'Patients' => 'patients',
-                    'Students' => 'students',
-                    'Other' => 'other',
+                    'processing_activity.data_subject.customers' => 'customers',
+                    'processing_activity.data_subject.employees' => 'employees',
+                    'processing_activity.data_subject.applicants' => 'applicants',
+                    'processing_activity.data_subject.suppliers' => 'suppliers',
+                    'processing_activity.data_subject.visitors' => 'visitors',
+                    'processing_activity.data_subject.subscribers' => 'subscribers',
+                    'processing_activity.data_subject.patients' => 'patients',
+                    'processing_activity.data_subject.students' => 'students',
+                    'processing_activity.data_subject.other' => 'other',
                 ],
                 'multiple' => true,
                 'required' => true,
@@ -83,7 +83,7 @@ class ProcessingActivityType extends AbstractType
             ])
             ->add('estimatedDataSubjectsCount', IntegerType::class, [
                 'label' => 'processing_activity.form.estimated_data_subjects_count',
-                'help' => 'Approximate number of affected data subjects',
+                'help' => 'processing_activity.help.estimated_data_subjects_count',
                 'required' => false,
             ])
 
@@ -92,18 +92,18 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             ->add('personalDataCategories', ChoiceType::class, [
                 'label' => 'processing_activity.form.personal_data_categories',
-                'help' => 'Categories of personal data processed (Art. 30(1)(c))',
+                'help' => 'processing_activity.help.personal_data_categories',
                 'choices' => [
-                    'Identification data (name, ID number)' => 'identification',
-                    'Contact data (address, email, phone)' => 'contact',
-                    'Financial data (bank account, payment info)' => 'financial',
-                    'Location data' => 'location',
-                    'Online identifiers (IP, cookies)' => 'online_identifiers',
-                    'Employment data' => 'employment',
-                    'Educational data' => 'educational',
-                    'Contract data' => 'contract',
-                    'Communication data' => 'communication',
-                    'Usage data' => 'usage',
+                    'processing_activity.personal_data.identification' => 'identification',
+                    'processing_activity.personal_data.contact' => 'contact',
+                    'processing_activity.personal_data.financial' => 'financial',
+                    'processing_activity.personal_data.location' => 'location',
+                    'processing_activity.personal_data.online_identifiers' => 'online_identifiers',
+                    'processing_activity.personal_data.employment' => 'employment',
+                    'processing_activity.personal_data.educational' => 'educational',
+                    'processing_activity.personal_data.contract' => 'contract',
+                    'processing_activity.personal_data.communication' => 'communication',
+                    'processing_activity.personal_data.usage' => 'usage',
                 ],
                 'multiple' => true,
                 'required' => true,
@@ -111,26 +111,26 @@ class ProcessingActivityType extends AbstractType
             ])
             ->add('processesSpecialCategories', ChoiceType::class, [
                 'label' => 'processing_activity.form.processes_special_categories',
-                'help' => 'Does this process special categories of data (Art. 9 GDPR)?',
+                'help' => 'processing_activity.help.processes_special_categories',
                 'choices' => [
-                    'No' => false,
-                    'Yes' => true,
+                    'common.no' => false,
+                    'common.yes' => true,
                 ],
                 'expanded' => true,
                 'required' => true,
             ])
             ->add('specialCategoriesDetails', ChoiceType::class, [
                 'label' => 'processing_activity.form.special_categories_details',
-                'help' => 'Which special categories are processed (Art. 9 GDPR)?',
+                'help' => 'processing_activity.help.special_categories_details',
                 'choices' => [
-                    'Health data' => 'health',
-                    'Biometric data' => 'biometric',
-                    'Genetic data' => 'genetic',
-                    'Racial/ethnic origin' => 'racial_ethnic',
-                    'Political opinions' => 'political',
-                    'Religious/philosophical beliefs' => 'religious',
-                    'Trade union membership' => 'union',
-                    'Sex life/sexual orientation' => 'sex_life',
+                    'processing_activity.special_category.health' => 'health',
+                    'processing_activity.special_category.biometric' => 'biometric',
+                    'processing_activity.special_category.genetic' => 'genetic',
+                    'processing_activity.special_category.racial_ethnic' => 'racial_ethnic',
+                    'processing_activity.special_category.political' => 'political',
+                    'processing_activity.special_category.religious' => 'religious',
+                    'processing_activity.special_category.union' => 'union',
+                    'processing_activity.special_category.sex_life' => 'sex_life',
                 ],
                 'multiple' => true,
                 'required' => false,
@@ -138,10 +138,10 @@ class ProcessingActivityType extends AbstractType
             ])
             ->add('processesCriminalData', ChoiceType::class, [
                 'label' => 'processing_activity.form.processes_criminal_data',
-                'help' => 'Does this process criminal convictions data (Art. 10 GDPR)?',
+                'help' => 'processing_activity.help.processes_criminal_data',
                 'choices' => [
-                    'No' => false,
-                    'Yes' => true,
+                    'common.no' => false,
+                    'common.yes' => true,
                 ],
                 'expanded' => true,
                 'required' => true,
@@ -152,17 +152,17 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             ->add('recipientCategories', ChoiceType::class, [
                 'label' => 'processing_activity.form.recipient_categories',
-                'help' => 'Categories of recipients (Art. 30(1)(d))',
+                'help' => 'processing_activity.help.recipient_categories',
                 'choices' => [
-                    'Internal departments' => 'internal_departments',
-                    'IT service providers' => 'it_service_providers',
-                    'Cloud providers' => 'cloud_providers',
-                    'Payment processors' => 'payment_processors',
-                    'Marketing agencies' => 'marketing_agencies',
-                    'Auditors/Consultants' => 'auditors',
-                    'Public authorities' => 'public_authorities',
-                    'Legal representatives' => 'legal',
-                    'Other processors' => 'other_processors',
+                    'processing_activity.recipient.internal_departments' => 'internal_departments',
+                    'processing_activity.recipient.it_service_providers' => 'it_service_providers',
+                    'processing_activity.recipient.cloud_providers' => 'cloud_providers',
+                    'processing_activity.recipient.payment_processors' => 'payment_processors',
+                    'processing_activity.recipient.marketing_agencies' => 'marketing_agencies',
+                    'processing_activity.recipient.auditors' => 'auditors',
+                    'processing_activity.recipient.public_authorities' => 'public_authorities',
+                    'processing_activity.recipient.legal' => 'legal',
+                    'processing_activity.recipient.other_processors' => 'other_processors',
                 ],
                 'multiple' => true,
                 'required' => false,
@@ -170,7 +170,7 @@ class ProcessingActivityType extends AbstractType
             ])
             ->add('recipientDetails', TextareaType::class, [
                 'label' => 'processing_activity.form.recipient_details',
-                'help' => 'Specific recipients (optional, for transparency)',
+                'help' => 'processing_activity.help.recipient_details',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
@@ -180,26 +180,26 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             ->add('hasThirdCountryTransfer', ChoiceType::class, [
                 'label' => 'processing_activity.form.has_third_country_transfer',
-                'help' => 'Is data transferred to countries outside EU/EEA (Art. 30(1)(e))?',
+                'help' => 'processing_activity.help.has_third_country_transfer',
                 'choices' => [
-                    'No' => false,
-                    'Yes' => true,
+                    'common.no' => false,
+                    'common.yes' => true,
                 ],
                 'expanded' => true,
                 'required' => true,
             ])
             ->add('thirdCountries', ChoiceType::class, [
                 'label' => 'processing_activity.form.third_countries',
-                'help' => 'Which countries receive data?',
+                'help' => 'processing_activity.help.third_countries',
                 'choices' => [
-                    'USA' => 'US',
-                    'United Kingdom' => 'GB',
-                    'Switzerland' => 'CH',
-                    'Canada' => 'CA',
-                    'Japan' => 'JP',
-                    'India' => 'IN',
-                    'China' => 'CN',
-                    'Other' => 'other',
+                    'processing_activity.country.us' => 'US',
+                    'processing_activity.country.gb' => 'GB',
+                    'processing_activity.country.ch' => 'CH',
+                    'processing_activity.country.ca' => 'CA',
+                    'processing_activity.country.jp' => 'JP',
+                    'processing_activity.country.in' => 'IN',
+                    'processing_activity.country.cn' => 'CN',
+                    'processing_activity.country.other' => 'other',
                 ],
                 'multiple' => true,
                 'required' => false,
@@ -207,18 +207,18 @@ class ProcessingActivityType extends AbstractType
             ])
             ->add('transferSafeguards', ChoiceType::class, [
                 'label' => 'processing_activity.form.transfer_safeguards',
-                'help' => 'Legal basis for third country transfer (Art. 44-49)',
+                'help' => 'processing_activity.help.transfer_safeguards',
                 'choices' => [
-                    'Art. 45 Adequacy Decision' => 'adequacy_decision',
-                    'Art. 46 Standard Contractual Clauses (SCCs)' => 'standard_contractual_clauses',
-                    'Art. 47 Binding Corporate Rules (BCRs)' => 'binding_corporate_rules',
-                    'Art. 42 Certification' => 'certification',
-                    'Art. 40 Codes of Conduct' => 'codes_of_conduct',
-                    'Art. 49(1)(a) Explicit consent' => 'explicit_consent',
-                    'Art. 49(1)(b) Contract necessity' => 'contract_necessity',
-                    'Art. 49(1)(d) Public interest' => 'public_interest',
-                    'Art. 49(1)(e) Legal claims' => 'legal_claims',
-                    'Art. 49(1)(f) Vital interests' => 'vital_interests',
+                    'processing_activity.transfer_safeguard.adequacy_decision' => 'adequacy_decision',
+                    'processing_activity.transfer_safeguard.standard_contractual_clauses' => 'standard_contractual_clauses',
+                    'processing_activity.transfer_safeguard.binding_corporate_rules' => 'binding_corporate_rules',
+                    'processing_activity.transfer_safeguard.certification' => 'certification',
+                    'processing_activity.transfer_safeguard.codes_of_conduct' => 'codes_of_conduct',
+                    'processing_activity.transfer_safeguard.explicit_consent' => 'explicit_consent',
+                    'processing_activity.transfer_safeguard.contract_necessity' => 'contract_necessity',
+                    'processing_activity.transfer_safeguard.public_interest' => 'public_interest',
+                    'processing_activity.transfer_safeguard.legal_claims' => 'legal_claims',
+                    'processing_activity.transfer_safeguard.vital_interests' => 'vital_interests',
                 ],
                 'required' => false,
                 'attr' => ['class' => 'select2'],
@@ -229,18 +229,18 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             ->add('retentionPeriod', TextareaType::class, [
                 'label' => 'processing_activity.form.retention_period',
-                'help' => 'Retention period/deletion deadline (Art. 30(1)(f))',
+                'help' => 'processing_activity.help.retention_period',
                 'required' => true,
                 'attr' => ['rows' => 2],
             ])
             ->add('retentionPeriodDays', IntegerType::class, [
                 'label' => 'processing_activity.form.retention_period_days',
-                'help' => 'Retention period in days (optional, for automated deletion)',
+                'help' => 'processing_activity.help.retention_period_days',
                 'required' => false,
             ])
             ->add('retentionLegalBasis', TextareaType::class, [
                 'label' => 'processing_activity.form.retention_legal_basis',
-                'help' => 'Legal basis for retention period (e.g., HGB §257, Tax Code)',
+                'help' => 'processing_activity.help.retention_legal_basis',
                 'required' => false,
                 'attr' => ['rows' => 2],
             ])
@@ -250,13 +250,13 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             ->add('technicalOrganizationalMeasures', TextareaType::class, [
                 'label' => 'processing_activity.form.technical_organizational_measures',
-                'help' => 'Description of technical and organizational security measures (Art. 32 GDPR)',
+                'help' => 'processing_activity.help.technical_organizational_measures',
                 'required' => true,
                 'attr' => ['rows' => 4],
             ])
             ->add('implementedControls', EntityType::class, [
                 'label' => 'processing_activity.form.implemented_controls',
-                'help' => 'Link to ISO 27001 controls (optional)',
+                'help' => 'processing_activity.help.implemented_controls',
                 'class' => Control::class,
                 'choice_label' => function (Control $control) {
                     return $control->getControlId() . ' - ' . $control->getName();
@@ -271,38 +271,38 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             ->add('legalBasis', ChoiceType::class, [
                 'label' => 'processing_activity.form.legal_basis',
-                'help' => 'Legal basis for processing (Art. 6(1) GDPR)',
+                'help' => 'processing_activity.help.legal_basis',
                 'choices' => [
-                    'Art. 6(1)(a) Consent' => 'consent',
-                    'Art. 6(1)(b) Contract performance' => 'contract',
-                    'Art. 6(1)(c) Legal obligation' => 'legal_obligation',
-                    'Art. 6(1)(d) Vital interests' => 'vital_interests',
-                    'Art. 6(1)(e) Public task' => 'public_task',
-                    'Art. 6(1)(f) Legitimate interests' => 'legitimate_interests',
+                    'processing_activity.legal_basis.consent' => 'consent',
+                    'processing_activity.legal_basis.contract' => 'contract',
+                    'processing_activity.legal_basis.legal_obligation' => 'legal_obligation',
+                    'processing_activity.legal_basis.vital_interests' => 'vital_interests',
+                    'processing_activity.legal_basis.public_task' => 'public_task',
+                    'processing_activity.legal_basis.legitimate_interests' => 'legitimate_interests',
                 ],
                 'required' => true,
                 'attr' => ['class' => 'select2'],
             ])
             ->add('legalBasisDetails', TextareaType::class, [
                 'label' => 'processing_activity.form.legal_basis_details',
-                'help' => 'Detailed explanation (mandatory for legitimate interests)',
+                'help' => 'processing_activity.help.legal_basis_details',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('legalBasisSpecialCategories', ChoiceType::class, [
                 'label' => 'processing_activity.form.legal_basis_special_categories',
-                'help' => 'Legal basis for processing special categories (Art. 9(2) GDPR)',
+                'help' => 'processing_activity.help.legal_basis_special_categories',
                 'choices' => [
-                    'Art. 9(2)(a) Explicit consent' => 'explicit_consent',
-                    'Art. 9(2)(b) Employment law' => 'employment_law',
-                    'Art. 9(2)(c) Vital interests' => 'vital_interests',
-                    'Art. 9(2)(d) Legitimate activities' => 'legitimate_activities',
-                    'Art. 9(2)(e) Made public by data subject' => 'made_public',
-                    'Art. 9(2)(f) Legal claims' => 'legal_claims',
-                    'Art. 9(2)(g) Substantial public interest' => 'substantial_public_interest',
-                    'Art. 9(2)(h) Health care' => 'health_care',
-                    'Art. 9(2)(i) Public health' => 'public_health',
-                    'Art. 9(2)(j) Research/statistics' => 'research_statistics',
+                    'processing_activity.legal_basis_special.explicit_consent' => 'explicit_consent',
+                    'processing_activity.legal_basis_special.employment_law' => 'employment_law',
+                    'processing_activity.legal_basis_special.vital_interests' => 'vital_interests',
+                    'processing_activity.legal_basis_special.legitimate_activities' => 'legitimate_activities',
+                    'processing_activity.legal_basis_special.made_public' => 'made_public',
+                    'processing_activity.legal_basis_special.legal_claims' => 'legal_claims',
+                    'processing_activity.legal_basis_special.substantial_public_interest' => 'substantial_public_interest',
+                    'processing_activity.legal_basis_special.health_care' => 'health_care',
+                    'processing_activity.legal_basis_special.public_health' => 'public_health',
+                    'processing_activity.legal_basis_special.research_statistics' => 'research_statistics',
                 ],
                 'required' => false,
                 'attr' => ['class' => 'select2'],
@@ -313,12 +313,12 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             ->add('responsibleDepartment', TextType::class, [
                 'label' => 'processing_activity.form.responsible_department',
-                'help' => 'Department/unit responsible for this processing',
+                'help' => 'processing_activity.help.responsible_department',
                 'required' => false,
             ])
             ->add('contactPerson', EntityType::class, [
                 'label' => 'processing_activity.form.contact_person',
-                'help' => 'Contact person for this processing activity',
+                'help' => 'processing_activity.help.contact_person',
                 'class' => User::class,
                 'choice_label' => 'username',
                 'required' => false,
@@ -326,7 +326,7 @@ class ProcessingActivityType extends AbstractType
             ])
             ->add('dataProtectionOfficer', EntityType::class, [
                 'label' => 'processing_activity.form.data_protection_officer',
-                'help' => 'Data Protection Officer (if applicable)',
+                'help' => 'processing_activity.help.data_protection_officer',
                 'class' => User::class,
                 'choice_label' => 'username',
                 'required' => false,
@@ -338,10 +338,10 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             ->add('involvesProcessors', ChoiceType::class, [
                 'label' => 'processing_activity.form.involves_processors',
-                'help' => 'Are processors (Auftragsverarbeiter) involved (Art. 28)?',
+                'help' => 'processing_activity.help.involves_processors',
                 'choices' => [
-                    'No' => false,
-                    'Yes' => true,
+                    'common.no' => false,
+                    'common.yes' => true,
                 ],
                 'expanded' => true,
                 'required' => true,
@@ -352,10 +352,10 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             ->add('isJointController', ChoiceType::class, [
                 'label' => 'processing_activity.form.is_joint_controller',
-                'help' => 'Is this a joint controller arrangement (Art. 26)?',
+                'help' => 'processing_activity.help.is_joint_controller',
                 'choices' => [
-                    'No' => false,
-                    'Yes' => true,
+                    'common.no' => false,
+                    'common.yes' => true,
                 ],
                 'expanded' => true,
                 'required' => true,
@@ -366,33 +366,33 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             ->add('isHighRisk', ChoiceType::class, [
                 'label' => 'processing_activity.form.is_high_risk',
-                'help' => 'Is this considered high-risk processing?',
+                'help' => 'processing_activity.help.is_high_risk',
                 'choices' => [
-                    'No' => false,
-                    'Yes' => true,
+                    'common.no' => false,
+                    'common.yes' => true,
                 ],
                 'expanded' => true,
                 'required' => true,
             ])
             ->add('dpiaCompleted', ChoiceType::class, [
                 'label' => 'processing_activity.form.dpia_completed',
-                'help' => 'Has a Data Protection Impact Assessment (DPIA) been conducted?',
+                'help' => 'processing_activity.help.dpia_completed',
                 'choices' => [
-                    'No' => false,
-                    'Yes' => true,
+                    'common.no' => false,
+                    'common.yes' => true,
                 ],
                 'expanded' => true,
                 'required' => true,
             ])
             ->add('dpiaDate', DateType::class, [
                 'label' => 'processing_activity.form.dpia_date',
-                'help' => 'Date of DPIA completion',
+                'help' => 'processing_activity.help.dpia_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('riskLevel', ChoiceType::class, [
                 'label' => 'processing_activity.form.risk_level',
-                'help' => 'Overall risk level assessment',
+                'help' => 'processing_activity.help.risk_level',
                 'choices' => [
                     'Low' => 'low',
                     'Medium' => 'medium',
@@ -408,7 +408,7 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             ->add('hasAutomatedDecisionMaking', ChoiceType::class, [
                 'label' => 'processing_activity.form.has_automated_decision_making',
-                'help' => 'Does this involve automated decision-making/profiling (Art. 22)?',
+                'help' => 'processing_activity.help.has_automated_decision_making',
                 'choices' => [
                     'No' => false,
                     'Yes' => true,
@@ -418,7 +418,7 @@ class ProcessingActivityType extends AbstractType
             ])
             ->add('automatedDecisionMakingDetails', TextareaType::class, [
                 'label' => 'processing_activity.form.automated_decision_making_details',
-                'help' => 'Explain logic and significance of automated decision-making',
+                'help' => 'processing_activity.help.automated_decision_making_details',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
@@ -428,7 +428,7 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             ->add('dataSources', ChoiceType::class, [
                 'label' => 'processing_activity.form.data_sources',
-                'help' => 'Where is data collected from?',
+                'help' => 'processing_activity.help.data_sources',
                 'choices' => [
                     'Directly from data subject' => 'data_subject',
                     'Third parties' => 'third_parties',
@@ -445,7 +445,7 @@ class ProcessingActivityType extends AbstractType
             // ============================================================================
             ->add('status', ChoiceType::class, [
                 'label' => 'processing_activity.form.status',
-                'help' => 'Status of this record',
+                'help' => 'processing_activity.help.status',
                 'choices' => [
                     'Draft' => 'draft',
                     'Active' => 'active',
@@ -455,19 +455,19 @@ class ProcessingActivityType extends AbstractType
             ])
             ->add('startDate', DateType::class, [
                 'label' => 'processing_activity.form.start_date',
-                'help' => 'When did this processing start?',
+                'help' => 'processing_activity.help.start_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('endDate', DateType::class, [
                 'label' => 'processing_activity.form.end_date',
-                'help' => 'When did this processing end (if applicable)?',
+                'help' => 'processing_activity.help.end_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('nextReviewDate', DateType::class, [
                 'label' => 'processing_activity.form.next_review_date',
-                'help' => 'When should this be reviewed next?',
+                'help' => 'processing_activity.help.next_review_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
@@ -478,6 +478,7 @@ class ProcessingActivityType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ProcessingActivity::class,
+            'translation_domain' => 'privacy',
         ]);
     }
 }

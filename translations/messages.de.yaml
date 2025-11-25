@@ -19,7 +19,7 @@ login:
     azure_saml: 'Mit Microsoft Azure anmelden (SAML)'
     no_account_message: 'Haben Sie noch kein Konto? Kontaktieren Sie Ihren Administrator.'
     placeholder:
-        email: ''
+        email: ihre.email@unternehmen.de
 logout: Abmelden
 email: E-Mail
 password: Passwort
@@ -60,8 +60,8 @@ home:
             action: 'Zu den Dokumenten'
     development_notice: 'Diese Funktion befindet sich in Entwicklung'
     go_to_dashboard: 'Zum Dashboard'
-    tagline: ''
-    quick_start: ''
+    tagline: 'Informationssicherheit nach ISO 27001 einfach gemacht'
+    quick_start: Schnellstart
 assets: Assets
 risks: Risiken
 controls: Maßnahmen
@@ -87,6 +87,8 @@ close: Schließen
 confirm: Bestätigen
 back: Zurück
 common:
+    yes: 'Ja'
+    no: 'Nein'
     overview: Übersicht
     name: Name
     description: Beschreibung
@@ -107,8 +109,6 @@ common:
     reset: Zurücksetzen
     metadata: Metadaten
     action_irreversible: 'Diese Aktion kann nicht rückgängig gemacht werden.'
-    'yes': Ja
-    'no': Nein
     note: Hinweis
     warning: Warnung
     to_home: 'Zur Startseite'
@@ -184,39 +184,39 @@ common:
     title: Titel
     responsible: Verantwortlich
     target_date: Zieldatum
-    export_pdf: ''
+    export_pdf: 'PDF exportieren'
     tooltip:
-        go_to_module_management: ''
-        framework_dashboard_description: ''
-        reload_to_see_framework: ''
-        fulfillment_slider: ''
-        status_in_progress: ''
-        status_fully_implemented: ''
-        framework_loaded_success: ''
-        opens_requirements_list: ''
-        requirements_sorted_by_fulfillment: ''
-        reach_100_percent: ''
-        view_gap_analysis: ''
-        activate_module: ''
-    info: ''
-    activities: ''
-    no_items_found: ''
-    pdf_export: ''
+        go_to_module_management: 'Zur Modulverwaltung gehen, um weitere Funktionen zu aktivieren'
+        framework_dashboard_description: 'Übersicht über alle aktivierten Compliance-Frameworks mit Erfüllungsgrad'
+        reload_to_see_framework: 'Seite neu laden, um das neu aktivierte Framework anzuzeigen'
+        fulfillment_slider: 'Schieberegler zeigt den aktuellen Erfüllungsgrad der Anforderungen an'
+        status_in_progress: 'Diese Anforderung befindet sich aktuell in Bearbeitung'
+        status_fully_implemented: 'Diese Anforderung wurde vollständig implementiert'
+        framework_loaded_success: 'Framework wurde erfolgreich geladen und ist nun verfügbar'
+        opens_requirements_list: 'Öffnet die vollständige Liste aller Anforderungen dieses Frameworks'
+        requirements_sorted_by_fulfillment: 'Anforderungen sind nach Erfüllungsgrad sortiert (niedrigster zuerst)'
+        reach_100_percent: 'Implementieren Sie alle Anforderungen, um 100% Erfüllung zu erreichen'
+        view_gap_analysis: 'Gap-Analyse anzeigen - identifiziert Lücken zwischen Ist- und Soll-Zustand'
+        activate_module: 'Modul aktivieren, um diese Funktionalität freizuschalten'
+    info: Information
+    activities: Aktivitäten
+    no_items_found: 'Keine Einträge gefunden'
+    pdf_export: PDF-Export
     placeholder:
-        case_number_from_authority: ''
-        explain_deadline_exceeded: ''
-        explain_breach_reopened: ''
-    reset_all_filters: ''
-    time_savings: ''
-    consistency: ''
-    audit_evidence: ''
-    informed_decisions: ''
-    search_processes: ''
-    data_reuse: ''
-    confirm_delete: ''
-    roles_and_responsibilities: ''
-    team_members: ''
-    observers: ''
+        case_number_from_authority: 'Aktenzeichen der Aufsichtsbehörde (z.B. AZ-2024-123)'
+        explain_deadline_exceeded: 'Erläutern Sie, warum die 72-Stunden-Frist überschritten wurde (Art. 33 Abs. 1 DSGVO)'
+        explain_breach_reopened: 'Begründen Sie, warum die Datenschutzverletzung wiedereröffnet werden muss'
+    reset_all_filters: 'Alle Filter zurücksetzen'
+    time_savings: Zeitersparnis
+    consistency: Konsistenz
+    audit_evidence: Audit-Nachweis
+    informed_decisions: 'Fundierte Entscheidungen'
+    search_processes: 'Prozesse durchsuchen'
+    data_reuse: Daten-Wiederverwendung
+    confirm_delete: 'Löschen bestätigen'
+    roles_and_responsibilities: 'Rollen und Verantwortlichkeiten'
+    team_members: Teammitglieder
+    observers: Beobachter
 person:
     title: Person
     titles:
@@ -308,552 +308,10 @@ person:
         created: 'Person erfolgreich erstellt.'
         updated: 'Person erfolgreich aktualisiert.'
         deleted: 'Person erfolgreich gelöscht.'
-    title.edit: ''
-    title.create: ''
-    title.list: ''
-    title.show: ''
-workflow:
-    title:
-        list: Workflows
-        definitions: Workflow-Definitionen
-        active: 'Aktive Workflows'
-        pending: 'Ausstehende Workflows'
-        overdue: 'Überfällige Workflows'
-        instance_show: Workflow-Details
-    step: Schritt
-    days: Tage
-    action:
-        start: 'Workflow starten'
-        cancel: 'Workflow abbrechen'
-        complete_step: 'Schritt abschließen'
-        definitions: 'Definitionen verwalten'
-        create_definition: ''
-        create: ''
-        update: ''
-        delete_definition: ''
-        builder: ''
-        edit: ''
-        deactivate: ''
-        activate: ''
-        delete: ''
-        back: ''
-    badge:
-        completed: Abgeschlossen
-        critical: Kritisch
-        current: Aktuell
-        due_soon: 'Bald fällig'
-        overdue: Überfällig
-        my_task: 'Meine Aufgabe'
-    confirm:
-        cancel: 'Möchten Sie diesen Workflow wirklich abbrechen?'
-        delete: ''
-    description:
-        active: 'Aktive Workflows'
-        active_detail: 'Workflows, die derzeit in Bearbeitung sind'
-        definitions: 'Workflow-Definitionen verwalten'
-        overdue: 'Überfällige Workflows'
-        overdue_detail: 'Workflows, die ihr Fälligkeitsdatum überschritten haben'
-        overview: Workflow-Übersicht
-        pending: 'Ausstehende Workflows'
-        pending_detail: 'Workflows, die auf eine Aktion warten'
-    field:
-        assignee: 'Zugewiesen an'
-        completed_at: 'Abgeschlossen am'
-        current_step: 'Aktueller Schritt'
-        days_overdue: 'Tage überfällig'
-        definition: Definition
-        due_date: Fälligkeitsdatum
-        priority: Priorität
-        progress: Fortschritt
-        definition_name: ''
-        description: ''
-        steps: ''
-        instances: ''
-        active: ''
-        name: ''
-        status: ''
-        entity_type: ''
-        created_at: ''
-        updated_at: ''
-    message:
-        no_active: 'Keine aktiven Workflows'
-        no_activities: 'Keine Aktivitäten'
-        no_overdue: 'Keine überfälligen Workflows'
-        no_overdue_desc: 'Alle Workflows sind im Zeitplan'
-        no_pending: 'Keine ausstehenden Workflows'
-        unassigned: 'Nicht zugewiesen'
-        no_definitions: ''
-        no_instances: ''
-        no_steps: ''
-    section:
-        active: 'Aktive Workflows'
-        activity_log: Aktivitätsprotokoll
-        overdue: Überfällig
-        overview: Übersicht
-        pending: Ausstehend
-        recent_instances: ''
-        basic_information: ''
-        danger_zone: ''
-        information: ''
-        steps: ''
-        actions: ''
-        statistics: ''
-    stats:
-        active: Aktive
-        avg_progress: 'Durchschnittlicher Fortschritt'
-        critical_overdue: 'Kritisch überfällig'
-        due_this_week: 'Fällig diese Woche'
-        my_overdue: 'Meine überfälligen'
-        my_tasks: 'Meine Aufgaben'
-        my_workflows: 'Meine Workflows'
-        overdue: Überfällig
-        overdue_days_avg: 'Durchschnitt Tage überfällig'
-        pending: Ausstehend
-        total: Gesamt
-        total_definitions: ''
-        active_definitions: ''
-        avg_steps: ''
-        entity_types: ''
-        steps: ''
-        total_instances: ''
-    activity:
-        action: Aktion
-        details: Details
-        timestamp: Zeitstempel
-        user: Benutzer
-    warning:
-        overdue_count: '{{ count }} überfällige Workflows'
-        overdue_message: 'Sie haben überfällige Workflows, die Aufmerksamkeit erfordern'
-        rejected: 'Workflow-Schritt abgelehnt'
-    success:
-        approved: 'Workflow-Schritt erfolgreich genehmigt.'
-        started: 'Workflow erfolgreich gestartet.'
-        definition_created: ''
-        definition_updated: ''
-        definition_deleted: ''
-    error:
-        not_authorized_approve: 'Sie sind nicht berechtigt, diesen Schritt zu genehmigen.'
-        not_authorized_reject: 'Sie sind nicht berechtigt, diesen Schritt abzulehnen.'
-        comments_required: 'Kommentare sind erforderlich, wenn ein Workflow-Schritt abgelehnt'
-        not_found: 'Kein Workflow für diesen Entity-Typ gefunden.'
-        has_active_instances: ''
-    info:
-        cancelled: 'Workflow-Instanz abgebrochen.'
-        no_active_workflow: 'Kein aktiver Workflow für diese Entität gefunden.'
-        steps_note_title: ''
-        steps_note_text: ''
-    definition:
-        edit_title: ''
-        new_title: ''
-        title: ''
-    breadcrumb:
-        home: ''
-        definitions: ''
-        edit: ''
-        new: ''
-    help:
-        name: ''
-        description: ''
-        delete_warning: ''
-    instance:
-        entity: ''
-        status: ''
-        current_step: ''
-        created: ''
-        actions: ''
-    status:
-        completed: ''
-        rejected: ''
-        cancelled: ''
-        pending: ''
-        active: ''
-        inactive: ''
-    step.requires_comment: ''
-    step.requires_file: ''
-    builder:
-        title: ''
-        breadcrumb: ''
-        heading: ''
-        steps: ''
-        drag_help: ''
-        add_step: ''
-        new_step: ''
-        templates: ''
-        templates_help: ''
-        info: ''
-        help: ''
-        help_drag: ''
-        help_edit: ''
-        help_duplicate: ''
-        help_delete: ''
-        help_template: ''
-    step.name: ''
-    step.type: ''
-    step.type.approval: ''
-    step.type.notification: ''
-    step.type.auto_action: ''
-    step.description: ''
-    step.approver_role: ''
-    step.days_to_complete: ''
-    step.days_help: ''
-    step.is_required: ''
-    template:
-        risk_assessment: ''
-        risk_assessment_desc: ''
-        control_implementation: ''
-        control_implementation_desc: ''
-        incident_response: ''
-        incident_response_desc: ''
-        document_review: ''
-        document_review_desc: ''
-        change_request: ''
-        change_request_desc: ''
-change_request:
-    title: Änderungsanträge
-    new: 'Neuer Änderungsantrag'
-    page:
-        title: 'ISMS Change Management'
-        new: 'Neuen Änderungsantrag erstellen'
-        edit: 'Änderungsantrag bearbeiten'
-    edit: 'Änderungsantrag bearbeiten'
-    action:
-        create: 'Änderungsantrag erstellen'
-        update: 'Änderungsantrag aktualisieren'
-        view: Ansehen
-        edit: Bearbeiten
-    field:
-        change_number: Änderungsnummer
-        title: Titel
-        change_type: Änderungstyp
-        description: Beschreibung
-        justification: Begründung
-        requested_by: 'Angefordert von'
-        requested_date: Anforderungsdatum
-        priority: Priorität
-        status: Status
-        complexity_score: Komplexitätsbewertung
-        isms_impact: ISMS-Auswirkung
-        risk_assessment: Risikobewertung
-        implementation_plan: Umsetzungsplan
-        rollback_plan: Rollback-Plan
-        testing_requirements: Testanforderungen
-        planned_implementation: 'Geplante Umsetzung'
-        planned_implementation_date: 'Geplantes Umsetzungsdatum'
-        actual_implementation_date: 'Tatsächliches Umsetzungsdatum'
-        implementation_date: Umsetzungsdatum
-        approved_by: 'Genehmigt von'
-        approved_date: Genehmigungsdatum
-        approval_date: Genehmigungsdatum
-        approval_comments: Genehmigungskommentare
-        comments: Kommentare
-        implemented_by: 'Umgesetzt von'
-        implementation_notes: Umsetzungsnotizen
-        notes: Notizen
-        verified_by: 'Verifiziert von'
-        verified_date: Verifizierungsdatum
-        verification_date: Verifizierungsdatum
-        verification_results: Verifizierungsergebnisse
-        results: Ergebnisse
-        closed_date: Abschlussdatum
-        closure_notes: Abschlussnotizen
-    change_type:
-        isms_policy: ISMS-Richtlinie
-        isms_scope: ISMS-Geltungsbereich
-        control: Maßnahme
-        asset: Asset
-        process: Prozess
-        technology: Technologie
-        supplier: Lieferant
-        organizational: Organisatorisch
-        other: Sonstiges
-    priority:
-        critical: Kritisch
-        high: Hoch
-        medium: Mittel
-        low: Niedrig
-    status:
-        draft: Entwurf
-        submitted: Eingereicht
-        under_review: 'In Prüfung'
-        approved: Genehmigt
-        rejected: Abgelehnt
-        scheduled: Geplant
-        not_scheduled: 'Nicht geplant'
-        implemented: Umgesetzt
-        verified: Verifiziert
-        closed: Geschlossen
-        cancelled: Abgebrochen
-    section:
-        description: Beschreibung
-        justification: Begründung
-        impact: Auswirkung
-        risk_assessment: Risikobewertung
-        plan: Umsetzungsplan
-        rollback_plan: Rollback-Plan
-        testing_requirements: Testanforderungen
-        approval_info: Genehmigungsinformationen
-        implementation: Umsetzung
-        verification: Verifizierung
-        closure: Abschluss
-        affected_assets: 'Betroffene Assets'
-        affected_controls: 'Betroffene Maßnahmen'
-        affected_risks: 'Betroffene Risiken'
-    confirm:
-        delete: 'Möchten Sie diesen Änderungsantrag wirklich löschen?'
-    statistics:
-        title: Statistiken
-        total: 'Gesamtzahl Änderungsanträge'
-        pending_approval: 'Warten auf Genehmigung'
-        in_implementation: 'In Umsetzung'
-        overdue: Überfällig
-    alert:
-        pending_approval: 'Warten auf Genehmigung'
-        overdue: 'Überfällige Änderungsanträge'
-    list:
-        title: 'Änderungsanträge (%count%)'
-    table:
-        change_number: Änderungs-Nr.
-        title: Titel
-        type: Typ
-        priority: Priorität
-        status: Status
-        complexity: Komplexität
-        requested: Angefordert
-        actions: Aktionen
-    empty:
-        message: 'Keine Änderungsanträge gefunden.'
-        create_first: 'Erstellen Sie Ihren ersten Änderungsantrag'
-    details:
-        title: Änderungsantragsdetails
-    success:
-        created: 'Änderungsantrag erfolgreich erstellt.'
-        updated: 'Änderungsantrag erfolgreich aktualisiert.'
-        deleted: 'Änderungsantrag erfolgreich gelöscht.'
-bc_plan:
-    new: 'Neuer BC-Plan'
-    create: 'BC-Plan erstellen'
-    section:
-        basic_info: Grundinformationen
-        team: Team
-        activation: 'Aktivierung & Reaktion'
-        communication: Kommunikation
-        alternative_site: 'Alternativer Standort'
-        backup_recovery: 'Backup & Wiederherstellung'
-        version_review: 'Version & Review'
-business_continuity_plan:
-    new: 'Neuer BC-Plan'
-    create: 'BC-Plan erstellen'
-    section:
-        basic_info: Grundinformationen
-        team: Team
-        activation: 'Aktivierung & Reaktion'
-        communication: Kommunikation
-        alternative_site: 'Alternativer Standort'
-        backup_recovery: 'Backup & Wiederherstellung'
-        version_review: 'Version & Review'
-    field:
-        name: Planname
-        business_process: Geschäftsprozess
-        description: Beschreibung
-        plan_owner: Plan-Verantwortlicher
-        bc_team: BC-Team-Mitglieder
-        status: Status
-        activation_criteria: Aktivierungskriterien
-        roles_and_responsibilities: 'Rollen und Verantwortlichkeiten'
-        recovery_procedures: Wiederherstellungsverfahren
-        communication_plan: Kommunikationsplan
-        internal_communication: 'Interne Kommunikation'
-        external_communication: 'Externe Kommunikation'
-        alternative_site: 'Alternativer Standort'
-        alternative_site_address: 'Adresse des alternativen Standorts'
-        alternative_site_capacity: 'Kapazität des alternativen Standorts'
-        backup_procedures: Backup-Verfahren
-        restore_procedures: Wiederherstellungsverfahren
-        version: Version
-        last_tested: 'Zuletzt getestet'
-        next_test_date: 'Nächstes Testdatum'
-        last_review_date: 'Letztes Überprüfungsdatum'
-        next_review_date: 'Nächstes Überprüfungsdatum'
-        review_notes: Überprüfungsnotizen
-    success:
-        created: 'Business Continuity Plan erfolgreich erstellt.'
-        updated: 'Business Continuity Plan erfolgreich aktualisiert.'
-        deleted: 'Business Continuity Plan erfolgreich gelöscht.'
-security:
-    error:
-        too_many_attempts: 'Zu viele Anmeldeversuche. Bitte versuchen Sie es in 15 Minuten'
-        saml_login_error: SAML-Anmeldefehler
-        saml_logout_error: SAML-Abmeldefehler
-        csrf_invalid: 'Ungültiges CSRF-Token.'
-    csrf_token_invalid: ''
-bc_exercise:
-    new: 'Neue BC-Übung'
-    create: 'BC-Übung erstellen'
-    section:
-        basic_info: Grundinformationen
-        planning: Planung
-        participants: Teilnehmer
-        results: Ergebnisse
-        report: Bericht
-    success:
-        created: 'BC-Übung erfolgreich erstellt.'
-        updated: 'BC-Übung erfolgreich aktualisiert.'
-        deleted: 'BC-Übung erfolgreich gelöscht.'
-objective:
-    field:
-        title: Titel
-        description: Beschreibung
-        category: Kategorie
-        measurable_indicators: 'Messbare Indikatoren'
-        target_value: Zielwert
-        current_value: 'Aktueller Wert'
-        unit: Einheit
-        responsible_person: 'Verantwortliche Person'
-        target_date: Zieldatum
-        status: Status
-        progress_notes: Fortschrittsnotizen
-    validation:
-        title_required: 'Bitte geben Sie einen Titel ein.'
-        title_max_length: 'Der Titel darf maximal {{ limit }} Zeichen lang sein.'
-        description_required: 'Bitte geben Sie eine Beschreibung ein.'
-        category_required: 'Bitte wählen Sie eine Kategorie aus.'
-        responsible_person_required: 'Bitte geben Sie eine verantwortliche Person an.'
-        name_max_length: 'Der Name darf maximal {{ limit }} Zeichen lang sein.'
-        target_date_required: 'Bitte geben Sie ein Zieldatum an.'
-        status_required: 'Bitte wählen Sie einen Status aus.'
-    link:
-        new: 'Neues Ziel'
-        create_new: 'Neues Ziel erstellen'
-    status:
-        total: Gesamt
-        active: Aktiv
-        achieved: Erreicht
-        delayed: Verzögert
-        at_risk: Gefährdet
-    success:
-        created: 'Ziel erfolgreich erstellt.'
-        updated: 'Ziel erfolgreich aktualisiert.'
-        deleted: 'Ziel erfolgreich gelöscht.'
-business_process:
-    field:
-        name: Prozessname
-        description: Beschreibung
-        process_owner: Prozessverantwortlicher
-        criticality: Kritikalität
-        rto: 'RTO (Recovery Time Objective) in Stunden'
-        rpo: 'RPO (Recovery Point Objective) in Stunden'
-        mtpd: 'MTPD (Maximum Tolerable Period of Disruption) in Stunden'
-        financial_impact_per_hour: 'Finanzieller Schaden pro Stunde'
-        financial_impact_per_day: 'Finanzieller Schaden pro Tag'
-        reputational_impact: Reputationsschaden
-        regulatory_impact: 'Regulatorische Auswirkungen'
-        operational_impact: 'Operationale Auswirkungen'
-        dependencies_upstream: 'Abhängigkeiten (Upstream)'
-        dependencies_downstream: 'Abhängigkeiten (Downstream)'
-        recovery_strategy: Wiederherstellungsstrategie
-        supporting_assets: 'Unterstützende Assets'
-        identified_risks: 'Identifizierte Risiken'
-    success:
-        created: 'Geschäftsprozess erfolgreich erstellt.'
-        updated: 'Geschäftsprozess erfolgreich aktualisiert.'
-        deleted: 'Geschäftsprozess erfolgreich gelöscht.'
-user:
-    name: Name
-    email: E-Mail
-    department: Abteilung
-    new: 'Neuer Benutzer'
-    edit: 'Benutzer bearbeiten'
-    create: 'Benutzer erstellen'
-    save_changes: 'Änderungen speichern'
-    edit_suffix: bearbeiten
-    section:
-        basic_info: Grundinformationen
-        tenant: Mandantenzuordnung
-        authentication: Authentifizierung
-        roles: 'Rollen & Berechtigungen'
-        status: Status
-    field:
-        first_name: Vorname
-        last_name: Nachname
-        email: E-Mail
-        department: Abteilung
-        job_title: Position
-        phone_number: Telefonnummer
-        avatar: Profilbild
-        avatar_help: 'Profilbild (max. 2MB, JPG/PNG/GIF/WebP)'
-        password: Passwort
-        system_roles: Systemrollen
-        roles: Systemrollen
-        custom_roles: 'Benutzerdefinierte Rollen'
-        tenant: Mandant
-        tenant_help: 'Ordnen Sie den Benutzer einem Mandanten zu'
-        active: Aktiv
-        is_active: Aktiv
-        is_verified: Verifiziert
-        email_verified: 'E-Mail verifiziert'
-        auth_provider: 'Auth Provider'
-        created_at: 'Erstellt am'
-        updated_at: 'Zuletzt geändert'
-        last_login: 'Letzte Anmeldung'
-    help:
-        first_name: 'Vorname des Benutzers'
-        last_name: 'Nachname des Benutzers'
-        email: 'E-Mail-Adresse für Login und Kommunikation'
-        department: 'Organisationseinheit des Benutzers'
-        job_title: 'Funktion oder Position des Benutzers'
-        phone_number: Kontakttelefonnummer
-        avatar: 'Profilbild hochladen (optional)'
-        tenant: 'Mandant, dem dieser Benutzer zugeordnet ist'
-        password: 'Sicheres Passwort für den Benutzer'
-        password_edit: 'Leer lassen, um das Passwort nicht zu ändern'
-    auth_provider:
-        local: Lokal
-    message:
-        no_custom_roles: 'Keine benutzerdefinierten Rollen verfügbar.'
-    placeholder:
-        tenant: 'Keinem Mandanten zugeordnet'
-    error:
-        no_users_selected: 'Keine Benutzer ausgewählt'
-        no_file_uploaded: 'Keine Datei hochgeladen'
-        cannot_deactivate_initial_admin: 'Der initiale Setup-Administrator kann nicht deaktiviert werden, um sicherzustellen, dass immer ein Systemadministrator verfügbar ist.'
-        cannot_delete_initial_admin: 'Der initiale Setup-Administrator kann nicht gelöscht werden, um sicherzustellen, dass immer ein Systemadministrator verfügbar ist.'
-        cannot_remove_admin_role_from_initial_admin: 'Die Admin-Rolle kann nicht vom initialen Setup-Administrator entfernt werden. Das System benötigt mindestens einen Administrator.'
-    warning:
-        own_password_changed: 'Achtung: Sie haben Ihr eigenes Passwort geändert. Sie werden möglicherweise automatisch ausgeloggt.'
-        session_will_be_invalidated: 'Achtung: Aus Sicherheitsgründen wird Ihre Session nach dieser Änderung möglicherweise invalidiert. Bitte loggen Sie sich erneut ein, falls erforderlich.'
-    success:
-        bulk_action_completed: '%count% Benutzer erfolgreich verarbeitet (%action%)'
-        imported: '%count% Benutzer erfolgreich importiert'
-        activated: 'Benutzer erfolgreich aktiviert'
-        deactivated: 'Benutzer erfolgreich deaktiviert'
-        created: 'Benutzer erfolgreich erstellt.'
-        updated: 'Benutzer erfolgreich aktualisiert.'
-        deleted: 'Benutzer erfolgreich gelöscht.'
-    info:
-        bulk_skipped_initial_admin: '%count% Benutzer übersprungen: Initialer Setup-Administrator (geschützt)'
-        bulk_skipped_current_user: '%count% Benutzer übersprungen: Ihr eigener Account (Selbst-Deaktivierung nicht erlaubt)'
-        bulk_skipped_no_permission: '%count% Benutzer übersprungen: Fehlende Berechtigung'
-        bulk_skipped_already_has_role: '%count% Benutzer übersprungen: Rolle bereits zugewiesen'
-    action:
-        export: Exportieren
-        import: Importieren
-        bulk_actions: Massen-Aktionen
-        activate: Aktivieren
-        deactivate: Deaktivieren
-        assign_role: 'Rolle zuweisen'
-        view_activity: 'Aktivität anzeigen'
-        view_mfa: 'MFA verwalten'
-        impersonate: 'Benutzer imitieren'
-    import:
-        title: 'Benutzer importieren'
-        description: 'Laden Sie eine CSV-Datei hoch, um mehrere Benutzer zu importieren'
-        format: 'Erwartetes Format: email, first_name, last_name, password, is_active, roles'
-        download_template: 'Vorlage herunterladen'
-    activity:
-        title: Benutzeraktivität
-        total: Gesamtaktivitäten
-        by_date: 'Nach Datum'
-        by_action: 'Nach Aktion'
+    title.edit: 'Person bearbeiten'
+    title.create: 'Person anlegen'
+    title.list: Personen
+    title.show: 'Person anzeigen'
 module:
     info:
         added_as_dependency: "Modul '{name}' wurde als Abhängigkeit hinzugefügt"
@@ -929,188 +387,12 @@ entity_history:
     entry_count: '%count% Einträge'
     show_details: 'Details anzeigen'
     no_entries: 'Keine Einträge vorhanden'
-    subtitle: ''
+    subtitle: 'Änderungsverlauf und Audit-Trail'
 preferences:
     success:
         imported: 'Einstellungen erfolgreich importiert'
     error:
         import_failed: 'Fehler beim Importieren der Einstellungen'
-soa:
-    export:
-        html: 'SoA als HTML exportieren'
-        pdf: 'SoA als PDF exportieren - Professioneller Bericht mit allen 93 Controls'
-    preview:
-        pdf: 'PDF-Vorschau im Browser anzeigen'
-    title: ''
-    in_progress_badge: ''
-    in_progress_badge_emoji: ''
-    message:
-        control_coverage: ''
-vulnerability:
-    title: Schwachstellen
-    new: 'Neue Schwachstelle'
-    edit: 'Schwachstelle bearbeiten'
-    list: Schwachstellen-Liste
-    details: Schwachstellendetails
-    empty: 'Noch keine Schwachstellen erfasst.'
-    field:
-        cve_id: CVE-ID
-        title: Titel
-        description: Beschreibung
-        severity: Schweregrad
-        cvss_score: 'CVSS Score'
-        cvss_vector: 'CVSS Vector'
-        cwe_id: CWE-ID
-        status: Status
-        affected_assets: 'Betroffene Assets'
-        discovered_at: 'Entdeckt am'
-        discovered_date: Entdeckungsdatum
-        disclosed_at: 'Offengelegt am'
-        remediation_deadline: Behebungsfrist
-        exploit_available: 'Exploit verfügbar'
-        vendor_advisory_url: 'Vendor Advisory URL'
-        mitigation_plan: Mitigationsplan
-        notes: Notizen
-        responsible_person: 'Verantwortliche Person'
-    severity:
-        critical: Kritisch
-        high: Hoch
-        medium: Mittel
-        low: Niedrig
-        info: Information
-    status:
-        identified: Identifiziert
-        analyzing: 'In Analyse'
-        patching: 'Wird gepatcht'
-        mitigated: Mitigiert
-        closed: Geschlossen
-        false_positive: 'False Positive'
-    kpi:
-        critical: 'Kritische Schwachstellen'
-        high: 'Hohe Schwachstellen'
-        overdue: 'Überfällige Behebungen'
-        total: Gesamt
-    placeholder:
-        cve_id: 'z.B. CVE-2024-1234'
-        title: 'Kurze Beschreibung der Schwachstelle'
-        description: 'Detaillierte Beschreibung der Schwachstelle und ihrer Auswirkungen'
-        mitigation_plan: 'Maßnahmen zur Behebung oder Mitigation'
-        responsible_person: 'Person, die für die Behebung verantwortlich ist'
-    help:
-        cve_id: 'Common Vulnerabilities and Exposures Identifier'
-        severity: 'Schweregrad basierend auf CVSS Score'
-        cvss_score: 'CVSS Score von 0.0 bis 10.0'
-        cvss_vector: 'CVSS 3.1 Vector String'
-        cwe_id: 'Common Weakness Enumeration ID'
-        affected_assets: 'Assets, die von dieser Schwachstelle betroffen sind'
-        remediation_deadline: 'Frist für die Behebung der Schwachstelle'
-        exploit_available: 'Ist ein öffentlicher Exploit verfügbar?'
-    success:
-        created: 'Schwachstelle erfolgreich erstellt.'
-        updated: 'Schwachstelle erfolgreich aktualisiert.'
-        deleted: 'Schwachstelle erfolgreich gelöscht.'
-patch:
-    title: Patches
-    new: 'Neuer Patch'
-    edit: 'Patch bearbeiten'
-    list: Patch-Liste
-    empty: 'Noch keine Patches erfasst.'
-    field:
-        patch_identifier: Patch-ID
-        patch_id: Patch-ID
-        title: Titel
-        description: Beschreibung
-        patch_type: Patch-Typ
-        status: Status
-        related_vulnerabilities: 'Zugehörige Schwachstellen'
-        version: Version
-        vendor: Hersteller
-        affected_systems: 'Betroffene Systeme'
-        release_date: Release-Datum
-        planned_deployment_date: 'Geplante Installation'
-        actual_deployment_date: 'Tatsächliche Installation'
-        test_results: Testergebnisse
-        rollback_procedure: Rollback-Verfahren
-        installation_instructions: Installationsanleitung
-        download_url: Download-URL
-        notes: Notizen
-        responsible_person: 'Verantwortliche Person'
-    type:
-        security: Sicherheitspatch
-        bugfix: Bugfix
-        feature: 'Feature Update'
-        critical: 'Kritischer Patch'
-    status:
-        available: Verfügbar
-        tested: Getestet
-        approved: Freigegeben
-        deployed: Installiert
-        failed: Fehlgeschlagen
-        rollback: Zurückgerollt
-    kpi:
-        pending: 'Ausstehende Patches'
-        deployed: 'Installierte Patches'
-        total: Gesamt
-    placeholder:
-        patch_identifier: 'z.B. KB5034441'
-        title: 'Kurze Beschreibung des Patches'
-        description: 'Detaillierte Beschreibung der Änderungen'
-        vendor: 'Hersteller des Patches'
-        affected_systems: 'Liste der betroffenen Systeme'
-        test_results: 'Ergebnisse der Tests in Test-Umgebung'
-        rollback_procedure: 'Schritte für Rollback bei Problemen'
-        installation_instructions: 'Schritt-für-Schritt Installationsanleitung'
-        responsible_person: 'Person, die für die Installation verantwortlich ist'
-    help:
-        patch_identifier: 'Eindeutige Patch-Kennung (z.B. KB-Nummer)'
-        patch_type: 'Art des Patches'
-        related_vulnerabilities: 'Schwachstellen, die durch diesen Patch behoben werden'
-        affected_systems: 'Systeme, auf denen der Patch installiert werden muss'
-        planned_deployment_date: 'Wann soll der Patch installiert werden?'
-        test_results: 'Dokumentation der Tests'
-        rollback_procedure: 'Verfahren zum Rückgängigmachen bei Problemen'
-        responsible_person: 'Zuständig für Installation und Überwachung'
-    success:
-        created: 'Patch erfolgreich erstellt.'
-        updated: 'Patch erfolgreich aktualisiert.'
-        deleted: 'Patch erfolgreich gelöscht.'
-mfa_token:
-    title: MFA-Tokens
-    new: 'Neues MFA-Token'
-    edit: 'MFA-Token bearbeiten'
-    empty: 'Noch keine MFA-Tokens konfiguriert.'
-    field:
-        user: Benutzer
-        token_type: Token-Typ
-        device_name: Geräte-Name
-        phone_number: Telefonnummer
-        is_active: Aktiv
-        is_primary: 'Primäre Methode'
-        expires_at: Ablaufdatum
-    type:
-        totp: 'Authenticator App (TOTP)'
-        webauthn: 'Security Key (WebAuthn/FIDO2)'
-        sms: 'SMS Verification'
-        hardware: 'Hardware Token'
-        backup: 'Backup-Codes'
-    kpi:
-        active: 'Aktive Tokens'
-    placeholder:
-        user: 'Benutzer auswählen'
-        device_name: 'z.B. iPhone 14, YubiKey 5'
-        phone_number: '+49 123 456789'
-    help:
-        user: 'Benutzer, dem dieses Token zugeordnet ist'
-        token_type: 'Art des MFA-Tokens'
-        device_name: 'Bezeichnung für das Gerät/Token'
-        phone_number: 'Für SMS-basierte MFA'
-        is_primary: 'Ist dies die primäre MFA-Methode für den Benutzer?'
-        expires_at: 'Wann läuft dieses Token ab? (optional)'
-    success:
-        created: 'MFA-Token erfolgreich erstellt.'
-        updated: 'MFA-Token erfolgreich aktualisiert.'
-        deleted: 'MFA-Token erfolgreich gelöscht.'
-        activated: 'Krisenstab erfolgreich aktiviert.'
 permission:
     title: Berechtigungen
     list: Berechtigungsliste
@@ -1126,7 +408,7 @@ permission:
         system: System
         custom: Benutzerdefiniert
         categories: Kategorien
-    subtitle: ''
+    subtitle: 'Verwaltung von Berechtigungen und Zugriffskontrolle'
 data:
     title: Datenverwaltung
     backup:
@@ -1245,6 +527,8 @@ data:
             last_name: Nachname
             email: E-Mail-Adresse
             email_help: 'Diese E-Mail-Adresse wird für den Login verwendet'
+            first_name_placeholder: 'Max'
+            last_name_placeholder: 'Mustermann'
             password: Passwort
             password_confirm: 'Passwort bestätigen'
             password_requirements: { title: Passwort-Anforderungen, length: 'Mindestens 8 Zeichen', uppercase: 'Mindestens ein Großbuchstabe', lowercase: 'Mindestens ein Kleinbuchstabe', number: 'Mindestens eine Ziffer' }
@@ -1293,6 +577,7 @@ data:
             from_address_help: 'E-Mail-Adresse des Absenders'
             from_name: Absender-Name
             from_name_help: 'Name des Absenders'
+            from_name_placeholder: 'Little ISMS Helper'
             sender_info: Absender-Informationen
             skip_button: Überspringen
             skipped: 'E-Mail-Konfiguration übersprungen'
@@ -1320,6 +605,8 @@ data:
             country_help: 'Hauptsitz Ihrer Organisation'
             description: Beschreibung
             description_help: 'Kurze Beschreibung Ihrer Organisation und Geschäftstätigkeit'
+            name_placeholder: 'Beispiel GmbH'
+            description_placeholder: 'Kurze Beschreibung der Organisation und Geschäftstätigkeit...'
             info_saved: 'Organisations-Informationen erfolgreich gespeichert'
             info_failed: 'Fehler beim Speichern der Organisations-Informationen'
             usage: { title: 'Verwendung dieser Informationen', message: 'Diese Informationen werden verwendet, um branchenspezifische Empfehlungen und Compliance-Anforderungen bereitzustellen.' }
@@ -1416,7 +703,7 @@ setup:
         docker_password_location: 'Gespeichert in: /var/www/html/var/mysql_credentials.txt'
         config_loaded: 'Datenbankkonfiguration aus .env.local geladen. Die Felder wurden mit den vorhandenen Werten ausgefüllt.'
         docker_auto_configured: 'Docker-Deployment erkannt: Die Datenbank wurde bereits automatisch konfiguriert. Fahre mit Schritt 3 fort.'
-        test_failed: ''
+        test_failed: 'Datenbankverbindungstest fehlgeschlagen. Bitte überprüfen Sie die Zugangsdaten.'
     admin:
         title: 'Administrator erstellen'
         header: Administrator-Account
@@ -1542,13 +829,13 @@ setup:
         configure_database_first: 'Bitte konfigurieren Sie zuerst die Datenbankverbindung'
         create_admin_first: 'Bitte erstellen Sie zuerst einen Administrator-Account'
     info:
-        backup_restored_skip_steps: ''
-    what_will_be_setup: ''
-    can_delete_later: ''
+        backup_restored_skip_steps: 'Ein Backup wurde wiederhergestellt. Setup-Schritte werden übersprungen.'
+    what_will_be_setup: 'Was wird eingerichtet?'
+    can_delete_later: 'Sie können diese später wieder löschen oder anpassen'
 status:
     in_progress: 'In Bearbeitung'
     not_started: 'Nicht begonnen'
-    approved: ''
+    approved: Genehmigt
 action:
     new_asset: 'Neues Asset'
     assess_risk: 'Risiko bewerten'
@@ -1561,7 +848,7 @@ action:
     edit: Bearbeiten
     back_to_list: 'Zurück zur Liste'
     view_all: 'Alle anzeigen'
-    view: ''
+    view: Anzeigen
 form:
     complete_asset_inventory: 'Asset-Inventar vervollständigen'
     conduct_risk_analysis: 'Risikoanalyse durchführen'
@@ -1761,42 +1048,10 @@ nis2:
             view_patches: 'Patches anzeigen'
             manage_mfa: 'MFA verwalten'
     article: 'NIS2 Art. %article%'
-    not_installed: ''
-    not_active: ''
-    report_not_available: ''
-    incident_not_reportable: ''
-data_breach:
-    form:
-        title: Titel
-        incident: Sicherheitsvorfall
-        processing_activity: 'Verarbeitungstätigkeit (VVT)'
-        affected_data_subjects: 'Betroffene Personen (Anzahl)'
-        data_categories: Datenkategorien
-        data_subject_categories: 'Kategorien betroffener Personen'
-        breach_nature: 'Art der Verletzung'
-        likely_consequences: 'Wahrscheinliche Folgen'
-        measures_taken: 'Ergriffene Maßnahmen'
-        mitigation_measures: Abhilfemaßnahmen
-        risk_level: Risikoniveau
-        risk_assessment: Risikobewertung
-        special_categories_affected: 'Besondere Kategorien betroffen (Art. 9 DSGVO)'
-        criminal_data_affected: 'Strafrechtliche Verurteilungen betroffen (Art. 10 DSGVO)'
-        requires_authority_notification: 'Meldung an Aufsichtsbehörde erforderlich'
-        requires_subject_notification: 'Benachrichtigung betroffener Personen erforderlich'
-        no_subject_notification_reason: 'Grund für Ausnahme von Benachrichtigung'
-        root_cause: Grundursache
-        lessons_learned: Erkenntnisse
-        data_protection_officer: Datenschutzbeauftragter
-    pdf:
-        art_33_3a_nature: ''
-        categories_personal_data: ''
-        categories_data_subjects: ''
-        approx_number_subjects: ''
-        art_33_3b_consequences: ''
-        art_33_3c_d_measures: ''
-        measures_taken: ''
-        measures_mitigate: ''
-        art_34_communication: ''
+    not_installed: 'Nicht installiert'
+    not_active: 'Nicht aktiv'
+    report_not_available: 'Bericht nicht verfügbar'
+    incident_not_reportable: 'Vorfall nicht meldepflichtig'
 Customer: Kunde
 Shareholder: Shareholder
 Employee: Mitarbeiter
@@ -1823,285 +1078,340 @@ Active: Aktiv
 Inactive: Inaktiv
 Evaluation: Bewertung
 Terminated: Beendigt
+training:
+    success:
+        created: 'Schulung erfolgreich erstellt'
+        updated: 'Schulung erfolgreich aktualisiert'
+        deleted: 'Schulung erfolgreich gelöscht'
+session:
+    error:
+        invalid_token: 'Ungültiges Sicherheitstoken. Bitte melden Sie sich erneut an.'
+clause:
+    4: 'Klausel 4 - Kontext der Organisation'
+    5: 'Klausel 5 - Führung'
+    6: 'Klausel 6 - Planung'
+    7: 'Klausel 7 - Unterstützung'
+    8: 'Klausel 8 - Betrieb'
+    9: 'Klausel 9 - Bewertung der Leistung'
+    10: 'Klausel 10 - Verbesserung'
+data_management:
+    import:
+        step_upload: 'Schritt 1: Datei hochladen'
+        step_preview: 'Schritt 2: Vorschau prüfen'
+        step_confirm: 'Schritt 3: Import bestätigen'
+        step_validate: 'Schritt 4: Daten validieren'
+        format_json: 'Format: JSON (aus Little ISMS Helper Export)'
+        format_export: 'Verwenden Sie nur Export-Dateien aus demselben System'
+        ensure_disk_space: 'Stellen Sie ausreichend Speicherplatz sicher'
+        plan_downtime: 'Planen Sie Wartungsfenster für große Imports'
+        test_small: 'Testen Sie zuerst mit kleinem Datensatz'
+        validation_required: 'Validierung ist erforderlich vor dem Import'
+        no_duplicate_detection: 'Keine automatische Duplikatserkennung - Überprüfen Sie manuell'
+    export:
+        includes_all_records: 'Export enthält alle Datensätze des Mandanten'
+        sensitive_data_warning: 'WARNUNG: Export kann vertrauliche Daten enthalten (DSGVO-relevant)'
+        large_exports_warning: 'Große Datenmengen können längere Verarbeitungszeit benötigen'
+        relationships_warning: 'Beziehungen zwischen Entitäten werden mit exportiert'
+email.automated_notification: 'Dies ist eine automatische Benachrichtigung'
+email.workflow.automated_alert: 'Automatische Workflow-Benachrichtigung'
+email.workflow.login_to_process_step: 'Bitte melden Sie sich an, um den Workflow-Schritt zu bearbeiten'
+email.automated_reminder: 'Automatische Erinnerung'
+email.training.mark_calendar: 'Tragen Sie den Termin in Ihren Kalender ein'
+email.workflow.time_to_complete: 'Zeit bis zur Fertigstellung'
+email.workflow.login_to_process: 'Melden Sie sich an, um den Workflow zu bearbeiten'
+email.risk_acceptance.review_reason: 'Überprüfen Sie die Begründung für die Risikoakzeptanz'
+email.risk_acceptance.identify_controls: 'Identifizieren Sie zusätzliche Kontrollen zur Risikominderung'
+email.risk_acceptance.update_assessment: 'Aktualisieren Sie die Risikobewertung'
+email.risk_acceptance.reassess_risk: 'Risiko neu bewerten'
+email.risk_acceptance.request_again: 'Neue Akzeptanz beantragen'
+email.new_incident_reported: 'Ein neuer Sicherheitsvorfall wurde gemeldet'
+email.take_appropriate_action: 'Bitte ergreifen Sie entsprechende Maßnahmen'
+email.workflow.workflow_update: Workflow-Aktualisierung
+email.workflow.login_for_details: 'Melden Sie sich an für Details'
+email.workflow.deadline_warning: Frist-Warnung
+email.workflow.login_to_review: 'Melden Sie sich an zur Überprüfung'
+email.ensure_preparations: 'Stellen Sie die Vorbereitung sicher'
+email.ensure_control_completion: 'Stellen Sie die vollständige Implementierung der Maßnahme sicher'
+pdf:
+    framework_comparison:
+        solid_mappings_minor: 'Solide Zuordnungen mit geringfügigen Abweichungen'
+    gap_analysis:
+        distribution_by_severity: 'Verteilung nach Schweregrad'
+        not_addressed: 'Nicht adressiert'
+        very_low: 'Sehr niedrig'
+        partial: Teilweise
+    base:
+        define_content_block: 'Definieren Sie hier den Inhaltsblock'
+    risk_report:
+        distribution_by_level: 'Verteilung nach Risikostufe'
+        distribution_by_status: 'Verteilung nach Status'
+    data_reuse:
+        recommendations_title: 'Empfehlungen zur Daten-Wiederverwendung'
+    transitive_compliance:
+        from_framework: 'Von Framework'
+        to_framework: 'Zu Framework'
+        establish_hub: 'Hub-Framework etablieren für optimale Abdeckung'
+not_assigned: 'Nicht zugewiesen'
+user_management:
+    import_irreversible: 'Import ist nicht rückgängig zu machen - erstellen Sie vorher ein Backup'
+page:
+    title: Seitentitel
+report:
+    document_type: Dokumenttyp
+    header_center: 'Kopfzeile (Mitte)'
+    default_reviewer: Standard-Prüfer
+    default_approver: Standard-Genehmiger
+label:
+    classification_confidential: Vertraulich
+    classification_confidential_upper: VERTRAULICH
+monitoring:
+    by_level: 'Nach Stufe'
+    show_entries: 'Einträge anzeigen'
+    no_errors_found: 'Keine Fehler gefunden'
+    reverse_order: 'Umgekehrte Reihenfolge'
+    recent_entries_only: 'Nur aktuelle Einträge'
+    full_log_analysis: 'Vollständige Log-Analyse'
+    large_files_warning: 'Warnung: Große Log-Dateien können lange Ladezeiten verursachen'
+vulnerability:
+    success:
+        created: 'Schwachstelle erfolgreich erstellt'
+        updated: 'Schwachstelle erfolgreich aktualisiert'
+        deleted: 'Schwachstelle erfolgreich gelöscht'
 processing_activity:
-    created: ''
-    updated: ''
-    deleted: ''
-    activated: ''
-    archived: ''
-    marked_for_review: ''
-    review_completed: ''
-    cloned: ''
-    permanently_delete: ''
-    view_all_activities: ''
-    pdf:
-        art_30_title: ''
-        table_of_contents: ''
-        art_30_1a: ''
-        purposes_processing: ''
-        art_30_1b: ''
-        art_30_1c: ''
-        art_30_1d: ''
-        art_30_1e: ''
-        legal_basis_retention: ''
-        art_30_1g: ''
+    created: 'Verarbeitungstätigkeit erfolgreich erstellt'
+    updated: 'Verarbeitungstätigkeit erfolgreich aktualisiert'
+    deleted: 'Verarbeitungstätigkeit erfolgreich gelöscht'
+    activated: 'Verarbeitungstätigkeit aktiviert'
+    archived: 'Verarbeitungstätigkeit archiviert'
+    marked_for_review: 'Zur Überprüfung markiert'
+    review_completed: 'Überprüfung abgeschlossen'
+    cloned: 'Erfolgreich dupliziert'
+business_continuity_plan:
+    success:
+        created: 'Business-Continuity-Plan erfolgreich erstellt'
+        updated: 'Business-Continuity-Plan erfolgreich aktualisiert'
+        deleted: 'Business-Continuity-Plan erfolgreich gelöscht'
+kpi:
+    registered_assets: 'Registrierte Assets'
+    unit_pieces: Stück
+    identified_risks: 'Identifizierte Risiken'
+    open_incidents: 'Offene Vorfälle'
+    compliance_status: Compliance-Status
+    unit_percent: '%'
+activity:
+    minutes_ago: 'Vor %count% Minuten'
+    recently: 'Vor Kurzem'
+    asset_added: 'Asset hinzugefügt'
+    system: System
+    risk_identified: 'Risiko identifiziert'
+    new_risk: 'Neues Risiko'
+    security_team: Sicherheitsteam
+change_request:
+    success:
+        created: 'Change-Request erfolgreich erstellt'
+        updated: 'Change-Request erfolgreich aktualisiert'
+        deleted: 'Change-Request erfolgreich gelöscht'
+workflow:
+    success:
+        approved: 'Workflow-Schritt genehmigt'
+        started: 'Workflow gestartet'
+        definition_created: 'Workflow-Definition erfolgreich erstellt'
+        definition_updated: 'Workflow-Definition erfolgreich aktualisiert'
+        definition_deleted: 'Workflow-Definition erfolgreich gelöscht'
+    error:
+        not_authorized_approve: 'Sie sind nicht berechtigt, diesen Schritt zu genehmigen'
+        comments_required: 'Kommentar erforderlich für diesen Schritt'
+        not_authorized_reject: 'Sie sind nicht berechtigt, diesen Schritt abzulehnen'
+        not_found: 'Workflow nicht gefunden'
+        has_active_instances: 'Workflow-Definition kann nicht gelöscht werden - es existieren noch aktive Instanzen'
+    warning:
+        rejected: 'Workflow-Schritt wurde abgelehnt'
+    info:
+        cancelled: 'Workflow wurde abgebrochen'
+        no_active_workflow: 'Kein aktiver Workflow vorhanden'
+    days: Tage
+    message:
+        no_overdue: 'Keine überfälligen Workflows'
+        no_overdue_desc: 'Alle Workflow-Instanzen liegen derzeit innerhalb ihrer Fristen'
+security:
+    error:
+        too_many_attempts: 'Zu viele Anmeldeversuche. Bitte versuchen Sie es später erneut.'
+        saml_login_error: SAML-Anmeldefehler
+        saml_logout_error: SAML-Abmeldefehler
+    csrf_token_invalid: 'Ungültiges CSRF-Token - bitte laden Sie die Seite neu'
+location:
+    success:
+        created: 'Standort erfolgreich erstellt'
+        updated: 'Standort erfolgreich aktualisiert'
+        deleted: 'Standort erfolgreich gelöscht'
 context:
     success:
-        updated: ''
-    message:
-        overdue_review_text: ''
-        upcoming_review_text: ''
+        updated: 'Kontext erfolgreich aktualisiert'
 mfa:
     challenge:
         error:
-            code_required: ''
-            invalid_token: ''
-            invalid_code: ''
-        success: ''
+            code_required: 'Code erforderlich'
+            invalid_token: 'Ungültiges MFA-Token'
+            invalid_code: 'Ungültiger Code'
+        success: 'MFA-Verifizierung erfolgreich'
     error:
-        token_not_found: ''
+        token_not_found: 'MFA-Token nicht gefunden'
     success:
-        token_reset: ''
+        token_reset: 'MFA-Token erfolgreich zurückgesetzt'
+user:
+    success:
+        created: 'Benutzer erfolgreich erstellt'
+        bulk_action_completed: 'Massen-Aktion erfolgreich abgeschlossen'
+        imported: 'Benutzer erfolgreich importiert'
+        updated: 'Benutzer erfolgreich aktualisiert'
+        deleted: 'Benutzer erfolgreich gelöscht'
+        activated: 'Benutzer erfolgreich aktiviert'
+        deactivated: 'Benutzer erfolgreich deaktiviert'
+    error:
+        no_users_selected: 'Keine Benutzer ausgewählt'
+        no_file_uploaded: 'Keine Datei hochgeladen'
+        cannot_deactivate_initial_admin: 'Der initiale Administrator kann nicht deaktiviert werden'
+        cannot_remove_admin_role_from_initial_admin: 'Die Administrator-Rolle kann dem initialen Administrator nicht entzogen werden'
+        cannot_delete_initial_admin: 'Der initiale Administrator kann nicht gelöscht werden'
+    info:
+        bulk_skipped_initial_admin: 'Initialer Administrator wurde übersprungen'
+        bulk_skipped_current_user: 'Aktueller Benutzer wurde übersprungen'
+        bulk_skipped_no_permission: 'Übersprungen - keine Berechtigung'
+        bulk_skipped_already_has_role: 'Übersprungen - hat bereits diese Rolle'
+    warning:
+        own_password_changed: 'Sie haben Ihr eigenes Passwort geändert'
+        session_will_be_invalidated: 'Ihre Session wird ungültig und Sie müssen sich erneut anmelden'
 dpia:
-    created: ''
-    updated: ''
-    deleted: ''
-    submitted_for_review: ''
-    approved: ''
-    rejected: ''
-    revision_requested: ''
-    reopened: ''
-    dpo_consulted: ''
-    supervisory_consulted: ''
-    marked_for_review: ''
-    review_completed: ''
-    cloned: ''
-    index:
-        create_first_dpia: ''
-    show:
-        cancel_button: ''
-    pdf:
-        art_35_7a_description: ''
-        purposes_processing: ''
-        art_35_7b_assessment: ''
-        art_35_7c_risks: ''
-        specific_risks: ''
-        art_35_7d_measures: ''
-        next_review_date: ''
-        approved_by: ''
-        footer_text: ''
+    created: 'DSFA erfolgreich erstellt'
+    updated: 'DSFA erfolgreich aktualisiert'
+    deleted: 'DSFA erfolgreich gelöscht'
+    submitted_for_review: 'DSFA zur Prüfung eingereicht'
+    approved: 'DSFA genehmigt'
+    rejected: 'DSFA abgelehnt'
+    revision_requested: 'Überarbeitung angefordert'
+    reopened: 'DSFA wiedereröffnet'
+    dpo_consulted: 'Datenschutzbeauftragter konsultiert'
+    supervisory_consulted: 'Aufsichtsbehörde konsultiert'
+    marked_for_review: 'Zur Überprüfung markiert'
+    review_completed: 'Überprüfung abgeschlossen'
+    cloned: 'DSFA erfolgreich dupliziert'
 admin:
     data_repair:
-        tenant_not_found: ''
-        invalid_entity_type: ''
-        assigned_count: ''
-        entity_not_found: ''
-        entity_reassigned: ''
-        select_asset: ''
-        asset_not_found: ''
-        select_risk: ''
-training:
+        tenant_not_found: 'Mandant nicht gefunden'
+        invalid_entity_type: 'Ungültiger Entitätstyp'
+        assigned_count: '%count% Entitäten zugewiesen'
+        entity_not_found: 'Entität nicht gefunden'
+        entity_reassigned: 'Entität erfolgreich neu zugewiesen'
+        select_asset: 'Asset auswählen'
+        asset_not_found: 'Asset nicht gefunden'
+        select_risk: 'Risiko auswählen'
+business_process:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
-session:
+        created: 'Geschäftsprozess erfolgreich erstellt'
+        updated: 'Geschäftsprozess erfolgreich aktualisiert'
+        deleted: 'Geschäftsprozess erfolgreich gelöscht'
+asset:
+    success:
+        created: 'Asset erfolgreich erstellt'
+        updated: 'Asset erfolgreich aktualisiert'
+        deleted: 'Asset erfolgreich gelöscht'
+    bulk_delete:
+        success: '%count% Assets erfolgreich gelöscht'
+        no_items: 'Keine Assets zum Löschen ausgewählt'
+interested_party:
+    success:
+        created: 'Interessierte Partei erfolgreich erstellt'
+        updated: 'Interessierte Partei erfolgreich aktualisiert'
+        deleted: 'Interessierte Partei erfolgreich gelöscht'
+objective:
+    success:
+        created: 'Ziel erfolgreich erstellt'
+        updated: 'Ziel erfolgreich aktualisiert'
+        deleted: 'Ziel erfolgreich gelöscht'
+control:
+    success:
+        updated: 'Maßnahme erfolgreich aktualisiert'
+audit:
+    success:
+        created: 'Audit erfolgreich erstellt'
+        updated: 'Audit erfolgreich aktualisiert'
+        deleted: 'Audit erfolgreich gelöscht'
+document:
     error:
-        invalid_token: ''
+        too_many_uploads: 'Zu viele Dateien hochgeladen'
+        upload_failed: 'Datei-Upload fehlgeschlagen'
+    success:
+        uploaded: 'Dokument erfolgreich hochgeladen'
+        updated: 'Dokument erfolgreich aktualisiert'
+        deleted: 'Dokument erfolgreich gelöscht'
 crisis_team:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
-        activated: ''
+        created: 'Krisenteam erfolgreich erstellt'
+        updated: 'Krisenteam erfolgreich aktualisiert'
+        deleted: 'Krisenteam erfolgreich gelöscht'
+        activated: 'Krisenteam aktiviert'
+bc_exercise:
+    success:
+        created: 'BC-Übung erfolgreich erstellt'
+        updated: 'BC-Übung erfolgreich aktualisiert'
+        deleted: 'BC-Übung erfolgreich gelöscht'
 management_review:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Management-Review erfolgreich erstellt'
+        updated: 'Management-Review erfolgreich aktualisiert'
+        deleted: 'Management-Review erfolgreich gelöscht'
+incident:
+    success:
+        reported: 'Vorfall erfolgreich gemeldet'
+        updated: 'Vorfall erfolgreich aktualisiert'
+        deleted: 'Vorfall erfolgreich gelöscht'
+    bcm:
+        auto_detect_success: 'Geschäftsprozesse erfolgreich automatisch erkannt'
+        no_processes_detected: 'Keine Geschäftsprozesse erkannt'
+risk:
+    success:
+        created: 'Risiko erfolgreich erstellt'
+        updated: 'Risiko erfolgreich aktualisiert'
+        deleted: 'Risiko erfolgreich gelöscht'
+    acceptance:
+        error:
+            wrong_strategy: 'Falsche Behandlungsstrategie - nur "Akzeptieren" erlaubt Risikoakzeptanz'
+            already_accepted: 'Risiko wurde bereits akzeptiert'
+            justification_required: 'Begründung erforderlich für Risikoakzeptanz'
+            reason_required: 'Ablehnungsgrund erforderlich'
+        success:
+            auto_accepted: 'Risiko automatisch akzeptiert (unterhalb Schwellenwert)'
+            approval_requested: 'Risikoakzeptanz zur Genehmigung eingereicht'
+            approved: 'Risikoakzeptanz genehmigt'
+            rejected: 'Risikoakzeptanz abgelehnt'
 risk_appetite:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Risikobereitschaft erfolgreich erstellt'
+        updated: 'Risikobereitschaft erfolgreich aktualisiert'
+        deleted: 'Risikobereitschaft erfolgreich gelöscht'
+patch:
+    success:
+        created: 'Patch erfolgreich erstellt'
+        updated: 'Patch erfolgreich aktualisiert'
+        deleted: 'Patch erfolgreich gelöscht'
+supplier:
+    success:
+        created: 'Lieferant erfolgreich erstellt'
+        updated: 'Lieferant erfolgreich aktualisiert'
+        deleted: 'Lieferant erfolgreich gelöscht'
+    page:
+        edit_title: 'Lieferant bearbeiten'
 risk_treatment_plan:
     success:
-        created: ''
-        updated: ''
-        deleted: ''
+        created: 'Risikobehandlungsplan erfolgreich erstellt'
+        updated: 'Risikobehandlungsplan erfolgreich aktualisiert'
+        deleted: 'Risikobehandlungsplan erfolgreich gelöscht'
 compliance:
     framework:
         flash:
-            created: ''
-            updated: ''
-            has_requirements: ''
-            deleted: ''
-            duplicated: ''
-clause:
-    4: ''
-    5: ''
-    6: ''
-    7: ''
-    8: ''
-    9: ''
-    10: ''
-security_reports:
-    page:
-        title: ''
-        subtitle: ''
-    nav:
-        title: ''
-        overview: ''
-        owasp_2025: ''
-        owasp_2021: ''
-        all_reports: ''
-    action:
-        title: ''
-        regenerate: ''
-        print: ''
-        download_md: ''
-    info:
-        regenerate_hint: ''
-    card:
-        owasp_2025_title: ''
-        full_report: ''
-    label:
-        overall_score: ''
-        status: ''
-        generated_at: ''
-        view_report: ''
-    severity:
-        p0: ''
-        p1: ''
-        p2: ''
-    legend:
-        title: ''
-    severity_desc:
-        p0: ''
-        p1: ''
-        p2: ''
-reports:
-    overview: ''
-    integrate_ci_cd: ''
-    page:
-        title: ''
-        subtitle: ''
-    card:
-        dashboard:
-            title: ''
-            description: ''
-            features: { feature_1: '', feature_2: '', feature_3: '', feature_4: '' }
-        risks:
-            title: ''
-            description: ''
-            features: { feature_1: '', feature_2: '', feature_3: '', feature_4: '' }
-        soa:
-            title: ''
-            description: ''
-            features: { feature_1: '', feature_2: '', feature_3: '', feature_4: '' }
-        incidents:
-            title: ''
-            description: ''
-            features: { feature_1: '', feature_2: '', feature_3: '', feature_4: '' }
-        training:
-            title: ''
-            description: ''
-            features: { feature_1: '', feature_2: '', feature_3: '', feature_4: '' }
-    custom:
-        title: ''
-        subtitle: ''
-        items:
-            item_1: ''
-            item_2: ''
-            item_3: ''
-            item_4: ''
-        coming_soon: ''
-    best_practices:
-        audits:
-            title: ''
-            items: { item_1: '', item_2: '', item_3: '', item_4: '' }
-        management:
-            title: ''
-            items: { item_1: '', item_2: '', item_3: '', item_4: '' }
-    section:
-        best_practices: ''
-data_management:
-    import:
-        step_upload: ''
-        step_preview: ''
-        step_confirm: ''
-        step_validate: ''
-        format_json: ''
-        format_export: ''
-        ensure_disk_space: ''
-        plan_downtime: ''
-        test_small: ''
-        validation_required: ''
-        no_duplicate_detection: ''
-    export:
-        includes_all_records: ''
-        sensitive_data_warning: ''
-        large_exports_warning: ''
-        relationships_warning: ''
-email.automated_notification: ''
-email.workflow.automated_alert: ''
-email.workflow.login_to_process_step: ''
-email.automated_reminder: ''
-email.training.mark_calendar: ''
-email.workflow.time_to_complete: ''
-email.workflow.login_to_process: ''
-email.risk_acceptance.review_reason: ''
-email.risk_acceptance.identify_controls: ''
-email.risk_acceptance.update_assessment: ''
-email.risk_acceptance.reassess_risk: ''
-email.risk_acceptance.request_again: ''
-email.new_incident_reported: ''
-email.take_appropriate_action: ''
-email.workflow.workflow_update: ''
-email.workflow.login_for_details: ''
-email.workflow.deadline_warning: ''
-email.workflow.login_to_review: ''
-email.ensure_preparations: ''
-email.ensure_control_completion: ''
-pdf:
-    framework_comparison:
-        solid_mappings_minor: ''
-    gap_analysis:
-        distribution_by_severity: ''
-        not_addressed: ''
-        very_low: ''
-        partial: ''
-    base:
-        define_content_block: ''
-    risk_report:
-        distribution_by_level: ''
-        distribution_by_status: ''
-    data_reuse:
-        recommendations_title: ''
-    transitive_compliance:
-        from_framework: ''
-        to_framework: ''
-        establish_hub: ''
-not_assigned: ''
-'yes': ''
-'no': ''
-user_management:
-    import_irreversible: ''
-page:
-    title: ''
-report:
-    document_type: ''
-    header_center: ''
-    default_reviewer: ''
-    default_approver: ''
-label:
-    classification_confidential: ''
-    classification_confidential_upper: ''
-monitoring:
-    by_level: ''
-    show_entries: ''
-    no_errors_found: ''
-    reverse_order: ''
-    recent_entries_only: ''
-    full_log_analysis: ''
-    large_files_warning: ''
+            created: 'Framework erfolgreich erstellt'
+            updated: 'Framework erfolgreich aktualisiert'
+            has_requirements: 'Framework kann nicht gelöscht werden - es enthält noch Anforderungen'
+            deleted: 'Framework erfolgreich gelöscht'
+            duplicated: 'Framework erfolgreich dupliziert'
+
