@@ -1,24 +1,27 @@
 {% extends 'base.html.twig' %}
-{% import '_macros/inheritance_badge.html.twig' as inheritance %}
+{% trans_default_domain 'asset' %}
 
-{% block title %}{{ 'asset_management.title'|trans({}, 'assets') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'asset.modern.header.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
-<div class="page-header">
-    <div>
-        <h1><i class="bi bi-cpu" aria-hidden="true"></i> {{ 'asset_management.title'|trans({}, 'assets') }}</h1>
-        <p class="text-muted">{{ 'asset_management.description'|trans({}, 'assets') }}</p>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('app_asset_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'asset.new'|trans({}, 'assets') }}
-        </a>
-    </div>
-</div>
+{# Breadcrumb Navigation #}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'asset.modern.breadcrumb'|trans }
+    ]
+} %}
 
-{# Skip link for filters section - WCAG 2.4.1 #}
-<a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans({}, 'messages') }}</a>
+{# Page Header with Actions #}
+{% include '_components/_page_header.html.twig' with {
+    title: 'asset.modern.header.title'|trans,
+    subtitle: 'asset.modern.header.subtitle'|trans,
+    icon: 'bi-server',
+    actions: [
+        { label: 'asset.action.create'|trans({}, 'asset'), url: path('app_asset_new'), variant: 'primary', icon: 'bi-plus-circle' }
+    ]
+} %}
 
+{# Tenant View Filter (Multi-Tenant Support) #}
 {% if currentTenant %}
 {% embed '_components/_card.html.twig' with {
     'class': 'mb-3'
@@ -51,28 +54,76 @@
 {% endembed %}
 {% endif %}
 
-<div class="stats-grid mb-4">
-    <div class="stat-card">
-        <div class="stat-icon"><i class="bi bi-collection" aria-hidden="true"></i></div>
-        <div class="stat-value">{{ detailedStats.total }}</div>
-        {% if currentTenant %}
-            <small class="text-muted d-block mt-2" style="font-size: 11px; opacity: 0.85;">
-                {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant') }}
-            </small>
-        {% endif %}
-        <div class="stat-label">{{ 'asset_management.active_assets'|trans({}, 'assets') }}</div>
-    </div>
+{# KPI Cards Grid #}
+<div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-server',
+        label: 'asset.modern.kpi.total'|trans,
+        value: detailedStats.total,
+        detail: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant')) : null,
+        variant: 'primary',
+        link: '#all-assets'
+    } %}
 
-    {% if typeStats|length > 0 %}
-        {% for stat in typeStats %}
-        <div class="stat-card">
-            <div class="stat-icon"><i class="bi bi-box" aria-hidden="true"></i></div>
-            <div class="stat-value">{{ stat.count }}</div>
-            <div class="stat-label">{{ stat.assetType }}</div>
-        </div>
-        {% endfor %}
-    {% endif %}
+    {% set criticalAssets = assets|filter(a => a.confidentialityValue >= 4 or a.integrityValue >= 4 or a.availabilityValue >= 4)|length %}
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-shield-exclamation',
+        label: 'asset.modern.kpi.critical'|trans,
+        value: criticalAssets,
+        variant: 'danger',
+        link: '#filter-critical'
+    } %}
+
+    {% set avgCIA = (assets|reduce((carry, asset) => carry + asset.confidentialityValue + asset.integrityValue + asset.availabilityValue, 0) / (assets|length > 0 ? assets|length * 3 : 1))|round(1) %}
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-bar-chart',
+        label: 'asset.modern.kpi.avg_cia'|trans,
+        value: avgCIA,
+        unit: 'asset.modern.kpi.unit.out_of_5'|trans,
+        variant: 'info'
+    } %}
+
+    {% set assetsWithRisks = 0 %}
+    {% for asset in assets %}
+        {% if recommendations[asset.id] is defined and recommendations[asset.id].risk_count > 0 %}
+            {% set assetsWithRisks = assetsWithRisks + 1 %}
+        {% endif %}
+    {% endfor %}
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-exclamation-triangle',
+        label: 'asset.modern.kpi.with_risks'|trans,
+        value: assetsWithRisks,
+        unit: '/ ' ~ assets|length,
+        variant: 'warning'
+    } %}
 </div>
+
+{# Type Distribution Chart #}
+{% if typeStats|length > 0 %}
+<div class="card mb-4">
+    <div class="card-header">
+        <h3><i class="bi bi-pie-chart" aria-hidden="true"></i> {{ 'asset.modern.chart.type_distribution'|trans }}</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {% for stat in typeStats %}
+            <div class="col-md-3 mb-3">
+                <div class="stat-item">
+                    <strong>{{ stat.assetType }}</strong>
+                    <div class="progress mt-2 progress-h-8">
+                        <div class="progress-bar"
+                             style="width: {{ (stat.count / assets|length * 100)|round }}%"
+                             title="{{ stat.count }} Assets">
+                        </div>
+                    </div>
+                    <small class="text-muted">{{ stat.count }} Assets ({{ (stat.count / assets|length * 100)|round }}%)</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endif %}
 
 {# Filter Section #}
 {% embed '_components/_card.html.twig' with {
@@ -84,7 +135,7 @@
         <form method="get" action="{{ path('app_asset_index') }}" class="row g-3" id="asset-filter-form" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}">
             <div id="filter-section" tabindex="-1"></div>
             <div class="col-md-3">
-                <label for="filter-type" class="form-label">{{ 'asset.label.type'|trans({}, 'assets') }}</label>
+                <label for="filter-type" class="form-label">{{ 'asset.label.type'|trans({}, 'asset') }}</label>
                 <select class="form-select" id="filter-type" name="type" onchange="this.form.submit()">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     {% if typeStats|length > 0 %}
@@ -97,28 +148,28 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <label for="filter-classification" class="form-label">{{ 'asset.label.data_classification'|trans({}, 'assets') }}</label>
+                <label for="filter-classification" class="form-label">{{ 'asset.label.data_classification'|trans({}, 'asset') }}</label>
                 <select class="form-select" id="filter-classification" name="classification" onchange="this.form.submit()">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    <option value="public" {{ app.request.get('classification') == 'public' ? 'selected' : '' }}>{{ 'asset.classification.public'|trans({}, 'assets') }}</option>
-                    <option value="internal" {{ app.request.get('classification') == 'internal' ? 'selected' : '' }}>{{ 'asset.classification.internal'|trans({}, 'assets') }}</option>
-                    <option value="confidential" {{ app.request.get('classification') == 'confidential' ? 'selected' : '' }}>{{ 'asset.classification.confidential'|trans({}, 'assets') }}</option>
-                    <option value="restricted" {{ app.request.get('classification') == 'restricted' ? 'selected' : '' }}>{{ 'asset.classification.restricted'|trans({}, 'assets') }}</option>
+                    <option value="public" {{ app.request.get('classification') == 'public' ? 'selected' : '' }}>{{ 'asset.classification.public'|trans({}, 'asset') }}</option>
+                    <option value="internal" {{ app.request.get('classification') == 'internal' ? 'selected' : '' }}>{{ 'asset.classification.internal'|trans({}, 'asset') }}</option>
+                    <option value="confidential" {{ app.request.get('classification') == 'confidential' ? 'selected' : '' }}>{{ 'asset.classification.confidential'|trans({}, 'asset') }}</option>
+                    <option value="restricted" {{ app.request.get('classification') == 'restricted' ? 'selected' : '' }}>{{ 'asset.classification.restricted'|trans({}, 'asset') }}</option>
                 </select>
             </div>
             <div class="col-md-3">
-                <label for="filter-owner" class="form-label">{{ 'asset.label.owner'|trans({}, 'assets') }}</label>
+                <label for="filter-owner" class="form-label">{{ 'asset.label.owner'|trans({}, 'asset') }}</label>
                 <input type="text" class="form-control" id="filter-owner" name="owner"
                        value="{{ app.request.get('owner') }}"
                        placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
             </div>
             <div class="col-md-3">
-                <label for="filter-status" class="form-label">{{ 'asset.label.status'|trans({}, 'assets') }}</label>
+                <label for="filter-status" class="form-label">{{ 'asset.label.status'|trans({}, 'asset') }}</label>
                 <select class="form-select" id="filter-status" name="status" onchange="this.form.submit()">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    <option value="active" {{ app.request.get('status') == 'active' ? 'selected' : '' }}>{{ 'asset.status.active'|trans({}, 'assets') }}</option>
-                    <option value="inactive" {{ app.request.get('status') == 'inactive' ? 'selected' : '' }}>{{ 'asset.status.inactive'|trans({}, 'assets') }}</option>
-                    <option value="retired" {{ app.request.get('status') == 'retired' ? 'selected' : '' }}>{{ 'asset.status.retired'|trans({}, 'assets') }}</option>
+                    <option value="active" {{ app.request.get('status') == 'active' ? 'selected' : '' }}>{{ 'asset.status.active'|trans({}, 'asset') }}</option>
+                    <option value="inactive" {{ app.request.get('status') == 'inactive' ? 'selected' : '' }}>{{ 'asset.status.inactive'|trans({}, 'asset') }}</option>
+                    <option value="retired" {{ app.request.get('status') == 'retired' ? 'selected' : '' }}>{{ 'asset.status.retired'|trans({}, 'asset') }}</option>
                 </select>
             </div>
             <div class="col-12">
@@ -133,15 +184,33 @@
     {% endblock %}
 {% endembed %}
 
-{# Assets Table #}
-<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset">
-    <div class="card-header">
-        <h2><i class="bi bi-list" aria-hidden="true"></i> {{ 'asset.list.title'|trans({}, 'assets') }} ({{ assets|length }})</h3>
+{# Assets Table or Empty State #}
+{% if assets|length == 0 %}
+    {% include '_components/_empty_state.html.twig' with {
+        icon: 'bi-server',
+        title: 'asset.modern.empty.title'|trans,
+        description: 'asset.modern.empty.description'|trans,
+        action: { label: 'asset.action.create'|trans({}, 'asset'), url: path('app_asset_new'), icon: 'bi-plus-circle' }
+    } %}
+{% else %}
+<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset" data-bulk-actions-entity-label="{{ 'asset.modern.header.title'|trans }}">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'asset.modern.table.title_all'|trans }} ({{ assets|length }})</h3>
+        <div>
+            <label for="asset-search" class="visually-hidden">{{ 'asset.modern.header.title'|trans }} durchsuchen</label>
+            <input type="search"
+                   class="form-control form-control-sm w-200px"
+                   placeholder="{{ 'asset.modern.table.search_placeholder'|trans }}"
+                   id="asset-search"
+                   aria-label="{{ 'asset.modern.header.title'|trans }} durchsuchen">
+        </div>
     </div>
     {% embed '_components/_table.html.twig' with {
-        'noMargin': true
+        'class': 'table-hover mb-0',
+        'caption': 'asset.modern.table.caption'|trans,
+        'noMargin': true,
+        'responsive': true
     } %}
-        {% import '_macros/inheritance_badge.html.twig' as inheritance %}
         {% block table_head %}
             <tr>
                 <th scope="col" class="w-40px">
@@ -151,13 +220,13 @@
                            data-bulk-actions-target="selectAllCheckbox"
                            aria-label="{{ 'common.select_all'|trans({}, 'messages') }}">
                 </th>
-                <th scope="col">{{ 'asset.label.name'|trans({}, 'assets') }}</th>
-                <th scope="col">{{ 'asset.label.type'|trans({}, 'assets') }}</th>
-                <th scope="col">{{ 'asset.label.owner'|trans({}, 'assets') }}</th>
-                <th scope="col" class="text-center">{{ 'asset.label.classification'|trans({}, 'assets') }}</th>
+                <th scope="col">{{ 'asset.label.name'|trans({}, 'asset') }}</th>
+                <th scope="col">{{ 'asset.label.type'|trans({}, 'asset') }}</th>
+                <th scope="col">{{ 'asset.label.owner'|trans({}, 'asset') }}</th>
+                <th scope="col" class="text-center">{{ 'asset.label.classification'|trans({}, 'asset') }}</th>
                 <th scope="col" class="text-center">CIA</th>
-                <th scope="col" class="text-center">{{ 'asset.label.risks'|trans({}, 'assets') }}</th>
-                <th scope="col">{{ 'asset.label.status'|trans({}, 'assets') }}</th>
+                <th scope="col" class="text-center">{{ 'asset.label.risks'|trans({}, 'asset') }}</th>
+                <th scope="col" class="text-center">{{ 'asset.label.status'|trans({}, 'asset') }}</th>
                 <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
             </tr>
         {% endblock %}
@@ -193,13 +262,13 @@
                 </td>
                 <td class="text-center">
                     <small>
-                        <span class="{{ badge_score(asset.confidentialityValue) }}">
+                        <span class="{{ badge_score(asset.confidentialityValue) }}" title="{{ 'asset.label.confidentiality'|trans({}, 'asset') }}: {{ asset.confidentialityValue }}/5">
                             C:{{ asset.confidentialityValue }}
                         </span>
-                        <span class="{{ badge_score(asset.integrityValue) }}">
+                        <span class="{{ badge_score(asset.integrityValue) }}" title="{{ 'asset.label.integrity'|trans({}, 'asset') }}: {{ asset.integrityValue }}/5">
                             I:{{ asset.integrityValue }}
                         </span>
-                        <span class="{{ badge_score(asset.availabilityValue) }}">
+                        <span class="{{ badge_score(asset.availabilityValue) }}" title="{{ 'asset.label.availability'|trans({}, 'asset') }}: {{ asset.availabilityValue }}/5">
                             A:{{ asset.availabilityValue }}
                         </span>
                     </small>
@@ -208,7 +277,7 @@
                     {% if recommendations[asset.id] is defined %}
                         {% set recData = recommendations[asset.id] %}
                         {% if recData.risk_count > 0 %}
-                            <a href="{{ path('app_risk_index') }}?asset={{ asset.id }}" class="{{ badge_score(recData.risk_count, 5, 3) }}" title="{{ recData.risk_count }} {{ 'asset.label.risks'|trans({}, 'assets') }}">
+                            <a href="{{ path('app_risk_index') }}?asset={{ asset.id }}" class="{{ badge_score(recData.risk_count, 5, 3) }}" title="{{ recData.risk_count }} {{ 'asset.label.risks'|trans({}, 'asset') }}" aria-label="{{ recData.risk_count }} Risiken für Asset {{ asset.name }}">
                                 {{ recData.risk_count }}
                             </a>
                         {% else %}
@@ -218,23 +287,27 @@
                         <span class="text-muted">-</span>
                     {% endif %}
                 </td>
-                <td>
-                    <span class="{{ badge_status(asset.status) }}">
-                        {{ asset.status|upper }}
+                <td class="text-center">
+                    <span class="badge {{ asset.status == 'active' ? 'bg-success' : 'bg-secondary' }}">
+                        {{ ('asset.status.' ~ asset.status)|trans({}, 'asset') }}
                     </span>
                 </td>
                 <td class="text-center">
-                    <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }} für Asset {{ asset.name }}">
                         <a href="{{ path('app_asset_show', {id: asset.id}) }}"
                            class="btn btn-outline-primary"
-                           title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                           data-turbo-action="advance"
+                           aria-label="Asset {{ asset.name }} anzeigen">
                             <i class="bi bi-eye" aria-hidden="true"></i>
                         </a>
+                        {% if is_granted('ROLE_USER') %}
                         <a href="{{ path('app_asset_edit', {id: asset.id}) }}"
                            class="btn btn-outline-secondary"
-                           title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                           data-turbo-action="advance"
+                           aria-label="Asset {{ asset.name }} bearbeiten">
                             <i class="bi bi-pencil" aria-hidden="true"></i>
                         </a>
+                        {% endif %}
                     </div>
                 </td>
             </tr>
@@ -243,53 +316,22 @@
     {% endembed %}
 
     {# Bulk Action Bar #}
-    {% if assets|length > 0 %}
     {% include '_components/_bulk_action_bar.html.twig' with {
-        actions: ['export', 'delete']
+        actions: ['export', 'assign', 'delete']
     } %}
-    {% endif %}
 </div>
+{% endif %}
 
-<style>
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: var(--spacing-lg);
-}
+{# Search functionality #}
+<script>
+document.getElementById('asset-search')?.addEventListener('input', function(e) {
+    const query = e.target.value.toLowerCase();
+    const rows = document.querySelectorAll('tbody tr[data-asset-id]');
 
-.stat-card {
-    background: var(--color-white);
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius);
-    padding: var(--spacing-lg);
-    text-align: center;
-    transition: all var(--transition-normal);
-}
-
-.stat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
-
-.stat-icon {
-    font-size: 2.5rem;
-    color: var(--color-secondary);
-    margin-bottom: var(--spacing-sm);
-}
-
-.stat-value {
-    font-size: 2rem;
-    font-weight: bold;
-    color: var(--color-primary);
-}
-
-.stat-label {
-    color: var(--color-text-light);
-    margin-top: var(--spacing-xs);
-}
-
-.mb-4 {
-    margin-bottom: var(--spacing-xl);
-}
-</style>
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(query) ? '' : 'none';
+    });
+});
+</script>
 {% endblock %}

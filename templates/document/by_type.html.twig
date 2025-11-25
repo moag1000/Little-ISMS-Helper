@@ -1,20 +1,20 @@
 {% extends 'base.html.twig' %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}{{ 'document.title.by_type'|trans({}, 'documents') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'document.title.by_type'|trans({}, 'document') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 <div class="page-header">
     <div>
-        <h1>{{ 'document.title.by_type'|trans({}, 'documents') }}</h1>
-        <p class="text-muted">{{ 'document.description.by_type'|trans({}, 'documents') }}</p>
+        <h1>{{ 'document.title.by_type'|trans({}, 'document') }}</h1>
+        <p class="text-muted">{{ 'document.description.by_type'|trans({}, 'document') }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_document_index') }}" class="btn btn-secondary">
             ← {{ 'common.back'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_document_new') }}" class="btn btn-primary">
-            ➕ {{ 'document.action.create'|trans({}, 'documents') }}
+            ➕ {{ 'document.action.create'|trans({}, 'document') }}
         </a>
     </div>
 </div>
@@ -22,28 +22,28 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('document.stats.total'|trans({}, 'documents'), totalDocuments, null, null, null, null) }}
+        {{ cards.kpi_card('document.stats.total'|trans({}, 'document'), totalDocuments, null, null, null, null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('document.stats.document_types'|trans({}, 'documents'), documentTypes|length, null, null, null, null) }}
+        {{ cards.kpi_card('document.stats.document_types'|trans({}, 'document'), documentTypes|length, null, null, null, null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('document.stats.expiring_soon'|trans({}, 'documents'), expiringSoonCount, null, null, 'warning', null) }}
+        {{ cards.kpi_card('document.stats.expiring_soon'|trans({}, 'document'), expiringSoonCount, null, null, 'warning', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('document.stats.avg_per_type'|trans({}, 'documents'), documentTypes|length > 0 ? (totalDocuments / documentTypes|length)|round : 0, null, null, null, null) }}
+        {{ cards.kpi_card('document.stats.avg_per_type'|trans({}, 'document'), documentTypes|length > 0 ? (totalDocuments / documentTypes|length)|round : 0, null, null, null, null) }}
     </div>
 </div>
 
 {# Document Type Selection #}
 <div class="card mb-4">
-    <h2>{{ 'document.section.select_type'|trans({}, 'documents') }}</h2>
+    <h2>{{ 'document.section.select_type'|trans({}, 'document') }}</h2>
 
     <form method="get" class="mt-md">
         <div class="form-group">
-            <label for="type">{{ 'document.field.document_type'|trans({}, 'documents') }}</label>
+            <label for="type">{{ 'document.field.document_type'|trans({}, 'document') }}</label>
             <select name="type" id="type" class="form-select" onchange="this.form.submit();">
-                <option value="">{{ 'document.option.all_types'|trans({}, 'documents') }}</option>
+                <option value="">{{ 'document.option.all_types'|trans({}, 'document') }}</option>
                 {% for type in documentTypes %}
                     <option value="{{ type.id }}" {% if selectedType and selectedType.id == type.id %}selected{% endif %}>
                         {{ type.name }} ({{ type.documentCount }})
@@ -55,7 +55,7 @@
 </div>
 
 {# Document Types Overview #}
-<h2>{{ 'document.section.types_overview'|trans({}, 'documents') }}</h2>
+<h2>{{ 'document.section.types_overview'|trans({}, 'document') }}</h2>
 
 <div class="module-grid mb-4">
     {% for type in documentTypes|slice(0, 6) %}
@@ -69,11 +69,11 @@
         <div class="stats-grid grid-col-2">
             <div class="stat-item">
                 <strong class="fs-4">{{ type.documentCount }}</strong>
-                <span>{{ 'document.field.documents'|trans({}, 'documents') }}</span>
+                <span>{{ 'document.field.documents'|trans({}, 'document') }}</span>
             </div>
             <div class="stat-item">
                 <strong>{{ type.activeDocuments }}</strong>
-                <span>{{ 'document.field.active'|trans({}, 'documents') }}</span>
+                <span>{{ 'document.field.active'|trans({}, 'document') }}</span>
             </div>
         </div>
 
@@ -86,7 +86,7 @@
     {% else %}
     <div class="card grid-full">
         <p class="text-center-muted">
-            {{ 'document.message.no_types'|trans({}, 'documents') }}
+            {{ 'document.message.no_types'|trans({}, 'document') }}
         </p>
     </div>
     {% endfor %}
@@ -94,7 +94,7 @@
 
 {# Documents by Selected Type #}
 {% if selectedType %}
-<h2>{{ selectedType.name }} - {{ 'document.section.documents'|trans({}, 'documents') }}</h2>
+<h2>{{ selectedType.name }} - {{ 'document.section.documents'|trans({}, 'document') }}</h2>
 
 {% embed '_components/_table.html.twig' with {
     'noMargin': true,
@@ -102,12 +102,12 @@
 } %}
     {% block table_head %}
         <tr>
-            <th scope="col">{{ 'document.field.title'|trans({}, 'documents') }}</th>
-            <th scope="col">{{ 'document.field.version'|trans({}, 'documents') }}</th>
-            <th scope="col">{{ 'document.field.status'|trans({}, 'documents') }}</th>
-            <th scope="col">{{ 'document.field.owner'|trans({}, 'documents') }}</th>
-            <th scope="col">{{ 'document.field.last_updated'|trans({}, 'documents') }}</th>
-            <th scope="col">{{ 'document.field.review_date'|trans({}, 'documents') }}</th>
+            <th scope="col">{{ 'document.field.title'|trans({}, 'document') }}</th>
+            <th scope="col">{{ 'document.field.version'|trans({}, 'document') }}</th>
+            <th scope="col">{{ 'document.field.status'|trans({}, 'document') }}</th>
+            <th scope="col">{{ 'document.field.owner'|trans({}, 'document') }}</th>
+            <th scope="col">{{ 'document.field.last_updated'|trans({}, 'document') }}</th>
+            <th scope="col">{{ 'document.field.review_date'|trans({}, 'document') }}</th>
             <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
@@ -118,12 +118,12 @@
                 <strong>{{ document.title }}</strong>
                 {% if document.isControlledDocument %}
                     <span class="badge bg-info ml-xs">
-                        {{ 'document.badge.controlled'|trans({}, 'documents') }}
+                        {{ 'document.badge.controlled'|trans({}, 'document') }}
                     </span>
                 {% endif %}
                 {% if document.isConfidential %}
                     <span class="badge bg-danger ml-xs">
-                        {{ 'document.badge.confidential'|trans({}, 'documents') }}
+                        {{ 'document.badge.confidential'|trans({}, 'document') }}
                     </span>
                 {% endif %}
             </td>
@@ -142,11 +142,11 @@
                     {{ document.reviewDate|date('d.m.Y') }}
                     {% if document.reviewDate < date() %}
                         <span class="badge bg-danger ml-xs">
-                            {{ 'document.badge.overdue'|trans({}, 'documents') }}
+                            {{ 'document.badge.overdue'|trans({}, 'document') }}
                         </span>
                     {% elseif document.reviewDate < date('+30 days') %}
                         <span class="badge bg-warning ml-xs">
-                            {{ 'document.badge.due_soon'|trans({}, 'documents') }}
+                            {{ 'document.badge.due_soon'|trans({}, 'document') }}
                         </span>
                     {% endif %}
                 {% else %}
@@ -165,7 +165,7 @@
         {% else %}
         <tr>
             <td colspan="7" class="text-center-p-xl-muted">
-                {{ 'document.message.no_documents_for_type'|trans({}, 'documents') }}
+                {{ 'document.message.no_documents_for_type'|trans({}, 'document') }}
             </td>
         </tr>
         {% endfor %}
@@ -175,30 +175,30 @@
 {# Type Statistics #}
 <div class="module-grid mt-4">
     <div class="card">
-        <h2>{{ 'document.section.type_statistics'|trans({}, 'documents') }}</h2>
+        <h2>{{ 'document.section.type_statistics'|trans({}, 'document') }}</h2>
 
         <div class="stats-grid mt-3 grid-col-1">
             <div class="stat-item">
                 <strong>{{ selectedType.documentCount }}</strong>
-                <span>{{ 'document.stats.total_documents'|trans({}, 'documents') }}</span>
+                <span>{{ 'document.stats.total_documents'|trans({}, 'document') }}</span>
             </div>
             <div class="stat-item">
                 <strong>{{ selectedType.activeDocuments }}</strong>
-                <span>{{ 'document.stats.active_documents'|trans({}, 'documents') }}</span>
+                <span>{{ 'document.stats.active_documents'|trans({}, 'document') }}</span>
             </div>
             <div class="stat-item">
                 <strong>{{ selectedType.draftDocuments }}</strong>
-                <span>{{ 'document.stats.draft_documents'|trans({}, 'documents') }}</span>
+                <span>{{ 'document.stats.draft_documents'|trans({}, 'document') }}</span>
             </div>
             <div class="stat-item">
                 <strong>{{ selectedType.overdueReviews }}</strong>
-                <span>{{ 'document.stats.overdue_reviews'|trans({}, 'documents') }}</span>
+                <span>{{ 'document.stats.overdue_reviews'|trans({}, 'document') }}</span>
             </div>
         </div>
     </div>
 
     <div class="card">
-        <h3>{{ 'document.section.recent_activity'|trans({}, 'documents') }}</h3>
+        <h3>{{ 'document.section.recent_activity'|trans({}, 'document') }}</h3>
 
         {% if selectedType.recentDocuments|length > 0 %}
         <ul class="list-unstyled-mt-md">
@@ -206,14 +206,14 @@
             <li class="li-border-item">
                 <strong>{{ doc.title }}</strong>
                 <br><small class="text-muted">
-                    {{ 'document.field.updated'|trans({}, 'documents') }}: {{ doc.updatedAt|date('d.m.Y H:i') }}
+                    {{ 'document.field.updated'|trans({}, 'document') }}: {{ doc.updatedAt|date('d.m.Y H:i') }}
                 </small>
             </li>
             {% endfor %}
         </ul>
         {% else %}
         <p class="text-muted-mt-md">
-            {{ 'document.message.no_recent_activity'|trans({}, 'documents') }}
+            {{ 'document.message.no_recent_activity'|trans({}, 'document') }}
         </p>
         {% endif %}
     </div>
@@ -222,7 +222,7 @@
 {% else %}
 
 {# All Document Types Table #}
-<h2>{{ 'document.section.all_types'|trans({}, 'documents') }}</h2>
+<h2>{{ 'document.section.all_types'|trans({}, 'document') }}</h2>
 
 {% embed '_components/_table.html.twig' with {
     'noMargin': true,
@@ -230,12 +230,12 @@
 } %}
     {% block table_head %}
         <tr>
-            <th scope="col">{{ 'document.field.type_name'|trans({}, 'documents') }}</th>
-            <th scope="col">{{ 'document.field.description'|trans({}, 'documents') }}</th>
-            <th scope="col" class="text-center">{{ 'document.field.total_documents'|trans({}, 'documents') }}</th>
-            <th scope="col" class="text-center">{{ 'document.field.active'|trans({}, 'documents') }}</th>
-            <th scope="col" class="text-center">{{ 'document.field.draft'|trans({}, 'documents') }}</th>
-            <th scope="col" class="text-center">{{ 'document.field.overdue_reviews'|trans({}, 'documents') }}</th>
+            <th scope="col">{{ 'document.field.type_name'|trans({}, 'document') }}</th>
+            <th scope="col">{{ 'document.field.description'|trans({}, 'document') }}</th>
+            <th scope="col" class="text-center">{{ 'document.field.total_documents'|trans({}, 'document') }}</th>
+            <th scope="col" class="text-center">{{ 'document.field.active'|trans({}, 'document') }}</th>
+            <th scope="col" class="text-center">{{ 'document.field.draft'|trans({}, 'document') }}</th>
+            <th scope="col" class="text-center">{{ 'document.field.overdue_reviews'|trans({}, 'document') }}</th>
             <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
@@ -275,7 +275,7 @@
         {% else %}
         <tr>
             <td colspan="7" class="text-center-p-xl-muted">
-                {{ 'document.message.no_types'|trans({}, 'documents') }}
+                {{ 'document.message.no_types'|trans({}, 'document') }}
             </td>
         </tr>
         {% endfor %}

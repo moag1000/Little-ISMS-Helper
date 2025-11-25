@@ -1,386 +1,512 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'context' %}
 
-{% block title %}{{ 'context_management.title'|trans({}, 'messages') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'context_management.title'|trans({}, 'context') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
-<div class="container-fluid py-4">
+<div class="container-fluid">
+    {# Breadcrumb Navigation #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.dashboard'|trans({}, 'nav', 'nav'), url: path('app_dashboard') },
+            { label: 'context_management.title'|trans({}, 'context') }
+        ]
+    } %}
+
     {# Page Header #}
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h3 mb-1">{{ 'context_management.title'|trans({}, 'messages') }}</h1>
-            <p class="text-muted mb-0">
-                {{ 'context_management.description'|trans({}, 'messages') }}
-                {% if tenant is defined and tenant %}
-                    <br>
-                    <small>
-                        <i class="bi bi-building" aria-hidden="true"></i>
-                        <a href="{{ path('tenant_management_show', {id: tenant.id}) }}" class="text-decoration-none">
-                            {{ tenant.name }} <i class="bi bi-box-arrow-up-right small" aria-hidden="true"></i>
-                        </a>
-                    </small>
-                {% endif %}
-            </p>
-        </div>
-        <div>
-            {% if tenant is defined and tenant %}
-                <a href="{{ path('tenant_management_show', {id: tenant.id}) }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-building" aria-hidden="true"></i> {{ 'tenant.link.view'|trans({}, 'tenant') }}
-                </a>
-            {% endif %}
-            {% if is_granted('ROLE_ADMIN') %}
-                {% if canEdit is defined and canEdit %}
-                    <a href="{{ path('app_context_edit') }}" class="btn btn-primary">
-                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'context.link.edit'|trans({}, 'messages') }}
-                    </a>
-                {% else %}
-                    <button class="btn btn-primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}">
-                        <i class="bi bi-lock" aria-hidden="true"></i> {{ 'context.link.edit'|trans({}, 'messages') }}
-                    </button>
-                {% endif %}
-                <a href="{{ path('app_objective_new') }}" class="btn btn-success">
-                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'objective.link.new'|trans({}, 'objectives') }}
-                </a>
-            {% endif %}
-        </div>
-    </div>
+    {% include '_components/_page_header.html.twig' with {
+        title: 'context_management.title'|trans({}, 'context'),
+        subtitle: 'context.info.subtitle'|trans({}, 'context'),
+        icon: 'bi-building',
+        actions: context ? [
+            {
+                label: 'context.link.edit'|trans({}, 'context'),
+                url: path('app_context_edit'),
+                variant: 'primary',
+                icon: 'bi-pencil'
+            }
+        ] : [
+            {
+                label: 'context.link.create'|trans({}, 'context'),
+                url: path('app_context_edit'),
+                variant: 'primary',
+                icon: 'bi-plus-circle'
+            }
+        ]
+    } %}
 
-    {# ISO 27001 Info Box #}
+    {% if context %}
+    {# ISO 27001 Clause Information #}
     <div class="alert alert-info mb-4">
-        <i class="bi bi-info-circle" aria-hidden="true"></i>
-        <strong>{{ 'context.info.iso_clause'|trans({}, 'messages') }}</strong> {{ 'context.info.iso_description'|trans({}, 'messages') }}
+        <div class="d-flex align-items-center">
+            <i class="bi bi-info-circle-fill icon-15-mr-md" aria-hidden="true"></i>
+            <div>
+                <h6 class="mb-1"><strong>{{ 'context.info.iso_clause'|trans({}, 'context') }}</strong></h5>
+                <p class="mb-0 small">{{ 'context.info.iso_description'|trans({}, 'context') }}</p>
+            </div>
+        </div>
     </div>
 
-    {# Corporate Inheritance Alert #}
-    {% if inheritanceInfo is defined and inheritanceInfo.isInherited %}
-    <div class="alert alert-warning mb-4">
-        <div class="d-flex align-items-start">
-            <i class="bi bi-diagram-3 me-2 mt-1" aria-hidden="true"></i>
+    {# Calculate Stats #}
+    {% set hasScope = context.ismsScope ? true : false %}
+    {% set hasExclusions = context.scopeExclusions ? true : false %}
+    {% set hasParties = context.interestedParties ? true : false %}
+    {% set hasPolicy = context.ismsPolicy ? true : false %}
+    {% set hasRequirements = (context.legalRequirements or context.regulatoryRequirements or context.contractualObligations) ? true : false %}
+    {% set completeness = ((hasScope ? 1 : 0) + (hasParties ? 1 : 0) + (hasPolicy ? 1 : 0) + (hasRequirements ? 1 : 0)) %}
+    {% set completenessPercentage = (completeness / 4 * 100)|round %}
+
+    {% set daysSinceReview = context.lastReviewDate ? ((date().diff(context.lastReviewDate).days)) : null %}
+    {% set daysUntilReview = context.nextReviewDate ? ((date().diff(context.nextReviewDate).days * -1)) : null %}
+
+    {# KPI Cards #}
+    <div class="kpi-grid">
+        {% include '_components/_kpi_card.html.twig' with {
+            icon: 'bi-check-circle',
+            label: 'context.kpi.completeness'|trans({}, 'context'),
+            value: completenessPercentage,
+            unit: '%',
+            variant: completenessPercentage >= 75 ? 'success' : (completenessPercentage >= 50 ? 'warning' : 'danger'),
+            link: null
+        } %}
+
+        {% include '_components/_kpi_card.html.twig' with {
+            icon: 'bi-bullseye',
+            label: 'context.kpi.active_goals'|trans({}, 'context'),
+            value: objectives|length,
+            variant: 'info',
+            link: path('app_objective_index')
+        } %}
+
+        {% include '_components/_kpi_card.html.twig' with {
+            icon: 'bi-calendar-check',
+            label: daysSinceReview ? 'context.kpi.days_since_review'|trans({}, 'context') : 'context.kpi.last_review'|trans({}, 'context'),
+            value: daysSinceReview ?? '-',
+            unit: daysSinceReview ? (daysSinceReview == 1 ? 'context.unit.day'|trans({}, 'context') : 'context.unit.days'|trans({}, 'context')) : '',
+            variant: daysSinceReview ? (daysSinceReview > 365 ? 'danger' : (daysSinceReview > 180 ? 'warning' : 'success')) : 'secondary',
+            link: null
+        } %}
+
+        {% include '_components/_kpi_card.html.twig' with {
+            icon: 'bi-calendar-event',
+            label: daysUntilReview ? 'context.kpi.days_until_review'|trans({}, 'context') : 'context.kpi.next_review'|trans({}, 'context'),
+            value: daysUntilReview ?? '-',
+            unit: daysUntilReview ? (daysUntilReview == 1 ? 'context.unit.day'|trans({}, 'context') : 'context.unit.days'|trans({}, 'context')) : '',
+            variant: daysUntilReview ? (daysUntilReview < 30 ? 'warning' : (daysUntilReview < 0 ? 'danger' : 'info')) : 'secondary',
+            link: null
+        } %}
+    </div>
+
+    {# Overdue Review Warning #}
+    {% if daysUntilReview and daysUntilReview < 0 %}
+    <div class="alert alert-danger mb-4">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill icon-15-mr-md" aria-hidden="true"></i>
             <div>
-                <strong>{{ 'corporate.inheritance.isms_context_inherited'|trans({}, 'messages') }}</strong><br>
-                <span class="small">
-                    {{ 'corporate.inheritance.from'|trans({}, 'messages') }}:
-                    {% if inheritanceInfo.inheritedFrom %}
-                        <a href="{{ path('tenant_management_show', {id: inheritanceInfo.inheritedFrom.id}) }}" class="alert-link">
-                            {{ inheritanceInfo.inheritedFrom.name }}
-                        </a>
-                    {% endif %}
-                </span><br>
-                <span class="small text-muted">
-                    {{ 'corporate.inheritance.edit_at_parent'|trans({}, 'messages') }}
-                </span>
+                <h6 class="mb-1"><strong>{{ 'context.message.overdue_review_title'|trans({}, 'context') }}</strong></h5>
+                <p class="mb-0">{{ 'context.message.overdue_review_text'|trans({'%date%': context.nextReviewDate|date('d.m.Y'), '%days%': (daysUntilReview * -1)}, 'context') }}</p>
+            </div>
+        </div>
+    </div>
+    {% elseif daysUntilReview and daysUntilReview < 30 %}
+    <div class="alert alert-warning mb-4">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-clock-fill icon-15-mr-md" aria-hidden="true"></i>
+            <div>
+                <h6 class="mb-1"><strong>{{ 'context.message.upcoming_review_title'|trans({}, 'context') }}</strong></h5>
+                <p class="mb-0">{{ 'context.message.upcoming_review_text'|trans({'%date%': context.nextReviewDate|date('d.m.Y'), '%days%': daysUntilReview}, 'context') }}</p>
             </div>
         </div>
     </div>
     {% endif %}
 
-    {% import '_macros/cards.html.twig' as cards %}
-
-    {# KPI Cards #}
+    {# Organization & Scope Section #}
     <div class="row mb-4">
-        {# Completeness Card #}
-        <div class="col-md-3 mb-3">
-            {{ cards.kpi_card(
-                'context.kpi.completeness'|trans({}, 'messages'),
-                completeness ~ '%',
-                null,
-                completeness,
-                completeness >= 80 ? 'success' : (completeness >= 50 ? 'warning' : 'danger')
-            ) }}
-        </div>
-
-        {# Active Objectives Card #}
-        <div class="col-md-3 mb-3">
-            {{ cards.kpi_card(
-                'context.kpi.active_goals'|trans({}, 'messages'),
-                statistics.active,
-                'context.kpi.of_total'|trans({'%total%': statistics.total}, 'messages'),
-                null,
-                null
-            ) }}
-        </div>
-
-        {# Achieved Objectives Card #}
-        <div class="col-md-3 mb-3">
-            {{ cards.kpi_card(
-                'context.kpi.achieved_goals'|trans({}, 'messages'),
-                statistics.achieved,
-                statistics.total > 0 ? ('context.kpi.success_rate'|trans({'%rate%': ((statistics.achieved / statistics.total) * 100)|round}, 'messages')) : null,
-                null,
-                'success'
-            ) }}
-        </div>
-
-        {# Review Status Card #}
-        <div class="col-md-3 mb-3">
-            {% if daysUntilReview is not null %}
-                {% if daysUntilReview > 0 %}
-                    {{ cards.kpi_card(
-                        'context.kpi.next_review'|trans({}, 'messages'),
-                        daysUntilReview,
-                        'context.review_status.days_remaining'|trans({}, 'messages'),
-                        null,
-                        null,
-                        isReviewDue ? 'border-warning' : ''
-                    ) }}
-                {% elseif daysUntilReview == 0 %}
-                    {{ cards.kpi_card(
-                        'context.kpi.next_review'|trans({}, 'messages'),
-                        'context.review_status.today'|trans({}, 'messages'),
-                        'context.review_status.due'|trans({}, 'messages'),
-                        null,
-                        'warning',
-                        'border-warning'
-                    ) }}
-                {% else %}
-                    {{ cards.kpi_card(
-                        'context.kpi.next_review'|trans({}, 'messages'),
-                        daysUntilReview|abs,
-                        'context.review_status.days_overdue'|trans({}, 'messages'),
-                        null,
-                        'danger',
-                        'border-warning'
-                    ) }}
-                {% endif %}
-            {% else %}
-                {{ cards.kpi_card(
-                    'context.kpi.next_review'|trans({}, 'messages'),
-                    '—',
-                    'context.review_status.not_scheduled'|trans({}, 'messages'),
-                    null,
-                    null,
-                    isReviewDue ? 'border-warning' : ''
-                ) }}
-            {% endif %}
-        </div>
-    </div>
-
-    {# Main Content Grid #}
-    <div class="row">
-        {# ISMS Context Section #}
-        <div class="col-lg-8 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0">{{ 'context.section.title'|trans({}, 'context') }}</h2>
-                    {% if is_granted('ROLE_ADMIN') %}
-                        {% if canEdit is defined and canEdit %}
-                            <a href="{{ path('app_context_edit') }}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
-                            </a>
-                        {% else %}
-                            <button class="btn btn-sm btn-outline-secondary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'messages') }}">
-                                <i class="bi bi-lock" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
-                            </button>
-                        {% endif %}
-                    {% endif %}
-                </div>
-                <div class="card-body">
-                    {% if context and context.organizationName %}
-                        <div class="mb-3">
-                            <h6 class="text-muted">{{ 'context.section.organization'|trans({}, 'context') }}</h6>
-                            <p class="mb-0">{{ context.organizationName }}</p>
-                        </div>
-
-                        {% if context.ismsScope %}
-                            <div class="mb-3">
-                                <h6 class="text-muted">{{ 'context_management.isms_scope'|trans({}, 'messages') }}</h6>
-                                <p class="mb-0">{{ context.ismsScope|nl2br }}</p>
-                            </div>
-                        {% endif %}
-
-                        {% if context.scopeExclusions %}
-                            <div class="mb-3">
-                                <h6 class="text-muted">{{ 'context.section.exclusions'|trans({}, 'context') }}</h6>
-                                <p class="mb-0">{{ context.scopeExclusions|nl2br }}</p>
-                            </div>
-                        {% endif %}
-
-                        {% if context.ismsPolicy %}
-                            <div class="mb-3">
-                                <h6 class="text-muted">{{ 'context.section.policy'|trans({}, 'context') }}</h6>
-                                <p class="mb-0">{{ context.ismsPolicy|length > 200 ? context.ismsPolicy|slice(0, 200) ~ '...' : context.ismsPolicy|nl2br }}</p>
-                            </div>
-                        {% endif %}
-                    {% else %}
-                        <div class="alert alert-warning">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                            {{ 'context_management.no_context_defined'|trans({}, 'messages') }}
-                            {% if is_granted('ROLE_ADMIN') and canEdit is defined and canEdit %}
-                                <a href="{{ path('app_context_edit') }}" class="alert-link">{{ 'context.link.create_now'|trans({}, 'messages') }}</a>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        {# Objectives Summary Section #}
-        <div class="col-lg-4 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h3 class="mb-0">{{ 'context_management.isms_objectives'|trans({}, 'messages') }}</h3>
-                    <a href="{{ path('app_objective_index') }}" class="btn btn-sm btn-outline-secondary">
-                        {{ 'common.show_all'|trans({}, 'messages') }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
-                    </a>
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h2 class="mb-0">
+                        <i class="bi bi-building" aria-hidden="true"></i>
+                        {{ 'context.section.organization'|trans({}, 'context') }}
+                    </h1>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">{{ 'objectives.status.total'|trans({}, 'objectives') }}</span>
-                            <strong>{{ statistics.total }}</strong>
-                        </div>
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">{{ 'objectives.status.active'|trans({}, 'objectives') }}</span>
-                            <span class="badge bg-primary">{{ statistics.active }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">{{ 'objectives.status.achieved'|trans({}, 'objectives') }}</span>
-                            <span class="badge bg-success">{{ statistics.achieved }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-1">
-                            <span class="text-muted">{{ 'objectives.status.delayed'|trans({}, 'objectives') }}</span>
-                            <span class="badge bg-danger">{{ statistics.delayed }}</span>
-                        </div>
-                        {% if statistics.at_risk is defined %}
-                            <div class="d-flex justify-content-between mb-1">
-                                <span class="text-muted">{{ 'objectives.status.at_risk'|trans({}, 'objectives') }}</span>
-                                <span class="badge bg-warning">{{ statistics.at_risk }}</span>
-                            </div>
-                        {% endif %}
+                        <label class="text-muted small">{{ 'context.field.organization_name'|trans({}, 'context') }}</label>
+                        <h4 class="mb-0">{{ context.organizationName }}</h4>
                     </div>
 
-                    {% if is_granted('ROLE_ADMIN') %}
-                        <div class="d-grid mt-3">
-                            <a href="{{ path('app_objective_new') }}" class="btn btn-success">
-                                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'objective.link.create_new'|trans({}, 'objectives') }}
-                            </a>
+                    {% if context.ismsScope %}
+                    <div class="mb-3">
+                        <label class="text-muted small">
+                            <i class="bi bi-check-circle text-success" aria-hidden="true"></i>
+                            {{ 'context.field.isms_scope'|trans({}, 'context') }}
+                        </label>
+                        <p class="mb-0">{{ context.ismsScope|nl2br }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if context.scopeExclusions %}
+                    <div class="mb-3">
+                        <label class="text-muted small">
+                            <i class="bi bi-x-circle text-danger" aria-hidden="true"></i>
+                            {{ 'context.field.scope_exclusions'|trans({}, 'context') }}
+                        </label>
+                        <p class="mb-0">{{ context.scopeExclusions|nl2br }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if context.lastReviewDate or context.nextReviewDate %}
+                    <div class="mt-4 pt-3 border-top-light">
+                        {% if context.lastReviewDate %}
+                        <div class="small text-muted mb-1">
+                            <i class="bi bi-calendar-check" aria-hidden="true"></i>
+                            {{ 'context.kpi.last_review'|trans({}, 'context') }}: <strong>{{ context.lastReviewDate|date('d.m.Y') }}</strong>
                         </div>
+                        {% endif %}
+                        {% if context.nextReviewDate %}
+                        <div class="small text-muted">
+                            <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                            {{ 'context.kpi.next_review'|trans({}, 'context') }}: <strong>{{ context.nextReviewDate|date('d.m.Y') }}</strong>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h2 class="mb-0">
+                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                        {{ 'context.section.context_analysis'|trans({}, 'context') }}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    {% if context.externalIssues %}
+                    <div class="mb-3">
+                        <label class="text-muted small">
+                            <i class="bi bi-globe" aria-hidden="true"></i>
+                            {{ 'context.field.external_issues'|trans({}, 'context') }}
+                        </label>
+                        <p class="mb-0 small">{{ context.externalIssues|nl2br }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if context.internalIssues %}
+                    <div class="mb-3">
+                        <label class="text-muted small">
+                            <i class="bi bi-building" aria-hidden="true"></i>
+                            {{ 'context.field.internal_issues'|trans({}, 'context') }}
+                        </label>
+                        <p class="mb-0 small">{{ context.internalIssues|nl2br }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if not context.externalIssues and not context.internalIssues %}
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-info-circle icon-2-opacity-3" aria-hidden="true"></i>
+                        <p class="small mt-2 mb-0">{{ 'context.message.no_context_topics'|trans({}, 'context') }}</p>
+                    </div>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
 
-    {# Additional Context Information #}
-    <div class="row">
-        {% if context %}
-            {# External Issues #}
-            {% if context.externalIssues %}
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-header bg-white"><h5 class="mb-0">{{ 'context.section.external_issues'|trans({}, 'messages') }}</h5>
-                        </div>
-                        <div class="card-body">
-                            <p class="mb-0">{{ context.externalIssues|nl2br }}</p>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-
-            {# Internal Issues #}
-            {% if context.internalIssues %}
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-header bg-white"><h5 class="mb-0">{{ 'context.section.internal_issues'|trans({}, 'messages') }}</h5>
-                        </div>
-                        <div class="card-body">
-                            <p class="mb-0">{{ context.internalIssues|nl2br }}</p>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-
-            {# Interested Parties #}
-            {% if context.interestedParties %}
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-header bg-white"><h5 class="mb-0">{{ 'context.section.interested_parties'|trans({}, 'messages') }}</h5>
-                        </div>
-                        <div class="card-body">
-                            <p class="mb-0">{{ context.interestedParties|nl2br }}</p>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-
-            {# Requirements #}
-            {% if context.legalRequirements or context.regulatoryRequirements or context.contractualObligations %}
-                <div class="col-md-6 mb-4">
-                    <div class="card shadow-sm h-100">
-                        <div class="card-header bg-white"><h5 class="mb-0">{{ 'context.section.requirements'|trans({}, 'messages') }}</h5>
-                        </div>
-                        <div class="card-body">
-                            {% if context.legalRequirements %}
-                                <h6 class="text-muted small">{{ 'context.section.legal_requirements'|trans({}, 'messages') }}</h6>
-                                <p class="mb-2">{{ context.legalRequirements|nl2br }}</p>
-                            {% endif %}
-                            {% if context.regulatoryRequirements %}
-                                <h6 class="text-muted small">{{ 'context.section.regulatory_requirements'|trans({}, 'messages') }}</h6>
-                                <p class="mb-2">{{ context.regulatoryRequirements|nl2br }}</p>
-                            {% endif %}
-                            {% if context.contractualObligations %}
-                                <h6 class="text-muted small">{{ 'context.section.contractual_obligations'|trans({}, 'messages') }}</h6>
-                                <p class="mb-0">{{ context.contractualObligations|nl2br }}</p>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-        {% endif %}
-    </div>
-
-    {# Context History: Audit Log #}
-    {% if auditLogs is defined and auditLogs|length > 0 %}
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-white">
-                    <h3 class="mb-0">
-                        <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'context.section.history'|trans({}, 'messages')|default('Context History') }}
-                        ({{ totalAuditLogs }} {{ 'audit_log.section.entries'|trans({}, 'audit_log') }})
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div class="audit-log-list">
-                        {% for log in auditLogs %}
-                        <div class="audit-log-entry">
-                            <div class="audit-log-header">
-                                <span class="badge bg-{{ log.action == 'create' ? 'success' : (log.action == 'update' ? 'info' : 'danger') }}">
-                                    {{ log.action|upper }}
-                                </span>
-                                <span class="text-muted">
-                                    {{ log.userName|default('System') }}
-                                    &bull; {{ log.createdAt|date('Y-m-d H:i:s') }}
-                                </span>
-                            </div>
-                            {% if log.action == 'update' %}
-                                {% set oldValues = log.oldValuesArray %}
-                                {% set newValues = log.newValuesArray %}
-                                {% if oldValues and newValues %}
-                                    <div class="audit-log-changes">
-                                        {% for field, newValue in newValues %}
-                                            {% if oldValues[field] is defined and oldValues[field] != newValue %}
-                                                <div class="change-item">
-                                                    <strong>{{ field }}:</strong>
-                                                    <span class="text-danger">{{ oldValues[field]|length > 100 ? oldValues[field]|slice(0, 100) ~ '...' : oldValues[field] }}</span>
-                                                    &rarr;
-                                                    <span class="text-success">{{ newValue|length > 100 ? newValue|slice(0, 100) ~ '...' : newValue }}</span>
-                                                </div>
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                {% endif %}
-                            {% endif %}
-                        </div>
-                        {% endfor %}
-                    </div>
-                    {% if totalAuditLogs > 10 %}
-                    <div class="text-center mt-3">
-                        <small class="text-muted">
-                            {{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs}, 'audit_log') }}
-                        </small>
+    {# Interested Parties Section #}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="mb-0">
+                <i class="bi bi-people" aria-hidden="true"></i>
+                {{ 'context.section.interested_parties_and_requirements'|trans({}, 'context') }}
+            </h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    {% if context.interestedParties %}
+                    <label class="text-muted small mb-2">
+                        <i class="bi bi-people-fill text-primary" aria-hidden="true"></i>
+                        {{ 'context.section.interested_parties'|trans({}, 'context') }}
+                    </label>
+                    <p class="mb-0">{{ context.interestedParties|nl2br }}</p>
+                    {% else %}
+                    <div class="text-center py-3 text-muted">
+                        <i class="bi bi-people icon-2-opacity-3" aria-hidden="true"></i>
+                        <p class="small mt-2 mb-0">{{ 'context.message.no_interested_parties'|trans({}, 'context') }}</p>
                     </div>
                     {% endif %}
+                </div>
+                <div class="col-md-6">
+                    {% if context.interestedPartiesRequirements %}
+                    <label class="text-muted small mb-2">
+                        <i class="bi bi-list-check text-success" aria-hidden="true"></i>
+                        {{ 'context.field.interested_parties_requirements'|trans({}, 'context') }}
+                    </label>
+                    <p class="mb-0">{{ context.interestedPartiesRequirements|nl2br }}</p>
+                    {% else %}
+                    <div class="text-center py-3 text-muted">
+                        <i class="bi bi-list-check icon-2-opacity-3" aria-hidden="true"></i>
+                        <p class="small mt-2 mb-0">{{ 'context.message.no_requirements'|trans({}, 'context') }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Requirements Section #}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="mb-0">
+                <i class="bi bi-shield-check" aria-hidden="true"></i>
+                {{ 'context.section.compliance'|trans({}, 'context') }}
+            </h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="requirement-box">
+                        <label class="text-muted small mb-2">
+                            <i class="bi bi-file-earmark-text text-warning" aria-hidden="true"></i>
+                            {{ 'context.section.legal_requirements'|trans({}, 'context') }}
+                        </label>
+                        {% if context.legalRequirements %}
+                        <p class="small mb-0">{{ context.legalRequirements|nl2br }}</p>
+                        {% else %}
+                        <p class="small text-muted mb-0">{{ 'context.message.no_requirements'|trans({}, 'context') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="requirement-box">
+                        <label class="text-muted small mb-2">
+                            <i class="bi bi-file-earmark-ruled text-info" aria-hidden="true"></i>
+                            {{ 'context.section.regulatory_requirements'|trans({}, 'context') }}
+                        </label>
+                        {% if context.regulatoryRequirements %}
+                        <p class="small mb-0">{{ context.regulatoryRequirements|nl2br }}</p>
+                        {% else %}
+                        <p class="small text-muted mb-0">{{ 'context.message.no_requirements'|trans({}, 'context') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="requirement-box">
+                        <label class="text-muted small mb-2">
+                            <i class="bi bi-file-earmark-check text-success" aria-hidden="true"></i>
+                            {{ 'context.section.contractual_obligations'|trans({}, 'context') }}
+                        </label>
+                        {% if context.contractualObligations %}
+                        <p class="small mb-0">{{ context.contractualObligations|nl2br }}</p>
+                        {% else %}
+                        <p class="small text-muted mb-0">{{ 'context.message.no_requirements'|trans({}, 'context') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ISMS Policy & Roles Section #}
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h2 class="mb-0">
+                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                        {{ 'context.field.isms_policy'|trans({}, 'context') }}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    {% if context.ismsPolicy %}
+                    <p class="mb-0">{{ context.ismsPolicy|nl2br }}</p>
+                    {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-file-earmark-text icon-3-opacity-3" aria-hidden="true"></i>
+                        <p class="small mt-2 mb-0">{{ 'context.message.no_requirements'|trans({}, 'context') }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h2 class="mb-0">
+                        <i class="bi bi-person-badge" aria-hidden="true"></i>
+                        {{ 'context.field.roles_and_responsibilities'|trans({}, 'context') }}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    {% if context.rolesAndResponsibilities %}
+                    <p class="mb-0">{{ context.rolesAndResponsibilities|nl2br }}</p>
+                    {% else %}
+                    <div class="text-center py-4 text-muted">
+                        <i class="bi bi-person-badge icon-3-opacity-3" aria-hidden="true"></i>
+                        <p class="small mt-2 mb-0">{{ 'context.message.no_requirements'|trans({}, 'context') }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ISMS Objectives Section #}
+    {% if objectives|length > 0 %}
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">
+                <i class="bi bi-target" aria-hidden="true"></i>
+                {{ 'context.section.objectives'|trans({}, 'context') }}
+            </h2>
+            <a href="{{ path('app_objective_index') }}" class="btn btn-sm btn-outline-primary">
+                {{ 'context.action.manage_objectives'|trans({}, 'context') }}
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            </a>
+        </div>
+        <div class="card-body">
+            {% embed '_components/_table.html.twig' with {
+                'class': 'table-hover mb-0',
+                'responsive': true,
+                'noMargin': true
+            } %}
+                {% block table_head %}
+                    <tr>
+                        <th scope="col">{{ 'common.title'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'common.category'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'common.responsible'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'common.target_date'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'common.status'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                    </tr>
+                {% endblock %}
+                {% block table_body %}
+                    {% for objective in objectives|slice(0, 5) %}
+                    <tr>
+                        <td>
+                            <strong>{{ objective.title }}</strong>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">{{ objective.category }}</span>
+                        </td>
+                        <td>{{ objective.responsiblePerson }}</td>
+                        <td>
+                            <i class="bi bi-calendar3" aria-hidden="true"></i>
+                            {{ objective.targetDate|date('d.m.Y') }}
+                        </td>
+                        <td>
+                            {% set statusClasses = {
+                                'achieved': 'success',
+                                'in_progress': 'info',
+                                'not_started': 'warning',
+                                'delayed': 'danger'
+                            } %}
+                            <span class="badge bg-{{ statusClasses[objective.status] ?? 'secondary' }}">
+                                {{ objective.status|replace({'_': ' '})|title }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ path('app_objective_show', {id: objective.id}) }}"
+                               class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                <i class="bi bi-eye" aria-hidden="true"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endblock %}
+            {% endembed %}
+            {% if objectives|length > 5 %}
+            <div class="text-center mt-3">
+                <a href="{{ path('app_objective_index') }}" class="btn btn-sm btn-outline-secondary">
+                    {{ 'context.action.view_all_objectives'|trans({'%count%': objectives|length}, 'context') }}
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% else %}
+    <div class="card">
+        <div class="card-header">
+            <h2 class="mb-0">
+                <i class="bi bi-target" aria-hidden="true"></i>
+                {{ 'context.section.objectives'|trans({}, 'context') }}
+            </h2>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info mb-0">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                {{ 'context.message.no_objectives'|trans({}, 'context') }}
+                <a href="{{ path('app_objective_index') }}" class="alert-link">
+                    {{ 'context.action.manage_objectives'|trans({}, 'context') }}
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% else %}
+    {# Empty State - No Context #}
+    {% include '_components/_empty_state.html.twig' with {
+        icon: 'bi-building',
+        title: 'context.empty.title'|trans({}, 'context'),
+        description: 'context.empty.description'|trans({}, 'context'),
+        action: {
+            label: 'context.action.create_context'|trans({}, 'context'),
+            url: path('app_context_edit'),
+            icon: 'bi-plus-circle'
+        }
+    } %}
+
+    {# Information Box #}
+    <div class="card mt-4">
+        <div class="card-header bg-light">
+            <h3 class="mb-0">
+                <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                {{ 'context.info.box_title'|trans({}, 'context') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4><i class="bi bi-1-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause41_title'|trans({}, 'context') }}</h5>
+                    <ul class="small">
+                        <li>{{ 'context.info.clause41_items.external_issues'|trans({}, 'context') }}</li>
+                        <li>{{ 'context.info.clause41_items.internal_issues'|trans({}, 'context') }}</li>
+                        <li>{{ 'context.info.clause41_items.scope'|trans({}, 'context') }}</li>
+                        <li>{{ 'context.info.clause41_items.exclusions'|trans({}, 'context') }}</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h4><i class="bi bi-2-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause42_title'|trans({}, 'context') }}</h5>
+                    <ul class="small">
+                        <li>{{ 'context.info.clause42_items.identify'|trans({}, 'context') }}</li>
+                        <li>{{ 'context.info.clause42_items.requirements'|trans({}, 'context') }}</li>
+                        <li>{{ 'context.info.clause42_items.legal_regulatory'|trans({}, 'context') }}</li>
+                        <li>{{ 'context.info.clause42_items.contractual'|trans({}, 'context') }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <h4><i class="bi bi-3-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause43_title'|trans({}, 'context') }}</h5>
+                    <ul class="small">
+                        <li>{{ 'context.info.clause43_items.boundaries'|trans({}, 'context') }}</li>
+                        <li>{{ 'context.info.clause43_items.locations_processes'|trans({}, 'context') }}</li>
+                        <li>{{ 'context.info.clause43_items.justified_exclusions'|trans({}, 'context') }}</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h4><i class="bi bi-4-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause44_title'|trans({}, 'context') }}</h5>
+                    <ul class="small">
+                        <li>{{ 'context.info.clause44_items.policy_objectives'|trans({}, 'context') }}</li>
+                        <li>{{ 'context.info.clause44_items.roles_responsibilities'|trans({}, 'context') }}</li>
+                        <li>{{ 'context.info.clause44_items.processes'|trans({}, 'context') }}</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -389,52 +515,28 @@
 </div>
 
 <style>
-/* Audit Log Styles */
-.audit-log-list {
-    margin-top: 1rem;
+.requirement-box {
+    padding: var(--spacing-md);
+    background: var(--color-bg);
+    border-radius: var(--border-radius);
+    height: 100%;
 }
 
-.audit-log-entry {
-    border-left: 3px solid #e5e7eb;
-    padding-left: 1rem;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #f3f4f6;
+.requirement-box:hover {
+    background: rgba(52, 152, 219, 0.05);
+    transition: background 0.2s;
 }
 
-.audit-log-entry:last-child {
-    border-bottom: none;
+/* Hover effect for cards */
+.card:hover {
+    box-shadow: var(--shadow-md);
+    transition: box-shadow 0.2s;
 }
 
-.audit-log-header {
-    margin-bottom: 0.5rem;
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.audit-log-changes {
-    font-size: 0.875rem;
-    margin-top: 0.5rem;
-    padding-left: 1rem;
-}
-
-.change-item {
-    margin-bottom: 0.25rem;
-    word-break: break-word;
-}
-
-.change-item strong {
-    color: #374151;
-}
-
-.text-danger {
-    color: #dc2626;
-}
-
-.text-success {
-    color: #10b981;
+/* Table row hover */
+.table tbody tr:hover {
+    background-color: rgba(52, 152, 219, 0.05);
+    transition: background-color 0.2s;
 }
 </style>
 {% endblock %}

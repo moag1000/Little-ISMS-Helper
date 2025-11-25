@@ -28,12 +28,12 @@
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title d-flex align-items-center gap-2" id="bulkDeleteModalTitle">
                     <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-                    <span>{{ 'bulk_delete.confirm.title'|trans({}, 'bulk_delete')|default('Löschen bestätigen') }}</span>
+                    <span>{{ 'bulk_delete.confirm.title'|trans({}, 'bulk_delete') }}</span>
                 </h5>
                 <button type="button"
                         class="btn-close btn-close-white" aria-label="{{ 'action.close'|trans({}, 'messages') }}" data-bs-dismiss="modal"
                         data-action="click->bulk-delete-confirmation#cancel"
-                        aria-label="{{ 'action.close'|trans({}, 'messages')|default('Schließen') }}">
+                        aria-label="{{ 'action.close'|trans({}, 'messages') }}">
                 </button>
             </div>
 
@@ -49,7 +49,7 @@
                             {# Dynamic message will be inserted here #}
                         </p>
                         <p class="mb-0 small text-muted">
-                            {{ 'bulk_delete.confirm.warning'|trans({}, 'bulk_delete')|default('Diese Aktion kann nicht rückgängig gemacht werden.') }}
+                            {{ 'bulk_delete.confirm.warning'|trans({}, 'bulk_delete') }}
                         </p>
                     </div>
                 </div>
@@ -57,13 +57,13 @@
                 {# Selection summary #}
                 <div class="mb-3">
                     <h6 class="fw-semibold mb-2">
-                        {{ 'bulk_delete.selection.title'|trans({}, 'bulk_delete')|default('Ausgewählte Einträge') }}
+                        {{ 'bulk_delete.selection.title'|trans({}, 'bulk_delete') }}
                     </h5>
                     <div class="d-flex align-items-center gap-2 p-2 bg-light rounded">
                         <i class="bi bi-check2-square text-primary" aria-hidden="true"></i>
                         <span>
                             <strong data-bulk-delete-confirmation-target="count">0</strong>
-                            <span data-bulk-delete-confirmation-target="entityLabel">{{ 'common.entries'|trans({}, 'messages')|default('Einträge') }}</span>
+                            <span data-bulk-delete-confirmation-target="entityLabel">{{ 'common.entries'|trans({}, 'messages') }}</span>
                         </span>
                     </div>
                 </div>
@@ -71,12 +71,12 @@
                 {# Dependencies and impact (dynamically populated) #}
                 <div data-bulk-delete-confirmation-target="dependencies" class="d-none">
                     <h6 class="fw-semibold mb-2">
-                        {{ 'bulk_delete.dependencies.title'|trans({}, 'bulk_delete')|default('Betroffene Verknüpfungen') }}
+                        {{ 'bulk_delete.dependencies.title'|trans({}, 'bulk_delete') }}
                     </h5>
                     <div class="alert alert-info" role="status">
                         <ul class="mb-0 ps-3"
                             data-bulk-delete-confirmation-target="dependencyList"
-                            aria-label="{{ 'bulk_delete.dependencies.list'|trans({}, 'bulk_delete')|default('Liste der betroffenen Verknüpfungen') }}">
+                            aria-label="{{ 'bulk_delete.dependencies.list'|trans({}, 'bulk_delete') }}">
                             {# Dependencies will be injected here #}
                         </ul>
                     </div>
@@ -85,10 +85,10 @@
                 {# Loading state #}
                 <div data-bulk-delete-confirmation-target="loading" class="text-center py-3 d-none">
                     <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">{{ 'common.loading'|trans({}, 'messages')|default('Lädt...') }}</span>
+                        <span class="visually-hidden">{{ 'common.loading'|trans({}, 'messages') }}</span>
                     </div>
                     <p class="mt-2 text-muted small">
-                        {{ 'bulk_delete.loading'|trans({}, 'bulk_delete')|default('Abhängigkeiten werden geprüft...') }}
+                        {{ 'bulk_delete.loading'|trans({}, 'bulk_delete') }}
                     </p>
                 </div>
 
@@ -107,7 +107,7 @@
                         data-action="click->bulk-delete-confirmation#cancel"
                         data-bulk-delete-confirmation-target="cancelButton">
                     <i class="bi bi-x-lg me-1" aria-hidden="true"></i>
-                    {{ 'action.cancel'|trans({}, 'messages')|default('Abbrechen') }}
+                    {{ 'action.cancel'|trans({}, 'messages') }}
                 </button>
                 <button type="button"
                         class="btn btn-danger"
@@ -115,7 +115,7 @@
                         data-bulk-delete-confirmation-target="confirmButton"
                         autofocus>
                     <i class="bi bi-trash me-1" aria-hidden="true"></i>
-                    {{ 'action.delete'|trans({}, 'messages')|default('Löschen') }}
+                    {{ 'action.delete'|trans({}, 'messages') }}
                 </button>
             </div>
         </div>

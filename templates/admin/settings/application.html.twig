@@ -1,5 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
-
+{% trans_default_domain 'admin'%}
 {% block admin_title %}{{ 'admin.settings.application.title'|trans({}, 'admin') }}{% endblock %}
 
 {% block breadcrumb_items %}
@@ -15,7 +15,7 @@
                     <h3 class="card-title mb-0">
                         <i class="bi bi-gear-fill text-primary" aria-hidden="true"></i>
                         {{ 'admin.settings.application.title'|trans({}, 'admin') }}
-                    </h5>
+                    </h3>
                 </div>
                 <div class="card-body">
                     <form method="post">

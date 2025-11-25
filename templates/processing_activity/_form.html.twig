@@ -11,38 +11,38 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.name,
-                'label': form.name.vars.label|default('processing_activity.field.name'|trans({}, 'privacy')),
+                'label': 'processing_activity.field.name'|trans({}, 'privacy'),
                 'required': true
             } %}
         </div>
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.status,
-                'label': form.status.vars.label|default('processing_activity.field.status'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.status'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.description,
-                'label': form.description.vars.label|default('processing_activity.field.description'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.description'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.purposes,
-                'label': form.purposes.vars.label|default('processing_activity.field.purposes'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.purposes'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.legalBasis,
-                'label': form.legalBasis.vars.label|default('processing_activity.field.legal_basis'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.legal_basis'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.legalBasisDetails,
-                'label': form.legalBasisDetails.vars.label|default('processing_activity.field.legal_basis_details'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.legal_basis_details'|trans({}, 'privacy')
             } %}
         </div>
     </div>
@@ -59,13 +59,13 @@
         <div class="col-md-8">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.dataSubjectCategories,
-                'label': form.dataSubjectCategories.vars.label|default('processing_activity.field.data_subject_categories'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.data_subject_categories'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.estimatedDataSubjectsCount,
-                'label': form.estimatedDataSubjectsCount.vars.label|default('processing_activity.field.estimated_data_subjects_count'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.estimated_data_subjects_count'|trans({}, 'privacy')
             } %}
         </div>
     </div>
@@ -82,31 +82,31 @@
         <div class="col-md-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.personalDataCategories,
-                'label': form.personalDataCategories.vars.label|default('processing_activity.field.personal_data_categories'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.personal_data_categories'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.processesSpecialCategories,
-                'label': form.processesSpecialCategories.vars.label|default('processing_activity.field.processes_special_categories'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.processes_special_categories'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.processesCriminalData,
-                'label': form.processesCriminalData.vars.label|default('processing_activity.field.processes_criminal_data'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.processes_criminal_data'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.specialCategoriesDetails,
-                'label': form.specialCategoriesDetails.vars.label|default('processing_activity.field.special_categories_details'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.special_categories_details'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.legalBasisSpecialCategories,
-                'label': form.legalBasisSpecialCategories.vars.label|default('processing_activity.field.legal_basis_special_categories'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.legal_basis_special_categories'|trans({}, 'privacy')
             } %}
         </div>
     </div>
@@ -123,31 +123,31 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.recipientCategories,
-                'label': form.recipientCategories.vars.label|default('processing_activity.field.recipient_categories'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.recipient_categories'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.hasThirdCountryTransfer,
-                'label': form.hasThirdCountryTransfer.vars.label|default('processing_activity.field.has_third_country_transfer'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.has_third_country_transfer'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.recipientDetails,
-                'label': form.recipientDetails.vars.label|default('processing_activity.field.recipient_details'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.recipient_details'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.thirdCountries,
-                'label': form.thirdCountries.vars.label|default('processing_activity.field.third_countries'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.third_countries'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.transferSafeguards,
-                'label': form.transferSafeguards.vars.label|default('processing_activity.field.transfer_safeguards'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.transfer_safeguards'|trans({}, 'privacy')
             } %}
         </div>
     </div>
@@ -164,19 +164,19 @@
         <div class="col-md-8">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.retentionPeriod,
-                'label': form.retentionPeriod.vars.label|default('processing_activity.field.retention_period'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.retention_period'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.retentionPeriodDays,
-                'label': form.retentionPeriodDays.vars.label|default('processing_activity.field.retention_period_days'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.retention_period_days'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.retentionLegalBasis,
-                'label': form.retentionLegalBasis.vars.label|default('processing_activity.field.retention_legal_basis'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.retention_legal_basis'|trans({}, 'privacy')
             } %}
         </div>
     </div>
@@ -193,13 +193,13 @@
         <div class="col-md-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.technicalOrganizationalMeasures,
-                'label': form.technicalOrganizationalMeasures.vars.label|default('processing_activity.field.technical_organizational_measures'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.technical_organizational_measures'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.implementedControls,
-                'label': form.implementedControls.vars.label|default('processing_activity.field.implemented_controls'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.implemented_controls'|trans({}, 'privacy')
             } %}
         </div>
     </div>
@@ -216,19 +216,19 @@
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.responsibleDepartment,
-                'label': form.responsibleDepartment.vars.label|default('processing_activity.field.responsible_department'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.responsible_department'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.contactPerson,
-                'label': form.contactPerson.vars.label|default('processing_activity.field.contact_person'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.contact_person'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.dataProtectionOfficer,
-                'label': form.dataProtectionOfficer.vars.label|default('processing_activity.field.data_protection_officer'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.data_protection_officer'|trans({}, 'privacy')
             } %}
         </div>
     </div>
@@ -245,13 +245,13 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.involvesProcessors,
-                'label': form.involvesProcessors.vars.label|default('processing_activity.field.involves_processors'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.involves_processors'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.isJointController,
-                'label': form.isJointController.vars.label|default('processing_activity.field.is_joint_controller'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.is_joint_controller'|trans({}, 'privacy')
             } %}
         </div>
     </div>
@@ -268,25 +268,25 @@
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.isHighRisk,
-                'label': form.isHighRisk.vars.label|default('processing_activity.field.is_high_risk'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.is_high_risk'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.dpiaCompleted,
-                'label': form.dpiaCompleted.vars.label|default('processing_activity.field.dpia_completed'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.dpia_completed'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.dpiaDate,
-                'label': form.dpiaDate.vars.label|default('processing_activity.field.dpia_date'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.dpia_date'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.riskLevel,
-                'label': form.riskLevel.vars.label|default('processing_activity.field.risk_level'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.risk_level'|trans({}, 'privacy')
             } %}
         </div>
     </div>
@@ -303,13 +303,13 @@
         <div class="col-md-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.hasAutomatedDecisionMaking,
-                'label': form.hasAutomatedDecisionMaking.vars.label|default('processing_activity.field.has_automated_decision_making'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.has_automated_decision_making'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.automatedDecisionMakingDetails,
-                'label': form.automatedDecisionMakingDetails.vars.label|default('processing_activity.field.automated_decision_making_details'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.automated_decision_making_details'|trans({}, 'privacy')
             } %}
         </div>
     </div>
@@ -326,25 +326,25 @@
         <div class="col-md-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.dataSources,
-                'label': form.dataSources.vars.label|default('processing_activity.field.data_sources'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.data_sources'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.startDate,
-                'label': form.startDate.vars.label|default('processing_activity.field.start_date'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.start_date'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.endDate,
-                'label': form.endDate.vars.label|default('processing_activity.field.end_date'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.end_date'|trans({}, 'privacy')
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.nextReviewDate,
-                'label': form.nextReviewDate.vars.label|default('processing_activity.field.next_review_date'|trans({}, 'privacy'))
+                'label': 'processing_activity.field.next_review_date'|trans({}, 'privacy')
             } %}
         </div>
     </div>

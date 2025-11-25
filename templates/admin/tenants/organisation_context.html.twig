@@ -39,7 +39,7 @@
                         <div class="col-md-12">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.industries,
-                                'label': form.industries.vars.label|default('tenant.organisation_context.field.industries'|trans({}, 'tenant'))
+                                'label': 'tenant.organisation_context.field.industries'|trans({}, 'tenant')
                             } %}
                         </div>
                     </div>
@@ -48,13 +48,13 @@
                         <div class="col-md-6">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.employee_count,
-                                'label': form.employee_count.vars.label|default('tenant.organisation_context.field.employee_count'|trans({}, 'tenant'))
+                                'label': 'tenant.organisation_context.field.employee_count'|trans({}, 'tenant')
                             } %}
                         </div>
                         <div class="col-md-6">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.country,
-                                'label': form.country.vars.label|default('tenant.organisation_context.field.country'|trans({}, 'tenant'))
+                                'label': 'tenant.organisation_context.field.country'|trans({}, 'tenant')
                             } %}
                         </div>
                     </div>
@@ -63,7 +63,7 @@
                         <div class="col-md-12">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.description,
-                                'label': form.description.vars.label|default('tenant.organisation_context.field.description'|trans({}, 'tenant'))
+                                'label': 'tenant.organisation_context.field.description'|trans({}, 'tenant')
                             } %}
                         </div>
                     </div>

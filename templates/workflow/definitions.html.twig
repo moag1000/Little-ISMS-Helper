@@ -1,22 +1,22 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'workflows' %}
 
-{% block title %}{{ 'workflow.title.definitions'|trans({}, 'messages') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'workflow.title.definitions'|trans({}, 'workflows') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
 
 <div class="page-header">
     <div>
-        <h1>{{ 'workflow.title.definitions'|trans({}, 'messages') }}</h1>
-        <p class="text-muted">{{ 'workflow.description.definitions'|trans({}, 'messages') }}</p>
+        <h1>{{ 'workflow.title.definitions'|trans({}, 'workflows') }}</h1>
+        <p class="text-muted">{{ 'workflow.description.definitions'|trans({}, 'workflows') }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
             ← {{ 'common.back'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_workflow_definition_new') }}" class="btn btn-primary">
-            ➕ {{ 'workflow.action.create_definition'|trans({}, 'messages') }}
+            ➕ {{ 'workflow.action.create_definition'|trans({}, 'workflows') }}
         </a>
     </div>
 </div>
@@ -24,17 +24,17 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.total_definitions'|trans({}, 'messages'), workflows|length, null, null, 'primary', null) }}
+        {{ cards.kpi_card('workflow.stats.total_definitions'|trans({}, 'workflows'), workflows|length, null, null, 'primary', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.active_definitions'|trans({}, 'messages'), workflows|filter(w => w.isActive)|length, null, null, 'success', null) }}
+        {{ cards.kpi_card('workflow.stats.active_definitions'|trans({}, 'workflows'), workflows|filter(w => w.isActive)|length, null, null, 'success', null) }}
     </div>
     <div class="col-auto">
         {% set totalSteps = 0 %}
         {% for workflow in workflows %}
             {% set totalSteps = totalSteps + workflow.steps|length %}
         {% endfor %}
-        {{ cards.kpi_card('workflow.stats.avg_steps'|trans({}, 'messages'), workflows|length > 0 ? (totalSteps / workflows|length)|round : 0, null, null, 'info', null) }}
+        {{ cards.kpi_card('workflow.stats.avg_steps'|trans({}, 'workflows'), workflows|length > 0 ? (totalSteps / workflows|length)|round : 0, null, null, 'info', null) }}
     </div>
     <div class="col-auto">
         {% set entityTypes = [] %}
@@ -43,7 +43,7 @@
                 {% set entityTypes = entityTypes|merge([w.entityType]) %}
             {% endif %}
         {% endfor %}
-        {{ cards.kpi_card('workflow.stats.entity_types'|trans({}, 'messages'), entityTypes|length, null, null, 'secondary', null) }}
+        {{ cards.kpi_card('workflow.stats.entity_types'|trans({}, 'workflows'), entityTypes|length, null, null, 'secondary', null) }}
     </div>
 </div>
 
@@ -54,11 +54,11 @@
 } %}
     {% block table_head %}
         <tr>
-            <th scope="col">{{ 'workflow.field.definition_name'|trans({}, 'messages') }}</th>
-            <th scope="col">{{ 'workflow.field.description'|trans({}, 'messages') }}</th>
-            <th scope="col" class="text-center">{{ 'workflow.field.steps'|trans({}, 'messages') }}</th>
-            <th scope="col" class="text-center">{{ 'workflow.field.instances'|trans({}, 'messages') }}</th>
-            <th scope="col" class="text-center">{{ 'workflow.field.active'|trans({}, 'messages') }}</th>
+            <th scope="col">{{ 'workflow.field.definition_name'|trans({}, 'workflows') }}</th>
+            <th scope="col">{{ 'workflow.field.description'|trans({}, 'workflows') }}</th>
+            <th scope="col" class="text-center">{{ 'workflow.field.steps'|trans({}, 'workflows') }}</th>
+            <th scope="col" class="text-center">{{ 'workflow.field.instances'|trans({}, 'workflows') }}</th>
+            <th scope="col" class="text-center">{{ 'workflow.field.active'|trans({}, 'workflows') }}</th>
             <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
@@ -99,7 +99,7 @@
         {% else %}
         <tr>
             <td colspan="6" class="text-center-p-xl-muted">
-                {{ 'workflow.message.no_definitions'|trans({}, 'messages') }}
+                {{ 'workflow.message.no_definitions'|trans({}, 'workflows') }}
             </td>
         </tr>
         {% endfor %}

@@ -1,9 +1,9 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'audit_log' %}
 
-{% block admin_title %}{{ 'audit_log.page.title'|trans({}, 'audits') }}{% endblock %}
+{% block admin_title %}{{ 'audit_log.page.title'|trans({}, 'audit_log') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">{{ 'audit_log.page.subtitle'|trans({}, 'audits') }}</p>
+    <p class="text-muted">{{ 'audit_log.page.subtitle'|trans({}, 'audit_log') }}</p>
 {% endblock %}
 
 {% block stylesheets %}
@@ -38,12 +38,12 @@
 {% block admin_content %}
 
 <div class="info-box">
-    <h1>{{ 'audit_log.section.statistics'|trans({}, 'audits') }}</h1>
-    <p><strong>{{ 'audit_log.stats.total_logs'|trans({}, 'audits') }}:</strong> {{ totalLogs }}</p>
-    <p><strong>{{ 'audit_log.stats.last_24h'|trans({}, 'audits') }}:</strong> {{ recentActivity|length }} {{ 'common.activities'|trans({}, 'messages') }}</p>
+    <h1>{{ 'audit_log.section.statistics'|trans({}, 'audit_log') }}</h1>
+    <p><strong>{{ 'audit_log.stats.total_logs'|trans({}, 'audit_log') }}:</strong> {{ totalLogs }}</p>
+    <p><strong>{{ 'audit_log.stats.last_24h'|trans({}, 'audit_log') }}:</strong> {{ recentActivity|length }} {{ 'common.activities'|trans({}, 'messages') }}</p>
 
     {% if actionStats|length > 0 %}
-    <p><strong>{{ 'audit_log.stats.actions'|trans({}, 'audits') }}:</strong></p>
+    <p><strong>{{ 'audit_log.stats.actions'|trans({}, 'audit_log') }}:</strong></p>
     <ul>
         {% for stat in actionStats %}
         <li>{{ stat.action|capitalize }}: {{ stat.count }}</li>
@@ -52,7 +52,7 @@
     {% endif %}
 
     {% if entityTypeStats|length > 0 %}
-    <p><strong>{{ 'audit_log.stats.entity_types'|trans({}, 'audits') }}:</strong></p>
+    <p><strong>{{ 'audit_log.stats.entity_types'|trans({}, 'audit_log') }}:</strong></p>
     <ul>
         {% for stat in entityTypeStats %}
         <li>{{ stat.entityType }}: {{ stat.count }}</li>
@@ -65,11 +65,11 @@
 <a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans({}, 'messages') }}</a>
 
 <div class="filter-container" id="filter-section" tabindex="-1">
-    <h2>{{ 'audit_log.section.filters'|trans({}, 'audits') }}</h2>
-    <form method="get" action="{{ path('app_audit_log_index') }}" role="search" aria-label="{{ 'audit_log.section.filters'|trans({}, 'audits') }}">
+    <h2>{{ 'audit_log.section.filters'|trans({}, 'audit_log') }}</h2>
+    <form method="get" action="{{ path('app_audit_log_index') }}" role="search" aria-label="{{ 'audit_log.section.filters'|trans({}, 'audit_log') }}">
         <div class="d-grid grid-responsive-200 gap-1 mb-md">
             <div>
-                <label for="entityType">{{ 'audit_log.filter.entity_type'|trans({}, 'audits') }}:</label>
+                <label for="entityType">{{ 'audit_log.filter.entity_type'|trans({}, 'audit_log') }}:</label>
                 <select name="entityType" id="entityType" class="form-control">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     {% for entityType in entityTypes %}
@@ -81,7 +81,7 @@
             </div>
 
             <div>
-                <label for="action">{{ 'audit_log.filter.action'|trans({}, 'audits') }}:</label>
+                <label for="action">{{ 'audit_log.filter.action'|trans({}, 'audit_log') }}:</label>
                 <select name="action" id="action" class="form-control">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     {% for action in actions %}
@@ -93,30 +93,30 @@
             </div>
 
             <div>
-                <label for="userName">{{ 'audit_log.filter.user'|trans({}, 'audits') }}:</label>
+                <label for="userName">{{ 'audit_log.filter.user'|trans({}, 'audit_log') }}:</label>
                 <input type="text" name="userName" id="userName" value="{{ filters.userName ?? '' }}" class="form-control">
             </div>
 
             <div>
-                <label for="dateFrom">{{ 'audit_log.filter.date_from'|trans({}, 'audits') }}:</label>
+                <label for="dateFrom">{{ 'audit_log.filter.date_from'|trans({}, 'audit_log') }}:</label>
                 <input type="date" name="dateFrom" id="dateFrom" value="{{ filters.dateFrom ?? '' }}" class="form-control">
             </div>
 
             <div>
-                <label for="dateTo">{{ 'audit_log.filter.date_to'|trans({}, 'audits') }}:</label>
+                <label for="dateTo">{{ 'audit_log.filter.date_to'|trans({}, 'audit_log') }}:</label>
                 <input type="date" name="dateTo" id="dateTo" value="{{ filters.dateTo ?? '' }}" class="form-control">
             </div>
         </div>
 
         <div class="d-flex gap-1">
             <button type="submit" class="btn btn-primary">
-                <i class="bi bi-funnel"></i> {{ 'audit_log.filter.apply'|trans({}, 'audits') }}
+                <i class="bi bi-funnel"></i> {{ 'audit_log.filter.apply'|trans({}, 'audit_log') }}
             </button>
             <a href="{{ path('app_audit_log_index') }}" class="btn btn-secondary">
-                <i class="bi bi-x-circle"></i> {{ 'audit_log.filter.reset'|trans({}, 'audits') }}
+                <i class="bi bi-x-circle"></i> {{ 'audit_log.filter.reset'|trans({}, 'audit_log') }}
             </a>
             <a href="{{ path('app_audit_log_statistics') }}" class="btn btn-outline-primary">
-                <i class="bi bi-graph-up"></i> {{ 'audit_log.filter.statistics'|trans({}, 'audits') }}
+                <i class="bi bi-graph-up"></i> {{ 'audit_log.filter.statistics'|trans({}, 'audit_log') }}
             </a>
         </div>
     </form>
@@ -124,7 +124,7 @@
 
 {% if auditLogs|length > 0 %}
 <div class="mt-2">
-    <h2>{{ 'audit_log.section.entries'|trans({}, 'audits') }}</h2>
+    <h2>{{ 'audit_log.section.entries'|trans({}, 'audit_log') }}</h2>
 
     {# Tab Navigation #}
     <ul class="nav nav-tabs mt-md" role="tablist">
@@ -134,7 +134,7 @@
                     data-bs-target="#table-view"
                     type="button"
                     role="tab">
-                <i class="bi bi-table"></i> {{ 'audit_log.section.table'|trans({}, 'audits') }}
+                <i class="bi bi-table"></i> {{ 'audit_log.section.table'|trans({}, 'audit_log') }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -143,7 +143,7 @@
                     data-bs-target="#timeline-view"
                     type="button"
                     role="tab">
-                <i class="bi bi-clock-history"></i> {{ 'audit_log.section.timeline'|trans({}, 'audits') }}
+                <i class="bi bi-clock-history"></i> {{ 'audit_log.section.timeline'|trans({}, 'audit_log') }}
             </button>
         </li>
     </ul>
@@ -157,12 +157,12 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.timestamp'|trans({}, 'audits') }}</th>
-                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.action'|trans({}, 'audits') }}</th>
-                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.entity'|trans({}, 'audits') }}</th>
-                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.user'|trans({}, 'audits') }}</th>
-                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.description'|trans({}, 'audits') }}</th>
-                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.details'|trans({}, 'audits') }}</th>
+                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.timestamp'|trans({}, 'audit_log') }}</th>
+                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.action'|trans({}, 'audit_log') }}</th>
+                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.entity'|trans({}, 'audit_log') }}</th>
+                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.user'|trans({}, 'audit_log') }}</th>
+                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.description'|trans({}, 'audit_log') }}</th>
+                        <th scope="col" class="table-cell text-left">{{ 'audit_log.table.details'|trans({}, 'audit_log') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -195,7 +195,7 @@
                         <td class="table-cell">
                             <a href="{{ path('app_audit_log_detail', {id: log.id}) }}"
                                class="link-primary">
-                                {{ 'audit_log.table.view_details'|trans({}, 'audits') }}
+                                {{ 'audit_log.table.view_details'|trans({}, 'audit_log') }}
                             </a>
                         </td>
                     </tr>
@@ -216,13 +216,13 @@
     <div class="mt-2 text-center">
         <div class="pagination">
             {% if currentPage > 1 %}
-                <a href="{{ path('app_audit_log_index', filters|merge({page: currentPage - 1})) }}">{{ 'audit_log.pagination.prev'|trans({}, 'audits') }}</a>
+                <a href="{{ path('app_audit_log_index', filters|merge({page: currentPage - 1})) }}">{{ 'audit_log.pagination.prev'|trans({}, 'audit_log') }}</a>
             {% endif %}
 
-            <span class="mx-1rem">{{ 'audit_log.pagination.page_counter'|trans({'%current%': currentPage, '%total%': totalPages}, 'audits') }}</span>
+            <span class="mx-1rem">{{ 'audit_log.pagination.page_counter'|trans({'%current%': currentPage, '%total%': totalPages}, 'audit') }}</span>
 
             {% if currentPage < totalPages %}
-                <a href="{{ path('app_audit_log_index', filters|merge({page: currentPage + 1})) }}">{{ 'audit_log.pagination.next'|trans({}, 'audits') }}</a>
+                <a href="{{ path('app_audit_log_index', filters|merge({page: currentPage + 1})) }}">{{ 'audit_log.pagination.next'|trans({}, 'audit_log') }}</a>
             {% endif %}
         </div>
     </div>
@@ -230,7 +230,7 @@
 </div>
 {% else %}
 <div class="alert alert-info mt-2" role="status">
-    {{ 'audit_log.message.no_entries'|trans({}, 'audits') }}
+    {{ 'audit_log.message.no_entries'|trans({}, 'audit_log') }}
 </div>
 {% endif %}
 {% endblock %}

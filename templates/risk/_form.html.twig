@@ -8,15 +8,15 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-info-circle" aria-hidden="true"></i>
-        {{ 'risk.section.basic_info'|trans({}, 'risks')|default('Grundinformationen') }}
+        {{ 'risk.section.basic_info'|trans({}, 'risk') }}
     </legend>
 
     <div class="row">
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.title,
-                'label': 'risk.field.title'|trans({}, 'risks')|default('Titel'),
-                'help': 'risk.help.title'|trans({}, 'risks')|default('Kurzer, prägnanter Titel des Risikos'),
+                'label': 'risk.field.title'|trans({}, 'risk'),
+                'help': 'risk.help.title'|trans({}, 'risk'),
                 'required': true
             } %}
         </div>
@@ -24,8 +24,8 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.asset,
-                'label': 'risk.field.asset'|trans({}, 'risks')|default('Betroffenes Asset'),
-                'help': 'risk.help.asset'|trans({}, 'risks')|default('Asset, das von diesem Risiko betroffen ist')
+                'label': 'risk.field.asset'|trans({}, 'risk'),
+                'help': 'risk.help.asset'|trans({}, 'risk')
             } %}
         </div>
     </div>
@@ -34,8 +34,8 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.description,
-                'label': 'risk.field.description'|trans({}, 'risks')|default('Beschreibung'),
-                'help': 'risk.help.description'|trans({}, 'risks')|default('Detaillierte Beschreibung des Risikos und seiner potenziellen Auswirkungen')
+                'label': 'risk.field.description'|trans({}, 'risk'),
+                'help': 'risk.help.description'|trans({}, 'risk')
             } %}
         </div>
     </div>
@@ -44,16 +44,16 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.threat,
-                'label': 'risk.field.threat'|trans({}, 'risks')|default('Bedrohung'),
-                'help': 'risk.help.threat'|trans({}, 'risks')|default('Welche Bedrohung könnte dieses Risiko auslösen?')
+                'label': 'risk.field.threat'|trans({}, 'risk'),
+                'help': 'risk.help.threat'|trans({}, 'risk')
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.vulnerability,
-                'label': 'risk.field.vulnerability'|trans({}, 'risks')|default('Verwundbarkeit'),
-                'help': 'risk.help.vulnerability'|trans({}, 'risks')|default('Welche Schwachstelle könnte ausgenutzt werden?')
+                'label': 'risk.field.vulnerability'|trans({}, 'risk'),
+                'help': 'risk.help.vulnerability'|trans({}, 'risk')
             } %}
         </div>
     </div>
@@ -63,28 +63,28 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-shield-lock" aria-hidden="true"></i>
-        {{ 'risk.section.gdpr_assessment'|trans({}, 'risks')|default('DSGVO/GDPR Datenschutz-Bewertung') }}
+        {{ 'risk.section.gdpr_assessment'|trans({}, 'risk') }}
     </legend>
 
     <div class="alert alert-info" role="status">
         <i class="bi bi-info-circle" aria-hidden="true"></i>
-        {{ 'risk.help.gdpr_section'|trans({}, 'risks')|default('Bewerten Sie, ob dieses Risiko personenbezogene Daten betrifft (DSGVO Art. 32)') }}
+        {{ 'risk.help.gdpr_section'|trans({}, 'risk') }}
     </div>
 
     <div class="row">
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.involvesPersonalData,
-                'label': 'risk.field.involves_personal_data'|trans({}, 'risks')|default('Betrifft personenbezogene Daten'),
-                'help': 'risk.help.involves_personal_data'|trans({}, 'risks')|default('Aktivieren Sie dies, wenn das Risiko die Verarbeitung personenbezogener Daten betrifft')
+                'label': 'risk.field.involves_personal_data'|trans({}, 'risk'),
+                'help': 'risk.help.involves_personal_data'|trans({}, 'risk')
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.involvesSpecialCategoryData,
-                'label': 'risk.field.involves_special_category_data'|trans({}, 'risks')|default('Betrifft besondere Kategorien'),
-                'help': 'risk.help.involves_special_category_data'|trans({}, 'risks')|default('Besondere Kategorien gemäß Art. 9 DSGVO')
+                'label': 'risk.field.involves_special_category_data'|trans({}, 'risk'),
+                'help': 'risk.help.involves_special_category_data'|trans({}, 'risk')
             } %}
         </div>
     </div>
@@ -93,16 +93,16 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.legalBasis,
-                'label': 'risk.field.legal_basis'|trans({}, 'risks')|default('Rechtsgrundlage'),
-                'help': 'risk.help.legal_basis'|trans({}, 'risks')|default('Rechtsgrundlage für die Datenverarbeitung gemäß DSGVO Art. 6')
+                'label': 'risk.field.legal_basis'|trans({}, 'risk'),
+                'help': 'risk.help.legal_basis'|trans({}, 'risk')
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.processingScale,
-                'label': 'risk.field.processing_scale'|trans({}, 'risks')|default('Umfang der Verarbeitung'),
-                'help': 'risk.help.processing_scale'|trans({}, 'risks')|default('Umfang der Datenverarbeitung')
+                'label': 'risk.field.processing_scale'|trans({}, 'risk'),
+                'help': 'risk.help.processing_scale'|trans({}, 'risk')
             } %}
         </div>
     </div>
@@ -111,8 +111,8 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.requiresDPIA,
-                'label': 'risk.field.requires_dpia'|trans({}, 'risks')|default('DSFA erforderlich'),
-                'help': 'risk.help.requires_dpia'|trans({}, 'risks')|default('Datenschutz-Folgenabschätzung erforderlich')
+                'label': 'risk.field.requires_dpia'|trans({}, 'risk'),
+                'help': 'risk.help.requires_dpia'|trans({}, 'risk')
             } %}
         </div>
     </div>
@@ -121,8 +121,8 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.dataSubjectImpact,
-                'label': 'risk.field.data_subject_impact'|trans({}, 'risks')|default('Auswirkungen auf betroffene Personen'),
-                'help': 'risk.help.data_subject_impact'|trans({}, 'risks')|default('Beschreiben Sie die Auswirkungen auf Rechte und Freiheiten')
+                'label': 'risk.field.data_subject_impact'|trans({}, 'risk'),
+                'help': 'risk.help.data_subject_impact'|trans({}, 'risk')
             } %}
         </div>
     </div>
@@ -132,12 +132,12 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-exclamation-diamond" aria-hidden="true"></i>
-        {{ 'risk.section.inherent_risk'|trans({}, 'risks')|default('Brutto-Risiko (ohne Controls)') }}
+        {{ 'risk.section.inherent_risk'|trans({}, 'risk') }}
     </legend>
 
     <div class="alert alert-info" role="status">
         <i class="bi bi-info-circle" aria-hidden="true"></i>
-        {{ 'risk.help.inherent'|trans({}, 'risks')|default('Bewertung des Risikos ohne bestehende Sicherheitsmaßnahmen') }}
+        {{ 'risk.help.inherent'|trans({}, 'risk') }}
     </div>
 
     {# Risk Assessment Guidance Helper (Priority 2.3) #}
@@ -150,7 +150,7 @@
                         aria-expanded="false"
                         aria-controls="riskAssessmentGuidance">
                     <i class="bi bi-question-circle-fill text-primary" aria-hidden="true"></i>
-                    {{ 'risk.guidance.title'|trans({}, 'risks') }}
+                    {{ 'risk.guidance.title'|trans({}, 'risk') }}
                     <i class="bi bi-chevron-down float-end" aria-hidden="true"></i>
                 </button>
             </h5>
@@ -158,13 +158,13 @@
         <div class="collapse" id="riskAssessmentGuidance">
             <div class="card-body">
                 <p class="text-muted mb-3">
-                    {{ 'risk.guidance.intro'|trans({}, 'risks') }}
+                    {{ 'risk.guidance.intro'|trans({}, 'risk') }}
                 </p>
 
                 {# Probability Scale #}
                 <h6 class="fw-bold mb-2">
                     <i class="bi bi-graph-up" aria-hidden="true"></i>
-                    {{ 'risk.guidance.probability_title'|trans({}, 'risks') }}
+                    {{ 'risk.guidance.probability_title'|trans({}, 'risk') }}
                 </h5>
                 <div class="mb-4">
                     {% embed '_components/_table.html.twig' with {
@@ -174,30 +174,30 @@
                     } %}
                         {% block table_head %}
                             <tr>
-                                <th style="width: 25%;">{{ 'risk.guidance.scale'|trans({}, 'risks') }}</th>
-                                <th>{{ 'risk.guidance.description'|trans({}, 'risks') }}</th>
+                                <th style="width: 25%;">{{ 'risk.guidance.scale'|trans({}, 'risk') }}</th>
+                                <th>{{ 'risk.guidance.description'|trans({}, 'risk') }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body %}
                             <tr>
-                                <td><strong>1 - {{ 'risk.guidance.probability.very_unlikely'|trans({}, 'risks') }}</strong></td>
-                                <td>{{ 'risk.guidance.probability.very_unlikely_desc'|trans({}, 'risks') }}</td>
+                                <td><strong>1 - {{ 'risk.guidance.probability.very_unlikely'|trans({}, 'risk') }}</strong></td>
+                                <td>{{ 'risk.guidance.probability.very_unlikely_desc'|trans({}, 'risk') }}</td>
                             </tr>
                             <tr>
-                                <td><strong>2 - {{ 'risk.guidance.probability.unlikely'|trans({}, 'risks') }}</strong></td>
-                                <td>{{ 'risk.guidance.probability.unlikely_desc'|trans({}, 'risks') }}</td>
+                                <td><strong>2 - {{ 'risk.guidance.probability.unlikely'|trans({}, 'risk') }}</strong></td>
+                                <td>{{ 'risk.guidance.probability.unlikely_desc'|trans({}, 'risk') }}</td>
                             </tr>
                             <tr>
-                                <td><strong>3 - {{ 'risk.guidance.probability.possible'|trans({}, 'risks') }}</strong></td>
-                                <td>{{ 'risk.guidance.probability.possible_desc'|trans({}, 'risks') }}</td>
+                                <td><strong>3 - {{ 'risk.guidance.probability.possible'|trans({}, 'risk') }}</strong></td>
+                                <td>{{ 'risk.guidance.probability.possible_desc'|trans({}, 'risk') }}</td>
                             </tr>
                             <tr>
-                                <td><strong>4 - {{ 'risk.guidance.probability.likely'|trans({}, 'risks') }}</strong></td>
-                                <td>{{ 'risk.guidance.probability.likely_desc'|trans({}, 'risks') }}</td>
+                                <td><strong>4 - {{ 'risk.guidance.probability.likely'|trans({}, 'risk') }}</strong></td>
+                                <td>{{ 'risk.guidance.probability.likely_desc'|trans({}, 'risk') }}</td>
                             </tr>
                             <tr>
-                                <td><strong>5 - {{ 'risk.guidance.probability.very_likely'|trans({}, 'risks') }}</strong></td>
-                                <td>{{ 'risk.guidance.probability.very_likely_desc'|trans({}, 'risks') }}</td>
+                                <td><strong>5 - {{ 'risk.guidance.probability.very_likely'|trans({}, 'risk') }}</strong></td>
+                                <td>{{ 'risk.guidance.probability.very_likely_desc'|trans({}, 'risk') }}</td>
                             </tr>
                         {% endblock %}
                     {% endembed %}
@@ -206,7 +206,7 @@
                 {# Impact Scale #}
                 <h6 class="fw-bold mb-2">
                     <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                    {{ 'risk.guidance.impact_title'|trans({}, 'risks') }}
+                    {{ 'risk.guidance.impact_title'|trans({}, 'risk') }}
                 </h5>
                 {% embed '_components/_table.html.twig' with {
                     'class': 'table-sm table-bordered',
@@ -215,30 +215,30 @@
                 } %}
                     {% block table_head %}
                         <tr>
-                            <th style="width: 25%;">{{ 'risk.guidance.scale'|trans({}, 'risks') }}</th>
-                            <th>{{ 'risk.guidance.description'|trans({}, 'risks') }}</th>
+                            <th style="width: 25%;">{{ 'risk.guidance.scale'|trans({}, 'risk') }}</th>
+                            <th>{{ 'risk.guidance.description'|trans({}, 'risk') }}</th>
                         </tr>
                     {% endblock %}
                     {% block table_body %}
                         <tr>
-                            <td><strong>1 - {{ 'risk.guidance.impact.negligible'|trans({}, 'risks') }}</strong></td>
-                            <td>{{ 'risk.guidance.impact.negligible_desc'|trans({}, 'risks') }}</td>
+                            <td><strong>1 - {{ 'risk.guidance.impact.negligible'|trans({}, 'risk') }}</strong></td>
+                            <td>{{ 'risk.guidance.impact.negligible_desc'|trans({}, 'risk') }}</td>
                         </tr>
                         <tr>
-                            <td><strong>2 - {{ 'risk.guidance.impact.minor'|trans({}, 'risks') }}</strong></td>
-                            <td>{{ 'risk.guidance.impact.minor_desc'|trans({}, 'risks') }}</td>
+                            <td><strong>2 - {{ 'risk.guidance.impact.minor'|trans({}, 'risk') }}</strong></td>
+                            <td>{{ 'risk.guidance.impact.minor_desc'|trans({}, 'risk') }}</td>
                         </tr>
                         <tr>
-                            <td><strong>3 - {{ 'risk.guidance.impact.moderate'|trans({}, 'risks') }}</strong></td>
-                            <td>{{ 'risk.guidance.impact.moderate_desc'|trans({}, 'risks') }}</td>
+                            <td><strong>3 - {{ 'risk.guidance.impact.moderate'|trans({}, 'risk') }}</strong></td>
+                            <td>{{ 'risk.guidance.impact.moderate_desc'|trans({}, 'risk') }}</td>
                         </tr>
                         <tr>
-                            <td><strong>4 - {{ 'risk.guidance.impact.major'|trans({}, 'risks') }}</strong></td>
-                            <td>{{ 'risk.guidance.impact.major_desc'|trans({}, 'risks') }}</td>
+                            <td><strong>4 - {{ 'risk.guidance.impact.major'|trans({}, 'risk') }}</strong></td>
+                            <td>{{ 'risk.guidance.impact.major_desc'|trans({}, 'risk') }}</td>
                         </tr>
                         <tr>
-                            <td><strong>5 - {{ 'risk.guidance.impact.catastrophic'|trans({}, 'risks') }}</strong></td>
-                            <td>{{ 'risk.guidance.impact.catastrophic_desc'|trans({}, 'risks') }}</td>
+                            <td><strong>5 - {{ 'risk.guidance.impact.catastrophic'|trans({}, 'risk') }}</strong></td>
+                            <td>{{ 'risk.guidance.impact.catastrophic_desc'|trans({}, 'risk') }}</td>
                         </tr>
                     {% endblock %}
                 {% endembed %}
@@ -246,7 +246,7 @@
                 <div class="alert alert-warning mt-3 mb-0" role="status">
                     <small>
                         <i class="bi bi-lightbulb" aria-hidden="true"></i>
-                        {{ 'risk.guidance.tip'|trans({}, 'risks') }}
+                        {{ 'risk.guidance.tip'|trans({}, 'risk') }}
                     </small>
                 </div>
             </div>
@@ -257,8 +257,8 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.probability,
-                'label': 'risk.field.probability'|trans({}, 'risks')|default('Eintrittswahrscheinlichkeit'),
-                'help': 'risk.help.probability'|trans({}, 'risks')|default('Wie wahrscheinlich ist das Eintreten? (1=sehr unwahrscheinlich, 5=sehr wahrscheinlich)'),
+                'label': 'risk.field.probability'|trans({}, 'risk'),
+                'help': 'risk.help.probability'|trans({}, 'risk'),
                 'required': true
             } %}
         </div>
@@ -266,8 +266,8 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.impact,
-                'label': 'risk.field.impact'|trans({}, 'risks')|default('Schadensausmaß'),
-                'help': 'risk.help.impact'|trans({}, 'risks')|default('Wie hoch wäre der Schaden? (1=minimal, 5=katastrophal)'),
+                'label': 'risk.field.impact'|trans({}, 'risk'),
+                'help': 'risk.help.impact'|trans({}, 'risk'),
                 'required': true
             } %}
         </div>
@@ -278,28 +278,28 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-shield-check" aria-hidden="true"></i>
-        {{ 'risk.section.residual_risk'|trans({}, 'risks')|default('Netto-Risiko (mit Controls)') }}
+        {{ 'risk.section.residual_risk'|trans({}, 'risk') }}
     </legend>
 
     <div class="alert alert-info" role="status">
         <i class="bi bi-info-circle" aria-hidden="true"></i>
-        {{ 'risk.help.residual'|trans({}, 'risks')|default('Bewertung des Risikos nach Anwendung von Sicherheitsmaßnahmen') }}
+        {{ 'risk.help.residual'|trans({}, 'risk') }}
     </div>
 
     <div class="row">
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.residualProbability,
-                'label': 'risk.field.residual_probability'|trans({}, 'risks')|default('Rest-Wahrscheinlichkeit'),
-                'help': 'risk.help.residual_probability'|trans({}, 'risks')|default('Verbleibende Wahrscheinlichkeit nach Maßnahmen')
+                'label': 'risk.field.residual_probability'|trans({}, 'risk'),
+                'help': 'risk.help.residual_probability'|trans({}, 'risk')
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.residualImpact,
-                'label': 'risk.field.residual_impact'|trans({}, 'risks')|default('Rest-Schadensausmaß'),
-                'help': 'risk.help.residual_impact'|trans({}, 'risks')|default('Verbleibendes Schadensausmaß nach Maßnahmen')
+                'label': 'risk.field.residual_impact'|trans({}, 'risk'),
+                'help': 'risk.help.residual_impact'|trans({}, 'risk')
             } %}
         </div>
     </div>
@@ -309,23 +309,23 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-clipboard-check" aria-hidden="true"></i>
-        {{ 'risk.section.treatment'|trans({}, 'risks')|default('Risikobehandlung') }}
+        {{ 'risk.section.treatment'|trans({}, 'risk') }}
     </legend>
 
     <div class="row">
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.treatmentStrategy,
-                'label': 'risk.field.treatment_strategy'|trans({}, 'risks')|default('Behandlungsstrategie'),
-                'help': 'risk.help.treatment_strategy'|trans({}, 'risks')|default('Wie soll mit diesem Risiko umgegangen werden?')
+                'label': 'risk.field.treatment_strategy'|trans({}, 'risk'),
+                'help': 'risk.help.treatment_strategy'|trans({}, 'risk')
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.riskOwner,
-                'label': 'risk.field.risk_owner'|trans({}, 'risks')|default('Risiko-Verantwortlicher'),
-                'help': 'risk.help.risk_owner'|trans({}, 'risks')|default('Person, die für die Behandlung dieses Risikos verantwortlich ist')
+                'label': 'risk.field.risk_owner'|trans({}, 'risk'),
+                'help': 'risk.help.risk_owner'|trans({}, 'risk')
             } %}
         </div>
     </div>
@@ -334,8 +334,8 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.treatmentDescription,
-                'label': 'risk.field.treatment_description'|trans({}, 'risks')|default('Behandlungsplan'),
-                'help': 'risk.help.treatment_description'|trans({}, 'risks')|default('Detaillierte Beschreibung der geplanten Maßnahmen')
+                'label': 'risk.field.treatment_description'|trans({}, 'risk'),
+                'help': 'risk.help.treatment_description'|trans({}, 'risk')
             } %}
         </div>
     </div>
@@ -345,23 +345,23 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-check-circle" aria-hidden="true"></i>
-        {{ 'risk.section.acceptance'|trans({}, 'risks')|default('Risikoakzeptanz') }}
+        {{ 'risk.section.acceptance'|trans({}, 'risk') }}
     </legend>
 
     <div class="row">
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.acceptanceApprovedBy,
-                'label': 'risk.field.acceptance_approved_by'|trans({}, 'risks')|default('Genehmigt durch'),
-                'help': 'risk.help.acceptance_approved_by'|trans({}, 'risks')|default('Person, die die Risikoakzeptanz genehmigt hat')
+                'label': 'risk.field.acceptance_approved_by'|trans({}, 'risk'),
+                'help': 'risk.help.acceptance_approved_by'|trans({}, 'risk')
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.acceptanceApprovedAt,
-                'label': 'risk.field.acceptance_approved_at'|trans({}, 'risks')|default('Genehmigungsdatum'),
-                'help': 'risk.help.acceptance_approved_at'|trans({}, 'risks')|default('Datum der Risikoakzeptanz-Genehmigung')
+                'label': 'risk.field.acceptance_approved_at'|trans({}, 'risk'),
+                'help': 'risk.help.acceptance_approved_at'|trans({}, 'risk')
             } %}
         </div>
     </div>

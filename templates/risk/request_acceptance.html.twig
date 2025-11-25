@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'risk.acceptance.title'|trans({}, 'risks') }} - {{ risk.title }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'risk.acceptance.title'|trans({}, 'risk') }} - {{ risk.title }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
@@ -8,13 +8,13 @@
     breadcrumbs: [
         { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index'), icon: 'bi-exclamation-triangle' },
         { label: risk.title, url: path('app_risk_show', {id: risk.id}) },
-        { label: 'risk.acceptance.title'|trans({}, 'risks') }
+        { label: 'risk.acceptance.title'|trans({}, 'risk') }
     ]
 } %}
 
 {# Page Header #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'risk.acceptance.title'|trans({}, 'risks'),
+    title: 'risk.acceptance.title'|trans({}, 'risk'),
     icon: 'bi-check-circle',
     actions: [
         { label: 'common.back'|trans({}, 'messages'), url: path('app_risk_show', {id: risk.id}), variant: 'secondary', icon: 'bi-arrow-left' }
@@ -28,7 +28,7 @@
             <div class="card-header">
                 <h3 class="mb-0">
                     <i class="bi bi-shield-check" aria-hidden="true"></i>
-                    {{ 'risk.acceptance.request'|trans({}, 'risks') }}
+                    {{ 'risk.acceptance.request'|trans({}, 'risk') }}
                 </h3>
             </div>
             <div class="card-body">
@@ -41,12 +41,12 @@
                     <hr>
                     <div class="row">
                         <div class="col-md-6">
-                            <strong>{{ 'risk.field.inherent_risk'|trans({}, 'risks') }}:</strong>
+                            <strong>{{ 'risk.field.inherent_risk'|trans({}, 'risk') }}:</strong>
                             {{ risk.inherentRiskLevel }}
                             ({{ risk.probability }} × {{ risk.impact }})
                         </div>
                         <div class="col-md-6">
-                            <strong>{{ 'risk.residual_assessment'|trans({}, 'risks') }}:</strong>
+                            <strong>{{ 'risk.residual_assessment'|trans({}, 'risk') }}:</strong>
                             {{ risk.residualRiskLevel }}
                             ({{ risk.residualProbability }} × {{ risk.residualImpact }})
                         </div>
@@ -59,7 +59,7 @@
 
                     <div class="mb-4">
                         <label for="justification" class="form-label required">
-                            {{ 'risk.acceptance.justification_label'|trans({}, 'risks') }}
+                            {{ 'risk.acceptance.justification_label'|trans({}, 'risk') }}
                         </label>
                         <textarea
                             class="form-control"
@@ -67,10 +67,10 @@
                             name="justification"
                             rows="6"
                             required
-                            placeholder="{{ 'risk.acceptance.justification_help'|trans({}, 'risks') }}"
+                            placeholder="{{ 'risk.acceptance.justification_help'|trans({}, 'risk') }}"
                         ></textarea>
                         <div class="form-text">
-                            {{ 'risk.acceptance.justification_help'|trans({}, 'risks') }}
+                            {{ 'risk.acceptance.justification_help'|trans({}, 'risk') }}
                         </div>
                     </div>
 
@@ -81,7 +81,7 @@
                         </a>
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-check-circle" aria-hidden="true"></i>
-                            {{ 'risk.acceptance.submit_request'|trans({}, 'risks') }}
+                            {{ 'risk.acceptance.submit_request'|trans({}, 'risk') }}
                         </button>
                     </div>
                 </form>
@@ -94,7 +94,7 @@
         <div class="card border-{{ required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') }}">
             <div class="card-header bg-{{ required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') }}-subtle"><h5 class="mb-0">
                     <i class="bi bi-shield-check" aria-hidden="true"></i>
-                    {{ 'risk.acceptance.required_approval_level'|trans({}, 'risks') }}
+                    {{ 'risk.acceptance.required_approval_level'|trans({}, 'risk') }}
                 </h5>
             </div>
             <div class="card-body">
@@ -103,12 +103,12 @@
                         <i class="bi bi-{{ required_level == 'automatic' ? 'check-circle-fill' : (required_level == 'manager' ? 'person-fill' : 'person-badge-fill') }} fs-3 me-3" aria-hidden="true"></i>
                         <div>
                             <strong class="d-block">{{ ('risk.acceptance.approval_levels.' ~ required_level)|trans }}</strong>
-                            <small>{{ 'risk.acceptance.approval_threshold_info'|trans({'%score%': risk.residualRiskLevel}, 'risks') }}</small>
+                            <small>{{ 'risk.acceptance.approval_threshold_info'|trans({'%score%': risk.residualRiskLevel}, 'risk') }}</small>
                         </div>
                     </div>
                 </div>
 
-                <h5>{{ 'risk.guidance.title'|trans({}, 'risks') }}</h5>
+                <h5>{{ 'risk.guidance.title'|trans({}, 'risk') }}</h5>
                 <div class="list-group list-group-flush">
                     {% for level, config in thresholds %}
                         <div class="list-group-item {{ required_level == level ? 'active' : '' }}">

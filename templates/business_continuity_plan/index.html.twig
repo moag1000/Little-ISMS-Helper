@@ -1,29 +1,29 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'bc_plans' %}
 
-{% block title %}{{ 'bc_plans.page.title'|trans({}, 'bcm') }}{% endblock %}
+{% block title %}{{ 'bc_plans.page.title'|trans({}, 'bc_plans') }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
-        <h1>{{ 'bc_plans.page.header'|trans({}, 'bcm') }}</h1>
+        <h1>{{ 'bc_plans.page.header'|trans({}, 'bc_plans') }}</h1>
         <a href="{{ path('app_bc_plan_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> {{ 'bc_plans.action.add_new'|trans({}, 'bcm') }}
+            <i class="bi bi-plus-circle"></i> {{ 'bc_plans.action.add_new'|trans({}, 'bc_plans') }}
         </a>
     </div>
 
     <p class="text-muted mb-2">
-        {{ 'bc_plans.page.subtitle'|trans({}, 'bcm') }}
+        {{ 'bc_plans.page.subtitle'|trans({}, 'bc_plans') }}
     </p>
 
     {% if overdue_tests|length > 0 %}
     <div class="alert alert-warning">
-        <h2>{{ 'bc_plans.alert.overdue_tests'|trans({}, 'bcm') }}</h2>
+        <h2>{{ 'bc_plans.alert.overdue_tests'|trans({}, 'bc_plans') }}</h2>
         <ul>
             {% for plan in overdue_tests %}
             <li>
                 <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a>
-                - {{ 'bc_plans.field.next_test'|trans({}, 'bcm') }}: {{ plan.nextTestDate ? plan.nextTestDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans({}, 'bcm')) }}
+                - {{ 'bc_plans.field.next_test'|trans({}, 'bc_plans') }}: {{ plan.nextTestDate ? plan.nextTestDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans({}, 'bc_plans')) }}
             </li>
             {% endfor %}
         </ul>
@@ -32,12 +32,12 @@
 
     {% if overdue_reviews|length > 0 %}
     <div class="alert alert-warning">
-        <h4>{{ 'bc_plans.alert.overdue_reviews'|trans({}, 'bcm') }}</h4>
+        <h4>{{ 'bc_plans.alert.overdue_reviews'|trans({}, 'bc_plans') }}</h4>
         <ul>
             {% for plan in overdue_reviews %}
             <li>
                 <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a>
-                - {{ 'bc_plans.field.next_review'|trans({}, 'bcm') }}: {{ plan.nextReviewDate ? plan.nextReviewDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans({}, 'bcm')) }}
+                - {{ 'bc_plans.field.next_review'|trans({}, 'bc_plans') }}: {{ plan.nextReviewDate ? plan.nextReviewDate|date('Y-m-d') : ('bc_plans.message.not_scheduled'|trans({}, 'bc_plans')) }}
             </li>
             {% endfor %}
         </ul>
@@ -46,7 +46,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h2>{{ 'bc_plans.page.header'|trans({}, 'bcm') }} ({{ bc_plans|length }})</h2>
+            <h2>{{ 'bc_plans.page.header'|trans({}, 'bc_plans') }} ({{ bc_plans|length }})</h2>
         </div>
         <div class="card-content">
             {% if bc_plans|length > 0 %}
@@ -56,13 +56,13 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">{{ 'bc_plans.table.name'|trans({}, 'bcm') }}</th>
-                        <th scope="col">{{ 'bc_plans.table.business_process'|trans({}, 'bcm') }}</th>
-                        <th scope="col">{{ 'bc_plans.table.owner'|trans({}, 'bcm') }}</th>
-                        <th scope="col">{{ 'bc_plans.table.status'|trans({}, 'bcm') }}</th>
-                        <th scope="col">{{ 'bc_plans.table.readiness'|trans({}, 'bcm') }}</th>
-                        <th scope="col">{{ 'bc_plans.table.last_tested'|trans({}, 'bcm') }}</th>
-                        <th scope="col">{{ 'bc_plans.table.actions'|trans({}, 'bcm') }}</th>
+                        <th scope="col">{{ 'bc_plans.table.name'|trans({}, 'bc_plans') }}</th>
+                        <th scope="col">{{ 'bc_plans.table.business_process'|trans({}, 'bc_plans') }}</th>
+                        <th scope="col">{{ 'bc_plans.table.owner'|trans({}, 'bc_plans') }}</th>
+                        <th scope="col">{{ 'bc_plans.table.status'|trans({}, 'bc_plans') }}</th>
+                        <th scope="col">{{ 'bc_plans.table.readiness'|trans({}, 'bc_plans') }}</th>
+                        <th scope="col">{{ 'bc_plans.table.last_tested'|trans({}, 'bc_plans') }}</th>
+                        <th scope="col">{{ 'bc_plans.table.actions'|trans({}, 'bc_plans') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -78,7 +78,7 @@
                                 {{ readiness }}%
                             </span>
                         </td>
-                        <td>{{ plan.lastTested ? plan.lastTested|date('Y-m-d') : ('bc_plans.message.never'|trans({}, 'bcm')) }}</td>
+                        <td>{{ plan.lastTested ? plan.lastTested|date('Y-m-d') : ('bc_plans.message.never'|trans({}, 'bc_plans')) }}</td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
                                 <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}" class="btn btn-outline-primary" title="{{ 'action.view'|trans({}, 'messages') }}">
@@ -94,7 +94,7 @@
                 {% endblock %}
             {% endembed %}
             {% else %}
-            <p>{{ 'bc_plans.message.no_plans'|trans({}, 'bcm') }} <a href="{{ path('app_bc_plan_new') }}">{{ 'bc_plans.message.create_first'|trans({}, 'bcm') }}</a>.</p>
+            <p>{{ 'bc_plans.message.no_plans'|trans({}, 'bc_plans') }} <a href="{{ path('app_bc_plan_new') }}">{{ 'bc_plans.message.create_first'|trans({}, 'bc_plans') }}</a>.</p>
             {% endif %}
         </div>
     </div>

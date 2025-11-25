@@ -1,21 +1,21 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'context' %}
 
-{% block title %}{{ 'context.edit.title'|trans({}, 'messages')|default('Edit ISMS Context') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'context.edit.title'|trans({}, 'context') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'context_management.title'|trans({}, 'messages')|default('ISMS Context'), url: path('app_context_index'), icon: 'bi-building' },
+            { label: 'context_management.title'|trans({}, 'context'), url: path('app_context_index'), icon: 'bi-building' },
             { label: context.organizationName, url: path('app_context_index') },
-            { label: 'common.edit'|trans({}, 'messages')|default('Edit') }
+            { label: 'common.edit'|trans({}, 'messages') }
         ]
     } %}
 
     {% include '_components/_page_header.html.twig' with {
-        title: 'context.edit.title'|trans({}, 'messages')|default('Edit ISMS Context'),
-        subtitle: 'context.info.subtitle'|trans({}, 'messages'),
+        title: 'context.edit.title'|trans({}, 'context'),
+        subtitle: 'context.info.subtitle'|trans({}, 'context'),
         icon: 'bi-building',
         actions: [
             { label: 'common.back'|trans({}, 'messages'), url: path('app_context_index'), variant: 'secondary', icon: 'bi-arrow-left' }
@@ -25,7 +25,7 @@
     {% if tenant is defined and tenant %}
         <div class="alert alert-secondary mb-4">
             <i class="bi bi-info-circle" aria-hidden="true"></i>
-            <strong>{{ 'tenant.isms_context.linked_to'|trans({}, 'tenant', 'tenant')|default('Linked to Tenant') }}:</strong>
+            <strong>{{ 'tenant.isms_context.linked_to'|trans({}, 'tenant', 'tenant') }}:</strong>
             {{ tenant.name }} ({{ tenant.code }})
         </div>
     {% endif %}
@@ -38,54 +38,54 @@
 
                     {# Organization Information #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-building" aria-hidden="true"></i> {{ 'context.section.organization'|trans({}, 'messages')|default('Organization Information') }}</legend>
-                        {% include '_components/_form_field.html.twig' with {'field': form.organizationName, 'label': 'context.field.organization_name'|trans({}, 'messages')|default('Organization Name'), 'help': 'context.help.organization_name'|trans({}, 'messages')|default('Name of the organization'), 'required': true} %}
+                        <legend class="h5 mb-3"><i class="bi bi-building" aria-hidden="true"></i> {{ 'context.section.organization'|trans({}, 'context') }}</legend>
+                        {% include '_components/_form_field.html.twig' with {'field': form.organizationName, 'label': 'context.field.organization_name'|trans({}, 'context'), 'help': 'context.help.organization_name'|trans({}, 'context'), 'required': true} %}
                     </fieldset>
 
                     {# ISMS Scope #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'context.section.scope'|trans({}, 'messages')|default('ISMS Scope') }}</legend>
-                        {% include '_components/_form_field.html.twig' with {'field': form.ismsScope, 'label': 'context.field.isms_scope'|trans({}, 'messages')|default('ISMS Scope'), 'help': 'context.help.isms_scope'|trans({}, 'messages')|default('ISO 27001 Clause 4.3: Define boundaries and applicability')} %}
-                        {% include '_components/_form_field.html.twig' with {'field': form.scopeExclusions, 'label': 'context.field.scope_exclusions'|trans({}, 'messages')|default('Scope Exclusions'), 'help': 'context.help.scope_exclusions'|trans({}, 'messages')|default('Areas explicitly excluded from the ISMS')} %}
+                        <legend class="h5 mb-3"><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'context.section.scope'|trans({}, 'context') }}</legend>
+                        {% include '_components/_form_field.html.twig' with {'field': form.ismsScope, 'label': 'context.field.isms_scope'|trans({}, 'context'), 'help': 'context.help.isms_scope'|trans({}, 'context')} %}
+                        {% include '_components/_form_field.html.twig' with {'field': form.scopeExclusions, 'label': 'context.field.scope_exclusions'|trans({}, 'context'), 'help': 'context.help.scope_exclusions'|trans({}, 'context')} %}
                     </fieldset>
 
                     {# Context Analysis #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-search" aria-hidden="true"></i> {{ 'context.section.context_analysis'|trans({}, 'messages')|default('Context Analysis') }}</legend>
+                        <legend class="h5 mb-3"><i class="bi bi-search" aria-hidden="true"></i> {{ 'context.section.context_analysis'|trans({}, 'context') }}</legend>
                         <div class="row">
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.externalIssues, 'label': 'context.field.external_issues'|trans({}, 'messages')|default('External Issues'), 'help': 'context.help.external_issues'|trans({}, 'messages')|default('ISO 27001 Clause 4.1: External factors affecting the ISMS')} %}</div>
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.internalIssues, 'label': 'context.field.internal_issues'|trans({}, 'messages')|default('Internal Issues'), 'help': 'context.help.internal_issues'|trans({}, 'messages')|default('ISO 27001 Clause 4.1: Internal factors affecting the ISMS')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.externalIssues, 'label': 'context.field.external_issues'|trans({}, 'context'), 'help': 'context.help.external_issues'|trans({}, 'context')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.internalIssues, 'label': 'context.field.internal_issues'|trans({}, 'context'), 'help': 'context.help.internal_issues'|trans({}, 'context')} %}</div>
                         </div>
                     </fieldset>
 
                     {# Stakeholders #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-people" aria-hidden="true"></i> {{ 'context.section.stakeholders'|trans({}, 'messages')|default('Interested Parties') }}</legend>
-                        {% include '_components/_form_field.html.twig' with {'field': form.interestedParties, 'label': 'context.field.interested_parties'|trans({}, 'messages')|default('Interested Parties'), 'help': 'context.help.interested_parties'|trans({}, 'messages')|default('ISO 27001 Clause 4.2: Stakeholders with ISMS requirements')} %}
-                        {% include '_components/_form_field.html.twig' with {'field': form.interestedPartiesRequirements, 'label': 'context.field.interested_parties_requirements'|trans({}, 'messages')|default('Stakeholder Requirements'), 'help': 'context.help.interested_parties_requirements'|trans({}, 'messages')|default('Specific requirements from stakeholders')} %}
+                        <legend class="h5 mb-3"><i class="bi bi-people" aria-hidden="true"></i> {{ 'context.section.stakeholders'|trans({}, 'context') }}</legend>
+                        {% include '_components/_form_field.html.twig' with {'field': form.interestedParties, 'label': 'context.field.interested_parties'|trans({}, 'context'), 'help': 'context.help.interested_parties'|trans({}, 'context')} %}
+                        {% include '_components/_form_field.html.twig' with {'field': form.interestedPartiesRequirements, 'label': 'context.field.interested_parties_requirements'|trans({}, 'context'), 'help': 'context.help.interested_parties_requirements'|trans({}, 'context')} %}
                     </fieldset>
 
                     {# Compliance Requirements #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'context.section.compliance'|trans({}, 'messages')|default('Compliance Requirements') }}</legend>
-                        {% include '_components/_form_field.html.twig' with {'field': form.legalRequirements, 'label': 'context.field.legal_requirements'|trans({}, 'messages')|default('Legal Requirements'), 'help': 'context.help.legal_requirements'|trans({}, 'messages')|default('Legal obligations and regulatory framework')} %}
-                        {% include '_components/_form_field.html.twig' with {'field': form.regulatoryRequirements, 'label': 'context.field.regulatory_requirements'|trans({}, 'messages')|default('Regulatory Requirements'), 'help': 'context.help.regulatory_requirements'|trans({}, 'messages')|default('Industry regulations and standards')} %}
-                        {% include '_components/_form_field.html.twig' with {'field': form.contractualObligations, 'label': 'context.field.contractual_obligations'|trans({}, 'messages')|default('Contractual Obligations'), 'help': 'context.help.contractual_obligations'|trans({}, 'messages')|default('Contractual security requirements')} %}
+                        <legend class="h5 mb-3"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'context.section.compliance'|trans({}, 'context') }}</legend>
+                        {% include '_components/_form_field.html.twig' with {'field': form.legalRequirements, 'label': 'context.field.legal_requirements'|trans({}, 'context'), 'help': 'context.help.legal_requirements'|trans({}, 'context')} %}
+                        {% include '_components/_form_field.html.twig' with {'field': form.regulatoryRequirements, 'label': 'context.field.regulatory_requirements'|trans({}, 'context'), 'help': 'context.help.regulatory_requirements'|trans({}, 'context')} %}
+                        {% include '_components/_form_field.html.twig' with {'field': form.contractualObligations, 'label': 'context.field.contractual_obligations'|trans({}, 'context'), 'help': 'context.help.contractual_obligations'|trans({}, 'context')} %}
                     </fieldset>
 
                     {# Policy & Governance #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-file-earmark-ruled" aria-hidden="true"></i> {{ 'context.section.policy'|trans({}, 'messages')|default('Policy & Governance') }}</legend>
-                        {% include '_components/_form_field.html.twig' with {'field': form.ismsPolicy, 'label': 'context.field.isms_policy'|trans({}, 'messages')|default('ISMS Policy'), 'help': 'context.help.isms_policy'|trans({}, 'messages')|default('ISO 27001 Clause 5.2: Information security policy')} %}
-                        {% include '_components/_form_field.html.twig' with {'field': form.rolesAndResponsibilities, 'label': 'context.field.roles_and_responsibilities'|trans({}, 'messages')|default('Roles & Responsibilities'), 'help': 'context.help.roles_and_responsibilities'|trans({}, 'messages')|default('ISO 27001 Clause 5.3: ISMS roles and responsibilities')} %}
+                        <legend class="h5 mb-3"><i class="bi bi-file-earmark-ruled" aria-hidden="true"></i> {{ 'context.section.policy'|trans({}, 'context') }}</legend>
+                        {% include '_components/_form_field.html.twig' with {'field': form.ismsPolicy, 'label': 'context.field.isms_policy'|trans({}, 'context'), 'help': 'context.help.isms_policy'|trans({}, 'context')} %}
+                        {% include '_components/_form_field.html.twig' with {'field': form.rolesAndResponsibilities, 'label': 'context.field.roles_and_responsibilities'|trans({}, 'context'), 'help': 'context.help.roles_and_responsibilities'|trans({}, 'context')} %}
                     </fieldset>
 
                     {# Review Schedule #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-calendar-check" aria-hidden="true"></i> {{ 'context.section.review'|trans({}, 'messages')|default('Review Schedule') }}</legend>
+                        <legend class="h5 mb-3"><i class="bi bi-calendar-check" aria-hidden="true"></i> {{ 'context.section.review'|trans({}, 'context') }}</legend>
                         <div class="row">
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.lastReviewDate, 'label': 'context.field.last_review_date'|trans({}, 'messages')|default('Last Review Date'), 'help': 'context.help.last_review_date'|trans({}, 'messages')|default('When was the ISMS context last reviewed?')} %}</div>
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.nextReviewDate, 'label': 'context.field.next_review_date'|trans({}, 'messages')|default('Next Review Date'), 'help': 'context.help.next_review_date'|trans({}, 'messages')|default('Recommended: annual review')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.lastReviewDate, 'label': 'context.field.last_review_date'|trans({}, 'context'), 'help': 'context.help.last_review_date'|trans({}, 'context')} %}</div>
+                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.nextReviewDate, 'label': 'context.field.next_review_date'|trans({}, 'context'), 'help': 'context.help.next_review_date'|trans({}, 'context')} %}</div>
                         </div>
                     </fieldset>
 
