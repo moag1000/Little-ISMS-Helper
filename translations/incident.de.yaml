@@ -41,9 +41,9 @@ incident:
         in_progress: 'In Bearbeitung'
         resolved: Gelöst
         closed: Abgeschlossen
-        reported: Reported
-        in_investigation: In Investigation
-        in_resolution: In Resolution
+        reported: 'Gemeldet'
+        in_investigation: 'In Untersuchung'
+        in_resolution: 'In Lösung'
     nis2_timeline:
         title: 'NIS2 Meldezeitplan (Artikel 23)'
         description: 'Gemäß NIS2-Richtlinie (EU 2022/2555) müssen bedeutende Vorfälle innerhalb definierter Fristen gemeldet werden.'
@@ -83,10 +83,10 @@ incident:
         estimated_financial_impact: 'Geschätzter finanzieller Schaden'
         national_authority_notified: 'Nationale Behörde benachrichtigt'
         authority_reference_number: 'Aktenzeichen der Behörde'
-        detected_date: Detected Date
-        closed_date: Closed Date
+        detected_date: 'Erkennungsdatum'
+        closed_date: 'Abschlussdatum'
     nis2_compliance:
-        title: 'NIS2 Compliance Status'
+        title: 'NIS2 Compliance-Status'
         not_applicable: 'Nicht NIS2-relevant'
         compliant: Konform
         overdue: 'Frist überschritten'
@@ -106,19 +106,19 @@ incident:
         title: Titel
         severity: Schweregrad
     edit: Bearbeiten
-    status_help: Status Hilfe
-    analysis_resolution: Analysis Resolution
-    update: Aktualisieren
+    status_help: 'Aktueller Bearbeitungsstatus des Vorfalls'
+    analysis_resolution: 'Analyse und Lösung'
+    update: 'Vorfall aktualisieren'
     severity:
-        low: Low
-        medium: Medium
-        high: High
-        critical: Critical
+        low: 'Niedrig'
+        medium: 'Mittel'
+        high: 'Hoch'
+        critical: 'Kritisch'
     filter:
-        data_breach: Data Breach
-        data_breach_only: Data Breach Only
-        nis2_only: Nis2 Only
-    empty: Keine Einträge vorhanden
+        data_breach: 'Datenschutzverletzung'
+        data_breach_only: 'Nur Datenschutzverletzungen'
+        nis2_only: 'Nur NIS2-relevante Vorfälle'
+    empty: 'Keine Vorfälle vorhanden'
     list:
-        title: Titel
-    controls_should_prevent: Controls Should Prevent
+        title: 'Vorfallsliste'
+    controls_should_prevent: 'Maßnahmen, die diesen Vorfall hätten verhindern sollen'
