@@ -126,7 +126,7 @@ class RiskController extends AbstractController
 
         $treatmentStats = $this->riskRepository->countByTreatmentStrategy();
 
-        return $this->render('risk/index_modern.html.twig', [
+        return $this->render('risk/index.html.twig', [
             'risks' => $risks,
             'highRisks' => $highRisks,
             'treatmentStats' => $treatmentStats,
