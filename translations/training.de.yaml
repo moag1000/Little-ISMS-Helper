@@ -64,16 +64,16 @@ training:
         status: Status
         mandatory: Verpflichtend
         related_controls: 'Zugeordnete Maßnahmen'
-        materials: Materials
-        feedback: Feedback
-    new_help: 'Planen Sie eine neue Schulung und informieren Sie die Zielgruppe rechtzeitig.'
-    edit_help: 'Bearbeiten Sie Details, Termin oder Zielgruppe dieser Schulung.'
-    participants_count: Teilnehmer
+        materials: 'Schulungsmaterialien und Unterlagen'
+        feedback: 'Teilnehmer-Feedback und Bewertungen'
+    new_help: 'Planen Sie eine neue Schulung und informieren Sie die Zielgruppe rechtzeitig (ISO 27001 Klausel 7.2: Kompetenz).'
+    edit_help: 'Bearbeiten Sie Details, Termin oder Zielgruppe dieser Schulung (ISO 27001 Klausel 7.3: Bewusstsein).'
+    participants_count: 'Anzahl Teilnehmer'
     confirm_delete: 'Schulung löschen bestätigen'
     delete_warning: "Möchten Sie die Schulung '%title%' wirklich löschen?"
-    controls_help: Maßnahmen Hilfe
+    controls_help: 'Verknüpfen Sie ISO 27001 Anhang A Controls, die durch diese Schulung abgedeckt werden'
     status.planned: Geplant
     status.in_progress: 'In Bearbeitung'
     status.completed: Abgeschlossen
     status.cancelled: Abgebrochen
-    no_participants: Nein Teilnehmer
+    no_participants: 'Keine Teilnehmer zugewiesen'
