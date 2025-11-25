@@ -154,6 +154,50 @@ class BusinessProcessController extends AbstractController
         ]);
     }
 
+    #[Route('/api/stats', name: 'app_business_process_stats_api', methods: ['GET'])]
+    public function statsApi(BusinessProcessRepository $businessProcessRepository): Response
+    {
+        $processes = $businessProcessRepository->findAll();
+
+        $stats = [
+            'total' => count($processes),
+            'by_criticality' => [
+                'critical' => 0,
+                'high' => 0,
+                'medium' => 0,
+                'low' => 0,
+            ],
+            'avg_rto' => 0,
+            'avg_rpo' => 0,
+            'processes_with_high_risks' => 0,
+        ];
+
+        $totalRto = 0;
+        $totalRpo = 0;
+
+        foreach ($processes as $process) {
+            $criticality = $process->getCriticality();
+            if (isset($stats['by_criticality'][$criticality])) {
+                $stats['by_criticality'][$criticality]++;
+            }
+
+            $totalRto += $process->getRto();
+            $totalRpo += $process->getRpo();
+
+            if ($process->hasUnmitigatedHighRisks()) {
+                $stats['processes_with_high_risks']++;
+            }
+        }
+
+        if ($stats['total'] > 0) {
+            $stats['avg_rto'] = round($totalRto / $stats['total'], 1);
+            $stats['avg_rpo'] = round($totalRpo / $stats['total'], 1);
+        }
+
+        return $this->json($stats);
+    }
+
+
     #[Route('/{id}', name: 'app_business_process_show', methods: ['GET'])]
     public function show(BusinessProcess $businessProcess): Response
     {
@@ -258,49 +302,6 @@ class BusinessProcessController extends AbstractController
             'business_process' => $businessProcess,
             'bia_data' => $biaData,
         ]);
-    }
-
-    #[Route('/api/stats', name: 'app_business_process_stats_api', methods: ['GET'])]
-    public function statsApi(BusinessProcessRepository $businessProcessRepository): Response
-    {
-        $processes = $businessProcessRepository->findAll();
-
-        $stats = [
-            'total' => count($processes),
-            'by_criticality' => [
-                'critical' => 0,
-                'high' => 0,
-                'medium' => 0,
-                'low' => 0,
-            ],
-            'avg_rto' => 0,
-            'avg_rpo' => 0,
-            'processes_with_high_risks' => 0,
-        ];
-
-        $totalRto = 0;
-        $totalRpo = 0;
-
-        foreach ($processes as $process) {
-            $criticality = $process->getCriticality();
-            if (isset($stats['by_criticality'][$criticality])) {
-                $stats['by_criticality'][$criticality]++;
-            }
-
-            $totalRto += $process->getRto();
-            $totalRpo += $process->getRpo();
-
-            if ($process->hasUnmitigatedHighRisks()) {
-                $stats['processes_with_high_risks']++;
-            }
-        }
-
-        if ($stats['total'] > 0) {
-            $stats['avg_rto'] = round($totalRto / $stats['total'], 1);
-            $stats['avg_rpo'] = round($totalRpo / $stats['total'], 1);
-        }
-
-        return $this->json($stats);
     }
 
     /**

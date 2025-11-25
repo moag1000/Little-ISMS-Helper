@@ -164,6 +164,64 @@ class IncidentController extends AbstractController
         ]);
     }
 
+    #[Route('/bulk-delete', name: 'app_incident_bulk_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function bulkDelete(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+
+        if (empty($ids)) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        $deleted = 0;
+        $errors = [];
+
+        foreach ($ids as $id) {
+            try {
+                $incident = $this->incidentRepository->find($id);
+
+                if (!$incident) {
+                    $errors[] = "Incident ID $id not found";
+                    continue;
+                }
+
+                // Security check: only allow deletion of own tenant's incidents
+                if ($tenant && $incident->getTenant() !== $tenant) {
+                    $errors[] = "Incident ID $id does not belong to your organization";
+                    continue;
+                }
+
+                $this->entityManager->remove($incident);
+                $deleted++;
+            } catch (\Exception $e) {
+                $errors[] = "Error deleting incident ID $id: " . $e->getMessage();
+            }
+        }
+
+        if ($deleted > 0) {
+            $this->entityManager->flush();
+        }
+
+        if (!empty($errors)) {
+            return $this->json([
+                'success' => $deleted > 0,
+                'deleted' => $deleted,
+                'errors' => $errors
+            ], $deleted > 0 ? 200 : 400);
+        }
+
+        return $this->json([
+            'success' => true,
+            'deleted' => $deleted,
+            'message' => "$deleted incidents deleted successfully"
+        ]);
+    }
+
     #[Route('/{id}', name: 'app_incident_show', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function show(Incident $incident): Response
@@ -327,64 +385,6 @@ class IncidentController extends AbstractController
             'subsidiaries' => $subsidiariesCount,
             'total' => $ownCount + $inheritedCount + $subsidiariesCount
         ];
-    }
-
-    #[Route('/bulk-delete', name: 'app_incident_bulk_delete', methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
-    public function bulkDelete(Request $request): Response
-    {
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $incident = $this->incidentRepository->find($id);
-
-                if (!$incident) {
-                    $errors[] = "Incident ID $id not found";
-                    continue;
-                }
-
-                // Security check: only allow deletion of own tenant's incidents
-                if ($tenant && $incident->getTenant() !== $tenant) {
-                    $errors[] = "Incident ID $id does not belong to your organization";
-                    continue;
-                }
-
-                $this->entityManager->remove($incident);
-                $deleted++;
-            } catch (\Exception $e) {
-                $errors[] = "Error deleting incident ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        if (!empty($errors)) {
-            return $this->json([
-                'success' => $deleted > 0,
-                'deleted' => $deleted,
-                'errors' => $errors
-            ], $deleted > 0 ? 200 : 400);
-        }
-
-        return $this->json([
-            'success' => true,
-            'deleted' => $deleted,
-            'message' => "$deleted incidents deleted successfully"
-        ]);
     }
 
     // CRITICAL-05: BCM Integration Actions

@@ -101,6 +101,65 @@ class TrainingController extends AbstractController
         ]);
     }
 
+    #[Route('/bulk-delete', name: 'app_training_bulk_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function bulkDelete(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+
+        if (empty($ids)) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        $deleted = 0;
+        $errors = [];
+
+        foreach ($ids as $id) {
+            try {
+                $training = $this->trainingRepository->find($id);
+
+                if (!$training) {
+                    $errors[] = "Training ID $id not found";
+                    continue;
+                }
+
+                // Security check: only allow deletion of own tenant's trainings
+                if ($tenant && $training->getTenant() !== $tenant) {
+                    $errors[] = "Training ID $id does not belong to your organization";
+                    continue;
+                }
+
+                $this->entityManager->remove($training);
+                $deleted++;
+            } catch (\Exception $e) {
+                $errors[] = "Error deleting training ID $id: " . $e->getMessage();
+            }
+        }
+
+        if ($deleted > 0) {
+            $this->entityManager->flush();
+        }
+
+        if (!empty($errors)) {
+            return $this->json([
+                'success' => $deleted > 0,
+                'deleted' => $deleted,
+                'errors' => $errors
+            ], $deleted > 0 ? 200 : 400);
+        }
+
+        return $this->json([
+            'success' => true,
+            'deleted' => $deleted,
+            'message' => "$deleted trainings deleted successfully"
+        ]);
+    }
+
+
     #[Route('/{id}', name: 'app_training_show', requirements: ['id' => '\d+'])]
     public function show(Training $training): Response
     {
@@ -183,63 +242,5 @@ class TrainingController extends AbstractController
             'subsidiaries' => $subsidiariesCount,
             'total' => $ownCount + $inheritedCount + $subsidiariesCount
         ];
-    }
-
-    #[Route('/bulk-delete', name: 'app_training_bulk_delete', methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
-    public function bulkDelete(Request $request): Response
-    {
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $training = $this->trainingRepository->find($id);
-
-                if (!$training) {
-                    $errors[] = "Training ID $id not found";
-                    continue;
-                }
-
-                // Security check: only allow deletion of own tenant's trainings
-                if ($tenant && $training->getTenant() !== $tenant) {
-                    $errors[] = "Training ID $id does not belong to your organization";
-                    continue;
-                }
-
-                $this->entityManager->remove($training);
-                $deleted++;
-            } catch (\Exception $e) {
-                $errors[] = "Error deleting training ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        if (!empty($errors)) {
-            return $this->json([
-                'success' => $deleted > 0,
-                'deleted' => $deleted,
-                'errors' => $errors
-            ], $deleted > 0 ? 200 : 400);
-        }
-
-        return $this->json([
-            'success' => true,
-            'deleted' => $deleted,
-            'message' => "$deleted trainings deleted successfully"
-        ]);
     }
 }

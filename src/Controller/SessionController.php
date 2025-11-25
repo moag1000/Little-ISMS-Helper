@@ -41,6 +41,48 @@ class SessionController extends AbstractController
         ]);
     }
 
+    #[Route('/statistics', name: 'session_statistics', methods: ['GET'])]
+    public function statistics(
+        AuditLogRepository $auditLogRepository
+    ): JsonResponse {
+        // Get login statistics for the last 30 days
+        $thirtyDaysAgo = new \DateTime('-30 days');
+        $now = new \DateTime();
+
+        $loginEvents = $auditLogRepository->findByDateRange($thirtyDaysAgo, $now);
+
+        // Filter for login events
+        $logins = array_filter($loginEvents, function ($log) {
+            return in_array($log->getAction(), ['login', 'login_success', 'authentication']);
+        });
+
+        // Group by date
+        $loginsByDate = [];
+        foreach ($logins as $login) {
+            $date = $login->getCreatedAt()->format('Y-m-d');
+            if (!isset($loginsByDate[$date])) {
+                $loginsByDate[$date] = 0;
+            }
+            $loginsByDate[$date]++;
+        }
+
+        // Get unique users
+        $uniqueUsers = array_unique(array_map(function ($log) {
+            return $log->getUserName();
+        }, $logins));
+
+        return $this->json([
+            'total_logins' => count($logins),
+            'unique_users' => count($uniqueUsers),
+            'logins_by_date' => $loginsByDate,
+            'period' => [
+                'from' => $thirtyDaysAgo->format('Y-m-d'),
+                'to' => $now->format('Y-m-d'),
+            ],
+        ]);
+    }
+
+
     #[Route('/{userName}/show', name: 'session_show', methods: ['GET'])]
     #[IsGranted('SESSION_VIEW')]
     public function show(
@@ -156,46 +198,5 @@ class SessionController extends AbstractController
         }
 
         return $this->redirectToRoute('session_index');
-    }
-
-    #[Route('/statistics', name: 'session_statistics', methods: ['GET'])]
-    public function statistics(
-        AuditLogRepository $auditLogRepository
-    ): JsonResponse {
-        // Get login statistics for the last 30 days
-        $thirtyDaysAgo = new \DateTime('-30 days');
-        $now = new \DateTime();
-
-        $loginEvents = $auditLogRepository->findByDateRange($thirtyDaysAgo, $now);
-
-        // Filter for login events
-        $logins = array_filter($loginEvents, function ($log) {
-            return in_array($log->getAction(), ['login', 'login_success', 'authentication']);
-        });
-
-        // Group by date
-        $loginsByDate = [];
-        foreach ($logins as $login) {
-            $date = $login->getCreatedAt()->format('Y-m-d');
-            if (!isset($loginsByDate[$date])) {
-                $loginsByDate[$date] = 0;
-            }
-            $loginsByDate[$date]++;
-        }
-
-        // Get unique users
-        $uniqueUsers = array_unique(array_map(function ($log) {
-            return $log->getUserName();
-        }, $logins));
-
-        return $this->json([
-            'total_logins' => count($logins),
-            'unique_users' => count($uniqueUsers),
-            'logins_by_date' => $loginsByDate,
-            'period' => [
-                'from' => $thirtyDaysAgo->format('Y-m-d'),
-                'to' => $now->format('Y-m-d'),
-            ],
-        ]);
     }
 }
