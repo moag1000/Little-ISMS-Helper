@@ -57,20 +57,6 @@ class ProcessingActivityController extends AbstractController
     }
 
     /**
-     * Show processing activity details
-     */
-    #[Route('/{id}', name: 'app_processing_activity_show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(ProcessingActivity $processingActivity): Response
-    {
-        $complianceReport = $this->service->generateComplianceReport($processingActivity);
-
-        return $this->render('processing_activity/show.html.twig', [
-            'processing_activity' => $processingActivity,
-            'compliance_report' => $complianceReport,
-        ]);
-    }
-
-    /**
      * Create new processing activity
      */
     #[Route('/new', name: 'app_processing_activity_new', methods: ['GET', 'POST'])]
@@ -341,17 +327,6 @@ class ProcessingActivityController extends AbstractController
     }
 
     /**
-     * Compliance report for a single processing activity (JSON API)
-     */
-    #[Route('/{id}/compliance-report', name: 'app_processing_activity_compliance_report', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function complianceReport(ProcessingActivity $processingActivity): Response
-    {
-        $report = $this->service->generateComplianceReport($processingActivity);
-
-        return $this->json($report);
-    }
-
-    /**
      * Search processing activities (AJAX endpoint)
      */
     #[Route('/search', name: 'app_processing_activity_search', methods: ['GET'])]
@@ -424,6 +399,31 @@ class ProcessingActivityController extends AbstractController
             'deleted' => $deleted,
             'message' => "$deleted processing activities deleted successfully",
         ]);
+    }
+
+    /**
+     * Show processing activity details
+     */
+    #[Route('/{id}', name: 'app_processing_activity_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function show(ProcessingActivity $processingActivity): Response
+    {
+        $complianceReport = $this->service->generateComplianceReport($processingActivity);
+
+        return $this->render('processing_activity/show.html.twig', [
+            'processing_activity' => $processingActivity,
+            'compliance_report' => $complianceReport,
+        ]);
+    }
+
+    /**
+     * Compliance report for a single processing activity (JSON API)
+     */
+    #[Route('/{id}/compliance-report', name: 'app_processing_activity_compliance_report', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function complianceReport(ProcessingActivity $processingActivity): Response
+    {
+        $report = $this->service->generateComplianceReport($processingActivity);
+
+        return $this->json($report);
     }
 
     /**

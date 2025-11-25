@@ -101,6 +101,38 @@ class StatementOfApplicabilityController extends AbstractController
         ]);
     }
 
+    #[Route('/report/export', name: 'app_soa_export')]
+    public function export(Request $request): Response
+    {
+        $controls = $this->controlRepository->findAllInIsoOrder();
+
+        // Close session to prevent blocking other requests
+        $request->getSession()->save();
+
+        return $this->render('soa/export.html.twig', [
+            'controls' => $controls,
+            'generatedAt' => new \DateTime(),
+        ]);
+    }
+
+
+    #[Route('/report/pdf', name: 'app_soa_export_pdf')]
+    public function exportPdf(Request $request): Response
+    {
+        // Close session to prevent blocking other requests during PDF generation
+        $request->getSession()->save();
+
+        return $this->soaReportService->downloadSoAReport();
+    }
+
+
+    #[Route('/report/pdf/preview', name: 'app_soa_preview_pdf')]
+    public function previewPdf(): Response
+    {
+        return $this->soaReportService->streamSoAReport();
+    }
+
+
     #[Route('/{id}', name: 'app_soa_show')]
     public function show(Control $control): Response
     {
@@ -136,43 +168,6 @@ class StatementOfApplicabilityController extends AbstractController
         return $this->render('soa/edit.html.twig', [
             'control' => $control,
         ]);
-    }
-
-    #[Route('/report/export', name: 'app_soa_export')]
-    public function export(Request $request): Response
-    {
-        $controls = $this->controlRepository->findAllInIsoOrder();
-
-        // Close session to prevent blocking other requests
-        $request->getSession()->save();
-
-        return $this->render('soa/export.html.twig', [
-            'controls' => $controls,
-            'generatedAt' => new \DateTime(),
-        ]);
-    }
-
-    /**
-     * Export Statement of Applicability as PDF
-     * Phase 6F-C: Professional SoA PDF Report with all 93 controls
-     */
-    #[Route('/report/pdf', name: 'app_soa_export_pdf')]
-    public function exportPdf(Request $request): Response
-    {
-        // Close session to prevent blocking other requests during PDF generation
-        $request->getSession()->save();
-
-        return $this->soaReportService->downloadSoAReport();
-    }
-
-    /**
-     * Preview SoA PDF Report (inline display)
-     * Phase 6F-C: View PDF in browser before downloading
-     */
-    #[Route('/report/pdf/preview', name: 'app_soa_preview_pdf')]
-    public function previewPdf(): Response
-    {
-        return $this->soaReportService->streamSoAReport();
     }
 
     /**

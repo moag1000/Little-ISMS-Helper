@@ -45,6 +45,20 @@ class AdminModuleController extends AbstractController
         ]);
     }
 
+    #[Route('/dependency-graph', name: 'admin_modules_graph', methods: ['GET'])]
+    #[IsGranted('MODULE_VIEW')]
+    public function dependencyGraph(): Response
+    {
+        $dependencyGraph = $this->moduleConfigService->getDependencyGraph();
+        $activeModules = $this->moduleConfigService->getActiveModules();
+
+        return $this->render('admin/modules/graph.html.twig', [
+            'dependency_graph' => $dependencyGraph,
+            'active_modules' => $activeModules,
+        ]);
+    }
+
+
     /**
      * Module Activation
      */
@@ -186,21 +200,5 @@ class AdminModuleController extends AbstractController
         $response->headers->set('Content-Disposition', sprintf('attachment; filename="module_%s_export_%s.yaml"', $moduleKey, date('Y-m-d')));
 
         return $response;
-    }
-
-    /**
-     * Dependency Graph Visualization
-     */
-    #[Route('/dependency-graph', name: 'admin_modules_graph', methods: ['GET'])]
-    #[IsGranted('MODULE_VIEW')]
-    public function dependencyGraph(): Response
-    {
-        $dependencyGraph = $this->moduleConfigService->getDependencyGraph();
-        $activeModules = $this->moduleConfigService->getActiveModules();
-
-        return $this->render('admin/modules/graph.html.twig', [
-            'dependency_graph' => $dependencyGraph,
-            'active_modules' => $activeModules,
-        ]);
     }
 }

@@ -60,20 +60,6 @@ class DPIAController extends AbstractController
     }
 
     /**
-     * Show DPIA details
-     */
-    #[Route('/{id}', name: 'app_dpia_show', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function show(DataProtectionImpactAssessment $dpia): Response
-    {
-        $complianceReport = $this->service->generateComplianceReport($dpia);
-
-        return $this->render('dpia/show.html.twig', [
-            'dpia' => $dpia,
-            'compliance_report' => $complianceReport,
-        ]);
-    }
-
-    /**
      * Create new DPIA
      */
     #[Route('/new', name: 'app_dpia_new', methods: ['GET', 'POST'])]
@@ -424,6 +410,48 @@ class DPIAController extends AbstractController
     }
 
     /**
+     * Search DPIAs (AJAX endpoint)
+     */
+    #[Route('/search', name: 'app_dpia_search', methods: ['GET'])]
+    public function search(Request $request): Response
+    {
+        $query = $request->query->get('q', '');
+
+        if (strlen($query) < 2) {
+            return $this->json(['results' => []]);
+        }
+
+        $results = $this->service->search($query);
+
+        $formattedResults = array_map(function (DataProtectionImpactAssessment $dpia) {
+            return [
+                'id' => $dpia->getId(),
+                'reference_number' => $dpia->getReferenceNumber(),
+                'title' => $dpia->getTitle(),
+                'status' => $dpia->getStatus(),
+                'risk_level' => $dpia->getRiskLevel(),
+                'completeness' => $dpia->getCompletenessPercentage(),
+            ];
+        }, $results);
+
+        return $this->json(['results' => $formattedResults]);
+    }
+
+    /**
+     * Show DPIA details
+     */
+    #[Route('/{id}', name: 'app_dpia_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function show(DataProtectionImpactAssessment $dpia): Response
+    {
+        $complianceReport = $this->service->generateComplianceReport($dpia);
+
+        return $this->render('dpia/show.html.twig', [
+            'dpia' => $dpia,
+            'compliance_report' => $complianceReport,
+        ]);
+    }
+
+    /**
      * Export DPIA as PDF (Art. 35 documentation)
      */
     #[Route('/{id}/export/pdf', name: 'app_dpia_export_pdf', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -466,34 +494,6 @@ class DPIAController extends AbstractController
         $report = $this->service->generateComplianceReport($dpia);
 
         return $this->json($report);
-    }
-
-    /**
-     * Search DPIAs (AJAX endpoint)
-     */
-    #[Route('/search', name: 'app_dpia_search', methods: ['GET'])]
-    public function search(Request $request): Response
-    {
-        $query = $request->query->get('q', '');
-
-        if (strlen($query) < 2) {
-            return $this->json(['results' => []]);
-        }
-
-        $results = $this->service->search($query);
-
-        $formattedResults = array_map(function (DataProtectionImpactAssessment $dpia) {
-            return [
-                'id' => $dpia->getId(),
-                'reference_number' => $dpia->getReferenceNumber(),
-                'title' => $dpia->getTitle(),
-                'status' => $dpia->getStatus(),
-                'risk_level' => $dpia->getRiskLevel(),
-                'completeness' => $dpia->getCompletenessPercentage(),
-            ];
-        }, $results);
-
-        return $this->json(['results' => $formattedResults]);
     }
 
     /**

@@ -70,13 +70,4 @@ class ModuleManagementController extends AbstractController
     {
         return $this->redirectToRoute('admin_modules_export', ['moduleKey' => $moduleKey]);
     }
-
-    /**
-     * Dependency Graph - Redirect to Admin
-     */
-    #[Route('/dependency-graph', name: 'module_management_graph')]
-    public function dependencyGraph(): Response
-    {
-        return $this->redirectToRoute('admin_modules_graph');
-    }
 }
