@@ -681,6 +681,100 @@ class RiskController extends AbstractController
         ]);
     }
 
+    #[Route('/matrix', name: 'app_risk_matrix')]
+    public function matrix(): Response
+    {
+        // Get current user's tenant
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        // Get risks: tenant-filtered if user has tenant, all risks if not
+        if ($tenant) {
+            $risks = $this->riskService->getRisksForTenant($tenant);
+        } else {
+            $risks = $this->riskRepository->findAll();
+        }
+
+        $matrixData = $this->riskMatrixService->generateMatrix();
+        $statistics = $this->riskMatrixService->getRiskStatistics();
+        $risksByLevel = $this->riskMatrixService->getRisksByLevel();
+
+        // Serialize risks for JavaScript consumption
+        $serializedRisks = array_map(function(Risk $risk) {
+            return [
+                'id' => $risk->getId(),
+                'title' => $risk->getTitle(),
+                'probability' => $risk->getProbability() ?? 1,
+                'impact' => $risk->getImpact() ?? 1,
+            ];
+        }, $risks instanceof \Traversable ? iterator_to_array($risks) : $risks);
+
+        return $this->render('risk/matrix.html.twig', [
+            'risks' => $serializedRisks,
+            'matrixData' => $matrixData,
+            'statistics' => $statistics,
+            'risksByLevel' => $risksByLevel,
+        ]);
+    }
+
+    #[Route('/bulk-delete', name: 'app_risk_bulk_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function bulkDelete(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+
+        if (empty($ids)) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        $deleted = 0;
+        $errors = [];
+
+        foreach ($ids as $id) {
+            try {
+                $risk = $this->riskRepository->find($id);
+
+                if (!$risk) {
+                    $errors[] = "Risk ID $id not found";
+                    continue;
+                }
+
+                // Security check: cannot delete inherited risks
+                if ($tenant && !$this->riskService->canEditRisk($risk, $tenant)) {
+                    $errors[] = "Risk ID $id is inherited and cannot be deleted";
+                    continue;
+                }
+
+                $this->entityManager->remove($risk);
+                $deleted++;
+            } catch (\Exception $e) {
+                $errors[] = "Error deleting risk ID $id: " . $e->getMessage();
+            }
+        }
+
+        if ($deleted > 0) {
+            $this->entityManager->flush();
+        }
+
+        if (!empty($errors)) {
+            return $this->json([
+                'success' => $deleted > 0,
+                'deleted' => $deleted,
+                'errors' => $errors
+            ], $deleted > 0 ? 200 : 400);
+        }
+
+        return $this->json([
+            'success' => true,
+            'deleted' => $deleted,
+            'message' => "$deleted risks deleted successfully"
+        ]);
+    }
+
     #[Route('/{id}', name: 'app_risk_show', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function show(Risk $risk): Response
@@ -895,42 +989,6 @@ class RiskController extends AbstractController
         return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
     }
 
-    #[Route('/matrix', name: 'app_risk_matrix')]
-    public function matrix(): Response
-    {
-        // Get current user's tenant
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
-        // Get risks: tenant-filtered if user has tenant, all risks if not
-        if ($tenant) {
-            $risks = $this->riskService->getRisksForTenant($tenant);
-        } else {
-            $risks = $this->riskRepository->findAll();
-        }
-
-        $matrixData = $this->riskMatrixService->generateMatrix();
-        $statistics = $this->riskMatrixService->getRiskStatistics();
-        $risksByLevel = $this->riskMatrixService->getRisksByLevel();
-
-        // Serialize risks for JavaScript consumption
-        $serializedRisks = array_map(function(Risk $risk) {
-            return [
-                'id' => $risk->getId(),
-                'title' => $risk->getTitle(),
-                'probability' => $risk->getProbability() ?? 1,
-                'impact' => $risk->getImpact() ?? 1,
-            ];
-        }, $risks instanceof \Traversable ? iterator_to_array($risks) : $risks);
-
-        return $this->render('risk/matrix.html.twig', [
-            'risks' => $serializedRisks,
-            'matrixData' => $matrixData,
-            'statistics' => $statistics,
-            'risksByLevel' => $risksByLevel,
-        ]);
-    }
-
     /**
      * Calculate detailed statistics showing breakdown by origin
      *
@@ -978,63 +1036,5 @@ class RiskController extends AbstractController
             'subsidiaries' => $subsidiariesCount,
             'total' => $ownCount + $inheritedCount + $subsidiariesCount
         ];
-    }
-
-    #[Route('/bulk-delete', name: 'app_risk_bulk_delete', methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
-    public function bulkDelete(Request $request): Response
-    {
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $risk = $this->riskRepository->find($id);
-
-                if (!$risk) {
-                    $errors[] = "Risk ID $id not found";
-                    continue;
-                }
-
-                // Security check: cannot delete inherited risks
-                if ($tenant && !$this->riskService->canEditRisk($risk, $tenant)) {
-                    $errors[] = "Risk ID $id is inherited and cannot be deleted";
-                    continue;
-                }
-
-                $this->entityManager->remove($risk);
-                $deleted++;
-            } catch (\Exception $e) {
-                $errors[] = "Error deleting risk ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        if (!empty($errors)) {
-            return $this->json([
-                'success' => $deleted > 0,
-                'deleted' => $deleted,
-                'errors' => $errors
-            ], $deleted > 0 ? 200 : 400);
-        }
-
-        return $this->json([
-            'success' => true,
-            'deleted' => $deleted,
-            'message' => "$deleted risks deleted successfully"
-        ]);
     }
 }
