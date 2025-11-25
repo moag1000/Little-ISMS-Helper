@@ -1,14 +1,14 @@
 context_management:
     title: 'ISMS Kontext'
     description: 'Überblick und Pflege des organisatorischen Kontexts gemäß ISO 27001 (Klauseln 4.1–4.3).'
-    isms_scope: Isms Scope
-    no_context_defined: No Context Defined
-    isms_objectives: Isms Objectives
+    isms_scope: 'ISMS-Geltungsbereich'
+    no_context_defined: 'Noch kein ISMS-Kontext definiert'
+    isms_objectives: 'ISMS-Ziele'
 context:
     link:
         edit: 'Kontext bearbeiten'
         create: 'Kontext erfassen'
-        create_now: Create Now
+        create_now: 'Jetzt erstellen'
     info:
         iso_clause: 'ISO 27001: Kontext der Organisation'
         iso_description: 'Klauseln 4.1–4.3: Externe/interne Themen, interessierte Parteien und Anwendungsbereich (Scope).'
@@ -73,11 +73,11 @@ context:
         isms_objectives: ISMS-Ziele
         active_objectives: 'Aktive Ziele'
         no_objectives: 'Noch keine ISMS-Ziele definiert.'
-        policy: Policy
-        review: Review
-        exclusions: Exclusions
-        external_issues: External Issues
-        internal_issues: Internal Issues
+        policy: 'ISMS-Policy'
+        review: 'Kontextüberprüfung'
+        exclusions: 'Ausschlüsse vom ISMS-Scope'
+        external_issues: 'Externe Themen'
+        internal_issues: 'Interne Themen'
     field:
         organization_name: Organisationsname
         isms_scope: ISMS‑Scope
