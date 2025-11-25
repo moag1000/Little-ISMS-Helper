@@ -60,7 +60,7 @@ audit_log:
         entries: audit_log
     showing_recent: Showing Recent
     entries: Entries
-    view_all: View All
+    view_all: Alle anzeigen
     field:
         timestamp: Timestamp
         action: Aktion

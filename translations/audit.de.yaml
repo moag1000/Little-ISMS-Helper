@@ -112,8 +112,8 @@ audit:
         standard: Standard
         planned_date: Geplant Datum
         actual_date: Tatsächlich Datum
-        lead_auditor: Lead Auditor
-        audit_team: Audit Team
+        lead_auditor: Leitender Auditor
+        audit_team: 'Audit-Team'
         auditee: Auditierter
         department: Department
         status: Status
@@ -128,7 +128,7 @@ audit:
         corrective_actions: Korrekturmaßnahme Aktionen
         follow_up_actions: Follow Up Actions
         conclusion: Schlussfolgerung
-        evidence_collected: Evidence Collected
+        evidence_collected: Gesammelte Nachweise
         summary: Zusammenfassung
         notes: Notizen
     scope: Geltungsbereich

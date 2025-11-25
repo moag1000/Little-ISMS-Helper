@@ -89,7 +89,7 @@ document:
         by_type: By Type
     stats:
         total: Gesamt
-        document_types: Document Types
+        document_types: Dokumenttypen
         expiring_soon: Expiring Soon
         avg_per_type: Avg Per Type
         total_documents: Gesamt Dokumente
