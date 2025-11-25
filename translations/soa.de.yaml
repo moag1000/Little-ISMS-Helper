@@ -121,5 +121,7 @@ soa:
         updated_at: 'Zuletzt aktualisiert'
         last_review: 'Letztes Review'
         next_review: 'Nächstes Review'
-    title: 'Control-Titel'
+    title: Control-Titel
     iso27001_full_title: 'ISO/IEC 27001:2022 vollständiger Titel'
+    in_progress_badge: 'In Arbeit'
+    in_progress_badge_emoji: '🚧 In Arbeit'
