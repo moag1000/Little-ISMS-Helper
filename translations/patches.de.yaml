@@ -1,15 +1,15 @@
 patch:
-    edit: Bearbeiten
-    new: Neu
-    title: Titel
+    edit: 'Patch bearbeiten'
+    new: 'Neuer Patch'
+    title: 'Patch-Verwaltung'
     field:
-        patch_id: Patch Id
-        title: Titel
-        patch_type: Patch Type
-        status: Status
-        description: Beschreibung
+        patch_id: 'Patch-ID'
+        title: 'Patch-Bezeichnung'
+        patch_type: 'Patch-Typ'
+        status: 'Patch-Status'
+        description: 'Beschreibung'
     kpi:
-        pending: Ausstehend
-        deployed: Deployed
-        total: Gesamt
-    empty: Empty
+        pending: 'Ausstehend'
+        deployed: 'Eingespielt'
+        total: 'Gesamt'
+    empty: 'Keine Patches vorhanden'

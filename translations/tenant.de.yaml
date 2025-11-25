@@ -23,7 +23,7 @@ tenant:
         description_help: 'Optionale Beschreibung des Mandanten'
         logo: Logo
         logo_help: 'Mandanten-Logo (max. 2MB, JPG/PNG/GIF/WebP)'
-        azure_tenant_id: 'Azure Tenant ID'
+        azure_tenant_id: 'Azure-Mandanten-ID'
         azure_tenant_id_help: 'Azure AD Tenant ID (UUID-Format) für SSO-Integration'
         is_active: Aktiv
         is_active_help: 'Nur aktive Mandanten können sich anmelden'
@@ -34,7 +34,7 @@ tenant:
         created: Erstellt
         updated: Aktualisiert
         parent: Muttergesellschaft
-        corporate_notes: Corporate Notes
+        corporate_notes: Konzernhinweise
     placeholder:
         code: 'z.B. acme-corp'
         name: 'z.B. ACME Corporation'
@@ -155,7 +155,7 @@ tenant:
         description: Beschreibung
         logo: Logo
         parent: Muttergesellschaft
-        corporate_notes: Corporate Notes
+        corporate_notes: Konzernhinweise
         azure_tenant_id: Azure Tenant Id
         settings: Einstellungen
     settings:
@@ -198,25 +198,27 @@ corporate:
         hierarchy_depth: Hierarchy Depth
         subsidiaries: Tochtergesellschaften
     action:
-        set_parent: Set Parent
-        update_governance: Update Governance
-        remove_parent: Entfernen Muttergesellschaft
-        view_structure: View Structure
-    title: Titel
-    subtitle: Untertitel
+        set_parent: 'Muttergesellschaft zuordnen'
+        update_governance: 'Governance aktualisieren'
+        remove_parent: 'Muttergesellschaft entfernen'
+        view_structure: 'Unternehmensstruktur anzeigen'
+    title:
+        edit: 'Mandant bearbeiten'
+        create: 'Neuer Mandant'
+    subtitle: 'Mandantenverwaltung'
     single_tenant:
-        title: Titel
-        message: Message
-        hint: Hint
+        title: 'Einzelmandanten-Modus'
+        message: 'Diese Installation ist für einen einzelnen Mandanten konfiguriert'
+        hint: 'Multi-Mandanten-Funktionen sind deaktiviert'
     section:
-        groups: Groups
-        standalone: Standalone
-        structure: Structure
+        groups: 'Mandantengruppen'
+        standalone: 'Eigenständiger Mandant'
+        structure: 'Unternehmensstruktur'
     role:
-        parent: Muttergesellschaft
+        parent: 'Muttergesellschaft'
     info:
-        title: Titel
-        text: Text
+        title: 'Mandanteninformationen'
+        text: 'Mandantendetails'
     modal:
         set_parent:
             title: Titel

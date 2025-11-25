@@ -19,8 +19,8 @@ bc_plans:
         team: Team
         activation: Activation
         communication: Communication
-        backup_recovery: Backup Recovery
-        version_review: Version Review
+        backup_recovery: Backup und Wiederherstellung
+        version_review: Versionsüberprüfung
     table:
         name: Name
         business_process: Geschäftsprozess
@@ -42,12 +42,12 @@ bc_plans:
         name: Name
         description: Beschreibung
         status: Status
-        bc_team: Bc Team
-        activation_criteria: Activation Criteria
-        roles_responsibilities: Roles Responsibilities
+        bc_team: 'BC-Team'
+        activation_criteria: Aktivierungskriterien
+        roles_responsibilities: Rollen und Verantwortlichkeiten
         recovery_procedures: Wiederherstellung Verfahren
-        communication_plan: Communication Plan
-        internal_communication: Internal Communication
+        communication_plan: Kommunikationsplan
+        internal_communication: Interne Kommunikation
         external_communication: External Communication
         alternative_site: Alternative Site
         alternative_site_address: Alternative Site Address
@@ -72,12 +72,12 @@ bc_plans:
         description: Beschreibung
         plan_owner: Plan Eigentümer
         status: Status
-        bc_team: Bc Team
-        activation_criteria: Activation Criteria
-        roles_responsibilities: Roles Responsibilities
+        bc_team: 'BC-Team'
+        activation_criteria: Aktivierungskriterien
+        roles_responsibilities: Rollen und Verantwortlichkeiten
         recovery_procedures: Wiederherstellung Verfahren
-        communication_plan: Communication Plan
-        internal_communication: Internal Communication
+        communication_plan: Kommunikationsplan
+        internal_communication: Interne Kommunikation
         external_communication: External Communication
         alternative_site: Alternative Site
         alternative_site_address: Alternative Site Address
@@ -92,5 +92,5 @@ bc_plans:
         review_notes: Review Notes
 bcm:
     field:
-        activation_criteria: Activation Criteria
+        activation_criteria: Aktivierungskriterien
         recovery_plan: Wiederherstellung Plan
