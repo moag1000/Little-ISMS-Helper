@@ -1,13 +1,10 @@
 location:
-    title:
-        list: Standorte
-        create: 'Standort anlegen'
-        show: Standortdetails
-        edit: 'Standort bearbeiten'
+    title: 'Standorte'
     description:
         overview: 'Übersicht über Standorte, Gebäude und Räume'
     action:
         create: 'Standort anlegen'
+        view_details: 'Details anzeigen'
     stats:
         total: Gesamt‑Standorte
         buildings: Gebäude
@@ -26,6 +23,8 @@ location:
         access_control: Zutrittskontrolle
         security_level: Sicherheitsniveau
         badge_access: 'Ausweiszugang erforderlich'
+        description: 'Beschreibung'
+        status: 'Status'
     section:
         address: Adresse
         hierarchy: Hierarchie
@@ -58,3 +57,7 @@ location:
         no_locations: 'Keine Standorte vorhanden.'
     confirm:
         delete: 'Sind Sie sicher, dass Sie diesen Standort löschen möchten?'
+    title.list: Standorte
+    title.create: 'Standort anlegen'
+    title.show: Standortdetails
+    title.edit: 'Standort bearbeiten'

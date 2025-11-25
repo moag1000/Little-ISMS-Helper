@@ -23,7 +23,7 @@ tenant:
         description_help: 'Optionale Beschreibung des Mandanten'
         logo: Logo
         logo_help: 'Mandanten-Logo (max. 2MB, JPG/PNG/GIF/WebP)'
-        azure_tenant_id: 'Azure-Mandanten-ID'
+        azure_tenant_id: Azure-Mandanten-ID
         azure_tenant_id_help: 'Azure AD Tenant ID (UUID-Format) für SSO-Integration'
         is_active: Aktiv
         is_active_help: 'Nur aktive Mandanten können sich anmelden'
@@ -132,7 +132,7 @@ tenant:
             corporate: 'Bei Konzernstrukturen können Tochtergesellschaften unterschiedliche Branchen abdecken'
         field:
             industries: Industries
-            employee_count: Employee Count
+            employee_count: 'Employee Count'
             country: Country
             description: Beschreibung
     link:
@@ -156,7 +156,7 @@ tenant:
         logo: Logo
         parent: Muttergesellschaft
         corporate_notes: Konzernhinweise
-        azure_tenant_id: Azure Tenant Id
+        azure_tenant_id: 'Azure Tenant Id'
         settings: Einstellungen
     settings:
         example_title: 'Beispiel JSON-Struktur'
@@ -169,56 +169,54 @@ corporate:
         including_inherited: 'Inkl. geerbte'
         including_subsidiaries: 'Inkl. Tochtergesellschaften'
     stats:
-        breakdown: 'Aufschlüsselung'
-        groups: 'Gruppen'
-        standalone: 'Eigenständig'
-        total: 'Gesamt'
+        breakdown: Aufschlüsselung
+        groups: Gruppen
+        standalone: Eigenständig
+        total: Gesamt
     inheritance:
         inherited_from: 'Geerbt von'
-        title: 'Vererbung'
+        title: Vererbung
         propagate: 'An Tochtergesellschaften vererben'
         no_context: 'Kein Kontext vorhanden'
-        organization: 'Organisation'
+        organization: Organisation
         own_context: 'Eigener Kontext'
         load_error: 'Fehler beim Laden der Vererbungsinformationen'
         confirm_propagate: 'Möchten Sie diesen Kontext wirklich an alle Tochtergesellschaften vererben?'
         propagate_error: 'Fehler beim Vererben des Kontexts'
         isms_context_inherited: 'ISMS-Kontext wird von Muttergesellschaft geerbt'
-        from: 'Von'
+        from: Von
         edit_at_parent: 'Bei Muttergesellschaft bearbeiten'
         cannot_edit_inherited: 'Geerbte Einträge können nicht direkt bearbeitet werden'
         view_only_title: 'Nur-Ansicht: Geerbt von Muttergesellschaft'
         risk_inherited_message: 'Dieses Risiko wurde von der Muttergesellschaft geerbt und kann hier nicht geändert werden'
-    inherited: 'Geerbt'
+    inherited: Geerbt
     field:
-        actions: 'Aktionen'
-        subsidiary: 'Tochtergesellschaft'
-        parent: 'Muttergesellschaft'
-        governance_model: 'Governance-Modell'
-        hierarchy_depth: 'Hierarchietiefe'
-        subsidiaries: 'Tochtergesellschaften'
+        actions: Aktionen
+        subsidiary: Tochtergesellschaft
+        parent: Muttergesellschaft
+        governance_model: Governance-Modell
+        hierarchy_depth: Hierarchietiefe
+        subsidiaries: Tochtergesellschaften
     action:
         set_parent: 'Muttergesellschaft zuordnen'
         update_governance: 'Governance aktualisieren'
         remove_parent: 'Muttergesellschaft entfernen'
         view_structure: 'Unternehmensstruktur anzeigen'
-    title:
-        edit: 'Mandant bearbeiten'
-        create: 'Neuer Mandant'
-    subtitle: 'Mandantenverwaltung'
+    title: 'Konzernstruktur'
+    subtitle: Mandantenverwaltung
     single_tenant:
-        title: 'Einzelmandanten-Modus'
+        title: Einzelmandanten-Modus
         message: 'Diese Installation ist für einen einzelnen Mandanten konfiguriert'
         hint: 'Multi-Mandanten-Funktionen sind deaktiviert'
     section:
-        groups: 'Mandantengruppen'
+        groups: Mandantengruppen
         standalone: 'Eigenständiger Mandant'
-        structure: 'Unternehmensstruktur'
+        structure: Unternehmensstruktur
     role:
-        parent: 'Muttergesellschaft'
+        parent: Muttergesellschaft
     info:
-        title: 'Mandanteninformationen'
-        text: 'Mandantendetails'
+        title: Mandanteninformationen
+        text: Mandantendetails
     modal:
         set_parent:
             title: Titel
@@ -228,26 +226,28 @@ corporate:
         parent: Muttergesellschaft
         governance: Governance
     confirm:
-        remove_parent: Entfernen Muttergesellschaft
+        remove_parent: 'Entfernen Muttergesellschaft'
     level: Level
     granular:
         title: Titel
-        add_rule: Add Rule
+        add_rule: 'Add Rule'
         modal:
             title: Titel
         field:
             scope: Geltungsbereich
-            scope_id: Geltungsbereich ID
+            scope_id: 'Geltungsbereich ID'
         scope:
             control: Maßnahme
-            isms_context: Isms Context
+            isms_context: 'Isms Context'
             risk: Risiko
             asset: Asset
             process: Process
         help:
-            scope_id: Geltungsbereich ID
-        no_rules: No Rules
+            scope_id: 'Geltungsbereich ID'
+        no_rules: 'No Rules'
         flash:
             error: Fehler
         confirm:
             delete: Löschen
+    title.edit: 'Mandant bearbeiten'
+    title.create: 'Neuer Mandant'
