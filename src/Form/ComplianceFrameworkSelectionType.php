@@ -41,6 +41,7 @@ class ComplianceFrameworkSelectionType extends AbstractType
                     'class' => 'compliance-framework-selection',
                 ],
                 'help' => 'setup.compliance.frameworks_help',
+                'translation_domain' => 'setup',
             ]);
     }
 

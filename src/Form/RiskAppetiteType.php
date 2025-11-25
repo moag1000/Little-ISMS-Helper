@@ -108,6 +108,7 @@ class RiskAppetiteType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => RiskAppetite::class,
+            'translation_domain' => 'risk_appetite',
         ]);
     }
 }

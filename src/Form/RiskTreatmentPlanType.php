@@ -201,6 +201,7 @@ class RiskTreatmentPlanType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => RiskTreatmentPlan::class,
+            'translation_domain' => 'risk_treatment_plan',
         ]);
     }
 }

@@ -151,6 +151,7 @@ class ComplianceFrameworkType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ComplianceFramework::class,
+            'translation_domain' => 'compliance',
         ]);
     }
 }

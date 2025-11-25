@@ -22,9 +22,9 @@ class ISMSContextType extends AbstractType
                 'label' => 'context.field.organization_name',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Name der Organisation',
+                    'placeholder' => 'context.placeholder.organization_name',
                 ],
-                'help' => 'Dieser Name wird automatisch vom zugeordneten Mandanten übernommen. Um ihn zu ändern, bearbeiten Sie den Mandanten in der Mandantenverwaltung.',
+                'help' => 'context.help.organization_name',
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'context.validation.organization_name_required']),
                     new Assert\Length([
@@ -39,9 +39,9 @@ class ISMSContextType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 5,
-                    'placeholder' => 'Definieren Sie den Geltungsbereich des ISMS (z.B. Abteilungen, Standorte, Prozesse)...'
+                    'placeholder' => 'context.placeholder.isms_scope'
                 ],
-                'help' => 'ISO 27001 Clause 4.3: Definieren Sie Grenzen und Anwendbarkeit des ISMS'
+                'help' => 'context.help.isms_scope'
             ])
             ->add('scopeExclusions', TextareaType::class, [
                 'label' => 'context.field.scope_exclusions',
@@ -49,9 +49,9 @@ class ISMSContextType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 3,
-                    'placeholder' => 'Bereiche, die ausdrücklich vom ISMS ausgeschlossen sind...'
+                    'placeholder' => 'context.placeholder.scope_exclusions'
                 ],
-                'help' => 'Begründen Sie, warum bestimmte Bereiche ausgeschlossen werden'
+                'help' => 'context.help.scope_exclusions'
             ])
             ->add('externalIssues', TextareaType::class, [
                 'label' => 'context.field.external_issues',
@@ -59,9 +59,9 @@ class ISMSContextType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 4,
-                    'placeholder' => 'Gesetzliche, technologische, wettbewerbliche, kulturelle und wirtschaftliche Themen...'
+                    'placeholder' => 'context.placeholder.external_issues'
                 ],
-                'help' => 'ISO 27001 Clause 4.1: Externe Faktoren, die das ISMS beeinflussen'
+                'help' => 'context.help.external_issues'
             ])
             ->add('internalIssues', TextareaType::class, [
                 'label' => 'context.field.internal_issues',
@@ -69,9 +69,9 @@ class ISMSContextType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 4,
-                    'placeholder' => 'Organisationskultur, Werte, Wissen, Performance, Ressourcen...'
+                    'placeholder' => 'context.placeholder.internal_issues'
                 ],
-                'help' => 'ISO 27001 Clause 4.1: Interne Faktoren, die das ISMS beeinflussen'
+                'help' => 'context.help.internal_issues'
             ])
             ->add('interestedParties', TextareaType::class, [
                 'label' => 'context.field.interested_parties',
@@ -79,9 +79,9 @@ class ISMSContextType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 4,
-                    'placeholder' => 'Kunden, Regulierungsbehörden, Lieferanten, Mitarbeiter, Aktionäre...'
+                    'placeholder' => 'context.placeholder.interested_parties'
                 ],
-                'help' => 'ISO 27001 Clause 4.2: Stakeholder, die Anforderungen an das ISMS stellen'
+                'help' => 'context.help.interested_parties'
             ])
             ->add('interestedPartiesRequirements', TextareaType::class, [
                 'label' => 'context.field.interested_parties_requirements',
@@ -89,9 +89,9 @@ class ISMSContextType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 4,
-                    'placeholder' => 'Welche Anforderungen stellen die interessierten Parteien?'
+                    'placeholder' => 'context.placeholder.interested_parties_requirements'
                 ],
-                'help' => 'Spezifische Anforderungen der Stakeholder bezüglich Informationssicherheit'
+                'help' => 'context.help.interested_parties_requirements'
             ])
             ->add('legalRequirements', TextareaType::class, [
                 'label' => 'context.field.legal_requirements',
@@ -99,9 +99,9 @@ class ISMSContextType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 3,
-                    'placeholder' => 'DSGVO, IT-Sicherheitsgesetz, KRITIS, etc.'
+                    'placeholder' => 'context.placeholder.legal_requirements'
                 ],
-                'help' => 'Gesetzliche Verpflichtungen und rechtliche Rahmenbedingungen'
+                'help' => 'context.help.legal_requirements'
             ])
             ->add('regulatoryRequirements', TextareaType::class, [
                 'label' => 'context.field.regulatory_requirements',
@@ -109,9 +109,9 @@ class ISMSContextType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 3,
-                    'placeholder' => 'Branchenspezifische Vorschriften, Standards, etc.'
+                    'placeholder' => 'context.placeholder.regulatory_requirements'
                 ],
-                'help' => 'Regulatorische Vorgaben und Branchenstandards'
+                'help' => 'context.help.regulatory_requirements'
             ])
             ->add('contractualObligations', TextareaType::class, [
                 'label' => 'context.field.contractual_obligations',
@@ -119,9 +119,9 @@ class ISMSContextType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 3,
-                    'placeholder' => 'SLAs, Vertraulichkeitsvereinbarungen, Kundenverträge...'
+                    'placeholder' => 'context.placeholder.contractual_obligations'
                 ],
-                'help' => 'Vertragliche Anforderungen an Informationssicherheit'
+                'help' => 'context.help.contractual_obligations'
             ])
             ->add('ismsPolicy', TextareaType::class, [
                 'label' => 'context.field.isms_policy',
@@ -129,9 +129,9 @@ class ISMSContextType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 6,
-                    'placeholder' => 'Übergeordnete Informationssicherheitsrichtlinie der Organisation...'
+                    'placeholder' => 'context.placeholder.isms_policy'
                 ],
-                'help' => 'ISO 27001 Clause 5.2: Festlegung der Informationssicherheitsrichtlinie'
+                'help' => 'context.help.isms_policy'
             ])
             ->add('rolesAndResponsibilities', TextareaType::class, [
                 'label' => 'context.field.roles_and_responsibilities',
@@ -139,9 +139,9 @@ class ISMSContextType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 5,
-                    'placeholder' => 'ISMS-Verantwortlicher, Informationssicherheitsbeauftragter, etc.'
+                    'placeholder' => 'context.placeholder.roles_and_responsibilities'
                 ],
-                'help' => 'ISO 27001 Clause 5.3: Definition von Rollen und Verantwortlichkeiten im ISMS'
+                'help' => 'context.help.roles_and_responsibilities'
             ])
             ->add('lastReviewDate', DateType::class, [
                 'label' => 'context.field.last_review_date',
@@ -150,7 +150,7 @@ class ISMSContextType extends AbstractType
                 'attr' => [
                     'class' => 'form-control'
                 ],
-                'help' => 'Wann wurde der ISMS-Kontext zuletzt überprüft?'
+                'help' => 'context.help.last_review_date'
             ])
             ->add('nextReviewDate', DateType::class, [
                 'label' => 'context.field.next_review_date',
@@ -159,7 +159,7 @@ class ISMSContextType extends AbstractType
                 'attr' => [
                     'class' => 'form-control'
                 ],
-                'help' => 'Wann soll die nächste Überprüfung stattfinden? (Empfohlen: jährlich)'
+                'help' => 'context.help.next_review_date'
             ])
         ;
 
@@ -174,10 +174,10 @@ class ISMSContextType extends AbstractType
                     'label' => 'context.field.organization_name',
                     'attr' => [
                         'class' => 'form-control',
-                        'placeholder' => 'Name der Organisation',
+                        'placeholder' => 'context.placeholder.organization_name',
                         'readonly' => true,
                     ],
-                    'help' => 'Dieser Name wird automatisch vom zugeordneten Mandanten übernommen. Um ihn zu ändern, bearbeiten Sie den Mandanten in der Mandantenverwaltung.',
+                    'help' => 'context.help.organization_name',
                     'constraints' => [
                         new Assert\NotBlank(['message' => 'context.validation.organization_name_required']),
                         new Assert\Length([
@@ -194,6 +194,7 @@ class ISMSContextType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ISMSContext::class,
+            'translation_domain' => 'context',
         ]);
     }
 }

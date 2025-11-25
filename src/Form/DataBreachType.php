@@ -31,7 +31,7 @@ class DataBreachType extends AbstractType
                 'label' => 'data_breach.form.title',
                 'required' => true,
                 'attr' => [
-                    'placeholder' => 'e.g., Unauthorized access to customer database',
+                    'placeholder' => 'data_breach.placeholder.title',
                     'class' => 'form-control',
                 ],
             ])
@@ -41,7 +41,7 @@ class DataBreachType extends AbstractType
                 'choice_label' => function (Incident $incident) {
                     return sprintf('%s - %s', $incident->getReferenceNumber(), $incident->getTitle());
                 },
-                'placeholder' => 'Select incident...',
+                'placeholder' => 'data_breach.placeholder.incident',
                 'required' => true,
                 'attr' => ['class' => 'form-select select2'],
             ])
@@ -49,10 +49,10 @@ class DataBreachType extends AbstractType
                 'label' => 'data_breach.form.processing_activity',
                 'class' => ProcessingActivity::class,
                 'choice_label' => 'name',
-                'placeholder' => 'Select processing activity (VVT)...',
+                'placeholder' => 'data_breach.placeholder.processing_activity',
                 'required' => false,
                 'attr' => ['class' => 'form-select select2'],
-                'help' => 'Link to VVT (Art. 30 GDPR)',
+                'help' => 'data_breach.help.processing_activity',
             ])
 
             // ================================================================
@@ -62,11 +62,11 @@ class DataBreachType extends AbstractType
                 'label' => 'data_breach.form.affected_data_subjects',
                 'required' => false,
                 'attr' => [
-                    'placeholder' => 'Number of affected individuals',
+                    'placeholder' => 'data_breach.placeholder.affected_data_subjects',
                     'class' => 'form-control',
                     'min' => 0,
                 ],
-                'help' => 'Art. 33(3)(a) GDPR',
+                'help' => 'data_breach.help.affected_data_subjects',
             ])
             ->add('dataCategories', ChoiceType::class, [
                 'label' => 'data_breach.form.data_categories',
@@ -89,7 +89,7 @@ class DataBreachType extends AbstractType
                 'expanded' => false,
                 'required' => true,
                 'attr' => ['class' => 'form-select select2-multiple'],
-                'help' => 'Art. 33(3)(a) GDPR - Select all applicable categories',
+                'help' => 'data_breach.help.data_categories',
             ])
             ->add('dataSubjectCategories', ChoiceType::class, [
                 'label' => 'data_breach.form.data_subject_categories',
@@ -110,7 +110,7 @@ class DataBreachType extends AbstractType
                 'expanded' => false,
                 'required' => true,
                 'attr' => ['class' => 'form-select select2-multiple'],
-                'help' => 'Art. 33(3)(a) GDPR',
+                'help' => 'data_breach.help.data_subject_categories',
             ])
             ->add('breachNature', TextareaType::class, [
                 'label' => 'data_breach.form.breach_nature',
@@ -118,9 +118,9 @@ class DataBreachType extends AbstractType
                 'attr' => [
                     'rows' => 5,
                     'class' => 'form-control',
-                    'placeholder' => 'Describe the nature of the personal data breach, including the circumstances...',
+                    'placeholder' => 'data_breach.placeholder.breach_nature',
                 ],
-                'help' => 'Art. 33(3)(a) GDPR - Describe what happened',
+                'help' => 'data_breach.help.breach_nature',
             ])
             ->add('likelyConsequences', TextareaType::class, [
                 'label' => 'data_breach.form.likely_consequences',
@@ -128,9 +128,9 @@ class DataBreachType extends AbstractType
                 'attr' => [
                     'rows' => 5,
                     'class' => 'form-control',
-                    'placeholder' => 'Describe the likely consequences of the breach for data subjects...',
+                    'placeholder' => 'data_breach.placeholder.likely_consequences',
                 ],
-                'help' => 'Art. 33(3)(b) GDPR',
+                'help' => 'data_breach.help.likely_consequences',
             ])
             ->add('measuresTaken', TextareaType::class, [
                 'label' => 'data_breach.form.measures_taken',
@@ -138,9 +138,9 @@ class DataBreachType extends AbstractType
                 'attr' => [
                     'rows' => 5,
                     'class' => 'form-control',
-                    'placeholder' => 'Describe measures taken or proposed to address the breach...',
+                    'placeholder' => 'data_breach.placeholder.measures_taken',
                 ],
-                'help' => 'Art. 33(3)(c) & (d) GDPR',
+                'help' => 'data_breach.help.measures_taken',
             ])
             ->add('mitigationMeasures', TextareaType::class, [
                 'label' => 'data_breach.form.mitigation_measures',
@@ -148,9 +148,9 @@ class DataBreachType extends AbstractType
                 'attr' => [
                     'rows' => 4,
                     'class' => 'form-control',
-                    'placeholder' => 'Additional mitigation measures including remedies...',
+                    'placeholder' => 'data_breach.placeholder.mitigation_measures',
                 ],
-                'help' => 'Art. 33(3)(d) GDPR - Measures to mitigate adverse effects',
+                'help' => 'data_breach.help.mitigation_measures',
             ])
 
             // ================================================================
@@ -165,10 +165,10 @@ class DataBreachType extends AbstractType
                     'data_breach.risk_level.critical' => 'critical',
                 ],
                 'choice_translation_domain' => 'privacy',
-                'placeholder' => 'Assess risk level...',
+                'placeholder' => 'data_breach.placeholder.risk_level',
                 'required' => false,
                 'attr' => ['class' => 'form-select'],
-                'help' => 'Assessment of risk to rights and freedoms',
+                'help' => 'data_breach.help.risk_level',
             ])
             ->add('riskAssessment', TextareaType::class, [
                 'label' => 'data_breach.form.risk_assessment',
@@ -176,20 +176,20 @@ class DataBreachType extends AbstractType
                 'attr' => [
                     'rows' => 4,
                     'class' => 'form-control',
-                    'placeholder' => 'Detailed risk assessment...',
+                    'placeholder' => 'data_breach.placeholder.risk_assessment',
                 ],
             ])
             ->add('specialCategoriesAffected', CheckboxType::class, [
                 'label' => 'data_breach.form.special_categories_affected',
                 'required' => false,
                 'attr' => ['class' => 'form-check-input'],
-                'help' => 'Art. 9 GDPR - Racial/ethnic origin, political opinions, religious beliefs, health data, etc.',
+                'help' => 'data_breach.help.special_categories_affected',
             ])
             ->add('criminalDataAffected', CheckboxType::class, [
                 'label' => 'data_breach.form.criminal_data_affected',
                 'required' => false,
                 'attr' => ['class' => 'form-check-input'],
-                'help' => 'Art. 10 GDPR - Criminal convictions and offences',
+                'help' => 'data_breach.help.criminal_data_affected',
             ])
 
             // ================================================================
@@ -200,13 +200,13 @@ class DataBreachType extends AbstractType
                 'required' => false,
                 'data' => true, // Default to checked
                 'attr' => ['class' => 'form-check-input'],
-                'help' => 'Art. 33(1) GDPR - Notification required unless unlikely to result in risk',
+                'help' => 'data_breach.help.requires_authority_notification',
             ])
             ->add('requiresSubjectNotification', CheckboxType::class, [
                 'label' => 'data_breach.form.requires_subject_notification',
                 'required' => false,
                 'attr' => ['class' => 'form-check-input'],
-                'help' => 'Art. 34(1) GDPR - Required if breach likely to result in HIGH RISK',
+                'help' => 'data_breach.help.requires_subject_notification',
             ])
             ->add('noSubjectNotificationReason', TextareaType::class, [
                 'label' => 'data_breach.form.no_subject_notification_reason',
@@ -214,9 +214,9 @@ class DataBreachType extends AbstractType
                 'attr' => [
                     'rows' => 3,
                     'class' => 'form-control',
-                    'placeholder' => 'Explain why notification is not required (Art. 34(3))...',
+                    'placeholder' => 'data_breach.placeholder.no_subject_notification_reason',
                 ],
-                'help' => 'Art. 34(3) GDPR exemptions: (a) Protection measures, (b) Subsequent measures, (c) Disproportionate effort',
+                'help' => 'data_breach.help.no_subject_notification_reason',
             ])
 
             // ================================================================
@@ -228,7 +228,7 @@ class DataBreachType extends AbstractType
                 'attr' => [
                     'rows' => 4,
                     'class' => 'form-control',
-                    'placeholder' => 'Root cause analysis...',
+                    'placeholder' => 'data_breach.placeholder.root_cause',
                 ],
             ])
             ->add('lessonsLearned', TextareaType::class, [
@@ -237,7 +237,7 @@ class DataBreachType extends AbstractType
                 'attr' => [
                     'rows' => 4,
                     'class' => 'form-control',
-                    'placeholder' => 'Lessons learned from this breach...',
+                    'placeholder' => 'data_breach.placeholder.lessons_learned',
                 ],
             ])
 
@@ -250,10 +250,10 @@ class DataBreachType extends AbstractType
                 'choice_label' => function (User $user) {
                     return sprintf('%s %s (%s)', $user->getFirstName(), $user->getLastName(), $user->getEmail());
                 },
-                'placeholder' => 'Select DPO...',
+                'placeholder' => 'data_breach.placeholder.data_protection_officer',
                 'required' => false,
                 'attr' => ['class' => 'form-select select2'],
-                'help' => 'Data Protection Officer (Art. 35(4) GDPR)',
+                'help' => 'data_breach.help.data_protection_officer',
             ])
         ;
     }
@@ -262,6 +262,7 @@ class DataBreachType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => DataBreach::class,
+            'translation_domain' => 'privacy',
         ]);
     }
 }

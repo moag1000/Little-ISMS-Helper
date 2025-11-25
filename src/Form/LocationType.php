@@ -179,6 +179,7 @@ class LocationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Location::class,
+            'translation_domain' => 'locations',
         ]);
     }
 }

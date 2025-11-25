@@ -25,10 +25,10 @@ class ControlType extends AbstractType
                 'label' => 'control.field.control_id',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'z.B. A.5.1',
+                    'placeholder' => 'control.placeholder.control_id',
                     'readonly' => !$options['allow_control_id_edit'],
                 ],
-                'help' => 'ISO 27001:2022 Annex A Control ID',
+                'help' => 'control.help.control_id',
                 'constraints' => [
                     new NotBlank(),
                 ],
@@ -37,7 +37,7 @@ class ControlType extends AbstractType
                 'label' => 'control.field.name',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'z.B. Policies for information security',
+                    'placeholder' => 'control.placeholder.name',
                 ],
                 'constraints' => [
                     new NotBlank(),
@@ -84,9 +84,9 @@ class ControlType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 3,
-                    'placeholder' => 'Begründen Sie die Anwendbarkeit oder Nicht-Anwendbarkeit...',
+                    'placeholder' => 'control.placeholder.justification',
                 ],
-                'help' => 'Pflicht für ISO 27001 Statement of Applicability (SoA)',
+                'help' => 'control.help.justification',
             ])
             ->add('implementationStatus', ChoiceType::class, [
                 'label' => 'control.field.implementation_status',
@@ -110,7 +110,7 @@ class ControlType extends AbstractType
                 'constraints' => [
                     new Range(['min' => 0, 'max' => 100]),
                 ],
-                'help' => 'Implementierungsfortschritt in Prozent (0-100)',
+                'help' => 'control.help.implementation_percentage',
             ])
             ->add('implementationNotes', TextareaType::class, [
                 'label' => 'control.field.implementation_notes',
@@ -119,7 +119,7 @@ class ControlType extends AbstractType
                     'class' => 'form-control',
                     'rows' => 4,
                 ],
-                'help' => 'Beschreiben Sie wie das Control implementiert ist.',
+                'help' => 'control.help.implementation_notes',
             ])
             ->add('responsiblePerson', TextType::class, [
                 'label' => 'control.field.responsible_person',
@@ -127,7 +127,7 @@ class ControlType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'maxlength' => 100,
-                    'placeholder' => 'Name der verantwortlichen Person',
+                    'placeholder' => 'control.placeholder.responsible_person',
                 ],
             ])
             ->add('targetDate', DateType::class, [
@@ -135,7 +135,7 @@ class ControlType extends AbstractType
                 'required' => false,
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
-                'help' => 'Bis wann soll das Control vollständig implementiert sein?',
+                'help' => 'control.help.target_date',
             ])
             ->add('lastReviewDate', DateType::class, [
                 'label' => 'control.field.last_review_date',
@@ -148,7 +148,7 @@ class ControlType extends AbstractType
                 'required' => false,
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
-                'help' => 'Wann soll das Control das nächste Mal überprüft werden?',
+                'help' => 'control.help.next_review_date',
             ])
             ->add('protectedAssets', EntityType::class, [
                 'label' => 'control.field.protected_assets',
@@ -160,7 +160,7 @@ class ControlType extends AbstractType
                     'class' => 'form-select',
                     'size' => 5,
                 ],
-                'help' => 'Welche Assets werden durch dieses Control geschützt?',
+                'help' => 'control.help.protected_assets',
             ]);
     }
 
@@ -169,6 +169,7 @@ class ControlType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Control::class,
             'allow_control_id_edit' => false, // Default: Control ID kann nicht geändert werden
+            'translation_domain' => 'control',
         ]);
     }
 }

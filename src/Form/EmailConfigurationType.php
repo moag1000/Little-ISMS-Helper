@@ -103,9 +103,10 @@ class EmailConfigurationType extends AbstractType
                 'data' => 'Little ISMS Helper',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Little ISMS Helper',
+                    'placeholder' => 'setup.email.from_name_placeholder',
                 ],
                 'help' => 'setup.email.from_name_help',
+            'translation_domain' => 'admin',
             ]);
     }
 

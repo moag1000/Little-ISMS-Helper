@@ -37,9 +37,10 @@ class OrganisationInfoType extends AbstractType
                 ],
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Beispiel GmbH',
+                    'placeholder' => 'setup.organisation.name_placeholder',
                 ],
                 'help' => 'setup.organisation.name_help',
+            'translation_domain' => 'admin',
             ]);
         }
 
@@ -136,7 +137,7 @@ class OrganisationInfoType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 3,
-                    'placeholder' => 'Kurze Beschreibung der Organisation und Geschäftstätigkeit...',
+                    'placeholder' => 'setup.organisation.description_placeholder',
                 ],
                 'help' => 'setup.organisation.description_help',
             ]);

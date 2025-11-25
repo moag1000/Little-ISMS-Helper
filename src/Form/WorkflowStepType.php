@@ -128,6 +128,7 @@ class WorkflowStepType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => WorkflowStep::class,
+            'translation_domain' => 'workflows',
         ]);
     }
 
