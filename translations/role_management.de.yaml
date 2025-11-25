@@ -54,19 +54,19 @@ role_management:
     confirm:
         delete: 'Sind Sie sicher, dass Sie diese Rolle löschen möchten? Alle Benutzerzuweisungen werden entfernt.'
 role:
-    user: Benutzer
-    manager: Manager
-    iso_officer: Iso Officer
-    risk_manager: Risk Manager
-    auditor: Auditor
-    admin: Admin
+    user: 'Benutzer'
+    manager: 'Manager'
+    iso_officer: 'ISO-Beauftragter / ISMS-Verantwortlicher'
+    risk_manager: 'Risikomanager'
+    auditor: 'Auditor'
+    admin: 'Administrator'
     compare:
-        title: Titel
-        select_roles: Auswählen Rollen
-        permission_matrix: Berechtigung Matrix
-        has_permission: Has Permission
-        no_permission: Nein Berechtigung
+        title: 'Rollen vergleichen'
+        select_roles: 'Rollen zum Vergleich auswählen'
+        permission_matrix: 'Berechtigungsmatrix'
+        has_permission: 'Hat Berechtigung'
+        no_permission: 'Keine Berechtigung'
     templates:
-        title: Titel
-        description: Beschreibung
-        custom_name: Custom Name
+        title: 'Rollenvorlagen'
+        description: 'Vordefinierte Rollenvorlagen für typische ISMS-Funktionen'
+        custom_name: 'Benutzerdefinierter Name'
