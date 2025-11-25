@@ -23,7 +23,7 @@
             {% endif %}
             <a href="{{ path('app_risk_index') }}" class="btn btn-secondary">{{ 'action.back_to_list'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit) %}
-                <form method="post" action="{{ path('app_risk_delete', {id: risk.id}) }}" class="d-inline" onsubmit="return confirm('{{ 'risk.delete.confirm_message'|trans({}, 'risks') }}');">
+                <form method="post" action="{{ path('app_risk_delete', {id: risk.id}) }}" class="d-inline" onsubmit="return confirm('{{ 'risk.delete.confirm_message'|trans({}, 'risk') }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ risk.id) }}">
                     <button type="submit" class="btn btn-danger">{{ 'action.delete'|trans({}, 'messages') }}</button>
                 </form>
@@ -48,7 +48,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h2>{{ 'risk.section.details'|trans({}, 'risks') }}</h2>
+            <h2>{{ 'risk.section.details'|trans({}, 'risk') }}</h2>
             <span class="{{ badge_risk(riskClass) }}">
                 {{ riskClass|upper }} ({{ risk.inherentRiskLevel }})
             </span>
@@ -56,73 +56,73 @@
         <div class="card-content">
             <div class="detail-grid">
                 <div class="detail-item">
-                    <span class="label">{{ 'risk.field.status'|trans({}, 'risks') }}:</span>
+                    <span class="label">{{ 'risk.field.status'|trans({}, 'risk') }}:</span>
                     <span class="value">{{ risk.status|upper|replace({'_': ' '}) }}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="label">{{ 'risk.field.created'|trans({}, 'risks') }}:</span>
+                    <span class="label">{{ 'risk.field.created'|trans({}, 'risk') }}:</span>
                     <span class="value">{{ risk.createdAt|date('d.m.Y') }}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="label">{{ 'risk.field.last_review'|trans({}, 'risks') }}:</span>
-                    <span class="value">{{ risk.reviewDate ? risk.reviewDate|date('d.m.Y') : ('risk.not_reviewed'|trans({}, 'risks')) }}</span>
+                    <span class="label">{{ 'risk.field.last_review'|trans({}, 'risk') }}:</span>
+                    <span class="value">{{ risk.reviewDate ? risk.reviewDate|date('d.m.Y') : ('risk.not_reviewed'|trans({}, 'risk')) }}</span>
                 </div>
             </div>
 
             {% if risk.description %}
                 <div class="detail-section">
-                    <h2>{{ 'risk.section.description'|trans({}, 'risks') }}</h2>
+                    <h2>{{ 'risk.section.description'|trans({}, 'risk') }}</h2>
                     <p>{{ risk.description }}</p>
                 </div>
             {% endif %}
 
             <div class="risk-assessment-grid">
                 <div class="assessment-card">
-                    <h2>{{ 'risk.assessment.inherent_risk'|trans({}, 'risks') }}</h2>
+                    <h2>{{ 'risk.assessment.inherent_risk'|trans({}, 'risk') }}</h2>
                     <div class="risk-matrix-mini risk-level-{{ riskClass }}">
                         <div class="risk-score">
                             {{ risk.inherentRiskLevel }}
                         </div>
                         <div class="risk-components">
-                            <div>{{ 'risk.assessment.probability'|trans({}, 'risks') }}: {{ risk.probability }}/5</div>
-                            <div>{{ 'risk.assessment.impact'|trans({}, 'risks') }}: {{ risk.impact }}/5</div>
+                            <div>{{ 'risk.assessment.probability'|trans({}, 'risk') }}: {{ risk.probability }}/5</div>
+                            <div>{{ 'risk.assessment.impact'|trans({}, 'risk') }}: {{ risk.impact }}/5</div>
                         </div>
                     </div>
-                    <p class="risk-level-text">{{ 'risk.assessment.level'|trans({}, 'risks') }}: <strong>{{ riskClass|upper }} ({{ 'risk.assessment.score'|trans({}, 'risks') }}: {{ risk.inherentRiskLevel }})</strong></p>
+                    <p class="risk-level-text">{{ 'risk.assessment.level'|trans({}, 'risk') }}: <strong>{{ riskClass|upper }} ({{ 'risk.assessment.score'|trans({}, 'risk') }}: {{ risk.inherentRiskLevel }})</strong></p>
                 </div>
 
                 {% if risk.residualProbability and risk.residualImpact %}
                 {# ISO 27001 compliant thresholds: 20/12/6 #}
                 {% set residualClass = risk.residualRiskLevel >= 20 ? 'critical' : (risk.residualRiskLevel >= 12 ? 'high' : (risk.residualRiskLevel >= 6 ? 'medium' : 'low')) %}
                 <div class="assessment-card">
-                    <h3>{{ 'risk.assessment.residual_risk'|trans({}, 'risks') }}</h3>
+                    <h3>{{ 'risk.assessment.residual_risk'|trans({}, 'risk') }}</h3>
                     <div class="risk-matrix-mini risk-level-{{ residualClass }}">
                         <div class="risk-score">
                             {{ risk.residualRiskLevel }}
                         </div>
                         <div class="risk-components">
-                            <div>{{ 'risk.assessment.probability'|trans({}, 'risks') }}: {{ risk.residualProbability }}/5</div>
-                            <div>{{ 'risk.assessment.impact'|trans({}, 'risks') }}: {{ risk.residualImpact }}/5</div>
+                            <div>{{ 'risk.assessment.probability'|trans({}, 'risk') }}: {{ risk.residualProbability }}/5</div>
+                            <div>{{ 'risk.assessment.impact'|trans({}, 'risk') }}: {{ risk.residualImpact }}/5</div>
                         </div>
                     </div>
-                    <p class="risk-level-text">{{ 'risk.assessment.level'|trans({}, 'risks') }}: <strong>{{ residualClass|upper }} ({{ 'risk.assessment.score'|trans({}, 'risks') }}: {{ risk.residualRiskLevel }})</strong></p>
+                    <p class="risk-level-text">{{ 'risk.assessment.level'|trans({}, 'risk') }}: <strong>{{ residualClass|upper }} ({{ 'risk.assessment.score'|trans({}, 'risk') }}: {{ risk.residualRiskLevel }})</strong></p>
                 </div>
                 {% endif %}
             </div>
 
             <div class="detail-section">
-                <h3>{{ 'risk.section.treatment_strategy'|trans({}, 'risks') }}</h3>
+                <h3>{{ 'risk.section.treatment_strategy'|trans({}, 'risk') }}</h3>
                 <p><strong>{{ risk.treatmentStrategy|upper|replace({'_': ' '}) }}</strong></p>
 
                 {% if risk.reviewDate %}
-                    <p>{{ 'risk.field.next_review'|trans({}, 'risks') }}: {{ risk.reviewDate|date('d.m.Y') }}</p>
+                    <p>{{ 'risk.field.next_review'|trans({}, 'risk') }}: {{ risk.reviewDate|date('d.m.Y') }}</p>
                 {% endif %}
             </div>
 
             {# Data Reuse: Risk Owner #}
             {% if risk.riskOwner is defined and risk.riskOwner %}
                 <div class="detail-section">
-                    <h3>{{ 'risk.section.risk_owner'|trans({}, 'risks') }}</h3>
+                    <h3>{{ 'risk.section.risk_owner'|trans({}, 'risk') }}</h3>
                     <p><strong>{{ risk.riskOwner.fullName }}</strong> ({{ risk.riskOwner.email }})</p>
                 </div>
             {% endif %}
@@ -130,7 +130,7 @@
             {# Data Reuse: Mitigating Controls #}
             {% if risk.controls is defined and risk.controls|length > 0 %}
                 <div class="detail-section">
-                    <h3>{{ 'risk.section.mitigating_controls'|trans({}, 'risks') }} ({{ risk.controls|length }})</h3>
+                    <h3>{{ 'risk.section.mitigating_controls'|trans({}, 'risk') }} ({{ risk.controls|length }})</h3>
                     <div class="controls-list">
                         {% for control in risk.controls %}
                             <div class="control-item">
@@ -148,10 +148,10 @@
             {# Data Reuse: Realized Risks (Incidents) #}
             {% if risk.incidents is defined and risk.incidents|length > 0 %}
                 <div class="detail-section">
-                    <h3>{{ 'risk.section.realization_history'|trans({}, 'risks') }} ({{ risk.incidents|length }} {{ 'risk.incidents'|trans({}, 'risks') }})</h3>
+                    <h3>{{ 'risk.section.realization_history'|trans({}, 'risk') }} ({{ risk.incidents|length }} {{ 'risk.incidents'|trans({}, 'risk') }})</h3>
                     <div class="alert alert-warning">
-                        <strong>⚠ {{ 'risk.realization.warning'|trans({'%count%': risk.incidents|length}, 'risks') }}</strong>
-                        {{ 'risk.realization.review_suggestion'|trans({}, 'risks') }}
+                        <strong>⚠ {{ 'risk.realization.warning'|trans({'%count%': risk.incidents|length}, 'risk') }}</strong>
+                        {{ 'risk.realization.review_suggestion'|trans({}, 'risk') }}
                     </div>
                     <div class="incidents-list">
                         {% for incident in risk.incidents %}
@@ -172,34 +172,34 @@
                 <div class="detail-section">
                     <h3>
                         <i class="bi bi-bullseye" aria-hidden="true"></i>
-                        {{ 'risk.section.risk_subject'|trans({}, 'risks') }}
+                        {{ 'risk.section.risk_subject'|trans({}, 'risk') }}
                         <span class="badge bg-secondary ms-2">{{ risk.riskSubjectType|upper }}</span>
                     </h3>
 
                     {% if risk.asset %}
                         <div class="subject-info card mb-3">
                             <div class="card-header bg-primary text-white">
-                                <i class="bi bi-cpu" aria-hidden="true"></i> {{ 'asset.title'|trans({}, 'assets') }}
+                                <i class="bi bi-cpu" aria-hidden="true"></i> {{ 'asset.title'|trans({}, 'asset') }}
                             </div>
                             <div class="card-body">
                                 <h5>{{ risk.asset.name }}</h5>
-                                <p><strong>{{ 'asset.field.type'|trans({}, 'assets') }}:</strong> {{ risk.asset.assetType }}</p>
+                                <p><strong>{{ 'asset.field.type'|trans({}, 'asset') }}:</strong> {{ risk.asset.assetType }}</p>
                                 {% if risk.asset.monetaryValue %}
-                                    <p><strong>{{ 'asset.field.monetary_value'|trans({}, 'assets') }}:</strong> €{{ risk.asset.monetaryValue|number_format(2, ',', '.') }}</p>
+                                    <p><strong>{{ 'asset.field.monetary_value'|trans({}, 'asset') }}:</strong> €{{ risk.asset.monetaryValue|number_format(2, ',', '.') }}</p>
                                     <div class="alert alert-info mb-0">
                                         <i class="bi bi-lightbulb" aria-hidden="true"></i>
-                                        <small>{{ 'risk.subject.asset.monetary_value_hint'|trans({}, 'risks') }}</small>
+                                        <small>{{ 'risk.subject.asset.monetary_value_hint'|trans({}, 'risk') }}</small>
                                     </div>
                                 {% endif %}
                                 {% if risk.asset.dataClassification %}
-                                    <p><strong>{{ 'asset.field.classification'|trans({}, 'assets') }}:</strong>
+                                    <p><strong>{{ 'asset.field.classification'|trans({}, 'asset') }}:</strong>
                                         <span class="{{ badge_classification(risk.asset.dataClassification) }}">
                                             {{ risk.asset.dataClassification|upper }}
                                         </span>
                                     </p>
                                 {% endif %}
                                 <a href="{{ path('app_asset_show', {id: risk.asset.id}) }}" class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> {{ 'asset.action.view_details'|trans({}, 'assets') }}
+                                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> {{ 'asset.action.view_details'|trans({}, 'asset') }}
                                 </a>
                             </div>
                         </div>
@@ -228,18 +228,18 @@
                     {% if risk.location %}
                         <div class="subject-info card mb-3">
                             <div class="card-header bg-warning text-dark">
-                                <i class="bi bi-geo-alt" aria-hidden="true"></i> {{ 'location.title'|trans({}, 'messages') }}
+                                <i class="bi bi-geo-alt" aria-hidden="true"></i> {{ 'location.title'|trans({}, 'locations') }}
                             </div>
                             <div class="card-body">
                                 <h5>{{ risk.location.name }}</h5>
                                 {% if risk.location.address %}
-                                    <p><strong>{{ 'location.field.address'|trans({}, 'messages') }}:</strong> {{ risk.location.address }}</p>
+                                    <p><strong>{{ 'location.field.address'|trans({}, 'locations') }}:</strong> {{ risk.location.address }}</p>
                                 {% endif %}
                                 {% if risk.location.city and risk.location.country %}
-                                    <p><strong>{{ 'risk.subject.location.city_country'|trans({}, 'risks') }}:</strong> {{ risk.location.city }}, {{ risk.location.country }}</p>
+                                    <p><strong>{{ 'risk.subject.location.city_country'|trans({}, 'risk') }}:</strong> {{ risk.location.city }}, {{ risk.location.country }}</p>
                                 {% endif %}
                                 <a href="{{ path('app_location_show', {id: risk.location.id}) }}" class="btn btn-sm btn-outline-warning">
-                                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> {{ 'location.action.view_details'|trans({}, 'messages') }}
+                                    <i class="bi bi-box-arrow-up-right" aria-hidden="true"></i> {{ 'location.action.view_details'|trans({}, 'locations') }}
                                 </a>
                             </div>
                         </div>
@@ -274,7 +274,7 @@
             {# Risk History: Audit Log #}
             {% if auditLogs is defined and auditLogs|length > 0 %}
                 <div class="detail-section">
-                    <h3>{{ 'risk.section.history'|trans({}, 'risks') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audits') }})</h3>
+                    <h3>{{ 'risk.section.history'|trans({}, 'risk') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h3>
                     <div class="audit-log-list">
                         {% for log in auditLogs %}
                             <div class="audit-log-item">

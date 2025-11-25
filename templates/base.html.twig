@@ -187,7 +187,7 @@
                            data-sidebar-dropdown-target="toggle"
                            aria-expanded="false">
                             <i class="bi bi-box-seam" aria-hidden="true"></i>
-                            <span>{{ 'nav.assets_risk_hub'|trans({}, 'nav')|default('Assets & Risks') }}</span>
+                            <span>{{ 'nav.assets_risk_hub'|trans({}, 'nav') }}</span>
                             <i class="bi bi-chevron-down submenu-icon" data-sidebar-dropdown-target="icon" aria-hidden="true"></i>
                         </a>
                         <ul class="submenu" data-sidebar-dropdown-target="submenu">
@@ -216,15 +216,15 @@
                             </a></li>
                             <li><a href="{{ path('app_risk_matrix') }}" class="{% if current_route == 'app_risk_matrix' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-grid-3x3" aria-hidden="true"></i>
-                                <span>{{ 'nav.risk_matrix'|trans({}, 'nav')|default('Risk Matrix') }}</span>
+                                <span>{{ 'nav.risk_matrix'|trans({}, 'nav') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_risk_appetite_index') }}" class="{% if current_route starts with 'app_risk_appetite_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-speedometer" aria-hidden="true"></i>
-                                <span>{{ 'nav.risk_appetite'|trans({}, 'nav')|default('Risk Appetite') }}</span>
+                                <span>{{ 'nav.risk_appetite'|trans({}, 'nav') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_risk_treatment_plan_index') }}" class="{% if current_route starts with 'app_risk_treatment_plan_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-clipboard-data" aria-hidden="true"></i>
-                                <span>{{ 'nav.risk_treatment_plans'|trans({}, 'nav')|default('Treatment Plans') }}</span>
+                                <span>{{ 'nav.risk_treatment_plans'|trans({}, 'nav') }}</span>
                             </a></li>
                             {% endif %}
                         </ul>
@@ -242,7 +242,7 @@
                            data-sidebar-dropdown-target="toggle"
                            aria-expanded="false">
                             <i class="bi bi-shield-shaded" aria-hidden="true"></i>
-                            <span>{{ 'nav.bcm_hub'|trans({}, 'nav')|default('BCM Hub') }}</span>
+                            <span>{{ 'nav.bcm_hub'|trans({}, 'nav') }}</span>
                             <i class="bi bi-chevron-down submenu-icon" data-sidebar-dropdown-target="icon" aria-hidden="true"></i>
                         </a>
                         <ul class="submenu" data-sidebar-dropdown-target="submenu">
@@ -260,14 +260,14 @@
                             </a></li>
                             <li><a href="{{ path('app_crisis_team_index') }}" class="{% if current_route starts with 'app_crisis_team_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-person-badge" aria-hidden="true"></i>
-                                <span>{{ 'nav.crisis_team'|trans({}, 'nav')|default('Crisis Team') }}</span>
+                                <span>{{ 'nav.crisis_team'|trans({}, 'nav') }}</span>
                             </a></li>
                         </ul>
                     </li>
                     {% endif %}
 
                     {# Privacy / Datenschutz (GDPR) #}
-                    <li class="nav-divider">{{ 'nav.section.privacy'|trans({}, 'nav')|default('Privacy / Datenschutz') }}</li>
+                    <li class="nav-divider">{{ 'nav.section.privacy'|trans({}, 'nav') }}</li>
                     <li class="has-submenu" data-controller="sidebar-dropdown" data-sidebar-dropdown-key-value="sidebar-privacy-expanded">
                         <a href="{{ path('app_processing_activity_index') }}"
                            class="submenu-toggle {% if current_route starts with 'app_processing_activity_' or current_route starts with 'app_dpia_' or current_route starts with 'app_data_breach_' %}active{% endif %}"
@@ -276,21 +276,21 @@
                            data-sidebar-dropdown-target="toggle"
                            aria-expanded="false">
                             <i class="bi bi-shield-lock" aria-hidden="true"></i>
-                            <span>{{ 'nav.privacy_hub'|trans({}, 'nav')|default('Privacy Hub') }}</span>
+                            <span>{{ 'nav.privacy_hub'|trans({}, 'nav') }}</span>
                             <i class="bi bi-chevron-down submenu-icon" data-sidebar-dropdown-target="icon" aria-hidden="true"></i>
                         </a>
                         <ul class="submenu" data-sidebar-dropdown-target="submenu">
                             <li><a href="{{ path('app_processing_activity_index') }}" class="{% if current_route starts with 'app_processing_activity_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-journal-text" aria-hidden="true"></i>
-                                <span>{{ 'nav.vvt'|trans({}, 'nav')|default('VVT (Art. 30)') }}</span>
+                                <span>{{ 'nav.vvt'|trans({}, 'nav') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_dpia_index') }}" class="{% if current_route starts with 'app_dpia_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-clipboard-check" aria-hidden="true"></i>
-                                <span>{{ 'nav.dpia'|trans({}, 'nav')|default('DPIA (Art. 35)') }}</span>
+                                <span>{{ 'nav.dpia'|trans({}, 'nav') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_data_breach_index') }}" class="{% if current_route starts with 'app_data_breach_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-                                <span>{{ 'nav.data_breaches'|trans({}, 'nav')|default('Data Breaches (Art. 33/34)') }}</span>
+                                <span>{{ 'nav.data_breaches'|trans({}, 'nav') }}</span>
                             </a></li>
                         </ul>
                     </li>
@@ -310,7 +310,7 @@
                     </a></li>
                     <li><a href="{{ path('app_workflow_index') }}" class="{% if current_route starts with 'app_workflow_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-diagram-3" aria-hidden="true"></i>
-                        <span>{{ 'nav.workflows'|trans({}, 'nav')|default('Workflows') }}</span>
+                        <span>{{ 'nav.workflows'|trans({}, 'nav') }}</span>
                     </a></li>
                     {% endif %}
                     {% if is_module_active('incidents') %}
@@ -342,11 +342,11 @@
                     {% endif %}
                     <li><a href="{{ path('app_training_index') }}" class="{% if current_route starts with 'app_training_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-book" aria-hidden="true"></i>
-                        <span>{{ 'nav.training'|trans({}, 'nav')|default('Training') }}</span>
+                        <span>{{ 'nav.training'|trans({}, 'nav') }}</span>
                     </a></li>
                     <li><a href="{{ path('app_management_review_index') }}" class="{% if current_route starts with 'app_management_review_' %}active{% endif %}" data-turbo-action="advance">
                         <i class="bi bi-clipboard2-check" aria-hidden="true"></i>
-                        <span>{{ 'nav.management_review'|trans({}, 'nav')|default('Management Review') }}</span>
+                        <span>{{ 'nav.management_review'|trans({}, 'nav') }}</span>
                     </a></li>
                     {% if is_module_active('compliance') and app.request.attributes.get('_route') is not same as('setup_wizard_index') and not (app.request.attributes.get('_route') starts with 'setup_step') %}
                     {% set compliance_frameworks = get_compliance_frameworks_quick() %}
@@ -364,11 +364,11 @@
                         <ul class="submenu" data-sidebar-dropdown-target="submenu">
                             <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route == 'app_compliance_index' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-grid" aria-hidden="true"></i>
-                                <span>{{ 'nav.compliance_overview'|trans({}, 'nav')|default('Overview') }}</span>
+                                <span>{{ 'nav.compliance_overview'|trans({}, 'nav') }}</span>
                             </a></li>
                             {% if compliance_frameworks|length > 0 %}
                             <li class="submenu-divider">
-                                <span>{{ 'nav.frameworks'|trans({}, 'nav')|default('Frameworks') }}</span>
+                                <span>{{ 'nav.frameworks'|trans({}, 'nav') }}</span>
                             </li>
                             {% for framework in compliance_frameworks %}
                             <li><a href="{{ path('app_compliance_framework', {id: framework.id}) }}"
@@ -382,19 +382,19 @@
                             {% endfor %}
                             {% endif %}
                             <li class="submenu-divider">
-                                <span>{{ 'nav.tools'|trans({}, 'nav')|default('Tools') }}</span>
+                                <span>{{ 'nav.tools'|trans({}, 'nav') }}</span>
                             </li>
                             <li><a href="{{ path('app_compliance_cross_framework') }}" class="{% if current_route == 'app_compliance_cross_framework' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-link-45deg" aria-hidden="true"></i>
-                                <span>{{ 'nav.cross_framework'|trans({}, 'nav')|default('Cross-Framework') }}</span>
+                                <span>{{ 'nav.cross_framework'|trans({}, 'nav') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_compliance_compare') }}" class="{% if current_route == 'app_compliance_compare' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-columns" aria-hidden="true"></i>
-                                <span>{{ 'nav.compare'|trans({}, 'nav')|default('Compare') }}</span>
+                                <span>{{ 'nav.compare'|trans({}, 'nav') }}</span>
                             </a></li>
                             <li><a href="{{ path('app_mapping_quality_dashboard') }}" class="{% if current_route starts with 'app_mapping_quality_' %}active{% endif %}" data-turbo-action="advance">
                                 <i class="bi bi-star-half" aria-hidden="true"></i>
-                                <span>{{ 'nav.mapping_quality'|trans({}, 'nav')|default('Mapping Quality') }}</span>
+                                <span>{{ 'nav.mapping_quality'|trans({}, 'nav') }}</span>
                             </a></li>
                         </ul>
                     </li>

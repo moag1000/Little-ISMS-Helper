@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'management_review' %}
 
-{% block title %}{{ 'management_review.title'|trans({}, 'messages') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'management_review.title'|trans({}, 'management_review') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="h2">
-            <i class="bi bi-clipboard2-check" aria-hidden="true"></i> {{ 'management_review.title'|trans({}, 'messages') }}
+            <i class="bi bi-clipboard2-check" aria-hidden="true"></i> {{ 'management_review.title'|trans({}, 'management_review') }}
         </h1>
         {% if is_granted('ROLE_ADMIN') %}
         <a href="{{ path('app_management_review_new') }}" class="btn btn-primary" data-turbo-action="advance">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'management_review.new'|trans({}, 'messages') }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'management_review.new'|trans({}, 'management_review') }}
         </a>
         {% endif %}
     </div>
@@ -19,10 +19,10 @@
     {# ISO 27001 Clause Information #}
     <div class="alert alert-info mb-4" role="alert">
         <h6 class="alert-heading">
-            <i class="bi bi-info-circle-fill" aria-hidden="true"></i> {{ 'management_review.iso_requirement'|trans({}, 'messages') }}
+            <i class="bi bi-info-circle-fill" aria-hidden="true"></i> {{ 'management_review.iso_requirement'|trans({}, 'management_review') }}
         </h5>
         <p class="mb-0 small">
-            {{ 'management_review.iso_clause_info'|trans({}, 'messages') }}
+            {{ 'management_review.iso_clause_info'|trans({}, 'management_review') }}
         </p>
     </div>
 
@@ -37,7 +37,7 @@
                                 <i class="bi bi-collection text-primary icon-2rem" aria-hidden="true"></i>
                             </div>
                             <div class="ms-3">
-                                <h6 class="text-muted mb-1">{{ 'management_review.statistics.total'|trans({}, 'messages') }}</h6>
+                                <h6 class="text-muted mb-1">{{ 'management_review.statistics.total'|trans({}, 'management_review') }}</h6>
                                 <h2 class="mb-0">{{ statistics.total }}</h2>
                             </div>
                         </div>
@@ -53,7 +53,7 @@
                                 <i class="bi bi-hourglass-split text-warning icon-2rem" aria-hidden="true"></i>
                             </div>
                             <div class="ms-3">
-                                <h6 class="text-muted mb-1">{{ 'management_review.statistics.planned'|trans({}, 'messages') }}</h6>
+                                <h6 class="text-muted mb-1">{{ 'management_review.statistics.planned'|trans({}, 'management_review') }}</h6>
                                 <h3 class="mb-0">{{ statistics.planned }}</h3>
                             </div>
                         </div>
@@ -69,7 +69,7 @@
                                 <i class="bi bi-check-circle text-success icon-2rem" aria-hidden="true"></i>
                             </div>
                             <div class="ms-3">
-                                <h6 class="text-muted mb-1">{{ 'management_review.statistics.completed'|trans({}, 'messages') }}</h6>
+                                <h6 class="text-muted mb-1">{{ 'management_review.statistics.completed'|trans({}, 'management_review') }}</h6>
                                 <h3 class="mb-0">{{ statistics.completed }}</h3>
                             </div>
                         </div>
@@ -85,7 +85,7 @@
                                 <i class="bi bi-calendar-event text-info icon-2rem" aria-hidden="true"></i>
                             </div>
                             <div class="ms-3">
-                                <h6 class="text-muted mb-1">{{ 'management_review.statistics.this_year'|trans({}, 'messages') }}</h6>
+                                <h6 class="text-muted mb-1">{{ 'management_review.statistics.this_year'|trans({}, 'management_review') }}</h6>
                                 <h3 class="mb-0">{{ statistics.this_year }}</h3>
                             </div>
                         </div>
@@ -98,15 +98,15 @@
     {# Management Reviews List #}
     <div class="card">
         <div class="card-header bg-primary text-white">
-            <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'management_review.all_reviews'|trans({}, 'messages') }}</h3>
+            <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'management_review.all_reviews'|trans({}, 'management_review') }}</h3>
         </div>
         <div class="card-body">
             {% if reviews|length == 0 %}
             <div class="alert alert-info" role="alert">
-                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'management_review.no_reviews'|trans({}, 'messages') }}
+                <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'management_review.no_reviews'|trans({}, 'management_review') }}
                 {% if is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('app_management_review_new') }}" class="alert-link" data-turbo-action="advance">
-                    {{ 'management_review.create_first'|trans({}, 'messages') }}
+                    {{ 'management_review.create_first'|trans({}, 'management_review') }}
                 </a>
                 {% endif %}
             </div>
@@ -117,10 +117,10 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">{{ 'management_review.title'|trans({}, 'messages') }}</th>
-                        <th scope="col">{{ 'management_review.field.review_date'|trans({}, 'messages') }}</th>
-                        <th scope="col">{{ 'management_review.field.status'|trans({}, 'messages') }}</th>
-                        <th scope="col">{{ 'management_review.field.participants'|trans({}, 'messages') }}</th>
+                        <th scope="col">{{ 'management_review.title'|trans({}, 'management_review') }}</th>
+                        <th scope="col">{{ 'management_review.field.review_date'|trans({}, 'management_review') }}</th>
+                        <th scope="col">{{ 'management_review.field.status'|trans({}, 'management_review') }}</th>
+                        <th scope="col">{{ 'management_review.field.participants'|trans({}, 'management_review') }}</th>
                         <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
@@ -191,12 +191,12 @@
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title" id="deleteModalLabel{{ review.id }}">
-                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'management_review.confirm_delete'|trans({}, 'messages') }}
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'management_review.confirm_delete'|trans({}, 'management_review') }}
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>{{ 'management_review.delete_warning'|trans({'%title%': review.title}, 'messages') }}</p>
+                <p>{{ 'management_review.delete_warning'|trans({'%title%': review.title}, 'management_review') }}</p>
                 <p class="text-muted"><small>{{ 'common.action_irreversible'|trans({}, 'messages') }}</small></p>
             </div>
             <div class="modal-footer">

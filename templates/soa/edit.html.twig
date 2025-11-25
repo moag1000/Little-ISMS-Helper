@@ -15,10 +15,10 @@
 </div>
 
 <div class="info-box mb-4">
-    <h2>{{ control.name }}</h2>
-    <p class="mt-sm-text-light">{{ control.description }}</p>
+    <h2>{{ control.name|trans({}, 'control') }}</h2>
+    <p class="mt-sm-text-light">{{ control.description|trans({}, 'control') }}</p>
     <div class="mt-2">
-        <span class="badge bg-info">{{ control.category }}</span>
+        <span class="badge bg-info">{{ control.category|trans({}, 'control') }}</span>
     </div>
 </div>
 

@@ -47,10 +47,10 @@
                     data-action="change->heat-map#applyFilters"
                     data-heat-map-target="statusFilter">
                 <option value="">{{ 'analytics.filter.all'|trans({}, 'analytics') }}</option>
-                <option value="open">{{ 'risks.status.open'|trans({}, 'risks')|default('Open') }}</option>
-                <option value="in_progress">{{ 'risks.status.in_progress'|trans({}, 'risks')|default('In Progress') }}</option>
-                <option value="mitigated">{{ 'risks.status.mitigated'|trans({}, 'risks')|default('Mitigated') }}</option>
-                <option value="closed">{{ 'risks.status.closed'|trans({}, 'risks')|default('Closed') }}</option>
+                <option value="open">{{ 'risk.status.open'|trans({}, 'risk') }}</option>
+                <option value="in_progress">{{ 'risk.status.in_progress'|trans({}, 'risk') }}</option>
+                <option value="mitigated">{{ 'risk.status.mitigated'|trans({}, 'risk') }}</option>
+                <option value="closed">{{ 'risk.status.closed'|trans({}, 'risk') }}</option>
             </select>
         </div>
         <div class="filter-group">
@@ -62,10 +62,10 @@
                     data-action="change->heat-map#applyFilters"
                     data-heat-map-target="categoryFilter">
                 <option value="">{{ 'analytics.filter.all'|trans({}, 'analytics') }}</option>
-                <option value="technical">{{ 'risks.category.technical'|trans({}, 'risks')|default('Technical') }}</option>
-                <option value="organizational">{{ 'risks.category.organizational'|trans({}, 'risks')|default('Organizational') }}</option>
-                <option value="physical">{{ 'risks.category.physical'|trans({}, 'risks')|default('Physical') }}</option>
-                <option value="compliance">{{ 'compliance.title.transitive'|trans({}, 'compliance')|default('Compliance') }}</option>
+                <option value="technical">{{ 'risk.category.technical'|trans({}, 'risk') }}</option>
+                <option value="organizational">{{ 'risk.category.organizational'|trans({}, 'risk') }}</option>
+                <option value="physical">{{ 'risk.category.physical'|trans({}, 'risk') }}</option>
+                <option value="compliance">{{ 'compliance.title.transitive'|trans({}, 'compliance') }}</option>
             </select>
         </div>
         <div class="filter-group">
@@ -77,9 +77,9 @@
                     data-action="change->heat-map#applyFilters"
                     data-heat-map-target="timeFilter">
                 <option value="">{{ 'analytics.filter.all'|trans({}, 'analytics') }}</option>
-                <option value="30">{{ 'common.last_30_days'|trans({}, 'messages')|default('Last 30 days') }}</option>
-                <option value="90">{{ 'common.last_90_days'|trans({}, 'messages')|default('Last 90 days') }}</option>
-                <option value="365">{{ 'common.last_year'|trans({}, 'messages')|default('Last year') }}</option>
+                <option value="30">{{ 'common.last_30_days'|trans({}, 'messages') }}</option>
+                <option value="90">{{ 'common.last_90_days'|trans({}, 'messages') }}</option>
+                <option value="365">{{ 'common.last_year'|trans({}, 'messages') }}</option>
             </select>
         </div>
         <button class="btn btn-sm btn-outline-danger"

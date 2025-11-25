@@ -75,7 +75,7 @@
             {% include '_components/_form_field.html.twig' with {
                 'field': form.avatarFile,
                 'label': 'user.field.avatar'|trans({}, 'user'),
-                'help': 'user.help.avatar'|trans({}, 'user')
+                'help': 'user.help.avatar'|trans({}, 'user')')
             } %}
         </div>
     </div>
@@ -85,7 +85,7 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-building" aria-hidden="true"></i>
-        {{ "user.section.tenant"|trans({}, 'user') }}
+        {{ 'user.section.tenant'|trans({}, 'user') }}
     </legend>
 
     <div class="row">
@@ -139,19 +139,19 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-shield" aria-hidden="true"></i>
-        {{ "user.section.roles"|trans({}, "user") }}
+        {{ 'user.section.roles'|trans({}, 'user') }}
     </legend>
 
     {# System Roles #}
     <div class="mb-3">
-        {{ form_label(form.roles, "user.field.roles"|trans({}, "user"), {
-            "label_attr": {"class": "form-label"}
+        {{ form_label(form.roles, 'user.field.roles'|trans({}, 'user'), {
+            'label_attr': {'class': 'form-label'}
         }) }}
         <div role="group" aria-labelledby="{{ form.roles.vars.id }}_label">
             {% for child in form.roles %}
                 <div class="form-check">
-                    {{ form_widget(child, {"attr": {"class": "form-check-input"}}) }}
-                    {{ form_label(child, null, {"label_attr": {"class": "form-check-label"}}) }}
+                    {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
+                    {{ form_label(child, null, {'label_attr': {'class': 'form-check-label'}}) }}
                 </div>
             {% endfor %}
         </div>
@@ -163,21 +163,21 @@
 
     {# Custom Roles #}
     <div class="mb-3">
-        {{ form_label(form.customRoles, "user.field.custom_roles"|trans({}, "user"), {
-            "label_attr": {"class": "form-label"}
+        {{ form_label(form.customRoles, 'user.field.custom_roles'|trans({}, 'user'), {
+            'label_attr': {'class': 'form-label'}
         }) }}
         {% if form.customRoles|length > 0 %}
             <div role="group" aria-labelledby="{{ form.customRoles.vars.id }}_label">
                 {% for child in form.customRoles %}
                     <div class="form-check">
-                        {{ form_widget(child, {"attr": {"class": "form-check-input"}}) }}
-                        {{ form_label(child, null, {"label_attr": {"class": "form-check-label"}}) }}
+                        {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
+                        {{ form_label(child, null, {'label_attr': {'class': 'form-check-label'}}) }}
                     </div>
                 {% endfor %}
             </div>
         {% else %}
             <p class="text-muted" role="status">
-                {{ "user.message.no_custom_roles"|trans({}, "user") }}
+                {{ 'user.message.no_custom_roles'|trans({}, 'user') }}
             </p>
         {% endif %}
         {% if form.customRoles.vars.help is not empty %}
@@ -191,14 +191,14 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-toggle-on" aria-hidden="true"></i>
-        {{ "user.section.status"|trans({}, "user") }}
+        {{ 'user.section.status'|trans({}, 'user') }}
     </legend>
 
     <div class="mb-3">
         <div class="form-check form-switch">
-            {{ form_widget(form.isActive, {"attr": {"class": "form-check-input", "role": "switch"}}) }}
-            {{ form_label(form.isActive, "user.field.is_active"|trans({}, "user"), {
-                "label_attr": {"class": "form-check-label"}
+            {{ form_widget(form.isActive, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
+            {{ form_label(form.isActive, 'user.field.is_active'|trans({}, 'user'), {
+                'label_attr': {'class': 'form-check-label'}
             }) }}
         </div>
         {% if form.isActive.vars.help is not empty %}
@@ -209,9 +209,9 @@
 
     <div class="mb-3">
         <div class="form-check form-switch">
-            {{ form_widget(form.isVerified, {"attr": {"class": "form-check-input", "role": "switch"}}) }}
-            {{ form_label(form.isVerified, "user.field.is_verified"|trans({}, "user"), {
-                "label_attr": {"class": "form-check-label"}
+            {{ form_widget(form.isVerified, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
+            {{ form_label(form.isVerified, 'user.field.is_verified'|trans({}, 'user'), {
+                'label_attr': {'class': 'form-check-label'}
             }) }}
         </div>
         {% if form.isVerified.vars.help is not empty %}
@@ -225,12 +225,12 @@
 {% if is_edit_mode|default(false) and user is defined %}
     <div class="alert alert-secondary" role="status">
         <small>
-            <strong>{{ "user.field.created_at"|trans({}, "user") }}:</strong> {{ user.createdAt|date("d.m.Y H:i") }}<br>
+            <strong>{{ 'user.field.created_at'|trans({}, 'user') }}:</strong> {{ user.createdAt|date('d.m.Y H:i') }}<br>
             {% if user.updatedAt %}
-                <strong>{{ "user.field.updated_at"|trans({}, "user") }}:</strong> {{ user.updatedAt|date("d.m.Y H:i") }}<br>
+                <strong>{{ 'user.field.updated_at'|trans({}, 'user') }}:</strong> {{ user.updatedAt|date('d.m.Y H:i') }}<br>
             {% endif %}
             {% if user.lastLoginAt %}
-                <strong>{{ "user.field.last_login"|trans({}, "user") }}:</strong> {{ user.lastLoginAt|date("d.m.Y H:i") }}
+                <strong>{{ 'user.field.last_login'|trans({}, 'user') }}:</strong> {{ user.lastLoginAt|date('d.m.Y H:i') }}
             {% endif %}
         </small>
     </div>
@@ -238,14 +238,14 @@
 
 {# Form Actions #}
 <div class="form-actions d-flex gap-2 justify-content-between mt-4">
-    <a href="{{ back_url|default(path("user_management_index")) }}"
+    <a href="{{ back_url|default(path('user_management_index')) }}"
        class="btn btn-secondary">
         <i class="bi bi-x-circle" aria-hidden="true"></i>
-        {{ "common.cancel"|trans({}, "messages") }}
+        {{ 'common.cancel'|trans({}, 'messages') }}
     </a>
 
     <button type="submit" class="btn btn-primary">
-        <i class="{{ button_icon|default("bi-save") }}" aria-hidden="true"></i>
-        {{ button_label|default("common.save"|trans({}, "messages")) }}
+        <i class="{{ button_icon|default('bi-save') }}" aria-hidden="true"></i>
+        {{ button_label|default('common.save'|trans({}, 'messages')) }}
     </button>
 </div>

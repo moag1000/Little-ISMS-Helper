@@ -50,19 +50,19 @@
 
                         <div class="row">
                             <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {'field': form.changeNumber, 'label': form.changeNumber.vars.label|default('change_request.field.change_number'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.changeNumber, 'label': 'change_request.field.change_number'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-8">
-                                {% include '_components/_form_field.html.twig' with {'field': form.title, 'label': form.title.vars.label|default('change_request.field.title'|trans({}, 'change_requests')), 'required': true} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.title, 'label': 'change_request.field.title'|trans({}, 'change_requests'), 'required': true} %}
                             </div>
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {'field': form.changeType, 'label': form.changeType.vars.label|default('change_request.field.change_type'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.changeType, 'label': 'change_request.field.change_type'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {'field': form.description, 'label': form.description.vars.label|default('change_request.field.description'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.description, 'label': 'change_request.field.description'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {'field': form.justification, 'label': form.justification.vars.label|default('change_request.field.justification'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.justification, 'label': 'change_request.field.justification'|trans({}, 'change_requests')} %}
                             </div>
                         </div>
                     </fieldset>
@@ -76,16 +76,16 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {'field': form.requestedBy, 'label': form.requestedBy.vars.label|default('change_request.field.requested_by'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.requestedBy, 'label': 'change_request.field.requested_by'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {'field': form.requestedDate, 'label': form.requestedDate.vars.label|default('change_request.field.requested_date'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.requestedDate, 'label': 'change_request.field.requested_date'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {'field': form.priority, 'label': form.priority.vars.label|default('change_request.field.priority'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.priority, 'label': 'change_request.field.priority'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {'field': form.status, 'label': form.status.vars.label|default('change_request.field.status'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.status, 'label': 'change_request.field.status'|trans({}, 'change_requests')} %}
                             </div>
                         </div>
                     </fieldset>
@@ -99,10 +99,10 @@
 
                         <div class="row">
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {'field': form.ismsImpact, 'label': form.ismsImpact.vars.label|default('change_request.field.isms_impact'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.ismsImpact, 'label': 'change_request.field.isms_impact'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {'field': form.riskAssessment, 'label': form.riskAssessment.vars.label|default('change_request.field.risk_assessment'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.riskAssessment, 'label': 'change_request.field.risk_assessment'|trans({}, 'change_requests')} %}
                             </div>
                         </div>
                     </fieldset>
@@ -116,25 +116,25 @@
 
                         <div class="row">
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {'field': form.implementationPlan, 'label': form.implementationPlan.vars.label|default('change_request.field.implementation_plan'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.implementationPlan, 'label': 'change_request.field.implementation_plan'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {'field': form.rollbackPlan, 'label': form.rollbackPlan.vars.label|default('change_request.field.rollback_plan'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.rollbackPlan, 'label': 'change_request.field.rollback_plan'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {'field': form.testingRequirements, 'label': form.testingRequirements.vars.label|default('change_request.field.testing_requirements'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.testingRequirements, 'label': 'change_request.field.testing_requirements'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {'field': form.plannedImplementationDate, 'label': form.plannedImplementationDate.vars.label|default('change_request.field.planned_implementation_date'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.plannedImplementationDate, 'label': 'change_request.field.planned_implementation_date'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {'field': form.actualImplementationDate, 'label': form.actualImplementationDate.vars.label|default('change_request.field.actual_implementation_date'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.actualImplementationDate, 'label': 'change_request.field.actual_implementation_date'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {'field': form.implementedBy, 'label': form.implementedBy.vars.label|default('change_request.field.implemented_by'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.implementedBy, 'label': 'change_request.field.implemented_by'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {'field': form.implementationNotes, 'label': form.implementationNotes.vars.label|default('change_request.field.implementation_notes'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.implementationNotes, 'label': 'change_request.field.implementation_notes'|trans({}, 'change_requests')} %}
                             </div>
                         </div>
                     </fieldset>
@@ -148,13 +148,13 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {'field': form.approvedBy, 'label': form.approvedBy.vars.label|default('change_request.field.approved_by'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.approvedBy, 'label': 'change_request.field.approved_by'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {'field': form.approvedDate, 'label': form.approvedDate.vars.label|default('change_request.field.approved_date'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.approvedDate, 'label': 'change_request.field.approved_date'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {'field': form.approvalComments, 'label': form.approvalComments.vars.label|default('change_request.field.approval_comments'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.approvalComments, 'label': 'change_request.field.approval_comments'|trans({}, 'change_requests')} %}
                             </div>
                         </div>
                     </fieldset>
@@ -168,19 +168,19 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {'field': form.verifiedBy, 'label': form.verifiedBy.vars.label|default('change_request.field.verified_by'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.verifiedBy, 'label': 'change_request.field.verified_by'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {'field': form.verifiedDate, 'label': form.verifiedDate.vars.label|default('change_request.field.verified_date'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.verifiedDate, 'label': 'change_request.field.verified_date'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {'field': form.verificationResults, 'label': form.verificationResults.vars.label|default('change_request.field.verification_results'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.verificationResults, 'label': 'change_request.field.verification_results'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {'field': form.closedDate, 'label': form.closedDate.vars.label|default('change_request.field.closed_date'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.closedDate, 'label': 'change_request.field.closed_date'|trans({}, 'change_requests')} %}
                             </div>
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {'field': form.closureNotes, 'label': form.closureNotes.vars.label|default('change_request.field.closure_notes'|trans({}, 'change_requests'))} %}
+                                {% include '_components/_form_field.html.twig' with {'field': form.closureNotes, 'label': 'change_request.field.closure_notes'|trans({}, 'change_requests')} %}
                             </div>
                         </div>
                     </fieldset>

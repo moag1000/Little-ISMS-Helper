@@ -8,10 +8,10 @@
 <div class="alert alert-info mb-4" role="status">
     <h6 class="alert-heading">
         <i class="bi bi-info-circle-fill" aria-hidden="true"></i>
-        {{ 'audit.iso_27001_requirement'|trans({}, 'audits')|default('ISO 27001 Anforderung') }}
+        {{ 'audit.iso_27001_requirement'|trans({}, 'audit') }}
     </h5>
     <p class="mb-0 small">
-        {{ 'audit.iso_27001_clause_info'|trans({}, 'audits')|default('Gemäß ISO 27001:2022 Klausel 9.2 müssen interne Audits in geplanten Abständen durchgeführt werden') }}
+        {{ 'audit.iso_27001_clause_info'|trans({}, 'audit') }}
     </p>
 </div>
 
@@ -20,7 +20,7 @@
     <div class="card-header bg-light">
         <legend class="h5 mb-0">
             <i class="bi bi-info-square" aria-hidden="true"></i>
-            {{ 'audit.section.basic_info'|trans({}, 'audits')|default('Grundinformationen') }}
+            {{ 'audit.section.basic_info'|trans({}, 'audit') }}
         </legend>
     </div>
     <div class="card-body">
@@ -28,8 +28,8 @@
             <div class="col-12">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.title,
-                    'label': 'audit.field.title'|trans({}, 'audits')|default('Audit-Titel'),
-                    'help': 'audit.help.title'|trans({}, 'audits')|default('Kurzer, prägnanter Titel des Audits'),
+                    'label': 'audit.field.title'|trans({}, 'audit'),
+                    'help': 'audit.help.title'|trans({}, 'audit'),
                     'required': true
                 } %}
             </div>
@@ -39,8 +39,8 @@
             <div class="col-12">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.scope,
-                    'label': 'audit.field.scope'|trans({}, 'audits')|default('Geltungsbereich'),
-                    'help': 'audit.help.scope'|trans({}, 'audits')|default('Definieren Sie den Umfang des Audits'),
+                    'label': 'audit.field.scope'|trans({}, 'audit'),
+                    'help': 'audit.help.scope'|trans({}, 'audit'),
                     'required': true
                 } %}
             </div>
@@ -50,8 +50,8 @@
             <div class="col-md-6">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.scopeType,
-                    'label': 'audit.field.scope_type'|trans({}, 'audits')|default('Geltungsbereich-Typ'),
-                    'help': 'audit.help.scope_type'|trans({}, 'audits')|default('Art des Audit-Geltungsbereichs')
+                    'label': 'audit.field.scope_type'|trans({}, 'audit'),
+                    'help': 'audit.help.scope_type'|trans({}, 'audit')
                 } %}
             </div>
 
@@ -59,8 +59,8 @@
             <div class="col-md-6">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.scopedFramework,
-                    'label': 'audit.field.scoped_framework'|trans({}, 'audits')|default('Framework'),
-                    'help': 'audit.help.scoped_framework'|trans({}, 'audits')|default('Verwendetes Audit-Framework')
+                    'label': 'audit.field.scoped_framework'|trans({}, 'audit'),
+                    'help': 'audit.help.scoped_framework'|trans({}, 'audit')
                 } %}
             </div>
             {% endif %}
@@ -69,8 +69,8 @@
             <div class="col-md-6">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.auditType,
-                    'label': 'audit.field.audit_type'|trans({}, 'audits')|default('Audit-Typ'),
-                    'help': 'audit.help.audit_type'|trans({}, 'audits')|default('Art des Audits')
+                    'label': 'audit.field.audit_type'|trans({}, 'audit'),
+                    'help': 'audit.help.audit_type'|trans({}, 'audit')
                 } %}
             </div>
             {% endif %}
@@ -81,13 +81,13 @@
         <div id="subsidiaries-container" style="display: none;">
             <div class="alert alert-info" role="status">
                 <i class="bi bi-info-circle" aria-hidden="true"></i>
-                <strong>{{ 'audit.corporate_audit_note_title'|trans({}, 'audits')|default('Konzernaudit') }}:</strong>
-                {{ 'audit.corporate_audit_note'|trans({}, 'audits')|default('Wählen Sie die Tochtergesellschaften aus, die in dieses Audit einbezogen werden sollen. Bei "Konzernweites Audit" sollten alle relevanten Tochtergesellschaften ausgewählt werden.') }}
+                <strong>{{ 'audit.corporate_audit_note_title'|trans({}, 'audit') }}:</strong>
+                {{ 'audit.corporate_audit_note'|trans({}, 'audit') }}
             </div>
             {% include '_components/_form_field.html.twig' with {
                 'field': form.auditedSubsidiaries,
-                'label': 'audit.field.audited_subsidiaries'|trans({}, 'audits')|default('Auditierte Tochtergesellschaften'),
-                'help': 'audit.help.audited_subsidiaries'|trans({}, 'audits')|default('Tochtergesellschaften, die in dieses Audit einbezogen werden')
+                'label': 'audit.field.audited_subsidiaries'|trans({}, 'audit'),
+                'help': 'audit.help.audited_subsidiaries'|trans({}, 'audit')
             } %}
         </div>
         {% endif %}
@@ -100,7 +100,7 @@
     <div class="card-header bg-light">
         <legend class="h5 mb-0">
             <i class="bi bi-shield-check" aria-hidden="true"></i>
-            {{ 'audit.section.frameworks'|trans({}, 'audits')|default('Frameworks & Standards') }}
+            {{ 'audit.section.frameworks'|trans({}, 'audit') }}
         </legend>
     </div>
     <div class="card-body">
@@ -108,16 +108,16 @@
             <div class="col-md-6">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.framework,
-                    'label': 'audit.field.framework'|trans({}, 'audits')|default('Framework'),
-                    'help': 'audit.help.framework'|trans({}, 'audits')|default('Verwendetes Compliance-Framework')
+                    'label': 'audit.field.framework'|trans({}, 'audit'),
+                    'help': 'audit.help.framework'|trans({}, 'audit')
                 } %}
             </div>
 
             <div class="col-md-6">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.standard,
-                    'label': 'audit.field.standard'|trans({}, 'audits')|default('Standard'),
-                    'help': 'audit.help.standard'|trans({}, 'audits')|default('Anwendbarer Standard')
+                    'label': 'audit.field.standard'|trans({}, 'audit'),
+                    'help': 'audit.help.standard'|trans({}, 'audit')
                 } %}
             </div>
         </div>
@@ -130,7 +130,7 @@
     <div class="card-header bg-light">
         <legend class="h5 mb-0">
             <i class="bi bi-calendar-event" aria-hidden="true"></i>
-            {{ 'audit.section.schedule'|trans({}, 'audits')|default('Zeitplan') }}
+            {{ 'audit.section.schedule'|trans({}, 'audit') }}
         </legend>
     </div>
     <div class="card-body">
@@ -138,16 +138,16 @@
             <div class="col-md-6">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.plannedDate,
-                    'label': 'audit.field.planned_date'|trans({}, 'audits')|default('Geplantes Datum'),
-                    'help': 'audit.help.planned_date'|trans({}, 'audits')|default('Geplantes Datum für das Audit')
+                    'label': 'audit.field.planned_date'|trans({}, 'audit'),
+                    'help': 'audit.help.planned_date'|trans({}, 'audit')
                 } %}
             </div>
 
             <div class="col-md-6">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.actualDate,
-                    'label': 'audit.field.actual_date'|trans({}, 'audits')|default('Tatsächliches Datum'),
-                    'help': 'audit.help.actual_date'|trans({}, 'audits')|default('Tatsächliches Durchführungsdatum')
+                    'label': 'audit.field.actual_date'|trans({}, 'audit'),
+                    'help': 'audit.help.actual_date'|trans({}, 'audit')
                 } %}
             </div>
         </div>
@@ -159,7 +159,7 @@
     <div class="card-header bg-light">
         <legend class="h5 mb-0">
             <i class="bi bi-people" aria-hidden="true"></i>
-            {{ 'audit.section.team'|trans({}, 'audits')|default('Team & Verantwortlichkeiten') }}
+            {{ 'audit.section.team'|trans({}, 'audit') }}
         </legend>
     </div>
     <div class="card-body">
@@ -167,16 +167,16 @@
             <div class="col-md-6">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.leadAuditor,
-                    'label': 'audit.field.lead_auditor'|trans({}, 'audits')|default('Leitender Auditor'),
-                    'help': 'audit.help.lead_auditor'|trans({}, 'audits')|default('Verantwortlicher Hauptauditor')
+                    'label': 'audit.field.lead_auditor'|trans({}, 'audit'),
+                    'help': 'audit.help.lead_auditor'|trans({}, 'audit')
                 } %}
             </div>
 
             <div class="col-md-6">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.auditTeam,
-                    'label': 'audit.field.audit_team'|trans({}, 'audits')|default('Audit-Team'),
-                    'help': 'audit.help.audit_team'|trans({}, 'audits')|default('Mitglieder des Audit-Teams')
+                    'label': 'audit.field.audit_team'|trans({}, 'audit'),
+                    'help': 'audit.help.audit_team'|trans({}, 'audit')
                 } %}
             </div>
 
@@ -184,8 +184,8 @@
             <div class="col-md-6">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.auditee,
-                    'label': 'audit.field.auditee'|trans({}, 'audits')|default('Auditierter'),
-                    'help': 'audit.help.auditee'|trans({}, 'audits')|default('Person oder Abteilung, die auditiert wird')
+                    'label': 'audit.field.auditee'|trans({}, 'audit'),
+                    'help': 'audit.help.auditee'|trans({}, 'audit')
                 } %}
             </div>
             {% endif %}
@@ -194,8 +194,8 @@
             <div class="col-md-6">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.department,
-                    'label': 'audit.field.department'|trans({}, 'audits')|default('Abteilung'),
-                    'help': 'audit.help.department'|trans({}, 'audits')|default('Betroffene Abteilung')
+                    'label': 'audit.field.department'|trans({}, 'audit'),
+                    'help': 'audit.help.department'|trans({}, 'audit')
                 } %}
             </div>
             {% endif %}
@@ -209,7 +209,7 @@
     <div class="card-header bg-light">
         <legend class="h5 mb-0">
             <i class="bi bi-flag" aria-hidden="true"></i>
-            {{ 'audit.section.status'|trans({}, 'audits')|default('Status & Ergebnisse') }}
+            {{ 'audit.section.status'|trans({}, 'audit') }}
         </legend>
     </div>
     <div class="card-body">
@@ -217,8 +217,8 @@
             <div class="col-md-6">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.status,
-                    'label': 'audit.field.status'|trans({}, 'audits')|default('Status'),
-                    'help': 'audit.help.status'|trans({}, 'audits')|default('Aktueller Status des Audits')
+                    'label': 'audit.field.status'|trans({}, 'audit'),
+                    'help': 'audit.help.status'|trans({}, 'audit')
                 } %}
             </div>
 
@@ -226,8 +226,8 @@
             <div class="col-md-6">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.overallResult,
-                    'label': 'audit.field.overall_result'|trans({}, 'audits')|default('Gesamtergebnis'),
-                    'help': 'audit.help.overall_result'|trans({}, 'audits')|default('Zusammenfassendes Audit-Ergebnis')
+                    'label': 'audit.field.overall_result'|trans({}, 'audit'),
+                    'help': 'audit.help.overall_result'|trans({}, 'audit')
                 } %}
             </div>
             {% endif %}
@@ -241,7 +241,7 @@
     <div class="card-header bg-light">
         <legend class="h5 mb-0">
             <i class="bi bi-bullseye" aria-hidden="true"></i>
-            {{ 'audit.section.objectives'|trans({}, 'audits')|default('Ziele & Kriterien') }}
+            {{ 'audit.section.objectives'|trans({}, 'audit') }}
         </legend>
     </div>
     <div class="card-body">
@@ -249,8 +249,8 @@
             <div class="col-12">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.objectives,
-                    'label': 'audit.field.objectives'|trans({}, 'audits')|default('Audit-Ziele'),
-                    'help': 'audit.help.objectives'|trans({}, 'audits')|default('Definierte Ziele und Zweck des Audits')
+                    'label': 'audit.field.objectives'|trans({}, 'audit'),
+                    'help': 'audit.help.objectives'|trans({}, 'audit')
                 } %}
             </div>
 
@@ -258,8 +258,8 @@
             <div class="col-12">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.auditCriteria,
-                    'label': 'audit.field.audit_criteria'|trans({}, 'audits')|default('Audit-Kriterien'),
-                    'help': 'audit.help.audit_criteria'|trans({}, 'audits')|default('Kriterien für die Audit-Bewertung')
+                    'label': 'audit.field.audit_criteria'|trans({}, 'audit'),
+                    'help': 'audit.help.audit_criteria'|trans({}, 'audit')
                 } %}
             </div>
             {% endif %}
@@ -268,8 +268,8 @@
             <div class="col-12">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.methodology,
-                    'label': 'audit.field.methodology'|trans({}, 'audits')|default('Methodik'),
-                    'help': 'audit.help.methodology'|trans({}, 'audits')|default('Angewandte Audit-Methodik')
+                    'label': 'audit.field.methodology'|trans({}, 'audit'),
+                    'help': 'audit.help.methodology'|trans({}, 'audit')
                 } %}
             </div>
             {% endif %}
@@ -282,7 +282,7 @@
     <div class="card-header bg-light">
         <legend class="h5 mb-0">
             <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-            {{ 'audit.section.findings'|trans({}, 'audits')|default('Feststellungen') }}
+            {{ 'audit.section.findings'|trans({}, 'audit') }}
         </legend>
     </div>
     <div class="card-body">
@@ -290,8 +290,8 @@
             <div class="col-12">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.findings,
-                    'label': 'audit.field.findings'|trans({}, 'audits')|default('Feststellungen'),
-                    'help': 'audit.help.findings'|trans({}, 'audits')|default('Identifizierte Feststellungen und Probleme')
+                    'label': 'audit.field.findings'|trans({}, 'audit'),
+                    'help': 'audit.help.findings'|trans({}, 'audit')
                 } %}
             </div>
 
@@ -299,8 +299,8 @@
             <div class="col-12">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.nonconformities,
-                    'label': 'audit.field.nonconformities'|trans({}, 'audits')|default('Nichtkonformitäten'),
-                    'help': 'audit.help.nonconformities'|trans({}, 'audits')|default('Identifizierte Nichtkonformitäten')
+                    'label': 'audit.field.nonconformities'|trans({}, 'audit'),
+                    'help': 'audit.help.nonconformities'|trans({}, 'audit')
                 } %}
             </div>
             {% endif %}
@@ -309,8 +309,8 @@
             <div class="col-12">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.observations,
-                    'label': 'audit.field.observations'|trans({}, 'audits')|default('Beobachtungen'),
-                    'help': 'audit.help.observations'|trans({}, 'audits')|default('Weitere Beobachtungen')
+                    'label': 'audit.field.observations'|trans({}, 'audit'),
+                    'help': 'audit.help.observations'|trans({}, 'audit')
                 } %}
             </div>
             {% endif %}
@@ -323,7 +323,7 @@
     <div class="card-header bg-light">
         <legend class="h5 mb-0">
             <i class="bi bi-lightbulb" aria-hidden="true"></i>
-            {{ 'audit.section.recommendations'|trans({}, 'audits')|default('Empfehlungen & Nachverfolgung') }}
+            {{ 'audit.section.recommendations'|trans({}, 'audit') }}
         </legend>
     </div>
     <div class="card-body">
@@ -331,8 +331,8 @@
             <div class="col-12">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.recommendations,
-                    'label': 'audit.field.recommendations'|trans({}, 'audits')|default('Empfehlungen'),
-                    'help': 'audit.help.recommendations'|trans({}, 'audits')|default('Empfohlene Maßnahmen')
+                    'label': 'audit.field.recommendations'|trans({}, 'audit'),
+                    'help': 'audit.help.recommendations'|trans({}, 'audit')
                 } %}
             </div>
 
@@ -340,8 +340,8 @@
             <div class="col-12">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.correctiveActions,
-                    'label': 'audit.field.corrective_actions'|trans({}, 'audits')|default('Korrekturmaßnahmen'),
-                    'help': 'audit.help.corrective_actions'|trans({}, 'audits')|default('Geplante Korrekturmaßnahmen')
+                    'label': 'audit.field.corrective_actions'|trans({}, 'audit'),
+                    'help': 'audit.help.corrective_actions'|trans({}, 'audit')
                 } %}
             </div>
             {% endif %}
@@ -350,8 +350,8 @@
             <div class="col-12">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.followUpActions,
-                    'label': 'audit.field.follow_up_actions'|trans({}, 'audits')|default('Nachverfolgungsmaßnahmen'),
-                    'help': 'audit.help.follow_up_actions'|trans({}, 'audits')|default('Geplante Nachverfolgungsaktivitäten')
+                    'label': 'audit.field.follow_up_actions'|trans({}, 'audit'),
+                    'help': 'audit.help.follow_up_actions'|trans({}, 'audit')
                 } %}
             </div>
             {% endif %}
@@ -360,8 +360,8 @@
             <div class="col-12">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.conclusion,
-                    'label': 'audit.field.conclusion'|trans({}, 'audits')|default('Schlussfolgerung'),
-                    'help': 'audit.help.conclusion'|trans({}, 'audits')|default('Gesamtschlussfolgerung des Audits')
+                    'label': 'audit.field.conclusion'|trans({}, 'audit'),
+                    'help': 'audit.help.conclusion'|trans({}, 'audit')
                 } %}
             </div>
             {% endif %}
@@ -375,7 +375,7 @@
     <div class="card-header bg-light">
         <legend class="h5 mb-0">
             <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
-            {{ 'audit.section.documentation'|trans({}, 'audits')|default('Dokumentation') }}
+            {{ 'audit.section.documentation'|trans({}, 'audit') }}
         </legend>
     </div>
     <div class="card-body">
@@ -383,8 +383,8 @@
             <div class="col-12">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.evidenceCollected,
-                    'label': 'audit.field.evidence_collected'|trans({}, 'audits')|default('Gesammelte Nachweise'),
-                    'help': 'audit.help.evidence_collected'|trans({}, 'audits')|default('Während des Audits gesammelte Nachweise')
+                    'label': 'audit.field.evidence_collected'|trans({}, 'audit'),
+                    'help': 'audit.help.evidence_collected'|trans({}, 'audit')
                 } %}
             </div>
 
@@ -392,8 +392,8 @@
             <div class="col-12">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.summary,
-                    'label': 'audit.field.summary'|trans({}, 'audits')|default('Zusammenfassung'),
-                    'help': 'audit.help.summary'|trans({}, 'audits')|default('Zusammenfassung des Audits')
+                    'label': 'audit.field.summary'|trans({}, 'audit'),
+                    'help': 'audit.help.summary'|trans({}, 'audit')
                 } %}
             </div>
             {% endif %}
@@ -402,8 +402,8 @@
             <div class="col-12">
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.notes,
-                    'label': 'audit.field.notes'|trans({}, 'audits')|default('Notizen'),
-                    'help': 'audit.help.notes'|trans({}, 'audits')|default('Zusätzliche Notizen')
+                    'label': 'audit.field.notes'|trans({}, 'audit'),
+                    'help': 'audit.help.notes'|trans({}, 'audit')
                 } %}
             </div>
             {% endif %}

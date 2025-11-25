@@ -4,7 +4,7 @@
 {# Document Metadata #}
 {% block document_id %}DOC-ISMS-SOA-001{% endblock %}
 {% block document_title %}{{ 'page.title'|trans({}, 'messages') }}{% endblock %}
-{% block document_type %}{{ 'report.document_type'|trans({}, 'messages') }}{% endblock %}
+{% block document_type %}{{ 'report.document_type'|trans({}, 'reports') }}{% endblock %}
 {% block document_version %}{{ version }}{% endblock %}
 {% block document_status %}{{ status|default(('status.approved'|trans({}, 'messages'))) }}{% endblock %}
 {% block document_status_class %}{{ status|default('approved')|lower }}{% endblock %}
@@ -12,13 +12,13 @@
 {% block classification_class %}confidential{% endblock %}
 
 {# Header/Footer #}
-{% block header_center %}{{ 'report.header_center'|trans({}, 'messages') }}{% endblock %}
+{% block header_center %}{{ 'report.header_center'|trans({}, 'reports') }}{% endblock %}
 {% block header_right %}{{ 'label.classification_confidential_upper'|trans({}, 'messages') }}{% endblock %}
 {% block footer_version %}{{ version }}{% endblock %}
 
 {# Show Approval Section #}
 {% set show_approval = true %}
-{% block reviewer_name %}{{ app.user.fullName|default(('report.default_reviewer'|trans({}, 'messages'))) }}{% endblock %}
+{% block reviewer_name %}{{ app.user.fullName|default(('report.default_reviewer'|trans({}, 'reports'))) }}{% endblock %}
 {% block review_date %}{{ generatedAt|date('d.m.Y') }}{% endblock %}
 {% block approver_name %}{{ approver|default(('report.default_approver'|trans({}, 'messages'))) }}{% endblock %}
 {% block approval_date %}{{ approval_date|default(generatedAt|date('d.m.Y')) }}{% endblock %}

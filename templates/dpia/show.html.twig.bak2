@@ -218,8 +218,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="approval_comments" class="form-label">Approval Comments (optional)</label>
-                        <textarea id="approval_comments" name="approval_comments" class="form-control" rows="3"></textarea>
+                        <label class="form-label">Approval Comments (optional)</label>
+                        <textarea name="approval_comments" class="form-control" rows="3"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -243,8 +243,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="rejection_reason" class="form-label">Rejection Reason *</label>
-                        <textarea id="rejection_reason" name="rejection_reason" class="form-control" rows="3" required></textarea>
+                        <label class="form-label">Rejection Reason *</label>
+                        <textarea name="rejection_reason" class="form-control" rows="3" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -268,12 +268,12 @@
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="revision_reason" class="form-label">Revision Reason *</label>
-                        <textarea id="revision_reason" name="revision_reason" class="form-control" rows="3" required></textarea>
+                        <label class="form-label">Revision Reason *</label>
+                        <textarea name="revision_reason" class="form-control" rows="3" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'dpia.show.cancel_button'|trans({}, 'privacy') }}</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'dpia.show.cancel_button'|transtrans({}, 'privacy') }}</button>
                     <button type="submit" class="btn btn-warning">Request Revision</button>
                 </div>
             </form>

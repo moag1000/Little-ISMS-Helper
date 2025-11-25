@@ -29,10 +29,10 @@
             <div class="modal-header bg-danger text-white">
                 <h5 class="modal-title" id="{{ modal_id }}Label">
                     <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-                    {{ 'bulk_delete.confirm.title'|trans({}, 'bulk_delete')|default('Confirm Bulk Delete') }}
+                    {{ 'bulk_delete.confirm.title'|trans({}, 'bulk_delete') }}
                 </h5>
                 <button type="button" class="btn-close btn-close-white" aria-label="{{ 'action.close'|trans({}, 'messages') }}" data-bs-dismiss="modal"
-                        aria-label="{{ 'action.close'|trans({}, 'messages')|default('Close') }}">
+                        aria-label="{{ 'action.close'|trans({}, 'messages') }}">
                 </button>
             </div>
 
@@ -41,10 +41,10 @@
                 {# Selected count announcement (screen reader) #}
                 <div class="alert alert-danger" role="alert">
                     <p class="mb-2">
-                        <strong>{{ 'bulk_delete.warning'|trans({}, 'bulk_delete')|default('Warning') }}:</strong>
+                        <strong>{{ 'bulk_delete.warning'|trans({}, 'bulk_delete') }}:</strong>
                         <span id="{{ modal_id }}SelectedCount">0</span>
                         {{ entity_name_plural|default(entity_name) }}
-                        {{ 'bulk_delete.will_be_deleted'|trans({}, 'bulk_delete')|default('will be permanently deleted.') }}
+                        {{ 'bulk_delete.will_be_deleted'|trans({}, 'bulk_delete') }}
                     </p>
 
                     {% if dependencies_info is defined and dependencies_info %}
@@ -57,12 +57,12 @@
 
                 {# Selected items list #}
                 <div class="mb-3">
-                    <h6>{{ 'bulk_delete.selected_items'|trans({}, 'bulk_delete')|default('Selected items') }}:</h6>
+                    <h6>{{ 'bulk_delete.selected_items'|trans({}, 'bulk_delete') }}:</h6>
                     <div id="{{ modal_id }}ItemsList"
                          class="border rounded p-2 bg-light"
                          style="max-height: 200px; overflow-y: auto;"
                          role="region"
-                         aria-label="{{ 'bulk_delete.selected_items'|trans({}, 'bulk_delete')|default('Selected items') }}">
+                         aria-label="{{ 'bulk_delete.selected_items'|trans({}, 'bulk_delete') }}">
                         {# Populated by JavaScript #}
                     </div>
                 </div>
@@ -75,10 +75,10 @@
                            aria-required="true"
                            aria-describedby="{{ modal_id }}ConfirmHelp">
                     <label class="form-check-label" for="{{ modal_id }}Confirm">
-                        {{ 'bulk_delete.understand'|trans({}, 'bulk_delete')|default('I understand that this action cannot be undone') }}
+                        {{ 'bulk_delete.understand'|trans({}, 'bulk_delete') }}
                     </label>
                     <div id="{{ modal_id }}ConfirmHelp" class="form-text">
-                        {{ 'bulk_delete.confirm_help'|trans({}, 'bulk_delete')|default('You must confirm to proceed with deletion') }}
+                        {{ 'bulk_delete.confirm_help'|trans({}, 'bulk_delete') }}
                     </div>
                 </div>
             </div>
@@ -87,7 +87,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     <i class="bi bi-x-circle" aria-hidden="true"></i>
-                    {{ 'action.cancel'|trans({}, 'messages')|default('Cancel') }}
+                    {{ 'action.cancel'|trans({}, 'messages') }}
                 </button>
                 <button type="button"
                         class="btn btn-danger"
@@ -96,7 +96,7 @@
                         data-delete-route="{{ delete_route }}"
                         aria-describedby="{{ modal_id }}ConfirmHelp">
                     <i class="bi bi-trash" aria-hidden="true"></i>
-                    {{ 'action.delete_selected'|trans({}, 'messages')|default('Delete Selected') }}
+                    {{ 'action.delete_selected'|trans({}, 'messages') }}
                 </button>
             </div>
         </div>

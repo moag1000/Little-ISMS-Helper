@@ -57,7 +57,7 @@
                         <div class="col-md-12">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.transport,
-                                'label': form.transport.vars.label|default('setup.email.transport'|trans({}, 'messages'))
+                                'label': 'setup.email.transport'|trans({}, 'messages')
                             } %}
                         </div>
                     </div>
@@ -67,13 +67,13 @@
                             <div class="col-md-8">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.host,
-                                    'label': form.host.vars.label|default('setup.email.host'|trans({}, 'messages'))
+                                    'label': 'setup.email.host'|trans({}, 'messages')
                                 } %}
                             </div>
                             <div class="col-md-4">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.port,
-                                    'label': form.port.vars.label|default('setup.email.port'|trans({}, 'messages'))
+                                    'label': 'setup.email.port'|trans({}, 'messages')
                                 } %}
                             </div>
                         </div>
@@ -82,7 +82,7 @@
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.encryption,
-                                    'label': form.encryption.vars.label|default('setup.email.encryption'|trans({}, 'messages'))
+                                    'label': 'setup.email.encryption'|trans({}, 'messages')
                                 } %}
                             </div>
                         </div>
@@ -91,13 +91,13 @@
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.username,
-                                    'label': form.username.vars.label|default('setup.email.username'|trans({}, 'messages'))
+                                    'label': 'setup.email.username'|trans({}, 'messages')
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.password,
-                                    'label': form.password.vars.label|default('setup.email.password'|trans({}, 'messages'))
+                                    'label': 'setup.email.password'|trans({}, 'messages')
                                 } %}
                             </div>
                         </div>
@@ -111,7 +111,7 @@
                         <div class="col-md-12">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.from_address,
-                                'label': form.from_address.vars.label|default('setup.email.from_address'|trans({}, 'messages')),
+                                'label': 'setup.email.from_address'|trans({}, 'messages'),
                                 'required': true
                             } %}
                         </div>
@@ -121,7 +121,7 @@
                         <div class="col-md-12">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.from_name,
-                                'label': form.from_name.vars.label|default('setup.email.from_name'|trans({}, 'messages'))
+                                'label': 'setup.email.from_name'|trans({}, 'messages')
                             } %}
                         </div>
                     </div>

@@ -1,14 +1,14 @@
 {% extends 'admin/layout.html.twig' %}
-{% trans_default_domain 'users' %}
+{% trans_default_domain 'user' %}
 
-{% block title %}{{ 'users.page.title'|trans({}, 'users') }}{% endblock %}
+{% block title %}{{ 'user.page.title'|trans({}, 'user') }}{% endblock %}
 
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-people" aria-hidden="true"></i> {{ 'users.page.title'|trans({}, 'users') }}</h1>
+        <h1><i class="bi bi-people" aria-hidden="true"></i> {{ 'user.page.title'|trans({}, 'user') }}</h1>
         <a href="{{ path('user_management_new') }}" class="btn btn-primary" data-turbo-frame="_top">
-            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'users.action.new_user'|trans({}, 'users') }}
+            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'user.action.new_user'|trans({}, 'user') }}
         </a>
     </div>
 
@@ -21,42 +21,42 @@
             <div class="col-md-3">
                 <div class="card border-primary">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-muted">{{ 'users.stats.total'|trans({}, 'users') }}</h5>
+                        <h5 class="card-title text-muted">{{ 'user.stats.total'|trans({}, 'user') }}</h5>
                         <p class="display-6 text-primary">
                             <span id="user-total-count">{{ statistics.total ?? users|length }}</span>
                         </p>
-                        <small>{{ 'users.stats.users'|trans({}, 'users') }}</small>
+                        <small>{{ 'user.stats.users'|trans({}, 'user') }}</small>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card border-success">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-muted">{{ 'users.stats.active'|trans({}, 'users') }}</h5>
+                        <h5 class="card-title text-muted">{{ 'user.stats.active'|trans({}, 'user') }}</h5>
                         <p class="display-6 text-success">
                             <span id="user-active-count">{{ statistics.active ?? 0 }}</span>
                         </p>
-                        <small>{{ 'users.stats.active_users'|trans({}, 'users') }}</small>
+                        <small>{{ 'user.stats.active_users'|trans({}, 'user') }}</small>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card border-warning">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-muted">{{ 'users.stats.admins'|trans({}, 'users') }}</h5>
+                        <h5 class="card-title text-muted">{{ 'user.stats.admins'|trans({}, 'user') }}</h5>
                         <p class="display-6 text-warning">
                             <span id="user-admin-count">{{ statistics.admins ?? 0 }}</span>
                         </p>
-                        <small>{{ 'users.stats.administrators'|trans({}, 'users') }}</small>
+                        <small>{{ 'user.stats.administrators'|trans({}, 'user') }}</small>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card border-info">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-muted">{{ 'users.stats.today_active'|trans({}, 'users') }}</h5>
+                        <h5 class="card-title text-muted">{{ 'user.stats.today_active'|trans({}, 'user') }}</h5>
                         <p class="display-6 text-info">{{ statistics.today_active ?? 0 }}</p>
-                        <small>{{ 'users.stats.logins_today'|trans({}, 'users') }}</small>
+                        <small>{{ 'user.stats.logins_today'|trans({}, 'user') }}</small>
                     </div>
                 </div>
             </div>
@@ -68,7 +68,7 @@
         <div class="card">
             <div class="card-header bg-primary text-white">
                 <h2 class="mb-0">
-                    <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'users.message.all_users'|trans({}, 'users') }}
+                    <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'user.message.all_users'|trans({}, 'user') }}
                 </h3>
             </div>
             <div class="card-body">
@@ -79,13 +79,13 @@
                         {% block table_head %}
                             <tr>
                                 <th scope="col" style="width: 60px;"></th>
-                                <th scope="col">{{ 'users.table.name'|trans({}, 'users') }}</th>
-                                <th scope="col">{{ 'users.table.email'|trans({}, 'users') }}</th>
-                                <th scope="col">{{ 'users.table.roles'|trans({}, 'users') }}</th>
-                                <th scope="col">{{ 'users.table.auth_provider'|trans({}, 'users') }}</th>
-                                <th scope="col">{{ 'users.table.status'|trans({}, 'users') }}</th>
-                                <th scope="col">{{ 'users.table.last_login'|trans({}, 'users') }}</th>
-                                <th scope="col">{{ 'users.table.actions'|trans({}, 'users') }}</th>
+                                <th scope="col">{{ 'user.table.name'|trans({}, 'user') }}</th>
+                                <th scope="col">{{ 'user.table.email'|trans({}, 'user') }}</th>
+                                <th scope="col">{{ 'user.table.roles'|trans({}, 'user') }}</th>
+                                <th scope="col">{{ 'user.table.auth_provider'|trans({}, 'user') }}</th>
+                                <th scope="col">{{ 'user.table.status'|trans({}, 'user') }}</th>
+                                <th scope="col">{{ 'user.table.last_login'|trans({}, 'user') }}</th>
+                                <th scope="col">{{ 'user.table.actions'|trans({}, 'user') }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body_attrs %}id="users-table-body"{% endblock %}

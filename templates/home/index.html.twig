@@ -3,123 +3,206 @@
 {% block title %}{{ 'home.welcome'|trans({}, 'messages') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
-<h1><i class="bi bi-house-heart" aria-hidden="true"></i> {{ 'home.title'|trans({}, 'messages') }}</h1>
-
-<div class="info-box">
-    <p><strong>{{ 'app.title'|trans({}, 'messages') }}</strong> {{ 'home.description'|trans({}, 'messages') }}</p>
-</div>
-
-<h2><i class="bi bi-grid-3x3-gap" aria-hidden="true"></i> {{ 'home.modules'|trans({}, 'messages') }}</h2>
-
-<div class="module-grid">
-    <div class="module-card">
-        <div class="module-icon"><i class="bi bi-cpu" aria-hidden="true"></i></div>
-        <h2>{{ 'home.module.assets.title'|trans({}, 'messages') }}</h2>
-        <p>{{ 'home.module.assets.description'|trans({}, 'messages') }}</p>
-        <a href="{{ path('app_asset_index') }}" class="btn btn-primary">
-            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.assets.action'|trans({}, 'messages') }}
-        </a>
-    </div>
-
-    <div class="module-card">
-        <div class="module-icon"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></div>
-        <h2>{{ 'home.module.risks.title'|trans({}, 'messages') }}</h2>
-        <p>{{ 'home.module.risks.description'|trans({}, 'messages') }}</p>
-        <a href="{{ path('app_risk_index') }}" class="btn btn-primary">
-            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.risks.action'|trans({}, 'messages') }}
-        </a>
-    </div>
-
-    <div class="module-card">
-        <div class="module-icon"><i class="bi bi-bug" aria-hidden="true"></i></div>
-        <h3>{{ 'home.module.incidents.title'|trans({}, 'messages') }}</h3>
-        <p>{{ 'home.module.incidents.description'|trans({}, 'messages') }}</p>
-        <a href="{{ path('app_incident_index') }}" class="btn btn-primary">
-            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.incidents.action'|trans({}, 'messages') }}
-        </a>
-    </div>
-
-    <div class="module-card">
-        <div class="module-icon"><i class="bi bi-check-circle" aria-hidden="true"></i></div>
-        <h3>{{ 'home.module.compliance.title'|trans({}, 'messages') }}</h3>
-        <p>{{ 'home.module.compliance.description'|trans({}, 'messages') }}</p>
-        <a href="{{ path('app_compliance_index') }}" class="btn btn-primary">
-            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.compliance.action'|trans({}, 'messages') }}
-        </a>
-    </div>
-
-    <div class="module-card">
-        <div class="module-icon"><i class="bi bi-speedometer2" aria-hidden="true"></i></div>
-        <h3>{{ 'home.module.dashboard.title'|trans({}, 'messages') }}</h3>
-        <p>{{ 'home.module.dashboard.description'|trans({}, 'messages') }}</p>
-        <a href="{{ path('app_dashboard') }}" class="btn btn-primary">
-            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.dashboard.action'|trans({}, 'messages') }}
-        </a>
-    </div>
-
-    <div class="module-card">
-        <div class="module-icon"><i class="bi bi-file-earmark-text" aria-hidden="true"></i></div>
-        <h3>{{ 'home.module.documents.title'|trans({}, 'messages') }}</h3>
-        <p>{{ 'home.module.documents.description'|trans({}, 'messages') }}</p>
-        <a href="{{ path('app_document_index') }}" class="btn btn-primary">
-            <i class="bi bi-arrow-right-circle" aria-hidden="true"></i> {{ 'home.module.documents.action'|trans({}, 'messages') }}
-        </a>
+{# Hero Section #}
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <i class="bi bi-shield-check text-white" aria-hidden="true"></i>
+                        {{ 'app.title'|trans({}, 'messages') }}
+                    </h1>
+                    <p class="hero-subtitle">
+                        {{ 'home.description'|trans({}, 'messages') }}
+                    </p>
+                    <div class="hero-stats mb-4">
+                        <div class="hero-stat">
+                            <span class="hero-stat-value">{{ stats.assets|default(0) }}</span>
+                            <span class="hero-stat-label">{{ 'assets'|trans({}, 'messages') }}</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-value">{{ stats.risks|default(0) }}</span>
+                            <span class="hero-stat-label">{{ 'risks'|trans({}, 'messages') }}</span>
+                        </div>
+                        <div class="hero-stat">
+                            <span class="hero-stat-value">{{ stats.controls|default(0) }}</span>
+                            <span class="hero-stat-label">{{ 'controls'|trans({}, 'messages') }}</span>
+                        </div>
+                    </div>
+                    <div class="hero-actions">
+                        <a href="{{ path('app_dashboard') }}" class="btn btn-light btn-lg">
+                            <i class="bi bi-speedometer2" aria-hidden="true"></i> {{ 'home.go_to_dashboard'|trans({}, 'messages') }}
+                        </a>
+                        <a href="#features" class="btn btn-outline-light btn-lg">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.view_details'|trans({}, 'messages') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="hero-image">
+                    <div class="text-center">
+                        <i class="bi bi-shield-lock hero-icon" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="alert alert-info mt-4">
-    <i class="bi bi-info-circle" aria-hidden="true"></i> <strong>{{ 'common.note'|trans({}, 'messages') }}:</strong> {{ 'home.development_notice'|trans({}, 'messages') }}
+{# Features Section #}
+<div class="container my-5" id="features">
+    <div class="text-center mb-5">
+        <h2 class="display-5 fw-bold">{{ 'home.modules'|trans({}, 'messages') }}</h2>
+        <p class="lead text-muted">{{ 'home.tagline'|trans({}, 'messages') }}</p>
+    </div>
+
+    <div class="row g-4">
+        {# Asset Management #}
+        <div class="col-lg-3 col-md-6">
+            <div class="feature-card">
+                <div class="feature-icon bg-primary" aria-hidden="true">
+                    <i class="bi bi-server" aria-hidden="true"></i>
+                </div>
+                <h2 class="feature-title">{{ 'home.module.assets.title'|trans({}, 'messages') }}</h2>
+                <p class="feature-description">
+                    {{ 'home.module.assets.description'|trans({}, 'messages') }}
+                </p>
+                <a href="{{ path('app_asset_index') }}" class="btn btn-sm btn-outline-primary mt-3">
+                    {{ 'home.module.assets.action'|trans({}, 'messages') }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+
+        {# Risk Management #}
+        <div class="col-lg-3 col-md-6">
+            <div class="feature-card">
+                <div class="feature-icon bg-warning" aria-hidden="true">
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                </div>
+                <h2 class="feature-title">{{ 'home.module.risks.title'|trans({}, 'messages') }}</h2>
+                <p class="feature-description">
+                    {{ 'home.module.risks.description'|trans({}, 'messages') }}
+                </p>
+                <a href="{{ path('app_risk_index') }}" class="btn btn-sm btn-outline-warning mt-3">
+                    {{ 'home.module.risks.action'|trans({}, 'messages') }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+
+        {# Control Framework #}
+        <div class="col-lg-3 col-md-6">
+            <div class="feature-card">
+                <div class="feature-icon bg-success" aria-hidden="true">
+                    <i class="bi bi-shield-check" aria-hidden="true"></i>
+                </div>
+                <h3 class="feature-title">{{ 'home.module.compliance.title'|trans({}, 'messages') }}</h3>
+                <p class="feature-description">
+                    {{ 'home.module.compliance.description'|trans({}, 'messages') }}
+                </p>
+                <a href="{{ path('app_compliance_index') }}" class="btn btn-sm btn-outline-success mt-3">
+                    {{ 'home.module.compliance.action'|trans({}, 'messages') }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+
+        {# Documents Management #}
+        <div class="col-lg-3 col-md-6">
+            <div class="feature-card">
+                <div class="feature-icon bg-info" aria-hidden="true">
+                    <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                </div>
+                <h3 class="feature-title">{{ 'home.module.documents.title'|trans({}, 'messages') }}</h3>
+                <p class="feature-description">
+                    {{ 'home.module.documents.description'|trans({}, 'messages') }}
+                </p>
+                <a href="{{ path('app_document_index') }}" class="btn btn-sm btn-outline-info mt-3">
+                    {{ 'home.module.documents.action'|trans({}, 'messages') }} <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="text-center mt-4">
-    <a href="{{ path('app_dashboard') }}" class="btn btn-lg btn-primary">
-        <i class="bi bi-speedometer2" aria-hidden="true"></i> {{ 'home.go_to_dashboard'|trans({}, 'messages') }}
-    </a>
+{# Quick Start Guide #}
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">{{ 'home.quick_start'|trans }}</h2>
+            <p class="lead text-muted">So starten Sie mit Ihrem ISMS</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="steps-container">
+                    {# Step 1 #}
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4 class="step-title">Assets erfassen</h4>
+                            <p class="step-description">
+                                Beginnen Sie mit der Erfassung Ihrer IT-Assets. Kategorisieren Sie Hardware, Software,
+                                Daten und Services für einen vollständigen Überblick.
+                            </p>
+                            <a href="{{ path('app_asset_new') }}" class="btn btn-sm btn-primary">Asset hinzufügen</a>
+                        </div>
+                    </div>
+
+                    {# Step 2 #}
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4 class="step-title">Risiken bewerten</h4>
+                            <p class="step-description">
+                                Identifizieren Sie potenzielle Risiken für Ihre Assets. Bewerten Sie Eintrittswahrscheinlichkeit
+                                und Auswirkungen systematisch.
+                            </p>
+                            <a href="{{ path('app_risk_new') }}" class="btn btn-sm btn-primary">Risiko erfassen</a>
+                        </div>
+                    </div>
+
+                    {# Step 3 #}
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4 class="step-title">Controls implementieren</h4>
+                            <p class="step-description">
+                                Wählen Sie passende Controls aus dem ISO 27001 Annex A und implementieren Sie
+                                Sicherheitsmaßnahmen zur Risikobehandlung.
+                            </p>
+                            <a href="{{ path('app_compliance_index') }}" class="btn btn-sm btn-primary">Controls ansehen</a>
+                        </div>
+                    </div>
+
+                    {# Step 4 #}
+                    <div class="step-item">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h4 class="step-title">Team schulen</h4>
+                            <p class="step-description">
+                                Sensibilisieren Sie Ihre Mitarbeiter durch regelmäßige Trainings. Dokumentieren Sie
+                                alle Schulungsaktivitäten für Compliance-Nachweise.
+                            </p>
+                            <a href="{{ path('app_training_new') }}" class="btn btn-sm btn-primary">Training planen</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<style>
-.module-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: var(--spacing-lg);
-    margin: var(--spacing-xl) 0;
-}
-
-.module-card {
-    background: var(--color-white);
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius);
-    padding: var(--spacing-lg);
-    text-align: center;
-    transition: all var(--transition-normal);
-    box-shadow: var(--shadow-sm);
-}
-
-.module-card:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--color-secondary);
-}
-
-.module-icon {
-    font-size: 3rem;
-    color: var(--color-secondary);
-    margin-bottom: var(--spacing-md);
-}
-
-.module-card h3 {
-    color: var(--color-primary);
-    margin-bottom: var(--spacing-sm);
-}
-
-.module-card p {
-    color: var(--color-text-light);
-    margin-bottom: var(--spacing-lg);
-    min-height: 3em;
-}
-
-.mt-4 {
-    margin-top: var(--spacing-xl);
-}
-</style>
+{# CTA Section #}
+<div class="container my-5">
+    <div class="text-center py-5">
+        <h2 class="display-5 fw-bold mb-4">{{ 'home.go_to_dashboard'|trans({}, 'messages') }}</h2>
+        <p class="lead text-muted mb-4">
+            {{ 'app.subtitle'|trans({}, 'messages') }}
+        </p>
+        <a href="{{ path('app_dashboard') }}" class="btn btn-primary btn-lg">
+            <i class="bi bi-speedometer2" aria-hidden="true"></i> {{ 'home.go_to_dashboard'|trans({}, 'messages') }}
+        </a>
+    </div>
+</div>
 {% endblock %}

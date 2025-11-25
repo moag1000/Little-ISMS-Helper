@@ -49,26 +49,26 @@
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.title,
-                                    'label': form.title.vars.label|default('training.field.title'|trans({}, 'training')),
+                                    'label': 'training.field.title'|trans({}, 'training'),
                                     'required': true
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.description,
-                                    'label': form.description.vars.label|default('training.field.description'|trans({}, 'training'))
+                                    'label': 'training.field.description'|trans({}, 'training')
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.trainingType,
-                                    'label': form.trainingType.vars.label|default('training.field.training_type'|trans({}, 'training'))
+                                    'label': 'training.field.training_type'|trans({}, 'training')
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.deliveryMethod,
-                                    'label': form.deliveryMethod.vars.label|default('training.field.delivery_method'|trans({}, 'training'))
+                                    'label': 'training.field.delivery_method'|trans({}, 'training')
                                 } %}
                             </div>
                         </div>
@@ -85,19 +85,19 @@
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.scheduledDate,
-                                    'label': form.scheduledDate.vars.label|default('training.field.scheduled_date'|trans({}, 'training'))
+                                    'label': 'training.field.scheduled_date'|trans({}, 'training')
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.duration,
-                                    'label': form.duration.vars.label|default('training.field.duration'|trans({}, 'training'))
+                                    'label': 'training.field.duration'|trans({}, 'training')
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.location,
-                                    'label': form.location.vars.label|default('training.field.location'|trans({}, 'training'))
+                                    'label': 'training.field.location'|trans({}, 'training')
                                 } %}
                             </div>
                         </div>
@@ -114,19 +114,19 @@
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.trainer,
-                                    'label': form.trainer.vars.label|default('training.field.trainer'|trans({}, 'training'))
+                                    'label': 'training.field.trainer'|trans({}, 'training')
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.targetAudience,
-                                    'label': form.targetAudience.vars.label|default('training.field.target_audience'|trans({}, 'training'))
+                                    'label': 'training.field.target_audience'|trans({}, 'training')
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.participants,
-                                    'label': form.participants.vars.label|default('training.field.participants'|trans({}, 'training'))
+                                    'label': 'training.field.participants'|trans({}, 'training')
                                 } %}
                             </div>
                         </div>
@@ -143,13 +143,13 @@
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.status,
-                                    'label': form.status.vars.label|default('training.field.status'|trans({}, 'training'))
+                                    'label': 'training.field.status'|trans({}, 'training')
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.mandatory,
-                                    'label': form.mandatory.vars.label|default('training.field.mandatory'|trans({}, 'training'))
+                                    'label': 'training.field.mandatory'|trans({}, 'training')
                                 } %}
                             </div>
                         </div>
@@ -166,7 +166,7 @@
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.relatedControls,
-                                    'label': form.relatedControls.vars.label|default('training.field.related_controls'|trans({}, 'training')),
+                                    'label': 'training.field.related_controls'|trans({}, 'training'),
                                     'help': 'training.controls_help'|trans({}, 'training')
                                 } %}
                             </div>
@@ -184,13 +184,13 @@
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.materials,
-                                    'label': form.materials.vars.label|default('training.field.materials'|trans({}, 'training'))
+                                    'label': 'training.field.materials'|trans({}, 'training')
                                 } %}
                             </div>
                             <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.feedback,
-                                    'label': form.feedback.vars.label|default('training.field.feedback'|trans({}, 'training'))
+                                    'label': 'training.field.feedback'|trans({}, 'training')
                                 } %}
                             </div>
                         </div>

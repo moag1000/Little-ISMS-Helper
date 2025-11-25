@@ -1,20 +1,20 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'assets' %}
 
-{% block title %}{{ 'assets.title.new'|trans({}, 'assets') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'asset.title.new'|trans({}, 'asset') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
         { label: 'nav.assets'|trans({}, 'nav', 'nav'), url: path('app_asset_index'), icon: 'bi-cpu' },
-        { label: 'assets.title.new'|trans({}, 'assets') }
+        { label: 'asset.title.new'|trans({}, 'asset') }
     ]
 } %}
 
 {# Page Header #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'assets.title.new'|trans({}, 'assets'),
+    title: 'asset.title.new'|trans({}, 'asset'),
     icon: 'bi-plus-circle',
     actions: [
         { label: 'common.back'|trans({}, 'messages'), url: path('app_asset_index'), variant: 'secondary', icon: 'bi-arrow-left' }
@@ -25,7 +25,7 @@
     <div class="card-body">
         {{ form_start(form) }}
             {% include 'asset/_form.html.twig' with {
-                'button_label': 'assets.action.create'|trans({}, 'assets'),
+                'button_label': 'asset.action.create'|trans({}, 'asset'),
                 'button_icon': 'bi-save'
             } %}
         {{ form_end(form) }}

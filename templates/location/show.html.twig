@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'locations' %}
 
-{% block title %}{{ location.name }} - {{ 'location.title.show'|trans({}, 'messages') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ location.name }} - {{ 'location.title.show'|trans({}, 'locations') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 <div class="page-header">
@@ -26,11 +26,11 @@
 
 {# Location Details #}
 <div class="card mb-4">
-    <h2>{{ 'location.section.details'|trans({}, 'messages') }}</h2>
+    <h2>{{ 'location.section.details'|trans({}, 'locations') }}</h2>
 
     {% if location.description %}
     <div class="form-group mt-3">
-        <label class="form-label">{{ 'location.field.description'|trans({}, 'messages') }}</label>
+        <label class="form-label">{{ 'location.field.description'|trans({}, 'locations') }}</label>
         <p class="text-light-pre-wrap">{{ location.description }}</p>
     </div>
     {% endif %}
@@ -38,7 +38,7 @@
     <div class="stats-grid mt-3 grid-responsive-250">
         <div class="stat-item">
             <strong>{{ ('location.type.' ~ location.locationType)|trans }}</strong>
-            <span>{{ 'location.field.type'|trans({}, 'messages') }}</span>
+            <span>{{ 'location.field.type'|trans({}, 'locations') }}</span>
         </div>
 
         {% if location.parentLocation %}
@@ -48,7 +48,7 @@
                     {{ location.parentLocation.name }}
                 </a>
             </strong>
-            <span>{{ 'location.field.parent_location'|trans({}, 'messages') }}</span>
+            <span>{{ 'location.field.parent_location'|trans({}, 'locations') }}</span>
         </div>
         {% endif %}
 
@@ -65,7 +65,7 @@
                     {{ ('location.security.' ~ location.securityLevel)|trans }}
                 </span>
             </strong>
-            <span>{{ 'location.field.security_level'|trans({}, 'messages') }}</span>
+            <span>{{ 'location.field.security_level'|trans({}, 'locations') }}</span>
         </div>
 
         <div class="stat-item">
@@ -76,7 +76,7 @@
                     <span class="badge bg-secondary">{{ 'common.no'|trans({}, 'messages') }}</span>
                 {% endif %}
             </strong>
-            <span>{{ 'location.field.badge_access'|trans({}, 'messages') }}</span>
+            <span>{{ 'location.field.badge_access'|trans({}, 'locations') }}</span>
         </div>
     </div>
 </div>
@@ -84,7 +84,7 @@
 {# Address Information #}
 {% if location.address or location.city or location.country %}
 <div class="card mb-4">
-    <h2>{{ 'location.section.address'|trans({}, 'messages') }}</h2>
+    <h2>{{ 'location.section.address'|trans({}, 'locations') }}</h2>
     <div class="info-box mt-2 bg-light">
         {% if location.address %}
             <p>{{ location.address }}</p>
@@ -105,7 +105,7 @@
 {# Child Locations #}
 {% if location.childLocations|length > 0 %}
 <div class="card mb-4">
-    <h2>{{ 'location.section.child_locations'|trans({}, 'messages') }} ({{ location.childLocations|length }})</h2>
+    <h2>{{ 'location.section.child_locations'|trans({}, 'locations') }} ({{ location.childLocations|length }})</h2>
     <div class="mt-2">
     {% embed '_components/_table.html.twig' with {
         'noMargin': true,
@@ -113,9 +113,9 @@
     } %}
         {% block table_head %}
             <tr>
-                <th scope="col">{{ 'location.field.name'|trans({}, 'messages') }}</th>
-                <th scope="col">{{ 'location.field.type'|trans({}, 'messages') }}</th>
-                <th scope="col">{{ 'location.field.security_level'|trans({}, 'messages') }}</th>
+                <th scope="col">{{ 'location.field.name'|trans({}, 'locations') }}</th>
+                <th scope="col">{{ 'location.field.type'|trans({}, 'locations') }}</th>
+                <th scope="col">{{ 'location.field.security_level'|trans({}, 'locations') }}</th>
                 <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
             </tr>
         {% endblock %}
@@ -151,7 +151,7 @@
 
 {# Additional Features #}
 <div class="card">
-    <h2>{{ 'location.section.features'|trans({}, 'messages') }}</h2>
+    <h2>{{ 'location.section.features'|trans({}, 'locations') }}</h2>
     <div class="stats-grid mt-2 grid-responsive-250">
         <div class="stat-item">
             <strong>
@@ -161,7 +161,7 @@
                     <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
                 {% endif %}
             </strong>
-            <span>{{ 'location.field.status'|trans({}, 'messages') }}</span>
+            <span>{{ 'location.field.status'|trans({}, 'locations') }}</span>
         </div>
 
         <div class="stat-item">
@@ -172,7 +172,7 @@
                     <span class="text-muted-color">-</span>
                 {% endif %}
             </strong>
-            <span>{{ 'location.field.access_control'|trans({}, 'messages') }}</span>
+            <span>{{ 'location.field.access_control'|trans({}, 'locations') }}</span>
         </div>
     </div>
 </div>
@@ -185,7 +185,7 @@
     <a href="{{ path('app_location_index') }}" class="btn btn-secondary">
         📋 {{ 'common.back_to_list'|trans({}, 'messages') }}
     </a>
-    <form method="post" action="{{ path('app_location_delete', {id: location.id}) }}" onsubmit="return confirm('{{ 'location.confirm.delete'|trans({}, 'messages') }}');" class="d-inline">
+    <form method="post" action="{{ path('app_location_delete', {id: location.id}) }}" onsubmit="return confirm('{{ 'location.confirm.delete'|trans({}, 'locations') }}');" class="d-inline">
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ location.id) }}">
         <button type="submit" class="btn btn-danger">🗑️ {{ 'common.delete'|trans({}, 'messages') }}</button>
     </form>
