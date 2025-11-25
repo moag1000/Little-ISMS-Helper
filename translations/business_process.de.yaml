@@ -9,7 +9,7 @@ business_process:
         supporting_resources: Supporting Resources
     field:
         name: Name
-        process_owner: Process Owner
+        process_owner: Prozessverantwortlicher
         description: Beschreibung
         criticality: Criticality
         rto: Rto
@@ -27,7 +27,7 @@ business_process:
         identified_risks: Identified Risks
     help:
         name: Name
-        process_owner: Process Owner
+        process_owner: Prozessverantwortlicher
         description: Beschreibung
         criticality: Criticality
         rto: Rto

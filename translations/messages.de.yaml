@@ -666,7 +666,7 @@ audit:
     objectives: Audit-Ziele
     planned_date: 'Geplantes Datum'
     actual_date: 'Tatsächliches Datum'
-    lead_auditor: 'Lead Auditor'
+    lead_auditor: 'Leitender Auditor'
     audit_team: Audit-Team
     auditee: 'Auditierte Person/Abteilung'
     department: Abteilung
@@ -753,7 +753,7 @@ audit:
         actual_date: 'Tatsächliches Datum'
         completed_date: Abschlussdatum
         status: Status
-        lead_auditor: 'Lead Auditor'
+        lead_auditor: 'Leitender Auditor'
         audit_team: Audit-Team
         frameworks: 'Geprüfte Frameworks'
         findings: 'Feststellungen & Nichtkonformitäten'
@@ -2227,7 +2227,7 @@ mfa_token:
         webauthn: 'Security Key (WebAuthn/FIDO2)'
         sms: 'SMS Verification'
         hardware: 'Hardware Token'
-        backup: 'Backup Codes'
+        backup: 'Backup-Codes'
     kpi:
         active: 'Aktive Tokens'
     placeholder:

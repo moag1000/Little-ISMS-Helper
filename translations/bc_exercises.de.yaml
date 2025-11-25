@@ -21,7 +21,7 @@ bc_exercises:
         improvements: 'Verbesserungsbereiche (AFI)'
         findings: Feststellungen
         action_items: Maßnahmen
-        lessons_learned: 'Lessons Learned'
+        lessons_learned: 'Gelernte Lektionen'
         plan_updates_required: 'Planaktualisierungen erforderlich'
         related_plans: 'Zugehörige BC-Pläne'
         report: Report
@@ -46,7 +46,7 @@ bc_exercises:
         areas_for_improvement: Areas For Improvement
         findings: Feststellungen
         action_items: Action Items
-        lessons_learned: Lessons Learned
+        lessons_learned: Gelernte Lektionen
         plan_updates_required: Plan Updates Required
     badge:
         'yes': Ja
@@ -67,7 +67,7 @@ bc_exercises:
         areas_for_improvement: Areas For Improvement
         findings: Feststellungen
         action_items: Action Items
-        lessons_learned: Lessons Learned
+        lessons_learned: Gelernte Lektionen
         plan_updates_required: Plan Updates Required
         success_rating: Success Rating
         report_completed: Report Completed
