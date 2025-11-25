@@ -30,25 +30,25 @@ document:
         all_documents: 'Alle Dokumente'
         basic_info: Basisinformationen
         file_upload: Datei‑Upload
-        select_type: Auswählen Typ
-        types_overview: Types Overview
-        documents: Dokumente
-        type_statistics: Type Statistics
-        recent_activity: Recent Activity
-        all_types: All Types
+        select_type: 'Typ auswählen'
+        types_overview: 'Dokumenttypen-Übersicht'
+        documents: 'Dokumente'
+        type_statistics: 'Typ-Statistiken'
+        recent_activity: 'Letzte Aktivitäten'
+        all_types: 'Alle Typen'
     filter:
         all_categories: 'Alle Kategorien'
-        search_placeholder: Suche...
+        search_placeholder: 'Suche...'
     table:
-        icon: Symbol
+        icon: 'Symbol'
         uploaded_by: 'Hochgeladen von'
     message:
         no_results: 'Keine Ergebnisse gefunden'
         no_documents: 'Noch keine Dokumente vorhanden'
         upload_first: 'Laden Sie Ihr erstes Dokument hoch, um zu starten'
-        no_documents_for_type: No Documents For Type
-        no_types: No Types
-        no_recent_activity: No Recent Activity
+        no_documents_for_type: 'Keine Dokumente für diesen Typ vorhanden'
+        no_types: 'Keine Dokumenttypen definiert'
+        no_recent_activity: 'Keine aktuellen Aktivitäten'
     confirm:
         delete: 'Dieses Dokument wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.'
     new: 'Neues Dokument'
