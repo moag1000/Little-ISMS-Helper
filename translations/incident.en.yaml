@@ -31,8 +31,8 @@ incident:
         resolved: Resolved
         closed: Closed
         reported: Reported
-        in_investigation: In Investigation
-        in_resolution: In Resolution
+        in_investigation: 'In Investigation'
+        in_resolution: 'In Resolution'
     nis2_timeline:
         title: 'NIS2 Reporting Timeline (Article 23)'
         description: 'According to the NIS2 Directive (EU 2022/2555), significant incidents must be reported within defined deadlines.'
@@ -55,48 +55,48 @@ incident:
         description: Description
         severity: Severity
         status: Status
-        detected_at: Detected At
-        occurred_at: Occurred At
-        detected_date: Detected Date
-        affected_systems: Affected Systems
-        affected_assets: Affected Assets
-        root_cause: Root Cause
-        corrective_actions: Corrective Actions
-        lessons_learned: Lessons Learned
-        closed_date: Closed Date
-        closed_at: Closed At
-        nis2_category: Nis2 Category
-        cross_border_impact: Cross Border Impact
-        early_warning_reported_at: Early Warning Reported At
-        detailed_notification_reported_at: Detailed Notification Reported At
-        final_report_submitted_at: Final Report Submitted At
-        affected_users_count: Affected Users Count
-        estimated_financial_impact: Estimated Financial Impact
-        national_authority_notified: National Authority Notified
-        authority_reference_number: Authority Reference Number
+        detected_at: 'Detected At'
+        occurred_at: 'Occurred At'
+        detected_date: 'Detected Date'
+        affected_systems: 'Affected Systems'
+        affected_assets: 'Affected Assets'
+        root_cause: 'Root Cause'
+        corrective_actions: 'Corrective Actions'
+        lessons_learned: 'Lessons Learned'
+        closed_date: 'Closed Date'
+        closed_at: 'Closed At'
+        nis2_category: 'Nis2 Category'
+        cross_border_impact: 'Cross Border Impact'
+        early_warning_reported_at: 'Early Warning Reported At'
+        detailed_notification_reported_at: 'Detailed Notification Reported At'
+        final_report_submitted_at: 'Final Report Submitted At'
+        affected_users_count: 'Affected Users Count'
+        estimated_financial_impact: 'Estimated Financial Impact'
+        national_authority_notified: 'National Authority Notified'
+        authority_reference_number: 'Authority Reference Number'
     label:
         title: Title
         severity: Severity
     edit: Edit
     section:
-        basic_info: Basic Information
-        severity_status: Severity Status
-        detection_reporting: Detection Reporting
-        affected_systems: Affected Systems
+        basic_info: 'Basic Information'
+        severity_status: 'Severity Status'
+        detection_reporting: 'Detection Reporting'
+        affected_systems: 'Affected Systems'
         analysis: Analysis
-        nis2_reporting: Nis2 Reporting
-        nis2_info: Nis2 Info
+        nis2_reporting: 'Nis2 Reporting'
+        nis2_info: 'Nis2 Info'
         history: History
-    status_help: Status Help
-    analysis_resolution: Analysis Resolution
+    status_help: 'Status Help'
+    analysis_resolution: 'Analysis Resolution'
     update: Update
     new: New
     nis2_alert:
         title: Title
         description: Description
-        early_warning: Early Warning
-        detailed_notification: Detailed Notification
-        final_report: Final Report
+        early_warning: 'Early Warning'
+        detailed_notification: 'Detailed Notification'
+        final_report: 'Final Report'
     nis2_toggle:
         hide: Hide
         show: Show
@@ -107,12 +107,50 @@ incident:
         high: High
         critical: Critical
     filter:
-        data_breach: Data Breach
-        data_breach_only: Data Breach Only
-        nis2_only: Nis2 Only
+        data_breach: 'Data Breach'
+        data_breach_only: 'Data Breach Only'
+        nis2_only: 'Nis2 Only'
     nis2_compliance:
-        not_applicable: Not Applicable
+        not_applicable: 'Not Applicable'
     empty: Empty
     list:
         title: Title
-    controls_should_prevent: Controls Should Prevent
+    controls_should_prevent: 'Controls Should Prevent'
+    pdf:
+        reported_at: 'Reported at'
+        reported_by: 'Reported by'
+    placeholder:
+        title: 'e.g. Unauthorized access to customer database'
+        description: 'Describe the incident in detail (What happened? When? How was it discovered?)...'
+        reported_by: 'Name of reporting employee'
+        affected_systems: 'e.g. CRM system, email server, database XY'
+        root_cause: 'Describe the cause that enabled the incident...'
+        corrective_actions: 'Describe measures taken and planned...'
+        lessons_learned: 'What insights were gained? What should be improved?'
+        nis2_category: '-- Select NIS2 category --'
+        national_authority: 'e.g. BSI, NCSC, ANSSI'
+        authority_reference: 'Reference number from authority'
+    help:
+        severity: 'Assess severity based on impact and scope (ISO 27001 A.16.1.4)'
+        affected_systems: 'List all affected systems, applications and infrastructure'
+        affected_assets: 'Select assets affected by the incident (hold CTRL for multiple selection)'
+        nis2_category: 'Category according to NIS2 Directive Article 23'
+        early_warning_24h: 'Early warning must be submitted within 24 hours of detection (NIS2 Art. 23)'
+        detailed_notification_72h: 'Detailed notification within 72 hours (NIS2 Art. 23)'
+        final_report_1month: 'Final report within one month after the incident (NIS2 Art. 23)'
+        cross_border_impact: 'Does the incident have impact on other EU member states?'
+        affected_users_count: 'Estimated number of affected users/customers'
+        estimated_financial_impact: 'Estimated financial damage in EUR'
+        national_authority: 'Competent national authority (e.g. BSI in Germany)'
+    category:
+        data_breach: 'Data Breach'
+        security_incident: 'Security Incident'
+        system_outage: 'System Outage'
+        compliance_violation: 'Compliance Violation'
+        physical_security: 'Physical Security'
+        other: Other
+    nis2_category:
+        operational: Operational
+        security: Security
+        privacy: Privacy
+        availability: Availability

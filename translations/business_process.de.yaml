@@ -5,12 +5,12 @@ business_process:
         financial_impact: 'Finanzielle Auswirkungen'
         impact_assessment: 'Business Impact Analyse (BIA)'
         dependencies: 'Abhängigkeiten und Schnittstellen'
-        recovery: 'Wiederherstellungsstrategie'
+        recovery: Wiederherstellungsstrategie
         supporting_resources: 'Unterstützende Ressourcen und Assets'
     field:
-        name: 'Prozessname'
-        process_owner: 'Prozessverantwortlicher'
-        description: 'Prozessbeschreibung'
+        name: Prozessname
+        process_owner: Prozessverantwortlicher
+        description: Prozessbeschreibung
         criticality: 'Kritikalität (niedrig, mittel, hoch, kritisch)'
         rto: 'RTO (Recovery Time Objective) - Maximal tolerierbare Ausfallzeit'
         rpo: 'RPO (Recovery Point Objective) - Maximal tolerierbarer Datenverlust'
@@ -43,3 +43,13 @@ business_process:
         recovery_strategy: 'Strategie zur Wiederherstellung nach ISO 22301:2019 (z.B. Backup-Site, manuelle Prozesse, alternative Lieferanten)'
         supporting_assets: 'Verknüpfte IT-Assets, Infrastruktur und Ressourcen, die den Prozess unterstützen'
         identified_risks: 'Verknüpfte Risiken, die diesen Prozess gefährden könnten'
+    placeholder:
+        rto: 'z.B. 4'
+        rpo: 'z.B. 2'
+        mtpd: 'z.B. 24'
+    impact_level:
+        very_low: 'Sehr niedrig'
+        low: Niedrig
+        medium: Mittel
+        high: Hoch
+        very_high: 'Sehr hoch'

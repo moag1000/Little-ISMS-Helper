@@ -4,8 +4,8 @@ asset:
         bcm_insights: 'BCM insights'
         create: 'Create asset'
         update: 'Save changes'
-        view_critical: View Critical
-        view_details: View Details
+        view_critical: 'View Critical'
+        view_details: 'View Details'
     details:
         title: 'Asset details'
     section:
@@ -23,10 +23,10 @@ asset:
         related_risks: 'Related risks'
         related_incidents: 'Related incidents'
         history: History
-        business_impact: Business Impact
-        rto_analysis: Rto Analysis
-        critical_assets: Critical Assets
-        dependency_insights: Dependency Insights
+        business_impact: 'Business Impact'
+        rto_analysis: 'Rto Analysis'
+        critical_assets: 'Critical Assets'
+        dependency_insights: 'Dependency Insights'
     field:
         name: Name
         type: 'Asset type'
@@ -38,17 +38,22 @@ asset:
         confidentiality: Confidentiality
         integrity: Integrity
         availability: Availability
-        rto_category: Rto Category
-        asset_count: Asset Count
+        rto_category: 'RTO Category'
+        asset_count: 'Asset Count'
         examples: Examples
-        asset_name: Asset Name
-        business_criticality: Business Criticality
-        rto: Rto
-        rpo: Rpo
-        recovery_strategy: Recovery Strategy
-        avg_rto: Avg Rto
-        monetary_value: Monetary Value
+        asset_name: 'Asset Name'
+        business_criticality: 'Business Criticality'
+        rto: 'RTO (Recovery Time Objective)'
+        rpo: 'RPO (Recovery Point Objective)'
+        recovery_strategy: 'Recovery Strategy'
+        avg_rto: 'Average RTO'
+        monetary_value: 'Monetary Value'
         classification: Classification
+        data_classification: 'Data Classification'
+        acceptable_use_policy: 'Acceptable Use Policy'
+        handling_instructions: 'Handling Instructions'
+        return_date: 'Return Date'
+        status: Status
     help:
         name: 'Unique name of the asset'
         type: 'Category of the asset (hardware, software, data, etc.)'
@@ -60,6 +65,12 @@ asset:
         confidentiality: 'Protection need regarding confidentiality of information'
         integrity: 'Protection need regarding integrity and correctness of data'
         availability: 'Protection need regarding constant availability and usability'
+        monetary_value: 'Estimated monetary value of the asset in EUR'
+        data_classification: 'Classification of data by protection requirements'
+        acceptable_use_policy: 'Guidelines for acceptable use of this asset'
+        handling_instructions: 'Special instructions for handling this asset'
+        return_date: 'Date of planned return (for temporarily assigned assets)'
+        status: 'Current usage status of the asset'
     cia_help: 'Assess protection needs for confidentiality, integrity and availability (1=very low, 5=very high)'
     label:
         type: Type
@@ -114,7 +125,25 @@ asset:
     status:
         active: Active
         inactive: Inactive
+        in_use: 'In Use'
+        returned: Returned
         retired: Retired
+        disposed: Disposed
+    placeholder:
+        name: 'e.g. Server-001 or Laptop Marketing'
+        description: 'Describe function and purpose of the asset...'
+        owner: 'Name of asset owner'
+        location: 'e.g. Server Room A or Office 201'
+        data_classification: '-- Select classification --'
+        acceptable_use_policy: 'Describe usage guidelines...'
+        handling_instructions: 'Special handling instructions...'
+    type:
+        information: Information
+        software: Software
+        hardware: Hardware
+        service: Service
+        personnel: Personnel
+        physical: Physical
     new: New
     list:
         title: Title
@@ -124,25 +153,25 @@ asset:
         standard: Standard
         flexible: Flexible
     badge:
-        business_critical: Business Critical
+        business_critical: 'Business Critical'
     message:
-        no_critical_assets: No Critical Assets
+        no_critical_assets: 'No Critical Assets'
     description:
-        bcm_insights: Bcm Insights
-        critical_impact: Critical Impact
-        high_impact: High Impact
-        medium_impact: Medium Impact
-        low_impact: Low Impact
-        rto_analysis: Rto Analysis
+        bcm_insights: 'Bcm Insights'
+        critical_impact: 'Critical Impact'
+        high_impact: 'High Impact'
+        medium_impact: 'Medium Impact'
+        low_impact: 'Low Impact'
+        rto_analysis: 'Rto Analysis'
         dependencies: Dependencies
     stats:
-        total_assets: Total Assets
-        critical_assets: Critical Assets
-        high_risk_assets: High Risk Assets
-        avg_rto: Avg Rto
-        with_dependencies: With Dependencies
-        avg_dependencies: Avg Dependencies
-        single_points_failure: Single Points Failure
+        total_assets: 'Total Assets'
+        critical_assets: 'Critical Assets'
+        high_risk_assets: 'High Risk Assets'
+        avg_rto: 'Avg Rto'
+        with_dependencies: 'With Dependencies'
+        avg_dependencies: 'Avg Dependencies'
+        single_points_failure: 'Single Points Failure'
     impact:
         critical: Critical
         high: High
@@ -150,8 +179,8 @@ asset:
         low: Low
     title.new: 'New Asset'
     title.edit: 'Edit Asset'
-    title.bcm_insights: Bcm Insights
+    title.bcm_insights: 'Bcm Insights'
 asset_management:
     title: Title
     description: Description
-    active_assets: Active Assets
+    active_assets: 'Active Assets'

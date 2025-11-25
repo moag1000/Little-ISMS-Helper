@@ -4,6 +4,18 @@ incident_management:
     open_incidents: 'Offene Vorfälle'
     total_recorded: 'Insgesamt erfasste Vorfälle'
 incident:
+    breadcrumb: Vorfallsmanagement
+    header:
+        title: Vorfallsmanagement
+        subtitle: 'Dokumentation und Behandlung von Informationssicherheitsvorfällen'
+        action: { report: 'Vorfall melden', export: Export }
+    kpi:
+        total: 'Gesamte Vorfälle'
+        open: 'Offene Vorfälle'
+        critical: 'Kritische Vorfälle'
+        avg_resolution: 'Ø Lösungszeit'
+        nis2_attention: 'NIS2 erfordert Aufmerksamkeit'
+        categories: Kategorien
     new: 'Neuer Vorfall'
     create: 'Vorfall erstellen'
     action:
@@ -12,9 +24,6 @@ incident:
         back_to_list: 'Zurück zur Liste'
         delete: Löschen
         download_nis2_report: 'NIS2-Report herunterladen'
-    kpi:
-        nis2_attention: 'NIS2 erfordert Aufmerksamkeit'
-        categories: Kategorien
     section:
         basic_info: Basisinformationen
         severity_status: 'Schweregrad & Status'
@@ -125,3 +134,38 @@ incident:
     pdf:
         reported_at: 'Gemeldet am'
         reported_by: 'Gemeldet von'
+    placeholder:
+        title: 'z.B. Unbefugter Zugriff auf Kundendatenbank'
+        description: 'Beschreiben Sie den Vorfall detailliert (Was ist passiert? Wann? Wie wurde es entdeckt?)...'
+        reported_by: 'Name des meldenden Mitarbeiters'
+        affected_systems: 'z.B. CRM-System, E-Mail-Server, Datenbank XY'
+        root_cause: 'Beschreiben Sie die Ursache, die den Vorfall ermöglicht hat...'
+        corrective_actions: 'Beschreiben Sie ergriffene und geplante Maßnahmen...'
+        lessons_learned: 'Welche Erkenntnisse wurden gewonnen? Was sollte verbessert werden?'
+        nis2_category: '-- NIS2-Kategorie auswählen --'
+        national_authority: 'z.B. BSI, BNetzA'
+        authority_reference: 'Aktenzeichen von der Behörde'
+    help:
+        severity: 'Bewerten Sie den Schweregrad basierend auf Auswirkung und Umfang (ISO 27001 A.16.1.4)'
+        affected_systems: 'Listen Sie alle betroffenen Systeme, Anwendungen und Infrastruktur auf'
+        affected_assets: 'Wählen Sie die vom Vorfall betroffenen Assets aus (STRG gedrückt halten für Mehrfachauswahl)'
+        nis2_category: 'Kategorie gemäß NIS2-Richtlinie Artikel 23'
+        early_warning_24h: 'Frühwarnung muss innerhalb von 24 Stunden nach Erkennung erfolgen (NIS2 Art. 23)'
+        detailed_notification_72h: 'Detaillierte Meldung innerhalb von 72 Stunden (NIS2 Art. 23)'
+        final_report_1month: 'Abschlussbericht innerhalb eines Monats nach dem Vorfall (NIS2 Art. 23)'
+        cross_border_impact: 'Hat der Vorfall Auswirkungen auf andere EU-Mitgliedstaaten?'
+        affected_users_count: 'Geschätzte Anzahl betroffener Nutzer/Kunden'
+        estimated_financial_impact: 'Geschätzter finanzieller Schaden in EUR'
+        national_authority: 'Zuständige nationale Behörde (z.B. BSI in Deutschland)'
+    category:
+        data_breach: Datenschutzverletzung
+        security_incident: Sicherheitsvorfall
+        system_outage: Systemausfall
+        compliance_violation: Compliance-Verstoß
+        physical_security: 'Physische Sicherheit'
+        other: Sonstiges
+    nis2_category:
+        operational: Operativ
+        security: Sicherheit
+        privacy: Datenschutz
+        availability: Verfügbarkeit

@@ -1,312 +1,398 @@
-compliance.title.transitive: 'Transitive Compliance'
-compliance.title.compare: 'Framework Comparison'
-compliance.title.gap_analysis: 'Gap Analysis'
-compliance.title.data_reuse: 'Data Reuse'
-compliance.description.transitive: 'Analyzes how requirements of different frameworks overlap and create leverage effects.'
-compliance.description.compare: 'Compares two compliance frameworks for overlaps and differences.'
-compliance.description.gap_analysis: 'Identifies gaps in the implementation of a framework and prioritizes remediation actions.'
-compliance.description.data_reuse: 'Analyzes reuse of data points across frameworks and highlights efficiency potential.'
-compliance.description.critical_gaps: 'Critical gaps with highest priority for immediate action.'
-compliance.description.high_gaps: 'Severe gaps with high priority.'
-compliance.description.medium_gaps: 'Medium gaps with moderate priority.'
-compliance.description.low_gaps: 'Low gaps to be addressed later.'
-compliance.description.reuse_matrix: 'Overview of where data can be reused across frameworks.'
-compliance.section.framework_relationships: 'Framework Relationships'
-compliance.section.select_frameworks: 'Select Frameworks'
-compliance.section.framework_selection: 'Framework Selection'
-compliance.section.reuse_opportunities: 'Reuse Opportunities'
-compliance.section.reuse_matrix: 'Reuse Matrix'
-compliance.section.framework_coverage: 'Framework Coverage'
-compliance.stats.total_relationships: 'Total Relationships'
-compliance.stats.transitive_compliance: 'Transitive Coverage'
-compliance.stats.leverage_rate: 'Leverage Rate'
-compliance.stats.frameworks_leveraged: 'Frameworks Leveraged'
-compliance.stats.total_requirements: 'Total Requirements'
-compliance.stats.met_requirements: 'Met Requirements'
-compliance.stats.gaps_identified: 'Gaps Identified'
-compliance.stats.compliance_score: 'Compliance Score'
-compliance.stats.common_requirements: 'Common Requirements'
-compliance.stats.overlap_percentage: 'Overlap Percentage'
-compliance.stats.total_data_points: 'Total Data Points'
-compliance.stats.reused_data: 'Reused Data'
-compliance.stats.reuse_rate: 'Reuse Rate'
-compliance.stats.effort_saved: 'Effort Saved'
-compliance.action.create_missing_mappings: 'Create missing mappings'
-compliance.action.create_mappings: 'Create mappings'
-compliance.action.compare: Compare
-compliance.action.export_pdf: 'PDF Report'
-compliance.action.export_excel: 'Excel Export'
-compliance.action.export_csv: 'CSV Export'
-compliance.unit.requirements: requirements
-compliance.field.framework_1: 'Framework 1'
-compliance.field.framework_2: 'Framework 2'
-compliance.field.select_framework: 'Select framework'
-compliance.field.total_requirements: 'Total requirements'
-compliance.field.unique_requirements: 'Unique requirements'
-compliance.field.categories: Categories
-compliance.field.requirement: Requirement
-compliance.field.framework: Framework
-compliance.field.severity: Severity
-compliance.field.gap_description: 'Gap description'
-compliance.field.remediation: Remediation
-compliance.field.due_date: 'Due date'
-compliance.field.data_element: 'Data element'
-compliance.field.source: Source
-compliance.field.reuse_count: 'Reuse count'
-compliance.field.used_in_frameworks: 'Used in frameworks'
-compliance.field.quality_score: 'Quality score'
-compliance.field.frameworks: Frameworks
-compliance.field.time_savings: 'Time savings'
-compliance.field.total_requirements_short: 'Total requirements'
-compliance.field.reused_data: 'Reused data'
-compliance.field.new_data_needed: 'New data needed'
-compliance.field.coverage: Coverage
-compliance.option.select_framework: 'Select framework…'
-compliance.option.all_frameworks: 'All frameworks'
-compliance.severity.critical: Critical
-compliance.severity.high: High
-compliance.severity.medium: Medium
-compliance.severity.low: Low
-compliance_mapping.mapping_type.weak: 'Weak (0-49%)'
-compliance_mapping.mapping_type.partial: 'Partial (50-99%)'
-compliance_mapping.mapping_type.full: 'Full (100%)'
-compliance_mapping.mapping_type.exceeds: 'Exceeds (101-150%)'
-compliance_mapping.confidence.low: Low
-compliance_mapping.confidence.medium: Medium
-compliance_mapping.confidence.high: High
-compliance_requirement.priority.critical: Critical
-compliance_requirement.priority.high: High
-compliance_requirement.priority.medium: Medium
-compliance_requirement.priority.low: Low
-compliance_requirement.requirement_type.core: 'Core requirement'
-compliance_requirement.requirement_type.detailed: 'Detailed requirement'
-compliance_requirement.requirement_type.sub_requirement: Sub-requirement
-compliance_requirement.message.no_gaps: 'No gaps found'
-compliance_requirement.message.no_gaps_desc: 'No implementation gaps were identified for the selected framework.'
-compliance_requirement.message.no_opportunities: 'No reuse opportunities found.'
-compliance_requirement.message.no_data_elements: 'No data elements available.'
-compliance_requirement.message.no_frameworks: 'No frameworks available.'
-compliance_requirement.badge.overdue: Overdue
-compliance_requirement.badge.reusable: reusable
-compliance_requirement.framework_dashboard.compliance_steps: 'Follow these steps to achieve 100% compliance'
-compliance_requirement.mapping.create_link: 'Create a mapping'
-compliance_requirement.mapping.create_instruction: 'to show how requirements relate to your controls'
-compliance_requirement.mapping_quality.no_mappings_found: 'Es wurden keine Compliance-Mappings in der Datenbank gefunden.'
-compliance_requirement.gaps.title_description: 'Identifizierte Lücken in Compliance-Mappings'
-compliance_requirement.gaps.by_priority: 'By Priority'
-compliance_requirement.gaps.change_status_instruction: 'Ändern Sie den Gap-Status in den jeweiligen Mapping-Reviews:'
-compliance_requirement.requirement.view_page_note: 'view page'
-compliance_requirement.requirement.filter_by_framework: 'Filter by Framework'
-nis2.article: __nis2.article
-compliance.manage_frameworks: __compliance.manage_frameworks
-compliance.manage_frameworks_subtitle: __compliance.manage_frameworks_subtitle
-compliance.framework_statistics: __compliance.framework_statistics
-compliance.total_available: __compliance.total_available
-compliance.loaded: __compliance.loaded
-compliance.not_loaded: __compliance.not_loaded
-compliance.mandatory_missing: __compliance.mandatory_missing
-compliance.available_frameworks: __compliance.available_frameworks
-compliance.version: __compliance.version
-compliance.industry: __compliance.industry
-compliance.regulatory_body: __compliance.regulatory_body
-compliance.mandatory: __compliance.mandatory
-compliance.required_modules: __compliance.required_modules
-compliance.already_loaded: __compliance.already_loaded
-compliance.delete_framework: __compliance.delete_framework
-compliance.load_framework: __compliance.load_framework
-compliance.confirm_load: __compliance.confirm_load
-compliance.loading: __compliance.loading
-compliance.successfully_loaded: __compliance.successfully_loaded
-compliance.load_failed: __compliance.load_failed
-compliance.error: __compliance.error
-compliance.deleting: __compliance.deleting
-compliance.successfully_deleted: __compliance.successfully_deleted
-compliance.delete_failed: __compliance.delete_failed
-compliance.mapping.create_link: __compliance.mapping.create_link
-compliance.mapping.create_instruction: __compliance.mapping.create_instruction
-compliance.message.no_data_elements: __compliance.message.no_data_elements
-compliance.message.no_frameworks: __compliance.message.no_frameworks
-compliance.badge.reusable: __compliance.badge.reusable
-compliance.message.no_opportunities: __compliance.message.no_opportunities
-compliance.framework.edit.title: __compliance.framework.edit.title
-compliance.framework.edit.heading: __compliance.framework.edit.heading
-compliance.framework.section.identification: __compliance.framework.section.identification
-compliance.framework.field.code: __compliance.framework.field.code
-compliance.framework.field.version: __compliance.framework.field.version
-compliance.framework.field.name: __compliance.framework.field.name
-compliance.framework.section.details: __compliance.framework.section.details
-compliance.framework.field.description: __compliance.framework.field.description
-compliance.framework.field.industry: __compliance.framework.field.industry
-compliance.framework.field.regulatory_body: __compliance.framework.field.regulatory_body
-compliance.framework.field.scope: __compliance.framework.field.scope
-compliance.framework.section.configuration: __compliance.framework.section.configuration
-compliance.framework.field.mandatory: __compliance.framework.field.mandatory
-compliance.framework.field.active: __compliance.framework.field.active
-compliance.framework.info: __compliance.framework.info
-compliance.framework.field.requirements: __compliance.framework.field.requirements
-compliance.framework.confirm.delete: __compliance.framework.confirm.delete
-compliance.framework.new.title: __compliance.framework.new.title
-compliance.framework.new.heading: __compliance.framework.new.heading
-compliance.framework.help.code.title: __compliance.framework.help.code.title
-compliance.framework.help.code.text: __compliance.framework.help.code.text
-compliance.framework.help.mandatory.title: __compliance.framework.help.mandatory.title
-compliance.framework.help.mandatory.text: __compliance.framework.help.mandatory.text
-compliance.framework.help.active.title: __compliance.framework.help.active.title
-compliance.framework.help.active.text: __compliance.framework.help.active.text
-compliance.framework.field.status: __compliance.framework.field.status
-compliance.framework.field.compliance: __compliance.framework.field.compliance
-compliance.framework.action.dashboard: __compliance.framework.action.dashboard
-compliance.framework.title: __compliance.framework.title
-compliance.framework.heading: __compliance.framework.heading
-compliance.framework.description: __compliance.framework.description
-compliance.framework.action.new: __compliance.framework.action.new
-compliance.framework.list: __compliance.framework.list
-compliance.framework.empty: __compliance.framework.empty
-compliance.framework.no_requirements: __compliance.framework.no_requirements
-compliance.requirement.action.new: __compliance.requirement.action.new
-compliance.requirement.priority.critical: __compliance.requirement.priority.critical
-compliance.requirement.priority.high: __compliance.requirement.priority.high
-compliance.requirement.priority.medium: __compliance.requirement.priority.medium
-compliance.requirement.priority.low: __compliance.requirement.priority.low
-compliance.framework.action.gap_analysis: __compliance.framework.action.gap_analysis
-compliance.framework.action.assess: __compliance.framework.action.assess
-compliance.framework.badge.mandatory: __compliance.framework.badge.mandatory
-compliance.framework.stats.total_requirements: __compliance.framework.stats.total_requirements
-compliance.framework.stats.applicable: __compliance.framework.stats.applicable
-compliance.framework.stats.fulfilled: __compliance.framework.stats.fulfilled
-compliance.framework.stats.compliance: __compliance.framework.stats.compliance
-compliance.cross_framework.source_target_label: __compliance.cross_framework.source_target_label
-compliance.cross_framework.table.source: __compliance.cross_framework.table.source
-compliance.cross_framework.table.target: __compliance.cross_framework.table.target
-compliance.cross_framework.table.type: __compliance.cross_framework.table.type
-compliance.cross_framework.table.strength: __compliance.cross_framework.table.strength
-compliance.cross_framework.table.bidirectional: __compliance.cross_framework.table.bidirectional
-compliance.cross_framework.yes_bidirectional: __compliance.cross_framework.yes_bidirectional
-compliance.cross_framework.title: __compliance.cross_framework.title
-compliance.cross_framework.subtitle: __compliance.cross_framework.subtitle
-compliance.cross_framework.back: __compliance.cross_framework.back
-compliance.cross_framework.coverage_matrix: __compliance.cross_framework.coverage_matrix
-compliance.cross_framework.coverage_description: __compliance.cross_framework.coverage_description
-compliance.cross_framework.coverage_high: __compliance.cross_framework.coverage_high
-compliance.cross_framework.coverage_medium: __compliance.cross_framework.coverage_medium
-compliance.cross_framework.coverage_low: __compliance.cross_framework.coverage_low
-compliance.cross_framework.strong_mappings: __compliance.cross_framework.strong_mappings
-compliance.cross_framework.partial_mappings_label: __compliance.cross_framework.partial_mappings_label
-compliance.cross_framework.weak_mappings: __compliance.cross_framework.weak_mappings
-compliance.cross_framework.showing_of: __compliance.cross_framework.showing_of
-compliance.cross_framework.understanding_title: __compliance.cross_framework.understanding_title
-compliance.cross_framework.what_title: __compliance.cross_framework.what_title
-compliance.cross_framework.what_description: __compliance.cross_framework.what_description
-compliance.cross_framework.types_title: __compliance.cross_framework.types_title
-compliance.cross_framework.types.exceeds: __compliance.cross_framework.types.exceeds
-compliance.cross_framework.types.full: __compliance.cross_framework.types.full
-compliance.cross_framework.types.partial: __compliance.cross_framework.types.partial
-compliance.cross_framework.types.weak: __compliance.cross_framework.types.weak
-compliance.cross_framework.bidirectional_title: __compliance.cross_framework.bidirectional_title
-compliance.cross_framework.bidirectional_description: __compliance.cross_framework.bidirectional_description
-compliance.cross_framework.strategic_title: __compliance.cross_framework.strategic_title
-compliance.cross_framework.strategic_description: __compliance.cross_framework.strategic_description
-compliance.page_title: __compliance.page_title
-compliance.page_subtitle: __compliance.page_subtitle
-compliance.button.cross_framework: __compliance.button.cross_framework
-compliance.button.transitive: __compliance.button.transitive
-compliance.button.compare_frameworks: __compliance.button.compare_frameworks
-compliance.quick_access: __compliance.quick_access
-compliance.quick_access_hint: __compliance.quick_access_hint
-compliance.data_reuse.title: __compliance.data_reuse.title
-compliance.data_reuse.description: __compliance.data_reuse.description
-compliance.label.compliance: __compliance.label.compliance
-compliance.label.fulfilled: __compliance.label.fulfilled
-compliance.label.gaps: __compliance.label.gaps
-compliance.button.open_dashboard: __compliance.button.open_dashboard
-compliance.no_frameworks_loaded: __compliance.no_frameworks_loaded
-compliance.add_frameworks: __compliance.add_frameworks
-compliance.contact_admin_to_add_frameworks: __compliance.contact_admin_to_add_frameworks
-compliance.stats.total_mappings: __compliance.stats.total_mappings
-compliance.stats.full_exceeds: __compliance.stats.full_exceeds
-compliance.stats.partial_mappings: __compliance.stats.partial_mappings
-compliance.stats.bidirectional_mappings: __compliance.stats.bidirectional_mappings
-compliance.button.explore_mappings: __compliance.button.explore_mappings
-compliance.benefits.title: __compliance.benefits.title
-compliance.benefits.data_reuse.title: __compliance.benefits.data_reuse.title
-compliance.benefits.data_reuse.description: __compliance.benefits.data_reuse.description
-compliance.benefits.time_efficiency.title: __compliance.benefits.time_efficiency.title
-compliance.benefits.time_efficiency.description: __compliance.benefits.time_efficiency.description
-compliance.benefits.transparency.title: __compliance.benefits.transparency.title
-compliance.benefits.transparency.description: __compliance.benefits.transparency.description
-compliance.benefits.strategic.title: __compliance.benefits.strategic.title
-compliance.benefits.strategic.description: __compliance.benefits.strategic.description
-compliance.gaps.title_description: __compliance.gaps.title_description
-compliance.gaps.by_priority: __compliance.gaps.by_priority
-compliance.gaps.change_status_instruction: __compliance.gaps.change_status_instruction
-compliance.mapping_quality.no_mappings_found: __compliance.mapping_quality.no_mappings_found
-compliance.requirement.view_page_note: __compliance.requirement.view_page_note
-compliance.requirement.filter_by_framework: __compliance.requirement.filter_by_framework
-compliance.field.category: __compliance.field.category
-compliance.field.mapping: __compliance.field.mapping
-compliance.field.match_quality: __compliance.field.match_quality
-compliance.badge.mapped: __compliance.badge.mapped
-compliance.badge.no_mapping: __compliance.badge.no_mapping
-compliance.message.no_comparison_data: __compliance.message.no_comparison_data
-compliance.section.detailed_comparison: __compliance.section.detailed_comparison
-compliance.section.unique_to: __compliance.section.unique_to
-compliance.description.unique_requirements: __compliance.description.unique_requirements
-compliance.message.more_requirements: __compliance.message.more_requirements
-compliance.message.no_unique: __compliance.message.no_unique
-compliance.field.source_requirement: __compliance.field.source_requirement
-compliance.field.target_requirements: __compliance.field.target_requirements
-compliance.field.mapping_strength: __compliance.field.mapping_strength
-compliance.field.mapped: __compliance.field.mapped
-compliance.section.compliance_matrix: __compliance.section.compliance_matrix
-compliance.description.matrix: __compliance.description.matrix
-compliance.section.cross_framework_mappings: __compliance.section.cross_framework_mappings
-compliance.mapping.type.full: __compliance.mapping.type.full
-compliance.mapping.type.partial: __compliance.mapping.type.partial
-compliance.mapping.type.weak: __compliance.mapping.type.weak
-compliance.section.mapping_explanation: __compliance.section.mapping_explanation
-compliance.explanation.what_are_mappings_title: __compliance.explanation.what_are_mappings_title
-compliance.explanation.what_are_mappings: __compliance.explanation.what_are_mappings
-compliance.explanation.mapping_types_title: __compliance.explanation.mapping_types_title
-compliance.explanation.mapping_types_exceeds: __compliance.explanation.mapping_types_exceeds
-compliance.explanation.mapping_types_full: __compliance.explanation.mapping_types_full
-compliance.explanation.mapping_types_partial: __compliance.explanation.mapping_types_partial
-compliance.explanation.mapping_types_weak: __compliance.explanation.mapping_types_weak
-compliance.explanation.strategic_value_title: __compliance.explanation.strategic_value_title
-compliance.explanation.strategic_value: __compliance.explanation.strategic_value
-compliance.switch_framework: __compliance.switch_framework
-compliance.button.back: __compliance.button.back
-compliance.button.reassess: __compliance.button.reassess
-compliance.label.requirements: __compliance.label.requirements
-compliance.label.time_savings: __compliance.label.time_savings
-compliance.label.days: __compliance.label.days
-compliance.framework_dashboard.compliance_steps: __compliance.framework_dashboard.compliance_steps
-compliance.tab.overview: __compliance.tab.overview
-compliance.tab.requirements: __compliance.tab.requirements
-compliance.tab.gaps: __compliance.tab.gaps
-compliance.tab.data_reuse: __compliance.tab.data_reuse
-compliance.framework_info: __compliance.framework_info
-compliance.label.code: __compliance.label.code
-compliance.label.yes: __compliance.label.yes
-compliance.label.no: __compliance.label.no
-compliance.recommendations: __compliance.recommendations
-compliance.filter: __compliance.filter
-compliance.search: __compliance.search
-compliance.priority.all: __compliance.priority.all
-compliance.priority.critical: __compliance.priority.critical
-compliance.priority.high: __compliance.priority.high
-compliance.priority.medium: __compliance.priority.medium
-compliance.priority.low: __compliance.priority.low
-compliance.status.all: __compliance.status.all
-compliance.status.fulfilled: __compliance.status.fulfilled
-compliance.status.partial: __compliance.status.partial
-compliance.status.gap: __compliance.status.gap
-compliance.gaps.title: __compliance.gaps.title
-compliance.gaps.fulfilled_percentage: __compliance.gaps.fulfilled_percentage
-compliance.gaps.none: __compliance.gaps.none
-compliance.gaps.none_description: __compliance.gaps.none_description
-compliance.data_reuse.hours_saved: __compliance.data_reuse.hours_saved
-compliance.data_reuse.work_days: __compliance.data_reuse.work_days
-compliance.data_reuse.show_details: __compliance.data_reuse.show_details
-compliance.badge.overdue: __compliance.badge.overdue
-compliance.message.no_gaps: __compliance.message.no_gaps
-compliance.message.no_gaps_desc: __compliance.message.no_gaps_desc
+compliance:
+    title:
+        transitive: 'Transitive Compliance'
+        compare: 'Framework Comparison'
+        gap_analysis: 'Gap Analysis'
+        data_reuse: 'Data Reuse'
+    description:
+        transitive: 'Analyzes how requirements of different frameworks overlap and create leverage effects.'
+        compare: 'Compares two compliance frameworks for overlaps and differences.'
+        gap_analysis: 'Identifies gaps in the implementation of a framework and prioritizes remediation actions.'
+        data_reuse: 'Analyzes reuse of data points across frameworks and highlights efficiency potential.'
+        critical_gaps: 'Critical gaps with highest priority for immediate action.'
+        high_gaps: 'Severe gaps with high priority.'
+        medium_gaps: 'Medium gaps with moderate priority.'
+        low_gaps: 'Low gaps to be addressed later.'
+        reuse_matrix: 'Overview of where data can be reused across frameworks.'
+        unique_requirements: __compliance.description.unique_requirements
+        matrix: __compliance.description.matrix
+    section:
+        framework_relationships: 'Framework Relationships'
+        select_frameworks: 'Select Frameworks'
+        framework_selection: 'Framework Selection'
+        reuse_opportunities: 'Reuse Opportunities'
+        reuse_matrix: 'Reuse Matrix'
+        framework_coverage: 'Framework Coverage'
+        detailed_comparison: __compliance.section.detailed_comparison
+        unique_to: __compliance.section.unique_to
+        compliance_matrix: __compliance.section.compliance_matrix
+        cross_framework_mappings: __compliance.section.cross_framework_mappings
+        mapping_explanation: __compliance.section.mapping_explanation
+    stats:
+        total_relationships: 'Total Relationships'
+        transitive_compliance: 'Transitive Coverage'
+        leverage_rate: 'Leverage Rate'
+        frameworks_leveraged: 'Frameworks Leveraged'
+        total_requirements: 'Total Requirements'
+        met_requirements: 'Met Requirements'
+        gaps_identified: 'Gaps Identified'
+        compliance_score: 'Compliance Score'
+        common_requirements: 'Common Requirements'
+        overlap_percentage: 'Overlap Percentage'
+        total_data_points: 'Total Data Points'
+        reused_data: 'Reused Data'
+        reuse_rate: 'Reuse Rate'
+        effort_saved: 'Effort Saved'
+        total_mappings: __compliance.stats.total_mappings
+        full_exceeds: __compliance.stats.full_exceeds
+        partial_mappings: __compliance.stats.partial_mappings
+        bidirectional_mappings: __compliance.stats.bidirectional_mappings
+    action:
+        create_missing_mappings: 'Create missing mappings'
+        create_mappings: 'Create mappings'
+        compare: Compare
+        export_pdf: 'PDF Report'
+        export_excel: 'Excel Export'
+        export_csv: 'CSV Export'
+    unit:
+        requirements: requirements
+    field:
+        framework_1: 'Framework 1'
+        framework_2: 'Framework 2'
+        select_framework: 'Select framework'
+        total_requirements: 'Total requirements'
+        unique_requirements: 'Unique requirements'
+        categories: Categories
+        requirement: Requirement
+        framework: Framework
+        severity: Severity
+        gap_description: 'Gap description'
+        remediation: Remediation
+        due_date: 'Due date'
+        data_element: 'Data element'
+        source: Source
+        reuse_count: 'Reuse count'
+        used_in_frameworks: 'Used in frameworks'
+        quality_score: 'Quality score'
+        frameworks: Frameworks
+        time_savings: 'Time savings'
+        total_requirements_short: 'Total requirements'
+        reused_data: 'Reused data'
+        new_data_needed: 'New data needed'
+        coverage: Coverage
+        category: __compliance.field.category
+        mapping: __compliance.field.mapping
+        match_quality: __compliance.field.match_quality
+        source_requirement: __compliance.field.source_requirement
+        target_requirements: __compliance.field.target_requirements
+        mapping_strength: __compliance.field.mapping_strength
+        mapped: __compliance.field.mapped
+    option:
+        select_framework: 'Select framework…'
+        all_frameworks: 'All frameworks'
+    severity:
+        critical: Critical
+        high: High
+        medium: Medium
+        low: Low
+    manage_frameworks: __compliance.manage_frameworks
+    manage_frameworks_subtitle: __compliance.manage_frameworks_subtitle
+    framework_statistics: __compliance.framework_statistics
+    total_available: __compliance.total_available
+    loaded: __compliance.loaded
+    not_loaded: __compliance.not_loaded
+    mandatory_missing: __compliance.mandatory_missing
+    available_frameworks: __compliance.available_frameworks
+    version: __compliance.version
+    industry: __compliance.industry
+    regulatory_body: __compliance.regulatory_body
+    mandatory: __compliance.mandatory
+    required_modules: __compliance.required_modules
+    already_loaded: __compliance.already_loaded
+    delete_framework: __compliance.delete_framework
+    load_framework: __compliance.load_framework
+    confirm_load: __compliance.confirm_load
+    loading: __compliance.loading
+    successfully_loaded: __compliance.successfully_loaded
+    load_failed: __compliance.load_failed
+    error: __compliance.error
+    deleting: __compliance.deleting
+    successfully_deleted: __compliance.successfully_deleted
+    delete_failed: __compliance.delete_failed
+    mapping:
+        create_link: __compliance.mapping.create_link
+        create_instruction: __compliance.mapping.create_instruction
+        type:
+            full: __compliance.mapping.type.full
+            partial: __compliance.mapping.type.partial
+            weak: __compliance.mapping.type.weak
+    message:
+        no_data_elements: __compliance.message.no_data_elements
+        no_frameworks: __compliance.message.no_frameworks
+        no_opportunities: __compliance.message.no_opportunities
+        no_comparison_data: __compliance.message.no_comparison_data
+        more_requirements: __compliance.message.more_requirements
+        no_unique: __compliance.message.no_unique
+        no_gaps: __compliance.message.no_gaps
+        no_gaps_desc: __compliance.message.no_gaps_desc
+    badge:
+        reusable: __compliance.badge.reusable
+        mapped: __compliance.badge.mapped
+        no_mapping: __compliance.badge.no_mapping
+        overdue: __compliance.badge.overdue
+    framework:
+        edit:
+            title: __compliance.framework.edit.title
+            heading: __compliance.framework.edit.heading
+        section:
+            identification: __compliance.framework.section.identification
+            details: __compliance.framework.section.details
+            configuration: __compliance.framework.section.configuration
+        field:
+            code: __compliance.framework.field.code
+            version: __compliance.framework.field.version
+            name: __compliance.framework.field.name
+            description: __compliance.framework.field.description
+            industry: __compliance.framework.field.industry
+            regulatory_body: __compliance.framework.field.regulatory_body
+            scope: __compliance.framework.field.scope
+            mandatory: __compliance.framework.field.mandatory
+            active: __compliance.framework.field.active
+            requirements: __compliance.framework.field.requirements
+            status: __compliance.framework.field.status
+            compliance: __compliance.framework.field.compliance
+        info: __compliance.framework.info
+        confirm:
+            delete: __compliance.framework.confirm.delete
+        new:
+            title: __compliance.framework.new.title
+            heading: __compliance.framework.new.heading
+        help:
+            code: { title: __compliance.framework.help.code.title, text: __compliance.framework.help.code.text }
+            mandatory: { title: __compliance.framework.help.mandatory.title, text: __compliance.framework.help.mandatory.text }
+            active: { title: __compliance.framework.help.active.title, text: __compliance.framework.help.active.text }
+        action:
+            dashboard: __compliance.framework.action.dashboard
+            new: __compliance.framework.action.new
+            gap_analysis: __compliance.framework.action.gap_analysis
+            assess: __compliance.framework.action.assess
+        title: __compliance.framework.title
+        heading: __compliance.framework.heading
+        description: __compliance.framework.description
+        list: __compliance.framework.list
+        empty: __compliance.framework.empty
+        no_requirements: __compliance.framework.no_requirements
+        badge:
+            mandatory: __compliance.framework.badge.mandatory
+        stats:
+            total_requirements: __compliance.framework.stats.total_requirements
+            applicable: __compliance.framework.stats.applicable
+            fulfilled: __compliance.framework.stats.fulfilled
+            compliance: __compliance.framework.stats.compliance
+    requirement:
+        action:
+            new: __compliance.requirement.action.new
+        priority:
+            critical: __compliance.requirement.priority.critical
+            high: __compliance.requirement.priority.high
+            medium: __compliance.requirement.priority.medium
+            low: __compliance.requirement.priority.low
+        view_page_note: __compliance.requirement.view_page_note
+        filter_by_framework: __compliance.requirement.filter_by_framework
+    cross_framework:
+        source_target_label: __compliance.cross_framework.source_target_label
+        table:
+            source: __compliance.cross_framework.table.source
+            target: __compliance.cross_framework.table.target
+            type: __compliance.cross_framework.table.type
+            strength: __compliance.cross_framework.table.strength
+            bidirectional: __compliance.cross_framework.table.bidirectional
+        yes_bidirectional: __compliance.cross_framework.yes_bidirectional
+        title: __compliance.cross_framework.title
+        subtitle: __compliance.cross_framework.subtitle
+        back: __compliance.cross_framework.back
+        coverage_matrix: __compliance.cross_framework.coverage_matrix
+        coverage_description: __compliance.cross_framework.coverage_description
+        coverage_high: __compliance.cross_framework.coverage_high
+        coverage_medium: __compliance.cross_framework.coverage_medium
+        coverage_low: __compliance.cross_framework.coverage_low
+        strong_mappings: __compliance.cross_framework.strong_mappings
+        partial_mappings_label: __compliance.cross_framework.partial_mappings_label
+        weak_mappings: __compliance.cross_framework.weak_mappings
+        showing_of: __compliance.cross_framework.showing_of
+        understanding_title: __compliance.cross_framework.understanding_title
+        what_title: __compliance.cross_framework.what_title
+        what_description: __compliance.cross_framework.what_description
+        types_title: __compliance.cross_framework.types_title
+        types:
+            exceeds: __compliance.cross_framework.types.exceeds
+            full: __compliance.cross_framework.types.full
+            partial: __compliance.cross_framework.types.partial
+            weak: __compliance.cross_framework.types.weak
+        bidirectional_title: __compliance.cross_framework.bidirectional_title
+        bidirectional_description: __compliance.cross_framework.bidirectional_description
+        strategic_title: __compliance.cross_framework.strategic_title
+        strategic_description: __compliance.cross_framework.strategic_description
+    page_title: __compliance.page_title
+    page_subtitle: __compliance.page_subtitle
+    button:
+        cross_framework: __compliance.button.cross_framework
+        transitive: __compliance.button.transitive
+        compare_frameworks: __compliance.button.compare_frameworks
+        open_dashboard: __compliance.button.open_dashboard
+        explore_mappings: __compliance.button.explore_mappings
+        back: __compliance.button.back
+        reassess: __compliance.button.reassess
+    quick_access: __compliance.quick_access
+    quick_access_hint: __compliance.quick_access_hint
+    data_reuse:
+        title: __compliance.data_reuse.title
+        description: __compliance.data_reuse.description
+        hours_saved: __compliance.data_reuse.hours_saved
+        work_days: __compliance.data_reuse.work_days
+        show_details: __compliance.data_reuse.show_details
+    label:
+        compliance: __compliance.label.compliance
+        fulfilled: __compliance.label.fulfilled
+        gaps: __compliance.label.gaps
+        requirements: __compliance.label.requirements
+        time_savings: __compliance.label.time_savings
+        days: __compliance.label.days
+        code: __compliance.label.code
+        'yes': __compliance.label.yes
+        'no': __compliance.label.no
+    no_frameworks_loaded: __compliance.no_frameworks_loaded
+    add_frameworks: __compliance.add_frameworks
+    contact_admin_to_add_frameworks: __compliance.contact_admin_to_add_frameworks
+    benefits:
+        title: __compliance.benefits.title
+        data_reuse:
+            title: __compliance.benefits.data_reuse.title
+            description: __compliance.benefits.data_reuse.description
+        time_efficiency:
+            title: __compliance.benefits.time_efficiency.title
+            description: __compliance.benefits.time_efficiency.description
+        transparency:
+            title: __compliance.benefits.transparency.title
+            description: __compliance.benefits.transparency.description
+        strategic:
+            title: __compliance.benefits.strategic.title
+            description: __compliance.benefits.strategic.description
+    gaps:
+        title_description: __compliance.gaps.title_description
+        by_priority: __compliance.gaps.by_priority
+        change_status_instruction: __compliance.gaps.change_status_instruction
+        title: __compliance.gaps.title
+        fulfilled_percentage: __compliance.gaps.fulfilled_percentage
+        none: __compliance.gaps.none
+        none_description: __compliance.gaps.none_description
+    mapping_quality:
+        no_mappings_found: __compliance.mapping_quality.no_mappings_found
+    explanation:
+        what_are_mappings_title: __compliance.explanation.what_are_mappings_title
+        what_are_mappings: __compliance.explanation.what_are_mappings
+        mapping_types_title: __compliance.explanation.mapping_types_title
+        mapping_types_exceeds: __compliance.explanation.mapping_types_exceeds
+        mapping_types_full: __compliance.explanation.mapping_types_full
+        mapping_types_partial: __compliance.explanation.mapping_types_partial
+        mapping_types_weak: __compliance.explanation.mapping_types_weak
+        strategic_value_title: __compliance.explanation.strategic_value_title
+        strategic_value: __compliance.explanation.strategic_value
+    switch_framework: __compliance.switch_framework
+    framework_dashboard:
+        compliance_steps: __compliance.framework_dashboard.compliance_steps
+    tab:
+        overview: __compliance.tab.overview
+        requirements: __compliance.tab.requirements
+        gaps: __compliance.tab.gaps
+        data_reuse: __compliance.tab.data_reuse
+    framework_info: __compliance.framework_info
+    recommendations: __compliance.recommendations
+    filter: __compliance.filter
+    search: __compliance.search
+    priority:
+        all: __compliance.priority.all
+        critical: __compliance.priority.critical
+        high: __compliance.priority.high
+        medium: __compliance.priority.medium
+        low: __compliance.priority.low
+    status:
+        all: __compliance.status.all
+        fulfilled: __compliance.status.fulfilled
+        partial: __compliance.status.partial
+        gap: __compliance.status.gap
+compliance_mapping:
+    mapping_type:
+        weak: 'Weak (0-49%)'
+        partial: 'Partial (50-99%)'
+        full: 'Full (100%)'
+        exceeds: 'Exceeds (101-150%)'
+    confidence:
+        low: Low
+        medium: Medium
+        high: High
+compliance_requirement:
+    field:
+        framework: Framework
+        requirement_id: 'Requirement ID'
+        title: Title
+        description: Description
+        category: Category
+        priority: Priority
+        requirement_type: 'Requirement Type'
+        parent_requirement: 'Parent Requirement'
+    placeholder:
+        requirement_id: 'e.g. A.5.1 or REQ-001'
+        title: 'e.g. Information Security Policies'
+        description: 'Describe the requirement in detail...'
+        category: 'e.g. Organizational, Technical, Physical'
+    help:
+        framework: 'Select the compliance framework this requirement belongs to'
+        requirement_id: 'Unique identifier of the requirement according to the framework (e.g. A.5.1 for ISO 27001)'
+        category: 'Optional categorization for better overview (e.g. Organizational, Technical)'
+        requirement_type: 'Core = Main requirement, Detailed = Specification, Sub-requirement = Part of a parent requirement'
+        parent_requirement: 'For sub-requirements: Select the parent requirement'
+    validation:
+        framework_required: 'Please select a framework'
+        requirement_id_required: 'Please provide a requirement ID'
+        requirement_id_max_length: 'The requirement ID must not exceed 50 characters'
+        title_required: 'Please provide a title'
+        title_max_length: 'The title must not exceed 255 characters'
+        description_required: 'Please provide a description'
+        category_max_length: 'The category must not exceed 100 characters'
+        priority_required: 'Please select a priority'
+        requirement_type_required: 'Please select a requirement type'
+    priority:
+        critical: Critical
+        high: High
+        medium: Medium
+        low: Low
+    requirement_type:
+        core: 'Core requirement'
+        detailed: 'Detailed requirement'
+        sub_requirement: Sub-requirement
+    message:
+        no_gaps: 'No gaps found'
+        no_gaps_desc: 'No implementation gaps were identified for the selected framework.'
+        no_opportunities: 'No reuse opportunities found.'
+        no_data_elements: 'No data elements available.'
+        no_frameworks: 'No frameworks available.'
+    badge:
+        overdue: Overdue
+        reusable: reusable
+    framework_dashboard:
+        compliance_steps: 'Follow these steps to achieve 100% compliance'
+    mapping:
+        create_link: 'Create a mapping'
+        create_instruction: 'to show how requirements relate to your controls'
+    mapping_quality:
+        no_mappings_found: 'Es wurden keine Compliance-Mappings in der Datenbank gefunden.'
+    gaps:
+        title_description: 'Identifizierte Lücken in Compliance-Mappings'
+        by_priority: 'By Priority'
+        change_status_instruction: 'Ändern Sie den Gap-Status in den jeweiligen Mapping-Reviews:'
+    requirement:
+        view_page_note: 'view page'
+        filter_by_framework: 'Filter by Framework'
+nis2:
+    article: __nis2.article

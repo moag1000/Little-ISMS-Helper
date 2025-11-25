@@ -25,15 +25,16 @@ user:
     message:
         all_users: 'Alle Benutzer'
         no_users: 'Keine Benutzer vorhanden.'
-    name: 'Benutzername'
-    email: 'E-Mail-Adresse'
-    department: 'Abteilung'
+        no_custom_roles: 'Keine benutzerdefinierten Rollen verfügbar.'
+    name: Benutzername
+    email: E-Mail-Adresse
+    department: Abteilung
     edit: 'Benutzer bearbeiten'
-    edit_suffix: 'Bearbeiten'
+    edit_suffix: Bearbeiten
     save_changes: 'Änderungen speichern'
     activity:
-        title: 'Benutzeraktivität'
-        total: 'Gesamtaktionen'
+        title: Benutzeraktivität
+        total: Gesamtaktionen
         by_action: 'Nach Aktionstyp'
     import:
         title: 'Benutzer importieren'
@@ -41,3 +42,53 @@ user:
         format: 'CSV-Format (Name, E-Mail, Rolle, Abteilung)'
     new: 'Neuer Benutzer'
     create: 'Benutzer erstellen'
+    section:
+        basic_info: 'Grundlegende Informationen'
+        tenant: Mandant
+        authentication: Authentifizierung
+        roles: 'Rollen & Berechtigungen'
+        status: Status
+    field:
+        first_name: Vorname
+        last_name: Nachname
+        email: E-Mail-Adresse
+        department: Abteilung
+        job_title: Berufsbezeichnung
+        phone_number: Telefonnummer
+        avatar: Profilbild
+        avatar_file: 'Profilbild hochladen'
+        tenant: Mandant
+        auth_provider: Authentifizierungsmethode
+        password: Passwort
+        plain_password: 'Neues Passwort'
+        roles: Rollen
+        system_roles: Systemrollen
+        custom_roles: 'Benutzerdefinierte Rollen'
+        is_active: Aktiv
+        active: Aktiv
+        is_verified: Verifiziert
+        email_verified: 'E-Mail verifiziert'
+        created_at: Erstellt am
+        updated_at: 'Zuletzt aktualisiert'
+        last_login: 'Letzte Anmeldung'
+    placeholder:
+        tenant: '-- Mandant auswählen --'
+    help:
+        first_name: 'Geben Sie den Vornamen des Benutzers ein'
+        last_name: 'Geben Sie den Nachnamen des Benutzers ein'
+        email: 'Geben Sie eine gültige E-Mail-Adresse ein (wird für Anmeldung und Benachrichtigungen verwendet)'
+        department: 'Abteilung oder Organisationseinheit des Benutzers'
+        job_title: 'Berufsbezeichnung oder Funktion des Benutzers'
+        phone_number: 'Telefonnummer für Kontaktaufnahme (optional)'
+        avatar: 'Profilbild hochladen (empfohlen: quadratisches Format, max. 2MB)'
+        avatar_help: 'Empfohlenes Format: quadratisch, max. 2MB (JPEG, PNG, GIF, WebP)'
+        tenant: 'Mandant, dem dieser Benutzer zugeordnet ist (bei Multi-Tenant-Umgebung)'
+        tenant_help: 'Leer lassen für Super-Admin-Benutzer ohne Mandantenbindung'
+        password_edit: 'Leer lassen, um das aktuelle Passwort beizubehalten'
+        password: 'Mindestens 8 Zeichen, sollte Groß- und Kleinbuchstaben, Zahlen und Sonderzeichen enthalten'
+    validation:
+        avatar_format: 'Bitte laden Sie ein gültiges Bild hoch (JPEG, PNG, GIF oder WebP)'
+    auth_provider:
+        local: 'Lokale Authentifizierung'
+user_management:
+    import_irreversible: 'Warnung: Der Benutzerimport kann nicht rückgängig gemacht werden. Bitte stellen Sie sicher, dass die CSV-Datei korrekt formatiert ist.'

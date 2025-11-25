@@ -16,11 +16,11 @@ bc_plans:
         alternative_site: Alternativstandort
         related_risks: 'Zugehörige Risiken'
         basic_info: Grundinformationen
-        team: 'BC-Team'
-        activation: 'Aktivierung'
-        communication: 'Kommunikation'
+        team: BC-Team
+        activation: Aktivierung
+        communication: Kommunikation
         backup_recovery: 'Backup und Wiederherstellung'
-        version_review: 'Versionsüberprüfung'
+        version_review: Versionsüberprüfung
     table:
         name: Name
         business_process: Geschäftsprozess
@@ -42,22 +42,28 @@ bc_plans:
         name: Name
         description: Beschreibung
         status: Status
-        bc_team: 'BC-Team'
+        bc_team: BC-Team
         activation_criteria: Aktivierungskriterien
-        roles_responsibilities: Rollen und Verantwortlichkeiten
-        recovery_procedures: 'Wiederherstellungsverfahren'
-        communication_plan: 'Kommunikationsplan'
+        roles_and_responsibilities: 'Rollen und Verantwortlichkeiten'
+        roles_responsibilities: 'Rollen und Verantwortlichkeiten'
+        recovery_procedures: Wiederherstellungsverfahren
+        communication_plan: Kommunikationsplan
         internal_communication: 'Interne Kommunikation'
         external_communication: 'Externe Kommunikation'
-        alternative_site: 'Alternativstandort'
+        alternative_site: Alternativstandort
         alternative_site_address: 'Adresse Alternativstandort'
         alternative_site_capacity: 'Kapazität Alternativstandort'
-        backup_procedures: 'Backup-Verfahren'
-        restore_procedures: 'Wiederherstellungsverfahren'
+        backup_procedures: Backup-Verfahren
+        restore_procedures: Wiederherstellungsverfahren
         next_test_date: 'Datum nächster Test'
         last_review_date: 'Datum letztes Review'
         next_review_date: 'Datum nächstes Review'
-        review_notes: 'Review-Notizen'
+        review_notes: Review-Notizen
+    status:
+        draft: Entwurf
+        under_review: 'In Überprüfung'
+        active: Aktiv
+        archived: Archiviert
     badge:
         overdue: ÜBERFÄLLIG
     message:
@@ -93,4 +99,4 @@ bc_plans:
 bcm:
     field:
         activation_criteria: Aktivierungskriterien
-        recovery_plan: Wiederherstellung Plan
+        recovery_plan: 'Wiederherstellung Plan'

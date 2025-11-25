@@ -64,3 +64,29 @@ interested_party:
         add_first: 'Erste Partei hinzufügen'
     confirm:
         delete: 'Möchten Sie diese interessierte Partei wirklich löschen?'
+Customer: Kunde
+Shareholder: Shareholder
+Employee: Mitarbeiter
+Regulator: 'Regulatorische Institution'
+Supplier: Lieferant
+Partner: Partner
+Public: Öffentlichkeit
+Media: Medien
+Government: Regierung
+Competitor: Konkurrenz
+Other: Andere
+Critical: Kritisch
+High: Hoch
+Medium: Mittel
+Low: Niedrig
+Daily: Täglich
+Weekly: Wöchentlich
+Monthly: Monatlich
+Yearly: Jährlich
+Quarterly: Quartalsweise
+Annually: Jährlich
+'As Needed': 'Nach Bedarf'
+Active: Aktiv
+Inactive: Inaktiv
+Evaluation: Bewertung
+Terminated: Beendigt

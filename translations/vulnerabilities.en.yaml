@@ -20,6 +20,8 @@ vulnerability:
         description: Description
         discovered_date: 'Discovered Date'
         responsible_person: 'Responsible Person'
+    placeholder:
+        cvss_score: '7.5'
     severity:
         critical: Critical
         high: High

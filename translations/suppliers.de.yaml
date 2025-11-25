@@ -45,6 +45,8 @@ supplier:
         related_assets: 'Zugeordnete Assets'
         related_risks: 'Zugeordnete Risiken'
     field:
+        name: Name
+        description: Beschreibung
         service_provided: 'Erbrachte Leistung'
         criticality: Kritikalität
         status: Status
@@ -54,19 +56,50 @@ supplier:
         address: Adresse
         security_score: Sicherheits‑Score
         last_assessment: 'Letzte Bewertung'
+        last_security_assessment: 'Letzte Sicherheitsbewertung'
         next_assessment: 'Nächste Bewertung'
+        next_assessment_date: 'Nächstes Bewertungsdatum'
         assessment_findings: Bewertungsergebnisse
         non_conformities: Nichtkonformitäten
         iso27001_certified: 'ISO 27001 zertifiziert'
         iso22301_certified: 'ISO 22301 zertifiziert'
+        has_iso27001: 'ISO 27001 Zertifizierung'
+        has_iso22301: 'ISO 22301 Zertifizierung'
+        certifications: 'Weitere Zertifizierungen'
         dpa: 'Auftragsverarbeitungsvertrag (AVV)'
+        has_dpa: 'AVV vorhanden'
         dpa_signed_date: 'AVV unterschrieben am'
         other_certifications: 'Weitere Zertifizierungen'
         contract_start: Vertragsbeginn
+        contract_start_date: Vertragsbeginn
         contract_end: Vertragsende
+        contract_end_date: Vertragsende
         security_requirements: Sicherheitsanforderungen
-        contact: 'Kontaktinformationen'
+        contact: Kontaktinformationen
         risk_level: 'Risikostufe (ISO 27001 Anhang A 5.19: Lieferantenbeziehungen)'
+    placeholder:
+        name: 'z.B. Acme IT Services GmbH'
+        description: 'Beschreiben Sie den Lieferanten und seine Dienste...'
+        contact_person: 'Name des Ansprechpartners'
+        email: 'kontakt@lieferant.de'
+        phone: '+49 123 456789'
+        address: 'Straße, PLZ Ort, Land'
+        service_provided: 'Beschreiben Sie die erbrachten Leistungen...'
+        security_score: '0-100'
+        assessment_findings: 'Dokumentieren Sie die Ergebnisse der Sicherheitsbewertung...'
+        non_conformities: 'Auflistung festgestellter Nichtkonformitäten...'
+        security_requirements: 'Definieren Sie die Sicherheitsanforderungen an den Lieferanten...'
+        certifications: 'z.B. SOC 2 Type II, TISAX, etc.'
+    criticality:
+        critical: Kritisch
+        high: Hoch
+        medium: Mittel
+        low: Niedrig
+    status:
+        active: Aktiv
+        inactive: Inaktiv
+        evaluation: 'In Evaluierung'
+        terminated: Beendet
     badge:
         overdue: Überfällig
     value:

@@ -23,6 +23,7 @@ management_review:
     field:
         title: Title
         review_date: 'Review Date'
+        reviewed_by: 'Reviewed by'
         participants: Participants
         status: Status
         changes_relevant_to_isms: 'Changes relevant to the ISMS'
@@ -32,10 +33,17 @@ management_review:
         previous_review_actions: 'Status of previous actions'
         non_conformities_status: 'Status of nonconformities'
         corrective_actions_status: 'Status of corrective actions'
+        nonconformities_review: 'Nonconformities review'
+        incidents_review: 'Incidents review'
+        risks_review: 'Risks review'
+        objectives_review: 'Objectives review'
+        context_changes: 'Context changes'
+        improvement_opportunities: 'Improvement opportunities'
         opportunities_for_improvement: 'Opportunities for improvement'
         resource_needs: 'Resource needs'
         decisions: Decisions
         action_items: 'Action items'
+        summary: Summary
     status_values:
         planned: Planned
         in_progress: 'In Progress'
@@ -71,3 +79,25 @@ management_review:
     output_2: 'Any need for changes to the ISMS'
     output_3: 'Resource needs'
     edit: Edit
+    placeholder:
+        title: 'e.g. Management Review Q1 2025'
+    help:
+        reviewed_by: 'Usually a member of top management'
+        performance_evaluation: 'Assessment of ISMS performance and KPIs'
+        changes_relevant_to_isms: 'Changes relevant to the ISMS (e.g. legal, organizational, technological)'
+        feedback_from_interested_parties: 'Feedback from interested parties (customers, partners, authorities, employees)'
+        audit_results: 'Results of internal/external audits since last review'
+        nonconformities_review: 'Status of open nonconformities from audits'
+        incidents_review: 'Analysis of security incidents since last review'
+        risks_review: 'Changes in the risk profile'
+        objectives_review: 'Status of ISMS objectives and achievement'
+        context_changes: 'Changes in internal/external requirements'
+        previous_review_actions: 'Status of actions from the previous management review'
+        non_conformities_status: 'Overview of open nonconformities and their processing status'
+        corrective_actions_status: 'Status of corrective actions (planned, in progress, completed)'
+        improvement_opportunities: 'Identified opportunities to improve the ISMS'
+        opportunities_for_improvement: 'Improvement opportunities (alias field, compatible with existing template)'
+        decisions: 'Decisions and actions taken'
+        action_items: 'Specific actions with responsibilities and deadlines'
+        resource_needs: 'Budget, personnel or other resources'
+        summary: 'Executive summary of the management review'
