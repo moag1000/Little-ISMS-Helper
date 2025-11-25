@@ -165,6 +165,59 @@ CONTEXT_TRANSLATIONS = {
     'Not Applicable': 'Nicht anwendbar',
     'Not Available': 'Nicht verfügbar',
     'Not Set': 'Nicht gesetzt',
+
+    # Compliance specific
+    'Coverage Analysis': 'Abdeckungsanalyse',
+    'Gap Analysis': 'Gap-Analyse',
+    'Compliance Score': 'Compliance-Score',
+    'Implementation Status': 'Umsetzungsstatus',
+    'Mapping Quality': 'Zuordnungsqualität',
+    'Requirements Coverage': 'Anforderungsabdeckung',
+
+    # SOA specific
+    'Control Implementation': 'Maßnahmenumsetzung',
+    'Implementation Details': 'Umsetzungsdetails',
+    'Implementation Plan': 'Umsetzungsplan',
+    'Applicable Controls': 'Anwendbare Maßnahmen',
+    'Not Applicable Controls': 'Nicht anwendbare Maßnahmen',
+
+    # BC Exercises
+    'Exercise Type': 'Übungstyp',
+    'Exercise Date': 'Übungsdatum',
+    'Participants List': 'Teilnehmerliste',
+    'Success Rating': 'Erfolgsbewertung',
+    'Areas Improvement': 'Verbesserungsbereiche',
+    'Next Exercise': 'Nächste Übung',
+
+    # Business Process
+    'Process Description': 'Prozessbeschreibung',
+    'Process Owner': 'Prozessverantwortlicher',
+    'Process Flow': 'Prozessablauf',
+    'Input Output': 'Ein- und Ausgaben',
+    'Key Activities': 'Hauptaktivitäten',
+
+    # More common patterns
+    'Show All': 'Alle anzeigen',
+    'Hide All': 'Alle ausblenden',
+    'Expand All': 'Alle aufklappen',
+    'Collapse All': 'Alle zuklappen',
+    'Select All': 'Alle auswählen',
+    'Deselect All': 'Alle abwählen',
+    'Clear All': 'Alle löschen',
+    'Reset All': 'Alle zurücksetzen',
+    'Apply Filter': 'Filter anwenden',
+    'Clear Filter': 'Filter löschen',
+    'Sort By': 'Sortieren nach',
+    'Group By': 'Gruppieren nach',
+    'Search Results': 'Suchergebnisse',
+    'No Results Found': 'Keine Ergebnisse gefunden',
+    'Loading': 'Laden...',
+    'Please Wait': 'Bitte warten',
+    'Success': 'Erfolg',
+    'Failed': 'Fehlgeschlagen',
+    'Warning': 'Warnung',
+    'Error Message': 'Fehlermeldung',
+    'Confirmation Required': 'Bestätigung erforderlich',
 }
 
 def improve_line(line):

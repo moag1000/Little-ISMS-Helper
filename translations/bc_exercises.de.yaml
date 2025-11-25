@@ -69,7 +69,7 @@ bc_exercises:
         action_items: Action Items
         lessons_learned: Gelernte Lektionen
         plan_updates_required: Plan Updates Required
-        success_rating: Success Rating
+        success_rating: Erfolgsbewertung
         report_completed: Report Completed
         report_date: Report Date
 bc_plans:
