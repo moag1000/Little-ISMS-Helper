@@ -74,7 +74,7 @@ mfa_token:
     kpi:
         active: Aktiv
         users: Benutzer
-    empty: Empty
+    empty: Keine Einträge vorhanden
     setup_new: Setup New
     backup_codes:
         title: Titel

@@ -26,157 +26,157 @@ risk:
             financial: finanziell
             physical: physisch
     label:
-        title: Titel
-        inherent_risk: Inhärentes Risiko Risiko
+        title: 'Risikotitel'
+        inherent_risk: 'Inhärentes Risiko'
     field:
-        title: Titel
-        score: Score
-        treatment_strategy: Treatment Strategy
-        status: Status
-        asset: Asset
-        description: Beschreibung
-        threat: Gefährdung
-        vulnerability: Schwachstelle
-        involves_personal_data: Involves Personal Data
-        involves_special_category_data: Involves Special Category Data
-        legal_basis: Rechtsgrundlage
-        processing_scale: Processing Scale
-        requires_dpia: Requires Dpia
-        data_subject_impact: Data Subject Impact
-        probability: Probability
-        impact: Auswirkung
-        residual_probability: Residual Probability
-        residual_impact: Restrisiko Auswirkung
-        risk_owner: Risiko Eigentümer
-        treatment_description: Behandlung Beschreibung
-        acceptance_approved_by: Acceptance Approved By
-        acceptance_approved_at: Acceptance Approved At
-        created: Erstellt
-        last_review: Last Review
-        next_review: Next Review
-        inherent_risk: Inhärentes Risiko Risiko
+        title: 'Risikobezeichnung'
+        score: 'Risikobewertung'
+        treatment_strategy: 'Behandlungsstrategie'
+        status: 'Status'
+        asset: 'Betroffenes Asset'
+        description: 'Risikobeschreibung'
+        threat: 'Gefährdung'
+        vulnerability: 'Schwachstelle'
+        involves_personal_data: 'Verarbeitet personenbezogene Daten'
+        involves_special_category_data: 'Verarbeitet besondere Kategorien personenbezogener Daten'
+        legal_basis: 'Rechtsgrundlage (DSGVO)'
+        processing_scale: 'Umfang der Verarbeitung'
+        requires_dpia: 'Erfordert Datenschutz-Folgenabschätzung (DSFA)'
+        data_subject_impact: 'Auswirkung auf betroffene Personen'
+        probability: 'Eintrittswahrscheinlichkeit'
+        impact: 'Schadensauswirkung'
+        residual_probability: 'Restrisiko-Wahrscheinlichkeit'
+        residual_impact: 'Restrisiko-Auswirkung'
+        risk_owner: 'Risikoverantwortlicher'
+        treatment_description: 'Beschreibung der Behandlungsmaßnahmen'
+        acceptance_approved_by: 'Risikoakzeptanz genehmigt durch'
+        acceptance_approved_at: 'Risikoakzeptanz genehmigt am'
+        created: 'Erstellt am'
+        last_review: 'Letzte Überprüfung'
+        next_review: 'Nächste Überprüfung'
+        inherent_risk: 'Inhärentes Risiko (vor Maßnahmen)'
     confirm:
-        delete: Löschen
-    edit: Bearbeiten
-    update: Aktualisieren
-    delete_warning: Löschen Warnung
-    new: Neu
-    create: Erstellen
+        delete: 'Risiko wirklich löschen?'
+    edit: 'Risiko bearbeiten'
+    update: 'Risiko aktualisieren'
+    delete_warning: 'WARNUNG: Das Löschen dieses Risikos kann nicht rückgängig gemacht werden.'
+    new: 'Neues Risiko'
+    create: 'Risiko erstellen'
     guidance:
-        scale: Scale
-        description: Beschreibung
+        scale: 'Bewertungsskala'
+        description: 'Bewertungshilfe für Risikoanalyse nach ISO 27005'
         probability:
-            very_unlikely: Very Unlikely
-            very_unlikely_desc: Very Unlikely Desc
-            unlikely: Unlikely
-            unlikely_desc: Unlikely Desc
-            possible: Possible
-            possible_desc: Possible Desc
-            likely: Likely
-            likely_desc: Likely Desc
-            very_likely: Very Likely
-            very_likely_desc: Very Likely Desc
+            very_unlikely: 'Sehr unwahrscheinlich (1)'
+            very_unlikely_desc: 'Tritt höchstens einmal in 10 Jahren ein'
+            unlikely: 'Unwahrscheinlich (2)'
+            unlikely_desc: 'Tritt etwa einmal in 5 Jahren ein'
+            possible: 'Möglich (3)'
+            possible_desc: 'Tritt etwa einmal pro Jahr ein'
+            likely: 'Wahrscheinlich (4)'
+            likely_desc: 'Tritt mehrmals pro Jahr ein'
+            very_likely: 'Sehr wahrscheinlich (5)'
+            very_likely_desc: 'Tritt häufig oder fast sicher ein'
         impact:
-            negligible: Negligible
-            negligible_desc: Negligible Desc
-            minor: Minor
-            minor_desc: Minor Desc
-            moderate: Moderate
-            moderate_desc: Moderate Desc
-            major: Major
-            major_desc: Major Desc
-            catastrophic: Catastrophic
-            catastrophic_desc: Catastrophic Desc
-        title: Titel
-        intro: Intro
-        probability_title: Probability Title
-        impact_title: Auswirkung Titel
-        tip: Tip
+            negligible: 'Vernachlässigbar (1)'
+            negligible_desc: 'Minimale Auswirkung, keine wesentlichen Folgen'
+            minor: 'Gering (2)'
+            minor_desc: 'Geringe Auswirkung, begrenzte Folgen'
+            moderate: 'Mittel (3)'
+            moderate_desc: 'Spürbare Auswirkung, erhebliche Folgen'
+            major: 'Hoch (4)'
+            major_desc: 'Schwerwiegende Auswirkung, bedeutende Folgen'
+            catastrophic: 'Katastrophal (5)'
+            catastrophic_desc: 'Existenzbedrohende Auswirkung, katastrophale Folgen'
+        title: 'Bewertungshilfe'
+        intro: 'Nutzen Sie diese Richtlinien zur konsistenten Risikobewertung gemäß ISO 27005'
+        probability_title: 'Eintrittswahrscheinlichkeit (1-5)'
+        impact_title: 'Schadensauswirkung (1-5)'
+        tip: 'Tipp: Das Brutto-Risiko ergibt sich aus Wahrscheinlichkeit × Auswirkung'
     section:
-        basic_info: Grundinformationen
-        gdpr_assessment: Gdpr Assessment
-        inherent_risk: Inhärentes Risiko Risiko
-        residual_risk: Restrisiko Risiko
-        treatment: Behandlung
-        acceptance: Acceptance
-        details: Details
-        description: Beschreibung
-        treatment_strategy: Treatment Strategy
-        risk_owner: Risiko Eigentümer
-        mitigating_controls: Mitigating Controls
-        realization_history: Realization History
-        risk_subject: Risk Subject
-        history: History
+        basic_info: 'Grundinformationen'
+        gdpr_assessment: 'DSGVO-Bewertung'
+        inherent_risk: 'Inhärentes Risiko (Brutto-Risiko)'
+        residual_risk: 'Restrisiko (Netto-Risiko)'
+        treatment: 'Risikobehandlung'
+        acceptance: 'Risikoakzeptanz'
+        details: 'Details'
+        description: 'Risikobeschreibung'
+        treatment_strategy: 'Behandlungsstrategie'
+        risk_owner: 'Risikoverantwortlicher'
+        mitigating_controls: 'Risikominderungsmaßnahmen'
+        realization_history: 'Schadenshistorie'
+        risk_subject: 'Risikogegenstand'
+        history: 'Änderungshistorie'
     help:
-        title: Titel
-        asset: Asset
-        description: Beschreibung
-        threat: Gefährdung
-        vulnerability: Schwachstelle
-        gdpr_section: Gdpr Section
-        involves_personal_data: Involves Personal Data
-        involves_special_category_data: Involves Special Category Data
-        legal_basis: Rechtsgrundlage
-        processing_scale: Processing Scale
-        requires_dpia: Requires Dpia
-        data_subject_impact: Data Subject Impact
-        inherent: Inhärentes Risiko
-        probability: Probability
-        impact: Auswirkung
-        residual: Restrisiko
-        residual_probability: Residual Probability
-        residual_impact: Restrisiko Auswirkung
-        treatment_strategy: Treatment Strategy
-        risk_owner: Risiko Eigentümer
-        treatment_description: Behandlung Beschreibung
-        acceptance_approved_by: Acceptance Approved By
-        acceptance_approved_at: Acceptance Approved At
+        title: 'Eindeutige Bezeichnung des Risikos für interne Referenzierung'
+        asset: 'Das von diesem Risiko betroffene Asset (Hardware, Software, Daten, Prozess)'
+        description: 'Detaillierte Beschreibung des Risikoszenarios und möglicher Folgen'
+        threat: 'Die Bedrohung bzw. Gefährdung (z.B. Cyberangriff, Naturkatastrophe, menschliches Versagen)'
+        vulnerability: 'Die Schwachstelle, die durch die Gefährdung ausgenutzt werden könnte'
+        gdpr_section: 'Gilt dieses Risiko für Verarbeitungen personenbezogener Daten? (DSGVO-relevant)'
+        involves_personal_data: 'Werden personenbezogene Daten verarbeitet? (Name, E-Mail, IP-Adresse, etc.)'
+        involves_special_category_data: 'Werden besondere Kategorien verarbeitet? (Art. 9 DSGVO: Gesundheit, biometrische Daten, etc.)'
+        legal_basis: 'Rechtsgrundlage für die Datenverarbeitung (Art. 6 DSGVO: Einwilligung, Vertrag, berechtigtes Interesse, etc.)'
+        processing_scale: 'Umfang der Datenverarbeitung (Anzahl betroffener Personen, Datenmenge)'
+        requires_dpia: 'Ist eine Datenschutz-Folgenabschätzung (DSFA) gemäß Art. 35 DSGVO erforderlich?'
+        data_subject_impact: 'Auswirkung auf die Rechte und Freiheiten betroffener Personen'
+        inherent: 'Das inhärente Risiko (Brutto-Risiko) vor Anwendung von Maßnahmen'
+        probability: 'Eintrittswahrscheinlichkeit: Wie wahrscheinlich ist es, dass dieses Risiko eintritt? (1-5)'
+        impact: 'Schadensauswirkung: Wie schwerwiegend wären die Folgen bei Eintritt? (1-5)'
+        residual: 'Das verbleibende Restrisiko (Netto-Risiko) nach Anwendung von Maßnahmen'
+        residual_probability: 'Verbleibende Eintrittswahrscheinlichkeit nach Risikobehandlung (1-5)'
+        residual_impact: 'Verbleibende Schadensauswirkung nach Risikobehandlung (1-5)'
+        treatment_strategy: 'Strategie zur Risikobehandlung (Vermeiden, Reduzieren, Übertragen, Akzeptieren)'
+        risk_owner: 'Person, die für die Risikoüberwachung und -behandlung verantwortlich ist'
+        treatment_description: 'Detaillierte Beschreibung der geplanten oder umgesetzten Behandlungsmaßnahmen'
+        acceptance_approved_by: 'Person, die das Restrisiko formal akzeptiert hat (erforderlich für Risikoakzeptanz)'
+        acceptance_approved_at: 'Datum der formalen Risikoakzeptanz durch die verantwortliche Person'
     delete:
-        confirm_message: Confirm Message
-    not_reviewed: Not Reviewed
+        confirm_message: 'Möchten Sie dieses Risiko wirklich unwiderruflich löschen?'
+    not_reviewed: 'Noch nicht überprüft'
     assessment:
-        inherent_risk: Inhärentes Risiko Risiko
-        probability: Probability
-        impact: Auswirkung
-        level: Level
-        score: Score
-        residual_risk: Restrisiko Risiko
-    incidents: Vorfälle
+        inherent_risk: 'Inhärentes Risiko (Brutto)'
+        probability: 'Wahrscheinlichkeit'
+        impact: 'Auswirkung'
+        level: 'Risikostufe'
+        score: 'Risikobewertung (Score)'
+        residual_risk: 'Restrisiko (Netto)'
+    incidents: 'Verbundene Vorfälle'
     realization:
-        warning: Warnung
-        review_suggestion: Review Suggestion
+        warning: 'WARNUNG: Dieses Risiko ist bereits eingetreten!'
+        review_suggestion: 'Überprüfen Sie die Risikobewertung und Behandlungsmaßnahmen aufgrund eingetretener Vorfälle'
     subject:
         asset:
-            monetary_value_hint: Monetary Value Hint
+            monetary_value_hint: 'Geschätzter monetärer Wert des Assets in EUR'
         location:
-            city_country: City Country
+            city_country: 'Stadt, Land'
     matrix:
-        title: Titel
-        back_to_risks: Back To Risks
-        header: Header
-        description: Beschreibung
-        impact: Auswirkung
-        probability: Probability
-        legend_title: Legend Title
+        title: 'Risikomatrix'
+        back_to_risks: 'Zurück zur Risikoliste'
+        header: 'Risikomatrix-Übersicht (ISO 27005)'
+        description: 'Visualisierung aller Risiken nach Eintrittswahrscheinlichkeit und Schadensauswirkung'
+        impact: 'Schadensauswirkung →'
+        probability: 'Eintrittswahrscheinlichkeit ↑'
+        legend_title: 'Risikostufen'
         level:
-            critical: Critical
-            high: High
-            medium: Medium
-            low: Low
+            critical: 'Kritisch (20-25)'
+            high: 'Hoch (10-19)'
+            medium: 'Mittel (5-9)'
+            low: 'Niedrig (1-4)'
     acceptance:
-        title: Titel
-        request: Request
-        justification_label: Justification Label
-        justification_help: Justification Help
-        submit_request: Submit Request
-        required_approval_level: Required Approval Level
-        approval_threshold_info: Approval Threshold Info
-    residual_assessment: Restrisiko Bewertung
+        title: 'Risikoakzeptanz beantragen'
+        request: 'Antrag auf Risikoakzeptanz'
+        justification_label: 'Begründung für die Risikoakzeptanz'
+        justification_help: 'Erläutern Sie, warum das Restrisiko akzeptiert werden soll (z.B. Kosten-Nutzen-Verhältnis, technische Machbarkeit)'
+        submit_request: 'Antrag einreichen'
+        required_approval_level: 'Erforderliche Genehmigungsstufe'
+        approval_threshold_info: 'Risiken ab Score %threshold% erfordern Management-Genehmigung'
+    residual_assessment: 'Restrisiko-Bewertung'
     status:
-        open: Öffnen
-        in_progress: In Bearbeitung
-        mitigated: Gemindert
-        closed: Closed
+        open: 'Offen'
+        in_progress: 'In Bearbeitung'
+        mitigated: 'Gemindert'
+        closed: 'Abgeschlossen'
     category:
         technical: Technical
         organizational: Organizational
@@ -184,6 +184,6 @@ risk:
 risk_management:
     title: Titel
     description: Beschreibung
-    high_risks: High Risks
-    risk_value_threshold: Risk Value Threshold
-    total_identified: Total Identified
+    high_risks: Hohe Risiken
+    risk_value_threshold: 'Risikobewertungs-Schwellenwert'
+    total_identified: Gesamt identifiziert

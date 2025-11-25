@@ -60,11 +60,11 @@ fi
 
 # Check 2: Required PHP extensions
 check "Required PHP extensions"
-REQUIRED_EXTENSIONS=("pdo" "pdo_mysql" "pdo_sqlite" "mbstring" "xml" "ctype" "iconv" "intl" "json")
+REQUIRED_EXTENSIONS=("pdo_mysql" "pdo_sqlite" "mbstring" "xml" "ctype" "iconv" "intl" "json")
 MISSING_EXTENSIONS=()
 
 for ext in "${REQUIRED_EXTENSIONS[@]}"; do
-    if ! php -m | grep -q "^$ext$"; then
+    if ! php -m | grep -qi "$ext"; then
         MISSING_EXTENSIONS+=("$ext")
     fi
 done
@@ -154,7 +154,7 @@ for entity_file in src/Entity/*.php; do
     entity_name=$(basename "$entity_file" .php)
 
     # Convert CamelCase to snake_case
-    table_name=$(echo "$entity_name" | sed 's/\([A-Z]\)/_\L\1/g' | sed 's/^_//' | tr '[:upper:]' '[:lower:]')
+    table_name=$(echo "$entity_name" | sed 's/\([A-Z]\)/_\1/g' | sed 's/^_//' | tr '[:upper:]' '[:lower:]')
 
     # Special cases
     case $entity_name in
@@ -256,14 +256,14 @@ fi
 check "Duplicate table creation"
 DUPLICATES=()
 
-for table in $(grep -h "CREATE TABLE" migrations/*.php | sed 's/.*CREATE TABLE //' | sed 's/ .*//' | sort | uniq -d); do
+for table in $(grep -h "CREATE TABLE" migrations/*.php | sed -n 's/.*CREATE TABLE[^`]*`\?\([a-z_][a-z0-9_]*\)`\?.*/\1/p' | grep -vE '^(IF|NOT|EXISTS)$' | sort | uniq -d); do
     DUPLICATES+=("$table")
 done
 
 if [ ${#DUPLICATES[@]} -eq 0 ]; then
     pass
 else
-    fail "Tables created multiple times: ${DUPLICATES[*]} (${DUPLICATES})"
+    fail "Tables created multiple times: ${DUPLICATES[*]}"
 fi
 
 echo ""

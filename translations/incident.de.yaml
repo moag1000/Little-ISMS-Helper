@@ -118,7 +118,7 @@ incident:
         data_breach: Data Breach
         data_breach_only: Data Breach Only
         nis2_only: Nis2 Only
-    empty: Empty
+    empty: Keine Einträge vorhanden
     list:
         title: Titel
     controls_should_prevent: Controls Should Prevent
