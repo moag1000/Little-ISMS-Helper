@@ -1,45 +1,45 @@
 business_process:
     section:
         basic_info: Grundinformationen
-        recovery_objectives: Wiederherstellung Zielsetzungen
-        financial_impact: Financial Impact
-        impact_assessment: Auswirkung Bewertung
-        dependencies: Dependencies
-        recovery: Wiederherstellung
-        supporting_resources: Supporting Resources
+        recovery_objectives: 'Wiederherstellungsziele (RTO/RPO/MTPD)'
+        financial_impact: 'Finanzielle Auswirkungen'
+        impact_assessment: 'Business Impact Analyse (BIA)'
+        dependencies: 'Abhängigkeiten und Schnittstellen'
+        recovery: 'Wiederherstellungsstrategie'
+        supporting_resources: 'Unterstützende Ressourcen und Assets'
     field:
-        name: Name
-        process_owner: Prozessverantwortlicher
-        description: Beschreibung
-        criticality: Criticality
-        rto: Rto
-        rpo: Rpo
-        mtpd: Mtpd
-        financial_impact_per_hour: Financial Impact Per Hour
-        financial_impact_per_day: Financial Impact Per Day
-        reputational_impact: Reputational Impact
-        regulatory_impact: Regulatory Impact
-        operational_impact: Operational Impact
-        dependencies_upstream: Dependencies Upstream
-        dependencies_downstream: Dependencies Downstream
-        recovery_strategy: Recovery Strategy
-        supporting_assets: Supporting Assets
-        identified_risks: Identified Risks
+        name: 'Prozessname'
+        process_owner: 'Prozessverantwortlicher'
+        description: 'Prozessbeschreibung'
+        criticality: 'Kritikalität (niedrig, mittel, hoch, kritisch)'
+        rto: 'RTO (Recovery Time Objective) - Maximal tolerierbare Ausfallzeit'
+        rpo: 'RPO (Recovery Point Objective) - Maximal tolerierbarer Datenverlust'
+        mtpd: 'MTPD (Maximum Tolerable Period of Disruption) - Maximal tolerierbare Unterbrechungsdauer'
+        financial_impact_per_hour: 'Finanzieller Schaden pro Stunde Ausfall'
+        financial_impact_per_day: 'Finanzieller Schaden pro Tag Ausfall'
+        reputational_impact: 'Auswirkungen auf Reputation und Marke'
+        regulatory_impact: 'Regulatorische und Compliance-Auswirkungen'
+        operational_impact: 'Operative Auswirkungen auf Geschäftstätigkeit'
+        dependencies_upstream: 'Vorgelagerte Abhängigkeiten (was braucht dieser Prozess?)'
+        dependencies_downstream: 'Nachgelagerte Abhängigkeiten (wer ist abhängig von diesem Prozess?)'
+        recovery_strategy: 'Wiederherstellungsstrategie (ISO 22301:2019 Klausel 8.4)'
+        supporting_assets: 'Unterstützende Assets und Ressourcen'
+        identified_risks: 'Identifizierte Risiken für diesen Prozess'
     help:
-        name: Name
-        process_owner: Prozessverantwortlicher
-        description: Beschreibung
-        criticality: Criticality
-        rto: Rto
-        rpo: Rpo
-        mtpd: Mtpd
-        financial_impact_per_hour: Financial Impact Per Hour
-        financial_impact_per_day: Financial Impact Per Day
-        reputational_impact: Reputational Impact
-        regulatory_impact: Regulatory Impact
-        operational_impact: Operational Impact
-        dependencies_upstream: Dependencies Upstream
-        dependencies_downstream: Dependencies Downstream
-        recovery_strategy: Recovery Strategy
-        supporting_assets: Supporting Assets
-        identified_risks: Identified Risks
+        name: 'Eindeutiger Name des Geschäftsprozesses (z.B. "Kundenauftragsabwicklung")'
+        process_owner: 'Verantwortlicher für den Prozess (fachlicher und strategischer Eigentümer)'
+        description: 'Detaillierte Beschreibung: Was macht der Prozess? Welche Inputs/Outputs gibt es?'
+        criticality: 'Geschäftskritikalität: Wie wichtig ist dieser Prozess für das Unternehmen?'
+        rto: 'Recovery Time Objective (ISO 22301): In welcher Zeit muss der Prozess nach Ausfall wiederhergestellt sein?'
+        rpo: 'Recovery Point Objective (ISO 22301): Wie viel Datenverlust ist tolerierbar (in Zeit gemessen)?'
+        mtpd: 'Maximum Tolerable Period of Disruption: Maximale Zeit, die der Prozess unterbrochen sein darf'
+        financial_impact_per_hour: 'Direkter und indirekter finanzieller Schaden bei einem Ausfall von 1 Stunde (in EUR)'
+        financial_impact_per_day: 'Kumulierter finanzieller Schaden bei einem Ausfall von 1 Tag (in EUR)'
+        reputational_impact: 'Auswirkungen auf Image, Marke, Kundenvertrauen bei Prozessausfall'
+        regulatory_impact: 'Regulatorische Konsequenzen (Bußgelder, Meldepflichten) bei Prozessausfall'
+        operational_impact: 'Auswirkungen auf andere Geschäftsprozesse und Betriebsabläufe'
+        dependencies_upstream: 'Welche Prozesse, Systeme oder Dienstleistungen benötigt dieser Prozess zur Funktionsfähigkeit?'
+        dependencies_downstream: 'Welche anderen Prozesse oder Bereiche sind von diesem Prozess abhängig?'
+        recovery_strategy: 'Strategie zur Wiederherstellung nach ISO 22301:2019 (z.B. Backup-Site, manuelle Prozesse, alternative Lieferanten)'
+        supporting_assets: 'Verknüpfte IT-Assets, Infrastruktur und Ressourcen, die den Prozess unterstützen'
+        identified_risks: 'Verknüpfte Risiken, die diesen Prozess gefährden könnten'
