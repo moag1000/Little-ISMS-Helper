@@ -40,18 +40,18 @@ change_request:
         approval: Freigabe
         verification_closure: 'Verifikation & Abschluss'
         description: Beschreibung
-        justification: Justification
-        impact: Auswirkung
-        risk_assessment: Risiko Bewertung
-        plan: Plan
-        rollback_plan: Rollback Plan
-        testing_requirements: Testing Requirements
-        approval_info: Approval Info
-        verification: Verification
-        closure: Closure
-        affected_assets: Affected Assets
-        affected_controls: Affected Controls
-        affected_risks: Affected Risks
+        justification: 'Begründung und Notwendigkeit'
+        impact: 'Auswirkungen und Impact-Analyse'
+        risk_assessment: 'Risikobewertung und Gefährdungsanalyse'
+        plan: 'Umsetzungsplan und Zeitplan'
+        rollback_plan: 'Rollback-Plan bei Fehlschlag'
+        testing_requirements: 'Testanforderungen und QA'
+        approval_info: 'Freigabe-Informationen'
+        verification: 'Verifikation und Abnahme'
+        closure: 'Abschluss und Lessons Learned'
+        affected_assets: 'Betroffene Assets'
+        affected_controls: 'Betroffene Controls (ISO 27001)'
+        affected_risks: 'Betroffene Risiken'
     field:
         change_number: Antrags‑Nr.
         title: Titel
@@ -79,18 +79,18 @@ change_request:
         verification_results: Verifikationsergebnisse
         closed_date: Abschlussdatum
         closure_notes: Abschlussnotizen
-        complexity_score: Complexity Score
-        planned_implementation: Geplant Umsetzung
-        approval_date: Approval Date
-        comments: Kommentare
-        implementation_date: Umsetzung Datum
-        notes: Notizen
-        verification_date: Verification Date
-        results: Ergebnisse
+        complexity_score: 'Komplexitätsbewertung (1-10)'
+        planned_implementation: 'Geplantes Umsetzungsdatum'
+        approval_date: 'Freigabedatum'
+        comments: 'Kommentare und Anmerkungen'
+        implementation_date: 'Datum der tatsächlichen Umsetzung'
+        notes: 'Notizen und zusätzliche Informationen'
+        verification_date: 'Datum der Verifikation'
+        results: 'Ergebnisse und Resultate'
     edit: Bearbeiten
     confirm:
         delete: Löschen
     details:
         title: Titel
     status:
-        not_scheduled: Not Scheduled
+        not_scheduled: 'Nicht eingeplant'

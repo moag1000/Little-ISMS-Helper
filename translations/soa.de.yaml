@@ -121,5 +121,5 @@ soa:
         updated_at: 'Zuletzt aktualisiert'
         last_review: 'Letztes Review'
         next_review: 'Nächstes Review'
-    title: Titel
-    iso27001_full_title: Iso27001 Full Title
+    title: 'Control-Titel'
+    iso27001_full_title: 'ISO/IEC 27001:2022 vollständiger Titel'
