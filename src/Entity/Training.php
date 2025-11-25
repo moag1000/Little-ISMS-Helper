@@ -110,6 +110,18 @@ class Training
     #[Assert\PositiveOrZero(message: 'Attendee count must be zero or positive')]
     private ?int $attendeeCount = 0;
 
+    #[ORM\Column(length: 50, nullable: true)]
+    #[Groups(['training:read', 'training:write'])]
+    #[Assert\Choice(
+        choices: ['in_person', 'online_live', 'e_learning', 'hybrid', 'workshop'],
+        message: 'Delivery method must be one of: {{ choices }}'
+    )]
+    private ?string $deliveryMethod = null;
+
+    #[ORM\Column(type: Types::BOOLEAN)]
+    #[Groups(['training:read', 'training:write'])]
+    private bool $mandatory = false;
+
     #[ORM\Column(length: 50)]
     #[Groups(['training:read', 'training:write'])]
     #[Assert\NotBlank(message: 'Status is required')]
@@ -282,6 +294,28 @@ public function __construct()
     public function setStatus(string $status): static
     {
         $this->status = $status;
+        return $this;
+    }
+
+    public function getDeliveryMethod(): ?string
+    {
+        return $this->deliveryMethod;
+    }
+
+    public function setDeliveryMethod(?string $deliveryMethod): static
+    {
+        $this->deliveryMethod = $deliveryMethod;
+        return $this;
+    }
+
+    public function isMandatory(): bool
+    {
+        return $this->mandatory;
+    }
+
+    public function setMandatory(bool $mandatory): static
+    {
+        $this->mandatory = $mandatory;
         return $this;
     }
 
