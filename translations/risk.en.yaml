@@ -1,36 +1,192 @@
-risks:
-  modern:
-    breadcrumb: Risk Management
-    header:
-      title: Risk Management
-      subtitle: Identification, assessment, and treatment of information security risks
-      action:
-        new: New Risk
-        matrix: Risk Matrix
-        export_pdf: PDF Report
-        export_excel: Excel Export
-        export_csv: CSV Export
-    kpi:
-      total: Identified Risks
-      critical: Critical Risks
-      high: High Risks
-      avg_residual: Avg. Residual Risk
-      unit:
-        max: '/ 25'
-    matrix_overview: Risk Matrix Overview
-    view_full_matrix: View full matrix
+risk:
+    modern:
+        breadcrumb: 'Risk Management'
+        header:
+            title: 'Risk Management'
+            subtitle: 'Identification, assessment, and treatment of information security risks'
+            action: { new: 'New Risk', matrix: 'Risk Matrix', export_pdf: 'PDF Report', export_excel: 'Excel Export', export_csv: 'CSV Export' }
+        kpi:
+            total: 'Identified Risks'
+            critical: 'Critical Risks'
+            high: 'High Risks'
+            avg_residual: 'Avg. Residual Risk'
+            unit: { max: '/ 25' }
+        matrix_overview: 'Risk Matrix Overview'
+        view_full_matrix: 'View full matrix'
+        status:
+            open: Open
+            in_progress: 'In Progress'
+            mitigated: Mitigated
+            resolved: Resolved
+            closed: Closed
+        category:
+            technical: technical
+            business: business
+            legal: legal
+            privacy: privacy
+            other: other
+            organizational: organizational
+            financial: financial
+            physical: physical
+    label:
+        title: Title
+        inherent_risk: Inherent Risk
+    field:
+        title: Title
+        score: Score
+        treatment_strategy: Treatment Strategy
+        status: Status
+        asset: Asset
+        description: Description
+        threat: Threat
+        vulnerability: Vulnerability
+        involves_personal_data: Involves Personal Data
+        involves_special_category_data: Involves Special Category Data
+        legal_basis: Legal Basis
+        processing_scale: Processing Scale
+        requires_dpia: Requires Dpia
+        data_subject_impact: Data Subject Impact
+        probability: Probability
+        impact: Impact
+        residual_probability: Residual Probability
+        residual_impact: Residual Impact
+        risk_owner: Risk Owner
+        treatment_description: Treatment Description
+        acceptance_approved_by: Acceptance Approved By
+        acceptance_approved_at: Acceptance Approved At
+        created: Created
+        last_review: Last Review
+        next_review: Next Review
+        inherent_risk: Inherent Risk
+    confirm:
+        delete: Delete
+    edit: Edit
+    update: Update
+    delete_warning: Delete Warning
+    new: New
+    create: Create
+    guidance:
+        scale: Scale
+        description: Description
+        probability:
+            very_unlikely: Very Unlikely
+            very_unlikely_desc: Very Unlikely Desc
+            unlikely: Unlikely
+            unlikely_desc: Unlikely Desc
+            possible: Possible
+            possible_desc: Possible Desc
+            likely: Likely
+            likely_desc: Likely Desc
+            very_likely: Very Likely
+            very_likely_desc: Very Likely Desc
+        impact:
+            negligible: Negligible
+            negligible_desc: Negligible Desc
+            minor: Minor
+            minor_desc: Minor Desc
+            moderate: Moderate
+            moderate_desc: Moderate Desc
+            major: Major
+            major_desc: Major Desc
+            catastrophic: Catastrophic
+            catastrophic_desc: Catastrophic Desc
+        title: Title
+        intro: Intro
+        probability_title: Probability Title
+        impact_title: Impact Title
+        tip: Tip
+    section:
+        basic_info: Basic Information
+        gdpr_assessment: Gdpr Assessment
+        inherent_risk: Inherent Risk
+        residual_risk: Residual Risk
+        treatment: Treatment
+        acceptance: Acceptance
+        details: Details
+        description: Description
+        treatment_strategy: Treatment Strategy
+        risk_owner: Risk Owner
+        mitigating_controls: Mitigating Controls
+        realization_history: Realization History
+        risk_subject: Risk Subject
+        history: History
+    help:
+        title: Title
+        asset: Asset
+        description: Description
+        threat: Threat
+        vulnerability: Vulnerability
+        gdpr_section: Gdpr Section
+        involves_personal_data: Involves Personal Data
+        involves_special_category_data: Involves Special Category Data
+        legal_basis: Legal Basis
+        processing_scale: Processing Scale
+        requires_dpia: Requires Dpia
+        data_subject_impact: Data Subject Impact
+        inherent: Inherent
+        probability: Probability
+        impact: Impact
+        residual: Residual
+        residual_probability: Residual Probability
+        residual_impact: Residual Impact
+        treatment_strategy: Treatment Strategy
+        risk_owner: Risk Owner
+        treatment_description: Treatment Description
+        acceptance_approved_by: Acceptance Approved By
+        acceptance_approved_at: Acceptance Approved At
+    delete:
+        confirm_message: Confirm Message
+    not_reviewed: Not Reviewed
+    assessment:
+        inherent_risk: Inherent Risk
+        probability: Probability
+        impact: Impact
+        level: Level
+        score: Score
+        residual_risk: Residual Risk
+    incidents: Incidents
+    realization:
+        warning: Warning
+        review_suggestion: Review Suggestion
+    subject:
+        asset:
+            monetary_value_hint: Monetary Value Hint
+        location:
+            city_country: City Country
+    matrix:
+        title: Title
+        back_to_risks: Back To Risks
+        header: Header
+        description: Description
+        impact: Impact
+        probability: Probability
+        legend_title: Legend Title
+        level:
+            critical: Critical
+            high: High
+            medium: Medium
+            low: Low
+    acceptance:
+        title: Title
+        request: Request
+        justification_label: Justification Label
+        justification_help: Justification Help
+        submit_request: Submit Request
+        required_approval_level: Required Approval Level
+        approval_threshold_info: Approval Threshold Info
+    residual_assessment: Residual Assessment
     status:
-      open: Open
-      in_progress: In Progress
-      mitigated: Mitigated
-      resolved: Resolved
-      closed: Closed
+        open: Open
+        in_progress: In Progress
+        mitigated: Mitigated
+        closed: Closed
     category:
-      technical: technical
-      business: business
-      legal: legal
-      privacy: privacy
-      other: other
-      organizational: organizational
-      financial: financial
-      physical: physical
+        technical: Technical
+        organizational: Organizational
+        physical: Physical
+risk_management:
+    title: Title
+    description: Description
+    high_risks: High Risks
+    risk_value_threshold: Risk Value Threshold
+    total_identified: Total Identified

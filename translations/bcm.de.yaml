@@ -1,86 +1,84 @@
 bcm:
-  title:
-    critical: Kritische Geschäftskontinuität
-  description:
-    critical: Übersicht über kritische Assets und Prozesse inklusive RTO/RPO und Handlungsbedarf
-    critical_level: Sofortiger Geschäftsausfall bei Verlust oder Ausfall. Höchste Priorität für Notfallmaßnahmen.
-    high_level: Erhebliche Geschäftsbeeinträchtigung innerhalb kurzer Zeit. Schnelle Wiederanlaufplanung erforderlich.
-    medium_level: Spürbare Beeinträchtigung, jedoch mit Puffer. Mittelfristige Maßnahmen ausreichend.
-    action_items: Empfohlene Maßnahmen zur Verbesserung der Wiederherstellungsfähigkeit und Reduktion der Ausfallzeiten.
-  action:
-    view_insights: Insights anzeigen
-    export: Exportieren
-    plan: Wiederherstellungsplan
-  warning:
-    critical_assets_count: '%count% kritische Assets identifiziert'
-    critical_message: Bitte prüfen Sie RTO/RPO, Wiederherstellungspläne und Teststände dieser Assets.
-  stats:
-    critical_assets: Kritische Assets
-    critical_processes: Kritische Prozesse
-    avg_rto: Ø RTO
-    missing_recovery_plans: Fehlende Wiederherstellungspläne
-  section:
-    criticality_overview: Übersicht Geschäfts­kritikalität
-    critical_assets_list: Liste kritischer Assets
-    critical_processes: Kritische Geschäftsprozesse
-    action_items: Maßnahmen
-  field:
-    assets: Assets
-    asset_name: Asset-Name
-    type: Typ
-    criticality: Kritikalität
-    rto: RTO
-    rpo: RPO
-    recovery_plan: Wiederherstellungsplan
-    last_tested: Zuletzt getestet
-    process_name: Prozessname
-    department: Abteilung
-    dependent_assets: Abhängige Assets
-    mtd: MTD
-    maximum_tolerable_downtime: Maximale tolerierbare Ausfallzeit
-    impact_of_loss: Auswirkungsgrad bei Ausfall
-    avg_rto: Ø RTO
-  badge:
-    no_recovery_plan: Kein Wiederherstellungsplan
-    immediate: Sofort
-    exists: vorhanden
-    missing: fehlt
-    test_overdue: Test überfällig
-  message:
-    never_tested: Nie getestet
-    no_critical_assets: Keine kritischen Assets vorhanden – gute Arbeit!
-    no_critical_processes: Keine kritischen Prozesse vorhanden
-  type:
-    information: Information
-    software: Software
-    hardware: Hardware
-    service: Dienst
-    personnel: Personal
-    physical: Physisch
-  criticality:
-    critical: Kritisch
-    high: Hoch
-    medium: Mittel
-  impact:
-    critical: Kritisch
-    high: Hoch
-    medium: Mittel
-    low: Niedrig
-  priority:
-    high: Hoch
-    medium: Mittel
-    low: Niedrig
-business_process:
-  impact_level:
-    very_low: Sehr gering (1)
-    low: Gering (2)
-    medium: Mittel (3)
-    high: Hoch (4)
-    very_high: Sehr hoch (5)
-  data_reuse:
-    asset_recommendations_title: "Asset-Empfehlungen basierend auf BCM-Daten"
-    benefits_title: "Vorteile der Datenwiederverwendung"
-    benefit_efficiency: "Keine manuelle Bestimmung von Verfügbarkeitsanforderungen erforderlich - BCM-Daten bieten evidenzbasierte Vorschläge."
-    benefit_consistency: "Stellt die Übereinstimmung zwischen Business-Continuity-Anforderungen und technischen Schutzmaßnahmen sicher."
-    benefit_compliance: "Demonstriert nachvollziehbare Verbindungen zwischen Geschäftsanforderungen und Sicherheitskontrollen für ISO 27001-Konformität."
-    benefit_quality: "Datenbasierte Empfehlungen auf Grundlage tatsächlicher Business-Impact-Analysen statt Annahmen."
+    title:
+        critical: 'Kritische Geschäftskontinuität'
+    description:
+        critical: 'Übersicht über kritische Assets und Prozesse inklusive RTO/RPO und Handlungsbedarf'
+        critical_level: 'Sofortiger Geschäftsausfall bei Verlust oder Ausfall. Höchste Priorität für Notfallmaßnahmen.'
+        high_level: 'Erhebliche Geschäftsbeeinträchtigung innerhalb kurzer Zeit. Schnelle Wiederanlaufplanung erforderlich.'
+        medium_level: 'Spürbare Beeinträchtigung, jedoch mit Puffer. Mittelfristige Maßnahmen ausreichend.'
+        action_items: 'Empfohlene Maßnahmen zur Verbesserung der Wiederherstellungsfähigkeit und Reduktion der Ausfallzeiten.'
+    action:
+        view_insights: 'Insights anzeigen'
+        export: Exportieren
+        plan: Wiederherstellungsplan
+    warning:
+        critical_assets_count: '%count% kritische Assets identifiziert'
+        critical_message: 'Bitte prüfen Sie RTO/RPO, Wiederherstellungspläne und Teststände dieser Assets.'
+    stats:
+        critical_assets: 'Kritische Assets'
+        critical_processes: 'Kritische Prozesse'
+        avg_rto: 'Ø RTO'
+        missing_recovery_plans: 'Fehlende Wiederherstellungspläne'
+    section:
+        criticality_overview: 'Übersicht Geschäfts­kritikalität'
+        critical_assets_list: 'Liste kritischer Assets'
+        critical_processes: 'Kritische Geschäftsprozesse'
+        action_items: Maßnahmen
+    field:
+        assets: Assets
+        asset_name: Asset-Name
+        type: Typ
+        criticality: Kritikalität
+        rto: RTO
+        rpo: RPO
+        recovery_plan: Wiederherstellungsplan
+        last_tested: 'Zuletzt getestet'
+        process_name: Prozessname
+        department: Abteilung
+        dependent_assets: 'Abhängige Assets'
+        mtd: MTD
+        maximum_tolerable_downtime: 'Maximale tolerierbare Ausfallzeit'
+        impact_of_loss: 'Auswirkungsgrad bei Ausfall'
+        avg_rto: 'Ø RTO'
+    badge:
+        no_recovery_plan: 'Kein Wiederherstellungsplan'
+        immediate: Sofort
+        exists: vorhanden
+        missing: fehlt
+        test_overdue: 'Test überfällig'
+    message:
+        never_tested: 'Nie getestet'
+        no_critical_assets: 'Keine kritischen Assets vorhanden – gute Arbeit!'
+        no_critical_processes: 'Keine kritischen Prozesse vorhanden'
+        no_matching_processes: No Matching Processes
+        rto_tooltip: Rto Tooltip
+        rpo_tooltip: Rpo Tooltip
+        mtd_tooltip: Mtd Tooltip
+        bcm_influences_asset_ratings: Bcm Influences Asset Ratings
+    type:
+        information: Information
+        software: Software
+        hardware: Hardware
+        service: Dienst
+        personnel: Personal
+        physical: Physisch
+    criticality:
+        critical: Kritisch
+        high: Hoch
+        medium: Mittel
+    impact:
+        critical: Kritisch
+        high: Hoch
+        medium: Mittel
+        low: Niedrig
+    priority:
+        high: Hoch
+        medium: Mittel
+        low: Niedrig
+    data_reuse:
+        asset_recommendations_title: Asset Empfehlungen Titel
+        benefits_title: Benefits Title
+        benefit_efficiency: Benefit Efficiency
+        benefit_consistency: Benefit Consistency
+        benefit_compliance: Benefit Compliance
+        benefit_quality: Benefit Quality

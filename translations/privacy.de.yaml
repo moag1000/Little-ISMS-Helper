@@ -1,131 +1,149 @@
 privacy:
-  breadcrumb:
-    privacy: Datenschutz
-    data_breaches: Datenschutzverletzungen
-  data_breach:
-    title: Datenschutzverletzungen
-    management: Verwaltung von Datenschutzverletzungen
-    subtitle: Art. 33/34 DSGVO – 72‑Stunden Meldepflicht
-    show:
-      page_title: "Datenschutzverletzung - %ref%"
-    page:
-      new_title: Neue Datenschutzverletzung
-      new_subtitle: Personenbezogene Datenschutzverletzung gemäß Art. 33/34 DSGVO erfassen
-      edit_title: Datenschutzverletzung bearbeiten
-      edit_subtitle: '%ref% – %title%'
-    actions:
-      dashboard: Dashboard
-      new: Neue Datenschutzverletzung
-    action:
-      create: Datenschutzverletzung anlegen
-      update: Datenschutzverletzung aktualisieren
-      export_pdf: PDF exportieren
-      submit_for_assessment: Zur Bewertung einreichen
-      edit: Vorfall bearbeiten
-      notify_authority: Aufsichtsbehörde benachrichtigen
-      notify_subjects: Betroffene Personen benachrichtigen
-      record_exemption: Ausnahme dokumentieren (Art. 34(3))
-      close_investigation: Untersuchung abschließen
-      reopen: Wiedereröffnen
-      delete: Löschen
-    form:
-      title: Formular Datenschutzverletzung
-    alert:
-      overdue_title: 'KRITISCH: Überfällige Meldungen'
-      overdue_text: '<strong>%count%</strong> Datenschutzverletzung(en) hat/haben die 72‑Stunden‑Frist zur Meldung an die Aufsichtsbehörde (Art. 33 Abs. 1 DSGVO) überschritten.'
-      view_overdue: Überfällige Fälle jetzt anzeigen
-    score:
-      heading: DSGVO Art. 33/34 Compliance‑Score
-      notification_compliance: Melde‑Compliance
-      timeliness: Pünktlichkeits‑Score
-      completeness: Vollständigkeit
-      summary: '%total% Gesamtfälle · %subjects% betroffene Personen'
-    kpi:
-      total_breaches: Gesamtfälle
-      high_critical_risk: hoch/kritisch Risiko
-      pending_authority: Ausstehend Behörde
-      deadline_72h: 72h‑Frist
-      special_categories: Besondere Kategorien
-      art9_data: Art. 9 Daten
-    section:
-      status_workflow: Status & Workflow
-      linked_incident: Verknüpfter Sicherheitsvorfall
-      authority: 'Art. 33 - Aufsichtsbehörde'
-      subjects: 'Art. 34 - Betroffene Personen'
-      nature: 'Art. 33(3) - Art der Verletzung'
-      consequences: 'Art. 33(3)(b-d) - Folgen & Maßnahmen'
+    breadcrumb:
+        privacy: Datenschutz
+        data_breaches: Datenschutzverletzungen
+    data_breach:
+        title: Datenschutzverletzungen
+        management: 'Verwaltung von Datenschutzverletzungen'
+        subtitle: 'Art. 33/34 DSGVO – 72‑Stunden Meldepflicht'
+        show:
+            page_title: 'Datenschutzverletzung - %ref%'
+        page:
+            new_title: 'Neue Datenschutzverletzung'
+            new_subtitle: 'Personenbezogene Datenschutzverletzung gemäß Art. 33/34 DSGVO erfassen'
+            edit_title: 'Datenschutzverletzung bearbeiten'
+            edit_subtitle: '%ref% – %title%'
+        actions:
+            dashboard: Dashboard
+            new: 'Neue Datenschutzverletzung'
+        action:
+            create: 'Datenschutzverletzung anlegen'
+            update: 'Datenschutzverletzung aktualisieren'
+            export_pdf: 'PDF exportieren'
+            submit_for_assessment: 'Zur Bewertung einreichen'
+            edit: 'Vorfall bearbeiten'
+            notify_authority: 'Aufsichtsbehörde benachrichtigen'
+            notify_subjects: 'Betroffene Personen benachrichtigen'
+            record_exemption: 'Ausnahme dokumentieren (Art. 34(3))'
+            close_investigation: 'Untersuchung abschließen'
+            reopen: Wiedereröffnen
+            delete: Löschen
+        form:
+            title: 'Formular Datenschutzverletzung'
+        alert:
+            overdue_title: 'KRITISCH: Überfällige Meldungen'
+            overdue_text: '<strong>%count%</strong> Datenschutzverletzung(en) hat/haben die 72‑Stunden‑Frist zur Meldung an die Aufsichtsbehörde (Art. 33 Abs. 1 DSGVO) überschritten.'
+            view_overdue: 'Überfällige Fälle jetzt anzeigen'
+        score:
+            heading: 'DSGVO Art. 33/34 Compliance‑Score'
+            notification_compliance: Melde‑Compliance
+            timeliness: Pünktlichkeits‑Score
+            completeness: Vollständigkeit
+            summary: '%total% Gesamtfälle · %subjects% betroffene Personen'
+        kpi:
+            total_breaches: Gesamtfälle
+            high_critical_risk: 'hoch/kritisch Risiko'
+            pending_authority: 'Ausstehend Behörde'
+            deadline_72h: 72h‑Frist
+            special_categories: 'Besondere Kategorien'
+            art9_data: 'Art. 9 Daten'
+        section:
+            status_workflow: 'Status & Workflow'
+            linked_incident: 'Verknüpfter Sicherheitsvorfall'
+            authority: 'Art. 33 - Aufsichtsbehörde'
+            subjects: 'Art. 34 - Betroffene Personen'
+            nature: 'Art. 33(3) - Art der Verletzung'
+            consequences: 'Art. 33(3)(b-d) - Folgen & Maßnahmen'
+        field:
+            status: Status
+            completeness: Vollständigkeit
+            assessor: 'Bewertende Person'
+            affected_subjects: 'Betroffene Personen'
+            risk_level: Risikostufe
+            created: Erstellt
+            incident: Vorfall
+            detected: Erkannt
+            severity: Schweregrad
+            processing_activity: 'Verarbeitungstätigkeit (VVT)'
+            notification_required: 'Meldung erforderlich'
+            notified: Benachrichtigt
+            authority: Behörde
+            reference: Aktenzeichen
+            method: Methode
+            delay_reason: 'Grund der Verzögerung'
+            not_yet_notified: 'Noch nicht benachrichtigt'
+            deadline: Frist
+            time_remaining: 'Verbleibende Zeit'
+            overdue_by: 'ÜBERFÄLLIG um'
+            hours: Stunden
+            'yes': Ja
+            'no': Nein
+            high_risk: 'Ja (Hohes Risiko)'
+            subjects_notified: 'Benachrichtigte Personen'
+            exemption_reason: Ausnahme
+            data_categories: Datenkategorien
+            data_subject_categories: 'Kategorien betroffener Personen'
+            special_categories_affected: 'Besondere Kategorien personenbezogener Daten betroffen (Art. 9 DSGVO)'
+            criminal_data_affected: 'Daten zu strafrechtlichen Verurteilungen betroffen (Art. 10 DSGVO)'
+            likely_consequences: 'Wahrscheinliche Folgen (Art. 33(3)(b))'
+            measures_taken: 'Ergriffene Maßnahmen (Art. 33(3)(c))'
+            measures_planned: 'Geplante Maßnahmen zur Abhilfe (Art. 33(3)(d))'
+        status:
+            draft: Entwurf
+            under_assessment: 'In Bewertung'
+            authority_notified: 'Behörde benachrichtigt'
+            subjects_notified: 'Betroffene benachrichtigt'
+            closed: Abgeschlossen
+        risk:
+            low: Niedrig
+            medium: Mittel
+            high: Hoch
+            critical: Kritisch
+        investigation_followup: Investigation Followup
+        root_cause: Root Cause
+        lessons_learned: Lessons Learned
+        follow_up_actions: Follow Up Actions
+        reopen_reason: Reopen Reason
+processing_activity:
     field:
-      status: Status
-      completeness: Vollständigkeit
-      assessor: Bewertende Person
-      affected_subjects: Betroffene Personen
-      risk_level: Risikostufe
-      created: Erstellt
-      incident: Vorfall
-      detected: Erkannt
-      severity: Schweregrad
-      processing_activity: Verarbeitungstätigkeit (VVT)
-      notification_required: Meldung erforderlich
-      notified: Benachrichtigt
-      authority: Behörde
-      reference: Aktenzeichen
-      method: Methode
-      delay_reason: Grund der Verzögerung
-      not_yet_notified: Noch nicht benachrichtigt
-      deadline: Frist
-      time_remaining: Verbleibende Zeit
-      overdue_by: ÜBERFÄLLIG um
-      hours: Stunden
-      yes: Ja
-      no: Nein
-      high_risk: Ja (Hohes Risiko)
-      subjects_notified: Benachrichtigte Personen
-      exemption_reason: Ausnahme
-      data_categories: Datenkategorien
-      data_subject_categories: Kategorien betroffener Personen
-      special_categories_affected: 'Besondere Kategorien personenbezogener Daten betroffen (Art. 9 DSGVO)'
-      criminal_data_affected: 'Daten zu strafrechtlichen Verurteilungen betroffen (Art. 10 DSGVO)'
-      likely_consequences: Wahrscheinliche Folgen (Art. 33(3)(b))
-      measures_taken: Ergriffene Maßnahmen (Art. 33(3)(c))
-      measures_planned: Geplante Maßnahmen zur Abhilfe (Art. 33(3)(d))
-    status:
-      draft: Entwurf
-      under_assessment: In Bewertung
-      authority_notified: Behörde benachrichtigt
-      subjects_notified: Betroffene benachrichtigt
-      closed: Abgeschlossen
-    risk:
-      low: Niedrig
-      medium: Mittel
-      high: Hoch
-      critical: Kritisch
+        name: Name
+        status: Status
+        description: Beschreibung
+        purposes: Purposes
+        legal_basis: Rechtsgrundlage
+        legal_basis_details: Legal Basis Details
+        data_subject_categories: Data Subject Categories
+        estimated_data_subjects_count: Estimated Data Subjects Count
+        personal_data_categories: Personal Data Categories
+        processes_special_categories: Processes Special Categories
+        processes_criminal_data: Processes Criminal Data
+        special_categories_details: Special Categories Details
+        legal_basis_special_categories: Legal Basis Special Categories
+        recipient_categories: Recipient Categories
+        has_third_country_transfer: Has Third Country Transfer
+        recipient_details: Recipient Details
+        third_countries: Third Countries
+        transfer_safeguards: Transfer Safeguards
+        retention_period: Retention Period
+        retention_period_days: Retention Period Days
+        retention_legal_basis: Retention Legal Basis
+        technical_organizational_measures: Technical Organizational Measures
+        implemented_controls: Implemented Controls
+        responsible_department: Responsible Department
+        contact_person: Contact Person
+        data_protection_officer: Data Protection Officer
+        involves_processors: Involves Processors
+        is_joint_controller: Is Joint Controller
+        is_high_risk: Is High Risk
+        dpia_completed: "Datenschutz-Folgenabschätzung Abgeschlossen"
+        dpia_date: "Datenschutz-Folgenabschätzung Datum"
+        risk_level: Risk Level
+        has_automated_decision_making: Has Automated Decision Making
+        automated_decision_making_details: Automated Decision Making Details
+        data_sources: Data Sources
+        start_date: Beginn Datum
+        end_date: Ende Datum
+        next_review_date: Next Review Date
 data_breach:
-  data_categories:
-    personal_identification: Persönliche Identifikationsdaten
-    contact_information: Kontaktinformationen
-    financial_data: Finanzdaten
-    health_data: Gesundheitsdaten
-    location_data: Standortdaten
-    online_identifiers: Online-Identifikatoren
-    employment_data: Beschäftigungsdaten
-    education_data: Bildungsdaten
-    criminal_convictions: Strafrechtliche Verurteilungen
-    biometric_data: Biometrische Daten
-    genetic_data: Genetische Daten
-    other: Sonstige
-  data_subject_categories:
-    customers: Kunden
-    employees: Mitarbeiter
-    applicants: Bewerber
-    visitors: Website-Besucher
-    patients: Patienten
-    students: Studenten
-    suppliers: Lieferanten/Partner
-    minors: Minderjährige (Kinder)
-    vulnerable: Schutzbedürftige Personen
-    other: Sonstige
-  risk_level:
-    low: Niedriges Risiko
-    medium: Mittleres Risiko
-    high: Hohes Risiko
-    critical: Kritisches Risiko
+    index:
+        view_all_breaches: View All Breaches

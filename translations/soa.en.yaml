@@ -1,115 +1,132 @@
-soa.page.title: 'Statement of Applicability (SoA)'
-soa.page.subtitle: 'ISO/IEC 27001:2022 Annex A controls – overview and applicability'
-soa.action.export_html: 'Export HTML'
-soa.action.export_pdf: 'Export PDF'
-soa.action.preview_pdf: Preview
-soa.action.view_details: 'View details'
-soa.action.edit: 'Edit control'
-soa.action.back_to_category: 'Back to %category%'
-soa.filter.view: View
-soa.filter.search: Search
-soa.filter.search_placeholder: 'Search by control ID, name or description …'
-soa.filter.category: Category
-soa.filter.status: Status
-soa.filter.all_categories: 'All categories'
-soa.filter.all_status: 'All statuses'
-soa.filter.reset: 'Reset filters'
-soa.kpi.total_controls: 'Total controls'
-soa.kpi.applicable_controls: 'Applicable controls'
-soa.kpi.implemented_controls: 'Implemented controls'
-soa.kpi.in_progress_controls: 'In progress'
-soa.kpi.not_started_controls: 'Not started'
-soa.kpi.compliance_rate: 'Compliance rate'
-soa.kpi.of: of
-soa.section.by_category: 'By category'
-soa.section.all_controls: 'All controls'
-soa.section.implementation_overview: 'Implementation overview'
-soa.section.controls_by_category: 'Controls by category'
-soa.section.detailed_assessment: 'Detailed controls assessment'
-soa.section.description: Description
-soa.section.applicability_status: 'Applicability status'
-soa.section.justification: Justification
-soa.section.implementation_details: 'Implementation details'
-soa.section.implementation_notes: 'Implementation notes'
-soa.section.data_reuse_protected_assets: 'Protected assets (%count%)'
-soa.section.data_reuse_related_risks: 'Mitigated risks (%count%)'
-soa.section.data_reuse_related_incidents: 'Related incidents (%count%)'
-soa.section.metadata: Metadata
-soa.section.training_coverage: 'Training coverage'
-soa.section.control_effectiveness: 'Control effectiveness'
-soa.category.Organizational: Organizational
-soa.category.People: People
-soa.category.Physical: Physical
-soa.category.Technological: Technological
-soa.table.control_id: 'Control ID'
-soa.table.name: Name
-soa.table.category: Category
-soa.table.count: Count
-soa.table.applicable: Applicable
-soa.table.implementation_status: 'Implementation status'
-soa.table.progress: Progress
-soa.table.justification: Justification
-soa.table.justification_notes: 'Justification / Notes'
-soa.table.target_date: 'Target date'
-soa.table.actions: Actions
-soa.status.implemented: Implemented
-soa.status.in_progress: 'In progress'
-soa.status.partial: Partial
-soa.status.planned: Planned
-soa.status.not_started: 'Not started'
-soa.status.not_applicable: 'Not applicable'
-soa.status.approved: Approved
-soa.value.yes: 'Yes'
-soa.value.no: 'No'
-soa.value.na: N/A
-soa.label.controls: Controls
-soa.label.control_coverage: 'Control coverage:'
-soa.label.incidents: Incidents
-soa.label.review_required: 'Review required:'
-soa.label.not_applicable_prefix: 'Not applicable:'
-soa.label.responsible: 'Responsible:'
-soa.label.linked_risks: 'Linked risks:'
-soa.label.classification_confidential: Confidential
-soa.label.classification_confidential_upper: CONFIDENTIAL
-soa.label.status: Status
-soa.label.completed_on: 'Completed on'
-soa.label.effectiveness_score: 'Effectiveness score'
-soa.message.no_controls_filtered: 'No controls found matching the filter criteria.'
-soa.message.no_justification: 'No justification provided.'
-soa.message.no_implementation_notes: 'No implementation notes available.'
-soa.message.control_coverage: 'This control protects %count% asset(s) with a total value of %value%.'
-soa.message.high_risk_assets: 'of which are high-risk assets.'
-soa.message.related_risks_info: 'This control contributes to the treatment of the following risks:'
-soa.message.related_incidents_count: 'are related to this control.'
-soa.message.review_required: 'Please review control effectiveness.'
-soa.message.no_completed_trainings: 'No completed trainings for this control.'
-soa.message.effectiveness_note: 'Based on incident analysis after control implementation.'
-soa.report.document_type: 'ISO 27001:2022 conformity document'
-soa.report.header_center: 'Statement of Applicability - ISO 27001:2022'
-soa.report.default_reviewer: 'ISMS Responsible'
-soa.report.default_approver: 'Top Management'
-soa.report.generated_at: 'Generated: %datetime%'
-soa.footer.note: 'Confidential - ISO 27001:2022 SoA | Page {PAGE_NUM}'
-soa.help.applicable: 'Mark this control as applicable if it is relevant for your ISMS.'
-soa.help.justification: 'A clear justification is important for audits and compliance evidence.'
-soa.help.implementation_notes: 'Document technical details, tools used and processes.'
-soa.placeholder.justification: 'Explain why this control is applicable or not applicable …'
-soa.placeholder.implementation_notes: 'Describe how this control was or will be implemented …'
-soa.placeholder.responsible_person: 'e.g. Jane Doe (Information Security Officer)'
-soa.field.applicable: Applicable
-soa.field.justification: Justification
-soa.field.implementation_percentage: 'Implementation percentage'
-soa.field.implementation_notes: 'Implementation notes'
-soa.field.responsible_person: 'Responsible person'
-soa.field.unassigned: Unassigned
-soa.field.target_date: 'Target date'
-soa.field.not_set: 'Not set'
-soa.field.cia: CIA
-soa.field.risk_level: 'Risk level'
-soa.field.status: Status
-soa.field.created_at: 'Created at'
-soa.field.updated_at: 'Updated at'
-soa.field.last_review: 'Last review'
-soa.field.next_review: 'Next review'
-soa.title: __soa.title
-soa.iso27001_full_title: __soa.iso27001_full_title
+soa:
+    page:
+        title: 'Statement of Applicability (SoA)'
+        subtitle: 'ISO/IEC 27001:2022 Annex A controls – overview and applicability'
+    action:
+        export_html: 'Export HTML'
+        export_pdf: 'Export PDF'
+        preview_pdf: Preview
+        view_details: 'View details'
+        edit: 'Edit control'
+        back_to_category: 'Back to %category%'
+    filter:
+        view: View
+        search: Search
+        search_placeholder: 'Search by control ID, name or description …'
+        category: Category
+        status: Status
+        all_categories: 'All categories'
+        all_status: 'All statuses'
+        reset: 'Reset filters'
+    kpi:
+        total_controls: 'Total controls'
+        applicable_controls: 'Applicable controls'
+        implemented_controls: 'Implemented controls'
+        in_progress_controls: 'In progress'
+        not_started_controls: 'Not started'
+        compliance_rate: 'Compliance rate'
+        of: of
+    section:
+        by_category: 'By category'
+        all_controls: 'All controls'
+        implementation_overview: 'Implementation overview'
+        controls_by_category: 'Controls by category'
+        detailed_assessment: 'Detailed controls assessment'
+        description: Description
+        applicability_status: 'Applicability status'
+        justification: Justification
+        implementation_details: 'Implementation details'
+        implementation_notes: 'Implementation notes'
+        data_reuse_protected_assets: 'Protected assets (%count%)'
+        data_reuse_related_risks: 'Mitigated risks (%count%)'
+        data_reuse_related_incidents: 'Related incidents (%count%)'
+        metadata: Metadata
+        training_coverage: 'Training coverage'
+        control_effectiveness: 'Control effectiveness'
+    category:
+        Organizational: Organizational
+        People: People
+        Physical: Physical
+        Technological: Technological
+    table:
+        control_id: 'Control ID'
+        name: Name
+        category: Category
+        count: Count
+        applicable: Applicable
+        implementation_status: 'Implementation status'
+        progress: Progress
+        justification: Justification
+        justification_notes: 'Justification / Notes'
+        target_date: 'Target date'
+        actions: Actions
+    status:
+        implemented: Implemented
+        in_progress: 'In progress'
+        partial: Partial
+        planned: Planned
+        not_started: 'Not started'
+        not_applicable: 'Not applicable'
+        approved: Approved
+    value:
+        'yes': 'Yes'
+        'no': 'No'
+        na: N/A
+    label:
+        controls: Controls
+        control_coverage: 'Control coverage:'
+        incidents: Incidents
+        review_required: 'Review required:'
+        not_applicable_prefix: 'Not applicable:'
+        responsible: 'Responsible:'
+        linked_risks: 'Linked risks:'
+        classification_confidential: Confidential
+        classification_confidential_upper: CONFIDENTIAL
+        status: Status
+        completed_on: 'Completed on'
+        effectiveness_score: 'Effectiveness score'
+    message:
+        no_controls_filtered: 'No controls found matching the filter criteria.'
+        no_justification: 'No justification provided.'
+        no_implementation_notes: 'No implementation notes available.'
+        control_coverage: 'This control protects %count% asset(s) with a total value of %value%.'
+        high_risk_assets: 'of which are high-risk assets.'
+        related_risks_info: 'This control contributes to the treatment of the following risks:'
+        related_incidents_count: 'are related to this control.'
+        review_required: 'Please review control effectiveness.'
+        no_completed_trainings: 'No completed trainings for this control.'
+        effectiveness_note: 'Based on incident analysis after control implementation.'
+    report:
+        document_type: 'ISO 27001:2022 conformity document'
+        header_center: 'Statement of Applicability - ISO 27001:2022'
+        default_reviewer: 'ISMS Responsible'
+        default_approver: 'Top Management'
+        generated_at: 'Generated: %datetime%'
+    footer:
+        note: 'Confidential - ISO 27001:2022 SoA | Page {PAGE_NUM}'
+    help:
+        applicable: 'Mark this control as applicable if it is relevant for your ISMS.'
+        justification: 'A clear justification is important for audits and compliance evidence.'
+        implementation_notes: 'Document technical details, tools used and processes.'
+    placeholder:
+        justification: 'Explain why this control is applicable or not applicable …'
+        implementation_notes: 'Describe how this control was or will be implemented …'
+        responsible_person: 'e.g. Jane Doe (Information Security Officer)'
+    field:
+        applicable: Applicable
+        justification: Justification
+        implementation_percentage: 'Implementation percentage'
+        implementation_notes: 'Implementation notes'
+        responsible_person: 'Responsible person'
+        unassigned: Unassigned
+        target_date: 'Target date'
+        not_set: 'Not set'
+        cia: CIA
+        risk_level: 'Risk level'
+        status: Status
+        created_at: 'Created at'
+        updated_at: 'Updated at'
+        last_review: 'Last review'
+        next_review: 'Next review'
+    title: Title
+    iso27001_full_title: Iso27001 Full Title

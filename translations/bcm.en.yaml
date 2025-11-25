@@ -1,239 +1,84 @@
-bcm.title.critical: 'Critical Business Continuity'
-bcm.description.critical: 'Overview of critical assets and processes including RTO/RPO and action needs'
-bcm.description.critical_level: 'Immediate business outage in case of loss or failure. Highest priority for emergency actions.'
-bcm.description.high_level: 'Significant business impact within a short time. Rapid recovery planning required.'
-bcm.description.medium_level: 'Noticeable impact with buffer. Mid-term measures sufficient.'
-bcm.description.action_items: 'Recommended actions to improve recoverability and reduce downtime.'
-bcm.action.view_insights: 'View insights'
-bcm.action.export: Export
-bcm.action.plan: 'Recovery plan'
-bcm.warning.critical_assets_count: '%count% critical assets identified'
-bcm.warning.critical_message: 'Please review RTO/RPO, recovery plans and test status of these assets.'
-bcm.stats.critical_assets: 'Critical Assets'
-bcm.stats.critical_processes: 'Critical Processes'
-bcm.stats.avg_rto: 'Avg. RTO'
-bcm.stats.missing_recovery_plans: 'Missing Recovery Plans'
-bcm.section.criticality_overview: 'Criticality Overview'
-bcm.section.critical_assets_list: 'List of Critical Assets'
-bcm.section.critical_processes: 'Critical Business Processes'
-bcm.section.action_items: 'Action Items'
-bcm.field.assets: Assets
-bcm.field.asset_name: 'Asset Name'
-bcm.field.type: Type
-bcm.field.criticality: Criticality
-bcm.field.rto: RTO
-bcm.field.rpo: RPO
-bcm.field.recovery_plan: 'Recovery Plan'
-bcm.field.last_tested: 'Last tested'
-bcm.field.process_name: 'Process Name'
-bcm.field.department: Department
-bcm.field.dependent_assets: 'Dependent Assets'
-bcm.field.mtd: MTD
-bcm.field.maximum_tolerable_downtime: 'Maximum tolerable downtime'
-bcm.field.impact_of_loss: 'Impact of loss'
-bcm.field.avg_rto: 'Avg. RTO'
-bcm.badge.no_recovery_plan: 'No recovery plan'
-bcm.badge.immediate: Immediate
-bcm.badge.exists: exists
-bcm.badge.missing: missing
-bcm.badge.test_overdue: 'Test overdue'
-bcm.message.never_tested: 'Never tested'
-bcm.message.no_critical_assets: 'No critical assets — well done!'
-bcm.message.no_critical_processes: 'No critical processes'
-bcm.type.information: Information
-bcm.type.software: Software
-bcm.type.hardware: Hardware
-bcm.type.service: Service
-bcm.type.personnel: Personnel
-bcm.type.physical: Physical
-bcm.criticality.critical: Critical
-bcm.criticality.high: High
-bcm.criticality.medium: Medium
-bcm.impact.critical: Critical
-bcm.impact.high: High
-bcm.impact.medium: Medium
-bcm.impact.low: Low
-bcm.priority.high: High
-bcm.priority.medium: Medium
-bcm.priority.low: Low
-business_process.impact_level.very_low: 'Very low (1)'
-business_process.impact_level.low: 'Low (2)'
-business_process.impact_level.medium: 'Medium (3)'
-business_process.impact_level.high: 'High (4)'
-business_process.impact_level.very_high: 'Very high (5)'
-business_process.data_reuse.asset_recommendations_title: 'Asset Recommendations Based on BCM Data'
-business_process.data_reuse.benefits_title: 'Benefits of Data Reuse'
-business_process.data_reuse.benefit_efficiency: 'No need to manually determine availability requirements - BCM data provides evidence-based suggestions.'
-business_process.data_reuse.benefit_consistency: 'Ensures alignment between business continuity requirements and technical protection measures.'
-business_process.data_reuse.benefit_compliance: 'Demonstrates traceable links between business requirements and security controls for ISO 27001 compliance.'
-business_process.data_reuse.benefit_quality: 'Data-driven recommendations based on actual business impact analysis rather than assumptions.'
-bcm.data_reuse.asset_recommendations_title: __bcm.data_reuse.asset_recommendations_title
-bcm.data_reuse.benefits_title: __bcm.data_reuse.benefits_title
-bcm.data_reuse.benefit_efficiency: __bcm.data_reuse.benefit_efficiency
-bcm.data_reuse.benefit_consistency: __bcm.data_reuse.benefit_consistency
-bcm.data_reuse.benefit_compliance: __bcm.data_reuse.benefit_compliance
-bcm.data_reuse.benefit_quality: __bcm.data_reuse.benefit_quality
-bcm.message.no_matching_processes: __bcm.message.no_matching_processes
-bcm.message.rto_tooltip: __bcm.message.rto_tooltip
-bcm.message.rpo_tooltip: __bcm.message.rpo_tooltip
-bcm.message.mtd_tooltip: __bcm.message.mtd_tooltip
-bcm.message.bcm_influences_asset_ratings: __bcm.message.bcm_influences_asset_ratings
-bc_plans.page.title: __bc_plans.page.title
-bc_plan.section.basic_info: __bc_plan.section.basic_info
-bc_plan.field.name: __bc_plan.field.name
-bc_plan.help.name: __bc_plan.help.name
-bc_plan.field.business_process: __bc_plan.field.business_process
-bc_plan.help.business_process: __bc_plan.help.business_process
-bc_plan.field.description: __bc_plan.field.description
-bc_plan.help.description: __bc_plan.help.description
-bc_plan.field.plan_owner: __bc_plan.field.plan_owner
-bc_plan.help.plan_owner: __bc_plan.help.plan_owner
-bc_plan.field.status: __bc_plan.field.status
-bc_plan.help.status: __bc_plan.help.status
-bc_plan.section.team: __bc_plan.section.team
-bc_plan.field.bc_team: __bc_plan.field.bc_team
-bc_plan.help.bc_team: __bc_plan.help.bc_team
-bc_plan.section.activation: __bc_plan.section.activation
-bc_plan.field.activation_criteria: __bc_plan.field.activation_criteria
-bc_plan.help.activation_criteria: __bc_plan.help.activation_criteria
-bc_plan.field.roles_responsibilities: __bc_plan.field.roles_responsibilities
-bc_plan.help.roles_responsibilities: __bc_plan.help.roles_responsibilities
-bc_plan.field.recovery_procedures: __bc_plan.field.recovery_procedures
-bc_plan.help.recovery_procedures: __bc_plan.help.recovery_procedures
-bc_plan.section.communication: __bc_plan.section.communication
-bc_plan.field.communication_plan: __bc_plan.field.communication_plan
-bc_plan.help.communication_plan: __bc_plan.help.communication_plan
-bc_plan.field.internal_communication: __bc_plan.field.internal_communication
-bc_plan.help.internal_communication: __bc_plan.help.internal_communication
-bc_plan.field.external_communication: __bc_plan.field.external_communication
-bc_plan.help.external_communication: __bc_plan.help.external_communication
-bc_plan.section.alternative_site: __bc_plan.section.alternative_site
-bc_plan.field.alternative_site: __bc_plan.field.alternative_site
-bc_plan.help.alternative_site: __bc_plan.help.alternative_site
-bc_plan.field.alternative_site_address: __bc_plan.field.alternative_site_address
-bc_plan.help.alternative_site_address: __bc_plan.help.alternative_site_address
-bc_plan.field.alternative_site_capacity: __bc_plan.field.alternative_site_capacity
-bc_plan.help.alternative_site_capacity: __bc_plan.help.alternative_site_capacity
-bc_plan.section.backup_recovery: __bc_plan.section.backup_recovery
-bc_plan.field.backup_procedures: __bc_plan.field.backup_procedures
-bc_plan.help.backup_procedures: __bc_plan.help.backup_procedures
-bc_plan.field.restore_procedures: __bc_plan.field.restore_procedures
-bc_plan.help.restore_procedures: __bc_plan.help.restore_procedures
-bc_plan.section.version_review: __bc_plan.section.version_review
-bc_plan.field.version: __bc_plan.field.version
-bc_plan.help.version: __bc_plan.help.version
-bc_plan.field.last_tested: __bc_plan.field.last_tested
-bc_plan.help.last_tested: __bc_plan.help.last_tested
-bc_plan.field.next_test_date: __bc_plan.field.next_test_date
-bc_plan.help.next_test_date: __bc_plan.help.next_test_date
-bc_plan.field.last_review_date: __bc_plan.field.last_review_date
-bc_plan.help.last_review_date: __bc_plan.help.last_review_date
-bc_plan.field.next_review_date: __bc_plan.field.next_review_date
-bc_plan.help.next_review_date: __bc_plan.help.next_review_date
-bc_plan.field.review_notes: __bc_plan.field.review_notes
-bc_plan.help.review_notes: __bc_plan.help.review_notes
-bc_plans.action.add_new: __bc_plans.action.add_new
-bc_plans.table.name: __bc_plans.table.name
-bc_plans.table.business_process: __bc_plans.table.business_process
-bc_plans.table.owner: __bc_plans.table.owner
-bc_plans.table.status: __bc_plans.table.status
-bc_plans.table.readiness: __bc_plans.table.readiness
-bc_plans.table.last_tested: __bc_plans.table.last_tested
-bc_plans.table.actions: __bc_plans.table.actions
-bc_plans.message.never: __bc_plans.message.never
-bc_plans.page.header: __bc_plans.page.header
-bc_plans.page.subtitle: __bc_plans.page.subtitle
-bc_plans.alert.overdue_tests: __bc_plans.alert.overdue_tests
-bc_plans.field.next_test: __bc_plans.field.next_test
-bc_plans.message.not_scheduled: __bc_plans.message.not_scheduled
-bc_plans.alert.overdue_reviews: __bc_plans.alert.overdue_reviews
-bc_plans.field.next_review: __bc_plans.field.next_review
-bc_plans.message.no_plans: __bc_plans.message.no_plans
-bc_plans.message.create_first: __bc_plans.message.create_first
-bc_plans.section.details: __bc_plans.section.details
-bc_plans.message.readiness_score: __bc_plans.message.readiness_score
-bc_plans.field.business_process: __bc_plans.field.business_process
-bc_plans.field.plan_owner: __bc_plans.field.plan_owner
-bc_plans.field.version: __bc_plans.field.version
-bcm.field.activation_criteria: __bcm.field.activation_criteria
-bc_plans.section.testing_review: __bc_plans.section.testing_review
-bc_plans.field.last_tested: __bc_plans.field.last_tested
-bc_plans.badge.overdue: __bc_plans.badge.overdue
-bc_plans.field.last_review: __bc_plans.field.last_review
-bc_plans.section.review_notes: __bc_plans.section.review_notes
-bc_plans.section.communication_plan: __bc_plans.section.communication_plan
-bc_plans.section.alternative_site: __bc_plans.section.alternative_site
-bc_plans.field.address: __bc_plans.field.address
-bc_plans.field.capacity: __bc_plans.field.capacity
-bc_plans.section.related_risks: __bc_plans.section.related_risks
-bc_exercises.action.edit: __bc_exercises.action.edit
-bc_exercises.page.title: __bc_exercises.page.title
-bc_exercises.section.details: __bc_exercises.section.details
-bc_exercises.table.name: __bc_exercises.table.name
-bc_exercises.table.type: __bc_exercises.table.type
-bc_exercises.section.scenario: __bc_exercises.section.scenario
-bc_exercises.table.status: __bc_exercises.table.status
-bc_exercises.section.scope_objectives: __bc_exercises.section.scope_objectives
-bc_exercises.field.exercise_date: __bc_exercises.field.exercise_date
-bc_exercises.field.duration_hours: __bc_exercises.field.duration_hours
-bc_exercises.section.participants: __bc_exercises.section.participants
-bc_exercises.field.participants: __bc_exercises.field.participants
-bc_exercises.field.facilitator: __bc_exercises.field.facilitator
-bc_exercises.field.observers: __bc_exercises.field.observers
-bc_exercises.section.results: __bc_exercises.section.results
-bc_exercises.section.what_went_well: __bc_exercises.section.what_went_well
-bc_exercises.section.improvements: __bc_exercises.section.improvements
-bc_exercises.section.findings: __bc_exercises.section.findings
-bc_exercises.section.action_items: __bc_exercises.section.action_items
-bc_exercises.section.lessons_learned: __bc_exercises.section.lessons_learned
-bc_exercises.section.plan_updates_required: __bc_exercises.section.plan_updates_required
-bc_exercises.field.success_rating: __bc_exercises.field.success_rating
-bc_exercises.field.report_completed: __bc_exercises.field.report_completed
-bc_exercises.field.report_date: __bc_exercises.field.report_date
-bc_exercises.action.add_new: __bc_exercises.action.add_new
-bc_exercises.field.duration: __bc_exercises.field.duration
-bc_exercise.section.participants: __bc_exercise.section.participants
-bc_exercise.field.participants: __bc_exercise.field.participants
-bc_exercise.help.participants: __bc_exercise.help.participants
-bc_exercise.field.facilitator: __bc_exercise.field.facilitator
-bc_exercise.help.facilitator: __bc_exercise.help.facilitator
-bc_exercise.field.observers: __bc_exercise.field.observers
-bc_exercise.help.observers: __bc_exercise.help.observers
-bc_exercise.section.results: __bc_exercise.section.results
-bc_exercise.field.results: __bc_exercise.field.results
-bc_exercise.help.results: __bc_exercise.help.results
-bc_exercise.field.what_went_well: __bc_exercise.field.what_went_well
-bc_exercise.help.what_went_well: __bc_exercise.help.what_went_well
-bc_exercise.field.areas_for_improvement: __bc_exercise.field.areas_for_improvement
-bc_exercise.help.areas_for_improvement: __bc_exercise.help.areas_for_improvement
-bc_exercise.field.findings: __bc_exercise.field.findings
-bc_exercise.help.findings: __bc_exercise.help.findings
-bc_exercise.field.action_items: __bc_exercise.field.action_items
-bc_exercise.help.action_items: __bc_exercise.help.action_items
-bc_exercise.field.lessons_learned: __bc_exercise.field.lessons_learned
-bc_exercise.help.lessons_learned: __bc_exercise.help.lessons_learned
-bc_exercise.field.plan_updates_required: __bc_exercise.field.plan_updates_required
-bc_exercise.help.plan_updates_required: __bc_exercise.help.plan_updates_required
-bc_exercise.section.report: __bc_exercise.section.report
-bc_exercise.field.success_rating: __bc_exercise.field.success_rating
-bc_exercise.help.success_rating: __bc_exercise.help.success_rating
-bc_exercise.field.report_completed: __bc_exercise.field.report_completed
-bc_exercise.help.report_completed: __bc_exercise.help.report_completed
-bc_exercise.field.report_date: __bc_exercise.field.report_date
-bc_exercise.help.report_date: __bc_exercise.help.report_date
-bc_exercise.create: __bc_exercise.create
-bc_exercises.table.date: __bc_exercises.table.date
-bc_exercises.table.effectiveness: __bc_exercises.table.effectiveness
-bc_exercises.message.na: __bc_exercises.message.na
-bc_exercises.page.header: __bc_exercises.page.header
-bc_exercises.stats.total: __bc_exercises.stats.total
-bc_exercises.stats.completed: __bc_exercises.stats.completed
-bc_exercises.stats.planned: __bc_exercises.stats.planned
-bc_exercises.section.upcoming: __bc_exercises.section.upcoming
-bc_exercises.section.incomplete_reports: __bc_exercises.section.incomplete_reports
-bc_exercises.message.no_exercises: __bc_exercises.message.no_exercises
-bc_exercises.message.schedule_first: __bc_exercises.message.schedule_first
-bc_exercises.message.confirm_delete: __bc_exercises.message.confirm_delete
-bc_exercises.badge.yes: __bc_exercises.badge.yes
-bc_exercises.badge.no: __bc_exercises.badge.no
-bc_exercises.section.related_plans: __bc_exercises.section.related_plans
+bcm:
+    title:
+        critical: 'Critical Business Continuity'
+    description:
+        critical: 'Overview of critical assets and processes including RTO/RPO and action needs'
+        critical_level: 'Immediate business outage in case of loss or failure. Highest priority for emergency actions.'
+        high_level: 'Significant business impact within a short time. Rapid recovery planning required.'
+        medium_level: 'Noticeable impact with buffer. Mid-term measures sufficient.'
+        action_items: 'Recommended actions to improve recoverability and reduce downtime.'
+    action:
+        view_insights: 'View insights'
+        export: Export
+        plan: 'Recovery plan'
+    warning:
+        critical_assets_count: '%count% critical assets identified'
+        critical_message: 'Please review RTO/RPO, recovery plans and test status of these assets.'
+    stats:
+        critical_assets: 'Critical Assets'
+        critical_processes: 'Critical Processes'
+        avg_rto: 'Avg. RTO'
+        missing_recovery_plans: 'Missing Recovery Plans'
+    section:
+        criticality_overview: 'Criticality Overview'
+        critical_assets_list: 'List of Critical Assets'
+        critical_processes: 'Critical Business Processes'
+        action_items: 'Action Items'
+    field:
+        assets: Assets
+        asset_name: 'Asset Name'
+        type: Type
+        criticality: Criticality
+        rto: RTO
+        rpo: RPO
+        recovery_plan: 'Recovery Plan'
+        last_tested: 'Last tested'
+        process_name: 'Process Name'
+        department: Department
+        dependent_assets: 'Dependent Assets'
+        mtd: MTD
+        maximum_tolerable_downtime: 'Maximum tolerable downtime'
+        impact_of_loss: 'Impact of loss'
+        avg_rto: 'Avg. RTO'
+    badge:
+        no_recovery_plan: 'No recovery plan'
+        immediate: Immediate
+        exists: exists
+        missing: missing
+        test_overdue: 'Test overdue'
+    message:
+        never_tested: 'Never tested'
+        no_critical_assets: 'No critical assets — well done!'
+        no_critical_processes: 'No critical processes'
+        no_matching_processes: No Matching Processes
+        rto_tooltip: Rto Tooltip
+        rpo_tooltip: Rpo Tooltip
+        mtd_tooltip: Mtd Tooltip
+        bcm_influences_asset_ratings: Bcm Influences Asset Ratings
+    type:
+        information: Information
+        software: Software
+        hardware: Hardware
+        service: Service
+        personnel: Personnel
+        physical: Physical
+    criticality:
+        critical: Critical
+        high: High
+        medium: Medium
+    impact:
+        critical: Critical
+        high: High
+        medium: Medium
+        low: Low
+    priority:
+        high: High
+        medium: Medium
+        low: Low
+    data_reuse:
+        asset_recommendations_title: Asset Recommendations Title
+        benefits_title: Benefits Title
+        benefit_efficiency: Benefit Efficiency
+        benefit_consistency: Benefit Consistency
+        benefit_compliance: Benefit Compliance
+        benefit_quality: Benefit Quality

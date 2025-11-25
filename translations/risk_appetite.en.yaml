@@ -1,45 +1,62 @@
-risk_appetite.title: 'Risk Appetite'
-risk_appetite.description: 'Defines which risk levels are acceptable – globally and per category.'
-risk_appetite.new: 'Create new'
-risk_appetite.new_description: 'Create a new risk appetite (global or for a category).'
-risk_appetite.edit: Edit
-risk_appetite.title_singular: Entry
-risk_appetite.approved: Approved
-risk_appetite.list.title: Entries
-risk_appetite.category.global: Global
-risk_appetite.filter.active_only: 'Show active only'
-risk_appetite.section.definition: Definition
-risk_appetite.section.approval: Approval
-risk_appetite.section.details: Details
-risk_appetite.section.history: History
-risk_appetite.field.category: Category
-risk_appetite.field.max_acceptable_risk: 'Max acceptable risk'
-risk_appetite.field.description: Description
-risk_appetite.field.status: Status
-risk_appetite.field.is_active: Active
-risk_appetite.field.approved_by: 'Approved by'
-risk_appetite.field.approved_at: 'Approved at'
-risk_appetite.field.created_at: 'Created at'
-risk_appetite.help.category_empty: 'Enter a category or choose "Global"'
-risk_appetite.stats.total: 'Total entries'
-risk_appetite.stats.global_threshold: 'Global threshold'
-risk_appetite.stats.categories: Categories
-risk_appetite.stats.total_risks: 'Total risks'
-risk_appetite.stats.exceeding: 'Exceeding threshold'
-risk_appetite.info.iso27005: 'Based on ISO/IEC 27005 – defining acceptable risks to guide treatment.'
-risk_appetite.show.subtitle: 'Overview and key metrics for this entry'
-risk_appetite.status.active: Active
-risk_appetite.status.inactive: Inactive
-risk_appetite.scale: Scale
-risk_appetite.risks_within: 'Risks within appetite'
-risk_appetite.risks_exceeding: 'Risks exceeding appetite'
-risk_appetite.acceptance_rate: 'Acceptance rate'
-risk_appetite.risks_exceeding_title: 'Risks exceeding appetite'
-risk_appetite.risks_exceeding_description: 'These risks exceed the defined appetite and require prioritization.'
-risk_appetite.risks_within_title: 'Risks within appetite'
-risk_appetite.risks_within_description: 'These risks are within the acceptable range.'
-risk_appetite.exceeds_by: 'Exceeds by'
-risk_appetite.appetite_percentage: 'Appetite utilization'
-risk_appetite.and_more_risks: 'And %count% more …'
-risk_appetite.delete.warning: 'This action cannot be undone. Please confirm deletion.'
-risk_appetite.no_appetites: 'No risk appetite defined yet.'
+risk_appetite:
+    title: 'Risk Appetite'
+    description: 'Defines which risk levels are acceptable – globally and per category.'
+    new: 'Create new'
+    new_description: 'Create a new risk appetite (global or for a category).'
+    edit: Edit
+    title_singular: Entry
+    approved: Approved
+    list:
+        title: Entries
+    category:
+        global: Global
+    filter:
+        active_only: 'Show active only'
+    section:
+        definition: Definition
+        approval: Approval
+        details: Details
+        history: History
+    field:
+        category: Category
+        max_acceptable_risk: 'Max acceptable risk'
+        description: Description
+        status: Status
+        is_active: Active
+        approved_by: 'Approved by'
+        approved_at: 'Approved at'
+        created_at: 'Created at'
+    help:
+        category_empty: 'Enter a category or choose "Global"'
+    stats:
+        total: 'Total entries'
+        global_threshold: 'Global threshold'
+        categories: Categories
+        total_risks: 'Total risks'
+        exceeding: 'Exceeding threshold'
+    info:
+        iso27005: 'Based on ISO/IEC 27005 – defining acceptable risks to guide treatment.'
+    show:
+        subtitle: 'Overview and key metrics for this entry'
+    status:
+        active: Active
+        inactive: Inactive
+    scale: Scale
+    risks_within: 'Risks within appetite'
+    risks_exceeding: 'Risks exceeding appetite'
+    acceptance_rate: 'Acceptance rate'
+    risks_exceeding_title: 'Risks exceeding appetite'
+    risks_exceeding_description: 'These risks exceed the defined appetite and require prioritization.'
+    risks_within_title: 'Risks within appetite'
+    risks_within_description: 'These risks are within the acceptable range.'
+    exceeds_by: 'Exceeds by'
+    appetite_percentage: 'Appetite utilization'
+    and_more_risks: 'And %count% more …'
+    delete:
+        warning: 'This action cannot be undone. Please confirm deletion.'
+        confirm: Confirm
+    no_appetites: 'No risk appetite defined yet.'
+    exceeding:
+        title: Title
+        description: Description
+    and_more: And More

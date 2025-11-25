@@ -1,66 +1,73 @@
-management_review.title: 'Management Review'
-management_review.new: 'New Management Review'
-management_review.create: 'Create Review'
-management_review.iso_requirement: 'ISO 27001: Management Review (Clause 9.3)'
-management_review.iso_clause_info: 'Top management shall review the ISMS at planned intervals to ensure its continuing suitability, adequacy and effectiveness.'
-management_review.iso_clause_93_info: 'Review according to ISO 27001:2022, Clause 9.3 (Management review).'
-management_review.statistics.total: 'Total Reviews'
-management_review.statistics.planned: Planned
-management_review.statistics.completed: Completed
-management_review.statistics.this_year: 'This Year'
-management_review.all_reviews: 'All Reviews'
-management_review.no_reviews: 'No reviews available.'
-management_review.create_first: 'Create first review'
-management_review.confirm_delete: 'Delete review?'
-management_review.delete_warning: "Do you really want to delete the review '%title%'?"
-management_review.section.basic_info: 'Basic Information'
-management_review.section.inputs: 'Inputs to the Review (9.3.2)'
-management_review.section.followup: 'Status of Previous Actions'
-management_review.section.outputs: 'Outputs of the Review (9.3.3)'
-management_review.field.title: Title
-management_review.field.review_date: 'Review Date'
-management_review.field.participants: Participants
-management_review.field.status: Status
-management_review.field.changes_relevant_to_isms: 'Changes relevant to the ISMS'
-management_review.field.feedback_from_interested_parties: 'Feedback from interested parties'
-management_review.field.audit_results: 'Audit results'
-management_review.field.performance_evaluation: 'ISMS performance (objectives, indicators)'
-management_review.field.previous_review_actions: 'Status of previous actions'
-management_review.field.non_conformities_status: 'Status of nonconformities'
-management_review.field.corrective_actions_status: 'Status of corrective actions'
-management_review.field.opportunities_for_improvement: 'Opportunities for improvement'
-management_review.field.resource_needs: 'Resource needs'
-management_review.field.decisions: Decisions
-management_review.field.action_items: 'Action items'
-management_review.status_values.planned: Planned
-management_review.status_values.in_progress: 'In Progress'
-management_review.status_values.completed: Completed
-management_review.status_values.cancelled: Cancelled
-management_review.status.planned: Planned
-management_review.status.in_progress: 'In Progress'
-management_review.status.completed: Completed
-management_review.status.cancelled: Cancelled
-management_review.changes_relevant_to_isms: 'Changes relevant to the ISMS'
-management_review.feedback_from_interested_parties: 'Feedback from interested parties'
-management_review.audit_results: 'Audit results'
-management_review.performance_evaluation: 'ISMS performance (objectives, indicators)'
-management_review.previous_review_actions: 'Status of previous actions'
-management_review.nonconformities_status: 'Status of nonconformities'
-management_review.corrective_actions_status: 'Status of corrective actions'
-management_review.opportunities_for_improvement: 'Opportunities for improvement'
-management_review.resource_needs: 'Resource needs'
-management_review.decisions: Decisions
-management_review.action_items: 'Action items'
-management_review.management_decisions: 'Management decisions'
-management_review.action_items_label: 'Action items'
-management_review.clause_93: 'ISO 27001 Clause 9.3'
-management_review.clause_93_description: 'Management review inputs and outputs according to ISO 27001:2022.'
-management_review.inputs_label: 'Inputs (examples)'
-management_review.input_1: 'Changes in external and internal issues relevant to the ISMS'
-management_review.input_2: 'Feedback from interested parties'
-management_review.input_3: 'Information on ISMS performance and effectiveness'
-management_review.input_4: 'Status of previous actions and risk treatment'
-management_review.outputs_label: 'Outputs (examples)'
-management_review.output_1: 'Decisions and actions related to opportunities for improvement'
-management_review.output_2: 'Any need for changes to the ISMS'
-management_review.output_3: 'Resource needs'
+management_review:
+    title: 'Management Review'
+    new: 'New Management Review'
+    create: 'Create Review'
+    iso_requirement: 'ISO 27001: Management Review (Clause 9.3)'
+    iso_clause_info: 'Top management shall review the ISMS at planned intervals to ensure its continuing suitability, adequacy and effectiveness.'
+    iso_clause_93_info: 'Review according to ISO 27001:2022, Clause 9.3 (Management review).'
+    statistics:
+        total: 'Total Reviews'
+        planned: Planned
+        completed: Completed
+        this_year: 'This Year'
+    all_reviews: 'All Reviews'
+    no_reviews: 'No reviews available.'
+    create_first: 'Create first review'
+    confirm_delete: 'Delete review?'
+    delete_warning: "Do you really want to delete the review '%title%'?"
+    section:
+        basic_info: 'Basic Information'
+        inputs: 'Inputs to the Review (9.3.2)'
+        followup: 'Status of Previous Actions'
+        outputs: 'Outputs of the Review (9.3.3)'
+    field:
+        title: Title
+        review_date: 'Review Date'
+        participants: Participants
+        status: Status
+        changes_relevant_to_isms: 'Changes relevant to the ISMS'
+        feedback_from_interested_parties: 'Feedback from interested parties'
+        audit_results: 'Audit results'
+        performance_evaluation: 'ISMS performance (objectives, indicators)'
+        previous_review_actions: 'Status of previous actions'
+        non_conformities_status: 'Status of nonconformities'
+        corrective_actions_status: 'Status of corrective actions'
+        opportunities_for_improvement: 'Opportunities for improvement'
+        resource_needs: 'Resource needs'
+        decisions: Decisions
+        action_items: 'Action items'
+    status_values:
+        planned: Planned
+        in_progress: 'In Progress'
+        completed: Completed
+        cancelled: Cancelled
+    status:
+        planned: Planned
+        in_progress: 'In Progress'
+        completed: Completed
+        cancelled: Cancelled
+    changes_relevant_to_isms: 'Changes relevant to the ISMS'
+    feedback_from_interested_parties: 'Feedback from interested parties'
+    audit_results: 'Audit results'
+    performance_evaluation: 'ISMS performance (objectives, indicators)'
+    previous_review_actions: 'Status of previous actions'
+    nonconformities_status: 'Status of nonconformities'
+    corrective_actions_status: 'Status of corrective actions'
+    opportunities_for_improvement: 'Opportunities for improvement'
+    resource_needs: 'Resource needs'
+    decisions: Decisions
+    action_items: 'Action items'
+    management_decisions: 'Management decisions'
+    action_items_label: 'Action items'
+    clause_93: 'ISO 27001 Clause 9.3'
+    clause_93_description: 'Management review inputs and outputs according to ISO 27001:2022.'
+    inputs_label: 'Inputs (examples)'
+    input_1: 'Changes in external and internal issues relevant to the ISMS'
+    input_2: 'Feedback from interested parties'
+    input_3: 'Information on ISMS performance and effectiveness'
+    input_4: 'Status of previous actions and risk treatment'
+    outputs_label: 'Outputs (examples)'
+    output_1: 'Decisions and actions related to opportunities for improvement'
+    output_2: 'Any need for changes to the ISMS'
+    output_3: 'Resource needs'
+    edit: Edit

@@ -1,0 +1,45 @@
+business_process:
+    section:
+        basic_info: Basic Information
+        recovery_objectives: Recovery Objectives
+        financial_impact: Financial Impact
+        impact_assessment: Impact Assessment
+        dependencies: Dependencies
+        recovery: Recovery
+        supporting_resources: Supporting Resources
+    field:
+        name: Name
+        process_owner: Process Owner
+        description: Description
+        criticality: Criticality
+        rto: Rto
+        rpo: Rpo
+        mtpd: Mtpd
+        financial_impact_per_hour: Financial Impact Per Hour
+        financial_impact_per_day: Financial Impact Per Day
+        reputational_impact: Reputational Impact
+        regulatory_impact: Regulatory Impact
+        operational_impact: Operational Impact
+        dependencies_upstream: Dependencies Upstream
+        dependencies_downstream: Dependencies Downstream
+        recovery_strategy: Recovery Strategy
+        supporting_assets: Supporting Assets
+        identified_risks: Identified Risks
+    help:
+        name: Name
+        process_owner: Process Owner
+        description: Description
+        criticality: Criticality
+        rto: Rto
+        rpo: Rpo
+        mtpd: Mtpd
+        financial_impact_per_hour: Financial Impact Per Hour
+        financial_impact_per_day: Financial Impact Per Day
+        reputational_impact: Reputational Impact
+        regulatory_impact: Regulatory Impact
+        operational_impact: Operational Impact
+        dependencies_upstream: Dependencies Upstream
+        dependencies_downstream: Dependencies Downstream
+        recovery_strategy: Recovery Strategy
+        supporting_assets: Supporting Assets
+        identified_risks: Identified Risks

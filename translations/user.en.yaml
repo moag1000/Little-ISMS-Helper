@@ -1,27 +1,43 @@
-users:
-  page:
-    title: User Management
-  action:
-    new_user: New User
-    view: View
-    edit: Edit
-  stats:
-    total: Total
-    users: Users
-    active: Active
-    active_users: Active Users
-    admins: Admins
-    administrators: Administrators
-    today_active: Active Today
-    logins_today: Logins today
-  table:
+user:
+    page:
+        title: 'User Management'
+    action:
+        new_user: 'New User'
+        view: View
+        edit: Edit
+    stats:
+        total: Total
+        users: Users
+        active: Active
+        active_users: 'Active Users'
+        admins: Admins
+        administrators: Administrators
+        today_active: 'Active Today'
+        logins_today: 'Logins today'
+    table:
+        name: Name
+        email: Email
+        roles: Roles
+        auth_provider: 'Auth Provider'
+        status: Status
+        last_login: 'Last Login'
+        actions: Actions
+    message:
+        all_users: 'All Users'
+        no_users: 'No users available.'
     name: Name
     email: Email
-    roles: Roles
-    auth_provider: Auth Provider
-    status: Status
-    last_login: Last Login
-    actions: Actions
-  message:
-    all_users: All Users
-    no_users: No users available.
+    department: Department
+    edit: Edit
+    edit_suffix: Edit Suffix
+    save_changes: Save Changes
+    activity:
+        title: Title
+        total: Total
+        by_action: By Action
+    import:
+        title: Title
+        description: Description
+        format: Format
+    new: New
+    create: Create

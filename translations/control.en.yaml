@@ -1,13 +1,13 @@
-controls:
-  field:
-    control_id: Control ID
-    name: Name
-    title: Title
-    category: Category
-    implementation_status: Implementation Status
-    status: Status
-  status:
-    implemented: Implemented
-    in_progress: In Progress
-    not_started: Not Started
-    not_applicable: Not applicable
+control:
+    field:
+        control_id: 'Control ID'
+        name: Name
+        title: Title
+        category: Category
+        implementation_status: 'Implementation Status'
+        status: Status
+    status:
+        implemented: Implemented
+        in_progress: 'In Progress'
+        not_started: 'Not Started'
+        not_applicable: 'Not applicable'

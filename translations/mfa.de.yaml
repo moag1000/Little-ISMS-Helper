@@ -1,45 +1,119 @@
 mfa:
-  title: Zwei-Faktor-Authentifizierung
-  tokens: MFA-Token
-  enabled: MFA aktiviert
-  disabled: MFA deaktiviert
-  token_type: Token-Typ
-  device_name: Gerätename
-  enrolled_at: Registriert am
-  last_used: Zuletzt verwendet
-  usage_count: Verwendungsanzahl
-  is_active: Aktiv
-  is_primary: Primär
-  action:
-    reset: Token zurücksetzen
-  error:
-    token_not_found: MFA-Token nicht gefunden
-  success:
-    token_reset: MFA-Token erfolgreich zurückgesetzt
-  statistics:
-    active_tokens: Aktive Token
-    by_type: Nach Typ
-  challenge:
-    title: 'Zwei-Faktor-Authentifizierung'
-    description: 'Bitte geben Sie den Bestätigungscode von Ihrem Authenticator ein.'
-    device: 'Authentifizierungsgerät'
-    device_help: 'Wählen Sie das Gerät, das Sie verwenden möchten.'
-    code: 'Bestätigungscode'
-    code_help: 'Geben Sie den 6-stelligen Code von Ihrer Authenticator-App oder einen 8-stelligen Backup-Code ein.'
-    verify: 'Code überprüfen'
-    success: 'Zwei-Faktor-Authentifizierung erfolgreich!'
-    cancel: 'Abbrechen und abmelden'
-    backup_code_hint: 'Kein Zugriff auf Ihr Gerät?'
-    using_backup_code: 'Backup-Code verwenden'
-    backup_code_info: 'Geben Sie einen Ihrer 8-stelligen Backup-Codes ein, die Sie bei der Einrichtung erhalten haben. Jeder Backup-Code kann nur einmal verwendet werden.'
-    device_changed: 'Gerät gewechselt'
-    help_title: 'Hilfe benötigt?'
-    help_text: 'Wenden Sie sich an Ihren Administrator, wenn Sie keinen Zugriff auf Ihre Authentifizierungsgeräte haben.'
-    nis2_compliance: 'NIS2-konforme Multi-Faktor-Authentifizierung (Art. 21.2.b)'
+    title: Zwei-Faktor-Authentifizierung
+    tokens: MFA-Token
+    enabled: 'MFA aktiviert'
+    disabled: 'MFA deaktiviert'
+    token_type: Token-Typ
+    device_name: Gerätename
+    enrolled_at: 'Registriert am'
+    last_used: 'Zuletzt verwendet'
+    usage_count: Verwendungsanzahl
+    is_active: Aktiv
+    is_primary: Primär
+    action:
+        reset: 'Token zurücksetzen'
     error:
-      code_required: 'Bitte geben Sie einen Bestätigungscode ein.'
-      invalid_code: 'Ungültiger Code. Bitte versuchen Sie es erneut.'
-      invalid_token: 'Ungültiges oder inaktives Authentifizierungsgerät.'
-  token:
-    primary: 'Primär'
-
+        token_not_found: 'MFA-Token nicht gefunden'
+    success:
+        token_reset: 'MFA-Token erfolgreich zurückgesetzt'
+    statistics:
+        active_tokens: 'Aktive Token'
+        by_type: 'Nach Typ'
+    challenge:
+        title: Zwei-Faktor-Authentifizierung
+        description: 'Bitte geben Sie den Bestätigungscode von Ihrem Authenticator ein.'
+        device: Authentifizierungsgerät
+        device_help: 'Wählen Sie das Gerät, das Sie verwenden möchten.'
+        code: Bestätigungscode
+        code_help: 'Geben Sie den 6-stelligen Code von Ihrer Authenticator-App oder einen 8-stelligen Backup-Code ein.'
+        verify: 'Code überprüfen'
+        success: 'Zwei-Faktor-Authentifizierung erfolgreich!'
+        cancel: 'Abbrechen und abmelden'
+        backup_code_hint: 'Kein Zugriff auf Ihr Gerät?'
+        using_backup_code: 'Backup-Code verwenden'
+        backup_code_info: 'Geben Sie einen Ihrer 8-stelligen Backup-Codes ein, die Sie bei der Einrichtung erhalten haben. Jeder Backup-Code kann nur einmal verwendet werden.'
+        device_changed: 'Gerät gewechselt'
+        help_title: 'Hilfe benötigt?'
+        help_text: 'Wenden Sie sich an Ihren Administrator, wenn Sie keinen Zugriff auf Ihre Authentifizierungsgeräte haben.'
+        nis2_compliance: 'NIS2-konforme Multi-Faktor-Authentifizierung (Art. 21.2.b)'
+        error:
+            code_required: 'Bitte geben Sie einen Bestätigungscode ein.'
+            invalid_code: 'Ungültiger Code. Bitte versuchen Sie es erneut.'
+            invalid_token: 'Ungültiges oder inaktives Authentifizierungsgerät.'
+    token:
+        primary: Primär
+    setup:
+        secret_key: Secret Key
+mfa_token:
+    edit: Bearbeiten
+    edit.subtitle: Untertitel
+    new: Neu
+    new.subtitle: Untertitel
+    field:
+        status: Status
+        token_type: Token Type
+        device_name: Device Name
+        enrolled_at: Enrolled At
+        last_used: Last Used
+        usage_count: Usage Count
+        user: Benutzer
+        is_primary: Is Primary
+        expires_at: Expires At
+        verification_code: Verification Code
+    status:
+        active: Aktiv
+        inactive: Inaktiv
+        expired: Expired
+    never_used: Never Used
+    confirm_disable: Bestätigen Deaktivieren
+    action:
+        disable: Deaktivieren
+    confirm_delete: Bestätigen Löschen
+    title: Titel
+    subtitle: Untertitel
+    kpi:
+        active: Aktiv
+        users: Benutzer
+    empty: Empty
+    setup_new: Setup New
+    backup_codes:
+        title: Titel
+        subtitle: Untertitel
+        warning: Warnung
+        warning_text: Warning Text
+        onetime_display: Onetime Display
+        codes: Codes
+        codes_count: Codes Count
+        copy_all: Copy All
+        print: Print
+        download: Herunterladen
+        usage_title: Usage Title
+        usage_1: Usage 1
+        usage_2: Usage 2
+        usage_3: Usage 3
+        usage_4: Usage 4
+        regenerate_warning: Regenerate Warning
+        remaining: Remaining
+        regenerate_confirm: Regenerate Confirm
+        regenerate: Regenerate
+        no_codes_left: No Codes Left
+        low_codes: Low Codes
+        description: Beschreibung
+    details:
+        subtitle: Untertitel
+        title: Titel
+    primary: Primary
+    usage:
+        title: Titel
+        times: Times
+    setup_totp:
+        title: Titel
+        subtitle: Untertitel
+        step1: Step1
+        scan_instructions: Scan Instructions
+        manual_entry: Manual Entry
+        manual_instructions: Manual Instructions
+        step2: Step2
+        verify_instructions: Verify Instructions
+        code_help: Code Hilfe
+        verify_button: Verify Button

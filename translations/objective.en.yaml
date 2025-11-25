@@ -1,49 +1,56 @@
-objectives:
-  page:
-    title: ISMS Objectives
-  title:
-    edit: Edit Objective
-    list: Objectives
-    new: New Objective
-    show: View Objective
-  section:
-    basic_info: Basic Information
-    measurement: Measurable Indicators
-    responsibility: Responsibility & Timeline
-    status_progress: Status & Progress
-  action:
-    add_new: New Objective
-  field:
-    title: Title
-    category: Category
-    description: Description
-    measurable_indicators: Measurable indicators
-    target_value: Target value
-    current_value: Current value
-    unit: Unit
-    responsible_person: Responsible person
-    target_date: Target date
-    status: Status
-    progress_notes: Progress notes
-  stats:
-    total: Total
-    active: Active
-    achieved: Achieved
-    delayed: Delayed
-  list:
-    title: "All Objectives (%count%)"
-  table:
-    title: Title
-    category: Category
-    target_date: Target date
-    progress: Progress
-    status: Status
-  message:
-    no_objectives: No objectives defined yet.
-  status:
-    achieved: achieved
-    in_progress: in progress
-    delayed: delayed
-    at_risk: at risk
-    total: total
-    active: active
+objective:
+    page:
+        title: 'ISMS Objectives'
+    title:
+        edit: 'Edit Objective'
+        list: Objectives
+        new: 'New Objective'
+        show: 'View Objective'
+    section:
+        basic_info: 'Basic Information'
+        measurement: 'Measurable Indicators'
+        responsibility: 'Responsibility & Timeline'
+        status_progress: 'Status & Progress'
+    action:
+        add_new: 'New Objective'
+    field:
+        title: Title
+        category: Category
+        description: Description
+        measurable_indicators: 'Measurable indicators'
+        target_value: 'Target value'
+        current_value: 'Current value'
+        unit: Unit
+        responsible_person: 'Responsible person'
+        target_date: 'Target date'
+        status: Status
+        progress_notes: 'Progress notes'
+        achieved_date: Achieved Date
+    stats:
+        total: Total
+        active: Active
+        achieved: Achieved
+        delayed: Delayed
+    list:
+        title: 'All Objectives (%count%)'
+    table:
+        title: Title
+        category: Category
+        target_date: 'Target date'
+        progress: Progress
+        status: Status
+    message:
+        no_objectives: 'No objectives defined yet.'
+    status:
+        achieved: achieved
+        in_progress: 'in progress'
+        delayed: delayed
+        at_risk: 'at risk'
+        total: total
+        active: active
+    link:
+        new: New
+        create_new: Create New
+    label:
+        current: Current
+        target: Target
