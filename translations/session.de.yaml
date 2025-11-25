@@ -19,5 +19,5 @@ session:
         invalid_token: 'Ungültiges CSRF-Token'
     info:
         termination_not_implemented: 'Sitzungsbeendigung erfordert zusätzliche Konfiguration (Datenbank-Session-Speicherung)'
-    subtitle: Untertitel
-    user_activity: User Activity
+    subtitle: 'Verwaltung aktiver Benutzersitzungen'
+    user_activity: 'Benutzeraktivität und Session-Monitoring'
