@@ -165,38 +165,38 @@ tenant:
     name: Name
 corporate:
     view:
-        own_only: Own Only
-        including_inherited: Including Inherited
-        including_subsidiaries: Including Subsidiaries
+        own_only: 'Nur eigene'
+        including_inherited: 'Inkl. geerbte'
+        including_subsidiaries: 'Inkl. Tochtergesellschaften'
     stats:
-        breakdown: Breakdown
-        groups: Groups
-        standalone: Standalone
-        total: Gesamt
+        breakdown: 'Aufschlüsselung'
+        groups: 'Gruppen'
+        standalone: 'Eigenständig'
+        total: 'Gesamt'
     inheritance:
-        inherited_from: Inherited From
-        title: Titel
-        propagate: Propagate
-        no_context: No Context
-        organization: Organisation
-        own_context: Own Context
-        load_error: Load Error
-        confirm_propagate: Confirm Propagate
-        propagate_error: Propagate Error
-        isms_context_inherited: Isms Context Inherited
-        from: From
-        edit_at_parent: Edit At Parent
-        cannot_edit_inherited: Cannot Edit Inherited
-        view_only_title: View Only Title
-        risk_inherited_message: Risk Inherited Message
-    inherited: Inherited
+        inherited_from: 'Geerbt von'
+        title: 'Vererbung'
+        propagate: 'An Tochtergesellschaften vererben'
+        no_context: 'Kein Kontext vorhanden'
+        organization: 'Organisation'
+        own_context: 'Eigener Kontext'
+        load_error: 'Fehler beim Laden der Vererbungsinformationen'
+        confirm_propagate: 'Möchten Sie diesen Kontext wirklich an alle Tochtergesellschaften vererben?'
+        propagate_error: 'Fehler beim Vererben des Kontexts'
+        isms_context_inherited: 'ISMS-Kontext wird von Muttergesellschaft geerbt'
+        from: 'Von'
+        edit_at_parent: 'Bei Muttergesellschaft bearbeiten'
+        cannot_edit_inherited: 'Geerbte Einträge können nicht direkt bearbeitet werden'
+        view_only_title: 'Nur-Ansicht: Geerbt von Muttergesellschaft'
+        risk_inherited_message: 'Dieses Risiko wurde von der Muttergesellschaft geerbt und kann hier nicht geändert werden'
+    inherited: 'Geerbt'
     field:
-        actions: Aktionen
-        subsidiary: Tochtergesellschaft
-        parent: Muttergesellschaft
-        governance_model: Governance Model
-        hierarchy_depth: Hierarchy Depth
-        subsidiaries: Tochtergesellschaften
+        actions: 'Aktionen'
+        subsidiary: 'Tochtergesellschaft'
+        parent: 'Muttergesellschaft'
+        governance_model: 'Governance-Modell'
+        hierarchy_depth: 'Hierarchietiefe'
+        subsidiaries: 'Tochtergesellschaften'
     action:
         set_parent: 'Muttergesellschaft zuordnen'
         update_governance: 'Governance aktualisieren'
