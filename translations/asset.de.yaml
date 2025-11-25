@@ -1,11 +1,11 @@
 asset:
     title: Titel
     action:
-        bcm_insights: BCM‑Insights
+        bcm_insights: 'BCM-Erkenntnisse'
         create: 'Asset anlegen'
         update: 'Änderungen speichern'
-        view_critical: Kritische anzeigen
-        view_details: Anzeigen Details
+        view_critical: 'Kritische Assets anzeigen'
+        view_details: 'Details anzeigen'
     details:
         title: Asset‑Details
     section:
@@ -39,16 +39,16 @@ asset:
         integrity: Integrität
         availability: Verfügbarkeit
         rto_category: 'RTO-Kategorie'
-        asset_count: Anzahl Assets
-        examples: Examples
-        asset_name: Asset Name
-        business_criticality: Business Criticality
-        rto: Rto
-        rpo: Rpo
-        recovery_strategy: Recovery Strategy
-        avg_rto: Avg Rto
-        monetary_value: Monetary Value
-        classification: Classification
+        asset_count: 'Anzahl Assets'
+        examples: 'Beispiele'
+        asset_name: 'Asset-Bezeichnung'
+        business_criticality: 'Geschäftskritikalität'
+        rto: 'RTO (Recovery Time Objective)'
+        rpo: 'RPO (Recovery Point Objective)'
+        recovery_strategy: 'Wiederherstellungsstrategie'
+        avg_rto: 'Durchschnittliche RTO'
+        monetary_value: 'Geldwert'
+        classification: 'Klassifizierung'
     help:
         name: 'Eindeutiger Name des Assets'
         type: 'Kategorie des Assets (Hardware, Software, Daten, etc.)'

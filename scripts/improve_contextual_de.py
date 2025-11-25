@@ -12,6 +12,7 @@ CONTEXT_TRANSLATIONS = {
     'View Critical': 'Kritische anzeigen',
     'View Details': 'Details anzeigen',
     'View Structure': 'Struktur anzeigen',
+    'View All': 'Alle anzeigen',
     'Add New': 'Neu anlegen',
     'Set Parent': 'Muttergesellschaft zuordnen',
     'Update Governance': 'Governance aktualisieren',
@@ -20,6 +21,63 @@ CONTEXT_TRANSLATIONS = {
     'Notify Subjects': 'Betroffene Personen benachrichtigen',
     'Update Status': 'Status aktualisieren',
     'Create New': 'Neu erstellen',
+    'Mark Resolved': 'Als gelöst markieren',
+    'Request Approval': 'Genehmigung anfordern',
+    'Log Activity': 'Aktivität protokollieren',
+
+    # Document Management
+    'Total Documents': 'Gesamtanzahl Dokumente',
+    'Total Size': 'Gesamtgröße',
+    'All Documents': 'Alle Dokumente',
+    'Document Types': 'Dokumenttypen',
+    'Recent Documents': 'Neueste Dokumente',
+    'Related Documents': 'Zugehörige Dokumente',
+    'File Size': 'Dateigröße',
+    'File Type': 'Dateityp',
+    'Upload Date': 'Upload-Datum',
+    'Last Modified': 'Zuletzt geändert',
+    'Document Owner': 'Dokumentverantwortlicher',
+    'Access Level': 'Zugriffsstufe',
+
+    # Incident Management
+    'Incident Response': 'Incident-Response',
+    'Root Cause': 'Grundursache',
+    'Lessons Learned': 'Gelernte Lektionen',
+    'Action Taken': 'Durchgeführte Maßnahme',
+    'Resolution Time': 'Lösungszeit',
+    'Response Team': 'Response-Team',
+    'Incident Type': 'Vorfalltyp',
+    'Affected Systems': 'Betroffene Systeme',
+    'Business Impact': 'Geschäftliche Auswirkung',
+
+    # Context/Organization
+    'External Context': 'Externer Kontext',
+    'Internal Context': 'Interner Kontext',
+    'Stakeholder Needs': 'Stakeholder-Anforderungen',
+    'Interested Parties': 'Interessierte Parteien',
+    'Legal Requirements': 'Rechtliche Anforderungen',
+    'Regulatory Requirements': 'Regulatorische Anforderungen',
+    'Contractual Obligations': 'Vertragliche Verpflichtungen',
+
+    # MFA/Authentication
+    'Two Factor': 'Zwei-Faktor',
+    'Backup Codes': 'Backup-Codes',
+    'Recovery Codes': 'Wiederherstellungscodes',
+    'Enable Mfa': 'MFA aktivieren',
+    'Disable Mfa': 'MFA deaktivieren',
+    'Verify Code': 'Code überprüfen',
+    'Setup Complete': 'Einrichtung abgeschlossen',
+    'Scan Code': 'Code scannen',
+
+    # Audit specific
+    'Lead Auditor': 'Leitender Auditor',
+    'Audit Team': 'Audit-Team',
+    'Audit Scope': 'Audit-Umfang',
+    'Audit Findings': 'Audit-Feststellungen',
+    'Corrective Actions': 'Korrekturmaßnahmen',
+    'Follow Up': 'Nachverfolgung',
+    'Audit Trail': 'Audit-Trail',
+    'Evidence Collected': 'Gesammelte Nachweise',
 
     # Status & States
     'Pending Authority': 'Meldung an Behörde ausstehend',
@@ -28,16 +86,31 @@ CONTEXT_TRANSLATIONS = {
     'High Risks': 'Hohe Risiken',
     'Critical Assets': 'Kritische Assets',
     'Special Categories': 'Besondere Kategorien personenbezogener Daten',
+    'Not Started': 'Nicht begonnen',
+    'In Progress': 'In Bearbeitung',
+    'Completed': 'Abgeschlossen',
+    'On Hold': 'Pausiert',
+    'Cancelled': 'Abgebrochen',
 
     # Fields & Labels
     'Business Impact': 'Geschäftliche Auswirkung',
     'Current Value': 'Aktueller Wert',
     'Asset Count': 'Anzahl Assets',
     'Last Review': 'Letzte Überprüfung',
+    'Next Review': 'Nächste Überprüfung',
     'Time Remaining': 'Verbleibende Zeit',
     'Affected Subjects': 'Betroffene Personen',
     'Corporate Notes': 'Konzernhinweise',
     'Azure Tenant ID': 'Azure-Mandanten-ID',
+    'Business Process': 'Geschäftsprozess',
+    'Process Owner': 'Prozessverantwortlicher',
+    'Created By': 'Erstellt von',
+    'Updated By': 'Aktualisiert von',
+    'Created At': 'Erstellt am',
+    'Updated At': 'Aktualisiert am',
+    'Due Date': 'Fälligkeitsdatum',
+    'Start Date': 'Startdatum',
+    'End Date': 'Enddatum',
 
     # BCM/BCP specific
     'Bc Team': 'BC-Team',
@@ -46,21 +119,35 @@ CONTEXT_TRANSLATIONS = {
     'Recovery Procedures': 'Wiederherstellungsverfahren',
     'Communication Plan': 'Kommunikationsplan',
     'Internal Communication': 'Interne Kommunikation',
+    'External Communication': 'Externe Kommunikation',
     'Backup Recovery': 'Backup und Wiederherstellung',
     'Version Review': 'Versionsüberprüfung',
     'Rto Analysis': 'RTO-Analyse',
     'Rto Category': 'RTO-Kategorie',
     'Dependency Insights': 'Abhängigkeitsanalyse',
+    'Business Continuity': 'Geschäftskontinuität',
+    'Disaster Recovery': 'Disaster Recovery',
+    'Alternative Site': 'Alternativstandort',
 
     # Risk Management
     'Risk Value Threshold': 'Risikobewertungs-Schwellenwert',
     'Total Identified': 'Gesamt identifiziert',
+    'Risk Score': 'Risikobewertung',
+    'Risk Level': 'Risikostufe',
+    'Risk Owner': 'Risikoverantwortlicher',
+    'Risk Treatment': 'Risikobehandlung',
+    'Residual Risk': 'Restrisiko',
+    'Inherent Risk': 'Inhärentes Risiko',
 
     # Privacy/GDPR
     'Data Subject': 'Betroffene Person',
     'Data Subjects': 'Betroffene Personen',
     'Processing Scale': 'Umfang der Verarbeitung',
     'Legal Basis': 'Rechtsgrundlage',
+    'Processing Activity': 'Verarbeitungstätigkeit',
+    'Data Categories': 'Datenkategorien',
+    'Retention Period': 'Aufbewahrungsfrist',
+    'Third Countries': 'Drittländer',
 
     # Generic terms
     'Title': 'Titel',
@@ -72,6 +159,12 @@ CONTEXT_TRANSLATIONS = {
     'Label': 'Bezeichnung',
     'Empty': 'Keine Einträge vorhanden',
     'No Data': 'Keine Daten vorhanden',
+    'No Items': 'Keine Einträge',
+    'None': 'Keine',
+    'Unknown': 'Unbekannt',
+    'Not Applicable': 'Nicht anwendbar',
+    'Not Available': 'Nicht verfügbar',
+    'Not Set': 'Nicht gesetzt',
 }
 
 def improve_line(line):

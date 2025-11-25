@@ -99,51 +99,51 @@ privacy:
             medium: Mittel
             high: Hoch
             critical: Kritisch
-        investigation_followup: Investigation Followup
-        root_cause: Root Cause
-        lessons_learned: Lessons Learned
-        follow_up_actions: Follow Up Actions
-        reopen_reason: Reopen Reason
+        investigation_followup: 'Untersuchung und Nachverfolgung'
+        root_cause: 'Grundursache (Root Cause Analysis)'
+        lessons_learned: 'Erkenntnisse und gelernte Lektionen'
+        follow_up_actions: 'Nachfolgende Maßnahmen'
+        reopen_reason: 'Grund für Wiedereröffnung'
 processing_activity:
     field:
-        name: Name
-        status: Status
-        description: Beschreibung
-        purposes: Purposes
-        legal_basis: Rechtsgrundlage
-        legal_basis_details: Legal Basis Details
-        data_subject_categories: Data Subject Categories
-        estimated_data_subjects_count: Estimated Data Subjects Count
-        personal_data_categories: Personal Data Categories
-        processes_special_categories: Processes Special Categories
-        processes_criminal_data: Processes Criminal Data
-        special_categories_details: Special Categories Details
-        legal_basis_special_categories: Legal Basis Special Categories
-        recipient_categories: Recipient Categories
-        has_third_country_transfer: Has Third Country Transfer
-        recipient_details: Recipient Details
-        third_countries: Third Countries
-        transfer_safeguards: Transfer Safeguards
-        retention_period: Retention Period
-        retention_period_days: Retention Period Days
-        retention_legal_basis: Retention Legal Basis
-        technical_organizational_measures: Technical Organizational Measures
-        implemented_controls: Implemented Controls
-        responsible_department: Responsible Department
-        contact_person: Contact Person
-        data_protection_officer: Data Protection Officer
-        involves_processors: Involves Processors
-        is_joint_controller: Is Joint Controller
-        is_high_risk: Is High Risk
-        dpia_completed: "Datenschutz-Folgenabschätzung Abgeschlossen"
-        dpia_date: "Datenschutz-Folgenabschätzung Datum"
-        risk_level: Risk Level
-        has_automated_decision_making: Has Automated Decision Making
-        automated_decision_making_details: Automated Decision Making Details
-        data_sources: Data Sources
-        start_date: Beginn Datum
-        end_date: Ende Datum
-        next_review_date: Next Review Date
+        name: 'Bezeichnung der Verarbeitungstätigkeit'
+        status: 'Status'
+        description: 'Beschreibung der Verarbeitung'
+        purposes: 'Zwecke der Verarbeitung (Art. 30(1)(b) DSGVO)'
+        legal_basis: 'Rechtsgrundlage (Art. 6 DSGVO)'
+        legal_basis_details: 'Details zur Rechtsgrundlage'
+        data_subject_categories: 'Kategorien betroffener Personen (z.B. Kunden, Mitarbeiter)'
+        estimated_data_subjects_count: 'Geschätzte Anzahl betroffener Personen'
+        personal_data_categories: 'Kategorien personenbezogener Daten'
+        processes_special_categories: 'Verarbeitet besondere Kategorien (Art. 9 DSGVO)'
+        processes_criminal_data: 'Verarbeitet Daten zu strafrechtlichen Verurteilungen (Art. 10 DSGVO)'
+        special_categories_details: 'Details zu besonderen Kategorien (Gesundheit, biometrische Daten, etc.)'
+        legal_basis_special_categories: 'Rechtsgrundlage für besondere Kategorien (Art. 9(2) DSGVO)'
+        recipient_categories: 'Kategorien von Empfängern (intern/extern)'
+        has_third_country_transfer: 'Übermittlung an Drittländer (Art. 44ff DSGVO)'
+        recipient_details: 'Details zu Empfängern'
+        third_countries: 'Drittländer (außerhalb EU/EWR)'
+        transfer_safeguards: 'Garantien für Drittlandübermittlung (z.B. Standardvertragsklauseln, BCR)'
+        retention_period: 'Aufbewahrungsfrist'
+        retention_period_days: 'Aufbewahrungsfrist in Tagen'
+        retention_legal_basis: 'Rechtsgrundlage für Aufbewahrung'
+        technical_organizational_measures: 'Technische und organisatorische Maßnahmen (TOMs, Art. 32 DSGVO)'
+        implemented_controls: 'Implementierte Kontrollen'
+        responsible_department: 'Verantwortliche Abteilung'
+        contact_person: 'Ansprechperson'
+        data_protection_officer: 'Datenschutzbeauftragter (DSB)'
+        involves_processors: 'Auftragsverarbeiter eingebunden (Art. 28 DSGVO)'
+        is_joint_controller: 'Gemeinsame Verantwortlichkeit (Art. 26 DSGVO)'
+        is_high_risk: 'Hohes Risiko für Rechte und Freiheiten'
+        dpia_completed: 'Datenschutz-Folgenabschätzung (DSFA) durchgeführt'
+        dpia_date: 'Datum der DSFA'
+        risk_level: 'Risikostufe'
+        has_automated_decision_making: 'Automatisierte Entscheidungsfindung (Art. 22 DSGVO)'
+        automated_decision_making_details: 'Details zur automatisierten Entscheidungsfindung'
+        data_sources: 'Datenquellen'
+        start_date: 'Beginn der Verarbeitung'
+        end_date: 'Ende der Verarbeitung'
+        next_review_date: 'Nächstes Überprüfungsdatum'
 data_breach:
     index:
-        view_all_breaches: View All Breaches
+        view_all_breaches: 'Alle Datenschutzverletzungen anzeigen'
