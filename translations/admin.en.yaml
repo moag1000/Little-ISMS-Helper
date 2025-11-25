@@ -72,7 +72,7 @@ admin:
             empty: 'No recent activity.'
             view_all: 'View all'
     licensing:
-        attributions_provided: Attributions Provided
+        attributions_provided: 'Attributions Provided'
     settings:
         title: Title
         subtitle: Subtitle
@@ -81,134 +81,134 @@ admin:
             description: Description
             locale: Locale
             timezone: Timezone
-            items_per_page: Items Per Page
-            locale_settings: Locale Settings
-            default_locale: Default Locale
-            default_locale_help: Default Locale Help
-            supported_locales: Supported Locales
-            supported_locales_help: Supported Locales Help
-            display_settings: Display Settings
-            items_per_page_help: Items Per Page Help
-            timezone_help: Timezone Help
-            date_format: Date Format
-            date_format_help: Date Format Help
-            datetime_format: Datetime Format
-            datetime_format_help: Datetime Format Help
-            help_text: Help Text
+            items_per_page: 'Items Per Page'
+            locale_settings: 'Locale Settings'
+            default_locale: 'Default Locale'
+            default_locale_help: 'Default Locale Help'
+            supported_locales: 'Supported Locales'
+            supported_locales_help: 'Supported Locales Help'
+            display_settings: 'Display Settings'
+            items_per_page_help: 'Items Per Page Help'
+            timezone_help: 'Timezone Help'
+            date_format: 'Date Format'
+            date_format_help: 'Date Format Help'
+            datetime_format: 'Datetime Format'
+            datetime_format_help: 'Datetime Format Help'
+            help_text: 'Help Text'
         configure: Configure
         security:
             title: Title
             description: Description
-            session_lifetime: Session Lifetime
-            max_login_attempts: Max Login Attempts
-            require_2fa: Require 2fa
-            session_settings: Session Settings
-            session_lifetime_help: Session Lifetime Help
-            remember_me_lifetime: Remember Me Lifetime
-            remember_me_help: Remember Me Help
-            password_settings: Password Settings
-            password_min_length: Password Min Length
-            password_min_length_help: Password Min Length Help
-            auth_settings: Auth Settings
-            max_login_attempts_help: Max Login Attempts Help
-            lockout_duration: Lockout Duration
-            lockout_duration_help: Lockout Duration Help
-            require_2fa_help: Require 2fa Help
+            session_lifetime: 'Session Lifetime'
+            max_login_attempts: 'Max Login Attempts'
+            require_2fa: 'Require 2fa'
+            session_settings: 'Session Settings'
+            session_lifetime_help: 'Session Lifetime Help'
+            remember_me_lifetime: 'Remember Me Lifetime'
+            remember_me_help: 'Remember Me Help'
+            password_settings: 'Password Settings'
+            password_min_length: 'Password Min Length'
+            password_min_length_help: 'Password Min Length Help'
+            auth_settings: 'Auth Settings'
+            max_login_attempts_help: 'Max Login Attempts Help'
+            lockout_duration: 'Lockout Duration'
+            lockout_duration_help: 'Lockout Duration Help'
+            require_2fa_help: 'Require 2fa Help'
             warning: Warning
         features:
             title: Title
             description: Description
-            dark_mode: Dark Mode
-            global_search: Global Search
-            audit_log: Audit Log
+            dark_mode: 'Dark Mode'
+            global_search: 'Global Search'
+            audit_log: 'Audit Log'
             intro: Intro
-            dark_mode_help: Dark Mode Help
-            global_search_help: Global Search Help
-            quick_view: Quick View
-            quick_view_help: Quick View Help
+            dark_mode_help: 'Dark Mode Help'
+            global_search_help: 'Global Search Help'
+            quick_view: 'Quick View'
+            quick_view_help: 'Quick View Help'
             notifications: Notifications
-            notifications_help: Notifications Help
-            audit_log_help: Audit Log Help
-            info_text: Info Text
-        info_title: Info Title
-        info_text: Info Text
-        required_for_iso27001: Required For Iso27001
+            notifications_help: 'Notifications Help'
+            audit_log_help: 'Audit Log Help'
+            info_text: 'Info Text'
+        info_title: 'Info Title'
+        info_text: 'Info Text'
+        required_for_iso27001: 'Required For Iso27001'
         info: Info
         help: Help
     compliance:
         framework: Framework
-        total_requirements: Total Requirements
+        total_requirements: 'Total Requirements'
         assessed: Assessed
         compliant: Compliant
-        compliance_rate: Compliance Rate
+        compliance_rate: 'Compliance Rate'
         progress: Progress
         statistics: Statistics
-        total_available: Total Available
+        total_available: 'Total Available'
         loaded: Loaded
-        not_loaded: Not Loaded
-        mandatory_missing: Mandatory Missing
-        compliance_overview: Compliance Overview
-        no_frameworks_loaded: No Frameworks Loaded
+        not_loaded: 'Not Loaded'
+        mandatory_missing: 'Mandatory Missing'
+        compliance_overview: 'Compliance Overview'
+        no_frameworks_loaded: 'No Frameworks Loaded'
     panel:
         title: Title
     data_repair:
-        current_asset: Current Asset
-        assign_to_asset: Assign To Asset
-        no_asset: No Asset
-        select_asset: Select Asset
-        assign_risk: Assign Risk
-        select_risk: Select Risk
-        assign_asset: Assign Asset
-        entity_type: Entity Type
+        current_asset: 'Current Asset'
+        assign_to_asset: 'Assign To Asset'
+        no_asset: 'No Asset'
+        select_asset: 'Select Asset'
+        assign_risk: 'Assign Risk'
+        select_risk: 'Select Risk'
+        assign_asset: 'Assign Asset'
+        entity_type: 'Entity Type'
         issue: Issue
         title: Title
         description: Description
-        orphaned_entities: Orphaned Entities
-        no_orphans: No Orphans
-        orphans_found: Orphans Found
-        orphaned_assets: Orphaned Assets
-        orphaned_risks: Orphaned Risks
-        orphaned_incidents: Orphaned Incidents
-        assign_to_tenant: Assign To Tenant
-        select_tenant: Select Tenant
-        all_orphans: All Orphans
-        assets_only: Assets Only
-        risks_only: Risks Only
-        incidents_only: Incidents Only
-        assign_orphans: Assign Orphans
-        orphaned_assets_list: Orphaned Assets List
-        orphaned_risks_list: Orphaned Risks List
-        orphaned_incidents_list: Orphaned Incidents List
-        tenant_statistics: Tenant Statistics
-        risk_asset_assignment: Risk Asset Assignment
-        risk_asset_assignment_desc: Risk Asset Assignment Desc
-        incident_asset_assignment: Incident Asset Assignment
-        incident_asset_assignment_desc: Incident Asset Assignment Desc
-        controls_without_risks: Controls Without Risks
-        controls_without_risks_desc: Controls Without Risks Desc
-        controls_count: Controls Count
-        controls_without_assets: Controls Without Assets
-        controls_without_assets_desc: Controls Without Assets Desc
-        broken_references: Broken References
-        broken_references_desc: Broken References Desc
+        orphaned_entities: 'Orphaned Entities'
+        no_orphans: 'No Orphans'
+        orphans_found: 'Orphans Found'
+        orphaned_assets: 'Orphaned Assets'
+        orphaned_risks: 'Orphaned Risks'
+        orphaned_incidents: 'Orphaned Incidents'
+        assign_to_tenant: 'Assign To Tenant'
+        select_tenant: 'Select Tenant'
+        all_orphans: 'All Orphans'
+        assets_only: 'Assets Only'
+        risks_only: 'Risks Only'
+        incidents_only: 'Incidents Only'
+        assign_orphans: 'Assign Orphans'
+        orphaned_assets_list: 'Orphaned Assets List'
+        orphaned_risks_list: 'Orphaned Risks List'
+        orphaned_incidents_list: 'Orphaned Incidents List'
+        tenant_statistics: 'Tenant Statistics'
+        risk_asset_assignment: 'Risk Asset Assignment'
+        risk_asset_assignment_desc: 'Risk Asset Assignment Desc'
+        incident_asset_assignment: 'Incident Asset Assignment'
+        incident_asset_assignment_desc: 'Incident Asset Assignment Desc'
+        controls_without_risks: 'Controls Without Risks'
+        controls_without_risks_desc: 'Controls Without Risks Desc'
+        controls_count: 'Controls Count'
+        controls_without_assets: 'Controls Without Assets'
+        controls_without_assets_desc: 'Controls Without Assets Desc'
+        broken_references: 'Broken References'
+        broken_references_desc: 'Broken References Desc'
     modules:
         title: Title
-        dependency_graph: Dependency Graph
+        dependency_graph: 'Dependency Graph'
         stats:
             total: Total
             active: Active
             inactive: Inactive
             required: Required
-        active_modules: Active Modules
+        active_modules: 'Active Modules'
         status:
             active: Active
             inactive: Inactive
         dependencies: Dependencies
-        required_by: Required By
+        required_by: 'Required By'
         details: Details
-        confirm_deactivate: Confirm Deactivate
+        confirm_deactivate: 'Confirm Deactivate'
         deactivate: Deactivate
         required: Required
-        no_active: No Active
-        inactive_modules: Inactive Modules
+        no_active: 'No Active'
+        inactive_modules: 'Inactive Modules'
         activate: Activate

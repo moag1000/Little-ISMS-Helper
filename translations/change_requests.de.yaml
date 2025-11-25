@@ -46,7 +46,7 @@ change_request:
         plan: 'Umsetzungsplan und Zeitplan'
         rollback_plan: 'Rollback-Plan bei Fehlschlag'
         testing_requirements: 'Testanforderungen und QA'
-        approval_info: 'Freigabe-Informationen'
+        approval_info: Freigabe-Informationen
         verification: 'Verifikation und Abnahme'
         closure: 'Abschluss und Lessons Learned'
         affected_assets: 'Betroffene Assets'
@@ -81,7 +81,7 @@ change_request:
         closure_notes: Abschlussnotizen
         complexity_score: 'Komplexitätsbewertung (1-10)'
         planned_implementation: 'Geplantes Umsetzungsdatum'
-        approval_date: 'Freigabedatum'
+        approval_date: Freigabedatum
         comments: 'Kommentare und Anmerkungen'
         implementation_date: 'Datum der tatsächlichen Umsetzung'
         notes: 'Notizen und zusätzliche Informationen'

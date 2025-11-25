@@ -9,7 +9,7 @@ bulk_delete:
         list: 'List of affected dependencies'
     loading: 'Checking dependencies...'
     warning: Warning
-    will_be_deleted: Will Be Deleted
-    selected_items: Selected Items
+    will_be_deleted: 'Will Be Deleted'
+    selected_items: 'Selected Items'
     understand: Understand
-    confirm_help: Confirm Help
+    confirm_help: 'Confirm Help'

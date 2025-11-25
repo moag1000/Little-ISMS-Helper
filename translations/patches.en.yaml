@@ -3,9 +3,9 @@ patch:
     new: New
     title: Title
     field:
-        patch_id: Patch Id
+        patch_id: 'Patch Id'
         title: Title
-        patch_type: Patch Type
+        patch_type: 'Patch Type'
         status: Status
         description: Description
     kpi:

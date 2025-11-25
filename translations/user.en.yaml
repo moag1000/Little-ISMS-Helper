@@ -25,19 +25,70 @@ user:
     message:
         all_users: 'All Users'
         no_users: 'No users available.'
+        no_custom_roles: 'No custom roles available.'
     name: Name
     email: Email
     department: Department
     edit: Edit
-    edit_suffix: Edit Suffix
-    save_changes: Save Changes
+    edit_suffix: 'Edit Suffix'
+    save_changes: 'Save Changes'
     activity:
         title: Title
         total: Total
-        by_action: By Action
+        by_action: 'By Action'
     import:
         title: Title
         description: Description
         format: Format
     new: New
     create: Create
+    section:
+        basic_info: 'Basic Information'
+        tenant: Tenant
+        authentication: Authentication
+        roles: 'Roles & Permissions'
+        status: Status
+    field:
+        first_name: 'First Name'
+        last_name: 'Last Name'
+        email: 'Email Address'
+        department: Department
+        job_title: 'Job Title'
+        phone_number: 'Phone Number'
+        avatar: Avatar
+        avatar_file: 'Upload Avatar'
+        tenant: Tenant
+        auth_provider: 'Authentication Provider'
+        password: Password
+        plain_password: 'New Password'
+        roles: Roles
+        system_roles: 'System Roles'
+        custom_roles: 'Custom Roles'
+        is_active: Active
+        active: Active
+        is_verified: Verified
+        email_verified: 'Email Verified'
+        created_at: 'Created At'
+        updated_at: 'Updated At'
+        last_login: 'Last Login'
+    placeholder:
+        tenant: '-- Select tenant --'
+    help:
+        first_name: "Enter the user's first name"
+        last_name: "Enter the user's last name"
+        email: 'Enter a valid email address (used for login and notifications)'
+        department: "User's department or organizational unit"
+        job_title: "User's job title or function"
+        phone_number: 'Phone number for contact (optional)'
+        avatar: 'Upload profile picture (recommended: square format, max 2MB)'
+        avatar_help: 'Recommended format: square, max 2MB (JPEG, PNG, GIF, WebP)'
+        tenant: 'Tenant this user belongs to (in multi-tenant environments)'
+        tenant_help: 'Leave empty for Super Admin users without tenant binding'
+        password_edit: 'Leave empty to keep current password'
+        password: 'Minimum 8 characters, should contain uppercase and lowercase letters, numbers and special characters'
+    validation:
+        avatar_format: 'Please upload a valid image (JPEG, PNG, GIF or WebP)'
+    auth_provider:
+        local: 'Local Authentication'
+user_management:
+    import_irreversible: 'Warning: User import cannot be undone. Please ensure your CSV file is correctly formatted.'

@@ -129,4 +129,6 @@ soa:
         last_review: 'Last review'
         next_review: 'Next review'
     title: Title
-    iso27001_full_title: Iso27001 Full Title
+    iso27001_full_title: 'Iso27001 Full Title'
+    in_progress_badge: 'In Progress'
+    in_progress_badge_emoji: '🔄 In Progress'

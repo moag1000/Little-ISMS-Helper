@@ -89,3 +89,10 @@ monitoring:
     related: 'Related Monitoring'
     refresh: Refresh
     back_to_health: 'Back to Health'
+    by_level: 'By Level'
+    show_entries: 'Show Entries'
+    no_errors_found: 'No errors found'
+    reverse_order: 'Reverse Order'
+    recent_entries_only: 'Recent Entries Only'
+    full_log_analysis: 'Full Log Analysis'
+    large_files_warning: 'Warning: Large log files may take longer to load'

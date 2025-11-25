@@ -66,4 +66,31 @@ risk_treatment_plan:
     delete:
         warning: 'This action cannot be undone. Do you really want to delete the treatment plan?'
         confirm: 'Are you sure you want to delete this treatment plan?'
-    no_plans: No Plans
+    no_plans: 'No treatment plans available'
+    placeholder:
+        risk: '-- Select risk --'
+        title: 'e.g. Implementation of a Web Application Firewall'
+        description: 'Describe the planned measures and their objectives...'
+        responsible_person: '-- Select responsible person --'
+        implementation_notes: 'Document progress, issues and solutions...'
+    help:
+        risk: 'Select the risk this treatment plan applies to'
+        description: 'Detailed description of the planned treatment measures'
+        status: 'Current status of the treatment plan'
+        priority: 'Priority based on risk severity and urgency'
+        start_date: 'Planned or actual start of treatment measures'
+        target_completion_date: 'Planned date for completion of all measures'
+        actual_completion_date: 'Actual completion date (filled in when status is "Completed")'
+        budget: 'Estimated or actual budget in EUR'
+        responsible_person: 'Person responsible for implementing the plan'
+        controls: 'ISO 27001 controls implemented to treat this risk (CTRL for multiple selection)'
+        completion_percentage: 'Implementation progress in percent (0-100)'
+        implementation_notes: 'Notes on implementation, progress, obstacles and solutions'
+    validation:
+        risk_required: 'Please select a risk'
+        title_required: 'Please enter a title'
+        title_max_length: 'Title must not exceed 255 characters'
+        description_required: 'Please enter a description'
+        target_completion_date_required: 'Please specify a target date'
+        budget_positive: 'Budget must be 0 or greater'
+        completion_percentage_range: 'Completion percentage must be between 0 and 100'

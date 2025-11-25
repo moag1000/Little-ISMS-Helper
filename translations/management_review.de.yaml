@@ -47,6 +47,7 @@ management_review:
     field:
         title: Titel
         review_date: Bewertungsdatum
+        reviewed_by: 'Durchgeführt von'
         participants: Teilnehmende
         status: Status
         changes_relevant_to_isms: 'Änderungen mit Relevanz für das ISMS'
@@ -56,10 +57,17 @@ management_review:
         previous_review_actions: 'Status früherer Maßnahmen'
         non_conformities_status: 'Status von Nichtkonformitäten'
         corrective_actions_status: 'Status der Korrekturmaßnahmen'
+        nonconformities_review: 'Bewertung von Nichtkonformitäten'
+        incidents_review: 'Bewertung von Vorfällen'
+        risks_review: 'Bewertung von Risiken'
+        objectives_review: 'Bewertung der Ziele'
+        context_changes: 'Kontextänderungen'
+        improvement_opportunities: 'Verbesserungschancen'
         opportunities_for_improvement: Verbesserungsmöglichkeiten
         resource_needs: Ressourcenbedarf
         decisions: Beschlüsse/Entscheidungen
         action_items: Maßnahmenliste
+        summary: Zusammenfassung
     status_values:
         planned: Geplant
         in_progress: 'In Bearbeitung'
@@ -71,3 +79,25 @@ management_review:
         completed: Abgeschlossen
         cancelled: Abgebrochen
     edit: Bearbeiten
+    placeholder:
+        title: 'z.B. Management Review Q1 2025'
+    help:
+        reviewed_by: 'Üblicherweise ein Mitglied des Top-Managements'
+        performance_evaluation: 'Bewertung der ISMS-Performance und KPIs'
+        changes_relevant_to_isms: 'Änderungen, die für das ISMS relevant sind (z.B. gesetzliche, organisatorische, technologische)'
+        feedback_from_interested_parties: 'Rückmeldungen interessierter Parteien (Kunden, Partner, Behörden, Mitarbeitende)'
+        audit_results: 'Ergebnisse interner/externer Audits seit dem letzten Review'
+        nonconformities_review: 'Status offener Nichtkonformitäten aus Audits'
+        incidents_review: 'Analyse von Sicherheitsvorfällen seit letztem Review'
+        risks_review: 'Änderungen im Risikoprofil'
+        objectives_review: 'Status der ISMS-Ziele und Zielerreichung'
+        context_changes: 'Änderungen in internen/externen Anforderungen'
+        previous_review_actions: 'Status der Maßnahmen aus dem vorherigen Management Review'
+        non_conformities_status: 'Übersicht offener Nichtkonformitäten und deren Bearbeitungsstand'
+        corrective_actions_status: 'Status der Korrekturmaßnahmen (geplant, in Bearbeitung, abgeschlossen)'
+        improvement_opportunities: 'Identifizierte Chancen zur Verbesserung des ISMS'
+        opportunities_for_improvement: 'Verbesserungsmöglichkeiten (Alias-Feld, kompatibel mit bestehendem Template)'
+        decisions: 'Getroffene Entscheidungen und Maßnahmen'
+        action_items: 'Konkrete Maßnahmen mit Verantwortlichkeiten und Fristen'
+        resource_needs: 'Budget, Personal oder sonstige Ressourcen'
+        summary: 'Executive Summary des Management Reviews'

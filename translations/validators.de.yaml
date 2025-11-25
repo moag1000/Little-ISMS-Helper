@@ -342,11 +342,11 @@ context:
         name_max_length: 'Der Name darf maximal {{ limit }} Zeichen lang sein.'
 workflow_step:
     validation:
-        name_required: Name Required
-        name_max_length: Name Max Length
-        step_type_required: Step Type Required
-        days_positive: Days Positive
-        days_max: Days Max
+        name_required: 'Name Required'
+        name_max_length: 'Name Max Length'
+        step_type_required: 'Step Type Required'
+        days_positive: 'Days Positive'
+        days_max: 'Days Max'
 'Bitte geben Sie einen Vornamen ein.': 'Bitte geben Sie einen Vornamen ein.'
 'Der Vorname darf maximal {{ limit }} Zeichen lang sein.': 'Der Vorname darf maximal {{ limit }} Zeichen lang sein.'
 'Bitte geben Sie einen Nachnamen ein.': 'Bitte geben Sie einen Nachnamen ein.'
@@ -372,7 +372,10 @@ workflow_step:
 'Requirements must be documented': 'Requirements must be documented'
 'Control ID is required': 'Control ID is required'
 'Control ID cannot exceed {{ limit }} characters': 'Control ID cannot exceed {{ limit }} characters'
-'Control ID must follow ISO 27001 format (e.g., 5.1, 8.3)': 'Control-ID muss dem ISO 27001 Format folgen (z.B. 5.1, 8.3)'
+'Control ID must follow ISO 27001 format (e':
+    g:
+        ', 5':
+            '1, 8': { 3): 'Control-ID muss dem ISO 27001 Format folgen (z.B. 5.1, 8.3)' }
 'Control name is required': 'Control-Name ist erforderlich'
 'Control name cannot exceed {{ limit }} characters': 'Control name cannot exceed {{ limit }} characters'
 'Control description is required': 'Control description is required'

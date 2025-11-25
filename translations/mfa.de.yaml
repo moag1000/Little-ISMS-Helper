@@ -50,54 +50,54 @@ mfa_token:
     new: 'Neues MFA-Token'
     new.subtitle: 'Neues Authentifizierungsgerät einrichten'
     field:
-        status: 'Status'
-        token_type: 'Token-Typ'
-        device_name: 'Gerätename'
+        status: Status
+        token_type: Token-Typ
+        device_name: Gerätename
         enrolled_at: 'Eingerichtet am'
         last_used: 'Zuletzt verwendet'
-        usage_count: 'Verwendungen'
-        user: 'Benutzer'
+        usage_count: Verwendungen
+        user: Benutzer
         is_primary: 'Primäres Gerät'
         expires_at: 'Läuft ab am'
-        verification_code: 'Bestätigungscode'
+        verification_code: Bestätigungscode
     status:
-        active: 'Aktiv'
-        inactive: 'Inaktiv'
-        expired: 'Abgelaufen'
+        active: Aktiv
+        inactive: Inaktiv
+        expired: Abgelaufen
     never_used: 'Noch nie verwendet'
     confirm_disable: 'MFA-Token wirklich deaktivieren?'
     action:
-        disable: 'Deaktivieren'
+        disable: Deaktivieren
     confirm_delete: 'MFA-Token wirklich löschen?'
-    title: 'MFA-Token'
+    title: MFA-Token
     subtitle: 'Verwaltung Zwei-Faktor-Authentifizierung'
     kpi:
-        active: 'Aktiv'
-        users: 'Benutzer'
+        active: Aktiv
+        users: Benutzer
     empty: 'Keine MFA-Token vorhanden'
     setup_new: 'Neues Token einrichten'
     backup_codes:
         title: Titel
         subtitle: Untertitel
         warning: Warnung
-        warning_text: Warning Text
-        onetime_display: Onetime Display
+        warning_text: 'Warning Text'
+        onetime_display: 'Onetime Display'
         codes: Codes
-        codes_count: Codes Count
-        copy_all: Copy All
+        codes_count: 'Codes Count'
+        copy_all: 'Copy All'
         print: Print
         download: Herunterladen
-        usage_title: Usage Title
-        usage_1: Usage 1
-        usage_2: Usage 2
-        usage_3: Usage 3
-        usage_4: Usage 4
-        regenerate_warning: Regenerate Warning
+        usage_title: 'Usage Title'
+        usage_1: 'Usage 1'
+        usage_2: 'Usage 2'
+        usage_3: 'Usage 3'
+        usage_4: 'Usage 4'
+        regenerate_warning: 'Regenerate Warning'
         remaining: Remaining
-        regenerate_confirm: Regenerate Confirm
+        regenerate_confirm: 'Regenerate Confirm'
         regenerate: Regenerate
-        no_codes_left: No Codes Left
-        low_codes: Low Codes
+        no_codes_left: 'No Codes Left'
+        low_codes: 'Low Codes'
         description: Beschreibung
     details:
         subtitle: Untertitel
@@ -110,10 +110,10 @@ mfa_token:
         title: Titel
         subtitle: Untertitel
         step1: Step1
-        scan_instructions: Scan Instructions
-        manual_entry: Manual Entry
-        manual_instructions: Manual Instructions
+        scan_instructions: 'Scan Instructions'
+        manual_entry: 'Manual Entry'
+        manual_instructions: 'Manual Instructions'
         step2: Step2
-        verify_instructions: Verify Instructions
-        code_help: Code Hilfe
-        verify_button: Verify Button
+        verify_instructions: 'Verify Instructions'
+        code_help: 'Code Hilfe'
+        verify_button: 'Verify Button'
