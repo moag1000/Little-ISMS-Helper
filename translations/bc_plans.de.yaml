@@ -1,48 +1,96 @@
 bc_plans:
-  page:
-    title: Business-Continuity-Pläne
-    header: Business-Continuity-Pläne
-    subtitle: ISO 22301:2019 Business Continuity Management
-  action:
-    add_new: Neuen BC‑Plan anlegen
-  alert:
-    overdue_tests: ⚠️ Überfällige BC‑Plan‑Tests
-    overdue_reviews: ⚠️ Überfällige BC‑Plan‑Reviews
-  section:
-    details: BC‑Plan Details
-    testing_review: Tests & Reviews
-    review_notes: Review‑Notizen
-    communication_plan: Kommunikationsplan
-    alternative_site: Alternativstandort
-    related_risks: Zugehörige Risiken
-  table:
-    name: Name
-    business_process: Geschäftsprozess
-    owner: Verantwortlich
-    status: Status
-    readiness: Bereitschaft
-    last_tested: Zuletzt getestet
-    actions: Aktionen
-  field:
-    business_process: Geschäftsprozess
-    plan_owner: Verantwortlich
-    version: Version
-    last_tested: Zuletzt getestet
-    next_test: Nächster Test
-    last_review: Letztes Review
-    next_review: Nächstes Review
-    address: Adresse
-    capacity: Kapazität
-  badge:
-    overdue: ÜBERFÄLLIG
-  status:
-    draft: Entwurf
-    under_review: In Prüfung
-    active: Aktiv
-    archived: Archiviert
-  message:
-    not_scheduled: Nicht geplant
-    never: Nie
-    no_plans: Keine BC‑Pläne gefunden.
-    create_first: Erstellen Sie Ihren ersten BC‑Plan
-    readiness_score: "Bereitschafts‑Score: %score%%"
+    page:
+        title: Business-Continuity-Pläne
+        header: Business-Continuity-Pläne
+        subtitle: 'ISO 22301:2019 Business Continuity Management'
+    action:
+        add_new: 'Neuen BC‑Plan anlegen'
+    alert:
+        overdue_tests: '⚠️ Überfällige BC‑Plan‑Tests'
+        overdue_reviews: '⚠️ Überfällige BC‑Plan‑Reviews'
+    section:
+        details: 'BC‑Plan Details'
+        testing_review: 'Tests & Reviews'
+        review_notes: Review‑Notizen
+        communication_plan: Kommunikationsplan
+        alternative_site: Alternativstandort
+        related_risks: 'Zugehörige Risiken'
+        basic_info: Grundinformationen
+        team: Team
+        activation: Activation
+        communication: Communication
+        backup_recovery: Backup Recovery
+        version_review: Version Review
+    table:
+        name: Name
+        business_process: Geschäftsprozess
+        owner: Verantwortlich
+        status: Status
+        readiness: Bereitschaft
+        last_tested: 'Zuletzt getestet'
+        actions: Aktionen
+    field:
+        business_process: Geschäftsprozess
+        plan_owner: Verantwortlich
+        version: Version
+        last_tested: 'Zuletzt getestet'
+        next_test: 'Nächster Test'
+        last_review: 'Letztes Review'
+        next_review: 'Nächstes Review'
+        address: Adresse
+        capacity: Kapazität
+        name: Name
+        description: Beschreibung
+        status: Status
+        bc_team: Bc Team
+        activation_criteria: Activation Criteria
+        roles_responsibilities: Roles Responsibilities
+        recovery_procedures: Wiederherstellung Verfahren
+        communication_plan: Communication Plan
+        internal_communication: Internal Communication
+        external_communication: External Communication
+        alternative_site: Alternative Site
+        alternative_site_address: Alternative Site Address
+        alternative_site_capacity: Alternative Site Capacity
+        backup_procedures: Backup Procedures
+        restore_procedures: Restore Procedures
+        next_test_date: Next Test Date
+        last_review_date: Last Review Date
+        next_review_date: Next Review Date
+        review_notes: Review Notes
+    badge:
+        overdue: ÜBERFÄLLIG
+    message:
+        not_scheduled: 'Nicht geplant'
+        never: Nie
+        no_plans: 'Keine BC‑Pläne gefunden.'
+        create_first: 'Erstellen Sie Ihren ersten BC‑Plan'
+        readiness_score: 'Bereitschafts‑Score: %score%%'
+    help:
+        name: Name
+        business_process: Business Process
+        description: Beschreibung
+        plan_owner: Plan Eigentümer
+        status: Status
+        bc_team: Bc Team
+        activation_criteria: Activation Criteria
+        roles_responsibilities: Roles Responsibilities
+        recovery_procedures: Wiederherstellung Verfahren
+        communication_plan: Communication Plan
+        internal_communication: Internal Communication
+        external_communication: External Communication
+        alternative_site: Alternative Site
+        alternative_site_address: Alternative Site Address
+        alternative_site_capacity: Alternative Site Capacity
+        backup_procedures: Backup Procedures
+        restore_procedures: Restore Procedures
+        version: Version
+        last_tested: Last Tested
+        next_test_date: Next Test Date
+        last_review_date: Last Review Date
+        next_review_date: Next Review Date
+        review_notes: Review Notes
+bcm:
+    field:
+        activation_criteria: Activation Criteria
+        recovery_plan: Wiederherstellung Plan

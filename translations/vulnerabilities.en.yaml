@@ -1,27 +1,34 @@
-vulnerability.title: Vulnerabilities
-vulnerability.new: 'New Vulnerability'
-vulnerability.list: 'Vulnerability List'
-vulnerability.empty: 'No vulnerabilities available.'
-vulnerability.section.details: Details
-vulnerability.kpi.total: 'Total Vulnerabilities'
-vulnerability.kpi.critical: 'Critical Vulnerabilities'
-vulnerability.kpi.high: 'High Vulnerabilities'
-vulnerability.kpi.overdue: 'Overdue Remediations'
-vulnerability.field.cve_id: 'CVE ID'
-vulnerability.field.title: Title
-vulnerability.field.severity: Severity
-vulnerability.field.status: Status
-vulnerability.field.affected_assets: 'Affected Assets'
-vulnerability.field.cvss_score: 'CVSS Score'
-vulnerability.field.description: Description
-vulnerability.field.discovered_date: 'Discovered Date'
-vulnerability.field.responsible_person: 'Responsible Person'
-vulnerability.severity.critical: Critical
-vulnerability.severity.high: High
-vulnerability.severity.medium: Medium
-vulnerability.severity.low: Low
-vulnerability.status.open: Open
-vulnerability.status.in_progress: 'In Progress'
-vulnerability.status.mitigated: Mitigated
-vulnerability.status.resolved: Resolved
-vulnerability.status.closed: Closed
+vulnerability:
+    title: Vulnerabilities
+    new: 'New Vulnerability'
+    list: 'Vulnerability List'
+    empty: 'No vulnerabilities available.'
+    section:
+        details: Details
+    kpi:
+        total: 'Total Vulnerabilities'
+        critical: 'Critical Vulnerabilities'
+        high: 'High Vulnerabilities'
+        overdue: 'Overdue Remediations'
+    field:
+        cve_id: 'CVE ID'
+        title: Title
+        severity: Severity
+        status: Status
+        affected_assets: 'Affected Assets'
+        cvss_score: 'CVSS Score'
+        description: Description
+        discovered_date: 'Discovered Date'
+        responsible_person: 'Responsible Person'
+    severity:
+        critical: Critical
+        high: High
+        medium: Medium
+        low: Low
+    status:
+        open: Open
+        in_progress: 'In Progress'
+        mitigated: Mitigated
+        resolved: Resolved
+        closed: Closed
+    edit: Edit

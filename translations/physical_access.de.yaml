@@ -1,34 +1,34 @@
 physical_access:
-  title: Zutrittskontrolle
-  name: Zutrittsprotokoll
-  person: Person
-  location: Standort
-  access_type: Zugriffstyp
-  access_time: Zugangszeit
-  exit_time: Ausgangszeit
-  authentication_method: Authentifizierungsmethode
-  purpose: Zweck
-  escorted_by: Begleitet von
-  authorized: Autorisiert
-  notes: Notizen
-  alert_level: Alarmstufe
-  after_hours: Außerhalb der Geschäftszeiten
-  door_or_gate: Tür/Tor
-  type:
-    entry: Eingang
-    exit: Ausgang
-    entry_exit: Ein-/Ausgang
-  auth_method:
-    badge: Ausweis
-    biometric: Biometrisch
-    pin: PIN
-    key: Schlüssel
-    escort: Begleitung
-    manual: Manuell
-    other: Sonstiges
-  alert:
-    none: Keine
-    low: Niedrig
-    medium: Mittel
-    high: Hoch
-    critical: Kritisch
+    title: Zutrittskontrolle
+    name: Zutrittsprotokoll
+    person: Person
+    location: Standort
+    access_type: Zugriffstyp
+    access_time: Zugangszeit
+    exit_time: Ausgangszeit
+    authentication_method: Authentifizierungsmethode
+    purpose: Zweck
+    escorted_by: 'Begleitet von'
+    authorized: Autorisiert
+    notes: Notizen
+    alert_level: Alarmstufe
+    after_hours: 'Außerhalb der Geschäftszeiten'
+    door_or_gate: Tür/Tor
+    type:
+        entry: Eingang
+        exit: Ausgang
+        entry_exit: Ein-/Ausgang
+    auth_method:
+        badge: Ausweis
+        biometric: Biometrisch
+        pin: PIN
+        key: Schlüssel
+        escort: Begleitung
+        manual: Manuell
+        other: Sonstiges
+    alert:
+        none: Keine
+        low: Niedrig
+        medium: Mittel
+        high: Hoch
+        critical: Kritisch

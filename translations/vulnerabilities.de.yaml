@@ -1,33 +1,34 @@
 vulnerability:
-  title: Schwachstellen
-  new: Neue Schwachstelle
-  list: Schwachstellenliste
-  empty: Keine Schwachstellen vorhanden.
-  section:
-    details: Details
-  kpi:
-    total: Gesamt‑Schwachstellen
-    critical: Kritische Schwachstellen
-    high: Hohe Schwachstellen
-    overdue: Überfällige Behebungen
-  field:
-    cve_id: CVE‑ID
-    title: Titel
-    severity: Schweregrad
-    status: Status
-    affected_assets: Betroffene Assets
-    cvss_score: CVSS‑Score
-    description: Beschreibung
-    discovered_date: Entdeckungsdatum
-    responsible_person: Verantwortliche Person
-  severity:
-    critical: Kritisch
-    high: Hoch
-    medium: Mittel
-    low: Niedrig
-  status:
-    open: Offen
-    in_progress: In Bearbeitung
-    mitigated: Mitigiert
-    resolved: Gelöst
-    closed: Abgeschlossen
+    title: Schwachstellen
+    new: 'Neue Schwachstelle'
+    list: Schwachstellenliste
+    empty: 'Keine Schwachstellen vorhanden.'
+    section:
+        details: Details
+    kpi:
+        total: Gesamt‑Schwachstellen
+        critical: 'Kritische Schwachstellen'
+        high: 'Hohe Schwachstellen'
+        overdue: 'Überfällige Behebungen'
+    field:
+        cve_id: CVE‑ID
+        title: Titel
+        severity: Schweregrad
+        status: Status
+        affected_assets: 'Betroffene Assets'
+        cvss_score: CVSS‑Score
+        description: Beschreibung
+        discovered_date: Entdeckungsdatum
+        responsible_person: 'Verantwortliche Person'
+    severity:
+        critical: Kritisch
+        high: Hoch
+        medium: Mittel
+        low: Niedrig
+    status:
+        open: Offen
+        in_progress: 'In Bearbeitung'
+        mitigated: Mitigiert
+        resolved: Gelöst
+        closed: Abgeschlossen
+    edit: Bearbeiten

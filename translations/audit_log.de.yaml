@@ -1,60 +1,79 @@
 audit_log:
-  page:
-    title: Audit Log
-    subtitle: Vollständige Protokollierung aller Aktivitäten im ISMS zur Sicherstellung der Revisionssicherheit
-    monitoring_subtitle: Sicherheits- und Aktivitätsprotokoll
-  section:
-    statistics: Statistik
-    filters: Filter
-    entries: Protokolleinträge
-    table: Tabelle
-    timeline: Timeline
-    quick_filters: Schnellfilter
-  stats:
-    total_logs: Gesamt Protokolleinträge
-    last_24h: Letzte 24 Stunden
-    actions: Aktionen
-    entity_types: Entitätstypen
-    total_entries: Protokolleinträge gesamt
-    top_actions: Top-Aktionen
-    top_entities: Top‑Entitäten
-  filter:
-    entity_type: Entitätstyp
-    action: Aktion
-    user: Benutzer
-    date_from: Von Datum
-    date_to: Bis Datum
-    apply: Filtern
-    reset: Filter zurücksetzen
-    statistics: Statistiken
-    quick:
-      all: Alle
-      today: Heute
-      this_week: Diese Woche
-      critical_actions: Kritische Aktionen
-  table:
-    timestamp: Zeitstempel
-    action: Aktion
-    entity: Entität
-    user: Benutzer
-    description: Beschreibung
-    details: Details
-    view_details: Details anzeigen
-    ip_address: IP‑Adresse
-    changes: Änderungen
-  pagination:
-    prev: « Zurück
-    next: Weiter »
-    page_counter: Seite %current% von %total%
-  message:
-    no_entries: Keine Protokolleinträge gefunden.
-    no_entries_filtered: Keine Protokolleinträge für den ausgewählten Filter gefunden.
-  action:
-    back_to_health: Zurück zur Systemgesundheit
-  modal:
-    title: Audit‑Log‑Details
-  info:
-    about_title: Über das Audit Log
-    about_text: Das Audit Log protokolliert alle wichtigen Aktionen im System, einschließlich Erstellen, Aktualisieren und Löschen. Dies ermöglicht eine vollständige Nachvollziehbarkeit für Compliance und Sicherheit.
-    module_link: Zum Audit‑Log‑Modul
-    entries: 'audit_log'
+    page:
+        title: 'Audit Log'
+        subtitle: 'Vollständige Protokollierung aller Aktivitäten im ISMS zur Sicherstellung der Revisionssicherheit'
+        monitoring_subtitle: 'Sicherheits- und Aktivitätsprotokoll'
+    section:
+        statistics: Statistik
+        filters: Filter
+        entries: Protokolleinträge
+        table: Tabelle
+        timeline: Timeline
+        quick_filters: Schnellfilter
+    stats:
+        total_logs: 'Gesamt Protokolleinträge'
+        last_24h: 'Letzte 24 Stunden'
+        actions: Aktionen
+        entity_types: Entitätstypen
+        total_entries: 'Protokolleinträge gesamt'
+        top_actions: Top-Aktionen
+        top_entities: Top‑Entitäten
+    filter:
+        entity_type: Entitätstyp
+        action: Aktion
+        user: Benutzer
+        date_from: 'Von Datum'
+        date_to: 'Bis Datum'
+        apply: Filtern
+        reset: 'Filter zurücksetzen'
+        statistics: Statistiken
+        quick:
+            all: Alle
+            today: Heute
+            this_week: 'Diese Woche'
+            critical_actions: 'Kritische Aktionen'
+    table:
+        timestamp: Zeitstempel
+        action: Aktion
+        entity: Entität
+        user: Benutzer
+        description: Beschreibung
+        details: Details
+        view_details: 'Details anzeigen'
+        ip_address: IP‑Adresse
+        changes: Änderungen
+    pagination:
+        prev: '« Zurück'
+        next: 'Weiter »'
+        page_counter: 'Seite %current% von %total%'
+    message:
+        no_entries: 'Keine Protokolleinträge gefunden.'
+        no_entries_filtered: 'Keine Protokolleinträge für den ausgewählten Filter gefunden.'
+    action:
+        back_to_health: 'Zurück zur Systemgesundheit'
+    modal:
+        title: Audit‑Log‑Details
+    info:
+        about_title: 'Über das Audit Log'
+        about_text: 'Das Audit Log protokolliert alle wichtigen Aktionen im System, einschließlich Erstellen, Aktualisieren und Löschen. Dies ermöglicht eine vollständige Nachvollziehbarkeit für Compliance und Sicherheit.'
+        module_link: 'Zum Audit‑Log‑Modul'
+        entries: audit_log
+    showing_recent: Showing Recent
+    entries: Entries
+    view_all: View All
+    field:
+        timestamp: Timestamp
+        action: Aktion
+        user: Benutzer
+        description: Beschreibung
+        entity_type: Entity Type
+        entity_id: Entity Id
+        ip_address: Ip Address
+        user_agent: User Agent
+    title: Titel
+    detail:
+        subtitle: Untertitel
+    entry: Entry
+    changes: Changes
+    old_values: Old Values
+    new_values: New Values

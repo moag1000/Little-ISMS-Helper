@@ -1,74 +1,46 @@
 reports:
-  page:
-    title: Berichte & Exporte
-    subtitle: Erstellen Sie umfassende PDF‑/Excel‑Berichte für Compliance‑Nachweise und Managementbewertungen.
-  action:
-    download_pdf: PDF herunterladen
-    download_excel: Excel herunterladen
-  card:
-    dashboard:
-      title: Dashboard‑Zusammenfassung
-      description: Umfassender ISMS‑Überblick mit allen wichtigen Kennzahlen und Statistiken.
-      features:
-        feature_1: Assets‑ & Risiko‑Überblick
-        feature_2: Umsetzungsstatus der Maßnahmen
-        feature_3: Vorfallsübersicht
-        feature_4: Compliance‑Prozentsatz
-    risks:
-      title: Risikoregister
-      description: Vollständige Risikobewertung mit Eintrittswahrscheinlichkeit, Auswirkung und Behandlungsplänen.
-      features:
-        feature_1: Alle identifizierten Risiken
-        feature_2: Risikoscores & ‑stufen
-        feature_3: Behandlungsstrategien
-        feature_4: Verantwortliche Personen
-    soa:
-      title: Statement of Applicability
-      description: ISO 27001 Anhang‑A Maßnahmen mit Begründung der Anwendbarkeit.
-      features:
-        feature_1: Alle 93 ISO 27001:2022 Maßnahmen
-        feature_2: Anwendbarkeitsstatus
-        feature_3: Umsetzungsfortschritt
-        feature_4: Begründungen
-    incidents:
-      title: Vorfallsprotokoll
-      description: Vollständige Vorfallverwaltung mit Zeitleiste und Lösungen.
-      features:
-        feature_1: Alle Sicherheitsvorfälle
-        feature_2: Schweregrad‑Klassifikationen
-        feature_3: Reaktionszeitleisten
-        feature_4: Lösungsstatus
-    training:
-      title: Schulungsprotokoll
-      description: Dokumentation zu Awareness‑Schulungen inkl. Teilnehmerlisten.
-      features:
-        feature_1: Alle durchgeführten Schulungen
-        feature_2: Teilnehmerlisten
-        feature_3: Schulungstypen & Methoden
-        feature_4: Pflichtschulungen
-  custom:
-    title: Benutzerdefinierte Berichte
-    subtitle: "Zusätzliche benutzerdefinierte Berichte folgen in Kürze:"
-    items:
-      item_1: Audit‑Zusammenfassungen
-      item_2: Managementbewertungs‑Berichte
-      item_3: Asset‑Inventar
-      item_4: Compliance‑Gap‑Analyse
-    coming_soon: "Bald verfügbar"
-  section:
-    best_practices: Best Practices für Berichte
-  best_practices:
-    audits:
-      title: "Für Audits & Compliance:"
-      items:
-        item_1: Statement of Applicability vor Audits generieren
-        item_2: Risikoregister in Managementbewertungen einbeziehen
-        item_3: Vorfall‑Trends über die Zeit dokumentieren
-        item_4: Schulungsabschluss‑Quoten nachverfolgen
-    management:
-      title: "Für Management‑Reporting:"
-      items:
-        item_1: Dashboard‑Zusammenfassung für Executive‑Overviews verwenden
-        item_2: Hochrisiko‑Einträge aus dem Risikoregister hervorheben
-        item_3: Umsetzungsfortschritt der Maßnahmen zeigen
-        item_4: Abschlussraten für Pflichtschulungen berichten
+    page:
+        title: 'Berichte & Exporte'
+        subtitle: 'Erstellen Sie umfassende PDF‑/Excel‑Berichte für Compliance‑Nachweise und Managementbewertungen.'
+    action:
+        download_pdf: 'PDF herunterladen'
+        download_excel: 'Excel herunterladen'
+    card:
+        dashboard:
+            title: Dashboard‑Zusammenfassung
+            description: 'Umfassender ISMS‑Überblick mit allen wichtigen Kennzahlen und Statistiken.'
+            features: { feature_1: 'Assets‑ & Risiko‑Überblick', feature_2: 'Umsetzungsstatus der Maßnahmen', feature_3: Vorfallsübersicht, feature_4: Compliance‑Prozentsatz }
+        risks:
+            title: Risikoregister
+            description: 'Vollständige Risikobewertung mit Eintrittswahrscheinlichkeit, Auswirkung und Behandlungsplänen.'
+            features: { feature_1: 'Alle identifizierten Risiken', feature_2: 'Risikoscores & ‑stufen', feature_3: Behandlungsstrategien, feature_4: 'Verantwortliche Personen' }
+        soa:
+            title: 'Statement of Applicability'
+            description: 'ISO 27001 Anhang‑A Maßnahmen mit Begründung der Anwendbarkeit.'
+            features: { feature_1: 'Alle 93 ISO 27001:2022 Maßnahmen', feature_2: Anwendbarkeitsstatus, feature_3: Umsetzungsfortschritt, feature_4: Begründungen }
+        incidents:
+            title: Vorfallsprotokoll
+            description: 'Vollständige Vorfallverwaltung mit Zeitleiste und Lösungen.'
+            features: { feature_1: 'Alle Sicherheitsvorfälle', feature_2: Schweregrad‑Klassifikationen, feature_3: Reaktionszeitleisten, feature_4: Lösungsstatus }
+        training:
+            title: Schulungsprotokoll
+            description: 'Dokumentation zu Awareness‑Schulungen inkl. Teilnehmerlisten.'
+            features: { feature_1: 'Alle durchgeführten Schulungen', feature_2: Teilnehmerlisten, feature_3: 'Schulungstypen & Methoden', feature_4: Pflichtschulungen }
+    custom:
+        title: 'Benutzerdefinierte Berichte'
+        subtitle: 'Zusätzliche benutzerdefinierte Berichte folgen in Kürze:'
+        items:
+            item_1: Audit‑Zusammenfassungen
+            item_2: Managementbewertungs‑Berichte
+            item_3: Asset‑Inventar
+            item_4: Compliance‑Gap‑Analyse
+        coming_soon: 'Bald verfügbar'
+    section:
+        best_practices: 'Best Practices für Berichte'
+    best_practices:
+        audits:
+            title: 'Für Audits & Compliance:'
+            items: { item_1: 'Statement of Applicability vor Audits generieren', item_2: 'Risikoregister in Managementbewertungen einbeziehen', item_3: 'Vorfall‑Trends über die Zeit dokumentieren', item_4: 'Schulungsabschluss‑Quoten nachverfolgen' }
+        management:
+            title: 'Für Management‑Reporting:'
+            items: { item_1: 'Dashboard‑Zusammenfassung für Executive‑Overviews verwenden', item_2: 'Hochrisiko‑Einträge aus dem Risikoregister hervorheben', item_3: 'Umsetzungsfortschritt der Maßnahmen zeigen', item_4: 'Abschlussraten für Pflichtschulungen berichten' }

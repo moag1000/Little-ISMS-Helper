@@ -1,29 +1,39 @@
-security_reports.page.title: 'Security Reports'
-security_reports.page.subtitle: 'OWASP Top 10 Compliance Analysis'
-security_reports.nav.title: Navigation
-security_reports.nav.overview: Overview
-security_reports.nav.owasp_2025: 'OWASP 2025 RC1'
-security_reports.nav.owasp_2021: 'OWASP 2021'
-security_reports.nav.all_reports: 'All reports'
-security_reports.action.title: Actions
-security_reports.action.regenerate: 'Regenerate reports'
-security_reports.action.print: Print
-security_reports.action.download_md: 'Download Report.md'
-security_reports.info.regenerate_hint: 'Run <code>php scripts/generate-security-audit.php</code> to update the reports'
-security_reports.card.owasp_2025_title: 'OWASP Top 10:2025 RC1 (Primary)'
-security_reports.card.full_report: 'Full Security Report'
-security_reports.label.overall_score: 'Overall score'
-security_reports.label.status: Status
-security_reports.label.generated_at: 'Generated at'
-security_reports.label.view_report: 'View report'
-security_reports.severity.p0: P0-URGENT
-security_reports.severity.p1: P1-HIGH
-security_reports.severity.p2: P2-MEDIUM
-security_reports.severity_desc.p0: 'Critical security issues – fix immediately'
-security_reports.severity_desc.p1: 'High priority – fix within 1 week'
-security_reports.severity_desc.p2: 'Medium priority – fix within 1 month'
-security_reports.legend.title: 'Severity Legend'
-security_reports.legend.critical: 'Critical (P0)'
-security_reports.legend.high: 'High (P1)'
-security_reports.legend.medium: 'Medium (P2)'
-security_reports.legend.low: 'Low (P3)'
+security_reports:
+    page:
+        title: 'Security Reports'
+        subtitle: 'OWASP Top 10 Compliance Analysis'
+    nav:
+        title: Navigation
+        overview: Overview
+        owasp_2025: 'OWASP 2025 RC1'
+        owasp_2021: 'OWASP 2021'
+        all_reports: 'All reports'
+    action:
+        title: Actions
+        regenerate: 'Regenerate reports'
+        print: Print
+        download_md: 'Download Report.md'
+    info:
+        regenerate_hint: 'Run <code>php scripts/generate-security-audit.php</code> to update the reports'
+    card:
+        owasp_2025_title: 'OWASP Top 10:2025 RC1 (Primary)'
+        full_report: 'Full Security Report'
+    label:
+        overall_score: 'Overall score'
+        status: Status
+        generated_at: 'Generated at'
+        view_report: 'View report'
+    severity:
+        p0: P0-URGENT
+        p1: P1-HIGH
+        p2: P2-MEDIUM
+    severity_desc:
+        p0: 'Critical security issues – fix immediately'
+        p1: 'High priority – fix within 1 week'
+        p2: 'Medium priority – fix within 1 month'
+    legend:
+        title: 'Severity Legend'
+        critical: 'Critical (P0)'
+        high: 'High (P1)'
+        medium: 'Medium (P2)'
+        low: 'Low (P3)'

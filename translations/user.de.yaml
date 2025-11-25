@@ -1,4 +1,4 @@
-users:
+user:
     page:
         title: Benutzerverwaltung
     action:
@@ -25,3 +25,19 @@ users:
     message:
         all_users: 'Alle Benutzer'
         no_users: 'Keine Benutzer vorhanden.'
+    name: Name
+    email: Email
+    department: Department
+    edit: Bearbeiten
+    edit_suffix: Bearbeiten Suffix
+    save_changes: Speichern Changes
+    activity:
+        title: Titel
+        total: Total
+        by_action: By Aktion
+    import:
+        title: Titel
+        description: Beschreibung
+        format: Format
+    new: New
+    create: Erstellen
