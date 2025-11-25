@@ -121,36 +121,50 @@
         </div>
     </div>
 
-    {# Batch Analysis UI #}
-    {% if quality_stats.unanalyzed_mappings > 0 %}
+    {# Batch Analysis UI - Always visible #}
     <div class="card mb-4" id="batchAnalysisCard">
-        <div class="card-header bg-info text-white">
-            <h3 class="mb-0">🚀 Mapping-Analyse starten</h3>
+        <div class="card-header {% if quality_stats.unanalyzed_mappings > 0 %}bg-info{% else %}bg-secondary{% endif %} text-white">
+            <h3 class="mb-0">🚀 Mapping-Analyse</h3>
         </div>
         <div class="card-body">
+            {% if quality_stats.unanalyzed_mappings > 0 %}
             <p class="mb-3">
                 <strong>{{ quality_stats.unanalyzed_mappings }} Mappings</strong> warten auf Analyse.
                 Starten Sie die Analyse in kleineren Batches direkt hier in der UI.
             </p>
+            {% else %}
+            <p class="mb-3">
+                <span class="badge bg-success me-2">✓ Alle Mappings analysiert</span>
+                Sie können eine Re-Analyse starten um die Qualitätswerte mit dem neuesten Algorithmus neu zu berechnen.
+            </p>
+            {% endif %}
 
             <div class="row mb-3">
                 <div class="col-md-12">
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-outline-primary" onclick="startBatchAnalysis(10)">
-                            10 analysieren
-                        </button>
-                        <button type="button" class="btn btn-outline-primary" onclick="startBatchAnalysis(25)">
-                            25 analysieren
-                        </button>
-                        <button type="button" class="btn btn-outline-primary" onclick="startBatchAnalysis(50)">
-                            50 analysieren
-                        </button>
-                        <button type="button" class="btn btn-outline-success" onclick="startBatchAnalysis(100)">
-                            100 analysieren
-                        </button>
-                        <button type="button" class="btn btn-success" onclick="startBatchAnalysis('all')">
-                            🎯 Alle analysieren
-                        </button>
+                    <div class="btn-toolbar" role="toolbar">
+                        <div class="btn-group me-2" role="group" aria-label="Quick Analysis">
+                            <button type="button" class="btn btn-outline-primary" onclick="startBatchAnalysis(10, false)">
+                                <i class="bi bi-play-circle"></i> 10 analysieren
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" onclick="startBatchAnalysis(25, false)">
+                                <i class="bi bi-play-circle"></i> 25 analysieren
+                            </button>
+                            <button type="button" class="btn btn-outline-primary" onclick="startBatchAnalysis(50, false)">
+                                <i class="bi bi-play-circle"></i> 50 analysieren
+                            </button>
+                        </div>
+                        <div class="btn-group me-2" role="group" aria-label="Full Analysis">
+                            <button type="button" class="btn btn-success" onclick="startBatchAnalysis('all', false)">
+                                <i class="bi bi-lightning-charge"></i> Alle analysieren
+                            </button>
+                        </div>
+                        {% if quality_stats.analyzed_mappings > 0 %}
+                        <div class="btn-group" role="group" aria-label="Re-Analysis">
+                            <button type="button" class="btn btn-outline-warning" onclick="startBatchAnalysis('all', true)" title="Re-analysiert alle Mappings mit neuestem Algorithmus">
+                                <i class="bi bi-arrow-clockwise"></i> Re-Analyse
+                            </button>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -207,7 +221,6 @@
             </div>
         </div>
     </div>
-    {% endif %}
 
     {# Charts Row #}
     <div class="row mb-4">
@@ -355,6 +368,7 @@
     </div>
     {% endif %}
 </div>
+{% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -494,15 +508,18 @@
         let totalToAnalyze = 0;
         let totalAnalyzed = 0;
         let totalErrors = 0;
+        let isReanalysis = false;
 
-        function startBatchAnalysis(batchSize) {
+        function startBatchAnalysis(batchSize, reanalyze = false) {
             if (analysisRunning) {
                 alert('Eine Analyse läuft bereits!');
                 return;
             }
 
+            isReanalysis = reanalyze;
+
             // Hide buttons, show progress
-            document.querySelectorAll('.btn-group button').forEach(btn => btn.disabled = true);
+            document.querySelectorAll('.btn-toolbar button').forEach(btn => btn.disabled = true);
             document.getElementById('analysisProgress').style.display = 'block';
             document.getElementById('analysisResults').style.display = 'none';
 
@@ -513,13 +530,14 @@
 
             // Determine chunk size and total
             const chunkSize = batchSize === 'all' ? 25 : Math.min(parseInt(batchSize), 25);
-            totalToAnalyze = batchSize === 'all' ? {{ quality_stats.unanalyzed_mappings }} : parseInt(batchSize);
+            const totalMappings = reanalyze ? {{ quality_stats.total_mappings }} : {{ quality_stats.unanalyzed_mappings }};
+            totalToAnalyze = batchSize === 'all' ? totalMappings : Math.min(parseInt(batchSize), totalMappings);
 
-            updateStatus('Starte Analyse...');
-            runBatchAnalysis(0, chunkSize, totalToAnalyze);
+            updateStatus(reanalyze ? 'Starte Re-Analyse...' : 'Starte Analyse...');
+            runBatchAnalysis(0, chunkSize, totalToAnalyze, reanalyze);
         }
 
-        async function runBatchAnalysis(offset, chunkSize, totalTarget) {
+        async function runBatchAnalysis(offset, chunkSize, totalTarget, reanalyze) {
             if (cancelRequested) {
                 finishAnalysis('Analyse abgebrochen', false);
                 return;
@@ -541,7 +559,7 @@
                     body: JSON.stringify({
                         limit: chunkSize,
                         offset: offset,
-                        reanalyze: false
+                        reanalyze: reanalyze || false
                     })
                 });
 
@@ -570,7 +588,7 @@
                 } else {
                     // Continue with next batch
                     setTimeout(() => {
-                        runBatchAnalysis(offset + chunkSize, chunkSize, totalTarget);
+                        runBatchAnalysis(offset + chunkSize, chunkSize, totalTarget, reanalyze);
                     }, 500); // Small delay between batches
                 }
 
@@ -607,16 +625,7 @@
             }
 
             // Re-enable buttons
-            document.querySelectorAll('.btn-group button').forEach(btn => btn.disabled = false);
+            document.querySelectorAll('.btn-toolbar button').forEach(btn => btn.disabled = false);
         }
-
-        // Auto-hide batch analysis card when complete
-        {% if quality_stats.unanalyzed_mappings == 0 %}
-        const batchCard = document.getElementById('batchAnalysisCard');
-        if (batchCard) {
-            batchCard.style.display = 'none';
-        }
-        {% endif %}
     </script>
-{% endblock %}
 {% endblock %}
