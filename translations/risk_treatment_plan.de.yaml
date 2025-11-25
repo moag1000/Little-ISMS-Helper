@@ -66,4 +66,4 @@ risk_treatment_plan:
     delete:
         warning: 'Diese Aktion kann nicht rückgängig gemacht werden. Möchten Sie den Behandlungsplan wirklich löschen?'
         confirm: 'Sind Sie sicher, dass Sie diesen Behandlungsplan löschen möchten?'
-    no_plans: Nein Pläne
+    no_plans: 'Keine Behandlungspläne vorhanden'
