@@ -27,7 +27,7 @@ class TrainingType extends AbstractType
                 'label' => 'training.field.title',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'z.B. ISO 27001 Awareness Training',
+                    'placeholder' => 'training.placeholder.title',
                 ],
                 'constraints' => [
                     new NotBlank(['message' => 'training.validation.title_required']),
@@ -39,20 +39,20 @@ class TrainingType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 4,
-                    'placeholder' => 'Beschreiben Sie Inhalt und Ziele der Schulung...',
+                    'placeholder' => 'training.placeholder.description',
                 ],
             ])
             ->add('trainingType', ChoiceType::class, [
                 'label' => 'training.field.training_type',
                 'choices' => [
-                    'Security Awareness' => 'security_awareness',
-                    'Technisches Training' => 'technical',
-                    'Compliance Training' => 'compliance',
-                    'Notfallübung' => 'emergency_drill',
-                    'Phishing-Simulation' => 'phishing_simulation',
-                    'Data Protection' => 'data_protection',
-                    'Cyber Security' => 'cyber_security',
-                    'Sonstiges' => 'other',
+                    'training.types.security_awareness' => 'security_awareness',
+                    'training.types.technical' => 'technical',
+                    'training.types.compliance' => 'compliance',
+                    'training.types.emergency_drill' => 'emergency_drill',
+                    'training.types.phishing_simulation' => 'phishing_simulation',
+                    'training.types.data_protection' => 'data_protection',
+                    'training.types.cyber_security' => 'cyber_security',
+                    'training.types.other' => 'other',
                 ],
                 'attr' => ['class' => 'form-select'],
                 'constraints' => [
@@ -62,11 +62,11 @@ class TrainingType extends AbstractType
             ->add('deliveryMethod', ChoiceType::class, [
                 'label' => 'training.field.delivery_method',
                 'choices' => [
-                    'Präsenz' => 'in_person',
-                    'Online (Live)' => 'online_live',
-                    'E-Learning (Selbststudium)' => 'e_learning',
-                    'Hybrid' => 'hybrid',
-                    'Workshop' => 'workshop',
+                    'training.delivery_methods.in_person' => 'in_person',
+                    'training.delivery_methods.online_live' => 'online_live',
+                    'training.delivery_methods.e_learning' => 'e_learning',
+                    'training.delivery_methods.hybrid' => 'hybrid',
+                    'training.delivery_methods.workshop' => 'workshop',
                 ],
                 'attr' => ['class' => 'form-select'],
             ])
@@ -83,19 +83,19 @@ class TrainingType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'min' => 15,
-                    'placeholder' => 'z.B. 60',
+                    'placeholder' => 'training.placeholder.duration',
                 ],
                 'constraints' => [
                     new Range(['min' => 15, 'max' => 480]),
                 ],
-                'help' => 'Dauer in Minuten (15-480)',
+                'help' => 'training.help.duration',
             ])
             ->add('location', TextType::class, [
                 'label' => 'training.field.location',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'z.B. Konferenzraum A oder Zoom-Link',
+                    'placeholder' => 'training.placeholder.location',
                 ],
             ])
             ->add('trainer', EntityType::class, [
@@ -104,21 +104,21 @@ class TrainingType extends AbstractType
                 'choice_label' => function (User $user) {
                     return $user->getFirstName() . ' ' . $user->getLastName();
                 },
-                'placeholder' => '-- Bitte wählen --',
+                'placeholder' => 'common.please_select',
                 'required' => false,
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('targetAudience', ChoiceType::class, [
                 'label' => 'training.field.target_audience',
                 'choices' => [
-                    'Alle Mitarbeiter' => 'all_employees',
-                    'IT-Abteilung' => 'it_department',
-                    'Management' => 'management',
-                    'Entwickler' => 'developers',
-                    'HR' => 'hr',
-                    'Externe Dienstleister' => 'contractors',
-                    'Neue Mitarbeiter' => 'new_employees',
-                    'Spezifische Abteilungen' => 'specific_departments',
+                    'training.target_audiences.all_employees' => 'all_employees',
+                    'training.target_audiences.it_department' => 'it_department',
+                    'training.target_audiences.management' => 'management',
+                    'training.target_audiences.developers' => 'developers',
+                    'training.target_audiences.hr' => 'hr',
+                    'training.target_audiences.contractors' => 'contractors',
+                    'training.target_audiences.new_employees' => 'new_employees',
+                    'training.target_audiences.specific_departments' => 'specific_departments',
                 ],
                 'attr' => ['class' => 'form-select'],
             ])
@@ -134,24 +134,24 @@ class TrainingType extends AbstractType
                     'class' => 'form-select',
                     'size' => 8,
                 ],
-                'help' => 'STRG gedrückt halten um mehrere Teilnehmer auszuwählen.',
+                'help' => 'training.help.participants',
             ])
             ->add('status', ChoiceType::class, [
                 'label' => 'training.field.status',
                 'choices' => [
-                    'Geplant' => 'planned',
-                    'Bestätigt' => 'confirmed',
-                    'Durchgeführt' => 'completed',
-                    'Abgesagt' => 'cancelled',
-                    'Verschoben' => 'postponed',
+                    'training.statuses.planned' => 'planned',
+                    'training.statuses.confirmed' => 'confirmed',
+                    'training.statuses.completed' => 'completed',
+                    'training.statuses.cancelled' => 'cancelled',
+                    'training.statuses.postponed' => 'postponed',
                 ],
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('mandatory', ChoiceType::class, [
                 'label' => 'training.field.mandatory',
                 'choices' => [
-                    'Ja, verpflichtend' => true,
-                    'Nein, optional' => false,
+                    'training.mandatory_options.yes' => true,
+                    'training.mandatory_options.no' => false,
                 ],
                 'expanded' => true,
                 'data' => true,
@@ -168,7 +168,7 @@ class TrainingType extends AbstractType
                     'class' => 'form-select',
                     'size' => 5,
                 ],
-                'help' => 'Welche ISO 27001 Controls werden durch diese Schulung adressiert?',
+                'help' => 'training.help.covered_controls',
             ])
             ->add('complianceRequirements', EntityType::class, [
                 'label' => 'training.field.compliance_requirements',
@@ -184,7 +184,7 @@ class TrainingType extends AbstractType
                     'class' => 'form-select',
                     'size' => 5,
                 ],
-                'help' => 'Welche Compliance-Anforderungen werden durch diese Schulung erfüllt? (z.B. DORA, TISAX, NIS2)',
+                'help' => 'training.help.compliance_requirements',
             ])
             ->add('materials', TextareaType::class, [
                 'label' => 'training.field.materials',
@@ -193,7 +193,7 @@ class TrainingType extends AbstractType
                     'class' => 'form-control',
                     'rows' => 3,
                 ],
-                'help' => 'Links oder Beschreibungen von Schulungsmaterialien.',
+                'help' => 'training.help.materials',
             ])
             ->add('feedback', TextareaType::class, [
                 'label' => 'training.field.feedback',
@@ -202,7 +202,7 @@ class TrainingType extends AbstractType
                     'class' => 'form-control',
                     'rows' => 4,
                 ],
-                'help' => 'Feedback von Teilnehmern oder Trainer-Notizen.',
+                'help' => 'training.help.feedback',
             ]);
     }
 
@@ -210,6 +210,7 @@ class TrainingType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Training::class,
+            'translation_domain' => 'training',
         ]);
     }
 }
