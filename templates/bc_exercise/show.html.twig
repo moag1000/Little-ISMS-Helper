@@ -11,7 +11,7 @@
             <a href="{{ path('app_bc_exercise_edit', {id: bc_exercise.id}) }}" class="btn btn-primary">{{ 'common.edit'|trans({}, 'messages') }}</a>
             <a href="{{ path('app_bc_exercise_index') }}" class="btn btn-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') %}
-                <form method="post" action="{{ path('app_bc_exercise_delete', {id: bc_exercise.id}) }}" style="display:inline;" onsubmit="return confirm('{{ 'bc_exercises.message.confirm_delete'|trans({}, 'bcm') }}');">
+                <form method="post" action="{{ path('app_bc_exercise_delete', {id: bc_exercise.id}) }}" style="display:inline;" onsubmit="return confirm('{{ 'bc_exercises.message.confirm_delete'|trans({}, 'bc_exercises') }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ bc_exercise.id) }}">
                     <button type="submit" class="btn btn-danger">{{ 'common.delete'|trans({}, 'messages') }}</button>
                 </form>
@@ -21,7 +21,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h2>{{ 'bc_exercises.section.details'|trans({}, 'bcm') }}</h2>
+            <h2>{{ 'bc_exercises.section.details'|trans({}, 'bc_exercises') }}</h2>
             <div>
                 <span class="badge badge-{{ bc_exercise.exerciseType }}">{{ bc_exercise.exerciseType }}</span>
                 <span class="badge badge-{{ bc_exercise.status }}">{{ bc_exercise.status }}</span>
@@ -31,26 +31,26 @@
             {% if bc_exercise.status == 'completed' %}
                 {% set effectiveness = bc_exercise.getEffectivenessScore() %}
                 <div class="alert alert-{{ effectiveness >= 80 ? 'success' : (effectiveness >= 60 ? 'info' : 'warning') }}">
-                    <strong>{{ 'bc_plans.message.readiness_score'|trans({'%score%': effectiveness}, 'bcm') }}</strong>
+                    <strong>{{ 'bc_plans.message.readiness_score'|trans({'%score%': effectiveness}, 'bc_exercises') }}</strong>
                 </div>
             {% endif %}
 
             <div class="detail-grid">
                 <div class="detail-item">
-                    <span class="label">{{ 'bc_exercises.field.exercise_date'|trans({}, 'bcm') }}:</span>
+                    <span class="label">{{ 'bc_exercises.field.exercise_date'|trans({}, 'bc_exercises') }}:</span>
                     <span class="value">{{ bc_exercise.exerciseDate|date('Y-m-d') }}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="label">{{ 'bc_exercises.field.duration'|trans({}, 'bcm') }}:</span>
-                    <span class="value">{{ bc_exercise.durationHours ?? ('bc_exercises.message.na'|trans({}, 'bcm')) }} {{ 'bc_exercises.field.duration_hours'|trans({}, 'bcm') }}</span>
+                    <span class="label">{{ 'bc_exercises.field.duration'|trans({}, 'bc_exercises') }}:</span>
+                    <span class="value">{{ bc_exercise.durationHours ?? ('bc_exercises.message.na'|trans({}, 'bc_exercises')) }} {{ 'bc_exercises.field.duration_hours'|trans({}, 'bc_exercises') }}</span>
                 </div>
                 <div class="detail-item">
-                    <span class="label">{{ 'bc_exercises.field.facilitator'|trans({}, 'bcm') }}:</span>
+                    <span class="label">{{ 'bc_exercises.field.facilitator'|trans({}, 'bc_exercises') }}:</span>
                     <span class="value">{{ bc_exercise.facilitator }}</span>
                 </div>
                 {% if bc_exercise.successRating %}
                 <div class="detail-item">
-                    <span class="label">{{ 'bc_exercises.field.success_rating'|trans({}, 'bcm') }}:</span>
+                    <span class="label">{{ 'bc_exercises.field.success_rating'|trans({}, 'bc_exercises') }}:</span>
                     <span class="value">{{ bc_exercise.successRating }}/5</span>
                 </div>
                 {% endif %}
@@ -58,26 +58,26 @@
 
             {% if bc_exercise.description %}
             <div class="detail-section">
-                <h2>{{ 'bc_exercises.section.details'|trans({}, 'bcm') }}</h2>
+                <h2>{{ 'bc_exercises.section.details'|trans({}, 'bc_exercises') }}</h2>
                 <p>{{ bc_exercise.description }}</p>
             </div>
             {% endif %}
 
             <div class="detail-section">
-                <h2>{{ 'bc_exercises.section.scope_objectives'|trans({}, 'bcm') }}</h2>
-                <p><strong>{{ 'bc_exercises.section.scope_objectives'|trans({}, 'bcm') }}:</strong> {{ bc_exercise.scope }}</p>
-                <p><strong>{{ 'bc_exercises.section.scope_objectives'|trans({}, 'bcm') }}:</strong> {{ bc_exercise.objectives|nl2br }}</p>
+                <h2>{{ 'bc_exercises.section.scope_objectives'|trans({}, 'bc_exercises') }}</h2>
+                <p><strong>{{ 'bc_exercises.section.scope_objectives'|trans({}, 'bc_exercises') }}:</strong> {{ bc_exercise.scope }}</p>
+                <p><strong>{{ 'bc_exercises.section.scope_objectives'|trans({}, 'bc_exercises') }}:</strong> {{ bc_exercise.objectives|nl2br }}</p>
             </div>
 
             {% if bc_exercise.scenario %}
             <div class="detail-section">
-                <h3>{{ 'bc_exercises.section.scenario'|trans({}, 'bcm') }}</h3>
+                <h3>{{ 'bc_exercises.section.scenario'|trans({}, 'bc_exercises') }}</h3>
                 <p>{{ bc_exercise.scenario|nl2br }}</p>
             </div>
             {% endif %}
 
             <div class="detail-section">
-                <h3>{{ 'bc_exercises.section.participants'|trans({}, 'bcm') }}</h3>
+                <h3>{{ 'bc_exercises.section.participants'|trans({}, 'bc_exercises') }}</h3>
                 <p>{{ bc_exercise.participants|nl2br }}</p>
                 {% if bc_exercise.observers %}
                 <p><strong>{{ 'common.observers'|trans({}, 'messages') }}:</strong> {{ bc_exercise.observers|nl2br }}</p>
@@ -87,64 +87,64 @@
             {% if bc_exercise.status == 'completed' %}
                 {% if bc_exercise.results %}
                 <div class="detail-section">
-                    <h3>{{ 'bc_exercises.section.results'|trans({}, 'bcm') }}</h3>
+                    <h3>{{ 'bc_exercises.section.results'|trans({}, 'bc_exercises') }}</h3>
                     <p>{{ bc_exercise.results|nl2br }}</p>
                 </div>
                 {% endif %}
 
                 {% if bc_exercise.whatWentWell %}
                 <div class="detail-section alert-success">
-                    <h3>✅ {{ 'bc_exercises.section.what_went_well'|trans({}, 'bcm') }}</h3>
+                    <h3>✅ {{ 'bc_exercises.section.what_went_well'|trans({}, 'bc_exercises') }}</h3>
                     <p>{{ bc_exercise.whatWentWell|nl2br }}</p>
                 </div>
                 {% endif %}
 
                 {% if bc_exercise.areasForImprovement %}
                 <div class="detail-section alert-warning">
-                    <h3>📋 {{ 'bc_exercises.section.improvements'|trans({}, 'bcm') }}</h3>
+                    <h3>📋 {{ 'bc_exercises.section.improvements'|trans({}, 'bc_exercises') }}</h3>
                     <p>{{ bc_exercise.areasForImprovement|nl2br }}</p>
                 </div>
                 {% endif %}
 
                 {% if bc_exercise.findings %}
                 <div class="detail-section">
-                    <h3>{{ 'bc_exercises.section.findings'|trans({}, 'bcm') }}</h3>
+                    <h3>{{ 'bc_exercises.section.findings'|trans({}, 'bc_exercises') }}</h3>
                     <p>{{ bc_exercise.findings|nl2br }}</p>
                 </div>
                 {% endif %}
 
                 {% if bc_exercise.actionItems %}
                 <div class="detail-section">
-                    <h3>{{ 'bc_exercises.section.action_items'|trans({}, 'bcm') }}</h3>
+                    <h3>{{ 'bc_exercises.section.action_items'|trans({}, 'bc_exercises') }}</h3>
                     <p>{{ bc_exercise.actionItems|nl2br }}</p>
                 </div>
                 {% endif %}
 
                 {% if bc_exercise.lessonsLearned %}
                 <div class="detail-section">
-                    <h3>{{ 'bc_exercises.section.lessons_learned'|trans({}, 'bcm') }}</h3>
+                    <h3>{{ 'bc_exercises.section.lessons_learned'|trans({}, 'bc_exercises') }}</h3>
                     <p>{{ bc_exercise.lessonsLearned|nl2br }}</p>
                 </div>
                 {% endif %}
 
                 {% if bc_exercise.planUpdatesRequired %}
                 <div class="detail-section alert-info">
-                    <h3>{{ 'bc_exercises.section.plan_updates_required'|trans({}, 'bcm') }}</h3>
+                    <h3>{{ 'bc_exercises.section.plan_updates_required'|trans({}, 'bc_exercises') }}</h3>
                     <p>{{ bc_exercise.planUpdatesRequired|nl2br }}</p>
                 </div>
                 {% endif %}
 
                 <div class="detail-section">
-                    <p><strong>{{ 'bc_exercises.field.report_completed'|trans({}, 'bcm') }}:</strong> {{ bc_exercise.reportCompleted ? ('bc_exercises.badge.yes'|trans({}, 'bcm')) : ('bc_exercises.badge.no'|trans({}, 'bcm')) }}</p>
+                    <p><strong>{{ 'bc_exercises.field.report_completed'|trans({}, 'bc_exercises') }}:</strong> {{ bc_exercise.reportCompleted ? ('bc_exercises.badge.yes'|trans({}, 'bc_exercises')) : ('bc_exercises.badge.no'|trans({}, 'bc_exercises')) }}</p>
                     {% if bc_exercise.reportDate %}
-                    <p><strong>{{ 'bc_exercises.field.report_date'|trans({}, 'bcm') }}:</strong> {{ bc_exercise.reportDate|date('Y-m-d') }}</p>
+                    <p><strong>{{ 'bc_exercises.field.report_date'|trans({}, 'bc_exercises') }}:</strong> {{ bc_exercise.reportDate|date('Y-m-d') }}</p>
                     {% endif %}
                 </div>
             {% endif %}
 
             {% if bc_exercise.relatedBCPlans|length > 0 %}
             <div class="detail-section">
-                <h3>{{ 'bc_exercises.section.related_plans'|trans({}, 'bcm') }} ({{ bc_exercise.relatedBCPlans|length }})</h3>
+                <h3>{{ 'bc_exercises.section.related_plans'|trans({}, 'bc_exercises') }} ({{ bc_exercise.relatedBCPlans|length }})</h3>
                 <ul>
                     {% for plan in bc_exercise.relatedBCPlans %}
                     <li><a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a></li>

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ workflow.name }} - {{ 'workflow.definition.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ workflow.name }} - {{ 'workflow.definition.title'|trans({}, 'workflows') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
@@ -8,32 +8,32 @@
         <div>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ path('app_workflow_index') }}">{{ 'workflow.breadcrumb.home'|trans({}, 'messages') }}</a></li>
-                    <li class="breadcrumb-item"><a href="{{ path('app_workflow_definitions') }}">{{ 'workflow.breadcrumb.definitions'|trans({}, 'messages') }}</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_workflow_index') }}">{{ 'workflow.breadcrumb.home'|trans({}, 'workflows') }}</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_workflow_definitions') }}">{{ 'workflow.breadcrumb.definitions'|trans({}, 'workflows') }}</a></li>
                     <li class="breadcrumb-item active">{{ workflow.name }}</li>
                 </ol>
             </nav>
             <h1>
                 <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ workflow.name }}
                 {% if workflow.isActive %}
-                    <span class="badge bg-success">{{ 'workflow.status.active'|trans({}, 'messages') }}</span>
+                    <span class="badge bg-success">{{ 'workflow.status.active'|trans({}, 'workflows') }}</span>
                 {% else %}
-                    <span class="badge bg-secondary">{{ 'workflow.status.inactive'|trans({}, 'messages') }}</span>
+                    <span class="badge bg-secondary">{{ 'workflow.status.inactive'|trans({}, 'workflows') }}</span>
                 {% endif %}
             </h1>
         </div>
         <div>
             <a href="{{ path('app_workflow_definition_builder', {id: workflow.id}) }}" class="btn btn-success">
-                <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'workflow.action.builder'|trans({}, 'messages') }}
+                <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'workflow.action.builder'|trans({}, 'workflows') }}
             </a>
             <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="btn btn-primary">
-                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'workflow.action.edit'|trans({}, 'messages') }}
+                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'workflow.action.edit'|trans({}, 'workflows') }}
             </a>
             <form method="post" action="{{ path('app_workflow_definition_toggle', {id: workflow.id}) }}" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ workflow.id) }}">
                 <button type="submit" class="btn btn-{{ workflow.isActive ? 'warning' : 'success' }}">
                     <i class="bi bi-{{ workflow.isActive ? 'pause-circle' : 'play-circle' }}" aria-hidden="true"></i>
-                    {{ workflow.isActive ? 'workflow.action.deactivate'|trans({}, 'messages') : 'workflow.action.activate'|trans({}, 'messages') }}
+                    {{ workflow.isActive ? 'workflow.action.deactivate'|trans({}, 'workflows') : 'workflow.action.activate'|trans({}, 'workflows') }}
                 </button>
             </form>
         </div>
@@ -45,36 +45,36 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <h2 class="mb-0">
-                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.section.information'|trans({}, 'messages') }}
+                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.section.information'|trans({}, 'workflows') }}
                     </h5>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
-                        <dt class="col-sm-3">{{ 'workflow.field.name'|trans({}, 'messages') }}</dt>
+                        <dt class="col-sm-3">{{ 'workflow.field.name'|trans({}, 'workflows') }}</dt>
                         <dd class="col-sm-9">{{ workflow.name }}</dd>
 
-                        <dt class="col-sm-3">{{ 'workflow.field.description'|trans({}, 'messages') }}</dt>
+                        <dt class="col-sm-3">{{ 'workflow.field.description'|trans({}, 'workflows') }}</dt>
                         <dd class="col-sm-9">{{ workflow.description|default('—') }}</dd>
 
-                        <dt class="col-sm-3">{{ 'workflow.field.entity_type'|trans({}, 'messages') }}</dt>
+                        <dt class="col-sm-3">{{ 'workflow.field.entity_type'|trans({}, 'workflows') }}</dt>
                         <dd class="col-sm-9">
                             <span class="badge bg-info">{{ workflow.entityType }}</span>
                         </dd>
 
-                        <dt class="col-sm-3">{{ 'workflow.field.status'|trans({}, 'messages') }}</dt>
+                        <dt class="col-sm-3">{{ 'workflow.field.status'|trans({}, 'workflows') }}</dt>
                         <dd class="col-sm-9">
                             {% if workflow.isActive %}
-                                <span class="badge bg-success">{{ 'workflow.status.active'|trans({}, 'messages') }}</span>
+                                <span class="badge bg-success">{{ 'workflow.status.active'|trans({}, 'workflows') }}</span>
                             {% else %}
-                                <span class="badge bg-secondary">{{ 'workflow.status.inactive'|trans({}, 'messages') }}</span>
+                                <span class="badge bg-secondary">{{ 'workflow.status.inactive'|trans({}, 'workflows') }}</span>
                             {% endif %}
                         </dd>
 
-                        <dt class="col-sm-3">{{ 'workflow.field.created_at'|trans({}, 'messages') }}</dt>
+                        <dt class="col-sm-3">{{ 'workflow.field.created_at'|trans({}, 'workflows') }}</dt>
                         <dd class="col-sm-9">{{ workflow.createdAt|date('d.m.Y H:i') }}</dd>
 
                         {% if workflow.updatedAt %}
-                        <dt class="col-sm-3">{{ 'workflow.field.updated_at'|trans({}, 'messages') }}</dt>
+                        <dt class="col-sm-3">{{ 'workflow.field.updated_at'|trans({}, 'workflows') }}</dt>
                         <dd class="col-sm-9">{{ workflow.updatedAt|date('d.m.Y H:i') }}</dd>
                         {% endif %}
                     </dl>
@@ -85,7 +85,7 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <h3 class="mb-0">
-                        <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'workflow.section.steps'|trans({}, 'messages') }} ({{ workflow.steps|length }})
+                        <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'workflow.section.steps'|trans({}, 'workflows') }} ({{ workflow.steps|length }})
                     </h5>
                 </div>
                 <div class="card-body">
@@ -108,10 +108,10 @@
                                         </div>
                                         <div>
                                             {% if step.requiresComment %}
-                                                <span class="badge bg-warning">{{ 'workflow.step.requires_comment'|trans({}, 'messages') }}</span>
+                                                <span class="badge bg-warning">{{ 'workflow.step.requires_comment'|trans({}, 'workflows') }}</span>
                                             {% endif %}
                                             {% if step.requiresFileUpload %}
-                                                <span class="badge bg-info">{{ 'workflow.step.requires_file'|trans({}, 'messages') }}</span>
+                                                <span class="badge bg-info">{{ 'workflow.step.requires_file'|trans({}, 'workflows') }}</span>
                                             {% endif %}
                                         </div>
                                     </div>
@@ -120,7 +120,7 @@
                         </div>
                     {% else %}
                         <p class="text-muted text-center py-4">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.message.no_steps'|trans({}, 'messages') }}
+                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.message.no_steps'|trans({}, 'workflows') }}
                         </p>
                     {% endif %}
                 </div>
@@ -130,7 +130,7 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="mb-0">
-                        <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'workflow.section.recent_instances'|trans({}, 'messages') }}
+                        <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'workflow.section.recent_instances'|trans({}, 'workflows') }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -142,11 +142,11 @@
                         } %}
                             {% block table_head %}
                                 <tr>
-                                    <th scope="col">{{ 'workflow.instance.entity'|trans({}, 'messages') }}</th>
-                                    <th scope="col">{{ 'workflow.instance.status'|trans({}, 'messages') }}</th>
-                                    <th scope="col">{{ 'workflow.instance.current_step'|trans({}, 'messages') }}</th>
-                                    <th scope="col">{{ 'workflow.instance.created'|trans({}, 'messages') }}</th>
-                                    <th scope="col">{{ 'workflow.instance.actions'|trans({}, 'messages') }}</th>
+                                    <th scope="col">{{ 'workflow.instance.entity'|trans({}, 'workflows') }}</th>
+                                    <th scope="col">{{ 'workflow.instance.status'|trans({}, 'workflows') }}</th>
+                                    <th scope="col">{{ 'workflow.instance.current_step'|trans({}, 'workflows') }}</th>
+                                    <th scope="col">{{ 'workflow.instance.created'|trans({}, 'workflows') }}</th>
+                                    <th scope="col">{{ 'workflow.instance.actions'|trans({}, 'workflows') }}</th>
                                 </tr>
                             {% endblock %}
                             {% block table_body %}
@@ -157,13 +157,13 @@
                                         </td>
                                         <td>
                                             {% if instance.status == 'completed' %}
-                                                <span class="badge bg-success">{{ 'workflow.status.completed'|trans({}, 'messages') }}</span>
+                                                <span class="badge bg-success">{{ 'workflow.status.completed'|trans({}, 'workflows') }}</span>
                                             {% elseif instance.status == 'rejected' %}
-                                                <span class="badge bg-danger">{{ 'workflow.status.rejected'|trans({}, 'messages') }}</span>
+                                                <span class="badge bg-danger">{{ 'workflow.status.rejected'|trans({}, 'workflows') }}</span>
                                             {% elseif instance.status == 'cancelled' %}
-                                                <span class="badge bg-secondary">{{ 'workflow.status.cancelled'|trans({}, 'messages') }}</span>
+                                                <span class="badge bg-secondary">{{ 'workflow.status.cancelled'|trans({}, 'workflows') }}</span>
                                             {% else %}
-                                                <span class="badge bg-warning">{{ 'workflow.status.pending'|trans({}, 'messages') }}</span>
+                                                <span class="badge bg-warning">{{ 'workflow.status.pending'|trans({}, 'workflows') }}</span>
                                             {% endif %}
                                         </td>
                                         <td>
@@ -181,7 +181,7 @@
                         {% endembed %}
                     {% else %}
                         <p class="text-muted text-center py-4">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.message.no_instances'|trans({}, 'messages') }}
+                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.message.no_instances'|trans({}, 'workflows') }}
                         </p>
                     {% endif %}
                 </div>
@@ -192,27 +192,27 @@
             {# Actions #}
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white"><h5 class="mb-0">
-                        <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'workflow.section.actions'|trans({}, 'messages') }}
+                        <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'workflow.section.actions'|trans({}, 'workflows') }}
                     </h5>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="btn btn-primary">
-                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'workflow.action.edit'|trans({}, 'messages') }}
+                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'workflow.action.edit'|trans({}, 'workflows') }}
                         </a>
                         <form method="post" action="{{ path('app_workflow_definition_toggle', {id: workflow.id}) }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ workflow.id) }}">
                             <button type="submit" class="btn btn-{{ workflow.isActive ? 'warning' : 'success' }} w-100">
                                 <i class="bi bi-{{ workflow.isActive ? 'pause-circle' : 'play-circle' }}" aria-hidden="true"></i>
-                                {{ workflow.isActive ? 'workflow.action.deactivate'|trans({}, 'messages') : 'workflow.action.activate'|trans({}, 'messages') }}
+                                {{ workflow.isActive ? 'workflow.action.deactivate'|trans({}, 'workflows') : 'workflow.action.activate'|trans({}, 'workflows') }}
                             </button>
                         </form>
                         <hr>
                         <form method="post" action="{{ path('app_workflow_definition_delete', {id: workflow.id}) }}"
-                              onsubmit="return confirm('{{ 'workflow.confirm.delete'|trans({}, 'messages') }}')">
+                              onsubmit="return confirm('{{ 'workflow.confirm.delete'|trans({}, 'workflows') }}')">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ workflow.id) }}">
                             <button type="submit" class="btn btn-danger w-100">
-                                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'workflow.action.delete'|trans({}, 'messages') }}
+                                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'workflow.action.delete'|trans({}, 'workflows') }}
                             </button>
                         </form>
                     </div>
@@ -222,15 +222,15 @@
             {# Statistics #}
             <div class="card">
                 <div class="card-header bg-info text-white"><h5 class="mb-0">
-                        <i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'workflow.section.statistics'|trans({}, 'messages') }}
+                        <i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'workflow.section.statistics'|trans({}, 'workflows') }}
                     </h5>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
-                        <dt class="col-sm-6">{{ 'workflow.stats.steps'|trans({}, 'messages') }}</dt>
+                        <dt class="col-sm-6">{{ 'workflow.stats.steps'|trans({}, 'workflows') }}</dt>
                         <dd class="col-sm-6 text-end"><strong>{{ workflow.steps|length }}</strong></dd>
 
-                        <dt class="col-sm-6">{{ 'workflow.stats.total_instances'|trans({}, 'messages') }}</dt>
+                        <dt class="col-sm-6">{{ 'workflow.stats.total_instances'|trans({}, 'workflows') }}</dt>
                         <dd class="col-sm-6 text-end"><strong>{{ recent_instances|length }}</strong></dd>
                     </dl>
                 </div>

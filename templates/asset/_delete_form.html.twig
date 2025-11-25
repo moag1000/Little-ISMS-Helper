@@ -1,4 +1,4 @@
-<form method="post" action="{{ path('app_asset_delete', {id: asset.id}) }}" onsubmit="return confirm('{{ 'asset.confirm.delete'|trans({}, 'assets') }}');">
+<form method="post" action="{{ path('app_asset_delete', {id: asset.id}) }}" onsubmit="return confirm('{{ 'asset.confirm.delete'|trans({}, 'asset') }}');">
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ asset.id) }}">
     <button type="submit" class="btn btn-danger">
         <i class="bi bi-trash" aria-hidden="true"></i>

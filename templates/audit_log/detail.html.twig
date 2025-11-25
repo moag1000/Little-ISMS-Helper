@@ -1,8 +1,8 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block admin_title %}{{ 'audit_log.title'|trans({}, 'audits') }}{% endblock %}
+{% block admin_title %}{{ 'audit_log.title'|trans({}, 'audit_log') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">{{ 'audit_log.detail.subtitle'|trans({}, 'audits')|default('Detailansicht eines Protokolleintrags') }}</p>
+    <p class="text-muted">{{ 'audit_log.detail.subtitle'|trans({}, 'audit_log') }}</p>
 {% endblock %}
 
 
@@ -14,7 +14,7 @@
 </p>
 
 <div class="info-box mt-2">
-    <h1>{{ 'audit_log.entry'|trans({'%id%': auditLog.id}, 'audits') }}</h1>
+    <h1>{{ 'audit_log.entry'|trans({'%id%': auditLog.id}, 'audit_log') }}</h1>
 
     {% embed '_components/_table.html.twig' with {
         'class': 'w-100 mt-lg',
@@ -23,22 +23,22 @@
     } %}
         {% block table_body %}
             <tr>
-                <td class="p-sm fw-bold w-200px">{{ 'audit_log.field.timestamp'|trans({}, 'audits') }}</td>
+                <td class="p-sm fw-bold w-200px">{{ 'audit_log.field.timestamp'|trans({}, 'audit_log') }}</td>
                 <td class="p-sm">{{ auditLog.createdAt|date('d.m.Y H:i:s') }}</td>
             </tr>
             <tr>
-                <td class="p-sm fw-bold">{{ 'audit_log.field.action'|trans({}, 'audits') }}</td>
+                <td class="p-sm fw-bold">{{ 'audit_log.field.action'|trans({}, 'audit_log') }}</td>
                 <td class="p-sm">
                     <span class="badge badge-{{ auditLog.action }}">{{ auditLog.action|capitalize }}</span>
                 </td>
             </tr>
             <tr>
-                <td class="p-sm fw-bold">{{ 'audit_log.field.entity_type'|trans({}, 'audits') }}</td>
+                <td class="p-sm fw-bold">{{ 'audit_log.field.entity_type'|trans({}, 'audit_log') }}</td>
                 <td class="p-sm">{{ auditLog.entityType }}</td>
             </tr>
             {% if auditLog.entityId %}
             <tr>
-                <td class="p-sm fw-bold">{{ 'audit_log.field.entity_id'|trans({}, 'audits') }}</td>
+                <td class="p-sm fw-bold">{{ 'audit_log.field.entity_id'|trans({}, 'audit_log') }}</td>
                 <td class="p-sm">
                     <a href="{{ path('app_audit_log_entity', {entityType: auditLog.entityType, entityId: auditLog.entityId}) }}"
                        class="link-primary">
@@ -48,7 +48,7 @@
             </tr>
             {% endif %}
             <tr>
-                <td class="p-sm fw-bold">{{ 'audit_log.field.user'|trans({}, 'audits') }}</td>
+                <td class="p-sm fw-bold">{{ 'audit_log.field.user'|trans({}, 'audit_log') }}</td>
                 <td class="p-sm">
                     <a href="{{ path('app_audit_log_user', {userName: auditLog.userName}) }}"
                        class="link-primary">
@@ -58,19 +58,19 @@
             </tr>
             {% if auditLog.ipAddress %}
             <tr>
-                <td class="p-sm fw-bold">{{ 'audit_log.field.ip_address'|trans({}, 'audits') }}</td>
+                <td class="p-sm fw-bold">{{ 'audit_log.field.ip_address'|trans({}, 'audit_log') }}</td>
                 <td class="p-sm">{{ auditLog.ipAddress }}</td>
             </tr>
             {% endif %}
             {% if auditLog.userAgent %}
             <tr>
-                <td class="p-sm fw-bold">{{ 'audit_log.field.user_agent'|trans({}, 'audits') }}</td>
+                <td class="p-sm fw-bold">{{ 'audit_log.field.user_agent'|trans({}, 'audit_log') }}</td>
                 <td class="p-sm fs-09">{{ auditLog.userAgent }}</td>
             </tr>
             {% endif %}
             {% if auditLog.description %}
             <tr>
-                <td class="p-sm fw-bold">{{ 'audit_log.field.description'|trans({}, 'audits') }}</td>
+                <td class="p-sm fw-bold">{{ 'audit_log.field.description'|trans({}, 'audit_log') }}</td>
                 <td class="p-sm">{{ auditLog.description }}</td>
             </tr>
             {% endif %}
@@ -83,12 +83,12 @@
 
 {% if oldValues or newValues %}
 <div class="info-box mt-2">
-    <h2>{{ 'audit_log.changes'|trans({}, 'audits') }}</h2>
+    <h2>{{ 'audit_log.changes'|trans({}, 'audit_log') }}</h2>
 
     <div class="grid-2-cols mt-lg">
         {% if oldValues %}
         <div>
-            <h4 class="text-danger">{{ 'audit_log.old_values'|trans({}, 'audits') }}</h4>
+            <h4 class="text-danger">{{ 'audit_log.old_values'|trans({}, 'audit_log') }}</h4>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-collapse-mt',
                 'noMargin': true
@@ -111,7 +111,7 @@
 
         {% if newValues %}
         <div>
-            <h4 class="text-success">{{ 'audit_log.new_values'|trans({}, 'audits') }}</h4>
+            <h4 class="text-success">{{ 'audit_log.new_values'|trans({}, 'audit_log') }}</h4>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-collapse-mt',
                 'noMargin': true

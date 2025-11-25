@@ -130,9 +130,9 @@
                     } %}
                         {% block table_head %}
                             <tr>
-                                <th scope="col">{{ 'user.name'|trans({}, 'users') }}</th>
-                                <th scope="col">{{ 'user.email'|trans({}, 'users') }}</th>
-                                <th scope="col">{{ 'user.department'|trans({}, 'users') }}</th>
+                                <th scope="col">{{ 'user.name'|trans({}, 'user') }}</th>
+                                <th scope="col">{{ 'user.email'|trans({}, 'user') }}</th>
+                                <th scope="col">{{ 'user.department'|trans({}, 'user') }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body %}
@@ -338,7 +338,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>{{ 'training.delete_warning'|trans({'%title%': training.title}, 'messages') }}</p>
+                <p>{{ 'training.delete_warning'|trans({'%title%': training.title}, 'training') }}</p>
                 <p class="text-muted"><small>{{ 'common.action_irreversible'|trans({}, 'messages') }}</small></p>
             </div>
             <div class="modal-footer">

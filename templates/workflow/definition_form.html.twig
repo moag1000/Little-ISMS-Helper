@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-    {{ is_edit ? 'workflow.definition.edit_title'|trans({}, 'messages') : 'workflow.definition.new_title'|trans({}, 'messages') }}
+    {{ is_edit ? 'workflow.definition.edit_title'|trans({}, 'workflows') : 'workflow.definition.new_title'|trans({}, 'workflows') }}
 {% endblock %}
 
 {% block body %}
@@ -10,13 +10,13 @@
         <div class="col-lg-8 offset-lg-2">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{{ path('app_workflow_index') }}">{{ 'workflow.breadcrumb.home'|trans({}, 'messages') }}</a></li>
-                    <li class="breadcrumb-item"><a href="{{ path('app_workflow_definitions') }}">{{ 'workflow.breadcrumb.definitions'|trans({}, 'messages') }}</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_workflow_index') }}">{{ 'workflow.breadcrumb.home'|trans({}, 'workflows') }}</a></li>
+                    <li class="breadcrumb-item"><a href="{{ path('app_workflow_definitions') }}">{{ 'workflow.breadcrumb.definitions'|trans({}, 'workflows') }}</a></li>
                     {% if is_edit %}
                         <li class="breadcrumb-item"><a href="{{ path('app_workflow_definition_show', {id: workflow.id}) }}">{{ workflow.name }}</a></li>
-                        <li class="breadcrumb-item active">{{ 'workflow.breadcrumb.edit'|trans({}, 'messages') }}</li>
+                        <li class="breadcrumb-item active">{{ 'workflow.breadcrumb.edit'|trans({}, 'workflows') }}</li>
                     {% else %}
-                        <li class="breadcrumb-item active">{{ 'workflow.breadcrumb.new'|trans({}, 'messages') }}</li>
+                        <li class="breadcrumb-item active">{{ 'workflow.breadcrumb.new'|trans({}, 'workflows') }}</li>
                     {% endif %}
                 </ol>
             </nav>
@@ -24,14 +24,14 @@
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1>
                     <i class="bi bi-{{ is_edit ? 'pencil' : 'plus-circle' }}" aria-hidden="true"></i>
-                    {{ is_edit ? 'workflow.definition.edit_title'|trans({}, 'messages') : 'workflow.definition.new_title'|trans({}, 'messages') }}
+                    {{ is_edit ? 'workflow.definition.edit_title'|trans({}, 'workflows') : 'workflow.definition.new_title'|trans({}, 'workflows') }}
                 </h1>
             </div>
 
             <div class="card">
                 <div class="card-header">
                     <h2 class="mb-0">
-                        <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'workflow.section.basic_information'|trans({}, 'messages') }}
+                        <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'workflow.section.basic_information'|trans({}, 'workflows') }}
                     </h5>
                 </div>
                 <div class="card-body">
@@ -41,14 +41,14 @@
                         {{ form_label(form.name) }}
                         {{ form_widget(form.name) }}
                         {{ form_errors(form.name) }}
-                        <small class="form-text text-muted">{{ 'workflow.help.name'|trans({}, 'messages') }}</small>
+                        <small class="form-text text-muted">{{ 'workflow.help.name'|trans({}, 'workflows') }}</small>
                     </div>
 
                     <div class="mb-3">
                         {{ form_label(form.description) }}
                         {{ form_widget(form.description) }}
                         {{ form_errors(form.description) }}
-                        <small class="form-text text-muted">{{ 'workflow.help.description'|trans({}, 'messages') }}</small>
+                        <small class="form-text text-muted">{{ 'workflow.help.description'|trans({}, 'workflows') }}</small>
                     </div>
 
                     <div class="mb-3">
@@ -71,8 +71,8 @@
 
                     <div class="alert alert-info">
                         <i class="bi bi-info-circle" aria-hidden="true"></i>
-                        <strong>{{ 'workflow.info.steps_note_title'|trans({}, 'messages') }}</strong><br>
-                        {{ 'workflow.info.steps_note_text'|trans({}, 'messages') }}
+                        <strong>{{ 'workflow.info.steps_note_title'|trans({}, 'workflows') }}</strong><br>
+                        {{ 'workflow.info.steps_note_text'|trans({}, 'workflows') }}
                     </div>
 
                     <div class="d-flex justify-content-between mt-4">
@@ -82,7 +82,7 @@
                         </a>
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-check-circle" aria-hidden="true"></i>
-                            {{ is_edit ? 'workflow.action.update'|trans({}, 'messages') : 'workflow.action.create'|trans({}, 'messages') }}
+                            {{ is_edit ? 'workflow.action.update'|trans({}, 'workflows') : 'workflow.action.create'|trans({}, 'workflows') }}
                         </button>
                     </div>
 
@@ -94,16 +94,16 @@
                 <div class="card mt-4">
                     <div class="card-header bg-warning">
                         <h3 class="mb-0">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'workflow.section.danger_zone'|trans({}, 'messages') }}
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'workflow.section.danger_zone'|trans({}, 'workflows') }}
                         </h5>
                     </div>
                     <div class="card-body">
-                        <p class="text-muted">{{ 'workflow.help.delete_warning'|trans({}, 'messages') }}</p>
+                        <p class="text-muted">{{ 'workflow.help.delete_warning'|trans({}, 'workflows') }}</p>
                         <form method="post" action="{{ path('app_workflow_definition_delete', {id: workflow.id}) }}"
-                              onsubmit="return confirm('{{ 'workflow.confirm.delete'|trans({}, 'messages') }}')">
+                              onsubmit="return confirm('{{ 'workflow.confirm.delete'|trans({}, 'workflows') }}')">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ workflow.id) }}">
                             <button type="submit" class="btn btn-danger">
-                                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'workflow.action.delete_definition'|trans({}, 'messages') }}
+                                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'workflow.action.delete_definition'|trans({}, 'workflows') }}
                             </button>
                         </form>
                     </div>

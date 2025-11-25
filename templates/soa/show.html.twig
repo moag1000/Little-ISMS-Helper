@@ -16,7 +16,7 @@
             ✏️ {{ 'soa.action.edit'|trans({}, 'soa') }}
         </a>
         <a href="{{ path('app_soa_by_category', {category: control.category}) }}" class="btn btn-secondary">
-            ← {{ 'soa.action.back_to_category'|trans({'%category%': ('soa.category.' ~ control.category)|trans }, 'messages') }}
+            ← {{ 'soa.action.back_to_category'|trans({'%category%': ('soa.category.' ~ control.category)|trans }, 'soa') }}
         </a>
     </div>
 </div>
@@ -139,9 +139,9 @@
 {# Data Reuse: Protected Assets #}
 {% if control.protectedAssets is defined and control.protectedAssets|length > 0 %}
 <div class="card mb-4">
-    <h2>🛡️ {{ 'soa.section.data_reuse_protected_assets'|trans({'%count%': control.protectedAssets|length}, 'messages') }}</h2>
+    <h2>🛡️ {{ 'soa.section.data_reuse_protected_assets'|trans({'%count%': control.protectedAssets|length}, 'soa') }}</h2>
     <div class="alert alert-info mt-2">
-        <strong>{{ 'soa.label.control_coverage'|trans({}, 'soa') }}</strong> {{ 'soa.message.control_coverage'|trans({'%count%': control.protectedAssets|length, '%value%': control.protectedAssetValue}, 'messages') }}
+        <strong>{{ 'soa.label.control_coverage'|trans({}, 'soa') }}</strong> {{ 'soa.message.control_coverage'|trans({'%count%': control.protectedAssets|length, '%value%': control.protectedAssetValue}, 'soa') }}
         {% if control.highRiskAssetCount > 0 %}
             <br><strong>⚠️ {{ control.highRiskAssetCount }}</strong> {{ 'soa.message.high_risk_assets'|trans({}, 'soa') }}
         {% endif %}
@@ -161,7 +161,7 @@
 {# Data Reuse: Related Risks #}
 {% if control.risks is defined and control.risks|length > 0 %}
 <div class="card mb-4">
-    <h2>⚠️ {{ 'soa.section.data_reuse_related_risks'|trans({'%count%': control.risks|length}, 'messages') }}</h2>
+    <h2>⚠️ {{ 'soa.section.data_reuse_related_risks'|trans({'%count%': control.risks|length}, 'soa') }}</h2>
     <p class="text-light">{{ 'soa.message.related_risks_info'|trans({}, 'soa') }}</p>
     <div class="data-reuse-list">
         {% for risk in control.risks %}
@@ -180,7 +180,7 @@
 {# Data Reuse: Related Incidents #}
 {% if control.incidents is defined and control.incidents|length > 0 %}
 <div class="card mb-4">
-    <h2>📋 {{ 'soa.section.data_reuse_related_incidents'|trans({'%count%': control.incidents|length}, 'messages') }}</h2>
+    <h2>📋 {{ 'soa.section.data_reuse_related_incidents'|trans({'%count%': control.incidents|length}, 'soa') }}</h2>
     <div class="alert alert-warning">
         <strong>⚠️ {{ control.incidents|length }} {{ 'soa.label.incidents'|trans({}, 'soa') }}</strong> {{ 'soa.message.related_incidents_count'|trans({}, 'soa') }}
         {% if control.isReviewNeeded %}

@@ -23,7 +23,7 @@
             {% if all_frameworks|length > 1 %}
             <div class="framework-switcher">
                 <select id="framework-switcher" class="form-select form-select-sm" onchange="window.location.href=this.value">
-                    <option value="" disabled>{{ 'compliance.switch_framework'|trans({}, 'compliance')|default('Switch Framework') }}</option>
+                    <option value="" disabled>{{ 'compliance.switch_framework'|trans({}, 'compliance') }}</option>
                     {% for fw in all_frameworks %}
                     <option value="{{ path('app_compliance_framework', {id: fw.id}) }}" {% if fw.id == framework.id %}selected{% endif %}>
                         {{ fw.code }} {% if fw.mandatory %}(!){% endif %}

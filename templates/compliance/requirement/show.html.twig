@@ -343,13 +343,6 @@
                             -
                         {% endif %}
                     </small></p>
-                    <p><small><strong>Created (Requirement):</strong>
-                        {% if requirement.lastAssessmentDate %}
-                            {{ requirement.lastAssessmentDate|date('Y-m-d') }}
-                        {% else %}
-                            -
-                        {% endif %}
-                    </small></p>
                     <p><small><strong>Created:</strong> {{ requirement.createdAt|date('Y-m-d H:i') }}</small></p>
                     {% if requirement.updatedAt %}
                         <p><small><strong>Updated:</strong> {{ requirement.updatedAt|date('Y-m-d H:i') }}</small></p>

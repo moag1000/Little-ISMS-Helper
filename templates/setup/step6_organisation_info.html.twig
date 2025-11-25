@@ -55,7 +55,7 @@
                         <div class="col-md-12">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.name,
-                                'label': form.name.vars.label|default('setup.organisation.name'|trans({}, 'messages')),
+                                'label': 'setup.organisation.name'|trans({}, 'messages'),
                                 'required': true
                             } %}
                         </div>
@@ -70,7 +70,7 @@
                         <div class="col-md-12">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.industries,
-                                'label': form.industries.vars.label|default('setup.organisation.industries'|trans({}, 'messages'))
+                                'label': 'setup.organisation.industries'|trans({}, 'messages')
                             } %}
                         </div>
                     </div>
@@ -79,13 +79,13 @@
                         <div class="col-md-6">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.employee_count,
-                                'label': form.employee_count.vars.label|default('setup.organisation.employee_count'|trans({}, 'messages'))
+                                'label': 'setup.organisation.employee_count'|trans({}, 'messages')
                             } %}
                         </div>
                         <div class="col-md-6">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.country,
-                                'label': form.country.vars.label|default('setup.organisation.country'|trans({}, 'messages'))
+                                'label': 'setup.organisation.country'|trans({}, 'messages')
                             } %}
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                         <div class="col-md-12">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.description,
-                                'label': form.description.vars.label|default('setup.organisation.description'|trans({}, 'messages'))
+                                'label': 'setup.organisation.description'|trans({}, 'messages')
                             } %}
                         </div>
                     </div>

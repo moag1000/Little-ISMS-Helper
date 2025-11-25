@@ -2,7 +2,7 @@
 
 {% block admin_title %}{{ 'entity_history.title'|trans({}, 'messages') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">{{ 'entity_history.subtitle'|trans({}, 'messages')|default('Verlauf einer Entität') }}</p>
+    <p class="text-muted">{{ 'entity_history.subtitle'|trans({}, 'messages') }}</p>
 {% endblock %}
 
 {% block admin_content %}
@@ -28,10 +28,10 @@
     } %}
         {% block table_head %}
             <tr>
-                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.timestamp'|trans({}, 'audits') }}</th>
-                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.action'|trans({}, 'audits') }}</th>
-                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.user'|trans({}, 'audits') }}</th>
-                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.description'|trans({}, 'audits') }}</th>
+                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.timestamp'|trans({}, 'audit_log') }}</th>
+                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.action'|trans({}, 'audit_log') }}</th>
+                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.user'|trans({}, 'audit_log') }}</th>
+                <th scope="col" class="table-cell text-left">{{ 'audit_log.field.description'|trans({}, 'audit_log') }}</th>
                 <th scope="col" class="table-cell text-left">{{ 'common.details'|trans({}, 'messages') }}</th>
             </tr>
         {% endblock %}

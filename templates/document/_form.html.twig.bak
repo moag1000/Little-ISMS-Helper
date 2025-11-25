@@ -66,7 +66,7 @@
                 'field': form.file,
                 'label': 'document.field.file'|trans({}, 'document'),
                 'help': is_edit_mode|default(false)
-                    ? ('document.help.file_edit'|trans({}, 'document'))
+                    ? ('document.help.file_edit'|trans({}, 'document')'))
                     : ('document.help.file'|trans({}, 'document')),
                 'required': not is_edit_mode|default(false)
             } %}
@@ -79,11 +79,11 @@
     <a href="{{ path('app_document_index') }}"
        class="btn btn-secondary">
         <i class="bi bi-x-circle" aria-hidden="true"></i>
-        {{ "common.cancel"|trans({}, "messages") }}
+        {{ 'common.cancel'|trans({}, 'messages') }}
     </a>
 
     <button type="submit" class="btn btn-primary">
-        <i class="{{ button_icon|default("bi-save") }}" aria-hidden="true"></i>
-        {{ button_label|default("common.save"|trans({}, "messages")) }}
+        <i class="{{ button_icon|default('bi-save') }}" aria-hidden="true"></i>
+        {{ button_label|default('common.save'|trans({}, 'messages')) }}
     </button>
 </div>

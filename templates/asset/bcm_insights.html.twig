@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}{{ 'asset.title.bcm_insights'|trans({}, 'assets') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'asset.title.bcm_insights'|trans({}, 'asset') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 <div class="page-header">
     <div>
-        <h1>{{ 'asset.title.bcm_insights'|trans({}, 'assets') }}</h1>
-        <p class="text-muted">{{ 'asset.description.bcm_insights'|trans({}, 'assets') }}</p>
+        <h1>{{ 'asset.title.bcm_insights'|trans({}, 'asset') }}</h1>
+        <p class="text-muted">{{ 'asset.description.bcm_insights'|trans({}, 'asset') }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_bcm_critical') }}" class="btn btn-secondary">
-            🔴 {{ 'asset.action.view_critical'|trans({}, 'assets') }}
+            🔴 {{ 'asset.action.view_critical'|trans({}, 'asset') }}
         </a>
         <a href="{{ path('app_asset_index') }}" class="btn btn-secondary">
             ← {{ 'common.back'|trans({}, 'messages') }}
@@ -22,86 +22,86 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('asset.stats.total_assets'|trans({}, 'assets'), totalAssets, null, null, null, null) }}
+        {{ cards.kpi_card('asset.stats.total_assets'|trans({}, 'asset'), totalAssets, null, null, null, null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('asset.stats.critical_assets'|trans({}, 'assets'), criticalAssets, null, null, 'danger', 'border-danger') }}
+        {{ cards.kpi_card('asset.stats.critical_assets'|trans({}, 'asset'), criticalAssets, null, null, 'danger', 'border-danger') }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('asset.stats.high_risk_assets'|trans({}, 'assets'), highRiskAssets, null, null, 'warning', null) }}
+        {{ cards.kpi_card('asset.stats.high_risk_assets'|trans({}, 'asset'), highRiskAssets, null, null, 'warning', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('asset.stats.avg_rto'|trans({}, 'assets'), avgRTO ~ 'h', null, null, null, null) }}
+        {{ cards.kpi_card('asset.stats.avg_rto'|trans({}, 'asset'), avgRTO ~ 'h', null, null, null, null) }}
     </div>
 </div>
 
 {# Business Impact Analysis #}
-<h2>{{ 'asset.section.business_impact'|trans({}, 'assets') }}</h2>
+<h2>{{ 'asset.section.business_impact'|trans({}, 'asset') }}</h2>
 
 <div class="module-grid mb-4">
     <div class="card card-border-left-danger">
         <div class="fs-2-mb-sm">🔴</div>
-        <h2>{{ 'asset.impact.critical'|trans({}, 'assets') }}</h2>
+        <h2>{{ 'asset.impact.critical'|trans({}, 'asset') }}</h2>
         <div class="mt-2">
             <strong class="fs-15-danger">{{ assetsByImpact.critical|length }}</strong>
         </div>
         <p class="text-muted-mt-xs">
-            {{ 'asset.description.critical_impact'|trans({}, 'assets') }}
+            {{ 'asset.description.critical_impact'|trans({}, 'asset') }}
         </p>
         <div class="mt-2">
-            <small><strong>{{ 'asset.field.avg_rto'|trans({}, 'assets') }}:</strong> {{ avgRTOByCriticality.critical }}h</small>
+            <small><strong>{{ 'asset.field.avg_rto'|trans({}, 'asset') }}:</strong> {{ avgRTOByCriticality.critical }}h</small>
         </div>
     </div>
 
     <div class="card card-border-left-warning">
         <div class="fs-2-mb-sm">🟡</div>
-        <h2>{{ 'asset.impact.high'|trans({}, 'assets') }}</h2>
+        <h2>{{ 'asset.impact.high'|trans({}, 'asset') }}</h2>
         <div class="mt-2">
             <strong class="fs-15-warning">{{ assetsByImpact.high|length }}</strong>
         </div>
         <p class="text-muted-mt-xs">
-            {{ 'asset.description.high_impact'|trans({}, 'assets') }}
+            {{ 'asset.description.high_impact'|trans({}, 'asset') }}
         </p>
         <div class="mt-2">
-            <small><strong>{{ 'asset.field.avg_rto'|trans({}, 'assets') }}:</strong> {{ avgRTOByCriticality.high }}h</small>
+            <small><strong>{{ 'asset.field.avg_rto'|trans({}, 'asset') }}:</strong> {{ avgRTOByCriticality.high }}h</small>
         </div>
     </div>
 
     <div class="card card-border-left-info">
         <div class="fs-2-mb-sm">🔵</div>
-        <h3>{{ 'asset.impact.medium'|trans({}, 'assets') }}</h3>
+        <h3>{{ 'asset.impact.medium'|trans({}, 'asset') }}</h3>
         <div class="mt-2">
             <strong class="fs-15-info">{{ assetsByImpact.medium|length }}</strong>
         </div>
         <p class="text-muted-mt-xs">
-            {{ 'asset.description.medium_impact'|trans({}, 'assets') }}
+            {{ 'asset.description.medium_impact'|trans({}, 'asset') }}
         </p>
         <div class="mt-2">
-            <small><strong>{{ 'asset.field.avg_rto'|trans({}, 'assets') }}:</strong> {{ avgRTOByCriticality.medium }}h</small>
+            <small><strong>{{ 'asset.field.avg_rto'|trans({}, 'asset') }}:</strong> {{ avgRTOByCriticality.medium }}h</small>
         </div>
     </div>
 
     <div class="card card-border-left-secondary">
         <div class="fs-2-mb-sm">⚪</div>
-        <h3>{{ 'asset.impact.low'|trans({}, 'assets') }}</h3>
+        <h3>{{ 'asset.impact.low'|trans({}, 'asset') }}</h3>
         <div class="mt-2">
             <strong class="fs-4">{{ assetsByImpact.low|length }}</strong>
         </div>
         <p class="text-muted-mt-xs">
-            {{ 'asset.description.low_impact'|trans({}, 'assets') }}
+            {{ 'asset.description.low_impact'|trans({}, 'asset') }}
         </p>
         <div class="mt-2">
-            <small><strong>{{ 'asset.field.avg_rto'|trans({}, 'assets') }}:</strong> {{ avgRTOByCriticality.low }}h</small>
+            <small><strong>{{ 'asset.field.avg_rto'|trans({}, 'asset') }}:</strong> {{ avgRTOByCriticality.low }}h</small>
         </div>
     </div>
 </div>
 
 {# Recovery Time Objectives (RTO) Analysis #}
-<h2>{{ 'asset.section.rto_analysis'|trans({}, 'assets') }}</h2>
+<h2>{{ 'asset.section.rto_analysis'|trans({}, 'asset') }}</h2>
 
 <div class="card mb-4">
     <p class="text-muted-mb-md">
-        {{ 'asset.description.rto_analysis'|trans({}, 'assets') }}
+        {{ 'asset.description.rto_analysis'|trans({}, 'asset') }}
     </p>
 
     {% embed '_components/_table.html.twig' with {
@@ -110,15 +110,15 @@
     } %}
         {% block table_head %}
             <tr>
-                <th scope="col">{{ 'asset.field.rto_category'|trans({}, 'assets') }}</th>
-                <th scope="col" class="text-center">{{ 'asset.field.asset_count'|trans({}, 'assets') }}</th>
-                <th scope="col">{{ 'asset.field.examples'|trans({}, 'assets') }}</th>
+                <th scope="col">{{ 'asset.field.rto_category'|trans({}, 'asset') }}</th>
+                <th scope="col" class="text-center">{{ 'asset.field.asset_count'|trans({}, 'asset') }}</th>
+                <th scope="col">{{ 'asset.field.examples'|trans({}, 'asset') }}</th>
             </tr>
         {% endblock %}
         {% block table_body %}
             <tr>
                 <td>
-                    <strong>{{ 'asset.rto.immediate'|trans({}, 'assets') }}</strong>
+                    <strong>{{ 'asset.rto.immediate'|trans({}, 'asset') }}</strong>
                     <br><small class="text-muted">&lt; 1h</small>
                 </td>
                 <td class="text-center">
@@ -132,7 +132,7 @@
             </tr>
             <tr>
                 <td>
-                    <strong>{{ 'asset.rto.urgent'|trans({}, 'assets') }}</strong>
+                    <strong>{{ 'asset.rto.urgent'|trans({}, 'asset') }}</strong>
                     <br><small class="text-muted">1-4h</small>
                 </td>
                 <td class="text-center">
@@ -146,7 +146,7 @@
             </tr>
             <tr>
                 <td>
-                    <strong>{{ 'asset.rto.standard'|trans({}, 'assets') }}</strong>
+                    <strong>{{ 'asset.rto.standard'|trans({}, 'asset') }}</strong>
                     <br><small class="text-muted">4-24h</small>
                 </td>
                 <td class="text-center">
@@ -160,7 +160,7 @@
             </tr>
             <tr>
                 <td>
-                    <strong>{{ 'asset.rto.flexible'|trans({}, 'assets') }}</strong>
+                    <strong>{{ 'asset.rto.flexible'|trans({}, 'asset') }}</strong>
                     <br><small class="text-muted">&gt; 24h</small>
                 </td>
                 <td class="text-center">
@@ -177,7 +177,7 @@
 </div>
 
 {# Critical Assets Details #}
-<h2>{{ 'asset.section.critical_assets'|trans({}, 'assets') }}</h2>
+<h2>{{ 'asset.section.critical_assets'|trans({}, 'asset') }}</h2>
 
 {% embed '_components/_table.html.twig' with {
     'noMargin': true,
@@ -185,12 +185,12 @@
 } %}
     {% block table_head %}
         <tr>
-            <th scope="col">{{ 'asset.field.asset_name'|trans({}, 'assets') }}</th>
-            <th scope="col">{{ 'asset.field.type'|trans({}, 'assets') }}</th>
-            <th scope="col">{{ 'asset.field.business_criticality'|trans({}, 'assets') }}</th>
-            <th scope="col">{{ 'asset.field.rto'|trans({}, 'assets') }}</th>
-            <th scope="col">{{ 'asset.field.rpo'|trans({}, 'assets') }}</th>
-            <th scope="col">{{ 'asset.field.recovery_strategy'|trans({}, 'assets') }}</th>
+            <th scope="col">{{ 'asset.field.asset_name'|trans({}, 'asset') }}</th>
+            <th scope="col">{{ 'asset.field.type'|trans({}, 'asset') }}</th>
+            <th scope="col">{{ 'asset.field.business_criticality'|trans({}, 'asset') }}</th>
+            <th scope="col">{{ 'asset.field.rto'|trans({}, 'asset') }}</th>
+            <th scope="col">{{ 'asset.field.rpo'|trans({}, 'asset') }}</th>
+            <th scope="col">{{ 'asset.field.recovery_strategy'|trans({}, 'asset') }}</th>
             <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
@@ -201,7 +201,7 @@
                 <strong>{{ asset.name }}</strong>
                 {% if asset.isBusinessCritical %}
                     <span class="badge bg-danger ml-xs">
-                        {{ 'asset.badge.business_critical'|trans({}, 'assets') }}
+                        {{ 'asset.badge.business_critical'|trans({}, 'asset') }}
                     </span>
                 {% endif %}
             </td>
@@ -239,7 +239,7 @@
         {% else %}
         <tr>
             <td colspan="7" class="text-center-p-xl">
-                {{ 'asset.message.no_critical_assets'|trans({}, 'assets') }}
+                {{ 'asset.message.no_critical_assets'|trans({}, 'asset') }}
             </td>
         </tr>
         {% endfor %}
@@ -248,23 +248,23 @@
 
 {# Dependency Map #}
 <div class="card mt-4">
-    <h2>{{ 'asset.section.dependency_insights'|trans({}, 'assets') }}</h2>
+    <h2>{{ 'asset.section.dependency_insights'|trans({}, 'asset') }}</h2>
     <p class="text-muted-mt-sm-mb-md">
-        {{ 'asset.description.dependencies'|trans({}, 'assets') }}
+        {{ 'asset.description.dependencies'|trans({}, 'asset') }}
     </p>
 
     <div class="stats-grid grid-auto-fit-250">
         <div class="stat-item">
             <strong>{{ assetsWithDependencies }}</strong>
-            <span>{{ 'asset.stats.with_dependencies'|trans({}, 'assets') }}</span>
+            <span>{{ 'asset.stats.with_dependencies'|trans({}, 'asset') }}</span>
         </div>
         <div class="stat-item">
             <strong>{{ avgDependencies|round(1) }}</strong>
-            <span>{{ 'asset.stats.avg_dependencies'|trans({}, 'assets') }}</span>
+            <span>{{ 'asset.stats.avg_dependencies'|trans({}, 'asset') }}</span>
         </div>
         <div class="stat-item">
             <strong>{{ singlePointsOfFailure }}</strong>
-            <span>{{ 'asset.stats.single_points_failure'|trans({}, 'assets') }}</span>
+            <span>{{ 'asset.stats.single_points_failure'|trans({}, 'asset') }}</span>
         </div>
     </div>
 </div>

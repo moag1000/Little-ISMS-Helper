@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'assets' %}
 
-{% block title %}{{ 'assets.title.edit'|trans({}, 'assets') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'asset.title.edit'|trans({}, 'asset') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
@@ -9,13 +9,13 @@
     breadcrumbs: [
         { label: 'nav.assets'|trans({}, 'nav', 'nav'), url: path('app_asset_index'), icon: 'bi-cpu' },
         { label: asset.name, url: path('app_asset_show', {id: asset.id}) },
-        { label: 'assets.title.edit'|trans({}, 'assets') }
+        { label: 'asset.title.edit'|trans({}, 'asset') }
     ]
 } %}
 
 {# Page Header #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'assets.title.edit'|trans({}, 'assets') ~ ': ' ~ asset.name,
+    title: 'asset.title.edit'|trans({}, 'asset') ~ ': ' ~ asset.name,
     icon: 'bi-pencil',
     actions: [
         { label: 'common.back'|trans({}, 'messages'), url: path('app_asset_show', {id: asset.id}), variant: 'secondary', icon: 'bi-arrow-left' }
@@ -26,7 +26,7 @@
     <div class="card-body">
         {{ form_start(form) }}
             {% include 'asset/_form.html.twig' with {
-                'button_label': 'assets.action.update'|trans({}, 'assets'),
+                'button_label': 'asset.action.update'|trans({}, 'asset'),
                 'button_icon': 'bi-check-circle'
             } %}
         {{ form_end(form) }}
@@ -43,7 +43,7 @@
     </div>
     <div class="card-body">
         <p class="text-muted">
-            {{ 'assets.warning.delete_irreversible'|trans({}, 'assets') }}
+            {{ 'asset.warning.delete_irreversible'|trans({}, 'asset') }}
         </p>
         {{ include('asset/_delete_form.html.twig') }}
     </div>

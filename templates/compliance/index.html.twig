@@ -34,8 +34,8 @@
     {% if frameworks|length > 0 %}
     <div class="quick-access-bar">
         <div class="quick-access-header">
-            <h2>{{ 'compliance.quick_access'|trans({}, 'compliance')|default('Quick Access') }}</h2>
-            <span class="quick-access-hint">{{ 'compliance.quick_access_hint'|trans({}, 'compliance')|default('Click to jump directly to framework') }}</span>
+            <h2>{{ 'compliance.quick_access'|trans({}, 'compliance') }}</h2>
+            <span class="quick-access-hint">{{ 'compliance.quick_access_hint'|trans({}, 'compliance') }}</span>
         </div>
         <div class="quick-access-items">
             {% for item in overview %}

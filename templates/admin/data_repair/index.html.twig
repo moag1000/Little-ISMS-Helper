@@ -1,5 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
-
+{% trans_default_domain 'admin'%}
 {% block title %}{{ 'admin.data_repair.title'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
 
 {% block admin_content %}
@@ -114,7 +114,7 @@
                             <tr>
                                 <th scope="col">ID</th>
                                 <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
-                                <th scope="col">{{ 'asset.label.type'|trans({}, 'assets') }}</th>
+                                <th scope="col">{{ 'asset.label.type'|trans({}, 'asset') }}</th>
                                 <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         {% endblock %}
@@ -157,8 +157,8 @@
                         {% block table_head %}
                             <tr>
                                 <th scope="col">ID</th>
-                                <th scope="col">{{ 'risk.label.title'|trans({}, 'risks') }}</th>
-                                <th scope="col">{{ 'risk.label.inherent_risk'|trans({}, 'risks') }}</th>
+                                <th scope="col">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
+                                <th scope="col">{{ 'risk.label.inherent_risk'|trans({}, 'risk') }}</th>
                                 <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         {% endblock %}
@@ -201,8 +201,8 @@
                         {% block table_head %}
                             <tr>
                                 <th scope="col">ID</th>
-                                <th scope="col">{{ 'incident.label.title'|trans({}, 'incidents') }}</th>
-                                <th scope="col">{{ 'incident.label.severity'|trans({}, 'incidents') }}</th>
+                                <th scope="col">{{ 'incident.label.title'|trans({}, 'incident') }}</th>
+                                <th scope="col">{{ 'incident.label.severity'|trans({}, 'incident') }}</th>
                                 <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                             </tr>
                         {% endblock %}
@@ -285,12 +285,12 @@
     <div class="card mt-4">
         <div class="card-header bg-warning text-dark">
             <h3 class="mb-0">
-                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.risk_asset_assignment'|trans({}, 'admin')|default('Risk-Asset Zuordnung reparieren') }}
+                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.risk_asset_assignment'|trans({}, 'admin') }}
             </h3>
         </div>
         <div class="card-body">
             <div class="alert alert-warning">
-                <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.risk_asset_assignment_desc'|trans({}, 'admin')|default('Folgende Risiken haben kein Asset zugewiesen und sollten korrigiert werden.') }}
+                <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.risk_asset_assignment_desc'|trans({}, 'admin') }}
             </div>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-sm table-striped',
@@ -300,9 +300,9 @@
                 {% block table_head %}
                     <tr>
                         <th scope="col">ID</th>
-                        <th scope="col">{{ 'risk.label.title'|trans({}, 'risks') }}</th>
-                        <th scope="col">{{ 'admin.data_repair.current_asset'|trans({}, 'admin')|default('Aktuelles Asset') }}</th>
-                        <th scope="col">{{ 'admin.data_repair.assign_to_asset'|trans({}, 'admin')|default('Neues Asset zuweisen') }}</th>
+                        <th scope="col">{{ 'risk.label.title'|trans({}, 'risk') }}</th>
+                        <th scope="col">{{ 'admin.data_repair.current_asset'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'admin.data_repair.assign_to_asset'|trans({}, 'admin') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -319,7 +319,7 @@
                             {% if risk.asset %}
                                 <span class="badge bg-success">{{ risk.asset.name }}</span>
                             {% else %}
-                                <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans({}, 'admin')|default('Kein Asset') }}</span>
+                                <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans({}, 'admin') }}</span>
                             {% endif %}
                         </td>
                         <td>
@@ -327,7 +327,7 @@
                                 <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_' ~ risk.id) }}">
                                 <div class="input-group input-group-sm">
                                     <select name="asset_id" class="form-select form-select-sm" required>
-                                        <option value="">{{ 'admin.data_repair.select_asset'|trans({}, 'admin')|default('Asset auswählen...') }}</option>
+                                        <option value="">{{ 'admin.data_repair.select_asset'|trans({}, 'admin') }}</option>
                                         {% for asset in allAssets %}
                                             <option value="{{ asset.id }}"{% if risk.asset and risk.asset.id == asset.id %} selected{% endif %}>
                                                 {{ asset.name }} ({{ asset.tenant ? asset.tenant.name : 'Kein Tenant' }})
@@ -354,12 +354,12 @@
     <div class="card mt-4">
         <div class="card-header bg-warning text-dark">
             <h3 class="mb-0">
-                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.incident_asset_assignment'|trans({}, 'admin')|default('Incident-Asset Zuordnung reparieren') }}
+                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.incident_asset_assignment'|trans({}, 'admin') }}
             </h3>
         </div>
         <div class="card-body">
             <div class="alert alert-warning">
-                <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.incident_asset_assignment_desc'|trans({}, 'admin')|default('Folgende Incidents haben keine Assets zugewiesen und sollten korrigiert werden.') }}
+                <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.incident_asset_assignment_desc'|trans({}, 'admin') }}
             </div>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-sm table-striped',
@@ -369,9 +369,9 @@
                 {% block table_head %}
                     <tr>
                         <th scope="col">ID</th>
-                        <th scope="col">{{ 'incident.label.title'|trans({}, 'incidents') }}</th>
-                        <th scope="col">{{ 'admin.data_repair.current_asset'|trans({}, 'admin')|default('Aktuelles Asset') }}</th>
-                        <th scope="col">{{ 'admin.data_repair.assign_to_asset'|trans({}, 'admin')|default('Neues Asset zuweisen') }}</th>
+                        <th scope="col">{{ 'incident.label.title'|trans({}, 'incident') }}</th>
+                        <th scope="col">{{ 'admin.data_repair.current_asset'|trans({}, 'admin') }}</th>
+                        <th scope="col">{{ 'admin.data_repair.assign_to_asset'|trans({}, 'admin') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -390,7 +390,7 @@
                                     <span class="badge bg-success">{{ asset.name }}</span>
                                 {% endfor %}
                             {% else %}
-                                <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans({}, 'admin')|default('Kein Asset') }}</span>
+                                <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans({}, 'admin') }}</span>
                             {% endif %}
                         </td>
                         <td>
@@ -398,7 +398,7 @@
                                 <input type="hidden" name="_token" value="{{ csrf_token('assign_asset_' ~ incident.id) }}">
                                 <div class="input-group input-group-sm">
                                     <select name="asset_id" class="form-select form-select-sm" required>
-                                        <option value="">{{ 'admin.data_repair.select_asset'|trans({}, 'admin')|default('Asset auswählen...') }}</option>
+                                        <option value="">{{ 'admin.data_repair.select_asset'|trans({}, 'admin') }}</option>
                                         {% for asset in allAssets %}
                                             <option value="{{ asset.id }}">
                                                 {{ asset.name }} ({{ asset.tenant ? asset.tenant.name : 'Kein Tenant' }})
@@ -439,10 +439,10 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">{{ 'controls.field.control_id'|trans({}, 'controls') }}</th>
-                        <th scope="col">{{ 'controls.field.name'|trans({}, 'controls') }}</th>
-                        <th scope="col">{{ 'controls.field.category'|trans({}, 'controls') }}</th>
-                        <th scope="col">{{ 'controls.field.implementation_status'|trans({}, 'controls') }}</th>
+                        <th scope="col">{{ 'control.field.control_id'|trans({}, 'control') }}</th>
+                        <th scope="col">{{ 'control.field.name'|trans({}, 'control') }}</th>
+                        <th scope="col">{{ 'control.field.category'|trans({}, 'control') }}</th>
+                        <th scope="col">{{ 'control.field.implementation_status'|trans({}, 'control') }}</th>
                         <th scope="col">{{ 'admin.data_repair.assign_risk'|trans({}, 'admin') }}</th>
                     </tr>
                 {% endblock %}
@@ -454,7 +454,7 @@
                         <td>{{ control.category }}</td>
                         <td>
                             <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : (control.implementationStatus == 'not_started' ? 'secondary' : 'dark')) }}">
-                                {{ ('controls.status.' ~ control.implementationStatus)|trans({}, 'controls') }}
+                                {{ ('control.status.' ~ control.implementationStatus)|trans({}, 'control') }}
                             </span>
                         </td>
                         <td>
@@ -503,10 +503,10 @@
             } %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col">{{ 'controls.field.control_id'|trans({}, 'controls') }}</th>
-                        <th scope="col">{{ 'controls.field.name'|trans({}, 'controls') }}</th>
-                        <th scope="col">{{ 'controls.field.category'|trans({}, 'controls') }}</th>
-                        <th scope="col">{{ 'controls.field.implementation_status'|trans({}, 'controls') }}</th>
+                        <th scope="col">{{ 'control.field.control_id'|trans({}, 'control') }}</th>
+                        <th scope="col">{{ 'control.field.name'|trans({}, 'control') }}</th>
+                        <th scope="col">{{ 'control.field.category'|trans({}, 'control') }}</th>
+                        <th scope="col">{{ 'control.field.implementation_status'|trans({}, 'control') }}</th>
                         <th scope="col">{{ 'admin.data_repair.assign_asset'|trans({}, 'admin') }}</th>
                     </tr>
                 {% endblock %}
@@ -518,7 +518,7 @@
                         <td>{{ control.category }}</td>
                         <td>
                             <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : (control.implementationStatus == 'not_started' ? 'secondary' : 'dark')) }}">
-                                {{ ('controls.status.' ~ control.implementationStatus)|trans({}, 'controls') }}
+                                {{ ('control.status.' ~ control.implementationStatus)|trans({}, 'control') }}
                             </span>
                         </td>
                         <td>

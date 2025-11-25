@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'risk.new'|trans({}, 'risks') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'risk.new'|trans({}, 'risk') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
         { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index'), icon: 'bi-exclamation-triangle' },
-        { label: 'risk.new'|trans({}, 'risks') }
+        { label: 'risk.new'|trans({}, 'risk') }
     ]
 } %}
 
 {# Page Header #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'risk.new'|trans({}, 'risks'),
+    title: 'risk.new'|trans({}, 'risk'),
     icon: 'bi-plus-circle',
     actions: [
         { label: 'common.back'|trans({}, 'messages'), url: path('app_risk_index'), variant: 'secondary', icon: 'bi-arrow-left' }
@@ -24,7 +24,7 @@
     <div class="card-body">
         {{ form_start(form) }}
             {% include 'risk/_form.html.twig' with {
-                'button_label': 'risk.create'|trans({}, 'risks'),
+                'button_label': 'risk.create'|trans({}, 'risk'),
                 'button_icon': 'bi-save'
             } %}
         {{ form_end(form) }}
