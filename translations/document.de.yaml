@@ -31,16 +31,16 @@ document:
         basic_info: Basisinformationen
         file_upload: Datei‑Upload
         select_type: 'Typ auswählen'
-        types_overview: 'Dokumenttypen-Übersicht'
-        documents: 'Dokumente'
-        type_statistics: 'Typ-Statistiken'
+        types_overview: Dokumenttypen-Übersicht
+        documents: Dokumente
+        type_statistics: Typ-Statistiken
         recent_activity: 'Letzte Aktivitäten'
         all_types: 'Alle Typen'
     filter:
         all_categories: 'Alle Kategorien'
-        search_placeholder: 'Suche...'
+        search_placeholder: Suche...
     table:
-        icon: 'Symbol'
+        icon: Symbol
         uploaded_by: 'Hochgeladen von'
     message:
         no_results: 'Keine Ergebnisse gefunden'
@@ -62,13 +62,13 @@ document:
         version: Version
         status: Status
         owner: Eigentümer
-        last_updated: Last Updated
-        review_date: Review Date
-        type_name: Typ Name
-        total_documents: Gesamt Dokumente
+        last_updated: 'Last Updated'
+        review_date: 'Review Date'
+        type_name: 'Typ Name'
+        total_documents: 'Gesamt Dokumente'
         active: Aktiv
         draft: Entwurf
-        overdue_reviews: Overdue Reviews
+        overdue_reviews: 'Overdue Reviews'
         documents: Dokumente
         updated: Aktualisiert
     help:
@@ -83,18 +83,22 @@ document:
         controlled: Controlled
         confidential: Confidential
         overdue: Overdue
-        due_soon: Due Soon
-    title.by_type: Nach Typ
+        due_soon: 'Due Soon'
+    title.by_type: 'Nach Typ'
     description:
-        by_type: By Type
+        by_type: 'By Type'
     stats:
         total: Gesamt
         document_types: Dokumenttypen
-        expiring_soon: Expiring Soon
-        avg_per_type: Avg Per Type
-        total_documents: Gesamt Dokumente
-        active_documents: Aktiv Dokumente
-        draft_documents: Entwurf Dokumente
-        overdue_reviews: Overdue Reviews
+        expiring_soon: 'Expiring Soon'
+        avg_per_type: 'Avg Per Type'
+        total_documents: 'Gesamt-Dokumente'
+        active_documents: 'Aktive Dokumente'
+        draft_documents: 'Entwurf-Dokumente'
+        overdue_reviews: 'Überfällige Reviews'
     option:
-        all_types: All Types
+        all_types: 'Alle Typen'
+    uploaded_by: 'Hochgeladen von'
+    uploaded_at: 'Hochgeladen am'
+    edit_button: 'Bearbeiten'
+    drag_files: 'Dateien hierher ziehen oder klicken zum Hochladen'

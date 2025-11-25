@@ -26,28 +26,28 @@ risk:
             financial: finanziell
             physical: physisch
     label:
-        title: 'Risikotitel'
+        title: Risikotitel
         inherent_risk: 'Inhärentes Risiko'
     field:
-        title: 'Risikobezeichnung'
-        score: 'Risikobewertung'
-        treatment_strategy: 'Behandlungsstrategie'
-        status: 'Status'
+        title: Risikobezeichnung
+        score: Risikobewertung
+        treatment_strategy: Behandlungsstrategie
+        status: Status
         asset: 'Betroffenes Asset'
-        description: 'Risikobeschreibung'
-        threat: 'Gefährdung'
-        vulnerability: 'Schwachstelle'
+        description: Risikobeschreibung
+        threat: Gefährdung
+        vulnerability: Schwachstelle
         involves_personal_data: 'Verarbeitet personenbezogene Daten'
         involves_special_category_data: 'Verarbeitet besondere Kategorien personenbezogener Daten'
         legal_basis: 'Rechtsgrundlage (DSGVO)'
         processing_scale: 'Umfang der Verarbeitung'
         requires_dpia: 'Erfordert Datenschutz-Folgenabschätzung (DSFA)'
         data_subject_impact: 'Auswirkung auf betroffene Personen'
-        probability: 'Eintrittswahrscheinlichkeit'
-        impact: 'Schadensauswirkung'
-        residual_probability: 'Restrisiko-Wahrscheinlichkeit'
-        residual_impact: 'Restrisiko-Auswirkung'
-        risk_owner: 'Risikoverantwortlicher'
+        probability: Eintrittswahrscheinlichkeit
+        impact: Schadensauswirkung
+        residual_probability: Restrisiko-Wahrscheinlichkeit
+        residual_impact: Restrisiko-Auswirkung
+        risk_owner: Risikoverantwortlicher
         treatment_description: 'Beschreibung der Behandlungsmaßnahmen'
         acceptance_approved_by: 'Risikoakzeptanz genehmigt durch'
         acceptance_approved_at: 'Risikoakzeptanz genehmigt am'
@@ -63,7 +63,7 @@ risk:
     new: 'Neues Risiko'
     create: 'Risiko erstellen'
     guidance:
-        scale: 'Bewertungsskala'
+        scale: Bewertungsskala
         description: 'Bewertungshilfe für Risikoanalyse nach ISO 27005'
         probability:
             very_unlikely: 'Sehr unwahrscheinlich (1)'
@@ -87,26 +87,26 @@ risk:
             major_desc: 'Schwerwiegende Auswirkung, bedeutende Folgen'
             catastrophic: 'Katastrophal (5)'
             catastrophic_desc: 'Existenzbedrohende Auswirkung, katastrophale Folgen'
-        title: 'Bewertungshilfe'
+        title: Bewertungshilfe
         intro: 'Nutzen Sie diese Richtlinien zur konsistenten Risikobewertung gemäß ISO 27005'
         probability_title: 'Eintrittswahrscheinlichkeit (1-5)'
         impact_title: 'Schadensauswirkung (1-5)'
         tip: 'Tipp: Das Brutto-Risiko ergibt sich aus Wahrscheinlichkeit × Auswirkung'
     section:
-        basic_info: 'Grundinformationen'
-        gdpr_assessment: 'DSGVO-Bewertung'
+        basic_info: Grundinformationen
+        gdpr_assessment: DSGVO-Bewertung
         inherent_risk: 'Inhärentes Risiko (Brutto-Risiko)'
         residual_risk: 'Restrisiko (Netto-Risiko)'
-        treatment: 'Risikobehandlung'
-        acceptance: 'Risikoakzeptanz'
-        details: 'Details'
-        description: 'Risikobeschreibung'
-        treatment_strategy: 'Behandlungsstrategie'
-        risk_owner: 'Risikoverantwortlicher'
-        mitigating_controls: 'Risikominderungsmaßnahmen'
-        realization_history: 'Schadenshistorie'
-        risk_subject: 'Risikogegenstand'
-        history: 'Änderungshistorie'
+        treatment: Risikobehandlung
+        acceptance: Risikoakzeptanz
+        details: Details
+        description: Risikobeschreibung
+        treatment_strategy: Behandlungsstrategie
+        risk_owner: Risikoverantwortlicher
+        mitigating_controls: Risikominderungsmaßnahmen
+        realization_history: Schadenshistorie
+        risk_subject: Risikogegenstand
+        history: Änderungshistorie
     help:
         title: 'Eindeutige Bezeichnung des Risikos für interne Referenzierung'
         asset: 'Das von diesem Risiko betroffene Asset (Hardware, Software, Daten, Prozess)'
@@ -136,9 +136,9 @@ risk:
     not_reviewed: 'Noch nicht überprüft'
     assessment:
         inherent_risk: 'Inhärentes Risiko (Brutto)'
-        probability: 'Wahrscheinlichkeit'
-        impact: 'Auswirkung'
-        level: 'Risikostufe'
+        probability: Wahrscheinlichkeit
+        impact: Auswirkung
+        level: Risikostufe
         score: 'Risikobewertung (Score)'
         residual_risk: 'Restrisiko (Netto)'
     incidents: 'Verbundene Vorfälle'
@@ -151,18 +151,19 @@ risk:
         location:
             city_country: 'Stadt, Land'
     matrix:
-        title: 'Risikomatrix'
+        title: Risikomatrix
         back_to_risks: 'Zurück zur Risikoliste'
         header: 'Risikomatrix-Übersicht (ISO 27005)'
         description: 'Visualisierung aller Risiken nach Eintrittswahrscheinlichkeit und Schadensauswirkung'
         impact: 'Schadensauswirkung →'
         probability: 'Eintrittswahrscheinlichkeit ↑'
-        legend_title: 'Risikostufen'
+        legend_title: Risikostufen
         level:
             critical: 'Kritisch (20-25)'
             high: 'Hoch (10-19)'
             medium: 'Mittel (5-9)'
             low: 'Niedrig (1-4)'
+        cell_title: 'Wahrscheinlichkeit: %probability% | Auswirkung: %impact%'
     acceptance:
         title: 'Risikoakzeptanz beantragen'
         request: 'Antrag auf Risikoakzeptanz'
@@ -171,12 +172,12 @@ risk:
         submit_request: 'Antrag einreichen'
         required_approval_level: 'Erforderliche Genehmigungsstufe'
         approval_threshold_info: 'Risiken ab Score %threshold% erfordern Management-Genehmigung'
-    residual_assessment: 'Restrisiko-Bewertung'
+    residual_assessment: Restrisiko-Bewertung
     status:
-        open: 'Offen'
+        open: Offen
         in_progress: 'In Bearbeitung'
-        mitigated: 'Gemindert'
-        closed: 'Abgeschlossen'
+        mitigated: Gemindert
+        closed: Abgeschlossen
     category:
         technical: Technical
         organizational: Organizational
@@ -184,6 +185,6 @@ risk:
 risk_management:
     title: Titel
     description: Beschreibung
-    high_risks: Hohe Risiken
-    risk_value_threshold: 'Risikobewertungs-Schwellenwert'
-    total_identified: Gesamt identifiziert
+    high_risks: 'Hohe Risiken'
+    risk_value_threshold: Risikobewertungs-Schwellenwert
+    total_identified: 'Gesamt identifiziert'

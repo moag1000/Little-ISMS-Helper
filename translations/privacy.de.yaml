@@ -107,7 +107,7 @@ privacy:
 processing_activity:
     field:
         name: 'Bezeichnung der Verarbeitungstätigkeit'
-        status: 'Status'
+        status: Status
         description: 'Beschreibung der Verarbeitung'
         purposes: 'Zwecke der Verarbeitung (Art. 30(1)(b) DSGVO)'
         legal_basis: 'Rechtsgrundlage (Art. 6 DSGVO)'
@@ -124,26 +124,62 @@ processing_activity:
         recipient_details: 'Details zu Empfängern'
         third_countries: 'Drittländer (außerhalb EU/EWR)'
         transfer_safeguards: 'Garantien für Drittlandübermittlung (z.B. Standardvertragsklauseln, BCR)'
-        retention_period: 'Aufbewahrungsfrist'
+        retention_period: Aufbewahrungsfrist
         retention_period_days: 'Aufbewahrungsfrist in Tagen'
         retention_legal_basis: 'Rechtsgrundlage für Aufbewahrung'
         technical_organizational_measures: 'Technische und organisatorische Maßnahmen (TOMs, Art. 32 DSGVO)'
         implemented_controls: 'Implementierte Kontrollen'
         responsible_department: 'Verantwortliche Abteilung'
-        contact_person: 'Ansprechperson'
+        contact_person: Ansprechperson
         data_protection_officer: 'Datenschutzbeauftragter (DSB)'
         involves_processors: 'Auftragsverarbeiter eingebunden (Art. 28 DSGVO)'
         is_joint_controller: 'Gemeinsame Verantwortlichkeit (Art. 26 DSGVO)'
         is_high_risk: 'Hohes Risiko für Rechte und Freiheiten'
         dpia_completed: 'Datenschutz-Folgenabschätzung (DSFA) durchgeführt'
         dpia_date: 'Datum der DSFA'
-        risk_level: 'Risikostufe'
+        risk_level: Risikostufe
         has_automated_decision_making: 'Automatisierte Entscheidungsfindung (Art. 22 DSGVO)'
         automated_decision_making_details: 'Details zur automatisierten Entscheidungsfindung'
-        data_sources: 'Datenquellen'
+        data_sources: Datenquellen
         start_date: 'Beginn der Verarbeitung'
         end_date: 'Ende der Verarbeitung'
         next_review_date: 'Nächstes Überprüfungsdatum'
+    permanently_delete: 'Dauerhaft löschen'
+    view_all_activities: 'Alle Verarbeitungstätigkeiten anzeigen'
+    pdf:
+        art_30_title: 'Verzeichnis von Verarbeitungstätigkeiten gemäß Art. 30 DSGVO'
+        table_of_contents: 'Inhaltsverzeichnis'
+        art_30_1a: 'Art. 30(1)(a) DSGVO - Name und Kontaktdaten des Verantwortlichen'
+        purposes_processing: 'Zwecke der Verarbeitung'
+        art_30_1b: 'Art. 30(1)(b) DSGVO - Zwecke der Verarbeitung'
+        art_30_1c: 'Art. 30(1)(c) DSGVO - Kategorien betroffener Personen und personenbezogener Daten'
+        art_30_1d: 'Art. 30(1)(d) DSGVO - Kategorien von Empfängern'
+        art_30_1e: 'Art. 30(1)(e) DSGVO - Übermittlungen an Drittländer'
+        legal_basis_retention: 'Rechtsgrundlage und Aufbewahrungsfristen'
+        art_30_1g: 'Art. 30(1)(g) DSGVO - Technische und organisatorische Maßnahmen (TOMs)'
 data_breach:
     index:
         view_all_breaches: 'Alle Datenschutzverletzungen anzeigen'
+    pdf:
+        art_33_3a_nature: 'Art. 33(3)(a) DSGVO - Art der Verletzung'
+        categories_personal_data: 'Kategorien personenbezogener Daten'
+        categories_data_subjects: 'Kategorien betroffener Personen'
+        approx_number_subjects: 'Ungefähre Anzahl betroffener Personen'
+        art_33_3b_consequences: 'Art. 33(3)(b) DSGVO - Wahrscheinliche Folgen der Verletzung'
+        art_33_3c_d_measures: 'Art. 33(3)(c-d) DSGVO - Ergriffene und vorgeschlagene Maßnahmen'
+        measures_taken: 'Bereits ergriffene Maßnahmen'
+        measures_mitigate: 'Maßnahmen zur Abschwächung nachteiliger Auswirkungen'
+        art_34_communication: 'Art. 34 DSGVO - Benachrichtigung betroffener Personen'
+dpia:
+    index:
+        create_first_dpia: 'Erste Datenschutz-Folgenabschätzung erstellen'
+    pdf:
+        art_35_7a_description: 'Art. 35(7)(a) DSGVO - Beschreibung der Verarbeitungsvorgänge'
+        purposes_processing: 'Zwecke der Verarbeitung'
+        art_35_7b_assessment: 'Art. 35(7)(b) DSGVO - Bewertung der Notwendigkeit und Verhältnismäßigkeit'
+        art_35_7c_risks: 'Art. 35(7)(c) DSGVO - Bewertung der Risiken für Rechte und Freiheiten'
+        specific_risks: 'Spezifische identifizierte Risiken'
+        art_35_7d_measures: 'Art. 35(7)(d) DSGVO - Abhilfemaßnahmen zur Bewältigung der Risiken'
+        next_review_date: 'Nächstes Überprüfungsdatum'
+        approved_by: 'Freigegeben von'
+        footer_text: 'Datenschutz-Folgenabschätzung (DSFA) gemäß Art. 35 DSGVO'
