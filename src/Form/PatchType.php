@@ -234,6 +234,7 @@ class PatchType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Patch::class,
+            'translation_domain' => 'patches',
         ]);
     }
 }

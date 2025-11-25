@@ -285,6 +285,7 @@ class RiskType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Risk::class,
+            'translation_domain' => 'risk',
         ]);
     }
 }

@@ -176,6 +176,7 @@ class AssetType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Asset::class,
+            'translation_domain' => 'asset',
         ]);
     }
 }

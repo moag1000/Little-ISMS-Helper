@@ -142,6 +142,7 @@ class ComplianceMappingType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ComplianceMapping::class,
+            'translation_domain' => 'compliance',
         ]);
     }
 }

@@ -54,9 +54,9 @@ class BusinessProcessType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'min' => 0,
-                    'placeholder' => 'z.B. 4',
+                    'placeholder' => 'business_process.placeholder.rto',
                 ],
-                'help' => 'Maximale akzeptable Ausfallzeit in Stunden',
+                'help' => 'business_process.help.rto',
                 'constraints' => [
                     new NotBlank(),
                     new Range(['min' => 0, 'max' => 8760]),
@@ -67,9 +67,9 @@ class BusinessProcessType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'min' => 0,
-                    'placeholder' => 'z.B. 2',
+                    'placeholder' => 'business_process.placeholder.rpo',
                 ],
-                'help' => 'Maximaler akzeptabler Datenverlust in Stunden',
+                'help' => 'business_process.help.rpo',
                 'constraints' => [
                     new NotBlank(),
                     new Range(['min' => 0, 'max' => 8760]),
@@ -80,9 +80,9 @@ class BusinessProcessType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'min' => 0,
-                    'placeholder' => 'z.B. 24',
+                    'placeholder' => 'business_process.placeholder.mtpd',
                 ],
-                'help' => 'Maximale tolerierbare Unterbrechungsdauer',
+                'help' => 'business_process.help.mtpd',
                 'constraints' => [
                     new NotBlank(),
                     new Range(['min' => 0, 'max' => 8760]),
@@ -142,13 +142,13 @@ class BusinessProcessType extends AbstractType
             ->add('dependenciesUpstream', TextareaType::class, [
                 'label' => 'business_process.field.dependencies_upstream',
                 'attr' => ['class' => 'form-control', 'rows' => 3],
-                'help' => 'Von welchen Prozessen/Systemen ist dieser Prozess abhängig?',
+                'help' => 'business_process.help.dependencies_upstream',
                 'required' => false,
             ])
             ->add('dependenciesDownstream', TextareaType::class, [
                 'label' => 'business_process.field.dependencies_downstream',
                 'attr' => ['class' => 'form-control', 'rows' => 3],
-                'help' => 'Welche Prozesse/Systeme sind von diesem Prozess abhängig?',
+                'help' => 'business_process.help.dependencies_downstream',
                 'required' => false,
             ])
             ->add('recoveryStrategy', TextareaType::class, [
@@ -163,7 +163,7 @@ class BusinessProcessType extends AbstractType
                 'required' => false,
                 'label' => 'business_process.field.supporting_assets',
                 'attr' => ['class' => 'form-select', 'size' => 5],
-                'help' => 'Welche IT-Assets unterstützen diesen Prozess?',
+                'help' => 'business_process.help.supporting_assets',
             ])
             ->add('identifiedRisks', EntityType::class, [
                 'class' => Risk::class,
@@ -172,7 +172,7 @@ class BusinessProcessType extends AbstractType
                 'required' => false,
                 'label' => 'business_process.field.identified_risks',
                 'attr' => ['class' => 'form-select', 'size' => 5],
-                'help' => 'Welche Risiken betreffen diesen Prozess?',
+                'help' => 'business_process.help.identified_risks',
             ])
         ;
     }
@@ -181,6 +181,7 @@ class BusinessProcessType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => BusinessProcess::class,
+            'translation_domain' => 'business_process',
         ]);
     }
 }

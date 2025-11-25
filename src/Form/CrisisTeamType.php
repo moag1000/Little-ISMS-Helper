@@ -80,7 +80,7 @@ class CrisisTeamType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'maxlength' => 50,
-                    'placeholder' => '+49 123 456789',
+                    'placeholder' => 'crisis_team.placeholder.primary_phone',
                 ],
                 'help' => 'crisis_team.help.primary_phone',
             ])
@@ -89,7 +89,7 @@ class CrisisTeamType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'maxlength' => 255,
-                    'placeholder' => 'crisis@company.com',
+                    'placeholder' => 'crisis_team.placeholder.primary_email',
                 ],
             ])
             ->add('meetingLocation', TextareaType::class, [
@@ -113,7 +113,7 @@ class CrisisTeamType extends AbstractType
                 'label' => 'crisis_team.field.virtual_meeting_url',
                 'required' => false,
                 'attr' => [
-                    'placeholder' => 'https://teams.microsoft.com/...',
+                    'placeholder' => 'crisis_team.placeholder.virtual_meeting_url',
                 ],
                 'help' => 'crisis_team.help.virtual_meeting_url',
             ])
@@ -190,6 +190,7 @@ class CrisisTeamType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => CrisisTeam::class,
+            'translation_domain' => 'crisis_team',
         ]);
     }
 }

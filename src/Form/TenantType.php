@@ -156,6 +156,7 @@ class TenantType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Tenant::class,
+            'translation_domain' => 'tenant',
         ]);
     }
 }

@@ -53,7 +53,7 @@ class AdminUserType extends AbstractType
                 ],
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'John',
+                    'placeholder' => 'setup.admin.first_name_placeholder',
                     'autocomplete' => 'given-name',
                 ],
             ])
@@ -73,7 +73,7 @@ class AdminUserType extends AbstractType
                 ],
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Doe',
+                    'placeholder' => 'setup.admin.last_name_placeholder',
                     'autocomplete' => 'family-name',
                 ],
             ])
@@ -123,6 +123,7 @@ class AdminUserType extends AbstractType
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'admin_user',
+            'translation_domain' => 'admin',
         ]);
     }
 }

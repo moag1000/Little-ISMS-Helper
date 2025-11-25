@@ -181,6 +181,7 @@ class SupplierType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Supplier::class,
+            'translation_domain' => 'suppliers',
         ]);
     }
 }

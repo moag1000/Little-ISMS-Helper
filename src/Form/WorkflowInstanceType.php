@@ -122,6 +122,7 @@ class WorkflowInstanceType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => WorkflowInstance::class,
+            'translation_domain' => 'workflows',
         ]);
     }
 }
