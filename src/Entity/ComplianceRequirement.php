@@ -298,6 +298,15 @@ class ComplianceRequirement
         return (int) round($totalImplementation / $this->mappedControls->count());
     }
 
+    /**
+     * Get fulfillment percentage (alias for calculateFulfillmentFromControls)
+     * Used by ComplianceMapping for transitive fulfillment calculations
+     */
+    public function getFulfillmentPercentage(): float
+    {
+        return (float) $this->calculateFulfillmentFromControls();
+    }
+
     public function getRequirementType(): string
     {
         return $this->requirementType;

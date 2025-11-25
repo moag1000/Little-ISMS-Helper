@@ -11,6 +11,9 @@
         <p class="text-muted">{{ 'compliance.description.transitive'|trans({}, 'compliance') }}</p>
     </div>
     <div class="button-group">
+        <a href="{{ path('app_compliance_index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans({}, 'messages') }}
+        </a>
         <button id="createAllMappingsBtn" class="btn btn-primary">
             🔗 {{ 'compliance.action.create_missing_mappings'|trans({}, 'compliance') }}
         </button>

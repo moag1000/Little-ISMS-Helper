@@ -338,6 +338,10 @@ class ComplianceMapping
      */
     public function calculateTransitiveFulfillment(): float
     {
+        if (!$this->sourceRequirement) {
+            return 0.0;
+        }
+
         $sourceFulfillment = $this->sourceRequirement->getFulfillmentPercentage();
         $mappingStrength = $this->mappingPercentage / 100;
 
