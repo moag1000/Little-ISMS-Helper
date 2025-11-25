@@ -87,6 +87,8 @@ close: Close
 confirm: Confirm
 back: Back
 common:
+    yes: 'Yes'
+    no: 'No'
     overview: Overview
     name: Name
     description: Description
@@ -107,8 +109,6 @@ common:
     reset: Reset
     metadata: Metadata
     action_irreversible: 'This action cannot be undone.'
-    'yes': 'Yes'
-    'no': 'No'
     note: Note
     warning: Warning
     to_home: 'To Home Page'
@@ -217,532 +217,9 @@ common:
     roles_and_responsibilities: ''
     team_members: ''
     observers: ''
-asset:
-    new: 'New Asset'
-    create: 'Create Asset'
-    edit: 'Edit Asset'
-    update: 'Update Asset'
-    details:
-        title: 'Asset Details'
-    confirm:
-        delete: 'Are you sure you want to delete this asset?'
-    title:
-        _default: Assets
-        bcm_insights: 'BCM Insights for Assets'
-    description:
-        bcm_insights: 'Analysis of business-critical assets and their impact on business continuity'
-        critical_impact: 'Critical Impact: Immediate business failure if lost'
-        high_impact: 'High Impact: Significant business disruption within hours'
-        medium_impact: 'Medium Impact: Noticeable disruption within days'
-        low_impact: 'Low Impact: Minimal or delayed impact'
-        rto_analysis: 'Distribution of assets by their Recovery Time Objectives'
-        dependencies: 'Analysis of asset dependencies and potential single points of failure'
-    action:
-        bcm_insights: 'BCM Insights'
-        view_critical: 'View Critical Assets'
-    stats:
-        total_assets: 'Total Assets'
-        critical_assets: 'Critical Assets'
-        high_risk_assets: 'High-Risk Assets'
-        avg_rto: 'Avg. RTO'
-        with_dependencies: 'With Dependencies'
-        avg_dependencies: 'Avg. Dependencies'
-        single_points_failure: 'Single Points of Failure'
-    section:
-        cia_triad: 'CIA Triad'
-        valuation: Valuation
-        compliance: Compliance
-        handling_instructions: 'Handling Instructions'
-        acceptable_use_policy: 'Acceptable Use Policy'
-        protection_analysis: 'Protection Analysis'
-        protecting_controls: 'Protecting Controls'
-        related_risks: 'Related Risks'
-        related_incidents: 'Related Incidents'
-        history: 'Change History'
-        business_impact: 'Business Impact'
-        rto_analysis: 'RTO Analysis'
-        critical_assets: 'Critical Assets'
-        dependency_insights: 'Dependency Analysis'
-    cia_help: 'Rate the confidentiality, integrity and availability of this asset'
-    cia_values: 'CIA Values'
-    classification:
-        public: Public
-        internal: Internal
-        confidential: Confidential
-        restricted: Restricted
-    field:
-        name: Name
-        type: Type
-        description: Description
-        owner: Owner
-        location: Location
-        status: Status
-        acquisition_value: 'Acquisition Value'
-        current_value: 'Current Value'
-        confidentiality: Confidentiality
-        integrity: Integrity
-        availability: Availability
-        asset_name: 'Asset Name'
-        business_criticality: 'Business Criticality'
-        rto: RTO
-        rpo: RPO
-        recovery_strategy: 'Recovery Strategy'
-        avg_rto: 'Avg. RTO'
-        rto_category: 'RTO Category'
-        asset_count: 'Asset Count'
-        examples: Examples
-    placeholder:
-        name: 'e.g. Customer Database'
-        description: 'Detailed description of the asset'
-        owner: 'Select the responsible owner'
-        location: 'Select the location'
-    type:
-        information: Information
-        software: Software
-        hardware: Hardware
-        service: Service
-        personnel: Personnel
-        physical: Physical
-    help:
-        description: 'Detailed description of the asset and its function'
-        owner: 'The person or department responsible for this asset'
-        acquisition_value: 'The original acquisition value of the asset'
-        current_value: 'The current estimated value of the asset'
-        confidentiality: 'Rate the confidentiality requirements (1=low, 5=high)'
-        integrity: 'Rate the integrity requirements (1=low, 5=high)'
-        availability: 'Rate the availability requirements (1=low, 5=high)'
-        status: 'The current operational status of the asset'
-    status:
-        active: Active
-        inactive: Inactive
-        retired: Retired
-        disposed: Disposed
-    label:
-        type: Type
-        owner: Owner
-        location: Location
-        status: Status
-        acquisition_value: 'Acquisition Value'
-        current_value: 'Current Value'
-        monetary_value: 'Monetary Value'
-        total_value: 'Total Value'
-        risk_score: 'Risk Score'
-        data_classification: 'Data Classification'
-        confidentiality: Confidentiality
-        integrity: Integrity
-        availability: Availability
-        return_date: 'Return Date'
-    impact:
-        critical: Critical
-        high: High
-        medium: Medium
-        low: Low
-    rto:
-        immediate: 'Immediate (< 4h)'
-        urgent: 'Urgent (4-24h)'
-        standard: 'Standard (1-3 days)'
-        flexible: 'Flexible (> 3 days)'
-    badge:
-        business_critical: 'Business Critical'
-    message:
-        no_critical_assets: 'No critical assets found'
-    success:
-        created: 'Asset created successfully.'
-        updated: 'Asset updated successfully.'
-        deleted: 'Asset deleted successfully.'
-    bulk_delete:
-        success: ''
-        no_items: ''
-risk:
-    new: 'New Risk'
-    create: 'Create Risk'
-    edit: 'Edit Risk'
-    update: 'Update Risk'
-    delete_warning: 'Are you sure you want to delete this risk?'
-    inherent_assessment: 'Inherent Risk Assessment'
-    inherent_help: 'Assess the risk without considering existing security controls'
-    probability_help: 'Likelihood of occurrence (1=Very unlikely, 5=Very likely)'
-    impact_help: 'Severity of impact if occurs (1=Negligible, 5=Catastrophic)'
-    residual_assessment: 'Residual Risk Assessment'
-    residual_help: 'Assess the remaining risk after implementing security controls'
-    confirm:
-        delete: 'Delete Risk'
-    success:
-        created: 'Risk created successfully.'
-        updated: 'Risk updated successfully.'
-        deleted: 'Risk deleted successfully.'
-    validation:
-        risk_owner_required: 'A risk owner must be assigned (ISO 27001 A.5.1/A.5.2)'
-    field:
-        title: 'Risk Title'
-        category: 'Risk Category'
-        involves_personal_data: 'Involves Personal Data'
-        involves_special_category_data: 'Involves Special Category Data (Art. 9 GDPR)'
-        legal_basis: 'Legal Basis (Art. 6 GDPR)'
-        processing_scale: 'Processing Scale'
-        requires_dpia: 'Data Protection Impact Assessment Required (Art. 35 GDPR)'
-        data_subject_impact: 'Impact on Data Subjects'
-        description: Description
-        threat: Threat
-        vulnerability: Vulnerability
-        asset: 'Affected Asset'
-        person: 'Affected Person'
-        location: 'Affected Location'
-        supplier: 'Affected Supplier'
-        probability: Likelihood
-        impact: Impact
-        residual_probability: 'Residual Likelihood'
-        residual_impact: 'Residual Impact'
-        risk_owner: 'Risk Owner'
-        treatment_strategy: 'Treatment Strategy'
-        treatment_description: 'Treatment Plan'
-        acceptance_approved_by: 'Approved By'
-        acceptance_approved_at: 'Approval Date'
-        acceptance_justification: 'Acceptance Justification'
-        status: Status
-        review_date: 'Review Date'
-        score: 'Risk Score'
-    label:
-        title: 'Risk Title'
-        risk_owner: 'Risk Owner'
-        inherent_risk: 'Inherent Risk'
-    placeholder:
-        title: 'e.g. Data loss from ransomware attack'
-        category: 'Select risk category...'
-        legal_basis: 'Select legal basis...'
-        processing_scale: 'Select processing scale...'
-        data_subject_impact: "Describe the impact on data subjects' rights and freedoms..."
-        description: 'Describe the risk in detail...'
-        threat: 'e.g. External attackers, Malware, Social Engineering'
-        vulnerability: 'e.g. Missing backups, Unpatched systems'
-        asset: 'Select asset...'
-        person: 'Select person...'
-        location: 'Select location...'
-        supplier: 'Select supplier...'
-        risk_owner: 'Select risk owner...'
-        treatment_description: 'Describe planned measures...'
-        acceptance_approved_by: 'e.g. John Doe (CEO)'
-        acceptance_justification: 'Justification for risk acceptance...'
-    help:
-        title: 'Short, concise risk title'
-        category: 'Select the risk category for better grouping and reporting (ISO 27005:2022 Section 8.2.3)'
-        gdpr_section: 'Assess whether this risk involves personal data (GDPR Art. 32 - Security of processing)'
-        involves_personal_data: 'Enable if this risk involves processing of personal data (GDPR Art. 4)'
-        involves_special_category_data: 'Enable for special categories: racial/ethnic origin, political opinions, religious beliefs, trade union membership, genetic/biometric data, health data, sex life (GDPR Art. 9)'
-        legal_basis: 'Legal basis for data processing according to GDPR Art. 6'
-        processing_scale: 'Scale of data processing operations. Large-scale processing often requires DPIA (GDPR Art. 35)'
-        requires_dpia: 'A Data Protection Impact Assessment is required for high risk to rights and freedoms (GDPR Art. 35)'
-        data_subject_impact: "Describe the potential impact on data subjects' rights and freedoms (GDPR Art. 35.7)"
-        description: 'Detailed description of the risk and its potential impacts'
-        threat: 'What threat could trigger this risk?'
-        vulnerability: 'What vulnerability could be exploited?'
-        asset: 'Select the affected asset (at least one assignment required)'
-        person: 'Select the affected person (at least one assignment required)'
-        location: 'Select the affected location (at least one assignment required)'
-        supplier: 'Select the affected supplier (at least one assignment required)'
-        probability: 'Likelihood of occurrence (1=very unlikely, 2=unlikely, 3=possible, 4=likely, 5=very likely)'
-        impact: 'Severity of impact (1=negligible, 2=minor, 3=moderate, 4=major, 5=catastrophic)'
-        residual_probability: 'Remaining likelihood after implementing controls'
-        residual_impact: 'Remaining impact after implementing controls'
-        risk_owner: 'Person responsible for treating this risk'
-        treatment: 'Select treatment strategy (Mitigate, Accept, Transfer, Avoid)'
-        treatment_strategy: 'Select treatment strategy (Mitigate, Accept, Transfer, Avoid)'
-        treatment_description: 'Detailed description of planned risk treatment measures'
-        acceptance_approved_by: 'Name of person who approved risk acceptance'
-        acceptance_approved_at: 'Date of risk acceptance approval'
-        acceptance_justification: 'Justification for accepting the risk'
-        review_date: 'Date of next risk review'
-        inherent: 'Assessment of risk without considering existing controls (inherent risk)'
-        residual: 'Assessment of risk after implementing controls (residual risk)'
-    treatment:
-        mitigate: Mitigate
-        transfer: Transfer
-        accept: Accept
-        avoid: Avoid
-    status:
-        identified: Identified
-        assessed: Assessed
-        treated: Treated
-        monitored: Monitored
-        closed: Closed
-        accepted: Accepted
-    category:
-        financial: 'Financial Risks'
-        operational: 'Operational Risks'
-        compliance: 'Compliance Risks'
-        strategic: 'Strategic Risks'
-        reputational: 'Reputational Risks'
-        security: 'Information Security Risks'
-    legal_basis:
-        consent: 'Consent (Art. 6.1.a)'
-        contract: 'Contract Performance (Art. 6.1.b)'
-        legal_obligation: 'Legal Obligation (Art. 6.1.c)'
-        vital_interests: 'Vital Interests (Art. 6.1.d)'
-        public_task: 'Public Task (Art. 6.1.e)'
-        legitimate_interests: 'Legitimate Interests (Art. 6.1.f)'
-    processing_scale:
-        small: 'Small Scale'
-        medium: 'Medium Scale'
-        large_scale: 'Large Scale (DPIA required)'
-    guidance:
-        title: 'Assessment Guide'
-        intro: 'Use these tables as a reference for assessing likelihood and impact.'
-        scale: Rating
-        description: Description
-        probability_title: 'Likelihood of Occurrence'
-        impact_title: 'Impact Severity'
-        tip: 'Tip: Consider both financial and non-financial impacts (reputation, business interruption, legal consequences) when assessing.'
-        probability:
-            very_unlikely: 'Very Unlikely'
-            very_unlikely_desc: '< 5% probability within 5 years. Event is theoretically possible but extremely rare.'
-            unlikely: Unlikely
-            unlikely_desc: '5-25% probability within 5 years. Event could occur but is rare.'
-            possible: Possible
-            possible_desc: '25-50% probability within 5 years. Event occurs occasionally.'
-            likely: Likely
-            likely_desc: '50-75% probability within 5 years. Event occurs regularly.'
-            very_likely: 'Very Likely'
-            very_likely_desc: '> 75% probability within 5 years. Event occurs frequently or almost certainly.'
-        impact:
-            negligible: Negligible
-            negligible_desc: '< €5,000 damage, no business interruption, minimal reputational damage.'
-            minor: Minor
-            minor_desc: '€5,000-25,000 damage, < 1 day interruption, limited reputational damage.'
-            moderate: Moderate
-            moderate_desc: '€25,000-100,000 damage, 1-3 days interruption, moderate reputational damage.'
-            major: Major
-            major_desc: '€100,000-500,000 damage, > 3 days interruption, significant reputational damage.'
-            catastrophic: Catastrophic
-            catastrophic_desc: '> €500,000 damage, existential threat, severe reputational damage, possible legal consequences.'
-    section:
-        basic_info: 'Basic Information'
-        gdpr_assessment: 'GDPR Data Protection Assessment'
-        inherent_risk: 'Inherent Risk Assessment (Gross Risk)'
-        residual_risk: 'Residual Risk Assessment (Net Risk)'
-        treatment: 'Risk Treatment'
-        acceptance: 'Risk Acceptance (ISO 27005)'
-        status: 'Status & Review'
-        risk_owner: 'Risk Owner'
-        mitigating_controls: 'Mitigating Controls'
-        realization_history: 'Realization History'
-        affected_asset: 'Affected Asset'
-    acceptance:
-        title: 'Formal Risk Acceptance'
-        request: 'Request Acceptance'
-        approve: 'Approve Acceptance'
-        reject: 'Reject Acceptance'
-        justification_label: 'Justification for Acceptance'
-        justification_help: 'Explain why this risk should be accepted (despite remaining residual risk)'
-        required_approval_level: 'Required Approval Level'
-        approval_threshold_info: 'Based on Residual Risk Score (%score%), the following approval is required'
-        already_accepted: 'This risk has already been formally accepted'
-        accepted_by: 'Approved by: %approver%'
-        accepted_at: 'Approved on: %date%'
-        submit_request: 'Submit Acceptance Request'
-        comments_label: 'Comments (optional)'
-        reason_label: 'Rejection Reason'
-        reason_help: 'Explain why the acceptance is being rejected'
-        approval_levels:
-            automatic: 'Automatic Acceptance'
-            manager: 'Manager Approval'
-            executive: 'Executive Approval'
-        success:
-            auto_accepted: 'Risk was automatically accepted (low risk)'
-            approval_requested: 'Acceptance request sent to %approver% (%level% approval required)'
-            approved: 'Risk acceptance has been approved'
-            rejected: 'Risk acceptance has been rejected'
-        error:
-            wrong_strategy: 'Only risks with "accept" treatment strategy can be formally accepted'
-            already_accepted: 'This risk has already been accepted'
-            justification_required: 'A justification is required'
-            reason_required: 'A rejection reason is required'
-            no_approver: 'No approver found for level %level%'
-control:
-    section:
-        protected_assets: 'Protected Assets'
-        mitigated_risks: 'Mitigated Risks'
-        related_incidents: 'Related Incidents'
-        training_coverage: 'Training Coverage'
-        effectiveness_score: 'Effectiveness Score'
-    field:
-        control_id: 'Control ID'
-        name: 'Control Name'
-        title: 'Control Title'
-        description: Description
-        category: Category
-        status: Status
-        applicable: Applicability
-        justification: Justification
-        implementation_status: 'Implementation Status'
-        implementation_percentage: 'Progress (%)'
-        implementation_notes: 'Implementation Details'
-        responsible_person: 'Responsible Person'
-        target_date: 'Target Date'
-        last_review_date: 'Last Review'
-        next_review_date: 'Next Review'
-        protected_assets: 'Related Assets'
-    status:
-        not_started: 'Not Started'
-        planned: Planned
-        in_progress: 'In Progress'
-        implemented: Implemented
-        verified: Verified
-    success:
-        updated: 'Control updated successfully.'
-audit:
-    title: Audits
-    new: 'New Audit'
-    edit: 'Edit Audit'
-    create: 'Create Audit'
-    delete_warning: 'Are you sure you want to delete this audit?'
-    confirm_delete: 'Delete Audit'
-    scope: Scope
-    objectives: 'Audit Objectives'
-    planned_date: 'Planned Date'
-    actual_date: 'Actual Date'
-    lead_auditor: 'Lead Auditor'
-    audit_team: 'Audit Team'
-    auditee: Auditee
-    department: Department
-    findings: Findings
-    nonconformities: Non-Conformities
-    observations: Observations
-    recommendations: Recommendations
-    corrective_actions: 'Corrective Actions'
-    follow_up_actions: 'Follow-up Actions'
-    summary: Summary
-    notes: Notes
-    methodology: Methodology
-    audit_criteria: 'Audit Criteria'
-    evidence_collected: 'Evidence Collected'
-    overall_result: 'Overall Result'
-    team_size: 'Team Size'
-    quick_stats: 'Quick Statistics'
-    export_pdf: 'Export as PDF'
-    iso_27001_clause_info: 'ISO 27001 Clause Information'
-    iso_27001_requirement: 'ISO 27001 Requirement'
-    framework: Framework
-    standard: Standard
-    status:
-        planned: Planned
-        in_progress: 'In Progress'
-        completed: Completed
-        cancelled: Cancelled
-        reported: Reported
-    scope_type:
-        internal: 'Internal Audit'
-        external: 'External Audit'
-        certification: 'Certification Audit'
-        surveillance: 'Surveillance Audit'
-        recertification: 'Recertification Audit'
-        asset: 'Asset Audit'
-        asset_group: 'Asset Group Audit'
-        asset_type: 'Asset Type Audit'
-        compliance_framework: 'Framework Audit'
-        department: 'Department Audit'
-        full_isms: 'Full ISMS Audit'
-        location: 'Location Audit'
-        corporate_wide: 'Corporate-Wide Audit'
-        corporate_subsidiaries: 'Subsidiary Audit'
-    type:
-        iso27001: 'ISO 27001'
-        iso9001: 'ISO 9001'
-        gdpr: GDPR
-        custom: Custom
-    result:
-        passed: Passed
-        passed_with_findings: 'Passed with Findings'
-        failed: Failed
-        pending: Pending
-    type_iso27001: 'ISO 27001'
-    type_iso9001: 'ISO 9001'
-    type_gdpr: GDPR
-    type_custom: Custom
-    result_passed: Passed
-    result_passed_with_findings: 'Passed with Findings'
-    result_failed: Failed
-    result_pending: Pending
-    section:
-        basic_info: 'Basic Information'
-        schedule: Schedule
-        team: Team
-        objectives: Objectives
-        frameworks: Frameworks
-        findings: Findings
-        recommendations: Recommendations
-        documentation: Documentation
-        status: Status
-        history: 'Audit History'
-    table:
-        auditor: Auditor
-        date: 'Audit Date'
-    field:
-        audit_number: 'Audit Number'
-        title: 'Audit Title'
-        scope: Scope
-        scope_type: 'Audit Type'
-        scoped_framework: 'Framework Scope'
-        objectives: 'Audit Objectives'
-        planned_date: 'Planned Date'
-        actual_date: 'Actual Date'
-        completed_date: 'Completion Date'
-        status: Status
-        lead_auditor: 'Lead Auditor'
-        audit_team: 'Audit Team'
-        frameworks: 'Audited Frameworks'
-        findings: 'Findings & Non-Conformities'
-        recommendations: Recommendations
-        conclusion: Conclusion
-        summary: Summary
-        audited_subsidiaries: 'Audited Subsidiaries'
-    validation:
-        title_required: 'Please enter a title.'
-        date_required: 'Please select a date.'
-    success:
-        created: 'Audit created successfully.'
-        updated: 'Audit updated successfully.'
-        deleted: 'Audit deleted successfully.'
-    status_in_progress: ''
 framework: Framework
 requirement: Requirement
-soa_title: 'Statement of Applicability'
 bia: 'Business Impact Analysis'
-asset_management:
-    title: 'Asset Management'
-    description: 'Management of IT assets and information values according to ISO 27001'
-    statistics: Statistics
-    active_assets: 'Active Assets'
-    distribution_by_type: 'Distribution by Type'
-risk_management:
-    title: 'Risk Management'
-    description: 'Identification, assessment and treatment of information security risks'
-    high_risks: 'High Risks'
-    risk_value_threshold: 'Risks with risk value ≥ 12'
-    total_identified: 'Total Identified Risks'
-incident_management:
-    title: 'Incident Management'
-    description: 'Documentation and handling of information security incidents'
-    open_incidents: 'Open Incidents'
-    closed_incidents: 'Closed Incidents'
-    total_recorded: 'Total Recorded Incidents'
-context_management:
-    title: 'ISMS Context'
-    description: 'Definition of organizational context, scope and ISMS objectives'
-    isms_scope: 'ISMS Scope'
-    no_context_defined: 'No ISMS context defined yet. Please define the organizational'
-    isms_objectives: 'ISMS Objectives'
-    active_objectives: 'Active Objectives'
-    no_objectives: 'No ISMS objectives defined yet.'
-audit_management:
-    title: 'Internal Audit'
-    description: 'Planning and execution of internal ISMS audits according to ISO 27001'
-    planned_audits: 'Planned Audits'
-    total_audits: 'Total Audits'
-    audits_list: 'Audits List'
-    no_audits: 'No audits available'
-compliance_management:
-    title: 'Compliance Management'
-    description: 'Management of compliance requirements'
 kpi:
     registered_assets: 'Registered Assets'
     identified_risks: 'Identified Risks'
@@ -758,283 +235,6 @@ activity:
     system: System
     security_team: 'Security Team'
     new_risk: 'New Risk'
-incident:
-    new: 'New Incident'
-    create: 'Create Incident'
-    edit: 'Edit Incident'
-    update: 'Update Incident'
-    empty: 'No incidents recorded yet'
-    status_help: 'Status of the incident in its lifecycle'
-    analysis_resolution: 'Analysis & Resolution'
-    list:
-        title: 'Incident List'
-    filter:
-        data_breach: 'Data Breach'
-        data_breach_only: 'Data Breaches Only'
-        nis2_only: 'NIS2 Reportable Only'
-    kpi:
-        by_category: 'By Category'
-        categories: Categories
-        nis2_attention: 'NIS2 Attention Required'
-    table:
-        category: Category
-        occurred: Occurred
-    section:
-        basic_info: 'Basic Information'
-        severity_status: 'Severity & Status'
-        detection_reporting: 'Detection & Reporting'
-        affected_systems: 'Affected Systems & Assets'
-        analysis: 'Analysis & Actions'
-        assessment: 'Impact Assessment'
-        history: History
-        nis2_reporting: 'NIS2 Reporting Requirement (EU 2022/2555)'
-        nis2_info: 'NIS2 Art. 23: Significant incidents must be reported within specified timeframes'
-        affected_assets: 'Affected Assets'
-        realized_risks: 'Realized Risks'
-        related_controls: 'Related Controls'
-    nis2_alert:
-        title: '⚠️ Potentially NIS2 Reportable'
-        description: 'Based on severity and impact, this incident may be reportable under NIS2 Directive (EU 2022/2555):'
-        early_warning: 'Early Warning: Within 24 hours of awareness'
-        detailed_notification: 'Detailed Notification: Within 72 hours'
-        final_report: 'Final Report: Within 1 month'
-    nis2_toggle:
-        show: 'Show NIS2 Reporting Fields'
-        hide: 'Hide NIS2 Fields'
-    field:
-        title: 'Incident Title'
-        description: Description
-        category: Category
-        severity: Severity
-        detected_at: 'Detected At'
-        occurred_at: 'Occurred At'
-        reported_by: 'Reported By'
-        status: Status
-        affected_systems: 'Affected Systems'
-        root_cause: 'Root Cause'
-        corrective_actions: 'Corrective Actions'
-        lessons_learned: 'Lessons Learned'
-        closed_date: 'Closed Date'
-        nis2_category: 'NIS2 Category'
-        early_warning_reported_at: 'Early Warning Reported At'
-        detailed_notification_reported_at: 'Detailed Notification Reported At'
-        final_report_submitted_at: 'Final Report Submitted At'
-        cross_border_impact: 'Cross-Border Impact'
-        affected_users_count: 'Affected Users Count'
-        estimated_financial_impact: 'Estimated Financial Impact'
-        national_authority_notified: 'Notified National Authority'
-        authority_reference_number: 'Authority Reference Number'
-        affected_assets: 'Affected Assets'
-    label:
-        title: 'Incident Title'
-        severity: Severity
-    action:
-        download_nis2_report: 'Download NIS2 Report (PDF)'
-        report_new: 'Report New Incident'
-    placeholder:
-        category: 'Select incident category'
-        severity: 'Select severity level'
-        title: 'e.g. Data breach customer data'
-        description: 'Detailed description of the incident...'
-        reported_by: 'Name of reporter'
-        affected_systems: 'e.g. CRM system, database'
-        root_cause: 'Root cause analysis...'
-        corrective_actions: 'Corrective actions taken...'
-        lessons_learned: 'What did we learn?'
-        nis2_category: 'Select NIS2 category...'
-        national_authority: 'e.g. BSI, ENISA'
-        authority_reference: 'e.g. BSI-2024-001234'
-    help:
-        severity: 'Assessment of incident severity (1=Low, 4=Critical)'
-        nis2_category: 'Categorization according to NIS2 Directive (EU 2022/2555)'
-        early_warning_24h: 'Early warning within 24 hours (NIS2 Art. 23)'
-        detailed_notification_72h: 'Detailed notification within 72 hours (NIS2 Art. 23)'
-        final_report_1month: 'Final report within 1 month (NIS2 Art. 23)'
-        cross_border_impact: 'Does this incident have cross-border impact on other EU member states?'
-        affected_users_count: 'Number of affected users or customers'
-        estimated_financial_impact: 'Estimated financial damage in EUR'
-        national_authority: 'Competent national authority (e.g. BSI in Germany)'
-        affected_assets: 'Assets affected by this incident'
-    category:
-        data_breach: 'Data Breach'
-        security_incident: 'Security Incident'
-        system_outage: 'System Outage'
-        compliance_violation: 'Compliance Violation'
-        physical_security: 'Physical Security'
-        other: Other
-    severity:
-        low: Low
-        medium: Medium
-        high: High
-        critical: Critical
-    status:
-        reported: Reported
-        in_investigation: 'In Investigation'
-        in_resolution: 'In Resolution'
-        resolved: Resolved
-        closed: Closed
-    nis2_category:
-        operational: 'Operational Disruption'
-        security: 'Security Breach'
-        privacy: 'Privacy/Data Protection'
-        availability: 'Service Availability'
-    timeline:
-        early_warning: 'Early Warning (24h)'
-        detailed_notification: 'Detailed Notification (72h)'
-        final_report: 'Final Report (1 month)'
-        deadline: Deadline
-        reported: Reported
-        reported_at: 'Reported at'
-        overdue: Overdue
-        hours_remaining: '%hours% hours remaining'
-        days_remaining: '%days% days remaining'
-    nis2_timeline:
-        title: 'NIS2 Reporting Timeline (Article 23)'
-        description: 'According to the NIS2 Directive (EU 2022/2555), significant incidents must be reported within defined timelines: Early Warning (24h), Detailed Notification (72h), Final Report (1 month).'
-    nis2_compliance:
-        title: 'NIS2 Compliance Status'
-        not_applicable: 'Not NIS2-relevant'
-        compliant: Compliant
-        overdue: 'Deadline exceeded'
-        awaiting_early_warning: 'Awaiting early warning'
-        awaiting_detailed: 'Awaiting detailed notification'
-        awaiting_final: 'Awaiting final report'
-    success:
-        reported: 'Incident reported successfully.'
-        updated: 'Incident updated successfully.'
-        deleted: 'Incident deleted successfully.'
-    bcm:
-        auto_detect_success: ''
-        no_processes_detected: ''
-    pdf:
-        reported_at: ''
-        reported_by: ''
-document:
-    doc_title: Documents
-    title: Documents
-    subtitle: 'Document Management'
-    new: 'New Document'
-    edit: 'Edit Document'
-    update: 'Update Document'
-    upload: 'Upload Document'
-    section:
-        basic_info: 'Document Information'
-        file_upload: 'File Upload'
-        all_documents: 'All Documents'
-        all_types: 'All Types'
-        documents: Documents
-        recent_activity: 'Recent Activity'
-        select_type: 'Select Type'
-        type_overview: 'Type Overview'
-        type_statistics: 'Type Statistics'
-        types_overview: 'Types Overview'
-    field:
-        name: 'Document Name'
-        description: Description
-        document_type: 'Document Type'
-        file: File
-        title: Title
-        status: Status
-        version: Version
-        owner: Owner
-        review_date: 'Review Date'
-        last_updated: 'Last Updated'
-        updated: Updated
-        active: Active
-        draft: Draft
-        documents: Documents
-        total_documents: 'Total Documents'
-        overdue_reviews: 'Overdue Reviews'
-        type_name: 'Type Name'
-    placeholder:
-        name: 'e.g. Information Security Policy 2024'
-        description: 'Brief description of the document...'
-    help:
-        name: 'Unique name of the document'
-        description: 'Detailed description of the document content and purpose'
-        document_type: 'Category of the document (Policy, Procedure, etc.)'
-        file: 'Choose a file to upload'
-        file_edit: 'Upload new file (optional)'
-        edit_file: 'Leave blank to keep the existing file'
-    file_help: 'Allowed file types: PDF, Word, Excel, Images, Text'
-    edit_file_help: 'Upload a new file to replace the existing one'
-    validation:
-        mime_types: 'Please upload a valid document (PDF, Word, Excel, Image or Text file)'
-    type:
-        asset: 'Asset Documentation'
-        risk: 'Risk Assessment'
-        incident: 'Incident Report'
-        control: 'Control Evidence'
-        audit: 'Audit Documentation'
-        compliance: 'Compliance Evidence'
-        training: 'Training Material'
-        general: General
-        pdf: 'PDF Documents'
-        images: Images
-        tables: Tables
-        excel: 'Excel Documents'
-        other: Other
-    label:
-        type: Type
-        file_name: 'File Name'
-        size: Size
-        mime_type: 'MIME Type'
-        uploaded_by: 'Uploaded By'
-        uploaded_at: 'Uploaded At'
-        last_updated: 'Last Updated'
-        related_entity: 'Related Entity'
-    action:
-        create: 'Create Document'
-        upload: 'Upload Document'
-    badge:
-        confidential: Confidential
-        controlled: Controlled
-        due_soon: 'Due Soon'
-        overdue: Overdue
-    confirm:
-        delete: 'Do you really want to delete this document?'
-    delete_warning: 'Deleting this document cannot be undone.'
-    description:
-        by_type: 'Documents by Type'
-    details:
-        title: 'Document Details'
-    error:
-        upload_failed: 'File upload failed'
-        too_many_uploads: 'Too many uploads. Please try again later.'
-    filter:
-        all_categories: 'All Categories'
-        search_placeholder: 'Search documents...'
-    kpi:
-        total_documents: 'Total Documents'
-        total_size: 'Total Size'
-    message:
-        no_documents: 'No documents available'
-        no_documents_for_type: 'No documents for this type'
-        no_recent_activity: 'No recent activity'
-        no_results: 'No results found'
-        no_types: 'No document types defined'
-        upload_first: 'Upload your first document'
-    option:
-        all_types: 'All Types'
-    stats:
-        active_documents: 'Active Documents'
-        avg_per_type: 'Average per Type'
-        document_types: 'Document Types'
-        draft_documents: Drafts
-        expiring_soon: 'Expiring Soon'
-        overdue_reviews: 'Overdue Reviews'
-        total: Total
-        total_documents: 'Total Documents'
-    success:
-        deleted: 'Document deleted successfully'
-        updated: 'Document updated successfully'
-        uploaded: 'Document uploaded successfully'
-    table:
-        uploaded_by: 'Uploaded By'
-    uploaded_by: ''
-    uploaded_at: ''
-    edit_button: ''
-    drag_files: ''
 person:
     title: ''
     name: Person
@@ -1107,754 +307,6 @@ person:
     title.show: 'View Person'
     title.create: 'Create New Person'
     title.edit: 'Edit Person'
-location:
-    title: ''
-    name: Location
-    location_type: 'Location Type'
-    code: 'Location Code'
-    description:
-        _default: Description
-        overview: 'Manage physical locations, buildings and rooms of your organization for security and asset management.'
-    action:
-        create: 'Create Location'
-        view_details: ''
-    stats:
-        total: 'Total Locations'
-        buildings: Buildings
-        rooms: Rooms
-        secure: 'Secure Areas'
-    address: Address
-    city: City
-    country: Country
-    postal_code: 'Postal Code'
-    parent_location: 'Parent Location'
-    security_level: 'Security Level'
-    requires_badge_access: 'Requires Badge Access'
-    requires_escort: 'Requires Escort'
-    camera_monitored: 'Camera Monitored'
-    access_control_system: 'Access Control System'
-    responsible_person: 'Responsible Person'
-    capacity: Capacity
-    square_meters: 'Square Meters'
-    active: Active
-    notes: Notes
-    type:
-        building: Building
-        floor: Floor
-        room: Room
-        area: Area
-        datacenter: 'Data Center'
-        server_room: 'Server Room'
-        office: Office
-        warehouse: Warehouse
-        gate: Gate
-        entrance: Entrance
-        parking: Parking
-        outdoor: Outdoor
-        other: Other
-    security:
-        public: Public
-        restricted: Restricted
-        controlled: Controlled
-        secure: Secure
-        high_security: 'High Security'
-    field:
-        name: 'Location Name'
-        location_type: 'Location Type'
-        type: Type
-        code: Code
-        description: Description
-        city: City
-        parent: 'Parent Location'
-        badge_access: 'Badge Access Required'
-        status: Status
-        access_control: 'Access Control System'
-        security_level: 'Security Level'
-        parent_location: ''
-        address: ''
-    section:
-        details: Details
-        address: Address
-        hierarchy: Hierarchy
-        child_locations: 'Child Locations'
-        security: Security
-        features: Features
-    message:
-        no_locations: 'No locations yet. Create your first location.'
-    placeholder:
-        name: 'e.g. Main Building A'
-        code: 'e.g. HQ-A-01'
-    help:
-        type: 'Select the location type (building, room, data center, etc.)'
-        code: 'Unique code to identify the location'
-        parent: 'Assign this location to a parent location (e.g. room in building)'
-    confirm:
-        delete: 'Are you sure you want to delete this location? Child locations will also be removed.'
-    success:
-        created: 'Location created successfully.'
-        updated: 'Location updated successfully.'
-        deleted: 'Location deleted successfully.'
-    actions:
-        label: ''
-    title._default: 'Location Management'
-    title.list: Locations
-    title.show: 'View Location'
-    title.create: 'Create New Location'
-    title.edit: 'Edit Location'
-supplier:
-    title: 'Supplier Management'
-    page:
-        title: 'Supplier Management'
-        edit_title: ''
-    action:
-        add_new: 'Add New Supplier'
-        view: View
-        edit: Edit
-    statistics:
-        title: Statistics
-        total: 'Total Suppliers'
-        critical: 'Critical Suppliers'
-        overdue_assessments: 'Overdue Assessments'
-        non_compliant: Non-Compliant
-    alert:
-        overdue_assessments: 'Overdue Security Assessments'
-        non_compliant: 'Non-Compliant Suppliers'
-    next_assessment: 'Next assessment'
-    not_scheduled: 'Not scheduled'
-    risk_score: 'Risk Score'
-    list:
-        title: 'Suppliers (%count%)'
-    table:
-        name: Name
-        service_provided: 'Service Provided'
-        criticality: Criticality
-        status: Status
-        risk_score: 'Risk Score'
-        iso27001: 'ISO 27001'
-        actions: Actions
-    empty:
-        message: 'No suppliers found.'
-        add_first: 'Add your first supplier'
-    contact_person: 'Contact Person'
-    field:
-        contact_person: 'Contact Person'
-        name: 'Supplier Name'
-        email: Email
-        phone: Phone
-        description: Description
-        address: Address
-        service_provided: 'Service Provided'
-        criticality: Criticality
-        status: Status
-        security_score: 'Security Score (0-100)'
-        last_security_assessment: 'Last Security Assessment'
-        next_assessment_date: 'Next Assessment Date'
-        assessment_findings: 'Assessment Findings'
-        non_conformities: Non-Conformities
-        contract_start_date: 'Contract Start Date'
-        contract_end_date: 'Contract End Date'
-        security_requirements: 'Security Requirements'
-        has_iso27001: 'ISO 27001 Certified'
-        has_iso22301: 'ISO 22301 Certified'
-        certifications: 'Other Certifications'
-        has_dpa: 'Data Processing Agreement Signed'
-        dpa_signed_date: 'DPA Signed Date'
-    success:
-        created: 'Supplier created successfully.'
-        updated: 'Supplier updated successfully.'
-        deleted: 'Supplier deleted successfully.'
-interested_party:
-    title: 'Interested Parties'
-    page:
-        title: 'Interested Parties Management'
-    action:
-        add_new: 'Add New Interested Party'
-        view: View
-        edit: Edit
-    iso_reference: 'ISO 27001:2022 Chapter 4.2 - Understanding the needs and expectations of interested parties'
-    alert:
-        overdue_communications: 'Overdue Communications'
-    next_communication: 'Next communication'
-    high_importance:
-        title: 'High Importance Parties'
-    engagement_score: 'Engagement Score'
-    list:
-        title: 'Interested Parties (%count%)'
-    table:
-        name: Name
-        type: Type
-        importance: Importance
-        engagement_score: 'Engagement Score'
-        last_communication: 'Last Communication'
-        actions: Actions
-    never: Never
-    empty:
-        message: 'No interested parties found.'
-        add_first: 'Add your first interested party'
-    contact_person: 'Contact Person'
-    field:
-        contact_person: 'Contact Person'
-        name: 'Party Name'
-        party_type: 'Party Type'
-        description: Description
-        email: Email
-        phone: Phone
-        importance: Importance
-        requirements: 'Requirements & Expectations'
-        how_addressed: 'How Requirements are Addressed'
-        communication_frequency: 'Communication Frequency'
-        communication_method: 'Communication Method'
-        last_communication: 'Last Communication'
-        next_communication: 'Next Planned Communication'
-        feedback: Feedback
-        satisfaction_level: 'Satisfaction Level (1-5)'
-        issues: Issues/Concerns
-    success:
-        created: 'Interested party created successfully.'
-        updated: 'Interested party updated successfully.'
-        deleted: 'Interested party deleted successfully.'
-workflow:
-    title:
-        list: Workflows
-        definitions: 'Workflow Definitions'
-        active: 'Active Workflows'
-        pending: 'Pending Workflows'
-        overdue: 'Overdue Workflows'
-        instance_show: 'Workflow Details'
-    step: Step
-    days: Days
-    action:
-        start: 'Start Workflow'
-        cancel: 'Cancel Workflow'
-        complete_step: 'Complete Step'
-        definitions: 'Manage Definitions'
-        create_definition: ''
-        create: ''
-        update: ''
-        delete_definition: ''
-        builder: ''
-        edit: ''
-        deactivate: ''
-        activate: ''
-        delete: ''
-        back: ''
-    badge:
-        completed: Completed
-        critical: Critical
-        current: Current
-        due_soon: 'Due Soon'
-        overdue: Overdue
-        my_task: 'My Task'
-    confirm:
-        cancel: 'Do you really want to cancel this workflow?'
-        delete: ''
-    description:
-        active: 'Active Workflows'
-        active_detail: 'Workflows currently in progress'
-        definitions: 'Manage workflow definitions'
-        overdue: 'Overdue Workflows'
-        overdue_detail: 'Workflows that have passed their due date'
-        overview: 'Workflow Overview'
-        pending: 'Pending Workflows'
-        pending_detail: 'Workflows awaiting action'
-    field:
-        assignee: Assignee
-        completed_at: 'Completed At'
-        current_step: 'Current Step'
-        days_overdue: 'Days Overdue'
-        definition: Definition
-        due_date: 'Due Date'
-        priority: Priority
-        progress: Progress
-        definition_name: ''
-        description: ''
-        steps: ''
-        instances: ''
-        active: ''
-        name: ''
-        status: ''
-        entity_type: ''
-        created_at: ''
-        updated_at: ''
-    message:
-        no_active: 'No active workflows'
-        no_activities: 'No activities'
-        no_overdue: 'No overdue workflows'
-        no_overdue_desc: 'All workflows are on schedule'
-        no_pending: 'No pending workflows'
-        unassigned: Unassigned
-        no_definitions: ''
-        no_instances: ''
-        no_steps: ''
-    section:
-        active: 'Active Workflows'
-        activity_log: 'Activity Log'
-        overdue: Overdue
-        overview: Overview
-        pending: Pending
-        recent_instances: ''
-        basic_information: ''
-        danger_zone: ''
-        information: ''
-        steps: ''
-        actions: ''
-        statistics: ''
-    stats:
-        active: Active
-        avg_progress: 'Average Progress'
-        critical_overdue: 'Critical Overdue'
-        due_this_week: 'Due This Week'
-        my_overdue: 'My Overdue'
-        my_tasks: 'My Tasks'
-        my_workflows: 'My Workflows'
-        overdue: Overdue
-        overdue_days_avg: 'Average Days Overdue'
-        pending: Pending
-        total: Total
-        total_definitions: ''
-        active_definitions: ''
-        avg_steps: ''
-        entity_types: ''
-        steps: ''
-        total_instances: ''
-    activity:
-        action: Action
-        details: Details
-        timestamp: Timestamp
-        user: User
-    warning:
-        overdue_count: '{{ count }} overdue workflows'
-        overdue_message: 'You have overdue workflows that require attention'
-        rejected: 'Workflow step rejected'
-    success:
-        approved: 'Workflow step approved successfully.'
-        started: 'Workflow started successfully.'
-        definition_created: ''
-        definition_updated: ''
-        definition_deleted: ''
-    error:
-        not_authorized_approve: 'You are not authorized to approve this step.'
-        not_authorized_reject: 'You are not authorized to reject this step.'
-        comments_required: 'Comments are required when rejecting a workflow step.'
-        not_found: 'No workflow found for this entity type.'
-        has_active_instances: ''
-    info:
-        cancelled: 'Workflow instance cancelled.'
-        no_active_workflow: 'No active workflow found for this entity.'
-        steps_note_title: ''
-        steps_note_text: ''
-    definition:
-        edit_title: ''
-        new_title: ''
-        title: ''
-    breadcrumb:
-        home: ''
-        definitions: ''
-        edit: ''
-        new: ''
-    help:
-        name: ''
-        description: ''
-        delete_warning: ''
-    instance:
-        entity: ''
-        status: ''
-        current_step: ''
-        created: ''
-        actions: ''
-    status:
-        completed: ''
-        rejected: ''
-        cancelled: ''
-        pending: ''
-        active: ''
-        inactive: ''
-    step.requires_comment: ''
-    step.requires_file: ''
-    builder:
-        title: ''
-        breadcrumb: ''
-        heading: ''
-        steps: ''
-        drag_help: ''
-        add_step: ''
-        new_step: ''
-        templates: ''
-        templates_help: ''
-        info: ''
-        help: ''
-        help_drag: ''
-        help_edit: ''
-        help_duplicate: ''
-        help_delete: ''
-        help_template: ''
-    step.name: ''
-    step.type: ''
-    step.type.approval: ''
-    step.type.notification: ''
-    step.type.auto_action: ''
-    step.description: ''
-    step.approver_role: ''
-    step.days_to_complete: ''
-    step.days_help: ''
-    step.is_required: ''
-    template:
-        risk_assessment: ''
-        risk_assessment_desc: ''
-        control_implementation: ''
-        control_implementation_desc: ''
-        incident_response: ''
-        incident_response_desc: ''
-        document_review: ''
-        document_review_desc: ''
-        change_request: ''
-        change_request_desc: ''
-change_request:
-    title: 'Change Requests'
-    new: 'New Change Request'
-    page:
-        title: 'ISMS Change Management'
-        new: 'Create New Change Request'
-        edit: 'Edit Change Request'
-    edit: 'Edit Change Request'
-    action:
-        create: 'Create Change Request'
-        update: 'Update Change Request'
-        view: View
-        edit: Edit
-    field:
-        change_number: 'Change Number'
-        title: Title
-        change_type: 'Change Type'
-        description: Description
-        justification: Justification
-        requested_by: 'Requested By'
-        requested_date: 'Requested Date'
-        priority: Priority
-        status: Status
-        complexity_score: 'Complexity Score'
-        isms_impact: 'ISMS Impact'
-        risk_assessment: 'Risk Assessment'
-        implementation_plan: 'Implementation Plan'
-        rollback_plan: 'Rollback Plan'
-        testing_requirements: 'Testing Requirements'
-        planned_implementation: 'Planned Implementation'
-        planned_implementation_date: 'Planned Implementation Date'
-        actual_implementation_date: 'Actual Implementation Date'
-        implementation_date: 'Implementation Date'
-        approved_by: 'Approved By'
-        approved_date: 'Approved Date'
-        approval_date: 'Approval Date'
-        approval_comments: 'Approval Comments'
-        comments: Comments
-        implemented_by: 'Implemented By'
-        implementation_notes: 'Implementation Notes'
-        notes: Notes
-        verified_by: 'Verified By'
-        verified_date: 'Verified Date'
-        verification_date: 'Verification Date'
-        verification_results: 'Verification Results'
-        results: Results
-        closed_date: 'Closed Date'
-        closure_notes: 'Closure Notes'
-    change_type:
-        isms_policy: 'ISMS Policy'
-        isms_scope: 'ISMS Scope'
-        control: Control
-        asset: Asset
-        process: Process
-        technology: Technology
-        supplier: Supplier
-        organizational: Organizational
-        other: Other
-    priority:
-        critical: Critical
-        high: High
-        medium: Medium
-        low: Low
-    status:
-        draft: Draft
-        submitted: Submitted
-        under_review: 'Under Review'
-        approved: Approved
-        rejected: Rejected
-        scheduled: Scheduled
-        not_scheduled: 'Not Scheduled'
-        implemented: Implemented
-        verified: Verified
-        closed: Closed
-        cancelled: Cancelled
-    section:
-        description: Description
-        justification: Justification
-        impact: Impact
-        risk_assessment: 'Risk Assessment'
-        plan: 'Implementation Plan'
-        rollback_plan: 'Rollback Plan'
-        testing_requirements: 'Testing Requirements'
-        approval_info: 'Approval Information'
-        implementation: Implementation
-        verification: Verification
-        closure: Closure
-        affected_assets: 'Affected Assets'
-        affected_controls: 'Affected Controls'
-        affected_risks: 'Affected Risks'
-    confirm:
-        delete: 'Are you sure you want to delete this change request?'
-    statistics:
-        title: Statistics
-        total: 'Total Change Requests'
-        pending_approval: 'Pending Approval'
-        in_implementation: 'In Implementation'
-        overdue: Overdue
-    alert:
-        pending_approval: 'Pending Approval'
-        overdue: 'Overdue Change Requests'
-    list:
-        title: 'Change Requests (%count%)'
-    table:
-        change_number: 'Change #'
-        title: Title
-        type: Type
-        priority: Priority
-        status: Status
-        complexity: Complexity
-        requested: Requested
-        actions: Actions
-    empty:
-        message: 'No change requests found.'
-        create_first: 'Create your first change request'
-    details:
-        title: 'Change Request Details'
-    success:
-        created: 'Change request created successfully.'
-        updated: 'Change request updated successfully.'
-        deleted: 'Change request deleted successfully.'
-bc_plan:
-    new: 'New BC Plan'
-    create: 'Create BC Plan'
-    section:
-        basic_info: 'Basic Information'
-        team: Team
-        activation: 'Activation & Response'
-        communication: Communication
-        alternative_site: 'Alternative Site'
-        backup_recovery: 'Backup & Recovery'
-        version_review: 'Version & Review'
-business_continuity_plan:
-    new: 'New BC Plan'
-    create: 'Create BC Plan'
-    section:
-        basic_info: 'Basic Information'
-        team: Team
-        activation: 'Activation & Response'
-        communication: Communication
-        alternative_site: 'Alternative Site'
-        backup_recovery: 'Backup & Recovery'
-        version_review: 'Version & Review'
-    field:
-        name: 'Plan Name'
-        business_process: 'Business Process'
-        description: Description
-        plan_owner: 'Plan Owner'
-        bc_team: 'BC Team Members'
-        status: Status
-        activation_criteria: 'Activation Criteria'
-        roles_and_responsibilities: 'Roles and Responsibilities'
-        recovery_procedures: 'Recovery Procedures'
-        communication_plan: 'Communication Plan'
-        internal_communication: 'Internal Communication'
-        external_communication: 'External Communication'
-        alternative_site: 'Alternative Site'
-        alternative_site_address: 'Alternative Site Address'
-        alternative_site_capacity: 'Alternative Site Capacity'
-        backup_procedures: 'Backup Procedures'
-        restore_procedures: 'Restore Procedures'
-        version: Version
-        last_tested: 'Last Tested'
-        next_test_date: 'Next Test Date'
-        last_review_date: 'Last Review Date'
-        next_review_date: 'Next Review Date'
-        review_notes: 'Review Notes'
-    success:
-        created: 'Business Continuity Plan created successfully.'
-        updated: 'Business Continuity Plan updated successfully.'
-        deleted: 'Business Continuity Plan deleted successfully.'
-security:
-    error:
-        too_many_attempts: 'Too many login attempts. Please try again in 15 minutes.'
-        saml_login_error: 'SAML Login Error'
-        saml_logout_error: 'SAML Logout Error'
-        csrf_invalid: 'Invalid CSRF token.'
-    csrf_token_invalid: ''
-bc_exercise:
-    new: 'New BC Exercise'
-    create: 'Create BC Exercise'
-    section:
-        basic_info: 'Basic Information'
-        planning: Planning
-        participants: Participants
-        results: Results
-        report: Report
-    success:
-        created: 'BC exercise created successfully.'
-        updated: 'BC exercise updated successfully.'
-        deleted: 'BC exercise deleted successfully.'
-objective:
-    field:
-        title: Title
-        description: Description
-        category: Category
-        measurable_indicators: 'Measurable Indicators'
-        target_value: 'Target Value'
-        current_value: 'Current Value'
-        unit: Unit
-        responsible_person: 'Responsible Person'
-        target_date: 'Target Date'
-        status: Status
-        progress_notes: 'Progress Notes'
-    validation:
-        title_required: 'Please enter a title.'
-        title_max_length: 'The title may not exceed {{ limit }} characters.'
-        description_required: 'Please enter a description.'
-        category_required: 'Please select a category.'
-        responsible_person_required: 'Please specify a responsible person.'
-        name_max_length: 'The name may not exceed {{ limit }} characters.'
-        target_date_required: 'Please specify a target date.'
-        status_required: 'Please select a status.'
-    link:
-        new: 'New Goal'
-        create_new: 'Create New Goal'
-    status:
-        total: Total
-        active: Active
-        achieved: Achieved
-        delayed: Delayed
-        at_risk: 'At Risk'
-    success:
-        created: 'Goal created successfully.'
-        updated: 'Goal updated successfully.'
-        deleted: 'Goal deleted successfully.'
-business_process:
-    field:
-        name: 'Process Name'
-        description: Description
-        process_owner: 'Process Owner'
-        criticality: Criticality
-        rto: 'RTO (Recovery Time Objective) in hours'
-        rpo: 'RPO (Recovery Point Objective) in hours'
-        mtpd: 'MTPD (Maximum Tolerable Period of Disruption) in hours'
-        financial_impact_per_hour: 'Financial Impact per Hour'
-        financial_impact_per_day: 'Financial Impact per Day'
-        reputational_impact: 'Reputational Impact'
-        regulatory_impact: 'Regulatory Impact'
-        operational_impact: 'Operational Impact'
-        dependencies_upstream: 'Dependencies (Upstream)'
-        dependencies_downstream: 'Dependencies (Downstream)'
-        recovery_strategy: 'Recovery Strategy'
-        supporting_assets: 'Supporting Assets'
-        identified_risks: 'Identified Risks'
-    success:
-        created: 'Business process created successfully.'
-        updated: 'Business process updated successfully.'
-        deleted: 'Business process deleted successfully.'
-user:
-    name: Name
-    email: Email
-    department: Department
-    new: 'New User'
-    edit: 'Edit User'
-    create: 'Create User'
-    save_changes: 'Save Changes'
-    edit_suffix: edit
-    section:
-        basic_info: 'Basic Information'
-        tenant: 'Tenant Assignment'
-        authentication: Authentication
-        roles: 'Roles & Permissions'
-        status: Status
-    field:
-        first_name: 'First Name'
-        last_name: 'Last Name'
-        email: Email
-        department: Department
-        job_title: 'Job Title'
-        phone_number: 'Phone Number'
-        avatar: 'Profile Picture'
-        avatar_help: 'Profile picture (max. 2MB, JPG/PNG/GIF/WebP)'
-        password: Password
-        system_roles: 'System Roles'
-        roles: 'System Roles'
-        custom_roles: 'Custom Roles'
-        tenant: Tenant
-        tenant_help: 'Assign the user to a tenant'
-        active: Active
-        is_active: Active
-        is_verified: Verified
-        email_verified: 'Email Verified'
-        auth_provider: 'Auth Provider'
-        created_at: 'Created at'
-        updated_at: 'Last updated'
-        last_login: 'Last login'
-    help:
-        first_name: 'User first name'
-        last_name: 'User last name'
-        email: 'Email address for login and communication'
-        department: 'User organizational unit'
-        job_title: 'User function or position'
-        phone_number: 'Contact phone number'
-        avatar: 'Upload profile picture (optional)'
-        tenant: 'Tenant this user is assigned to'
-        password: 'Secure password for the user'
-        password_edit: 'Leave blank to keep the current password'
-    auth_provider:
-        local: Local
-    message:
-        no_custom_roles: 'No custom roles available.'
-    placeholder:
-        tenant: 'Not assigned to any tenant'
-    error:
-        no_users_selected: 'No users selected'
-        no_file_uploaded: 'No file uploaded'
-        cannot_deactivate_initial_admin: 'The initial setup administrator cannot be deactivated to ensure that a system administrator is always available.'
-        cannot_delete_initial_admin: 'The initial setup administrator cannot be deleted to ensure that a system administrator is always available.'
-        cannot_remove_admin_role_from_initial_admin: 'The admin role cannot be removed from the initial setup administrator. The system requires at least one administrator.'
-    warning:
-        own_password_changed: 'Warning: You have changed your own password. You may be automatically logged out.'
-        session_will_be_invalidated: 'Warning: For security reasons, your session may be invalidated after this change. Please log in again if necessary.'
-    success:
-        bulk_action_completed: '%count% users successfully processed (%action%)'
-        imported: '%count% users successfully imported'
-        activated: 'User successfully activated'
-        deactivated: 'User successfully deactivated'
-        created: 'User created successfully.'
-        updated: 'User updated successfully.'
-        deleted: 'User deleted successfully.'
-    info:
-        bulk_skipped_initial_admin: '%count% users skipped: Initial setup administrator (protected)'
-        bulk_skipped_current_user: '%count% users skipped: Your own account (self-deactivation not allowed)'
-        bulk_skipped_no_permission: '%count% users skipped: Missing permission'
-        bulk_skipped_already_has_role: '%count% users skipped: Role already assigned'
-    action:
-        export: Export
-        import: Import
-        bulk_actions: 'Bulk Actions'
-        activate: Activate
-        deactivate: Deactivate
-        assign_role: 'Assign Role'
-        view_activity: 'View Activity'
-        view_mfa: 'Manage MFA'
-        impersonate: 'Impersonate User'
-    import:
-        title: 'Import Users'
-        description: 'Upload a CSV file to import multiple users'
-        format: 'Expected format: email, first_name, last_name, password, is_active, roles'
-        download_template: 'Download Template'
-    activity:
-        title: 'User Activity'
-        total: 'Total Activities'
-        by_date: 'By Date'
-        by_action: 'By Action'
 module:
     info:
         added_as_dependency: "Module '{name}' was added as dependency"
@@ -1936,182 +388,6 @@ preferences:
         imported: 'Settings successfully imported'
     error:
         import_failed: 'Error importing settings'
-soa:
-    export:
-        html: 'Export SoA as HTML'
-        pdf: 'Export SoA as PDF - Professional report with all 93 controls'
-    preview:
-        pdf: 'Preview PDF report in browser'
-    title: ''
-    in_progress_badge: ''
-    in_progress_badge_emoji: ''
-    message:
-        control_coverage: ''
-vulnerability:
-    title: Vulnerabilities
-    new: 'New Vulnerability'
-    edit: 'Edit Vulnerability'
-    list: 'Vulnerability List'
-    details: 'Vulnerability Details'
-    empty: 'No vulnerabilities recorded yet.'
-    field:
-        cve_id: CVE-ID
-        title: Title
-        description: Description
-        severity: Severity
-        cvss_score: 'CVSS Score'
-        cvss_vector: 'CVSS Vector'
-        cwe_id: CWE-ID
-        status: Status
-        affected_assets: 'Affected Assets'
-        discovered_at: 'Discovered At'
-        discovered_date: 'Discovery Date'
-        disclosed_at: 'Disclosed At'
-        remediation_deadline: 'Remediation Deadline'
-        exploit_available: 'Exploit Available'
-        vendor_advisory_url: 'Vendor Advisory URL'
-        mitigation_plan: 'Mitigation Plan'
-        notes: Notes
-        responsible_person: 'Responsible Person'
-    severity:
-        critical: Critical
-        high: High
-        medium: Medium
-        low: Low
-        info: Info
-    status:
-        identified: Identified
-        analyzing: Analyzing
-        patching: Patching
-        mitigated: Mitigated
-        closed: Closed
-        false_positive: 'False Positive'
-    kpi:
-        critical: 'Critical Vulnerabilities'
-        high: 'High Vulnerabilities'
-        overdue: 'Overdue Remediations'
-        total: Total
-    placeholder:
-        cve_id: 'e.g. CVE-2024-1234'
-        title: 'Brief description of the vulnerability'
-        description: 'Detailed description of the vulnerability and its impact'
-        mitigation_plan: 'Actions to fix or mitigate'
-        responsible_person: 'Person responsible for remediation'
-    help:
-        cve_id: 'Common Vulnerabilities and Exposures Identifier'
-        severity: 'Severity based on CVSS Score'
-        cvss_score: 'CVSS Score from 0.0 to 10.0'
-        cvss_vector: 'CVSS 3.1 Vector String'
-        cwe_id: 'Common Weakness Enumeration ID'
-        affected_assets: 'Assets affected by this vulnerability'
-        remediation_deadline: 'Deadline for fixing the vulnerability'
-        exploit_available: 'Is a public exploit available?'
-    success:
-        created: 'Vulnerability created successfully.'
-        updated: 'Vulnerability updated successfully.'
-        deleted: 'Vulnerability deleted successfully.'
-patch:
-    title: Patches
-    new: 'New Patch'
-    edit: 'Edit Patch'
-    list: 'Patch List'
-    empty: 'No patches recorded yet.'
-    field:
-        patch_identifier: 'Patch ID'
-        patch_id: 'Patch ID'
-        title: Title
-        description: Description
-        patch_type: 'Patch Type'
-        status: Status
-        related_vulnerabilities: 'Related Vulnerabilities'
-        version: Version
-        vendor: Vendor
-        affected_systems: 'Affected Systems'
-        release_date: 'Release Date'
-        planned_deployment_date: 'Planned Deployment'
-        actual_deployment_date: 'Actual Deployment'
-        test_results: 'Test Results'
-        rollback_procedure: 'Rollback Procedure'
-        installation_instructions: 'Installation Instructions'
-        download_url: 'Download URL'
-        notes: Notes
-        responsible_person: 'Responsible Person'
-    type:
-        security: 'Security Patch'
-        bugfix: Bugfix
-        feature: 'Feature Update'
-        critical: 'Critical Patch'
-    status:
-        available: Available
-        tested: Tested
-        approved: Approved
-        deployed: Deployed
-        failed: Failed
-        rollback: 'Rolled Back'
-    kpi:
-        pending: 'Pending Patches'
-        deployed: 'Deployed Patches'
-        total: Total
-    placeholder:
-        patch_identifier: 'e.g. KB5034441'
-        title: 'Brief description of the patch'
-        description: 'Detailed description of changes'
-        vendor: 'Patch vendor'
-        affected_systems: 'List of affected systems'
-        test_results: 'Test results from test environment'
-        rollback_procedure: 'Steps to rollback if issues occur'
-        installation_instructions: 'Step-by-step installation guide'
-        responsible_person: 'Person responsible for installation'
-    help:
-        patch_identifier: 'Unique patch identifier (e.g. KB number)'
-        patch_type: 'Type of patch'
-        related_vulnerabilities: 'Vulnerabilities fixed by this patch'
-        affected_systems: 'Systems where patch must be installed'
-        planned_deployment_date: 'When should the patch be deployed?'
-        test_results: 'Test documentation'
-        rollback_procedure: 'Procedure to undo if problems occur'
-        responsible_person: 'Responsible for installation and monitoring'
-    success:
-        created: 'Patch created successfully.'
-        updated: 'Patch updated successfully.'
-        deleted: 'Patch deleted successfully.'
-mfa_token:
-    title: 'MFA Tokens'
-    new: 'New MFA Token'
-    edit: 'Edit MFA Token'
-    empty: 'No MFA tokens configured yet.'
-    field:
-        user: User
-        token_type: 'Token Type'
-        device_name: 'Device Name'
-        phone_number: 'Phone Number'
-        is_active: Active
-        is_primary: 'Primary Method'
-        expires_at: 'Expires At'
-    type:
-        totp: 'Authenticator App (TOTP)'
-        webauthn: 'Security Key (WebAuthn/FIDO2)'
-        sms: 'SMS Verification'
-        hardware: 'Hardware Token'
-        backup: 'Backup Codes'
-    kpi:
-        active: 'Active Tokens'
-    placeholder:
-        user: 'Select user'
-        device_name: 'e.g. iPhone 14, YubiKey 5'
-        phone_number: '+49 123 456789'
-    help:
-        user: 'User this token is assigned to'
-        token_type: 'Type of MFA token'
-        device_name: 'Name for the device/token'
-        phone_number: 'For SMS-based MFA'
-        is_primary: 'Is this the primary MFA method for the user?'
-        expires_at: 'When does this token expire? (optional)'
-    success:
-        created: 'MFA token created successfully.'
-        updated: 'MFA token updated successfully.'
-        deleted: 'MFA token deleted successfully.'
-        activated: 'Crisis team activated successfully.'
 permission:
     title: Permissions
     list: 'Permission List'
@@ -2246,6 +522,8 @@ data:
             last_name: 'Last Name'
             email: 'Email Address'
             email_help: 'This email address will be used for login'
+            first_name_placeholder: 'John'
+            last_name_placeholder: 'Doe'
             password: Password
             password_confirm: 'Confirm Password'
             password_requirements: { title: 'Password Requirements', length: 'At least 8 characters', uppercase: 'At least one uppercase letter', lowercase: 'At least one lowercase letter', number: 'At least one digit' }
@@ -2294,6 +572,7 @@ data:
             from_address_help: 'Email address of the sender'
             from_name: 'Sender Name'
             from_name_help: 'Name of the sender'
+            from_name_placeholder: 'Little ISMS Helper'
             sender_info: 'Sender Information'
             skip_button: Skip
             skipped: 'Email configuration skipped'
@@ -2321,6 +600,8 @@ data:
             country_help: 'Main location of your organisation'
             description: Description
             description_help: 'Brief description of your organisation and business activities'
+            name_placeholder: 'Example Ltd.'
+            description_placeholder: 'Brief description of the organisation and business activities...'
             info_saved: 'Organisation information saved successfully'
             info_failed: 'Error saving organisation information'
             usage: { title: 'Use of this Information', message: 'This information will be used to provide industry-specific recommendations and compliance requirements.' }
@@ -2763,38 +1044,6 @@ nis2:
     not_active: ''
     report_not_available: ''
     incident_not_reportable: ''
-data_breach:
-    form:
-        title: Title
-        incident: 'Security Incident'
-        processing_activity: 'Processing Activity (RoPA)'
-        affected_data_subjects: 'Affected Data Subjects (Count)'
-        data_categories: 'Data Categories'
-        data_subject_categories: 'Data Subject Categories'
-        breach_nature: 'Nature of the Breach'
-        likely_consequences: 'Likely Consequences'
-        measures_taken: 'Measures Taken'
-        mitigation_measures: 'Mitigation Measures'
-        risk_level: 'Risk Level'
-        risk_assessment: 'Risk Assessment'
-        special_categories_affected: 'Special Categories Affected (Art. 9 GDPR)'
-        criminal_data_affected: 'Criminal Convictions Affected (Art. 10 GDPR)'
-        requires_authority_notification: 'Supervisory Authority Notification Required'
-        requires_subject_notification: 'Data Subject Notification Required'
-        no_subject_notification_reason: 'Reason for Notification Exemption'
-        root_cause: 'Root Cause'
-        lessons_learned: 'Lessons Learned'
-        data_protection_officer: 'Data Protection Officer'
-    pdf:
-        art_33_3a_nature: ''
-        categories_personal_data: ''
-        categories_data_subjects: ''
-        approx_number_subjects: ''
-        art_33_3b_consequences: ''
-        art_33_3c_d_measures: ''
-        measures_taken: ''
-        measures_mitigate: ''
-        art_34_communication: ''
 Customer: Customer
 Shareholder: Shareholder
 Employee: Employee
@@ -2821,6 +1070,11 @@ Active: Active
 Inactive: Inactive
 Evaluation: Evaluation
 Terminated: Terminated
+vulnerability:
+    success:
+        created: ''
+        updated: ''
+        deleted: ''
 processing_activity:
     created: ''
     updated: ''
@@ -2830,25 +1084,48 @@ processing_activity:
     marked_for_review: ''
     review_completed: ''
     cloned: ''
-    permanently_delete: ''
-    view_all_activities: ''
-    pdf:
-        art_30_title: ''
-        table_of_contents: ''
-        art_30_1a: ''
-        purposes_processing: ''
-        art_30_1b: ''
-        art_30_1c: ''
-        art_30_1d: ''
-        art_30_1e: ''
-        legal_basis_retention: ''
-        art_30_1g: ''
+business_continuity_plan:
+    success:
+        created: ''
+        updated: ''
+        deleted: ''
+change_request:
+    success:
+        created: ''
+        updated: ''
+        deleted: ''
+workflow:
+    success:
+        approved: ''
+        started: ''
+        definition_created: ''
+        definition_updated: ''
+        definition_deleted: ''
+    error:
+        not_authorized_approve: ''
+        comments_required: ''
+        not_authorized_reject: ''
+        not_found: ''
+        has_active_instances: ''
+    warning:
+        rejected: ''
+    info:
+        cancelled: ''
+        no_active_workflow: ''
+security:
+    error:
+        too_many_attempts: ''
+        saml_login_error: ''
+        saml_logout_error: ''
+    csrf_token_invalid: ''
+location:
+    success:
+        created: ''
+        updated: ''
+        deleted: ''
 context:
     success:
         updated: ''
-    message:
-        overdue_review_text: ''
-        upcoming_review_text: ''
 mfa:
     challenge:
         error:
@@ -2860,6 +1137,29 @@ mfa:
         token_not_found: ''
     success:
         token_reset: ''
+user:
+    success:
+        created: ''
+        bulk_action_completed: ''
+        imported: ''
+        updated: ''
+        deleted: ''
+        activated: ''
+        deactivated: ''
+    error:
+        no_users_selected: ''
+        no_file_uploaded: ''
+        cannot_deactivate_initial_admin: ''
+        cannot_remove_admin_role_from_initial_admin: ''
+        cannot_delete_initial_admin: ''
+    info:
+        bulk_skipped_initial_admin: ''
+        bulk_skipped_current_user: ''
+        bulk_skipped_no_permission: ''
+        bulk_skipped_already_has_role: ''
+    warning:
+        own_password_changed: ''
+        session_will_be_invalidated: ''
 dpia:
     created: ''
     updated: ''
@@ -2874,20 +1174,6 @@ dpia:
     marked_for_review: ''
     review_completed: ''
     cloned: ''
-    index:
-        create_first_dpia: ''
-    show:
-        cancel_button: ''
-    pdf:
-        art_35_7a_description: ''
-        purposes_processing: ''
-        art_35_7b_assessment: ''
-        art_35_7c_risks: ''
-        specific_risks: ''
-        art_35_7d_measures: ''
-        next_review_date: ''
-        approved_by: ''
-        footer_text: ''
 admin:
     data_repair:
         tenant_not_found: ''
@@ -2898,7 +1184,25 @@ admin:
         select_asset: ''
         asset_not_found: ''
         select_risk: ''
+business_process:
+    success:
+        created: ''
+        updated: ''
+        deleted: ''
+asset:
+    success:
+        created: ''
+        updated: ''
+        deleted: ''
+    bulk_delete:
+        success: ''
+        no_items: ''
 training:
+    success:
+        created: ''
+        updated: ''
+        deleted: ''
+interested_party:
     success:
         created: ''
         updated: ''
@@ -2906,18 +1210,78 @@ training:
 session:
     error:
         invalid_token: ''
+objective:
+    success:
+        created: ''
+        updated: ''
+        deleted: ''
+control:
+    success:
+        updated: ''
+audit:
+    success:
+        created: ''
+        updated: ''
+        deleted: ''
+document:
+    error:
+        too_many_uploads: ''
+        upload_failed: ''
+    success:
+        uploaded: ''
+        updated: ''
+        deleted: ''
 crisis_team:
     success:
         created: ''
         updated: ''
         deleted: ''
         activated: ''
+bc_exercise:
+    success:
+        created: ''
+        updated: ''
+        deleted: ''
 management_review:
     success:
         created: ''
         updated: ''
         deleted: ''
+incident:
+    success:
+        reported: ''
+        updated: ''
+        deleted: ''
+    bcm:
+        auto_detect_success: ''
+        no_processes_detected: ''
+risk:
+    success:
+        created: ''
+        updated: ''
+        deleted: ''
+    acceptance:
+        error:
+            wrong_strategy: ''
+            already_accepted: ''
+            justification_required: ''
+            reason_required: ''
+        success:
+            auto_accepted: ''
+            approval_requested: ''
+            approved: ''
+            rejected: ''
 risk_appetite:
+    success:
+        created: ''
+        updated: ''
+        deleted: ''
+patch:
+    success:
+        created: ''
+        updated: ''
+        deleted: ''
+supplier:
     success:
         created: ''
         updated: ''
@@ -2943,86 +1307,6 @@ clause:
     8: ''
     9: ''
     10: ''
-security_reports:
-    page:
-        title: ''
-        subtitle: ''
-    nav:
-        title: ''
-        overview: ''
-        owasp_2025: ''
-        owasp_2021: ''
-        all_reports: ''
-    action:
-        title: ''
-        regenerate: ''
-        print: ''
-        download_md: ''
-    info:
-        regenerate_hint: ''
-    card:
-        owasp_2025_title: ''
-        full_report: ''
-    label:
-        overall_score: ''
-        status: ''
-        generated_at: ''
-        view_report: ''
-    severity:
-        p0: ''
-        p1: ''
-        p2: ''
-    legend:
-        title: ''
-    severity_desc:
-        p0: ''
-        p1: ''
-        p2: ''
-reports:
-    overview: ''
-    integrate_ci_cd: ''
-    page:
-        title: ''
-        subtitle: ''
-    card:
-        dashboard:
-            title: ''
-            description: ''
-            features: { feature_1: '', feature_2: '', feature_3: '', feature_4: '' }
-        risks:
-            title: ''
-            description: ''
-            features: { feature_1: '', feature_2: '', feature_3: '', feature_4: '' }
-        soa:
-            title: ''
-            description: ''
-            features: { feature_1: '', feature_2: '', feature_3: '', feature_4: '' }
-        incidents:
-            title: ''
-            description: ''
-            features: { feature_1: '', feature_2: '', feature_3: '', feature_4: '' }
-        training:
-            title: ''
-            description: ''
-            features: { feature_1: '', feature_2: '', feature_3: '', feature_4: '' }
-    custom:
-        title: ''
-        subtitle: ''
-        items:
-            item_1: ''
-            item_2: ''
-            item_3: ''
-            item_4: ''
-        coming_soon: ''
-    best_practices:
-        audits:
-            title: ''
-            items: { item_1: '', item_2: '', item_3: '', item_4: '' }
-        management:
-            title: ''
-            items: { item_1: '', item_2: '', item_3: '', item_4: '' }
-    section:
-        best_practices: ''
 data_management:
     import:
         step_upload: ''
@@ -3083,25 +1367,10 @@ pdf:
 bulk_actions:
     select_all: ''
 not_assigned: ''
-'yes': ''
-'no': ''
-user_management:
-    import_irreversible: ''
 page:
     title: ''
-report:
-    document_type: ''
-    header_center: ''
-    default_reviewer: ''
-    default_approver: ''
 label:
     classification_confidential: ''
     classification_confidential_upper: ''
-monitoring:
-    by_level: ''
-    show_entries: ''
-    no_errors_found: ''
-    reverse_order: ''
-    recent_entries_only: ''
-    full_log_analysis: ''
-    large_files_warning: ''
+report:
+    default_approver: ''
