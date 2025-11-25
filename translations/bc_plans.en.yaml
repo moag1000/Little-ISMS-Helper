@@ -1,38 +1,96 @@
-bc_plans.page.title: 'Business Continuity Plans'
-bc_plans.page.header: 'Business Continuity Plans'
-bc_plans.page.subtitle: 'ISO 22301:2019 Business Continuity Management'
-bc_plans.action.add_new: 'Add New BC Plan'
-bc_plans.alert.overdue_tests: '⚠️ Overdue BC Plan Tests'
-bc_plans.alert.overdue_reviews: '⚠️ Overdue BC Plan Reviews'
-bc_plans.section.details: 'BC Plan Details'
-bc_plans.section.testing_review: 'Testing & Review'
-bc_plans.section.review_notes: 'Review Notes'
-bc_plans.section.communication_plan: 'Communication Plan'
-bc_plans.section.alternative_site: 'Alternative Site'
-bc_plans.section.related_risks: 'Related Risks'
-bc_plans.table.name: Name
-bc_plans.table.business_process: 'Business Process'
-bc_plans.table.owner: Owner
-bc_plans.table.status: Status
-bc_plans.table.readiness: Readiness
-bc_plans.table.last_tested: 'Last Tested'
-bc_plans.table.actions: Actions
-bc_plans.field.business_process: 'Business Process'
-bc_plans.field.plan_owner: 'Plan Owner'
-bc_plans.field.version: Version
-bc_plans.field.last_tested: 'Last Tested'
-bc_plans.field.next_test: 'Next Test'
-bc_plans.field.last_review: 'Last Review'
-bc_plans.field.next_review: 'Next Review'
-bc_plans.field.address: Address
-bc_plans.field.capacity: Capacity
-bc_plans.badge.overdue: OVERDUE
-bc_plans.status.draft: Draft
-bc_plans.status.under_review: 'Under Review'
-bc_plans.status.active: Active
-bc_plans.status.archived: Archived
-bc_plans.message.not_scheduled: 'Not scheduled'
-bc_plans.message.never: Never
-bc_plans.message.no_plans: 'No BC plans found.'
-bc_plans.message.create_first: 'Create your first BC plan'
-bc_plans.message.readiness_score: 'Readiness Score: %score%%'
+bc_plans:
+    page:
+        title: 'Business Continuity Plans'
+        header: 'Business Continuity Plans'
+        subtitle: 'ISO 22301:2019 Business Continuity Management'
+    action:
+        add_new: 'Add New BC Plan'
+    alert:
+        overdue_tests: '⚠️ Overdue BC Plan Tests'
+        overdue_reviews: '⚠️ Overdue BC Plan Reviews'
+    section:
+        details: 'BC Plan Details'
+        testing_review: 'Testing & Review'
+        review_notes: 'Review Notes'
+        communication_plan: 'Communication Plan'
+        alternative_site: 'Alternative Site'
+        related_risks: 'Related Risks'
+        basic_info: Basic Information
+        team: Team
+        activation: Activation
+        communication: Communication
+        backup_recovery: Backup Recovery
+        version_review: Version Review
+    table:
+        name: Name
+        business_process: 'Business Process'
+        owner: Owner
+        status: Status
+        readiness: Readiness
+        last_tested: 'Last Tested'
+        actions: Actions
+    field:
+        business_process: 'Business Process'
+        plan_owner: 'Plan Owner'
+        version: Version
+        last_tested: 'Last Tested'
+        next_test: 'Next Test'
+        last_review: 'Last Review'
+        next_review: 'Next Review'
+        address: Address
+        capacity: Capacity
+        name: Name
+        description: Description
+        status: Status
+        bc_team: Bc Team
+        activation_criteria: Activation Criteria
+        roles_responsibilities: Roles Responsibilities
+        recovery_procedures: Recovery Procedures
+        communication_plan: Communication Plan
+        internal_communication: Internal Communication
+        external_communication: External Communication
+        alternative_site: Alternative Site
+        alternative_site_address: Alternative Site Address
+        alternative_site_capacity: Alternative Site Capacity
+        backup_procedures: Backup Procedures
+        restore_procedures: Restore Procedures
+        next_test_date: Next Test Date
+        last_review_date: Last Review Date
+        next_review_date: Next Review Date
+        review_notes: Review Notes
+    badge:
+        overdue: OVERDUE
+    message:
+        not_scheduled: 'Not scheduled'
+        never: Never
+        no_plans: 'No BC plans found.'
+        create_first: 'Create your first BC plan'
+        readiness_score: 'Readiness Score: %score%%'
+    help:
+        name: Name
+        business_process: Business Process
+        description: Description
+        plan_owner: Plan Owner
+        status: Status
+        bc_team: Bc Team
+        activation_criteria: Activation Criteria
+        roles_responsibilities: Roles Responsibilities
+        recovery_procedures: Recovery Procedures
+        communication_plan: Communication Plan
+        internal_communication: Internal Communication
+        external_communication: External Communication
+        alternative_site: Alternative Site
+        alternative_site_address: Alternative Site Address
+        alternative_site_capacity: Alternative Site Capacity
+        backup_procedures: Backup Procedures
+        restore_procedures: Restore Procedures
+        version: Version
+        last_tested: Last Tested
+        next_test_date: Next Test Date
+        last_review_date: Last Review Date
+        next_review_date: Next Review Date
+        review_notes: Review Notes
+bcm:
+    field:
+        activation_criteria: Activation Criteria
+        recovery_plan: Recovery Plan

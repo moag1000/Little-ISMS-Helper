@@ -1,54 +1,66 @@
-interested_party.title: 'Interested Parties'
-interested_party.page.title: 'Manage Interested Parties'
-interested_party.page.new_title: 'New Interested Party'
-interested_party.page.edit_title: 'Edit Interested Party'
-interested_party.page.show_title: 'Interested Party Details'
-interested_party.action.add_new: 'Add New Party'
-interested_party.action.create: 'Create Interested Party'
-interested_party.action.update: 'Save Changes'
-interested_party.action.delete: Delete
-interested_party.action.view: View
-interested_party.action.edit: Edit
-interested_party.action.back_to_list: 'Back to List'
-interested_party.iso_reference: 'ISO 27001 Clause 4.2: Understanding the needs and expectations of interested parties'
-interested_party.alert.overdue_communications: 'Overdue communication activities'
-interested_party.next_communication: 'Next communication'
-interested_party.high_importance.title: 'High-importance parties'
-interested_party.engagement_score: 'Engagement score'
-interested_party.list.title: 'List ({{ count }})'
-interested_party.table.name: Name
-interested_party.table.type: Type
-interested_party.table.importance: Importance
-interested_party.table.engagement_score: 'Engagement score'
-interested_party.table.last_communication: 'Last communication'
-interested_party.table.actions: Actions
-interested_party.never: Never
-interested_party.not_scheduled: 'Not scheduled'
-interested_party.badge.overdue: Overdue
-interested_party.section.basic_info: 'Basic information'
-interested_party.section.contact_info: 'Contact information'
-interested_party.section.requirements: 'Requirements & Expectations'
-interested_party.section.communication: Communication
-interested_party.section.feedback: 'Feedback & Satisfaction'
-interested_party.section.meta: Metadata
-interested_party.field.name: Name
-interested_party.field.party_type: 'Party type'
-interested_party.field.importance: Importance
-interested_party.field.description: Description
-interested_party.field.contact_person: 'Contact person'
-interested_party.field.email: Email
-interested_party.field.phone: Phone
-interested_party.field.requirements: Requirements
-interested_party.field.how_addressed: 'How addressed'
-interested_party.field.communication_frequency: 'Communication frequency'
-interested_party.field.communication_method: 'Communication method'
-interested_party.field.last_communication: 'Last communication'
-interested_party.field.next_communication: 'Next communication'
-interested_party.field.feedback: Feedback
-interested_party.field.satisfaction_level: 'Satisfaction level'
-interested_party.field.issues: Issues/Concerns
-interested_party.field.created_at: 'Created at'
-interested_party.field.updated_at: 'Updated at'
-interested_party.empty.message: 'No interested parties found.'
-interested_party.empty.add_first: 'Add first party'
-interested_party.confirm.delete: 'Are you sure you want to delete this interested party?'
+interested_party:
+    title: 'Interested Parties'
+    page:
+        title: 'Manage Interested Parties'
+        new_title: 'New Interested Party'
+        edit_title: 'Edit Interested Party'
+        show_title: 'Interested Party Details'
+    action:
+        add_new: 'Add New Party'
+        create: 'Create Interested Party'
+        update: 'Save Changes'
+        delete: Delete
+        view: View
+        edit: Edit
+        back_to_list: 'Back to List'
+    iso_reference: 'ISO 27001 Clause 4.2: Understanding the needs and expectations of interested parties'
+    alert:
+        overdue_communications: 'Overdue communication activities'
+    next_communication: 'Next communication'
+    high_importance:
+        title: 'High-importance parties'
+    engagement_score: 'Engagement score'
+    list:
+        title: 'List ({{ count }})'
+    table:
+        name: Name
+        type: Type
+        importance: Importance
+        engagement_score: 'Engagement score'
+        last_communication: 'Last communication'
+        actions: Actions
+    never: Never
+    not_scheduled: 'Not scheduled'
+    badge:
+        overdue: Overdue
+    section:
+        basic_info: 'Basic information'
+        contact_info: 'Contact information'
+        requirements: 'Requirements & Expectations'
+        communication: Communication
+        feedback: 'Feedback & Satisfaction'
+        meta: Metadata
+    field:
+        name: Name
+        party_type: 'Party type'
+        importance: Importance
+        description: Description
+        contact_person: 'Contact person'
+        email: Email
+        phone: Phone
+        requirements: Requirements
+        how_addressed: 'How addressed'
+        communication_frequency: 'Communication frequency'
+        communication_method: 'Communication method'
+        last_communication: 'Last communication'
+        next_communication: 'Next communication'
+        feedback: Feedback
+        satisfaction_level: 'Satisfaction level'
+        issues: Issues/Concerns
+        created_at: 'Created at'
+        updated_at: 'Updated at'
+    empty:
+        message: 'No interested parties found.'
+        add_first: 'Add first party'
+    confirm:
+        delete: 'Are you sure you want to delete this interested party?'

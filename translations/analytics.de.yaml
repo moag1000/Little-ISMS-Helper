@@ -1,70 +1,70 @@
 analytics:
-  page:
-    title: Analytics Dashboard
-    subtitle: Erweiterte Datenanalysen und Visualisierungen
-  action:
-    export: Export
-    export_risks_csv: Risiken als CSV exportieren
-    export_assets_csv: Assets als CSV exportieren
-    export_compliance_csv: Compliance als CSV exportieren
-    print_dashboard: Dashboard drucken
-    filter: Filtern
-    refresh: Aktualisieren
-    export_png: Als PNG exportieren
-    reset_filters: Filter zurücksetzen
-  filter:
-    period:
-      last_6_months: Letzte 6 Monate
-      last_12_months: Letzte 12 Monate
-      last_24_months: Letzte 24 Monate
-    status: Status
-    category: Kategorie
-    time: Zeitraum
-    all: Alle
-  tabs:
-    overview: Übersicht
-    heat_map: Risiko-Heatmap
-    compliance_radar: Compliance-Radar
-    trends: Trends
-  card:
-    risk_heat_map: Risiko-Heatmap
-    compliance_radar: Compliance-Radar
-    trend_analysis: Trendanalyse
-  loading:
-    loading: Lädt…
-    loading_heat_map: Heatmap-Daten werden geladen…
-    loading_compliance: Compliance-Daten werden geladen…
-    loading_trends: Trenddaten werden geladen…
-  legend:
-    critical: Kritisch (15–25)
-    high: Hoch (8–14)
-    medium: Mittel (4–7)
-    low: Niedrig (1–3)
-  axes:
-    impact: Auswirkung →
-    probability: ← Eintrittswahrscheinlichkeit
-  details:
-    risks_in_cell: Risiken in dieser Zelle
-  overall_compliance: Gesamt-Compliance
-  table:
-    annex: Anhang
-    implemented: Implementiert
-    total: Gesamt
-    compliance: Compliance
-  trend_tabs:
-    risks: Risiken
-    assets: Assets
-    incidents: Vorfälle
-  chart_title:
-    risk_trends_last_12: Risikotrends (Letzte 12 Monate)
-    asset_growth_last_12: Assetwachstum (Letzte 12 Monate)
-    incident_trends_last_12: Vorfall-Trends (Letzte 12 Monate)
-  stat_label:
-    total_risks: Gesamt-Risiken
-    high_risk: Hohe Risiken
-    trend: Trend
-    total_assets: Gesamt-Assets
-    growth: Wachstum
-    total_incidents: Gesamt-Vorfälle
-    critical: Kritisch
-    avg_per_month: Ø/Monat
+    page:
+        title: 'Analytics Dashboard'
+        subtitle: 'Erweiterte Datenanalysen und Visualisierungen'
+    action:
+        export: Export
+        export_risks_csv: 'Risiken als CSV exportieren'
+        export_assets_csv: 'Assets als CSV exportieren'
+        export_compliance_csv: 'Compliance als CSV exportieren'
+        print_dashboard: 'Dashboard drucken'
+        filter: Filtern
+        refresh: Aktualisieren
+        export_png: 'Als PNG exportieren'
+        reset_filters: 'Filter zurücksetzen'
+    filter:
+        period:
+            last_6_months: 'Letzte 6 Monate'
+            last_12_months: 'Letzte 12 Monate'
+            last_24_months: 'Letzte 24 Monate'
+        status: Status
+        category: Kategorie
+        time: Zeitraum
+        all: Alle
+    tabs:
+        overview: Übersicht
+        heat_map: Risiko-Heatmap
+        compliance_radar: Compliance-Radar
+        trends: Trends
+    card:
+        risk_heat_map: Risiko-Heatmap
+        compliance_radar: Compliance-Radar
+        trend_analysis: Trendanalyse
+    loading:
+        loading: Lädt…
+        loading_heat_map: 'Heatmap-Daten werden geladen…'
+        loading_compliance: 'Compliance-Daten werden geladen…'
+        loading_trends: 'Trenddaten werden geladen…'
+    legend:
+        critical: 'Kritisch (15–25)'
+        high: 'Hoch (8–14)'
+        medium: 'Mittel (4–7)'
+        low: 'Niedrig (1–3)'
+    axes:
+        impact: 'Auswirkung →'
+        probability: '← Eintrittswahrscheinlichkeit'
+    details:
+        risks_in_cell: 'Risiken in dieser Zelle'
+    overall_compliance: Gesamt-Compliance
+    table:
+        annex: Anhang
+        implemented: Implementiert
+        total: Gesamt
+        compliance: Compliance
+    trend_tabs:
+        risks: Risiken
+        assets: Assets
+        incidents: Vorfälle
+    chart_title:
+        risk_trends_last_12: 'Risikotrends (Letzte 12 Monate)'
+        asset_growth_last_12: 'Assetwachstum (Letzte 12 Monate)'
+        incident_trends_last_12: 'Vorfall-Trends (Letzte 12 Monate)'
+    stat_label:
+        total_risks: Gesamt-Risiken
+        high_risk: 'Hohe Risiken'
+        trend: Trend
+        total_assets: Gesamt-Assets
+        growth: Wachstum
+        total_incidents: Gesamt-Vorfälle
+        critical: Kritisch
+        avg_per_month: Ø/Monat

@@ -1,72 +1,73 @@
 management_review:
-  title: Managementbewertung
-  new: Neue Managementbewertung
-  create: Bewertung anlegen
-  iso_requirement: "ISO 27001: Managementbewertung (Klausel 9.3)"
-  iso_clause_info: "Die oberste Leitung muss das ISMS in geplanten Abständen bewerten, um dessen fortdauernde Eignung, Angemessenheit und Wirksamkeit sicherzustellen."
-  iso_clause_93_info: "Bewertung gemäß ISO 27001:2022, Klausel 9.3 (Managementbewertung)."
-  statistics:
-    total: Gesamt‑Bewertungen
-    planned: Geplant
-    completed: Abgeschlossen
-    this_year: Dieses Jahr
-  all_reviews: Alle Bewertungen
-  no_reviews: Keine Bewertungen vorhanden.
-  create_first: Erste Bewertung anlegen
-  confirm_delete: Bewertung löschen?
-  delete_warning: "Möchten Sie die Bewertung '%title%' wirklich löschen?"
-  changes_relevant_to_isms: Änderungen mit Relevanz für das ISMS
-  feedback_from_interested_parties: Rückmeldungen interessierter Parteien
-  audit_results: Ergebnisse von Audits
-  performance_evaluation: Leistung des ISMS (Ziele, Indikatoren)
-  previous_review_actions: Status früherer Maßnahmen
-  nonconformities_status: Status von Nichtkonformitäten
-  corrective_actions_status: Status der Korrekturmaßnahmen
-  opportunities_for_improvement: Verbesserungsmöglichkeiten
-  resource_needs: Ressourcenbedarf
-  decisions: Beschlüsse/Entscheidungen
-  action_items: Maßnahmenliste
-  management_decisions: Management‑Beschlüsse
-  action_items_label: Maßnahmen
-  clause_93: ISO 27001 Klausel 9.3
-  clause_93_description: Eingaben und Ergebnisse der Managementbewertung gemäß ISO 27001:2022.
-  inputs_label: Eingaben (Beispiele)
-  input_1: Änderungen interner und externer Themen mit ISMS‑Bezug
-  input_2: Rückmeldungen interessierter Parteien
-  input_3: Informationen zur Leistung und Wirksamkeit des ISMS
-  input_4: Status früherer Maßnahmen und Risikobehandlung
-  outputs_label: Ergebnisse (Beispiele)
-  output_1: Beschlüsse/Maßnahmen zu Verbesserungsmöglichkeiten
-  output_2: Änderungsbedarf am ISMS
-  output_3: Ressourcenbedarf
-  section:
-    basic_info: Basisinformationen
-    inputs: Eingaben zur Bewertung (9.3.2)
-    followup: Status früherer Maßnahmen
-    outputs: Ergebnisse der Bewertung (9.3.3)
-  field:
-    title: Titel
-    review_date: Bewertungsdatum
-    participants: Teilnehmende
-    status: Status
-    changes_relevant_to_isms: Änderungen mit Relevanz für das ISMS
-    feedback_from_interested_parties: Rückmeldungen interessierter Parteien
-    audit_results: Ergebnisse von Audits
-    performance_evaluation: Leistung des ISMS (Ziele, Indikatoren)
-    previous_review_actions: Status früherer Maßnahmen
-    non_conformities_status: Status von Nichtkonformitäten
-    corrective_actions_status: Status der Korrekturmaßnahmen
+    title: Managementbewertung
+    new: 'Neue Managementbewertung'
+    create: 'Bewertung anlegen'
+    iso_requirement: 'ISO 27001: Managementbewertung (Klausel 9.3)'
+    iso_clause_info: 'Die oberste Leitung muss das ISMS in geplanten Abständen bewerten, um dessen fortdauernde Eignung, Angemessenheit und Wirksamkeit sicherzustellen.'
+    iso_clause_93_info: 'Bewertung gemäß ISO 27001:2022, Klausel 9.3 (Managementbewertung).'
+    statistics:
+        total: Gesamt‑Bewertungen
+        planned: Geplant
+        completed: Abgeschlossen
+        this_year: 'Dieses Jahr'
+    all_reviews: 'Alle Bewertungen'
+    no_reviews: 'Keine Bewertungen vorhanden.'
+    create_first: 'Erste Bewertung anlegen'
+    confirm_delete: 'Bewertung löschen?'
+    delete_warning: "Möchten Sie die Bewertung '%title%' wirklich löschen?"
+    changes_relevant_to_isms: 'Änderungen mit Relevanz für das ISMS'
+    feedback_from_interested_parties: 'Rückmeldungen interessierter Parteien'
+    audit_results: 'Ergebnisse von Audits'
+    performance_evaluation: 'Leistung des ISMS (Ziele, Indikatoren)'
+    previous_review_actions: 'Status früherer Maßnahmen'
+    nonconformities_status: 'Status von Nichtkonformitäten'
+    corrective_actions_status: 'Status der Korrekturmaßnahmen'
     opportunities_for_improvement: Verbesserungsmöglichkeiten
     resource_needs: Ressourcenbedarf
     decisions: Beschlüsse/Entscheidungen
     action_items: Maßnahmenliste
-  status_values:
-    planned: Geplant
-    in_progress: In Bearbeitung
-    completed: Abgeschlossen
-    cancelled: Abgebrochen
-  status:
-    planned: Geplant
-    in_progress: In Bearbeitung
-    completed: Abgeschlossen
-    cancelled: Abgebrochen
+    management_decisions: Management‑Beschlüsse
+    action_items_label: Maßnahmen
+    clause_93: 'ISO 27001 Klausel 9.3'
+    clause_93_description: 'Eingaben und Ergebnisse der Managementbewertung gemäß ISO 27001:2022.'
+    inputs_label: 'Eingaben (Beispiele)'
+    input_1: 'Änderungen interner und externer Themen mit ISMS‑Bezug'
+    input_2: 'Rückmeldungen interessierter Parteien'
+    input_3: 'Informationen zur Leistung und Wirksamkeit des ISMS'
+    input_4: 'Status früherer Maßnahmen und Risikobehandlung'
+    outputs_label: 'Ergebnisse (Beispiele)'
+    output_1: 'Beschlüsse/Maßnahmen zu Verbesserungsmöglichkeiten'
+    output_2: 'Änderungsbedarf am ISMS'
+    output_3: Ressourcenbedarf
+    section:
+        basic_info: Basisinformationen
+        inputs: 'Eingaben zur Bewertung (9.3.2)'
+        followup: 'Status früherer Maßnahmen'
+        outputs: 'Ergebnisse der Bewertung (9.3.3)'
+    field:
+        title: Titel
+        review_date: Bewertungsdatum
+        participants: Teilnehmende
+        status: Status
+        changes_relevant_to_isms: 'Änderungen mit Relevanz für das ISMS'
+        feedback_from_interested_parties: 'Rückmeldungen interessierter Parteien'
+        audit_results: 'Ergebnisse von Audits'
+        performance_evaluation: 'Leistung des ISMS (Ziele, Indikatoren)'
+        previous_review_actions: 'Status früherer Maßnahmen'
+        non_conformities_status: 'Status von Nichtkonformitäten'
+        corrective_actions_status: 'Status der Korrekturmaßnahmen'
+        opportunities_for_improvement: Verbesserungsmöglichkeiten
+        resource_needs: Ressourcenbedarf
+        decisions: Beschlüsse/Entscheidungen
+        action_items: Maßnahmenliste
+    status_values:
+        planned: Geplant
+        in_progress: 'In Bearbeitung'
+        completed: Abgeschlossen
+        cancelled: Abgebrochen
+    status:
+        planned: Geplant
+        in_progress: 'In Bearbeitung'
+        completed: Abgeschlossen
+        cancelled: Abgebrochen
+    edit: Bearbeiten

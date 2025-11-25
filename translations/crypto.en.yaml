@@ -1,28 +1,31 @@
-crypto.title: 'Cryptographic Operations'
-crypto.name: 'Cryptographic Operation'
-crypto.operation_type: 'Operation Type'
-crypto.algorithm: Algorithm
-crypto.key_length: 'Key Length'
-crypto.key_identifier: 'Key Identifier'
-crypto.purpose: Purpose
-crypto.data_classification: 'Data Classification'
-crypto.application_component: 'Application Component'
-crypto.related_asset: 'Related Asset'
-crypto.status: Status
-crypto.error_message: 'Error Message'
-crypto.timestamp: Timestamp
-crypto.ip_address: 'IP Address'
-crypto.metadata: Metadata
-crypto.compliance_relevant: 'Compliance Relevant'
-crypto.type.encryption: Encryption
-crypto.type.decryption: Decryption
-crypto.type.signing: Signing
-crypto.type.verification: Verification
-crypto.type.key_generation: 'Key Generation'
-crypto.type.key_exchange: 'Key Exchange'
-crypto.type.hashing: Hashing
-crypto.type.other: Other
-crypto.status_type.success: Success
-crypto.status_type.failed: Failed
-crypto.status_type.pending: Pending
-crypto.status_type.in_progress: 'In Progress'
+crypto:
+    title: 'Cryptographic Operations'
+    name: 'Cryptographic Operation'
+    operation_type: 'Operation Type'
+    algorithm: Algorithm
+    key_length: 'Key Length'
+    key_identifier: 'Key Identifier'
+    purpose: Purpose
+    data_classification: 'Data Classification'
+    application_component: 'Application Component'
+    related_asset: 'Related Asset'
+    status: Status
+    error_message: 'Error Message'
+    timestamp: Timestamp
+    ip_address: 'IP Address'
+    metadata: Metadata
+    compliance_relevant: 'Compliance Relevant'
+    type:
+        encryption: Encryption
+        decryption: Decryption
+        signing: Signing
+        verification: Verification
+        key_generation: 'Key Generation'
+        key_exchange: 'Key Exchange'
+        hashing: Hashing
+        other: Other
+    status_type:
+        success: Success
+        failed: Failed
+        pending: Pending
+        in_progress: 'In Progress'

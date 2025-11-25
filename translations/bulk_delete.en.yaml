@@ -1,11 +1,15 @@
-bulk_delete.confirm.title: 'Confirm Deletion'
-bulk_delete.confirm.warning: 'This action cannot be undone.'
-bulk_delete.selection.title: 'Selected Entries'
-bulk_delete.dependencies.title: 'Affected Dependencies'
-bulk_delete.dependencies.list: 'List of affected dependencies'
-bulk_delete.loading: 'Checking dependencies...'
-bulk_delete.warning: __bulk_delete.warning
-bulk_delete.will_be_deleted: __bulk_delete.will_be_deleted
-bulk_delete.selected_items: __bulk_delete.selected_items
-bulk_delete.understand: __bulk_delete.understand
-bulk_delete.confirm_help: __bulk_delete.confirm_help
+bulk_delete:
+    confirm:
+        title: 'Confirm Deletion'
+        warning: 'This action cannot be undone.'
+    selection:
+        title: 'Selected Entries'
+    dependencies:
+        title: 'Affected Dependencies'
+        list: 'List of affected dependencies'
+    loading: 'Checking dependencies...'
+    warning: Warning
+    will_be_deleted: Will Be Deleted
+    selected_items: Selected Items
+    understand: Understand
+    confirm_help: Confirm Help

@@ -1,25 +1,15 @@
 patch:
-  title: Patches
-  new: New Patch
-  list: Patch List
-  empty: No patches available.
-  kpi:
-    total: Total Patches
-    pending: Pending Patches
-    deployed: Deployed Patches
-  field:
-    patch_id: Patch ID
+    edit: Edit
+    new: New
     title: Title
-    patch_type: Patch Type
-    status: Status
-  type:
-    security: Security
-    bugfix: Bugfix
-    feature: Feature
-    other: Other
-  status:
-    pending: Pending
-    in_progress: In Progress
-    deployed: Deployed
-    failed: Failed
-    cancelled: Cancelled
+    field:
+        patch_id: Patch Id
+        title: Title
+        patch_type: Patch Type
+        status: Status
+        description: Description
+    kpi:
+        pending: Pending
+        deployed: Deployed
+        total: Total
+    empty: Empty

@@ -1,66 +1,66 @@
 interested_party:
-  title: Interessierte Parteien
-  page:
-    title: Interessierte Parteien verwalten
-    new_title: Neue interessierte Partei
-    edit_title: Interessierte Partei bearbeiten
-    show_title: Details zur interessierten Partei
-  action:
-    add_new: Neue Partei hinzufügen
-    create: Partei anlegen
-    update: Änderungen speichern
-    delete: Löschen
-    view: Anzeigen
-    edit: Bearbeiten
-    back_to_list: Zurück zur Liste
-  iso_reference: "ISO 27001 Klausel 4.2: Verstehen der Bedürfnisse und Erwartungen interessierter Parteien"
-  alert:
-    overdue_communications: Überfällige Kommunikationsmaßnahmen
-  next_communication: Nächste Kommunikation
-  high_importance:
-    title: Parteien mit hoher Bedeutung
-  engagement_score: Engagement‑Score
-  list:
-    title: "Liste ({{ count }})"
-  table:
-    name: Name
-    type: Typ
-    importance: Bedeutung
+    title: 'Interessierte Parteien'
+    page:
+        title: 'Interessierte Parteien verwalten'
+        new_title: 'Neue interessierte Partei'
+        edit_title: 'Interessierte Partei bearbeiten'
+        show_title: 'Details zur interessierten Partei'
+    action:
+        add_new: 'Neue Partei hinzufügen'
+        create: 'Partei anlegen'
+        update: 'Änderungen speichern'
+        delete: Löschen
+        view: Anzeigen
+        edit: Bearbeiten
+        back_to_list: 'Zurück zur Liste'
+    iso_reference: 'ISO 27001 Klausel 4.2: Verstehen der Bedürfnisse und Erwartungen interessierter Parteien'
+    alert:
+        overdue_communications: 'Überfällige Kommunikationsmaßnahmen'
+    next_communication: 'Nächste Kommunikation'
+    high_importance:
+        title: 'Parteien mit hoher Bedeutung'
     engagement_score: Engagement‑Score
-    last_communication: Letzte Kommunikation
-    actions: Aktionen
-  never: Nie
-  not_scheduled: Nicht geplant
-  badge:
-    overdue: Überfällig
-  section:
-    basic_info: Basisinformationen
-    contact_info: Kontaktinformationen
-    requirements: Anforderungen & Erwartungen
-    communication: Kommunikation
-    feedback: Feedback & Zufriedenheit
-    meta: Metadaten
-  field:
-    name: Name
-    party_type: Partei‑Typ
-    importance: Bedeutung
-    description: Beschreibung
-    contact_person: Kontaktperson
-    email: E‑Mail
-    phone: Telefon
-    requirements: Anforderungen
-    how_addressed: Wie adressiert
-    communication_frequency: Kommunikationsfrequenz
-    communication_method: Kommunikationsmethode
-    last_communication: Letzte Kommunikation
-    next_communication: Nächste Kommunikation
-    feedback: Feedback
-    satisfaction_level: Zufriedenheitsniveau
-    issues: Probleme/Bedarfe
-    created_at: Erstellt am
-    updated_at: Aktualisiert am
-  empty:
-    message: Keine interessierten Parteien vorhanden.
-    add_first: Erste Partei hinzufügen
-  confirm:
-    delete: Möchten Sie diese interessierte Partei wirklich löschen?
+    list:
+        title: 'Liste ({{ count }})'
+    table:
+        name: Name
+        type: Typ
+        importance: Bedeutung
+        engagement_score: Engagement‑Score
+        last_communication: 'Letzte Kommunikation'
+        actions: Aktionen
+    never: Nie
+    not_scheduled: 'Nicht geplant'
+    badge:
+        overdue: Überfällig
+    section:
+        basic_info: Basisinformationen
+        contact_info: Kontaktinformationen
+        requirements: 'Anforderungen & Erwartungen'
+        communication: Kommunikation
+        feedback: 'Feedback & Zufriedenheit'
+        meta: Metadaten
+    field:
+        name: Name
+        party_type: Partei‑Typ
+        importance: Bedeutung
+        description: Beschreibung
+        contact_person: Kontaktperson
+        email: E‑Mail
+        phone: Telefon
+        requirements: Anforderungen
+        how_addressed: 'Wie adressiert'
+        communication_frequency: Kommunikationsfrequenz
+        communication_method: Kommunikationsmethode
+        last_communication: 'Letzte Kommunikation'
+        next_communication: 'Nächste Kommunikation'
+        feedback: Feedback
+        satisfaction_level: Zufriedenheitsniveau
+        issues: Probleme/Bedarfe
+        created_at: 'Erstellt am'
+        updated_at: 'Aktualisiert am'
+    empty:
+        message: 'Keine interessierten Parteien vorhanden.'
+        add_first: 'Erste Partei hinzufügen'
+    confirm:
+        delete: 'Möchten Sie diese interessierte Partei wirklich löschen?'

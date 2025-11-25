@@ -1,52 +1,46 @@
-reports.page.title: 'Reports & Exports'
-reports.page.subtitle: 'Generate comprehensive PDF/Excel reports for compliance evidence and management reviews.'
-reports.action.download_pdf: 'Download PDF'
-reports.action.download_excel: 'Download Excel'
-reports.card.dashboard.title: 'Dashboard Summary'
-reports.card.dashboard.description: 'Comprehensive ISMS overview with all key metrics and statistics.'
-reports.card.dashboard.features.feature_1: 'Assets & Risks Overview'
-reports.card.dashboard.features.feature_2: 'Control Implementation Status'
-reports.card.dashboard.features.feature_3: 'Incident Summary'
-reports.card.dashboard.features.feature_4: 'Compliance Percentage'
-reports.card.risks.title: 'Risk Register'
-reports.card.risks.description: 'Complete risk assessment with likelihood, impact and treatment plans.'
-reports.card.risks.features.feature_1: 'All identified risks'
-reports.card.risks.features.feature_2: 'Risk scores & levels'
-reports.card.risks.features.feature_3: 'Treatment strategies'
-reports.card.risks.features.feature_4: 'Risk owners'
-reports.card.soa.title: 'Statement of Applicability'
-reports.card.soa.description: 'ISO 27001 Annex A controls documentation with applicability justification.'
-reports.card.soa.features.feature_1: 'All 93 ISO 27001:2022 controls'
-reports.card.soa.features.feature_2: 'Applicability status'
-reports.card.soa.features.feature_3: 'Implementation progress'
-reports.card.soa.features.feature_4: Justifications
-reports.card.incidents.title: 'Incident Log'
-reports.card.incidents.description: 'Complete incident management records with timeline and resolutions.'
-reports.card.incidents.features.feature_1: 'All security incidents'
-reports.card.incidents.features.feature_2: 'Severity classifications'
-reports.card.incidents.features.feature_3: 'Response timelines'
-reports.card.incidents.features.feature_4: 'Resolution status'
-reports.card.training.title: 'Training Log'
-reports.card.training.description: 'Security awareness and training documentation with attendance records.'
-reports.card.training.features.feature_1: 'All conducted trainings'
-reports.card.training.features.feature_2: 'Participant lists'
-reports.card.training.features.feature_3: 'Training types & methods'
-reports.card.training.features.feature_4: 'Mandatory trainings'
-reports.custom.title: 'Custom Reports'
-reports.custom.subtitle: 'Additional custom reports coming soon:'
-reports.custom.items.item_1: 'Audit Summary Reports'
-reports.custom.items.item_2: 'Management Review Reports'
-reports.custom.items.item_3: 'Asset Inventory'
-reports.custom.items.item_4: 'Compliance Gap Analysis'
-reports.custom.coming_soon: 'Coming Soon'
-reports.section.best_practices: 'Best Practices for Reports'
-reports.best_practices.audits.title: 'For Audits & Compliance:'
-reports.best_practices.audits.items.item_1: 'Generate Statement of Applicability before audits'
-reports.best_practices.audits.items.item_2: 'Include Risk Register in management reviews'
-reports.best_practices.audits.items.item_3: 'Document incident trends over time'
-reports.best_practices.audits.items.item_4: 'Track training completion rates'
-reports.best_practices.management.title: 'For Management Reporting:'
-reports.best_practices.management.items.item_1: 'Use Dashboard Summary for executive overviews'
-reports.best_practices.management.items.item_2: 'Highlight high‑risk items from Risk Register'
-reports.best_practices.management.items.item_3: 'Show control implementation progress'
-reports.best_practices.management.items.item_4: 'Report on mandatory training completion'
+reports:
+    page:
+        title: 'Reports & Exports'
+        subtitle: 'Generate comprehensive PDF/Excel reports for compliance evidence and management reviews.'
+    action:
+        download_pdf: 'Download PDF'
+        download_excel: 'Download Excel'
+    card:
+        dashboard:
+            title: 'Dashboard Summary'
+            description: 'Comprehensive ISMS overview with all key metrics and statistics.'
+            features: { feature_1: 'Assets & Risks Overview', feature_2: 'Control Implementation Status', feature_3: 'Incident Summary', feature_4: 'Compliance Percentage' }
+        risks:
+            title: 'Risk Register'
+            description: 'Complete risk assessment with likelihood, impact and treatment plans.'
+            features: { feature_1: 'All identified risks', feature_2: 'Risk scores & levels', feature_3: 'Treatment strategies', feature_4: 'Risk owners' }
+        soa:
+            title: 'Statement of Applicability'
+            description: 'ISO 27001 Annex A controls documentation with applicability justification.'
+            features: { feature_1: 'All 93 ISO 27001:2022 controls', feature_2: 'Applicability status', feature_3: 'Implementation progress', feature_4: Justifications }
+        incidents:
+            title: 'Incident Log'
+            description: 'Complete incident management records with timeline and resolutions.'
+            features: { feature_1: 'All security incidents', feature_2: 'Severity classifications', feature_3: 'Response timelines', feature_4: 'Resolution status' }
+        training:
+            title: 'Training Log'
+            description: 'Security awareness and training documentation with attendance records.'
+            features: { feature_1: 'All conducted trainings', feature_2: 'Participant lists', feature_3: 'Training types & methods', feature_4: 'Mandatory trainings' }
+    custom:
+        title: 'Custom Reports'
+        subtitle: 'Additional custom reports coming soon:'
+        items:
+            item_1: 'Audit Summary Reports'
+            item_2: 'Management Review Reports'
+            item_3: 'Asset Inventory'
+            item_4: 'Compliance Gap Analysis'
+        coming_soon: 'Coming Soon'
+    section:
+        best_practices: 'Best Practices for Reports'
+    best_practices:
+        audits:
+            title: 'For Audits & Compliance:'
+            items: { item_1: 'Generate Statement of Applicability before audits', item_2: 'Include Risk Register in management reviews', item_3: 'Document incident trends over time', item_4: 'Track training completion rates' }
+        management:
+            title: 'For Management Reporting:'
+            items: { item_1: 'Use Dashboard Summary for executive overviews', item_2: 'Highlight high‑risk items from Risk Register', item_3: 'Show control implementation progress', item_4: 'Report on mandatory training completion' }

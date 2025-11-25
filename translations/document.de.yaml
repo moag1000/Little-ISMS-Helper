@@ -1,58 +1,100 @@
 document:
-  title: Dokumente
-  subtitle: Verwaltung und Ablage von Richtlinien, Nachweisen und ISMS‑Dokumenten
-  action:
-    upload: Dokument hochladen
-    update: Aktualisieren
-  kpi:
-    total_documents: Gesamte Dokumente
-    total_size: Gesamte Größe
-  details:
-    title: Details
-  label:
-    type: Typ
-    file_name: Dateiname
-    size: Größe
-    mime_type: MIME‑Typ
-    uploaded_by: Hochgeladen von
-    uploaded_at: Hochgeladen am
-    last_updated: Zuletzt aktualisiert
-    related_entity: Zugehöriges Objekt
-  type:
-    pdf: PDF
-    images: Bilder
-    tables: Tabellen
-    excel: Excel
-    other: Andere
-  section:
-    type_overview: Typ‑Übersicht
-    all_documents: Alle Dokumente
-    basic_info: Basisinformationen
-    file_upload: Datei‑Upload
-  filter:
-    all_categories: Alle Kategorien
-    search_placeholder: Suche...
-  table:
-    icon: Symbol
-    uploaded_by: Hochgeladen von
-  message:
-    no_results: Keine Ergebnisse gefunden
-    no_documents: Noch keine Dokumente vorhanden
-    upload_first: Laden Sie Ihr erstes Dokument hoch, um zu starten
-  confirm:
-    delete: "Dieses Dokument wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden."
-  new: Neues Dokument
-  edit: Dokument bearbeiten
-  field:
-    name: Name
-    description: Beschreibung
-    document_type: Dokumenttyp
-    file: Datei
-  help:
-    name: Eindeutiger Name des Dokuments
-    description: Detaillierte Beschreibung des Inhalts und Zwecks
-    document_type: Kategorie des Dokuments (z. B. Richtlinie, Verfahren)
-    file: Wählen Sie eine Datei zum Hochladen
-    edit_file: Lassen Sie das Feld leer, um die vorhandene Datei beizubehalten
-    file_edit: Neue Datei hochladen (optional)
-  delete_warning: Das Löschen dieses Dokuments kann nicht rückgängig gemacht werden.
+    title: Dokumente
+    subtitle: 'Verwaltung und Ablage von Richtlinien, Nachweisen und ISMS‑Dokumenten'
+    action:
+        upload: 'Dokument hochladen'
+        update: Aktualisieren
+        create: Erstellen
+    kpi:
+        total_documents: 'Gesamte Dokumente'
+        total_size: 'Gesamte Größe'
+    details:
+        title: Details
+    label:
+        type: Typ
+        file_name: Dateiname
+        size: Größe
+        mime_type: MIME‑Typ
+        uploaded_by: 'Hochgeladen von'
+        uploaded_at: 'Hochgeladen am'
+        last_updated: 'Zuletzt aktualisiert'
+        related_entity: 'Zugehöriges Objekt'
+    type:
+        pdf: PDF
+        images: Bilder
+        tables: Tabellen
+        excel: Excel
+        other: Andere
+    section:
+        type_overview: Typ‑Übersicht
+        all_documents: 'Alle Dokumente'
+        basic_info: Basisinformationen
+        file_upload: Datei‑Upload
+        select_type: Auswählen Typ
+        types_overview: Types Overview
+        documents: Dokumente
+        type_statistics: Type Statistics
+        recent_activity: Recent Activity
+        all_types: All Types
+    filter:
+        all_categories: 'Alle Kategorien'
+        search_placeholder: Suche...
+    table:
+        icon: Symbol
+        uploaded_by: 'Hochgeladen von'
+    message:
+        no_results: 'Keine Ergebnisse gefunden'
+        no_documents: 'Noch keine Dokumente vorhanden'
+        upload_first: 'Laden Sie Ihr erstes Dokument hoch, um zu starten'
+        no_documents_for_type: No Documents For Type
+        no_types: No Types
+        no_recent_activity: No Recent Activity
+    confirm:
+        delete: 'Dieses Dokument wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.'
+    new: 'Neues Dokument'
+    edit: 'Dokument bearbeiten'
+    field:
+        name: Name
+        description: Beschreibung
+        document_type: Dokumenttyp
+        file: Datei
+        title: Titel
+        version: Version
+        status: Status
+        owner: Eigentümer
+        last_updated: Last Updated
+        review_date: Review Date
+        type_name: Typ Name
+        total_documents: Gesamt Dokumente
+        active: Aktiv
+        draft: Entwurf
+        overdue_reviews: Overdue Reviews
+        documents: Dokumente
+        updated: Aktualisiert
+    help:
+        name: 'Eindeutiger Name des Dokuments'
+        description: 'Detaillierte Beschreibung des Inhalts und Zwecks'
+        document_type: 'Kategorie des Dokuments (z. B. Richtlinie, Verfahren)'
+        file: 'Wählen Sie eine Datei zum Hochladen'
+        edit_file: 'Lassen Sie das Feld leer, um die vorhandene Datei beizubehalten'
+        file_edit: 'Neue Datei hochladen (optional)'
+    delete_warning: 'Das Löschen dieses Dokuments kann nicht rückgängig gemacht werden.'
+    badge:
+        controlled: Controlled
+        confidential: Confidential
+        overdue: Overdue
+        due_soon: Due Soon
+    title.by_type: Nach Typ
+    description:
+        by_type: By Type
+    stats:
+        total: Gesamt
+        document_types: Document Types
+        expiring_soon: Expiring Soon
+        avg_per_type: Avg Per Type
+        total_documents: Gesamt Dokumente
+        active_documents: Aktiv Dokumente
+        draft_documents: Entwurf Dokumente
+        overdue_reviews: Overdue Reviews
+    option:
+        all_types: All Types

@@ -1,57 +1,69 @@
-risk_treatment_plan.title: 'Treatment Plans'
-risk_treatment_plan.description: 'Planning and tracking of risk treatment actions.'
-risk_treatment_plan.new: 'New Treatment Plan'
-risk_treatment_plan.new_description: 'Create a new treatment plan for a risk and define actions, responsibilities and timelines.'
-risk_treatment_plan.edit: 'Edit Treatment Plan'
-risk_treatment_plan.show.subtitle: 'Overview and progress of this treatment plan'
-risk_treatment_plan.overdue: Overdue
-risk_treatment_plan.days_until_target: 'Days until target date'
-risk_treatment_plan.days_overdue: 'days overdue'
-risk_treatment_plan.due_today: 'Due today'
-risk_treatment_plan.days_remaining: 'days remaining'
-risk_treatment_plan.action.add_new: 'Add new'
-risk_treatment_plan.stats.total: Total
-risk_treatment_plan.stats.planned: Planned
-risk_treatment_plan.stats.in_progress: 'In progress'
-risk_treatment_plan.stats.completed: Completed
-risk_treatment_plan.stats.overdue: Overdue
-risk_treatment_plan.stats.avg_completion: 'Avg. completion'
-risk_treatment_plan.list.title: 'Treatment Plans'
-risk_treatment_plan.filter.overdue: Overdue
-risk_treatment_plan.filter.overdue_only: 'Overdue only'
-risk_treatment_plan.section.details: Details
-risk_treatment_plan.section.controls: 'Linked Controls'
-risk_treatment_plan.section.history: History
-risk_treatment_plan.section.basic_info: 'Basic Information'
-risk_treatment_plan.section.status_progress: 'Status & Progress'
-risk_treatment_plan.section.timeline: Timeline
-risk_treatment_plan.section.responsibility_resources: 'Responsibility & Resources'
-risk_treatment_plan.section.controls_implementation: 'Controls & Implementation'
-risk_treatment_plan.field.title: Title
-risk_treatment_plan.field.risk: Risk
-risk_treatment_plan.field.description: Description
-risk_treatment_plan.field.status: Status
-risk_treatment_plan.field.priority: Priority
-risk_treatment_plan.field.completion: Completion
-risk_treatment_plan.field.completion_percentage: 'Completion percentage (%)'
-risk_treatment_plan.field.target_date: 'Target date'
-risk_treatment_plan.field.responsible_person: 'Responsible person'
-risk_treatment_plan.field.start_date: 'Start date'
-risk_treatment_plan.field.target_completion_date: 'Target completion date'
-risk_treatment_plan.field.actual_completion_date: 'Actual completion date'
-risk_treatment_plan.field.budget: Budget
-risk_treatment_plan.field.implementation_notes: 'Implementation notes'
-risk_treatment_plan.field.controls: Controls
-risk_treatment_plan.status.planned: Planned
-risk_treatment_plan.status.in_progress: 'In progress'
-risk_treatment_plan.status.completed: Completed
-risk_treatment_plan.status.on_hold: 'On hold'
-risk_treatment_plan.status.cancelled: Cancelled
-risk_treatment_plan.priority.critical: Critical
-risk_treatment_plan.priority.high: High
-risk_treatment_plan.priority.medium: Medium
-risk_treatment_plan.priority.low: Low
-risk_treatment_plan.message.no_plans: 'No treatment plans found.'
-risk_treatment_plan.delete.warning: 'This action cannot be undone. Do you really want to delete the treatment plan?'
-risk_treatment_plan.delete.confirm: 'Are you sure you want to delete this treatment plan?'
-risk_treatment_plan.no_plans: __risk_treatment_plan.no_plans
+risk_treatment_plan:
+    title: 'Treatment Plans'
+    description: 'Planning and tracking of risk treatment actions.'
+    new: 'New Treatment Plan'
+    new_description: 'Create a new treatment plan for a risk and define actions, responsibilities and timelines.'
+    edit: 'Edit Treatment Plan'
+    show:
+        subtitle: 'Overview and progress of this treatment plan'
+    overdue: Overdue
+    days_until_target: 'Days until target date'
+    days_overdue: 'days overdue'
+    due_today: 'Due today'
+    days_remaining: 'days remaining'
+    action:
+        add_new: 'Add new'
+    stats:
+        total: Total
+        planned: Planned
+        in_progress: 'In progress'
+        completed: Completed
+        overdue: Overdue
+        avg_completion: 'Avg. completion'
+    list:
+        title: 'Treatment Plans'
+    filter:
+        overdue: Overdue
+        overdue_only: 'Overdue only'
+    section:
+        details: Details
+        controls: 'Linked Controls'
+        history: History
+        basic_info: 'Basic Information'
+        status_progress: 'Status & Progress'
+        timeline: Timeline
+        responsibility_resources: 'Responsibility & Resources'
+        controls_implementation: 'Controls & Implementation'
+    field:
+        title: Title
+        risk: Risk
+        description: Description
+        status: Status
+        priority: Priority
+        completion: Completion
+        completion_percentage: 'Completion percentage (%)'
+        target_date: 'Target date'
+        responsible_person: 'Responsible person'
+        start_date: 'Start date'
+        target_completion_date: 'Target completion date'
+        actual_completion_date: 'Actual completion date'
+        budget: Budget
+        implementation_notes: 'Implementation notes'
+        controls: Controls
+    status:
+        planned: Planned
+        in_progress: 'In progress'
+        completed: Completed
+        on_hold: 'On hold'
+        cancelled: Cancelled
+    priority:
+        critical: Critical
+        high: High
+        medium: Medium
+        low: Low
+    message:
+        no_plans: 'No treatment plans found.'
+    delete:
+        warning: 'This action cannot be undone. Do you really want to delete the treatment plan?'
+        confirm: 'Are you sure you want to delete this treatment plan?'
+    no_plans: No Plans

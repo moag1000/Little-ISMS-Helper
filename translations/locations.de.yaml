@@ -1,60 +1,60 @@
 location:
-  title:
-    list: Standorte
-    create: Standort anlegen
-    show: Standortdetails
-    edit: Standort bearbeiten
-  description:
-    overview: Übersicht über Standorte, Gebäude und Räume
-  action:
-    create: Standort anlegen
-  stats:
-    total: Gesamt‑Standorte
-    buildings: Gebäude
-    rooms: Räume
-    secure: Zutrittsgesichert
-  field:
-    name: Name
-    type: Typ
-    code: Code
-    city: Stadt
-    address: Adresse
-    postal_code: Postleitzahl
-    country: Land
-    parent_location: Übergeordneter Standort
-    access_control_system: Zutrittskontrollsystem
-    access_control: Zutrittskontrolle
-    security_level: Sicherheitsniveau
-    badge_access: Ausweiszugang erforderlich
-  section:
-    address: Adresse
-    hierarchy: Hierarchie
-    security: Sicherheit
-    details: Details
-    child_locations: Untergeordnete Standorte
-    features: Merkmale
-  placeholder:
-    name: z. B. Hauptgebäude München
-    code: z. B. DE-MUC-HQ
-  help:
-    type: Wählen Sie den passenden Standorttyp (Gebäude, Raum, Rechenzentrum, …)
-    code: Interner Standort‑Code für eindeutige Referenz (optional)
-    parent: Optional – ordnen Sie den Standort einem übergeordneten Standort zu
-  type:
-    building: Gebäude
-    room: Raum
-    campus: Campus
-    datacenter: Rechenzentrum
-    office: Büro
-  security:
-    public: Öffentlich
-    restricted: Eingeschränkt
-    controlled: Kontrolliert
-    secure: Gesichert
-    high_security: Hochsicher
-  actions:
-    label: Standort‑Aktionen
-  message:
-    no_locations: Keine Standorte vorhanden.
-  confirm:
-    delete: Sind Sie sicher, dass Sie diesen Standort löschen möchten?
+    title:
+        list: Standorte
+        create: 'Standort anlegen'
+        show: Standortdetails
+        edit: 'Standort bearbeiten'
+    description:
+        overview: 'Übersicht über Standorte, Gebäude und Räume'
+    action:
+        create: 'Standort anlegen'
+    stats:
+        total: Gesamt‑Standorte
+        buildings: Gebäude
+        rooms: Räume
+        secure: Zutrittsgesichert
+    field:
+        name: Name
+        type: Typ
+        code: Code
+        city: Stadt
+        address: Adresse
+        postal_code: Postleitzahl
+        country: Land
+        parent_location: 'Übergeordneter Standort'
+        access_control_system: Zutrittskontrollsystem
+        access_control: Zutrittskontrolle
+        security_level: Sicherheitsniveau
+        badge_access: 'Ausweiszugang erforderlich'
+    section:
+        address: Adresse
+        hierarchy: Hierarchie
+        security: Sicherheit
+        details: Details
+        child_locations: 'Untergeordnete Standorte'
+        features: Merkmale
+    placeholder:
+        name: 'z. B. Hauptgebäude München'
+        code: 'z. B. DE-MUC-HQ'
+    help:
+        type: 'Wählen Sie den passenden Standorttyp (Gebäude, Raum, Rechenzentrum, …)'
+        code: 'Interner Standort‑Code für eindeutige Referenz (optional)'
+        parent: 'Optional – ordnen Sie den Standort einem übergeordneten Standort zu'
+    type:
+        building: Gebäude
+        room: Raum
+        campus: Campus
+        datacenter: Rechenzentrum
+        office: Büro
+    security:
+        public: Öffentlich
+        restricted: Eingeschränkt
+        controlled: Kontrolliert
+        secure: Gesichert
+        high_security: Hochsicher
+    actions:
+        label: Standort‑Aktionen
+    message:
+        no_locations: 'Keine Standorte vorhanden.'
+    confirm:
+        delete: 'Sind Sie sicher, dass Sie diesen Standort löschen möchten?'

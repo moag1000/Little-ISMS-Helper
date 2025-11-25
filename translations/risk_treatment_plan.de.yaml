@@ -1,69 +1,69 @@
 risk_treatment_plan:
-  title: Behandlungspläne
-  description: Planung und Nachverfolgung von Maßnahmen zur Risikobehandlung.
-  new: Neuer Behandlungsplan
-  new_description: Legen Sie einen neuen Behandlungsplan für ein Risiko an und definieren Sie Maßnahmen, Verantwortlichkeiten und Termine.
-  edit: Behandlungsplan bearbeiten
-  show:
-    subtitle: Übersicht und Fortschritt dieses Behandlungsplans
-  overdue: Überfällig
-  days_until_target: Tage bis Zieltermin
-  days_overdue: Tage überfällig
-  due_today: Heute fällig
-  days_remaining: Tage verbleibend
-  action:
-    add_new: Neu anlegen
-  stats:
-    total: Gesamt
-    planned: Geplant
-    in_progress: In Bearbeitung
-    completed: Abgeschlossen
-    overdue: Überfällig
-    avg_completion: Ø‑Fertigstellungsgrad
-  list:
     title: Behandlungspläne
-  filter:
-    overdue: Überfälligkeit
-    overdue_only: Nur überfällige
-  section:
-    details: Details
-    controls: Zugeordnete Maßnahmen
-    history: Verlauf
-    basic_info: Basisinformationen
-    status_progress: Status & Fortschritt
-    timeline: Zeitplan
-    responsibility_resources: Verantwortlichkeiten & Ressourcen
-    controls_implementation: Maßnahmen & Umsetzung
-  field:
-    title: Titel
-    risk: Risiko
-    description: Beschreibung
-    status: Status
-    priority: Priorität
-    completion: Fertigstellung
-    completion_percentage: Fertigstellungsgrad (%)
-    target_date: Zieltermin
-    responsible_person: Verantwortliche Person
-    start_date: Startdatum
-    target_completion_date: Geplanter Abschluss
-    actual_completion_date: Tatsächlicher Abschluss
-    budget: Budget
-    implementation_notes: Umsetzungsnotizen
-    controls: Maßnahmen (Controls)
-  status:
-    planned: Geplant
-    in_progress: In Bearbeitung
-    completed: Abgeschlossen
-    on_hold: Angehalten
-    cancelled: Abgebrochen
-  priority:
-    critical: Kritisch
-    high: Hoch
-    medium: Mittel
-    low: Niedrig
-  message:
-    no_plans: Keine Behandlungspläne gefunden.
-  delete:
-    warning: Diese Aktion kann nicht rückgängig gemacht werden. Möchten Sie den Behandlungsplan wirklich löschen?
-    confirm: Sind Sie sicher, dass Sie diesen Behandlungsplan löschen möchten?
-  no_plans: Keine Risikobehandlungspläne vorhanden.
+    description: 'Planung und Nachverfolgung von Maßnahmen zur Risikobehandlung.'
+    new: 'Neuer Behandlungsplan'
+    new_description: 'Legen Sie einen neuen Behandlungsplan für ein Risiko an und definieren Sie Maßnahmen, Verantwortlichkeiten und Termine.'
+    edit: 'Behandlungsplan bearbeiten'
+    show:
+        subtitle: 'Übersicht und Fortschritt dieses Behandlungsplans'
+    overdue: Überfällig
+    days_until_target: 'Tage bis Zieltermin'
+    days_overdue: 'Tage überfällig'
+    due_today: 'Heute fällig'
+    days_remaining: 'Tage verbleibend'
+    action:
+        add_new: 'Neu anlegen'
+    stats:
+        total: Gesamt
+        planned: Geplant
+        in_progress: 'In Bearbeitung'
+        completed: Abgeschlossen
+        overdue: Überfällig
+        avg_completion: Ø‑Fertigstellungsgrad
+    list:
+        title: Behandlungspläne
+    filter:
+        overdue: Überfälligkeit
+        overdue_only: 'Nur überfällige'
+    section:
+        details: Details
+        controls: 'Zugeordnete Maßnahmen'
+        history: Verlauf
+        basic_info: Basisinformationen
+        status_progress: 'Status & Fortschritt'
+        timeline: Zeitplan
+        responsibility_resources: 'Verantwortlichkeiten & Ressourcen'
+        controls_implementation: 'Maßnahmen & Umsetzung'
+    field:
+        title: Titel
+        risk: Risiko
+        description: Beschreibung
+        status: Status
+        priority: Priorität
+        completion: Fertigstellung
+        completion_percentage: 'Fertigstellungsgrad (%)'
+        target_date: Zieltermin
+        responsible_person: 'Verantwortliche Person'
+        start_date: Startdatum
+        target_completion_date: 'Geplanter Abschluss'
+        actual_completion_date: 'Tatsächlicher Abschluss'
+        budget: Budget
+        implementation_notes: Umsetzungsnotizen
+        controls: 'Maßnahmen (Controls)'
+    status:
+        planned: Geplant
+        in_progress: 'In Bearbeitung'
+        completed: Abgeschlossen
+        on_hold: Angehalten
+        cancelled: Abgebrochen
+    priority:
+        critical: Kritisch
+        high: Hoch
+        medium: Mittel
+        low: Niedrig
+    message:
+        no_plans: 'Keine Behandlungspläne gefunden.'
+    delete:
+        warning: 'Diese Aktion kann nicht rückgängig gemacht werden. Möchten Sie den Behandlungsplan wirklich löschen?'
+        confirm: 'Sind Sie sicher, dass Sie diesen Behandlungsplan löschen möchten?'
+    no_plans: Nein Pläne
