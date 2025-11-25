@@ -1,148 +1,251 @@
 tenant:
-  title: Mandantenverwaltung
-  subtitle: Verwalten Sie Organisationen und Mandanten
-  empty: Keine Mandanten vorhanden
-  stats:
-    total: Gesamt
-    active: Aktiv
-    inactive: Inaktiv
-    total_users: Benutzer gesamt
-    active_users: Aktive Benutzer
-    inactive_users: Inaktive Benutzer
-  filter:
-    all: Alle
-    active: Aktiv
-    inactive: Inaktiv
-  field:
-    code: Mandanten-Code
-    code_help: Eindeutiger alphanumerischer Code (nur a-z, 0-9, _, -)
-    code_auto_generated: Wird automatisch aus dem Namen generiert
-    name: Name
-    name_help: Vollständiger Name der Organisation
-    description: Beschreibung
-    description_help: Optionale Beschreibung des Mandanten
-    logo: Logo
-    logo_help: Mandanten-Logo (max. 2MB, JPG/PNG/GIF/WebP)
-    azure_tenant_id: Azure Tenant ID
-    azure_tenant_id_help: Azure AD Tenant ID (UUID-Format) für SSO-Integration
-    is_active: Aktiv
-    is_active_help: Nur aktive Mandanten können sich anmelden
-    settings: Einstellungen (JSON)
-    settings_help: Mandantenspezifische Einstellungen im JSON-Format
-    users: Benutzer
-    status: Status
-    created: Erstellt
-    updated: Aktualisiert
-  placeholder:
-    code: z.B. acme-corp
-    name: z.B. ACME Corporation
-    description: Beschreibung des Mandanten...
-    azure_tenant_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-    settings: "{\n  \"branding\": {...},\n  \"features\": {...}\n}"
-  validation:
-    code_format: Der Code darf nur Buchstaben, Zahlen, Unterstriche und Bindestriche enthalten
-    azure_tenant_id_format: Die Azure Tenant ID muss im UUID-Format vorliegen
-    logo_format: Das Logo muss im Format JPG, PNG, GIF oder WebP vorliegen
-  status:
-    active: Aktiv
-    inactive: Inaktiv
-  action:
-    create: Neuen Mandanten erstellen
-    create_first: Ersten Mandanten erstellen
-    edit: Bearbeiten
-    delete: Löschen
-    activate: Aktivieren
-    deactivate: Deaktivieren
-  section:
-    information: Mandanten-Informationen
-    users: Benutzer
-    basic_info: Grundinformationen
-    azure_integration: Azure-Integration
-    settings: Einstellungen
-    danger_zone: Gefahrenbereich
-  users:
-    empty: Keine Benutzer in diesem Mandanten
-    showing: 'Zeige %count% von %total% Benutzern'
-    manage: Benutzer verwalten
-    manage_title: Benutzer verwalten
-    add_user: Benutzer hinzufügen
-    enter_email: E-Mail-Adresse des Benutzers eingeben
-    add: Hinzufügen
-    add_help: Geben Sie die E-Mail-Adresse eines existierenden Benutzers ein, um ihn diesem Mandanten zuzuordnen
-    current_users: Aktuelle Benutzer
-    confirm_remove: Möchten Sie den Benutzer %email% wirklich aus diesem Mandanten entfernen?
+    title: Mandantenverwaltung
+    subtitle: 'Verwalten Sie Organisationen und Mandanten'
+    empty: 'Keine Mandanten vorhanden'
+    stats:
+        total: Gesamt
+        active: Aktiv
+        inactive: Inaktiv
+        total_users: 'Benutzer gesamt'
+        active_users: 'Aktive Benutzer'
+        inactive_users: 'Inaktive Benutzer'
+    filter:
+        all: Alle
+        active: Aktiv
+        inactive: Inaktiv
+    field:
+        code: Mandanten-Code
+        code_help: 'Eindeutiger alphanumerischer Code (nur a-z, 0-9, _, -)'
+        code_auto_generated: 'Wird automatisch aus dem Namen generiert'
+        name: Name
+        name_help: 'Vollständiger Name der Organisation'
+        description: Beschreibung
+        description_help: 'Optionale Beschreibung des Mandanten'
+        logo: Logo
+        logo_help: 'Mandanten-Logo (max. 2MB, JPG/PNG/GIF/WebP)'
+        azure_tenant_id: 'Azure Tenant ID'
+        azure_tenant_id_help: 'Azure AD Tenant ID (UUID-Format) für SSO-Integration'
+        is_active: Aktiv
+        is_active_help: 'Nur aktive Mandanten können sich anmelden'
+        settings: 'Einstellungen (JSON)'
+        settings_help: 'Mandantenspezifische Einstellungen im JSON-Format'
+        users: Benutzer
+        status: Status
+        created: Erstellt
+        updated: Aktualisiert
+        parent: Muttergesellschaft
+        corporate_notes: Corporate Notes
+    placeholder:
+        code: 'z.B. acme-corp'
+        name: 'z.B. ACME Corporation'
+        description: 'Beschreibung des Mandanten...'
+        azure_tenant_id: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+        settings: "{\n  \"branding\": {...},\n  \"features\": {...}\n}"
+    validation:
+        code_format: 'Der Code darf nur Buchstaben, Zahlen, Unterstriche und Bindestriche enthalten'
+        azure_tenant_id_format: 'Die Azure Tenant ID muss im UUID-Format vorliegen'
+        logo_format: 'Das Logo muss im Format JPG, PNG, GIF oder WebP vorliegen'
+    status:
+        active: Aktiv
+        inactive: Inaktiv
+    action:
+        create: 'Neuen Mandanten erstellen'
+        create_first: 'Ersten Mandanten erstellen'
+        edit: Bearbeiten
+        delete: Löschen
+        activate: Aktivieren
+        deactivate: Deaktivieren
+    section:
+        information: Mandanten-Informationen
+        users: Benutzer
+        basic_info: Grundinformationen
+        azure_integration: Azure-Integration
+        settings: Einstellungen
+        danger_zone: Gefahrenbereich
+    users:
+        empty: 'Keine Benutzer in diesem Mandanten'
+        showing: 'Zeige %count% von %total% Benutzern'
+        manage: 'Benutzer verwalten'
+        manage_title: 'Benutzer verwalten'
+        add_user: 'Benutzer hinzufügen'
+        enter_email: 'E-Mail-Adresse des Benutzers eingeben'
+        add: Hinzufügen
+        add_help: 'Geben Sie die E-Mail-Adresse eines existierenden Benutzers ein, um ihn diesem Mandanten zuzuordnen'
+        current_users: 'Aktuelle Benutzer'
+        confirm_remove: 'Möchten Sie den Benutzer %email% wirklich aus diesem Mandanten entfernen?'
+        flash:
+            email_required: 'E-Mail-Adresse ist erforderlich'
+            user_not_found: 'Benutzer mit dieser E-Mail-Adresse wurde nicht gefunden'
+            already_assigned: 'Benutzer ist bereits diesem Mandanten zugeordnet'
+            user_added: 'Benutzer erfolgreich zum Mandanten hinzugefügt'
+            user_removed: 'Benutzer erfolgreich vom Mandanten entfernt'
+            not_assigned: 'Benutzer ist nicht diesem Mandanten zugeordnet'
+            error: 'Fehler bei der Benutzer-Verwaltung'
+    form:
+        create_title: 'Neuen Mandanten anlegen'
+        edit_title: 'Mandant bearbeiten'
     flash:
-      email_required: E-Mail-Adresse ist erforderlich
-      user_not_found: Benutzer mit dieser E-Mail-Adresse wurde nicht gefunden
-      already_assigned: Benutzer ist bereits diesem Mandanten zugeordnet
-      user_added: Benutzer erfolgreich zum Mandanten hinzugefügt
-      user_removed: Benutzer erfolgreich vom Mandanten entfernt
-      not_assigned: Benutzer ist nicht diesem Mandanten zugeordnet
-      error: Fehler bei der Benutzer-Verwaltung
-  form:
-    create_title: Neuen Mandanten anlegen
-    edit_title: Mandant bearbeiten
-  flash:
-    created: Mandant erfolgreich erstellt
-    updated: Mandant erfolgreich aktualisiert
-    deleted: Mandant erfolgreich gelöscht
-    activated: Mandant erfolgreich aktiviert
-    deactivated: Mandant erfolgreich deaktiviert
-    error: Fehler beim Speichern des Mandanten
-    has_users: Mandant kann nicht gelöscht werden, da er noch Benutzer hat
-    organisation_context_updated: Organisations-Kontext erfolgreich aktualisiert
-    organisation_context_error: Fehler beim Aktualisieren des Organisations-Kontexts
-  confirm:
-    delete: Sind Sie sicher, dass Sie diesen Mandanten löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.
-    toggle: Möchten Sie den Status dieses Mandanten wirklich ändern?
-  delete:
-    warning: Mandanten können nur gelöscht werden, wenn sie keine zugewiesenen Benutzer mehr haben.
-  tabs:
-    details: Details
-    isms_context: ISMS Kontext
-    users: Benutzer
-  isms_context:
-    not_configured: ISMS Kontext nicht konfiguriert
-    configure_prompt: Konfigurieren Sie den ISMS Kontext für diesen Mandanten.
-    configure_now: Jetzt konfigurieren
-    load_error: Fehler beim Laden des ISMS Kontexts
-    view_full: Vollständigen ISMS Kontext anzeigen
-    linked_to: Verknüpft mit Mandant
-  organisation_context:
-    title: Organisations-Kontext
-    header: Organisations-Kontext bearbeiten
-    description: Bearbeiten Sie die Branchenzuordnung, Unternehmensgröße und Standort Ihrer Organisation. Diese Daten beeinflussen Compliance-Empfehlungen.
-    name_info: Der Organisationsname wird aus der Mandanten-Konfiguration übernommen.
-    current_config: Aktuelle Konfiguration
-    active_modules: Aktive Module
-    active_frameworks: Aktive Frameworks
-    setup_date: Setup abgeschlossen am
-    last_modified: Zuletzt geändert
-    impact_warning:
-      title: Hinweis zur Auswirkung
-      message: Änderungen am Organisations-Kontext beeinflussen zukünftige Empfehlungen für Module und Compliance-Frameworks. Bereits aktivierte Module bleiben unverändert.
+        created: 'Mandant erfolgreich erstellt'
+        updated: 'Mandant erfolgreich aktualisiert'
+        deleted: 'Mandant erfolgreich gelöscht'
+        activated: 'Mandant erfolgreich aktiviert'
+        deactivated: 'Mandant erfolgreich deaktiviert'
+        error: 'Fehler beim Speichern des Mandanten'
+        has_users: 'Mandant kann nicht gelöscht werden, da er noch Benutzer hat'
+        organisation_context_updated: 'Organisations-Kontext erfolgreich aktualisiert'
+        organisation_context_error: 'Fehler beim Aktualisieren des Organisations-Kontexts'
+    confirm:
+        delete: 'Sind Sie sicher, dass Sie diesen Mandanten löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.'
+        toggle: 'Möchten Sie den Status dieses Mandanten wirklich ändern?'
+    delete:
+        warning: 'Mandanten können nur gelöscht werden, wenn sie keine zugewiesenen Benutzer mehr haben.'
+    tabs:
+        details: Details
+        isms_context: 'ISMS Kontext'
+        users: Benutzer
+    isms_context:
+        not_configured: 'ISMS Kontext nicht konfiguriert'
+        configure_prompt: 'Konfigurieren Sie den ISMS Kontext für diesen Mandanten.'
+        configure_now: 'Jetzt konfigurieren'
+        load_error: 'Fehler beim Laden des ISMS Kontexts'
+        view_full: 'Vollständigen ISMS Kontext anzeigen'
+        linked_to: 'Verknüpft mit Mandant'
+    organisation_context:
+        title: Organisations-Kontext
+        header: 'Organisations-Kontext bearbeiten'
+        description: 'Bearbeiten Sie die Branchenzuordnung, Unternehmensgröße und Standort Ihrer Organisation. Diese Daten beeinflussen Compliance-Empfehlungen.'
+        name_info: 'Der Organisationsname wird aus der Mandanten-Konfiguration übernommen.'
+        current_config: 'Aktuelle Konfiguration'
+        active_modules: 'Aktive Module'
+        active_frameworks: 'Aktive Frameworks'
+        setup_date: 'Setup abgeschlossen am'
+        last_modified: 'Zuletzt geändert'
+        impact_warning:
+            title: 'Hinweis zur Auswirkung'
+            message: 'Änderungen am Organisations-Kontext beeinflussen zukünftige Empfehlungen für Module und Compliance-Frameworks. Bereits aktivierte Module bleiben unverändert.'
+        info:
+            title: 'Über den Organisations-Kontext'
+            description: 'Der Organisations-Kontext bestimmt, welche regulatorischen Anforderungen für Ihre Organisation relevant sind.'
+            industries: 'Mehrfachauswahl ermöglicht Konzernstrukturen mit verschiedenen Geschäftsfeldern'
+            size: 'Unternehmensgröße beeinflusst NIS2 und andere größenabhängige Regulierungen'
+            country: 'Standort bestimmt nationale Regulierungen (z.B. KRITIS, TKG für Deutschland)'
+            corporate: 'Bei Konzernstrukturen können Tochtergesellschaften unterschiedliche Branchen abdecken'
+        field:
+            industries: Industries
+            employee_count: Employee Count
+            country: Country
+            description: Beschreibung
+    link:
+        view: 'Mandant anzeigen'
+        back_to_tenant: 'Zurück zum Mandanten'
     info:
-      title: Über den Organisations-Kontext
-      description: Der Organisations-Kontext bestimmt, welche regulatorischen Anforderungen für Ihre Organisation relevant sind.
-      industries: Mehrfachauswahl ermöglicht Konzernstrukturen mit verschiedenen Geschäftsfeldern
-      size: Unternehmensgröße beeinflusst NIS2 und andere größenabhängige Regulierungen
-      country: Standort bestimmt nationale Regulierungen (z.B. KRITIS, TKG für Deutschland)
-      corporate: Bei Konzernstrukturen können Tochtergesellschaften unterschiedliche Branchen abdecken
-  link:
-    view: Mandant anzeigen
-    back_to_tenant: Zurück zum Mandanten
-  info:
-    title: Über Mandanten
-    text: Mandanten ermöglichen es, mehrere Organisationen in einer Instanz zu verwalten. Jeder Benutzer gehört zu einem Mandanten.
-    metadata: Metadaten
-  no_logo: Kein Logo vorhanden
-  help:
-    title: Hilfe
-    code_title: Mandanten-Code
-    code_text: Der Code ist ein eindeutiger Identifier und kann nach der Erstellung nicht mehr geändert werden. Verwenden Sie nur Kleinbuchstaben, Zahlen und Bindestriche.
-    azure_title: Azure-Integration
-    azure_text: Wenn Sie Azure AD SSO verwenden, können Sie hier die Azure Tenant ID hinterlegen für mandantenspezifische Authentifizierung.
-    settings_title: Einstellungen
-    settings_text: Mandantenspezifische Einstellungen im JSON-Format können individuelle Konfigurationen wie Branding, Features oder Limits enthalten.
-  settings:
-    example_title: Beispiel JSON-Struktur
+        title: 'Über Mandanten'
+        text: 'Mandanten ermöglichen es, mehrere Organisationen in einer Instanz zu verwalten. Jeder Benutzer gehört zu einem Mandanten.'
+        metadata: Metadaten
+    no_logo: 'Kein Logo vorhanden'
+    help:
+        title: Hilfe
+        code_title: Mandanten-Code
+        code_text: 'Der Code ist ein eindeutiger Identifier und kann nach der Erstellung nicht mehr geändert werden. Verwenden Sie nur Kleinbuchstaben, Zahlen und Bindestriche.'
+        azure_title: Azure-Integration
+        azure_text: 'Wenn Sie Azure AD SSO verwenden, können Sie hier die Azure Tenant ID hinterlegen für mandantenspezifische Authentifizierung.'
+        settings_title: Einstellungen
+        settings_text: 'Mandantenspezifische Einstellungen im JSON-Format können individuelle Konfigurationen wie Branding, Features oder Limits enthalten.'
+        name: Name
+        description: Beschreibung
+        logo: Logo
+        parent: Muttergesellschaft
+        corporate_notes: Corporate Notes
+        azure_tenant_id: Azure Tenant Id
+        settings: Einstellungen
+    settings:
+        example_title: 'Beispiel JSON-Struktur'
+    title.edit: Bearbeiten
+    title.create: Erstellen
+    name: Name
+corporate:
+    view:
+        own_only: Own Only
+        including_inherited: Including Inherited
+        including_subsidiaries: Including Subsidiaries
+    stats:
+        breakdown: Breakdown
+        groups: Groups
+        standalone: Standalone
+        total: Gesamt
+    inheritance:
+        inherited_from: Inherited From
+        title: Titel
+        propagate: Propagate
+        no_context: No Context
+        organization: Organisation
+        own_context: Own Context
+        load_error: Load Error
+        confirm_propagate: Confirm Propagate
+        propagate_error: Propagate Error
+        isms_context_inherited: Isms Context Inherited
+        from: From
+        edit_at_parent: Edit At Parent
+        cannot_edit_inherited: Cannot Edit Inherited
+        view_only_title: View Only Title
+        risk_inherited_message: Risk Inherited Message
+    inherited: Inherited
+    field:
+        actions: Aktionen
+        subsidiary: Tochtergesellschaft
+        parent: Muttergesellschaft
+        governance_model: Governance Model
+        hierarchy_depth: Hierarchy Depth
+        subsidiaries: Tochtergesellschaften
+    action:
+        set_parent: Set Parent
+        update_governance: Update Governance
+        remove_parent: Entfernen Muttergesellschaft
+        view_structure: View Structure
+    title: Titel
+    subtitle: Untertitel
+    single_tenant:
+        title: Titel
+        message: Message
+        hint: Hint
+    section:
+        groups: Groups
+        standalone: Standalone
+        structure: Structure
+    role:
+        parent: Muttergesellschaft
+    info:
+        title: Titel
+        text: Text
+    modal:
+        set_parent:
+            title: Titel
+        update_governance:
+            title: Titel
+    select:
+        parent: Muttergesellschaft
+        governance: Governance
+    confirm:
+        remove_parent: Entfernen Muttergesellschaft
+    level: Level
+    granular:
+        title: Titel
+        add_rule: Add Rule
+        modal:
+            title: Titel
+        field:
+            scope: Geltungsbereich
+            scope_id: Geltungsbereich ID
+        scope:
+            control: Maßnahme
+            isms_context: Isms Context
+            risk: Risiko
+            asset: Asset
+            process: Process
+        help:
+            scope_id: Geltungsbereich ID
+        no_rules: No Rules
+        flash:
+            error: Fehler
+        confirm:
+            delete: Löschen

@@ -1,33 +1,189 @@
-risks:
-  modern:
-    breadcrumb: Risikomanagement
-    header:
-      title: Risikomanagement
-      subtitle: Identifikation, Bewertung und Behandlung von Informationssicherheitsrisiken
-      action:
-        new: Neues Risiko
-        matrix: Risikomatrix
-        export_pdf: PDF Report
-        export_excel: Excel Export
-        export_csv: CSV Export
-    kpi:
-      total: Identifizierte Risiken
-      critical: Kritische Risiken
-      high: Hohe Risiken
-      avg_residual: Durchschn. Restrisiko
-      unit:
-        max: '/ 25'
-    matrix_overview: Risikomatrix-Übersicht
-    view_full_matrix: Vollständige Matrix anzeigen
+risk:
+    modern:
+        breadcrumb: Risikomanagement
+        header:
+            title: Risikomanagement
+            subtitle: 'Identifikation, Bewertung und Behandlung von Informationssicherheitsrisiken'
+            action: { new: 'Neues Risiko', matrix: Risikomatrix, export_pdf: 'PDF Report', export_excel: 'Excel Export', export_csv: 'CSV Export' }
+        kpi:
+            total: 'Identifizierte Risiken'
+            critical: 'Kritische Risiken'
+            high: 'Hohe Risiken'
+            avg_residual: 'Durchschn. Restrisiko'
+            unit: { max: '/ 25' }
+        matrix_overview: Risikomatrix-Übersicht
+        view_full_matrix: 'Vollständige Matrix anzeigen'
+        status:
+            open: Offen
+            in_progress: 'In Bearbeitung'
+            mitigated: Mitigiert
+            resolved: Gelöst
+            closed: Abgeschlossen
+        category:
+            technical: technisch
+            organisational: organisatorisch
+            organizational: organisatorisch
+            financial: finanziell
+            physical: physisch
+    label:
+        title: Titel
+        inherent_risk: Inhärentes Risiko Risiko
+    field:
+        title: Titel
+        score: Score
+        treatment_strategy: Treatment Strategy
+        status: Status
+        asset: Asset
+        description: Beschreibung
+        threat: Gefährdung
+        vulnerability: Schwachstelle
+        involves_personal_data: Involves Personal Data
+        involves_special_category_data: Involves Special Category Data
+        legal_basis: Rechtsgrundlage
+        processing_scale: Processing Scale
+        requires_dpia: Requires Dpia
+        data_subject_impact: Data Subject Impact
+        probability: Probability
+        impact: Auswirkung
+        residual_probability: Residual Probability
+        residual_impact: Restrisiko Auswirkung
+        risk_owner: Risiko Eigentümer
+        treatment_description: Behandlung Beschreibung
+        acceptance_approved_by: Acceptance Approved By
+        acceptance_approved_at: Acceptance Approved At
+        created: Erstellt
+        last_review: Last Review
+        next_review: Next Review
+        inherent_risk: Inhärentes Risiko Risiko
+    confirm:
+        delete: Löschen
+    edit: Bearbeiten
+    update: Aktualisieren
+    delete_warning: Löschen Warnung
+    new: Neu
+    create: Erstellen
+    guidance:
+        scale: Scale
+        description: Beschreibung
+        probability:
+            very_unlikely: Very Unlikely
+            very_unlikely_desc: Very Unlikely Desc
+            unlikely: Unlikely
+            unlikely_desc: Unlikely Desc
+            possible: Possible
+            possible_desc: Possible Desc
+            likely: Likely
+            likely_desc: Likely Desc
+            very_likely: Very Likely
+            very_likely_desc: Very Likely Desc
+        impact:
+            negligible: Negligible
+            negligible_desc: Negligible Desc
+            minor: Minor
+            minor_desc: Minor Desc
+            moderate: Moderate
+            moderate_desc: Moderate Desc
+            major: Major
+            major_desc: Major Desc
+            catastrophic: Catastrophic
+            catastrophic_desc: Catastrophic Desc
+        title: Titel
+        intro: Intro
+        probability_title: Probability Title
+        impact_title: Auswirkung Titel
+        tip: Tip
+    section:
+        basic_info: Grundinformationen
+        gdpr_assessment: Gdpr Assessment
+        inherent_risk: Inhärentes Risiko Risiko
+        residual_risk: Restrisiko Risiko
+        treatment: Behandlung
+        acceptance: Acceptance
+        details: Details
+        description: Beschreibung
+        treatment_strategy: Treatment Strategy
+        risk_owner: Risiko Eigentümer
+        mitigating_controls: Mitigating Controls
+        realization_history: Realization History
+        risk_subject: Risk Subject
+        history: History
+    help:
+        title: Titel
+        asset: Asset
+        description: Beschreibung
+        threat: Gefährdung
+        vulnerability: Schwachstelle
+        gdpr_section: Gdpr Section
+        involves_personal_data: Involves Personal Data
+        involves_special_category_data: Involves Special Category Data
+        legal_basis: Rechtsgrundlage
+        processing_scale: Processing Scale
+        requires_dpia: Requires Dpia
+        data_subject_impact: Data Subject Impact
+        inherent: Inhärentes Risiko
+        probability: Probability
+        impact: Auswirkung
+        residual: Restrisiko
+        residual_probability: Residual Probability
+        residual_impact: Restrisiko Auswirkung
+        treatment_strategy: Treatment Strategy
+        risk_owner: Risiko Eigentümer
+        treatment_description: Behandlung Beschreibung
+        acceptance_approved_by: Acceptance Approved By
+        acceptance_approved_at: Acceptance Approved At
+    delete:
+        confirm_message: Confirm Message
+    not_reviewed: Not Reviewed
+    assessment:
+        inherent_risk: Inhärentes Risiko Risiko
+        probability: Probability
+        impact: Auswirkung
+        level: Level
+        score: Score
+        residual_risk: Restrisiko Risiko
+    incidents: Vorfälle
+    realization:
+        warning: Warnung
+        review_suggestion: Review Suggestion
+    subject:
+        asset:
+            monetary_value_hint: Monetary Value Hint
+        location:
+            city_country: City Country
+    matrix:
+        title: Titel
+        back_to_risks: Back To Risks
+        header: Header
+        description: Beschreibung
+        impact: Auswirkung
+        probability: Probability
+        legend_title: Legend Title
+        level:
+            critical: Critical
+            high: High
+            medium: Medium
+            low: Low
+    acceptance:
+        title: Titel
+        request: Request
+        justification_label: Justification Label
+        justification_help: Justification Help
+        submit_request: Submit Request
+        required_approval_level: Required Approval Level
+        approval_threshold_info: Approval Threshold Info
+    residual_assessment: Restrisiko Bewertung
     status:
-        open: Offen
+        open: Öffnen
         in_progress: In Bearbeitung
-        mitigated: Mitigiert
-        resolved: Gelöst
-        closed: Abgeschlossen
+        mitigated: Gemindert
+        closed: Closed
     category:
-        technical: technisch
-        organisational: organisatorisch
-        organizational: organisatorisch
-        financial: finanziell
-        physical: physisch
+        technical: Technical
+        organizational: Organizational
+        physical: Physical
+risk_management:
+    title: Titel
+    description: Beschreibung
+    high_risks: High Risks
+    risk_value_threshold: Risk Value Threshold
+    total_identified: Total Identified

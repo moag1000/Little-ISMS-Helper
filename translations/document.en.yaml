@@ -1,58 +1,100 @@
 document:
-  title: Documents
-  subtitle: Management and storage of policies, evidence and ISMS documents
-  action:
-    upload: Upload document
-    update: Update
-  kpi:
-    total_documents: Total documents
-    total_size: Total size
-  details:
-    title: Details
-  label:
-    type: Type
-    file_name: File name
-    size: Size
-    mime_type: MIME type
-    uploaded_by: Uploaded by
-    uploaded_at: Uploaded at
-    last_updated: Last updated
-    related_entity: Related entity
-  type:
-    pdf: PDF
-    images: Images
-    tables: Tables
-    excel: Excel
-    other: Other
-  section:
-    type_overview: Type overview
-    all_documents: All documents
-    basic_info: Basic information
-    file_upload: File upload
-  filter:
-    all_categories: All categories
-    search_placeholder: Search...
-  table:
-    icon: Icon
-    uploaded_by: Uploaded by
-  message:
-    no_results: No results found
-    no_documents: No documents yet
-    upload_first: Upload your first document to get started
-  confirm:
-    delete: "Do you really want to delete this document? This action cannot be undone."
-  new: New Document
-  edit: Edit Document
-  field:
-    name: Name
-    description: Description
-    document_type: Document type
-    file: File
-  help:
-    name: Unique name of the document
-    description: Detailed description of the content and purpose
-    document_type: Category of the document (e.g. policy, procedure)
-    file: Choose a file to upload
-    edit_file: Leave the field empty to keep the existing file
-    file_edit: Upload a new file (optional)
-  delete_warning: Deleting this document cannot be undone.
+    title: Documents
+    subtitle: 'Management and storage of policies, evidence and ISMS documents'
+    action:
+        upload: 'Upload document'
+        update: Update
+        create: Create
+    kpi:
+        total_documents: 'Total documents'
+        total_size: 'Total size'
+    details:
+        title: Details
+    label:
+        type: Type
+        file_name: 'File name'
+        size: Size
+        mime_type: 'MIME type'
+        uploaded_by: 'Uploaded by'
+        uploaded_at: 'Uploaded at'
+        last_updated: 'Last updated'
+        related_entity: 'Related entity'
+    type:
+        pdf: PDF
+        images: Images
+        tables: Tables
+        excel: Excel
+        other: Other
+    section:
+        type_overview: 'Type overview'
+        all_documents: 'All documents'
+        basic_info: 'Basic information'
+        file_upload: 'File upload'
+        select_type: Select Type
+        types_overview: Types Overview
+        documents: Documents
+        type_statistics: Type Statistics
+        recent_activity: Recent Activity
+        all_types: All Types
+    filter:
+        all_categories: 'All categories'
+        search_placeholder: Search...
+    table:
+        icon: Icon
+        uploaded_by: 'Uploaded by'
+    message:
+        no_results: 'No results found'
+        no_documents: 'No documents yet'
+        upload_first: 'Upload your first document to get started'
+        no_documents_for_type: No Documents For Type
+        no_types: No Types
+        no_recent_activity: No Recent Activity
+    confirm:
+        delete: 'Do you really want to delete this document? This action cannot be undone.'
+    new: 'New Document'
+    edit: 'Edit Document'
+    field:
+        name: Name
+        description: Description
+        document_type: 'Document type'
+        file: File
+        title: Title
+        version: Version
+        status: Status
+        owner: Owner
+        last_updated: Last Updated
+        review_date: Review Date
+        type_name: Type Name
+        total_documents: Total Documents
+        active: Active
+        draft: Draft
+        overdue_reviews: Overdue Reviews
+        documents: Documents
+        updated: Updated
+    help:
+        name: 'Unique name of the document'
+        description: 'Detailed description of the content and purpose'
+        document_type: 'Category of the document (e.g. policy, procedure)'
+        file: 'Choose a file to upload'
+        edit_file: 'Leave the field empty to keep the existing file'
+        file_edit: 'Upload a new file (optional)'
+    delete_warning: 'Deleting this document cannot be undone.'
+    badge:
+        controlled: Controlled
+        confidential: Confidential
+        overdue: Overdue
+        due_soon: Due Soon
+    title.by_type: By Type
+    description:
+        by_type: By Type
+    stats:
+        total: Total
+        document_types: Document Types
+        expiring_soon: Expiring Soon
+        avg_per_type: Avg Per Type
+        total_documents: Total Documents
+        active_documents: Active Documents
+        draft_documents: Draft Documents
+        overdue_reviews: Overdue Reviews
+    option:
+        all_types: All Types

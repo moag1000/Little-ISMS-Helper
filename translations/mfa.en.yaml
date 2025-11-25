@@ -1,99 +1,118 @@
-mfa.title: 'Two-Factor Authentication'
-mfa.tokens: 'MFA Tokens'
-mfa.enabled: 'MFA Enabled'
-mfa.disabled: 'MFA Disabled'
-mfa.token_type: 'Token Type'
-mfa.device_name: 'Device Name'
-mfa.enrolled_at: 'Enrolled At'
-mfa.last_used: 'Last Used'
-mfa.usage_count: 'Usage Count'
-mfa.is_active: Active
-mfa.is_primary: Primary
-mfa.action.reset: 'Reset Token'
-mfa.error.token_not_found: 'MFA token not found'
-mfa.success.token_reset: 'MFA token successfully reset'
-mfa.statistics.active_tokens: 'Active Tokens'
-mfa.statistics.by_type: 'By Type'
-mfa.challenge.title: 'Two-Factor Authentication'
-mfa.challenge.description: 'Please enter the verification code from your authenticator.'
-mfa.challenge.device: 'Authentication Device'
-mfa.challenge.device_help: 'Select the device you want to use.'
-mfa.challenge.code: 'Verification Code'
-mfa.challenge.code_help: 'Enter the 6-digit code from your authenticator app or an 8-digit backup code.'
-mfa.challenge.verify: 'Verify Code'
-mfa.challenge.success: 'Two-factor authentication successful!'
-mfa.challenge.cancel: 'Cancel and logout'
-mfa.challenge.backup_code_hint: 'No access to your device?'
-mfa.challenge.using_backup_code: 'Use backup code'
-mfa.challenge.backup_code_info: 'Enter one of your 8-digit backup codes that you received during setup. Each backup code can only be used once.'
-mfa.challenge.help_title: 'Need help?'
-mfa.challenge.help_text: "Contact your administrator if you don't have access to your authentication devices."
-mfa.challenge.nis2_compliance: 'NIS2-compliant Multi-Factor Authentication (Art. 21.2.b)'
-mfa.challenge.error.code_required: 'Please enter a verification code.'
-mfa.challenge.error.invalid_code: 'Invalid code. Please try again.'
-mfa.challenge.error.invalid_token: 'Invalid or inactive authentication device.'
-mfa.token.primary: Primary
-mfa_token.edit: __mfa_token.edit
-mfa_token.edit.subtitle: __mfa_token.edit.subtitle
-mfa_token.new: __mfa_token.new
-mfa_token.new.subtitle: __mfa_token.new.subtitle
-mfa_token.field.status: __mfa_token.field.status
-mfa_token.field.token_type: __mfa_token.field.token_type
-mfa_token.field.device_name: __mfa_token.field.device_name
-mfa_token.field.enrolled_at: __mfa_token.field.enrolled_at
-mfa_token.field.last_used: __mfa_token.field.last_used
-mfa_token.field.usage_count: __mfa_token.field.usage_count
-mfa_token.status.active: __mfa_token.status.active
-mfa_token.status.inactive: __mfa_token.status.inactive
-mfa_token.never_used: __mfa_token.never_used
-mfa_token.confirm_disable: __mfa_token.confirm_disable
-mfa_token.action.disable: __mfa_token.action.disable
-mfa_token.confirm_delete: __mfa_token.confirm_delete
-mfa_token.title: __mfa_token.title
-mfa_token.subtitle: __mfa_token.subtitle
-mfa_token.kpi.active: __mfa_token.kpi.active
-mfa_token.kpi.users: __mfa_token.kpi.users
-mfa_token.empty: __mfa_token.empty
-mfa_token.setup_new: __mfa_token.setup_new
-mfa_token.backup_codes.title: __mfa_token.backup_codes.title
-mfa_token.backup_codes.subtitle: __mfa_token.backup_codes.subtitle
-mfa_token.backup_codes.warning: __mfa_token.backup_codes.warning
-mfa_token.backup_codes.warning_text: __mfa_token.backup_codes.warning_text
-mfa_token.backup_codes.onetime_display: __mfa_token.backup_codes.onetime_display
-mfa_token.backup_codes.codes: __mfa_token.backup_codes.codes
-mfa_token.backup_codes.codes_count: __mfa_token.backup_codes.codes_count
-mfa_token.field.user: __mfa_token.field.user
-mfa_token.backup_codes.copy_all: __mfa_token.backup_codes.copy_all
-mfa_token.backup_codes.print: __mfa_token.backup_codes.print
-mfa_token.backup_codes.download: __mfa_token.backup_codes.download
-mfa_token.backup_codes.usage_title: __mfa_token.backup_codes.usage_title
-mfa_token.backup_codes.usage_1: __mfa_token.backup_codes.usage_1
-mfa_token.backup_codes.usage_2: __mfa_token.backup_codes.usage_2
-mfa_token.backup_codes.usage_3: __mfa_token.backup_codes.usage_3
-mfa_token.backup_codes.usage_4: __mfa_token.backup_codes.usage_4
-mfa_token.backup_codes.regenerate_warning: __mfa_token.backup_codes.regenerate_warning
-mfa_token.details.subtitle: __mfa_token.details.subtitle
-mfa_token.details.title: __mfa_token.details.title
-mfa_token.field.is_primary: __mfa_token.field.is_primary
-mfa_token.primary: __mfa_token.primary
-mfa_token.usage.title: __mfa_token.usage.title
-mfa_token.usage.times: __mfa_token.usage.times
-mfa_token.field.expires_at: __mfa_token.field.expires_at
-mfa_token.status.expired: __mfa_token.status.expired
-mfa_token.backup_codes.remaining: __mfa_token.backup_codes.remaining
-mfa_token.backup_codes.regenerate_confirm: __mfa_token.backup_codes.regenerate_confirm
-mfa_token.backup_codes.regenerate: __mfa_token.backup_codes.regenerate
-mfa_token.backup_codes.no_codes_left: __mfa_token.backup_codes.no_codes_left
-mfa_token.backup_codes.low_codes: __mfa_token.backup_codes.low_codes
-mfa_token.backup_codes.description: __mfa_token.backup_codes.description
-mfa_token.setup_totp.title: __mfa_token.setup_totp.title
-mfa_token.setup_totp.subtitle: __mfa_token.setup_totp.subtitle
-mfa_token.setup_totp.step1: __mfa_token.setup_totp.step1
-mfa_token.setup_totp.scan_instructions: __mfa_token.setup_totp.scan_instructions
-mfa_token.setup_totp.manual_entry: __mfa_token.setup_totp.manual_entry
-mfa_token.setup_totp.manual_instructions: __mfa_token.setup_totp.manual_instructions
-mfa_token.setup_totp.step2: __mfa_token.setup_totp.step2
-mfa_token.setup_totp.verify_instructions: __mfa_token.setup_totp.verify_instructions
-mfa_token.field.verification_code: __mfa_token.field.verification_code
-mfa_token.setup_totp.code_help: __mfa_token.setup_totp.code_help
-mfa_token.setup_totp.verify_button: __mfa_token.setup_totp.verify_button
+mfa:
+    title: 'Two-Factor Authentication'
+    tokens: 'MFA Tokens'
+    enabled: 'MFA Enabled'
+    disabled: 'MFA Disabled'
+    token_type: 'Token Type'
+    device_name: 'Device Name'
+    enrolled_at: 'Enrolled At'
+    last_used: 'Last Used'
+    usage_count: 'Usage Count'
+    is_active: Active
+    is_primary: Primary
+    action:
+        reset: 'Reset Token'
+    error:
+        token_not_found: 'MFA token not found'
+    success:
+        token_reset: 'MFA token successfully reset'
+    statistics:
+        active_tokens: 'Active Tokens'
+        by_type: 'By Type'
+    challenge:
+        title: 'Two-Factor Authentication'
+        description: 'Please enter the verification code from your authenticator.'
+        device: 'Authentication Device'
+        device_help: 'Select the device you want to use.'
+        code: 'Verification Code'
+        code_help: 'Enter the 6-digit code from your authenticator app or an 8-digit backup code.'
+        verify: 'Verify Code'
+        success: 'Two-factor authentication successful!'
+        cancel: 'Cancel and logout'
+        backup_code_hint: 'No access to your device?'
+        using_backup_code: 'Use backup code'
+        backup_code_info: 'Enter one of your 8-digit backup codes that you received during setup. Each backup code can only be used once.'
+        help_title: 'Need help?'
+        help_text: "Contact your administrator if you don't have access to your authentication devices."
+        nis2_compliance: 'NIS2-compliant Multi-Factor Authentication (Art. 21.2.b)'
+        error:
+            code_required: 'Please enter a verification code.'
+            invalid_code: 'Invalid code. Please try again.'
+            invalid_token: 'Invalid or inactive authentication device.'
+    token:
+        primary: Primary
+    setup:
+        secret_key: Secret Key
+mfa_token:
+    edit: Edit
+    edit.subtitle: Subtitle
+    new: New
+    new.subtitle: Subtitle
+    field:
+        status: Status
+        token_type: Token Type
+        device_name: Device Name
+        enrolled_at: Enrolled At
+        last_used: Last Used
+        usage_count: Usage Count
+        user: User
+        is_primary: Is Primary
+        expires_at: Expires At
+        verification_code: Verification Code
+    status:
+        active: Active
+        inactive: Inactive
+        expired: Expired
+    never_used: Never Used
+    confirm_disable: Confirm Disable
+    action:
+        disable: Disable
+    confirm_delete: Confirm Delete
+    title: Title
+    subtitle: Subtitle
+    kpi:
+        active: Active
+        users: Users
+    empty: Empty
+    setup_new: Setup New
+    backup_codes:
+        title: Title
+        subtitle: Subtitle
+        warning: Warning
+        warning_text: Warning Text
+        onetime_display: Onetime Display
+        codes: Codes
+        codes_count: Codes Count
+        copy_all: Copy All
+        print: Print
+        download: Download
+        usage_title: Usage Title
+        usage_1: Usage 1
+        usage_2: Usage 2
+        usage_3: Usage 3
+        usage_4: Usage 4
+        regenerate_warning: Regenerate Warning
+        remaining: Remaining
+        regenerate_confirm: Regenerate Confirm
+        regenerate: Regenerate
+        no_codes_left: No Codes Left
+        low_codes: Low Codes
+        description: Description
+    details:
+        subtitle: Subtitle
+        title: Title
+    primary: Primary
+    usage:
+        title: Title
+        times: Times
+    setup_totp:
+        title: Title
+        subtitle: Subtitle
+        step1: Step1
+        scan_instructions: Scan Instructions
+        manual_entry: Manual Entry
+        manual_instructions: Manual Instructions
+        step2: Step2
+        verify_instructions: Verify Instructions
+        code_help: Code Help
+        verify_button: Verify Button

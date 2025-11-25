@@ -1,17 +1,210 @@
-audits:
-  audit_management:
-    title: Audits
-    description: Planning, execution and follow-up of internal and external audits
-    planned_audits: Planned Audits
-    total_audits: Total Audits
-    audits_list: Audits List
-    no_audits: No audits available.
-  audit:
-    new: New Audit
-    edit: Edit Audit
-    create: Create Audit
-    export_pdf: Export PDF
-    quick_stats: Quick Stats
+title: Audits
+description: 'Planning, execution and follow-up of internal and external audits'
+planned_audits: 'Planned Audits'
+total_audits: 'Total Audits'
+audits_list: 'Audits List'
+no_audits: 'No audits available.'
+new: 'New Audit'
+edit: 'Edit Audit'
+create: 'Create Audit'
+export_pdf: 'Export PDF'
+quick_stats: 'Quick Stats'
+framework: Framework
+standard: Standard
+planned_date: 'Planned Date'
+actual_date: 'Actual Date'
+lead_auditor: 'Lead Auditor'
+department: Department
+auditee: Auditee
+audit_team: 'Audit Team'
+overall_result: 'Overall Result'
+objectives: Objectives
+audit_criteria: 'Audit Criteria'
+methodology: Methodology
+findings: Findings
+nonconformities: Nonconformities
+observations: Observations
+recommendations: Recommendations
+corrective_actions: 'Corrective Actions'
+follow_up_actions: 'Follow-up Actions'
+documentation: Documentation
+evidence_collected: 'Evidence Collected'
+summary: Summary
+notes: Notes
+type: Type
+team_size: 'Team size'
+result: Result
+iso_27001_requirement: 'ISO 27001: Internal Audit (Clause 9.2)'
+iso_27001_clause_info: 'Internal audits shall be conducted at planned intervals to provide information on whether the ISMS conforms to requirements and is effectively implemented and maintained.'
+confirm_delete: 'Delete audit?'
+delete_warning: "Do you really want to delete the audit '%title%'?"
+actions:
+    label: 'Audit Actions'
+field:
+    title: Title
+    scope: Scope
+    status: Status
+    scope_type: 'Scope Type'
+    scoped_framework: 'Scoped framework'
+    framework: Framework
+    standard: Standard
+    audit_type: 'Audit type'
+    planned_date: 'Planned Date'
+    actual_date: 'Actual Date'
+    lead_auditor: 'Lead Auditor'
+    department: Department
+    auditee: Auditee
+    audit_team: 'Audit Team'
+    audit_number: 'Audit Number'
+    audited_subsidiaries: 'Audited subsidiaries'
+    objectives: Objectives
+    audit_criteria: 'Audit Criteria'
+    methodology: Methodology
+    findings: Findings
+    observations: Observations
+    recommendations: Recommendations
+    corrective_actions: 'Corrective Actions'
+    follow_up_actions: 'Follow-up Actions'
+    documentation: Documentation
+    evidence_collected: 'Evidence Collected'
+    summary: Summary
+    notes: Notes
+    team_size: 'Team size'
+    result: Result
+status:
+    planned: Planned
+    in_progress: 'In Progress'
+    completed: Completed
+    reported: Reported
+scope_type:
+    full_isms: 'Full ISMS'
+    compliance_framework: 'Compliance Framework'
+    asset: Asset
+    asset_type: 'Asset Type'
+    asset_group: 'Asset Group'
+    location: Location
+    department: Department
+    corporate_wide: Corporate-wide
+    corporate_subsidiaries: Subsidiaries
+section:
+    basic_info: 'Basic Information'
+    schedule: Schedule
+    frameworks: 'Frameworks & Standards'
+    team: 'Team & Responsibilities'
+    status: 'Status & Results'
+    objectives: 'Objectives & Criteria'
+    findings: Findings
+    recommendations: 'Recommendations & Actions'
+    documentation: Documentation
+    history: History
+message:
+    corporate_subsidiaries_info: 'This corporate audit covers %count% subsidiary/subsidiaries'
+    corporate_audit_note_title: 'Corporate audit'
+    corporate_audit_note: "Select the subsidiaries to be included in this audit. For 'corporate-wide audit', all relevant subsidiaries should be selected."
+audit_log:
+    pagination:
+        page_counter: Page Counter
+    showing_recent: Showing Recent
+audit:
+    edit: Edit
+    iso_27001_requirement: Iso 27001 Requirement
+    iso_27001_clause_info: Iso 27001 Clause Info
+    section:
+        basic_info: Basic Information
+        frameworks: Frameworks
+        schedule: Schedule
+        team: Team
+        status: Status
+        objectives: Objectives
+        findings: Findings
+        recommendations: Recommendations
+        documentation: Documentation
+        history: History
+    field:
+        title: Title
+        scope: Scope
+        scope_type: Scope Type
+        audit_type: Audit Type
+        audited_subsidiaries: Audited Subsidiaries
+        framework: Framework
+        standard: Standard
+        planned_date: Planned Date
+        actual_date: Actual Date
+        lead_auditor: Lead Auditor
+        audit_team: Audit Team
+        auditee: Auditee
+        department: Department
+        status: Status
+        overall_result: Overall Result
+        objectives: Objectives
+        audit_criteria: Audit Criteria
+        methodology: Methodology
+        findings: Findings
+        nonconformities: Nonconformities
+        observations: Observations
+        recommendations: Recommendations
+        corrective_actions: Corrective Actions
+        follow_up_actions: Follow Up Actions
+        evidence_collected: Evidence Collected
+        summary: Summary
+        notes: Notes
+        scoped_framework: Scoped Framework
+        conclusion: Conclusion
+        audit_number: Audit Number
+    new: New
+    corporate_audit_note_title: Corporate Audit Note Title
+    corporate_audit_note: Corporate Audit Note
+    create: Create
+    status:
+        planned: Planned
+        in_progress: In Progress
+        completed: Completed
+        reported: Reported
+    scope_type:
+        full_isms: Full Isms
+        compliance_framework: Compliance Framework
+        asset: Asset
+        asset_type: Asset Type
+        asset_group: Asset Group
+        location: Location
+        department: Department
+        corporate_wide: Corporate Wide
+        corporate_subsidiaries: Corporate Subsidiaries
+    actions:
+        label: Label
+    help:
+        title: Title
+        scope: Scope
+        scope_type: Scope Type
+        scoped_framework: Scoped Framework
+        audit_type: Audit Type
+        audited_subsidiaries: Audited Subsidiaries
+        framework: Framework
+        standard: Standard
+        planned_date: Planned Date
+        actual_date: Actual Date
+        lead_auditor: Lead Auditor
+        audit_team: Audit Team
+        auditee: Auditee
+        department: Department
+        status: Status
+        overall_result: Overall Result
+        objectives: Objectives
+        audit_criteria: Audit Criteria
+        methodology: Methodology
+        findings: Findings
+        nonconformities: Nonconformities
+        observations: Observations
+        recommendations: Recommendations
+        corrective_actions: Corrective Actions
+        follow_up_actions: Follow Up Actions
+        conclusion: Conclusion
+        evidence_collected: Evidence Collected
+        summary: Summary
+        notes: Notes
+    scope: Scope
+    message:
+        corporate_subsidiaries_info: Corporate Subsidiaries Info
     framework: Framework
     standard: Standard
     planned_date: Planned Date
@@ -29,78 +222,20 @@ audits:
     observations: Observations
     recommendations: Recommendations
     corrective_actions: Corrective Actions
-    follow_up_actions: Follow-up Actions
-    documentation: Documentation
+    follow_up_actions: Follow Up Actions
     evidence_collected: Evidence Collected
     summary: Summary
     notes: Notes
+    export_pdf: Export Pdf
+    quick_stats: Quick Stats
     type: Type
-    team_size: Team size
+    team_size: Team Size
     result: Result
-    iso_27001_requirement: "ISO 27001: Internal Audit (Clause 9.2)"
-    iso_27001_clause_info: "Internal audits shall be conducted at planned intervals to provide information on whether the ISMS conforms to requirements and is effectively implemented and maintained."
-    confirm_delete: Delete audit?
-    delete_warning: "Do you really want to delete the audit '%title%'?"
-    actions:
-      label: Audit Actions
-    field:
-      title: Title
-      scope: Scope
-      status: Status
-      scope_type: Scope Type
-      scoped_framework: Scoped framework
-      framework: Framework
-      standard: Standard
-      audit_type: Audit type
-      planned_date: Planned Date
-      actual_date: Actual Date
-      lead_auditor: Lead Auditor
-      department: Department
-      auditee: Auditee
-      audit_team: Audit Team
-      audit_number: Audit Number
-      audited_subsidiaries: Audited subsidiaries
-      objectives: Objectives
-      audit_criteria: Audit Criteria
-      methodology: Methodology
-      findings: Findings
-      observations: Observations
-      recommendations: Recommendations
-      corrective_actions: Corrective Actions
-      follow_up_actions: Follow-up Actions
-      documentation: Documentation
-      evidence_collected: Evidence Collected
-      summary: Summary
-      notes: Notes
-      team_size: Team size
-      result: Result
-    status:
-      planned: Planned
-      in_progress: In Progress
-      completed: Completed
-      reported: Reported
-    scope_type:
-      full_isms: Full ISMS
-      compliance_framework: Compliance Framework
-      asset: Asset
-      asset_type: Asset Type
-      asset_group: Asset Group
-      location: Location
-      department: Department
-      corporate_wide: Corporate-wide
-      corporate_subsidiaries: Subsidiaries
-    section:
-      basic_info: Basic Information
-      schedule: Schedule
-      frameworks: Frameworks & Standards
-      team: Team & Responsibilities
-      status: Status & Results
-      objectives: Objectives & Criteria
-      findings: Findings
-      recommendations: Recommendations & Actions
-      documentation: Documentation
-      history: History
-    message:
-      corporate_subsidiaries_info: "This corporate audit covers %count% subsidiary/subsidiaries"
-      corporate_audit_note_title: Corporate audit
-      corporate_audit_note: "Select the subsidiaries to be included in this audit. For 'corporate-wide audit', all relevant subsidiaries should be selected."
+    confirm_delete: Confirm Delete
+    delete_warning: Delete Warning
+audit_management:
+    title: Title
+    no_audits: No Audits
+    description: Description
+    planned_audits: Planned Audits
+    total_audits: Total Audits

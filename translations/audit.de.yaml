@@ -1,31 +1,61 @@
-audits:
-    audit_management:
-        title: Audits
-        description: 'Planung, Durchführung und Nachverfolgung interner und externer Audits'
-        planned_audits: 'Geplante Audits'
-        total_audits: Gesamt‑Audits
-        audits_list: Audits‑Liste
-        no_audits: 'Keine Audits vorhanden.'
-    audit:
-        new: 'Neues Audit'
-        edit: 'Audit bearbeiten'
-        create: 'Audit erstellen'
-        export_pdf: 'PDF exportieren'
-        quick_stats: Schnellübersicht
+audit:
+    new: 'Neues Audit'
+    edit: 'Audit bearbeiten'
+    create: 'Audit erstellen'
+    export_pdf: 'PDF exportieren'
+    quick_stats: Schnellübersicht
+    framework: Rahmenwerk
+    standard: Standard
+    planned_date: 'Geplantes Datum'
+    actual_date: 'Tatsächliches Datum'
+    lead_auditor: 'Leitender Auditor'
+    department: Abteilung
+    auditee: 'Auditierter Bereich'
+    audit_team: Audit‑Team
+    overall_result: Gesamtergebnis
+    objectives: Ziele
+    audit_criteria: Auditkriterien
+    methodology: Methodik
+    findings: Feststellungen
+    nonconformities: Nichtkonformitäten
+    observations: Beobachtungen
+    recommendations: Empfehlungen
+    corrective_actions: Korrekturmaßnahmen
+    follow_up_actions: Nachverfolgungsmaßnahmen
+    documentation: Dokumentation
+    evidence_collected: 'Gesammelte Nachweise'
+    summary: Zusammenfassung
+    notes: Notizen
+    type: Typ
+    team_size: Teamgröße
+    result: Ergebnis
+    iso_27001_requirement: 'ISO 27001: Internes Audit (Klausel 9.2)'
+    iso_27001_clause_info: 'Interne Audits müssen in geplanten Abständen durchgeführt werden, um zu prüfen, ob das ISMS die Anforderungen erfüllt und wirksam umgesetzt/aufrechterhalten wird.'
+    confirm_delete: 'Audit löschen?'
+    delete_warning: "Möchten Sie das Audit '%title%' wirklich löschen?"
+    actions:
+        label: Audit‑Aktionen
+    field:
+        title: Titel
+        scope: Geltungsbereich
+        status: Status
+        scope_type: Scope‑Typ
+        scoped_framework: 'Framework im Geltungsbereich'
         framework: Rahmenwerk
         standard: Standard
+        audit_type: Audit‑Typ
         planned_date: 'Geplantes Datum'
         actual_date: 'Tatsächliches Datum'
         lead_auditor: 'Leitender Auditor'
         department: Abteilung
         auditee: 'Auditierter Bereich'
         audit_team: Audit‑Team
-        overall_result: Gesamtergebnis
+        audit_number: Audit‑Nummer
+        audited_subsidiaries: 'Auditierte Tochtergesellschaften'
         objectives: Ziele
         audit_criteria: Auditkriterien
         methodology: Methodik
         findings: Feststellungen
-        nonconformities: Nichtkonformitäten
         observations: Beobachtungen
         recommendations: Empfehlungen
         corrective_actions: Korrekturmaßnahmen
@@ -34,77 +64,82 @@ audits:
         evidence_collected: 'Gesammelte Nachweise'
         summary: Zusammenfassung
         notes: Notizen
-        type: Typ
         team_size: Teamgröße
         result: Ergebnis
-        iso_27001_requirement: 'ISO 27001: Internes Audit (Klausel 9.2)'
-        iso_27001_clause_info: 'Interne Audits müssen in geplanten Abständen durchgeführt werden, um zu prüfen, ob das ISMS die Anforderungen erfüllt und wirksam umgesetzt/aufrechterhalten wird.'
-        confirm_delete: 'Audit löschen?'
-        delete_warning: "Möchten Sie das Audit '%title%' wirklich löschen?"
-        actions:
-            label: Audit‑Aktionen
-        field:
-            title: Titel
-            scope: Geltungsbereich
-            status: Status
-            scope_type: Scope‑Typ
-            scoped_framework: 'Framework im Geltungsbereich'
-            framework: Rahmenwerk
-            standard: Standard
-            audit_type: Audit‑Typ
-            planned_date: 'Geplantes Datum'
-            actual_date: 'Tatsächliches Datum'
-            lead_auditor: 'Leitender Auditor'
-            department: Abteilung
-            auditee: 'Auditierter Bereich'
-            audit_team: Audit‑Team
-            audit_number: Audit‑Nummer
-            audited_subsidiaries: 'Auditierte Tochtergesellschaften'
-            objectives: Ziele
-            audit_criteria: Auditkriterien
-            methodology: Methodik
-            findings: Feststellungen
-            observations: Beobachtungen
-            recommendations: Empfehlungen
-            corrective_actions: Korrekturmaßnahmen
-            follow_up_actions: Nachverfolgungsmaßnahmen
-            documentation: Dokumentation
-            evidence_collected: 'Gesammelte Nachweise'
-            summary: Zusammenfassung
-            notes: Notizen
-            team_size: Teamgröße
-            result: Ergebnis
-        status:
-            planned: Geplant
-            in_progress: 'In Bearbeitung'
-            completed: Abgeschlossen
-            reported: Berichtet
-        scope_type:
-            full_isms: 'Gesamtes ISMS'
-            compliance_framework: Compliance‑Framework
-            asset: Asset
-            asset_type: Asset‑Typ
-            asset_group: Asset‑Gruppe
-            location: Standort
-            department: Abteilung
-            corporate_wide: Unternehmensweit
-            corporate_subsidiaries: Tochtergesellschaften
-        section:
-            basic_info: Grundinformationen
-            schedule: Zeitplan
-            frameworks: 'Frameworks & Standards'
-            team: 'Team & Verantwortlichkeiten'
-            status: 'Status & Ergebnisse'
-            objectives: 'Ziele & Kriterien'
-            findings: Feststellungen
-            recommendations: 'Empfehlungen & Maßnahmen'
-            documentation: Dokumentation
-            history: Verlauf
-        message:
-            corporate_subsidiaries_info: 'Dieses Konzernaudit umfasst %count% Tochtergesellschaft(en)'
-            corporate_audit_note_title: Konzernaudit
-            corporate_audit_note: "Wählen Sie die Tochtergesellschaften aus, die in dieses Audit einbezogen werden sollen. Bei 'Konzernweites Audit' sollten alle relevanten Tochtergesellschaften ausgewählt werden."
+        overall_result: Overall Result
+        nonconformities: Nichtkonformitäten
+        conclusion: Schlussfolgerung
+    status:
+        planned: Geplant
+        in_progress: 'In Bearbeitung'
+        completed: Abgeschlossen
+        reported: Berichtet
+    scope_type:
+        full_isms: 'Gesamtes ISMS'
+        compliance_framework: Compliance‑Framework
+        asset: Asset
+        asset_type: Asset‑Typ
+        asset_group: Asset‑Gruppe
+        location: Standort
+        department: Abteilung
+        corporate_wide: Unternehmensweit
+        corporate_subsidiaries: Tochtergesellschaften
+    section:
+        basic_info: Grundinformationen
+        schedule: Zeitplan
+        frameworks: 'Frameworks & Standards'
+        team: 'Team & Verantwortlichkeiten'
+        status: 'Status & Ergebnisse'
+        objectives: 'Ziele & Kriterien'
+        findings: Feststellungen
+        recommendations: 'Empfehlungen & Maßnahmen'
+        documentation: Dokumentation
+        history: Verlauf
+    message:
+        corporate_subsidiaries_info: 'Dieses Konzernaudit umfasst %count% Tochtergesellschaft(en)'
+        corporate_audit_note_title: Konzernaudit
+        corporate_audit_note: "Wählen Sie die Tochtergesellschaften aus, die in dieses Audit einbezogen werden sollen. Bei 'Konzernweites Audit' sollten alle relevanten Tochtergesellschaften ausgewählt werden."
+    corporate_audit_note_title: Corporate Audit Note Title
+    corporate_audit_note: Corporate Audit Note
+    help:
+        title: Titel
+        scope: Geltungsbereich
+        scope_type: Geltungsbereich Typ
+        scoped_framework: Scoped Framework
+        audit_type: Audit Typ
+        audited_subsidiaries: Auditiert Tochtergesellschaften
+        framework: Rahmenwerk
+        standard: Standard
+        planned_date: Geplant Datum
+        actual_date: Tatsächlich Datum
+        lead_auditor: Lead Auditor
+        audit_team: Audit Team
+        auditee: Auditierter
+        department: Department
+        status: Status
+        overall_result: Overall Result
+        objectives: Zielsetzungen
+        audit_criteria: Audit Kriterien
+        methodology: Methodik
+        findings: Feststellungen
+        nonconformities: Nichtkonformitäten
+        observations: Beobachtungen
+        recommendations: Empfehlungen
+        corrective_actions: Korrekturmaßnahme Aktionen
+        follow_up_actions: Follow Up Actions
+        conclusion: Schlussfolgerung
+        evidence_collected: Evidence Collected
+        summary: Zusammenfassung
+        notes: Notizen
+    scope: Geltungsbereich
 audit_log:
     pagination:
-        page_counter: "\0NoFill\0audit_log.pagination.page_counter"
-    showing_recent: "\0NoFill\0audit_log.showing_recent"
+        page_counter: Seite Zähler
+    showing_recent: Showing Recent
+audit_management:
+    title: Audits
+    description: 'Planung, Durchführung und Nachverfolgung interner und externer Audits'
+    planned_audits: 'Geplante Audits'
+    total_audits: Gesamt‑Audits
+    audits_list: Audits‑Liste
+    no_audits: 'Keine Audits vorhanden.'

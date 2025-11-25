@@ -1,31 +1,31 @@
 dashboard:
-  title: ISMS Dashboard
-  subtitle: Übersicht über Ihren Informationssicherheitsstatus
-  kpis: Kennzahlen
-  compliance_status: Compliance-Status
-  implementation_status: Implementierungsstatus
-  quick_access: Schnellzugriff
-  next_steps: Nächste Schritte
-  success:
-    settings_imported: Dashboard-Einstellungen erfolgreich importiert!
-  error:
-    import_failed: Fehler beim Importieren der Einstellungen. Bitte überprüfen Sie
-  overdue_reviews:
-    title: 'Überfällige Risikobewertungen'
-    description: '%count% Risiken erfordern eine Überprüfung (ISO 27001:2022 Clause 6.1.3.d)'
-    last_review: 'Letzte Überprüfung'
-    never_reviewed: 'Noch nie überprüft'
-    view_all: 'Alle %count% anzeigen'
-  upcoming_reviews:
-    title: 'Anstehende Risikobewertungen'
-    description: 'Risiken, die in den nächsten 30 Tagen überprüft werden müssen'
-  overdue_treatment_plans:
-    title: 'Überfällige Behandlungspläne'
-    description: '%count% Behandlungspläne sind überfällig (ISO 27001:2022 Clause 6.1.3)'
-    due_date: 'Fälligkeitsdatum'
-    days_overdue: 'Tage überfällig'
-    view_all: 'Weitere %count% anzeigen'
-  approaching_treatment_plans:
-    title: 'Nahende Deadlines'
-    description: 'Behandlungspläne mit Fälligkeitsdatum in den nächsten 7 Tagen'
-    days_remaining: 'Tage verbleibend'
+    title: 'ISMS Dashboard'
+    subtitle: 'Übersicht über Ihren Informationssicherheitsstatus'
+    kpis: Kennzahlen
+    compliance_status: Compliance-Status
+    implementation_status: Implementierungsstatus
+    quick_access: Schnellzugriff
+    next_steps: 'Nächste Schritte'
+    success:
+        settings_imported: 'Dashboard-Einstellungen erfolgreich importiert!'
+    error:
+        import_failed: 'Fehler beim Importieren der Einstellungen. Bitte überprüfen Sie'
+    overdue_reviews:
+        title: 'Überfällige Risikobewertungen'
+        description: '%count% Risiken erfordern eine Überprüfung (ISO 27001:2022 Clause 6.1.3.d)'
+        last_review: 'Letzte Überprüfung'
+        never_reviewed: 'Noch nie überprüft'
+        view_all: 'Alle %count% anzeigen'
+    upcoming_reviews:
+        title: 'Anstehende Risikobewertungen'
+        description: 'Risiken, die in den nächsten 30 Tagen überprüft werden müssen'
+    overdue_treatment_plans:
+        title: 'Überfällige Behandlungspläne'
+        description: '%count% Behandlungspläne sind überfällig (ISO 27001:2022 Clause 6.1.3)'
+        due_date: Fälligkeitsdatum
+        days_overdue: 'Tage überfällig'
+        view_all: 'Weitere %count% anzeigen'
+    approaching_treatment_plans:
+        title: 'Nahende Deadlines'
+        description: 'Behandlungspläne mit Fälligkeitsdatum in den nächsten 7 Tagen'
+        days_remaining: 'Tage verbleibend'

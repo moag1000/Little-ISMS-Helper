@@ -1,58 +1,62 @@
 risk_appetite:
-  title: Risikobereitschaft
-  description: Definiert, welche Risikoniveaus akzeptabel sind – global und je Kategorie.
-  new: Neu anlegen
-  new_description: Legen Sie eine neue Risikobereitschaft an (global oder für eine Kategorie).
-  edit: Bearbeiten
-  title_singular: Eintrag
-  approved: Freigegeben
-  list:
-    title: Einträge
-  category:
-    global: Global
-  filter:
-    active_only: Nur aktive anzeigen
-  section:
-    definition: Definition
-    approval: Freigabe
-    details: Details
-    history: Historie
-  field:
-    category: Kategorie
-    max_acceptable_risk: Max. akzeptables Risiko
-    description: Beschreibung
-    status: Status
-    is_active: Aktiv
-    approved_by: Freigegeben von
-    approved_at: Freigegeben am
-    created_at: Erstellt am
-  help:
-    category_empty: Kategorie eingeben oder "Global" wählen
-  stats:
-    total: Einträge gesamt
-    global_threshold: Globaler Schwellwert
-    categories: Kategorien
-    total_risks: Risiken gesamt
-    exceeding: Über Schwellwert
-  info:
-    iso27005: Orientierung an ISO/IEC 27005 – Definition akzeptabler Risiken zur Steuerung der Behandlung.
-  show:
-    subtitle: Übersicht und Kennzahlen für diesen Eintrag
-  status:
-    active: Aktiv
-    inactive: Inaktiv
-  scale: Skala
-  risks_within: Risiken im Rahmen
-  risks_exceeding: Risiken über Rahmen
-  acceptance_rate: Akzeptanzrate
-  risks_exceeding_title: Risiken über dem Appetit
-  risks_exceeding_description: Diese Risiken überschreiten den definierten Appetit und benötigen Priorisierung.
-  risks_within_title: Risiken innerhalb des Appetits
-  risks_within_description: Diese Risiken liegen innerhalb des akzeptablen Bereichs.
-  exceeds_by: Überschreitung um
-  appetite_percentage: Auslastung des Appetits
-  and_more_risks: Und %count% weitere …
-  delete:
-    warning: Dieser Vorgang kann nicht rückgängig gemacht werden. Bitte bestätigen Sie das Löschen.
-    confirm: Wollen Sie diesen Eintrag wirklich löschen?
-  no_appetites: Keine Risikobereitschaften definiert.
+    title: Risikobereitschaft
+    description: 'Definiert, welche Risikoniveaus akzeptabel sind – global und je Kategorie.'
+    new: 'Neu anlegen'
+    new_description: 'Legen Sie eine neue Risikobereitschaft an (global oder für eine Kategorie).'
+    edit: Bearbeiten
+    title_singular: Eintrag
+    approved: Freigegeben
+    list:
+        title: Einträge
+    category:
+        global: Global
+    filter:
+        active_only: 'Nur aktive anzeigen'
+    section:
+        definition: Definition
+        approval: Freigabe
+        details: Details
+        history: Historie
+    field:
+        category: Kategorie
+        max_acceptable_risk: 'Max. akzeptables Risiko'
+        description: Beschreibung
+        status: Status
+        is_active: Aktiv
+        approved_by: 'Freigegeben von'
+        approved_at: 'Freigegeben am'
+        created_at: 'Erstellt am'
+    help:
+        category_empty: 'Kategorie eingeben oder "Global" wählen'
+    stats:
+        total: 'Einträge gesamt'
+        global_threshold: 'Globaler Schwellwert'
+        categories: Kategorien
+        total_risks: 'Risiken gesamt'
+        exceeding: 'Über Schwellwert'
+    info:
+        iso27005: 'Orientierung an ISO/IEC 27005 – Definition akzeptabler Risiken zur Steuerung der Behandlung.'
+    show:
+        subtitle: 'Übersicht und Kennzahlen für diesen Eintrag'
+    status:
+        active: Aktiv
+        inactive: Inaktiv
+    scale: Skala
+    risks_within: 'Risiken im Rahmen'
+    risks_exceeding: 'Risiken über Rahmen'
+    acceptance_rate: Akzeptanzrate
+    risks_exceeding_title: 'Risiken über dem Appetit'
+    risks_exceeding_description: 'Diese Risiken überschreiten den definierten Appetit und benötigen Priorisierung.'
+    risks_within_title: 'Risiken innerhalb des Appetits'
+    risks_within_description: 'Diese Risiken liegen innerhalb des akzeptablen Bereichs.'
+    exceeds_by: 'Überschreitung um'
+    appetite_percentage: 'Auslastung des Appetits'
+    and_more_risks: 'Und %count% weitere …'
+    delete:
+        warning: 'Dieser Vorgang kann nicht rückgängig gemacht werden. Bitte bestätigen Sie das Löschen.'
+        confirm: 'Wollen Sie diesen Eintrag wirklich löschen?'
+    no_appetites: 'Keine Risikobereitschaften definiert.'
+    exceeding:
+        title: Titel
+        description: Beschreibung
+    and_more: And More

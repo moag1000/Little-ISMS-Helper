@@ -1,4 +1,4 @@
-objectives:
+objective:
     page:
         title: ISMS‑Ziele
     title:
@@ -52,3 +52,6 @@ objectives:
         at_risk: gefährdet
         total: gesamt
         active: aktiv
+    link:
+        new: Neu
+        create_new: Erstellen Neu

@@ -1,50 +1,50 @@
 person:
-  title:
-    list: Personen
-    create: Person anlegen
-    show: Personendetails
-    edit: Person bearbeiten
-  description:
-    overview: Übersicht über Mitarbeiter, Auftragnehmer und weitere Personen
-  action:
-    create: Person anlegen
-  stats:
-    total: Gesamt‑Personen
-    employees: Mitarbeiter
-    contractors: Auftragnehmer
-    with_badge: Mit Ausweis
-  field:
-    name: Name
-    type: Typ
-    badge_id: Ausweis‑ID
-    company: Unternehmen
-    email: E‑Mail
-    department: Abteilung
-    job_title: Stellenbezeichnung
-    phone: Telefon
-    notes: Notizen
-  section:
-    basic_info: Basisinformationen
-    organization: Organisation
-    contact: Kontakt
-    additional: Zusätzliche Angaben
-    details: Details
-    notes: Notizen
-  placeholder:
-    name: z. B. Max Mustermann
-    badge: z. B. 123456
-  help:
-    badge: Interne Ausweis‑/Badge‑Nummer (optional)
-  type:
-    employee: Mitarbeiter
-    contractor: Auftragnehmer
-    visitor: Besucher
-    vendor: Lieferant
-    auditor: Auditor
-    consultant: Berater
-  actions:
-    label: Personen‑Aktionen
-  message:
-    no_persons: Keine Personen vorhanden.
-  confirm:
-    delete: Sind Sie sicher, dass Sie diese Person löschen möchten?
+    title:
+        list: Personen
+        create: 'Person anlegen'
+        show: Personendetails
+        edit: 'Person bearbeiten'
+    description:
+        overview: 'Übersicht über Mitarbeiter, Auftragnehmer und weitere Personen'
+    action:
+        create: 'Person anlegen'
+    stats:
+        total: Gesamt‑Personen
+        employees: Mitarbeiter
+        contractors: Auftragnehmer
+        with_badge: 'Mit Ausweis'
+    field:
+        name: Name
+        type: Typ
+        badge_id: Ausweis‑ID
+        company: Unternehmen
+        email: E‑Mail
+        department: Abteilung
+        job_title: Stellenbezeichnung
+        phone: Telefon
+        notes: Notizen
+    section:
+        basic_info: Basisinformationen
+        organization: Organisation
+        contact: Kontakt
+        additional: 'Zusätzliche Angaben'
+        details: Details
+        notes: Notizen
+    placeholder:
+        name: 'z. B. Max Mustermann'
+        badge: 'z. B. 123456'
+    help:
+        badge: 'Interne Ausweis‑/Badge‑Nummer (optional)'
+    type:
+        employee: Mitarbeiter
+        contractor: Auftragnehmer
+        visitor: Besucher
+        vendor: Lieferant
+        auditor: Auditor
+        consultant: Berater
+    actions:
+        label: Personen‑Aktionen
+    message:
+        no_persons: 'Keine Personen vorhanden.'
+    confirm:
+        delete: 'Sind Sie sicher, dass Sie diese Person löschen möchten?'

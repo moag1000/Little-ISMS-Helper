@@ -1,55 +1,70 @@
-analytics.page.title: 'Analytics Dashboard'
-analytics.page.subtitle: 'Advanced data analysis and visualizations'
-analytics.action.export: Export
-analytics.action.export_risks_csv: 'Export risks CSV'
-analytics.action.export_assets_csv: 'Export assets CSV'
-analytics.action.export_compliance_csv: 'Export compliance CSV'
-analytics.action.print_dashboard: 'Print dashboard'
-analytics.action.filter: Filter
-analytics.action.refresh: Refresh
-analytics.action.export_png: 'Export as PNG'
-analytics.action.reset_filters: 'Reset filters'
-analytics.filter.period.last_6_months: 'Last 6 months'
-analytics.filter.period.last_12_months: 'Last 12 months'
-analytics.filter.period.last_24_months: 'Last 24 months'
-analytics.filter.status: Status
-analytics.filter.category: Category
-analytics.filter.time: 'Time period'
-analytics.filter.all: All
-analytics.tabs.overview: Overview
-analytics.tabs.heat_map: 'Risk Heat Map'
-analytics.tabs.compliance_radar: 'Compliance Radar'
-analytics.tabs.trends: Trends
-analytics.card.risk_heat_map: 'Risk Heat Map'
-analytics.card.compliance_radar: 'Compliance Radar'
-analytics.card.trend_analysis: 'Trend Analysis'
-analytics.loading.loading: Loading...
-analytics.loading.loading_heat_map: 'Loading heat map data...'
-analytics.loading.loading_compliance: 'Loading compliance data...'
-analytics.loading.loading_trends: 'Loading trend data...'
-analytics.legend.critical: 'Critical (15-25)'
-analytics.legend.high: 'High (8-14)'
-analytics.legend.medium: 'Medium (4-7)'
-analytics.legend.low: 'Low (1-3)'
-analytics.axes.impact: 'Impact →'
-analytics.axes.probability: '← Probability'
-analytics.details.risks_in_cell: 'Risks in this cell'
-analytics.overall_compliance: 'Overall Compliance'
-analytics.table.annex: Annex
-analytics.table.implemented: Implemented
-analytics.table.total: Total
-analytics.table.compliance: Compliance
-analytics.trend_tabs.risks: Risks
-analytics.trend_tabs.assets: Assets
-analytics.trend_tabs.incidents: Incidents
-analytics.chart_title.risk_trends_last_12: 'Risk Trends (Last 12 Months)'
-analytics.chart_title.asset_growth_last_12: 'Asset Growth (Last 12 Months)'
-analytics.chart_title.incident_trends_last_12: 'Incident Trends (Last 12 Months)'
-analytics.stat_label.total_risks: 'Total Risks'
-analytics.stat_label.high_risk: 'High Risk'
-analytics.stat_label.trend: Trend
-analytics.stat_label.total_assets: 'Total Assets'
-analytics.stat_label.growth: Growth
-analytics.stat_label.total_incidents: 'Total Incidents'
-analytics.stat_label.critical: Critical
-analytics.stat_label.avg_per_month: Avg/Month
+analytics:
+    page:
+        title: 'Analytics Dashboard'
+        subtitle: 'Advanced data analysis and visualizations'
+    action:
+        export: Export
+        export_risks_csv: 'Export risks CSV'
+        export_assets_csv: 'Export assets CSV'
+        export_compliance_csv: 'Export compliance CSV'
+        print_dashboard: 'Print dashboard'
+        filter: Filter
+        refresh: Refresh
+        export_png: 'Export as PNG'
+        reset_filters: 'Reset filters'
+    filter:
+        period:
+            last_6_months: 'Last 6 months'
+            last_12_months: 'Last 12 months'
+            last_24_months: 'Last 24 months'
+        status: Status
+        category: Category
+        time: 'Time period'
+        all: All
+    tabs:
+        overview: Overview
+        heat_map: 'Risk Heat Map'
+        compliance_radar: 'Compliance Radar'
+        trends: Trends
+    card:
+        risk_heat_map: 'Risk Heat Map'
+        compliance_radar: 'Compliance Radar'
+        trend_analysis: 'Trend Analysis'
+    loading:
+        loading: Loading...
+        loading_heat_map: 'Loading heat map data...'
+        loading_compliance: 'Loading compliance data...'
+        loading_trends: 'Loading trend data...'
+    legend:
+        critical: 'Critical (15-25)'
+        high: 'High (8-14)'
+        medium: 'Medium (4-7)'
+        low: 'Low (1-3)'
+    axes:
+        impact: 'Impact →'
+        probability: '← Probability'
+    details:
+        risks_in_cell: 'Risks in this cell'
+    overall_compliance: 'Overall Compliance'
+    table:
+        annex: Annex
+        implemented: Implemented
+        total: Total
+        compliance: Compliance
+    trend_tabs:
+        risks: Risks
+        assets: Assets
+        incidents: Incidents
+    chart_title:
+        risk_trends_last_12: 'Risk Trends (Last 12 Months)'
+        asset_growth_last_12: 'Asset Growth (Last 12 Months)'
+        incident_trends_last_12: 'Incident Trends (Last 12 Months)'
+    stat_label:
+        total_risks: 'Total Risks'
+        high_risk: 'High Risk'
+        trend: Trend
+        total_assets: 'Total Assets'
+        growth: Growth
+        total_incidents: 'Total Incidents'
+        critical: Critical
+        avg_per_month: Avg/Month
