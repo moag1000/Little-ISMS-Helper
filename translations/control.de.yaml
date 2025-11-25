@@ -1,0 +1,13 @@
+controls:
+    field:
+        control_id: Maßnahme‑ID
+        name: Name
+        title: Titel
+        category: Kategorie
+        implementation_status: Umsetzungsstatus
+        status: Status
+    status:
+        implemented: Implementiert
+        in_progress: 'In Bearbeitung'
+        not_started: 'Nicht begonnen'
+        not_applicable: 'Nicht anwendbar'

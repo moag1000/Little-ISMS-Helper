@@ -40,27 +40,27 @@
 
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.name,
-                                'label': 'tenant.field.name'|trans({}, 'tenant')|default('Name'),
-                                'help': 'tenant.help.name'|trans({}, 'tenant')|default('Name des Tenants'),
+                                'label': 'tenant.field.name'|trans({}, 'tenant'),
+                                'help': 'tenant.help.name'|trans({}, 'tenant'),
                                 'required': true
                             } %}
 
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.code,
-                                'label': 'tenant.field.code'|trans({}, 'tenant')|default('Code'),
-                                'help': 'tenant.field.code_auto_generated'|trans({}, 'tenant')|default('Automatisch generiert aus dem Namen')
+                                'label': 'tenant.field.code'|trans({}, 'tenant'),
+                                'help': 'tenant.field.code_auto_generated'|trans({}, 'tenant')
                             } %}
 
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.description,
-                                'label': 'tenant.field.description'|trans({}, 'tenant')|default('Beschreibung'),
-                                'help': 'tenant.help.description'|trans({}, 'tenant')|default('Beschreibung des Tenants')
+                                'label': 'tenant.field.description'|trans({}, 'tenant'),
+                                'help': 'tenant.help.description'|trans({}, 'tenant')
                             } %}
 
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.logoFile,
-                                'label': 'tenant.field.logo'|trans({}, 'tenant')|default('Logo'),
-                                'help': 'tenant.help.logo'|trans({}, 'tenant')|default('Tenant-Logo hochladen')
+                                'label': 'tenant.field.logo'|trans({}, 'tenant'),
+                                'help': 'tenant.help.logo'|trans({}, 'tenant')
                             } %}
                         </fieldset>
 
@@ -70,8 +70,8 @@
 
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.parent,
-                                'label': 'tenant.field.parent'|trans({}, 'tenant')|default('Parent Tenant'),
-                                'help': 'tenant.help.parent'|trans({}, 'tenant')|default('Übergeordneter Tenant in der Unternehmensstruktur')
+                                'label': 'tenant.field.parent'|trans({}, 'tenant'),
+                                'help': 'tenant.help.parent'|trans({}, 'tenant')
                             } %}
 
                             {# Switch field - special handling #}
@@ -86,8 +86,8 @@
 
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.corporateNotes,
-                                'label': 'tenant.field.corporate_notes'|trans({}, 'tenant')|default('Corporate Notes'),
-                                'help': 'tenant.help.corporate_notes'|trans({}, 'tenant')|default('Notizen zur Unternehmensstruktur')
+                                'label': 'tenant.field.corporate_notes'|trans({}, 'tenant'),
+                                'help': 'tenant.help.corporate_notes'|trans({}, 'tenant')
                             } %}
                         </fieldset>
 
@@ -97,8 +97,8 @@
 
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.azureTenantId,
-                                'label': 'tenant.field.azure_tenant_id'|trans({}, 'tenant')|default('Azure Tenant ID'),
-                                'help': 'tenant.help.azure_tenant_id'|trans({}, 'tenant')|default('Azure AD Tenant ID für SSO Integration')
+                                'label': 'tenant.field.azure_tenant_id'|trans({}, 'tenant'),
+                                'help': 'tenant.help.azure_tenant_id'|trans({}, 'tenant')
                             } %}
                         </fieldset>
 
@@ -118,8 +118,8 @@
 
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.settings,
-                                'label': 'tenant.field.settings'|trans({}, 'tenant')|default('Settings (JSON)'),
-                                'help': 'tenant.help.settings'|trans({}, 'tenant')|default('Tenant-spezifische Einstellungen im JSON-Format')
+                                'label': 'tenant.field.settings'|trans({}, 'tenant'),
+                                'help': 'tenant.help.settings'|trans({}, 'tenant')
                             } %}
                             <div class="form-text mt-2">
                                 <strong>{{ 'tenant.settings.example_title'|trans({}, 'tenant') }}</strong><br>
@@ -215,7 +215,7 @@
 
 {% block javascripts %}
     {{ parent() }}
-    <script>
+    <script type="text/javascript">
         function initTenantForm() {
             if (window.tenantFormInitialized) return;
             window.tenantFormInitialized = true;
