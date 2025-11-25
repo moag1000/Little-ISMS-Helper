@@ -72,7 +72,7 @@ incident:
         affected_assets: 'Betroffene Assets'
         root_cause: 'Ursächliche Ursache'
         corrective_actions: Korrekturmaßnahmen
-        lessons_learned: 'Lessons Learned'
+        lessons_learned: 'Gelernte Lektionen'
         closed_at: 'Geschlossen am'
         nis2_category: NIS2‑Kategorie
         cross_border_impact: 'Grenzüberschreitende Auswirkungen'

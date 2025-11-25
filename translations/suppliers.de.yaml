@@ -66,7 +66,7 @@ supplier:
         contract_end: Vertragsende
         security_requirements: Sicherheitsanforderungen
         contact: Contact
-        risk_level: Risk Level
+        risk_level: Risikostufe
     badge:
         overdue: Überfällig
     value:
