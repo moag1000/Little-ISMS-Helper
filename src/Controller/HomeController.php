@@ -101,7 +101,7 @@ class HomeController extends AbstractController
         $overdueTreatmentPlans = $tenant ? $this->treatmentPlanRepository->findOverdueForTenant($tenant) : [];
         $approachingTreatmentPlans = $tenant ? $this->treatmentPlanRepository->findDueWithinDays(7, $tenant) : [];
 
-        return $this->render('home/dashboard_modern.html.twig', [
+        return $this->render('home/dashboard.html.twig', [
             'kpis' => $kpis,
             'stats' => $stats,
             'activities' => $activities,
@@ -121,30 +121,60 @@ class HomeController extends AbstractController
         $recentAssets = array_slice($this->assetRepository->findActiveAssets(), 0, 3);
         foreach ($recentAssets as $asset) {
             $createdAt = $asset->getCreatedAt();
-            $timeAgo = $createdAt ? sprintf($this->translator->trans('activity.minutes_ago'), $createdAt->diff(new \DateTime())->i) : $this->translator->trans('activity.recently');
+            if ($createdAt) {
+                $diff = $createdAt->diff(new \DateTime());
+                $minutes = $diff->i;
+                $hours = $diff->h;
+                $days = $diff->d;
+
+                if ($days > 0) {
+                    $timeAgo = $this->translator->trans('dashboard.activity.days_ago', ['count' => $days], 'dashboard');
+                } elseif ($hours > 0) {
+                    $timeAgo = $this->translator->trans('dashboard.activity.hours_ago', ['count' => $hours], 'dashboard');
+                } else {
+                    $timeAgo = $this->translator->trans('dashboard.activity.minutes_ago', ['count' => $minutes], 'dashboard');
+                }
+            } else {
+                $timeAgo = $this->translator->trans('dashboard.activity.recently', [], 'dashboard');
+            }
 
             $activities[] = [
                 'icon' => 'bi-server',
                 'color' => 'primary',
-                'title' => $this->translator->trans('activity.asset_added'),
+                'title' => $this->translator->trans('dashboard.activity.asset_added', [], 'dashboard'),
                 'description' => $asset->getName(),
                 'time' => $timeAgo,
-                'user' => $asset->getOwner() ?? $this->translator->trans('activity.system'),
+                'user' => $asset->getOwner() ?? $this->translator->trans('dashboard.activity.system', [], 'dashboard'),
             ];
         }
 
         $recentRisks = array_slice($this->riskRepository->findAll(), 0, 3);
         foreach ($recentRisks as $risk) {
             $createdAt = $risk->getCreatedAt();
-            $timeAgo = $createdAt ? sprintf($this->translator->trans('activity.minutes_ago'), $createdAt->diff(new \DateTime())->i) : $this->translator->trans('activity.recently');
+            if ($createdAt) {
+                $diff = $createdAt->diff(new \DateTime());
+                $minutes = $diff->i;
+                $hours = $diff->h;
+                $days = $diff->d;
+
+                if ($days > 0) {
+                    $timeAgo = $this->translator->trans('dashboard.activity.days_ago', ['count' => $days], 'dashboard');
+                } elseif ($hours > 0) {
+                    $timeAgo = $this->translator->trans('dashboard.activity.hours_ago', ['count' => $hours], 'dashboard');
+                } else {
+                    $timeAgo = $this->translator->trans('dashboard.activity.minutes_ago', ['count' => $minutes], 'dashboard');
+                }
+            } else {
+                $timeAgo = $this->translator->trans('dashboard.activity.recently', [], 'dashboard');
+            }
 
             $activities[] = [
                 'icon' => 'bi-exclamation-triangle',
                 'color' => 'warning',
-                'title' => $this->translator->trans('activity.risk_identified'),
-                'description' => $risk->getDescription() ?? $this->translator->trans('activity.new_risk'),
+                'title' => $this->translator->trans('dashboard.activity.risk_identified', [], 'dashboard'),
+                'description' => $risk->getDescription() ?? $this->translator->trans('dashboard.activity.new_risk', [], 'dashboard'),
                 'time' => $timeAgo,
-                'user' => $this->translator->trans('activity.security_team'),
+                'user' => $this->translator->trans('dashboard.activity.security_team', [], 'dashboard'),
             ];
         }
 

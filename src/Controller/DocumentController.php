@@ -93,7 +93,7 @@ class DocumentController extends AbstractController
             $detailedStats = ['own' => count($documents), 'inherited' => 0, 'subsidiaries' => 0, 'total' => count($documents)];
         }
 
-        return $this->render('document/index_modern.html.twig', [
+        return $this->render('document/index.html.twig', [
             'documents' => $documents,
             'inheritanceInfo' => $inheritanceInfo,
             'currentTenant' => $tenant,
@@ -118,7 +118,7 @@ class DocumentController extends AbstractController
 
                 $this->addFlash('error', $this->translator->trans('document.error.too_many_uploads'));
 
-                return $this->render('document/new_modern.html.twig', [
+                return $this->render('document/new.html.twig', [
                     'document' => $document,
                     'form' => $form,
                 ]);
@@ -176,14 +176,14 @@ class DocumentController extends AbstractController
 
                 $this->addFlash('error', $this->translator->trans('document.error.upload_failed') . ': ' . $e->getMessage());
 
-                return $this->render('document/new_modern.html.twig', [
+                return $this->render('document/new.html.twig', [
                     'document' => $document,
                     'form' => $form,
                 ]);
             }
         }
 
-        return $this->render('document/new_modern.html.twig', [
+        return $this->render('document/new.html.twig', [
             'document' => $document,
             'form' => $form,
         ]);
