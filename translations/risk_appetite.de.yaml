@@ -57,6 +57,6 @@ risk_appetite:
         confirm: 'Wollen Sie diesen Eintrag wirklich löschen?'
     no_appetites: 'Keine Risikobereitschaften definiert.'
     exceeding:
-        title: Titel
-        description: Beschreibung
-    and_more: And More
+        title: 'Risikoüberschreitungen'
+        description: 'Risiken, die den definierten Risikoappetit überschreiten'
+    and_more: 'Und weitere'
