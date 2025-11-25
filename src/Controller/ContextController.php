@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\ISMSContext;
 use App\Form\ISMSContextType;
 use App\Repository\AuditLogRepository;
+use App\Repository\ISMSObjectiveRepository;
 use App\Service\ISMSContextService;
 use App\Service\ISMSObjectiveService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,6 +21,7 @@ class ContextController extends AbstractController
     public function __construct(
         private ISMSContextService $contextService,
         private ISMSObjectiveService $objectiveService,
+        private ISMSObjectiveRepository $objectiveRepository,
         private AuditLogRepository $auditLogRepository,
         private TranslatorInterface $translator
     ) {}
@@ -44,6 +46,9 @@ class ContextController extends AbstractController
         // Get current tenant for navigation
         $tenant = $context->getTenant();
 
+        // Get objectives for KPI display and table
+        $objectives = $this->objectiveRepository->findActive();
+
         return $this->render('context/index.html.twig', [
             'context' => $effectiveContext, // Show effective context
             'ownContext' => $context, // Keep reference to own context
@@ -51,6 +56,7 @@ class ContextController extends AbstractController
             'isReviewDue' => $this->contextService->isReviewDue($effectiveContext),
             'daysUntilReview' => $this->contextService->getDaysUntilReview($effectiveContext),
             'statistics' => $statistics,
+            'objectives' => $objectives, // Active objectives for KPI and table display
             'auditLogs' => $auditLogs,
             'totalAuditLogs' => $totalAuditLogs,
             'inheritanceInfo' => $inheritanceInfo, // NEW: Corporate inheritance info
