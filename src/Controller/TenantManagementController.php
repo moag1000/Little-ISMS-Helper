@@ -153,6 +153,40 @@ class TenantManagementController extends AbstractController
         ]);
     }
 
+    #[Route('/corporate-structure', name: 'tenant_management_corporate_structure', methods: ['GET'])]
+    #[IsGranted('TENANT_VIEW')]
+    public function corporateStructure(): Response
+    {
+        // Check if corporate structure features should be available
+        $isMultiTenant = $this->multiTenantCheckService->isMultiTenant();
+
+        // Get all root tenants (corporate parents without parents)
+        $allTenants = $this->tenantRepository->findBy(['isActive' => true], ['name' => 'ASC']);
+        $corporateGroups = [];
+
+        foreach ($allTenants as $tenant) {
+            if ($tenant->isCorporateParent() && $tenant->getParent() === null) {
+                $tree = $this->corporateStructureService->getStructureTree($tenant);
+                $corporateGroups[] = $tree;
+            }
+        }
+
+        // Get standalone tenants (not part of any corporate structure)
+        $standaloneTenants = array_filter($allTenants, function ($tenant) {
+            return !$tenant->isPartOfCorporateStructure();
+        });
+
+        return $this->render('admin/tenants/corporate_structure.html.twig', [
+            'corporateGroups' => $corporateGroups,
+            'standaloneTenants' => $standaloneTenants,
+            'allTenants' => $allTenants,
+            'governanceModels' => GovernanceModel::cases(),
+            'isMultiTenant' => $isMultiTenant,
+            'activeTenantCount' => $this->multiTenantCheckService->getActiveTenantCount(),
+        ]);
+    }
+
+
     #[Route('/{id}', name: 'tenant_management_show', methods: ['GET'])]
     #[IsGranted('TENANT_VIEW')]
     public function show(Tenant $tenant): Response
@@ -445,42 +479,6 @@ class TenantManagementController extends AbstractController
                 'error' => $e->getMessage(),
             ]);
         }
-    }
-
-    /**
-     * Corporate Structure Management Routes
-     */
-    #[Route('/corporate-structure', name: 'tenant_management_corporate_structure', methods: ['GET'])]
-    #[IsGranted('TENANT_VIEW')]
-    public function corporateStructure(): Response
-    {
-        // Check if corporate structure features should be available
-        $isMultiTenant = $this->multiTenantCheckService->isMultiTenant();
-
-        // Get all root tenants (corporate parents without parents)
-        $allTenants = $this->tenantRepository->findBy(['isActive' => true], ['name' => 'ASC']);
-        $corporateGroups = [];
-
-        foreach ($allTenants as $tenant) {
-            if ($tenant->isCorporateParent() && $tenant->getParent() === null) {
-                $tree = $this->corporateStructureService->getStructureTree($tenant);
-                $corporateGroups[] = $tree;
-            }
-        }
-
-        // Get standalone tenants (not part of any corporate structure)
-        $standaloneTenants = array_filter($allTenants, function ($tenant) {
-            return !$tenant->isPartOfCorporateStructure();
-        });
-
-        return $this->render('admin/tenants/corporate_structure.html.twig', [
-            'corporateGroups' => $corporateGroups,
-            'standaloneTenants' => $standaloneTenants,
-            'allTenants' => $allTenants,
-            'governanceModels' => GovernanceModel::cases(),
-            'isMultiTenant' => $isMultiTenant,
-            'activeTenantCount' => $this->multiTenantCheckService->getActiveTenantCount(),
-        ]);
     }
 
     #[Route('/{id}/set-parent', name: 'tenant_management_set_parent', methods: ['POST'])]

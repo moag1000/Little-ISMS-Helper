@@ -119,6 +119,65 @@ class SupplierController extends AbstractController
         ]);
     }
 
+    #[Route('/bulk-delete', name: 'app_supplier_bulk_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function bulkDelete(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+
+        if (empty($ids)) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $user = $this->security->getUser();
+        $tenant = $user?->getTenant();
+
+        $deleted = 0;
+        $errors = [];
+
+        foreach ($ids as $id) {
+            try {
+                $supplier = $this->supplierRepository->find($id);
+
+                if (!$supplier) {
+                    $errors[] = "Supplier ID $id not found";
+                    continue;
+                }
+
+                // Security check: only allow deletion of own tenant's suppliers
+                if ($tenant && $supplier->getTenant() !== $tenant) {
+                    $errors[] = "Supplier ID $id does not belong to your organization";
+                    continue;
+                }
+
+                $this->entityManager->remove($supplier);
+                $deleted++;
+            } catch (\Exception $e) {
+                $errors[] = "Error deleting supplier ID $id: " . $e->getMessage();
+            }
+        }
+
+        if ($deleted > 0) {
+            $this->entityManager->flush();
+        }
+
+        if (!empty($errors)) {
+            return $this->json([
+                'success' => $deleted > 0,
+                'deleted' => $deleted,
+                'errors' => $errors
+            ], $deleted > 0 ? 200 : 400);
+        }
+
+        return $this->json([
+            'success' => true,
+            'deleted' => $deleted,
+            'message' => "$deleted suppliers deleted successfully"
+        ]);
+    }
+
+
     #[Route('/{id}', name: 'app_supplier_show', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function show(Supplier $supplier): Response
@@ -236,63 +295,5 @@ class SupplierController extends AbstractController
             'subsidiaries' => $subsidiariesCount,
             'total' => $ownCount + $inheritedCount + $subsidiariesCount
         ];
-    }
-
-    #[Route('/bulk-delete', name: 'app_supplier_bulk_delete', methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
-    public function bulkDelete(Request $request): Response
-    {
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $user = $this->security->getUser();
-        $tenant = $user?->getTenant();
-
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $supplier = $this->supplierRepository->find($id);
-
-                if (!$supplier) {
-                    $errors[] = "Supplier ID $id not found";
-                    continue;
-                }
-
-                // Security check: only allow deletion of own tenant's suppliers
-                if ($tenant && $supplier->getTenant() !== $tenant) {
-                    $errors[] = "Supplier ID $id does not belong to your organization";
-                    continue;
-                }
-
-                $this->entityManager->remove($supplier);
-                $deleted++;
-            } catch (\Exception $e) {
-                $errors[] = "Error deleting supplier ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        if (!empty($errors)) {
-            return $this->json([
-                'success' => $deleted > 0,
-                'deleted' => $deleted,
-                'errors' => $errors
-            ], $deleted > 0 ? 200 : 400);
-        }
-
-        return $this->json([
-            'success' => true,
-            'deleted' => $deleted,
-            'message' => "$deleted suppliers deleted successfully"
-        ]);
     }
 }

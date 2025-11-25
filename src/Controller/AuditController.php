@@ -92,6 +92,88 @@ class AuditController extends AbstractController
         ]);
     }
 
+    #[Route('/export/excel', name: 'app_audit_export_excel')]
+    public function exportExcel(Request $request): Response
+    {
+        $audits = $this->auditRepository->findAll();
+
+        $headers = ['ID', 'Title', 'Scope', 'Status', 'Planned Date', 'Actual Date'];
+        $data = [];
+
+        foreach ($audits as $audit) {
+            $data[] = [
+                $audit->getId(),
+                $audit->getTitle(),
+                $audit->getScope(),
+                $audit->getStatus(),
+                $audit->getPlannedDate()?->format('d.m.Y') ?? '',
+                $audit->getActualDate()?->format('d.m.Y') ?? '',
+            ];
+        }
+
+        // Close session to prevent blocking other requests during Excel generation
+        $request->getSession()->save();
+
+        $spreadsheet = $this->excelService->exportArray($data, $headers, 'Audits');
+        $excel = $this->excelService->generateExcel($spreadsheet);
+
+        return new Response($excel, 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="audits_' . date('Y-m-d') . '.xlsx"',
+        ]);
+    }
+
+
+    #[Route('/bulk-delete', name: 'app_audit_bulk_delete', methods: ['POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function bulkDelete(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $ids = $data['ids'] ?? [];
+
+        if (empty($ids)) {
+            return $this->json(['error' => 'No items selected'], 400);
+        }
+
+        $deleted = 0;
+        $errors = [];
+
+        foreach ($ids as $id) {
+            try {
+                $audit = $this->auditRepository->find($id);
+
+                if (!$audit) {
+                    $errors[] = "Audit ID $id not found";
+                    continue;
+                }
+
+                $this->entityManager->remove($audit);
+                $deleted++;
+            } catch (\Exception $e) {
+                $errors[] = "Error deleting audit ID $id: " . $e->getMessage();
+            }
+        }
+
+        if ($deleted > 0) {
+            $this->entityManager->flush();
+        }
+
+        if (!empty($errors)) {
+            return $this->json([
+                'success' => $deleted > 0,
+                'deleted' => $deleted,
+                'errors' => $errors
+            ], $deleted > 0 ? 200 : 400);
+        }
+
+        return $this->json([
+            'success' => true,
+            'deleted' => $deleted,
+            'message' => "$deleted audits deleted successfully"
+        ]);
+    }
+
+
     #[Route('/{id}', name: 'app_audit_show', requirements: ['id' => '\d+'])]
     public function show(InternalAudit $audit): Response
     {
@@ -154,86 +236,6 @@ class AuditController extends AbstractController
         return new Response($pdf, 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="audit_' . $audit->getId() . '.pdf"',
-        ]);
-    }
-
-    #[Route('/export/excel', name: 'app_audit_export_excel')]
-    public function exportExcel(Request $request): Response
-    {
-        $audits = $this->auditRepository->findAll();
-
-        $headers = ['ID', 'Title', 'Scope', 'Status', 'Planned Date', 'Actual Date'];
-        $data = [];
-
-        foreach ($audits as $audit) {
-            $data[] = [
-                $audit->getId(),
-                $audit->getTitle(),
-                $audit->getScope(),
-                $audit->getStatus(),
-                $audit->getPlannedDate()?->format('d.m.Y') ?? '',
-                $audit->getActualDate()?->format('d.m.Y') ?? '',
-            ];
-        }
-
-        // Close session to prevent blocking other requests during Excel generation
-        $request->getSession()->save();
-
-        $spreadsheet = $this->excelService->exportArray($data, $headers, 'Audits');
-        $excel = $this->excelService->generateExcel($spreadsheet);
-
-        return new Response($excel, 200, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition' => 'attachment; filename="audits_' . date('Y-m-d') . '.xlsx"',
-        ]);
-    }
-
-    #[Route('/bulk-delete', name: 'app_audit_bulk_delete', methods: ['POST'])]
-    #[IsGranted('ROLE_ADMIN')]
-    public function bulkDelete(Request $request): Response
-    {
-        $data = json_decode($request->getContent(), true);
-        $ids = $data['ids'] ?? [];
-
-        if (empty($ids)) {
-            return $this->json(['error' => 'No items selected'], 400);
-        }
-
-        $deleted = 0;
-        $errors = [];
-
-        foreach ($ids as $id) {
-            try {
-                $audit = $this->auditRepository->find($id);
-
-                if (!$audit) {
-                    $errors[] = "Audit ID $id not found";
-                    continue;
-                }
-
-                $this->entityManager->remove($audit);
-                $deleted++;
-            } catch (\Exception $e) {
-                $errors[] = "Error deleting audit ID $id: " . $e->getMessage();
-            }
-        }
-
-        if ($deleted > 0) {
-            $this->entityManager->flush();
-        }
-
-        if (!empty($errors)) {
-            return $this->json([
-                'success' => $deleted > 0,
-                'deleted' => $deleted,
-                'errors' => $errors
-            ], $deleted > 0 ? 200 : 400);
-        }
-
-        return $this->json([
-            'success' => true,
-            'deleted' => $deleted,
-            'message' => "$deleted audits deleted successfully"
         ]);
     }
 }

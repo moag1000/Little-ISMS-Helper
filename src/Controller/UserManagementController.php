@@ -132,6 +132,327 @@ class UserManagementController extends AbstractController
         ]);
     }
 
+    #[Route('/bulk-actions', name: 'user_management_bulk_actions', methods: ['POST'])]
+    public function bulkActions(
+        Request $request,
+        UserRepository $userRepository,
+        RoleRepository $roleRepository,
+        EntityManagerInterface $entityManager,
+        TranslatorInterface $translator
+    ): Response {
+        $this->denyAccessUnlessGranted(UserVoter::VIEW_ALL);
+
+        $action = $request->request->get('action');
+        $userIds = $request->request->all('user_ids') ?? [];
+
+        if (empty($userIds)) {
+            $this->addFlash('error', $translator->trans('user.error.no_users_selected'));
+            return $this->redirectToRoute('user_management_index');
+        }
+
+        $users = $userRepository->findBy(['id' => $userIds]);
+        $count = 0;
+        $skippedCount = 0;
+        $skippedReasons = [];
+
+        foreach ($users as $user) {
+            $skipped = false;
+            $skipReason = null;
+
+            switch ($action) {
+                case 'activate':
+                    if ($this->isGranted(UserVoter::EDIT, $user)) {
+                        $user->setIsActive(true);
+                        $user->setUpdatedAt(new \DateTimeImmutable());
+                        $count++;
+                    } else {
+                        $skipped = true;
+                        $skipReason = 'no_permission';
+                    }
+                    break;
+
+                case 'deactivate':
+                    if ($this->isGranted(UserVoter::EDIT, $user)) {
+                        // Protect initial setup admin and current user
+                        $isInitialAdmin = $this->initialAdminService->isInitialAdmin($user);
+                        $isCurrentUser = $this->getUser() && $this->getUser()->getId() === $user->getId();
+
+                        if ($isInitialAdmin) {
+                            $skipped = true;
+                            $skipReason = 'initial_admin';
+                        } elseif ($isCurrentUser) {
+                            $skipped = true;
+                            $skipReason = 'current_user';
+                        } else {
+                            $user->setIsActive(false);
+                            $user->setUpdatedAt(new \DateTimeImmutable());
+                            $count++;
+                        }
+                    } else {
+                        $skipped = true;
+                        $skipReason = 'no_permission';
+                    }
+                    break;
+
+                case 'assign_role':
+                    $roleId = $request->request->get('role_id');
+                    $role = $roleRepository->find($roleId);
+
+                    if ($role && $this->isGranted(UserVoter::EDIT, $user)) {
+                        if (!$user->getCustomRoles()->contains($role)) {
+                            $user->addCustomRole($role);
+                            $user->setUpdatedAt(new \DateTimeImmutable());
+                            $count++;
+                        } else {
+                            $skipped = true;
+                            $skipReason = 'already_has_role';
+                        }
+                    } else {
+                        $skipped = true;
+                        $skipReason = !$role ? 'role_not_found' : 'no_permission';
+                    }
+                    break;
+
+                case 'delete':
+                    if ($this->isGranted(UserVoter::DELETE, $user)) {
+                        // Protect initial setup admin from deletion
+                        $isInitialAdmin = $this->initialAdminService->isInitialAdmin($user);
+
+                        if ($isInitialAdmin) {
+                            $skipped = true;
+                            $skipReason = 'initial_admin';
+                        } else {
+                            $entityManager->remove($user);
+                            $count++;
+                        }
+                    } else {
+                        $skipped = true;
+                        $skipReason = 'no_permission';
+                    }
+                    break;
+            }
+
+            if ($skipped) {
+                $skippedCount++;
+                if ($skipReason) {
+                    $skippedReasons[$skipReason] = ($skippedReasons[$skipReason] ?? 0) + 1;
+                }
+            }
+        }
+
+        $entityManager->flush();
+
+        // Log bulk action
+        $this->logger->info('Bulk action executed', [
+            'action' => $action,
+            'selected_users' => count($userIds),
+            'processed' => $count,
+            'skipped' => $skippedCount,
+            'skipped_reasons' => $skippedReasons,
+            'executor_id' => $this->getUser()?->getId(),
+        ]);
+
+        // Success message
+        if ($count > 0) {
+            $this->addFlash('success', $translator->trans('user.success.bulk_action_completed', [
+                'count' => $count,
+                'action' => $action,
+            ]));
+        }
+
+        // Detailed feedback for skipped users
+        if ($skippedCount > 0) {
+            $reasonMessages = [];
+
+            if (isset($skippedReasons['initial_admin'])) {
+                $reasonMessages[] = $translator->trans('user.info.bulk_skipped_initial_admin', [
+                    'count' => $skippedReasons['initial_admin'],
+                ], 'messages');
+            }
+
+            if (isset($skippedReasons['current_user'])) {
+                $reasonMessages[] = $translator->trans('user.info.bulk_skipped_current_user', [
+                    'count' => $skippedReasons['current_user'],
+                ], 'messages');
+            }
+
+            if (isset($skippedReasons['no_permission'])) {
+                $reasonMessages[] = $translator->trans('user.info.bulk_skipped_no_permission', [
+                    'count' => $skippedReasons['no_permission'],
+                ], 'messages');
+            }
+
+            if (isset($skippedReasons['already_has_role'])) {
+                $reasonMessages[] = $translator->trans('user.info.bulk_skipped_already_has_role', [
+                    'count' => $skippedReasons['already_has_role'],
+                ], 'messages');
+            }
+
+            foreach ($reasonMessages as $message) {
+                $this->addFlash('info', $message);
+            }
+        }
+
+        return $this->redirectToRoute('user_management_index');
+    }
+
+
+    #[Route('/export', name: 'user_management_export', methods: ['GET'])]
+    public function export(
+        UserRepository $userRepository
+    ): StreamedResponse {
+        $this->denyAccessUnlessGranted(UserVoter::VIEW_ALL);
+
+        $users = $userRepository->findAll();
+
+        $response = new StreamedResponse(function () use ($users) {
+            $handle = fopen('php://output', 'w');
+
+            // CSV Header
+            fputcsv($handle, [
+                'ID',
+                'Email',
+                'First Name',
+                'Last Name',
+                'Active',
+                'MFA Enabled',
+                'Tenant',
+                'Roles',
+                'Auth Provider',
+                'Created At',
+                'Last Login',
+            ]);
+
+            // CSV Rows
+            foreach ($users as $user) {
+                $roles = array_map(function ($role) {
+                    return $role->getName();
+                }, $user->getCustomRoles()->toArray());
+
+                fputcsv($handle, [
+                    $user->getId(),
+                    $user->getEmail(),
+                    $user->getFirstName(),
+                    $user->getLastName(),
+                    $user->isActive() ? 'Yes' : 'No',
+                    'N/A', // MFA status - would need MfaTokenRepository to check
+                    $user->getTenant() ? $user->getTenant()->getName() : '',
+                    implode(', ', $roles),
+                    $user->getAuthProvider(),
+                    $user->getCreatedAt()?->format('Y-m-d H:i:s'),
+                    $user->getLastLoginAt()?->format('Y-m-d H:i:s'),
+                ]);
+            }
+
+            fclose($handle);
+        });
+
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="users_export_' . date('Y-m-d_H-i-s') . '.csv"');
+
+        return $response;
+    }
+
+
+    #[Route('/import', name: 'user_management_import', methods: ['GET', 'POST'])]
+    public function import(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserPasswordHasherInterface $passwordHasher,
+        RoleRepository $roleRepository,
+        TranslatorInterface $translator
+    ): Response {
+        $this->denyAccessUnlessGranted(UserVoter::CREATE);
+
+        if ($request->isMethod('POST')) {
+            $file = $request->files->get('import_file');
+
+            if (!$file) {
+                $this->addFlash('error', $translator->trans('user.error.no_file_uploaded'));
+                return $this->redirectToRoute('user_management_import');
+            }
+
+            $handle = fopen($file->getPathname(), 'r');
+            $header = fgetcsv($handle); // Skip header
+
+            $imported = 0;
+            $errors = [];
+
+            while (($row = fgetcsv($handle)) !== false) {
+                try {
+                    // Expected CSV format: email, first_name, last_name, password, is_active, roles
+                    $email = $row[0] ?? null;
+                    $firstName = $row[1] ?? null;
+                    $lastName = $row[2] ?? null;
+                    $password = $row[3] ?? null;
+                    $isActive = ($row[4] ?? 'yes') === 'yes';
+                    $roleNames = isset($row[5]) ? explode(',', $row[5]) : [];
+
+                    if (!$email || !$firstName || !$lastName) {
+                        $errors[] = "Skipped row: Missing required fields (email, first_name, last_name)";
+                        continue;
+                    }
+
+                    // Check if user already exists
+                    $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+                    if ($existingUser) {
+                        $errors[] = "Skipped: User with email {$email} already exists";
+                        continue;
+                    }
+
+                    $user = new User();
+                    $user->setEmail($email);
+                    $user->setFirstName($firstName);
+                    $user->setLastName($lastName);
+                    $user->setIsActive($isActive);
+                    $user->setAuthProvider('local');
+
+                    // Set password
+                    if ($password) {
+                        $hashedPassword = $passwordHasher->hashPassword($user, $password);
+                        $user->setPassword($hashedPassword);
+                    } else {
+                        // Generate random password if not provided
+                        $randomPassword = bin2hex(random_bytes(16));
+                        $hashedPassword = $passwordHasher->hashPassword($user, $randomPassword);
+                        $user->setPassword($hashedPassword);
+                    }
+
+                    // Assign roles
+                    foreach ($roleNames as $roleName) {
+                        $roleName = trim($roleName);
+                        $role = $roleRepository->findOneBy(['name' => $roleName]);
+                        if ($role) {
+                            $user->addCustomRole($role);
+                        }
+                    }
+
+                    $entityManager->persist($user);
+                    $imported++;
+                } catch (\Exception $e) {
+                    $errors[] = "Error importing row: " . $e->getMessage();
+                }
+            }
+
+            fclose($handle);
+
+            $entityManager->flush();
+
+            $this->addFlash('success', $translator->trans('user.success.imported', ['count' => $imported]));
+
+            if (!empty($errors)) {
+                foreach ($errors as $error) {
+                    $this->addFlash('warning', $error);
+                }
+            }
+
+            return $this->redirectToRoute('user_management_index');
+        }
+
+        return $this->render('user_management/import.html.twig');
+    }
+
+
     #[Route('/{id}', name: 'user_management_show', requirements: ['id' => '\d+'])]
     public function show(User $user): Response
     {
@@ -411,324 +732,6 @@ class UserManagementController extends AbstractController
         }
 
         return $this->redirectToRoute('user_management_show', ['id' => $user->getId()]);
-    }
-
-    #[Route('/bulk-actions', name: 'user_management_bulk_actions', methods: ['POST'])]
-    public function bulkActions(
-        Request $request,
-        UserRepository $userRepository,
-        RoleRepository $roleRepository,
-        EntityManagerInterface $entityManager,
-        TranslatorInterface $translator
-    ): Response {
-        $this->denyAccessUnlessGranted(UserVoter::VIEW_ALL);
-
-        $action = $request->request->get('action');
-        $userIds = $request->request->all('user_ids') ?? [];
-
-        if (empty($userIds)) {
-            $this->addFlash('error', $translator->trans('user.error.no_users_selected'));
-            return $this->redirectToRoute('user_management_index');
-        }
-
-        $users = $userRepository->findBy(['id' => $userIds]);
-        $count = 0;
-        $skippedCount = 0;
-        $skippedReasons = [];
-
-        foreach ($users as $user) {
-            $skipped = false;
-            $skipReason = null;
-
-            switch ($action) {
-                case 'activate':
-                    if ($this->isGranted(UserVoter::EDIT, $user)) {
-                        $user->setIsActive(true);
-                        $user->setUpdatedAt(new \DateTimeImmutable());
-                        $count++;
-                    } else {
-                        $skipped = true;
-                        $skipReason = 'no_permission';
-                    }
-                    break;
-
-                case 'deactivate':
-                    if ($this->isGranted(UserVoter::EDIT, $user)) {
-                        // Protect initial setup admin and current user
-                        $isInitialAdmin = $this->initialAdminService->isInitialAdmin($user);
-                        $isCurrentUser = $this->getUser() && $this->getUser()->getId() === $user->getId();
-
-                        if ($isInitialAdmin) {
-                            $skipped = true;
-                            $skipReason = 'initial_admin';
-                        } elseif ($isCurrentUser) {
-                            $skipped = true;
-                            $skipReason = 'current_user';
-                        } else {
-                            $user->setIsActive(false);
-                            $user->setUpdatedAt(new \DateTimeImmutable());
-                            $count++;
-                        }
-                    } else {
-                        $skipped = true;
-                        $skipReason = 'no_permission';
-                    }
-                    break;
-
-                case 'assign_role':
-                    $roleId = $request->request->get('role_id');
-                    $role = $roleRepository->find($roleId);
-
-                    if ($role && $this->isGranted(UserVoter::EDIT, $user)) {
-                        if (!$user->getCustomRoles()->contains($role)) {
-                            $user->addCustomRole($role);
-                            $user->setUpdatedAt(new \DateTimeImmutable());
-                            $count++;
-                        } else {
-                            $skipped = true;
-                            $skipReason = 'already_has_role';
-                        }
-                    } else {
-                        $skipped = true;
-                        $skipReason = !$role ? 'role_not_found' : 'no_permission';
-                    }
-                    break;
-
-                case 'delete':
-                    if ($this->isGranted(UserVoter::DELETE, $user)) {
-                        // Protect initial setup admin from deletion
-                        $isInitialAdmin = $this->initialAdminService->isInitialAdmin($user);
-
-                        if ($isInitialAdmin) {
-                            $skipped = true;
-                            $skipReason = 'initial_admin';
-                        } else {
-                            $entityManager->remove($user);
-                            $count++;
-                        }
-                    } else {
-                        $skipped = true;
-                        $skipReason = 'no_permission';
-                    }
-                    break;
-            }
-
-            if ($skipped) {
-                $skippedCount++;
-                if ($skipReason) {
-                    $skippedReasons[$skipReason] = ($skippedReasons[$skipReason] ?? 0) + 1;
-                }
-            }
-        }
-
-        $entityManager->flush();
-
-        // Log bulk action
-        $this->logger->info('Bulk action executed', [
-            'action' => $action,
-            'selected_users' => count($userIds),
-            'processed' => $count,
-            'skipped' => $skippedCount,
-            'skipped_reasons' => $skippedReasons,
-            'executor_id' => $this->getUser()?->getId(),
-        ]);
-
-        // Success message
-        if ($count > 0) {
-            $this->addFlash('success', $translator->trans('user.success.bulk_action_completed', [
-                'count' => $count,
-                'action' => $action,
-            ]));
-        }
-
-        // Detailed feedback for skipped users
-        if ($skippedCount > 0) {
-            $reasonMessages = [];
-
-            if (isset($skippedReasons['initial_admin'])) {
-                $reasonMessages[] = $translator->trans('user.info.bulk_skipped_initial_admin', [
-                    'count' => $skippedReasons['initial_admin'],
-                ], 'messages');
-            }
-
-            if (isset($skippedReasons['current_user'])) {
-                $reasonMessages[] = $translator->trans('user.info.bulk_skipped_current_user', [
-                    'count' => $skippedReasons['current_user'],
-                ], 'messages');
-            }
-
-            if (isset($skippedReasons['no_permission'])) {
-                $reasonMessages[] = $translator->trans('user.info.bulk_skipped_no_permission', [
-                    'count' => $skippedReasons['no_permission'],
-                ], 'messages');
-            }
-
-            if (isset($skippedReasons['already_has_role'])) {
-                $reasonMessages[] = $translator->trans('user.info.bulk_skipped_already_has_role', [
-                    'count' => $skippedReasons['already_has_role'],
-                ], 'messages');
-            }
-
-            foreach ($reasonMessages as $message) {
-                $this->addFlash('info', $message);
-            }
-        }
-
-        return $this->redirectToRoute('user_management_index');
-    }
-
-    #[Route('/export', name: 'user_management_export', methods: ['GET'])]
-    public function export(
-        UserRepository $userRepository
-    ): StreamedResponse {
-        $this->denyAccessUnlessGranted(UserVoter::VIEW_ALL);
-
-        $users = $userRepository->findAll();
-
-        $response = new StreamedResponse(function () use ($users) {
-            $handle = fopen('php://output', 'w');
-
-            // CSV Header
-            fputcsv($handle, [
-                'ID',
-                'Email',
-                'First Name',
-                'Last Name',
-                'Active',
-                'MFA Enabled',
-                'Tenant',
-                'Roles',
-                'Auth Provider',
-                'Created At',
-                'Last Login',
-            ]);
-
-            // CSV Rows
-            foreach ($users as $user) {
-                $roles = array_map(function ($role) {
-                    return $role->getName();
-                }, $user->getCustomRoles()->toArray());
-
-                fputcsv($handle, [
-                    $user->getId(),
-                    $user->getEmail(),
-                    $user->getFirstName(),
-                    $user->getLastName(),
-                    $user->isActive() ? 'Yes' : 'No',
-                    'N/A', // MFA status - would need MfaTokenRepository to check
-                    $user->getTenant() ? $user->getTenant()->getName() : '',
-                    implode(', ', $roles),
-                    $user->getAuthProvider(),
-                    $user->getCreatedAt()?->format('Y-m-d H:i:s'),
-                    $user->getLastLoginAt()?->format('Y-m-d H:i:s'),
-                ]);
-            }
-
-            fclose($handle);
-        });
-
-        $response->headers->set('Content-Type', 'text/csv');
-        $response->headers->set('Content-Disposition', 'attachment; filename="users_export_' . date('Y-m-d_H-i-s') . '.csv"');
-
-        return $response;
-    }
-
-    #[Route('/import', name: 'user_management_import', methods: ['GET', 'POST'])]
-    public function import(
-        Request $request,
-        EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher,
-        RoleRepository $roleRepository,
-        TranslatorInterface $translator
-    ): Response {
-        $this->denyAccessUnlessGranted(UserVoter::CREATE);
-
-        if ($request->isMethod('POST')) {
-            $file = $request->files->get('import_file');
-
-            if (!$file) {
-                $this->addFlash('error', $translator->trans('user.error.no_file_uploaded'));
-                return $this->redirectToRoute('user_management_import');
-            }
-
-            $handle = fopen($file->getPathname(), 'r');
-            $header = fgetcsv($handle); // Skip header
-
-            $imported = 0;
-            $errors = [];
-
-            while (($row = fgetcsv($handle)) !== false) {
-                try {
-                    // Expected CSV format: email, first_name, last_name, password, is_active, roles
-                    $email = $row[0] ?? null;
-                    $firstName = $row[1] ?? null;
-                    $lastName = $row[2] ?? null;
-                    $password = $row[3] ?? null;
-                    $isActive = ($row[4] ?? 'yes') === 'yes';
-                    $roleNames = isset($row[5]) ? explode(',', $row[5]) : [];
-
-                    if (!$email || !$firstName || !$lastName) {
-                        $errors[] = "Skipped row: Missing required fields (email, first_name, last_name)";
-                        continue;
-                    }
-
-                    // Check if user already exists
-                    $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
-                    if ($existingUser) {
-                        $errors[] = "Skipped: User with email {$email} already exists";
-                        continue;
-                    }
-
-                    $user = new User();
-                    $user->setEmail($email);
-                    $user->setFirstName($firstName);
-                    $user->setLastName($lastName);
-                    $user->setIsActive($isActive);
-                    $user->setAuthProvider('local');
-
-                    // Set password
-                    if ($password) {
-                        $hashedPassword = $passwordHasher->hashPassword($user, $password);
-                        $user->setPassword($hashedPassword);
-                    } else {
-                        // Generate random password if not provided
-                        $randomPassword = bin2hex(random_bytes(16));
-                        $hashedPassword = $passwordHasher->hashPassword($user, $randomPassword);
-                        $user->setPassword($hashedPassword);
-                    }
-
-                    // Assign roles
-                    foreach ($roleNames as $roleName) {
-                        $roleName = trim($roleName);
-                        $role = $roleRepository->findOneBy(['name' => $roleName]);
-                        if ($role) {
-                            $user->addCustomRole($role);
-                        }
-                    }
-
-                    $entityManager->persist($user);
-                    $imported++;
-                } catch (\Exception $e) {
-                    $errors[] = "Error importing row: " . $e->getMessage();
-                }
-            }
-
-            fclose($handle);
-
-            $entityManager->flush();
-
-            $this->addFlash('success', $translator->trans('user.success.imported', ['count' => $imported]));
-
-            if (!empty($errors)) {
-                foreach ($errors as $error) {
-                    $this->addFlash('warning', $error);
-                }
-            }
-
-            return $this->redirectToRoute('user_management_index');
-        }
-
-        return $this->render('user_management/import.html.twig');
     }
 
     #[Route('/{id}/activity', name: 'user_management_activity', requirements: ['id' => '\d+'])]
