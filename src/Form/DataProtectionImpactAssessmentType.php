@@ -32,21 +32,21 @@ class DataProtectionImpactAssessmentType extends AbstractType
             // ============================================================================
             ->add('title', TextType::class, [
                 'label' => 'dpia.form.title',
-                'help' => 'Title of the DPIA (e.g., "Employee Monitoring System DPIA")',
+                'help' => 'dpia.help.title',
                 'required' => true,
             ])
             ->add('referenceNumber', TextType::class, [
                 'label' => 'dpia.form.reference_number',
-                'help' => 'Reference number (auto-generated if empty, format: DPIA-YYYY-XXX)',
+                'help' => 'dpia.help.reference_number',
                 'required' => false,
             ])
             ->add('processingActivity', EntityType::class, [
                 'label' => 'dpia.form.processing_activity',
-                'help' => 'Link to related VVT processing activity (Art. 30)',
+                'help' => 'dpia.help.processing_activity',
                 'class' => ProcessingActivity::class,
                 'choice_label' => 'name',
                 'required' => false,
-                'placeholder' => 'Select processing activity',
+                'placeholder' => 'dpia.placeholder.processing_activity',
                 'attr' => ['class' => 'select2'],
             ])
 
@@ -55,32 +55,32 @@ class DataProtectionImpactAssessmentType extends AbstractType
             // ============================================================================
             ->add('processingDescription', TextareaType::class, [
                 'label' => 'dpia.form.processing_description',
-                'help' => 'Systematic description of the envisaged processing operations (Art. 35(7)(a))',
+                'help' => 'dpia.help.processing_description',
                 'required' => true,
                 'attr' => ['rows' => 5],
             ])
             ->add('processingPurposes', TextareaType::class, [
                 'label' => 'dpia.form.processing_purposes',
-                'help' => 'Purposes of the processing (Art. 35(7)(a))',
+                'help' => 'dpia.help.processing_purposes',
                 'required' => true,
                 'attr' => ['rows' => 3],
             ])
             ->add('dataCategories', ChoiceType::class, [
                 'label' => 'dpia.form.data_categories',
-                'help' => 'Categories of personal data processed (Art. 35(7)(a))',
+                'help' => 'dpia.help.data_categories',
                 'choices' => [
-                    'Identification data (name, ID number)' => 'identification',
-                    'Contact data (address, email, phone)' => 'contact',
-                    'Financial data (bank account, payment info)' => 'financial',
-                    'Location data' => 'location',
-                    'Online identifiers (IP, cookies)' => 'online_identifiers',
-                    'Employment data' => 'employment',
-                    'Health data (Art. 9)' => 'health',
-                    'Biometric data (Art. 9)' => 'biometric',
-                    'Genetic data (Art. 9)' => 'genetic',
-                    'Communication data' => 'communication',
-                    'Usage data' => 'usage',
-                    'Behavioral data' => 'behavioral',
+                    'privacy.personal_data.identification' => 'identification',
+                    'privacy.personal_data.contact' => 'contact',
+                    'privacy.personal_data.financial' => 'financial',
+                    'privacy.personal_data.location' => 'location',
+                    'privacy.personal_data.online_identifiers' => 'online_identifiers',
+                    'privacy.personal_data.employment' => 'employment',
+                    'privacy.data_category.health_art9' => 'health',
+                    'privacy.data_category.biometric_art9' => 'biometric',
+                    'privacy.data_category.genetic_art9' => 'genetic',
+                    'privacy.personal_data.communication' => 'communication',
+                    'privacy.personal_data.usage' => 'usage',
+                    'privacy.data_category.behavioral' => 'behavioral',
                 ],
                 'multiple' => true,
                 'required' => true,
@@ -88,19 +88,19 @@ class DataProtectionImpactAssessmentType extends AbstractType
             ])
             ->add('dataSubjectCategories', ChoiceType::class, [
                 'label' => 'dpia.form.data_subject_categories',
-                'help' => 'Categories of data subjects affected (Art. 35(7)(a))',
+                'help' => 'dpia.form.data_subject_categories',
                 'choices' => [
-                    'Customers' => 'customers',
-                    'Employees' => 'employees',
-                    'Job applicants' => 'applicants',
-                    'Suppliers/Partners' => 'suppliers',
-                    'Website visitors' => 'visitors',
-                    'Newsletter subscribers' => 'subscribers',
-                    'Patients' => 'patients',
-                    'Students' => 'students',
-                    'Children' => 'children',
-                    'Vulnerable groups' => 'vulnerable',
-                    'Other' => 'other',
+                    'privacy.data_subject.customers' => 'customers',
+                    'privacy.data_subject.employees' => 'employees',
+                    'privacy.data_subject.applicants' => 'applicants',
+                    'privacy.data_subject.suppliers' => 'suppliers',
+                    'privacy.data_subject.visitors' => 'visitors',
+                    'privacy.data_subject.subscribers' => 'subscribers',
+                    'privacy.data_subject.patients' => 'patients',
+                    'privacy.data_subject.students' => 'students',
+                    'privacy.data_subject.children' => 'children',
+                    'privacy.data_subject.vulnerable' => 'vulnerable',
+                    'privacy.data_subject.other' => 'other',
                 ],
                 'multiple' => true,
                 'required' => true,
@@ -108,18 +108,18 @@ class DataProtectionImpactAssessmentType extends AbstractType
             ])
             ->add('estimatedDataSubjects', IntegerType::class, [
                 'label' => 'dpia.form.estimated_data_subjects',
-                'help' => 'Estimated number of affected data subjects',
+                'help' => 'dpia.help.estimated_data_subjects',
                 'required' => false,
             ])
             ->add('dataRetentionPeriod', TextareaType::class, [
                 'label' => 'dpia.form.data_retention_period',
-                'help' => 'How long will the data be retained?',
+                'help' => 'dpia.help.data_retention_period',
                 'required' => false,
                 'attr' => ['rows' => 2],
             ])
             ->add('dataFlowDescription', TextareaType::class, [
                 'label' => 'dpia.form.data_flow_description',
-                'help' => 'Description of data flows (collection, storage, processing, sharing, deletion)',
+                'help' => 'dpia.help.data_flow_description',
                 'required' => false,
                 'attr' => ['rows' => 4],
             ])
@@ -129,33 +129,33 @@ class DataProtectionImpactAssessmentType extends AbstractType
             // ============================================================================
             ->add('necessityAssessment', TextareaType::class, [
                 'label' => 'dpia.form.necessity_assessment',
-                'help' => 'Why is this processing necessary? (Art. 35(7)(b))',
+                'help' => 'dpia.help.necessity_assessment',
                 'required' => true,
                 'attr' => ['rows' => 4],
             ])
             ->add('proportionalityAssessment', TextareaType::class, [
                 'label' => 'dpia.form.proportionality_assessment',
-                'help' => 'Is the processing proportionate to the purpose? (Art. 35(7)(b))',
+                'help' => 'dpia.help.proportionality_assessment',
                 'required' => true,
                 'attr' => ['rows' => 4],
             ])
             ->add('legalBasis', ChoiceType::class, [
                 'label' => 'dpia.form.legal_basis',
-                'help' => 'Legal basis for processing (Art. 6 GDPR)',
+                'help' => 'dpia.help.legal_basis',
                 'choices' => [
-                    'Consent (Art. 6(1)(a))' => 'consent',
-                    'Contract (Art. 6(1)(b))' => 'contract',
-                    'Legal obligation (Art. 6(1)(c))' => 'legal_obligation',
-                    'Vital interests (Art. 6(1)(d))' => 'vital_interests',
-                    'Public task (Art. 6(1)(e))' => 'public_task',
-                    'Legitimate interests (Art. 6(1)(f))' => 'legitimate_interests',
+                    'privacy.legal_basis.consent' => 'consent',
+                    'privacy.legal_basis.contract' => 'contract',
+                    'privacy.legal_basis.legal_obligation' => 'legal_obligation',
+                    'privacy.legal_basis.vital_interests' => 'vital_interests',
+                    'privacy.legal_basis.public_task' => 'public_task',
+                    'privacy.legal_basis.legitimate_interests' => 'legitimate_interests',
                 ],
                 'required' => true,
-                'placeholder' => 'Select legal basis',
+                'placeholder' => 'dpia.placeholder.legal_basis',
             ])
             ->add('legislativeCompliance', TextareaType::class, [
                 'label' => 'dpia.form.legislative_compliance',
-                'help' => 'Compliance with other legislation (e.g., NIS2, sector-specific laws)',
+                'help' => 'dpia.help.legislative_compliance',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
@@ -165,45 +165,45 @@ class DataProtectionImpactAssessmentType extends AbstractType
             // ============================================================================
             ->add('riskLevel', ChoiceType::class, [
                 'label' => 'dpia.form.risk_level',
-                'help' => 'Overall risk level to rights and freedoms (Art. 35(7)(c))',
+                'help' => 'dpia.help.risk_level',
                 'choices' => [
-                    'Low' => 'low',
-                    'Medium' => 'medium',
-                    'High' => 'high',
-                    'Critical' => 'critical',
+                    'privacy.risk_level.low' => 'low',
+                    'privacy.risk_level.medium' => 'medium',
+                    'privacy.risk_level.high' => 'high',
+                    'privacy.risk_level.critical' => 'critical',
                 ],
                 'required' => true,
-                'placeholder' => 'Select risk level',
+                'placeholder' => 'dpia.placeholder.risk_level',
             ])
             ->add('likelihood', ChoiceType::class, [
                 'label' => 'dpia.form.likelihood',
-                'help' => 'Likelihood of risk occurrence',
+                'help' => 'dpia.help.likelihood',
                 'choices' => [
-                    'Rare' => 'rare',
-                    'Unlikely' => 'unlikely',
-                    'Possible' => 'possible',
-                    'Likely' => 'likely',
-                    'Certain' => 'certain',
+                    'privacy.likelihood.rare' => 'rare',
+                    'privacy.likelihood.unlikely' => 'unlikely',
+                    'privacy.likelihood.possible' => 'possible',
+                    'privacy.likelihood.likely' => 'likely',
+                    'privacy.likelihood.certain' => 'certain',
                 ],
                 'required' => false,
-                'placeholder' => 'Select likelihood',
+                'placeholder' => 'dpia.placeholder.likelihood',
             ])
             ->add('impact', ChoiceType::class, [
                 'label' => 'dpia.form.impact',
-                'help' => 'Impact if risk materializes',
+                'help' => 'dpia.help.impact',
                 'choices' => [
-                    'Negligible' => 'negligible',
-                    'Minor' => 'minor',
-                    'Moderate' => 'moderate',
-                    'Major' => 'major',
-                    'Severe' => 'severe',
+                    'privacy.impact.negligible' => 'negligible',
+                    'privacy.impact.minor' => 'minor',
+                    'privacy.impact.moderate' => 'moderate',
+                    'privacy.impact.major' => 'major',
+                    'privacy.impact.severe' => 'severe',
                 ],
                 'required' => false,
-                'placeholder' => 'Select impact',
+                'placeholder' => 'dpia.placeholder.impact',
             ])
             ->add('dataSubjectRisks', TextareaType::class, [
                 'label' => 'dpia.form.data_subject_risks',
-                'help' => 'Specific risks to data subjects (e.g., discrimination, identity theft, financial loss)',
+                'help' => 'dpia.help.data_subject_risks',
                 'required' => false,
                 'attr' => ['rows' => 4],
             ])
@@ -213,19 +213,19 @@ class DataProtectionImpactAssessmentType extends AbstractType
             // ============================================================================
             ->add('technicalMeasures', TextareaType::class, [
                 'label' => 'dpia.form.technical_measures',
-                'help' => 'Technical measures to mitigate risks (Art. 32 GDPR)',
+                'help' => 'dpia.help.technical_measures',
                 'required' => true,
                 'attr' => ['rows' => 5],
             ])
             ->add('organizationalMeasures', TextareaType::class, [
                 'label' => 'dpia.form.organizational_measures',
-                'help' => 'Organizational measures to mitigate risks (Art. 32 GDPR)',
+                'help' => 'dpia.help.organizational_measures',
                 'required' => true,
                 'attr' => ['rows' => 5],
             ])
             ->add('implementedControls', EntityType::class, [
                 'label' => 'dpia.form.implemented_controls',
-                'help' => 'ISO 27001 controls implemented',
+                'help' => 'dpia.help.implemented_controls',
                 'class' => Control::class,
                 'choice_label' => function (Control $control) {
                     return $control->getControlId() . ' - ' . $control->getName();
@@ -236,27 +236,27 @@ class DataProtectionImpactAssessmentType extends AbstractType
             ])
             ->add('complianceMeasures', TextareaType::class, [
                 'label' => 'dpia.form.compliance_measures',
-                'help' => 'Measures to demonstrate compliance (Art. 24 GDPR - accountability)',
+                'help' => 'dpia.help.compliance_measures',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('residualRiskAssessment', TextareaType::class, [
                 'label' => 'dpia.form.residual_risk_assessment',
-                'help' => 'Residual risk assessment after implementing measures',
+                'help' => 'dpia.help.residual_risk_assessment',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('residualRiskLevel', ChoiceType::class, [
                 'label' => 'dpia.form.residual_risk_level',
-                'help' => 'Residual risk level after mitigation',
+                'help' => 'dpia.help.residual_risk_level',
                 'choices' => [
-                    'Low' => 'low',
-                    'Medium' => 'medium',
-                    'High' => 'high',
-                    'Critical' => 'critical',
+                    'privacy.risk_level.low' => 'low',
+                    'privacy.risk_level.medium' => 'medium',
+                    'privacy.risk_level.high' => 'high',
+                    'privacy.risk_level.critical' => 'critical',
                 ],
                 'required' => false,
-                'placeholder' => 'Select residual risk level',
+                'placeholder' => 'dpia.placeholder.residual_risk_level',
             ])
 
             // ============================================================================
@@ -264,40 +264,40 @@ class DataProtectionImpactAssessmentType extends AbstractType
             // ============================================================================
             ->add('dataProtectionOfficer', EntityType::class, [
                 'label' => 'dpia.form.data_protection_officer',
-                'help' => 'Data Protection Officer (Art. 35(2))',
+                'help' => 'dpia.help.data_protection_officer',
                 'class' => User::class,
                 'choice_label' => function (User $user) {
                     return $user->getFirstName() . ' ' . $user->getLastName();
                 },
                 'required' => false,
-                'placeholder' => 'Select DPO',
+                'placeholder' => 'dpia.placeholder.data_protection_officer',
                 'attr' => ['class' => 'select2'],
             ])
             ->add('dpoConsultationDate', DateType::class, [
                 'label' => 'dpia.form.dpo_consultation_date',
-                'help' => 'Date DPO was consulted',
+                'help' => 'dpia.help.dpo_consultation_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('dpoAdvice', TextareaType::class, [
                 'label' => 'dpia.form.dpo_advice',
-                'help' => 'DPO advice/feedback',
+                'help' => 'dpia.help.dpo_advice',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('dataSubjectsConsulted', ChoiceType::class, [
                 'label' => 'dpia.form.data_subjects_consulted',
-                'help' => 'Were data subjects consulted? (Art. 35(9) - where appropriate)',
+                'help' => 'dpia.help.data_subjects_consulted',
                 'choices' => [
-                    'No' => false,
-                    'Yes' => true,
+                    'common.no' => false,
+                    'common.yes' => true,
                 ],
                 'expanded' => true,
                 'required' => false,
             ])
             ->add('dataSubjectConsultationDetails', TextareaType::class, [
                 'label' => 'dpia.form.data_subject_consultation_details',
-                'help' => 'Details of data subject consultation',
+                'help' => 'dpia.help.data_subject_consultation_details',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
@@ -307,23 +307,23 @@ class DataProtectionImpactAssessmentType extends AbstractType
             // ============================================================================
             ->add('requiresSupervisoryConsultation', ChoiceType::class, [
                 'label' => 'dpia.form.requires_supervisory_consultation',
-                'help' => 'Does this require prior consultation with supervisory authority? (Art. 36)',
+                'help' => 'dpia.help.requires_supervisory_consultation',
                 'choices' => [
-                    'No' => false,
-                    'Yes (high residual risk)' => true,
+                    'common.no' => false,
+                    'privacy.supervisory_consultation.yes_high_risk' => true,
                 ],
                 'expanded' => true,
                 'required' => false,
             ])
             ->add('supervisoryConsultationDate', DateType::class, [
                 'label' => 'dpia.form.supervisory_consultation_date',
-                'help' => 'Date supervisory authority was consulted',
+                'help' => 'dpia.help.supervisory_consultation_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('supervisoryAuthorityFeedback', TextareaType::class, [
                 'label' => 'dpia.form.supervisory_authority_feedback',
-                'help' => 'Supervisory authority feedback/decision',
+                'help' => 'dpia.help.supervisory_authority_feedback',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
@@ -333,13 +333,13 @@ class DataProtectionImpactAssessmentType extends AbstractType
             // ============================================================================
             ->add('conductor', EntityType::class, [
                 'label' => 'dpia.form.conductor',
-                'help' => 'Person responsible for conducting the DPIA',
+                'help' => 'dpia.help.conductor',
                 'class' => User::class,
                 'choice_label' => function (User $user) {
                     return $user->getFirstName() . ' ' . $user->getLastName();
                 },
                 'required' => false,
-                'placeholder' => 'Select conductor',
+                'placeholder' => 'dpia.placeholder.conductor',
                 'attr' => ['class' => 'select2'],
             ])
 
@@ -348,13 +348,13 @@ class DataProtectionImpactAssessmentType extends AbstractType
             // ============================================================================
             ->add('reviewFrequencyMonths', IntegerType::class, [
                 'label' => 'dpia.form.review_frequency_months',
-                'help' => 'Review frequency in months (e.g., 12 = annually)',
+                'help' => 'dpia.help.review_frequency_months',
                 'required' => false,
                 'data' => 12,
             ])
             ->add('nextReviewDate', DateType::class, [
                 'label' => 'dpia.form.next_review_date',
-                'help' => 'Next scheduled review date (Art. 35(11))',
+                'help' => 'dpia.help.next_review_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
@@ -365,6 +365,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => DataProtectionImpactAssessment::class,
+            'translation_domain' => 'privacy',
         ]);
     }
 }

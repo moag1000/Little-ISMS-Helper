@@ -22,7 +22,7 @@ class ISMSObjectiveType extends AbstractType
                 'label' => 'objective.field.title',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'z.B. Verbesserung der Informationssicherheit'
+                    'placeholder' => 'objective.placeholder.title'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'objective.validation.title_required']),
@@ -37,7 +37,7 @@ class ISMSObjectiveType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 4,
-                    'placeholder' => 'Detaillierte Beschreibung des Ziels'
+                    'placeholder' => 'objective.placeholder.description'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'objective.validation.description_required'])
@@ -68,7 +68,7 @@ class ISMSObjectiveType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 3,
-                    'placeholder' => 'Wie wird der Fortschritt gemessen? z.B. Anzahl durchgeführter Schulungen'
+                    'placeholder' => 'objective.placeholder.measurable_indicators'
                 ]
             ])
             ->add('targetValue', NumberType::class, [
@@ -76,7 +76,7 @@ class ISMSObjectiveType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'z.B. 100',
+                    'placeholder' => 'objective.placeholder.target_value',
                     'step' => '0.01'
                 ],
                 'html5' => true,
@@ -87,7 +87,7 @@ class ISMSObjectiveType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'z.B. 75',
+                    'placeholder' => 'objective.placeholder.current_value',
                     'step' => '0.01'
                 ],
                 'html5' => true,
@@ -106,7 +106,7 @@ class ISMSObjectiveType extends AbstractType
                     'Euro (€)' => '€',
                     'Punkte' => 'points',
                 ],
-                'placeholder' => 'Einheit auswählen',
+                'placeholder' => 'objective.placeholder.unit',
                 'attr' => [
                     'class' => 'form-select'
                 ]
@@ -115,7 +115,7 @@ class ISMSObjectiveType extends AbstractType
                 'label' => 'objective.field.responsible_person',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Name des Verantwortlichen'
+                    'placeholder' => 'objective.placeholder.responsible_person'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'objective.validation.responsible_person_required']),
@@ -134,16 +134,16 @@ class ISMSObjectiveType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'objective.validation.target_date_required'])
                 ],
-                'help' => 'Zieldatum für die Erreichung des Ziels'
+                'help' => 'objective.help.target_date'
             ])
             ->add('status', ChoiceType::class, [
                 'label' => 'objective.field.status',
                 'choices' => [
-                    'Nicht begonnen' => 'not_started',
-                    'In Bearbeitung' => 'in_progress',
-                    'Erreicht' => 'achieved',
-                    'Verzögert' => 'delayed',
-                    'Abgebrochen' => 'cancelled',
+                    'objective.status.not_started' => 'not_started',
+                    'objective.status.in_progress' => 'in_progress',
+                    'objective.status.achieved' => 'achieved',
+                    'objective.status.delayed' => 'delayed',
+                    'objective.status.cancelled' => 'cancelled',
                 ],
                 'attr' => [
                     'class' => 'form-select'
@@ -158,7 +158,7 @@ class ISMSObjectiveType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 4,
-                    'placeholder' => 'Notizen zum aktuellen Fortschritt, Hindernisse, etc.'
+                    'placeholder' => 'objective.placeholder.progress_notes'
                 ]
             ])
         ;
@@ -168,6 +168,7 @@ class ISMSObjectiveType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => ISMSObjective::class,
+            'translation_domain' => 'objective',
         ]);
     }
 }

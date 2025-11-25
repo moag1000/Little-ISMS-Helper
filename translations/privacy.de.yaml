@@ -144,11 +144,50 @@ processing_activity:
         start_date: 'Beginn der Verarbeitung'
         end_date: 'Ende der Verarbeitung'
         next_review_date: 'Nächstes Überprüfungsdatum'
+    help:
+        name: 'Name/Bezeichnung der Verarbeitungstätigkeit (z.B. "Kundenverwaltung", "Lohnbuchhaltung")'
+        description: 'Detaillierte Beschreibung der Verarbeitungstätigkeit'
+        purposes: 'Zweck(e) der Verarbeitung (Art. 30(1)(a))'
+        data_subject_categories: 'Kategorien betroffener Personen (Art. 30(1)(b))'
+        estimated_data_subjects_count: 'Ungefähre Anzahl der betroffenen Personen'
+        personal_data_categories: 'Kategorien der verarbeiteten personenbezogenen Daten (Art. 30(1)(c))'
+        processes_special_categories: 'Werden besondere Kategorien von Daten verarbeitet (Art. 9 DSGVO)?'
+        special_categories_details: 'Welche besonderen Kategorien werden verarbeitet (Art. 9 DSGVO)?'
+        processes_criminal_data: 'Werden Daten zu strafrechtlichen Verurteilungen verarbeitet (Art. 10 DSGVO)?'
+        recipient_categories: 'Kategorien von Empfängern (Art. 30(1)(d))'
+        recipient_details: 'Spezifische Empfänger (optional, für Transparenz)'
+        has_third_country_transfer: 'Werden Daten in Länder außerhalb EU/EWR übermittelt (Art. 30(1)(e))?'
+        third_countries: 'Welche Länder erhalten die Daten?'
+        transfer_safeguards: 'Rechtsgrundlage für Drittlandübermittlung (Art. 44-49)'
+        retention_period: 'Aufbewahrungsfrist/Löschfrist (Art. 30(1)(f))'
+        retention_period_days: 'Aufbewahrungsfrist in Tagen (optional, für automatisierte Löschung)'
+        retention_legal_basis: 'Rechtsgrundlage für Aufbewahrungsfrist (z.B. HGB §257, Abgabenordnung)'
+        technical_organizational_measures: 'Beschreibung der technischen und organisatorischen Sicherheitsmaßnahmen (Art. 32 DSGVO)'
+        implemented_controls: 'Verknüpfung zu ISO 27001 Kontrollen (optional)'
+        legal_basis: 'Rechtsgrundlage für die Verarbeitung (Art. 6(1) DSGVO)'
+        legal_basis_details: 'Detaillierte Erläuterung (obligatorisch bei berechtigtem Interesse)'
+        legal_basis_special_categories: 'Rechtsgrundlage für Verarbeitung besonderer Kategorien (Art. 9(2) DSGVO)'
+        responsible_department: 'Abteilung/Einheit, die für diese Verarbeitung verantwortlich ist'
+        contact_person: 'Ansprechperson für diese Verarbeitungstätigkeit'
+        data_protection_officer: 'Datenschutzbeauftragter (falls zutreffend)'
+        involves_processors: 'Sind Auftragsverarbeiter eingebunden (Art. 28)?'
+        is_joint_controller: 'Liegt eine gemeinsame Verantwortlichkeit vor (Art. 26)?'
+        is_high_risk: 'Gilt dies als Hochrisiko-Verarbeitung?'
+        dpia_completed: 'Wurde eine Datenschutz-Folgenabschätzung (DSFA) durchgeführt?'
+        dpia_date: 'Datum der DSFA-Fertigstellung'
+        risk_level: 'Gesamtbewertung der Risikostufe'
+        has_automated_decision_making: 'Beinhaltet dies automatisierte Entscheidungsfindung/Profiling (Art. 22)?'
+        automated_decision_making_details: 'Erläutern Sie Logik und Bedeutung der automatisierten Entscheidungsfindung'
+        data_sources: 'Woher werden die Daten erhoben?'
+        status: 'Status dieses Datensatzes'
+        start_date: 'Wann wurde diese Verarbeitung begonnen?'
+        end_date: 'Wann wurde diese Verarbeitung beendet (falls zutreffend)?'
+        next_review_date: 'Wann sollte dies als nächstes überprüft werden?'
     permanently_delete: 'Dauerhaft löschen'
     view_all_activities: 'Alle Verarbeitungstätigkeiten anzeigen'
     pdf:
         art_30_title: 'Verzeichnis von Verarbeitungstätigkeiten gemäß Art. 30 DSGVO'
-        table_of_contents: 'Inhaltsverzeichnis'
+        table_of_contents: Inhaltsverzeichnis
         art_30_1a: 'Art. 30(1)(a) DSGVO - Name und Kontaktdaten des Verantwortlichen'
         purposes_processing: 'Zwecke der Verarbeitung'
         art_30_1b: 'Art. 30(1)(b) DSGVO - Zwecke der Verarbeitung'
@@ -170,9 +209,121 @@ data_breach:
         measures_taken: 'Bereits ergriffene Maßnahmen'
         measures_mitigate: 'Maßnahmen zur Abschwächung nachteiliger Auswirkungen'
         art_34_communication: 'Art. 34 DSGVO - Benachrichtigung betroffener Personen'
+    placeholder:
+        title: 'z.B. Unbefugter Zugriff auf Kundendatenbank'
+        incident: 'Vorfall auswählen...'
+        processing_activity: 'Verarbeitungstätigkeit (VVT) auswählen...'
+        affected_data_subjects: 'Anzahl der betroffenen Personen'
+        breach_nature: 'Beschreiben Sie die Art der Datenschutzverletzung einschließlich der Umstände...'
+        likely_consequences: 'Beschreiben Sie die wahrscheinlichen Folgen der Verletzung für betroffene Personen...'
+        measures_taken: 'Beschreiben Sie die ergriffenen oder vorgeschlagenen Maßnahmen zur Bewältigung der Verletzung...'
+        mitigation_measures: 'Zusätzliche Maßnahmen zur Abschwächung einschließlich Abhilfemaßnahmen...'
+        risk_level: 'Risikostufe bewerten...'
+        risk_assessment: 'Detaillierte Risikobewertung...'
+        no_subject_notification_reason: 'Erklären Sie, warum eine Benachrichtigung nicht erforderlich ist (Art. 34(3))...'
+        root_cause: 'Ursachenanalyse...'
+        lessons_learned: 'Aus dieser Verletzung gelernte Lektionen...'
+        data_protection_officer: 'DSB auswählen...'
+    help:
+        processing_activity: 'Verknüpfung zum VVT (Art. 30 DSGVO)'
+        affected_data_subjects: 'Art. 33(3)(a) DSGVO'
+        data_categories: 'Art. 33(3)(a) DSGVO - Alle zutreffenden Kategorien auswählen'
+        data_subject_categories: 'Art. 33(3)(a) DSGVO'
+        breach_nature: 'Art. 33(3)(a) DSGVO - Beschreiben Sie, was passiert ist'
+        likely_consequences: 'Art. 33(3)(b) DSGVO'
+        measures_taken: 'Art. 33(3)(c) & (d) DSGVO'
+        mitigation_measures: 'Art. 33(3)(d) DSGVO - Maßnahmen zur Abschwächung nachteiliger Auswirkungen'
+        risk_level: 'Bewertung des Risikos für Rechte und Freiheiten'
+        special_categories_affected: 'Art. 9 DSGVO - Rassische/ethnische Herkunft, politische Meinungen, religiöse Überzeugungen, Gesundheitsdaten, etc.'
+        criminal_data_affected: 'Art. 10 DSGVO - Strafrechtliche Verurteilungen und Straftaten'
+        requires_authority_notification: 'Art. 33(1) DSGVO - Meldung erforderlich, es sei denn, es ist unwahrscheinlich, dass ein Risiko entsteht'
+        requires_subject_notification: 'Art. 34(1) DSGVO - Erforderlich, wenn die Verletzung wahrscheinlich zu einem HOHEN RISIKO führt'
+        no_subject_notification_reason: 'Art. 34(3) DSGVO Ausnahmen: (a) Schutzmaßnahmen, (b) Nachfolgende Maßnahmen, (c) Unverhältnismäßiger Aufwand'
+        data_protection_officer: 'Datenschutzbeauftragter (Art. 35(4) DSGVO)'
 dpia:
     index:
         create_first_dpia: 'Erste Datenschutz-Folgenabschätzung erstellen'
+    form:
+        title: 'Titel der DSFA'
+        reference_number: Referenznummer
+        processing_activity: 'Verarbeitungstätigkeit'
+        processing_description: 'Beschreibung der Verarbeitungsvorgänge (Art. 35(7)(a))'
+        processing_purposes: 'Zwecke der Verarbeitung'
+        data_categories: 'Kategorien personenbezogener Daten'
+        data_subject_categories: 'Kategorien betroffener Personen'
+        estimated_data_subjects: 'Geschätzte Anzahl betroffener Personen'
+        data_retention_period: Aufbewahrungsfrist
+        data_flow_description: 'Beschreibung der Datenflüsse'
+        necessity_assessment: 'Bewertung der Notwendigkeit (Art. 35(7)(b))'
+        proportionality_assessment: 'Bewertung der Verhältnismäßigkeit (Art. 35(7)(b))'
+        legal_basis: 'Rechtsgrundlage (Art. 6 DSGVO)'
+        legislative_compliance: 'Einhaltung anderer Rechtsvorschriften'
+        risk_level: 'Risikostufe (Art. 35(7)(c))'
+        likelihood: 'Eintrittswahrscheinlichkeit'
+        impact: 'Auswirkung'
+        data_subject_risks: 'Risiken für betroffene Personen'
+        technical_measures: 'Technische Maßnahmen (Art. 35(7)(d))'
+        organizational_measures: 'Organisatorische Maßnahmen (Art. 35(7)(d))'
+        implemented_controls: 'Implementierte Kontrollen (ISO 27001)'
+        compliance_measures: 'Compliance-Maßnahmen (Art. 24 DSGVO)'
+        residual_risk_assessment: 'Restrisikobewertung'
+        residual_risk_level: 'Restrisikostufe'
+        data_protection_officer: 'Datenschutzbeauftragter (Art. 35(2))'
+        dpo_consultation_date: 'Datum DSB-Konsultation'
+        dpo_advice: 'Stellungnahme des DSB'
+        data_subjects_consulted: 'Betroffene konsultiert? (Art. 35(9))'
+        data_subject_consultation_details: 'Details zur Konsultation betroffener Personen'
+        requires_supervisory_consultation: 'Konsultation der Aufsichtsbehörde erforderlich? (Art. 36)'
+        supervisory_consultation_date: 'Datum Konsultation Aufsichtsbehörde'
+        supervisory_authority_feedback: 'Rückmeldung der Aufsichtsbehörde'
+        conductor: 'Durchführende Person'
+        review_frequency_months: 'Überprüfungshäufigkeit (Monate)'
+        next_review_date: 'Nächstes Überprüfungsdatum (Art. 35(11))'
+    help:
+        title: 'Titel der DSFA (z.B. "DSFA Mitarbeiterüberwachungssystem")'
+        reference_number: 'Referenznummer (automatisch generiert falls leer, Format: DPIA-YYYY-XXX)'
+        processing_activity: 'Verknüpfung zur zugehörigen VVT-Verarbeitungstätigkeit (Art. 30)'
+        processing_description: 'Systematische Beschreibung der geplanten Verarbeitungsvorgänge (Art. 35(7)(a))'
+        processing_purposes: 'Zwecke der Verarbeitung (Art. 35(7)(a))'
+        data_categories: 'Kategorien der verarbeiteten personenbezogenen Daten (Art. 35(7)(a))'
+        data_subject_categories: 'Kategorien der betroffenen Personen (Art. 35(7)(a))'
+        estimated_data_subjects: 'Geschätzte Anzahl betroffener Personen'
+        data_retention_period: 'Wie lange werden die Daten aufbewahrt?'
+        data_flow_description: 'Beschreibung der Datenflüsse (Erhebung, Speicherung, Verarbeitung, Weitergabe, Löschung)'
+        necessity_assessment: 'Warum ist diese Verarbeitung notwendig? (Art. 35(7)(b))'
+        proportionality_assessment: 'Ist die Verarbeitung verhältnismäßig zum Zweck? (Art. 35(7)(b))'
+        legal_basis: 'Rechtsgrundlage für die Verarbeitung (Art. 6 DSGVO)'
+        legislative_compliance: 'Einhaltung anderer Rechtsvorschriften (z.B. NIS2, branchenspezifische Gesetze)'
+        risk_level: 'Gesamtrisikostufe für Rechte und Freiheiten (Art. 35(7)(c))'
+        likelihood: 'Wahrscheinlichkeit des Risikoeintritts'
+        impact: 'Auswirkung bei Risikoeintritt'
+        data_subject_risks: 'Spezifische Risiken für betroffene Personen (z.B. Diskriminierung, Identitätsdiebstahl, finanzielle Verluste)'
+        technical_measures: 'Technische Maßnahmen zur Risikominderung (Art. 32 DSGVO)'
+        organizational_measures: 'Organisatorische Maßnahmen zur Risikominderung (Art. 32 DSGVO)'
+        implemented_controls: 'Implementierte ISO 27001 Kontrollen'
+        compliance_measures: 'Maßnahmen zum Nachweis der Compliance (Art. 24 DSGVO - Rechenschaftspflicht)'
+        residual_risk_assessment: 'Bewertung des Restrisikos nach Umsetzung der Maßnahmen'
+        residual_risk_level: 'Restrisikostufe nach Risikominderung'
+        data_protection_officer: 'Datenschutzbeauftragter (Art. 35(2))'
+        dpo_consultation_date: 'Datum der DSB-Konsultation'
+        dpo_advice: 'Stellungnahme/Feedback des DSB'
+        data_subjects_consulted: 'Wurden betroffene Personen konsultiert? (Art. 35(9) - soweit angemessen)'
+        data_subject_consultation_details: 'Details zur Konsultation betroffener Personen'
+        requires_supervisory_consultation: 'Ist eine vorherige Konsultation der Aufsichtsbehörde erforderlich? (Art. 36)'
+        supervisory_consultation_date: 'Datum der Konsultation der Aufsichtsbehörde'
+        supervisory_authority_feedback: 'Rückmeldung/Entscheidung der Aufsichtsbehörde'
+        conductor: 'Für die Durchführung der DSFA verantwortliche Person'
+        review_frequency_months: 'Überprüfungshäufigkeit in Monaten (z.B. 12 = jährlich)'
+        next_review_date: 'Nächstes geplantes Überprüfungsdatum (Art. 35(11))'
+    placeholder:
+        processing_activity: 'Verarbeitungstätigkeit auswählen'
+        legal_basis: 'Rechtsgrundlage auswählen'
+        risk_level: 'Risikostufe auswählen'
+        likelihood: 'Wahrscheinlichkeit auswählen'
+        impact: 'Auswirkung auswählen'
+        residual_risk_level: 'Restrisikostufe auswählen'
+        data_protection_officer: 'DSB auswählen'
+        conductor: 'Durchführende Person auswählen'
     pdf:
         art_35_7a_description: 'Art. 35(7)(a) DSGVO - Beschreibung der Verarbeitungsvorgänge'
         purposes_processing: 'Zwecke der Verarbeitung'
@@ -183,3 +334,120 @@ dpia:
         next_review_date: 'Nächstes Überprüfungsdatum'
         approved_by: 'Freigegeben von'
         footer_text: 'Datenschutz-Folgenabschätzung (DSFA) gemäß Art. 35 DSGVO'
+    show:
+        cancel_button: 'Abbrechen'
+    purpose:
+        contract_fulfillment: Vertragserfüllung
+        marketing: Marketing
+        legal_obligation: 'Rechtliche Verpflichtung'
+        crm: Kundenbeziehungsmanagement
+        hr_management: Personalverwaltung
+        accounting: Finanzbuchhaltung
+        it_security: IT-Sicherheit
+        quality_assurance: Qualitätssicherung
+        research: 'Forschung und Entwicklung'
+        other: Sonstiges
+    data_subject:
+        customers: Kunden
+        employees: Mitarbeiter
+        applicants: Bewerber
+        suppliers: 'Lieferanten/Partner'
+        visitors: Website-Besucher
+        subscribers: Newsletter-Abonnenten
+        patients: Patienten
+        students: Schüler/Studenten
+        children: 'Kinder'
+        vulnerable: 'Schutzbedürftige Gruppen'
+        other: Sonstige
+    personal_data:
+        identification: 'Identifikationsdaten (Name, Ausweisnummer)'
+        contact: 'Kontaktdaten (Adresse, E-Mail, Telefon)'
+        financial: 'Finanzdaten (Bankverbindung, Zahlungsinformationen)'
+        location: Standortdaten
+        online_identifiers: 'Online-Kennungen (IP, Cookies)'
+        employment: Beschäftigungsdaten
+        educational: Bildungsdaten
+        contract: Vertragsdaten
+        communication: Kommunikationsdaten
+        usage: Nutzungsdaten
+    special_category:
+        health: Gesundheitsdaten
+        biometric: 'Biometrische Daten'
+        genetic: 'Genetische Daten'
+        racial_ethnic: 'Rassische/ethnische Herkunft'
+        political: 'Politische Meinungen'
+        religious: 'Religiöse/philosophische Überzeugungen'
+        union: Gewerkschaftszugehörigkeit
+        sex_life: 'Sexualleben/sexuelle Orientierung'
+    recipient:
+        internal_departments: 'Interne Abteilungen'
+        it_service_providers: IT-Dienstleister
+        cloud_providers: Cloud-Anbieter
+        payment_processors: Zahlungsdienstleister
+        marketing_agencies: Marketing-Agenturen
+        auditors: 'Prüfer/Berater'
+        public_authorities: 'Öffentliche Stellen'
+        legal: Rechtsvertreter
+        other_processors: 'Sonstige Auftragsverarbeiter'
+    country:
+        us: USA
+        gb: 'Vereinigtes Königreich'
+        ch: Schweiz
+        ca: Kanada
+        jp: Japan
+        in: Indien
+        cn: China
+        other: Sonstige
+    transfer_safeguard:
+        adequacy_decision: 'Art. 45 Angemessenheitsbeschluss'
+        standard_contractual_clauses: 'Art. 46 Standardvertragsklauseln (SVK)'
+        binding_corporate_rules: 'Art. 47 verbindliche interne Datenschutzvorschriften (BCR)'
+        certification: 'Art. 42 Zertifizierung'
+        codes_of_conduct: 'Art. 40 Verhaltensregeln'
+        explicit_consent: 'Art. 49(1)(a) Ausdrückliche Einwilligung'
+        contract_necessity: 'Art. 49(1)(b) Vertragserfüllung'
+        public_interest: 'Art. 49(1)(d) Öffentliches Interesse'
+        legal_claims: 'Art. 49(1)(e) Rechtliche Ansprüche'
+        vital_interests: 'Art. 49(1)(f) Lebenswichtige Interessen'
+    legal_basis:
+        consent: 'Art. 6(1)(a) Einwilligung'
+        contract: 'Art. 6(1)(b) Vertragserfüllung'
+        legal_obligation: 'Art. 6(1)(c) Rechtliche Verpflichtung'
+        vital_interests: 'Art. 6(1)(d) Lebenswichtige Interessen'
+        public_task: 'Art. 6(1)(e) Öffentliche Aufgabe'
+        legitimate_interests: 'Art. 6(1)(f) Berechtigte Interessen'
+    legal_basis_special:
+        explicit_consent: 'Art. 9(2)(a) Ausdrückliche Einwilligung'
+        employment_law: 'Art. 9(2)(b) Arbeitsrecht'
+        vital_interests: 'Art. 9(2)(c) Lebenswichtige Interessen'
+        legitimate_activities: 'Art. 9(2)(d) Berechtigte Tätigkeiten'
+        made_public: 'Art. 9(2)(e) Öffentlich gemachte Daten'
+        legal_claims: 'Art. 9(2)(f) Rechtliche Ansprüche'
+        substantial_public_interest: 'Art. 9(2)(g) Erhebliches öffentliches Interesse'
+        health_care: 'Art. 9(2)(h) Gesundheitsversorgung'
+        public_health: 'Art. 9(2)(i) Öffentliche Gesundheit'
+        research_statistics: 'Art. 9(2)(j) Forschung/Statistik'
+    data_category:
+        health_art9: 'Gesundheitsdaten (Art. 9 DSGVO)'
+        biometric_art9: 'Biometrische Daten (Art. 9 DSGVO)'
+        genetic_art9: 'Genetische Daten (Art. 9 DSGVO)'
+        behavioral: 'Verhaltens-/Profiling-Daten'
+    risk_level:
+        low: Niedrig
+        medium: Mittel
+        high: Hoch
+        critical: Kritisch
+    likelihood:
+        rare: 'Selten (0-10%)'
+        unlikely: 'Unwahrscheinlich (10-30%)'
+        possible: 'Möglich (30-50%)'
+        likely: 'Wahrscheinlich (50-70%)'
+        certain: 'Sicher (70-100%)'
+    impact:
+        negligible: 'Vernachlässigbar'
+        minor: 'Gering'
+        moderate: 'Mäßig'
+        major: 'Erheblich'
+        severe: 'Schwerwiegend'
+    supervisory_consultation:
+        yes_high_risk: 'Ja (hohes Restrisiko - Art. 36)'

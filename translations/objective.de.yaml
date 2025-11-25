@@ -27,6 +27,17 @@ objective:
         achieved_date: 'Erreicht am'
         status: Status
         progress_notes: Fortschrittsnotizen
+    placeholder:
+        title: 'z.B. Verbesserung der Informationssicherheit'
+        description: 'Detaillierte Beschreibung des Ziels'
+        measurable_indicators: 'Wie wird der Fortschritt gemessen? z.B. Anzahl durchgeführter Schulungen'
+        target_value: 'z.B. 100'
+        current_value: 'z.B. 75'
+        unit: 'Einheit auswählen'
+        responsible_person: 'Name des Verantwortlichen'
+        progress_notes: 'Notizen zum aktuellen Fortschritt, Hindernisse, etc.'
+    help:
+        target_date: 'Zieldatum für die Erreichung des Ziels'
     label:
         current: Ist
         target: Ziel
@@ -46,12 +57,14 @@ objective:
     message:
         no_objectives: 'Noch keine Ziele definiert.'
     status:
-        achieved: erreicht
-        in_progress: 'in Bearbeitung'
-        delayed: verzögert
-        at_risk: gefährdet
-        total: gesamt
-        active: aktiv
+        not_started: 'Nicht begonnen'
+        in_progress: 'In Bearbeitung'
+        achieved: Erreicht
+        delayed: Verzögert
+        cancelled: Abgebrochen
+        at_risk: Gefährdet
+        total: Gesamt
+        active: Aktiv
     link:
         new: Neu
-        create_new: Erstellen Neu
+        create_new: 'Erstellen Neu'
