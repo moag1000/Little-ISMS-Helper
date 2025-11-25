@@ -4,7 +4,7 @@ asset:
         bcm_insights: BCM‑Insights
         create: 'Asset anlegen'
         update: 'Änderungen speichern'
-        view_critical: View Critical
+        view_critical: Kritische anzeigen
         view_details: Anzeigen Details
     details:
         title: Asset‑Details
@@ -23,10 +23,10 @@ asset:
         related_risks: 'Zugehörige Risiken'
         related_incidents: 'Zugehörige Incidents'
         history: Historie
-        business_impact: Business Impact
-        rto_analysis: Rto Analysis
-        critical_assets: Critical Assets
-        dependency_insights: Dependency Insights
+        business_impact: Geschäftliche Auswirkung
+        rto_analysis: 'RTO-Analyse'
+        critical_assets: Kritische Assets
+        dependency_insights: Abhängigkeitsanalyse
     field:
         name: Name
         type: Asset‑Typ
@@ -38,8 +38,8 @@ asset:
         confidentiality: Vertraulichkeit
         integrity: Integrität
         availability: Verfügbarkeit
-        rto_category: Rto Category
-        asset_count: Asset Count
+        rto_category: 'RTO-Kategorie'
+        asset_count: Anzahl Assets
         examples: Examples
         asset_name: Asset Name
         business_criticality: Business Criticality
@@ -135,11 +135,11 @@ asset:
         high_impact: High Impact
         medium_impact: Medium Impact
         low_impact: Low Impact
-        rto_analysis: Rto Analysis
+        rto_analysis: 'RTO-Analyse'
         dependencies: Dependencies
     stats:
         total_assets: Gesamt Assets
-        critical_assets: Critical Assets
+        critical_assets: Kritische Assets
         high_risk_assets: High Risk Assets
         avg_rto: Avg Rto
         with_dependencies: With Dependencies
