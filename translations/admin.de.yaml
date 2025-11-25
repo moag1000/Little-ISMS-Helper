@@ -60,7 +60,7 @@ admin:
             incidents: Vorfälle
             audits: Audits
             trainings: Schulungen
-            controls: 'Controls'
+            controls: Controls
         quick_actions:
             title: Schnellaktionen
             add_user: 'Benutzer anlegen'
@@ -75,82 +75,82 @@ admin:
         attributions_provided: 'Attributionen in der Anwendung bereitstellen (erledigt ✓)'
     settings:
         required_for_iso27001: 'Erforderlich für ISO 27001'
-        title: 'Systemeinstellungen'
+        title: Systemeinstellungen
         subtitle: 'Konfiguration von Anwendungsparametern und Systemverhalten'
         application:
-            title: 'Anwendungseinstellungen'
+            title: Anwendungseinstellungen
             description: 'Grundlegende Einstellungen für Sprache, Zeitzone und Anzeigeoptionen'
             locale: 'Sprache / Locale'
-            timezone: 'Zeitzone'
+            timezone: Zeitzone
             items_per_page: 'Einträge pro Seite'
-            locale_settings: 'Spracheinstellungen'
-            default_locale: 'Standard-Sprache'
+            locale_settings: Spracheinstellungen
+            default_locale: Standard-Sprache
             default_locale_help: 'Standard-Sprache für neue Benutzer und Systemausgaben'
             supported_locales: 'Unterstützte Sprachen'
             supported_locales_help: 'Sprachen, die Benutzer auswählen können (de, en)'
-            display_settings: 'Anzeigeeinstellungen'
+            display_settings: Anzeigeeinstellungen
             items_per_page_help: 'Anzahl der Einträge pro Seite in Tabellen (Standard: 25)'
             timezone_help: 'Zeitzone für Datumsanzeigen (z.B. Europe/Berlin)'
-            date_format: 'Datumsformat'
+            date_format: Datumsformat
             date_format_help: 'Format für Datumsanzeigen (z.B. d.m.Y für 31.12.2024)'
-            datetime_format: 'Datum-/Zeitformat'
+            datetime_format: Datum-/Zeitformat
             datetime_format_help: 'Format für Datum und Uhrzeit (z.B. d.m.Y H:i für 31.12.2024 14:30)'
             help_text: 'Diese Einstellungen wirken sich global auf alle Mandanten und Benutzer aus'
         configure: 'Einstellungen konfigurieren'
         security:
-            title: 'Sicherheitseinstellungen'
+            title: Sicherheitseinstellungen
             description: 'Konfiguration von Authentifizierung, Session-Management und Passwortrichtlinien (ISO 27001 Anhang A 5.17, 5.18)'
-            session_lifetime: 'Session-Laufzeit'
+            session_lifetime: Session-Laufzeit
             max_login_attempts: 'Max. Anmeldeversuche'
             require_2fa: 'MFA erzwingen'
-            session_settings: 'Session-Einstellungen'
+            session_settings: Session-Einstellungen
             session_lifetime_help: 'Session-Laufzeit in Minuten (Standard: 1440 = 24 Stunden)'
             remember_me_lifetime: 'Remember-Me Laufzeit'
             remember_me_help: 'Dauer des "Angemeldet bleiben"-Cookies in Tagen (Standard: 30)'
-            password_settings: 'Passwortrichtlinien'
+            password_settings: Passwortrichtlinien
             password_min_length: 'Min. Passwortlänge'
             password_min_length_help: 'Minimale Anzahl Zeichen für Passwörter (Standard: 12, empfohlen: 12-16)'
-            auth_settings: 'Authentifizierungseinstellungen'
+            auth_settings: Authentifizierungseinstellungen
             max_login_attempts_help: 'Anzahl fehlgeschlagener Anmeldeversuche vor Account-Sperre (Standard: 5)'
-            lockout_duration: 'Sperrdauer'
+            lockout_duration: Sperrdauer
             lockout_duration_help: 'Dauer der Account-Sperre in Minuten nach zu vielen Fehlversuchen (Standard: 15)'
             require_2fa_help: 'Multi-Faktor-Authentifizierung für alle Benutzer erzwingen (NIS2-konform, Art. 21.2.b)'
             warning: 'Warnung: Änderungen an Sicherheitseinstellungen können bestehende Sessions ungültig machen'
         features:
-            title: 'Feature-Einstellungen'
+            title: Feature-Einstellungen
             description: 'Aktivierung und Konfiguration von optionalen Funktionen'
             dark_mode: 'Dark Mode'
             global_search: 'Globale Suche'
             audit_log: 'Audit Log'
-            intro: 'Einführungs-Tutorial'
+            intro: Einführungs-Tutorial
             dark_mode_help: 'Dark Mode für alle Benutzer aktivieren'
             global_search_help: 'Globale Volltextsuche über alle Entities aktivieren'
             quick_view: 'Quick View'
             quick_view_help: 'Schnellansicht-Modals für Entities aktivieren'
-            notifications: 'Benachrichtigungen'
+            notifications: Benachrichtigungen
             notifications_help: 'System-Benachrichtigungen für Benutzer aktivieren'
             audit_log_help: 'Audit-Protokollierung aller Benutzeraktionen (ISO 27001 Anhang A 8.15)'
             info_text: 'Feature-Flags ermöglichen das selektive Aktivieren von Funktionalitäten'
         info_title: 'Systemeinstellungen Hilfe'
         info_text: 'Änderungen werden sofort wirksam und betreffen alle Mandanten'
-        info: 'Information'
-        help: 'Hilfe'
+        info: Information
+        help: Hilfe
     compliance:
-        framework: 'Framework'
-        total_requirements: 'Gesamtanforderungen'
-        assessed: 'Bewertet'
-        compliant: 'Konform'
-        compliance_rate: 'Compliance-Rate'
-        progress: 'Fortschritt'
-        statistics: 'Statistiken'
+        framework: Framework
+        total_requirements: Gesamtanforderungen
+        assessed: Bewertet
+        compliant: Konform
+        compliance_rate: Compliance-Rate
+        progress: Fortschritt
+        statistics: Statistiken
         total_available: 'Gesamt verfügbar'
-        loaded: 'Geladen'
+        loaded: Geladen
         not_loaded: 'Nicht geladen'
         mandatory_missing: 'Pflicht-Frameworks fehlen'
-        compliance_overview: 'Compliance-Übersicht'
+        compliance_overview: Compliance-Übersicht
         no_frameworks_loaded: 'Keine Frameworks geladen'
     panel:
-        title: 'Admin-Panel'
+        title: Admin-Panel
     data_repair:
         current_asset: 'Aktuelles Asset'
         assign_to_asset: 'Asset zuweisen'
@@ -159,9 +159,9 @@ admin:
         assign_risk: 'Risiko zuweisen'
         select_risk: 'Risiko auswählen'
         assign_asset: 'Asset zuweisen'
-        entity_type: 'Entity-Typ'
-        issue: 'Problem'
-        title: 'Daten-Reparatur'
+        entity_type: Entity-Typ
+        issue: Problem
+        title: Daten-Reparatur
         description: 'Erkennung und Behebung von Dateninkonsistenzen'
         orphaned_entities: 'Verwaiste Entities'
         no_orphans: 'Keine verwaisten Entities gefunden'
@@ -179,10 +179,10 @@ admin:
         orphaned_assets_list: 'Liste verwaister Assets'
         orphaned_risks_list: 'Liste verwaister Risiken'
         orphaned_incidents_list: 'Liste verwaister Vorfälle'
-        tenant_statistics: 'Mandanten-Statistiken'
-        risk_asset_assignment: 'Risiko-Asset-Zuordnung'
+        tenant_statistics: Mandanten-Statistiken
+        risk_asset_assignment: Risiko-Asset-Zuordnung
         risk_asset_assignment_desc: 'Risiken ohne zugeordnete Assets'
-        incident_asset_assignment: 'Vorfall-Asset-Zuordnung'
+        incident_asset_assignment: Vorfall-Asset-Zuordnung
         incident_asset_assignment_desc: 'Vorfälle ohne zugeordnete Assets'
         controls_without_risks: 'Controls ohne Risiken'
         controls_without_risks_desc: 'Controls, die keinen Risiken zugeordnet sind'
@@ -192,23 +192,23 @@ admin:
         broken_references: 'Defekte Referenzen'
         broken_references_desc: 'Verweise auf nicht existierende Entities'
     modules:
-        title: 'Modul-Verwaltung'
-        dependency_graph: 'Abhängigkeitsgraph'
+        title: Modul-Verwaltung
+        dependency_graph: Abhängigkeitsgraph
         stats:
-            total: 'Gesamt'
-            active: 'Aktiv'
-            inactive: 'Inaktiv'
-            required: 'Erforderlich'
+            total: Gesamt
+            active: Aktiv
+            inactive: Inaktiv
+            required: Erforderlich
         active_modules: 'Aktive Module'
         status:
-            active: 'Aktiv'
-            inactive: 'Inaktiv'
-        dependencies: 'Abhängigkeiten'
+            active: Aktiv
+            inactive: Inaktiv
+        dependencies: Abhängigkeiten
         required_by: 'Benötigt von'
-        details: 'Details'
+        details: Details
         confirm_deactivate: 'Möchten Sie dieses Modul wirklich deaktivieren?'
-        deactivate: 'Deaktivieren'
-        required: 'Erforderlich'
+        deactivate: Deaktivieren
+        required: Erforderlich
         no_active: 'Keine aktiven Module'
         inactive_modules: 'Inaktive Module'
-        activate: 'Aktivieren'
+        activate: Aktivieren

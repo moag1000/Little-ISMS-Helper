@@ -1,14 +1,14 @@
 context_management:
     title: 'ISMS Context'
     description: 'Overview and maintenance of the organizational context according to ISO 27001 (Clauses 4.1–4.3).'
-    isms_scope: Isms Scope
-    no_context_defined: No Context Defined
-    isms_objectives: Isms Objectives
+    isms_scope: 'Isms Scope'
+    no_context_defined: 'No Context Defined'
+    isms_objectives: 'Isms Objectives'
 context:
     link:
         edit: 'Edit context'
         create: 'Create context'
-        create_now: Create Now
+        create_now: 'Create Now'
     info:
         iso_clause: 'ISO 27001: Context of the organization'
         iso_description: 'Clauses 4.1–4.3: External/internal issues, interested parties and scope.'
@@ -76,8 +76,8 @@ context:
         policy: Policy
         review: Review
         exclusions: Exclusions
-        external_issues: External Issues
-        internal_issues: Internal Issues
+        external_issues: 'External Issues'
+        internal_issues: 'Internal Issues'
     field:
         organization_name: 'Organization name'
         isms_scope: 'ISMS scope'
@@ -96,21 +96,34 @@ context:
     unit:
         day: day
         days: days
+    placeholder:
+        organization_name: 'Organization name'
+        isms_scope: 'Define the scope of the ISMS (e.g., departments, locations, processes)...'
+        scope_exclusions: 'Areas explicitly excluded from the ISMS...'
+        external_issues: 'Legal, technological, competitive, cultural and economic issues...'
+        internal_issues: 'Organizational culture, values, knowledge, performance, resources...'
+        interested_parties: 'Customers, regulators, suppliers, employees, shareholders...'
+        interested_parties_requirements: 'What requirements do interested parties have?'
+        legal_requirements: 'GDPR, IT Security Act, KRITIS, etc.'
+        regulatory_requirements: 'Industry-specific regulations, standards, etc.'
+        contractual_obligations: 'SLAs, confidentiality agreements, customer contracts...'
+        isms_policy: 'Overarching information security policy of the organization...'
+        roles_and_responsibilities: 'ISMS responsible, Information Security Officer, etc.'
     help:
-        organization_name: 'Name of the organization'
-        isms_scope: 'ISO 27001 Clause 4.3: Define boundaries and applicability'
-        scope_exclusions: 'Areas explicitly excluded from the ISMS'
-        external_issues: 'ISO 27001 Clause 4.1: External factors'
-        internal_issues: 'ISO 27001 Clause 4.1: Internal factors'
-        interested_parties: 'ISO 27001 Clause 4.2: Stakeholders with ISMS requirements'
-        interested_parties_requirements: 'Specific requirements from stakeholders'
-        legal_requirements: 'Legal obligations and regulatory framework'
-        regulatory_requirements: 'Industry regulations and standards'
-        contractual_obligations: 'Contractual security requirements'
-        isms_policy: 'ISO 27001 Clause 5.2: Information security policy'
-        roles_and_responsibilities: 'ISO 27001 Clause 5.3: ISMS roles and responsibilities'
+        organization_name: 'This name is automatically taken from the assigned tenant. To change it, edit the tenant in tenant management.'
+        isms_scope: 'ISO 27001 Clause 4.3: Define boundaries and applicability of the ISMS'
+        scope_exclusions: 'Justify why certain areas are excluded'
+        external_issues: 'ISO 27001 Clause 4.1: External factors that affect the ISMS'
+        internal_issues: 'ISO 27001 Clause 4.1: Internal factors that affect the ISMS'
+        interested_parties: 'ISO 27001 Clause 4.2: Stakeholders who have requirements for the ISMS'
+        interested_parties_requirements: 'Specific requirements of stakeholders regarding information security'
+        legal_requirements: 'Legal obligations and legal framework'
+        regulatory_requirements: 'Regulatory requirements and industry standards'
+        contractual_obligations: 'Contractual information security requirements'
+        isms_policy: 'ISO 27001 Clause 5.2: Establishment of the information security policy'
+        roles_and_responsibilities: 'ISO 27001 Clause 5.3: Definition of roles and responsibilities in the ISMS'
         last_review_date: 'When was the ISMS context last reviewed?'
-        next_review_date: 'Recommendation: annual review'
+        next_review_date: 'When should the next review take place? (Recommended: annually)'
     action:
         edit_context: 'Edit context'
         create_context: 'Create ISMS context'

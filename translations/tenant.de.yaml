@@ -202,7 +202,7 @@ corporate:
         update_governance: 'Governance aktualisieren'
         remove_parent: 'Muttergesellschaft entfernen'
         view_structure: 'Unternehmensstruktur anzeigen'
-    title: 'Konzernstruktur'
+    title: Konzernstruktur
     subtitle: Mandantenverwaltung
     single_tenant:
         title: Einzelmandanten-Modus

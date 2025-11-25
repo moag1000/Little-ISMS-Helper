@@ -6,8 +6,45 @@ control:
         category: Category
         implementation_status: 'Implementation Status'
         status: Status
+        description: Description
+        applicable: Applicable
+        justification: Justification
+        implementation_percentage: 'Implementation (%)'
+        implementation_notes: 'Implementation Notes'
+        responsible_person: 'Responsible Person'
+        target_date: 'Target Date'
+        last_review_date: 'Last Review Date'
+        next_review_date: 'Next Review Date'
+        protected_assets: 'Protected Assets'
+    help:
+        control_id: 'ISO 27001:2022 Annex A Control ID'
+        justification: 'Required for ISO 27001 Statement of Applicability (SoA)'
+        implementation_percentage: 'Implementation progress in percent (0-100)'
+        implementation_notes: 'Describe how the control is implemented'
+        target_date: 'By when should the control be fully implemented?'
+        next_review_date: 'When should this control be reviewed next?'
+        protected_assets: 'Which assets are protected by this control?'
+    placeholder:
+        control_id: 'e.g. A.5.1'
+        name: 'e.g. Policies for information security'
+        justification: 'Justify the applicability or non-applicability...'
+        responsible_person: 'Name of the responsible person'
     status:
         implemented: Implemented
         in_progress: 'In Progress'
         not_started: 'Not Started'
         not_applicable: 'Not applicable'
+    category:
+        organizational: Organizational
+        people: People
+        physical: Physical
+        technological: Technological
+    applicable:
+        'yes': 'Yes'
+        'no': 'No'
+    implementation_status:
+        not_started: 'Not Started'
+        planned: Planned
+        in_progress: 'In Progress'
+        implemented: Implemented
+        verified: Verified

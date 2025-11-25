@@ -1,13 +1,10 @@
 location:
-    title:
-        list: Locations
-        create: 'Create location'
-        show: 'Location details'
-        edit: 'Edit location'
+    title: Locations
     description:
         overview: 'Overview of locations, buildings and rooms'
     action:
         create: 'Create location'
+        view_details: 'View details'
     stats:
         total: 'Total locations'
         buildings: Buildings
@@ -17,6 +14,7 @@ location:
         name: Name
         type: Type
         code: Code
+        location_type: 'Location Type'
         city: City
         address: Address
         postal_code: 'Postal code'
@@ -26,6 +24,16 @@ location:
         access_control: 'Access control'
         security_level: 'Security level'
         badge_access: 'Badge access'
+        requires_badge_access: 'Requires badge access'
+        requires_escort: 'Requires escort'
+        camera_monitored: 'Camera monitored'
+        responsible_person: 'Responsible person'
+        capacity: Capacity
+        square_meters: 'Area (m²)'
+        active: Active
+        notes: Notes
+        description: Description
+        status: Status
     section:
         address: Address
         hierarchy: Hierarchy
@@ -36,16 +44,38 @@ location:
     placeholder:
         name: 'e.g. Headquarters Munich'
         code: 'e.g. DE-MUC-HQ'
+        description: 'Describe the location...'
+        address: 'Enter full address...'
+        city: 'e.g. Munich'
+        country: 'e.g. Germany'
+        postal_code: 'e.g. 80331'
+        parent_location: '-- Select parent location --'
+        access_control_system: 'e.g. Kaba, dormakaba, SALTO'
+        responsible_person: 'Name of responsible person'
+        capacity: 'e.g. 50'
+        square_meters: 'e.g. 120.50'
+        notes: 'Additional notes and remarks...'
     help:
         type: 'Select the appropriate location type (building, room, data center, …)'
         code: 'Internal location code for unique reference (optional)'
         parent: 'Optional – assign the location to a parent location'
+        parent_location: 'Assign this location to a parent location (e.g. room to building)'
+        capacity: 'Maximum person capacity of this location'
     type:
         building: Building
+        floor: Floor
         room: Room
-        campus: Campus
+        area: Area
         datacenter: 'Data Center'
+        server_room: 'Server Room'
         office: Office
+        warehouse: Warehouse
+        gate: Gate
+        entrance: Entrance
+        parking: Parking
+        outdoor: Outdoor
+        campus: Campus
+        other: Other
     security:
         public: Public
         restricted: Restricted
@@ -58,3 +88,7 @@ location:
         no_locations: 'No locations available.'
     confirm:
         delete: 'Are you sure you want to delete this location?'
+    title.list: Locations
+    title.create: 'Create location'
+    title.show: 'Location details'
+    title.edit: 'Edit location'

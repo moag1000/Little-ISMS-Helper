@@ -29,3 +29,13 @@ dashboard:
         title: 'Nahende Deadlines'
         description: 'Behandlungspläne mit Fälligkeitsdatum in den nächsten 7 Tagen'
         days_remaining: 'Tage verbleibend'
+    activity:
+        minutes_ago: 'vor %count% Minuten'
+        hours_ago: 'vor %count% Stunden'
+        days_ago: 'vor %count% Tagen'
+        recently: 'kürzlich'
+        asset_added: 'Asset hinzugefügt'
+        risk_identified: 'Risiko identifiziert'
+        new_risk: 'Neues Risiko'
+        system: 'System'
+        security_team: 'Security-Team'

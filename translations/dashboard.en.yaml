@@ -29,3 +29,13 @@ dashboard:
         title: 'Approaching Deadlines'
         description: 'Treatment plans with deadlines within the next 7 days'
         days_remaining: 'days remaining'
+    activity:
+        minutes_ago: '%count% minutes ago'
+        hours_ago: '%count% hours ago'
+        days_ago: '%count% days ago'
+        recently: recently
+        asset_added: 'Asset added'
+        risk_identified: 'Risk identified'
+        new_risk: 'New risk'
+        system: System
+        security_team: 'Security Team'

@@ -22,6 +22,14 @@ workflow:
         complete_step: 'Complete step'
         start: Start
         cancel: Cancel
+        update: 'Update Workflow'
+        delete_definition: 'Delete Definition'
+        builder: 'Workflow Builder'
+        edit: Edit
+        deactivate: Deactivate
+        activate: Activate
+        delete: Delete
+        back: Back
     stats:
         total: 'Total Workflows'
         active: Active
@@ -38,6 +46,8 @@ workflow:
         active_definitions: 'Active definitions'
         avg_steps: 'Avg. steps per definition'
         entity_types: 'Covered entity types'
+        steps: 'Total Steps'
+        total_instances: 'Total Instances'
     section:
         overview: Overview
         steps: Steps
@@ -46,6 +56,11 @@ workflow:
         active: Active
         overdue: Overdue
         recent_instances: 'Recent Instances'
+        basic_information: 'Basic Information'
+        danger_zone: 'Danger Zone'
+        information: Information
+        actions: Actions
+        statistics: Statistics
     field:
         name: Name
         definition: Definition
@@ -63,6 +78,8 @@ workflow:
         progress: Progress
         priority: Priority
         days_overdue: 'Days overdue'
+        entity_type: 'Entity Type'
+        updated_at: 'Updated At'
     priority:
         low: Low
         medium: Medium
@@ -73,6 +90,8 @@ workflow:
         active: Active
         completed: Completed
         cancelled: Cancelled
+        rejected: Rejected
+        inactive: Inactive
     badge:
         overdue: Overdue
         my_task: 'My Task'
@@ -89,8 +108,79 @@ workflow:
         no_overdue_desc: 'All workflow instances are currently within their deadlines.'
         no_definitions: 'No workflow definitions available.'
         no_activities: 'No activities available.'
+        no_steps: 'No steps defined for this workflow yet.'
     warning:
         overdue_count: '%count% overdue workflow(s) identified'
         overdue_message: 'Please review assignees and deadlines. Consider re‑prioritizing or escalating.'
     days: days
     step: Step
+    definition:
+        edit_title: 'Edit Workflow Definition'
+        new_title: 'New Workflow Definition'
+        title: 'Workflow Definition'
+    breadcrumb:
+        home: Home
+        definitions: 'Workflow Definitions'
+        edit: Edit
+        new: New
+    help:
+        name: 'Enter a descriptive name for this workflow definition'
+        description: 'Describe the purpose and scope of this workflow'
+        delete_warning: 'Warning: Deleting this definition will also delete all associated workflow instances'
+    info:
+        steps_note_title: 'About Workflow Steps'
+        steps_note_text: 'Define the sequential steps that must be completed for this workflow. Each step can have assignees, due dates, and completion criteria.'
+    confirm:
+        delete: 'Are you sure you want to delete this workflow? This action cannot be undone.'
+        cancel: 'Are you sure you want to cancel this workflow instance?'
+    instance:
+        entity: 'Related Entity'
+        status: Status
+        current_step: 'Current Step'
+        created: 'Created At'
+        actions: Actions
+    step.requires_comment: 'Comment Required'
+    step.requires_file: 'File Upload Required'
+    activity:
+        timestamp: Timestamp
+        user: User
+        action: Action
+        details: Details
+    builder:
+        title: 'Workflow Builder'
+        breadcrumb: Builder
+        heading: 'Build Your Workflow'
+        steps: 'Workflow Steps'
+        drag_help: 'Drag steps to reorder'
+        add_step: 'Add Step'
+        new_step: 'New Step'
+        templates: 'Workflow Templates'
+        templates_help: 'Start with a pre-built template'
+        info: Information
+        help: 'Builder Help'
+        help_drag: 'Click and drag steps to change the workflow order'
+        help_edit: 'Click the edit icon to modify step details'
+        help_duplicate: 'Duplicate a step to reuse configuration'
+        help_delete: 'Delete steps that are no longer needed'
+        help_template: 'Choose a template to quickly set up common workflow patterns'
+    step.name: 'Step Name'
+    step.type: 'Step Type'
+    step.type.approval: 'Approval Step'
+    step.type.notification: 'Notification Step'
+    step.type.auto_action: 'Automated Action'
+    step.description: Description
+    step.approver_role: 'Approver Role'
+    step.days_to_complete: 'Days to Complete'
+    step.days_help: 'Number of days allocated for completing this step'
+    step.is_required: Required
+    template:
+        risk_assessment: 'Risk Assessment Workflow'
+        risk_assessment_desc: 'Multi-step workflow for identifying, assessing, and treating information security risks'
+        control_implementation: 'Control Implementation Workflow'
+        control_implementation_desc: 'Structured process for implementing and verifying ISO 27001 security controls'
+        incident_response: 'Incident Response Workflow'
+        incident_response_desc: 'Standardized workflow for detecting, responding to, and resolving security incidents'
+        document_review: 'Document Review Workflow'
+        document_review_desc: 'Approval process for reviewing and approving ISMS documentation'
+        change_request: 'Change Request Workflow'
+        change_request_desc: 'Approval workflow for evaluating and implementing system or process changes'

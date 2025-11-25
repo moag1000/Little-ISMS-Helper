@@ -34,7 +34,7 @@ tenant:
         created: Created
         updated: Updated
         parent: Parent
-        corporate_notes: Corporate Notes
+        corporate_notes: 'Corporate Notes'
     placeholder:
         code: 'e.g. acme-corp'
         name: 'e.g. ACME Corporation'
@@ -132,7 +132,7 @@ tenant:
             corporate: 'In corporate structures, subsidiaries can cover different industries'
         field:
             industries: Industries
-            employee_count: Employee Count
+            employee_count: 'Employee Count'
             country: Country
             description: Description
     link:
@@ -155,8 +155,8 @@ tenant:
         description: Description
         logo: Logo
         parent: Parent
-        corporate_notes: Corporate Notes
-        azure_tenant_id: Azure Tenant Id
+        corporate_notes: 'Corporate Notes'
+        azure_tenant_id: 'Azure Tenant Id'
         settings: Settings
     settings:
         example_title: 'Example JSON Structure'
@@ -165,43 +165,43 @@ tenant:
     name: Name
 corporate:
     view:
-        own_only: Own Only
-        including_inherited: Including Inherited
-        including_subsidiaries: Including Subsidiaries
+        own_only: 'Own Only'
+        including_inherited: 'Including Inherited'
+        including_subsidiaries: 'Including Subsidiaries'
     stats:
         breakdown: Breakdown
         groups: Groups
         standalone: Standalone
         total: Total
     inheritance:
-        inherited_from: Inherited From
+        inherited_from: 'Inherited From'
         title: Title
         propagate: Propagate
-        no_context: No Context
+        no_context: 'No Context'
         organization: Organization
-        own_context: Own Context
-        load_error: Load Error
-        confirm_propagate: Confirm Propagate
-        propagate_error: Propagate Error
-        isms_context_inherited: Isms Context Inherited
+        own_context: 'Own Context'
+        load_error: 'Load Error'
+        confirm_propagate: 'Confirm Propagate'
+        propagate_error: 'Propagate Error'
+        isms_context_inherited: 'Isms Context Inherited'
         from: From
-        edit_at_parent: Edit At Parent
-        cannot_edit_inherited: Cannot Edit Inherited
-        view_only_title: View Only Title
-        risk_inherited_message: Risk Inherited Message
+        edit_at_parent: 'Edit At Parent'
+        cannot_edit_inherited: 'Cannot Edit Inherited'
+        view_only_title: 'View Only Title'
+        risk_inherited_message: 'Risk Inherited Message'
     inherited: Inherited
     field:
         actions: Actions
         subsidiary: Subsidiary
         parent: Parent
-        governance_model: Governance Model
-        hierarchy_depth: Hierarchy Depth
+        governance_model: 'Governance Model'
+        hierarchy_depth: 'Hierarchy Depth'
         subsidiaries: Subsidiaries
     action:
-        set_parent: Set Parent
-        update_governance: Update Governance
-        remove_parent: Remove Parent
-        view_structure: View Structure
+        set_parent: 'Set Parent'
+        update_governance: 'Update Governance'
+        remove_parent: 'Remove Parent'
+        view_structure: 'View Structure'
     title: Title
     subtitle: Subtitle
     single_tenant:
@@ -226,25 +226,25 @@ corporate:
         parent: Parent
         governance: Governance
     confirm:
-        remove_parent: Remove Parent
+        remove_parent: 'Remove Parent'
     level: Level
     granular:
         title: Title
-        add_rule: Add Rule
+        add_rule: 'Add Rule'
         modal:
             title: Title
         field:
             scope: Scope
-            scope_id: Scope Id
+            scope_id: 'Scope Id'
         scope:
             control: Control
-            isms_context: Isms Context
+            isms_context: 'Isms Context'
             risk: Risk
             asset: Asset
             process: Process
         help:
-            scope_id: Scope Id
-        no_rules: No Rules
+            scope_id: 'Scope Id'
+        no_rules: 'No Rules'
         flash:
             error: Error
         confirm:

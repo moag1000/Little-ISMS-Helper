@@ -44,3 +44,12 @@ reports:
         management:
             title: 'For Management Reporting:'
             items: { item_1: 'Use Dashboard Summary for executive overviews', item_2: 'Highlight high‑risk items from Risk Register', item_3: 'Show control implementation progress', item_4: 'Report on mandatory training completion' }
+    overview: 'Reports Overview'
+    integrate_ci_cd: 'Integrate into CI/CD Pipeline'
+security_reports:
+    page:
+        title: 'Security Reports'
+report:
+    document_type: 'Document Type'
+    header_center: 'Header (Center)'
+    default_reviewer: 'Default Reviewer'

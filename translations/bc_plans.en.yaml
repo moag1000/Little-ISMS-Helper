@@ -15,12 +15,12 @@ bc_plans:
         communication_plan: 'Communication Plan'
         alternative_site: 'Alternative Site'
         related_risks: 'Related Risks'
-        basic_info: Basic Information
+        basic_info: 'Basic Information'
         team: Team
         activation: Activation
         communication: Communication
-        backup_recovery: Backup Recovery
-        version_review: Version Review
+        backup_recovery: 'Backup Recovery'
+        version_review: 'Version Review'
     table:
         name: Name
         business_process: 'Business Process'
@@ -42,22 +42,28 @@ bc_plans:
         name: Name
         description: Description
         status: Status
-        bc_team: Bc Team
-        activation_criteria: Activation Criteria
-        roles_responsibilities: Roles Responsibilities
-        recovery_procedures: Recovery Procedures
-        communication_plan: Communication Plan
-        internal_communication: Internal Communication
-        external_communication: External Communication
-        alternative_site: Alternative Site
-        alternative_site_address: Alternative Site Address
-        alternative_site_capacity: Alternative Site Capacity
-        backup_procedures: Backup Procedures
-        restore_procedures: Restore Procedures
-        next_test_date: Next Test Date
-        last_review_date: Last Review Date
-        next_review_date: Next Review Date
-        review_notes: Review Notes
+        bc_team: 'BC Team'
+        activation_criteria: 'Activation Criteria'
+        roles_and_responsibilities: 'Roles and Responsibilities'
+        roles_responsibilities: 'Roles and Responsibilities'
+        recovery_procedures: 'Recovery Procedures'
+        communication_plan: 'Communication Plan'
+        internal_communication: 'Internal Communication'
+        external_communication: 'External Communication'
+        alternative_site: 'Alternative Site'
+        alternative_site_address: 'Alternative Site Address'
+        alternative_site_capacity: 'Alternative Site Capacity'
+        backup_procedures: 'Backup Procedures'
+        restore_procedures: 'Restore Procedures'
+        next_test_date: 'Next Test Date'
+        last_review_date: 'Last Review Date'
+        next_review_date: 'Next Review Date'
+        review_notes: 'Review Notes'
+    status:
+        draft: Draft
+        under_review: 'Under Review'
+        active: Active
+        archived: Archived
     badge:
         overdue: OVERDUE
     message:
@@ -67,30 +73,31 @@ bc_plans:
         create_first: 'Create your first BC plan'
         readiness_score: 'Readiness Score: %score%%'
     help:
-        name: Name
-        business_process: Business Process
-        description: Description
-        plan_owner: Plan Owner
-        status: Status
-        bc_team: Bc Team
-        activation_criteria: Activation Criteria
-        roles_responsibilities: Roles Responsibilities
-        recovery_procedures: Recovery Procedures
-        communication_plan: Communication Plan
-        internal_communication: Internal Communication
-        external_communication: External Communication
-        alternative_site: Alternative Site
-        alternative_site_address: Alternative Site Address
-        alternative_site_capacity: Alternative Site Capacity
-        backup_procedures: Backup Procedures
-        restore_procedures: Restore Procedures
-        version: Version
-        last_tested: Last Tested
-        next_test_date: Next Test Date
-        last_review_date: Last Review Date
-        next_review_date: Next Review Date
-        review_notes: Review Notes
+        name: 'Unique name of the BC plan'
+        business_process: 'Business process protected by this plan (ISO 22301)'
+        description: 'Detailed description of the plan and its scope'
+        plan_owner: 'Person responsible for maintaining and implementing the plan'
+        status: 'Current status of the plan (Draft, Active, Archived)'
+        bc_team: 'People to be involved when the plan is activated (BC team per ISO 22301)'
+        activation_criteria: 'Conditions under which this plan should be activated (e.g. server outage > 4h)'
+        roles_and_responsibilities: 'Roles and responsibilities of team members during a BC situation'
+        roles_responsibilities: 'Roles and responsibilities of team members during a BC situation'
+        recovery_procedures: 'Step-by-step procedures for restoring business operations'
+        communication_plan: 'Communication strategy during the continuity situation'
+        internal_communication: 'Communication with internal stakeholders (employees, management)'
+        external_communication: 'Communication with external stakeholders (customers, suppliers, authorities)'
+        alternative_site: 'Alternative site for emergency operations (if physical location is unavailable)'
+        alternative_site_address: 'Full address of the alternative site'
+        alternative_site_capacity: 'Capacity and resources at the alternative site (workstations, technology)'
+        backup_procedures: 'Data backup procedures (backup strategy, frequency, storage locations)'
+        restore_procedures: 'Data restoration procedures (restore process, prioritization)'
+        version: 'Current version number of the BC plan'
+        last_tested: 'Date of last BC plan test (exercises per ISO 22301:2019 Clause 8.5)'
+        next_test_date: 'Date of next scheduled BC plan test'
+        last_review_date: 'Date of last plan review'
+        next_review_date: 'Date of next scheduled review (at least annually per ISO 22301)'
+        review_notes: 'Notes from the last plan review (changes needed, improvements)'
 bcm:
     field:
-        activation_criteria: Activation Criteria
-        recovery_plan: Recovery Plan
+        activation_criteria: 'Activation Criteria'
+        recovery_plan: 'Recovery Plan'

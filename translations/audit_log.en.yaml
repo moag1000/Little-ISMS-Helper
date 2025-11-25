@@ -58,22 +58,22 @@ audit_log:
         about_text: 'The audit log tracks all significant actions in the system including create, update, and delete operations. This provides a complete audit trail for compliance and security purposes.'
         module_link: 'Audit Log module'
         entries: audit_log
-    showing_recent: Showing Recent
+    showing_recent: 'Showing Recent'
     entries: Entries
-    view_all: View All
+    view_all: 'View All'
     field:
         timestamp: Timestamp
         action: Action
         user: User
         description: Description
-        entity_type: Entity Type
-        entity_id: Entity Id
-        ip_address: Ip Address
-        user_agent: User Agent
+        entity_type: 'Entity Type'
+        entity_id: 'Entity Id'
+        ip_address: 'Ip Address'
+        user_agent: 'User Agent'
     title: Title
     detail:
         subtitle: Subtitle
     entry: Entry
     changes: Changes
-    old_values: Old Values
-    new_values: New Values
+    old_values: 'Old Values'
+    new_values: 'New Values'

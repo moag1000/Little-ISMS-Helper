@@ -30,12 +30,12 @@ document:
         all_documents: 'All documents'
         basic_info: 'Basic information'
         file_upload: 'File upload'
-        select_type: Select Type
-        types_overview: Types Overview
+        select_type: 'Select Type'
+        types_overview: 'Types Overview'
         documents: Documents
-        type_statistics: Type Statistics
-        recent_activity: Recent Activity
-        all_types: All Types
+        type_statistics: 'Type Statistics'
+        recent_activity: 'Recent Activity'
+        all_types: 'All Types'
     filter:
         all_categories: 'All categories'
         search_placeholder: Search...
@@ -46,9 +46,9 @@ document:
         no_results: 'No results found'
         no_documents: 'No documents yet'
         upload_first: 'Upload your first document to get started'
-        no_documents_for_type: No Documents For Type
-        no_types: No Types
-        no_recent_activity: No Recent Activity
+        no_documents_for_type: 'No Documents For Type'
+        no_types: 'No Types'
+        no_recent_activity: 'No Recent Activity'
     confirm:
         delete: 'Do you really want to delete this document? This action cannot be undone.'
     new: 'New Document'
@@ -62,13 +62,13 @@ document:
         version: Version
         status: Status
         owner: Owner
-        last_updated: Last Updated
-        review_date: Review Date
-        type_name: Type Name
-        total_documents: Total Documents
+        last_updated: 'Last Updated'
+        review_date: 'Review Date'
+        type_name: 'Type Name'
+        total_documents: 'Total Documents'
         active: Active
         draft: Draft
-        overdue_reviews: Overdue Reviews
+        overdue_reviews: 'Overdue Reviews'
         documents: Documents
         updated: Updated
     help:
@@ -83,18 +83,22 @@ document:
         controlled: Controlled
         confidential: Confidential
         overdue: Overdue
-        due_soon: Due Soon
-    title.by_type: By Type
+        due_soon: 'Due Soon'
+    title.by_type: 'By Type'
     description:
-        by_type: By Type
+        by_type: 'By Type'
     stats:
         total: Total
-        document_types: Document Types
-        expiring_soon: Expiring Soon
-        avg_per_type: Avg Per Type
-        total_documents: Total Documents
-        active_documents: Active Documents
-        draft_documents: Draft Documents
-        overdue_reviews: Overdue Reviews
+        document_types: 'Document Types'
+        expiring_soon: 'Expiring Soon'
+        avg_per_type: 'Avg Per Type'
+        total_documents: 'Total Documents'
+        active_documents: 'Active Documents'
+        draft_documents: 'Draft Documents'
+        overdue_reviews: 'Overdue Reviews'
     option:
-        all_types: All Types
+        all_types: 'All Types'
+    uploaded_by: 'Uploaded by'
+    uploaded_at: 'Uploaded at'
+    edit_button: 'Edit document'
+    drag_files: 'Drag files here or click to upload'

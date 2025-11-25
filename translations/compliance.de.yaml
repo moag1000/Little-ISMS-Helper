@@ -25,7 +25,7 @@ compliance:
         framework_coverage: Framework‑Abdeckung
         detailed_comparison: 'Detaillierter Vergleich'
         unique_to: 'Einzigartig für %framework%'
-        compliance_matrix: 'Compliance-Matrix'
+        compliance_matrix: Compliance-Matrix
         cross_framework_mappings: 'Framework-übergreifende Zuordnungen'
         mapping_explanation: 'Erklärung der Zuordnungen'
     stats:
@@ -44,7 +44,7 @@ compliance:
         reuse_rate: Reuse‑Rate
         effort_saved: 'Eingesparter Aufwand'
         total_mappings: 'Gesamte Zuordnungen'
-        full_exceeds: 'Vollständig/Übertrifft'
+        full_exceeds: Vollständig/Übertrifft
         partial_mappings: 'Teilweise Zuordnungen'
         bidirectional_mappings: 'Bidirektionale Zuordnungen'
     action:
@@ -80,13 +80,13 @@ compliance:
         reused_data: 'Wiederverwendete Daten'
         new_data_needed: 'Neue Daten benötigt'
         coverage: Abdeckung
-        category: 'Kategorie'
-        mapping: 'Zuordnung'
-        match_quality: 'Zuordnungsqualität'
-        source_requirement: 'Quellanforderung'
-        target_requirements: 'Zielanforderungen'
-        mapping_strength: 'Zuordnungsstärke'
-        mapped: 'Zugeordnet'
+        category: Kategorie
+        mapping: Zuordnung
+        match_quality: Zuordnungsqualität
+        source_requirement: Quellanforderung
+        target_requirements: Zielanforderungen
+        mapping_strength: Zuordnungsstärke
+        mapped: Zugeordnet
     option:
         select_framework: 'Framework wählen…'
         all_frameworks: 'Alle Frameworks'
@@ -97,16 +97,16 @@ compliance:
         low: Niedrig
     manage_frameworks: 'Frameworks verwalten'
     manage_frameworks_subtitle: 'Compliance-Frameworks laden und konfigurieren'
-    framework_statistics: 'Framework-Statistiken'
+    framework_statistics: Framework-Statistiken
     total_available: 'Gesamt verfügbar'
-    loaded: 'Geladen'
+    loaded: Geladen
     not_loaded: 'Nicht geladen'
     mandatory_missing: 'Pflicht-Frameworks fehlen'
     available_frameworks: 'Verfügbare Frameworks'
-    version: 'Version'
-    industry: 'Branche'
-    regulatory_body: 'Regulierungsbehörde'
-    mandatory: 'Pflicht'
+    version: Version
+    industry: Branche
+    regulatory_body: Regulierungsbehörde
+    mandatory: Pflicht
     required_modules: 'Erforderliche Module'
     already_loaded: 'Bereits geladen'
     delete_framework: 'Framework löschen'
@@ -115,7 +115,7 @@ compliance:
     loading: 'Wird geladen...'
     successfully_loaded: 'Framework erfolgreich geladen'
     load_failed: 'Fehler beim Laden des Frameworks'
-    error: 'Fehler'
+    error: Fehler
     deleting: 'Wird gelöscht...'
     successfully_deleted: 'Framework erfolgreich gelöscht'
     delete_failed: 'Fehler beim Löschen des Frameworks'
@@ -136,191 +136,191 @@ compliance:
         no_gaps: 'Keine Lücken gefunden'
         no_gaps_desc: 'Alle Anforderungen sind erfüllt'
     badge:
-        reusable: 'Wiederverwendbar'
-        mapped: 'Zugeordnet'
+        reusable: Wiederverwendbar
+        mapped: Zugeordnet
         no_mapping: 'Nicht zugeordnet'
-        overdue: 'Überfällig'
+        overdue: Überfällig
     framework:
         edit:
-            title: "\0NoFill\0compliance.framework.edit.title"
-            heading: "\0NoFill\0compliance.framework.edit.heading"
+            title: 'Compliance-Framework bearbeiten'
+            heading: 'Framework bearbeiten'
         section:
-            identification: "\0NoFill\0compliance.framework.section.identification"
-            details: "\0NoFill\0compliance.framework.section.details"
-            configuration: "\0NoFill\0compliance.framework.section.configuration"
+            identification: Identifikation
+            details: Details
+            configuration: Konfiguration
         field:
-            code: "\0NoFill\0compliance.framework.field.code"
-            version: "\0NoFill\0compliance.framework.field.version"
-            name: "\0NoFill\0compliance.framework.field.name"
-            description: "\0NoFill\0compliance.framework.field.description"
-            industry: "\0NoFill\0compliance.framework.field.industry"
-            regulatory_body: "\0NoFill\0compliance.framework.field.regulatory_body"
-            scope: "\0NoFill\0compliance.framework.field.scope"
-            mandatory: "\0NoFill\0compliance.framework.field.mandatory"
-            active: "\0NoFill\0compliance.framework.field.active"
-            requirements: "\0NoFill\0compliance.framework.field.requirements"
-            status: "\0NoFill\0compliance.framework.field.status"
-            compliance: "\0NoFill\0compliance.framework.field.compliance"
-        info: "\0NoFill\0compliance.framework.info"
+            code: Code
+            version: Version
+            name: Name
+            description: Beschreibung
+            industry: Branche
+            regulatory_body: 'Regulierungsbehörde'
+            scope: Anwendungsbereich
+            mandatory: Verpflichtend
+            active: Aktiv
+            requirements: Anforderungen
+            status: Status
+            compliance: Compliance
+        info: 'Informationen zum Compliance-Framework'
         confirm:
-            delete: "\0NoFill\0compliance.framework.confirm.delete"
+            delete: 'Sind Sie sicher, dass Sie dieses Compliance-Framework löschen möchten? Alle zugehörigen Anforderungen und Bewertungen werden ebenfalls entfernt.'
         new:
-            title: "\0NoFill\0compliance.framework.new.title"
-            heading: "\0NoFill\0compliance.framework.new.heading"
+            title: 'Neues Compliance-Framework'
+            heading: 'Neues Framework erstellen'
         help:
-            code: { title: "\0NoFill\0compliance.framework.help.code.title", text: "\0NoFill\0compliance.framework.help.code.text" }
-            mandatory: { title: "\0NoFill\0compliance.framework.help.mandatory.title", text: "\0NoFill\0compliance.framework.help.mandatory.text" }
-            active: { title: "\0NoFill\0compliance.framework.help.active.title", text: "\0NoFill\0compliance.framework.help.active.text" }
+            code: { title: Framework-Code, text: 'Eindeutiger Identifikator für das Framework (z.B. ISO-27001, NIS2, DORA)' }
+            mandatory: { title: Verpflichtend, text: 'Kennzeichnet, ob die Einhaltung dieses Frameworks gesetzlich oder vertraglich vorgeschrieben ist' }
+            active: { title: 'Aktiv/Inaktiv', text: 'Nur aktive Frameworks werden in Compliance-Dashboards und Berichten berücksichtigt' }
         action:
-            dashboard: "\0NoFill\0compliance.framework.action.dashboard"
-            new: "\0NoFill\0compliance.framework.action.new"
-            gap_analysis: "\0NoFill\0compliance.framework.action.gap_analysis"
-            assess: "\0NoFill\0compliance.framework.action.assess"
-        title: "\0NoFill\0compliance.framework.title"
-        heading: "\0NoFill\0compliance.framework.heading"
-        description: "\0NoFill\0compliance.framework.description"
-        list: "\0NoFill\0compliance.framework.list"
-        empty: "\0NoFill\0compliance.framework.empty"
-        no_requirements: "\0NoFill\0compliance.framework.no_requirements"
+            dashboard: 'Zum Dashboard'
+            new: 'Neues Framework'
+            gap_analysis: Gap-Analyse
+            assess: Bewerten
+        title: Compliance-Frameworks
+        heading: 'Compliance-Frameworks verwalten'
+        description: 'Verwalten Sie regulatorische Frameworks wie ISO 27001, NIS2, DORA und weitere Standards'
+        list: Framework-Liste
+        empty: 'Keine Compliance-Frameworks vorhanden. Erstellen Sie Ihr erstes Framework.'
+        no_requirements: 'Keine Anforderungen für dieses Framework definiert'
         badge:
-            mandatory: "\0NoFill\0compliance.framework.badge.mandatory"
+            mandatory: Verpflichtend
         stats:
-            total_requirements: "\0NoFill\0compliance.framework.stats.total_requirements"
-            applicable: "\0NoFill\0compliance.framework.stats.applicable"
-            fulfilled: "\0NoFill\0compliance.framework.stats.fulfilled"
-            compliance: "\0NoFill\0compliance.framework.stats.compliance"
+            total_requirements: 'Anforderungen gesamt'
+            applicable: Anwendbar
+            fulfilled: Erfüllt
+            compliance: Compliance-Rate
     requirement:
         action:
-            new: "\0NoFill\0compliance.requirement.action.new"
+            new: 'Neue Anforderung'
         priority:
-            critical: "\0NoFill\0compliance.requirement.priority.critical"
-            high: "\0NoFill\0compliance.requirement.priority.high"
-            medium: "\0NoFill\0compliance.requirement.priority.medium"
-            low: "\0NoFill\0compliance.requirement.priority.low"
-        view_page_note: "\0NoFill\0compliance.requirement.view_page_note"
-        filter_by_framework: "\0NoFill\0compliance.requirement.filter_by_framework"
+            critical: Kritisch
+            high: Hoch
+            medium: Mittel
+            low: Niedrig
+        view_page_note: 'Klicken Sie auf eine Anforderung, um Details und Umsetzungsstatus anzuzeigen'
+        filter_by_framework: 'Nach Framework filtern'
     cross_framework:
-        source_target_label: "\0NoFill\0compliance.cross_framework.source_target_label"
+        source_target_label: 'Quell- und Ziel-Framework'
         table:
-            source: "\0NoFill\0compliance.cross_framework.table.source"
-            target: "\0NoFill\0compliance.cross_framework.table.target"
-            type: "\0NoFill\0compliance.cross_framework.table.type"
-            strength: "\0NoFill\0compliance.cross_framework.table.strength"
-            bidirectional: "\0NoFill\0compliance.cross_framework.table.bidirectional"
-        yes_bidirectional: "\0NoFill\0compliance.cross_framework.yes_bidirectional"
-        title: "\0NoFill\0compliance.cross_framework.title"
-        subtitle: "\0NoFill\0compliance.cross_framework.subtitle"
-        back: "\0NoFill\0compliance.cross_framework.back"
-        coverage_matrix: "\0NoFill\0compliance.cross_framework.coverage_matrix"
-        coverage_description: "\0NoFill\0compliance.cross_framework.coverage_description"
-        coverage_high: "\0NoFill\0compliance.cross_framework.coverage_high"
-        coverage_medium: "\0NoFill\0compliance.cross_framework.coverage_medium"
-        coverage_low: "\0NoFill\0compliance.cross_framework.coverage_low"
-        strong_mappings: "\0NoFill\0compliance.cross_framework.strong_mappings"
-        partial_mappings_label: "\0NoFill\0compliance.cross_framework.partial_mappings_label"
-        weak_mappings: "\0NoFill\0compliance.cross_framework.weak_mappings"
-        showing_of: "\0NoFill\0compliance.cross_framework.showing_of"
-        understanding_title: "\0NoFill\0compliance.cross_framework.understanding_title"
-        what_title: "\0NoFill\0compliance.cross_framework.what_title"
-        what_description: "\0NoFill\0compliance.cross_framework.what_description"
-        types_title: "\0NoFill\0compliance.cross_framework.types_title"
+            source: Quelle
+            target: Ziel
+            type: Typ
+            strength: 'Stärke'
+            bidirectional: Bidirektional
+        yes_bidirectional: 'Ja (bidirektional)'
+        title: Framework-übergreifende-Mappings
+        subtitle: 'Vergleichen und mappen Sie Anforderungen zwischen verschiedenen Compliance-Frameworks'
+        back: Zurück
+        coverage_matrix: Abdeckungsmatrix
+        coverage_description: 'Visualisierung der Mapping-Qualität zwischen Frameworks'
+        coverage_high: 'Hohe Abdeckung'
+        coverage_medium: 'Mittlere Abdeckung'
+        coverage_low: 'Niedrige Abdeckung'
+        strong_mappings: 'Starke Mappings'
+        partial_mappings_label: 'Teilweise Mappings'
+        weak_mappings: 'Schwache Mappings'
+        showing_of: 'Zeige %current% von %total%'
+        understanding_title: 'Framework-Mappings verstehen'
+        what_title: 'Was sind Framework-Mappings?'
+        what_description: 'Mappings zeigen Beziehungen zwischen Anforderungen verschiedener Compliance-Frameworks. Sie helfen, Doppelarbeit zu vermeiden und Synergien zu nutzen.'
+        types_title: Mapping-Typen
         types:
-            exceeds: "\0NoFill\0compliance.cross_framework.types.exceeds"
-            full: "\0NoFill\0compliance.cross_framework.types.full"
-            partial: "\0NoFill\0compliance.cross_framework.types.partial"
-            weak: "\0NoFill\0compliance.cross_framework.types.weak"
-        bidirectional_title: "\0NoFill\0compliance.cross_framework.bidirectional_title"
-        bidirectional_description: "\0NoFill\0compliance.cross_framework.bidirectional_description"
-        strategic_title: "\0NoFill\0compliance.cross_framework.strategic_title"
-        strategic_description: "\0NoFill\0compliance.cross_framework.strategic_description"
-    page_title: "\0NoFill\0compliance.page_title"
-    page_subtitle: "\0NoFill\0compliance.page_subtitle"
+            exceeds: 'Übertrifft: Quell-Anforderung geht über Ziel-Anforderung hinaus'
+            full: 'Vollständig: Anforderungen sind identisch oder äquivalent'
+            partial: 'Teilweise: Anforderungen überschneiden sich teilweise'
+            weak: 'Schwach: Nur geringe Überschneidung oder thematische Nähe'
+        bidirectional_title: 'Bidirektionale Mappings'
+        bidirectional_description: 'Wenn beide Richtungen gelten (A→B und B→A), wird das Mapping als bidirektional markiert'
+        strategic_title: 'Strategischer Nutzen'
+        strategic_description: 'Nutzen Sie Mappings, um bei der Erfüllung eines Frameworks gleichzeitig Anforderungen anderer Frameworks zu erfüllen und so Zeit und Aufwand zu sparen'
+    page_title: 'Compliance-Management'
+    page_subtitle: 'Verwalten Sie mehrere regulatorische Frameworks und deren Anforderungen zentral'
     button:
-        cross_framework: "\0NoFill\0compliance.button.cross_framework"
-        transitive: "\0NoFill\0compliance.button.transitive"
-        compare_frameworks: "\0NoFill\0compliance.button.compare_frameworks"
-        open_dashboard: "\0NoFill\0compliance.button.open_dashboard"
-        explore_mappings: "\0NoFill\0compliance.button.explore_mappings"
-        back: "\0NoFill\0compliance.button.back"
-        reassess: "\0NoFill\0compliance.button.reassess"
-    quick_access: "\0NoFill\0compliance.quick_access"
-    quick_access_hint: "\0NoFill\0compliance.quick_access_hint"
+        cross_framework: Framework-Mappings
+        transitive: 'Transitive Mappings'
+        compare_frameworks: 'Frameworks vergleichen'
+        open_dashboard: 'Dashboard öffnen'
+        explore_mappings: 'Mappings erkunden'
+        back: Zurück
+        reassess: 'Neu bewerten'
+    quick_access: Schnellzugriff
+    quick_access_hint: 'Klicken Sie auf ein Framework, um Details anzuzeigen und Anforderungen zu verwalten'
     data_reuse:
-        title: "\0NoFill\0compliance.data_reuse.title"
-        description: "\0NoFill\0compliance.data_reuse.description"
-        hours_saved: "\0NoFill\0compliance.data_reuse.hours_saved"
-        work_days: "\0NoFill\0compliance.data_reuse.work_days"
-        show_details: "\0NoFill\0compliance.data_reuse.show_details"
+        title: 'Data-Reuse-Zeitersparnis'
+        description: 'Durch Wiederverwendung bestehender Assets, Controls und Dokumentation'
+        hours_saved: 'Stunden gespart'
+        work_days: Arbeitstage
+        show_details: 'Details anzeigen'
     label:
-        compliance: "\0NoFill\0compliance.label.compliance"
-        fulfilled: "\0NoFill\0compliance.label.fulfilled"
-        gaps: "\0NoFill\0compliance.label.gaps"
-        requirements: "\0NoFill\0compliance.label.requirements"
-        time_savings: "\0NoFill\0compliance.label.time_savings"
-        days: "\0NoFill\0compliance.label.days"
-        code: "\0NoFill\0compliance.label.code"
-        'yes': "\0NoFill\0compliance.label.yes"
-        'no': "\0NoFill\0compliance.label.no"
-    no_frameworks_loaded: "\0NoFill\0compliance.no_frameworks_loaded"
-    add_frameworks: "\0NoFill\0compliance.add_frameworks"
-    contact_admin_to_add_frameworks: "\0NoFill\0compliance.contact_admin_to_add_frameworks"
+        compliance: Compliance
+        fulfilled: Erfüllt
+        gaps: 'Lücken'
+        requirements: Anforderungen
+        time_savings: Zeitersparnis
+        days: Tage
+        code: Code
+        'yes': Ja
+        'no': Nein
+    no_frameworks_loaded: 'Keine Compliance-Frameworks geladen'
+    add_frameworks: 'Frameworks hinzufügen'
+    contact_admin_to_add_frameworks: 'Kontaktieren Sie Ihren Administrator, um Compliance-Frameworks hinzuzufügen'
     benefits:
-        title: "\0NoFill\0compliance.benefits.title"
+        title: 'Vorteile des Compliance-Managements'
         data_reuse:
-            title: "\0NoFill\0compliance.benefits.data_reuse.title"
-            description: "\0NoFill\0compliance.benefits.data_reuse.description"
+            title: Datenwiederverwendung
+            description: 'Nutzen Sie bestehende Assets, Controls und Dokumentation für mehrere Frameworks gleichzeitig'
         time_efficiency:
-            title: "\0NoFill\0compliance.benefits.time_efficiency.title"
-            description: "\0NoFill\0compliance.benefits.time_efficiency.description"
+            title: Zeiteffizienz
+            description: 'Reduzieren Sie Doppelarbeit durch Framework-Mappings um bis zu 60%'
         transparency:
-            title: "\0NoFill\0compliance.benefits.transparency.title"
-            description: "\0NoFill\0compliance.benefits.transparency.description"
+            title: Transparenz
+            description: 'Vollständiger Überblick über alle Compliance-Verpflichtungen und deren Status'
         strategic:
-            title: "\0NoFill\0compliance.benefits.strategic.title"
-            description: "\0NoFill\0compliance.benefits.strategic.description"
+            title: 'Strategische Planung'
+            description: 'Priorisieren Sie Anforderungen und planen Sie Umsetzungsmaßnahmen effektiv'
     gaps:
-        title_description: "\0NoFill\0compliance.gaps.title_description"
-        by_priority: "\0NoFill\0compliance.gaps.by_priority"
-        change_status_instruction: "\0NoFill\0compliance.gaps.change_status_instruction"
-        title: "\0NoFill\0compliance.gaps.title"
-        fulfilled_percentage: "\0NoFill\0compliance.gaps.fulfilled_percentage"
-        none: "\0NoFill\0compliance.gaps.none"
-        none_description: "\0NoFill\0compliance.gaps.none_description"
+        title_description: 'Anforderungen, die noch nicht erfüllt sind'
+        by_priority: 'Nach Priorität'
+        change_status_instruction: 'Klicken Sie auf eine Anforderung, um den Status zu ändern'
+        title: 'Compliance-Lücken'
+        fulfilled_percentage: 'Erfüllungsgrad'
+        none: 'Keine Lücken'
+        none_description: 'Alle Anforderungen sind erfüllt oder nicht anwendbar'
     mapping_quality:
-        no_mappings_found: "\0NoFill\0compliance.mapping_quality.no_mappings_found"
+        no_mappings_found: 'Keine Mappings zwischen den gewählten Frameworks gefunden'
     explanation:
-        what_are_mappings_title: "\0NoFill\0compliance.explanation.what_are_mappings_title"
-        what_are_mappings: "\0NoFill\0compliance.explanation.what_are_mappings"
-        mapping_types_title: "\0NoFill\0compliance.explanation.mapping_types_title"
-        mapping_types_exceeds: "\0NoFill\0compliance.explanation.mapping_types_exceeds"
-        mapping_types_full: "\0NoFill\0compliance.explanation.mapping_types_full"
-        mapping_types_partial: "\0NoFill\0compliance.explanation.mapping_types_partial"
-        mapping_types_weak: "\0NoFill\0compliance.explanation.mapping_types_weak"
-        strategic_value_title: "\0NoFill\0compliance.explanation.strategic_value_title"
-        strategic_value: "\0NoFill\0compliance.explanation.strategic_value"
-    switch_framework: "\0NoFill\0compliance.switch_framework"
+        what_are_mappings_title: 'Was sind Compliance-Mappings?'
+        what_are_mappings: 'Mappings zeigen Beziehungen zwischen Anforderungen verschiedener Frameworks. Sie ermöglichen die Wiederverwendung von Nachweisen und reduzieren Doppelarbeit.'
+        mapping_types_title: 'Mapping-Typen erklärt'
+        mapping_types_exceeds: 'EXCEEDS: Die Quell-Anforderung geht über die Ziel-Anforderung hinaus'
+        mapping_types_full: 'FULL: Beide Anforderungen sind inhaltlich identisch oder gleichwertig'
+        mapping_types_partial: 'PARTIAL: Die Anforderungen überschneiden sich teilweise'
+        mapping_types_weak: 'WEAK: Nur geringe Überschneidung oder thematische Verwandtschaft'
+        strategic_value_title: 'Strategischer Wert von Mappings'
+        strategic_value: 'Durch Mappings können Sie mit einer Maßnahme mehrere Framework-Anforderungen gleichzeitig erfüllen und so Zeit und Ressourcen sparen'
+    switch_framework: 'Framework wechseln'
     framework_dashboard:
-        compliance_steps: "\0NoFill\0compliance.framework_dashboard.compliance_steps"
+        compliance_steps: 'Folgen Sie diesen Schritten, um 100% Compliance zu erreichen'
     tab:
-        overview: "\0NoFill\0compliance.tab.overview"
-        requirements: "\0NoFill\0compliance.tab.requirements"
-        gaps: "\0NoFill\0compliance.tab.gaps"
-        data_reuse: "\0NoFill\0compliance.tab.data_reuse"
-    framework_info: "\0NoFill\0compliance.framework_info"
-    recommendations: "\0NoFill\0compliance.recommendations"
-    filter: "\0NoFill\0compliance.filter"
-    search: "\0NoFill\0compliance.search"
+        overview: Übersicht
+        requirements: Anforderungen
+        gaps: 'Lücken'
+        data_reuse: Datenwiederverwendung
+    framework_info: Framework-Informationen
+    recommendations: Empfehlungen
+    filter: Filtern
+    search: Suchen
     priority:
-        all: "\0NoFill\0compliance.priority.all"
-        critical: "\0NoFill\0compliance.priority.critical"
-        high: "\0NoFill\0compliance.priority.high"
-        medium: "\0NoFill\0compliance.priority.medium"
-        low: "\0NoFill\0compliance.priority.low"
+        all: 'Alle Prioritäten'
+        critical: Kritisch
+        high: Hoch
+        medium: Mittel
+        low: Niedrig
     status:
-        all: "\0NoFill\0compliance.status.all"
-        fulfilled: "\0NoFill\0compliance.status.fulfilled"
-        partial: "\0NoFill\0compliance.status.partial"
-        gap: "\0NoFill\0compliance.status.gap"
+        all: 'Alle Status'
+        fulfilled: Erfüllt
+        partial: 'Teilweise erfüllt'
+        gap: 'Lücke'
 compliance_mapping:
     mapping_type:
         weak: 'Schwach (0-49%)'
@@ -332,6 +332,36 @@ compliance_mapping:
         medium: Mittel
         high: Hoch
 compliance_requirement:
+    field:
+        framework: Framework
+        requirement_id: Anforderungs-ID
+        title: Titel
+        description: Beschreibung
+        category: Kategorie
+        priority: Priorität
+        requirement_type: Anforderungstyp
+        parent_requirement: Übergeordnete Anforderung
+    placeholder:
+        requirement_id: 'z.B. A.5.1 oder REQ-001'
+        title: 'z.B. Informationssicherheitsrichtlinien'
+        description: 'Beschreiben Sie die Anforderung detailliert...'
+        category: 'z.B. Organisatorisch, Technisch, Physisch'
+    help:
+        framework: 'Wählen Sie das Compliance-Framework, zu dem diese Anforderung gehört'
+        requirement_id: 'Eindeutige Kennung der Anforderung gemäß dem Framework (z.B. A.5.1 für ISO 27001)'
+        category: 'Optionale Kategorisierung zur besseren Übersicht (z.B. Organisatorisch, Technisch)'
+        requirement_type: 'Kern-Anforderung = Hauptanforderung, Detailliert = Konkretisierung, Unter-Anforderung = Teil einer übergeordneten Anforderung'
+        parent_requirement: 'Bei Unter-Anforderungen: Wählen Sie die übergeordnete Anforderung aus'
+    validation:
+        framework_required: 'Bitte wählen Sie ein Framework aus'
+        requirement_id_required: 'Bitte geben Sie eine Anforderungs-ID an'
+        requirement_id_max_length: 'Die Anforderungs-ID darf maximal 50 Zeichen lang sein'
+        title_required: 'Bitte geben Sie einen Titel an'
+        title_max_length: 'Der Titel darf maximal 255 Zeichen lang sein'
+        description_required: 'Bitte geben Sie eine Beschreibung an'
+        category_max_length: 'Die Kategorie darf maximal 100 Zeichen lang sein'
+        priority_required: 'Bitte wählen Sie eine Priorität aus'
+        requirement_type_required: 'Bitte wählen Sie einen Anforderungstyp aus'
     priority:
         critical: Kritisch
         high: Hoch
@@ -365,4 +395,4 @@ compliance_requirement:
         view_page_note: 'Seite anzeigen'
         filter_by_framework: 'Nach Framework filtern'
 nis2:
-    article: "\0NoFill\0nis2.article"
+    article: Artikel
