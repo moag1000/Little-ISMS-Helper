@@ -1,95 +1,469 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'documents' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
-{% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}Documents{% endblock %}
+{% block title %}{{ 'document.title'|trans({}, 'document') }}{% endblock %}
 
 {% block body %}
-<div class="container">
-    <div class="page-header">
-        <h1>Document Management</h1>
-        <a href="{{ path('app_document_new') }}" class="btn btn-primary">Upload Document</a>
+<div class="container-fluid">
+    {# Breadcrumb Navigation #}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'common.dashboard'|trans({}, 'messages'), url: path('app_dashboard') },
+            { label: 'document.title'|trans({}, 'document') }
+        ]
+    } %}
+
+    {# Page Header #}
+    {% include '_components/_page_header.html.twig' with {
+        title: 'document.title'|trans({}, 'document'),
+        subtitle: 'document.subtitle'|trans({}, 'document'),
+        icon: 'bi-file-earmark-text',
+        actions: [
+            {
+                label: 'document.action.upload'|trans({}, 'document'),
+                url: path('app_document_new'),
+                variant: 'primary',
+                icon: 'bi-cloud-upload'
+            }
+        ]
+    } %}
+
+    {# View Filter #}
+    {% if currentTenant %}
+    <div class="card mb-3">
+        <div class="card-body py-2">
+            <form method="get" action="{{ path('app_document_index') }}" class="d-flex align-items-center gap-2">
+                <label for="view-filter" class="mb-0 fw-bold">
+                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
+                </label>
+                <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
+                    <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
+                        {{ 'corporate.view.own_only'|trans({}, 'messages') }}
+                    </option>
+                    {% if inheritanceInfo.hasParent %}
+                    <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
+                        {{ 'corporate.view.including_inherited'|trans({}, 'messages') }}
+                    </option>
+                    {% endif %}
+                    {% if inheritanceInfo.hasSubsidiaries %}
+                    <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
+                        {{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}
+                    </option>
+                    {% endif %}
+                </select>
+                <noscript>
+                    <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
+                </noscript>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Calculate Stats #}
+    {% set total = detailedStats.total %}
+    {% set totalSize = documents|reduce((carry, doc) => carry + doc.fileSize, 0) %}
+    {% set totalSizeMB = (totalSize / 1024 / 1024)|number_format(2) %}
+    {% set pdfDocs = documents|filter(d => d.mimeType == 'application/pdf')|length %}
+    {% set imageDocs = documents|filter(d => d.mimeType starts with 'image/')|length %}
+    {% set excelDocs = documents|filter(d => d.mimeType matches '/spreadsheet/')|length %}
+
+    {# KPI Cards #}
+    <div class="kpi-grid">
+        {% include '_components/_kpi_card.html.twig' with {
+            icon: 'bi-file-earmark-text',
+            label: 'document.kpi.total_documents'|trans({}, 'document'),
+            value: total,
+            detail: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages')) : null,
+            variant: 'primary',
+            link: null
+        } %}
+
+        {% include '_components/_kpi_card.html.twig' with {
+            icon: 'bi-hdd',
+            label: 'document.kpi.total_size'|trans({}, 'document'),
+            value: totalSizeMB,
+            unit: 'MB',
+            variant: 'info',
+            link: null
+        } %}
+
+        {% include '_components/_kpi_card.html.twig' with {
+            icon: 'bi-file-pdf',
+            label: 'document.type.pdf'|trans({}, 'document'),
+            value: pdfDocs,
+            variant: 'danger',
+            link: null
+        } %}
+
+        {% include '_components/_kpi_card.html.twig' with {
+            icon: 'bi-file-earmark-spreadsheet',
+            label: 'document.type.excel'|trans({}, 'document'),
+            value: excelDocs,
+            variant: 'success',
+            link: null
+        } %}
     </div>
 
-    <div class="stats-grid">
-        <div class="col-auto">
-            {{ cards.kpi_card('Total Documents', stats.total, null, null, 'primary', null) }}
-        </div>
-        <div class="col-auto">
-            {{ cards.kpi_card('Total Size', (stats.total_size / 1024 / 1024)|number_format(2) ~ ' MB', null, null, 'info', null) }}
-        </div>
-    </div>
-
-    <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/document">
+    {# Document Type Distribution #}
+    <div class="card mb-4">
         <div class="card-header">
-            <h2>Documents</h2>
+            <h1 class="mb-0">
+                <i class="bi bi-pie-chart" aria-hidden="true"></i>
+                {{ 'document.section.type_overview'|trans({}, 'document') }}
+            </h1>
         </div>
-        <div class="card-content">
+        <div class="card-body">
+            <div class="row g-4">
+                {# PDF #}
+                <div class="col-md-3">
+                    <div class="type-card text-center p-4 bg-pdf-light">
+                        <div class="type-icon mb-3 fs-25 color-pdf">
+                            <i class="bi bi-file-pdf" aria-hidden="true"></i>
+                        </div>
+                        <div class="type-label text-muted mb-2">{{ 'document.type.pdf'|trans({}, 'document') }}</div>
+                        <div class="type-count fs-2 fw-700 color-pdf">
+                            {{ pdfDocs }}
+                        </div>
+                    </div>
+                </div>
+
+                {# Images #}
+                <div class="col-md-3">
+                    <div class="type-card text-center p-4 bg-image-light">
+                        <div class="type-icon mb-3 fs-25 color-image">
+                            <i class="bi bi-image" aria-hidden="true"></i>
+                        </div>
+                        <div class="type-label text-muted mb-2">{{ 'document.type.images'|trans({}, 'document') }}</div>
+                        <div class="type-count fs-2 fw-700 color-image">
+                            {{ imageDocs }}
+                        </div>
+                    </div>
+                </div>
+
+                {# Excel/Spreadsheets #}
+                <div class="col-md-3">
+                    <div class="type-card text-center p-4 bg-excel-light">
+                        <div class="type-icon mb-3 fs-25 color-excel">
+                            <i class="bi bi-file-earmark-spreadsheet" aria-hidden="true"></i>
+                        </div>
+                        <div class="type-label text-muted mb-2">{{ 'document.type.tables'|trans({}, 'document') }}</div>
+                        <div class="type-count fs-2 fw-700 color-excel">
+                            {{ excelDocs }}
+                        </div>
+                    </div>
+                </div>
+
+                {# Other #}
+                <div class="col-md-3">
+                    <div class="type-card text-center p-4 bg-other-light">
+                        <div class="type-icon mb-3 fs-25 color-other">
+                            <i class="bi bi-file-earmark" aria-hidden="true"></i>
+                        </div>
+                        <div class="type-label text-muted mb-2">{{ 'document.type.other'|trans({}, 'document') }}</div>
+                        <div class="type-count fs-2 fw-700 color-other">
+                            {{ total - pdfDocs - imageDocs - excelDocs }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Document List with Bulk Actions #}
+    <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/document">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">
+                <i class="bi bi-list-ul" aria-hidden="true"></i>
+                {{ 'document.section.all_documents'|trans({}, 'document') }}
+                <span class="bulk-selected-badge" data-bulk-actions-target="countBadge" class="d-none">
+                    <span data-bulk-actions-target="count">0</span> {{ 'common.selected'|trans({}, 'messages') }}
+                </span>
+            </h2>
+
+            {# Filter Controls #}
+            <div class="d-flex gap-2">
+                <select class="form-select form-select-sm" id="categoryFilter" class="w-auto">
+                    <option value="">{{ 'document.filter.all_categories'|trans({}, 'document') }}</option>
+                {% set categories = [] %}
+                    {% for doc in documents %}
+                        {% if doc.category not in categories %}
+                            {% set categories = categories|merge([doc.category]) %}
+                        {% endif %}
+                    {% endfor %}
+                    {% for category in categories %}
+                        <option value="{{ category }}">{{ category|capitalize }}</option>
+                    {% endfor %}
+                </select>
+
+                <input type="search"
+                       class="form-control form-control-sm"
+            <label for="documentSearch" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
+                       id="documentSearch"
+                       placeholder="{{ 'document.filter.search_placeholder'|trans({}, 'document') }}"
+                       class="w-250px">
+            </div>
+        </div>
+
+        <div class="card-body p-0">
+            {% if documents|length > 0 %}
             {% embed '_components/_table.html.twig' with {
+                'class': 'table-hover table-bulk-selectable mb-0',
+                'theadClass': 'thead-sticky',
+                'noMargin': true,
                 'responsive': true
             } %}
-                {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                 {% block table_head %}
                     <tr>
-                        <th scope="col" class="w-40px">
+                        <th scope="col" class="bulk-select-column">
                             <input type="checkbox"
-                                   class="form-check-input"
                                    data-action="bulk-actions#selectAll"
                                    data-bulk-actions-target="selectAllCheckbox"
-                                   aria-label="{{ 'common.select_all'|trans({}, 'messages') }}">
+                                   aria-label="{{ 'bulk_actions.select_all'|trans({}, 'messages') }}">
                         </th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Type</th>
-                        <th scope="col">Size</th>
-                        <th scope="col">{{ 'document.uploaded_by'|trans }}</th>
-                        <th scope="col">{{ 'document.uploaded_at'|trans }}</th>
-                        <th scope="col">Actions</th>
+                        <th scope="col" class="w-50px"><span class="visually-hidden">{{ 'document.table.icon'|trans({}, 'document') }}</span></th>
+                        <th scope="col">{{ 'common.name'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="w-150px">{{ 'common.category'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="w-100px">{{ 'common.size'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="w-150px">{{ 'document.table.uploaded_by'|trans({}, 'document') }}</th>
+                        <th scope="col" class="w-130px">{{ 'common.date'|trans({}, 'messages') }}</th>
+                        <th scope="col" class="w-180px text-right">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
+                {% block table_body_attrs %}id="documentTableBody"{% endblock %}
                 {% block table_body %}
                     {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                     {% for document in documents %}
-                        <tr data-document-id="{{ document.id }}">
-                            <td>
-                                <input type="checkbox"
-                                       class="form-check-input"
-                                       data-bulk-actions-target="item"
-                                       data-action="bulk-actions#selectItem"
-                                       value="{{ document.id }}"
-                                       aria-label="{{ 'common.select'|trans({}, 'messages') }} {{ document.name }}">
-                            </td>
-                            <td>
-                                <a href="{{ path('app_document_show', {id: document.id}) }}">
-                                    {{ document.name }}
+                    <tr class="document-row"
+                        data-category="{{ document.category|lower }}"
+                        data-name="{{ document.originalFilename|lower }}">
+                        <td class="bulk-select-column">
+                            <input type="checkbox"
+                                   data-bulk-actions-target="item"
+                                   data-action="bulk-actions#selectItem"
+                                   value="{{ document.id }}">
+                        </td>
+                        <td>
+                            {# File Type Icon #}
+                            {% if document.mimeType == 'application/pdf' %}
+                                <i class="bi bi-file-pdf-fill text-danger fs-15" aria-hidden="true"></i>
+                            {% elseif document.mimeType starts with 'image/' %}
+                                <i class="bi bi-file-image-fill text-primary fs-15" aria-hidden="true"></i>
+                            {% elseif document.mimeType matches '/spreadsheet/' %}
+                                <i class="bi bi-file-earmark-spreadsheet-fill text-success fs-15" aria-hidden="true"></i>
+                            {% elseif document.mimeType matches '/word/' or document.mimeType matches '/document/' %}
+                                <i class="bi bi-file-word-fill text-info fs-15" aria-hidden="true"></i>
+                            {% else %}
+                                <i class="bi bi-file-earmark-fill text-secondary fs-15" aria-hidden="true"></i>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ path('app_document_show', {id: document.id}) }}" class="text-decoration-none">
+                                <strong>{{ document.originalFilename }}</strong>
+                            </a>
+                            {{ inheritance.small_badge(document, currentTenant) }}
+                            {% if document.description %}
+                            <br>
+                            <small class="text-muted">{{ document.description|length > 60 ? document.description|slice(0, 60) ~ '...' : document.description }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">{{ document.category|capitalize }}</span>
+                        </td>
+                        <td>
+                            {{ document.fileSizeFormatted }}
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-person-circle me-1" aria-hidden="true"></i>
+                                {{ document.uploadedBy ? document.uploadedBy.fullName : '-' }}
+                            </div>
+                        </td>
+                        <td>
+                            <i class="bi bi-calendar3" aria-hidden="true"></i>
+                            {{ document.uploadedAt|date('d.m.Y') }}
+                            <br>
+                            <small class="text-muted">{{ document.uploadedAt|date('H:i') }}</small>
+                        </td>
+                        <td class="text-right">
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
+                                <a href="{{ path('app_document_download', {id: document.id}) }}"
+                                   class="btn btn-sm btn-outline-success"
+                                   title="{{ 'common.download'|trans({}, 'messages') }}" aria-label="{{ 'common.download'|trans({}, 'messages') }}">
+                                    <i class="bi bi-download" aria-hidden="true"></i>
                                 </a>
-                                {{ inheritance.small_badge(document, currentTenant) }}
-                            </td>
-                            <td><span class="badge">{{ document.documentType|upper }}</span></td>
-                            <td>{{ document.fileSizeFormatted }}</td>
-                            <td>{{ document.uploadedBy ? document.uploadedBy.fullName : '-' }}</td>
-                            <td>{{ document.uploadedAt|date('d.m.Y H:i') }}</td>
-                            <td>
-                                <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
-                                    <a href="{{ path('app_document_download', {id: document.id}) }}" class="btn btn-outline-secondary">Download</a>
-                                    <a href="{{ path('app_document_edit', {id: document.id}) }}" class="btn btn-outline-primary">{{ 'document.edit_button'|trans }}</a>
-                                </div>
-                            </td>
-                        </tr>
-                    {% else %}
-                        <tr>
-                            <td colspan="6" class="text-center">No documents found</td>
-                        </tr>
+                                <a href="{{ path('app_document_show', {id: document.id}) }}"
+                                   class="btn btn-sm btn-outline-primary"
+                                   title="{{ 'common.details'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                    <i class="bi bi-eye" aria-hidden="true"></i>
+                                </a>
+                                <a href="{{ path('app_document_edit', {id: document.id}) }}"
+                                   class="btn btn-sm btn-outline-secondary"
+                                   title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
-        </div>
 
-        {# Bulk Action Bar #}
-        {% if documents|length > 0 %}
-        {% include '_components/_bulk_action_bar.html.twig' with {
-            actions: ['export', 'delete']
-        } %}
-        {% endif %}
+            {# No Results Message #}
+            <div id="noResults" class="text-center p-5 d-none">
+                <i class="bi bi-search icon-search-empty" aria-hidden="true"></i>
+                <p class="text-muted mt-3">{{ 'document.message.no_results'|trans({}, 'document') }}</p>
+            </div>
+
+            {# Bulk Action Bar #}
+            {% include '_components/_bulk_action_bar.html.twig' with {
+                actions: ['delete', 'export']
+            } %}
+            {% else %}
+            {# Empty State #}
+            {% include '_components/_empty_state.html.twig' with {
+                icon: 'bi-file-earmark-text',
+                title: 'document.message.no_documents'|trans({}, 'document'),
+                description: 'document.message.upload_first'|trans({}, 'document'),
+                action: {
+                    label: 'document.action.upload'|trans({}, 'document'),
+                    url: path('app_document_new'),
+                    icon: 'bi-cloud-upload'
+                }
+            } %}
+            {% endif %}
+        </div>
     </div>
 </div>
+
+<style>
+/* Type Cards Hover Effect */
+.type-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: default;
+}
+
+.type-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Table Row Hover */
+.table tbody tr:hover {
+    background-color: rgba(52, 152, 219, 0.05);
+    transition: background-color 0.2s;
+}
+
+/* Filter Controls */
+#categoryFilter:focus,
+#documentSearch:focus {
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 0.2rem rgba(60, 141, 188, 0.25);
+}
+
+/* Count Badge */
+.bulk-selected-badge {
+    background: var(--color-secondary);
+    color: white;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 12px;
+    margin-left: var(--spacing-md);
+}
+</style>
+
+<script>
+function initializeDocumentFilters() {
+    const categoryFilter = document.getElementById('categoryFilter');
+    const searchInput = document.getElementById('documentSearch');
+    const documentRows = document.querySelectorAll('.document-row');
+    const noResults = document.getElementById('noResults');
+    const tableBody = document.getElementById('documentTableBody');
+
+    if (!categoryFilter && !searchInput) return; // Elements not present on page
+
+    function filterDocuments() {
+        const categoryValue = categoryFilter ? categoryFilter.value.toLowerCase() : '';
+        const searchValue = searchInput ? searchInput.value.toLowerCase() : '';
+        let visibleCount = 0;
+
+        documentRows.forEach(row => {
+            const category = row.dataset.category;
+            const name = row.dataset.name;
+
+            const matchesCategory = !categoryValue || category === categoryValue;
+            const matchesSearch = !searchValue || name.includes(searchValue);
+
+            if (matchesCategory && matchesSearch) {
+                row.style.display = '';
+                visibleCount++;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+
+        // Show/hide no results message
+        if (noResults && tableBody) {
+            if (visibleCount === 0 && documentRows.length > 0) {
+                tableBody.style.display = 'none';
+                noResults.style.display = 'block';
+            } else {
+                tableBody.style.display = '';
+                noResults.style.display = 'none';
+            }
+        }
+    }
+
+    // Attach event listeners (prevent duplicates)
+    if (categoryFilter && categoryFilter.dataset.initialized !== 'true') {
+        categoryFilter.dataset.initialized = 'true';
+        categoryFilter.addEventListener('change', filterDocuments);
+    }
+
+    if (searchInput && searchInput.dataset.initialized !== 'true') {
+        searchInput.dataset.initialized = 'true';
+        searchInput.addEventListener('input', filterDocuments);
+    }
+
+    // Update badge visibility when selection changes
+    const bulkActionsController = document.querySelector('[data-controller="bulk-actions"]');
+    if (bulkActionsController && bulkActionsController.dataset.badgeInitialized !== 'true') {
+        bulkActionsController.dataset.badgeInitialized = 'true';
+        const countBadge = document.querySelector('[data-bulk-actions-target="countBadge"]');
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.target.classList.contains('bulk-actions-target') && mutation.target.dataset.bulkActionsTarget === 'count') {
+                    const count = parseInt(mutation.target.textContent);
+                    if (countBadge) {
+                        countBadge.style.display = count > 0 ? 'inline-block' : 'none';
+                    }
+                }
+            });
+        });
+
+        const countTarget = document.querySelector('[data-bulk-actions-target="count"]');
+        if (countTarget && countBadge) {
+            observer.observe(countTarget, { childList: true, characterData: true, subtree: true });
+            // Initial state
+            countBadge.style.display = 'none';
+        }
+    }
+}
+
+// Cleanup before Turbo caches the page to allow re-initialization on back navigation
+document.addEventListener('turbo:before-cache', function() {
+    const categoryFilter = document.getElementById('categoryFilter');
+    const searchInput = document.getElementById('documentSearch');
+    const bulkActionsController = document.querySelector('[data-controller="bulk-actions"]');
+
+    if (categoryFilter) delete categoryFilter.dataset.initialized;
+    if (searchInput) delete searchInput.dataset.initialized;
+    if (bulkActionsController) delete bulkActionsController.dataset.badgeInitialized;
+});
+
+// Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
+document.addEventListener('DOMContentLoaded', initializeDocumentFilters);
+document.addEventListener('turbo:load', initializeDocumentFilters);
+</script>
 {% endblock %}

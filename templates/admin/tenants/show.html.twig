@@ -856,7 +856,7 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h6 class="text-muted mb-2">{{ 'context.kpi.completeness'|trans({}, 'messages') }}</h6>
+                                        <h6 class="text-muted mb-2">{{ 'context.kpi.completeness'|trans({}, 'context') }}</h6>
                                         <h2 class="mb-0">${safeCompleteness}%</h2>
                                     </div>
                                     <div>
@@ -882,15 +882,15 @@
                     html += '<div class="row">';
 
                     const fields = [
-                        { key: 'organizationName', label: '{{ 'context.field.organization_name'|trans({}, 'messages') }}', icon: 'building' },
-                        { key: 'ismsScope', label: '{{ 'context.field.isms_scope'|trans({}, 'messages') }}', icon: 'bullseye', multiline: true },
-                        { key: 'scopeExclusions', label: '{{ 'context.field.scope_exclusions'|trans({}, 'messages') }}', icon: 'x-circle', multiline: true },
-                        { key: 'externalIssues', label: '{{ 'context.field.external_issues'|trans({}, 'messages') }}', icon: 'globe', multiline: true },
-                        { key: 'internalIssues', label: '{{ 'context.field.internal_issues'|trans({}, 'messages') }}', icon: 'house', multiline: true },
-                        { key: 'interestedParties', label: '{{ 'context.field.interested_parties'|trans({}, 'messages') }}', icon: 'people', multiline: true },
-                        { key: 'legalRequirements', label: '{{ 'context.field.legal_requirements'|trans({}, 'messages') }}', icon: 'file-text', multiline: true },
-                        { key: 'ismsPolicy', label: '{{ 'context.field.isms_policy'|trans({}, 'messages') }}', icon: 'shield-check', multiline: true },
-                        { key: 'rolesAndResponsibilities', label: '{{ 'context.field.roles_and_responsibilities'|trans({}, 'messages') }}', icon: 'person-badge', multiline: true }
+                        { key: 'organizationName', label: '{{ 'context.field.organization_name'|trans({}, 'context') }}', icon: 'building' },
+                        { key: 'ismsScope', label: '{{ 'context.field.isms_scope'|trans({}, 'context') }}', icon: 'bullseye', multiline: true },
+                        { key: 'scopeExclusions', label: '{{ 'context.field.scope_exclusions'|trans({}, 'context') }}', icon: 'x-circle', multiline: true },
+                        { key: 'externalIssues', label: '{{ 'context.field.external_issues'|trans({}, 'context') }}', icon: 'globe', multiline: true },
+                        { key: 'internalIssues', label: '{{ 'context.field.internal_issues'|trans({}, 'context') }}', icon: 'house', multiline: true },
+                        { key: 'interestedParties', label: '{{ 'context.field.interested_parties'|trans({}, 'context') }}', icon: 'people', multiline: true },
+                        { key: 'legalRequirements', label: '{{ 'context.field.legal_requirements'|trans({}, 'context') }}', icon: 'file-text', multiline: true },
+                        { key: 'ismsPolicy', label: '{{ 'context.field.isms_policy'|trans({}, 'context') }}', icon: 'shield-check', multiline: true },
+                        { key: 'rolesAndResponsibilities', label: '{{ 'context.field.roles_and_responsibilities'|trans({}, 'context') }}', icon: 'person-badge', multiline: true }
                     ];
 
                     fields.forEach((field, index) => {
@@ -942,7 +942,7 @@
                             ${errorMessage}
                             <br><br>
                             <button class="btn btn-sm btn-outline-danger" onclick="loadISMSContext()">
-                                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'common.retry'|trans({}, 'messages')|default('Erneut versuchen') }}
+                                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'common.retry'|trans({}, 'messages') }}
                             </button>
                         </div>
                     `;

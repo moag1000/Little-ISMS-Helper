@@ -1,28 +1,28 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'risks' %}
+{% trans_default_domain 'risk' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 
-{% block title %}{{ 'risks.modern.header.title'|trans({}, 'risks') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'risk.modern.header.title'|trans({}, 'risk') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'risks.modern.breadcrumb'|trans({}, 'risks') }
+        { label: 'risk.modern.breadcrumb'|trans({}, 'risk') }
     ]
 } %}
 
 {# Page Header with Actions #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'risks.modern.header.title'|trans({}, 'risks'),
-    subtitle: 'risks.modern.header.subtitle'|trans({}, 'risks'),
+    title: 'risk.modern.header.title'|trans({}, 'risk'),
+    subtitle: 'risk.modern.header.subtitle'|trans({}, 'risk'),
     icon: 'bi-exclamation-triangle',
     actions: [
-        { label: 'risks.modern.header.action.new'|trans({}, 'risks'), url: path('app_risk_new'), variant: 'primary', icon: 'bi-plus-circle' },
-        { label: 'risks.modern.header.action.matrix'|trans({}, 'risks'), url: path('app_risk_matrix'), variant: 'info', icon: 'bi-grid-3x3' },
-        { label: 'risks.modern.header.action.export_pdf'|trans({}, 'risks'), url: path('app_risk_export_pdf'), variant: 'danger', icon: 'bi-file-pdf', turbo: false },
-        { label: 'risks.modern.header.action.export_excel'|trans({}, 'risks'), url: path('app_risk_export_excel'), variant: 'success', icon: 'bi-file-earmark-excel', turbo: false },
-        { label: 'risks.modern.header.action.export_csv'|trans({}, 'risks'), url: path('app_risk_export'), variant: 'secondary', icon: 'bi-download', turbo: false }
+        { label: 'risk.modern.header.action.new'|trans({}, 'risk'), url: path('app_risk_new'), variant: 'primary', icon: 'bi-plus-circle' },
+        { label: 'risk.modern.header.action.matrix'|trans({}, 'risk'), url: path('app_risk_matrix'), variant: 'info', icon: 'bi-grid-3x3' },
+        { label: 'risk.modern.header.action.export_pdf'|trans({}, 'risk'), url: path('app_risk_export_pdf'), variant: 'danger', icon: 'bi-file-pdf', turbo: false },
+        { label: 'risk.modern.header.action.export_excel'|trans({}, 'risk'), url: path('app_risk_export_excel'), variant: 'success', icon: 'bi-file-earmark-excel', turbo: false },
+        { label: 'risk.modern.header.action.export_csv'|trans({}, 'risk'), url: path('app_risk_export'), variant: 'secondary', icon: 'bi-download', turbo: false }
     ]
 } %}
 
@@ -61,7 +61,7 @@
 <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-exclamation-triangle',
-        label: 'risks.modern.kpi.total'|trans({}, 'risks'),
+        label: 'risk.modern.kpi.total'|trans({}, 'risk'),
         value: detailedStats.total,
         detail: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages')) : null,
         variant: 'primary',
@@ -72,7 +72,7 @@
     {% set criticalRisks = risks|filter(r => r.getRiskScore() >= 20)|length %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-shield-fill-exclamation',
-        label: 'risks.modern.kpi.critical'|trans({}, 'risks'),
+        label: 'risk.modern.kpi.critical'|trans({}, 'risk'),
         value: criticalRisks,
         variant: 'danger',
         trend: criticalRisks > 0 ? '-' : '+0',
@@ -82,7 +82,7 @@
     {% set highRisks = risks|filter(r => r.getRiskScore() >= 12 and r.getRiskScore() < 20)|length %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-exclamation-circle',
-        label: 'risks.modern.kpi.high'|trans({}, 'risks'),
+        label: 'risk.modern.kpi.high'|trans({}, 'risk'),
         value: highRisks,
         variant: 'warning',
         link: '#filter-high'
@@ -91,18 +91,18 @@
     {% set avgResidualRisk = risks|length > 0 ? (risks|reduce((carry, risk) => carry + risk.getResidualRiskLevel(), 0) / risks|length)|round(1) : 0 %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-graph-down',
-        label: 'risks.modern.kpi.avg_residual'|trans({}, 'risks'),
+        label: 'risk.modern.kpi.avg_residual'|trans({}, 'risk'),
         value: avgResidualRisk,
-        unit: 'risks.modern.kpi.unit.max'|trans({}, 'risks'),
+        unit: 'risk.modern.kpi.unit.max'|trans({}, 'risk'),
         variant: avgResidualRisk < 8 ? 'success' : 'warning'
     } %}
 </div>
 
 {# Risk Matrix Overview #}
 {% embed '_components/_card.html.twig' with {
-    'title': 'risks.modern.matrix_overview',
+    'title': 'risk.modern.matrix_overview',
     'headerIcon': 'bi-grid-3x3',
-    'actions': '<a href="' ~ path('app_risk_matrix') ~ '" class="btn btn-sm btn-outline-primary">' ~ ('risks.modern.view_full_matrix'|trans({}, 'risks')) ~ ' <i class="bi bi-arrow-right" aria-hidden="true"></i></a>',
+    'actions': '<a href="' ~ path('app_risk_matrix') ~ '" class="btn btn-sm btn-outline-primary">' ~ ('risk.modern.view_full_matrix'|trans({}, 'risk')) ~ ' <i class="bi bi-arrow-right" aria-hidden="true"></i></a>',
     'class': 'mb-4'
 } %}
     {% block card_body %}

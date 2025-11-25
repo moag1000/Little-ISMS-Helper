@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{% trans_default_domain 'soa' %}{{ 'soa.page.title'|trans({}, 'messages') }}</title>
+    <title>{% trans_default_domain 'soa' %}{{ 'soa.page.title'|trans({}, 'soa') }}</title>
     <style>
         @page { size: A4 landscape; margin: 15mm; }
         body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; }
@@ -54,21 +54,21 @@
 </head>
 <body>
     <div class="header">
-        <h1>{{ 'soa.page.title'|trans({}, 'messages') }}</h1>
-        <div class="subtitle">ISO/IEC 27001:2022 Annex A Controls | {{ 'soa.report.generated_at'|trans({'%datetime%': generated_at|date('d.m.Y H:i')}, 'messages') }}</div>
+        <h1>{{ 'soa.page.title'|trans({}, 'soa') }}</h1>
+        <div class="subtitle">ISO/IEC 27001:2022 Annex A Controls | {{ 'soa.report.generated_at'|trans({'%datetime%': generated_at|date('d.m.Y H:i')}, 'soa') }}</div>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th scope="col" class="w-8">{{ 'soa.table.control_id'|trans({}, 'messages') }}</th>
-                <th scope="col" class="w-22">{{ 'soa.table.name'|trans({}, 'messages') }}</th>
-                <th scope="col" class="w-10">{{ 'soa.table.category'|trans({}, 'messages') }}</th>
-                <th scope="col" class="w-12">{{ 'soa.table.applicable'|trans({}, 'messages') }}</th>
-                <th scope="col" class="w-12">{{ 'soa.table.implementation_status'|trans({}, 'messages') }}</th>
-                <th scope="col" class="w-8">{{ 'soa.table.progress'|trans({}, 'messages') }}</th>
-                <th scope="col" class="w-18">{{ 'soa.table.justification'|trans({}, 'messages') }}</th>
-                <th scope="col" class="w-10">{{ 'soa.table.target_date'|trans({}, 'messages') }}</th>
+                <th scope="col" class="w-8">{{ 'soa.table.control_id'|trans({}, 'soa') }}</th>
+                <th scope="col" class="w-22">{{ 'soa.table.name'|trans({}, 'soa') }}</th>
+                <th scope="col" class="w-10">{{ 'soa.table.category'|trans({}, 'soa') }}</th>
+                <th scope="col" class="w-12">{{ 'soa.table.applicable'|trans({}, 'soa') }}</th>
+                <th scope="col" class="w-12">{{ 'soa.table.implementation_status'|trans({}, 'soa') }}</th>
+                <th scope="col" class="w-8">{{ 'soa.table.progress'|trans({}, 'soa') }}</th>
+                <th scope="col" class="w-18">{{ 'soa.table.justification'|trans({}, 'soa') }}</th>
+                <th scope="col" class="w-10">{{ 'soa.table.target_date'|trans({}, 'soa') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -78,7 +78,7 @@
                 <td>{{ control.name|slice(0, 40) }}{% if control.name|length > 40 %}...{% endif %}</td>
                 <td>{{ ('soa.category.' ~ control.category)|trans|default(control.category) }}</td>
                 <td class="{% if control.applicability == 'applicable' %}applicable{% else %}not-applicable{% endif %}">
-                    {{ control.applicability == 'applicable' ? ('soa.value.yes'|trans({}, 'messages')) : ('soa.value.no'|trans({}, 'messages')) }}
+                    {{ control.applicability == 'applicable' ? ('soa.value.yes'|trans({}, 'soa')) : ('soa.value.no'|trans({}, 'soa')) }}
                 </td>
                 <td>{{ ('soa.status.' ~ control.implementationStatus)|trans|default(control.implementationStatus) }}</td>
                 <td>
@@ -95,7 +95,7 @@
     </table>
 
     <div class="footer">
-        <p>{{ 'soa.footer.note'|trans({}, 'messages') }}</p>
+        <p>{{ 'soa.footer.note'|trans({}, 'soa') }}</p>
     </div>
 </body>
 </html>

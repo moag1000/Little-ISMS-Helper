@@ -1,5 +1,5 @@
 {% extends 'admin/layout.html.twig' %}
-
+{% trans_default_domain 'admin'%}
 {% block admin_title %}{{ 'admin.settings.title'|trans({}, 'admin') }}{% endblock %}
 {% block admin_subtitle %}
     <p class="text-muted">{{ 'admin.settings.subtitle'|trans({}, 'admin') }}</p>

@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'soa' %}
 {% import '_macros/cards.html.twig' as cards %}
 
 {% block title %}{{ category }} Controls - Statement of Applicability - Little ISMS Helper{% endblock %}
@@ -71,7 +72,7 @@
                     {% if control.implementationStatus == 'implemented' %}
                         <span class="badge bg-success">✅ Implementiert</span>
                     {% elseif control.implementationStatus == 'in_progress' %}
-                        <span class="badge bg-warning">{{ 'soa.in_progress_badge_emoji'|trans }}</span>
+                        <span class="badge bg-warning">{{ 'soa.in_progress_badge_emoji'|trans({}, 'soa') }}</span>
                     {% elseif control.implementationStatus == 'not_started' %}
                         <span class="badge bg-danger">⏸ Nicht begonnen</span>
                     {% else %}

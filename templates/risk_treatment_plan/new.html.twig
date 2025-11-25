@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk_treatment_plan' %}
 
-{% block title %}{{ 'risk_treatment_plan.new'|trans({}, 'risks') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'risk_treatment_plan.new'|trans({}, 'risk_treatment_plan') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 <div class="page-header">
     <div>
-        <h1><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'risk_treatment_plan.new'|trans({}, 'risks') }}</h1>
-        <p class="text-muted">{{ 'risk_treatment_plan.new_description'|trans({}, 'risks') }}</p>
+        <h1><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'risk_treatment_plan.new'|trans({}, 'risk_treatment_plan') }}</h1>
+        <p class="text-muted">{{ 'risk_treatment_plan.new_description'|trans({}, 'risk_treatment_plan') }}</p>
     </div>
     <div class="button-group">
         <a href="{{ path('app_risk_treatment_plan_index') }}" class="btn btn-secondary">
@@ -22,14 +22,14 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-info-square" aria-hidden="true"></i>
-        {{ 'risk_treatment_plan.section.basic_info'|trans({}, 'risks') }}
+        {{ 'risk_treatment_plan.section.basic_info'|trans({}, 'risk_treatment_plan') }}
     </legend>
 
     <div class="row">
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.risk,
-                'label': form.risk.vars.label|default('risk_treatment_plan.field.risk'|trans({}, 'risks')),
+                'label': 'risk_treatment_plan.field.risk'|trans({}, 'risk_treatment_plan'),
                 'required': true,
                 'domain': 'risk_treatment_plan'
             } %}
@@ -37,7 +37,7 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.title,
-                'label': form.title.vars.label|default('risk_treatment_plan.field.title'|trans({}, 'risks')),
+                'label': 'risk_treatment_plan.field.title'|trans({}, 'risk_treatment_plan'),
                 'required': true,
                 'domain': 'risk_treatment_plan'
             } %}
@@ -45,7 +45,7 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.description,
-                'label': form.description.vars.label|default('risk_treatment_plan.field.description'|trans({}, 'risks')),
+                'label': 'risk_treatment_plan.field.description'|trans({}, 'risk_treatment_plan'),
                 'domain': 'risk_treatment_plan'
             } %}
         </div>
@@ -56,28 +56,28 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-graph-up" aria-hidden="true"></i>
-        {{ 'risk_treatment_plan.section.status_progress'|trans({}, 'risks') }}
+        {{ 'risk_treatment_plan.section.status_progress'|trans({}, 'risk_treatment_plan') }}
     </legend>
 
     <div class="row">
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.status,
-                'label': form.status.vars.label|default('risk_treatment_plan.field.status'|trans({}, 'risks')),
+                'label': 'risk_treatment_plan.field.status'|trans({}, 'risk_treatment_plan'),
                 'domain': 'risk_treatment_plan'
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.priority,
-                'label': form.priority.vars.label|default('risk_treatment_plan.field.priority'|trans({}, 'risks')),
+                'label': 'risk_treatment_plan.field.priority'|trans({}, 'risk_treatment_plan'),
                 'domain': 'risk_treatment_plan'
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.completionPercentage,
-                'label': form.completionPercentage.vars.label|default('risk_treatment_plan.field.completion_percentage'|trans({}, 'risks')),
+                'label': 'risk_treatment_plan.field.completion_percentage'|trans({}, 'risk_treatment_plan'),
                 'domain': 'risk_treatment_plan'
             } %}
         </div>
@@ -88,28 +88,28 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-calendar-range" aria-hidden="true"></i>
-        {{ 'risk_treatment_plan.section.timeline'|trans({}, 'risks') }}
+        {{ 'risk_treatment_plan.section.timeline'|trans({}, 'risk_treatment_plan') }}
     </legend>
 
     <div class="row">
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.startDate,
-                'label': form.startDate.vars.label|default('risk_treatment_plan.field.start_date'|trans({}, 'risks')),
+                'label': 'risk_treatment_plan.field.start_date'|trans({}, 'risk_treatment_plan'),
                 'domain': 'risk_treatment_plan'
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.targetCompletionDate,
-                'label': form.targetCompletionDate.vars.label|default('risk_treatment_plan.field.target_completion_date'|trans({}, 'risks')),
+                'label': 'risk_treatment_plan.field.target_completion_date'|trans({}, 'risk_treatment_plan'),
                 'domain': 'risk_treatment_plan'
             } %}
         </div>
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.actualCompletionDate,
-                'label': form.actualCompletionDate.vars.label|default('risk_treatment_plan.field.actual_completion_date'|trans({}, 'risks')),
+                'label': 'risk_treatment_plan.field.actual_completion_date'|trans({}, 'risk_treatment_plan'),
                 'domain': 'risk_treatment_plan'
             } %}
         </div>
@@ -120,21 +120,21 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-person-badge" aria-hidden="true"></i>
-        {{ 'risk_treatment_plan.section.responsibility_resources'|trans({}, 'risks') }}
+        {{ 'risk_treatment_plan.section.responsibility_resources'|trans({}, 'risk_treatment_plan') }}
     </legend>
 
     <div class="row">
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.responsiblePerson,
-                'label': form.responsiblePerson.vars.label|default('risk_treatment_plan.field.responsible_person'|trans({}, 'risks')),
+                'label': 'risk_treatment_plan.field.responsible_person'|trans({}, 'risk_treatment_plan'),
                 'domain': 'risk_treatment_plan'
             } %}
         </div>
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.budget,
-                'label': form.budget.vars.label|default('risk_treatment_plan.field.budget'|trans({}, 'risks')),
+                'label': 'risk_treatment_plan.field.budget'|trans({}, 'risk_treatment_plan'),
                 'domain': 'risk_treatment_plan'
             } %}
         </div>
@@ -145,21 +145,21 @@
 <fieldset class="mb-4">
     <legend class="h5 mb-3">
         <i class="bi bi-shield-check" aria-hidden="true"></i>
-        {{ 'risk_treatment_plan.section.controls_implementation'|trans({}, 'risks') }}
+        {{ 'risk_treatment_plan.section.controls_implementation'|trans({}, 'risk_treatment_plan') }}
     </legend>
 
     <div class="row">
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.controls,
-                'label': form.controls.vars.label|default('risk_treatment_plan.field.controls'|trans({}, 'risks')),
+                'label': 'risk_treatment_plan.field.controls'|trans({}, 'risk_treatment_plan'),
                 'domain': 'risk_treatment_plan'
             } %}
         </div>
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.implementationNotes,
-                'label': form.implementationNotes.vars.label|default('risk_treatment_plan.field.implementation_notes'|trans({}, 'risks')),
+                'label': 'risk_treatment_plan.field.implementation_notes'|trans({}, 'risk_treatment_plan'),
                 'domain': 'risk_treatment_plan'
             } %}
         </div>

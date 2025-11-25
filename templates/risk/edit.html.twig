@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'risk.edit'|trans({}, 'risks') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'risk.edit'|trans({}, 'risk') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
@@ -8,13 +8,13 @@
     breadcrumbs: [
         { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index'), icon: 'bi-exclamation-triangle' },
         { label: risk.title, url: path('app_risk_show', {id: risk.id}) },
-        { label: 'risk.edit'|trans({}, 'risks') }
+        { label: 'risk.edit'|trans({}, 'risk') }
     ]
 } %}
 
 {# Page Header #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'risk.edit'|trans({}, 'risks') ~ ': ' ~ risk.title,
+    title: 'risk.edit'|trans({}, 'risk') ~ ': ' ~ risk.title,
     icon: 'bi-pencil',
     actions: [
         { label: 'common.back'|trans({}, 'messages'), url: path('app_risk_show', {id: risk.id}), variant: 'secondary', icon: 'bi-arrow-left' }
@@ -25,7 +25,7 @@
     <div class="card-body">
         {{ form_start(form) }}
             {% include 'risk/_form.html.twig' with {
-                'button_label': 'risk.update'|trans({}, 'risks'),
+                'button_label': 'risk.update'|trans({}, 'risk'),
                 'button_icon': 'bi-check-circle'
             } %}
         {{ form_end(form) }}
@@ -42,7 +42,7 @@
     </div>
     <div class="card-body">
         <p class="text-muted">
-            {{ 'risk.delete_warning'|trans({}, 'risks')|default('Das Löschen dieses Risikos kann nicht rückgängig gemacht werden.') }}
+            {{ 'risk.delete_warning'|trans({}, 'risk') }}
         </p>
         {{ include('risk/_delete_form.html.twig') }}
     </div>
