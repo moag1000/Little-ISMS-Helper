@@ -189,6 +189,7 @@ class UserType extends AbstractType
             'data_class' => User::class,
             'is_edit' => false,
             'attr' => ['novalidate' => 'novalidate'], // Use HTML5 validation
+            'translation_domain' => 'user',
         ]);
     }
 }

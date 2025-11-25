@@ -79,6 +79,7 @@ class DocumentType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Document::class,
+            'translation_domain' => 'document',
         ]);
     }
 }

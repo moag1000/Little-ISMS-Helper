@@ -183,6 +183,7 @@ class DatabaseConfigurationType extends AbstractType
                     'data-database-type-target' => 'versionField',
                 ],
                 'help' => 'setup.database.server_version_help',
+            'translation_domain' => 'admin',
             ]);
 
         // Add event listener to set default values based on database type
@@ -228,6 +229,7 @@ class DatabaseConfigurationType extends AbstractType
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'database_config',
+            'translation_domain' => 'messages',
         ]);
     }
 

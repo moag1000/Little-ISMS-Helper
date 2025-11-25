@@ -88,6 +88,7 @@ class MfaTokenType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => MfaToken::class,
+            'translation_domain' => 'mfa',
         ]);
     }
 }
