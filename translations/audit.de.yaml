@@ -66,7 +66,7 @@ audit:
         notes: Notizen
         team_size: Teamgröße
         result: Ergebnis
-        overall_result: 'Gesamtergebnis'
+        overall_result: Gesamtergebnis
         nonconformities: Nichtkonformitäten
         conclusion: Schlussfolgerung
     status:
@@ -99,7 +99,7 @@ audit:
         corporate_subsidiaries_info: 'Dieses Konzernaudit umfasst %count% Tochtergesellschaft(en)'
         corporate_audit_note_title: Konzernaudit
         corporate_audit_note: "Wählen Sie die Tochtergesellschaften aus, die in dieses Audit einbezogen werden sollen. Bei 'Konzernweites Audit' sollten alle relevanten Tochtergesellschaften ausgewählt werden."
-    corporate_audit_note_title: 'Konzernaudit-Hinweis'
+    corporate_audit_note_title: Konzernaudit-Hinweis
     corporate_audit_note: 'Informationen zum konzernweiten Audit'
     help:
         title: 'Kurze Beschreibung des Audit-Zwecks'
@@ -132,6 +132,7 @@ audit:
         summary: 'Kurze Zusammenfassung des Audits'
         notes: 'Zusätzliche Notizen und Anmerkungen'
     scope: Geltungsbereich
+    status_in_progress: 'In Bearbeitung'
 audit_log:
     pagination:
         page_counter: 'Seite %current% von %total%'
