@@ -43,39 +43,39 @@ mfa:
     token:
         primary: Primär
     setup:
-        secret_key: Secret Key
+        secret_key: 'Geheimer Schlüssel (Secret Key)'
 mfa_token:
-    edit: Bearbeiten
-    edit.subtitle: Untertitel
-    new: Neu
-    new.subtitle: Untertitel
+    edit: 'MFA-Token bearbeiten'
+    edit.subtitle: 'Authentifizierungsgerät bearbeiten'
+    new: 'Neues MFA-Token'
+    new.subtitle: 'Neues Authentifizierungsgerät einrichten'
     field:
-        status: Status
-        token_type: Token Type
-        device_name: Device Name
-        enrolled_at: Enrolled At
-        last_used: Last Used
-        usage_count: Usage Count
-        user: Benutzer
-        is_primary: Is Primary
-        expires_at: Expires At
-        verification_code: Verification Code
+        status: 'Status'
+        token_type: 'Token-Typ'
+        device_name: 'Gerätename'
+        enrolled_at: 'Eingerichtet am'
+        last_used: 'Zuletzt verwendet'
+        usage_count: 'Verwendungen'
+        user: 'Benutzer'
+        is_primary: 'Primäres Gerät'
+        expires_at: 'Läuft ab am'
+        verification_code: 'Bestätigungscode'
     status:
-        active: Aktiv
-        inactive: Inaktiv
-        expired: Expired
-    never_used: Never Used
-    confirm_disable: Bestätigen Deaktivieren
+        active: 'Aktiv'
+        inactive: 'Inaktiv'
+        expired: 'Abgelaufen'
+    never_used: 'Noch nie verwendet'
+    confirm_disable: 'MFA-Token wirklich deaktivieren?'
     action:
-        disable: Deaktivieren
-    confirm_delete: Bestätigen Löschen
-    title: Titel
-    subtitle: Untertitel
+        disable: 'Deaktivieren'
+    confirm_delete: 'MFA-Token wirklich löschen?'
+    title: 'MFA-Token'
+    subtitle: 'Verwaltung Zwei-Faktor-Authentifizierung'
     kpi:
-        active: Aktiv
-        users: Benutzer
-    empty: Keine Einträge vorhanden
-    setup_new: Setup New
+        active: 'Aktiv'
+        users: 'Benutzer'
+    empty: 'Keine MFA-Token vorhanden'
+    setup_new: 'Neues Token einrichten'
     backup_codes:
         title: Titel
         subtitle: Untertitel
