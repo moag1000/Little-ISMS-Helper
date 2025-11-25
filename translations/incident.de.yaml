@@ -41,7 +41,7 @@ incident:
         in_progress: 'In Bearbeitung'
         resolved: Gelöst
         closed: Abgeschlossen
-        reported: 'Gemeldet'
+        reported: Gemeldet
         in_investigation: 'In Untersuchung'
         in_resolution: 'In Lösung'
     nis2_timeline:
@@ -83,8 +83,8 @@ incident:
         estimated_financial_impact: 'Geschätzter finanzieller Schaden'
         national_authority_notified: 'Nationale Behörde benachrichtigt'
         authority_reference_number: 'Aktenzeichen der Behörde'
-        detected_date: 'Erkennungsdatum'
-        closed_date: 'Abschlussdatum'
+        detected_date: Erkennungsdatum
+        closed_date: Abschlussdatum
     nis2_compliance:
         title: 'NIS2 Compliance-Status'
         not_applicable: 'Nicht NIS2-relevant'
@@ -110,15 +110,18 @@ incident:
     analysis_resolution: 'Analyse und Lösung'
     update: 'Vorfall aktualisieren'
     severity:
-        low: 'Niedrig'
-        medium: 'Mittel'
-        high: 'Hoch'
-        critical: 'Kritisch'
+        low: Niedrig
+        medium: Mittel
+        high: Hoch
+        critical: Kritisch
     filter:
-        data_breach: 'Datenschutzverletzung'
+        data_breach: Datenschutzverletzung
         data_breach_only: 'Nur Datenschutzverletzungen'
         nis2_only: 'Nur NIS2-relevante Vorfälle'
     empty: 'Keine Vorfälle vorhanden'
     list:
-        title: 'Vorfallsliste'
+        title: Vorfallsliste
     controls_should_prevent: 'Maßnahmen, die diesen Vorfall hätten verhindern sollen'
+    pdf:
+        reported_at: 'Gemeldet am'
+        reported_by: 'Gemeldet von'
