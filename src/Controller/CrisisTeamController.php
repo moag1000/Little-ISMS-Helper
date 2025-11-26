@@ -7,6 +7,7 @@ use App\Form\CrisisTeamType;
 use App\Repository\CrisisTeamRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -20,7 +21,8 @@ class CrisisTeamController extends AbstractController
     public function __construct(
         private CrisisTeamRepository $crisisTeamRepository,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private Security $security
     ) {}
 
     #[Route('/', name: 'app_crisis_team_index')]
@@ -45,6 +47,13 @@ class CrisisTeamController extends AbstractController
     public function new(Request $request): Response
     {
         $crisisTeam = new CrisisTeam();
+
+        // Set tenant from current user
+        $user = $this->security->getUser();
+        if ($user && $user->getTenant()) {
+            $crisisTeam->setTenant($user->getTenant());
+        }
+
         $form = $this->createForm(CrisisTeamType::class, $crisisTeam);
         $form->handleRequest($request);
 

@@ -7,6 +7,7 @@ use App\Form\PersonType;
 use App\Repository\PersonRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -19,7 +20,8 @@ class PersonController extends AbstractController
     public function __construct(
         private PersonRepository $personRepository,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private Security $security
     ) {}
 
     #[Route('/', name: 'app_person_index')]
@@ -40,6 +42,13 @@ class PersonController extends AbstractController
     public function new(Request $request): Response
     {
         $person = new Person();
+
+        // Set tenant from current user
+        $user = $this->security->getUser();
+        if ($user && $user->getTenant()) {
+            $person->setTenant($user->getTenant());
+        }
+
         $form = $this->createForm(PersonType::class, $person);
         $form->handleRequest($request);
 
