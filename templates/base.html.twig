@@ -127,8 +127,14 @@
                 {# User Avatar #}
                 {% if app.user %}
                 <div class="user-avatar-container">
+                    {% set firstName = app.user.firstName|default('') %}
+                    {% set lastName = app.user.lastName|default('') %}
+                    {% set initials = (firstName|length > 0 ? firstName|slice(0, 1) : '') ~ (lastName|length > 0 ? lastName|slice(0, 1) : '') %}
+                    {% if initials|length == 0 %}
+                        {% set initials = app.user.fullName|slice(0, 2) %}
+                    {% endif %}
                     <span class="user-avatar" title="{{ app.user.fullName }}">
-                        {{ app.user.firstName[0]|upper }}{{ app.user.lastName[0]|upper }}
+                        {{ initials|upper }}
                     </span>
                 </div>
                 {% endif %}
