@@ -15,8 +15,9 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.firstName,
-                'label': 'user.field.first_name'|trans({}, 'user'),
-                'help': 'user.help.first_name'|trans({}, 'user'),
+                'label_key': 'user.field.first_name',
+                'help_key': 'user.help.first_name',
+                'translation_domain': 'users',
                 'required': true
             } %}
         </div>
@@ -24,8 +25,9 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.lastName,
-                'label': 'user.field.last_name'|trans({}, 'user'),
-                'help': 'user.help.last_name'|trans({}, 'user'),
+                'label_key': 'user.field.last_name',
+                'help_key': 'user.help.last_name',
+                'translation_domain': 'users',
                 'required': true
             } %}
         </div>
@@ -35,8 +37,9 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.email,
-                'label': 'user.field.email'|trans({}, 'user'),
-                'help': 'user.help.email'|trans({}, 'user'),
+                'label_key': 'user.field.email',
+                'help_key': 'user.help.email',
+                'translation_domain': 'users',
                 'required': true
             } %}
         </div>
@@ -46,16 +49,18 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.department,
-                'label': 'user.field.department'|trans({}, 'user'),
-                'help': 'user.help.department'|trans({}, 'user')
+                'label_key': 'user.field.department',
+                'help_key': 'user.help.department',
+                'translation_domain': 'users'
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.jobTitle,
-                'label': 'user.field.job_title'|trans({}, 'user'),
-                'help': 'user.help.job_title'|trans({}, 'user')
+                'label_key': 'user.field.job_title',
+                'help_key': 'user.help.job_title',
+                'translation_domain': 'users'
             } %}
         </div>
     </div>
@@ -64,8 +69,9 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.phoneNumber,
-                'label': 'user.field.phone_number'|trans({}, 'user'),
-                'help': 'user.help.phone_number'|trans({}, 'user')
+                'label_key': 'user.field.phone_number',
+                'help_key': 'user.help.phone_number',
+                'translation_domain': 'users'
             } %}
         </div>
     </div>
@@ -74,8 +80,9 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.avatarFile,
-                'label': 'user.field.avatar'|trans({}, 'user'),
-                'help': 'user.help.avatar'|trans({}, 'user')
+                'label_key': 'user.field.avatar',
+                'help_key': 'user.help.avatar',
+                'translation_domain': 'users'
             } %}
         </div>
     </div>
@@ -92,8 +99,9 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.tenant,
-                'label': 'user.field.tenant'|trans({}, 'user'),
-                'help': 'user.help.tenant'|trans({}, 'user'),
+                'label_key': 'user.field.tenant',
+                'help_key': 'user.help.tenant',
+                'translation_domain': 'users',
                 'required': true
             } %}
         </div>
@@ -125,10 +133,11 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.plainPassword,
-                'label': 'user.field.password'|trans({}, 'user'),
-                'help': is_edit_mode|default(false)
-                    ? ('user.help.password_edit'|trans({}, 'user'))
-                    : ('user.help.password'|trans({}, 'user')),
+                'label_key': 'user.field.password',
+                'help_key': is_edit_mode|default(false)
+                    ? 'user.help.password_edit'
+                    : 'user.help.password',
+                'translation_domain': 'users',
                 'required': not is_edit_mode|default(false)
             } %}
         </div>
