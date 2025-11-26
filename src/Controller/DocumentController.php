@@ -133,6 +133,11 @@ class DocumentController extends AbstractController
                 // Security: Generate safe filename to prevent path traversal and overwrites
                 $safeFilename = $this->fileUploadSecurity->generateSafeFilename($uploadedFile);
 
+                // Extract metadata BEFORE moving file (temp file gets deleted after move)
+                $originalFilename = $uploadedFile->getClientOriginalName();
+                $mimeType = $uploadedFile->getMimeType();
+                $fileSize = $uploadedFile->getSize();
+
                 // Move file to secure upload directory
                 $uploadedFile->move(
                     $this->projectDir . '/public/uploads/documents',
@@ -141,9 +146,9 @@ class DocumentController extends AbstractController
 
                 // Store file information
                 $document->setFilename($safeFilename);
-                $document->setOriginalFilename($uploadedFile->getClientOriginalName());
-                $document->setMimeType($uploadedFile->getMimeType());
-                $document->setFileSize($uploadedFile->getSize());
+                $document->setOriginalFilename($originalFilename);
+                $document->setMimeType($mimeType);
+                $document->setFileSize($fileSize);
                 $document->setFilePath('/uploads/documents/' . $safeFilename);
                 $document->setUploadedBy($this->getUser());
 
@@ -153,8 +158,8 @@ class DocumentController extends AbstractController
                 // Security: Log successful file upload
                 $this->securityLogger->logFileUpload(
                     $safeFilename,
-                    $uploadedFile->getMimeType(),
-                    $uploadedFile->getSize(),
+                    $mimeType,
+                    $fileSize,
                     true
                 );
 
