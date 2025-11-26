@@ -149,11 +149,11 @@
                 <option value="medium">Mittel</option>
                 <option value="low">Niedrig</option>
             </select>
+            <label for="incident-search" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
             <input type="search"
                    class="form-control form-control-sm w-200px"
-                   placeholder="Suche..."
-            <label for="incident-search" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
-                   id="incident-search">
+                   id="incident-search"
+                   placeholder="Suche...">
         </div>
     </div>
     {% embed '_components/_table.html.twig' with {

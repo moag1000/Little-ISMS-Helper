@@ -196,12 +196,11 @@
                     {% endfor %}
                 </select>
 
+                <label for="documentSearch" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
                 <input type="search"
-                       class="form-control form-control-sm"
-            <label for="documentSearch" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
+                       class="form-control form-control-sm w-250px"
                        id="documentSearch"
-                       placeholder="{{ 'document.filter.search_placeholder'|trans({}, 'document') }}"
-                       class="w-250px">
+                       placeholder="{{ 'document.filter.search_placeholder'|trans({}, 'document') }}">
             </div>
         </div>
 
