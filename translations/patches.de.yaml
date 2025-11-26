@@ -2,6 +2,14 @@ patch:
     edit: 'Patch bearbeiten'
     new: 'Neuer Patch'
     title: Patch-Verwaltung
+    section:
+        basic_info: Grundinformationen
+        product_info: Produktinformationen
+        priority_status: 'Priorität & Status'
+        deployment: Deployment
+        testing_deployment: 'Test & Deployment'
+        requirements: Anforderungen
+        resources: Ressourcen
     field:
         patch_id: Patch-ID
         title: Patch-Bezeichnung
