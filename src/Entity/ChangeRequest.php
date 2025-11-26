@@ -280,8 +280,8 @@ class ChangeRequest
         $this->affectedProcesses = new ArrayCollection();
         $this->associatedRisks = new ArrayCollection();
         $this->documents = new ArrayCollection();
-        $this->createdAt = new \DateTime();
-        $this->requestedDate = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
+        $this->requestedDate = new \DateTimeImmutable();
     }
 
     #[ORM\PrePersist]

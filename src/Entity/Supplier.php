@@ -233,16 +233,16 @@ class Supplier
         $this->supportedAssets = new ArrayCollection();
         $this->identifiedRisks = new ArrayCollection();
         $this->documents = new ArrayCollection();
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
     public function updateTimestamps(): void
     {
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new \DateTimeImmutable();
         if ($this->createdAt === null) {
-            $this->createdAt = new \DateTime();
+            $this->createdAt = new \DateTimeImmutable();
         }
     }
 
