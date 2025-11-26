@@ -82,3 +82,22 @@ bcm:
         benefit_consistency: 'Benefit Consistency'
         benefit_compliance: 'Benefit Compliance'
         benefit_quality: 'Benefit Quality'
+
+bc_exercises:
+    exercise_type:
+        tabletop: Tabletop-Übung
+        walkthrough: Walkthrough
+        simulation: Simulation
+        full_test: 'Vollständiger Test'
+        component_test: Komponententest
+    status:
+        planned: Geplant
+        in_progress: 'In Bearbeitung'
+        completed: Abgeschlossen
+        cancelled: Abgebrochen
+bc_plans:
+    status:
+        draft: Entwurf
+        under_review: 'In Prüfung'
+        active: Aktiv
+        archived: Archiviert

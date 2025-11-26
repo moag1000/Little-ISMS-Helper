@@ -213,3 +213,22 @@ admin:
         no_active: 'Keine aktiven Module'
         inactive_modules: 'Inaktive Module'
         activate: Aktivieren
+setup:
+    organisation:
+        country:
+            de: Deutschland
+            at: Österreich
+            ch: Schweiz
+            be: Belgien
+            dk: Dänemark
+            fi: Finnland
+            fr: Frankreich
+            it: Italien
+            lu: Luxemburg
+            nl: Niederlande
+            pl: Polen
+            es: Spanien
+            se: Schweden
+            cz: Tschechien
+            eu_other: 'Andere EU'
+            non_eu: 'Außerhalb EU'

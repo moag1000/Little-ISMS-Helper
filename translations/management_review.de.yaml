@@ -77,6 +77,7 @@ management_review:
         planned: Geplant
         in_progress: 'In Bearbeitung'
         completed: Abgeschlossen
+        follow_up_required: 'Follow-up erforderlich'
         cancelled: Abgebrochen
     edit: Bearbeiten
     placeholder:
