@@ -22,8 +22,9 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.name,
-                'label': 'asset.field.name'|trans({}, 'asset'),
-                'help': 'asset.help.name'|trans({}, 'asset'),
+                'label_key': 'asset.field.name',
+                'help_key': 'asset.help.name',
+                'translation_domain': 'assets',
                 'required': true
             } %}
         </div>
@@ -31,8 +32,9 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.assetType,
-                'label': 'asset.field.type'|trans({}, 'asset'),
-                'help': 'asset.help.type'|trans({}, 'asset'),
+                'label_key': 'asset.field.type',
+                'help_key': 'asset.help.type',
+                'translation_domain': 'assets',
                 'required': true
             } %}
         </div>
@@ -42,8 +44,9 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.description,
-                'label': 'asset.field.description'|trans({}, 'asset'),
-                'help': 'asset.help.description'|trans({}, 'asset')
+                'label_key': 'asset.field.description',
+                'help_key': 'asset.help.description',
+                'translation_domain': 'assets'
             } %}
         </div>
     </div>
@@ -60,16 +63,18 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.owner,
-                'label': 'asset.field.owner'|trans({}, 'asset'),
-                'help': 'asset.help.owner'|trans({}, 'asset')
+                'label_key': 'asset.field.owner',
+                'help_key': 'asset.help.owner',
+                'translation_domain': 'assets'
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.location,
-                'label': 'asset.field.location'|trans({}, 'asset'),
-                'help': 'asset.help.location'|trans({}, 'asset')
+                'label_key': 'asset.field.location',
+                'help_key': 'asset.help.location',
+                'translation_domain': 'assets'
             } %}
         </div>
     </div>
@@ -86,16 +91,18 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.acquisitionValue,
-                'label': 'asset.field.acquisition_value'|trans({}, 'asset'),
-                'help': 'asset.help.acquisition_value'|trans({}, 'asset')
+                'label_key': 'asset.field.acquisition_value',
+                'help_key': 'asset.help.acquisition_value',
+                'translation_domain': 'assets'
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.currentValue,
-                'label': 'asset.field.current_value'|trans({}, 'asset'),
-                'help': 'asset.help.current_value'|trans({}, 'asset')
+                'label_key': 'asset.field.current_value',
+                'help_key': 'asset.help.current_value',
+                'translation_domain': 'assets'
             } %}
         </div>
     </div>
@@ -117,24 +124,27 @@
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.confidentialityValue,
-                'label': 'asset.field.confidentiality'|trans({}, 'asset'),
-                'help': 'asset.help.confidentiality'|trans({}, 'asset')
+                'label_key': 'asset.field.confidentiality',
+                'help_key': 'asset.help.confidentiality',
+                'translation_domain': 'assets'
             } %}
         </div>
 
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.integrityValue,
-                'label': 'asset.field.integrity'|trans({}, 'asset'),
-                'help': 'asset.help.integrity'|trans({}, 'asset')
+                'label_key': 'asset.field.integrity',
+                'help_key': 'asset.help.integrity',
+                'translation_domain': 'assets'
             } %}
         </div>
 
         <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.availabilityValue,
-                'label': 'asset.field.availability'|trans({}, 'asset'),
-                'help': 'asset.help.availability'|trans({}, 'asset')
+                'label_key': 'asset.field.availability',
+                'help_key': 'asset.help.availability',
+                'translation_domain': 'assets'
             } %}
         </div>
     </div>
