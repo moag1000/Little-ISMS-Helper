@@ -10,6 +10,17 @@ nav:
     risks: Risks
     change_requests: 'Change Requests'
     bcm: BCM
+    objectives: Objectives
+    business_processes: 'Business Processes'
+    processing_activities: 'Processing Activities'
+    compliance_frameworks: 'Compliance Frameworks'
+    framework_dashboard: 'Framework Dashboard'
+    nis2: 'NIS2 Assessment'
+    treatment_plans: 'Treatment Plans'
+    roles: 'Roles & Permissions'
+    tenants: Tenants
+    data_repair: 'Data Repair'
+    management_reviews: 'Management Reviews'
     bc_plans: 'BC Plans'
     bc_exercises: 'BC Exercises'
     incidents: Incidents
@@ -45,6 +56,77 @@ nav:
     data_breaches: 'Data Breaches (Art. 33/34)'
     toggle_menu: 'Toggle Menu'
     main_navigation: 'Main Navigation'
+
+    # Mega Menu Categories
+    mega:
+        category:
+            dashboard: Dashboard
+            isms_core: 'ISMS Core'
+            assets_risk: 'Assets & Risk'
+            bcm: 'Business Continuity'
+            privacy: 'Privacy & GDPR'
+            operations: Operations
+            compliance: Compliance
+            admin: Administration
+
+        section:
+            overview: Overview
+            foundation: Foundation
+            controls: Controls
+            assets: 'Asset Management'
+            risk: 'Risk Management'
+            continuity: 'Continuity Planning'
+            testing: 'Testing & Exercises'
+            data_protection: 'Data Protection'
+            documents: 'Document Management'
+            security_ops: 'Security Operations'
+            auditing: 'Auditing & Training'
+            frameworks: 'Compliance Frameworks'
+            user_management: 'User Management'
+            system: 'System Administration'
+
+        desc:
+            home: 'Overview and quick access'
+            dashboard: 'Key metrics and insights'
+            analytics: 'Reports and analytics'
+            context: 'Organization context and scope'
+            interested_parties: 'Stakeholders and requirements'
+            soa: 'Statement of Applicability (ISO 27001 Annex A)'
+            objectives: 'ISMS objectives and targets'
+            assets: 'IT and information assets inventory'
+            suppliers: 'Third-party suppliers and vendors'
+            locations: 'Physical locations and facilities'
+            people: 'Personnel and contact information'
+            risks: 'Risk register and assessments'
+            risk_matrix: 'Risk heat map visualization'
+            risk_appetite: 'Risk tolerance thresholds'
+            treatment_plans: 'Risk treatment strategies'
+            business_processes: 'Critical business processes'
+            bc_plans: 'Business continuity plans'
+            bc_exercises: 'BC plan testing and validation'
+            crisis_team: 'Emergency response team'
+            processing_activities: 'Records of Processing Activities (Art. 30 GDPR)'
+            dpia: 'Data Protection Impact Assessments (Art. 35)'
+            data_breaches: 'Personal data breach register (Art. 33/34)'
+            documents: 'Policies, procedures, and documentation'
+            change_requests: 'Change management workflow'
+            workflows: 'Automated business workflows'
+            incidents: 'Security incident management'
+            vulnerabilities: 'Vulnerability tracking'
+            patches: 'Patch management system'
+            audits: 'Internal and external audits'
+            training: 'Security awareness training'
+            management_reviews: 'Management review meetings'
+            compliance_frameworks: 'Multi-framework management'
+            framework_dashboard: 'Cross-framework overview'
+            mapping_quality: 'Cross-framework mapping quality analysis'
+            nis2: 'NIS2 Directive assessment'
+            users: 'User account management'
+            roles: 'Roles and permissions'
+            tenants: 'Multi-tenant administration'
+            data_repair: 'Data integrity tools'
+            audit_log: 'System audit trail'
+
     section:
         isms_core: 'ISMS Core'
         assets_risk: 'Assets & Risk'
