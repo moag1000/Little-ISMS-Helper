@@ -16,10 +16,10 @@
     <div class="row">
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
-                'field': form.name,
+                'field': form.originalFilename,
                 'label': 'document.field.name'|trans({}, 'document'),
                 'help': 'document.help.name'|trans({}, 'document'),
-                'required': true
+                'required': false
             } %}
         </div>
     </div>
@@ -37,7 +37,7 @@
     <div class="row">
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
-                'field': form.documentType,
+                'field': form.category,
                 'label': 'document.field.document_type'|trans({}, 'document'),
                 'help': 'document.help.document_type'|trans({}, 'document'),
                 'required': true

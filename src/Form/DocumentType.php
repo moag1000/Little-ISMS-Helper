@@ -17,13 +17,15 @@ class DocumentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('name', TextType::class, [
+            ->add('originalFilename', TextType::class, [
                 'label' => 'document.field.name',
-                'required' => true,
+                'required' => false,
+                'mapped' => false, // Will be set from uploaded file
                 'attr' => [
                     'maxlength' => 255,
                     'placeholder' => 'document.placeholder.name',
                 ],
+                'help' => 'document.help.name_optional',
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'document.field.description',
@@ -33,7 +35,7 @@ class DocumentType extends AbstractType
                     'placeholder' => 'document.placeholder.description',
                 ],
             ])
-            ->add('documentType', ChoiceType::class, [
+            ->add('category', ChoiceType::class, [
                 'label' => 'document.field.document_type',
                 'choices' => [
                     'document.type.asset' => 'asset',
@@ -49,7 +51,8 @@ class DocumentType extends AbstractType
             ])
             ->add('file', FileType::class, [
                 'label' => 'document.field.file',
-                'required' => true,
+                'mapped' => false, // File upload is handled separately
+                'required' => $options['is_new'] ?? true,
                 'constraints' => [
                     new File([
                         'maxSize' => '10M',
@@ -79,7 +82,8 @@ class DocumentType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Document::class,
-            'translation_domain' => 'document',
+            'translation_domain' => 'documents',
+            'is_new' => true,
         ]);
     }
 }
