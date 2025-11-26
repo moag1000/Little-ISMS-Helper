@@ -6,12 +6,14 @@
 
 **Moderne, webbasierte ISMS-Lösung für KMUs – ISO 27001:2022 konform**
 
+[![Version 2.0](https://img.shields.io/badge/Version-2.0.0-success?logo=semver&logoColor=white)](CHANGELOG.md)
 [![PHP 8.4+](https://img.shields.io/badge/PHP-8.4%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
 [![Symfony 7.4](https://img.shields.io/badge/Symfony-7.4-000000?logo=symfony&logoColor=white)](https://symfony.com/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![ISO 27001:2022](https://img.shields.io/badge/ISO-27001%3A2022-blue)](https://www.iso.org/standard/27001)
 [![Tests](https://img.shields.io/badge/Tests-1618%20passing-success)](tests/)
+[![WCAG 2.1 AA](https://img.shields.io/badge/WCAG-2.1%20AA-green)](https://www.w3.org/WAI/WCAG21/quickref/)
 
 [Features](#-funktionen) • [Quick Start](#-quick-start-mit-docker) • [Dokumentation](#-dokumentation) • [Roadmap](#-roadmap) • [Contributing](#-beitragen)
 
@@ -244,9 +246,14 @@ Für Produktions-Deployments beachten Sie:
 - **Email Notifications** - Automatisierte Benachrichtigungen
 - **Workflow Engine** - Genehmigungsprozesse
 
-### 🎨 Modern UI/UX
-- **Progressive Disclosure** - Aufgeräumte Oberfläche
-- **Dark Mode** - Theme-Switching
+### 🎨 Modern UI/UX (🆕 2.0)
+- **Mega Menu Navigation** - Hierarchische, Multi-Column Navigation mit visuellen Icons
+- **Dark Mode** - Vollständige Theme-Unterstützung mit WCAG AA Kontrasten
+- **Complete i18n** - 3.290+ Übersetzungsschlüssel in 97 Domänen (DE/EN)
+- **WCAG 2.1 AA** - 100% Barrierefreiheit (Kontraste, ARIA, Keyboard Navigation)
+- **Component System** - Wiederverwendbare Twig-Komponenten (Cards, Badges, Buttons)
+- **Responsive Design** - Mobile-First mit Bootstrap 5.3
+- **Cyberpunk Fairy Design** - Einzigartiger visueller Stil mit Gradients & Neon-Effekten
 - **Global Search** - Cmd+K/Ctrl+K
 - **Drag & Drop** - Dashboard & File Upload
 - **Keyboard Shortcuts** - Power-User-Features
