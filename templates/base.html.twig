@@ -112,12 +112,26 @@
                 {# Global Search Component (Button + Modal) #}
                 {% include '_components/_global_search.html.twig' %}
 
+                {# Notification Bell (moved to header) #}
+                {% if not is_setup_route %}
+                    {% include '_components/_notification_bell.html.twig' %}
+                {% endif %}
+
                 <div class="language-switcher">
                     <a href="{{ path(app.request.attributes.get('_route'), (app.request.attributes.get('_route_params') ?? {})|merge({'_locale': 'de'})) }}"
                        class="lang-btn {% if app.request.locale == 'de' %}active{% endif %}">DE</a>
                     <a href="{{ path(app.request.attributes.get('_route'), (app.request.attributes.get('_route_params') ?? {})|merge({'_locale': 'en'})) }}"
                        class="lang-btn {% if app.request.locale == 'en' %}active{% endif %}">EN</a>
                 </div>
+
+                {# User Avatar #}
+                {% if app.user %}
+                <div class="user-avatar-container">
+                    <span class="user-avatar" title="{{ app.user.fullName }}">
+                        {{ app.user.firstName[0]|upper }}{{ app.user.lastName[0]|upper }}
+                    </span>
+                </div>
+                {% endif %}
             </div>
         </div>
     </header>

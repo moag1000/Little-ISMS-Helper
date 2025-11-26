@@ -1,0 +1,19 @@
+{# Notification Bell Button (Header Version)
+   Usage: {% include '_components/_notification_bell.html.twig' %}
+
+   This is the button that appears in the header.
+   The panel is defined in _notification_center.html.twig
+#}
+
+<div class="notification-bell" data-controller="notifications">
+    {# Notification Bell Button #}
+    <button type="button"
+            class="notification-bell-btn-header"
+            data-action="click->notifications#toggle"
+            title="{{ 'notifications.title'|trans({}, 'messages') }}"
+            aria-label="{{ 'notifications.title'|trans({}, 'messages') }}">
+        <i class="bi bi-bell"></i>
+        <span class="notification-badge d-none"
+              data-notifications-target="badge">0</span>
+    </button>
+</div>
