@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #ea580c; color: white; padding: 20px; text-align: center; }
+        .header.severity-critical { background: #dc2626; }
+        .header.severity-high { background: #ea580c; }
+        .header.severity-medium { background: #d97706; }
+        .header.severity-low { background: #2563eb; }
+        .content { background: #f9fafb; padding: 20px; margin: 20px 0; }
+        .field { margin: 10px 0; }
+        .label { font-weight: bold; color: #666; }
+        .value { color: #000; }
+        .escalation-box { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 15px 0; }
+        .escalation-box.critical { background: #fee2e2; border-left-color: #dc2626; }
+        .escalation-box.high { background: #ffedd5; border-left-color: #ea580c; }
+        .severity-critical { color: #dc2626; font-weight: bold; text-transform: uppercase; }
+        .severity-high { color: #ea580c; font-weight: bold; text-transform: uppercase; }
+        .severity-medium { color: #d97706; font-weight: bold; text-transform: uppercase; }
+        .severity-low { color: #2563eb; font-weight: bold; text-transform: uppercase; }
+        .sla-deadline { background: #fde68a; border: 2px solid #f59e0b; padding: 12px; margin: 15px 0; border-radius: 4px; text-align: center; font-weight: bold; }
+        .action-required { background: #dbeafe; border-left: 4px solid #2563eb; padding: 15px; margin: 15px 0; }
+        .cta-button { display: inline-block; background: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; margin: 15px 0; font-weight: bold; }
+        .footer { text-align: center; color: #666; font-size: 12px; padding: 20px; }
+        .incident-number { font-size: 14px; color: #666; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header severity-{{ severity|lower }}">
+            <h1>⚠️ {{ 'incident.escalation.title'|trans({}, 'incident') }}</h1>
+            <p style="margin: 0; font-size: 14px;">{{ 'incident.escalation.level'|trans({'%level%': escalation_level}, 'incident') }}</p>
+        </div>
+
+        <div class="content">
+            <p>{{ 'incident.escalation.greeting'|trans({'%name%': recipient.firstName}, 'incident') }}</p>
+
+            <div class="escalation-box {% if severity in ['critical', 'high'] %}{{ severity }}{% endif %}">
+                <strong>{{ 'incident.escalation.alert'|trans({}, 'incident') }}</strong>
+                <p style="margin: 5px 0 0 0;">{{ 'incident.escalation.message'|trans({'%severity%': severity|upper, '%level%': escalation_level}, 'incident') }}</p>
+            </div>
+
+            <div class="field">
+                <span class="label">{{ 'incident.field.title'|trans({}, 'incident') }}:</span>
+                <span class="value">{{ incident.title }}</span>
+            </div>
+
+            <div class="field">
+                <span class="label">{{ 'incident.escalation.incident_number'|trans({}, 'incident') }}:</span>
+                <span class="value incident-number">#{{ incident.id }}</span>
+            </div>
+
+            <div class="field">
+                <span class="label">{{ 'incident.field.severity'|trans({}, 'incident') }}:</span>
+                <span class="value severity-{{ severity|lower }}">
+                    {{ ('incident.severity.' ~ severity|lower)|trans({}, 'incident') }}
+                </span>
+            </div>
+
+            <div class="field">
+                <span class="label">{{ 'incident.field.status'|trans({}, 'incident') }}:</span>
+                <span class="value">{{ ('incident.status.' ~ incident.status|lower)|trans({}, 'incident') }}</span>
+            </div>
+
+            {% if incident.category %}
+            <div class="field">
+                <span class="label">{{ 'incident.field.category'|trans({}, 'incident') }}:</span>
+                <span class="value">{{ ('incident.category.' ~ incident.category|lower)|trans({}, 'incident') }}</span>
+            </div>
+            {% endif %}
+
+            {% if incident.detectedAt %}
+            <div class="field">
+                <span class="label">{{ 'incident.field.detected_at'|trans({}, 'incident') }}:</span>
+                <span class="value">{{ incident.detectedAt|date('d.m.Y H:i') }}</span>
+            </div>
+            {% endif %}
+
+            {% if incident.description %}
+            <div class="field">
+                <span class="label">{{ 'incident.field.description'|trans({}, 'incident') }}:</span>
+                <p class="value" style="margin: 5px 0;">{{ incident.description|nl2br }}</p>
+            </div>
+            {% endif %}
+
+            <div class="sla-deadline">
+                🕐 {{ 'incident.escalation.sla_deadline'|trans({}, 'incident') }}: {{ sla_deadline|date('d.m.Y H:i') }}
+            </div>
+
+            <div class="action-required">
+                <strong>{{ 'incident.escalation.action_required'|trans({}, 'incident') }}:</strong>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li>{{ 'incident.escalation.action_review'|trans({}, 'incident') }}</li>
+                    <li>{{ 'incident.escalation.action_assess'|trans({}, 'incident') }}</li>
+                    <li>{{ 'incident.escalation.action_update'|trans({}, 'incident') }}</li>
+                    {% if severity in ['critical', 'high'] %}
+                    <li>{{ 'incident.escalation.action_notify_management'|trans({}, 'incident') }}</li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="{{ incident_url }}" class="cta-button">
+                    {{ 'incident.escalation.view_incident'|trans({}, 'incident') }}
+                </a>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>{{ 'incident.escalation.automated_notification'|trans({}, 'incident') }}</p>
+            <p>{{ 'incident.escalation.iso_reference'|trans({}, 'incident') }}</p>
+        </div>
+    </div>
+</body>
+</html>

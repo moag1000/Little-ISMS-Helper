@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Incident Escalation Workflow Service
@@ -57,7 +58,8 @@ class IncidentEscalationWorkflowService
         private EmailNotificationService $emailService,
         private UserRepository $userRepository,
         private AuditLogger $auditLogger,
-        private LoggerInterface $logger
+        private LoggerInterface $logger,
+        private UrlGeneratorInterface $urlGenerator
     ) {}
 
     /**
@@ -127,6 +129,12 @@ class IncidentEscalationWorkflowService
             'Data Breach Notification'
         );
 
+        if (!$workflowInstance) {
+            $this->logger->warning('No workflow found for Data Breach Notification', [
+                'incident_id' => $incident->getId(),
+            ]);
+        }
+
         // Send immediate notifications
         $this->notifyDataBreach($incident, $dpo, $ciso, $ceo, $deadline);
 
@@ -189,18 +197,31 @@ class IncidentEscalationWorkflowService
             'Critical Incident Response'
         );
 
+        if (!$workflowInstance) {
+            $this->logger->warning('No workflow found for Critical Incident Response', [
+                'incident_id' => $incident->getId(),
+            ]);
+        }
+
+        // Generate incident URL for email
+        $incidentUrl = $this->urlGenerator->generate(
+            'app_incident_show',
+            ['id' => $incident->getId()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
         // Send notifications
         $notifiedUsers = [];
         if ($incidentManager) {
-            $this->emailService->sendIncidentEscalationNotification($incidentManager, $incident, 'critical');
+            $this->emailService->sendIncidentEscalationNotification($incidentManager, $incident, 'critical', $slaDeadline, $incidentUrl);
             $notifiedUsers[] = $incidentManager;
         }
         if ($ciso) {
-            $this->emailService->sendIncidentEscalationNotification($ciso, $incident, 'critical');
+            $this->emailService->sendIncidentEscalationNotification($ciso, $incident, 'critical', $slaDeadline, $incidentUrl);
             $notifiedUsers[] = $ciso;
         }
         foreach ($management as $manager) {
-            $this->emailService->sendIncidentEscalationNotification($manager, $incident, 'critical');
+            $this->emailService->sendIncidentEscalationNotification($manager, $incident, 'critical', $slaDeadline, $incidentUrl);
             $notifiedUsers[] = $manager;
         }
 
@@ -255,13 +276,26 @@ class IncidentEscalationWorkflowService
             'High Severity Incident'
         );
 
+        if (!$workflowInstance) {
+            $this->logger->warning('No workflow found for High Severity Incident', [
+                'incident_id' => $incident->getId(),
+            ]);
+        }
+
+        // Generate incident URL for email
+        $incidentUrl = $this->urlGenerator->generate(
+            'app_incident_show',
+            ['id' => $incident->getId()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
         $notifiedUsers = [];
         if ($incidentManager) {
-            $this->emailService->sendIncidentEscalationNotification($incidentManager, $incident, 'high');
+            $this->emailService->sendIncidentEscalationNotification($incidentManager, $incident, 'high', $slaDeadline, $incidentUrl);
             $notifiedUsers[] = $incidentManager;
         }
         if ($ciso) {
-            $this->emailService->sendIncidentEscalationNotification($ciso, $incident, 'high');
+            $this->emailService->sendIncidentEscalationNotification($ciso, $incident, 'high', $slaDeadline, $incidentUrl);
             $notifiedUsers[] = $ciso;
         }
 
@@ -306,8 +340,21 @@ class IncidentEscalationWorkflowService
             'Medium Severity Incident'
         );
 
+        if (!$workflowInstance) {
+            $this->logger->warning('No workflow found for Medium Severity Incident', [
+                'incident_id' => $incident->getId(),
+            ]);
+        }
+
+        // Generate incident URL for email
+        $incidentUrl = $this->urlGenerator->generate(
+            'app_incident_show',
+            ['id' => $incident->getId()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
         if ($incidentManager) {
-            $this->emailService->sendIncidentEscalationNotification($incidentManager, $incident, 'medium');
+            $this->emailService->sendIncidentEscalationNotification($incidentManager, $incident, 'medium', $slaDeadline, $incidentUrl);
         }
 
         $this->auditLogger->log(
@@ -342,9 +389,16 @@ class IncidentEscalationWorkflowService
         $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
         $slaDeadline = (new \DateTimeImmutable())->modify('+' . self::SLA_LOW . ' hours');
 
+        // Generate incident URL for email
+        $incidentUrl = $this->urlGenerator->generate(
+            'app_incident_show',
+            ['id' => $incident->getId()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
         // No workflow for low severity - just track SLA
         if ($incidentManager) {
-            $this->emailService->sendIncidentEscalationNotification($incidentManager, $incident, 'low');
+            $this->emailService->sendIncidentEscalationNotification($incidentManager, $incident, 'low', $slaDeadline, $incidentUrl);
         }
 
         $this->auditLogger->log(
@@ -382,11 +436,19 @@ class IncidentEscalationWorkflowService
         ?User $ceo,
         \DateTimeImmutable $deadline
     ): void {
+        // Generate incident URL for email
+        $incidentUrl = $this->urlGenerator->generate(
+            'app_incident_show',
+            ['id' => $incident->getId()],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
+
         $context = [
             'incident' => $incident,
             'deadline' => $deadline,
             'deadline_formatted' => $deadline->format('d.m.Y H:i'),
             'hours_remaining' => round(($deadline->getTimestamp() - time()) / 3600, 1),
+            'incident_url' => $incidentUrl,
         ];
 
         if ($dpo) {
@@ -457,6 +519,7 @@ class IncidentEscalationWorkflowService
         return [
             'has_active_workflow' => true,
             'escalation_level' => $this->determineEscalationLevel($incident),
+            'workflow_instance' => $workflowInstance,
             'workflow_status' => $workflowInstance->getStatus(),
             'current_step' => $workflowInstance->getCurrentStep()?->getName(),
             'due_date' => $workflowInstance->getDueDate(),

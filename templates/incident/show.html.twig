@@ -31,6 +31,91 @@
         </div>
     </div>
 
+    {# Workflow Status Section #}
+    {% if workflowStatus.has_active_workflow %}
+        {% set escalationLevel = workflowStatus.escalation_level %}
+        {% set isDataBreach = escalationLevel == 'data_breach' %}
+
+        {# Determine alert level based on escalation #}
+        {% set alertClass = {
+            'low': 'info',
+            'medium': 'warning',
+            'high': 'warning',
+            'critical': 'danger',
+            'data_breach': 'danger'
+        }[escalationLevel] ?? 'info' %}
+
+        <div class="alert alert-{{ alertClass }} workflow-status-alert" role="alert">
+            <div class="workflow-status-header">
+                <div class="workflow-status-title">
+                    <i class="bi bi-{{ isDataBreach ? 'exclamation-triangle-fill' : 'gear-fill' }}" aria-hidden="true"></i>
+                    <strong>
+                        {% if isDataBreach %}
+                            {{ 'incident.workflow.data_breach_active'|trans({}, 'incident') }}
+                        {% else %}
+                            {{ 'incident.workflow.active'|trans({}, 'incident') }}
+                        {% endif %}
+                    </strong>
+                </div>
+                <span class="badge bg-{{ alertClass }}">
+                    {{ ('incident.workflow.escalation.' ~ escalationLevel)|trans({}, 'incident') }}
+                </span>
+            </div>
+
+            <div class="workflow-status-content">
+                <div class="workflow-info-grid">
+                    <div class="workflow-info-item">
+                        <span class="label">{{ 'workflow.field.status'|trans({}, 'workflows') }}:</span>
+                        <span class="value">{{ workflowStatus.workflow_status|upper }}</span>
+                    </div>
+                    <div class="workflow-info-item">
+                        <span class="label">{{ 'workflow.field.current_step'|trans({}, 'workflows') }}:</span>
+                        <span class="value">{{ workflowStatus.current_step ?? 'N/A' }}</span>
+                    </div>
+                    {% if workflowStatus.due_date %}
+                        <div class="workflow-info-item">
+                            <span class="label">{{ 'workflow.field.due_date'|trans({}, 'workflows') }}:</span>
+                            <span class="value">
+                                {{ workflowStatus.due_date|date('d.m.Y H:i') }}
+                                {% if workflowStatus.is_overdue %}
+                                    <span class="badge bg-danger ms-2">{{ 'workflow.badge.overdue'|trans({}, 'workflows') }}</span>
+                                {% else %}
+                                    {% set hoursRemaining = ((workflowStatus.due_date.timestamp - "now"|date('U')) / 3600)|round(1) %}
+                                    {% if hoursRemaining < 24 %}
+                                        <span class="badge bg-warning ms-2">{{ hoursRemaining }} {{ 'incident.timeline.hours_remaining'|trans({}, 'incident') }}</span>
+                                    {% else %}
+                                        {% set daysRemaining = (hoursRemaining / 24)|round(1) %}
+                                        <span class="badge bg-info ms-2">{{ daysRemaining }} {{ 'workflow.days'|trans({}, 'workflows') }}</span>
+                                    {% endif %}
+                                {% endif %}
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                {% if isDataBreach and workflowStatus.due_date %}
+                    <div class="gdpr-deadline-warning">
+                        <i class="bi bi-clock-history" aria-hidden="true"></i>
+                        <strong>{{ 'incident.workflow.gdpr_72h_deadline'|trans({}, 'incident') }}</strong>
+                        {% set hoursRemaining = ((workflowStatus.due_date.timestamp - "now"|date('U')) / 3600)|round(1) %}
+                        {% if workflowStatus.is_overdue %}
+                            <span class="text-danger">{{ 'workflow.badge.overdue'|trans({}, 'workflows') }}!</span>
+                        {% else %}
+                            <span>{{ hoursRemaining }} {{ 'incident.timeline.hours_remaining'|trans({}, 'incident') }}</span>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <div class="workflow-actions">
+                    <a href="{{ path('app_workflow_instance_show', {id: workflowStatus.workflow_instance.id}) }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-eye" aria-hidden="true"></i>
+                        {{ 'incident.workflow.view_details'|trans({}, 'incident') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
     <div class="card">
         <div class="card-header">
             <h2>Incident #{{ incident.incidentNumber }}</h2>
@@ -456,7 +541,7 @@
             {% if incident.relatedControls is defined and incident.relatedControls|length > 0 %}
                 <div class="detail-section">
                     <h3>🛡️ Related Controls ({{ incident.relatedControls|length }})</h3>
-                    <p class="text-muted">{{ 'incident.controls_should_prevent'|trans }}</p>
+                    <p class="text-muted">{{ 'incident.controls_should_prevent'|trans({}, 'incident') }}</p>
                     <div class="data-reuse-list">
                         {% for control in incident.relatedControls %}
                             <div class="data-reuse-item">
@@ -477,6 +562,82 @@
 </div>
 
 <style>
+/* Workflow Status Alert Styles */
+.workflow-status-alert {
+    margin-bottom: 1.5rem;
+    border-left: 4px solid currentColor;
+    padding: 1.25rem;
+}
+
+.workflow-status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.workflow-status-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.workflow-status-title i {
+    font-size: 1.25rem;
+}
+
+.workflow-status-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.workflow-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.workflow-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.workflow-info-item .label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    opacity: 0.8;
+}
+
+.workflow-info-item .value {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.gdpr-deadline-warning {
+    background: rgba(220, 38, 38, 0.1);
+    border: 2px solid #dc2626;
+    border-radius: 6px;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+}
+
+.gdpr-deadline-warning i {
+    font-size: 1.25rem;
+    color: #dc2626;
+}
+
+.workflow-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
 .badges {
     display: flex;
     gap: 0.5rem;

@@ -116,6 +116,17 @@ incident:
     list:
         title: Title
     controls_should_prevent: 'Controls Should Prevent'
+    workflow:
+        active: 'Active Workflow'
+        data_breach_active: 'Data Breach Workflow Active'
+        view_details: 'View Workflow Details'
+        gdpr_72h_deadline: 'GDPR 72h Breach Notification Deadline'
+        escalation:
+            low: 'Low Priority'
+            medium: 'Medium Priority'
+            high: 'High Priority'
+            critical: 'Critical Priority'
+            data_breach: 'Data Breach - GDPR Compliance'
     pdf:
         reported_at: 'Reported at'
         reported_by: 'Reported by'
@@ -154,3 +165,19 @@ incident:
         security: Security
         privacy: Privacy
         availability: Availability
+    escalation:
+        title: 'Incident Escalated'
+        level: 'Escalation Level: %level%'
+        greeting: 'Dear %name%,'
+        alert: 'Important Security Alert'
+        message: 'An incident with severity %severity% has been escalated to level %level% and requires your immediate attention.'
+        incident_number: 'Incident Number'
+        sla_deadline: 'SLA Deadline'
+        action_required: 'Action Required'
+        action_review: 'Review the incident details and current status'
+        action_assess: 'Assess the impact and identify affected systems'
+        action_update: 'Update the incident with your findings and actions taken'
+        action_notify_management: 'Notify management about this critical incident'
+        view_incident: 'View Incident'
+        automated_notification: 'This is an automated notification from the Incident Management System.'
+        iso_reference: 'ISO 27001 A.16.1 - Management of Information Security Incidents'
