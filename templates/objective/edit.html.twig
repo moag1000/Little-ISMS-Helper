@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'objective'%}
+{% trans_default_domain 'objective' %}
 
-{% block title %}{{ 'objective.title.edit'|trans({}, 'objective') }}: {{ objective.title }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'objective.title.edit'|trans }}: {{ objective.title }}{% endblock %}
 
 {% block body %}
-<div class="container-fluid py-4">
+<div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.objectives'|trans({}, 'nav'), url: path('app_objective_index') },
@@ -13,128 +13,60 @@
         ]
     } %}
 
-    <div class="card">
-        <div class="card-header bg-primary text-white"><h5 class="mb-0">{{ 'objective.title.edit'|trans({}, 'objective') }}: {{ objective.title }}</h5>
-        </div>
-        <div class="card-body">
-            {{ form_start(form) }}
-
-            {# Basic Information #}
-            <fieldset class="mb-4">
-                <legend class="h5 mb-3">
-                    <i class="bi bi-info-square" aria-hidden="true"></i>
-                    {{ 'objective.section.basic_info'|trans({}, 'objective') }}
-                </legend>
-
-                <div class="row">
-                    <div class="col-md-8">
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.title,
-                            'label': 'objective.field.title'|trans({}, 'objective'),
-                            'required': true
-                        } %}
-                    </div>
-                    <div class="col-md-4">
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.category,
-                            'label': 'objective.field.category'|trans({}, 'objective')
-                        } %}
-                    </div>
-                    <div class="col-md-12">
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.description,
-                            'label': 'objective.field.description'|trans({}, 'objective')
-                } %}
-            </div>
-        </div>
-    </fieldset>
-
-    {# Measurement #}
-    <fieldset class="mb-4">
-        <legend class="h5 mb-3">
-            <i class="bi bi-graph-up" aria-hidden="true"></i>
-            {{ 'objective.section.measurement'|trans({}, 'objective') }}
-        </legend>
-
-        <div class="row">
-            <div class="col-md-12">
-                {% include '_components/_form_field.html.twig' with {
-                    'field': form.measurableIndicators,
-                    'label': 'objective.field.measurable_indicators'|trans({}, 'objective')
-                } %}
-            </div>
-            <div class="col-md-4">
-                {% include '_components/_form_field.html.twig' with {
-                    'field': form.targetValue,
-                    'label': 'objective.field.target_value'|trans({}, 'objective')
-                } %}
-            </div>
-            <div class="col-md-4">
-                {% include '_components/_form_field.html.twig' with {
-                    'field': form.currentValue,
-                    'label': 'objective.field.current_value'|trans({}, 'objective')
-                } %}
-            </div>
-            <div class="col-md-4">
-                {% include '_components/_form_field.html.twig' with {
-                    'field': form.unit,
-                    'label': 'objective.field.unit'|trans({}, 'objective')
-                } %}
-            </div>
-        </div>
-    </fieldset>
-
-    {# Responsibility & Timeline #}
-    <fieldset class="mb-4">
-        <legend class="h5 mb-3">
-            <i class="bi bi-person-badge" aria-hidden="true"></i>
-            {{ 'objective.section.responsibility'|trans({}, 'objective') }}
-        </legend>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.responsiblePerson,
-                            'label': 'objective.field.responsible_person'|trans({}, 'objective')
-                } %}
-            </div>
-            <div class="col-md-6">
-                {% include '_components/_form_field.html.twig' with {
-                    'field': form.targetDate,
-                    'label': 'objective.field.target_date'|trans({}, 'objective')
-                } %}
-            </div>
-        </div>
-    </fieldset>
-
-    {# Status & Progress #}
-    <fieldset class="mb-4">
-        <legend class="h5 mb-3">
-            <i class="bi bi-clipboard-check" aria-hidden="true"></i>
-            {{ 'objective.section.status_progress'|trans({}, 'objective') }}
-        </legend>
-
-                <div class="row">
-                    <div class="col-md-12">
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.status,
-                            'label': 'objective.field.status'|trans({}, 'objective')
-                } %}
-            </div>
-            <div class="col-md-12">
-                {% include '_components/_form_field.html.twig' with {
-                    'field': form.progressNotes,
-                    'label': 'objective.field.progress_notes'|trans({}, 'objective')
-                } %}
-            </div>
-        </div>
-    </fieldset>
-
-    <div class="d-flex justify-content-between pt-3 border-top">
-        <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-outline-secondary">{{ 'common.cancel'|trans({}, 'messages') }}</a>
-        <button type="submit" class="btn btn-primary">{{ 'common.save_changes'|trans({}, 'messages') }}</button>
+    <div class="page-header">
+        <h1>{{ 'objective.title.edit'|trans }}: {{ objective.title }}</h1>
+        <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
     </div>
 
+    <div class="card">
+        <div class="card-content">
+            {{ form_start(form) }}
+                {% include '_components/_auto_form.html.twig' with {
+                    'form': form,
+                    'sections': {
+                        'basic_info': {
+                            'label': 'objective.section.basic_info'|trans,
+                            'fields': ['title', 'category', 'description']
+                        },
+                        'measurement': {
+                            'label': 'objective.section.measurement'|trans,
+                            'fields': ['measurableIndicators', 'targetValue', 'currentValue', 'unit']
+                        },
+                        'responsibility': {
+                            'label': 'objective.section.responsibility'|trans,
+                            'fields': ['responsiblePerson', 'targetDate']
+                        },
+                        'status_progress': {
+                            'label': 'objective.section.status_progress'|trans,
+                            'fields': ['status', 'progressNotes']
+                        }
+                    },
+                    'col_widths': {
+                        'title': 8,
+                        'category': 4,
+                        'description': 12,
+                        'measurableIndicators': 12,
+                        'targetValue': 4,
+                        'currentValue': 4,
+                        'unit': 4,
+                        'responsiblePerson': 6,
+                        'targetDate': 6,
+                        'status': 12,
+                        'progressNotes': 12
+                    },
+                    'help_texts': {
+                        'targetDate': 'objective.help.target_date'|trans
+                    }
+                } %}
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-secondary">
+                        {{ 'common.cancel'|trans({}, 'messages') }}
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        {{ 'common.save_changes'|trans({}, 'messages') }}
+                    </button>
+                </div>
             {{ form_end(form) }}
         </div>
     </div>
