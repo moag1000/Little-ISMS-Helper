@@ -58,6 +58,7 @@ class ProcessingActivityType extends AbstractType
                 'multiple' => true,
                 'required' => true,
                 'attr' => ['class' => 'select2'],
+                'choice_translation_domain' => 'privacy',
             ])
 
             // ============================================================================
@@ -80,6 +81,7 @@ class ProcessingActivityType extends AbstractType
                 'multiple' => true,
                 'required' => true,
                 'attr' => ['class' => 'select2'],
+                'choice_translation_domain' => 'privacy',
             ])
             ->add('estimatedDataSubjectsCount', IntegerType::class, [
                 'label' => 'processing_activity.form.estimated_data_subjects_count',
@@ -108,6 +110,7 @@ class ProcessingActivityType extends AbstractType
                 'multiple' => true,
                 'required' => true,
                 'attr' => ['class' => 'select2'],
+                'choice_translation_domain' => 'privacy',
             ])
             ->add('processesSpecialCategories', ChoiceType::class, [
                 'label' => 'processing_activity.form.processes_special_categories',
@@ -118,6 +121,7 @@ class ProcessingActivityType extends AbstractType
                 ],
                 'expanded' => true,
                 'required' => true,
+                'choice_translation_domain' => 'privacy',
             ])
             ->add('specialCategoriesDetails', ChoiceType::class, [
                 'label' => 'processing_activity.form.special_categories_details',
@@ -135,6 +139,7 @@ class ProcessingActivityType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'attr' => ['class' => 'select2'],
+                'choice_translation_domain' => 'privacy',
             ])
             ->add('processesCriminalData', ChoiceType::class, [
                 'label' => 'processing_activity.form.processes_criminal_data',
@@ -145,6 +150,7 @@ class ProcessingActivityType extends AbstractType
                 ],
                 'expanded' => true,
                 'required' => true,
+                'choice_translation_domain' => 'privacy',
             ])
 
             // ============================================================================
@@ -167,6 +173,7 @@ class ProcessingActivityType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'attr' => ['class' => 'select2'],
+                'choice_translation_domain' => 'privacy',
             ])
             ->add('recipientDetails', TextareaType::class, [
                 'label' => 'processing_activity.form.recipient_details',
@@ -187,6 +194,7 @@ class ProcessingActivityType extends AbstractType
                 ],
                 'expanded' => true,
                 'required' => true,
+                'choice_translation_domain' => 'privacy',
             ])
             ->add('thirdCountries', ChoiceType::class, [
                 'label' => 'processing_activity.form.third_countries',
@@ -204,6 +212,7 @@ class ProcessingActivityType extends AbstractType
                 'multiple' => true,
                 'required' => false,
                 'attr' => ['class' => 'select2'],
+                'choice_translation_domain' => 'privacy',
             ])
             ->add('transferSafeguards', ChoiceType::class, [
                 'label' => 'processing_activity.form.transfer_safeguards',
@@ -222,6 +231,7 @@ class ProcessingActivityType extends AbstractType
                 ],
                 'required' => false,
                 'attr' => ['class' => 'select2'],
+                'choice_translation_domain' => 'privacy',
             ])
 
             // ============================================================================
@@ -282,6 +292,7 @@ class ProcessingActivityType extends AbstractType
                 ],
                 'required' => true,
                 'attr' => ['class' => 'select2'],
+                'choice_translation_domain' => 'privacy',
             ])
             ->add('legalBasisDetails', TextareaType::class, [
                 'label' => 'processing_activity.form.legal_basis_details',
@@ -306,6 +317,7 @@ class ProcessingActivityType extends AbstractType
                 ],
                 'required' => false,
                 'attr' => ['class' => 'select2'],
+                'choice_translation_domain' => 'privacy',
             ])
 
             // ============================================================================
@@ -345,6 +357,7 @@ class ProcessingActivityType extends AbstractType
                 ],
                 'expanded' => true,
                 'required' => true,
+                'choice_translation_domain' => 'privacy',
             ])
 
             // ============================================================================
@@ -359,6 +372,7 @@ class ProcessingActivityType extends AbstractType
                 ],
                 'expanded' => true,
                 'required' => true,
+                'choice_translation_domain' => 'privacy',
             ])
 
             // ============================================================================
@@ -373,6 +387,7 @@ class ProcessingActivityType extends AbstractType
                 ],
                 'expanded' => true,
                 'required' => true,
+                'choice_translation_domain' => 'privacy',
             ])
             ->add('dpiaCompleted', ChoiceType::class, [
                 'label' => 'processing_activity.form.dpia_completed',
@@ -383,6 +398,7 @@ class ProcessingActivityType extends AbstractType
                 ],
                 'expanded' => true,
                 'required' => true,
+                'choice_translation_domain' => 'privacy',
             ])
             ->add('dpiaDate', DateType::class, [
                 'label' => 'processing_activity.form.dpia_date',
@@ -394,13 +410,14 @@ class ProcessingActivityType extends AbstractType
                 'label' => 'processing_activity.form.risk_level',
                 'help' => 'processing_activity.help.risk_level',
                 'choices' => [
-                    'Low' => 'low',
-                    'Medium' => 'medium',
-                    'High' => 'high',
-                    'Critical' => 'critical',
+                    'processing_activity.risk_level.low' => 'low',
+                    'processing_activity.risk_level.medium' => 'medium',
+                    'processing_activity.risk_level.high' => 'high',
+                    'processing_activity.risk_level.critical' => 'critical',
                 ],
                 'required' => false,
                 'attr' => ['class' => 'select2'],
+                'choice_translation_domain' => 'privacy',
             ])
 
             // ============================================================================
@@ -410,11 +427,12 @@ class ProcessingActivityType extends AbstractType
                 'label' => 'processing_activity.form.has_automated_decision_making',
                 'help' => 'processing_activity.help.has_automated_decision_making',
                 'choices' => [
-                    'No' => false,
-                    'Yes' => true,
+                    'common.no' => false,
+                    'common.yes' => true,
                 ],
                 'expanded' => true,
                 'required' => true,
+                'choice_translation_domain' => 'privacy',
             ])
             ->add('automatedDecisionMakingDetails', TextareaType::class, [
                 'label' => 'processing_activity.form.automated_decision_making_details',
@@ -430,14 +448,15 @@ class ProcessingActivityType extends AbstractType
                 'label' => 'processing_activity.form.data_sources',
                 'help' => 'processing_activity.help.data_sources',
                 'choices' => [
-                    'Directly from data subject' => 'data_subject',
-                    'Third parties' => 'third_parties',
-                    'Public sources' => 'public_sources',
-                    'Other' => 'other',
+                    'processing_activity.data_source.data_subject' => 'data_subject',
+                    'processing_activity.data_source.third_parties' => 'third_parties',
+                    'processing_activity.data_source.public_sources' => 'public_sources',
+                    'processing_activity.data_source.other' => 'other',
                 ],
                 'multiple' => true,
                 'required' => false,
                 'attr' => ['class' => 'select2'],
+                'choice_translation_domain' => 'privacy',
             ])
 
             // ============================================================================
@@ -447,11 +466,12 @@ class ProcessingActivityType extends AbstractType
                 'label' => 'processing_activity.form.status',
                 'help' => 'processing_activity.help.status',
                 'choices' => [
-                    'Draft' => 'draft',
-                    'Active' => 'active',
-                    'Archived' => 'archived',
+                    'processing_activity.status.draft' => 'draft',
+                    'processing_activity.status.active' => 'active',
+                    'processing_activity.status.archived' => 'archived',
                 ],
                 'required' => true,
+                'choice_translation_domain' => 'privacy',
             ])
             ->add('startDate', DateType::class, [
                 'label' => 'processing_activity.form.start_date',

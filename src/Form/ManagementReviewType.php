@@ -66,11 +66,12 @@ class ManagementReviewType extends AbstractType
             ->add('status', ChoiceType::class, [
                 'label' => 'management_review.field.status',
                 'choices' => [
-                    'Geplant' => 'planned',
-                    'Durchgeführt' => 'completed',
-                    'Follow-up erforderlich' => 'follow_up_required',
+                    'management_review.status.planned' => 'planned',
+                    'management_review.status.completed' => 'completed',
+                    'management_review.status.follow_up_required' => 'follow_up_required',
                 ],
                 'attr' => ['class' => 'form-select'],
+                'choice_translation_domain' => 'management_review',
             ])
             ->add('performanceEvaluation', TextareaType::class, [
                 'label' => 'management_review.field.performance_evaluation',

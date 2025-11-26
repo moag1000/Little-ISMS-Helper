@@ -40,6 +40,7 @@ class ChangeRequestType extends AbstractType
                     'change_request.change_type.other' => 'other',
                 ],
                 'required' => true,
+                    'choice_translation_domain' => 'change_requests',
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'change_request.field.description',
@@ -70,6 +71,7 @@ class ChangeRequestType extends AbstractType
                     'change_request.priority.low' => 'low',
                 ],
                 'required' => true,
+                    'choice_translation_domain' => 'change_requests',
             ])
             ->add('status', ChoiceType::class, [
                 'label' => 'change_request.field.status',
@@ -86,6 +88,7 @@ class ChangeRequestType extends AbstractType
                     'change_request.status.cancelled' => 'cancelled',
                 ],
                 'required' => true,
+                    'choice_translation_domain' => 'change_requests',
             ])
             ->add('ismsImpact', TextareaType::class, [
                 'label' => 'change_request.field.isms_impact',

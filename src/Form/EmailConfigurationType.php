@@ -35,6 +35,7 @@ class EmailConfigurationType extends AbstractType
                     'class' => 'form-select',
                 ],
                 'help' => 'setup.email.transport_help',
+                    'choice_translation_domain' => 'admin',
             ])
             ->add('host', TextType::class, [
                 'label' => 'setup.email.host',
@@ -69,6 +70,7 @@ class EmailConfigurationType extends AbstractType
                     'class' => 'form-select',
                 ],
                 'help' => 'setup.email.encryption_help',
+                    'choice_translation_domain' => 'admin',
             ])
             ->add('username', TextType::class, [
                 'label' => 'setup.email.username',

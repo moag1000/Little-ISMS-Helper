@@ -85,6 +85,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'multiple' => true,
                 'required' => true,
                 'attr' => ['class' => 'select2'],
+                    'choice_translation_domain' => 'privacy',
             ])
             ->add('dataSubjectCategories', ChoiceType::class, [
                 'label' => 'dpia.form.data_subject_categories',
@@ -105,6 +106,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'multiple' => true,
                 'required' => true,
                 'attr' => ['class' => 'select2'],
+                    'choice_translation_domain' => 'privacy',
             ])
             ->add('estimatedDataSubjects', IntegerType::class, [
                 'label' => 'dpia.form.estimated_data_subjects',
@@ -152,6 +154,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 ],
                 'required' => true,
                 'placeholder' => 'dpia.placeholder.legal_basis',
+                    'choice_translation_domain' => 'privacy',
             ])
             ->add('legislativeCompliance', TextareaType::class, [
                 'label' => 'dpia.form.legislative_compliance',
@@ -174,6 +177,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 ],
                 'required' => true,
                 'placeholder' => 'dpia.placeholder.risk_level',
+                    'choice_translation_domain' => 'privacy',
             ])
             ->add('likelihood', ChoiceType::class, [
                 'label' => 'dpia.form.likelihood',
@@ -187,6 +191,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 ],
                 'required' => false,
                 'placeholder' => 'dpia.placeholder.likelihood',
+                    'choice_translation_domain' => 'privacy',
             ])
             ->add('impact', ChoiceType::class, [
                 'label' => 'dpia.form.impact',
@@ -200,6 +205,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 ],
                 'required' => false,
                 'placeholder' => 'dpia.placeholder.impact',
+                    'choice_translation_domain' => 'privacy',
             ])
             ->add('dataSubjectRisks', TextareaType::class, [
                 'label' => 'dpia.form.data_subject_risks',
@@ -257,6 +263,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 ],
                 'required' => false,
                 'placeholder' => 'dpia.placeholder.residual_risk_level',
+                    'choice_translation_domain' => 'privacy',
             ])
 
             // ============================================================================
@@ -294,6 +301,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 ],
                 'expanded' => true,
                 'required' => false,
+                    'choice_translation_domain' => 'privacy',
             ])
             ->add('dataSubjectConsultationDetails', TextareaType::class, [
                 'label' => 'dpia.form.data_subject_consultation_details',
@@ -314,6 +322,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 ],
                 'expanded' => true,
                 'required' => false,
+                    'choice_translation_domain' => 'privacy',
             ])
             ->add('supervisoryConsultationDate', DateType::class, [
                 'label' => 'dpia.form.supervisory_consultation_date',

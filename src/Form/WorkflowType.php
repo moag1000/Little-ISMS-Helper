@@ -43,13 +43,13 @@ class WorkflowType extends AbstractType
             ->add('entityType', ChoiceType::class, [
                 'label' => 'workflow.field.entity_type',
                 'choices' => [
-                    'Risiko' => 'Risk',
-                    'Maßnahme' => 'Control',
-                    'Vorfall' => 'Incident',
-                    'Asset' => 'Asset',
-                    'Änderungsantrag' => 'ChangeRequest',
-                    'Dokument' => 'Document',
-                    'Audit' => 'InternalAudit',
+                    'workflow.entity_type.risk' => 'Risk',
+                    'workflow.entity_type.control' => 'Control',
+                    'workflow.entity_type.incident' => 'Incident',
+                    'workflow.entity_type.asset' => 'Asset',
+                    'workflow.entity_type.change_request' => 'ChangeRequest',
+                    'workflow.entity_type.document' => 'Document',
+                    'workflow.entity_type.audit' => 'InternalAudit',
                 ],
                 'attr' => [
                     'class' => 'form-select'
@@ -57,7 +57,8 @@ class WorkflowType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'workflow.validation.entity_type_required'])
                 ],
-                'help' => 'workflow.help.entity_type'
+                'help' => 'workflow.help.entity_type',
+                'choice_translation_domain' => 'workflows',
             ])
             ->add('isActive', CheckboxType::class, [
                 'label' => 'workflow.field.is_active',

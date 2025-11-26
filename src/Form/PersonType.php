@@ -41,6 +41,7 @@ class PersonType extends AbstractType
                     'person.type.other' => 'other',
                 ],
                 'required' => true,
+                    'choice_translation_domain' => 'people',
             ])
             ->add('badgeId', TextType::class, [
                 'label' => 'person.field.badge_id',

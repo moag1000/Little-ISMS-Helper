@@ -47,6 +47,7 @@ class IncidentType extends AbstractType
                     'incident.category.other' => 'other',
                 ],
                 'required' => true,
+                    'choice_translation_domain' => 'incident',
             ])
             ->add('severity', ChoiceType::class, [
                 'label' => 'incident.field.severity',
@@ -58,6 +59,7 @@ class IncidentType extends AbstractType
                 ],
                 'required' => true,
                 'help' => 'incident.help.severity',
+                    'choice_translation_domain' => 'incident',
             ])
             ->add('detectedAt', DateTimeType::class, [
                 'label' => 'incident.field.detected_at',
@@ -87,6 +89,7 @@ class IncidentType extends AbstractType
                     'incident.status.closed' => 'closed',
                 ],
                 'required' => true,
+                    'choice_translation_domain' => 'incident',
             ])
             ->add('affectedSystems', TextareaType::class, [
                 'label' => 'incident.field.affected_systems',
@@ -139,6 +142,7 @@ class IncidentType extends AbstractType
                 'required' => false,
                 'placeholder' => 'incident.placeholder.nis2_category',
                 'help' => 'incident.help.nis2_category',
+                    'choice_translation_domain' => 'incident',
             ])
             ->add('earlyWarningReportedAt', DateTimeType::class, [
                 'label' => 'incident.field.early_warning_reported_at',
@@ -167,6 +171,7 @@ class IncidentType extends AbstractType
                 'expanded' => true,
                 'required' => true,
                 'help' => 'incident.help.cross_border_impact',
+                    'choice_translation_domain' => 'incident',
             ])
             ->add('affectedUsersCount', IntegerType::class, [
                 'label' => 'incident.field.affected_users_count',

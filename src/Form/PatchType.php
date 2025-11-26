@@ -91,6 +91,7 @@ class PatchType extends AbstractType
                 ],
                 'required' => true,
                 'help' => 'patch.help.patch_type',
+                    'choice_translation_domain' => 'patches',
             ])
             ->add('priority', ChoiceType::class, [
                 'label' => 'patch.field.priority',
@@ -102,6 +103,7 @@ class PatchType extends AbstractType
                 ],
                 'required' => true,
                 'help' => 'patch.help.priority',
+                    'choice_translation_domain' => 'patches',
             ])
             ->add('affectedAssets', EntityType::class, [
                 'label' => 'patch.field.affected_assets',
@@ -127,6 +129,7 @@ class PatchType extends AbstractType
                     'patch.status.not_applicable' => 'not_applicable',
                 ],
                 'required' => true,
+                    'choice_translation_domain' => 'patches',
             ])
             ->add('releaseDate', DateType::class, [
                 'label' => 'patch.field.release_date',
@@ -186,6 +189,7 @@ class PatchType extends AbstractType
                 ],
                 'expanded' => true,
                 'required' => true,
+                    'choice_translation_domain' => 'patches',
             ])
             ->add('estimatedDowntimeMinutes', IntegerType::class, [
                 'label' => 'patch.field.estimated_downtime_minutes',
@@ -204,6 +208,7 @@ class PatchType extends AbstractType
                 ],
                 'expanded' => true,
                 'required' => true,
+                    'choice_translation_domain' => 'patches',
             ])
             ->add('knownIssues', TextareaType::class, [
                 'label' => 'patch.field.known_issues',

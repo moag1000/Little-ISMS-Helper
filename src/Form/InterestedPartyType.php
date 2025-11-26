@@ -26,19 +26,20 @@ class InterestedPartyType extends AbstractType
             ->add('partyType', ChoiceType::class, [
                 'label' => 'interested_party.field.party_type',
                 'choices' => [
-                    'Customer' => 'customer',
-                    'Shareholder' => 'shareholder',
-                    'Employee' => 'employee',
-                    'Regulator' => 'regulator',
-                    'Supplier' => 'supplier',
-                    'Partner' => 'partner',
-                    'Public' => 'public',
-                    'Media' => 'media',
-                    'Government' => 'government',
-                    'Competitor' => 'competitor',
-                    'Other' => 'other',
+                    'interested_party.party_type.customer' => 'customer',
+                    'interested_party.party_type.shareholder' => 'shareholder',
+                    'interested_party.party_type.employee' => 'employee',
+                    'interested_party.party_type.regulator' => 'regulator',
+                    'interested_party.party_type.supplier' => 'supplier',
+                    'interested_party.party_type.partner' => 'partner',
+                    'interested_party.party_type.public' => 'public',
+                    'interested_party.party_type.media' => 'media',
+                    'interested_party.party_type.government' => 'government',
+                    'interested_party.party_type.competitor' => 'competitor',
+                    'interested_party.party_type.other' => 'other',
                 ],
                 'required' => true,
+                'choice_translation_domain' => 'interested_parties',
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'interested_party.field.description',
@@ -62,12 +63,13 @@ class InterestedPartyType extends AbstractType
             ->add('importance', ChoiceType::class, [
                 'label' => 'interested_party.field.importance',
                 'choices' => [
-                    'Critical' => 'critical',
-                    'High' => 'high',
-                    'Medium' => 'medium',
-                    'Low' => 'low',
+                    'interested_party.importance.critical' => 'critical',
+                    'interested_party.importance.high' => 'high',
+                    'interested_party.importance.medium' => 'medium',
+                    'interested_party.importance.low' => 'low',
                 ],
                 'required' => true,
+                'choice_translation_domain' => 'interested_parties',
             ])
             ->add('requirements', TextareaType::class, [
                 'label' => 'interested_party.field.requirements',
@@ -82,14 +84,15 @@ class InterestedPartyType extends AbstractType
             ->add('communicationFrequency', ChoiceType::class, [
                 'label' => 'interested_party.field.communication_frequency',
                 'choices' => [
-                    'Daily' => 'daily',
-                    'Weekly' => 'weekly',
-                    'Monthly' => 'monthly',
-                    'Quarterly' => 'quarterly',
-                    'Annually' => 'annually',
-                    'As Needed' => 'as_needed',
+                    'interested_party.frequency.daily' => 'daily',
+                    'interested_party.frequency.weekly' => 'weekly',
+                    'interested_party.frequency.monthly' => 'monthly',
+                    'interested_party.frequency.quarterly' => 'quarterly',
+                    'interested_party.frequency.annually' => 'annually',
+                    'interested_party.frequency.as_needed' => 'as_needed',
                 ],
                 'required' => false,
+                'choice_translation_domain' => 'interested_parties',
             ])
             ->add('communicationMethod', TextareaType::class, [
                 'label' => 'interested_party.field.communication_method',
