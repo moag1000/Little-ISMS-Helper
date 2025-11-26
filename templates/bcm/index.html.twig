@@ -6,6 +6,12 @@
 {% import '_macros/cards.html.twig' as cards %}
 
 <div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.bcm'|trans({}, 'nav') }
+        ]
+    } %}
+
     <div class="page-header">
         <div>
             <h1>Business Continuity Management</h1>
