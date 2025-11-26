@@ -1,26 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Mapping{% endblock %}
+{% block title %}{{ 'compliance.mapping.edit.title'|trans({}, 'compliance') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'Compliance', url: path('app_compliance_index'), icon: 'bi-shield-check' },
-            { label: 'Mappings', url: path('app_compliance_mapping_index') },
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index'), icon: 'bi-shield-check' },
+            { label: 'compliance.mapping.list.title'|trans({}, 'compliance'), url: path('app_compliance_mapping_index') },
             { label: mapping.sourceRequirement.requirementId ~ ' → ' ~ mapping.targetRequirement.requirementId, url: path('app_compliance_mapping_show', {id: mapping.id}) },
-            { label: 'Edit' }
+            { label: 'common.edit'|trans({}, 'messages') }
         ]
     } %}
 
     {# Page Header #}
     {% include '_components/_page_header.html.twig' with {
-        title: 'Edit Mapping',
+        title: 'compliance.mapping.edit.title'|trans({}, 'compliance'),
         icon: 'bi-pencil',
         actions: [
-            { label: 'View', url: path('app_compliance_mapping_show', {id: mapping.id}), variant: 'outline-primary', icon: 'bi-eye' },
-            { label: 'Back to List', url: path('app_compliance_mapping_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+            { label: 'common.view'|trans({}, 'messages'), url: path('app_compliance_mapping_show', {id: mapping.id}), variant: 'outline-primary', icon: 'bi-eye' },
+            { label: 'common.back'|trans({}, 'messages'), url: path('app_compliance_mapping_index'), variant: 'secondary', icon: 'bi-arrow-left' }
         ]
     } %}
 
@@ -30,97 +30,40 @@
                 <div class="card-body">
                     {{ form_start(form) }}
 
-                    {# Requirement Selection #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-link-45deg" aria-hidden="true"></i>
-                            Requirement Mapping
-                        </legend>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.sourceRequirement,
-                                    'label': 'Source Requirement',
-                                    'help': 'The requirement being mapped from',
-                                    'required': true
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.targetRequirement,
-                                    'label': 'Target Requirement',
-                                    'help': 'The requirement being mapped to',
-                                    'required': true
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {# Mapping Strength #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-speedometer2" aria-hidden="true"></i>
-                            Mapping Strength
-                        </legend>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.mappingPercentage,
-                                    'label': 'Mapping Percentage',
-                                    'help': 'How much does source fulfill target? (0-150%)',
-                                    'required': true
-                                } %}
-                            </div>
-                            <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.mappingType,
-                                    'label': 'Mapping Type',
-                                    'help': 'Automatically determined by percentage'
-                                } %}
-                            </div>
-                            <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.confidence,
-                                    'label': 'Confidence Level',
-                                    'help': 'How confident are you in this mapping?'
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {# Rationale #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-journal-text" aria-hidden="true"></i>
-                            Justification
-                        </legend>
-
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.mappingRationale,
-                            'label': 'Mapping Rationale',
-                            'help': 'Explain why these requirements are related'
-                        } %}
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.bidirectional,
-                                    'label': 'Bidirectional Mapping',
-                                    'help': 'Does this mapping work in both directions?'
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
+                    {% include '_components/_auto_form.html.twig' with {
+                        'form': form,
+                        'sections': {
+                            'requirements': {
+                                'label': 'compliance.mapping.section.requirements'|trans({}, 'compliance'),
+                                'fields': ['sourceRequirement', 'targetRequirement']
+                            },
+                            'strength': {
+                                'label': 'compliance.mapping.section.strength'|trans({}, 'compliance'),
+                                'fields': ['mappingPercentage', 'mappingType', 'confidence']
+                            },
+                            'rationale': {
+                                'label': 'compliance.mapping.section.rationale'|trans({}, 'compliance'),
+                                'fields': ['mappingRationale', 'bidirectional']
+                            }
+                        },
+                        'col_widths': {
+                            'sourceRequirement': 6,
+                            'targetRequirement': 6,
+                            'mappingPercentage': 4,
+                            'mappingType': 4,
+                            'confidence': 4,
+                            'mappingRationale': 12,
+                            'bidirectional': 6
+                        }
+                    } %}
 
                     {# Form Actions #}
                     <div class="form-actions d-flex gap-2 justify-content-between">
                         <a href="{{ path('app_compliance_mapping_show', {id: mapping.id}) }}" class="btn btn-secondary">
-                            <i class="bi bi-x-circle" aria-hidden="true"></i> Cancel
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save" aria-hidden="true"></i> Save Changes
+                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
                         </button>
                     </div>
 
@@ -131,25 +74,25 @@
 
         <div class="col-md-4">
             <div class="card">
-                <div class="card-header"><h5 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> Current Mapping</h5>
+                <div class="card-header"><h5 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'compliance.mapping.info.current'|trans({}, 'compliance') }}</h5>
                 </div>
                 <div class="card-body">
                     <p class="small">
-                        <strong>Source:</strong><br>
+                        <strong>{{ 'compliance.mapping.field.source'|trans({}, 'compliance') }}:</strong><br>
                         {{ mapping.sourceRequirement.framework.code }} - {{ mapping.sourceRequirement.requirementId }}
                     </p>
                     <p class="small">
-                        <strong>Target:</strong><br>
+                        <strong>{{ 'compliance.mapping.field.target'|trans({}, 'compliance') }}:</strong><br>
                         {{ mapping.targetRequirement.framework.code }} - {{ mapping.targetRequirement.requirementId }}
                     </p>
                     <p class="small">
-                        <strong>Current Type:</strong>
+                        <strong>{{ 'compliance.mapping.field.type'|trans({}, 'compliance') }}:</strong>
                         <span class="badge bg-{{ mapping.mappingBadgeClass }}">{{ mapping.mappingType }}</span>
                     </p>
                     {% if mapping.isAnalyzed %}
                         <p class="small">
-                            <strong>Calculated:</strong> {{ mapping.calculatedPercentage }}%<br>
-                            <strong>Analysis Confidence:</strong> {{ mapping.analysisConfidence }}%
+                            <strong>{{ 'compliance.mapping.field.calculated'|trans({}, 'compliance') }}:</strong> {{ mapping.calculatedPercentage }}%<br>
+                            <strong>{{ 'compliance.mapping.field.analysis_confidence'|trans({}, 'compliance') }}:</strong> {{ mapping.analysisConfidence }}%
                         </p>
                     {% endif %}
                 </div>
