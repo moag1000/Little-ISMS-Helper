@@ -55,7 +55,7 @@ class ISMSObjectiveController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $objective->setUpdatedAt(new \DateTime());
+            $objective->setUpdatedAt(new \DateTimeImmutable());
 
             $this->entityManager->persist($objective);
             $this->entityManager->flush();
@@ -87,7 +87,7 @@ class ISMSObjectiveController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $objective->setUpdatedAt(new \DateTime());
+            $objective->setUpdatedAt(new \DateTimeImmutable());
 
             // Automatically set achieved date when status changes to achieved
             if ($objective->getStatus() === 'achieved' && !$objective->getAchievedDate()) {

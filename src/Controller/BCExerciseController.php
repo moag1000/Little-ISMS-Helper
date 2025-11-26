@@ -78,7 +78,7 @@ class BCExerciseController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $bcExercise->setUpdatedAt(new \DateTime());
+            $bcExercise->setUpdatedAt(new \DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('bc_exercise.success.updated'));

@@ -137,7 +137,7 @@ class RiskAppetiteController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $appetite->setUpdatedAt(new \DateTime());
+            $appetite->setUpdatedAt(new \DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('risk_appetite.success.updated'));
