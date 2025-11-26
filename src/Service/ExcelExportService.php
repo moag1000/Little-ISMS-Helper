@@ -69,7 +69,7 @@ class ExcelExportService
             ]);
 
             $sheet->getColumnDimension($col)->setAutoSize(true);
-            $col++;
+            $col = str_increment($col);
         }
     }
 
@@ -85,7 +85,7 @@ class ExcelExportService
                 // Security: Prevent CSV/Excel Formula Injection (OWASP #3 - Injection)
                 $safeValue = $this->sanitizeFormulaInjection($value);
                 $sheet->setCellValue($col . $row, $safeValue);
-                $col++;
+                $col = str_increment($col);
             }
             $row++;
         }
@@ -244,7 +244,7 @@ class ExcelExportService
                 ],
             ]);
 
-            $col++;
+            $col = str_increment($col);
         }
 
         // Freeze pane below header
@@ -284,7 +284,7 @@ class ExcelExportService
                     ],
                 ]);
 
-                $col++;
+                $col = str_increment($col);
                 $colIndex++;
             }
             $currentRow++;
