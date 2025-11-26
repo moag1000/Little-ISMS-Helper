@@ -38,7 +38,7 @@
 {% block admin_content %}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'nav.admin'|trans({}, 'nav'), url: path('app_admin_dashboard') },
+        { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
         { label: 'audit_log.page.title'|trans({}, 'audit_log') }
     ]
 } %}

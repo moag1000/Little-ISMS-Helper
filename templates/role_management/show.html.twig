@@ -6,7 +6,7 @@
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'nav.admin'|trans({}, 'nav'), url: path('app_admin_dashboard') },
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
             { label: 'nav.roles'|trans({}, 'nav'), url: path('role_management_index') },
             { label: role.name }
         ]

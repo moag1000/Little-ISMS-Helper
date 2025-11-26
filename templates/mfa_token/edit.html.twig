@@ -8,7 +8,7 @@
 {% block admin_content %}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'nav.admin'|trans({}, 'nav'), url: path('app_admin_dashboard') },
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
             { label: 'nav.mfa'|trans({}, 'nav'), url: path('admin_mfa_index') },
             { label: mfa_token.name, url: path('admin_mfa_show', {id: mfa_token.id}) },
             { label: 'common.edit'|trans({}, 'messages') }
