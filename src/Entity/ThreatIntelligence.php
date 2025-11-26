@@ -144,8 +144,8 @@ class ThreatIntelligence
 
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
-        $this->detectionDate = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
+        $this->detectionDate = new \DateTimeImmutable();
         $this->affectedAssets = new ArrayCollection();
         $this->resultingIncidents = new ArrayCollection();
     }

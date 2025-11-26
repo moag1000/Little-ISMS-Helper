@@ -423,8 +423,8 @@ class ProcessingActivity
         $this->purposes = [];
         $this->dataSubjectCategories = [];
         $this->personalDataCategories = [];
-        $this->createdAt = new \DateTime();
-        $this->updatedAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     // ============================================================================
@@ -434,7 +434,7 @@ class ProcessingActivity
     #[ORM\PreUpdate]
     public function setUpdatedAtValue(): void
     {
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     // ============================================================================

@@ -106,7 +106,7 @@ class CryptographicOperation
 
     public function __construct()
     {
-        $this->timestamp = new \DateTime();
+        $this->timestamp = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
