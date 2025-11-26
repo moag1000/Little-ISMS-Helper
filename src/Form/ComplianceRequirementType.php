@@ -21,106 +21,106 @@ class ComplianceRequirementType extends AbstractType
     {
         $builder
             ->add('framework', EntityType::class, [
-                'label' => 'compliance_requirement.field.framework',
+                'label' => 'requirement.field.framework',
                 'class' => ComplianceFramework::class,
                 'choice_label' => 'name',
                 'attr' => [
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_requirement.validation.framework_required'])
+                    new Assert\NotBlank(['message' => 'requirement.validation.framework_required'])
                 ],
-                'help' => 'compliance_requirement.help.framework'
+                'help' => 'requirement.help.framework'
             ])
             ->add('requirementId', TextType::class, [
-                'label' => 'compliance_requirement.field.requirement_id',
+                'label' => 'requirement.field.requirement_id',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'compliance_requirement.placeholder.requirement_id'
+                    'placeholder' => 'requirement.placeholder.requirement_id'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_requirement.validation.requirement_id_required']),
+                    new Assert\NotBlank(['message' => 'requirement.validation.requirement_id_required']),
                     new Assert\Length([
                         'max' => 50,
-                        'maxMessage' => 'compliance_requirement.validation.requirement_id_max_length'
+                        'maxMessage' => 'requirement.validation.requirement_id_max_length'
                     ])
                 ],
-                'help' => 'compliance_requirement.help.requirement_id'
+                'help' => 'requirement.help.requirement_id'
             ])
             ->add('title', TextType::class, [
-                'label' => 'compliance_requirement.field.title',
+                'label' => 'requirement.field.title',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'compliance_requirement.placeholder.title'
+                    'placeholder' => 'requirement.placeholder.title'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_requirement.validation.title_required']),
+                    new Assert\NotBlank(['message' => 'requirement.validation.title_required']),
                     new Assert\Length([
                         'max' => 255,
-                        'maxMessage' => 'compliance_requirement.validation.title_max_length'
+                        'maxMessage' => 'requirement.validation.title_max_length'
                     ])
                 ]
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'compliance_requirement.field.description',
+                'label' => 'requirement.field.description',
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 5,
-                    'placeholder' => 'compliance_requirement.placeholder.description'
+                    'placeholder' => 'requirement.placeholder.description'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_requirement.validation.description_required'])
+                    new Assert\NotBlank(['message' => 'requirement.validation.description_required'])
                 ]
             ])
             ->add('category', TextType::class, [
-                'label' => 'compliance_requirement.field.category',
+                'label' => 'requirement.field.category',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'compliance_requirement.placeholder.category'
+                    'placeholder' => 'requirement.placeholder.category'
                 ],
                 'constraints' => [
                     new Assert\Length([
                         'max' => 100,
-                        'maxMessage' => 'compliance_requirement.validation.category_max_length'
+                        'maxMessage' => 'requirement.validation.category_max_length'
                     ])
                 ],
-                'help' => 'compliance_requirement.help.category'
+                'help' => 'requirement.help.category'
             ])
             ->add('priority', ChoiceType::class, [
-                'label' => 'compliance_requirement.field.priority',
+                'label' => 'requirement.field.priority',
                 'choices' => [
-                    'compliance_requirement.priority.critical' => 'critical',
-                    'compliance_requirement.priority.high' => 'high',
-                    'compliance_requirement.priority.medium' => 'medium',
-                    'compliance_requirement.priority.low' => 'low',
+                    'requirement.priority.critical' => 'critical',
+                    'requirement.priority.high' => 'high',
+                    'requirement.priority.medium' => 'medium',
+                    'requirement.priority.low' => 'low',
                 ],
                 'choice_translation_domain' => 'compliance',
                 'attr' => [
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_requirement.validation.priority_required'])
+                    new Assert\NotBlank(['message' => 'requirement.validation.priority_required'])
                 ]
             ])
             ->add('requirementType', ChoiceType::class, [
-                'label' => 'compliance_requirement.field.requirement_type',
+                'label' => 'requirement.field.requirement_type',
                 'choices' => [
-                    'compliance_requirement.requirement_type.core' => 'core',
-                    'compliance_requirement.requirement_type.detailed' => 'detailed',
-                    'compliance_requirement.requirement_type.sub_requirement' => 'sub_requirement',
+                    'requirement.requirement_type.core' => 'core',
+                    'requirement.requirement_type.detailed' => 'detailed',
+                    'requirement.requirement_type.sub_requirement' => 'sub_requirement',
                 ],
                 'choice_translation_domain' => 'compliance',
                 'attr' => [
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_requirement.validation.requirement_type_required'])
+                    new Assert\NotBlank(['message' => 'requirement.validation.requirement_type_required'])
                 ],
-                'help' => 'compliance_requirement.help.requirement_type'
+                'help' => 'requirement.help.requirement_type'
             ])
             ->add('parentRequirement', EntityType::class, [
-                'label' => 'compliance_requirement.field.parent_requirement',
+                'label' => 'requirement.field.parent_requirement',
                 'class' => ComplianceRequirement::class,
                 'choice_label' => function(ComplianceRequirement $req) {
                     return $req->getRequirementId() . ' - ' . $req->getTitle();
@@ -129,7 +129,7 @@ class ComplianceRequirementType extends AbstractType
                 'attr' => [
                     'class' => 'form-select'
                 ],
-                'help' => 'compliance_requirement.help.parent_requirement'
+                'help' => 'requirement.help.parent_requirement'
             ])
             // Note: applicable, applicabilityJustification, and fulfillmentPercentage
             // are now tenant-specific and managed via ComplianceRequirementFulfillment.
