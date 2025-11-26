@@ -25,6 +25,14 @@ document:
         tables: Tabellen
         excel: Excel
         other: Andere
+        asset: Asset
+        risk: Risiko
+        incident: Vorfall
+        control: Kontrolle
+        audit: Audit
+        compliance: Compliance
+        training: Schulung
+        general: Allgemein
     section:
         type_overview: Typ‑Übersicht
         all_documents: 'Alle Dokumente'
@@ -73,11 +81,15 @@ document:
         updated: Aktualisiert
     help:
         name: 'Eindeutiger Name des Dokuments'
+        name_optional: 'Optionaler Name (wird automatisch vom Dateinamen übernommen, falls leer)'
         description: 'Detaillierte Beschreibung des Inhalts und Zwecks'
         document_type: 'Kategorie des Dokuments (z. B. Richtlinie, Verfahren)'
-        file: 'Wählen Sie eine Datei zum Hochladen'
+        file: 'Wählen Sie eine Datei zum Hochladen (max. 10 MB, erlaubte Formate: PDF, Word, Excel, Bilder, Text)'
         edit_file: 'Lassen Sie das Feld leer, um die vorhandene Datei beizubehalten'
         file_edit: 'Neue Datei hochladen (optional)'
+    placeholder:
+        name: 'z.B. ISMS-Richtlinie 2025'
+        description: 'Beschreiben Sie den Inhalt und Zweck dieses Dokuments...'
     delete_warning: 'Das Löschen dieses Dokuments kann nicht rückgängig gemacht werden.'
     badge:
         controlled: Controlled

@@ -68,3 +68,21 @@ objective:
     link:
         new: Neu
         create_new: 'Erstellen Neu'
+    category:
+        availability: Verfügbarkeit
+        confidentiality: Vertraulichkeit
+        integrity: Integrität
+        compliance: Compliance
+        risk_management: Risikomanagement
+        incident_response: 'Incident Response'
+        awareness: 'Awareness & Schulung'
+        continual_improvement: 'Kontinuierliche Verbesserung'
+    unit:
+        percent: 'Prozent (%)'
+        days: Tage
+        hours: Stunden
+        count: Anzahl
+        incidents: Vorfälle
+        employees: Mitarbeiter
+        euro: 'Euro (€)'
+        points: Punkte
