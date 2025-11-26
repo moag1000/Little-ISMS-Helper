@@ -197,22 +197,22 @@
                 {% endif %}
             </div>
 
-            {% if supplier.relatedAssets|length > 0 %}
+            {% if supplier.supportedAssets|length > 0 %}
             <div class="detail-section">
-                <h3>{{ 'supplier.section.related_assets'|trans({}, 'suppliers') }} ({{ supplier.relatedAssets|length }})</h3>
+                <h3>{{ 'supplier.section.related_assets'|trans({}, 'suppliers') }} ({{ supplier.supportedAssets|length }})</h3>
                 <ul>
-                    {% for asset in supplier.relatedAssets %}
+                    {% for asset in supplier.supportedAssets %}
                     <li><a href="{{ path('app_asset_show', {id: asset.id}) }}">{{ asset.name }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
             {% endif %}
 
-            {% if supplier.relatedRisks|length > 0 %}
+            {% if supplier.identifiedRisks|length > 0 %}
             <div class="detail-section">
-                <h3>{{ 'supplier.section.related_risks'|trans({}, 'suppliers') }} ({{ supplier.relatedRisks|length }})</h3>
+                <h3>{{ 'supplier.section.related_risks'|trans({}, 'suppliers') }} ({{ supplier.identifiedRisks|length }})</h3>
                 <ul>
-                    {% for risk in supplier.relatedRisks %}
+                    {% for risk in supplier.identifiedRisks %}
                     <li><a href="{{ path('app_risk_show', {id: risk.id}) }}">{{ risk.title }}</a></li>
                     {% endfor %}
                 </ul>
