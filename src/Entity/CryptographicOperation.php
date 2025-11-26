@@ -84,7 +84,7 @@ class CryptographicOperation
     #[Groups(['crypto:read', 'crypto:write'])]
     private ?string $errorMessage = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['crypto:read'])]
     private ?\DateTimeInterface $timestamp = null;
 

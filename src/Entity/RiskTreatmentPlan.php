@@ -141,11 +141,11 @@ class RiskTreatmentPlan
     #[Assert\Range(min: 0, max: 100, notInRangeMessage: 'Completion percentage must be between {{ min }} and {{ max }}')]
     private int $completionPercentage = 0;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['treatment_plan:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['treatment_plan:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
