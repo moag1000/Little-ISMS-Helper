@@ -15,7 +15,7 @@ class BCExerciseTest extends TestCase
         $exercise = new BCExercise();
 
         $this->assertNotNull($exercise->getCreatedAt());
-        $this->assertInstanceOf(\DateTime::class, $exercise->getCreatedAt());
+        $this->assertInstanceOf(\DateTimeInterface::class, $exercise->getCreatedAt());
         $this->assertEquals(0, $exercise->getTestedPlans()->count());
         $this->assertEquals(0, $exercise->getDocuments()->count());
     }

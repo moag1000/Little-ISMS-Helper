@@ -156,7 +156,7 @@ class ISMSObjectiveServiceTest extends TestCase
 
         $objective->expects($this->once())
             ->method('setUpdatedAt')
-            ->with($this->isInstanceOf(\DateTime::class));
+            ->with($this->isInstanceOf(\DateTimeInterface::class));
 
         $this->entityManager->expects($this->once())
             ->method('flush');
@@ -172,11 +172,11 @@ class ISMSObjectiveServiceTest extends TestCase
 
         $objective->expects($this->once())
             ->method('setUpdatedAt')
-            ->with($this->isInstanceOf(\DateTime::class));
+            ->with($this->isInstanceOf(\DateTimeInterface::class));
 
         $objective->expects($this->once())
             ->method('setAchievedDate')
-            ->with($this->isInstanceOf(\DateTime::class));
+            ->with($this->isInstanceOf(\DateTimeInterface::class));
 
         $this->service->updateObjective($objective);
     }
@@ -204,7 +204,7 @@ class ISMSObjectiveServiceTest extends TestCase
 
         $objective->expects($this->once())
             ->method('setUpdatedAt')
-            ->with($this->isInstanceOf(\DateTime::class));
+            ->with($this->isInstanceOf(\DateTimeInterface::class));
 
         $this->entityManager->expects($this->once())
             ->method('persist')

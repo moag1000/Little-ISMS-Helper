@@ -42,7 +42,7 @@ class SupplierTest extends TestCase
         $this->assertCount(0, $supplier->getSupportedAssets());
         $this->assertCount(0, $supplier->getIdentifiedRisks());
         $this->assertCount(0, $supplier->getDocuments());
-        $this->assertInstanceOf(\DateTime::class, $supplier->getCreatedAt());
+        $this->assertInstanceOf(\DateTimeInterface::class, $supplier->getCreatedAt());
         $this->assertNull($supplier->getUpdatedAt());
     }
 

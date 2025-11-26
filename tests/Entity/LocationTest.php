@@ -35,7 +35,7 @@ class LocationTest extends TestCase
         $this->assertCount(0, $location->getAccessLogs());
         $this->assertCount(0, $location->getAssets());
         $this->assertNull($location->getTenant());
-        $this->assertInstanceOf(\DateTime::class, $location->getCreatedAt());
+        $this->assertInstanceOf(\DateTimeInterface::class, $location->getCreatedAt());
         $this->assertNull($location->getUpdatedAt());
     }
 
