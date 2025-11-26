@@ -35,7 +35,7 @@ class SupplierController extends AbstractController
         $tenant = $user?->getTenant();
 
         // Get view filter parameter
-        $view = $request->query->get('view', 'inherited'); // Default: inherited
+        $view = $request->query->get('view', 'own'); // Default: own tenant's suppliers
 
         // Get suppliers based on view filter
         if ($tenant) {
@@ -102,6 +102,13 @@ class SupplierController extends AbstractController
     public function new(Request $request): Response
     {
         $supplier = new Supplier();
+
+        // Set tenant from current user
+        $user = $this->security->getUser();
+        if ($user && $user->getTenant()) {
+            $supplier->setTenant($user->getTenant());
+        }
+
         $form = $this->createForm(SupplierType::class, $supplier);
         $form->handleRequest($request);
 
