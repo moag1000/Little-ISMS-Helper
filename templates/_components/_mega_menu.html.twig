@@ -474,7 +474,7 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.compliance_frameworks'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
-                        <li><a href="{{ path('app_compliance_framework_dashboard') }}" class="{% if current_route == 'app_compliance_framework_dashboard' %}active{% endif %}" data-turbo-action="advance">
+                        <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route starts with 'app_compliance_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-bar-chart" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.framework_dashboard'|trans({}, 'nav') }}</span>
@@ -488,7 +488,7 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.mapping_quality'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
-                        <li><a href="{{ path('app_nis2_assessment') }}" class="{% if current_route starts with 'app_nis2_' %}active{% endif %}" data-turbo-action="advance">
+                        <li><a href="{{ path('app_nis2_compliance_dashboard') }}" class="{% if current_route starts with 'app_nis2_' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-building-check" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.nis2'|trans({}, 'nav') }}</span>
@@ -536,14 +536,14 @@
                             </div>
                         </a></li>
                         {% endif %}
-                        <li><a href="{{ path('admin_data_repair') }}" class="{% if current_route starts with 'admin_data_repair' %}active{% endif %}" data-turbo-action="advance">
+                        <li><a href="{{ path('admin_data_repair_index') }}" class="{% if current_route starts with 'admin_data_repair' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-tools" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.data_repair'|trans({}, 'nav') }}</span>
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.data_repair'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
-                        <li><a href="{{ path('admin_audit_log') }}" class="{% if current_route starts with 'admin_audit_log' %}active{% endif %}" data-turbo-action="advance">
+                        <li><a href="{{ path('app_audit_log_index') }}" class="{% if current_route starts with 'app_audit_log' %}active{% endif %}" data-turbo-action="advance">
                             <i class="bi bi-clock-history" aria-hidden="true"></i>
                             <div class="mega-menu-link-content">
                                 <span class="mega-menu-link-title">{{ 'nav.audit_log'|trans({}, 'nav') }}</span>
