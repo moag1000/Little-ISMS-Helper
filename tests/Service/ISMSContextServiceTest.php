@@ -457,7 +457,6 @@ class ISMSContextServiceTest extends TestCase
 
         $reflection = new \ReflectionClass($context);
         $idProperty = $reflection->getProperty('id');
-        $idProperty->setAccessible(true);
         $idProperty->setValue($context, $id);
 
         $context->setTenant($tenant);

@@ -315,7 +315,6 @@ class HealthAutoFixServiceTest extends TestCase
     {
         $reflection = new \ReflectionClass($this->service);
         $method = $reflection->getMethod('formatBytes');
-        $method->setAccessible(true);
 
         $this->assertEquals('0 B', $method->invoke($this->service, 0));
         $this->assertEquals('1 KB', $method->invoke($this->service, 1024));
@@ -329,7 +328,6 @@ class HealthAutoFixServiceTest extends TestCase
 
         $reflection = new \ReflectionClass($this->service);
         $method = $reflection->getMethod('getDirectorySize');
-        $method->setAccessible(true);
 
         $size = $method->invoke($this->service, $this->cacheDir);
 
@@ -344,7 +342,6 @@ class HealthAutoFixServiceTest extends TestCase
 
         $reflection = new \ReflectionClass($this->service);
         $method = $reflection->getMethod('getDirectorySize');
-        $method->setAccessible(true);
 
         $size = $method->invoke($this->service, $this->cacheDir);
 
@@ -361,7 +358,6 @@ class HealthAutoFixServiceTest extends TestCase
 
         $reflection = new \ReflectionClass($this->service);
         $method = $reflection->getMethod('compressFile');
-        $method->setAccessible(true);
 
         $result = $method->invoke($this->service, $sourceFile, $destFile);
 
@@ -374,7 +370,6 @@ class HealthAutoFixServiceTest extends TestCase
     {
         $reflection = new \ReflectionClass($this->service);
         $method = $reflection->getMethod('findComposerBinary');
-        $method->setAccessible(true);
 
         $result = $method->invoke($this->service);
 
@@ -391,7 +386,6 @@ class HealthAutoFixServiceTest extends TestCase
 
         $reflection = new \ReflectionClass($this->service);
         $method = $reflection->getMethod('fixDirectoryPermissionsRecursive');
-        $method->setAccessible(true);
 
         $method->invoke($this->service, $this->cacheDir);
 
