@@ -1,6 +1,8 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'patches' %}
+
 {% block title %}{{ 'patch.new'|trans({}, 'patches') }} - {{ parent() }}{% endblock %}
+
 {% block body %}
 <div class="container py-4">
     <nav aria-label="breadcrumb" class="mb-4">
@@ -9,16 +11,79 @@
             <li class="breadcrumb-item active">{{ 'patch.new'|trans({}, 'patches') }}</li>
         </ol>
     </nav>
+
     <div class="card">
-        <div class="card-header bg-primary text-white"><h5 class="mb-0"><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'patch.new'|trans({}, 'patches') }}</h5>
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'patch.new'|trans({}, 'patches') }}</h5>
         </div>
         <div class="card-body">
-            {{ form_start(form) }}
-                {{ form_widget(form) }}
-                <div class="d-flex justify-content-between pt-3 border-top">
-                    <a href="{{ path('app_patch_index') }}" class="btn btn-outline-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
-                    <button type="submit" class="btn btn-primary">{{ 'common.save'|trans({}, 'messages') }}</button>
-                </div>
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+            {% include '_components/_auto_form.html.twig' with {
+                'form': form,
+                'sections': {
+                    'basic_info': {
+                        'label': 'patch.section.basic_info'|trans({}, 'patches'),
+                        'fields': ['patchId', 'title', 'description', 'vulnerability']
+                    },
+                    'product_info': {
+                        'label': 'patch.section.product_info'|trans({}, 'patches'),
+                        'fields': ['vendor', 'product', 'version', 'patchType']
+                    },
+                    'priority_status': {
+                        'label': 'patch.section.priority_status'|trans({}, 'patches'),
+                        'fields': ['priority', 'affectedAssets', 'status']
+                    },
+                    'deployment': {
+                        'label': 'patch.section.deployment'|trans({}, 'patches'),
+                        'fields': ['releaseDate', 'deploymentDeadline', 'deployedDate', 'responsiblePerson']
+                    },
+                    'testing_deployment': {
+                        'label': 'patch.section.testing_deployment'|trans({}, 'patches'),
+                        'fields': ['testingNotes', 'deploymentNotes', 'rollbackPlan']
+                    },
+                    'requirements': {
+                        'label': 'patch.section.requirements'|trans({}, 'patches'),
+                        'fields': ['requiresDowntime', 'estimatedDowntimeMinutes', 'requiresReboot', 'knownIssues']
+                    },
+                    'resources': {
+                        'label': 'patch.section.resources'|trans({}, 'patches'),
+                        'fields': ['downloadUrl', 'documentationUrl']
+                    }
+                },
+                'col_widths': {
+                    'patchId': 4,
+                    'title': 8,
+                    'description': 12,
+                    'vulnerability': 12,
+                    'vendor': 6,
+                    'product': 6,
+                    'version': 6,
+                    'patchType': 6,
+                    'priority': 6,
+                    'affectedAssets': 12,
+                    'status': 6,
+                    'releaseDate': 6,
+                    'deploymentDeadline': 6,
+                    'deployedDate': 6,
+                    'responsiblePerson': 6,
+                    'testingNotes': 12,
+                    'deploymentNotes': 12,
+                    'rollbackPlan': 12,
+                    'requiresDowntime': 6,
+                    'estimatedDowntimeMinutes': 6,
+                    'requiresReboot': 6,
+                    'knownIssues': 12,
+                    'downloadUrl': 12,
+                    'documentationUrl': 12
+                }
+            } %}
+
+            <div class="d-flex justify-content-between pt-3 border-top">
+                <a href="{{ path('app_patch_index') }}" class="btn btn-outline-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
+                <button type="submit" class="btn btn-primary">{{ 'common.save'|trans({}, 'messages') }}</button>
+            </div>
+
             {{ form_end(form) }}
         </div>
     </div>
