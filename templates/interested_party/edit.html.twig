@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'interested_parties' %}
 
-{% block title %}{{ 'interested_party.page.edit_title'|trans({}, 'interested_parties') }}: {{ interested_party.name }}{% endblock %}
+{% block title %}{{ 'interested_party.page.edit_title'|trans }}: {{ interested_party.name }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -14,7 +14,7 @@
     } %}
 
     <div class="page-header">
-        <h1>{{ 'interested_party.page.edit_title'|trans({}, 'interested_parties') }}: {{ interested_party.name }}</h1>
+        <h1>{{ 'interested_party.page.edit_title'|trans }}: {{ interested_party.name }}</h1>
         <div class="actions">
             <a href="{{ path('app_interested_party_show', {id: interested_party.id}) }}" class="btn btn-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
             <a href="{{ path('app_interested_party_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
@@ -24,98 +24,56 @@
     <div class="card">
         <div class="card-content">
             {{ form_start(form) }}
-                <fieldset class="mb-4">
-                    <legend class="h5 mb-3">{{ 'interested_party.section.basic_info'|trans({}, 'interested_parties') }}</legend>
-                    <div class="row">
-                        <div class="col-md-4">
-                            {{ form_row(form.name) }}
-                        </div>
-                        <div class="col-md-4">
-                            {{ form_row(form.partyType) }}
-                        </div>
-                        <div class="col-md-4">
-                            {{ form_row(form.importance) }}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            {{ form_row(form.description) }}
-                        </div>
-                    </div>
-                </fieldset>
-
-                <fieldset class="mb-4">
-                    <legend class="h5 mb-3">{{ 'interested_party.section.contact_info'|trans({}, 'interested_parties') }}</legend>
-                    <div class="row">
-                        <div class="col-md-4">
-                            {{ form_row(form.contactPerson) }}
-                        </div>
-                        <div class="col-md-4">
-                            {{ form_row(form.email) }}
-                        </div>
-                        <div class="col-md-4">
-                            {{ form_row(form.phone) }}
-                        </div>
-                    </div>
-                </fieldset>
-
-                <fieldset class="mb-4">
-                    <legend class="h5 mb-3">{{ 'interested_party.section.requirements'|trans({}, 'interested_parties') }}</legend>
-                    <div class="row">
-                        <div class="col-12">
-                            {{ form_row(form.requirements) }}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-12">
-                            {{ form_row(form.howAddressed) }}
-                        </div>
-                    </div>
-                </fieldset>
-
-                <fieldset class="mb-4">
-                    <legend class="h5 mb-3">{{ 'interested_party.section.communication'|trans({}, 'interested_parties') }}</legend>
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form_row(form.communicationFrequency) }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form_row(form.communicationMethod) }}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form_row(form.lastCommunication) }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form_row(form.nextCommunication) }}
-                        </div>
-                    </div>
-                </fieldset>
-
-                <fieldset class="mb-4">
-                    <legend class="h5 mb-3">{{ 'interested_party.section.feedback'|trans({}, 'interested_parties') }}</legend>
-                    <div class="row">
-                        <div class="col-12">
-                            {{ form_row(form.feedback) }}
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            {{ form_row(form.satisfactionLevel) }}
-                        </div>
-                        <div class="col-md-6">
-                            {{ form_row(form.issues) }}
-                        </div>
-                    </div>
-                </fieldset>
+                {% include '_components/_auto_form.html.twig' with {
+                    'form': form,
+                    'sections': {
+                        'basic_info': {
+                            'label': 'interested_party.section.basic_info'|trans,
+                            'fields': ['name', 'partyType', 'importance', 'description']
+                        },
+                        'contact_info': {
+                            'label': 'interested_party.section.contact_info'|trans,
+                            'fields': ['contactPerson', 'email', 'phone']
+                        },
+                        'requirements': {
+                            'label': 'interested_party.section.requirements'|trans,
+                            'fields': ['requirements', 'howAddressed']
+                        },
+                        'communication': {
+                            'label': 'interested_party.section.communication'|trans,
+                            'fields': ['communicationFrequency', 'communicationMethod', 'lastCommunication', 'nextCommunication']
+                        },
+                        'feedback': {
+                            'label': 'interested_party.section.feedback'|trans,
+                            'fields': ['feedback', 'satisfactionLevel', 'issues']
+                        }
+                    },
+                    'col_widths': {
+                        'name': 4,
+                        'partyType': 4,
+                        'importance': 4,
+                        'description': 12,
+                        'contactPerson': 4,
+                        'email': 4,
+                        'phone': 4,
+                        'requirements': 12,
+                        'howAddressed': 12,
+                        'communicationFrequency': 6,
+                        'communicationMethod': 6,
+                        'lastCommunication': 6,
+                        'nextCommunication': 6,
+                        'feedback': 12,
+                        'satisfactionLevel': 6,
+                        'issues': 6
+                    }
+                } %}
 
                 <div class="d-flex justify-content-between mt-4">
                     <a href="{{ path('app_interested_party_show', {id: interested_party.id}) }}" class="btn btn-secondary">
                         {{ 'common.cancel'|trans({}, 'messages') }}
                     </a>
                     <button type="submit" class="btn btn-primary">
-                        {{ 'interested_party.action.update'|trans({}, 'interested_parties') }}
+                        {{ 'interested_party.action.update'|trans }}
                     </button>
                 </div>
             {{ form_end(form) }}
