@@ -24,7 +24,7 @@ class ChangeRequestTest extends TestCase
         $this->assertNull($changeRequest->getDescription());
         $this->assertNull($changeRequest->getJustification());
         $this->assertNull($changeRequest->getRequestedBy());
-        $this->assertInstanceOf(\DateTime::class, $changeRequest->getRequestedDate());
+        $this->assertInstanceOf(\DateTimeInterface::class, $changeRequest->getRequestedDate());
         $this->assertEquals('medium', $changeRequest->getPriority());
         $this->assertEquals('draft', $changeRequest->getStatus());
         $this->assertNull($changeRequest->getIsmsImpact());
@@ -33,7 +33,7 @@ class ChangeRequestTest extends TestCase
         $this->assertCount(0, $changeRequest->getAffectedProcesses());
         $this->assertCount(0, $changeRequest->getAssociatedRisks());
         $this->assertCount(0, $changeRequest->getDocuments());
-        $this->assertInstanceOf(\DateTime::class, $changeRequest->getCreatedAt());
+        $this->assertInstanceOf(\DateTimeInterface::class, $changeRequest->getCreatedAt());
         $this->assertNull($changeRequest->getUpdatedAt());
     }
 
