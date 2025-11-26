@@ -5,6 +5,13 @@
 
 {% block body %}
 <div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.incidents'|trans({}, 'nav'), url: path('app_incident_index') },
+            { label: incident.title }
+        ]
+    } %}
+
     <div class="page-header">
         <h1>{{ incident.title }}</h1>
         <div class="actions">

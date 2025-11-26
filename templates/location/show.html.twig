@@ -4,6 +4,15 @@
 {% block title %}{{ location.name }} - {{ 'location.title.show'|trans({}, 'locations') }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.locations'|trans({}, 'nav'), url: path('app_location_index') },
+            { label: location.name }
+        ]
+    } %}
+</div>
+
 <div class="page-header">
     <div>
         <h1>{{ location.name }}</h1>
