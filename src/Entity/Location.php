@@ -148,7 +148,7 @@ class Location
 
     public function __construct()
     {
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
         $this->childLocations = new ArrayCollection();
         $this->accessLogs = new ArrayCollection();
         $this->assets = new ArrayCollection();

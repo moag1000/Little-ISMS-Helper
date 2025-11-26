@@ -255,7 +255,7 @@ class BCExercise
     {
         $this->testedPlans = new ArrayCollection();
         $this->documents = new ArrayCollection();
-        $this->createdAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     #[ORM\PrePersist]
