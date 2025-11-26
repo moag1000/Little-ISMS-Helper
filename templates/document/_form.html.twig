@@ -17,8 +17,9 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.originalFilename,
-                'label': 'document.field.name'|trans({}, 'document'),
-                'help': 'document.help.name'|trans({}, 'document'),
+                'label_key': 'document.field.name',
+                'help_key': 'document.help.name',
+                'translation_domain': 'documents',
                 'required': false
             } %}
         </div>
@@ -28,8 +29,9 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.description,
-                'label': 'document.field.description'|trans({}, 'document'),
-                'help': 'document.help.description'|trans({}, 'document')
+                'label_key': 'document.field.description',
+                'help_key': 'document.help.description',
+                'translation_domain': 'documents'
             } %}
         </div>
     </div>
@@ -38,8 +40,9 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.category,
-                'label': 'document.field.document_type'|trans({}, 'document'),
-                'help': 'document.help.document_type'|trans({}, 'document'),
+                'label_key': 'document.field.document_type',
+                'help_key': 'document.help.document_type',
+                'translation_domain': 'documents',
                 'required': true
             } %}
         </div>
@@ -64,10 +67,11 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.file,
-                'label': 'document.field.file'|trans({}, 'document'),
-                'help': is_edit_mode|default(false)
-                    ? ('document.help.file_edit'|trans({}, 'document'))
-                    : ('document.help.file'|trans({}, 'document')),
+                'label_key': 'document.field.file',
+                'help_key': is_edit_mode|default(false)
+                    ? 'document.help.file_edit'
+                    : 'document.help.file',
+                'translation_domain': 'documents',
                 'required': not is_edit_mode|default(false)
             } %}
         </div>
