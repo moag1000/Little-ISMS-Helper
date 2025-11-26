@@ -81,6 +81,7 @@ class TenantContext
 
     /**
      * Initialize the tenant context from the current user
+     * Falls back to default tenant if user has no tenant assigned
      */
     private function initialize(): void
     {
@@ -94,7 +95,54 @@ class TenantContext
             return;
         }
 
+        // Use user's tenant if available
         $this->currentTenant = $user->getTenant();
+
+        // Fallback if user has no tenant assigned
+        if ($this->currentTenant === null) {
+            $this->currentTenant = $this->resolveDefaultTenant();
+        }
+    }
+
+    /**
+     * Resolve default tenant when user has none assigned
+     * Priority: 1) Only one tenant exists -> use it
+     *           2) Multiple tenants -> use root tenant (no parent)
+     *           3) Multiple roots -> use oldest one
+     *           4) No tenants -> return null
+     */
+    private function resolveDefaultTenant(): ?Tenant
+    {
+        $activeTenants = $this->tenantRepository->findBy(['isActive' => true]);
+
+        if (count($activeTenants) === 0) {
+            return null;
+        }
+
+        if (count($activeTenants) === 1) {
+            return $activeTenants[0];
+        }
+
+        // Find root tenants (no parent)
+        $rootTenants = array_filter($activeTenants, fn(Tenant $t) => $t->getParent() === null);
+
+        if (count($rootTenants) === 1) {
+            return reset($rootTenants);
+        }
+
+        if (count($rootTenants) > 1) {
+            // Sort by createdAt ascending (oldest first)
+            usort($rootTenants, fn(Tenant $a, Tenant $b) =>
+                $a->getCreatedAt() <=> $b->getCreatedAt()
+            );
+            return $rootTenants[0];
+        }
+
+        // No root tenants found, return oldest tenant
+        usort($activeTenants, fn(Tenant $a, Tenant $b) =>
+            $a->getCreatedAt() <=> $b->getCreatedAt()
+        );
+        return $activeTenants[0];
     }
 
     /**

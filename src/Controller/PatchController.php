@@ -33,7 +33,7 @@ class PatchController extends AbstractController
         $tenant = $user?->getTenant();
 
         // Get view filter parameter
-        $view = $request->query->get('view', 'inherited'); // Default: inherited
+        $view = $request->query->get('view', 'own'); // Default: inherited
 
         // Get patches based on view filter
         if ($tenant) {
@@ -89,6 +89,13 @@ class PatchController extends AbstractController
     public function new(Request $request): Response
     {
         $patch = new Patch();
+
+        // Set tenant from current user
+        $user = $this->security->getUser();
+        if ($user && $user->getTenant()) {
+            $patch->setTenant($user->getTenant());
+        }
+
         $form = $this->createForm(PatchType::class, $patch);
         $form->handleRequest($request);
 
