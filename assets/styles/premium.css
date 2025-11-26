@@ -1319,13 +1319,35 @@
 /* ===============================
    Notification Center
    =============================== */
-.notification-center {
-    position: fixed;
-    top: 20px;
-    right: 80px;
+.notification-center-panel {
+    position: relative;
     z-index: 1001;
 }
 
+/* Header version of notification bell button */
+.notification-bell-btn-header {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.notification-bell-btn-header:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+}
+
+/* Keep old style for fixed position (if needed elsewhere) */
 .notification-bell-btn {
     width: 48px;
     height: 48px;

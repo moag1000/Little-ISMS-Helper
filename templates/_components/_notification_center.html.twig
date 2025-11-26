@@ -1,24 +1,11 @@
-{# Notification Center Component
+{# Notification Center Panel
    Usage: {% include '_components/_notification_center.html.twig' %}
-   
-   Features:
-   - Display notifications
-   - Mark as read
-   - Clear all
-   - Notification history
+
+   This contains only the notification panel.
+   The button is in _notification_bell.html.twig (in header)
 #}
 
-<div class="notification-center" data-controller="notifications">
-    {# Notification Bell Button #}
-    <button type="button"
-            class="notification-bell-btn"
-            data-action="click->notifications#toggle"
-            title="Benachrichtigungen">
-        <i class="bi bi-bell"></i>
-        <span class="notification-badge d-none"
-              data-notifications-target="badge">0</span>
-    </button>
-
+<div class="notification-center-panel" data-controller="notifications">
     {# Notification Panel #}
     <div class="notification-panel d-none"
          data-notifications-target="panel"
