@@ -1,20 +1,20 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'documents' %}
 
-{% block title %}{{ document.name }}{% endblock %}
+{% block title %}{{ document.originalFilename }}{% endblock %}
 
 {% block body %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.documents'|trans({}, 'nav'), url: path('app_document_index') },
-            { label: document.name }
+            { label: document.originalFilename }
         ]
     } %}
 
     <div class="page-header">
         <h1>
-            {{ document.name }}
+            {{ document.originalFilename }}
             {% if isInherited is defined and isInherited %}
                 <span class="badge bg-info ms-2">
                     <i class="bi bi-building" aria-hidden="true"></i> {{ 'corporate.inherited'|trans({}, 'messages') }}
@@ -55,17 +55,17 @@
     <div class="card">
         <div class="card-header">
             <h2>{{ 'document.details.title'|trans({}, 'document') }}</h2>
-            <span class="badge">{{ document.documentType|upper }}</span>
+            <span class="badge">{{ document.category|upper }}</span>
         </div>
         <div class="card-content">
             <div class="detail-grid">
                 <div class="detail-item">
                     <span class="label">{{ 'document.label.type'|trans({}, 'document') }}</span>
-                    <span class="value">{{ document.documentType|upper|replace({'_': ' '}) }}</span>
+                    <span class="value">{{ document.category|upper|replace({'_': ' '}) }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="label">{{ 'document.label.file_name'|trans({}, 'document') }}</span>
-                    <span class="value">{{ document.originalName }}</span>
+                    <span class="value">{{ document.originalFilename }}</span>
                 </div>
                 <div class="detail-item">
                     <span class="label">{{ 'document.label.size'|trans({}, 'document') }}</span>
@@ -98,10 +98,10 @@
                 </div>
             {% endif %}
 
-            {% if document.relatedEntityType and document.relatedEntityId %}
+            {% if document.entityType and document.entityId %}
                 <div class="detail-section">
                     <h2>{{ 'document.label.related_entity'|trans({}, 'document') }}</h2>
-                    <p>{{ document.relatedEntityType }} #{{ document.relatedEntityId }}</p>
+                    <p>{{ document.entityType }} #{{ document.entityId }}</p>
                 </div>
             {% endif %}
         </div>
