@@ -138,11 +138,11 @@ class Location
     #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['location:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['location:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
