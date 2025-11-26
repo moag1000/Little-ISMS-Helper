@@ -335,6 +335,58 @@ class EmailNotificationService
     }
 
     /**
+     * Send incident escalation notification
+     *
+     * @param User $recipient
+     * @param Incident $incident
+     * @param string $severity Escalation level (low, medium, high, critical)
+     */
+    public function sendIncidentEscalationNotification(User $recipient, Incident $incident, string $severity): void
+    {
+        $safeTitle = $this->sanitizeEmailSubject($incident->getTitle());
+        $severityLabel = strtoupper($severity);
+
+        $email = (new TemplatedEmail())
+            ->from(new Address($this->fromEmail, $this->fromName))
+            ->to($recipient->getEmail())
+            ->subject("[ISMS Alert - {$severityLabel}] Incident Escalation: {$safeTitle}")
+            ->htmlTemplate('emails/incident_escalation.html.twig')
+            ->context([
+                'incident' => $incident,
+                'recipient' => $recipient,
+                'severity' => $severity,
+                'escalation_level' => $severity,
+            ]);
+
+        $this->mailer->send($email);
+    }
+
+    /**
+     * Send data breach notification (GDPR Art. 33 + BDSG § 42)
+     *
+     * Critical: 72h notification deadline
+     *
+     * @param User $recipient
+     * @param array $context Must include: incident, deadline, deadline_formatted, hours_remaining
+     */
+    public function sendDataBreachNotification(User $recipient, array $context): void
+    {
+        $incident = $context['incident'];
+        $safeTitle = $this->sanitizeEmailSubject($incident->getTitle());
+
+        $email = (new TemplatedEmail())
+            ->from(new Address($this->fromEmail, $this->fromName))
+            ->to($recipient->getEmail())
+            ->subject("[URGENT - DATA BREACH] GDPR 72h Notification Required: {$safeTitle}")
+            ->htmlTemplate('emails/data_breach_notification.html.twig')
+            ->context(array_merge($context, [
+                'recipient' => $recipient,
+            ]));
+
+        $this->mailer->send($email);
+    }
+
+    /**
      * Security: Sanitize email subject to prevent header injection
      * Removes newlines, carriage returns, control characters, and email header keywords
      */
