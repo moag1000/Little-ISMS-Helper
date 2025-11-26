@@ -17,11 +17,9 @@
             {% if user.profilePicture %}
                 <img src="{{ asset(user.profilePicture) }}"
                      alt="{{ user.firstName }} {{ user.lastName }}"
-                     class="rounded-circle me-3"
-                     style="width: 80px; height: 80px; object-fit: cover; border: 2px solid #0d6efd;">
+                     class="rounded-circle me-3 profile-avatar profile-avatar-lg">
             {% else %}
-                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
-                     style="width: 80px; height: 80px; font-size: 2rem; font-weight: 600; border: 2px solid #0d6efd;">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3 profile-avatar profile-avatar-lg">
                     {{ user.firstName|slice(0, 1)|upper }}{{ user.lastName|slice(0, 1)|upper }}
                 </div>
             {% endif %}
@@ -59,8 +57,7 @@
                                     {% if user.profilePicture %}
                                         <img src="{{ asset(user.profilePicture) }}"
                                              alt="{{ user.firstName }} {{ user.lastName }}"
-                                             class="rounded-circle"
-                                             style="width: 60px; height: 60px; object-fit: cover;">
+                                             class="rounded-circle profile-avatar profile-avatar-md">
                                     {% else %}
                                         <span class="text-muted">Kein Profilbild</span>
                                     {% endif %}
@@ -335,7 +332,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
-                <form method="post" action="{{ path('user_management_delete', {'id': user.id}) }}" style="display: inline;">
+                <form method="post" action="{{ path('user_management_delete', {'id': user.id}) }}" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
                     <button type="submit" class="btn btn-danger">Löschen</button>
                 </form>

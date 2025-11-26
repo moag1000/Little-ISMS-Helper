@@ -22,7 +22,7 @@
             <div class="card shadow-lg">
                 <div class="card-header bg-info text-white">
                     <h2 class="mb-0">
-                        <i class="bi bi-cloud-upload-alt me-2"></i>
+                        <i class="bi bi-cloud-upload-alt me-2" aria-hidden="true"></i>
                         Schritt 3: Backup wiederherstellen (Optional)
                     </h2>
                 </div>
@@ -33,7 +33,7 @@
 
                     <div class="alert alert-info" role="alert">
                         <h4 class="alert-heading">
-                            <i class="bi bi-info-circle me-2"></i>
+                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
                             Backup vs. Neu-Installation
                         </h5>
                         <ul class="mb-0">
@@ -47,7 +47,7 @@
                         <div class="mt-3 mb-4">
                             {% if backup_restore_result.success %}
                                 <div class="alert alert-success">
-                                    <i class="bi bi-check-circle me-2"></i>
+                                    <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
                                     <strong>Backup erfolgreich wiederhergestellt!</strong>
                                     <ul class="mb-0 mt-2">
                                         {% for entity, stats in backup_restore_result.statistics %}
@@ -67,7 +67,7 @@
                                 {% if backup_restore_result.orphaned_entities is defined and backup_restore_result.orphaned_entities.total > 0 %}
                                     <div class="alert alert-warning mt-3">
                                         <h4 class="alert-heading">
-                                            <i class="bi bi-exclamation-triangle me-2"></i>
+                                            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
                                             Verwaiste Entitäten gefunden
                                         </h5>
                                         <p>
@@ -88,7 +88,7 @@
                                         <div class="card border-warning">
                                             <div class="card-body">
                                                 <h4 class="card-title">
-                                                    <i class="bi bi-tools me-2"></i>
+                                                    <i class="bi bi-tools me-2" aria-hidden="true"></i>
                                                     Verwaiste Entitäten reparieren
                                                 </h5>
                                                 <p class="card-text text-muted">
@@ -115,7 +115,7 @@
                                                         </div>
                                                         <div class="col-md-4">
                                                             <button type="submit" class="btn btn-warning w-100">
-                                                                <i class="bi bi-wrench me-2"></i>
+                                                                <i class="bi bi-wrench me-2" aria-hidden="true"></i>
                                                                 Jetzt reparieren
                                                             </button>
                                                         </div>
@@ -130,7 +130,7 @@
                                 {% if backup_restore_result.risks_without_assets is defined and backup_restore_result.risks_without_assets > 0 %}
                                     <div class="alert alert-info mt-3">
                                         <h4 class="alert-heading">
-                                            <i class="bi bi-link me-2"></i>
+                                            <i class="bi bi-link me-2" aria-hidden="true"></i>
                                             Asset-Zuordnungen reparieren
                                         </h5>
                                         <p>
@@ -145,14 +145,14 @@
                                 {% if backup_restore_result.orphaned_entities is not defined or backup_restore_result.orphaned_entities.total == 0 %}
                                     <div class="mt-4">
                                         <a href="{{ path('setup_step11_complete') }}" class="btn btn-success btn-lg">
-                                            <i class="bi bi-check me-2"></i>
+                                            <i class="bi bi-check me-2" aria-hidden="true"></i>
                                             Setup abschließen
                                         </a>
                                     </div>
                                 {% endif %}
                             {% else %}
                                 <div class="alert alert-danger">
-                                    <i class="bi bi-exclamation-circle me-2"></i>
+                                    <i class="bi bi-exclamation-circle me-2" aria-hidden="true"></i>
                                     <strong>Fehler bei der Wiederherstellung:</strong>
                                     <p class="mb-0 mt-2">{{ backup_restore_result.message }}</p>
                                 </div>
@@ -165,7 +165,7 @@
                     <div class="card border-warning mb-4">
                         <div class="card-header bg-warning text-dark">
                             <h3 class="mb-0">
-                                <i class="bi bi-database me-2"></i>
+                                <i class="bi bi-database me-2" aria-hidden="true"></i>
                                 Schritt 1: Datenbank-Struktur erstellen
                             </h5>
                         </div>
@@ -175,14 +175,14 @@
                                 Dieser Vorgang kann einige Minuten dauern.
                             </p>
                             <div class="alert alert-info" role="alert">
-                                <i class="bi bi-info-circle me-2"></i>
+                                <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
                                 <strong>Hinweis:</strong> Die Migrationen werden ausgeführt und erstellen alle benötigten Tabellen.
                                 Bitte warten Sie, bis der Vorgang abgeschlossen ist.
                             </div>
                             <form method="post" action="{{ path('setup_step3_create_schema') }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token('setup_create_schema') }}">
                                 <button type="submit" class="btn btn-warning btn-lg">
-                                    <i class="bi bi-gears me-2"></i>
+                                    <i class="bi bi-gears me-2" aria-hidden="true"></i>
                                     Datenbank-Struktur jetzt erstellen
                                 </button>
                             </form>
@@ -195,13 +195,13 @@
                     <div class="card border-info mb-4">
                         <div class="card-header bg-info text-white">
                             <h3 class="mb-0">
-                                <i class="bi bi-cloud-upload-alt me-2"></i>
+                                <i class="bi bi-cloud-upload-alt me-2" aria-hidden="true"></i>
                                 Option 1: Backup wiederherstellen
                             </h5>
                         </div>
                         <div class="card-body">
                             <div class="alert alert-success mb-3" role="alert">
-                                <i class="bi bi-check-circle me-2"></i>
+                                <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
                                 <strong>Datenbank-Struktur erfolgreich erstellt!</strong> Sie können jetzt ein Backup hochladen.
                             </div>
                             <p class="text-muted">
@@ -230,14 +230,14 @@
                                     </label>
                                     <input type="password" class="form-control" id="adminPassword" name="admin_password" placeholder="Neues Passwort für Admin-Benutzer" required>
                                     <div class="form-text">
-                                        <i class="bi bi-info-circle me-1"></i>
+                                        <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
                                         Passwörter werden aus Sicherheitsgründen nicht im Backup gespeichert.
                                         Geben Sie hier das Passwort für den Admin-Benutzer an.
                                     </div>
                                 </div>
 
                                 <button type="submit" class="btn btn-info btn-lg">
-                                    <i class="bi bi-upload me-2"></i>
+                                    <i class="bi bi-upload me-2" aria-hidden="true"></i>
                                     Backup hochladen und wiederherstellen
                                 </button>
                             </form>
@@ -249,7 +249,7 @@
                     <div class="card border-secondary">
                         <div class="card-header bg-secondary text-white">
                             <h3 class="mb-0">
-                                <i class="bi bi-skip-forward me-2"></i>
+                                <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
                                 Option 2: Neu-Installation
                             </h5>
                         </div>
@@ -259,7 +259,7 @@
                             </p>
                             <form method="post" action="{{ path('setup_step3_restore_backup_skip') }}">
                                 <button type="submit" class="btn btn-secondary btn-lg">
-                                    <i class="bi bi-skip-forward me-2"></i>
+                                    <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
                                     Überspringen - Neu-Installation erstellen
                                 </button>
                             </form>
