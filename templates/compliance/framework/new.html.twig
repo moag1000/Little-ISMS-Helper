@@ -22,94 +22,34 @@
                 <div class="card-body">
                     {{ form_start(form) }}
 
-                    {# Framework Identification #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-tag" aria-hidden="true"></i>
-                            {{ 'compliance.framework.section.identification'|trans({}, 'compliance') }}
-                        </legend>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.code,
-                                    'label': 'compliance.framework.field.code'|trans({}, 'compliance'),
-                                    'required': true
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.version,
-                                    'label': 'compliance.framework.field.version'|trans({}, 'compliance')
-                                } %}
-                            </div>
-                            <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.name,
-                                    'label': 'compliance.framework.field.name'|trans({}, 'compliance'),
-                                    'required': true
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {# Details #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-info-square" aria-hidden="true"></i>
-                            {{ 'compliance.framework.section.details'|trans({}, 'compliance') }}
-                        </legend>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.description,
-                                    'label': 'compliance.framework.field.description'|trans({}, 'compliance')
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.applicableIndustry,
-                                    'label': 'compliance.framework.field.industry'|trans({}, 'compliance')
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.regulatoryBody,
-                                    'label': 'compliance.framework.field.regulatory_body'|trans({}, 'compliance')
-                                } %}
-                            </div>
-                            <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.scopeDescription,
-                                    'label': 'compliance.framework.field.scope'|trans({}, 'compliance')
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {# Configuration #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-gear" aria-hidden="true"></i>
-                            {{ 'compliance.framework.section.configuration'|trans({}, 'compliance') }}
-                        </legend>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.mandatory,
-                                    'label': 'compliance.framework.field.mandatory'|trans({}, 'compliance')
-                                } %}
-                            </div>
-                            <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.active,
-                                    'label': 'compliance.framework.field.active'|trans({}, 'compliance')
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
+                    {% include '_components/_auto_form.html.twig' with {
+                        'form': form,
+                        'sections': {
+                            'identification': {
+                                'label': 'compliance.framework.section.identification'|trans({}, 'compliance'),
+                                'fields': ['code', 'version', 'name']
+                            },
+                            'details': {
+                                'label': 'compliance.framework.section.details'|trans({}, 'compliance'),
+                                'fields': ['description', 'applicableIndustry', 'regulatoryBody', 'scopeDescription']
+                            },
+                            'configuration': {
+                                'label': 'compliance.framework.section.configuration'|trans({}, 'compliance'),
+                                'fields': ['mandatory', 'active']
+                            }
+                        },
+                        'col_widths': {
+                            'code': 6,
+                            'version': 6,
+                            'name': 12,
+                            'description': 12,
+                            'applicableIndustry': 6,
+                            'regulatoryBody': 6,
+                            'scopeDescription': 12,
+                            'mandatory': 4,
+                            'active': 4
+                        }
+                    } %}
 
                     <div class="d-flex gap-2 pt-3 border-top">
                         <button type="submit" class="btn btn-success">
