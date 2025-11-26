@@ -1,67 +1,97 @@
 {% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'role_management' %}
 
-{% block title %}{{ 'role_management.title.create'|trans({}, 'role_management') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'role_management.title.create'|trans }} - Little ISMS Helper{% endblock %}
 
 {% block admin_content %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('app_admin_dashboard') },
+            { label: 'nav.roles'|trans({}, 'nav'), url: path('role_management_index') },
+            { label: 'role_management.title.create'|trans }
+        ]
+    } %}
+</div>
+
 <div class="page-header">
     <div>
-        <h1>{{ 'role_management.title.create'|trans({}, 'role_management') }}</h1>
+        <h1>{{ 'role_management.title.create'|trans }}</h1>
     </div>
     <div class="button-group">
         <a href="{{ path('role_management_index') }}" class="btn btn-secondary">
-            ← {{ 'common.back_to_list'|trans({}, 'messages') }}
+            <i class="bi bi-arrow-left"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
 
 <div class="card">
-    {{ form_start(form) }}
+    <div class="card-body">
+        <form method="post" action="{{ path('role_management_new') }}">
+            <h2 class="h5 mb-3">{{ 'role_management.section.basic_info'|trans }}</h2>
 
-    <h2>{{ 'role_management.section.basic_info'|trans({}, 'role_management') }}</h2>
+            <div class="mb-3">
+                <label for="name" class="form-label">{{ 'role_management.field.name'|trans }}</label>
+                <input type="text" class="form-control" id="name" name="name"
+                       value="{{ role.name }}" required
+                       placeholder="{{ 'role_management.placeholder.name'|trans }}">
+            </div>
 
-    <div class="form-group">
-        {{ form_label(form.name) }}
-        {{ form_widget(form.name, {'attr': {'class': 'form-control', 'placeholder': 'role_management.placeholder.name'|trans({}, 'role_management')}}) }}
-        {{ form_errors(form.name) }}
+            <div class="mb-3">
+                <label for="description" class="form-label">{{ 'role_management.field.description'|trans }}</label>
+                <textarea class="form-control" id="description" name="description" rows="3"
+                          placeholder="{{ 'role_management.placeholder.description'|trans }}">{{ role.description }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="isSystemRole" name="isSystemRole" value="1">
+                    <label class="form-check-label" for="isSystemRole">{{ 'role_management.field.system_role'|trans }}</label>
+                </div>
+                <small class="text-muted">{{ 'role_management.help.system_role'|trans }}</small>
+            </div>
+
+            <h2 class="h5 mb-3 mt-4">{{ 'role_management.section.permissions'|trans }}</h2>
+
+            <div class="mb-3">
+                <label class="form-label">{{ 'role_management.field.permissions'|trans }}</label>
+                <small class="text-muted d-block mb-2">{{ 'role_management.help.permissions'|trans }}</small>
+
+                {% for category, categoryPermissions in permissions %}
+                <div class="card mb-2">
+                    <div class="card-header py-2">
+                        <strong>{{ category }}</strong>
+                    </div>
+                    <div class="card-body py-2">
+                        <div class="row">
+                            {% for permission in categoryPermissions %}
+                            <div class="col-md-4 col-lg-3">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input"
+                                           id="permission_{{ permission.id }}"
+                                           name="permissions[]"
+                                           value="{{ permission.id }}">
+                                    <label class="form-check-label" for="permission_{{ permission.id }}">
+                                        {{ permission.name }}
+                                    </label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <button type="submit" class="btn btn-success">
+                    <i class="bi bi-check-lg"></i> {{ 'common.create'|trans({}, 'messages') }}
+                </button>
+                <a href="{{ path('role_management_index') }}" class="btn btn-secondary">
+                    <i class="bi bi-x-lg"></i> {{ 'common.cancel'|trans({}, 'messages') }}
+                </a>
+            </div>
+        </form>
     </div>
-
-    <div class="form-group">
-        {{ form_label(form.description) }}
-        {{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 3, 'placeholder': 'role_management.placeholder.description'|trans({}, 'role_management')}}) }}
-        {{ form_errors(form.description) }}
-    </div>
-
-    <div class="form-group">
-        {{ form_label(form.active) }}
-        <div class="mt-xs">
-            {{ form_widget(form.active) }}
-        </div>
-        {{ form_errors(form.active) }}
-        <small class="small-muted-block">
-            {{ 'role_management.help.active'|trans({}, 'role_management') }}
-        </small>
-    </div>
-
-    <h2 class="h3-mt-lg">{{ 'role_management.section.permissions'|trans({}, 'role_management') }}</h2>
-
-    <div class="form-group">
-        {{ form_label(form.permissions) }}
-        {{ form_widget(form.permissions, {'attr': {'class': 'form-control', 'size': 10}}) }}
-        {{ form_errors(form.permissions) }}
-        <small class="small-muted-block">
-            {{ 'role_management.help.permissions'|trans({}, 'role_management') }}
-        </small>
-    </div>
-
-    <div class="d-flex gap-2 mt-4">
-        <button type="submit" class="btn btn-success">
-            💾 {{ 'common.create'|trans({}, 'messages') }}
-        </button>
-        <a href="{{ path('role_management_index') }}" class="btn btn-secondary">
-            ❌ {{ 'common.cancel'|trans({}, 'messages') }}
-        </a>
-    </div>
-
-    {{ form_end(form) }}
 </div>
 {% endblock admin_content %}

@@ -3,6 +3,13 @@
 {% block title %}{{ 'crisis_team.new'|trans({}, 'crisis_team') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 {% block body %}
 <div class="container py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.crisis_teams'|trans({}, 'nav'), url: path('app_crisis_team_index') },
+            { label: 'crisis_team.new'|trans({}, 'crisis_team') }
+        ]
+    } %}
+
     <div class="card">
         <div class="card-header bg-primary text-white"><h5 class="mb-0">{{ 'crisis_team.new'|trans({}, 'crisis_team') }}</h5></div>
         <div class="card-body">

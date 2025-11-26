@@ -4,6 +4,16 @@
 {% block title %}{{ 'risk_appetite.edit'|trans({}, 'risk_appetite') }}: {{ appetite.displayName }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.risk_appetite'|trans({}, 'nav'), url: path('app_risk_appetite_index') },
+            { label: appetite.displayName, url: path('app_risk_appetite_show', {id: appetite.id}) },
+            { label: 'common.edit'|trans({}, 'messages') }
+        ]
+    } %}
+</div>
+
 <div class="page-header">
     <div>
         <h1><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'risk_appetite.edit'|trans({}, 'risk_appetite') }}</h1>
