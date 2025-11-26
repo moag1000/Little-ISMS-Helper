@@ -17,161 +17,161 @@ class ChangeRequestType extends AbstractType
     {
         $builder
             ->add('changeNumber', TextType::class, [
-                'label' => 'change_request.field.change_number',
+                'label' => 'field.change_number',
                 'required' => true,
                 'attr' => ['maxlength' => 50],
             ])
             ->add('title', TextType::class, [
-                'label' => 'change_request.field.title',
+                'label' => 'field.title',
                 'required' => true,
                 'attr' => ['maxlength' => 255],
             ])
             ->add('changeType', ChoiceType::class, [
-                'label' => 'change_request.field.change_type',
+                'label' => 'field.change_type',
                 'choices' => [
-                    'change_request.change_type.isms_policy' => 'isms_policy',
-                    'change_request.change_type.isms_scope' => 'isms_scope',
-                    'change_request.change_type.control' => 'control',
-                    'change_request.change_type.asset' => 'asset',
-                    'change_request.change_type.process' => 'process',
-                    'change_request.change_type.technology' => 'technology',
-                    'change_request.change_type.supplier' => 'supplier',
-                    'change_request.change_type.organizational' => 'organizational',
-                    'change_request.change_type.other' => 'other',
+                    'change_type.isms_policy' => 'isms_policy',
+                    'change_type.isms_scope' => 'isms_scope',
+                    'change_type.control' => 'control',
+                    'change_type.asset' => 'asset',
+                    'change_type.process' => 'process',
+                    'change_type.technology' => 'technology',
+                    'change_type.supplier' => 'supplier',
+                    'change_type.organizational' => 'organizational',
+                    'change_type.other' => 'other',
                 ],
                 'required' => true,
                     'choice_translation_domain' => 'change_requests',
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'change_request.field.description',
+                'label' => 'field.description',
                 'required' => true,
                 'attr' => ['rows' => 4],
             ])
             ->add('justification', TextareaType::class, [
-                'label' => 'change_request.field.justification',
+                'label' => 'field.justification',
                 'required' => true,
                 'attr' => ['rows' => 3],
             ])
             ->add('requestedBy', TextType::class, [
-                'label' => 'change_request.field.requested_by',
+                'label' => 'field.requested_by',
                 'required' => true,
                 'attr' => ['maxlength' => 100],
             ])
             ->add('requestedDate', DateType::class, [
-                'label' => 'change_request.field.requested_date',
+                'label' => 'field.requested_date',
                 'widget' => 'single_text',
                 'required' => true,
             ])
             ->add('priority', ChoiceType::class, [
-                'label' => 'change_request.field.priority',
+                'label' => 'field.priority',
                 'choices' => [
-                    'change_request.priority.critical' => 'critical',
-                    'change_request.priority.high' => 'high',
-                    'change_request.priority.medium' => 'medium',
-                    'change_request.priority.low' => 'low',
+                    'priority.critical' => 'critical',
+                    'priority.high' => 'high',
+                    'priority.medium' => 'medium',
+                    'priority.low' => 'low',
                 ],
                 'required' => true,
                     'choice_translation_domain' => 'change_requests',
             ])
             ->add('status', ChoiceType::class, [
-                'label' => 'change_request.field.status',
+                'label' => 'field.status',
                 'choices' => [
-                    'change_request.status.draft' => 'draft',
-                    'change_request.status.submitted' => 'submitted',
-                    'change_request.status.under_review' => 'under_review',
-                    'change_request.status.approved' => 'approved',
-                    'change_request.status.rejected' => 'rejected',
-                    'change_request.status.scheduled' => 'scheduled',
-                    'change_request.status.implemented' => 'implemented',
-                    'change_request.status.verified' => 'verified',
-                    'change_request.status.closed' => 'closed',
-                    'change_request.status.cancelled' => 'cancelled',
+                    'status.draft' => 'draft',
+                    'status.submitted' => 'submitted',
+                    'status.under_review' => 'under_review',
+                    'status.approved' => 'approved',
+                    'status.rejected' => 'rejected',
+                    'status.scheduled' => 'scheduled',
+                    'status.implemented' => 'implemented',
+                    'status.verified' => 'verified',
+                    'status.closed' => 'closed',
+                    'status.cancelled' => 'cancelled',
                 ],
                 'required' => true,
                     'choice_translation_domain' => 'change_requests',
             ])
             ->add('ismsImpact', TextareaType::class, [
-                'label' => 'change_request.field.isms_impact',
+                'label' => 'field.isms_impact',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('riskAssessment', TextareaType::class, [
-                'label' => 'change_request.field.risk_assessment',
+                'label' => 'field.risk_assessment',
                 'required' => false,
                 'attr' => ['rows' => 4],
             ])
             ->add('implementationPlan', TextareaType::class, [
-                'label' => 'change_request.field.implementation_plan',
+                'label' => 'field.implementation_plan',
                 'required' => false,
                 'attr' => ['rows' => 4],
             ])
             ->add('rollbackPlan', TextareaType::class, [
-                'label' => 'change_request.field.rollback_plan',
+                'label' => 'field.rollback_plan',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('testingRequirements', TextareaType::class, [
-                'label' => 'change_request.field.testing_requirements',
+                'label' => 'field.testing_requirements',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('plannedImplementationDate', DateType::class, [
-                'label' => 'change_request.field.planned_implementation_date',
+                'label' => 'field.planned_implementation_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('actualImplementationDate', DateType::class, [
-                'label' => 'change_request.field.actual_implementation_date',
+                'label' => 'field.actual_implementation_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('approvedBy', TextType::class, [
-                'label' => 'change_request.field.approved_by',
+                'label' => 'field.approved_by',
                 'required' => false,
                 'attr' => ['maxlength' => 100],
             ])
             ->add('approvedDate', DateType::class, [
-                'label' => 'change_request.field.approved_date',
+                'label' => 'field.approved_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('approvalComments', TextareaType::class, [
-                'label' => 'change_request.field.approval_comments',
+                'label' => 'field.approval_comments',
                 'required' => false,
                 'attr' => ['rows' => 2],
             ])
             ->add('implementedBy', TextType::class, [
-                'label' => 'change_request.field.implemented_by',
+                'label' => 'field.implemented_by',
                 'required' => false,
                 'attr' => ['maxlength' => 100],
             ])
             ->add('implementationNotes', TextareaType::class, [
-                'label' => 'change_request.field.implementation_notes',
+                'label' => 'field.implementation_notes',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('verifiedBy', TextType::class, [
-                'label' => 'change_request.field.verified_by',
+                'label' => 'field.verified_by',
                 'required' => false,
                 'attr' => ['maxlength' => 100],
             ])
             ->add('verifiedDate', DateType::class, [
-                'label' => 'change_request.field.verified_date',
+                'label' => 'field.verified_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('verificationResults', TextareaType::class, [
-                'label' => 'change_request.field.verification_results',
+                'label' => 'field.verification_results',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('closedDate', DateType::class, [
-                'label' => 'change_request.field.closed_date',
+                'label' => 'field.closed_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('closureNotes', TextareaType::class, [
-                'label' => 'change_request.field.closure_notes',
+                'label' => 'field.closure_notes',
                 'required' => false,
                 'attr' => ['rows' => 2],
             ])
