@@ -3,6 +3,14 @@
 {% block title %}{{ 'patch.edit'|trans({}, 'patches') }} - {{ parent() }}{% endblock %}
 {% block body %}
 <div class="container py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.patches'|trans({}, 'nav'), url: path('app_patch_index') },
+            { label: patch.title, url: path('app_patch_show', {id: patch.id}) },
+            { label: 'common.edit'|trans({}, 'messages') }
+        ]
+    } %}
+
     <div class="card">
         <div class="card-header bg-primary text-white"><h5 class="mb-0">{{ 'patch.edit'|trans({}, 'patches') }}</h5>
         </div>

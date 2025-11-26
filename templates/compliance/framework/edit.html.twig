@@ -4,6 +4,14 @@
 
 {% block body %}
 <div class="container-fluid mt-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index') },
+            { label: framework.name, url: path('app_compliance_framework_show', {id: framework.id}) },
+            { label: 'common.edit'|trans({}, 'messages') }
+        ]
+    } %}
+
     <div class="row">
         <div class="col-lg-8">
             <div class="card">
