@@ -861,6 +861,75 @@ button {
     color: var(--text-primary);
 }
 
+/* ==========================================
+   BOOTSTRAP FLOATING LABELS - Dark Mode
+   ========================================== */
+
+/* Floating label wrapper dark mode */
+[data-theme="dark"] .form-floating,
+[data-bs-theme="dark"] .form-floating {
+    background-color: transparent;
+}
+
+/* Floating label text - must be visible in dark mode */
+[data-theme="dark"] .form-floating > label,
+[data-bs-theme="dark"] .form-floating > label {
+    color: var(--text-secondary);
+    opacity: 0.8;
+}
+
+/* Floating label when input has focus or value */
+[data-theme="dark"] .form-floating > .form-control:focus ~ label,
+[data-theme="dark"] .form-floating > .form-control:not(:placeholder-shown) ~ label,
+[data-theme="dark"] .form-floating > .form-select ~ label,
+[data-bs-theme="dark"] .form-floating > .form-control:focus ~ label,
+[data-bs-theme="dark"] .form-floating > .form-control:not(:placeholder-shown) ~ label,
+[data-bs-theme="dark"] .form-floating > .form-select ~ label {
+    color: var(--text-primary);
+    opacity: 1;
+}
+
+/* Floating label required indicator */
+[data-theme="dark"] .form-floating > label .required,
+[data-bs-theme="dark"] .form-floating > label .required {
+    color: #f87171;
+}
+
+/* Form controls in floating labels - dark mode backgrounds */
+[data-theme="dark"] .form-floating > .form-control,
+[data-theme="dark"] .form-floating > .form-select,
+[data-bs-theme="dark"] .form-floating > .form-control,
+[data-bs-theme="dark"] .form-floating > .form-select {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+/* Floating form controls on focus */
+[data-theme="dark"] .form-floating > .form-control:focus,
+[data-theme="dark"] .form-floating > .form-select:focus,
+[data-bs-theme="dark"] .form-floating > .form-control:focus,
+[data-bs-theme="dark"] .form-floating > .form-select:focus {
+    background-color: var(--bg-tertiary);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
+}
+
+/* Invalid state for floating labels in dark mode */
+[data-theme="dark"] .form-floating > .form-control.is-invalid,
+[data-theme="dark"] .form-floating > .form-select.is-invalid,
+[data-bs-theme="dark"] .form-floating > .form-control.is-invalid,
+[data-bs-theme="dark"] .form-floating > .form-select.is-invalid {
+    border-color: #f87171;
+}
+
+[data-theme="dark"] .form-floating > .form-control.is-invalid ~ label,
+[data-theme="dark"] .form-floating > .form-select.is-invalid ~ label,
+[data-bs-theme="dark"] .form-floating > .form-control.is-invalid ~ label,
+[data-bs-theme="dark"] .form-floating > .form-select.is-invalid ~ label {
+    color: #f87171;
+}
+
 /* Disabled Form Controls Dark Mode */
 [data-theme="dark"] input:disabled,
 [data-theme="dark"] select:disabled,
