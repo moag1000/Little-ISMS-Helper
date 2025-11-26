@@ -1,7 +1,8 @@
 {#
-    Accessible Form Field Component
+    Accessible Form Field Component with Bootstrap Floating Labels
 
     This component provides WCAG 2.1 AA compliant form field rendering with:
+    - Bootstrap 5.3 Floating Labels (modern UX)
     - Proper ARIA attributes (aria-invalid, aria-describedby, aria-required)
     - Error message association
     - Help text association
@@ -26,26 +27,47 @@
 {% set field_name = field.vars.full_name %}
 {% set has_errors = field.vars.errors|length > 0 %}
 {% set is_required = required|default(field.vars.required) %}
+{% set field_type = field.vars.block_prefixes[1]|default('text') %}
 
-<div class="form-group mb-3">
-    {# Label with required indicator #}
-    <label for="{{ field_id }}" class="form-label">
-        {{ label|trans }}
-        {% if is_required %}
-            <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
-        {% endif %}
-    </label>
+{# Floating labels work for: text, email, password, number, textarea, select #}
+{% set supports_floating = field_type in ['text', 'email', 'password', 'number', 'tel', 'url', 'search', 'textarea', 'choice'] %}
 
-    {# Help text (if provided) #}
-    {% if help is defined and help %}
-        <div id="{{ field_id }}_help" class="form-text text-muted">
-            <i class="bi bi-info-circle" aria-hidden="true"></i>
-            {{ help }}
+<div class="mb-3">
+    {% if supports_floating %}
+        {# Bootstrap Floating Label wrapper #}
+        <div class="form-floating">
+            {# Input MUST come before label for floating effect #}
+            {% set placeholder_text = label|trans %}
+            {{ form_widget(field, {
+                'attr': {
+                    'class': (field.vars.attr.class|default('') ~ (has_errors ? ' is-invalid' : ''))|trim,
+                    'placeholder': placeholder_text,
+                    'aria-invalid': has_errors ? 'true' : 'false',
+                    'aria-describedby': [
+                        help is defined and help ? field_id ~ '_help',
+                        has_errors ? field_id ~ '_error'
+                    ]|filter(v => v)|join(' ')|default(null),
+                    'aria-required': is_required ? 'true' : 'false'
+                }
+            }) }}
+
+            {# Label comes AFTER input for floating labels #}
+            <label for="{{ field_id }}">
+                {{ label|trans }}
+                {% if is_required %}
+                    <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
+                {% endif %}
+            </label>
         </div>
-    {% endif %}
+    {% else %}
+        {# Fallback for non-floating fields (checkbox, radio, file, hidden) #}
+        <label for="{{ field_id }}" class="form-label">
+            {{ label|trans }}
+            {% if is_required %}
+                <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
+            {% endif %}
+        </label>
 
-    {# Input field with ARIA attributes #}
-    <div class="input-wrapper">
         {{ form_widget(field, {
             'attr': {
                 'class': (field.vars.attr.class|default('') ~ (has_errors ? ' is-invalid' : ''))|trim,
@@ -57,9 +79,17 @@
                 'aria-required': is_required ? 'true' : 'false'
             }
         }) }}
-    </div>
+    {% endif %}
 
-    {# Error messages with ARIA live region - Always positioned below field #}
+    {# Help text (positioned below input) #}
+    {% if help is defined and help %}
+        <div id="{{ field_id }}_help" class="form-text">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            {{ help }}
+        </div>
+    {% endif %}
+
+    {# Error messages with ARIA live region #}
     {% if has_errors %}
         <div id="{{ field_id }}_error" class="invalid-feedback d-block" role="alert" aria-live="assertive">
             <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
@@ -73,14 +103,16 @@
 {#
     Accessibility Features Implemented:
 
-    1. aria-invalid: Indicates validation state to screen readers
-    2. aria-describedby: Links help text and error messages to input
-    3. aria-required: Announces required fields to screen readers
-    4. role="alert": Error messages are announced immediately
-    5. aria-live="assertive": Ensures errors interrupt screen reader flow
-    6. aria-label: Required indicator has semantic meaning
-    7. Visual indicators: Icons are marked aria-hidden (decorative)
-    8. Unique IDs: All helper elements have unique IDs for association
+    1. Bootstrap Floating Labels: Modern UX with animated labels
+    2. aria-invalid: Indicates validation state to screen readers
+    3. aria-describedby: Links help text and error messages to input
+    4. aria-required: Announces required fields to screen readers
+    5. role="alert": Error messages are announced immediately
+    6. aria-live="assertive": Ensures errors interrupt screen reader flow
+    7. aria-label: Required indicator has semantic meaning
+    8. Visual indicators: Icons are marked aria-hidden (decorative)
+    9. Unique IDs: All helper elements have unique IDs for association
+    10. Placeholder: Required for floating labels, matches label text
 
     WCAG 2.1 Criteria Met:
     - 1.3.1 Info and Relationships (Level A)
@@ -88,4 +120,7 @@
     - 3.3.2 Labels or Instructions (Level A)
     - 3.3.3 Error Suggestion (Level AA)
     - 4.1.3 Status Messages (Level AA)
+
+    Bootstrap Floating Labels Documentation:
+    https://getbootstrap.com/docs/5.3/forms/floating-labels/
 #}
