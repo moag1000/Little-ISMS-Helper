@@ -24,113 +24,99 @@
     <div class="card">
         <div class="card-content">
             {{ form_start(form) }}
-                <h2>{{ 'interested_party.section.basic_info'|trans({}, 'interested_parties') }}</h2>
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.name) }}
-                        {{ form_widget(form.name) }}
-                        {{ form_errors(form.name) }}
+                <fieldset class="mb-4">
+                    <legend class="h5 mb-3">{{ 'interested_party.section.basic_info'|trans({}, 'interested_parties') }}</legend>
+                    <div class="row">
+                        <div class="col-md-4">
+                            {{ form_row(form.name) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_row(form.partyType) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_row(form.importance) }}
+                        </div>
                     </div>
-                    <div class="form-group">
-                        {{ form_label(form.partyType) }}
-                        {{ form_widget(form.partyType) }}
-                        {{ form_errors(form.partyType) }}
+                    <div class="row">
+                        <div class="col-12">
+                            {{ form_row(form.description) }}
+                        </div>
                     </div>
-                    <div class="form-group">
-                        {{ form_label(form.importance) }}
-                        {{ form_widget(form.importance) }}
-                        {{ form_errors(form.importance) }}
-                    </div>
-                </div>
+                </fieldset>
 
-                <div class="form-group">
-                    {{ form_label(form.description) }}
-                    {{ form_widget(form.description) }}
-                    {{ form_errors(form.description) }}
-                </div>
+                <fieldset class="mb-4">
+                    <legend class="h5 mb-3">{{ 'interested_party.section.contact_info'|trans({}, 'interested_parties') }}</legend>
+                    <div class="row">
+                        <div class="col-md-4">
+                            {{ form_row(form.contactPerson) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_row(form.email) }}
+                        </div>
+                        <div class="col-md-4">
+                            {{ form_row(form.phone) }}
+                        </div>
+                    </div>
+                </fieldset>
 
-                <h2>{{ 'interested_party.section.contact_info'|trans({}, 'interested_parties') }}</h2>
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.contactPerson) }}
-                        {{ form_widget(form.contactPerson) }}
-                        {{ form_errors(form.contactPerson) }}
+                <fieldset class="mb-4">
+                    <legend class="h5 mb-3">{{ 'interested_party.section.requirements'|trans({}, 'interested_parties') }}</legend>
+                    <div class="row">
+                        <div class="col-12">
+                            {{ form_row(form.requirements) }}
+                        </div>
                     </div>
-                    <div class="form-group">
-                        {{ form_label(form.email) }}
-                        {{ form_widget(form.email) }}
-                        {{ form_errors(form.email) }}
+                    <div class="row">
+                        <div class="col-12">
+                            {{ form_row(form.howAddressed) }}
+                        </div>
                     </div>
-                    <div class="form-group">
-                        {{ form_label(form.phone) }}
-                        {{ form_widget(form.phone) }}
-                        {{ form_errors(form.phone) }}
-                    </div>
-                </div>
+                </fieldset>
 
-                <h3>{{ 'interested_party.section.requirements'|trans({}, 'interested_parties') }}</h3>
-                <div class="form-group">
-                    {{ form_label(form.requirements) }}
-                    {{ form_widget(form.requirements) }}
-                    {{ form_errors(form.requirements) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.howAddressed) }}
-                    {{ form_widget(form.howAddressed) }}
-                    {{ form_errors(form.howAddressed) }}
-                </div>
-
-                <h3>{{ 'interested_party.section.communication'|trans({}, 'interested_parties') }}</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.communicationFrequency) }}
-                        {{ form_widget(form.communicationFrequency) }}
-                        {{ form_errors(form.communicationFrequency) }}
+                <fieldset class="mb-4">
+                    <legend class="h5 mb-3">{{ 'interested_party.section.communication'|trans({}, 'interested_parties') }}</legend>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.communicationFrequency) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.communicationMethod) }}
+                        </div>
                     </div>
-                    <div class="form-group">
-                        {{ form_label(form.communicationMethod) }}
-                        {{ form_widget(form.communicationMethod) }}
-                        {{ form_errors(form.communicationMethod) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.lastCommunication) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.nextCommunication) }}
+                        </div>
                     </div>
-                </div>
+                </fieldset>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.lastCommunication) }}
-                        {{ form_widget(form.lastCommunication) }}
-                        {{ form_errors(form.lastCommunication) }}
+                <fieldset class="mb-4">
+                    <legend class="h5 mb-3">{{ 'interested_party.section.feedback'|trans({}, 'interested_parties') }}</legend>
+                    <div class="row">
+                        <div class="col-12">
+                            {{ form_row(form.feedback) }}
+                        </div>
                     </div>
-                    <div class="form-group">
-                        {{ form_label(form.nextCommunication) }}
-                        {{ form_widget(form.nextCommunication) }}
-                        {{ form_errors(form.nextCommunication) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form_row(form.satisfactionLevel) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_row(form.issues) }}
+                        </div>
                     </div>
-                </div>
+                </fieldset>
 
-                <h3>{{ 'interested_party.section.feedback'|trans({}, 'interested_parties') }}</h3>
-                <div class="form-group">
-                    {{ form_label(form.feedback) }}
-                    {{ form_widget(form.feedback) }}
-                    {{ form_errors(form.feedback) }}
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.satisfactionLevel) }}
-                        {{ form_widget(form.satisfactionLevel) }}
-                        {{ form_errors(form.satisfactionLevel) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.issues) }}
-                        {{ form_widget(form.issues) }}
-                        {{ form_errors(form.issues) }}
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">{{ 'interested_party.action.update'|trans({}, 'interested_parties') }}</button>
-                    <a href="{{ path('app_interested_party_show', {id: interested_party.id}) }}" class="btn btn-secondary">{{ 'common.cancel'|trans({}, 'messages') }}</a>
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_interested_party_show', {id: interested_party.id}) }}" class="btn btn-secondary">
+                        {{ 'common.cancel'|trans({}, 'messages') }}
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        {{ 'interested_party.action.update'|trans({}, 'interested_parties') }}
+                    </button>
                 </div>
             {{ form_end(form) }}
         </div>
