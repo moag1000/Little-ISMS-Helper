@@ -2687,3 +2687,34 @@ table.table-borderless td {
     border-color: var(--color-secondary, #06b6d4);
 }
 
+/* ============================================
+   Required Field Indicator (Bootstrap 5 Floating Labels)
+   ============================================ */
+
+/* Required field asterisk */
+.required {
+    color: var(--color-danger, #ef4444);
+    margin-left: 0.25rem;
+    font-weight: 700;
+    font-size: 1.1em;
+    line-height: 1;
+    vertical-align: middle;
+}
+
+/* Bootstrap Floating Labels - Required indicator positioning */
+.form-floating > label .required {
+    position: relative;
+    top: -1px;
+}
+
+/* Dark mode - ensure asterisk is visible */
+[data-theme="dark"] .required,
+[data-bs-theme="dark"] .required {
+    color: #fca5a5; /* Lighter red for better contrast in dark mode */
+}
+
+/* Accessibility: Screen reader text */
+.required[aria-label] {
+    position: relative;
+}
+
