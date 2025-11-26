@@ -6,6 +6,27 @@ privacy:
         title: Datenschutzverletzungen
         management: 'Verwaltung von Datenschutzverletzungen'
         subtitle: 'Art. 33/34 DSGVO – 72‑Stunden Meldepflicht'
+        urgent_banner: 'DRINGEND: DATENSCHUTZVERLETZUNG - 72-STUNDEN-FRIST'
+        email_title: 'Datenschutzverletzung - Sofortige Meldung erforderlich'
+        greeting: 'Sehr geehrte(r) %name%,'
+        hours_remaining: 'Stunden verbleibend bis zur 72h-Frist'
+        deadline_date: 'Meldefrist'
+        legal_obligation: 'Gesetzliche Meldepflicht'
+        gdpr_art33: 'DSGVO Art. 33: Meldung von Datenschutzverletzungen an die Aufsichtsbehörde innerhalb von 72 Stunden'
+        bdsg_42: 'BDSG § 42: Strafbarkeit bei Unterlassung der Meldung'
+        incident_details: 'Vorfalldetails'
+        incident_number: Vorfallsnummer
+        immediate_action_required: 'SOFORTIGES HANDELN ERFORDERLICH'
+        action_description: 'Sie müssen folgende Maßnahmen UNVERZÜGLICH ergreifen, um die gesetzlichen Anforderungen zu erfüllen:'
+        action_1: 'Überprüfen und vervollständigen Sie die Vorfallsdokumentation'
+        action_2: 'Bewerten Sie die Art der Verletzung gemäß Art. 33(3) DSGVO'
+        action_3: 'Erstellen und genehmigen Sie die Meldung an die Aufsichtsbehörde'
+        action_4: 'Prüfen Sie die Benachrichtigungspflicht für betroffene Personen (Art. 34 DSGVO)'
+        review_and_approve: 'Vorfall prüfen und Meldung genehmigen'
+        compliance_note: 'Compliance-Hinweis'
+        compliance_text: 'Eine verspätete Meldung kann zu erheblichen Bußgeldern (bis zu 10 Mio. EUR oder 2% des Jahresumsatzes) und rechtlichen Konsequenzen führen. Die rechtzeitige Meldung ist zwingend erforderlich.'
+        urgent_automated: 'DRINGENDE automatisierte Benachrichtigung - Sofortiges Handeln erforderlich!'
+        footer_reference: 'DSGVO Art. 33 & 34 | BDSG § 42 | ISO 27001 A.16.1.6'
         show:
             page_title: 'Datenschutzverletzung - %ref%'
         page:
