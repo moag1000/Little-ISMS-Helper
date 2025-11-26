@@ -236,11 +236,14 @@ body {
 .header {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     color: white;
-    padding: var(--spacing-md) var(--spacing-lg);
+    padding: 1rem var(--spacing-lg);
+    min-height: 80px;
     box-shadow: var(--shadow-md), 0 1px 0 var(--color-secondary);
     border-bottom: 2px solid var(--color-secondary);
     position: relative; /* Create stacking context */
     z-index: 100; /* Explicitly below mega menu panel (99999) */
+    display: flex;
+    align-items: center;
 }
 
 /* Header sticky only on desktop (matches nav behavior) */
@@ -2045,6 +2048,7 @@ textarea.form-control {
 @media (max-width: 767.98px) {
     .header {
         padding: var(--spacing-sm) var(--spacing-md);
+        min-height: 64px;
     }
 
     .header h1 {
@@ -2062,6 +2066,18 @@ textarea.form-control {
 
     .header-logo {
         gap: 0.5rem;
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 0.75rem;
+    }
+
+    .notification-bell-btn-header {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
     }
 
     /* Hide sidebar on mobile by default */
