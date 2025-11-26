@@ -1,0 +1,123 @@
+{#
+    Automatic Form Field Renderer
+
+    This component automatically renders all form fields using the _form_field component.
+    It intelligently groups fields by section and handles all field types.
+
+    Usage:
+        {% include '_components/_auto_form.html.twig' with {
+            'form': form,
+            'sections': {
+                'details': {
+                    'label': 'supplier.section.details'|trans,
+                    'fields': ['name', 'criticality', 'status', 'description', 'serviceProvided']
+                },
+                'contact': {
+                    'label': 'supplier.section.contact_info'|trans,
+                    'fields': ['contactPerson', 'email', 'phone', 'address']
+                }
+            },
+            'col_widths': {
+                'name': 4,
+                'criticality': 4,
+                'status': 4,
+                'description': 12
+            }
+        } %}
+
+    Parameters:
+    - form: The Symfony form object
+    - sections: Array of sections with labels and field names
+    - col_widths: (Optional) Custom column widths for specific fields (default: 12 for full width)
+    - help_texts: (Optional) Array of help texts for specific fields (field_name => translated help text)
+    - exclude: (Optional) Array of field names to exclude from rendering
+
+    Note: Labels are taken from field.vars.label which is already translated by the FormType.
+          Help texts must be provided pre-translated via the help_texts parameter.
+#}
+
+{% set exclude_fields = exclude|default([]) %}
+{% set help_texts = help_texts|default({}) %}
+{% set default_col_width = 12 %}
+
+{% for section_key, section in sections %}
+    <fieldset class="mb-4">
+        <legend class="h5 mb-3">{{ section.label }}</legend>
+
+        {% set current_row_fields = [] %}
+        {% set current_row_width = 0 %}
+
+        {% for field_name in section.fields %}
+            {% if field_name not in exclude_fields and form[field_name] is defined %}
+                {% set field = form[field_name] %}
+                {% set field_type = field.vars.block_prefixes[1]|default('text') %}
+                {% set col_width = col_widths[field_name]|default(default_col_width) %}
+
+                {# Handle checkbox fields separately #}
+                {% if field_type == 'checkbox' %}
+                    {# Flush current row if any #}
+                    {% if current_row_fields|length > 0 %}
+                        <div class="row">
+                            {% for row_field in current_row_fields %}
+                                {{ row_field|raw }}
+                            {% endfor %}
+                        </div>
+                        {% set current_row_fields = [] %}
+                        {% set current_row_width = 0 %}
+                    {% endif %}
+
+                    {# Render checkbox #}
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="form-check mb-3">
+                                {{ form_widget(field, {'attr': {'class': 'form-check-input'}}) }}
+                                {{ form_label(field, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                {{ form_errors(field) }}
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    {# Regular field - add to current row or start new row #}
+                    {% if current_row_width + col_width > 12 %}
+                        {# Start new row #}
+                        <div class="row">
+                            {% for row_field in current_row_fields %}
+                                {{ row_field|raw }}
+                            {% endfor %}
+                        </div>
+                        {% set current_row_fields = [] %}
+                        {% set current_row_width = 0 %}
+                    {% endif %}
+
+                    {# Capture field HTML #}
+                    {% set field_html %}
+                        <div class="col-md-{{ col_width }}">
+                            {% set help_key = help_texts[field_name]|default(null) %}
+                            {# Get translation domain from form or use default #}
+                            {% set translation_domain = field.vars.translation_domain|default('messages') %}
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': field,
+                                'label_key': field.vars.label,
+                                'help_key': help_key,
+                                'translation_domain': translation_domain,
+                                'required': field.vars.required
+                            } %}
+                        </div>
+                    {% endset %}
+
+                    {% set current_row_fields = current_row_fields|merge([field_html]) %}
+                    {% set current_row_width = current_row_width + col_width %}
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+
+        {# Flush remaining row #}
+        {% if current_row_fields|length > 0 %}
+            <div class="row">
+                {% for row_field in current_row_fields %}
+                    {{ row_field|raw }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </fieldset>
+{% endfor %}

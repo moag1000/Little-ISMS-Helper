@@ -80,7 +80,7 @@ class RiskTreatmentPlanType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'help' => 'risk_treatment_plan.help.status',
-                    'choice_translation_domain' => 'risks',
+                    'choice_translation_domain' => 'risk',
             ])
             ->add('priority', ChoiceType::class, [
                 'label' => 'risk_treatment_plan.field.priority',
@@ -95,7 +95,7 @@ class RiskTreatmentPlanType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'help' => 'risk_treatment_plan.help.priority',
-                    'choice_translation_domain' => 'risks',
+                    'choice_translation_domain' => 'risk',
             ])
             ->add('startDate', DateType::class, [
                 'label' => 'risk_treatment_plan.field.start_date',

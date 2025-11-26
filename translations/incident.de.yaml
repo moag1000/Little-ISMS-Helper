@@ -16,6 +16,8 @@ incident:
         avg_resolution: 'Ø Lösungszeit'
         nis2_attention: 'NIS2 erfordert Aufmerksamkeit'
         categories: Kategorien
+        unit:
+            days: Tage
     new: 'Neuer Vorfall'
     create: 'Vorfall erstellen'
     action:

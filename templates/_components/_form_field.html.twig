@@ -16,11 +16,23 @@
             'required': true
         } %}
 
-    @param field      FormView  The form field to render
-    @param label      string    The label text (already translated)
-    @param help       string    Optional help text (already translated)
-    @param required   boolean   Whether the field is required
-    @param type       string    Input type override (default: from field)
+    IMPORTANT: When using with field.vars.label, DO NOT translate again:
+        {% include '_components/_form_field.html.twig' with {
+            'field': form.fieldName,
+            'label': form.fieldName.vars.label,  {# Already translated by Symfony #}
+            'required': form.fieldName.vars.required
+        } %}
+
+    @param field               FormView  The form field to render
+    @param label_key           string    Translation key for the label (e.g., 'supplier.field.name')
+    @param help_key            string    Optional translation key for help text
+    @param translation_domain  string    Translation domain (default: 'messages')
+    @param required            boolean   Whether the field is required
+    @param type                string    Input type override (default: from field)
+
+    BACKWARD COMPATIBILITY:
+    @param label               string    Deprecated: Use label_key instead
+    @param help                string    Deprecated: Use help_key instead
 #}
 
 {% set field_id = field.vars.id %}
@@ -28,6 +40,11 @@
 {% set has_errors = field.vars.errors|length > 0 %}
 {% set is_required = required|default(field.vars.required) %}
 {% set field_type = field.vars.block_prefixes[1]|default('text') %}
+
+{# Support both new (label_key) and old (label) parameters for backward compatibility #}
+{% set trans_domain = translation_domain|default('messages') %}
+{% set label_text = label_key is defined ? (label_key|trans({}, trans_domain)) : (label|default('')) %}
+{% set help_text = help_key is defined ? (help_key|trans({}, trans_domain)) : (help|default(null)) %}
 
 {# Floating labels work for: text, email, password, number, textarea, select #}
 {% set supports_floating = field_type in ['text', 'email', 'password', 'number', 'tel', 'url', 'search', 'textarea', 'choice'] %}
@@ -37,14 +54,14 @@
         {# Bootstrap Floating Label wrapper #}
         <div class="form-floating">
             {# Input MUST come before label for floating effect #}
-            {% set placeholder_text = label|trans %}
+            {% set placeholder_text = label_text %}
             {{ form_widget(field, {
                 'attr': {
                     'class': (field.vars.attr.class|default('') ~ (has_errors ? ' is-invalid' : ''))|trim,
                     'placeholder': placeholder_text,
                     'aria-invalid': has_errors ? 'true' : 'false',
                     'aria-describedby': [
-                        help is defined and help ? field_id ~ '_help',
+                        help_text ? field_id ~ '_help',
                         has_errors ? field_id ~ '_error'
                     ]|filter(v => v)|join(' ')|default(null),
                     'aria-required': is_required ? 'true' : 'false'
@@ -53,7 +70,7 @@
 
             {# Label comes AFTER input for floating labels #}
             <label for="{{ field_id }}">
-                {{ label|trans }}
+                {{ label_text }}
                 {% if is_required %}
                     <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
                 {% endif %}
@@ -62,7 +79,7 @@
     {% else %}
         {# Fallback for non-floating fields (checkbox, radio, file, hidden) #}
         <label for="{{ field_id }}" class="form-label">
-            {{ label|trans }}
+            {{ label_text }}
             {% if is_required %}
                 <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
             {% endif %}
@@ -82,10 +99,10 @@
     {% endif %}
 
     {# Help text (positioned below input) #}
-    {% if help is defined and help %}
+    {% if help_text %}
         <div id="{{ field_id }}_help" class="form-text">
             <i class="bi bi-info-circle" aria-hidden="true"></i>
-            {{ help }}
+            {{ help_text }}
         </div>
     {% endif %}
 
