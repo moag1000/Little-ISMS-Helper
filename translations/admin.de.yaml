@@ -3,6 +3,7 @@ admin:
     breadcrumb:
         home: 'Admin Dashboard'
     section:
+        overview: Übersicht
         user_access: 'Benutzer & Zugriff'
         system_config: Systemkonfiguration
         modules: 'Module & Features'
