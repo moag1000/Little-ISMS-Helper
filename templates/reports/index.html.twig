@@ -7,6 +7,12 @@
 {% import '_macros/cards.html.twig' as cards %}
 
 <div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.reports'|trans({}, 'nav') }
+        ]
+    } %}
+
     <h1 class="h2 mb-4">
         <i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i> {{ 'reports.page.title'|trans({}, 'reports') }}
     </h1>
