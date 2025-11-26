@@ -120,12 +120,12 @@ class Incident
     )]
     private ?string $status = 'open';
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['incident:read', 'incident:write'])]
     #[Assert\NotNull(message: 'Detection date is required')]
     private ?\DateTimeInterface $detectedAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
     private ?\DateTimeInterface $occurredAt = null;
 
@@ -164,11 +164,11 @@ class Incident
     #[Groups(['incident:read', 'incident:write'])]
     private ?string $lessonsLearned = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
     private ?\DateTimeInterface $resolvedAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
     private ?\DateTimeInterface $closedAt = null;
 
@@ -253,11 +253,11 @@ class Incident
     #[Groups(['incident:read', 'incident:write'])]
     private ?string $authorityReferenceNumber = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['incident:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['incident:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 

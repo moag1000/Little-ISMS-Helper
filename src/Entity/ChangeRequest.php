@@ -265,11 +265,11 @@ class ChangeRequest
     #[Groups(['change_request:read'])]
     private Collection $documents;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['change_request:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['change_request:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
