@@ -4,6 +4,16 @@
 {% block title %}{{ appetite.displayName }} - {{ 'risk_appetite.title'|trans({}, 'risk_appetite') }}{% endblock %}
 
 {% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index') },
+            { label: 'nav.risk_appetite'|trans({}, 'nav'), url: path('app_risk_appetite_index') },
+            { label: appetite.displayName }
+        ]
+    } %}
+</div>
+
 <div class="page-header">
     <div>
         <h1>

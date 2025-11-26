@@ -1,9 +1,17 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'risk' %}
 
 {% block title %}{{ risk.title }}{% endblock %}
 
 {% block body %}
 <div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index') },
+            { label: risk.title }
+        ]
+    } %}
+
     <div class="page-header">
         <h1>
             {{ risk.title }}

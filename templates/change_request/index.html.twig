@@ -6,6 +6,12 @@
 
 {% block body %}
 <div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.change_requests'|trans({}, 'nav') }
+        ]
+    } %}
+
     <div class="page-header">
         <h1>{{ 'change_request.page.title'|trans({}, 'change_requests') }}</h1>
         <a href="{{ path('app_change_request_new') }}" class="btn btn-primary">{{ 'change_request.action.create'|trans({}, 'change_requests') }}</a>
