@@ -27,60 +27,47 @@
 <div class="card">
     <div class="card-content">
         {{ form_start(form) }}
-            <fieldset class="mb-4">
-                <legend class="h5 mb-3">{{ 'person.section.basic_info'|trans({}, 'messages') }}</legend>
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ form_row(form.fullName) }}
-                    </div>
-                    <div class="col-md-6">
-                        {{ form_row(form.personType) }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        {{ form_row(form.badgeId) }}
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset class="mb-4">
-                <legend class="h5 mb-3">{{ 'person.section.organization'|trans({}, 'messages') }}</legend>
-                <div class="row">
-                    <div class="col-md-4">
-                        {{ form_row(form.company) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ form_row(form.department) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ form_row(form.jobTitle) }}
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset class="mb-4">
-                <legend class="h5 mb-3">{{ 'person.section.contact'|trans({}, 'messages') }}</legend>
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ form_row(form.email) }}
-                    </div>
-                    <div class="col-md-6">
-                        {{ form_row(form.phone) }}
-                    </div>
-                </div>
-            </fieldset>
-
-            {% if form.notes is defined %}
-            <fieldset class="mb-4">
-                <legend class="h5 mb-3">{{ 'person.section.additional'|trans({}, 'messages') }}</legend>
-                <div class="row">
-                    <div class="col-12">
-                        {{ form_row(form.notes) }}
-                    </div>
-                </div>
-            </fieldset>
-            {% endif %}
+            {% include '_components/_auto_form.html.twig' with {
+                'form': form,
+                'sections': {
+                    'basic_info': {
+                        'label': 'person.section.basic_info'|trans({}, 'messages'),
+                        'fields': ['fullName', 'personType', 'badgeId']
+                    },
+                    'organization': {
+                        'label': 'person.section.organization'|trans({}, 'messages'),
+                        'fields': ['company', 'department', 'jobTitle']
+                    },
+                    'contact': {
+                        'label': 'person.section.contact'|trans({}, 'messages'),
+                        'fields': ['email', 'phone']
+                    },
+                    'access': {
+                        'label': 'person.section.access'|trans({}, 'messages'),
+                        'fields': ['linkedUser', 'active', 'accessValidFrom', 'accessValidUntil']
+                    },
+                    'additional': {
+                        'label': 'person.section.additional'|trans({}, 'messages'),
+                        'fields': ['notes']
+                    }
+                },
+                'col_widths': {
+                    'fullName': 6,
+                    'personType': 6,
+                    'badgeId': 12,
+                    'company': 4,
+                    'department': 4,
+                    'jobTitle': 4,
+                    'email': 6,
+                    'phone': 6,
+                    'linkedUser': 12,
+                    'active': 12,
+                    'accessValidFrom': 6,
+                    'accessValidUntil': 6,
+                    'notes': 12
+                },
+                'exclude': ['linkedUser', 'active', 'accessValidFrom', 'accessValidUntil']
+            } %}
 
             <div class="d-flex justify-content-between mt-4">
                 <a href="{{ path('app_person_index') }}" class="btn btn-secondary">
