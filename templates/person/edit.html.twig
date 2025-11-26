@@ -26,81 +26,59 @@
 </div>
 
 <div class="card">
-    {{ form_start(form) }}
+    <div class="card-content">
+        {{ form_start(form) }}
+            {% include '_components/_auto_form.html.twig' with {
+                'form': form,
+                'sections': {
+                    'basic_info': {
+                        'label': 'person.section.basic_info'|trans({}, 'messages'),
+                        'fields': ['fullName', 'personType', 'badgeId']
+                    },
+                    'organization': {
+                        'label': 'person.section.organization'|trans({}, 'messages'),
+                        'fields': ['company', 'department', 'jobTitle']
+                    },
+                    'contact': {
+                        'label': 'person.section.contact'|trans({}, 'messages'),
+                        'fields': ['email', 'phone']
+                    },
+                    'access': {
+                        'label': 'person.section.access'|trans({}, 'messages'),
+                        'fields': ['linkedUser', 'active', 'accessValidFrom', 'accessValidUntil']
+                    },
+                    'additional': {
+                        'label': 'person.section.additional'|trans({}, 'messages'),
+                        'fields': ['notes']
+                    }
+                },
+                'col_widths': {
+                    'fullName': 6,
+                    'personType': 6,
+                    'badgeId': 12,
+                    'company': 4,
+                    'department': 4,
+                    'jobTitle': 4,
+                    'email': 6,
+                    'phone': 6,
+                    'linkedUser': 12,
+                    'active': 12,
+                    'accessValidFrom': 6,
+                    'accessValidUntil': 6,
+                    'notes': 12
+                },
+                'exclude': ['linkedUser', 'active', 'accessValidFrom', 'accessValidUntil']
+            } %}
 
-    <h2>{{ 'person.section.basic_info'|trans({}, 'messages') }}</h2>
-
-    <div class="form-group">
-        {{ form_label(form.fullName) }}
-        {{ form_widget(form.fullName, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.fullName) }}
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ path('app_person_show', {id: person.id}) }}" class="btn btn-secondary">
+                    {{ 'common.cancel'|trans({}, 'messages') }}
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    {{ 'common.save'|trans({}, 'messages') }}
+                </button>
+            </div>
+        {{ form_end(form) }}
     </div>
-
-    <div class="form-group">
-        {{ form_label(form.personType) }}
-        {{ form_widget(form.personType, {'attr': {'class': 'form-select'}}) }}
-        {{ form_errors(form.personType) }}
-    </div>
-
-    <div class="form-group">
-        {{ form_label(form.badgeId) }}
-        {{ form_widget(form.badgeId, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.badgeId) }}
-    </div>
-
-    <h2 style="margin-top: var(--spacing-lg);">{{ 'person.section.organization'|trans({}, 'messages') }}</h2>
-
-    <div class="form-group">
-        {{ form_label(form.company) }}
-        {{ form_widget(form.company, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.company) }}
-    </div>
-
-    <div class="form-group">
-        {{ form_label(form.department) }}
-        {{ form_widget(form.department, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.department) }}
-    </div>
-
-    <div class="form-group">
-        {{ form_label(form.jobTitle) }}
-        {{ form_widget(form.jobTitle, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.jobTitle) }}
-    </div>
-
-    <h3 style="margin-top: var(--spacing-lg);">{{ 'person.section.contact'|trans({}, 'messages') }}</h3>
-
-    <div class="form-group">
-        {{ form_label(form.email) }}
-        {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.email) }}
-    </div>
-
-    <div class="form-group">
-        {{ form_label(form.phone) }}
-        {{ form_widget(form.phone, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.phone) }}
-    </div>
-
-    {% if form.notes is defined %}
-    <h3 style="margin-top: var(--spacing-lg);">{{ 'person.section.additional'|trans({}, 'messages') }}</h3>
-
-    <div class="form-group">
-        {{ form_label(form.notes) }}
-        {{ form_widget(form.notes, {'attr': {'class': 'form-control', 'rows': 4}}) }}
-        {{ form_errors(form.notes) }}
-    </div>
-    {% endif %}
-
-    <div class="d-flex gap-2 mt-4">
-        <button type="submit" class="btn btn-success">
-            💾 {{ 'common.save'|trans({}, 'messages') }}
-        </button>
-        <a href="{{ path('app_person_show', {id: person.id}) }}" class="btn btn-secondary">
-            ❌ {{ 'common.cancel'|trans({}, 'messages') }}
-        </a>
-    </div>
-
-    {{ form_end(form) }}
 </div>
 {% endblock %}
