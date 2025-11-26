@@ -130,7 +130,7 @@
                             <tr>
                                 <td>{{ asset.id }}</td>
                                 <td>{{ asset.name }}</td>
-                                <td>{{ asset.assetType }}</td>
+                                <td>{{ asset.type }}</td>
                                 <td>
                                     <form method="post" action="{{ path('admin_data_repair_reassign_entity', {type: 'asset', id: asset.id}) }}" class="d-inline">
                                         <input type="hidden" name="_token" value="{{ csrf_token('reassign_entity_' ~ asset.id) }}">

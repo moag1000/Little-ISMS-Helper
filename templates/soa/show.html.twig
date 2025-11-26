@@ -159,7 +159,7 @@
         {% for asset in control.protectedAssets %}
             <div class="data-reuse-item">
                 <strong>{{ asset.name }}</strong>
-                <span class="badge bg-info">{{ asset.assetType }}</span>
+                <span class="badge bg-info">{{ asset.type }}</span>
                 <small>{{ 'soa.field.cia'|trans({}, 'soa') }}: {{ asset.confidentialityValue }}/{{ asset.integrityValue }}/{{ asset.availabilityValue }}</small>
             </div>
         {% endfor %}
