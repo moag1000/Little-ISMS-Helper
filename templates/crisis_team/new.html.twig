@@ -1,22 +1,102 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'crisis_team' %}
-{% block title %}{{ 'crisis_team.new'|trans({}, 'crisis_team') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block title %}{{ 'crisis_team.new'|trans }}{% endblock %}
+
 {% block body %}
-<div class="container py-4">
+<div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.crisis_teams'|trans({}, 'nav'), url: path('app_crisis_team_index') },
-            { label: 'crisis_team.new'|trans({}, 'crisis_team') }
+            { label: 'crisis_team.new'|trans }
         ]
     } %}
 
+    <div class="page-header">
+        <h1>{{ 'crisis_team.new'|trans }}</h1>
+        <a href="{{ path('app_crisis_team_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
+    </div>
+
     <div class="card">
-        <div class="card-header bg-primary text-white"><h5 class="mb-0">{{ 'crisis_team.new'|trans({}, 'crisis_team') }}</h5></div>
-        <div class="card-body">
-            {{ form_start(form) }}{{ form_widget(form) }}
-                <div class="d-flex justify-content-between pt-3 border-top">
-                    <a href="{{ path('app_crisis_team_index') }}" class="btn btn-outline-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
-                    <button type="submit" class="btn btn-primary">{{ 'common.save'|trans({}, 'messages') }}</button>
+        <div class="card-content">
+            {{ form_start(form) }}
+                {% include '_components/_auto_form.html.twig' with {
+                    'form': form,
+                    'sections': {
+                        'basic_info': {
+                            'label': 'crisis_team.section.basic_info'|trans,
+                            'fields': ['teamName', 'description', 'teamType', 'isActive']
+                        },
+                        'leadership': {
+                            'label': 'crisis_team.section.leadership'|trans,
+                            'fields': ['teamLeader', 'deputyLeader']
+                        },
+                        'contact': {
+                            'label': 'crisis_team.section.contact'|trans,
+                            'fields': ['primaryPhone', 'primaryEmail']
+                        },
+                        'meeting_locations': {
+                            'label': 'crisis_team.section.meeting_locations'|trans,
+                            'fields': ['meetingLocation', 'backupMeetingLocation', 'virtualMeetingUrl']
+                        },
+                        'procedures': {
+                            'label': 'crisis_team.section.procedures'|trans,
+                            'fields': ['alertProcedures', 'decisionAuthority', 'communicationProtocols']
+                        },
+                        'training': {
+                            'label': 'crisis_team.section.training'|trans,
+                            'fields': ['trainingSchedule', 'lastTrainingAt', 'nextTrainingAt']
+                        },
+                        'plans': {
+                            'label': 'crisis_team.section.plans'|trans,
+                            'fields': ['businessContinuityPlans', 'notes']
+                        }
+                    },
+                    'col_widths': {
+                        'teamName': 6,
+                        'description': 12,
+                        'teamType': 6,
+                        'isActive': 6,
+                        'teamLeader': 6,
+                        'deputyLeader': 6,
+                        'primaryPhone': 6,
+                        'primaryEmail': 6,
+                        'meetingLocation': 6,
+                        'backupMeetingLocation': 6,
+                        'virtualMeetingUrl': 12,
+                        'alertProcedures': 12,
+                        'decisionAuthority': 6,
+                        'communicationProtocols': 6,
+                        'trainingSchedule': 12,
+                        'lastTrainingAt': 6,
+                        'nextTrainingAt': 6,
+                        'businessContinuityPlans': 12,
+                        'notes': 12
+                    },
+                    'help_texts': {
+                        'teamName': 'crisis_team.help.team_name'|trans,
+                        'teamType': 'crisis_team.help.team_type'|trans,
+                        'teamLeader': 'crisis_team.help.team_leader'|trans,
+                        'deputyLeader': 'crisis_team.help.deputy_leader'|trans,
+                        'primaryPhone': 'crisis_team.help.primary_phone'|trans,
+                        'meetingLocation': 'crisis_team.help.meeting_location'|trans,
+                        'virtualMeetingUrl': 'crisis_team.help.virtual_meeting_url'|trans,
+                        'alertProcedures': 'crisis_team.help.alert_procedures'|trans,
+                        'decisionAuthority': 'crisis_team.help.decision_authority'|trans,
+                        'communicationProtocols': 'crisis_team.help.communication_protocols'|trans,
+                        'trainingSchedule': 'crisis_team.help.training_schedule'|trans,
+                        'nextTrainingAt': 'crisis_team.help.next_training_at'|trans,
+                        'businessContinuityPlans': 'crisis_team.help.business_continuity_plans'|trans
+                    }
+                } %}
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_crisis_team_index') }}" class="btn btn-secondary">
+                        {{ 'common.cancel'|trans({}, 'messages') }}
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        {{ 'common.create'|trans({}, 'messages') }}
+                    </button>
                 </div>
             {{ form_end(form) }}
         </div>
