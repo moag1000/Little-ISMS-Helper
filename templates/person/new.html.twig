@@ -25,84 +25,72 @@
 </div>
 
 <div class="card">
-    {{ form_start(form) }}
+    <div class="card-content">
+        {{ form_start(form) }}
+            <fieldset class="mb-4">
+                <legend class="h5 mb-3">{{ 'person.section.basic_info'|trans({}, 'messages') }}</legend>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.fullName) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.personType) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        {{ form_row(form.badgeId) }}
+                    </div>
+                </div>
+            </fieldset>
 
-    <h2>{{ 'person.section.basic_info'|trans({}, 'messages') }}</h2>
+            <fieldset class="mb-4">
+                <legend class="h5 mb-3">{{ 'person.section.organization'|trans({}, 'messages') }}</legend>
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ form_row(form.company) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.department) }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form_row(form.jobTitle) }}
+                    </div>
+                </div>
+            </fieldset>
 
-    <div class="form-group">
-        {{ form_label(form.fullName) }}
-        {{ form_widget(form.fullName, {'attr': {'class': 'form-control', 'placeholder': 'person.placeholder.name'|trans({}, 'messages')}}) }}
-        {{ form_errors(form.fullName) }}
+            <fieldset class="mb-4">
+                <legend class="h5 mb-3">{{ 'person.section.contact'|trans({}, 'messages') }}</legend>
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form_row(form.email) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_row(form.phone) }}
+                    </div>
+                </div>
+            </fieldset>
+
+            {% if form.notes is defined %}
+            <fieldset class="mb-4">
+                <legend class="h5 mb-3">{{ 'person.section.additional'|trans({}, 'messages') }}</legend>
+                <div class="row">
+                    <div class="col-12">
+                        {{ form_row(form.notes) }}
+                    </div>
+                </div>
+            </fieldset>
+            {% endif %}
+
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{{ path('app_person_index') }}" class="btn btn-secondary">
+                    {{ 'common.cancel'|trans({}, 'messages') }}
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    {{ 'common.create'|trans({}, 'messages') }}
+                </button>
+            </div>
+        {{ form_end(form) }}
     </div>
-
-    <div class="form-group">
-        {{ form_label(form.personType) }}
-        {{ form_widget(form.personType, {'attr': {'class': 'form-select'}}) }}
-        {{ form_errors(form.personType) }}
-    </div>
-
-    <div class="form-group">
-        {{ form_label(form.badgeId) }}
-        {{ form_widget(form.badgeId, {'attr': {'class': 'form-control', 'placeholder': 'person.placeholder.badge'|trans({}, 'messages')}}) }}
-        {{ form_errors(form.badgeId) }}
-        <small class="small-muted-block">
-            {{ 'person.help.badge'|trans({}, 'messages') }}
-        </small>
-    </div>
-
-    <h2 class="h3-mt-lg">{{ 'person.section.organization'|trans({}, 'messages') }}</h2>
-
-    <div class="form-group">
-        {{ form_label(form.company) }}
-        {{ form_widget(form.company, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.company) }}
-    </div>
-
-    <div class="form-group">
-        {{ form_label(form.department) }}
-        {{ form_widget(form.department, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.department) }}
-    </div>
-
-    <div class="form-group">
-        {{ form_label(form.jobTitle) }}
-        {{ form_widget(form.jobTitle, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.jobTitle) }}
-    </div>
-
-    <h3 class="h3-mt-lg">{{ 'person.section.contact'|trans({}, 'messages') }}</h3>
-
-    <div class="form-group">
-        {{ form_label(form.email) }}
-        {{ form_widget(form.email, {'attr': {'class': 'form-control', 'type': 'email'}}) }}
-        {{ form_errors(form.email) }}
-    </div>
-
-    <div class="form-group">
-        {{ form_label(form.phone) }}
-        {{ form_widget(form.phone, {'attr': {'class': 'form-control'}}) }}
-        {{ form_errors(form.phone) }}
-    </div>
-
-    {% if form.notes is defined %}
-    <h3 class="h3-mt-lg">{{ 'person.section.additional'|trans({}, 'messages') }}</h3>
-
-    <div class="form-group">
-        {{ form_label(form.notes) }}
-        {{ form_widget(form.notes, {'attr': {'class': 'form-control', 'rows': 4}}) }}
-        {{ form_errors(form.notes) }}
-    </div>
-    {% endif %}
-
-    <div class="d-flex gap-2 mt-4">
-        <button type="submit" class="btn btn-success">
-            💾 {{ 'common.create'|trans({}, 'messages') }}
-        </button>
-        <a href="{{ path('app_person_index') }}" class="btn btn-secondary">
-            ❌ {{ 'common.cancel'|trans({}, 'messages') }}
-        </a>
-    </div>
-
-    {{ form_end(form) }}
 </div>
 {% endblock %}

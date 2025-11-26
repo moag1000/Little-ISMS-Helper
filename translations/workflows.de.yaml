@@ -10,6 +10,7 @@ workflow:
         overview: 'Übersicht über laufende, ausstehende und überfällige Workflows'
         pending: 'Workflows, die auf Bearbeitung oder Entscheidung warten'
         active: 'Aktive Workflows in Bearbeitung'
+        in_progress: 'Workflows, die aktuell bearbeitet werden'
         overdue: 'Überfällige Workflows mit überschrittener Frist'
         active_detail: 'Übersicht der aktuell aktiven Workflow‑Instanzen mit Fortschritt und Zuständigkeiten'
         pending_detail: 'Übersicht der ausstehenden Workflow‑Instanzen mit Fristen und Prioritäten'
@@ -30,10 +31,13 @@ workflow:
         activate: Aktivieren
         delete: Löschen
         back: Zurück
+        pending: Ausstehend
     stats:
         total: Gesamt‑Workflows
         active: Aktiv
         pending: Ausstehend
+        in_progress: 'In Bearbeitung'
+        approved: Genehmigt
         overdue: Überfällig
         avg_progress: 'Ø Fortschritt'
         my_workflows: 'Meine Workflows'
@@ -54,6 +58,7 @@ workflow:
         activity_log: Aktivitätsprotokoll
         pending: Ausstehend
         active: Aktiv
+        in_progress: 'In Bearbeitung'
         overdue: Überfällig
         recent_instances: 'Letzte Instanzen'
         basic_information: Grundinformationen

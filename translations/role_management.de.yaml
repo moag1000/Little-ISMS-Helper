@@ -70,3 +70,7 @@ role:
         title: Rollenvorlagen
         description: 'Vordefinierte Rollenvorlagen für typische ISMS-Funktionen'
         custom_name: 'Benutzerdefinierter Name'
+    field:
+        system_role: Systemrolle
+    help:
+        system_role: 'Systemrolle mit vordefinierten Berechtigungen'
