@@ -232,3 +232,5 @@ setup:
             cz: Tschechien
             eu_other: 'Andere EU'
             non_eu: 'Außerhalb EU'
+    section:
+        overview: Übersicht

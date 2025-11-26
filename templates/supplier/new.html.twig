@@ -1,167 +1,79 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'suppliers' %}
 
-{% block title %}{{ 'supplier.page.new_title'|trans({}, 'suppliers') }}{% endblock %}
+{% block title %}{{ 'supplier.page.new_title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.suppliers'|trans({}, 'nav'), url: path('app_supplier_index') },
-            { label: 'supplier.page.new_title'|trans({}, 'suppliers') }
+            { label: 'supplier.page.new_title'|trans }
         ]
     } %}
 
     <div class="page-header">
-        <h1>{{ 'supplier.page.new_title'|trans({}, 'suppliers') }}</h1>
+        <h1>{{ 'supplier.page.new_title'|trans }}</h1>
         <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
     </div>
 
     <div class="card">
         <div class="card-content">
             {{ form_start(form) }}
-                <h2>{{ 'supplier.section.details'|trans({}, 'suppliers') }}</h2>
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.name) }}
-                        {{ form_widget(form.name) }}
-                        {{ form_errors(form.name) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.criticality) }}
-                        {{ form_widget(form.criticality) }}
-                        {{ form_errors(form.criticality) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.status) }}
-                        {{ form_widget(form.status) }}
-                        {{ form_errors(form.status) }}
-                    </div>
-                </div>
+                {% include '_components/_auto_form.html.twig' with {
+                    'form': form,
+                    'sections': {
+                        'details': {
+                            'label': 'supplier.section.details'|trans,
+                            'fields': ['name', 'criticality', 'status', 'description', 'serviceProvided']
+                        },
+                        'contact_info': {
+                            'label': 'supplier.section.contact_info'|trans,
+                            'fields': ['contactPerson', 'email', 'phone', 'address']
+                        },
+                        'security_assessment': {
+                            'label': 'supplier.section.security_assessment'|trans,
+                            'fields': ['securityScore', 'lastSecurityAssessment', 'nextAssessmentDate', 'assessmentFindings', 'nonConformities', 'securityRequirements']
+                        },
+                        'certifications': {
+                            'label': 'supplier.section.certifications_compliance'|trans,
+                            'fields': ['hasISO27001', 'hasISO22301', 'hasDPA', 'dpaSignedDate', 'certifications']
+                        },
+                        'contract': {
+                            'label': 'supplier.section.contract_info'|trans,
+                            'fields': ['contractStartDate', 'contractEndDate']
+                        }
+                    },
+                    'col_widths': {
+                        'name': 4,
+                        'criticality': 4,
+                        'status': 4,
+                        'description': 12,
+                        'serviceProvided': 12,
+                        'contactPerson': 4,
+                        'email': 4,
+                        'phone': 4,
+                        'address': 12,
+                        'securityScore': 4,
+                        'lastSecurityAssessment': 4,
+                        'nextAssessmentDate': 4,
+                        'assessmentFindings': 12,
+                        'nonConformities': 12,
+                        'securityRequirements': 12,
+                        'dpaSignedDate': 6,
+                        'certifications': 6,
+                        'contractStartDate': 6,
+                        'contractEndDate': 6
+                    }
+                } %}
 
-                <div class="form-group">
-                    {{ form_label(form.description) }}
-                    {{ form_widget(form.description) }}
-                    {{ form_errors(form.description) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.serviceProvided) }}
-                    {{ form_widget(form.serviceProvided) }}
-                    {{ form_errors(form.serviceProvided) }}
-                </div>
-
-                <h2>{{ 'supplier.section.contact_info'|trans({}, 'suppliers') }}</h2>
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.contactPerson) }}
-                        {{ form_widget(form.contactPerson) }}
-                        {{ form_errors(form.contactPerson) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.email) }}
-                        {{ form_widget(form.email) }}
-                        {{ form_errors(form.email) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.phone) }}
-                        {{ form_widget(form.phone) }}
-                        {{ form_errors(form.phone) }}
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.address) }}
-                    {{ form_widget(form.address) }}
-                    {{ form_errors(form.address) }}
-                </div>
-
-                <h3>{{ 'supplier.section.security_assessment'|trans({}, 'suppliers') }}</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.securityScore) }}
-                        {{ form_widget(form.securityScore) }}
-                        {{ form_errors(form.securityScore) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.lastSecurityAssessment) }}
-                        {{ form_widget(form.lastSecurityAssessment) }}
-                        {{ form_errors(form.lastSecurityAssessment) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.nextAssessmentDate) }}
-                        {{ form_widget(form.nextAssessmentDate) }}
-                        {{ form_errors(form.nextAssessmentDate) }}
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.assessmentFindings) }}
-                    {{ form_widget(form.assessmentFindings) }}
-                    {{ form_errors(form.assessmentFindings) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.nonConformities) }}
-                    {{ form_widget(form.nonConformities) }}
-                    {{ form_errors(form.nonConformities) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.securityRequirements) }}
-                    {{ form_widget(form.securityRequirements) }}
-                    {{ form_errors(form.securityRequirements) }}
-                </div>
-
-                <h3>{{ 'supplier.section.certifications_compliance'|trans({}, 'suppliers') }}</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.hasISO27001) }}
-                        {{ form_widget(form.hasISO27001) }}
-                        {{ form_errors(form.hasISO27001) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.hasISO22301) }}
-                        {{ form_widget(form.hasISO22301) }}
-                        {{ form_errors(form.hasISO22301) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.hasDPA) }}
-                        {{ form_widget(form.hasDPA) }}
-                        {{ form_errors(form.hasDPA) }}
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.dpaSignedDate) }}
-                        {{ form_widget(form.dpaSignedDate) }}
-                        {{ form_errors(form.dpaSignedDate) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.certifications) }}
-                        {{ form_widget(form.certifications) }}
-                        {{ form_errors(form.certifications) }}
-                    </div>
-                </div>
-
-                <h3>{{ 'supplier.section.contract_info'|trans({}, 'suppliers') }}</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.contractStartDate) }}
-                        {{ form_widget(form.contractStartDate) }}
-                        {{ form_errors(form.contractStartDate) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.contractEndDate) }}
-                        {{ form_widget(form.contractEndDate) }}
-                        {{ form_errors(form.contractEndDate) }}
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">{{ 'supplier.action.create'|trans({}, 'suppliers') }}</button>
-                    <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">{{ 'common.cancel'|trans({}, 'messages') }}</a>
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">
+                        {{ 'common.cancel'|trans({}, 'messages') }}
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        {{ 'supplier.action.create'|trans }}
+                    </button>
                 </div>
             {{ form_end(form) }}
         </div>

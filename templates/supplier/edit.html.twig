@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'suppliers' %}
 
-{% block title %}{{ 'supplier.page.edit_title'|trans({'%name%': supplier.name}, 'suppliers') }}{% endblock %}
+{% block title %}{{ 'supplier.page.edit_title'|trans({'%name%': supplier.name}) }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -14,9 +14,9 @@
     } %}
 
     <div class="page-header">
-        <h1>{{ 'supplier.page.edit_title'|trans({'%name%': supplier.name}, 'suppliers') }}</h1>
+        <h1>{{ 'supplier.page.edit_title'|trans({'%name%': supplier.name}) }}</h1>
         <div class="actions">
-            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-secondary">{{ 'supplier.action.view'|trans({}, 'suppliers') }}</a>
+            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-secondary">{{ 'supplier.action.view'|trans }}</a>
             <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
         </div>
     </div>
@@ -24,148 +24,196 @@
     <div class="card">
         <div class="card-content">
             {{ form_start(form) }}
-                <h2>{{ 'supplier.section.details'|trans({}, 'suppliers') }}</h2>
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.name) }}
-                        {{ form_widget(form.name) }}
-                        {{ form_errors(form.name) }}
+                <fieldset class="mb-4">
+                    <legend class="h5 mb-3">{{ 'supplier.section.details'|trans }}</legend>
+                    <div class="row">
+                        <div class="col-md-4">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.name,
+                                'label': 'supplier.field.name'|trans,
+                                'required': true
+                            } %}
+                        </div>
+                        <div class="col-md-4">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.criticality,
+                                'label': 'supplier.field.criticality'|trans,
+                                'required': true
+                            } %}
+                        </div>
+                        <div class="col-md-4">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.status,
+                                'label': 'supplier.field.status'|trans,
+                                'required': true
+                            } %}
+                        </div>
                     </div>
-                    <div class="form-group">
-                        {{ form_label(form.criticality) }}
-                        {{ form_widget(form.criticality) }}
-                        {{ form_errors(form.criticality) }}
+                    <div class="row">
+                        <div class="col-12">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.description,
+                                'label': 'supplier.field.description'|trans
+                            } %}
+                        </div>
                     </div>
-                    <div class="form-group">
-                        {{ form_label(form.status) }}
-                        {{ form_widget(form.status) }}
-                        {{ form_errors(form.status) }}
+                    <div class="row">
+                        <div class="col-12">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.serviceProvided,
+                                'label': 'supplier.field.service_provided'|trans,
+                                'required': true
+                            } %}
+                        </div>
                     </div>
-                </div>
+                </fieldset>
 
-                <div class="form-group">
-                    {{ form_label(form.description) }}
-                    {{ form_widget(form.description) }}
-                    {{ form_errors(form.description) }}
-                </div>
+                <fieldset class="mb-4">
+                    <legend class="h5 mb-3">{{ 'supplier.section.contact_info'|trans }}</legend>
+                    <div class="row">
+                        <div class="col-md-4">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.contactPerson,
+                                'label': 'supplier.field.contact_person'|trans
+                            } %}
+                        </div>
+                        <div class="col-md-4">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.email,
+                                'label': 'supplier.field.email'|trans
+                            } %}
+                        </div>
+                        <div class="col-md-4">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.phone,
+                                'label': 'supplier.field.phone'|trans
+                            } %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.address,
+                                'label': 'supplier.field.address'|trans
+                            } %}
+                        </div>
+                    </div>
+                </fieldset>
 
-                <div class="form-group">
-                    {{ form_label(form.serviceProvided) }}
-                    {{ form_widget(form.serviceProvided) }}
-                    {{ form_errors(form.serviceProvided) }}
-                </div>
+                <fieldset class="mb-4">
+                    <legend class="h5 mb-3">{{ 'supplier.section.security_assessment'|trans }}</legend>
+                    <div class="row">
+                        <div class="col-md-4">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.securityScore,
+                                'label': 'supplier.field.security_score'|trans
+                            } %}
+                        </div>
+                        <div class="col-md-4">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.lastSecurityAssessment,
+                                'label': 'supplier.field.last_security_assessment'|trans
+                            } %}
+                        </div>
+                        <div class="col-md-4">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.nextAssessmentDate,
+                                'label': 'supplier.field.next_assessment_date'|trans
+                            } %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.assessmentFindings,
+                                'label': 'supplier.field.assessment_findings'|trans
+                            } %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.nonConformities,
+                                'label': 'supplier.field.non_conformities'|trans
+                            } %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.securityRequirements,
+                                'label': 'supplier.field.security_requirements'|trans
+                            } %}
+                        </div>
+                    </div>
+                </fieldset>
 
-                <h2>{{ 'supplier.section.contact_info'|trans({}, 'suppliers') }}</h2>
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.contactPerson) }}
-                        {{ form_widget(form.contactPerson) }}
-                        {{ form_errors(form.contactPerson) }}
+                <fieldset class="mb-4">
+                    <legend class="h5 mb-3">{{ 'supplier.section.certifications_compliance'|trans }}</legend>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-check mb-3">
+                                {{ form_widget(form.hasISO27001, {'attr': {'class': 'form-check-input'}}) }}
+                                {{ form_label(form.hasISO27001, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                {{ form_errors(form.hasISO27001) }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check mb-3">
+                                {{ form_widget(form.hasISO22301, {'attr': {'class': 'form-check-input'}}) }}
+                                {{ form_label(form.hasISO22301, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                {{ form_errors(form.hasISO22301) }}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-check mb-3">
+                                {{ form_widget(form.hasDPA, {'attr': {'class': 'form-check-input'}}) }}
+                                {{ form_label(form.hasDPA, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                {{ form_errors(form.hasDPA) }}
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        {{ form_label(form.email) }}
-                        {{ form_widget(form.email) }}
-                        {{ form_errors(form.email) }}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.dpaSignedDate,
+                                'label': 'supplier.field.dpa_signed_date'|trans
+                            } %}
+                        </div>
+                        <div class="col-md-6">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.certifications,
+                                'label': 'supplier.field.certifications'|trans
+                            } %}
+                        </div>
                     </div>
-                    <div class="form-group">
-                        {{ form_label(form.phone) }}
-                        {{ form_widget(form.phone) }}
-                        {{ form_errors(form.phone) }}
-                    </div>
-                </div>
+                </fieldset>
 
-                <div class="form-group">
-                    {{ form_label(form.address) }}
-                    {{ form_widget(form.address) }}
-                    {{ form_errors(form.address) }}
-                </div>
+                <fieldset class="mb-4">
+                    <legend class="h5 mb-3">{{ 'supplier.section.contract_info'|trans }}</legend>
+                    <div class="row">
+                        <div class="col-md-6">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.contractStartDate,
+                                'label': 'supplier.field.contract_start_date'|trans
+                            } %}
+                        </div>
+                        <div class="col-md-6">
+                            {% include '_components/_form_field.html.twig' with {
+                                'field': form.contractEndDate,
+                                'label': 'supplier.field.contract_end_date'|trans
+                            } %}
+                        </div>
+                    </div>
+                </fieldset>
 
-                <h3>{{ 'supplier.section.security_assessment'|trans({}, 'suppliers') }}</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.securityScore) }}
-                        {{ form_widget(form.securityScore) }}
-                        {{ form_errors(form.securityScore) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.lastSecurityAssessment) }}
-                        {{ form_widget(form.lastSecurityAssessment) }}
-                        {{ form_errors(form.lastSecurityAssessment) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.nextAssessmentDate) }}
-                        {{ form_widget(form.nextAssessmentDate) }}
-                        {{ form_errors(form.nextAssessmentDate) }}
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.assessmentFindings) }}
-                    {{ form_widget(form.assessmentFindings) }}
-                    {{ form_errors(form.assessmentFindings) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.nonConformities) }}
-                    {{ form_widget(form.nonConformities) }}
-                    {{ form_errors(form.nonConformities) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.securityRequirements) }}
-                    {{ form_widget(form.securityRequirements) }}
-                    {{ form_errors(form.securityRequirements) }}
-                </div>
-
-                <h3>{{ 'supplier.section.certifications_compliance'|trans({}, 'suppliers') }}</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.hasISO27001) }}
-                        {{ form_widget(form.hasISO27001) }}
-                        {{ form_errors(form.hasISO27001) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.hasISO22301) }}
-                        {{ form_widget(form.hasISO22301) }}
-                        {{ form_errors(form.hasISO22301) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.hasDPA) }}
-                        {{ form_widget(form.hasDPA) }}
-                        {{ form_errors(form.hasDPA) }}
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.dpaSignedDate) }}
-                        {{ form_widget(form.dpaSignedDate) }}
-                        {{ form_errors(form.dpaSignedDate) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.certifications) }}
-                        {{ form_widget(form.certifications) }}
-                        {{ form_errors(form.certifications) }}
-                    </div>
-                </div>
-
-                <h3>{{ 'supplier.section.contract_info'|trans({}, 'suppliers') }}</h3>
-                <div class="form-row">
-                    <div class="form-group">
-                        {{ form_label(form.contractStartDate) }}
-                        {{ form_widget(form.contractStartDate) }}
-                        {{ form_errors(form.contractStartDate) }}
-                    </div>
-                    <div class="form-group">
-                        {{ form_label(form.contractEndDate) }}
-                        {{ form_widget(form.contractEndDate) }}
-                        {{ form_errors(form.contractEndDate) }}
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">{{ 'supplier.action.update'|trans({}, 'suppliers') }}</button>
-                    <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-secondary">{{ 'common.cancel'|trans({}, 'messages') }}</a>
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-secondary">
+                        {{ 'common.cancel'|trans({}, 'messages') }}
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        {{ 'supplier.action.update'|trans }}
+                    </button>
                 </div>
             {{ form_end(form) }}
         </div>

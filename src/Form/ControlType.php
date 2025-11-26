@@ -62,7 +62,7 @@ class ControlType extends AbstractType
                     'control.category.physical' => 'physical',
                     'control.category.technological' => 'technological',
                 ],
-                'choice_translation_domain' => 'controls',
+                'choice_translation_domain' => 'control',
                 'attr' => ['class' => 'form-select'],
                 'constraints' => [
                     new NotBlank(),
@@ -74,7 +74,7 @@ class ControlType extends AbstractType
                     'control.applicable.yes' => true,
                     'control.applicable.no' => false,
                 ],
-                'choice_translation_domain' => 'controls',
+                'choice_translation_domain' => 'control',
                 'expanded' => true,
                 'attr' => ['class' => 'form-check'],
             ])
@@ -97,7 +97,7 @@ class ControlType extends AbstractType
                     'control.implementation_status.implemented' => 'implemented',
                     'control.implementation_status.verified' => 'verified',
                 ],
-                'choice_translation_domain' => 'controls',
+                'choice_translation_domain' => 'control',
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('implementationPercentage', IntegerType::class, [

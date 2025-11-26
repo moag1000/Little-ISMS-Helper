@@ -21,17 +21,17 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.pending'|trans({}, 'workflows'), pendingInstances|length, null, null, 'warning', null) }}
+        {{ cards.kpi_card('workflow.stats.pending'|trans({}, 'workflows'), pending_approvals|length, null, null, 'warning', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.overdue'|trans({}, 'workflows'), pendingInstances|filter(i => i.overdue)|length, null, null, 'danger', null) }}
+        {{ cards.kpi_card('workflow.stats.overdue'|trans({}, 'workflows'), pending_approvals|filter(i => i.overdue)|length, null, null, 'danger', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.my_tasks'|trans({}, 'workflows'), pendingInstances|filter(i => i.assignee and i.assignee.id == app.user.id)|length, null, null, 'success', null) }}
+        {{ cards.kpi_card('workflow.stats.my_tasks'|trans({}, 'workflows'), pending_approvals|filter(i => i.assignee and i.assignee.id == app.user.id)|length, null, null, 'success', null) }}
     </div>
     <div class="col-auto">
         {% set weekEnd = 'now'|date_modify('+7 days') %}
-        {{ cards.kpi_card('workflow.stats.due_this_week'|trans({}, 'workflows'), pendingInstances|filter(i => i.dueDate and i.dueDate <= weekEnd)|length, null, null, 'info', null) }}
+        {{ cards.kpi_card('workflow.stats.due_this_week'|trans({}, 'workflows'), pending_approvals|filter(i => i.dueDate and i.dueDate <= weekEnd)|length, null, null, 'info', null) }}
     </div>
 </div>
 
@@ -52,7 +52,7 @@
         </tr>
     {% endblock %}
     {% block table_body %}
-        {% for instance in pendingInstances %}
+        {% for instance in pending_approvals %}
         <tr{% if instance.overdue %} class="bg-danger-light"{% endif %}>
             <td>
                 <strong>{{ instance.name }}</strong>
