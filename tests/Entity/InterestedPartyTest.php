@@ -30,7 +30,7 @@ class InterestedPartyTest extends TestCase
         $this->assertNull($party->getFeedback());
         $this->assertNull($party->getSatisfactionLevel());
         $this->assertNull($party->getIssues());
-        $this->assertInstanceOf(\DateTime::class, $party->getCreatedAt());
+        $this->assertInstanceOf(\DateTimeInterface::class, $party->getCreatedAt());
         $this->assertNull($party->getUpdatedAt());
     }
 
