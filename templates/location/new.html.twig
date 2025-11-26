@@ -27,77 +27,52 @@
 <div class="card">
     <div class="card-content">
         {{ form_start(form) }}
-            <fieldset class="mb-4">
-                <legend class="h5 mb-3">{{ 'location.section.basic_info'|trans }}</legend>
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ form_row(form.name) }}
-                    </div>
-                    <div class="col-md-6">
-                        {{ form_row(form.locationType) }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ form_row(form.code) }}
-                    </div>
-                    <div class="col-md-6">
-                        {{ form_row(form.description) }}
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset class="mb-4">
-                <legend class="h5 mb-3">{{ 'location.section.address'|trans }}</legend>
-                <div class="row">
-                    <div class="col-12">
-                        {{ form_row(form.address) }}
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        {{ form_row(form.city) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ form_row(form.postalCode) }}
-                    </div>
-                    <div class="col-md-4">
-                        {{ form_row(form.country) }}
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset class="mb-4">
-                <legend class="h5 mb-3">{{ 'location.section.hierarchy'|trans }}</legend>
-                <div class="row">
-                    <div class="col-12">
-                        {{ form_row(form.parentLocation) }}
-                    </div>
-                </div>
-            </fieldset>
-
-            <fieldset class="mb-4">
-                <legend class="h5 mb-3">{{ 'location.section.security'|trans }}</legend>
-                <div class="row">
-                    <div class="col-md-6">
-                        {{ form_row(form.securityLevel) }}
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-check mt-4">
-                            {{ form_widget(form.requiresBadgeAccess, {'attr': {'class': 'form-check-input'}}) }}
-                            {{ form_label(form.requiresBadgeAccess, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                        </div>
-                        {{ form_errors(form.requiresBadgeAccess) }}
-                    </div>
-                </div>
-                {% if form.accessControlSystem is defined %}
-                <div class="row">
-                    <div class="col-12">
-                        {{ form_row(form.accessControlSystem) }}
-                    </div>
-                </div>
-                {% endif %}
-            </fieldset>
+            {% include '_components/_auto_form.html.twig' with {
+                'form': form,
+                'sections': {
+                    'basic_info': {
+                        'label': 'location.section.basic_info'|trans,
+                        'fields': ['name', 'locationType', 'code', 'description']
+                    },
+                    'address': {
+                        'label': 'location.section.address'|trans,
+                        'fields': ['address', 'city', 'postalCode', 'country']
+                    },
+                    'hierarchy': {
+                        'label': 'location.section.hierarchy'|trans,
+                        'fields': ['parentLocation']
+                    },
+                    'security': {
+                        'label': 'location.section.security'|trans,
+                        'fields': ['securityLevel', 'requiresBadgeAccess', 'requiresEscort', 'cameraMonitored', 'accessControlSystem']
+                    },
+                    'details': {
+                        'label': 'location.section.details'|trans,
+                        'fields': ['responsiblePerson', 'capacity', 'squareMeters', 'notes']
+                    }
+                },
+                'col_widths': {
+                    'name': 6,
+                    'locationType': 6,
+                    'code': 6,
+                    'description': 6,
+                    'address': 12,
+                    'city': 4,
+                    'postalCode': 4,
+                    'country': 4,
+                    'parentLocation': 12,
+                    'securityLevel': 6,
+                    'requiresBadgeAccess': 12,
+                    'requiresEscort': 12,
+                    'cameraMonitored': 12,
+                    'accessControlSystem': 12,
+                    'responsiblePerson': 6,
+                    'capacity': 3,
+                    'squareMeters': 3,
+                    'notes': 12
+                },
+                'exclude': ['active']
+            } %}
 
             <div class="d-flex justify-content-between mt-4">
                 <a href="{{ path('app_location_index') }}" class="btn btn-secondary">
