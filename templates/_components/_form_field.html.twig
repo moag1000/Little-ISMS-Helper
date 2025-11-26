@@ -1,39 +1,4 @@
-{#
-    Accessible Form Field Component with Bootstrap Floating Labels
-
-    This component provides WCAG 2.1 AA compliant form field rendering with:
-    - Bootstrap 5.3 Floating Labels (modern UX)
-    - Proper ARIA attributes (aria-invalid, aria-describedby, aria-required)
-    - Error message association
-    - Help text association
-    - Clear visual and programmatic error states
-
-    Usage:
-        {% include '_components/_form_field.html.twig' with {
-            'field': form.fieldName,
-            'label': 'form.label.fieldName'|trans({}, 'messages'),
-            'help': 'form.help.fieldName'|trans({}, 'messages'),
-            'required': true
-        } %}
-
-    IMPORTANT: When using with field.vars.label, DO NOT translate again:
-        {% include '_components/_form_field.html.twig' with {
-            'field': form.fieldName,
-            'label': form.fieldName.vars.label,  {# Already translated by Symfony #}
-            'required': form.fieldName.vars.required
-        } %}
-
-    @param field               FormView  The form field to render
-    @param label_key           string    Translation key for the label (e.g., 'supplier.field.name')
-    @param help_key            string    Optional translation key for help text
-    @param translation_domain  string    Translation domain (default: 'messages')
-    @param required            boolean   Whether the field is required
-    @param type                string    Input type override (default: from field)
-
-    BACKWARD COMPATIBILITY:
-    @param label               string    Deprecated: Use label_key instead
-    @param help                string    Deprecated: Use help_key instead
-#}
+{# Form Field Component - Bootstrap 5.3 Floating Labels with WCAG 2.1 AA compliance #}
 
 {% set field_id = field.vars.id %}
 {% set field_name = field.vars.full_name %}
@@ -116,28 +81,3 @@
         </div>
     {% endif %}
 </div>
-
-{#
-    Accessibility Features Implemented:
-
-    1. Bootstrap Floating Labels: Modern UX with animated labels
-    2. aria-invalid: Indicates validation state to screen readers
-    3. aria-describedby: Links help text and error messages to input
-    4. aria-required: Announces required fields to screen readers
-    5. role="alert": Error messages are announced immediately
-    6. aria-live="assertive": Ensures errors interrupt screen reader flow
-    7. aria-label: Required indicator has semantic meaning
-    8. Visual indicators: Icons are marked aria-hidden (decorative)
-    9. Unique IDs: All helper elements have unique IDs for association
-    10. Placeholder: Required for floating labels, matches label text
-
-    WCAG 2.1 Criteria Met:
-    - 1.3.1 Info and Relationships (Level A)
-    - 3.3.1 Error Identification (Level A)
-    - 3.3.2 Labels or Instructions (Level A)
-    - 3.3.3 Error Suggestion (Level AA)
-    - 4.1.3 Status Messages (Level AA)
-
-    Bootstrap Floating Labels Documentation:
-    https://getbootstrap.com/docs/5.3/forms/floating-labels/
-#}
