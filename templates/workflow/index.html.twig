@@ -32,16 +32,16 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.total'|trans({}, 'workflows'), instances|length, null, null, null, null) }}
+        {{ cards.kpi_card('workflow.stats.total'|trans({}, 'workflows'), statistics.total, null, null, null, null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.active'|trans({}, 'workflows'), instances|filter(i => i.status == 'active')|length, null, null, 'info', null) }}
+        {{ cards.kpi_card('workflow.stats.in_progress'|trans({}, 'workflows'), statistics.in_progress, null, null, 'info', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.pending'|trans({}, 'workflows'), instances|filter(i => i.status == 'pending')|length, null, null, 'warning', null) }}
+        {{ cards.kpi_card('workflow.stats.pending'|trans({}, 'workflows'), statistics.pending, null, null, 'warning', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.overdue'|trans({}, 'workflows'), instances|filter(i => i.overdue)|length, null, null, 'danger', null) }}
+        {{ cards.kpi_card('workflow.stats.approved'|trans({}, 'workflows'), statistics.approved, null, null, 'success', null) }}
     </div>
 </div>
 
@@ -54,7 +54,7 @@
             {{ 'workflow.description.pending'|trans({}, 'workflows') }}
         </p>
         <div class="mt-2">
-            <strong class="fs-4">{{ instances|filter(i => i.status == 'pending')|length }}</strong>
+            <strong class="fs-4">{{ statistics.pending }}</strong>
         </div>
         <div class="mt-2">
             <a href="{{ path('app_workflow_pending') }}" class="btn btn-sm">{{ 'common.view'|trans({}, 'messages') }}</a>
@@ -63,12 +63,12 @@
 
     <div class="card">
         <div class="fs-2-mb-sm">🔄</div>
-        <h2>{{ 'workflow.section.active'|trans({}, 'workflows') }}</h2>
+        <h2>{{ 'workflow.section.in_progress'|trans({}, 'workflows') }}</h2>
         <p class="text-muted-mt-xs">
-            {{ 'workflow.description.active'|trans({}, 'workflows') }}
+            {{ 'workflow.description.in_progress'|trans({}, 'workflows') }}
         </p>
         <div class="mt-2">
-            <strong class="fs-4">{{ instances|filter(i => i.status == 'active')|length }}</strong>
+            <strong class="fs-4">{{ statistics.in_progress }}</strong>
         </div>
         <div class="mt-2">
             <a href="{{ path('app_workflow_active') }}" class="btn btn-sm">{{ 'common.view'|trans({}, 'messages') }}</a>
