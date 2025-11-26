@@ -242,7 +242,6 @@ class AuditLogger
         $reflection = new \ReflectionClass($entity);
 
         foreach ($reflection->getProperties() as $property) {
-            $property->setAccessible(true);
             $name = $property->getName();
 
             // Skip certain properties
