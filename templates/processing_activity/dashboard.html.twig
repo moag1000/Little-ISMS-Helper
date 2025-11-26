@@ -134,7 +134,7 @@
                 <div class="card-header"><h5 class="mb-0"><i class="bi bi-bar-chart"></i> Statistics</h5>
                 </div>
                 <div class="card-body">
-                    <h6>By Legal Basis</h6>
+                    <h6>{{ 'privacy.chart.by_legal_basis'|trans({}, 'privacy') }}</h6>
                     {% if statistics.by_legal_basis %}
                         <ul class="list-unstyled">
                             {% for basis, count in statistics.by_legal_basis %}
@@ -146,7 +146,7 @@
                         </ul>
                     {% endif %}
 
-                    <h6 class="mt-4">By Risk Level</h6>
+                    <h6 class="mt-4">{{ 'privacy.chart.by_risk_level'|trans({}, 'privacy') }}</h6>
                     {% if statistics.by_risk_level %}
                         <ul class="list-unstyled">
                             {% for level, count in statistics.by_risk_level %}

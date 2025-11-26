@@ -396,3 +396,21 @@ compliance_requirement:
         filter_by_framework: 'Nach Framework filtern'
 nis2:
     article: Artikel
+
+compliance_framework:
+    industry:
+        all_sectors: 'Alle Branchen'
+        automotive: Automobil
+        financial_services: Finanzdienstleistungen
+        healthcare: Gesundheitswesen
+        telecommunications: Telekommunikation
+        pharmaceutical: Pharma
+        cloud_services: Cloud-Dienste
+        critical_infrastructure: 'Kritische Infrastruktur'
+        energy: Energie
+        manufacturing: Fertigung
+        retail: Einzelhandel
+        transportation: Transport
+        public_sector: 'Öffentlicher Sektor'
+        education: Bildung
+        insurance: Versicherung
