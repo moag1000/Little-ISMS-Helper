@@ -406,8 +406,8 @@ class DataProtectionImpactAssessment
         $this->dataCategories = [];
         $this->dataSubjectCategories = [];
         $this->identifiedRisks = [];
-        $this->createdAt = new \DateTime();
-        $this->updatedAt = new \DateTime();
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     // ============================================================================
@@ -417,7 +417,7 @@ class DataProtectionImpactAssessment
     #[ORM\PreUpdate]
     public function setUpdatedAtValue(): void
     {
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     // ============================================================================
