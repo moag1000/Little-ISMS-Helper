@@ -7,6 +7,7 @@ use App\Form\LocationType;
 use App\Repository\LocationRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -19,7 +20,8 @@ class LocationController extends AbstractController
     public function __construct(
         private LocationRepository $locationRepository,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private Security $security
     ) {}
 
     #[Route('/', name: 'app_location_index')]
@@ -40,6 +42,13 @@ class LocationController extends AbstractController
     public function new(Request $request): Response
     {
         $location = new Location();
+
+        // Set tenant from current user
+        $user = $this->security->getUser();
+        if ($user && $user->getTenant()) {
+            $location->setTenant($user->getTenant());
+        }
+
         $form = $this->createForm(LocationType::class, $location);
         $form->handleRequest($request);
 

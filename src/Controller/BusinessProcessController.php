@@ -31,7 +31,7 @@ class BusinessProcessController extends AbstractController
         $tenant = $user?->getTenant();
 
         // Get view filter parameter
-        $view = $request->query->get('view', 'inherited'); // Default: inherited
+        $view = $request->query->get('view', 'own'); // Default: inherited
 
         // Get business processes based on view filter
         if ($tenant) {
@@ -125,6 +125,13 @@ class BusinessProcessController extends AbstractController
     public function new(Request $request): Response
     {
         $businessProcess = new BusinessProcess();
+
+        // Set tenant from current user
+        $user = $this->security->getUser();
+        if ($user && $user->getTenant()) {
+            $businessProcess->setTenant($user->getTenant());
+        }
+
         $form = $this->createForm(BusinessProcessType::class, $businessProcess);
         $form->handleRequest($request);
 

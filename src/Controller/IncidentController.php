@@ -9,6 +9,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\IncidentRepository;
 use App\Service\EmailNotificationService;
 use App\Service\IncidentBCMImpactService;
+use App\Service\IncidentEscalationWorkflowService;
 use App\Service\PdfExportService;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,7 +34,8 @@ class IncidentController extends AbstractController
         private PdfExportService $pdfService,
         private UserRepository $userRepository,
         private TranslatorInterface $translator,
-        private Security $security
+        private Security $security,
+        private IncidentEscalationWorkflowService $escalationService
     ) {}
 
     #[Route('/', name: 'app_incident_index')]
@@ -230,10 +232,14 @@ class IncidentController extends AbstractController
         $auditLogs = $this->auditLogRepository->findByEntity('Incident', $incident->getId());
         $recentAuditLogs = array_slice($auditLogs, 0, 10);
 
+        // Get workflow status
+        $workflowStatus = $this->escalationService->getEscalationStatus($incident);
+
         return $this->render('incident/show.html.twig', [
             'incident' => $incident,
             'auditLogs' => $recentAuditLogs,
             'totalAuditLogs' => count($auditLogs),
+            'workflowStatus' => $workflowStatus,
         ]);
     }
 
