@@ -250,11 +250,11 @@ class Risk
     #[Groups(['risk:read', 'risk:write'])]
     private ?\DateTimeInterface $reviewDate = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['risk:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['risk:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 

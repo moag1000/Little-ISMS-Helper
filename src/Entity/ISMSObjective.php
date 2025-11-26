@@ -92,11 +92,11 @@ class ISMSObjective
     #[Groups(['isms_objective:read'])]
     private ?\DateTimeInterface $achievedDate = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['isms_objective:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['isms_objective:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 

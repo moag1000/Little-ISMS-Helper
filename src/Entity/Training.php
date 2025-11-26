@@ -143,11 +143,11 @@ class Training
     #[Groups(['training:read', 'training:write'])]
     private ?\DateTimeInterface $completionDate = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['training:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['training:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
