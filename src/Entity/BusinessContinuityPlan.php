@@ -259,11 +259,11 @@ class BusinessContinuityPlan
     #[Groups(['bc_plan:read', 'bc_plan:write'])]
     private ?string $reviewNotes = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['bc_plan:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['bc_plan:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 

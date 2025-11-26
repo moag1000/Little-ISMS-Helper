@@ -195,11 +195,11 @@ class InternalAudit
     #[Groups(['audit:read', 'audit:write'])]
     private ?\DateTimeInterface $reportDate = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['audit:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['audit:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
