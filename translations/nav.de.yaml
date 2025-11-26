@@ -10,6 +10,17 @@ nav:
     risks: Risiken
     change_requests: Änderungsanträge
     bcm: BCM
+    objectives: Ziele
+    business_processes: Geschäftsprozesse
+    processing_activities: Verarbeitungstätigkeiten
+    compliance_frameworks: 'Compliance Frameworks'
+    framework_dashboard: Framework-Dashboard
+    nis2: NIS2-Bewertung
+    treatment_plans: Behandlungspläne
+    roles: 'Rollen & Berechtigungen'
+    tenants: Mandanten
+    data_repair: Datenreparatur
+    management_reviews: Managementbewertungen
     bc_plans: BC-Pläne
     bc_exercises: BC-Übungen
     incidents: Vorfälle
@@ -45,6 +56,77 @@ nav:
     data_breaches: 'Datenschutzverletzungen (Art. 33/34)'
     toggle_menu: 'Menü umschalten'
     main_navigation: Hauptnavigation
+
+    # Mega Menu Kategorien
+    mega:
+        category:
+            dashboard: Dashboard
+            isms_core: 'ISMS Kern'
+            assets_risk: 'Assets & Risiken'
+            bcm: Geschäftskontinuität
+            privacy: 'Datenschutz & DSGVO'
+            operations: Betrieb
+            compliance: Compliance
+            admin: Administration
+
+        section:
+            overview: Übersicht
+            foundation: Grundlagen
+            controls: Maßnahmen
+            assets: Asset-Management
+            risk: Risikomanagement
+            continuity: Kontinuitätsplanung
+            testing: 'Tests & Übungen'
+            data_protection: Datenschutz
+            documents: Dokumentenverwaltung
+            security_ops: Sicherheitsbetrieb
+            auditing: 'Audits & Schulungen'
+            frameworks: 'Compliance Frameworks'
+            user_management: Benutzerverwaltung
+            system: Systemverwaltung
+
+        desc:
+            home: 'Übersicht und Schnellzugriff'
+            dashboard: 'Wichtige Kennzahlen und Einblicke'
+            analytics: 'Berichte und Analysen'
+            context: 'Organisationskontext und Anwendungsbereich'
+            interested_parties: 'Stakeholder und Anforderungen'
+            soa: 'Anwendbarkeitserklärung (ISO 27001 Anhang A)'
+            objectives: 'ISMS-Ziele und Vorgaben'
+            assets: 'IT- und Informationsassets-Inventar'
+            suppliers: 'Drittanbieter und Lieferanten'
+            locations: 'Physische Standorte und Einrichtungen'
+            people: 'Personal und Kontaktinformationen'
+            risks: 'Risikoregister und -bewertungen'
+            risk_matrix: 'Risiko-Heatmap-Visualisierung'
+            risk_appetite: 'Risikotoleranz-Schwellenwerte'
+            treatment_plans: 'Risikobehandlungsstrategien'
+            business_processes: 'Kritische Geschäftsprozesse'
+            bc_plans: 'Business Continuity Pläne'
+            bc_exercises: 'BC-Plan-Tests und Validierung'
+            crisis_team: 'Notfallreaktionsteam'
+            processing_activities: 'Verzeichnis von Verarbeitungstätigkeiten (Art. 30 DSGVO)'
+            dpia: 'Datenschutz-Folgenabschätzungen (Art. 35)'
+            data_breaches: 'Datenschutzverletzungsregister (Art. 33/34)'
+            documents: 'Richtlinien, Verfahren und Dokumentation'
+            change_requests: 'Change Management Workflow'
+            workflows: 'Automatisierte Geschäftsworkflows'
+            incidents: 'Sicherheitsvorfallmanagement'
+            vulnerabilities: 'Schwachstellenverfolgung'
+            patches: 'Patch Management System'
+            audits: 'Interne und externe Audits'
+            training: 'Sicherheitsbewusstseins-Schulungen'
+            management_reviews: 'Managementbewertungs-Meetings'
+            compliance_frameworks: 'Multi-Framework-Management'
+            framework_dashboard: 'Framework-übergreifende Übersicht'
+            mapping_quality: 'Framework-übergreifende Mapping-Qualitätsanalyse'
+            nis2: 'NIS2-Richtlinienbewertung'
+            users: 'Benutzerkontenverwaltung'
+            roles: 'Rollen und Berechtigungen'
+            tenants: 'Mandantenverwaltung'
+            data_repair: 'Datenintegritätswerkzeuge'
+            audit_log: 'System-Audit-Trail'
+
     section:
         isms_core: 'ISMS Kern'
         assets_risk: 'Assets & Risiken'
