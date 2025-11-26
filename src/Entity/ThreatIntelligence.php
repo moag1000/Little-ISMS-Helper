@@ -123,11 +123,11 @@ class ThreatIntelligence
     #[Groups(['threat:read', 'threat:write'])]
     private ?string $references = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['threat:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['threat:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 

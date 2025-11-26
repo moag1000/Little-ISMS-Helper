@@ -66,7 +66,7 @@ class PhysicalAccessLog
     #[Assert\Choice(choices: ['entry', 'exit', 'denied', 'forced_entry'])]
     private ?string $accessType = 'entry';
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['physical_access:read', 'physical_access:write'])]
     #[Assert\NotBlank]
     private ?\DateTimeInterface $accessTime = null;
@@ -108,7 +108,7 @@ class PhysicalAccessLog
     #[Groups(['physical_access:read', 'physical_access:write'])]
     private ?string $doorOrGate = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['physical_access:read'])]
     private ?\DateTimeInterface $exitTime = null;
 
@@ -121,7 +121,7 @@ class PhysicalAccessLog
     #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['physical_access:read'])]
     private ?\DateTimeInterface $createdAt = null;
 

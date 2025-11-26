@@ -178,7 +178,7 @@ class DataBreach
     /**
      * Date/time supervisory authority was notified (must be within 72h!)
      */
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeInterface $supervisoryAuthorityNotifiedAt = null;
 
     /**
@@ -237,7 +237,7 @@ class DataBreach
     /**
      * Date/time data subjects were notified
      */
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeInterface $dataSubjectsNotifiedAt = null;
 
     /**
@@ -322,10 +322,10 @@ class DataBreach
     // Metadata
     // ============================================================================
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
