@@ -22,7 +22,7 @@
             <div class="card shadow-lg">
                 <div class="card-header bg-primary text-white">
                     <h2 class="mb-0">
-                        <i class="bi bi-file-earmark-code me-2"></i>
+                        <i class="bi bi-file-earmark-code me-2" aria-hidden="true"></i>
                         Schritt 10: Beispiel-Daten (Optional)
                     </h2>
                 </div>
@@ -33,7 +33,7 @@
 
                     <div class="alert alert-warning" role="alert">
                         <h4 class="alert-heading">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
                             Hinweis zu Beispiel-Daten
                         </h5>
                         <ul class="mb-0">
@@ -44,7 +44,7 @@
                     </div>
 
                     <h5 class="mb-3">
-                        <i class="bi bi-database me-2"></i>
+                        <i class="bi bi-database me-2" aria-hidden="true"></i>
                         Beispiel-Daten importieren
                     </h5>
 
@@ -52,7 +52,7 @@
                         <form method="post" action="{{ path('setup_step10_sample_data_import') }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('setup_sample_data') }}">
                             <h5 class="mb-3 mt-4">
-                                <i class="bi bi-toggle-on me-2"></i>
+                                <i class="bi bi-toggle-on me-2" aria-hidden="true"></i>
                                 Verfügbare Beispiel-Daten
                             </h5>
 
@@ -68,19 +68,19 @@
                                                         <p class="text-muted mb-2">{{ data.description }}</p>
                                                         {% if data.command is defined %}
                                                             <small class="text-muted">
-                                                                <i class="bi bi-terminal me-1"></i>
+                                                                <i class="bi bi-terminal me-1" aria-hidden="true"></i>
                                                                 Command: <code>{{ data.command }}</code>
                                                             </small>
                                                         {% elseif data.file is defined %}
                                                             <small class="text-muted">
-                                                                <i class="bi bi-file-earmark me-1"></i>
+                                                                <i class="bi bi-file-earmark me-1" aria-hidden="true"></i>
                                                                 File: <code>{{ data.file }}</code>
                                                             </small>
                                                         {% endif %}
                                                         {% if data.required_modules is defined %}
                                                             <div class="mt-2">
                                                                 <small class="text-muted">
-                                                                    <i class="bi bi-puzzle me-1"></i>
+                                                                    <i class="bi bi-puzzle me-1" aria-hidden="true"></i>
                                                                     Module:
                                                                     {% for module in data.required_modules %}
                                                                         <span class="badge bg-secondary">{{ module }}</span>
@@ -98,16 +98,16 @@
 
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{{ path('setup_step9_base_data') }}" class="btn btn-outline-secondary">
-                                    <i class="bi bi-arrow-left me-2"></i>
+                                    <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
                                     Zurück
                                 </a>
                                 <div>
                                     <button type="button" class="btn btn-outline-secondary me-2" onclick="document.getElementById('skip-form').submit()">
-                                        <i class="bi bi-skip-forward me-2"></i>
+                                        <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
                                         Überspringen
                                     </button>
                                     <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-download me-2"></i>
+                                        <i class="bi bi-download me-2" aria-hidden="true"></i>
                                         Ausgewählte Daten importieren
                                     </button>
                                 </div>
@@ -119,18 +119,18 @@
                         </form>
                     {% else %}
                         <div class="alert alert-info" role="alert">
-                            <i class="bi bi-info-circle me-2"></i>
+                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
                             Keine Beispiel-Daten für die ausgewählten Module verfügbar.
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">
                             <a href="{{ path('setup_step9_base_data') }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left me-2"></i>
+                                <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
                                 Zurück
                             </a>
                             <a href="{{ path('setup_step11_complete') }}" class="btn btn-primary">
                                 Weiter zu Schritt 10: Abschluss
-                                <i class="bi bi-arrow-right ms-2"></i>
+                                <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
                             </a>
                         </div>
                     {% endif %}

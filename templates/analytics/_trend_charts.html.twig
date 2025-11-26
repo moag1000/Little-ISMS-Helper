@@ -21,12 +21,12 @@
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->trend-chart#refresh"
                     title="{{ 'analytics.action.refresh'|trans({}, 'analytics') }}">
-                <i class="bi bi-arrow-clockwise"></i>
+                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
             </button>
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->trend-chart#exportImage"
                     title="{{ 'analytics.action.export_png'|trans({}, 'analytics') }}">
-                <i class="bi bi-image"></i>
+                <i class="bi bi-image" aria-hidden="true"></i>
             </button>
         </div>
     </div>
@@ -47,21 +47,21 @@
                     <button class="nav-link active"
                             data-action="click->trend-chart#showRiskTrend"
                             data-trend-chart-target="riskTab">
-                        <i class="bi bi-exclamation-triangle"></i> {{ 'analytics.trend_tabs.risks'|trans({}, 'analytics') }}
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'analytics.trend_tabs.risks'|trans({}, 'analytics') }}
                     </button>
                 </li>
                 <li class="nav-item">
                     <button class="nav-link"
                             data-action="click->trend-chart#showAssetTrend"
                             data-trend-chart-target="assetTab">
-                        <i class="bi bi-server"></i> {{ 'analytics.trend_tabs.assets'|trans({}, 'analytics') }}
+                        <i class="bi bi-server" aria-hidden="true"></i> {{ 'analytics.trend_tabs.assets'|trans({}, 'analytics') }}
                     </button>
                 </li>
                 <li class="nav-item">
                     <button class="nav-link"
                             data-action="click->trend-chart#showIncidentTrend"
                             data-trend-chart-target="incidentTab">
-                        <i class="bi bi-exclamation-circle"></i> {{ 'analytics.trend_tabs.incidents'|trans({}, 'analytics') }}
+                        <i class="bi bi-exclamation-circle" aria-hidden="true"></i> {{ 'analytics.trend_tabs.incidents'|trans({}, 'analytics') }}
                     </button>
                 </li>
             </ul>

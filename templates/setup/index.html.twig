@@ -9,14 +9,14 @@
             <div class="card shadow-lg">
                 <div class="card-header bg-primary text-white">
                     <h1 class="mb-0">
-                        <i class="bi bi-magic me-2"></i>
+                        <i class="bi bi-magic me-2" aria-hidden="true"></i>
                         Little ISMS Helper - Deployment Wizard
                     </h1>
                 </div>
                 <div class="card-body p-5">
                     {% if setup_complete %}
                         <div class="alert alert-success" role="alert">
-                            <i class="bi bi-check-circle me-2"></i>
+                            <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
                             <strong>Setup bereits abgeschlossen!</strong>
                             <p class="mb-0 mt-2">
                                 Ihr System wurde bereits konfiguriert. Sie können:
@@ -25,16 +25,16 @@
 
                         <div class="d-grid gap-3 mt-4">
                             <a href="{{ path('app_dashboard', {'_locale': app.request.locale}) }}" class="btn btn-lg btn-primary">
-                                <i class="bi bi-house me-2"></i>
+                                <i class="bi bi-house me-2" aria-hidden="true"></i>
                                 Zum Dashboard
                             </a>
                             <a href="{{ path('module_management_index', {'_locale': app.request.locale}) }}" class="btn btn-lg btn-outline-primary">
-                                <i class="bi bi-puzzle me-2"></i>
+                                <i class="bi bi-puzzle me-2" aria-hidden="true"></i>
                                 Module verwalten
                             </a>
                             {% if app.environment == 'dev' %}
                                 <a href="{{ path('setup_wizard_reset') }}" class="btn btn-sm btn-outline-danger">
-                                    <i class="bi bi-arrow-clockwise me-2"></i>
+                                    <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>
                                     Setup zurücksetzen (Development)
                                 </a>
                             {% endif %}
@@ -52,14 +52,14 @@
                             <div class="col-md-6">
                                 <div class="card h-100 border-primary">
                                     <div class="card-body">
-                                        <i class="bi bi-check-circle text-primary  mb-3"></i>
+                                        <i class="bi bi-check-circle text-primary  mb-3" aria-hidden="true"></i>
                                         <h5>{{ 'setup.what_will_be_setup'|trans }}</h5>
                                         <ul class="list-unstyled">
-                                            <li><i class="bi bi-check text-success me-2"></i>System-Anforderungen prüfen</li>
-                                            <li><i class="bi bi-check text-success me-2"></i>Module auswählen</li>
-                                            <li><i class="bi bi-check text-success me-2"></i>Datenbank initialisieren</li>
-                                            <li><i class="bi bi-check text-success me-2"></i>Basis-Daten importieren</li>
-                                            <li><i class="bi bi-check text-success me-2"></i>Optional: Beispiel-Daten laden</li>
+                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>System-Anforderungen prüfen</li>
+                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>Module auswählen</li>
+                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>Datenbank initialisieren</li>
+                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>Basis-Daten importieren</li>
+                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>Optional: Beispiel-Daten laden</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -67,13 +67,13 @@
                             <div class="col-md-6">
                                 <div class="card h-100 border-info">
                                     <div class="card-body">
-                                        <i class="bi bi-clock text-info  mb-3"></i>
+                                        <i class="bi bi-clock text-info  mb-3" aria-hidden="true"></i>
                                         <h5>Dauer & Voraussetzungen</h5>
                                         <ul class="list-unstyled">
-                                            <li><i class="bi bi-hourglass-split text-info me-2"></i>~5-10 Minuten</li>
-                                            <li><i class="bi bi-database text-info me-2"></i>Datenbank-Zugriff erforderlich</li>
-                                            <li><i class="bi bi-server text-info me-2"></i>PHP 8.2+ und Extensions</li>
-                                            <li><i class="bi bi-folder text-info me-2"></i>Schreibrechte für Verzeichnisse</li>
+                                            <li><i class="bi bi-hourglass-split text-info me-2" aria-hidden="true"></i>~5-10 Minuten</li>
+                                            <li><i class="bi bi-database text-info me-2" aria-hidden="true"></i>Datenbank-Zugriff erforderlich</li>
+                                            <li><i class="bi bi-server text-info me-2" aria-hidden="true"></i>PHP 8.2+ und Extensions</li>
+                                            <li><i class="bi bi-folder text-info me-2" aria-hidden="true"></i>Schreibrechte für Verzeichnisse</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -83,7 +83,7 @@
                         <div class="card bg-light mb-4">
                             <div class="card-body">
                                 <h5 class="card-title">
-                                    <i class="bi bi-puzzle me-2"></i>
+                                    <i class="bi bi-puzzle me-2" aria-hidden="true"></i>
                                     Verfügbare Module
                                 </h5>
                                 <p class="text-muted mb-3">
@@ -91,31 +91,31 @@
                                 </p>
                                 <div class="row g-2">
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-shield-check-check text-primary me-1"></i> Core ISMS (erforderlich)</small>
+                                        <small><i class="bi bi-shield-check-check text-primary me-1" aria-hidden="true"></i> Core ISMS (erforderlich)</small>
                                     </div>
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-database text-muted me-1"></i> Asset Management</small>
+                                        <small><i class="bi bi-database text-muted me-1" aria-hidden="true"></i> Asset Management</small>
                                     </div>
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-exclamation-triangle text-muted me-1"></i> Risk Management</small>
+                                        <small><i class="bi bi-exclamation-triangle text-muted me-1" aria-hidden="true"></i> Risk Management</small>
                                     </div>
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-list-check text-muted me-1"></i> Controls (SoA)</small>
+                                        <small><i class="bi bi-list-check text-muted me-1" aria-hidden="true"></i> Controls (SoA)</small>
                                     </div>
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-bell text-muted me-1"></i> Incident Management</small>
+                                        <small><i class="bi bi-bell text-muted me-1" aria-hidden="true"></i> Incident Management</small>
                                     </div>
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-clipboard-check text-muted me-1"></i> Audit Management</small>
+                                        <small><i class="bi bi-clipboard-check text-muted me-1" aria-hidden="true"></i> Audit Management</small>
                                     </div>
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-arrow-clockwise text-muted me-1"></i> BCM</small>
+                                        <small><i class="bi bi-arrow-clockwise text-muted me-1" aria-hidden="true"></i> BCM</small>
                                     </div>
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-balance text-muted me-1"></i> Compliance</small>
+                                        <small><i class="bi bi-balance text-muted me-1" aria-hidden="true"></i> Compliance</small>
                                     </div>
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-mortarboard text-muted me-1"></i> Training</small>
+                                        <small><i class="bi bi-mortarboard text-muted me-1" aria-hidden="true"></i> Training</small>
                                     </div>
                                 </div>
                             </div>
@@ -123,7 +123,7 @@
 
                         <div class="d-grid">
                             <a href="{{ path('setup_step0_welcome') }}" class="btn btn-lg btn-primary">
-                                <i class="bi bi-play me-2"></i>
+                                <i class="bi bi-play me-2" aria-hidden="true"></i>
                                 Setup starten
                             </a>
                         </div>

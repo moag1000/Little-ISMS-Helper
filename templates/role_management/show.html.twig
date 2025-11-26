@@ -71,7 +71,7 @@
 
     {% if role.permissions|length > 0 %}
     <div class="table-container mt-3">
-        {% embed '_components/_table.html.twig' with {'noMargin': true} %}
+        {% embed '_components/_table.html.twig' with {'noMargin': true, 'responsive': true} %}
             {% block table_head %}
                 <tr>
                     <th scope="col">{{ 'role_management.permission.name'|trans({}, 'role_management') }}</th>
@@ -103,7 +103,7 @@
 
     {% if role.users|length > 0 %}
     <div class="table-container mt-3">
-        {% embed '_components/_table.html.twig' with {'noMargin': true} %}
+        {% embed '_components/_table.html.twig' with {'noMargin': true, 'responsive': true} %}
             {% block table_head %}
                 <tr>
                     <th scope="col">{{ 'role_management.user.name'|trans({}, 'role_management') }}</th>

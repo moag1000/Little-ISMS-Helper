@@ -39,7 +39,7 @@
             <div class="card shadow-lg">
                 <div class="card-header bg-primary text-white">
                     <h2 class="mb-0">
-                        <i class="bi bi-database me-2"></i>
+                        <i class="bi bi-database me-2" aria-hidden="true"></i>
                         {{ 'setup.database.header'|trans({}, 'messages') }}
                     </h2>
                 </div>
@@ -52,19 +52,19 @@
                     {% if is_docker_standalone and docker_password %}
                         <div class="alert alert-success border-success">
                             <h5 class="alert-heading">
-                                <i class="bi bi-key me-2"></i>
+                                <i class="bi bi-key me-2" aria-hidden="true"></i>
                                 {{ 'setup.database.docker_password_title'|trans({}, 'messages') }}
                             </h5>
                             <p class="mb-2">{{ 'setup.database.docker_password_info'|trans({}, 'messages') }}</p>
                             <div class="p-3 bg-light border rounded">
                                 <code class="text-primary fw-bold" style="font-size: 1.1rem;">{{ docker_password }}</code>
                                 <button type="button" class="btn btn-sm btn-outline-primary ms-3" onclick="navigator.clipboard.writeText('{{ docker_password }}')">
-                                    <i class="bi bi-clipboard me-1"></i>
+                                    <i class="bi bi-clipboard me-1" aria-hidden="true"></i>
                                     {{ 'common.copy'|trans({}, 'messages') }}
                                 </button>
                             </div>
                             <small class="text-muted mt-2 d-block">
-                                <i class="bi bi-info-circle me-1"></i>
+                                <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
                                 {{ 'setup.database.docker_password_location'|trans({}, 'messages') }}
                             </small>
                         </div>
@@ -140,7 +140,7 @@
 
                     {# Info Box #}
                     <div class="alert alert-info">
-                        <i class="bi bi-info-circle me-2"></i>
+                        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
                         <strong>{{ 'setup.database.info.title'|trans({}, 'messages') }}</strong>
                         <ul class="mb-0 mt-2">
                             <li>{{ 'setup.database.info.mysql'|trans({}, 'messages') }}</li>
@@ -154,7 +154,7 @@
                     {% if test_result is defined and test_result is not null %}
                         {% if test_result.success %}
                             <div class="alert alert-success">
-                                <i class="bi bi-check-circle me-2"></i>
+                                <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
                                 <strong>{{ 'setup.database.test.success'|trans({}, 'messages') }}</strong>
                                 <p class="mb-0">{{ test_result.message }}</p>
                                 {% if test_result.create_needed is defined and test_result.create_needed %}
@@ -163,7 +163,7 @@
                             </div>
                         {% else %}
                             <div class="alert alert-danger">
-                                <i class="bi bi-x-circle me-2"></i>
+                                <i class="bi bi-x-circle me-2" aria-hidden="true"></i>
                                 <strong>{{ 'setup.database.test.failed'|trans({}, 'messages') }}</strong>
                                 <p class="mb-0">{{ test_result.message }}</p>
                             </div>
@@ -173,18 +173,18 @@
                     {# Navigation #}
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ path('setup_step0_welcome') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-2"></i>
+                            <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
                             {{ 'setup.navigation.back'|trans({}, 'messages') }}
                         </a>
 
                         <div>
                             <button type="submit" name="test" value="1" class="btn btn-outline-primary me-2">
-                                <i class="bi bi-flask me-2"></i>
+                                <i class="bi bi-flask me-2" aria-hidden="true"></i>
                                 {{ 'setup.database.test_button'|trans({}, 'messages') }}
                             </button>
                             <button type="submit" name="save" value="1" class="btn btn-primary">
                                 {{ 'setup.navigation.next'|trans({}, 'messages') }}
-                                <i class="bi bi-arrow-right ms-2"></i>
+                                <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
                             </button>
                         </div>
                     </div>
