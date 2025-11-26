@@ -4,6 +4,13 @@
 
 {% block admin_content %}
 <div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('app_admin_dashboard') },
+            { label: 'compliance.manage_frameworks'|trans({}, 'compliance') }
+        ]
+    } %}
+
     <div class="page-header">
         <div>
             <h1>📦 {{ 'compliance.manage_frameworks'|trans({}, 'compliance') }}</h1>

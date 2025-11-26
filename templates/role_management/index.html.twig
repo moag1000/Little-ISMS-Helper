@@ -5,6 +5,13 @@
 {% block admin_content %}
 {% import '_macros/cards.html.twig' as cards %}
 
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'nav.admin'|trans({}, 'nav'), url: path('app_admin_dashboard') },
+        { label: 'nav.roles'|trans({}, 'nav') }
+    ]
+} %}
+
 <div class="page-header">
     <div>
         <h1>{{ 'role_management.title.list'|trans({}, 'role_management') }}</h1>

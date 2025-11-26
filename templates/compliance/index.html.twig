@@ -4,6 +4,12 @@
 
 {% block body %}
 <div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.compliance'|trans({}, 'nav') }
+        ]
+    } %}
+
     <div class="page-header">
         <div>
             <h1>🎯 {{ 'compliance.page_title'|trans({}, 'compliance') }}</h1>

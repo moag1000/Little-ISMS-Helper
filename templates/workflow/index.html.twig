@@ -6,6 +6,14 @@
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
 
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.workflows'|trans({}, 'nav') }
+        ]
+    } %}
+</div>
+
 <div class="page-header">
     <div>
         <h1>{{ 'workflow.title.list'|trans({}, 'workflows') }}</h1>

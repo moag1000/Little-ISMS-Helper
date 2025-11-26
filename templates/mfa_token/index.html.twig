@@ -6,6 +6,13 @@
 {% endblock %}
 
 {% block admin_content %}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('app_admin_dashboard') },
+            { label: 'nav.mfa'|trans({}, 'nav') }
+        ]
+    } %}
+
     {# Statistics Cards #}
     <div class="row mb-4">
         <div class="col-md-3">
