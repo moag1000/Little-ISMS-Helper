@@ -30,6 +30,7 @@ admin:
         export: Export
         import: Import
         data_repair: 'Data Repair'
+        licensing: Licensing
         license_management: 'License Management'
     dashboard:
         title: 'Admin Dashboard'
@@ -74,66 +75,66 @@ admin:
     licensing:
         attributions_provided: 'Attributions Provided'
     settings:
-        title: Title
-        subtitle: Subtitle
+        required_for_iso27001: 'Required for ISO 27001'
+        title: 'System Settings'
+        subtitle: 'Configuration of application parameters and system behavior'
         application:
-            title: Title
-            description: Description
-            locale: Locale
+            title: 'Application Settings'
+            description: 'Basic settings for language, timezone and display options'
+            locale: 'Language / Locale'
             timezone: Timezone
-            items_per_page: 'Items Per Page'
-            locale_settings: 'Locale Settings'
-            default_locale: 'Default Locale'
-            default_locale_help: 'Default Locale Help'
-            supported_locales: 'Supported Locales'
-            supported_locales_help: 'Supported Locales Help'
+            items_per_page: 'Items per page'
+            locale_settings: 'Language Settings'
+            default_locale: 'Default Language'
+            default_locale_help: 'Default language for new users and system outputs'
+            supported_locales: 'Supported Languages'
+            supported_locales_help: 'Languages that users can select (de, en)'
             display_settings: 'Display Settings'
-            items_per_page_help: 'Items Per Page Help'
-            timezone_help: 'Timezone Help'
+            items_per_page_help: 'Number of items per page in tables (Default: 25)'
+            timezone_help: 'Timezone for date displays (e.g. Europe/Berlin)'
             date_format: 'Date Format'
-            date_format_help: 'Date Format Help'
-            datetime_format: 'Datetime Format'
-            datetime_format_help: 'Datetime Format Help'
-            help_text: 'Help Text'
-        configure: Configure
+            date_format_help: 'Format for date displays (e.g. Y-m-d for 2024-12-31)'
+            datetime_format: 'Date/Time Format'
+            datetime_format_help: 'Format for date and time (e.g. Y-m-d H:i for 2024-12-31 14:30)'
+            help_text: 'These settings affect all tenants and users globally'
+        configure: 'Configure Settings'
         security:
-            title: Title
-            description: Description
+            title: 'Security Settings'
+            description: 'Configuration of authentication, session management and password policies (ISO 27001 Annex A 5.17, 5.18)'
             session_lifetime: 'Session Lifetime'
-            max_login_attempts: 'Max Login Attempts'
-            require_2fa: 'Require 2fa'
+            max_login_attempts: 'Max. Login Attempts'
+            require_2fa: 'Require MFA'
             session_settings: 'Session Settings'
-            session_lifetime_help: 'Session Lifetime Help'
-            remember_me_lifetime: 'Remember Me Lifetime'
-            remember_me_help: 'Remember Me Help'
-            password_settings: 'Password Settings'
-            password_min_length: 'Password Min Length'
-            password_min_length_help: 'Password Min Length Help'
-            auth_settings: 'Auth Settings'
-            max_login_attempts_help: 'Max Login Attempts Help'
+            session_lifetime_help: 'Session lifetime in minutes (Default: 1440 = 24 hours)'
+            remember_me_lifetime: 'Remember-Me Lifetime'
+            remember_me_help: 'Duration of "Stay logged in" cookie in days (Default: 30)'
+            password_settings: 'Password Policies'
+            password_min_length: 'Min. Password Length'
+            password_min_length_help: 'Minimum number of characters for passwords (Default: 12, recommended: 12-16)'
+            auth_settings: 'Authentication Settings'
+            max_login_attempts_help: 'Number of failed login attempts before account lockout (Default: 5)'
             lockout_duration: 'Lockout Duration'
-            lockout_duration_help: 'Lockout Duration Help'
-            require_2fa_help: 'Require 2fa Help'
-            warning: Warning
+            lockout_duration_help: 'Duration of account lockout in minutes after too many failed attempts (Default: 15)'
+            require_2fa_help: 'Enforce multi-factor authentication for all users (NIS2 compliant, Art. 21.2.b)'
+            warning: 'Warning: Changes to security settings may invalidate existing sessions'
         features:
-            title: Title
-            description: Description
+            title: 'Feature Settings'
+            description: 'Activation and configuration of optional features'
             dark_mode: 'Dark Mode'
             global_search: 'Global Search'
             audit_log: 'Audit Log'
-            intro: Intro
-            dark_mode_help: 'Dark Mode Help'
-            global_search_help: 'Global Search Help'
+            intro: 'Introduction Tutorial'
+            dark_mode_help: 'Enable dark mode for all users'
+            global_search_help: 'Enable global full-text search across all entities'
             quick_view: 'Quick View'
-            quick_view_help: 'Quick View Help'
+            quick_view_help: 'Enable quick view modals for entities'
             notifications: Notifications
-            notifications_help: 'Notifications Help'
-            audit_log_help: 'Audit Log Help'
-            info_text: 'Info Text'
-        info_title: 'Info Title'
-        info_text: 'Info Text'
-        required_for_iso27001: 'Required For Iso27001'
-        info: Info
+            notifications_help: 'Enable system notifications for users'
+            audit_log_help: 'Audit logging of all user actions (ISO 27001 Annex A 8.15)'
+            info_text: 'Feature flags allow selective activation of functionalities'
+        info_title: 'System Settings Help'
+        info_text: 'Changes take effect immediately and affect all tenants'
+        info: Information
         help: Help
     compliance:
         framework: Framework

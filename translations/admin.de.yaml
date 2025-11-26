@@ -30,6 +30,7 @@ admin:
         export: Export
         import: Import
         data_repair: Daten-Reparatur
+        licensing: Lizenzierung
         license_management: Lizenz-Verwaltung
     dashboard:
         title: 'Admin Dashboard'

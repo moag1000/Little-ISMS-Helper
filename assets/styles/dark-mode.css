@@ -112,48 +112,196 @@ body {
     transition: background-color var(--transition-speed), color var(--transition-speed);
 }
 
-/* Headers */
-.header {
+/* Headers - Dark Mode Only */
+[data-theme="dark"] .header,
+[data-bs-theme="dark"] .header {
     background-color: var(--bg-elevated);
     border-bottom: 1px solid var(--border-color);
     box-shadow: var(--shadow-sm);
 }
 
-/* Navigation */
-.nav {
+/* Navigation - Dark Mode Only */
+[data-theme="dark"] .nav,
+[data-bs-theme="dark"] .nav {
     background-color: var(--bg-secondary);
     border-right: 1px solid var(--border-color);
 }
 
-.nav a {
+[data-theme="dark"] .nav a,
+[data-bs-theme="dark"] .nav a {
     color: var(--text-secondary);
     transition: background-color 0.2s, color 0.2s;
 }
 
-.nav a:hover,
-.nav a.active {
+[data-theme="dark"] .nav a:hover,
+[data-theme="dark"] .nav a.active,
+[data-bs-theme="dark"] .nav a:hover,
+[data-bs-theme="dark"] .nav a.active {
     background-color: var(--bg-tertiary);
     color: var(--color-primary);
 }
 
-/* Cards */
-.card,
-.stat-card,
-.widget-card,
-.feature-card,
-.kpi-card {
-    background-color: var(--bg-elevated);
-    border-color: var(--border-color);
-    box-shadow: var(--shadow-sm);
-}
-
 /* KPI Card Dark Mode Enhancements */
-.kpi-card::after {
+[data-theme="dark"] .kpi-card::after,
+[data-bs-theme="dark"] .kpi-card::after {
     background: linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.08));
 }
 
-.kpi-card:hover {
+[data-theme="dark"] .kpi-card:hover,
+[data-bs-theme="dark"] .kpi-card:hover {
     box-shadow: var(--shadow-md), 0 0 20px rgba(6, 182, 212, 0.15);
+}
+
+/* Override Bootstrap bg-white and bg-light in dark mode */
+[data-theme="dark"] .bg-white,
+[data-bs-theme="dark"] .bg-white {
+    background-color: var(--bg-elevated) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .bg-light,
+[data-bs-theme="dark"] .bg-light {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Alerts - Dark Mode Text Visibility */
+[data-theme="dark"] .alert-info,
+[data-bs-theme="dark"] .alert-info,
+[data-theme="dark"] .alert-info h1,
+[data-theme="dark"] .alert-info h2,
+[data-theme="dark"] .alert-info h3,
+[data-theme="dark"] .alert-info h4,
+[data-theme="dark"] .alert-info h5,
+[data-theme="dark"] .alert-info h6,
+[data-bs-theme="dark"] .alert-info h1,
+[data-bs-theme="dark"] .alert-info h2,
+[data-bs-theme="dark"] .alert-info h3,
+[data-bs-theme="dark"] .alert-info h4,
+[data-bs-theme="dark"] .alert-info h5,
+[data-bs-theme="dark"] .alert-info h6 {
+    color: #ffffff !important;
+}
+
+/* Cards - Dark Mode */
+[data-theme="dark"] .card,
+[data-bs-theme="dark"] .card,
+[data-theme="dark"] .stat-card,
+[data-bs-theme="dark"] .stat-card,
+[data-theme="dark"] .widget-card,
+[data-bs-theme="dark"] .widget-card,
+[data-theme="dark"] .feature-card,
+[data-bs-theme="dark"] .feature-card,
+[data-theme="dark"] .kpi-card,
+[data-bs-theme="dark"] .kpi-card,
+[data-theme="dark"] .framework-card,
+[data-bs-theme="dark"] .framework-card {
+    background: var(--bg-elevated) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .card-header,
+[data-bs-theme="dark"] .card-header,
+[data-theme="dark"] .widget-header,
+[data-bs-theme="dark"] .widget-header {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .card-body,
+[data-bs-theme="dark"] .card-body,
+[data-theme="dark"] .framework-body,
+[data-bs-theme="dark"] .framework-body {
+    background: var(--bg-elevated) !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .card-footer,
+[data-bs-theme="dark"] .card-footer {
+    background: var(--bg-secondary) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Stat Card Text - Dark Mode */
+[data-theme="dark"] .stat-card-title,
+[data-bs-theme="dark"] .stat-card-title {
+    color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .stat-card-value,
+[data-bs-theme="dark"] .stat-card-value {
+    color: var(--text-primary) !important;
+}
+
+/* Widget Card Text - Dark Mode */
+[data-theme="dark"] .widget-title,
+[data-bs-theme="dark"] .widget-title {
+    color: var(--text-primary) !important;
+}
+
+/* Bootstrap bg-*-subtle overrides for Dark Mode */
+[data-theme="dark"] .bg-warning-subtle,
+[data-bs-theme="dark"] .bg-warning-subtle {
+    background-color: rgba(245, 158, 11, 0.15) !important;
+}
+
+[data-theme="dark"] .bg-danger-subtle,
+[data-bs-theme="dark"] .bg-danger-subtle {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+}
+
+[data-theme="dark"] .bg-success-subtle,
+[data-bs-theme="dark"] .bg-success-subtle {
+    background-color: rgba(16, 185, 129, 0.15) !important;
+}
+
+[data-theme="dark"] .bg-info-subtle,
+[data-bs-theme="dark"] .bg-info-subtle {
+    background-color: rgba(6, 182, 212, 0.15) !important;
+}
+
+[data-theme="dark"] .bg-light,
+[data-bs-theme="dark"] .bg-light {
+    background: var(--bg-secondary) !important;
+}
+
+/* Compliance Page - Dark Mode */
+[data-theme="dark"] .quick-access-bar,
+[data-bs-theme="dark"] .quick-access-bar,
+[data-theme="dark"] .workflow-steps-card,
+[data-bs-theme="dark"] .workflow-steps-card {
+    background-color: var(--bg-elevated);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .quick-access-header h2,
+[data-bs-theme="dark"] .quick-access-header h2 {
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .framework-header,
+[data-bs-theme="dark"] .framework-header {
+    background-color: var(--bg-secondary) !important;
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .framework-header h2,
+[data-bs-theme="dark"] .framework-header h2 {
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .framework-header.bg-gradient-primary,
+[data-bs-theme="dark"] .framework-header.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%) !important;
+}
+
+[data-theme="dark"] .framework-header.bg-gradient-danger,
+[data-bs-theme="dark"] .framework-header.bg-gradient-danger {
+    background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%) !important;
 }
 
 /* Tables - Dark Mode Only */
