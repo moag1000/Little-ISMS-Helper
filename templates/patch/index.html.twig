@@ -7,6 +7,12 @@
 
 {% block body %}
 <div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.patches'|trans({}, 'nav') }
+        ]
+    } %}
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1><i class="bi bi-patch-check" aria-hidden="true"></i> {{ 'patch.title'|trans({}, 'patches') }}</h1>
         <a href="{{ path('app_patch_new') }}" class="btn btn-primary">

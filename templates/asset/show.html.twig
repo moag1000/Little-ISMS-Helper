@@ -5,6 +5,13 @@
 
 {% block body %}
 <div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.assets'|trans({}, 'nav'), url: path('app_asset_index') },
+            { label: asset.name }
+        ]
+    } %}
+
     <div class="page-header">
         <h1>
             {{ asset.name }}

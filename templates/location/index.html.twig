@@ -6,6 +6,14 @@
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
 
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.locations'|trans({}, 'nav') }
+        ]
+    } %}
+</div>
+
 <div class="page-header">
     <div>
         <h1>{{ 'location.title.list'|trans({}, 'locations') }}</h1>

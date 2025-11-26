@@ -4,6 +4,14 @@
 
 {% block admin_content %}
 <div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('app_admin_dashboard') },
+            { label: 'nav.users'|trans({}, 'nav'), url: path('admin_user_index') },
+            { label: user.firstName ~ ' ' ~ user.lastName }
+        ]
+    } %}
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div class="d-flex align-items-center">
             {% if user.profilePicture %}

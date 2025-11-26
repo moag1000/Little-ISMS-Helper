@@ -6,6 +6,14 @@
 {% endblock %}
 
 {% block admin_content %}
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('app_admin_dashboard') },
+            { label: 'nav.mfa'|trans({}, 'nav'), url: path('admin_mfa_index') },
+            { label: mfa_token.tokenTypeName }
+        ]
+    } %}
+
     <div class="mb-4">
         <a href="{{ path('admin_mfa_index') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
