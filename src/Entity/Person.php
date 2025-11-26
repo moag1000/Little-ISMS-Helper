@@ -107,11 +107,11 @@ class Person
     #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['person:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['person:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 

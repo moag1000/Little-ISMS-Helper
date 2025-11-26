@@ -164,11 +164,11 @@ class InterestedParty
     #[Groups(['interested_party:read', 'interested_party:write'])]
     private ?string $issues = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['interested_party:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['interested_party:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 

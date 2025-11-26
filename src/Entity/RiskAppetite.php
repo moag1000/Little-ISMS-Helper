@@ -86,15 +86,15 @@ class RiskAppetite
     /**
      * Date when this risk appetite was approved
      */
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['risk_appetite:read', 'risk_appetite:write'])]
     private ?\DateTimeInterface $approvedAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['risk_appetite:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['risk_appetite:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
