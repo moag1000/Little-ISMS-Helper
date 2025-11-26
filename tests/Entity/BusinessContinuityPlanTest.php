@@ -17,7 +17,7 @@ class BusinessContinuityPlanTest extends TestCase
         $plan = new BusinessContinuityPlan();
 
         $this->assertNotNull($plan->getCreatedAt());
-        $this->assertInstanceOf(\DateTime::class, $plan->getCreatedAt());
+        $this->assertInstanceOf(\DateTimeInterface::class, $plan->getCreatedAt());
         $this->assertEquals(0, $plan->getCriticalSuppliers()->count());
         $this->assertEquals(0, $plan->getCriticalAssets()->count());
         $this->assertEquals(0, $plan->getDocuments()->count());
