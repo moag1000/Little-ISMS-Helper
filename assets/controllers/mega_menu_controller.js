@@ -14,32 +14,18 @@ export default class extends Controller {
     static targets = ['trigger', 'panel'];
 
     connect() {
-        // Initialize first panel as active on load
-        this.initializeFirstPanel();
+        // Start with panels closed
+        // User can click a category to open
 
         // Handle keyboard navigation
         this.element.addEventListener('keydown', this.handleKeyboard.bind(this));
 
-        // Handle outside clicks to close on mobile
-        if (window.innerWidth < 768) {
-            document.addEventListener('click', this.handleOutsideClick.bind(this));
-        }
+        // Handle outside clicks to close panel
+        document.addEventListener('click', this.handleOutsideClick.bind(this));
     }
 
     disconnect() {
         document.removeEventListener('click', this.handleOutsideClick.bind(this));
-    }
-
-    /**
-     * Initialize the first available panel as active
-     */
-    initializeFirstPanel() {
-        if (this.triggerTargets.length > 0 && this.panelTargets.length > 0) {
-            const firstTrigger = this.triggerTargets[0];
-            const category = firstTrigger.dataset.category;
-
-            this.activatePanel(category);
-        }
     }
 
     /**
@@ -50,12 +36,38 @@ export default class extends Controller {
         const trigger = event.currentTarget;
         const category = trigger.dataset.category;
 
-        // If clicking the active category, do nothing (always keep one panel visible)
+        // If clicking the active category, close the panel
         if (trigger.classList.contains('active')) {
+            this.closePanel();
             return;
         }
 
         this.activatePanel(category);
+    }
+
+    /**
+     * Close the panel
+     */
+    closePanel() {
+        // Deactivate all triggers
+        this.triggerTargets.forEach(trigger => {
+            trigger.classList.remove('active');
+            trigger.setAttribute('aria-expanded', 'false');
+        });
+
+        // Hide panel container
+        const panelContainer = this.element.querySelector('.mega-menu-secondary');
+        if (panelContainer) {
+            panelContainer.classList.remove('panel-visible');
+        }
+
+        // After animation, hide panels
+        setTimeout(() => {
+            this.panelTargets.forEach(panel => {
+                panel.classList.remove('active');
+                panel.setAttribute('aria-hidden', 'true');
+            });
+        }, 300);
     }
 
     /**
@@ -92,6 +104,12 @@ export default class extends Controller {
 
             // Scroll panel to top
             activePanel.scrollTop = 0;
+
+            // Show the panel container
+            const panelContainer = this.element.querySelector('.mega-menu-secondary');
+            if (panelContainer) {
+                panelContainer.classList.add('panel-visible');
+            }
         }
     }
 
@@ -155,14 +173,19 @@ export default class extends Controller {
     }
 
     /**
-     * Handle clicks outside the menu on mobile to close
+     * Handle clicks outside the menu to close panel
      * @param {Event} event
      */
     handleOutsideClick(event) {
-        if (!this.element.contains(event.target)) {
-            // On mobile, we might want to collapse the menu
-            // For now, we just ensure the state is maintained
-            return;
+        const panelContainer = this.element.querySelector('.mega-menu-secondary');
+        if (!panelContainer) return;
+
+        // Check if click is outside both the menu and the panel
+        if (!this.element.contains(event.target) && !panelContainer.contains(event.target)) {
+            // Close panel if it's open
+            if (panelContainer.classList.contains('panel-visible')) {
+                this.closePanel();
+            }
         }
     }
 
