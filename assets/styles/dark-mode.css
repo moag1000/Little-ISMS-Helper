@@ -45,7 +45,8 @@
 /* ===============================
    Dark Mode Variables - Enhanced Cyberpunk
    =============================== */
-[data-theme="dark"] {
+[data-theme="dark"],
+[data-bs-theme="dark"] {
     /* Vibrant Cyberpunk Colors */
     --color-primary: #06b6d4;
     --color-primary-dark: #0891b2;
@@ -66,9 +67,9 @@
     --bg-elevated: #1e293b;
 
     /* Bootstrap background variables override for better table contrast */
-    --bs-tertiary-bg: #1e293b;
-    --bs-body-bg: #0f172a;
-    --bs-secondary-bg: #334155;
+    --bs-tertiary-bg: #1e293b;  /* slate-800 - dark for table cells */
+    --bs-body-bg: #0f172a;      /* slate-900 - darker background */
+    --bs-secondary-bg: #334155; /* slate-700 - lighter for hover */
 
     /* Background - Compatibility with app.css naming */
     --color-bg: #1e293b;
@@ -155,23 +156,42 @@ body {
     box-shadow: var(--shadow-md), 0 0 20px rgba(6, 182, 212, 0.15);
 }
 
-/* Tables */
-table {
+/* Tables - Dark Mode Only */
+[data-theme="dark"] table {
     background-color: var(--bg-elevated);
     color: var(--text-primary);
 }
 
-thead {
+[data-theme="dark"] thead {
     background-color: var(--bg-secondary);
     color: var(--text-primary);
 }
 
-tbody tr {
+[data-theme="dark"] tbody tr {
     border-bottom: 1px solid var(--border-color-light);
 }
 
-tbody tr:hover {
+[data-theme="dark"] tbody tr:hover {
     background-color: var(--bg-secondary);
+}
+
+/* Table text visibility in Dark Mode */
+[data-theme="dark"] table td,
+[data-theme="dark"] table th {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] table strong,
+[data-theme="dark"] table b,
+[data-theme="dark"] table td strong,
+[data-theme="dark"] table td b {
+    color: #f1f5f9 !important; /* slate-100 - high contrast */
+    font-weight: 600;
+}
+
+[data-theme="dark"] table .text-muted,
+[data-theme="dark"] table small.text-muted {
+    color: #94a3b8 !important; /* slate-400 - readable muted text */
 }
 
 /* Forms - Enhanced for Bootstrap 5 Form Components */
