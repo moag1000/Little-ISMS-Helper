@@ -21,17 +21,17 @@
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->heat-map#toggleFilters"
                     title="{{ 'analytics.action.filter'|trans({}, 'analytics') }}">
-                <i class="bi bi-funnel"></i>
+                <i class="bi bi-funnel" aria-hidden="true"></i>
             </button>
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->heat-map#refresh"
                     title="{{ 'analytics.action.refresh'|trans({}, 'analytics') }}">
-                <i class="bi bi-arrow-clockwise"></i>
+                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i>
             </button>
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->heat-map#exportImage"
                     title="{{ 'analytics.action.export_png'|trans({}, 'analytics') }}">
-                <i class="bi bi-image"></i>
+                <i class="bi bi-image" aria-hidden="true"></i>
             </button>
         </div>
     </div>
@@ -40,7 +40,7 @@
     <div class="heat-map-filters d-none" data-heat-map-target="filters">
         <div class="filter-group">
             <label class="filter-label" for="heat-map-status-filter">
-                <i class="bi bi-check-circle"></i> {{ 'analytics.filter.status'|trans({}, 'analytics') }}
+                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'analytics.filter.status'|trans({}, 'analytics') }}
             </label>
             <select class="form-select form-select-sm"
                     id="heat-map-status-filter"
@@ -55,7 +55,7 @@
         </div>
         <div class="filter-group">
             <label class="filter-label" for="heat-map-category-filter">
-                <i class="bi bi-tag"></i> {{ 'analytics.filter.category'|trans({}, 'analytics') }}
+                <i class="bi bi-tag" aria-hidden="true"></i> {{ 'analytics.filter.category'|trans({}, 'analytics') }}
             </label>
             <select class="form-select form-select-sm"
                     id="heat-map-category-filter"
@@ -70,7 +70,7 @@
         </div>
         <div class="filter-group">
             <label class="filter-label" for="heat-map-time-filter">
-                <i class="bi bi-calendar"></i> {{ 'analytics.filter.time'|trans({}, 'analytics') }}
+                <i class="bi bi-calendar" aria-hidden="true"></i> {{ 'analytics.filter.time'|trans({}, 'analytics') }}
             </label>
             <select class="form-select form-select-sm"
                     id="heat-map-time-filter"
@@ -84,7 +84,7 @@
         </div>
         <button class="btn btn-sm btn-outline-danger"
                 data-action="click->heat-map#clearFilters">
-            <i class="bi bi-x-circle"></i> {{ 'analytics.action.reset_filters'|trans({}, 'analytics') }}
+            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'analytics.action.reset_filters'|trans({}, 'analytics') }}
         </button>
     </div>
     <div class="card-body">
