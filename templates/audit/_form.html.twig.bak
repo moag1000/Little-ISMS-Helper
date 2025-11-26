@@ -74,8 +74,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.auditType,
                     'label_key': 'audit.field.audit_type',
-                    'help_key': 'audit.help.audit_type',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.audit_type'
                 } %}
             </div>
             {% endif %}
@@ -91,9 +90,8 @@
             </div>
             {% include '_components/_form_field.html.twig' with {
                 'field': form.auditedSubsidiaries,
-                'label_key': 'audit.field.audited_subsidiaries',
-                'help_key': 'audit.help.audited_subsidiaries',
-                'translation_domain': 'audits'
+                'label': 'audit.field.audited_subsidiaries',
+                'help_key': 'audit.help.audited_subsidiaries'
             } %}
         </div>
         {% endif %}
@@ -115,8 +113,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.framework,
                     'label_key': 'audit.field.framework',
-                    'help_key': 'audit.help.framework',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.framework'
                 } %}
             </div>
 
@@ -124,8 +121,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.standard,
                     'label_key': 'audit.field.standard',
-                    'help_key': 'audit.help.standard',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.standard'
                 } %}
             </div>
         </div>
@@ -147,8 +143,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.plannedDate,
                     'label_key': 'audit.field.planned_date',
-                    'help_key': 'audit.help.planned_date',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.planned_date'
                 } %}
             </div>
 
@@ -156,8 +151,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.actualDate,
                     'label_key': 'audit.field.actual_date',
-                    'help_key': 'audit.help.actual_date',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.actual_date'
                 } %}
             </div>
         </div>
@@ -178,8 +172,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.leadAuditor,
                     'label_key': 'audit.field.lead_auditor',
-                    'help_key': 'audit.help.lead_auditor',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.lead_auditor'
                 } %}
             </div>
 
@@ -187,8 +180,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.auditTeam,
                     'label_key': 'audit.field.audit_team',
-                    'help_key': 'audit.help.audit_team',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.audit_team'
                 } %}
             </div>
 
@@ -197,8 +189,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.auditee,
                     'label_key': 'audit.field.auditee',
-                    'help_key': 'audit.help.auditee',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.auditee'
                 } %}
             </div>
             {% endif %}
@@ -208,8 +199,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.department,
                     'label_key': 'audit.field.department',
-                    'help_key': 'audit.help.department',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.department'
                 } %}
             </div>
             {% endif %}
@@ -232,8 +222,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.status,
                     'label_key': 'audit.field.status',
-                    'help_key': 'audit.help.status',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.status'
                 } %}
             </div>
 
@@ -242,8 +231,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.overallResult,
                     'label_key': 'audit.field.overall_result',
-                    'help_key': 'audit.help.overall_result',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.overall_result'
                 } %}
             </div>
             {% endif %}
@@ -266,8 +254,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.objectives,
                     'label_key': 'audit.field.objectives',
-                    'help_key': 'audit.help.objectives',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.objectives'
                 } %}
             </div>
 
@@ -276,8 +263,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.auditCriteria,
                     'label_key': 'audit.field.audit_criteria',
-                    'help_key': 'audit.help.audit_criteria',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.audit_criteria'
                 } %}
             </div>
             {% endif %}
@@ -287,8 +273,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.methodology,
                     'label_key': 'audit.field.methodology',
-                    'help_key': 'audit.help.methodology',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.methodology'
                 } %}
             </div>
             {% endif %}
@@ -310,8 +295,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.findings,
                     'label_key': 'audit.field.findings',
-                    'help_key': 'audit.help.findings',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.findings'
                 } %}
             </div>
 
@@ -320,8 +304,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.nonconformities,
                     'label_key': 'audit.field.nonconformities',
-                    'help_key': 'audit.help.nonconformities',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.nonconformities'
                 } %}
             </div>
             {% endif %}
@@ -331,8 +314,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.observations,
                     'label_key': 'audit.field.observations',
-                    'help_key': 'audit.help.observations',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.observations'
                 } %}
             </div>
             {% endif %}
@@ -354,8 +336,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.recommendations,
                     'label_key': 'audit.field.recommendations',
-                    'help_key': 'audit.help.recommendations',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.recommendations'
                 } %}
             </div>
 
@@ -364,8 +345,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.correctiveActions,
                     'label_key': 'audit.field.corrective_actions',
-                    'help_key': 'audit.help.corrective_actions',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.corrective_actions'
                 } %}
             </div>
             {% endif %}
@@ -375,8 +355,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.followUpActions,
                     'label_key': 'audit.field.follow_up_actions',
-                    'help_key': 'audit.help.follow_up_actions',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.follow_up_actions'
                 } %}
             </div>
             {% endif %}
@@ -386,8 +365,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.conclusion,
                     'label_key': 'audit.field.conclusion',
-                    'help_key': 'audit.help.conclusion',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.conclusion'
                 } %}
             </div>
             {% endif %}
@@ -410,8 +388,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.evidenceCollected,
                     'label_key': 'audit.field.evidence_collected',
-                    'help_key': 'audit.help.evidence_collected',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.evidence_collected'
                 } %}
             </div>
 
@@ -420,8 +397,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.summary,
                     'label_key': 'audit.field.summary',
-                    'help_key': 'audit.help.summary',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.summary'
                 } %}
             </div>
             {% endif %}
@@ -431,8 +407,7 @@
                 {% include '_components/_form_field.html.twig' with {
                     'field': form.notes,
                     'label_key': 'audit.field.notes',
-                    'help_key': 'audit.help.notes',
-                    'translation_domain': 'audits'
+                    'help_key': 'audit.help.notes'
                 } %}
             </div>
             {% endif %}
