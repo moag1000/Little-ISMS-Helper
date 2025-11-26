@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk_appetite' %}
 
-{% block title %}{{ 'risk_appetite.edit'|trans({}, 'risk_appetite') }}: {{ appetite.displayName }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'risk_appetite.edit'|trans }}: {{ appetite.displayName }}{% endblock %}
 
 {% block body %}
-<div class="container-fluid py-4">
+<div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.risk_appetite'|trans({}, 'nav'), url: path('app_risk_appetite_index') },
@@ -12,114 +12,59 @@
             { label: 'common.edit'|trans({}, 'messages') }
         ]
     } %}
-</div>
 
-<div class="page-header">
-    <div>
-        <h1><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'risk_appetite.edit'|trans({}, 'risk_appetite') }}</h1>
-        <p class="text-muted">{{ appetite.displayName }}</p>
+    <div class="page-header">
+        <h1>{{ 'risk_appetite.edit'|trans }}: {{ appetite.displayName }}</h1>
+        <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}" class="btn btn-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
     </div>
-    <div class="button-group">
-        <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
-        </a>
-    </div>
-</div>
 
-{{ form_start(form) }}
+    <div class="card">
+        <div class="card-content">
+            {{ form_start(form) }}
+                {% include '_components/_auto_form.html.twig' with {
+                    'form': form,
+                    'sections': {
+                        'definition': {
+                            'label': 'risk_appetite.section.definition'|trans,
+                            'fields': ['category', 'maxAcceptableRisk', 'description']
+                        },
+                        'approval': {
+                            'label': 'risk_appetite.section.approval'|trans,
+                            'fields': ['isActive', 'approvedBy', 'approvedAt']
+                        }
+                    },
+                    'col_widths': {
+                        'category': 6,
+                        'maxAcceptableRisk': 6,
+                        'description': 12,
+                        'isActive': 4,
+                        'approvedBy': 4,
+                        'approvedAt': 4
+                    },
+                    'help_texts': {
+                        'category': 'risk_appetite.help.category'|trans,
+                        'maxAcceptableRisk': 'risk_appetite.help.max_acceptable_risk'|trans,
+                        'description': 'risk_appetite.help.description'|trans,
+                        'isActive': 'risk_appetite.help.is_active'|trans,
+                        'approvedBy': 'risk_appetite.help.approved_by'|trans,
+                        'approvedAt': 'risk_appetite.help.approved_at'|trans
+                    }
+                } %}
 
-{# Risk Definition #}
-<fieldset class="mb-4">
-    <legend class="h5 mb-3">
-        <i class="bi bi-bar-chart" aria-hidden="true"></i>
-        {{ 'risk_appetite.section.definition'|trans({}, 'risk_appetite') }}
-    </legend>
+                <div class="alert alert-info mt-4">
+                    {{ 'risk_appetite.info.iso27005'|trans }}
+                </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.category,
-                'label': 'risk_appetite.field.category'|trans({}, 'risk_appetite'),
-                'help': 'risk_appetite.help.category_empty'|trans({}, 'risk_appetite'),
-                'required': true
-            } %}
-        </div>
-        <div class="col-md-6">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.maxAcceptableRisk,
-                'label': 'risk_appetite.field.max_acceptable_risk'|trans({}, 'risk_appetite')
-            } %}
-        </div>
-        <div class="col-12">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.description,
-                'label': 'risk_appetite.field.description'|trans({}, 'risk_appetite')
-            } %}
-        </div>
-    </div>
-</fieldset>
-
-{# Approval Information #}
-<fieldset class="mb-4">
-    <legend class="h5 mb-3">
-        <i class="bi bi-check-circle" aria-hidden="true"></i>
-        {{ 'risk_appetite.section.approval'|trans({}, 'risk_appetite') }}
-    </legend>
-
-    <div class="row">
-        <div class="col-md-4">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.isActive,
-                'label': 'risk_appetite.field.is_active'|trans({}, 'risk_appetite')
-            } %}
-        </div>
-        <div class="col-md-4">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.approvedBy,
-                'label': 'risk_appetite.field.approved_by'|trans({}, 'risk_appetite')
-            } %}
-        </div>
-        <div class="col-md-4">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.approvedAt,
-                'label': 'risk_appetite.field.approved_at'|trans({}, 'risk_appetite')
-            } %}
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}" class="btn btn-secondary">
+                        {{ 'common.cancel'|trans({}, 'messages') }}
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        {{ 'common.save'|trans({}, 'messages') }}
+                    </button>
+                </div>
+            {{ form_end(form) }}
         </div>
     </div>
-</fieldset>
-
-<div class="alert alert-info">
-    <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_appetite.info.iso27005'|trans({}, 'risk_appetite') }}
 </div>
-
-<div class="form-actions">
-    <button type="submit" class="btn btn-primary">
-        <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
-    </button>
-    <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}" class="btn btn-secondary">
-        {{ 'common.cancel'|trans({}, 'messages') }}
-    </a>
-</div>
-
-{{ form_end(form) }}
-
-<style>
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: var(--spacing-xl);
-}
-
-.button-group {
-    display: flex;
-    gap: var(--spacing-sm);
-}
-
-.form-actions {
-    margin-top: var(--spacing-lg);
-    display: flex;
-    gap: var(--spacing-sm);
-}
-</style>
 {% endblock %}
