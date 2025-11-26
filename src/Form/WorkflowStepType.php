@@ -59,7 +59,8 @@ class WorkflowStepType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'workflow_step.validation.step_type_required'])
                 ],
-                'help' => 'workflow_step.help.step_type'
+                'help' => 'workflow_step.help.step_type',
+                    'choice_translation_domain' => 'workflows',
             ])
             ->add('approverRole', ChoiceType::class, [
                 'label' => 'workflow_step.field.approver_role',
@@ -76,7 +77,8 @@ class WorkflowStepType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'placeholder' => 'workflow_step.placeholder.select_role',
-                'help' => 'workflow_step.help.approver_role'
+                'help' => 'workflow_step.help.approver_role',
+                    'choice_translation_domain' => 'workflows',
             ])
             ->add('approverUsers', ChoiceType::class, [
                 'label' => 'workflow_step.field.approver_users',
@@ -87,7 +89,8 @@ class WorkflowStepType extends AbstractType
                     'class' => 'form-select',
                     'size' => 5
                 ],
-                'help' => 'workflow_step.help.approver_users'
+                'help' => 'workflow_step.help.approver_users',
+                    'choice_translation_domain' => 'workflows',
             ])
             ->add('isRequired', CheckboxType::class, [
                 'label' => 'workflow_step.field.is_required',

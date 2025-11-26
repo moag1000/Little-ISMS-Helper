@@ -46,21 +46,22 @@ class ISMSObjectiveType extends AbstractType
             ->add('category', ChoiceType::class, [
                 'label' => 'objective.field.category',
                 'choices' => [
-                    'Verfügbarkeit' => 'availability',
-                    'Vertraulichkeit' => 'confidentiality',
-                    'Integrität' => 'integrity',
-                    'Compliance' => 'compliance',
-                    'Risikomanagement' => 'risk_management',
-                    'Incident Response' => 'incident_response',
-                    'Awareness & Schulung' => 'awareness',
-                    'Kontinuierliche Verbesserung' => 'continual_improvement',
+                    'objective.category.availability' => 'availability',
+                    'objective.category.confidentiality' => 'confidentiality',
+                    'objective.category.integrity' => 'integrity',
+                    'objective.category.compliance' => 'compliance',
+                    'objective.category.risk_management' => 'risk_management',
+                    'objective.category.incident_response' => 'incident_response',
+                    'objective.category.awareness' => 'awareness',
+                    'objective.category.continual_improvement' => 'continual_improvement',
                 ],
                 'attr' => [
                     'class' => 'form-select'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'objective.validation.category_required'])
-                ]
+                ],
+                'choice_translation_domain' => 'objective',
             ])
             ->add('measurableIndicators', TextareaType::class, [
                 'label' => 'objective.field.measurable_indicators',
@@ -97,19 +98,20 @@ class ISMSObjectiveType extends AbstractType
                 'label' => 'objective.field.unit',
                 'required' => false,
                 'choices' => [
-                    'Prozent (%)' => '%',
-                    'Tage' => 'days',
-                    'Stunden' => 'hours',
-                    'Anzahl' => 'count',
-                    'Vorfälle' => 'incidents',
-                    'Mitarbeiter' => 'employees',
-                    'Euro (€)' => '€',
-                    'Punkte' => 'points',
+                    'objective.unit.percent' => '%',
+                    'objective.unit.days' => 'days',
+                    'objective.unit.hours' => 'hours',
+                    'objective.unit.count' => 'count',
+                    'objective.unit.incidents' => 'incidents',
+                    'objective.unit.employees' => 'employees',
+                    'objective.unit.euro' => '€',
+                    'objective.unit.points' => 'points',
                 ],
                 'placeholder' => 'objective.placeholder.unit',
                 'attr' => [
                     'class' => 'form-select'
-                ]
+                ],
+                'choice_translation_domain' => 'objective',
             ])
             ->add('responsiblePerson', TextType::class, [
                 'label' => 'objective.field.responsible_person',
@@ -150,7 +152,8 @@ class ISMSObjectiveType extends AbstractType
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'objective.validation.status_required'])
-                ]
+                ],
+                    'choice_translation_domain' => 'objective',
             ])
             ->add('progressNotes', TextareaType::class, [
                 'label' => 'objective.field.progress_notes',

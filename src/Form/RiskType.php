@@ -48,6 +48,7 @@ class RiskType extends AbstractType
                 'attr' => [
                     'class' => 'form-select',
                 ],
+                    'choice_translation_domain' => 'risk',
             ])
             // DSGVO Risk Assessment Extension (Priority 2.2)
             ->add('involvesPersonalData', CheckboxType::class, [
@@ -76,6 +77,7 @@ class RiskType extends AbstractType
                 'attr' => [
                     'class' => 'form-select',
                 ],
+                    'choice_translation_domain' => 'risk',
             ])
             ->add('processingScale', ChoiceType::class, [
                 'label' => 'risk.field.processing_scale',
@@ -90,6 +92,7 @@ class RiskType extends AbstractType
                 'attr' => [
                     'class' => 'form-select',
                 ],
+                    'choice_translation_domain' => 'risk',
             ])
             ->add('requiresDPIA', CheckboxType::class, [
                 'label' => 'risk.field.requires_dpia',
@@ -226,6 +229,7 @@ class RiskType extends AbstractType
                 ],
                 'required' => true,
                 'help' => 'risk.help.treatment',
+                    'choice_translation_domain' => 'risk',
             ])
             ->add('treatmentDescription', TextareaType::class, [
                 'label' => 'risk.field.treatment_description',
@@ -271,6 +275,7 @@ class RiskType extends AbstractType
                     'risk.status.accepted' => 'accepted',
                 ],
                 'required' => true,
+                    'choice_translation_domain' => 'risk',
             ])
             ->add('reviewDate', DateType::class, [
                 'label' => 'risk.field.review_date',

@@ -61,6 +61,7 @@ class InternalAuditType extends AbstractType
                     new NotBlank(),
                 ],
                 'help' => 'audit.help.scope_type',
+                    'choice_translation_domain' => 'audit',
             ])
             ->add('objectives', TextareaType::class, [
                 'label' => 'audit.field.objectives',
@@ -97,6 +98,7 @@ class InternalAuditType extends AbstractType
                     'audit.status.cancelled' => 'cancelled',
                 ],
                 'attr' => ['class' => 'form-select'],
+                    'choice_translation_domain' => 'audit',
             ])
             ->add('leadAuditor', TextType::class, [
                 'label' => 'audit.field.lead_auditor',

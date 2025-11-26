@@ -48,6 +48,7 @@ class DocumentType extends AbstractType
                     'document.type.general' => 'general',
                 ],
                 'required' => true,
+                    'choice_translation_domain' => 'document',
             ])
             ->add('file', FileType::class, [
                 'label' => 'document.field.file',

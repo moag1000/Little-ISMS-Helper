@@ -64,18 +64,19 @@ class WorkflowInstanceType extends AbstractType
             ->add('status', ChoiceType::class, [
                 'label' => 'workflow_instance.field.status',
                 'choices' => [
-                    'Ausstehend' => 'pending',
-                    'In Bearbeitung' => 'in_progress',
-                    'Genehmigt' => 'approved',
-                    'Abgelehnt' => 'rejected',
-                    'Abgebrochen' => 'cancelled',
+                    'workflow_instance.status.pending' => 'pending',
+                    'workflow_instance.status.in_progress' => 'in_progress',
+                    'workflow_instance.status.approved' => 'approved',
+                    'workflow_instance.status.rejected' => 'rejected',
+                    'workflow_instance.status.cancelled' => 'cancelled',
                 ],
                 'attr' => [
                     'class' => 'form-select'
                 ],
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'workflow_instance.validation.status_required'])
-                ]
+                ],
+                'choice_translation_domain' => 'workflows',
             ])
             ->add('initiatedBy', EntityType::class, [
                 'label' => 'workflow_instance.field.initiated_by',
