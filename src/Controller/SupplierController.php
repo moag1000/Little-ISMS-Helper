@@ -219,7 +219,7 @@ class SupplierController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $supplier->setUpdatedAt(new \DateTime());
+            $supplier->setUpdatedAt(new \DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('supplier.success.updated'));

@@ -78,7 +78,7 @@ class ChangeRequestController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $changeRequest->setUpdatedAt(new \DateTime());
+            $changeRequest->setUpdatedAt(new \DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('change_request.success.updated'));

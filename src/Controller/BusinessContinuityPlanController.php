@@ -78,7 +78,7 @@ class BusinessContinuityPlanController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $bcPlan->setUpdatedAt(new \DateTime());
+            $bcPlan->setUpdatedAt(new \DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('business_continuity_plan.success.updated'));
