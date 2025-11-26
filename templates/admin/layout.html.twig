@@ -25,31 +25,22 @@
             animation: none;
         }
 
-        /* Admin-specific layout */
+        /* Admin-specific layout - match .content from base.html.twig */
         .admin-wrapper {
-            display: flex;
-            min-height: calc(100vh - 200px);
-            background: var(--color-bg);
+            background: white;
+            padding: var(--spacing-xl);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-sm);
         }
 
         [data-theme="dark"] .admin-wrapper {
-            background: var(--bg-primary);
+            background: var(--bg-elevated);
+            color: var(--text-primary);
         }
 
+        /* Hide admin sidebar - using mega menu instead */
         .admin-sidebar {
-            width: 240px;
-            background: linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%);
-            border-right: 2px solid transparent;
-            border-image: linear-gradient(180deg,
-                          rgba(6, 182, 212, 0.3),
-                          rgba(236, 72, 153, 0.2),
-                          rgba(139, 92, 246, 0.15)) 1;
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            height: calc(100vh - 200px);
-            overflow-y: auto;
-            box-shadow: inset -2px 0 10px rgba(6, 182, 212, 0.05);
+            display: none;
         }
 
         .admin-sidebar nav {
@@ -123,17 +114,7 @@
             margin-left: auto;
         }
 
-        .admin-content {
-            flex: 1;
-            padding: 1.5rem;
-            max-width: 100%;
-            background: white;
-            overflow-x: auto;
-        }
-
-        [data-theme="dark"] .admin-content {
-            background: var(--bg-secondary);
-        }
+        /* admin-content no longer used - sidebar removed */
 
         .admin-header {
             margin-bottom: 2rem;
@@ -241,186 +222,8 @@
 {% endblock %}
 
 {% block body %}
-    <div class="admin-wrapper">
-        {# Admin Sidebar Navigation #}
-        <aside class="admin-sidebar" role="complementary" aria-label="Admin navigation">
-            <nav id="main-navigation" role="navigation">
-                {# Admin Dashboard #}
-                <div class="sidebar-section">
-                    <ul>
-                        <li>
-                            <a href="{{ path('admin_dashboard') }}"
-                               class="{% if app.request.get('_route') == 'admin_dashboard' %}active{% endif %}">
-                                <i class="bi bi-speedometer2" aria-hidden="true"></i> {{ 'admin.nav.dashboard'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                {# User & Access Management #}
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">{{ 'admin.section.user_access'|trans({}, 'admin') }}</div>
-                    <ul>
-                        <li>
-                            <a href="{{ path('tenant_management_index') }}"
-                               class="{% if app.request.get('_route') starts with 'tenant_management_' and app.request.get('_route') != 'tenant_management_corporate_structure' %}active{% endif %}">
-                                <i class="bi bi-building" aria-hidden="true"></i> {{ 'admin.nav.tenants'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                        {% if is_multi_tenant_environment %}
-                            <li>
-                                <a href="{{ path('tenant_management_corporate_structure') }}"
-                                   class="{% if app.request.get('_route') == 'tenant_management_corporate_structure' %}active{% endif %}">
-                                    <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'admin.nav.corporate_structure'|trans({}, 'admin') }}
-                                </a>
-                            </li>
-                        {% endif %}
-                        <li>
-                            <a href="{{ path('user_management_index') }}"
-                               class="{% if app.request.get('_route') starts with 'user_management_' %}active{% endif %}">
-                                <i class="bi bi-people" aria-hidden="true"></i> {{ 'admin.nav.users'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('role_management_index') }}"
-                               class="{% if app.request.get('_route') starts with 'role_management_' %}active{% endif %}">
-                                <i class="bi bi-shield-lock" aria-hidden="true"></i> {{ 'admin.nav.roles'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('permission_index') }}"
-                               class="{% if app.request.get('_route') starts with 'permission_' %}active{% endif %}">
-                                <i class="bi bi-key" aria-hidden="true"></i> {{ 'admin.nav.permissions'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('session_index') }}"
-                               class="{% if app.request.get('_route') starts with 'session_' %}active{% endif %}">
-                                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'admin.nav.sessions'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('admin_mfa_index') }}"
-                               class="{% if app.request.get('_route') starts with 'admin_mfa_' %}active{% endif %}">
-                                <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'admin.nav.mfa'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                {# System Configuration #}
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">{{ 'admin.section.system_config'|trans({}, 'admin') }}</div>
-                    <ul>
-                        <li>
-                            <a href="{{ path('admin_settings_index') }}"
-                               class="{% if app.request.get('_route') starts with 'admin_settings_' %}active{% endif %}">
-                                <i class="bi bi-gear" aria-hidden="true"></i> {{ 'admin.nav.settings'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                {# Modules & Features #}
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">{{ 'admin.section.modules'|trans({}, 'admin') }}</div>
-                    <ul>
-                        <li>
-                            <a href="{{ path('admin_modules_index') }}"
-                               class="{% if app.request.get('_route') starts with 'admin_modules_' %}active{% endif %}">
-                                <i class="bi bi-puzzle" aria-hidden="true"></i> {{ 'admin.nav.module_management'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('admin_compliance_index') }}"
-                               class="{% if app.request.get('_route') starts with 'admin_compliance_' %}active{% endif %}">
-                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.nav.compliance_management'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                {# Monitoring & Logs #}
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">{{ 'admin.section.monitoring'|trans({}, 'admin') }}</div>
-                    <ul>
-                        <li>
-                            <a href="{{ path('monitoring_health') }}"
-                               class="{% if app.request.get('_route') starts with 'monitoring_' %}active{% endif %}">
-                                <i class="bi bi-heart-pulse" aria-hidden="true"></i> {{ 'admin.nav.system_health'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('app_audit_log_index') }}"
-                               class="{% if app.request.get('_route') starts with 'app_audit_log_' %}active{% endif %}">
-                                <i class="bi bi-journal-text" aria-hidden="true"></i> {{ 'admin.nav.audit_log'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                {# Data Management #}
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">{{ 'admin.section.data_management'|trans({}, 'admin') }}</div>
-                    <ul>
-                        <li>
-                            <a href="{{ path('data_backup_index') }}"
-                               class="{% if app.request.get('_route') starts with 'data_backup' %}active{% endif %}">
-                                <i class="bi bi-hdd" aria-hidden="true"></i> {{ 'admin.nav.backup'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('data_export_index') }}"
-                               class="{% if app.request.get('_route') starts with 'data_export' %}active{% endif %}">
-                                <i class="bi bi-download" aria-hidden="true"></i> {{ 'admin.nav.export'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('data_import_index') }}"
-                               class="{% if app.request.get('_route') starts with 'data_import' %}active{% endif %}">
-                                <i class="bi bi-upload" aria-hidden="true"></i> {{ 'admin.nav.import'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ path('admin_data_repair_index') }}"
-                               class="{% if app.request.get('_route') starts with 'admin_data_repair' %}active{% endif %}">
-                                <i class="bi bi-tools" aria-hidden="true"></i> {{ 'admin.nav.data_repair'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                {# Licensing #}
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">{{ 'admin.section.licensing'|trans({}, 'admin') }}</div>
-                    <ul>
-                        <li>
-                            <a href="{{ path('admin_licensing_index') }}"
-                               class="{% if app.request.get('_route') starts with 'admin_licensing' %}active{% endif %}">
-                                <i class="bi bi-file-text" aria-hidden="true"></i> {{ 'admin.nav.license_management'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-
-                {# Back to Application #}
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">{{ 'admin.section.navigation'|trans({}, 'admin') }}</div>
-                    <ul>
-                        <li>
-                            <a href="{{ path('app_dashboard') }}">
-                                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'admin.nav.back_to_app'|trans({}, 'admin') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </aside>
-
-        {# Admin Content Area #}
-        <main id="main-content" class="admin-content">
-            {# Breadcrumb Navigation #}
-            {% block breadcrumb %}
+    {# Breadcrumb Navigation #}
+    {% block breadcrumb %}
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb admin-breadcrumb">
                         <li class="breadcrumb-item"><a href="{{ path('admin_dashboard') }}">{{ 'admin.breadcrumb.home'|trans({}, 'admin') }}</a></li>
@@ -447,10 +250,8 @@
                 </div>
             {% endblock %}
 
-            {# Main Content #}
-            {% block admin_content %}
-                {# Content from child templates #}
-            {% endblock %}
-        </main>
-    </div>
+    {# Main Content #}
+    {% block admin_content %}
+        {# Content from child templates #}
+    {% endblock %}
 {% endblock %}
