@@ -98,225 +98,38 @@
                         </div>
                     </fieldset>
 
-                    {# Framework & Standards Section #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-shield-check" aria-hidden="true"></i>
-                            {{ 'audit.section.frameworks'|trans({}, 'audit') }}
-                        </legend>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.framework,
-                                    'label': 'audit.field.framework'|trans({}, 'audit')
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.standard,
-                                    'label': 'audit.field.standard'|trans({}, 'audit')
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {# Schedule Section #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-calendar-event" aria-hidden="true"></i>
-                            {{ 'audit.section.schedule'|trans({}, 'audit') }}
-                        </legend>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.plannedDate,
-                                    'label': 'audit.field.planned_date'|trans({}, 'audit')
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.actualDate,
-                                    'label': 'audit.field.actual_date'|trans({}, 'audit')
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {# Team & Responsibilities Section #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-people" aria-hidden="true"></i>
-                            {{ 'audit.section.team'|trans({}, 'audit') }}
-                        </legend>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.leadAuditor,
-                                    'label': 'audit.field.lead_auditor'|trans({}, 'audit')
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.auditTeam,
-                                    'label': 'audit.field.audit_team'|trans({}, 'audit')
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.auditee,
-                                    'label': 'audit.field.auditee'|trans({}, 'audit')
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.department,
-                                    'label': 'audit.field.department'|trans({}, 'audit')
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {# Status & Results Section #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-flag" aria-hidden="true"></i>
-                            {{ 'audit.section.status'|trans({}, 'audit') }}
-                        </legend>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.status,
-                                    'label': 'audit.field.status'|trans({}, 'audit')
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.overallResult,
-                                    'label': 'audit.field.overall_result'|trans({}, 'audit')
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {# Objectives & Criteria Section #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-bullseye" aria-hidden="true"></i>
-                            {{ 'audit.section.objectives'|trans({}, 'audit') }}
-                        </legend>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.objectives,
-                                    'label': 'audit.field.objectives'|trans({}, 'audit')
-                                } %}
-                            </div>
-                            <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.auditCriteria,
-                                    'label': 'audit.field.audit_criteria'|trans({}, 'audit')
-                                } %}
-                            </div>
-                            <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.methodology,
-                                    'label': 'audit.field.methodology'|trans({}, 'audit')
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {# Findings Section #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                            {{ 'audit.section.findings'|trans({}, 'audit') }}
-                        </legend>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.findings,
-                                    'label': 'audit.field.findings'|trans({}, 'audit')
-                                } %}
-                            </div>
-                            <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.nonconformities,
-                                    'label': 'audit.field.nonconformities'|trans({}, 'audit')
-                                } %}
-                            </div>
-                            <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.observations,
-                                    'label': 'audit.field.observations'|trans({}, 'audit')
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {# Recommendations & Follow-up Section #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-lightbulb" aria-hidden="true"></i>
-                            {{ 'audit.section.recommendations'|trans({}, 'audit') }}
-                        </legend>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.recommendations,
-                                    'label': 'audit.field.recommendations'|trans({}, 'audit')
-                                } %}
-                            </div>
-                            <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.correctiveActions,
-                                    'label': 'audit.field.corrective_actions'|trans({}, 'audit')
-                                } %}
-                            </div>
-                            <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.followUpActions,
-                                    'label': 'audit.field.follow_up_actions'|trans({}, 'audit')
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {# Documentation Section #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
-                            {{ 'audit.section.documentation'|trans({}, 'audit') }}
-                        </legend>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.evidenceCollected,
-                                    'label': 'audit.field.evidence_collected'|trans({}, 'audit')
-                                } %}
-                            </div>
-                            <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.summary,
-                                    'label': 'audit.field.summary'|trans({}, 'audit')
-                                } %}
-                            </div>
-                            <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.notes,
-                                    'label': 'audit.field.notes'|trans({}, 'audit')
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
+                    {% include '_components/_auto_form.html.twig' with {
+                        'form': form,
+                        'sections': {
+                            'schedule': {
+                                'label': 'audit.section.schedule'|trans({}, 'audits'),
+                                'fields': ['plannedDate', 'actualDate']
+                            },
+                            'team': {
+                                'label': 'audit.section.team'|trans({}, 'audits'),
+                                'fields': ['leadAuditor', 'auditTeam']
+                            },
+                            'status': {
+                                'label': 'audit.section.status'|trans({}, 'audits'),
+                                'fields': ['status']
+                            },
+                            'objectives': {
+                                'label': 'audit.section.objectives'|trans({}, 'audits'),
+                                'fields': ['objectives']
+                            },
+                            'findings': {
+                                'label': 'audit.section.findings'|trans({}, 'audits'),
+                                'fields': ['findings', 'recommendations', 'conclusion']
+                            }
+                        },
+                        'col_widths': {
+                            'plannedDate': 6,
+                            'actualDate': 6,
+                            'leadAuditor': 6,
+                            'status': 6
+                        },
+                        'exclude': ['title', 'scope', 'scopeType', 'scopedFramework', 'auditedSubsidiaries']
+                    } %}
 
                     {# Form Actions #}
                     <div class="d-flex justify-content-between align-items-center pt-3 border-top">
