@@ -142,23 +142,23 @@
                 <div class="card-header"><h5 class="mb-0"><i class="bi bi-bar-chart"></i> Statistics</h5>
                 </div>
                 <div class="card-body">
-                    <h6>By Status</h6>
+                    <h6>{{ 'privacy.chart.by_status'|trans({}, 'privacy') }}</h6>
                     <ul class="list-unstyled">
                         <li class="mb-2">
                             <span class="badge bg-secondary">{{ statistics.draft }}</span>
-                            Draft
+                            {{ 'privacy.status_label.draft'|trans({}, 'privacy') }}
                         </li>
                         <li class="mb-2">
                             <span class="badge bg-info">{{ statistics.in_review }}</span>
-                            In Review
+                            {{ 'privacy.status_label.in_review'|trans({}, 'privacy') }}
                         </li>
                         <li class="mb-2">
                             <span class="badge bg-success">{{ statistics.approved }}</span>
-                            Approved
+                            {{ 'privacy.status_label.approved'|trans({}, 'privacy') }}
                         </li>
                     </ul>
 
-                    <h6 class="mt-4">By Risk Level</h6>
+                    <h6 class="mt-4">{{ 'privacy.chart.by_risk_level'|trans({}, 'privacy') }}</h6>
                     {% if statistics.risk_distribution %}
                         <ul class="list-unstyled">
                             {% for level, count in statistics.risk_distribution %}

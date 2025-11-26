@@ -90,5 +90,11 @@ user:
         avatar_format: 'Bitte laden Sie ein gültiges Bild hoch (JPEG, PNG, GIF oder WebP)'
     auth_provider:
         local: 'Lokale Authentifizierung'
+    role:
+        user: 'ROLE_USER - Standard Benutzer'
+        auditor: 'ROLE_AUDITOR - Auditor (Leserechte)'
+        manager: 'ROLE_MANAGER - Manager (Erweiterte Rechte)'
+        admin: 'ROLE_ADMIN - Administrator (Alle Rechte)'
+        super_admin: 'ROLE_SUPER_ADMIN - Super Administrator'
 user_management:
     import_irreversible: 'Warnung: Der Benutzerimport kann nicht rückgängig gemacht werden. Bitte stellen Sie sicher, dass die CSV-Datei korrekt formatiert ist.'

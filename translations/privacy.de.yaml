@@ -105,6 +105,45 @@ privacy:
         follow_up_actions: 'Nachfolgende Maßnahmen'
         reopen_reason: 'Grund für Wiedereröffnung'
 processing_activity:
+    form:
+        name: 'Bezeichnung der Verarbeitungstätigkeit'
+        status: Status
+        description: 'Beschreibung der Verarbeitung'
+        purposes: 'Zwecke der Verarbeitung (Art. 30(1)(b) DSGVO)'
+        legal_basis: 'Rechtsgrundlage (Art. 6 DSGVO)'
+        legal_basis_details: 'Details zur Rechtsgrundlage'
+        data_subject_categories: 'Kategorien betroffener Personen (z.B. Kunden, Mitarbeiter)'
+        estimated_data_subjects_count: 'Geschätzte Anzahl betroffener Personen'
+        personal_data_categories: 'Kategorien personenbezogener Daten'
+        processes_special_categories: 'Verarbeitet besondere Kategorien (Art. 9 DSGVO)'
+        processes_criminal_data: 'Verarbeitet Daten zu strafrechtlichen Verurteilungen (Art. 10 DSGVO)'
+        special_categories_details: 'Details zu besonderen Kategorien (Gesundheit, biometrische Daten, etc.)'
+        legal_basis_special_categories: 'Rechtsgrundlage für besondere Kategorien (Art. 9(2) DSGVO)'
+        recipient_categories: 'Kategorien von Empfängern (intern/extern)'
+        has_third_country_transfer: 'Übermittlung an Drittländer (Art. 44ff DSGVO)'
+        recipient_details: 'Details zu Empfängern'
+        third_countries: 'Drittländer (außerhalb EU/EWR)'
+        transfer_safeguards: 'Garantien für Drittlandübermittlung (z.B. Standardvertragsklauseln, BCR)'
+        retention_period: Aufbewahrungsfrist
+        retention_period_days: 'Aufbewahrungsfrist in Tagen'
+        retention_legal_basis: 'Rechtsgrundlage für Aufbewahrung'
+        technical_organizational_measures: 'Technische und organisatorische Maßnahmen (TOMs, Art. 32 DSGVO)'
+        implemented_controls: 'Implementierte Kontrollen'
+        responsible_department: 'Verantwortliche Abteilung'
+        contact_person: Ansprechperson
+        data_protection_officer: 'Datenschutzbeauftragter (DSB)'
+        involves_processors: 'Auftragsverarbeiter eingebunden (Art. 28 DSGVO)'
+        is_joint_controller: 'Gemeinsame Verantwortlichkeit (Art. 26 DSGVO)'
+        is_high_risk: 'Hohes Risiko für Rechte und Freiheiten'
+        dpia_completed: 'Datenschutz-Folgenabschätzung (DSFA) durchgeführt'
+        dpia_date: 'Datum der DSFA'
+        risk_level: Risikostufe
+        has_automated_decision_making: 'Automatisierte Entscheidungsfindung (Art. 22 DSGVO)'
+        automated_decision_making_details: 'Details zur automatisierten Entscheidungsfindung'
+        data_sources: Datenquellen
+        start_date: 'Beginn der Verarbeitung'
+        end_date: 'Ende der Verarbeitung'
+        next_review_date: 'Nächstes Überprüfungsdatum'
     field:
         name: 'Bezeichnung der Verarbeitungstätigkeit'
         status: Status
@@ -397,6 +436,110 @@ dpia:
         quality_assurance: Qualitätssicherung
         research: 'Forschung und Entwicklung'
         other: Sonstiges
+    processing_activity:
+        risk_level:
+            low: Niedrig
+            medium: Mittel
+            high: Hoch
+            critical: Kritisch
+        data_source:
+            data_subject: 'Direkt von der betroffenen Person'
+            third_parties: 'Von Dritten'
+            public_sources: 'Aus öffentlichen Quellen'
+            other: Sonstige
+        status:
+            draft: Entwurf
+            active: Aktiv
+            archived: Archiviert
+        purpose:
+            contract_fulfillment: Vertragserfüllung
+            marketing: Marketing
+            legal_obligation: 'Rechtliche Verpflichtung'
+            crm: Kundenbeziehungsmanagement
+            hr_management: Personalverwaltung
+            accounting: Finanzbuchhaltung
+            it_security: IT-Sicherheit
+            quality_assurance: Qualitätssicherung
+            research: 'Forschung und Entwicklung'
+            other: Sonstiges
+        data_subject:
+            customers: Kunden
+            employees: Mitarbeiter
+            applicants: Bewerber
+            suppliers: 'Lieferanten/Partner'
+            visitors: Website-Besucher
+            subscribers: Newsletter-Abonnenten
+            patients: Patienten
+            students: Schüler/Studenten
+            other: Sonstige
+        personal_data:
+            identification: 'Identifikationsdaten (Name, Ausweisnummer)'
+            contact: 'Kontaktdaten (Adresse, E-Mail, Telefon)'
+            financial: 'Finanzdaten (Bankverbindung, Zahlungsinformationen)'
+            location: Standortdaten
+            online_identifiers: 'Online-Kennungen (IP, Cookies)'
+            employment: Beschäftigungsdaten
+            educational: Bildungsdaten
+            contract: Vertragsdaten
+            communication: Kommunikationsdaten
+            usage: Nutzungsdaten
+        special_category:
+            health: Gesundheitsdaten
+            biometric: 'Biometrische Daten'
+            genetic: 'Genetische Daten'
+            racial_ethnic: 'Rassische/ethnische Herkunft'
+            political: 'Politische Meinungen'
+            religious: 'Religiöse/philosophische Überzeugungen'
+            union: Gewerkschaftszugehörigkeit
+            sex_life: 'Sexualleben/sexuelle Orientierung'
+        recipient:
+            internal_departments: 'Interne Abteilungen'
+            it_service_providers: IT-Dienstleister
+            cloud_providers: Cloud-Anbieter
+            payment_processors: Zahlungsdienstleister
+            marketing_agencies: Marketing-Agenturen
+            auditors: 'Prüfer/Berater'
+            public_authorities: 'Öffentliche Stellen'
+            legal: Rechtsvertreter
+            other_processors: 'Sonstige Auftragsverarbeiter'
+        country:
+            us: USA
+            gb: 'Vereinigtes Königreich'
+            ch: Schweiz
+            ca: Kanada
+            jp: Japan
+            in: Indien
+            cn: China
+            other: Sonstige
+        transfer_safeguard:
+            adequacy_decision: 'Art. 45 Angemessenheitsbeschluss'
+            standard_contractual_clauses: 'Art. 46 Standardvertragsklauseln (SVK)'
+            binding_corporate_rules: 'Art. 47 verbindliche interne Datenschutzvorschriften (BCR)'
+            certification: 'Art. 42 Zertifizierung'
+            codes_of_conduct: 'Art. 40 Verhaltensregeln'
+            explicit_consent: 'Art. 49(1)(a) Ausdrückliche Einwilligung'
+            contract_necessity: 'Art. 49(1)(b) Vertragserfüllung'
+            public_interest: 'Art. 49(1)(d) Öffentliches Interesse'
+            legal_claims: 'Art. 49(1)(e) Rechtliche Ansprüche'
+            vital_interests: 'Art. 49(1)(f) Lebenswichtige Interessen'
+        legal_basis:
+            consent: 'Art. 6(1)(a) Einwilligung'
+            contract: 'Art. 6(1)(b) Vertragserfüllung'
+            legal_obligation: 'Art. 6(1)(c) Rechtliche Verpflichtung'
+            vital_interests: 'Art. 6(1)(d) Lebenswichtige Interessen'
+            public_task: 'Art. 6(1)(e) Öffentliche Aufgabe'
+            legitimate_interests: 'Art. 6(1)(f) Berechtigte Interessen'
+        legal_basis_special:
+            explicit_consent: 'Art. 9(2)(a) Ausdrückliche Einwilligung'
+            employment_law: 'Art. 9(2)(b) Arbeitsrecht'
+            vital_interests: 'Art. 9(2)(c) Lebenswichtige Interessen'
+            legitimate_activities: 'Art. 9(2)(d) Berechtigte Tätigkeiten'
+            made_public: 'Art. 9(2)(e) Öffentlich gemachte Daten'
+            legal_claims: 'Art. 9(2)(f) Rechtliche Ansprüche'
+            substantial_public_interest: 'Art. 9(2)(g) Erhebliches öffentliches Interesse'
+            health_care: 'Art. 9(2)(h) Gesundheitsversorgung'
+            public_health: 'Art. 9(2)(i) Öffentliche Gesundheit'
+            research_statistics: 'Art. 9(2)(j) Forschung/Statistik'
     data_subject:
         customers: Kunden
         employees: Mitarbeiter
@@ -501,3 +644,37 @@ dpia:
         severe: 'Schwerwiegend'
     supervisory_consultation:
         yes_high_risk: 'Ja (hohes Restrisiko - Art. 36)'
+    data_source:
+        data_subject: 'Direkt von der betroffenen Person'
+        third_parties: 'Von Dritten'
+        public_sources: 'Aus öffentlichen Quellen'
+        other: 'Sonstige'
+    status:
+        draft: Entwurf
+        active: Aktiv
+        archived: Archiviert
+    risk_level_choice:
+        Low: Niedrig
+        Medium: Mittel
+        High: Hoch
+        Critical: Kritisch
+    yes_no:
+        No: Nein
+        Yes: Ja
+    data_sources_choice:
+        'Directly from data subject': 'Direkt von der betroffenen Person'
+        'Third parties': 'Von Dritten'
+        'Public sources': 'Aus öffentlichen Quellen'
+        Other: Sonstige
+    status_choice:
+        Draft: Entwurf
+        Active: Aktiv
+        Archived: Archiviert
+    chart:
+        by_status: 'Nach Status'
+        by_risk_level: 'Nach Risikostufe'
+        by_legal_basis: 'Nach Rechtsgrundlage'
+    status_label:
+        in_review: 'In Prüfung'
+        draft: Entwurf
+        approved: Genehmigt

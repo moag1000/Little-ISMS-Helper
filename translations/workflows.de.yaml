@@ -184,3 +184,23 @@ workflow:
         document_review_desc: 'Strukturierter Review-Prozess für ISMS-Dokumente: Entwurf, Prüfung, Freigabe, Veröffentlichung'
         change_request: Change-Request-Workflow
         change_request_desc: 'Change-Management-Prozess: Antrag, Bewertung, Genehmigung, Umsetzung, Überprüfung'
+    entity_type:
+        risk: Risiko
+        control: Maßnahme
+        incident: Vorfall
+        asset: Asset
+        change_request: Änderungsantrag
+        document: Dokument
+        audit: Audit
+workflow_instance:
+    status:
+        pending: Ausstehend
+        in_progress: 'In Bearbeitung'
+        approved: Genehmigt
+        rejected: Abgelehnt
+        cancelled: Abgebrochen
+workflow_step:
+    type:
+        approval: 'Freigabe / Genehmigung'
+        notification: Benachrichtigung
+        auto_action: 'Automatische Aktion'
