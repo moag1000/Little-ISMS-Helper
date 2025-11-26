@@ -136,12 +136,16 @@
         <div class="sidebar-backdrop" data-sidebar-toggle-target="backdrop" data-action="click->sidebar-toggle#close"></div>
         {% endif %}
 
-        {# Sidebar Navigation #}
-        {# Hide sidebar during setup to avoid database access before DB is configured #}
+        {# Mega Menu Navigation #}
+        {# Hide navigation during setup to avoid database access before DB is configured #}
         {% if not is_setup_route %}
         <aside class="app-sidebar" role="complementary" aria-label="{{ 'nav.main_navigation'|trans({}, 'nav') }}" data-sidebar-toggle-target="sidebar">
+            {# Two-Level Mega Menu replaces traditional sidebar navigation #}
+            {{ include('_components/_mega_menu.html.twig') }}
+
+            {# Old sidebar navigation - kept for reference, remove after testing
             <nav id="main-navigation" role="navigation">
-                <ul>
+                <ul style="display:none;">
                     <li><a href="{{ path('app_home') }}" class="{% if current_route starts with 'app_home' %}active{% endif %}" {% if current_route starts with 'app_home' %}aria-current="page"{% endif %} data-turbo-action="advance">
                         <i class="bi bi-house" aria-hidden="true"></i>
                         <span>{{ 'nav.home'|trans({}, 'nav') }}</span>
@@ -440,11 +444,6 @@
                             {% endfor %}
                         {% endfor %}
                     </div>
-
-                    {# Two-Level Mega Menu Navigation #}
-                    {% if not is_setup_route %}
-                        {{ include('_components/_mega_menu.html.twig') }}
-                    {% endif %}
 
                     {% block body %}{% endblock %}
                 </div>
