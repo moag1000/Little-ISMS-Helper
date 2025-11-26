@@ -334,7 +334,7 @@
                         {% for asset in incident.affectedAssets %}
                             <div class="data-reuse-item">
                                 <strong>{{ asset.name }}</strong>
-                                <span class="badge bg-info">{{ asset.assetType }}</span>
+                                <span class="badge bg-info">{{ asset.type }}</span>
                                 <small>CIA: {{ asset.confidentialityValue }}/{{ asset.integrityValue }}/{{ asset.availabilityValue }}</small>
                                 {% if asset.monetaryValue %}
                                     <small class="text-danger">Value: €{{ asset.monetaryValue }}</small>

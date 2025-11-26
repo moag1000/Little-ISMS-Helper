@@ -249,7 +249,7 @@
                         <br><small class="text-muted">{{ asset.description|length > 60 ? asset.description|slice(0, 60) ~ '...' : asset.description }}</small>
                     {% endif %}
                 </td>
-                <td><span class="badge bg-secondary">{{ asset.assetType }}</span></td>
+                <td><span class="badge bg-secondary">{{ asset.type }}</span></td>
                 <td>{{ asset.owner }}</td>
                 <td class="text-center">
                     {% if asset.dataClassification %}
