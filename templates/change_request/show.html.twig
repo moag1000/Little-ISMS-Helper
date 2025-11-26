@@ -165,11 +165,11 @@
             </div>
             {% endif %}
 
-            {% if change_request.affectedRisks|length > 0 %}
+            {% if change_request.associatedRisks|length > 0 %}
             <div class="detail-section">
-                <h3>{{ 'change_request.section.affected_risks'|trans({'%count%': change_request.affectedRisks|length}, 'change_requests') }}</h3>
+                <h3>{{ 'change_request.section.associated_risks'|trans({'%count%': change_request.associatedRisks|length}, 'change_requests') }}</h3>
                 <ul>
-                    {% for risk in change_request.affectedRisks %}
+                    {% for risk in change_request.associatedRisks %}
                     <li><a href="{{ path('app_risk_show', {id: risk.id}) }}">{{ risk.title }}</a></li>
                     {% endfor %}
                 </ul>
