@@ -4,6 +4,16 @@
 {% block title %}{{ 'risk_treatment_plan.edit'|trans({}, 'risk_treatment_plan') }}: {{ plan.title }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.risk_treatment_plans'|trans({}, 'nav'), url: path('app_risk_treatment_plan_index') },
+            { label: plan.title, url: path('app_risk_treatment_plan_show', {id: plan.id}) },
+            { label: 'common.edit'|trans({}, 'messages') }
+        ]
+    } %}
+</div>
+
 <div class="page-header">
     <div>
         <h1><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'risk_treatment_plan.edit'|trans({}, 'risk_treatment_plan') }}</h1>

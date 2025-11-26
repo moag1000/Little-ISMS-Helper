@@ -4,6 +4,16 @@
 {% block title %}{{ 'person.title.edit'|trans({}, 'messages') }} - {{ person.fullName }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.people'|trans({}, 'nav'), url: path('app_person_index') },
+            { label: person.fullName, url: path('app_person_show', {id: person.id}) },
+            { label: 'common.edit'|trans({}, 'messages') }
+        ]
+    } %}
+</div>
+
 <div class="page-header">
     <div>
         <h1>{{ 'person.title.edit'|trans({}, 'messages') }}: {{ person.fullName }}</h1>

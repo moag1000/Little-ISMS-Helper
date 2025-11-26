@@ -4,6 +4,16 @@
 {% block title %}{{ 'location.title.edit'|trans({}, 'locations') }} - {{ location.name }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.locations'|trans({}, 'nav'), url: path('app_location_index') },
+            { label: location.name, url: path('app_location_show', {id: location.id}) },
+            { label: 'common.edit'|trans({}, 'messages') }
+        ]
+    } %}
+</div>
+
 <div class="page-header">
     <div>
         <h1>{{ 'location.title.edit'|trans({}, 'locations') }}: {{ location.name }}</h1>
