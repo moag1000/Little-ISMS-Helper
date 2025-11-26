@@ -45,7 +45,7 @@ class DocumentController extends AbstractController
         $tenant = $user?->getTenant();
 
         // Get view filter parameter
-        $view = $request->query->get('view', 'inherited'); // Default: inherited
+        $view = $request->query->get('view', 'own'); // Default: own documents
 
         // Get documents based on view filter
         if ($tenant) {
@@ -105,6 +105,13 @@ class DocumentController extends AbstractController
     public function new(Request $request): Response
     {
         $document = new Document();
+
+        // Set tenant from current user
+        $user = $this->security->getUser();
+        if ($user && $user->getTenant()) {
+            $document->setTenant($user->getTenant());
+        }
+
         $form = $this->createForm(DocumentType::class, $document);
         $form->handleRequest($request);
 
