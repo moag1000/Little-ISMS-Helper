@@ -2336,9 +2336,11 @@ table:not(.no-default-style) td {
 }
 
 [data-theme="dark"] table:not(.no-default-style) td,
-[data-theme="dark"] table:not(.no-default-style) th {
-    background-color: var(--bs-tertiary-bg);
-    color: #f8fafc;
+[data-theme="dark"] table:not(.no-default-style) th,
+[data-bs-theme="dark"] table:not(.no-default-style) td,
+[data-bs-theme="dark"] table:not(.no-default-style) th {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
 }
 
 table:not(.no-default-style) thead th {
@@ -2358,24 +2360,33 @@ table:not(.no-default-style) tbody tr:hover {
     background-color: var(--bs-tertiary-bg);
 }
 
-[data-theme="dark"] table:not(.no-default-style) tbody tr:hover {
-    background-color: var(--bs-secondary-bg);
+[data-theme="dark"] table:not(.no-default-style) tbody tr:hover,
+[data-bs-theme="dark"] table:not(.no-default-style) tbody tr:hover {
+    background-color: #334155 !important;
 }
 
-[data-theme="dark"] table:not(.no-default-style) tbody tr:hover td {
-    color: #e2e8f0;
-    background-color: var(--bs-secondary-bg);
+[data-theme="dark"] table:not(.no-default-style) tbody tr:hover td,
+[data-bs-theme="dark"] table:not(.no-default-style) tbody tr:hover td {
+    color: #ffffff !important;
+    background-color: #334155 !important;
 }
 
 /* Fix text-muted in tables for dark mode */
-[data-theme="dark"] table:not(.no-default-style) .text-muted {
-    color: var(--bs-gray-400) !important;
+[data-theme="dark"] table:not(.no-default-style) .text-muted,
+[data-theme="dark"] table:not(.no-default-style) small.text-muted {
+    color: #94a3b8 !important; /* slate-400 - readable muted text */
 }
 
 /* Ensure strong/bold text is highly visible in dark mode tables */
-[data-theme="dark"] table:not(.no-default-style) strong {
-    color: #ffffff !important;
+[data-theme="dark"] table:not(.no-default-style) strong,
+[data-theme="dark"] table:not(.no-default-style) b,
+[data-theme="dark"] table:not(.no-default-style) td strong,
+[data-theme="dark"] table:not(.no-default-style) td b,
+[data-theme="dark"] table tbody td strong,
+[data-theme="dark"] table tbody td b {
+    color: #ffffff !important; /* Pure white for maximum contrast */
     font-weight: 600;
+    opacity: 1 !important;
 }
 
 /* Striped tables */
