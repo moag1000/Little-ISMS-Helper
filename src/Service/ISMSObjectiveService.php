@@ -18,7 +18,7 @@ class ISMSObjectiveService
      */
     public function createObjective(ISMSObjective $objective): void
     {
-        $objective->setUpdatedAt(new \DateTime());
+        $objective->setUpdatedAt(new \DateTimeImmutable());
 
         $this->entityManager->persist($objective);
         $this->entityManager->flush();
@@ -29,7 +29,7 @@ class ISMSObjectiveService
      */
     public function updateObjective(ISMSObjective $objective): void
     {
-        $objective->setUpdatedAt(new \DateTime());
+        $objective->setUpdatedAt(new \DateTimeImmutable());
 
         // Automatically set achieved date when status changes to achieved
         if ($objective->getStatus() === 'achieved' && !$objective->getAchievedDate()) {

@@ -76,7 +76,7 @@ class ISMSContextService
         // Auto-sync organization name from tenant
         $this->syncOrganizationNameFromTenant($context);
 
-        $context->setUpdatedAt(new \DateTime());
+        $context->setUpdatedAt(new \DateTimeImmutable());
 
         if (!$context->getId()) {
             $this->entityManager->persist($context);

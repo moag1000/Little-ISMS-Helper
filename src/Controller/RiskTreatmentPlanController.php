@@ -118,7 +118,7 @@ class RiskTreatmentPlanController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $plan->setUpdatedAt(new \DateTime());
+            $plan->setUpdatedAt(new \DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('risk_treatment_plan.success.updated'));
