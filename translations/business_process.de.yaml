@@ -1,4 +1,10 @@
 business_process:
+    new: 'Neuer Geschäftsprozess'
+    edit: 'Geschäftsprozess bearbeiten'
+    success:
+        created: 'Geschäftsprozess erfolgreich erstellt.'
+        updated: 'Geschäftsprozess erfolgreich aktualisiert.'
+        deleted: 'Geschäftsprozess erfolgreich gelöscht.'
     section:
         basic_info: Grundinformationen
         recovery_objectives: 'Wiederherstellungsziele (RTO/RPO/MTPD)'

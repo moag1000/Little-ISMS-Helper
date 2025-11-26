@@ -276,6 +276,7 @@ person:
         access_valid_until: 'Zugang gültig bis'
         notes: Notizen
     section:
+        access: 'Zugangsberechtigungen'
         basic_info: Grundinformationen
         details: Details
         contact: Kontaktdaten

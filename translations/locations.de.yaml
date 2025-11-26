@@ -35,6 +35,7 @@ location:
         description: Beschreibung
         status: Status
     section:
+        basic_info: Grundinformationen
         address: Adresse
         hierarchy: Hierarchie
         security: Sicherheit

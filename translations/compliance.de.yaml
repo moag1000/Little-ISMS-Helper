@@ -120,8 +120,51 @@ compliance:
     successfully_deleted: 'Framework erfolgreich gelöscht'
     delete_failed: 'Fehler beim Löschen des Frameworks'
     mapping:
+        title: Compliance-Mapping
         create_link: 'Zuordnung erstellen'
         create_instruction: 'um zu zeigen, wie Anforderungen mit Ihren Controls zusammenhängen'
+        edit:
+            title: 'Mapping bearbeiten'
+        list:
+            title: 'Mappings verwalten'
+        new:
+            title: 'Neues Mapping'
+        section:
+            requirements: Anforderungen
+            strength: 'Mapping-Stärke'
+            rationale: Begründung
+        info:
+            current: 'Aktuelles Mapping'
+        field:
+            source: Quellanforderung
+            target: Zielanforderung
+            type: Mapping-Typ
+            calculated: Berechnet
+            analysis_confidence: Analyse-Konfidenz
+        action:
+            create: 'Mapping erstellen'
+        help:
+            types:
+                title: Mapping-Typen
+                weak: Schwach
+                weak_desc: 'Nur geringe Überschneidung oder thematische Verwandtschaft (0-49%)'
+                partial: Teilweise
+                partial_desc: 'Die Anforderungen überschneiden sich teilweise (50-99%)'
+                full: Vollständig
+                full_desc: 'Beide Anforderungen sind inhaltlich identisch oder gleichwertig (100%)'
+                exceeds: Übertrifft
+                exceeds_desc: 'Die Quell-Anforderung geht über die Ziel-Anforderung hinaus (>100%)'
+            confidence:
+                title: Konfidenzniveau
+                low: Niedrig
+                low_desc: 'Geschätzt oder automatisch ermittelt'
+                medium: Mittel
+                medium_desc: 'Basierend auf vergleichbaren Anforderungen'
+                high: Hoch
+                high_desc: 'Manuell überprüft und bestätigt'
+            bidirectional:
+                title: 'Bidirektionale Mappings'
+                desc: 'Wenn beide Richtungen gelten (A→B und B→A), wird das Mapping als bidirektional markiert'
         type:
             full: 'Vollständig (100%)'
             partial: 'Teilweise (50-99%)'
@@ -190,8 +233,47 @@ compliance:
             fulfilled: Erfüllt
             compliance: Compliance-Rate
     requirement:
+        title: Compliance-Anforderung
+        edit:
+            title: 'Anforderung bearbeiten'
+            note: 'Änderungen an Anforderungen können die Compliance-Bewertung beeinflussen'
+        list:
+            title: 'Anforderungen verwalten'
+        new:
+            title: 'Neue Anforderung'
+        section:
+            identification: Identifikation
+            basic: Grunddaten
+            structure: Struktur
+        info:
+            title: 'Anforderungsdetails'
+            mapped_controls: 'Zugeordnete Controls'
+            sub_requirements: 'Unter-Anforderungen'
         action:
             new: 'Neue Anforderung'
+            create: 'Anforderung erstellen'
+        help:
+            types:
+                title: Anforderungstypen
+                core: Kern
+                core_desc: 'Hauptanforderung des Frameworks'
+                detailed: Detailliert
+                detailed_desc: 'Konkretisierung einer Kern-Anforderung'
+                sub: Unter-Anforderung
+                sub_desc: 'Teil einer übergeordneten Anforderung'
+            priority:
+                title: Prioritätsstufen
+                critical: Kritisch
+                critical_desc: 'Sofortige Umsetzung erforderlich'
+                high: Hoch
+                high_desc: 'Hohe Priorität, zeitnah umsetzen'
+                medium: Mittel
+                medium_desc: 'Mittlere Priorität, planmäßig umsetzen'
+                low: Niedrig
+                low_desc: 'Geringe Priorität, bei Gelegenheit umsetzen'
+            fulfillment:
+                title: Erfüllungsgrad
+                desc: 'Prozentsatz der Anforderungserfüllung (0-100%)'
         priority:
             critical: Kritisch
             high: Hoch
