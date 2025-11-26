@@ -5,6 +5,14 @@
 
 {% block body %}
 <div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.objectives'|trans({}, 'nav'), url: path('app_objective_index') },
+            { label: objective.title, url: path('app_objective_show', {id: objective.id}) },
+            { label: 'common.edit'|trans({}, 'messages') }
+        ]
+    } %}
+
     <div class="card">
         <div class="card-header bg-primary text-white"><h5 class="mb-0">{{ 'objective.title.edit'|trans({}, 'objective') }}: {{ objective.title }}</h5>
         </div>

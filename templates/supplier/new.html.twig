@@ -5,6 +5,13 @@
 
 {% block body %}
 <div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.suppliers'|trans({}, 'nav'), url: path('app_supplier_index') },
+            { label: 'supplier.page.new_title'|trans({}, 'suppliers') }
+        ]
+    } %}
+
     <div class="page-header">
         <h1>{{ 'supplier.page.new_title'|trans({}, 'suppliers') }}</h1>
         <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
