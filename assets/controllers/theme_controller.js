@@ -72,12 +72,16 @@ export default class extends Controller {
     }
 
     setTheme(theme) {
-        // Remove existing theme
+        // Remove existing theme attributes
         document.documentElement.removeAttribute('data-theme');
+        document.documentElement.removeAttribute('data-bs-theme');
 
-        // Add new theme
+        // Add new theme (both for custom CSS and Bootstrap 5.3+)
         if (theme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+        } else {
+            document.documentElement.setAttribute('data-bs-theme', 'light');
         }
 
         // Update meta theme-color for mobile browsers

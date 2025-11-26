@@ -66,10 +66,22 @@
     --bg-tertiary: #1e293b;
     --bg-elevated: #1e293b;
 
-    /* Bootstrap background variables override for better table contrast */
-    --bs-tertiary-bg: #1e293b;  /* slate-800 - dark for table cells */
-    --bs-body-bg: #0f172a;      /* slate-900 - darker background */
-    --bs-secondary-bg: #334155; /* slate-700 - lighter for hover */
+    /* Bootstrap Variables Override - Dark Mode */
+    --bs-body-bg: #0f172a;
+    --bs-body-color: #f1f5f9;
+    --bs-tertiary-bg: #1e293b;
+    --bs-secondary-bg: #334155;
+    --bs-primary-bg-subtle: rgba(6, 182, 212, 0.15);
+    --bs-info-bg-subtle: rgba(6, 182, 212, 0.15);
+    --bs-warning-bg-subtle: rgba(245, 158, 11, 0.15);
+    --bs-danger-bg-subtle: rgba(239, 68, 68, 0.15);
+    --bs-success-bg-subtle: rgba(16, 185, 129, 0.15);
+    --bs-light-bg-subtle: #1e293b;
+    --bs-dark-bg-subtle: #0f172a;
+    --bs-border-color: #334155;
+    --bs-border-color-translucent: rgba(255, 255, 255, 0.1);
+    --bs-card-bg: #1e293b;
+    --bs-card-border-color: #334155;
 
     /* Background - Compatibility with app.css naming */
     --color-bg: #1e293b;
@@ -103,10 +115,13 @@
 }
 
 /* ===============================
-   Apply Variables to Elements
+   Apply Variables to Elements - Dark Mode Only
    =============================== */
 
-body {
+[data-theme="dark"] body,
+[data-bs-theme="dark"] body,
+body[data-theme="dark"],
+body[data-bs-theme="dark"] {
     background-color: var(--bg-primary);
     color: var(--text-primary);
     transition: background-color var(--transition-speed), color var(--transition-speed);
@@ -165,22 +180,56 @@ body {
     color: var(--text-primary) !important;
 }
 
-/* Alerts - Dark Mode Text Visibility */
-[data-theme="dark"] .alert-info,
-[data-bs-theme="dark"] .alert-info,
-[data-theme="dark"] .alert-info h1,
-[data-theme="dark"] .alert-info h2,
-[data-theme="dark"] .alert-info h3,
-[data-theme="dark"] .alert-info h4,
-[data-theme="dark"] .alert-info h5,
-[data-theme="dark"] .alert-info h6,
-[data-bs-theme="dark"] .alert-info h1,
-[data-bs-theme="dark"] .alert-info h2,
-[data-bs-theme="dark"] .alert-info h3,
-[data-bs-theme="dark"] .alert-info h4,
-[data-bs-theme="dark"] .alert-info h5,
-[data-bs-theme="dark"] .alert-info h6 {
-    color: #ffffff !important;
+/* Alerts - Dark Mode with proper contrast (light text on dark background) */
+html[data-theme="dark"] .alert-info,
+html[data-bs-theme="dark"] .alert-info,
+[data-theme="dark"] .alert.alert-info,
+[data-bs-theme="dark"] .alert.alert-info {
+    background-color: rgba(6, 182, 212, 0.15) !important;
+    border-color: rgba(6, 182, 212, 0.5) !important;
+    color: #7dd3fc !important; /* sky-300 - light cyan text */
+}
+
+html[data-theme="dark"] .alert-warning,
+html[data-bs-theme="dark"] .alert-warning,
+[data-theme="dark"] .alert.alert-warning,
+[data-bs-theme="dark"] .alert.alert-warning {
+    background-color: rgba(245, 158, 11, 0.15) !important;
+    border-color: rgba(245, 158, 11, 0.5) !important;
+    color: #fcd34d !important; /* amber-300 - light amber text */
+}
+
+html[data-theme="dark"] .alert-danger,
+html[data-bs-theme="dark"] .alert-danger,
+[data-theme="dark"] .alert.alert-danger,
+[data-bs-theme="dark"] .alert.alert-danger {
+    background-color: rgba(239, 68, 68, 0.15) !important;
+    border-color: rgba(239, 68, 68, 0.5) !important;
+    color: #fca5a5 !important; /* red-300 - light red text */
+}
+
+html[data-theme="dark"] .alert-success,
+html[data-bs-theme="dark"] .alert-success,
+[data-theme="dark"] .alert.alert-success,
+[data-bs-theme="dark"] .alert.alert-success {
+    background-color: rgba(16, 185, 129, 0.15) !important;
+    border-color: rgba(16, 185, 129, 0.5) !important;
+    color: #6ee7b7 !important; /* emerald-300 - light green text */
+}
+
+html[data-theme="dark"] .alert h1,
+html[data-theme="dark"] .alert h2,
+html[data-theme="dark"] .alert h3,
+html[data-theme="dark"] .alert h4,
+html[data-theme="dark"] .alert h5,
+html[data-theme="dark"] .alert h6,
+html[data-bs-theme="dark"] .alert h1,
+html[data-bs-theme="dark"] .alert h2,
+html[data-bs-theme="dark"] .alert h3,
+html[data-bs-theme="dark"] .alert h4,
+html[data-bs-theme="dark"] .alert h5,
+html[data-bs-theme="dark"] .alert h6 {
+    color: inherit !important;
 }
 
 /* Cards - Dark Mode */
