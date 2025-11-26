@@ -32,7 +32,7 @@ class WorkflowController extends AbstractController
     {
         $workflows = $this->workflowRepository->findAllActive();
         $statistics = $this->workflowInstanceRepository->getStatistics();
-        $instances = $this->workflowInstanceRepository->findBy([], ['createdAt' => 'DESC'], 10);
+        $instances = $this->workflowInstanceRepository->findBy([], ['startedAt' => 'DESC'], 10);
 
         return $this->render('workflow/index.html.twig', [
             'workflows' => $workflows,
