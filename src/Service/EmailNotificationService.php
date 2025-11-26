@@ -340,9 +340,16 @@ class EmailNotificationService
      * @param User $recipient
      * @param Incident $incident
      * @param string $severity Escalation level (low, medium, high, critical)
+     * @param \DateTimeImmutable $slaDeadline SLA deadline for incident response
+     * @param string $incidentUrl Absolute URL to incident detail page
      */
-    public function sendIncidentEscalationNotification(User $recipient, Incident $incident, string $severity): void
-    {
+    public function sendIncidentEscalationNotification(
+        User $recipient,
+        Incident $incident,
+        string $severity,
+        \DateTimeImmutable $slaDeadline,
+        string $incidentUrl
+    ): void {
         $safeTitle = $this->sanitizeEmailSubject($incident->getTitle());
         $severityLabel = strtoupper($severity);
 
@@ -356,6 +363,8 @@ class EmailNotificationService
                 'recipient' => $recipient,
                 'severity' => $severity,
                 'escalation_level' => $severity,
+                'sla_deadline' => $slaDeadline,
+                'incident_url' => $incidentUrl,
             ]);
 
         $this->mailer->send($email);

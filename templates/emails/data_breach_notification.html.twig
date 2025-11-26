@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: #dc2626; color: white; padding: 20px; text-align: center; border-top: 5px solid #991b1b; }
+        .urgent-banner { background: #991b1b; color: white; padding: 10px; text-align: center; font-weight: bold; font-size: 16px; }
+        .content { background: #f9fafb; padding: 20px; margin: 20px 0; }
+        .field { margin: 10px 0; }
+        .label { font-weight: bold; color: #666; }
+        .value { color: #000; }
+        .deadline-countdown { background: #fee2e2; border: 3px solid #dc2626; padding: 20px; margin: 20px 0; border-radius: 4px; text-align: center; }
+        .countdown-number { font-size: 36px; font-weight: bold; color: #dc2626; line-height: 1; }
+        .countdown-label { font-size: 14px; color: #991b1b; margin-top: 5px; }
+        .legal-reference { background: #fef3c7; border-left: 4px solid #d97706; padding: 15px; margin: 15px 0; font-size: 13px; }
+        .critical-action { background: #fef2f2; border: 2px solid #dc2626; padding: 20px; margin: 20px 0; border-radius: 4px; }
+        .cta-button { display: inline-block; background: #dc2626; color: white; padding: 16px 32px; text-decoration: none; border-radius: 4px; margin: 15px 0; font-weight: bold; font-size: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .cta-button:hover { background: #991b1b; }
+        .urgency-indicator { color: #dc2626; font-weight: bold; font-size: 18px; }
+        .footer { text-align: center; color: #666; font-size: 12px; padding: 20px; }
+        .incident-number { font-size: 14px; color: #666; font-family: monospace; }
+        .warning-icon { font-size: 48px; line-height: 1; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="urgent-banner">
+            🚨 {{ 'privacy.data_breach.urgent_banner'|trans({}, 'privacy') }}
+        </div>
+
+        <div class="header">
+            <div class="warning-icon">⚠️</div>
+            <h1 style="margin: 10px 0;">{{ 'privacy.data_breach.email_title'|trans({}, 'privacy') }}</h1>
+            <p style="margin: 5px 0; font-size: 14px;">{{ 'privacy.data_breach.subtitle'|trans({}, 'privacy') }}</p>
+        </div>
+
+        <div class="content">
+            <p>{{ 'privacy.data_breach.greeting'|trans({'%name%': recipient.firstName}, 'privacy') }}</p>
+
+            <div class="deadline-countdown">
+                <div class="countdown-number">{{ hours_remaining|number_format(1) }}</div>
+                <div class="countdown-label">{{ 'privacy.data_breach.hours_remaining'|trans({}, 'privacy') }}</div>
+                <div style="margin-top: 15px; font-size: 14px; color: #991b1b;">
+                    {{ 'privacy.data_breach.deadline_date'|trans({}, 'privacy') }}: <strong>{{ deadline_formatted }}</strong>
+                </div>
+            </div>
+
+            <div class="legal-reference">
+                <strong>📋 {{ 'privacy.data_breach.legal_obligation'|trans({}, 'privacy') }}:</strong><br>
+                {{ 'privacy.data_breach.gdpr_art33'|trans({}, 'privacy') }}<br>
+                {{ 'privacy.data_breach.bdsg_42'|trans({}, 'privacy') }}
+            </div>
+
+            <h3 style="color: #dc2626; margin: 20px 0 10px 0;">{{ 'privacy.data_breach.incident_details'|trans({}, 'privacy') }}</h3>
+
+            <div class="field">
+                <span class="label">{{ 'incident.field.title'|trans({}, 'incident') }}:</span>
+                <span class="value">{{ incident.title }}</span>
+            </div>
+
+            <div class="field">
+                <span class="label">{{ 'privacy.data_breach.incident_number'|trans({}, 'privacy') }}:</span>
+                <span class="value incident-number">#{{ incident.id }}</span>
+            </div>
+
+            <div class="field">
+                <span class="label">{{ 'incident.field.category'|trans({}, 'incident') }}:</span>
+                <span class="value urgency-indicator">{{ ('incident.category.' ~ incident.category|lower)|trans({}, 'incident') }}</span>
+            </div>
+
+            {% if incident.detectedAt %}
+            <div class="field">
+                <span class="label">{{ 'incident.field.detected_at'|trans({}, 'incident') }}:</span>
+                <span class="value">{{ incident.detectedAt|date('d.m.Y H:i') }}</span>
+            </div>
+            {% endif %}
+
+            {% if incident.occurredAt %}
+            <div class="field">
+                <span class="label">{{ 'incident.field.occurred_at'|trans({}, 'incident') }}:</span>
+                <span class="value">{{ incident.occurredAt|date('d.m.Y H:i') }}</span>
+            </div>
+            {% endif %}
+
+            {% if incident.description %}
+            <div class="field">
+                <span class="label">{{ 'incident.field.description'|trans({}, 'incident') }}:</span>
+                <p class="value" style="margin: 5px 0;">{{ incident.description|nl2br }}</p>
+            </div>
+            {% endif %}
+
+            {% if incident.affectedSystems %}
+            <div class="field">
+                <span class="label">{{ 'incident.field.affected_systems'|trans({}, 'incident') }}:</span>
+                <p class="value" style="margin: 5px 0;">{{ incident.affectedSystems|nl2br }}</p>
+            </div>
+            {% endif %}
+
+            <div class="critical-action">
+                <h3 style="margin: 0 0 10px 0; color: #dc2626;">
+                    {{ 'privacy.data_breach.immediate_action_required'|trans({}, 'privacy') }}
+                </h3>
+                <p style="margin: 10px 0;">{{ 'privacy.data_breach.action_description'|trans({}, 'privacy') }}</p>
+
+                <ul style="margin: 15px 0; padding-left: 20px;">
+                    <li><strong>{{ 'privacy.data_breach.action_1'|trans({}, 'privacy') }}</strong></li>
+                    <li><strong>{{ 'privacy.data_breach.action_2'|trans({}, 'privacy') }}</strong></li>
+                    <li><strong>{{ 'privacy.data_breach.action_3'|trans({}, 'privacy') }}</strong></li>
+                    <li><strong>{{ 'privacy.data_breach.action_4'|trans({}, 'privacy') }}</strong></li>
+                </ul>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="{{ incident_url }}" class="cta-button">
+                        {{ 'privacy.data_breach.review_and_approve'|trans({}, 'privacy') }} →
+                    </a>
+                </div>
+            </div>
+
+            <div class="legal-reference">
+                <strong>⚖️ {{ 'privacy.data_breach.compliance_note'|trans({}, 'privacy') }}:</strong><br>
+                {{ 'privacy.data_breach.compliance_text'|trans({}, 'privacy') }}
+            </div>
+        </div>
+
+        <div class="footer">
+            <p style="color: #dc2626; font-weight: bold;">{{ 'privacy.data_breach.urgent_automated'|trans({}, 'privacy') }}</p>
+            <p>{{ 'privacy.data_breach.footer_reference'|trans({}, 'privacy') }}</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -41,11 +41,10 @@ class WorkflowAutoTriggerListener
     /**
      * Handle post-persist events (new entities)
      *
-     * @param PostPersistEventArgs $args
+     * Entity listeners receive the entity as first argument, then the event args
      */
-    public function postPersist(PostPersistEventArgs $args): void
+    public function postPersist(object $entity, PostPersistEventArgs $args): void
     {
-        $entity = $args->getObject();
 
         // Check if this entity type requires workflow triggering
         if (!$this->workflowAutoTriggerService->shouldTriggerWorkflow($entity)) {
@@ -68,11 +67,10 @@ class WorkflowAutoTriggerListener
     /**
      * Handle post-update events (entity updates)
      *
-     * @param PostUpdateEventArgs $args
+     * Entity listeners receive the entity as first argument, then the event args
      */
-    public function postUpdate(PostUpdateEventArgs $args): void
+    public function postUpdate(object $entity, PostUpdateEventArgs $args): void
     {
-        $entity = $args->getObject();
         $changeSet = $args->getObjectManager()->getUnitOfWork()->getEntityChangeSet($entity);
 
         // Check if this entity change requires workflow triggering
