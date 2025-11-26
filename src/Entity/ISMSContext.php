@@ -92,11 +92,11 @@ class ISMSContext
     #[Groups(['isms_context:read', 'isms_context:write'])]
     private ?\DateTimeInterface $nextReviewDate = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['isms_context:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['isms_context:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 

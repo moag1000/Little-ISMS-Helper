@@ -243,11 +243,11 @@ class BCExercise
     #[Groups(['bc_exercise:read'])]
     private Collection $documents;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['bc_exercise:read'])]
     private ?\DateTimeInterface $createdAt = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['bc_exercise:read'])]
     private ?\DateTimeInterface $updatedAt = null;
 
