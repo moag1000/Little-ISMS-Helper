@@ -133,6 +133,17 @@ incident:
     list:
         title: Vorfallsliste
     controls_should_prevent: 'Maßnahmen, die diesen Vorfall hätten verhindern sollen'
+    workflow:
+        active: 'Aktiver Workflow'
+        data_breach_active: 'Datenschutzverletzungs-Workflow aktiv'
+        view_details: 'Workflow-Details anzeigen'
+        gdpr_72h_deadline: 'DSGVO 72h-Frist für Meldung von Datenschutzverletzungen'
+        escalation:
+            low: 'Niedrige Priorität'
+            medium: 'Mittlere Priorität'
+            high: 'Hohe Priorität'
+            critical: 'Kritische Priorität'
+            data_breach: 'Datenschutzverletzung - DSGVO-Konformität'
     pdf:
         reported_at: 'Gemeldet am'
         reported_by: 'Gemeldet von'
@@ -171,3 +182,19 @@ incident:
         security: Sicherheit
         privacy: Datenschutz
         availability: Verfügbarkeit
+    escalation:
+        title: 'Vorfall eskaliert'
+        level: 'Eskalationsstufe: %level%'
+        greeting: 'Sehr geehrte(r) %name%,'
+        alert: 'Wichtige Sicherheitsmitteilung'
+        message: 'Ein Vorfall mit Schweregrad %severity% wurde auf Eskalationsstufe %level% eskaliert und erfordert Ihre sofortige Aufmerksamkeit.'
+        incident_number: Vorfallsnummer
+        sla_deadline: 'SLA-Frist'
+        action_required: 'Erforderliche Maßnahmen'
+        action_review: 'Überprüfen Sie die Vorfalldetails und den aktuellen Status'
+        action_assess: 'Bewerten Sie die Auswirkungen und identifizieren Sie betroffene Systeme'
+        action_update: 'Aktualisieren Sie den Vorfall mit Ihren Erkenntnissen und ergriffenen Maßnahmen'
+        action_notify_management: 'Benachrichtigen Sie die Geschäftsführung über diesen kritischen Vorfall'
+        view_incident: 'Vorfall anzeigen'
+        automated_notification: 'Dies ist eine automatisierte Benachrichtigung des Vorfallmanagement-Systems.'
+        iso_reference: 'ISO 27001 A.16.1 - Management von Informationssicherheitsvorfällen'

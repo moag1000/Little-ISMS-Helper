@@ -47,8 +47,14 @@ class WorkflowService
 
     /**
      * Start a workflow for an entity
+     *
+     * @param string $entityType The entity type (e.g., 'Incident', 'Risk')
+     * @param int $entityId The entity ID
+     * @param string|null $workflowName Optional specific workflow name
+     * @param bool $autoFlush Whether to automatically flush after persisting (default: true)
+     * @return WorkflowInstance|null The workflow instance or null if no workflow found
      */
-    public function startWorkflow(string $entityType, int $entityId, ?string $workflowName = null): ?WorkflowInstance
+    public function startWorkflow(string $entityType, int $entityId, ?string $workflowName = null, bool $autoFlush = true): ?WorkflowInstance
     {
         // Find appropriate workflow
         $workflow = $workflowName
@@ -60,11 +66,19 @@ class WorkflowService
         }
 
         // Check if workflow instance already exists
-        $existingInstance = $this->workflowInstanceRepository->findOneBy([
-            'entityType' => $entityType,
-            'entityId' => $entityId,
-            'status' => ['pending', 'in_progress']
-        ]);
+        // Note: findOneBy doesn't support array values, use QueryBuilder
+        $qb = $this->entityManager->createQueryBuilder();
+        $existingInstance = $qb->select('wi')
+            ->from(WorkflowInstance::class, 'wi')
+            ->where('wi.entityType = :entityType')
+            ->andWhere('wi.entityId = :entityId')
+            ->andWhere($qb->expr()->in('wi.status', ':statuses'))
+            ->setParameter('entityType', $entityType)
+            ->setParameter('entityId', $entityId)
+            ->setParameter('statuses', ['pending', 'in_progress'])
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
 
         if ($existingInstance) {
             return $existingInstance;
@@ -97,7 +111,10 @@ class WorkflowService
         }
 
         $this->entityManager->persist($instance);
-        $this->entityManager->flush();
+
+        if ($autoFlush) {
+            $this->entityManager->flush();
+        }
 
         return $instance;
     }
