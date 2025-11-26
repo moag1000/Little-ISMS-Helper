@@ -132,6 +132,7 @@
         <div class="col-lg-8">
             {% embed '_components/_card.html.twig' with {
                 'title': 'admin.dashboard.modules.title',
+                'titleDomain': 'admin',
                 'headerIcon': 'bi-bar-chart-fill text-primary'
             } %}
                 {% block card_body %}
@@ -256,6 +257,7 @@
             {# Quick Actions #}
             {% embed '_components/_card.html.twig' with {
                 'title': 'admin.dashboard.quick_actions.title',
+                'titleDomain': 'admin',
                 'headerIcon': 'bi-lightning-fill text-warning',
                 'class': 'mb-4'
             } %}
@@ -280,6 +282,7 @@
             {# Recent Activity #}
             {% embed '_components/_card.html.twig' with {
                 'title': 'admin.dashboard.activity.title',
+                'titleDomain': 'admin',
                 'headerIcon': 'bi-clock-history text-info',
                 'noPadding': true
             } %}
