@@ -8,14 +8,14 @@
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
         { label: 'nav.documents'|trans({}, 'nav', 'nav'), url: path('app_document_index'), icon: 'bi-file-earmark-text' },
-        { label: document.name, url: path('app_document_show', {id: document.id}) },
+        { label: document.originalFilename, url: path('app_document_show', {id: document.id}) },
         { label: 'document.edit'|trans({}, 'document') }
     ]
 } %}
 
 {# Page Header #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'document.edit'|trans({}, 'document') ~ ': ' ~ document.name,
+    title: 'document.edit'|trans({}, 'document') ~ ': ' ~ document.originalFilename,
     icon: 'bi-pencil',
     actions: [
         { label: 'common.back'|trans({}, 'messages'), url: path('app_document_show', {id: document.id}), variant: 'secondary', icon: 'bi-arrow-left' }
