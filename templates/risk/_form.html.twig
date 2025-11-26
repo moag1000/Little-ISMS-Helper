@@ -15,8 +15,9 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.title,
-                'label': 'risk.field.title'|trans({}, 'risk'),
-                'help': 'risk.help.title'|trans({}, 'risk'),
+                'label_key': 'risk.field.title',
+                'help_key': 'risk.help.title',
+                'translation_domain': 'risks',
                 'required': true
             } %}
         </div>
@@ -24,8 +25,9 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.asset,
-                'label': 'risk.field.asset'|trans({}, 'risk'),
-                'help': 'risk.help.asset'|trans({}, 'risk')
+                'label_key': 'risk.field.asset',
+                'help_key': 'risk.help.asset',
+                'translation_domain': 'risks'
             } %}
         </div>
     </div>
@@ -34,8 +36,9 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.description,
-                'label': 'risk.field.description'|trans({}, 'risk'),
-                'help': 'risk.help.description'|trans({}, 'risk')
+                'label_key': 'risk.field.description',
+                'help_key': 'risk.help.description',
+                'translation_domain': 'risks'
             } %}
         </div>
     </div>
@@ -44,16 +47,18 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.threat,
-                'label': 'risk.field.threat'|trans({}, 'risk'),
-                'help': 'risk.help.threat'|trans({}, 'risk')
+                'label_key': 'risk.field.threat',
+                'help_key': 'risk.help.threat',
+                'translation_domain': 'risks'
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.vulnerability,
-                'label': 'risk.field.vulnerability'|trans({}, 'risk'),
-                'help': 'risk.help.vulnerability'|trans({}, 'risk')
+                'label_key': 'risk.field.vulnerability',
+                'help_key': 'risk.help.vulnerability',
+                'translation_domain': 'risks'
             } %}
         </div>
     </div>
@@ -75,16 +80,18 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.involvesPersonalData,
-                'label': 'risk.field.involves_personal_data'|trans({}, 'risk'),
-                'help': 'risk.help.involves_personal_data'|trans({}, 'risk')
+                'label_key': 'risk.field.involves_personal_data',
+                'help_key': 'risk.help.involves_personal_data',
+                'translation_domain': 'risks'
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.involvesSpecialCategoryData,
-                'label': 'risk.field.involves_special_category_data'|trans({}, 'risk'),
-                'help': 'risk.help.involves_special_category_data'|trans({}, 'risk')
+                'label_key': 'risk.field.involves_special_category_data',
+                'help_key': 'risk.help.involves_special_category_data',
+                'translation_domain': 'risks'
             } %}
         </div>
     </div>
@@ -93,16 +100,18 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.legalBasis,
-                'label': 'risk.field.legal_basis'|trans({}, 'risk'),
-                'help': 'risk.help.legal_basis'|trans({}, 'risk')
+                'label_key': 'risk.field.legal_basis',
+                'help_key': 'risk.help.legal_basis',
+                'translation_domain': 'risks'
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.processingScale,
-                'label': 'risk.field.processing_scale'|trans({}, 'risk'),
-                'help': 'risk.help.processing_scale'|trans({}, 'risk')
+                'label_key': 'risk.field.processing_scale',
+                'help_key': 'risk.help.processing_scale',
+                'translation_domain': 'risks'
             } %}
         </div>
     </div>
@@ -111,8 +120,9 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.requiresDPIA,
-                'label': 'risk.field.requires_dpia'|trans({}, 'risk'),
-                'help': 'risk.help.requires_dpia'|trans({}, 'risk')
+                'label_key': 'risk.field.requires_dpia',
+                'help_key': 'risk.help.requires_dpia',
+                'translation_domain': 'risks'
             } %}
         </div>
     </div>
@@ -121,8 +131,9 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.dataSubjectImpact,
-                'label': 'risk.field.data_subject_impact'|trans({}, 'risk'),
-                'help': 'risk.help.data_subject_impact'|trans({}, 'risk')
+                'label_key': 'risk.field.data_subject_impact',
+                'help_key': 'risk.help.data_subject_impact',
+                'translation_domain': 'risks'
             } %}
         </div>
     </div>
@@ -257,8 +268,9 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.probability,
-                'label': 'risk.field.probability'|trans({}, 'risk'),
-                'help': 'risk.help.probability'|trans({}, 'risk'),
+                'label_key': 'risk.field.probability',
+                'help_key': 'risk.help.probability',
+                'translation_domain': 'risks',
                 'required': true
             } %}
         </div>
@@ -266,8 +278,9 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.impact,
-                'label': 'risk.field.impact'|trans({}, 'risk'),
-                'help': 'risk.help.impact'|trans({}, 'risk'),
+                'label_key': 'risk.field.impact',
+                'help_key': 'risk.help.impact',
+                'translation_domain': 'risks',
                 'required': true
             } %}
         </div>
@@ -290,16 +303,18 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.residualProbability,
-                'label': 'risk.field.residual_probability'|trans({}, 'risk'),
-                'help': 'risk.help.residual_probability'|trans({}, 'risk')
+                'label_key': 'risk.field.residual_probability',
+                'help_key': 'risk.help.residual_probability',
+                'translation_domain': 'risks'
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.residualImpact,
-                'label': 'risk.field.residual_impact'|trans({}, 'risk'),
-                'help': 'risk.help.residual_impact'|trans({}, 'risk')
+                'label_key': 'risk.field.residual_impact',
+                'help_key': 'risk.help.residual_impact',
+                'translation_domain': 'risks'
             } %}
         </div>
     </div>
@@ -316,16 +331,18 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.treatmentStrategy,
-                'label': 'risk.field.treatment_strategy'|trans({}, 'risk'),
-                'help': 'risk.help.treatment_strategy'|trans({}, 'risk')
+                'label_key': 'risk.field.treatment_strategy',
+                'help_key': 'risk.help.treatment_strategy',
+                'translation_domain': 'risks'
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.riskOwner,
-                'label': 'risk.field.risk_owner'|trans({}, 'risk'),
-                'help': 'risk.help.risk_owner'|trans({}, 'risk')
+                'label_key': 'risk.field.risk_owner',
+                'help_key': 'risk.help.risk_owner',
+                'translation_domain': 'risks'
             } %}
         </div>
     </div>
@@ -334,8 +351,9 @@
         <div class="col-12">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.treatmentDescription,
-                'label': 'risk.field.treatment_description'|trans({}, 'risk'),
-                'help': 'risk.help.treatment_description'|trans({}, 'risk')
+                'label_key': 'risk.field.treatment_description',
+                'help_key': 'risk.help.treatment_description',
+                'translation_domain': 'risks'
             } %}
         </div>
     </div>
@@ -352,16 +370,18 @@
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.acceptanceApprovedBy,
-                'label': 'risk.field.acceptance_approved_by'|trans({}, 'risk'),
-                'help': 'risk.help.acceptance_approved_by'|trans({}, 'risk')
+                'label_key': 'risk.field.acceptance_approved_by',
+                'help_key': 'risk.help.acceptance_approved_by',
+                'translation_domain': 'risks'
             } %}
         </div>
 
         <div class="col-md-6">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.acceptanceApprovedAt,
-                'label': 'risk.field.acceptance_approved_at'|trans({}, 'risk'),
-                'help': 'risk.help.acceptance_approved_at'|trans({}, 'risk')
+                'label_key': 'risk.field.acceptance_approved_at',
+                'help_key': 'risk.help.acceptance_approved_at',
+                'translation_domain': 'risks'
             } %}
         </div>
     </div>
