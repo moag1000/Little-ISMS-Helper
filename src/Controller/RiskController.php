@@ -49,7 +49,7 @@ class RiskController extends AbstractController
         $status = $request->query->get('status');
         $treatment = $request->query->get('treatment');
         $owner = $request->query->get('owner');
-        $view = $request->query->get('view', 'inherited'); // Default: inherited
+        $view = $request->query->get('view', 'own'); // Default: own tenant's risks
 
         // Get risks based on view filter
         if ($tenant) {
@@ -664,6 +664,13 @@ class RiskController extends AbstractController
     public function new(Request $request): Response
     {
         $risk = new Risk();
+
+        // Set tenant from current user
+        $user = $this->security->getUser();
+        if ($user && $user->getTenant()) {
+            $risk->setTenant($user->getTenant());
+        }
+
         $form = $this->createForm(RiskType::class, $risk);
         $form->handleRequest($request);
 
