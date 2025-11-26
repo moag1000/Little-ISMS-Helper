@@ -4,6 +4,15 @@
 {% block title %}{{ control.controlId }} - {{ control.name }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.soa'|trans({}, 'nav'), url: path('app_soa_index') },
+            { label: control.controlId ~ ': ' ~ control.name }
+        ]
+    } %}
+</div>
+
 <div class="page-header">
     <div>
         <h1>{{ control.controlId }}: {{ control.name }}</h1>

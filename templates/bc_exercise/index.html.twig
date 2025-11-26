@@ -6,6 +6,13 @@
 
 {% block body %}
 <div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.bcm'|trans({}, 'nav'), url: path('app_bcm_index') },
+            { label: 'nav.bc_exercises'|trans({}, 'nav') }
+        ]
+    } %}
+
     <div class="page-header">
         <h1>{{ 'bc_exercises.page.header'|trans({}, 'bc_exercises') }}</h1>
         <a href="{{ path('app_bc_exercise_new') }}" class="btn btn-primary">{{ 'bc_exercises.action.add_new'|trans({}, 'bc_exercises') }}</a>

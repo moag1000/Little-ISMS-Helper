@@ -3,6 +3,16 @@
 {% block title %}{{ role.name }} - {{ 'role_management.title.show'|trans({}, 'role_management') }} - Little ISMS Helper{% endblock %}
 
 {% block admin_content %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.admin'|trans({}, 'nav'), url: path('app_admin_dashboard') },
+            { label: 'nav.roles'|trans({}, 'nav'), url: path('role_management_index') },
+            { label: role.name }
+        ]
+    } %}
+</div>
+
 <div class="page-header">
     <div>
         <h1>{{ role.name }}</h1>

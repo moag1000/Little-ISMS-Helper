@@ -6,6 +6,15 @@
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
 
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index') },
+            { label: 'nav.treatment_plans'|trans({}, 'nav') }
+        ]
+    } %}
+</div>
+
 <div class="page-header">
     <div>
         <h1><i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'risk_treatment_plan.title'|trans({}, 'risk_treatment_plan') }}</h1>

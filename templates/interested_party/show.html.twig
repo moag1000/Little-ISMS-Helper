@@ -5,6 +5,13 @@
 
 {% block body %}
 <div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.interested_parties'|trans({}, 'nav'), url: path('app_interested_party_index') },
+            { label: interested_party.name }
+        ]
+    } %}
+
     <div class="page-header">
         <h1>{{ interested_party.name }}</h1>
         <div class="actions">

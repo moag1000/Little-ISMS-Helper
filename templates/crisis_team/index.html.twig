@@ -5,6 +5,13 @@
 {% block title %}{{ 'crisis_team.title'|trans({}, 'crisis_team') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 {% block body %}
 <div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.bcm'|trans({}, 'nav'), url: path('app_bcm_index') },
+            { label: 'nav.crisis_team'|trans({}, 'nav') }
+        ]
+    } %}
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1><i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'crisis_team.title'|trans({}, 'crisis_team') }}</h1>
         <a href="{{ path('app_crisis_team_new') }}" class="btn btn-primary"><i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'crisis_team.new'|trans({}, 'crisis_team') }}</a>

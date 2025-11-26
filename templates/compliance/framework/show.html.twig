@@ -1,9 +1,18 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'compliance' %}
 
 {% block title %}{{ framework.name }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index') },
+            { label: 'nav.compliance_frameworks'|trans({}, 'nav'), url: path('app_compliance_framework_index') },
+            { label: framework.name }
+        ]
+    } %}
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1>

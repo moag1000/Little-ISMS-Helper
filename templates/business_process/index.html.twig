@@ -6,6 +6,13 @@
 
 {% block body %}
 <div class="container-fluid">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.bcm'|trans({}, 'nav'), url: path('app_bcm_index') },
+            { label: 'nav.business_processes'|trans({}, 'nav') }
+        ]
+    } %}
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Business Continuity Management (BCM)</h1>
         <a href="{{ path('app_business_process_new') }}" class="btn btn-primary">
