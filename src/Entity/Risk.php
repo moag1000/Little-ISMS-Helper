@@ -302,6 +302,10 @@ class Risk
         $this->controls = new ArrayCollection();
         $this->incidents = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
+        // Set default values for required fields
+        $this->residualProbability = 1;
+        $this->residualImpact = 1;
+        $this->treatmentStrategy = 'mitigate';
     }
 
     public function getId(): ?int
