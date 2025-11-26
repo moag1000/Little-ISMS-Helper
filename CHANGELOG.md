@@ -15,6 +15,122 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.0.0] - 2025-11-26
+
+### 🎉 Major Release: Complete UI/UX Overhaul & Internationalization
+
+This major release represents a complete redesign of the user interface and navigation system, along with comprehensive internationalization support. Version 2.0 introduces breaking changes in the navigation structure and requires a fresh session after upgrade.
+
+### 🚀 Major Features
+
+#### Navigation & UI Revolution
+- **Two-Level Mega Menu Navigation** - Complete redesign with primary and secondary navigation
+  - Icon-based category navigation (Dashboard, ISMS Core, Assets & Risk, BCM, Privacy, Operations, Compliance, Admin)
+  - Hover and click interactions with accessible keyboard navigation
+  - Mobile-responsive with sidebar toggle
+  - Integrated with Stimulus controllers for smooth interactions
+- **Breadcrumb Navigation** - Consistent navigation across all pages
+  - Added to 150+ templates (index, show, edit, new)
+  - Home → Section → Page navigation pattern
+  - Improves user orientation and navigation efficiency
+- **Dark Mode** - Professional dark theme implementation
+  - Theme-aware color system with CSS variables
+  - Bootstrap 5.3 dark mode integration
+  - Proper contrast ratios for WCAG AA compliance
+  - Consistent styling across all components (cards, tables, forms, alerts)
+  - Custom dark mode for mega menu, tables, and compliance pages
+
+#### Internationalization (i18n)
+- **97 Translation Domains** - Organized by functional area instead of monolithic files
+  - Domain-specific: `nav`, `mfa`, `tenant`, `assets`, `risks`, `controls`, etc.
+  - Better organization and faster lookups
+  - Reduced merge conflicts
+- **3,290+ Translation Keys** - Complete German and English coverage
+  - All UI elements, forms, and messages translated
+  - Validation messages in dedicated `validators` domain
+  - Navigation in dedicated `nav` domain
+- **147 Templates Updated** - Added `trans_default_domain` to all templates
+- **35 FormTypes Updated** - Replaced hardcoded placeholders and labels
+- **Translation Quality Tools** - `scripts/quality/check_translation_issues.py`
+  - Detect missing translations
+  - Find hardcoded text
+  - Validate translation domains
+
+### 🔧 Technical Improvements
+
+#### UI Components
+- **Card Component Enhancement** - Added `titleDomain` parameter for flexible translations
+- **Table Styling** - Comprehensive dark mode support with proper contrast
+- **Alert Components** - Dark mode text visibility fixes
+- **Bootstrap Variable Overrides** - `.bg-white` and `.bg-light` work correctly in dark mode
+
+#### Code Quality
+- **Removed Deprecated Navigation** - Cleaned up old navigation components
+- **Unified Sidebar** - Single navigation system across entire application
+- **Stimulus Controller** - Modern JavaScript with Stimulus for mega menu
+- **CSS Organization** - Separated concerns (dark-mode.css, mega-menu.css, app.css)
+
+### 🐛 Bug Fixes
+
+#### Navigation
+- Fixed mega menu z-index stacking issues (panel now renders at body level)
+- Fixed route name mismatches in mega menu links
+- Resolved duplicate Stimulus controller instances
+- Fixed breadcrumb route names for admin dashboard
+
+#### Dark Mode
+- Fixed table background colors (proper contrast in dark mode)
+- Fixed text visibility in alert-info components
+- Fixed compliance page card backgrounds
+- Fixed framework header gradients
+- Overridden Bootstrap's bg-white/bg-light for dark mode compatibility
+
+#### Translations
+- Fixed missing `admin.nav.licensing` translation
+- Fixed `admin.dashboard.*` title translations
+- Removed duplicate/placeholder translations in admin.en.yaml
+- Fixed card title translation domain issue
+
+### 🔄 Breaking Changes
+
+⚠️ **Navigation Structure Changed**
+- Old sidebar navigation completely removed
+- New mega menu structure requires session refresh
+- Bookmarked URLs remain compatible
+- Users need to clear browser cache for optimal experience
+
+⚠️ **Translation Domain Changes**
+- Moved from monolithic `messages.*.yaml` to domain-specific files
+- Custom code using translations must specify domains explicitly
+- Example: `{{ 'text'|trans({}, 'nav') }}` instead of `{{ 'text'|trans }}`
+
+⚠️ **CSS Variable Changes**
+- Dark mode now uses Bootstrap 5.3 CSS variables
+- Custom themes may need adjustments
+- `--bs-tertiary-bg`, `--bs-secondary-bg` redefined for better dark mode
+
+### 📊 Statistics
+
+- **Commits:** 20+ commits focusing on UI/UX
+- **Files Changed:** 200+ files
+- **Lines Changed:** 10,000+ lines
+- **Translation Keys:** 3,290+ across 97 domains
+- **Templates Updated:** 147 templates with proper i18n
+- **Dark Mode Classes:** 50+ CSS rules for comprehensive coverage
+
+### 🎯 Migration Guide
+
+1. **Clear Sessions:** Run `php bin/console clear-sessions` after upgrade
+2. **Clear Browser Cache:** Users should hard-refresh (Ctrl+Shift+R)
+3. **Review Custom Translations:** Update to use new domain structure
+4. **Test Dark Mode:** Verify custom styles work with new dark mode variables
+
+### 🙏 Acknowledgments
+
+Special thanks to all contributors who helped shape this major release through testing, feedback, and issue reports.
+
+---
+
 ## [1.10.1] - 2025-11-21
 
 ### Fixed
