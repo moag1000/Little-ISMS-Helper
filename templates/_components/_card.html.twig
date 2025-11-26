@@ -10,6 +10,7 @@
  *   - header: Card header content (optional)
  *   - headerIcon: Bootstrap icon class for header (optional, e.g., 'bi-graph-up')
  *   - title: Card title (alternative to header for simple text)
+ *   - titleDomain: Translation domain for title (default: 'messages')
  *   - actions: Card header actions HTML (optional)
  *   - body: Card body content (can be passed as block)
  *   - footer: Card footer content (optional)
@@ -92,7 +93,7 @@
                 {% if headerIcon is defined %}
                     <i class="{{ headerIcon }}" aria-hidden="true"></i>
                 {% endif %}
-                {{ title|trans }}
+                {{ title|trans({}, titleDomain|default('messages')) }}
             </h5>
         {% endif %}
 
