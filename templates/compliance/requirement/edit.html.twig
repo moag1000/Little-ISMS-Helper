@@ -1,26 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit {{ requirement.requirementId }}{% endblock %}
+{% block title %}{{ 'compliance.requirement.edit.title'|trans({}, 'compliance') }} {{ requirement.requirementId }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'Compliance', url: path('app_compliance_index'), icon: 'bi-shield-check' },
-            { label: 'Requirements', url: path('app_compliance_requirement_index') },
+            { label: 'nav.compliance'|trans({}, 'nav'), url: path('app_compliance_index'), icon: 'bi-shield-check' },
+            { label: 'compliance.requirement.list.title'|trans({}, 'compliance'), url: path('app_compliance_requirement_index') },
             { label: requirement.requirementId, url: path('app_compliance_requirement_show', {id: requirement.id}) },
-            { label: 'Edit' }
+            { label: 'common.edit'|trans({}, 'messages') }
         ]
     } %}
 
     {# Page Header #}
     {% include '_components/_page_header.html.twig' with {
-        title: 'Edit ' ~ requirement.requirementId,
+        title: ('compliance.requirement.edit.title'|trans({}, 'compliance')) ~ ' ' ~ requirement.requirementId,
         icon: 'bi-pencil',
         actions: [
-            { label: 'View', url: path('app_compliance_requirement_show', {id: requirement.id}), variant: 'outline-primary', icon: 'bi-eye' },
-            { label: 'Back to List', url: path('app_compliance_requirement_index'), variant: 'secondary', icon: 'bi-arrow-left' }
+            { label: 'common.view'|trans({}, 'messages'), url: path('app_compliance_requirement_show', {id: requirement.id}), variant: 'outline-primary', icon: 'bi-eye' },
+            { label: 'common.back'|trans({}, 'messages'), url: path('app_compliance_requirement_index'), variant: 'secondary', icon: 'bi-arrow-left' }
         ]
     } %}
 
@@ -30,95 +30,33 @@
                 <div class="card-body">
                     {{ form_start(form) }}
 
-                    {# Framework & ID #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-bookmark" aria-hidden="true"></i>
-                            Framework & Identifier
-                        </legend>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.framework,
-                                    'label': 'Framework',
-                                    'help': 'Compliance framework this requirement belongs to',
-                                    'required': true
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.requirementId,
-                                    'label': 'Requirement ID',
-                                    'help': 'Unique identifier (e.g., ISO 27001:2022 A.5.1)',
-                                    'required': true
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {# Basic Information #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i>
-                            Basic Information
-                        </legend>
-
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.title,
-                            'label': 'Title',
-                            'help': 'Short, descriptive title of the requirement',
-                            'required': true
-                        } %}
-
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.description,
-                            'label': 'Description',
-                            'help': 'Detailed description of what this requirement entails'
-                        } %}
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.category,
-                                    'label': 'Category',
-                                    'help': 'Functional category (e.g., Access Control, Cryptography)'
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.priority,
-                                    'label': 'Priority',
-                                    'help': 'How urgent is this requirement?'
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {# Structure #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-diagram-3" aria-hidden="true"></i>
-                            Requirement Structure
-                        </legend>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.requirementType,
-                                    'label': 'Type',
-                                    'help': 'Core, Detailed, or Sub-requirement'
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.parentRequirement,
-                                    'label': 'Parent Requirement',
-                                    'help': 'Optional parent for hierarchical structure'
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
+                    {% include '_components/_auto_form.html.twig' with {
+                        'form': form,
+                        'sections': {
+                            'identification': {
+                                'label': 'compliance.requirement.section.identification'|trans({}, 'compliance'),
+                                'fields': ['framework', 'requirementId']
+                            },
+                            'basic': {
+                                'label': 'compliance.requirement.section.basic'|trans({}, 'compliance'),
+                                'fields': ['title', 'description', 'category', 'priority']
+                            },
+                            'structure': {
+                                'label': 'compliance.requirement.section.structure'|trans({}, 'compliance'),
+                                'fields': ['requirementType', 'parentRequirement']
+                            }
+                        },
+                        'col_widths': {
+                            'framework': 6,
+                            'requirementId': 6,
+                            'title': 12,
+                            'description': 12,
+                            'category': 6,
+                            'priority': 6,
+                            'requirementType': 6,
+                            'parentRequirement': 6
+                        }
+                    } %}
 
                     {# Note: Applicability and Fulfillment are now tenant-specific #}
                     {# Use the "Quick Update" form on the show page to manage fulfillment data #}
@@ -126,10 +64,10 @@
                     {# Form Actions #}
                     <div class="form-actions d-flex gap-2 justify-content-between">
                         <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}" class="btn btn-secondary">
-                            <i class="bi bi-x-circle" aria-hidden="true"></i> Cancel
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                         </a>
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-save" aria-hidden="true"></i> Save Changes
+                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
                         </button>
                     </div>
 
@@ -140,23 +78,23 @@
 
         <div class="col-md-4">
             <div class="card">
-                <div class="card-header"><h5 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> Requirement Info</h5>
+                <div class="card-header"><h5 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'compliance.requirement.info.title'|trans({}, 'compliance') }}</h5>
                 </div>
                 <div class="card-body">
                     <ul class="list-unstyled small">
-                        <li><i class="bi bi-link-45deg" aria-hidden="true"></i> {{ requirement.mappedControls|length }} mapped controls</li>
-                        <li><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ requirement.detailedRequirements|length }} sub-requirements</li>
-                        <li><i class="bi bi-calendar" aria-hidden="true"></i> Created {{ requirement.createdAt|date('Y-m-d') }}</li>
+                        <li><i class="bi bi-link-45deg" aria-hidden="true"></i> {{ requirement.mappedControls|length }} {{ 'compliance.requirement.info.mapped_controls'|trans({}, 'compliance') }}</li>
+                        <li><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ requirement.detailedRequirements|length }} {{ 'compliance.requirement.info.sub_requirements'|trans({}, 'compliance') }}</li>
+                        <li><i class="bi bi-calendar" aria-hidden="true"></i> {{ 'common.created'|trans({}, 'messages') }} {{ requirement.createdAt|date('Y-m-d') }}</li>
                     </ul>
                 </div>
             </div>
 
             <div class="card mt-3 bg-light">
-                <div class="card-header"><h5 class="mb-0"><i class="bi bi-lightbulb" aria-hidden="true"></i> Note</h5>
+                <div class="card-header"><h5 class="mb-0"><i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'common.note'|trans({}, 'messages') }}</h5>
                 </div>
                 <div class="card-body">
                     <p class="small mb-0">
-                        This form edits the global requirement definition. To manage tenant-specific fulfillment data (applicable, percentage, justification), use the "Quick Update" form on the <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}">{{ 'compliance.requirement.view_page_note'|trans({}, 'compliance') }}</a>.
+                        {{ 'compliance.requirement.edit.note'|trans({}, 'compliance') }} <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}">{{ 'compliance.requirement.view_page_note'|trans({}, 'compliance') }}</a>.
                     </p>
                 </div>
             </div>
