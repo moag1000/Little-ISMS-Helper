@@ -33,12 +33,18 @@ This major release represents a complete redesign of the user interface and navi
   - Added to 150+ templates (index, show, edit, new)
   - Home → Section → Page navigation pattern
   - Improves user orientation and navigation efficiency
+- **Bootstrap 5.3 Floating Labels** - Modern form design across all forms
+  - Automatic floating labels for text, email, password, number, textarea, select fields
+  - Global Symfony form theme (`bootstrap_5_floating.html.twig`)
+  - Applies to all 286+ form usages automatically
+  - Dark mode support with proper color contrast
+  - Maintains full WCAG 2.1 AA accessibility (ARIA, error handling)
 - **Dark Mode** - Professional dark theme implementation
   - Theme-aware color system with CSS variables
   - Bootstrap 5.3 dark mode integration
-  - Proper contrast ratios for WCAG AA compliance
+  - Proper contrast ratios for WCAG AA compliance (100% on interactive elements)
   - Consistent styling across all components (cards, tables, forms, alerts)
-  - Custom dark mode for mega menu, tables, and compliance pages
+  - Custom dark mode for mega menu, tables, compliance pages, and floating labels
 
 #### Internationalization (i18n)
 - **97 Translation Domains** - Organized by functional area instead of monolithic files

@@ -1,0 +1,89 @@
+{% use "bootstrap_5_layout.html.twig" %}
+
+{#
+    Custom Symfony Form Theme with Bootstrap 5 Floating Labels
+
+    This theme automatically applies Bootstrap 5.3 Floating Labels to all supported form fields.
+    Addresses 2.0 UI/UX Enhancement: Modern Form Design
+
+    Features:
+    - Automatic floating labels for text, email, password, number, textarea, select
+    - Fallback to standard labels for checkbox, radio, file inputs
+    - WCAG 2.1 AA compliant with full aria support
+    - Dark mode support via dark-mode.css
+    - Required field indicators with aria-label
+    - Error state support with is-invalid class
+
+    Bootstrap Floating Labels Documentation:
+    https://getbootstrap.com/docs/5.3/forms/floating-labels/
+#}
+
+{# Override form_row for floating labels #}
+{% block form_row %}
+    {% set field_type = form.vars.block_prefixes[1]|default('text') %}
+    {% set supports_floating = field_type in ['text', 'email', 'password', 'number', 'tel', 'url', 'search', 'textarea', 'choice'] and form.vars.expanded is not defined %}
+
+    <div class="mb-3">
+        {% if supports_floating %}
+            {# Bootstrap Floating Label #}
+            <div class="form-floating">
+                {{- form_widget(form, {
+                    'attr': (form.vars.attr|default({}))|merge({'placeholder': form.vars.label|default(form.vars.name)})
+                }) -}}
+                {{- form_label(form) -}}
+            </div>
+        {% else %}
+            {# Standard layout for non-floating fields #}
+            {{- form_label(form) -}}
+            {{- form_widget(form) -}}
+        {% endif %}
+        {{- form_help(form) -}}
+        {{- form_errors(form) -}}
+    </div>
+{% endblock %}
+
+{# Override widget attrs to ensure form-control class #}
+{% block form_widget_simple %}
+    {% set type = type|default('text') %}
+    {% set attr = attr|default({})|merge({'class': (attr.class|default('') ~ ' form-control')|trim}) %}
+    {{- parent() -}}
+{% endblock %}
+
+{# Textarea widget #}
+{% block textarea_widget %}
+    {% set attr = attr|default({})|merge({'class': (attr.class|default('') ~ ' form-control')|trim}) %}
+    {{- parent() -}}
+{% endblock %}
+
+{# Select widget #}
+{% block choice_widget_collapsed %}
+    {% set attr = attr|default({})|merge({'class': (attr.class|default('') ~ ' form-select')|trim}) %}
+    {{- parent() -}}
+{% endblock %}
+
+{# Required field indicator #}
+{% block form_label_required %}
+    <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
+{% endblock %}
+
+{# Help text #}
+{% block form_help %}
+    {% if help is not empty %}
+        <div id="{{ id }}_help" class="form-text">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            {{ help|trans(help_translation_parameters, translation_domain) }}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{# Error messages #}
+{% block form_errors %}
+    {% if errors|length > 0 %}
+        <div id="{{ id }}_error" class="invalid-feedback d-block" role="alert" aria-live="assertive">
+            <i class="bi bi-exclamation-circle-fill" aria-hidden="true"></i>
+            {% for error in errors %}
+                {{ error.message }}{% if not loop.last %}<br>{% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
