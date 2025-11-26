@@ -31,204 +31,55 @@
                 <div class="card-body">
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
-                    {# Basic Information Section #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-info-square" aria-hidden="true"></i>
-                            {{ 'bc_exercises.section.details'|trans({}, 'bc_exercises') }}
-                        </legend>
-
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.name,
-                            'label': 'bc_exercises.table.name'|trans({}, 'bc_exercises'),
-                            'help': 'bc_exercises.section.details'|trans({}, 'bc_exercises'),
-                            'required': true
-                        } %}
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.exerciseType,
-                                    'label': 'bc_exercises.table.type'|trans({}, 'bc_exercises'),
-                                    'help': 'bc_exercises.section.scenario'|trans({}, 'bc_exercises')
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.status,
-                                    'label': 'bc_exercises.table.status'|trans({}, 'bc_exercises'),
-                                    'help': 'bc_exercises.table.status'|trans({}, 'bc_exercises')
-                                } %}
-                            </div>
-                        </div>
-
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.description,
-                            'label': 'bc_exercises.section.details'|trans({}, 'bc_exercises'),
-                            'help': 'bc_exercises.section.details'|trans({}, 'bc_exercises')
-                        } %}
-
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.scope,
-                            'label': 'bc_exercises.section.scope_objectives'|trans({}, 'bc_exercises'),
-                            'help': 'bc_exercises.section.scope_objectives'|trans({}, 'bc_exercises')
-                        } %}
-                    </fieldset>
-
-                    {# Planning Section #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-calendar-event" aria-hidden="true"></i>
-                            {{ 'bc_exercises.section.scenario'|trans({}, 'bc_exercises') }}
-                        </legend>
-
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.objectives,
-                            'label': 'bc_exercises.section.scope_objectives'|trans({}, 'bc_exercises'),
-                            'help': 'bc_exercises.section.scope_objectives'|trans({}, 'bc_exercises')
-                        } %}
-
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.scenario,
-                            'label': 'bc_exercises.section.scenario'|trans({}, 'bc_exercises'),
-                            'help': 'bc_exercises.section.scenario'|trans({}, 'bc_exercises')
-                        } %}
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.exerciseDate,
-                                    'label': 'bc_exercises.field.exercise_date'|trans({}, 'bc_exercises'),
-                                    'help': 'bc_exercises.field.exercise_date'|trans({}, 'bc_exercises')
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.durationHours,
-                                    'label': 'bc_exercises.field.duration_hours'|trans({}, 'bc_exercises'),
-                                    'help': 'bc_exercises.field.duration_hours'|trans({}, 'bc_exercises')
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {# Participants Section #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-people" aria-hidden="true"></i>
-                            {{ 'bc_exercises.section.participants'|trans({}, 'bc_exercises') }}
-                        </legend>
-
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.participants,
-                            'label': 'bc_exercises.field.participants'|trans({}, 'bc_exercises'),
-                            'help': 'bc_exercises.section.participants'|trans({}, 'bc_exercises')
-                        } %}
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.facilitator,
-                                    'label': 'bc_exercises.field.facilitator'|trans({}, 'bc_exercises'),
-                                    'help': 'bc_exercises.field.facilitator'|trans({}, 'bc_exercises')
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.observers,
-                                    'label': 'bc_exercises.field.observers'|trans({}, 'bc_exercises'),
-                                    'help': 'bc_exercises.field.observers'|trans({}, 'bc_exercises')
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    {# Results Section #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-clipboard-check" aria-hidden="true"></i>
-                            {{ 'bc_exercises.section.results'|trans({}, 'bc_exercises') }}
-                        </legend>
-
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.results,
-                            'label': 'bc_exercises.section.results'|trans({}, 'bc_exercises'),
-                            'help': 'bc_exercises.section.results'|trans({}, 'bc_exercises')
-                        } %}
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.whatWentWell,
-                                    'label': 'bc_exercises.section.what_went_well'|trans({}, 'bc_exercises'),
-                                    'help': 'bc_exercises.section.what_went_well'|trans({}, 'bc_exercises')
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.areasForImprovement,
-                                    'label': 'bc_exercises.section.improvements'|trans({}, 'bc_exercises'),
-                                    'help': 'bc_exercises.section.improvements'|trans({}, 'bc_exercises')
-                                } %}
-                            </div>
-                        </div>
-
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.findings,
-                            'label': 'bc_exercises.section.findings'|trans({}, 'bc_exercises'),
-                            'help': 'bc_exercises.section.findings'|trans({}, 'bc_exercises')
-                        } %}
-
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.actionItems,
-                            'label': 'bc_exercises.section.action_items'|trans({}, 'bc_exercises'),
-                            'help': 'bc_exercises.section.action_items'|trans({}, 'bc_exercises')
-                        } %}
-
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.lessonsLearned,
-                            'label': 'bc_exercises.section.lessons_learned'|trans({}, 'bc_exercises'),
-                            'help': 'bc_exercises.section.lessons_learned'|trans({}, 'bc_exercises')
-                        } %}
-
-                        {% include '_components/_form_field.html.twig' with {
-                            'field': form.planUpdatesRequired,
-                            'label': 'bc_exercises.section.plan_updates_required'|trans({}, 'bc_exercises'),
-                            'help': 'bc_exercises.section.plan_updates_required'|trans({}, 'bc_exercises')
-                        } %}
-                    </fieldset>
-
-                    {# Report Section #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
-                            {{ 'bc_exercises.section.results'|trans({}, 'bc_exercises') }}
-                        </legend>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.successRating,
-                                    'label': 'bc_exercises.field.success_rating'|trans({}, 'bc_exercises'),
-                                    'help': 'bc_exercises.field.success_rating'|trans({}, 'bc_exercises')
-                                } %}
-                            </div>
-                            <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.reportCompleted,
-                                    'label': 'bc_exercises.field.report_completed'|trans({}, 'bc_exercises'),
-                                    'help': 'bc_exercises.field.report_completed'|trans({}, 'bc_exercises')
-                                } %}
-                            </div>
-                            <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.reportDate,
-                                    'label': 'bc_exercises.field.report_date'|trans({}, 'bc_exercises'),
-                                    'help': 'bc_exercises.field.report_date'|trans({}, 'bc_exercises')
-                                } %}
-                            </div>
-                        </div>
-                    </fieldset>
+                    {% include '_components/_auto_form.html.twig' with {
+                        'form': form,
+                        'sections': {
+                            'details': {
+                                'label': 'bc_exercises.section.details'|trans({}, 'bc_exercises'),
+                                'fields': ['name', 'exerciseType', 'status', 'description', 'scope']
+                            },
+                            'planning': {
+                                'label': 'bc_exercises.section.scenario'|trans({}, 'bc_exercises'),
+                                'fields': ['objectives', 'scenario', 'exerciseDate', 'durationHours']
+                            },
+                            'participants': {
+                                'label': 'bc_exercises.section.participants'|trans({}, 'bc_exercises'),
+                                'fields': ['participants', 'facilitator', 'observers']
+                            },
+                            'results': {
+                                'label': 'bc_exercises.section.results'|trans({}, 'bc_exercises'),
+                                'fields': ['results', 'whatWentWell', 'areasForImprovement', 'findings', 'actionItems', 'lessonsLearned', 'planUpdatesRequired']
+                            },
+                            'report': {
+                                'label': 'bc_exercises.section.report'|trans({}, 'bc_exercises'),
+                                'fields': ['successRating', 'reportCompleted', 'reportDate']
+                            }
+                        },
+                        'col_widths': {
+                            'name': 12,
+                            'exerciseType': 6,
+                            'status': 6,
+                            'description': 12,
+                            'scope': 12,
+                            'objectives': 12,
+                            'scenario': 12,
+                            'exerciseDate': 6,
+                            'durationHours': 6,
+                            'participants': 12,
+                            'facilitator': 6,
+                            'observers': 6,
+                            'results': 12,
+                            'whatWentWell': 6,
+                            'areasForImprovement': 6,
+                            'findings': 12,
+                            'actionItems': 12,
+                            'lessonsLearned': 12,
+                            'planUpdatesRequired': 12,
+                            'successRating': 4,
+                            'reportCompleted': 4,
+                            'reportDate': 4
+                        }
+                    } %}
 
                     {# Form Actions #}
                     <div class="form-actions d-flex gap-2 justify-content-between pt-3 border-top">
