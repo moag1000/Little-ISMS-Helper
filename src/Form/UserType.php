@@ -124,16 +124,17 @@ class UserType extends AbstractType
             ->add('roles', ChoiceType::class, [
                 'label' => 'user.field.system_roles',
                 'choices' => [
-                    'ROLE_USER - Standard Benutzer' => 'ROLE_USER',
-                    'ROLE_AUDITOR - Auditor (Leserechte)' => 'ROLE_AUDITOR',
-                    'ROLE_MANAGER - Manager (Erweiterte Rechte)' => 'ROLE_MANAGER',
-                    'ROLE_ADMIN - Administrator (Alle Rechte)' => 'ROLE_ADMIN',
-                    'ROLE_SUPER_ADMIN - Super Administrator' => 'ROLE_SUPER_ADMIN',
+                    'user.role.user' => 'ROLE_USER',
+                    'user.role.auditor' => 'ROLE_AUDITOR',
+                    'user.role.manager' => 'ROLE_MANAGER',
+                    'user.role.admin' => 'ROLE_ADMIN',
+                    'user.role.super_admin' => 'ROLE_SUPER_ADMIN',
                 ],
                 'multiple' => true,
                 'expanded' => true,
                 'required' => false,
                 'data' => !$isEdit ? ['ROLE_USER'] : null, // Default only for new users
+                'choice_translation_domain' => 'user',
                 'help' => 'Systemrollen definieren grundlegende Zugriffsrechte',
             ])
             ->add('customRoles', EntityType::class, [

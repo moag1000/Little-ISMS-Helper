@@ -89,6 +89,7 @@ class ComplianceFrameworkType extends AbstractType
                     'compliance_framework.industry.education' => 'education',
                     'compliance_framework.industry.insurance' => 'insurance',
                 ],
+                'choice_translation_domain' => 'compliance',
                 'attr' => [
                     'class' => 'form-control form-select',
                 ],
@@ -96,7 +97,8 @@ class ComplianceFrameworkType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'compliance_framework.validation.applicable_industry_required']),
                 ],
-                'help' => 'compliance_framework.help.applicable_industry'
+                'help' => 'compliance_framework.help.applicable_industry',
+                'choice_translation_domain' => 'compliance',
             ])
             ->add('regulatoryBody', TextType::class, [
                 'label' => 'compliance_framework.field.regulatory_body',

@@ -49,6 +49,7 @@ class CrisisTeamType extends AbstractType
                 ],
                 'required' => true,
                 'help' => 'crisis_team.help.team_type',
+                    'choice_translation_domain' => 'crisis_team',
             ])
             ->add('isActive', ChoiceType::class, [
                 'label' => 'crisis_team.field.is_active',
@@ -58,6 +59,7 @@ class CrisisTeamType extends AbstractType
                 ],
                 'expanded' => true,
                 'required' => true,
+                    'choice_translation_domain' => 'crisis_team',
             ])
             ->add('teamLeader', EntityType::class, [
                 'label' => 'crisis_team.field.team_leader',

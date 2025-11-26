@@ -45,6 +45,7 @@ class LocationType extends AbstractType
                     'location.type.other' => 'other',
                 ],
                 'required' => true,
+                    'choice_translation_domain' => 'locations',
             ])
             ->add('code', TextType::class, [
                 'label' => 'location.field.code',
@@ -113,6 +114,7 @@ class LocationType extends AbstractType
                     'location.security.high_security' => 'high_security',
                 ],
                 'required' => true,
+                    'choice_translation_domain' => 'locations',
             ])
             ->add('requiresBadgeAccess', CheckboxType::class, [
                 'label' => 'location.field.requires_badge_access',

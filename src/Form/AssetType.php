@@ -45,6 +45,7 @@ class AssetType extends AbstractType
                     'asset.type.physical' => 'Physical',
                 ],
                 'required' => true,
+                    'choice_translation_domain' => 'assets',
             ])
             ->add('owner', TextType::class, [
                 'label' => 'asset.field.owner',
@@ -131,6 +132,7 @@ class AssetType extends AbstractType
                 'required' => false,
                 'placeholder' => 'asset.placeholder.data_classification',
                 'help' => 'asset.help.data_classification',
+                    'choice_translation_domain' => 'assets',
             ])
             ->add('acceptableUsePolicy', TextareaType::class, [
                 'label' => 'asset.field.acceptable_use_policy',
@@ -168,6 +170,7 @@ class AssetType extends AbstractType
                 ],
                 'required' => true,
                 'help' => 'asset.help.status',
+                    'choice_translation_domain' => 'assets',
             ])
         ;
     }

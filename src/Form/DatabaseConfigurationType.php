@@ -86,6 +86,7 @@ class DatabaseConfigurationType extends AbstractType
                     'data-action' => 'change->database-type#toggle',
                 ],
                 'help' => 'setup.database.type_help',
+                    'choice_translation_domain' => 'admin',
             ])
             ->add('host', TextType::class, [
                 'label' => 'setup.database.host',
