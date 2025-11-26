@@ -3,6 +3,7 @@
 @import './styles/app.css';
 @import './styles/components.css';
 @import './styles/ui-components.css';
+@import './styles/mega-menu.css';
 @import './styles/command-palette.css';
 @import './styles/toast.css';
 @import './styles/keyboard-shortcuts.css';
