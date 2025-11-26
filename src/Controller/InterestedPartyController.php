@@ -76,7 +76,7 @@ class InterestedPartyController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $interestedParty->setUpdatedAt(new \DateTime());
+            $interestedParty->setUpdatedAt(new \DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('interested_party.success.updated'));

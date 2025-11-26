@@ -156,7 +156,7 @@ class StatementOfApplicabilityController extends AbstractController
                 $control->setTargetDate(new \DateTime($request->request->get('targetDate')));
             }
 
-            $control->setUpdatedAt(new \DateTime());
+            $control->setUpdatedAt(new \DateTimeImmutable());
 
             $this->entityManager->flush();
 

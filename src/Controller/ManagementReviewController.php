@@ -53,7 +53,7 @@ class ManagementReviewController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $review->setUpdatedAt(new \DateTime());
+            $review->setUpdatedAt(new \DateTimeImmutable());
             $this->entityManager->persist($review);
             $this->entityManager->flush();
 
@@ -83,7 +83,7 @@ class ManagementReviewController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $review->setUpdatedAt(new \DateTime());
+            $review->setUpdatedAt(new \DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('management_review.success.updated'));
