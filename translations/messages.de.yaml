@@ -1414,4 +1414,8 @@ compliance:
             has_requirements: 'Framework kann nicht gelöscht werden - es enthält noch Anforderungen'
             deleted: 'Framework erfolgreich gelöscht'
             duplicated: 'Framework erfolgreich dupliziert'
+yes: Ja
+no: Nein
+notifications:
+    title: Benachrichtigungen
 

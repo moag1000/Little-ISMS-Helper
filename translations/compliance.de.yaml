@@ -414,3 +414,7 @@ compliance_framework:
         public_sector: 'Öffentlicher Sektor'
         education: Bildung
         insurance: Versicherung
+    mapping:
+        title: Compliance-Mapping
+    requirement:
+        title: Compliance-Anforderung
