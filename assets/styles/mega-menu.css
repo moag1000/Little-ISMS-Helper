@@ -117,8 +117,8 @@
 
 .mega-menu-secondary {
     position: fixed;
-    top: 60px; /* Below header */
-    left: 280px; /* Right of sidebar */
+    top: 0;
+    left: 260px; /* Right of sidebar (sidebar width) */
     bottom: 0;
     width: 600px;
     background: var(--color-white);
@@ -128,6 +128,11 @@
     transform: translateX(100%);
     transition: transform 0.3s ease;
     overflow: hidden;
+    pointer-events: none;
+}
+
+.mega-menu-secondary.panel-visible {
+    pointer-events: all;
 }
 
 .mega-menu-secondary.panel-visible {
