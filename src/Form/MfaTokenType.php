@@ -37,6 +37,7 @@ class MfaTokenType extends AbstractType
                 ],
                 'required' => true,
                 'help' => 'mfa_token.help.token_type',
+                    'choice_translation_domain' => 'mfa',
             ])
             ->add('deviceName', TextType::class, [
                 'label' => 'mfa_token.field.device_name',
@@ -64,6 +65,7 @@ class MfaTokenType extends AbstractType
                 ],
                 'expanded' => true,
                 'required' => true,
+                    'choice_translation_domain' => 'mfa',
             ])
             ->add('isPrimary', ChoiceType::class, [
                 'label' => 'mfa_token.field.is_primary',
@@ -74,6 +76,7 @@ class MfaTokenType extends AbstractType
                 'expanded' => true,
                 'required' => true,
                 'help' => 'mfa_token.help.is_primary',
+                    'choice_translation_domain' => 'mfa',
             ])
             ->add('expiresAt', DateTimeType::class, [
                 'label' => 'mfa_token.field.expires_at',

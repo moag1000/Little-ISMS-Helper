@@ -58,6 +58,7 @@ class TrainingType extends AbstractType
                 'constraints' => [
                     new NotBlank(),
                 ],
+                    'choice_translation_domain' => 'training',
             ])
             ->add('deliveryMethod', ChoiceType::class, [
                 'label' => 'training.field.delivery_method',
@@ -69,6 +70,7 @@ class TrainingType extends AbstractType
                     'training.delivery_methods.workshop' => 'workshop',
                 ],
                 'attr' => ['class' => 'form-select'],
+                    'choice_translation_domain' => 'training',
             ])
             ->add('scheduledDate', DateTimeType::class, [
                 'label' => 'training.field.scheduled_date',
@@ -121,6 +123,7 @@ class TrainingType extends AbstractType
                     'training.target_audiences.specific_departments' => 'specific_departments',
                 ],
                 'attr' => ['class' => 'form-select'],
+                    'choice_translation_domain' => 'training',
             ])
             ->add('participants', EntityType::class, [
                 'label' => 'training.field.participants',
@@ -146,6 +149,7 @@ class TrainingType extends AbstractType
                     'training.statuses.postponed' => 'postponed',
                 ],
                 'attr' => ['class' => 'form-select'],
+                    'choice_translation_domain' => 'training',
             ])
             ->add('mandatory', ChoiceType::class, [
                 'label' => 'training.field.mandatory',
@@ -155,6 +159,7 @@ class TrainingType extends AbstractType
                 ],
                 'expanded' => true,
                 'data' => true,
+                    'choice_translation_domain' => 'training',
             ])
             ->add('coveredControls', EntityType::class, [
                 'label' => 'training.field.covered_controls',
