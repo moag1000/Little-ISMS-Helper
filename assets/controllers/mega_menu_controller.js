@@ -15,13 +15,30 @@ export default class extends Controller {
 
     connect() {
         // Start with panels closed
-        // User can click a category to open
+        // User can click or hover over a category to open
 
         // Handle keyboard navigation
         this.element.addEventListener('keydown', this.handleKeyboard.bind(this));
 
         // Handle outside clicks to close panel
         document.addEventListener('click', this.handleOutsideClick.bind(this));
+
+        // Add hover listeners to triggers
+        this.triggerTargets.forEach(trigger => {
+            trigger.addEventListener('mouseenter', this.handleMouseEnter.bind(this));
+        });
+
+        // Add mouseleave to the sidebar to close when leaving
+        const sidebar = document.querySelector('.app-sidebar');
+        if (sidebar) {
+            sidebar.addEventListener('mouseleave', this.handleMouseLeave.bind(this));
+        }
+
+        // Also handle mouseleave on the panel container (on body level)
+        const panelContainer = document.querySelector('.mega-menu-secondary');
+        if (panelContainer) {
+            panelContainer.addEventListener('mouseleave', this.handlePanelMouseLeave.bind(this));
+        }
     }
 
     disconnect() {
@@ -55,8 +72,8 @@ export default class extends Controller {
             trigger.setAttribute('aria-expanded', 'false');
         });
 
-        // Hide panel container
-        const panelContainer = this.element.querySelector('.mega-menu-secondary');
+        // Hide panel container (on body level)
+        const panelContainer = document.querySelector('.mega-menu-secondary');
         if (panelContainer) {
             panelContainer.classList.remove('panel-visible');
         }
@@ -105,8 +122,8 @@ export default class extends Controller {
             // Scroll panel to top
             activePanel.scrollTop = 0;
 
-            // Show the panel container
-            const panelContainer = this.element.querySelector('.mega-menu-secondary');
+            // Show the panel container (on body level)
+            const panelContainer = document.querySelector('.mega-menu-secondary');
             if (panelContainer) {
                 panelContainer.classList.add('panel-visible');
             }
@@ -177,11 +194,12 @@ export default class extends Controller {
      * @param {Event} event
      */
     handleOutsideClick(event) {
-        const panelContainer = this.element.querySelector('.mega-menu-secondary');
-        if (!panelContainer) return;
+        const panelContainer = document.querySelector('.mega-menu-secondary');
+        const sidebar = document.querySelector('.app-sidebar');
+        if (!panelContainer || !sidebar) return;
 
-        // Check if click is outside both the menu and the panel
-        if (!this.element.contains(event.target) && !panelContainer.contains(event.target)) {
+        // Check if click is outside both the sidebar and the panel
+        if (!sidebar.contains(event.target) && !panelContainer.contains(event.target)) {
             // Close panel if it's open
             if (panelContainer.classList.contains('panel-visible')) {
                 this.closePanel();
@@ -260,5 +278,62 @@ export default class extends Controller {
         }
 
         this.navigateTo(categories[previousIndex]);
+    }
+
+    /**
+     * Handle mouse enter on trigger - open panel on hover
+     * @param {MouseEvent} event
+     */
+    handleMouseEnter(event) {
+        const trigger = event.currentTarget;
+        const category = trigger.dataset.category;
+
+        // Cancel any pending close timeout
+        if (this.closeTimeout) {
+            clearTimeout(this.closeTimeout);
+            this.closeTimeout = null;
+        }
+
+        // Open the panel on hover
+        this.activatePanel(category);
+    }
+
+    /**
+     * Handle mouse leave from the mega menu - close panel
+     * @param {MouseEvent} event
+     */
+    handleMouseLeave(event) {
+        // Check if mouse is entering the panel
+        const relatedTarget = event.relatedTarget;
+        const panelContainer = document.querySelector('.mega-menu-secondary');
+
+        // Don't close if moving to the panel
+        if (panelContainer && panelContainer.contains(relatedTarget)) {
+            return;
+        }
+
+        // Close panel when leaving the sidebar (with a small delay for better UX)
+        this.closeTimeout = setTimeout(() => {
+            this.closePanel();
+        }, 200);
+    }
+
+    /**
+     * Handle mouse leave from the panel - close if not returning to menu
+     * @param {MouseEvent} event
+     */
+    handlePanelMouseLeave(event) {
+        const relatedTarget = event.relatedTarget;
+        const sidebar = document.querySelector('.app-sidebar');
+
+        // Don't close if moving back to the sidebar
+        if (sidebar && sidebar.contains(relatedTarget)) {
+            return;
+        }
+
+        // Close panel when leaving the panel
+        this.closeTimeout = setTimeout(() => {
+            this.closePanel();
+        }, 200);
     }
 }

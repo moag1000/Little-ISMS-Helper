@@ -218,6 +218,8 @@ body {
     padding: var(--spacing-md) var(--spacing-lg);
     box-shadow: var(--shadow-md), 0 1px 0 var(--color-secondary);
     border-bottom: 2px solid var(--color-secondary);
+    position: relative; /* Create stacking context */
+    z-index: 100; /* Explicitly below mega menu panel (99999) */
 }
 
 /* Header sticky only on desktop (matches nav behavior) */
@@ -225,7 +227,7 @@ body {
     .header {
         position: sticky;
         top: 0;
-        z-index: var(--z-sticky);
+        z-index: 100; /* Keep same z-index when sticky */
     }
 }
 
@@ -346,9 +348,56 @@ body {
     min-height: calc(100vh - 180px);
 }
 
-/* App Sidebar - Cyberpunk Style */
+/* App Sidebar - Theme-aware */
 .app-sidebar {
     width: 260px;
+    background: var(--color-bg-alt); /* Light mode: Light gray using CSS var */
+    border-right: 1px solid var(--color-border);
+    padding: var(--spacing-lg) 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0; /* Scrolls with page - header stays on top */
+    align-self: flex-start;
+    max-height: 100vh;
+    z-index: 50; /* Below header (z-index: 100), above content */
+}
+
+/* Custom Scrollbar for Sidebar - Light Mode */
+.app-sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.app-sidebar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    margin: var(--spacing-sm) 0;
+}
+
+.app-sidebar::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.app-sidebar::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.app-sidebar::-webkit-scrollbar-thumb:active {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+/* Firefox Scrollbar */
+.app-sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.05);
+}
+
+/* Dark Mode Sidebar */
+[data-theme="dark"] .app-sidebar,
+[data-bs-theme="dark"] .app-sidebar {
     background: linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
     border-right: 3px solid transparent;
     border-image: linear-gradient(180deg,
@@ -356,44 +405,32 @@ body {
                   rgba(236, 72, 153, 0.4),
                   rgba(139, 92, 246, 0.3),
                   rgba(6, 182, 212, 0.6)) 1;
-    padding: var(--spacing-lg) 0;
-    overflow-y: auto;
-    overflow-x: hidden;
     box-shadow: 2px 0 30px rgba(6, 182, 212, 0.15),
                 inset -1px 0 20px rgba(6, 182, 212, 0.05);
-    position: sticky;
-    top: 0;
-    align-self: flex-start;
-    max-height: 100vh;
 }
 
-/* Custom Scrollbar for Sidebar - Cyberpunk Style */
-.app-sidebar::-webkit-scrollbar {
-    width: 8px;
-}
-
-.app-sidebar::-webkit-scrollbar-track {
+/* Dark Mode Scrollbar */
+[data-theme="dark"] .app-sidebar::-webkit-scrollbar-track,
+[data-bs-theme="dark"] .app-sidebar::-webkit-scrollbar-track {
     background: linear-gradient(180deg,
                 rgba(15, 23, 42, 0.3),
                 rgba(30, 41, 59, 0.5),
                 rgba(15, 23, 42, 0.3));
-    border-radius: 4px;
-    margin: var(--spacing-sm) 0;
 }
 
-.app-sidebar::-webkit-scrollbar-thumb {
+[data-theme="dark"] .app-sidebar::-webkit-scrollbar-thumb,
+[data-bs-theme="dark"] .app-sidebar::-webkit-scrollbar-thumb {
     background: linear-gradient(180deg,
                 #06b6d4 0%,
                 #8b5cf6 50%,
                 #ec4899 100%);
-    border-radius: 4px;
     border: 1px solid rgba(6, 182, 212, 0.3);
     box-shadow: 0 0 15px rgba(6, 182, 212, 0.6),
                 inset 0 0 10px rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
 }
 
-.app-sidebar::-webkit-scrollbar-thumb:hover {
+[data-theme="dark"] .app-sidebar::-webkit-scrollbar-thumb:hover,
+[data-bs-theme="dark"] .app-sidebar::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(180deg,
                 #22d3ee 0%,
                 #a78bfa 50%,
@@ -404,7 +441,8 @@ body {
     border-color: rgba(6, 182, 212, 0.6);
 }
 
-.app-sidebar::-webkit-scrollbar-thumb:active {
+[data-theme="dark"] .app-sidebar::-webkit-scrollbar-thumb:active,
+[data-bs-theme="dark"] .app-sidebar::-webkit-scrollbar-thumb:active {
     background: linear-gradient(180deg,
                 #0891b2 0%,
                 #7c3aed 50%,
@@ -413,41 +451,34 @@ body {
                 0 0 15px rgba(236, 72, 153, 0.8);
 }
 
-/* Firefox Scrollbar */
-.app-sidebar {
-    scrollbar-width: thin;
+[data-theme="dark"] .app-sidebar,
+[data-bs-theme="dark"] .app-sidebar {
     scrollbar-color: #06b6d4 rgba(15, 23, 42, 0.5);
 }
 
-[data-theme="dark"] .app-sidebar {
-    background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
-}
-
-.app-sidebar nav {
+.app-sidebar nav:not(#main-navigation) {
     padding: 0 var(--spacing-xs);
 }
 
-.app-sidebar ul {
+.app-sidebar ul:not(.mega-menu-categories):not(.mega-menu-links) {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.app-sidebar li {
+.app-sidebar li:not(.mega-menu-category) {
     margin: 0;
 }
 
-/* Sidebar Dividers */
+/* Sidebar Dividers - Light Mode */
 .app-sidebar .nav-divider {
     padding: var(--spacing-lg) var(--spacing-md) var(--spacing-sm);
     font-size: 0.65rem;
     font-weight: 800;
     text-transform: uppercase;
-    color: #22d3ee;
+    color: var(--color-text-muted); /* Using CSS var */
     letter-spacing: 1.5px;
     margin-top: var(--spacing-xl);
-    text-shadow: 0 0 15px rgba(6, 182, 212, 0.8),
-                 0 0 5px rgba(6, 182, 212, 0.5);
     border-left: 0;
     position: relative;
     user-select: none;
@@ -461,27 +492,40 @@ body {
     width: 3px;
     height: 60%;
     transform: translateY(-50%);
-    background: linear-gradient(180deg,
-                transparent,
-                rgba(6, 182, 212, 0.8),
-                transparent);
+    background: var(--color-secondary);
     border-radius: 2px;
-    box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
 }
 
 .app-sidebar .nav-divider:first-child {
     margin-top: 0;
 }
 
-/* Sidebar Links */
-.app-sidebar a {
+/* Dark Mode Dividers */
+[data-theme="dark"] .app-sidebar .nav-divider,
+[data-bs-theme="dark"] .app-sidebar .nav-divider {
+    color: #22d3ee;
+    text-shadow: 0 0 15px rgba(6, 182, 212, 0.8),
+                 0 0 5px rgba(6, 182, 212, 0.5);
+}
+
+[data-theme="dark"] .app-sidebar .nav-divider::before,
+[data-bs-theme="dark"] .app-sidebar .nav-divider::before {
+    background: linear-gradient(180deg,
+                transparent,
+                rgba(6, 182, 212, 0.8),
+                transparent);
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+}
+
+/* Sidebar Links - Light Mode */
+.app-sidebar nav:not(#main-navigation) a {
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
     padding: 0.75rem var(--spacing-md);
     margin: 0.25rem var(--spacing-sm);
     min-height: 44px; /* WCAG touch target minimum */
-    color: #cffafe;
+    color: var(--color-text); /* Using CSS var */
     text-decoration: none;
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: var(--border-radius-sm);
@@ -493,7 +537,7 @@ body {
     touch-action: manipulation; /* Disable double-tap zoom */
 }
 
-.app-sidebar a i {
+.app-sidebar nav:not(#main-navigation) a i {
     font-size: 1.15rem;
     min-width: 24px;
     text-align: center;
@@ -501,7 +545,7 @@ body {
     filter: drop-shadow(0 0 3px rgba(6, 182, 212, 0.3));
 }
 
-.app-sidebar a span {
+.app-sidebar nav:not(#main-navigation) a span {
     font-size: 0.875rem;
     font-weight: 500;
     letter-spacing: 0.3px;
@@ -509,7 +553,7 @@ body {
 }
 
 /* Sidebar Link Hover Effect - Subtle Glow */
-.app-sidebar a::before {
+.app-sidebar nav:not(#main-navigation) a::before {
     content: '';
     position: absolute;
     left: 0;
@@ -524,7 +568,7 @@ body {
     border-radius: var(--border-radius-sm);
 }
 
-.app-sidebar a::after {
+.app-sidebar nav:not(#main-navigation) a::after {
     content: '';
     position: absolute;
     left: 0;
@@ -535,16 +579,16 @@ body {
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.app-sidebar a:hover::before {
+.app-sidebar nav:not(#main-navigation) a:hover::before {
     width: 100%;
 }
 
-.app-sidebar a:hover::after {
+.app-sidebar nav:not(#main-navigation) a:hover::after {
     background: linear-gradient(180deg, #06b6d4, #8b5cf6);
     box-shadow: 0 0 10px rgba(6, 182, 212, 0.6);
 }
 
-.app-sidebar a:hover {
+.app-sidebar nav:not(#main-navigation) a:hover {
     color: white;
     background: rgba(6, 182, 212, 0.1);
     padding-left: calc(var(--spacing-md) + 4px);
@@ -552,18 +596,18 @@ body {
     transform: translateX(2px);
 }
 
-.app-sidebar a:hover i {
+.app-sidebar nav:not(#main-navigation) a:hover i {
     color: #22d3ee;
     transform: scale(1.12) rotate(-5deg);
     filter: drop-shadow(0 0 8px rgba(6, 182, 212, 0.8));
 }
 
-.app-sidebar a:hover span {
+.app-sidebar nav:not(#main-navigation) a:hover span {
     letter-spacing: 0.5px;
 }
 
 /* Sidebar Active Link - Bold Gradient */
-.app-sidebar a.active {
+.app-sidebar nav:not(#main-navigation) a.active {
     background: linear-gradient(135deg,
                 rgba(6, 182, 212, 0.2) 0%,
                 rgba(139, 92, 246, 0.15) 100%);
@@ -577,7 +621,7 @@ body {
     border: 1px solid rgba(6, 182, 212, 0.3);
 }
 
-.app-sidebar a.active::before {
+.app-sidebar nav:not(#main-navigation) a.active::before {
     width: 100%;
     background: linear-gradient(90deg,
                 rgba(6, 182, 212, 0.15),
@@ -585,38 +629,38 @@ body {
                 transparent);
 }
 
-.app-sidebar a.active::after {
+.app-sidebar nav:not(#main-navigation) a.active::after {
     background: linear-gradient(180deg, #06b6d4, #ec4899, #8b5cf6);
     width: 4px;
     box-shadow: 0 0 15px rgba(6, 182, 212, 0.8),
                 0 0 10px rgba(236, 72, 153, 0.5);
 }
 
-.app-sidebar a.active i {
+.app-sidebar nav:not(#main-navigation) a.active i {
     color: #22d3ee;
     transform: scale(1.2);
     filter: drop-shadow(0 0 10px rgba(6, 182, 212, 1));
 }
 
-.app-sidebar a.active span {
+.app-sidebar nav:not(#main-navigation) a.active span {
     letter-spacing: 0.5px;
 }
 
 /* Focus State for Accessibility */
-.app-sidebar a:focus-visible {
+.app-sidebar nav:not(#main-navigation) a:focus-visible {
     outline: 2px solid #06b6d4;
     outline-offset: 2px;
 }
 
-[data-theme="dark"] .app-sidebar a {
+[data-theme="dark"] .app-sidebar nav:not(#main-navigation) a {
     color: var(--text-secondary);
 }
 
-[data-theme="dark"] .app-sidebar a:hover {
+[data-theme="dark"] .app-sidebar nav:not(#main-navigation) a:hover {
     color: white;
 }
 
-[data-theme="dark"] .app-sidebar a.active {
+[data-theme="dark"] .app-sidebar nav:not(#main-navigation) a.active {
     background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(139, 92, 246, 0.15));
     color: white;
 }
@@ -737,7 +781,7 @@ body {
 
 .content {
     background: white;
-    padding: var(--spacing-xl);
+    padding: var(--spacing-md);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow-sm);
     animation: fadeIn var(--transition-slow);
@@ -1203,15 +1247,16 @@ table {
 }
 
 thead {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-    color: white;
-    border-bottom: 2px solid var(--color-secondary);
-    box-shadow: 0 2px 0 rgba(6, 182, 212, 0.3);
+    background-color: var(--bs-dark);
+    color: var(--bs-light);
+    border-bottom: 2px solid var(--bs-primary);
+    box-shadow: 0 2px 0 rgba(var(--bs-primary-rgb), 0.3);
 }
 
 [data-theme="dark"] thead {
-    background: var(--bg-secondary);
-    border-bottom-color: var(--border-color);
+    background-color: var(--bs-secondary-bg);
+    border-bottom-color: var(--bs-border-color);
+    color: var(--bs-body-color);
 }
 
 thead th {
@@ -1223,25 +1268,44 @@ thead th {
     letter-spacing: 0.5px;
 }
 
+[data-theme="dark"] thead th {
+    color: var(--bs-body-color);
+}
+
+tbody {
+    background-color: var(--bs-body-bg);
+}
+
 tbody tr {
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--bs-border-color);
     transition: background-color var(--transition-fast);
+    background-color: var(--bs-body-bg);
+}
+
+[data-theme="dark"] tbody {
+    background-color: var(--bs-dark);
 }
 
 [data-theme="dark"] tbody tr {
-    border-bottom-color: var(--border-color-light);
+    border-bottom-color: var(--bs-border-color);
+    background-color: var(--bs-dark);
 }
 
 tbody tr:hover {
-    background-color: var(--color-bg-alt);
+    background-color: var(--bs-tertiary-bg);
 }
 
 [data-theme="dark"] tbody tr:hover {
-    background-color: var(--bg-secondary);
+    background-color: var(--bs-secondary-bg);
 }
 
 tbody td {
     padding: var(--spacing-md);
+    color: var(--bs-body-color);
+}
+
+[data-theme="dark"] tbody td {
+    color: var(--bs-gray-200);
 }
 
 /* Sticky Table Headers */
@@ -1250,22 +1314,28 @@ tbody td {
     position: sticky;
     top: 60px; /* Adjust based on navbar height */
     z-index: 10;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--bs-box-shadow);
 }
 
 .table thead.sticky-top th,
 .table thead.thead-sticky th {
-    background-color: var(--bg-secondary);
-    color: var(--text-primary);
+    background-color: var(--bs-dark);
+    color: var(--bs-light);
     font-weight: 600;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--bs-border-color);
     padding: 12px 8px;
     white-space: nowrap;
 }
 
+[data-theme="dark"] .table thead.sticky-top th,
+[data-theme="dark"] .table thead.thead-sticky th {
+    background-color: var(--bs-secondary-bg);
+    color: var(--bs-body-color);
+}
+
 [data-theme="dark"] .table thead.sticky-top,
 [data-theme="dark"] .table thead.thead-sticky {
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--bs-box-shadow-lg);
 }
 
 /* Table container for scrollable tables */
@@ -2240,7 +2310,7 @@ input.is-valid:focus {
 
 /* Dark mode adjustments for sticky headers */
 [data-theme="dark"] table thead {
-    background-color: var(--bg-elevated);
+    background-color: var(--bs-secondary-bg);
 }
 
 /* ===================================================================
@@ -2252,39 +2322,69 @@ input.is-valid:focus {
 table:not(.no-default-style) {
     width: 100%;
     margin-bottom: 1rem;
-    color: var(--color-text);
+    color: var(--bs-body-color);
     border-collapse: collapse;
+    background-color: var(--bs-body-bg);
 }
 
 table:not(.no-default-style) th,
 table:not(.no-default-style) td {
     padding: 0.75rem;
     vertical-align: top;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--bs-border-color);
+    background-color: var(--bs-body-bg);
+}
+
+[data-theme="dark"] table:not(.no-default-style) td,
+[data-theme="dark"] table:not(.no-default-style) th {
+    background-color: var(--bs-tertiary-bg);
+    color: #f8fafc;
 }
 
 table:not(.no-default-style) thead th {
     vertical-align: bottom;
     font-weight: 600;
-    border-bottom: 2px solid var(--color-border);
-    color: var(--color-text);
+    border-bottom: 2px solid var(--bs-border-color);
+    color: var(--bs-light);
+    background-color: var(--bs-dark);
+}
+
+[data-theme="dark"] table:not(.no-default-style) thead th {
+    color: var(--bs-body-color);
+    background-color: var(--bs-secondary-bg);
 }
 
 table:not(.no-default-style) tbody tr:hover {
-    background-color: rgba(0, 0, 0, 0.02);
+    background-color: var(--bs-tertiary-bg);
 }
 
 [data-theme="dark"] table:not(.no-default-style) tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--bs-secondary-bg);
+}
+
+[data-theme="dark"] table:not(.no-default-style) tbody tr:hover td {
+    color: #e2e8f0;
+    background-color: var(--bs-secondary-bg);
+}
+
+/* Fix text-muted in tables for dark mode */
+[data-theme="dark"] table:not(.no-default-style) .text-muted {
+    color: var(--bs-gray-400) !important;
+}
+
+/* Ensure strong/bold text is highly visible in dark mode tables */
+[data-theme="dark"] table:not(.no-default-style) strong {
+    color: #ffffff !important;
+    font-weight: 600;
 }
 
 /* Striped tables */
 table.table-striped tbody tr:nth-of-type(odd) {
-    background-color: rgba(0, 0, 0, 0.02);
+    background-color: var(--bs-table-striped-bg);
 }
 
 [data-theme="dark"] table.table-striped tbody tr:nth-of-type(odd) {
-    background-color: rgba(255, 255, 255, 0.02);
+    background-color: var(--bs-table-striped-bg);
 }
 
 /* Bordered tables */

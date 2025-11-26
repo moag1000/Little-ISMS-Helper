@@ -1,0 +1,533 @@
+{#
+ # Mega Menu Secondary Panel - Rendered outside sidebar
+ # This file is rendered at the body level to escape z-index stacking context issues
+ # Note: data-controller="mega-menu" is in base.html.twig and wraps both triggers and this panel
+ #}
+{% set current_route = app.request.get('_route') %}
+
+    {# Level 2: Secondary Navigation Panels (Mega Menu Content) #}
+    <div class="mega-menu-secondary">
+        {# Dashboard Panel #}
+        <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="dashboard" role="menu" aria-label="{{ 'nav.mega.category.dashboard'|trans({}, 'nav') }}">
+            <div class="mega-menu-panel-content">
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.overview'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('app_home') }}" class="{% if current_route starts with 'app_home' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-house" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.home'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.home'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_dashboard') }}" class="{% if current_route starts with 'app_dashboard' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.dashboard'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.dashboard'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_analytics_dashboard') }}" class="{% if current_route starts with 'app_analytics_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-graph-up" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.analytics'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.analytics'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        {# ISMS Core Panel #}
+        {% if is_module_active('core') or is_module_active('controls') %}
+        <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="isms-core" role="menu" aria-label="{{ 'nav.mega.category.isms_core'|trans({}, 'nav') }}">
+            <div class="mega-menu-panel-content">
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.foundation'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('app_context_index') }}" class="{% if current_route starts with 'app_context_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.context'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.context'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_interested_party_index') }}" class="{% if current_route starts with 'app_interested_party_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-people" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.interested_parties'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.interested_parties'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.controls'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('app_soa_index') }}" class="{% if current_route starts with 'app_soa_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-file-earmark-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.soa'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.soa'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_objective_index') }}" class="{% if current_route starts with 'app_objective_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-bullseye" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.objectives'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.objectives'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# Assets & Risk Panel #}
+        {% if is_module_active('assets') or is_module_active('risks') %}
+        <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="assets-risk" role="menu" aria-label="{{ 'nav.mega.category.assets_risk'|trans({}, 'nav') }}">
+            <div class="mega-menu-panel-content">
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.assets'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('app_asset_index') }}" class="{% if current_route starts with 'app_asset_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-box-seam" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.assets'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.assets'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_supplier_index') }}" class="{% if current_route starts with 'app_supplier_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-building" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.suppliers'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.suppliers'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_location_index') }}" class="{% if current_route starts with 'app_location_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-geo-alt" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.locations'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.locations'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_person_index') }}" class="{% if current_route starts with 'app_person_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-person-badge" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.people'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.people'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.risk'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('app_risk_index') }}" class="{% if current_route starts with 'app_risk_index' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.risks'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.risks'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_risk_matrix') }}" class="{% if current_route == 'app_risk_matrix' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-grid-3x3-gap" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.risk_matrix'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.risk_matrix'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_risk_appetite_index') }}" class="{% if current_route starts with 'app_risk_appetite_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-sliders" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.risk_appetite'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.risk_appetite'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_risk_treatment_plan_index') }}" class="{% if current_route starts with 'app_risk_treatment_plan_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.treatment_plans'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.treatment_plans'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# BCM Panel #}
+        {% if is_module_active('bcm') %}
+        <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="bcm" role="menu" aria-label="{{ 'nav.mega.category.bcm'|trans({}, 'nav') }}">
+            <div class="mega-menu-panel-content">
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.continuity'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('app_business_process_index') }}" class="{% if current_route starts with 'app_business_process_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-diagram-2" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.business_processes'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.business_processes'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_bc_plan_index') }}" class="{% if current_route starts with 'app_bc_plan_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.bc_plans'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.bc_plans'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.testing'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('app_bc_exercise_index') }}" class="{% if current_route starts with 'app_bc_exercise_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-calendar-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.bc_exercises'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.bc_exercises'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_crisis_team_index') }}" class="{% if current_route starts with 'app_crisis_team_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-people-fill" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.crisis_team'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.crisis_team'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# Privacy/GDPR Panel #}
+        <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="privacy" role="menu" aria-label="{{ 'nav.mega.category.privacy'|trans({}, 'nav') }}">
+            <div class="mega-menu-panel-content">
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.data_protection'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('app_processing_activity_index') }}" class="{% if current_route starts with 'app_processing_activity_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-list-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.processing_activities'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.processing_activities'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_dpia_index') }}" class="{% if current_route starts with 'app_dpia_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-shield-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.dpia'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.dpia'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_data_breach_index') }}" class="{% if current_route starts with 'app_data_breach_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-exclamation-octagon" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.data_breaches'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.data_breaches'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        {# Operations Panel #}
+        {% if is_module_active('core') or is_module_active('incidents') %}
+        <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="operations" role="menu" aria-label="{{ 'nav.mega.category.operations'|trans({}, 'nav') }}">
+            <div class="mega-menu-panel-content">
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.documents'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('app_document_index') }}" class="{% if current_route starts with 'app_document_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-file-earmark" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.documents'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.documents'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_change_request_index') }}" class="{% if current_route starts with 'app_change_request_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-arrow-left-right" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.change_requests'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.change_requests'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_workflow_index') }}" class="{% if current_route starts with 'app_workflow_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.workflows'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.workflows'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.security_ops'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('app_incident_index') }}" class="{% if current_route starts with 'app_incident_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-exclamation-circle" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.incidents'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.incidents'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_vulnerability_index') }}" class="{% if current_route starts with 'app_vulnerability_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-bug" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.vulnerabilities'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.vulnerabilities'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_patch_index') }}" class="{% if current_route starts with 'app_patch_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-bandaid" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.patches'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.patches'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# Compliance Panel #}
+        {% if is_module_active('audits') or is_module_active('compliance') %}
+        <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="compliance" role="menu" aria-label="{{ 'nav.mega.category.compliance'|trans({}, 'nav') }}">
+            <div class="mega-menu-panel-content">
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.auditing'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('app_audit_index') }}" class="{% if current_route starts with 'app_audit_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-clipboard-data" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.audits'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.audits'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_training_index') }}" class="{% if current_route starts with 'app_training_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-book" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.training'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.training'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_management_review_index') }}" class="{% if current_route starts with 'app_management_review_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.management_reviews'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.management_reviews'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'nav.mega.section.frameworks'|trans({}, 'nav') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route starts with 'app_compliance_index' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-shield-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.compliance_frameworks'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.compliance_frameworks'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_compliance_index') }}" class="{% if current_route starts with 'app_compliance_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-bar-chart" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.framework_dashboard'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.framework_dashboard'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_mapping_quality_dashboard') }}" class="{% if current_route starts with 'app_mapping_quality_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.mapping_quality'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.mapping_quality'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_nis2_compliance_dashboard') }}" class="{% if current_route starts with 'app_nis2_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-building-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.nis2'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.nis2'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        {# Admin Panel #}
+        {% if is_granted('ROLE_ADMIN') %}
+        <div class="mega-menu-panel" data-mega-menu-target="panel" data-category="admin" role="menu" aria-label="{{ 'nav.mega.category.admin'|trans({}, 'nav') }}">
+            <div class="mega-menu-panel-content">
+                {# Overview #}
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'admin.section.overview'|trans({}, 'admin') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('admin_dashboard') }}" class="{% if current_route == 'admin_dashboard' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.dashboard'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+
+                {# User & Access Management #}
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'admin.section.user_access'|trans({}, 'admin') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('tenant_management_index') }}" class="{% if current_route starts with 'tenant_management_' and current_route != 'tenant_management_corporate_structure' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-building" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.tenants'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        {% if is_multi_tenant_environment %}
+                        <li><a href="{{ path('tenant_management_corporate_structure') }}" class="{% if current_route == 'tenant_management_corporate_structure' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.corporate_structure'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        {% endif %}
+                        <li><a href="{{ path('user_management_index') }}" class="{% if current_route starts with 'user_management_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-people" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.users'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('role_management_index') }}" class="{% if current_route starts with 'role_management_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.roles'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('permission_index') }}" class="{% if current_route starts with 'permission_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-key" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.permissions'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('session_index') }}" class="{% if current_route starts with 'session_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-clock-history" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.sessions'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('admin_mfa_index') }}" class="{% if current_route starts with 'admin_mfa_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-shield-check" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.mfa'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+
+                {# System Configuration #}
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'admin.section.system_config'|trans({}, 'admin') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('admin_settings_index') }}" class="{% if current_route starts with 'admin_settings_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-gear" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.settings'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+
+                {# Modules & Features #}
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'admin.section.modules'|trans({}, 'admin') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('admin_modules_index') }}" class="{% if current_route starts with 'admin_modules_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-puzzle" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.module_management'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('admin_compliance_index') }}" class="{% if current_route starts with 'admin_compliance_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-check-circle" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.compliance_management'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+
+                {# Monitoring & Logs #}
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'admin.section.monitoring'|trans({}, 'admin') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('monitoring_health') }}" class="{% if current_route starts with 'monitoring_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-heart-pulse" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.system_health'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('app_audit_log_index') }}" class="{% if current_route starts with 'app_audit_log_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-journal-text" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.audit_log'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+
+                {# Data Management #}
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'admin.section.data_management'|trans({}, 'admin') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('data_backup_index') }}" class="{% if current_route starts with 'data_backup' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-hdd" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.backup'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('data_export_index') }}" class="{% if current_route starts with 'data_export' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-download" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.export'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('data_import_index') }}" class="{% if current_route starts with 'data_import' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-upload" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.import'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                        <li><a href="{{ path('admin_data_repair_index') }}" class="{% if current_route starts with 'admin_data_repair' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-tools" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.data_repair'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+
+                {# Licensing #}
+                <div class="mega-menu-section">
+                    <h3 class="mega-menu-section-title">{{ 'admin.section.licensing'|trans({}, 'admin') }}</h3>
+                    <ul class="mega-menu-links">
+                        <li><a href="{{ path('admin_licensing_index') }}" class="{% if current_route starts with 'admin_licensing_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-award" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'admin.nav.licensing'|trans({}, 'admin') }}</span>
+                            </div>
+                        </a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>

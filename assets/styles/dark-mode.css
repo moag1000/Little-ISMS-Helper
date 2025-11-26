@@ -62,8 +62,13 @@
     /* Dark Cyberpunk Backgrounds */
     --bg-primary: #0f172a;
     --bg-secondary: #1e293b;
-    --bg-tertiary: #334155;
+    --bg-tertiary: #1e293b;
     --bg-elevated: #1e293b;
+
+    /* Bootstrap background variables override for better table contrast */
+    --bs-tertiary-bg: #1e293b;
+    --bs-body-bg: #0f172a;
+    --bs-secondary-bg: #334155;
 
     /* Background - Compatibility with app.css naming */
     --color-bg: #1e293b;
