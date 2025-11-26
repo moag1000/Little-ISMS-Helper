@@ -32,17 +32,17 @@ class TranslationChecker:
         self.templates_dir = Path(templates_dir)
         self.issues: List[TranslationIssue] = []
 
-        # Valid translation domains
+        # Valid translation domains (from actual .de.yaml files)
         self.valid_domains = {
             'messages', 'nav', 'mfa', 'tenant', 'role_management', 'dashboard',
-            'bulk_delete', 'session', 'field', 'admin', 'analytics', 'assets',
-            'audit_log', 'audits', 'bc_exercises', 'bc_plans', 'bcm',
-            'change_requests', 'compliance', 'context', 'controls', 'crisis_team',
-            'crypto', 'documents', 'incidents', 'interested_parties', 'locations',
-            'management_review', 'monitoring', 'objectives', 'patches', 'people',
+            'bulk_delete', 'session', 'field', 'admin', 'analytics', 'asset',
+            'audit_log', 'audit', 'bc_exercises', 'bc_plans', 'bcm', 'business_process',
+            'change_requests', 'compliance', 'context', 'control', 'crisis_team',
+            'crypto', 'document', 'incident', 'interested_parties', 'locations',
+            'management_review', 'monitoring', 'objective', 'patches', 'people',
             'physical_access', 'privacy', 'reports', 'risk_appetite',
-            'risk_treatment_plan', 'risks', 'security', 'security_reports',
-            'soa', 'suppliers', 'training', 'ui', 'users', 'validators',
+            'risk_treatment_plan', 'risk', 'security', 'security_reports',
+            'soa', 'suppliers', 'training', 'ui', 'user', 'validators',
             'vulnerabilities', 'workflows', 'threat'
         }
 
