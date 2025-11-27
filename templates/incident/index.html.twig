@@ -197,13 +197,13 @@
                     {% if incident.description %}
                     <br><small class="text-muted">{{ incident.description|length > 60 ? incident.description|slice(0, 60) ~ '...' : incident.description }}</small>
                     {% endif %}
-                    {% if incident.status == 'open' %}
-                        <span class="badge bg-danger ms-2">NEU</span>
+                    {% if incident.status == 'reported' %}
+                        <span class="badge bg-danger ms-2">{{ 'common.new'|trans({}, 'messages') }}</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if incident.category %}
-                        <span class="badge bg-secondary">{{ incident.category|replace({'_': ' '})|title }}</span>
+                        <span class="badge bg-secondary">{{ ('incident.category.' ~ incident.category)|trans({}, 'incident') }}</span>
                     {% else %}
                         <span class="text-muted">-</span>
                     {% endif %}
@@ -216,29 +216,30 @@
                         'low': 'success'
                     } %}
                     <span class="badge bg-{{ severityColors[incident.severity] ?? 'secondary' }}">
-                        {{ incident.severity|upper }}
+                        {{ ('incident.severity.' ~ incident.severity)|trans({}, 'incident') }}
                     </span>
                 </td>
                 <td>
                     {% set statusIcons = {
-                        'open': 'bi-circle text-danger',
-                        'in_progress': 'bi-arrow-repeat text-warning',
+                        'reported': 'bi-circle text-danger',
+                        'in_investigation': 'bi-search text-warning',
+                        'in_resolution': 'bi-arrow-repeat text-info',
                         'resolved': 'bi-check-circle text-success',
                         'closed': 'bi-check-circle-fill text-secondary'
                     } %}
                     <i class="bi {{ statusIcons[incident.status] ?? 'bi-circle' }}" aria-hidden="true"></i>
-                    {{ incident.status|replace({'_': ' '})|title }}
+                    {{ ('incident.status.' ~ incident.status)|trans({}, 'incident') }}
                 </td>
                 <td>
-                    {{ incident.occurredAt|date('d.m.Y H:i') }}
-                    {% if incident.occurredAt %}
-                        {% set daysSince = (date().diff(incident.occurredAt).days) %}
+                    {{ incident.detectedAt|date('d.m.Y H:i') }}
+                    {% if incident.detectedAt %}
+                        {% set daysSince = (date().diff(incident.detectedAt).days) %}
                         {% if daysSince == 0 %}
-                            <br><small class="text-muted">Heute</small>
+                            <br><small class="text-muted">{{ 'common.today'|trans({}, 'messages') }}</small>
                         {% elseif daysSince == 1 %}
-                            <br><small class="text-muted">Gestern</small>
+                            <br><small class="text-muted">{{ 'common.yesterday'|trans({}, 'messages') }}</small>
                         {% else %}
-                            <br><small class="text-muted">vor {{ daysSince }} Tagen</small>
+                            <br><small class="text-muted">{{ 'common.days_ago'|trans({'%days%': daysSince}, 'messages') }}</small>
                         {% endif %}
                     {% endif %}
                 </td>
@@ -252,12 +253,12 @@
                     {% endif %}
                 </td>
                 <td class="text-center">
-                    {% if incident.dataBreachRelevant %}
-                        <span class="badge bg-danger" title="Datenschutzverletzung">
-                            <i class="bi bi-shield-exclamation" aria-hidden="true"></i> Ja
+                    {% if incident.dataBreachOccurred %}
+                        <span class="badge bg-danger" title="{{ 'incident.field.data_breach_occurred'|trans({}, 'incident') }}">
+                            <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'common.yes'|trans({}, 'messages') }}
                         </span>
                     {% else %}
-                        <span class="text-muted">Nein</span>
+                        <span class="text-muted">{{ 'common.no'|trans({}, 'messages') }}</span>
                     {% endif %}
                 </td>
                 <td class="text-center">
@@ -265,14 +266,14 @@
                         <a href="{{ path('app_incident_show', {id: incident.id}) }}"
                            class="btn btn-outline-primary"
                            data-turbo-action="advance"
-                           title="Anzeigen" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                           title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                             <i class="bi bi-eye" aria-hidden="true"></i>
                         </a>
                         {% if is_granted('ROLE_USER') and incident.status != 'closed' %}
                         <a href="{{ path('app_incident_edit', {id: incident.id}) }}"
                            class="btn btn-outline-secondary"
                            data-turbo-action="advance"
-                           title="Bearbeiten" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                           title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                             <i class="bi bi-pencil" aria-hidden="true"></i>
                         </a>
                         {% endif %}

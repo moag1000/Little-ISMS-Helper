@@ -251,6 +251,10 @@ privacy:
             reportable_medium: 'Report to supervisory authority within 72 hours (Art. 33). Begin impact assessment and prepare for potential data subject notification.'
             reportable_high: 'URGENT: Report to supervisory authority within 72 hours (Art. 33). Consider notifying affected data subjects (Art. 34). Immediate action required.'
             reportable_very_high: 'CRITICAL: Report to supervisory authority within 72 hours (Art. 33). Notify affected data subjects without undue delay (Art. 34). Immediate escalation required.'
+        calculating: 'Calculating...'
+        yes_reportable: 'YES - Reportable to Supervisory Authority'
+        no_not_reportable: 'NO - Not Reportable'
+        step_of: 'of'
 processing_activity:
     title: 'VVT - Record of Processing Activities'
     subtitle: 'Art. 30 GDPR - Record of Processing Activities'

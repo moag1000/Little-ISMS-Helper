@@ -115,10 +115,10 @@ class Incident
     #[Groups(['incident:read', 'incident:write'])]
     #[Assert\NotBlank(message: 'Status is required')]
     #[Assert\Choice(
-        choices: ['open', 'investigating', 'resolved', 'closed'],
+        choices: ['reported', 'in_investigation', 'in_resolution', 'resolved', 'closed'],
         message: 'Status must be one of: {{ choices }}'
     )]
-    private ?string $status = 'open';
+    private ?string $status = 'reported';
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['incident:read', 'incident:write'])]

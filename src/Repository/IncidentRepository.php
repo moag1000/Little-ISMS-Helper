@@ -26,6 +26,35 @@ class IncidentRepository extends ServiceEntityRepository
     }
 
     /**
+     * Generate next incident number for a tenant.
+     * Format: INC-YYYY-NNNN (e.g., INC-2025-0001)
+     */
+    public function getNextIncidentNumber(\App\Entity\Tenant $tenant): string
+    {
+        $year = date('Y');
+        $prefix = "INC-{$year}-";
+
+        $result = $this->createQueryBuilder('i')
+            ->select('MAX(i.incidentNumber) as maxNumber')
+            ->where('i.tenant = :tenant')
+            ->andWhere('i.incidentNumber LIKE :prefix')
+            ->setParameter('tenant', $tenant)
+            ->setParameter('prefix', $prefix . '%')
+            ->getQuery()
+            ->getSingleScalarResult();
+
+        if ($result) {
+            // Extract number part and increment
+            $lastNumber = (int) substr($result, -4);
+            $nextNumber = $lastNumber + 1;
+        } else {
+            $nextNumber = 1;
+        }
+
+        return $prefix . str_pad((string) $nextNumber, 4, '0', STR_PAD_LEFT);
+    }
+
+    /**
      * Find all open/active security incidents ordered by severity and detection date.
      *
      * @return Incident[] Array of open Incident entities
