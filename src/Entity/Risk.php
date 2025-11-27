@@ -235,7 +235,7 @@ class Risk
      * Phase 6F-B: Changed from string to User entity reference
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ORM\JoinColumn(name: 'risk_owner_id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['risk:read', 'risk:write'])]
     #[MaxDepth(1)]
     #[Assert\NotNull(message: 'risk.validation.risk_owner_required')]

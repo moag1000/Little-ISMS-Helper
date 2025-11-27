@@ -25,61 +25,61 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class PermissionVoter extends Voter
 {
     // Admin permissions
-    public const ADMIN_ACCESS = 'ADMIN_ACCESS';
-    public const ADMIN_VIEW = 'ADMIN_VIEW';
-    public const ADMIN_EDIT = 'ADMIN_EDIT';
-    public const ADMIN_SETTINGS = 'ADMIN_SETTINGS';
+    public const string ADMIN_ACCESS = 'ADMIN_ACCESS';
+    public const string ADMIN_VIEW = 'ADMIN_VIEW';
+    public const string ADMIN_EDIT = 'ADMIN_EDIT';
+    public const string ADMIN_SETTINGS = 'ADMIN_SETTINGS';
 
     // User management permissions
-    public const USER_VIEW = 'USER_VIEW';
-    public const USER_CREATE = 'USER_CREATE';
-    public const USER_EDIT = 'USER_EDIT';
-    public const USER_DELETE = 'USER_DELETE';
-    public const USER_MANAGE_ROLES = 'USER_MANAGE_ROLES';
+    public const string USER_VIEW = 'USER_VIEW';
+    public const string USER_CREATE = 'USER_CREATE';
+    public const string USER_EDIT = 'USER_EDIT';
+    public const string USER_DELETE = 'USER_DELETE';
+    public const string USER_MANAGE_ROLES = 'USER_MANAGE_ROLES';
 
     // Tenant management permissions
-    public const TENANT_VIEW = 'TENANT_VIEW';
-    public const TENANT_CREATE = 'TENANT_CREATE';
-    public const TENANT_EDIT = 'TENANT_EDIT';
-    public const TENANT_DELETE = 'TENANT_DELETE';
+    public const string TENANT_VIEW = 'TENANT_VIEW';
+    public const string TENANT_CREATE = 'TENANT_CREATE';
+    public const string TENANT_EDIT = 'TENANT_EDIT';
+    public const string TENANT_DELETE = 'TENANT_DELETE';
 
     // Session management permissions
-    public const SESSION_VIEW = 'SESSION_VIEW';
-    public const SESSION_TERMINATE = 'SESSION_TERMINATE';
+    public const string SESSION_VIEW = 'SESSION_VIEW';
+    public const string SESSION_TERMINATE = 'SESSION_TERMINATE';
 
     // MFA management permissions
-    public const MFA_VIEW = 'MFA_VIEW';
-    public const MFA_MANAGE = 'MFA_MANAGE';
-    public const MFA_SETUP = 'MFA_SETUP';
-    public const MFA_DELETE = 'MFA_DELETE';
+    public const string MFA_VIEW = 'MFA_VIEW';
+    public const string MFA_MANAGE = 'MFA_MANAGE';
+    public const string MFA_SETUP = 'MFA_SETUP';
+    public const string MFA_DELETE = 'MFA_DELETE';
 
     // Module management permissions
-    public const MODULE_VIEW = 'MODULE_VIEW';
-    public const MODULE_MANAGE = 'MODULE_MANAGE';
-    public const MODULE_CONFIGURE = 'MODULE_CONFIGURE';
+    public const string MODULE_VIEW = 'MODULE_VIEW';
+    public const string MODULE_MANAGE = 'MODULE_MANAGE';
+    public const string MODULE_CONFIGURE = 'MODULE_CONFIGURE';
 
     // Role & Permission management
-    public const ROLE_VIEW = 'ROLE_VIEW';
-    public const ROLE_CREATE = 'ROLE_CREATE';
-    public const ROLE_EDIT = 'ROLE_EDIT';
-    public const ROLE_DELETE = 'ROLE_DELETE';
+    public const string ROLE_VIEW = 'ROLE_VIEW';
+    public const string ROLE_CREATE = 'ROLE_CREATE';
+    public const string ROLE_EDIT = 'ROLE_EDIT';
+    public const string ROLE_DELETE = 'ROLE_DELETE';
 
     // Compliance management permissions
-    public const COMPLIANCE_VIEW = 'COMPLIANCE_VIEW';
-    public const COMPLIANCE_MANAGE = 'COMPLIANCE_MANAGE';
+    public const string COMPLIANCE_VIEW = 'COMPLIANCE_VIEW';
+    public const string COMPLIANCE_MANAGE = 'COMPLIANCE_MANAGE';
 
     // Audit log permissions
-    public const AUDIT_VIEW = 'AUDIT_VIEW';
-    public const AUDIT_EXPORT = 'AUDIT_EXPORT';
+    public const string AUDIT_VIEW = 'AUDIT_VIEW';
+    public const string AUDIT_EXPORT = 'AUDIT_EXPORT';
 
     // System monitoring permissions
-    public const MONITORING_VIEW = 'MONITORING_VIEW';
-    public const MONITORING_MANAGE = 'MONITORING_MANAGE';
-    public const MONITORING_EXPORT = 'MONITORING_EXPORT';
+    public const string MONITORING_VIEW = 'MONITORING_VIEW';
+    public const string MONITORING_MANAGE = 'MONITORING_MANAGE';
+    public const string MONITORING_EXPORT = 'MONITORING_EXPORT';
 
     // Backup permissions
-    public const BACKUP_CREATE = 'BACKUP_CREATE';
-    public const BACKUP_RESTORE = 'BACKUP_RESTORE';
+    public const string BACKUP_CREATE = 'BACKUP_CREATE';
+    public const string BACKUP_RESTORE = 'BACKUP_RESTORE';
 
     protected function supports(string $attribute, mixed $subject): bool
     {

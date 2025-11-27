@@ -55,7 +55,7 @@ class ComplianceRequirementFulfillment
      * The compliance requirement being fulfilled
      */
     #[ORM\ManyToOne(targetEntity: ComplianceRequirement::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'requirement_id', nullable: false, onDelete: 'CASCADE')]
     private ?ComplianceRequirement $complianceRequirement = null;
 
     /**

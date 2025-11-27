@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Exception;
+use Psr\Cache\InvalidArgumentException;
 use RuntimeException;
 use App\Entity\User;
 use App\Repository\UserRepository;
@@ -39,6 +40,8 @@ class InitialAdminService
      * Get the initial setup admin user.
      *
      * @return User|null The initial admin or null if not found
+     *
+     * @throws InvalidArgumentException
      */
     public function getInitialAdmin(): ?User
     {

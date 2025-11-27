@@ -115,7 +115,7 @@ class RiskTreatmentPlan
      * Person responsible for implementing this plan
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ORM\JoinColumn(name: 'responsible_person_id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
     #[MaxDepth(1)]
     private ?User $user = null;

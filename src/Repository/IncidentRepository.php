@@ -105,7 +105,7 @@ class IncidentRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant to find incidents for
      * @return Incident[] Array of Incident entities
      */
-    public function findByTenant($tenant): array
+    public function findByTenant(Tenant $tenant): array
     {
         return $this->createQueryBuilder('i')
             ->where('i.tenant = :tenant')
@@ -123,7 +123,7 @@ class IncidentRepository extends ServiceEntityRepository
      * @param Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
      * @return Incident[] Array of Incident entities (own + inherited from all ancestors)
      */
-    public function findByTenantIncludingParent($tenant, $parentTenant = null): array
+    public function findByTenantIncludingParent(Tenant $tenant, Tenant|null $parentTenant = null): array
     {
         // Get all ancestors (parent, grandparent, great-grandparent, etc.)
         $ancestors = $tenant->getAllAncestors();

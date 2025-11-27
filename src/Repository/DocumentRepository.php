@@ -63,7 +63,7 @@ class DocumentRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant to find documents for
      * @return Document[] Array of Document entities
      */
-    public function findByTenant($tenant): array
+    public function findByTenant(Tenant $tenant): array
     {
         return $this->createQueryBuilder('d')
             ->where('d.tenant = :tenant')
@@ -82,7 +82,7 @@ class DocumentRepository extends ServiceEntityRepository
      * @param Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
      * @return Document[] Array of Document entities (own + inherited from all ancestors)
      */
-    public function findByTenantIncludingParent($tenant, $parentTenant = null): array
+    public function findByTenantIncludingParent(Tenant $tenant, Tenant|null $parentTenant = null): array
     {
         // Get all ancestors (parent, grandparent, great-grandparent, etc.)
         $ancestors = $tenant->getAllAncestors();
@@ -111,7 +111,7 @@ class DocumentRepository extends ServiceEntityRepository
      * @param string $category Document category
      * @return Document[] Array of Document entities
      */
-    public function findByCategoryAndTenant($tenant, string $category): array
+    public function findByCategoryAndTenant(Tenant $tenant, string $category): array
     {
         return $this->createQueryBuilder('d')
             ->where('d.tenant = :tenant')
@@ -131,7 +131,7 @@ class DocumentRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant to find documents for
      * @return Document[] Array of Document entities (own + from all subsidiaries)
      */
-    public function findByTenantIncludingSubsidiaries($tenant): array
+    public function findByTenantIncludingSubsidiaries(Tenant $tenant): array
     {
         // Get all subsidiaries recursively
         $subsidiaries = $tenant->getAllSubsidiaries();

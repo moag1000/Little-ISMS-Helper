@@ -79,6 +79,9 @@ class BackupService
      * @param bool $includeAuditLog Include audit log in backup
      * @param bool $includeUserSessions Include user sessions in backup
      * @return array Backup data with metadata
+     * @throws Exception If an error occurs during backup creation
+     * @throws RuntimeException If backup cannot be compressed
+     *
      */
     public function createBackup(bool $includeAuditLog = true, bool $includeUserSessions = false): array
     {

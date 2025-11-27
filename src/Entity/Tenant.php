@@ -57,8 +57,8 @@ class Tenant
 
     // Corporate Structure fields
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'subsidiaries')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    private ?Tenant $tenant = null;
+    #[ORM\JoinColumn(name: 'parent_id', nullable: true, onDelete: 'SET NULL')]
+    private ?Tenant $parent = null;
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
     private Collection $subsidiaries;
@@ -216,12 +216,12 @@ class Tenant
     // Corporate Structure methods
     public function getParent(): ?Tenant
     {
-        return $this->tenant;
+        return $this->parent;
     }
 
-    public function setParent(?Tenant $tenant): static
+    public function setParent(?Tenant $parent): static
     {
-        $this->tenant = $tenant;
+        $this->parent = $parent;
         return $this;
     }
 
@@ -279,7 +279,7 @@ class Tenant
      */
     public function isPartOfCorporateStructure(): bool
     {
-        return $this->tenant !== null || $this->subsidiaries->count() > 0;
+        return $this->parent !== null || $this->subsidiaries->count() > 0;
     }
 
     /**
@@ -330,7 +330,7 @@ class Tenant
     public function getAllAncestors(): array
     {
         $ancestors = [];
-        $current = $this->tenant;
+        $current = $this->parent;
 
         while ($current !== null) {
             $ancestors[] = $current;
