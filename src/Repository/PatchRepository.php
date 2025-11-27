@@ -88,6 +88,7 @@ class PatchRepository extends ServiceEntityRepository
      * Find critical patches due soon (within X days)
      *
      * @return Patch[]
+     * @throws \DateMalformedStringException
      */
     public function findCriticalDueSoon(int $days = 7): array
     {
@@ -146,6 +147,7 @@ class PatchRepository extends ServiceEntityRepository
      * Find recently deployed patches
      *
      * @return Patch[]
+     * @throws \DateMalformedStringException
      */
     public function findRecentlyDeployed(int $days = 30): array
     {

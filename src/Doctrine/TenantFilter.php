@@ -5,6 +5,7 @@ namespace App\Doctrine;
 use App\Entity\Tenant;
 use App\Entity\User;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\MappingException;
 use Doctrine\ORM\Query\Filter\SQLFilter;
 
 /**
@@ -28,6 +29,7 @@ class TenantFilter extends SQLFilter
      * Add tenant filter condition to SQL query
      *
      * @param string $targetTableAlias
+     * @throws MappingException
      */
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias): string
     {

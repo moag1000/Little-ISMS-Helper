@@ -79,6 +79,7 @@ class ManagementReview
 
     // Neue, formularkompatible Felder (Option B)
     #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(name: 'reviewed_by_id', nullable: true)]
     private ?User $user = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

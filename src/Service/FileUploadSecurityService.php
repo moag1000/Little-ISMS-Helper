@@ -50,7 +50,7 @@ class FileUploadSecurityService
     ];
 
     // Security: Maximum file size (10MB default)
-    private const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
+    private const int|float MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB in bytes
 
     // Security: Magic bytes for file type verification
     private const array MAGIC_BYTES = [

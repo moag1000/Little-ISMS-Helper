@@ -21,7 +21,7 @@ class MappingGapItem
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: ComplianceMapping::class, inversedBy: 'gapItems')]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'mapping_id', nullable: false, onDelete: 'CASCADE')]
     private ?ComplianceMapping $complianceMapping = null;
 
     /**

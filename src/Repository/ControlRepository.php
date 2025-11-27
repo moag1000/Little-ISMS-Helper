@@ -145,7 +145,7 @@ class ControlRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant to find controls for
      * @return Control[] Array of Control entities
      */
-    public function findByTenant($tenant): array
+    public function findByTenant(Tenant $tenant): array
     {
         return $this->createQueryBuilder('c')
             ->where('c.tenant = :tenant')
@@ -164,7 +164,7 @@ class ControlRepository extends ServiceEntityRepository
      * @param Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
      * @return Control[] Array of Control entities (own + inherited from all ancestors)
      */
-    public function findByTenantIncludingParent($tenant, $parentTenant = null): array
+    public function findByTenantIncludingParent(Tenant $tenant, Tenant|null $parentTenant = null): array
     {
         // Get all ancestors (parent, grandparent, great-grandparent, etc.)
         $ancestors = $tenant->getAllAncestors();
@@ -193,7 +193,7 @@ class ControlRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant
      * @return Control|null The control or null if not found
      */
-    public function findByControlIdAndTenant(string $controlId, $tenant): ?Control
+    public function findByControlIdAndTenant(string $controlId, Tenant $tenant): ?Control
     {
         return $this->createQueryBuilder('c')
             ->where('c.controlId = :controlId')
@@ -210,7 +210,7 @@ class ControlRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant
      * @return array{total: int, implemented: int, in_progress: int, not_started: int, not_applicable: int} Control statistics
      */
-    public function getImplementationStatsByTenant($tenant): array
+    public function getImplementationStatsByTenant(Tenant $tenant): array
     {
         $rawStats = $this->createQueryBuilder('c')
             ->select('c.implementationStatus, COUNT(c.id) as count')
@@ -261,7 +261,7 @@ class ControlRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant to find controls for
      * @return Control[] Array of Control entities (own + from all subsidiaries)
      */
-    public function findByTenantIncludingSubsidiaries($tenant): array
+    public function findByTenantIncludingSubsidiaries(Tenant $tenant): array
     {
         // Get all subsidiaries recursively
         $subsidiaries = $tenant->getAllSubsidiaries();

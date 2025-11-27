@@ -132,7 +132,7 @@ class InternalAudit
     private Collection $auditedSubsidiaries;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(name: 'scoped_framework_id', nullable: true)]
     #[Groups(['audit:read'])]
     #[MaxDepth(1)]
     private ?ComplianceFramework $complianceFramework = null;

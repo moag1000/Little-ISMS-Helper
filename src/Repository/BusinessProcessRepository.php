@@ -161,7 +161,7 @@ class BusinessProcessRepository extends ServiceEntityRepository
      * @param Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
      * @return BusinessProcess[] Array of BusinessProcess entities (own + inherited from all ancestors)
      */
-    public function findByTenantIncludingParent($tenant, $parentTenant = null): array
+    public function findByTenantIncludingParent(Tenant $tenant, Tenant|null $parentTenant = null): array
     {
         // Get all ancestors (parent, grandparent, great-grandparent, etc.)
         $ancestors = $tenant->getAllAncestors();
@@ -189,7 +189,7 @@ class BusinessProcessRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant to find processes for
      * @return BusinessProcess[] Array of BusinessProcess entities (own + from all subsidiaries)
      */
-    public function findByTenantIncludingSubsidiaries($tenant): array
+    public function findByTenantIncludingSubsidiaries(Tenant $tenant): array
     {
         // Get all subsidiaries recursively
         $subsidiaries = $tenant->getAllSubsidiaries();
