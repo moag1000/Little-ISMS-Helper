@@ -93,7 +93,7 @@
                         <div class="status-icon mb-3 audit-icon-planned">
                             <i class="bi bi-calendar3" aria-hidden="true"></i>
                         </div>
-                        <div class="status-label text-muted mb-2">{{ 'audit.status.planned'|trans({}, 'audits') }}</div>
+                        <div class="status-label text-muted mb-2">{{ 'audit.status.planned'|trans({}, 'audit') }}</div>
                         <div class="status-count audit-count-planned">
                             {{ plannedAudits }}
                         </div>
@@ -106,7 +106,7 @@
                         <div class="status-icon mb-3 audit-icon-in-progress">
                             <i class="bi bi-hourglass-split" aria-hidden="true"></i>
                         </div>
-                        <div class="status-label text-muted mb-2">{{ 'audit.status.in_progress'|trans({}, 'audits') }}</div>
+                        <div class="status-label text-muted mb-2">{{ 'audit.status.in_progress'|trans({}, 'audit') }}</div>
                         <div class="status-count audit-count-in-progress">
                             {{ inProgressAudits }}
                         </div>
@@ -119,7 +119,7 @@
                         <div class="status-icon mb-3 audit-icon-completed">
                             <i class="bi bi-check-circle" aria-hidden="true"></i>
                         </div>
-                        <div class="status-label text-muted mb-2">{{ 'audit.status.completed'|trans({}, 'audits') }}</div>
+                        <div class="status-label text-muted mb-2">{{ 'audit.status.completed'|trans({}, 'audit') }}</div>
                         <div class="status-count audit-count-completed">
                             {{ completedAudits }}
                         </div>
@@ -132,7 +132,7 @@
                         <div class="status-icon mb-3 audit-icon-reported">
                             <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
                         </div>
-                        <div class="status-label text-muted mb-2">{{ 'audit.status.reported'|trans({}, 'audits') }}</div>
+                        <div class="status-label text-muted mb-2">{{ 'audit.status.reported'|trans({}, 'audit') }}</div>
                         <div class="status-count audit-count-reported">
                             {{ reportedAudits }}
                         </div>
@@ -167,10 +167,10 @@
             <div class="d-flex gap-2">
                 <select class="form-select form-select-sm" id="statusFilter" class="w-auto">
                     <option value="">{{ 'audit.filter.all_status'|trans }}</option>
-                    <option value="planned">{{ 'audit.status.planned'|trans({}, 'audits') }}</option>
-                    <option value="in_progress">{{ 'audit.status.in_progress'|trans({}, 'audits') }}</option>
-                    <option value="completed">{{ 'audit.status.completed'|trans({}, 'audits') }}</option>
-                    <option value="reported">{{ 'audit.status.reported'|trans({}, 'audits') }}</option>
+                    <option value="planned">{{ 'audit.status.planned'|trans({}, 'audit') }}</option>
+                    <option value="in_progress">{{ 'audit.status.in_progress'|trans({}, 'audit') }}</option>
+                    <option value="completed">{{ 'audit.status.completed'|trans({}, 'audit') }}</option>
+                    <option value="reported">{{ 'audit.status.reported'|trans({}, 'audit') }}</option>
                 </select>
 
                 <label for="auditSearch" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
@@ -231,7 +231,7 @@
                                 'corporate_subsidiaries': 'bi-diagram-3'
                             } %}
                             <i class="bi {{ typeIcons[audit.scopeType] ?? 'bi-question-circle' }}"></i>
-                            {{ ('audit.scope_type.' ~ audit.scopeType)|trans({}, 'audits') }}
+                            {{ ('audit.scope_type.' ~ audit.scopeType)|trans({}, 'audit') }}
                         </td>
                         <td>
                             {% if audit.plannedDate %}
@@ -252,7 +252,7 @@
                                 {% elseif audit.status == 'reported' %}
                                     <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
                                 {% endif %}
-                                {{ ('audit.status.' ~ audit.status)|trans({}, 'audits') }}
+                                {{ ('audit.status.' ~ audit.status)|trans({}, 'audit') }}
                             </span>
                         </td>
                         <td class="w-text-right">
