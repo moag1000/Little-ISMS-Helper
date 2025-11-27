@@ -3,7 +3,7 @@
  # This file is rendered at the body level to escape z-index stacking context issues
  # Note: data-controller="mega-menu" is in base.html.twig and wraps both triggers and this panel
  #}
-{% set current_route = app.request.get('_route') %}
+{% set current_route = app.request.attributes.get('_route') %}
 
     {# Level 2: Secondary Navigation Panels (Mega Menu Content) #}
     <div class="mega-menu-secondary">

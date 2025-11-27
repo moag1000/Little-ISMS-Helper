@@ -142,7 +142,7 @@
         </div>
     </header>
 
-    {% set current_route = app.request.get('_route') %}
+    {% set current_route = app.request.attributes.get('_route') %}
 
     {# Skip to Content Link - WCAG 2.1 AA (Issue 13.1) #}
     <a href="#main-content" class="skip-link">
