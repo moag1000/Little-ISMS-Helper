@@ -69,16 +69,6 @@
             </div>
             {% endif %}
 
-            {% if form.auditType is defined %}
-            <div class="col-md-6">
-                {% include '_components/_form_field.html.twig' with {
-                    'field': form.auditType,
-                    'label_key': 'audit.field.audit_type',
-                    'help_key': 'audit.help.audit_type',
-                    'translation_domain': 'audits'
-                } %}
-            </div>
-            {% endif %}
         </div>
 
         {# Corporate Subsidiaries (conditional) #}
