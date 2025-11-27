@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\ManagementReview;
 use App\Form\ManagementReviewType;
 use App\Repository\ManagementReviewRepository;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +20,8 @@ class ManagementReviewController extends AbstractController
     public function __construct(
         private ManagementReviewRepository $reviewRepository,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private TenantContext $tenantContext
     ) {}
 
     #[Route('/', name: 'app_management_review_index')]
@@ -49,6 +51,8 @@ class ManagementReviewController extends AbstractController
     public function new(Request $request): Response
     {
         $review = new ManagementReview();
+        $review->setTenant($this->tenantContext->getCurrentTenant());
+
         $form = $this->createForm(ManagementReviewType::class, $review);
         $form->handleRequest($request);
 

@@ -125,7 +125,132 @@ privacy:
         lessons_learned: 'Erkenntnisse und gelernte Lektionen'
         follow_up_actions: 'Nachfolgende Maßnahmen'
         reopen_reason: 'Grund für Wiedereröffnung'
+    # Choice fields for DPIA form (privacy.* keys)
+    personal_data:
+        identification: 'Identifikationsdaten (Name, Ausweisnummer)'
+        contact: 'Kontaktdaten (Adresse, E-Mail, Telefon)'
+        financial: 'Finanzdaten (Bankverbindung, Zahlungsinformationen)'
+        location: Standortdaten
+        online_identifiers: 'Online-Kennungen (IP, Cookies)'
+        employment: Beschäftigungsdaten
+        educational: Bildungsdaten
+        contract: Vertragsdaten
+        communication: Kommunikationsdaten
+        usage: Nutzungsdaten
+    data_subject:
+        customers: Kunden
+        employees: Mitarbeiter
+        applicants: Bewerber
+        suppliers: 'Lieferanten/Partner'
+        visitors: Website-Besucher
+        subscribers: Newsletter-Abonnenten
+        patients: Patienten
+        students: Schüler/Studenten
+        children: Kinder
+        vulnerable: 'Schutzbedürftige Gruppen'
+        other: Sonstige
+    data_category:
+        health_art9: 'Gesundheitsdaten (Art. 9 DSGVO)'
+        biometric_art9: 'Biometrische Daten (Art. 9 DSGVO)'
+        genetic_art9: 'Genetische Daten (Art. 9 DSGVO)'
+        behavioral: 'Verhaltens-/Profiling-Daten'
+    legal_basis:
+        consent: 'Art. 6(1)(a) Einwilligung'
+        contract: 'Art. 6(1)(b) Vertragserfüllung'
+        legal_obligation: 'Art. 6(1)(c) Rechtliche Verpflichtung'
+        vital_interests: 'Art. 6(1)(d) Lebenswichtige Interessen'
+        public_task: 'Art. 6(1)(e) Öffentliche Aufgabe'
+        legitimate_interests: 'Art. 6(1)(f) Berechtigte Interessen'
+    risk_level:
+        low: Niedrig
+        medium: Mittel
+        high: Hoch
+        critical: Kritisch
+    likelihood:
+        rare: 'Selten (0-10%)'
+        unlikely: 'Unwahrscheinlich (10-30%)'
+        possible: 'Möglich (30-50%)'
+        likely: 'Wahrscheinlich (50-70%)'
+        certain: 'Sicher (70-100%)'
+    impact:
+        negligible: Vernachlässigbar
+        minor: Gering
+        moderate: Mäßig
+        major: Erheblich
+        severe: Schwerwiegend
+    supervisory_consultation:
+        yes_high_risk: 'Ja (hohes Restrisiko - Art. 36)'
 processing_activity:
+    title: 'VVT - Verzeichnis von Verarbeitungstätigkeiten'
+    subtitle: 'Art. 30 DSGVO - Verzeichnis von Verarbeitungstätigkeiten'
+    page:
+        new_title: 'Neue Verarbeitungstätigkeit'
+        new_subtitle: 'Neuen VVT-Eintrag erstellen (Art. 30 DSGVO)'
+        edit_title: 'Verarbeitungstätigkeit bearbeiten'
+        edit_subtitle: 'VVT-Eintrag bearbeiten (Art. 30 DSGVO)'
+    breadcrumb:
+        privacy: 'Datenschutz'
+        vvt: 'VVT - Verarbeitungstätigkeiten'
+        new: 'Neue Verarbeitungstätigkeit'
+        edit: 'Bearbeiten'
+    button:
+        dashboard: 'Dashboard'
+        export_pdf: 'PDF exportieren'
+        export_csv: 'CSV exportieren'
+        new: 'Neue Verarbeitungstätigkeit'
+    stat:
+        total: 'Gesamt'
+        active: 'aktiv'
+        compliance_score: 'Compliance-Score'
+        complete: 'vollständig'
+        high_risk: 'Hohes Risiko'
+        missing_dpia: 'fehlende DSFA'
+        special_categories: 'Besondere Kategorien'
+        art9_data: 'Art. 9 Daten'
+    filter:
+        title: 'Filter'
+        all: 'Alle'
+        active: 'Aktiv'
+        incomplete: 'Unvollständig'
+        requiring_dpia: 'DSFA erforderlich'
+        special_categories: 'Besondere Kategorien'
+        third_country: 'Drittlandübermittlung'
+    table:
+        title: 'Verarbeitungstätigkeiten'
+        items: 'Einträge'
+        name: 'Name'
+        legal_basis: 'Rechtsgrundlage'
+        data_subjects: 'Betroffene'
+        risk: 'Risiko'
+        status: 'Status'
+        completeness: 'Vollständigkeit'
+        actions: 'Aktionen'
+        categories: 'Kategorien'
+        subjects: 'Betroffene'
+    badge:
+        special_categories: 'Besondere Kategorien'
+        third_country: 'Drittland'
+        dpia_required: 'DSFA erforderlich'
+    empty:
+        title: 'Keine Verarbeitungstätigkeiten gefunden.'
+        filter_hint: 'Versuchen Sie einen anderen Filter oder'
+        create_hint: 'Beginnen Sie mit dem'
+        create_first: 'Erstellen Ihrer ersten Verarbeitungstätigkeit'
+    section:
+        basic_info: 'Grundinformationen (Art. 30(1)(a))'
+        data_subjects: 'Betroffene Personen (Art. 30(1)(b))'
+        personal_data: 'Personenbezogene Daten (Art. 30(1)(c))'
+        recipients_transfers: 'Empfänger & Übermittlungen (Art. 30(1)(d-e))'
+        retention: 'Aufbewahrung (Art. 30(1)(f))'
+        security: 'Sicherheitsmaßnahmen (Art. 30(1)(g))'
+        organization: 'Organisation'
+        processors: 'Auftragsverarbeiter & gemeinsame Verantwortliche'
+        risk_assessment: 'Risikobewertung (Art. 35)'
+        automated_decision: 'Automatisierte Entscheidungsfindung (Art. 22)'
+        additional: 'Zusätzliche Informationen'
+    action:
+        save: 'Verarbeitungstätigkeit speichern'
+        cancel: 'Abbrechen'
     form:
         name: 'Bezeichnung der Verarbeitungstätigkeit'
         status: Status
@@ -817,3 +942,68 @@ dpia:
 'privacy.chart.by_status': 'Nach Status'
 'privacy.chart.by_risk_level': 'Nach Risikostufe'
 'privacy.chart.by_legal_basis': 'Nach Rechtsgrundlage'
+
+# GDPR Breach Wizard
+wizard:
+    trigger_button: 'DSGVO Verletzungs-Assistent starten'
+    trigger_hint: 'Nutzen Sie den Assistenten, um zu prüfen, ob eine DSGVO-Meldepflicht besteht (Art. 33)'
+    title: 'DSGVO Datenschutzverletzungs-Assistent'
+    subtitle: 'Schritt-für-Schritt-Bewertung gemäß Art. 33 DSGVO'
+
+    # Step 1
+    step1_title: 'Sind personenbezogene Daten betroffen?'
+    personal_data_question: 'Sind bei diesem Vorfall personenbezogene Daten betroffen (Daten, die sich auf identifizierte oder identifizierbare natürliche Personen beziehen)?'
+    personal_data_yes: 'Personenbezogene Daten sind betroffen'
+    personal_data_no: 'Keine personenbezogenen Daten betroffen (dann KEINE DSGVO-Verletzung)'
+    personal_data_hint: 'Personenbezogene Daten sind alle Informationen, die sich auf eine identifizierte oder identifizierbare natürliche Person beziehen (Name, E-Mail, IP-Adresse, Standortdaten, etc.).'
+
+    # Step 2
+    step2_title: 'Welche Art personenbezogener Daten?'
+    data_type_question: 'Wählen Sie alle betroffenen Datenkategorien aus (mehrere möglich):'
+    data_types:
+        names_contact: 'Namen und Kontaktdaten'
+        names_contact_desc: 'Name, Adresse, E-Mail, Telefonnummer'
+        financial: 'Finanzdaten'
+        financial_desc: 'Bankverbindung, Kreditkartennummern, Zahlungsinformationen'
+        health_biometric: 'Gesundheits-/Biometrische Daten'
+        health_biometric_desc: 'Gesundheitsinformationen, Fingerabdrücke, Gesichtserkennung'
+        special_category_art9: 'Besondere Kategorien (Art. 9 DSGVO)'
+        special_category_art9_desc: 'Ethnische Herkunft, politische Meinungen, religiöse Überzeugungen, Gewerkschaftszugehörigkeit, genetische Daten, Sexualleben'
+        criminal_records_art10: 'Strafrechtliche Daten (Art. 10 DSGVO)'
+        criminal_records_art10_desc: 'Strafrechtliche Verurteilungen und Straftaten'
+    risk_score: 'Risikoscore'
+
+    # Step 3
+    step3_title: 'Wie viele Personen sind betroffen?'
+    affected_count_question: 'Wählen Sie die Anzahl der betroffenen Personen:'
+    scale_options:
+        under_100: 'Weniger als 100 Personen'
+        100_to_1000: '100 bis 1.000 Personen'
+        1001_to_10000: '1.001 bis 10.000 Personen'
+        over_10000: 'Mehr als 10.000 Personen'
+    scale_score: 'Umfangs-Score'
+
+    # Step 4
+    step4_title: 'Ergebnis & Empfehlung'
+    risk_level_label: 'Risikostufe'
+    gdpr_article_33_requirement: 'DSGVO Art. 33 Meldepflicht'
+    deadline_warning: '72-Stunden-Frist läuft!'
+    deadline_date: 'Meldefrist (72h ab jetzt)'
+    recommendation_label: 'Empfehlung'
+    legal_references: 'Rechtsgrundlagen'
+    complete_and_create: 'Abschließen & Vorfall anlegen'
+
+    # Risk levels
+    risk_level:
+        low: 'Niedriges Risiko'
+        medium: 'Mittleres Risiko'
+        high: 'Hohes Risiko'
+        very_high: 'Sehr hohes Risiko'
+
+    # Recommendations
+    recommendation:
+        not_reportable: 'Diese Verletzung wird voraussichtlich NICHT zu einem Risiko für die Rechte und Freiheiten führen. Dokumentation empfohlen, aber keine verpflichtende Meldung an die Aufsichtsbehörde.'
+        reportable_low: 'Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Verletzung gründlich dokumentieren.'
+        reportable_medium: 'Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Folgenabschätzung beginnen und mögliche Benachrichtigung betroffener Personen vorbereiten.'
+        reportable_high: 'DRINGEND: Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Benachrichtigung betroffener Personen prüfen (Art. 34). Sofortiges Handeln erforderlich.'
+        reportable_very_high: 'KRITISCH: Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Benachrichtigung betroffener Personen unverzüglich (Art. 34). Sofortige Eskalation erforderlich.'

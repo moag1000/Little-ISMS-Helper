@@ -38,13 +38,159 @@
                 </div>
                 <div class="card-body">
                     {{ form_start(form) }}
-                        {% include 'user_management/_form.html.twig' with {
-                            'button_label': 'user.save_changes'|trans({}, 'user'),
-                            'button_icon': 'bi-check-circle',
-                            'is_edit_mode': true,
-                            'user': user,
-                            'back_url': path('user_management_show', {'id': user.id})
+                        {% include '_components/_auto_form.html.twig' with {
+                            'form': form,
+                            'sections': {
+                                'basic_info': {
+                                    'label': 'user.section.basic_info'|trans({}, 'user'),
+                                    'fields': ['firstName', 'lastName', 'email', 'department', 'jobTitle', 'phoneNumber', 'avatarFile']
+                                },
+                                'tenant': {
+                                    'label': 'user.section.tenant'|trans({}, 'user'),
+                                    'fields': ['tenant']
+                                },
+                                'authentication': {
+                                    'label': 'user.section.authentication'|trans({}, 'user'),
+                                    'fields': ['plainPassword']
+                                }
+                            },
+                            'col_widths': {
+                                'firstName': 6,
+                                'lastName': 6,
+                                'email': 12,
+                                'department': 6,
+                                'jobTitle': 6,
+                                'phoneNumber': 6,
+                                'avatarFile': 12,
+                                'tenant': 12,
+                                'plainPassword': 12
+                            },
+                            'exclude': ['roles', 'customRoles', 'isActive', 'isVerified']
                         } %}
+
+                        {# Auth Provider Info (Edit Mode Only) #}
+                        <div class="alert alert-info" role="status">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                            <strong>{{ 'user.field.auth_provider'|trans({}, 'user') }}:</strong>
+                            {% if user.authProvider == 'azure_oauth' %}
+                                Azure OAuth
+                            {% elseif user.authProvider == 'azure_saml' %}
+                                Azure SAML
+                            {% else %}
+                                {{ 'user.auth_provider.local'|trans({}, 'user') }}
+                            {% endif %}
+                        </div>
+
+                        {# Roles & Permissions - Manual handling required #}
+                        <fieldset class="mb-4">
+                            <legend class="h5 mb-3">
+                                <i class="bi bi-shield" aria-hidden="true"></i>
+                                {{ 'user.section.roles'|trans({}, 'user') }}
+                            </legend>
+
+                            {# System Roles #}
+                            <div class="mb-3">
+                                {{ form_label(form.roles, 'user.field.roles'|trans({}, 'user'), {
+                                    'label_attr': {'class': 'form-label'}
+                                }) }}
+                                <div role="group" aria-labelledby="{{ form.roles.vars.id }}_label">
+                                    {% for child in form.roles %}
+                                        <div class="form-check">
+                                            {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
+                                            {{ form_label(child, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                {% if form.roles.vars.help is not empty %}
+                                    <small class="form-text text-muted">{{ form.roles.vars.help }}</small>
+                                {% endif %}
+                                {{ form_errors(form.roles) }}
+                            </div>
+
+                            {# Custom Roles #}
+                            <div class="mb-3">
+                                {{ form_label(form.customRoles, 'user.field.custom_roles'|trans({}, 'user'), {
+                                    'label_attr': {'class': 'form-label'}
+                                }) }}
+                                {% if form.customRoles|length > 0 %}
+                                    <div role="group" aria-labelledby="{{ form.customRoles.vars.id }}_label">
+                                        {% for child in form.customRoles %}
+                                            <div class="form-check">
+                                                {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
+                                                {{ form_label(child, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <p class="text-muted" role="status">
+                                        {{ 'user.message.no_custom_roles'|trans({}, 'user') }}
+                                    </p>
+                                {% endif %}
+                                {% if form.customRoles.vars.help is not empty %}
+                                    <small class="form-text text-muted">{{ form.customRoles.vars.help }}</small>
+                                {% endif %}
+                                {{ form_errors(form.customRoles) }}
+                            </div>
+                        </fieldset>
+
+                        {# Status #}
+                        <fieldset class="mb-4">
+                            <legend class="h5 mb-3">
+                                <i class="bi bi-toggle-on" aria-hidden="true"></i>
+                                {{ 'user.section.status'|trans({}, 'user') }}
+                            </legend>
+
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    {{ form_widget(form.isActive, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
+                                    {{ form_label(form.isActive, 'user.field.is_active'|trans({}, 'user'), {
+                                        'label_attr': {'class': 'form-check-label'}
+                                    }) }}
+                                </div>
+                                {% if form.isActive.vars.help is not empty %}
+                                    <small class="form-text text-muted">{{ form.isActive.vars.help }}</small>
+                                {% endif %}
+                                {{ form_errors(form.isActive) }}
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check form-switch">
+                                    {{ form_widget(form.isVerified, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
+                                    {{ form_label(form.isVerified, 'user.field.is_verified'|trans({}, 'user'), {
+                                        'label_attr': {'class': 'form-check-label'}
+                                    }) }}
+                                </div>
+                                {% if form.isVerified.vars.help is not empty %}
+                                    <small class="form-text text-muted">{{ form.isVerified.vars.help }}</small>
+                                {% endif %}
+                                {{ form_errors(form.isVerified) }}
+                            </div>
+                        </fieldset>
+
+                        {# Metadata (Edit Mode Only) #}
+                        <div class="alert alert-secondary" role="status">
+                            <small>
+                                <strong>{{ 'user.field.created_at'|trans({}, 'user') }}:</strong> {{ user.createdAt|date('d.m.Y H:i') }}<br>
+                                {% if user.updatedAt %}
+                                    <strong>{{ 'user.field.updated_at'|trans({}, 'user') }}:</strong> {{ user.updatedAt|date('d.m.Y H:i') }}<br>
+                                {% endif %}
+                                {% if user.lastLoginAt %}
+                                    <strong>{{ 'user.field.last_login'|trans({}, 'user') }}:</strong> {{ user.lastLoginAt|date('d.m.Y H:i') }}
+                                {% endif %}
+                            </small>
+                        </div>
+
+                        {# Form Actions #}
+                        <div class="form-actions d-flex gap-2 justify-content-between mt-4">
+                            <a href="{{ path('user_management_show', {'id': user.id}) }}" class="btn btn-secondary">
+                                <i class="bi bi-x-circle" aria-hidden="true"></i>
+                                {{ 'common.cancel'|trans({}, 'messages') }}
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi-check-circle" aria-hidden="true"></i>
+                                {{ 'user.save_changes'|trans({}, 'user') }}
+                            </button>
+                        </div>
                     {{ form_end(form) }}
                 </div>
             </div>

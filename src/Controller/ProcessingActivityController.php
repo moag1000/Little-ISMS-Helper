@@ -6,6 +6,7 @@ use App\Entity\ProcessingActivity;
 use App\Form\ProcessingActivityType;
 use App\Service\ProcessingActivityService;
 use App\Service\PdfExportService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +23,8 @@ class ProcessingActivityController extends AbstractController
         private ProcessingActivityService $service,
         private PdfExportService $pdfService,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private TenantContext $tenantContext
     ) {}
 
     /**
@@ -63,6 +65,8 @@ class ProcessingActivityController extends AbstractController
     public function new(Request $request): Response
     {
         $processingActivity = new ProcessingActivity();
+        $processingActivity->setTenant($this->tenantContext->getCurrentTenant());
+
         $form = $this->createForm(ProcessingActivityType::class, $processingActivity);
         $form->handleRequest($request);
 

@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'soa' %}
+{% trans_default_domain 'control' %}
 
 {% block title %}{{ 'soa.action.edit'|trans({}, 'soa') }} - {{ control.controlId }} - Little ISMS Helper{% endblock %}
 
@@ -32,152 +32,159 @@
     </div>
 </div>
 
-<form method="post">
-    <div class="form-group">
-        <label class="form-label label-checkbox">
-            <input type="checkbox" name="applicable" value="1" {% if control.applicable %}checked{% endif %} class="checkbox-lg">
-            <span>{{ 'soa.field.applicable'|trans({}, 'soa') }}</span>
-        </label>
-        <small class="small-muted-block">
-            {{ 'soa.help.applicable'|trans({}, 'soa') }}
-        </small>
-    </div>
+{{ form_start(form) }}
 
-    <div class="form-group">
-        <label class="form-label" for="justification">
-            {{ 'soa.field.justification'|trans({}, 'soa') }} *
-        </label>
-        <textarea
-            name="justification"
-            id="justification"
-            rows="4"
-            class="form-control"
-            placeholder="{{ 'soa.placeholder.justification'|trans({}, 'soa') }}"
-        >{{ control.justification }}</textarea>
-        <small class="small-muted-block">
-            {{ 'soa.help.justification'|trans({}, 'soa') }}
-        </small>
-    </div>
-
-    <div class="form-group">
-        <label class="form-label" for="implementationStatus">
-            {{ 'soa.field.status'|trans({}, 'soa') }}
-        </label>
-        <select name="implementationStatus" id="implementationStatus" class="form-control">
-            <option value="not_started" {% if control.implementationStatus == 'not_started' %}selected{% endif %}>{{ 'soa.status.not_started'|trans({}, 'soa') }}</option>
-            <option value="in_progress" {% if control.implementationStatus == 'in_progress' %}selected{% endif %}>{{ 'soa.status.in_progress'|trans({}, 'soa') }}</option>
-            <option value="implemented" {% if control.implementationStatus == 'implemented' %}selected{% endif %}>{{ 'soa.status.implemented'|trans({}, 'soa') }}</option>
-            <option value="not_applicable" {% if control.implementationStatus == 'not_applicable' %}selected{% endif %}>{{ 'soa.status.not_applicable'|trans({}, 'soa') }}</option>
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label class="form-label" for="implementationPercentage">
-            {{ 'soa.field.implementation_percentage'|trans({}, 'soa') }}
-        </label>
-        <div class="flex-center-gap-md">
-            <input
-                type="range"
-                name="implementationPercentage"
-                id="implementationPercentage"
-                min="0"
-                max="100"
-                value="{{ control.implementationPercentage }}"
-                class="flex-1"
-                oninput="document.getElementById('percentageValue').textContent = this.value + '%'"
-            >
-            <span id="percentageValue" class="badge bg-info badge-fs-1-p-sm-md">
-                {{ control.implementationPercentage }}%
-            </span>
-        </div>
-        <div class="progress mt-2">
-            <div class="progress-bar" style="width: {{ control.implementationPercentage }}%">
-                {{ control.implementationPercentage }}%
+{# Applicability Section #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">{{ 'control.section.applicability'|trans({}, 'control') }}</legend>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-check mb-3">
+                {{ form_widget(form.applicable, {'attr': {'class': 'form-check-input'}}) }}
+                {{ form_label(form.applicable, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                {{ form_errors(form.applicable) }}
             </div>
         </div>
     </div>
-
-    <div class="form-group">
-        <label class="form-label" for="implementationNotes">
-            {{ 'soa.field.implementation_notes'|trans({}, 'soa') }}
-        </label>
-        <textarea
-            name="implementationNotes"
-            id="implementationNotes"
-            rows="6"
-            class="form-control"
-            placeholder="{{ 'soa.placeholder.implementation_notes'|trans({}, 'soa') }}"
-        >{{ control.implementationNotes }}</textarea>
-        <small class="small-muted-block">
-            {{ 'soa.help.implementation_notes'|trans({}, 'soa') }}
-        </small>
+    <div class="row">
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.justification,
+                'label_key': form.justification.vars.label,
+                'translation_domain': 'control',
+                'required': form.justification.vars.required
+            } %}
+        </div>
     </div>
+</fieldset>
 
-    <div class="form-group">
-        <label class="form-label" for="responsiblePerson">
-            {{ 'soa.field.responsible_person'|trans({}, 'soa') }}
-        </label>
-        <input
-            type="text"
-            name="responsiblePerson"
-            id="responsiblePerson"
-            value="{{ control.responsiblePerson }}"
-            class="form-control"
-            placeholder="{{ 'soa.placeholder.responsible_person'|trans({}, 'soa') }}"
-        >
+{# Implementation Section #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">{{ 'control.section.implementation'|trans({}, 'control') }}</legend>
+    <div class="row">
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.implementationStatus,
+                'label_key': form.implementationStatus.vars.label,
+                'translation_domain': 'control',
+                'required': form.implementationStatus.vars.required
+            } %}
+        </div>
     </div>
-
-    <div class="form-group">
-        <label class="form-label" for="targetDate">
-            {{ 'soa.field.target_date'|trans({}, 'soa') }}
-        </label>
-        <input
-            type="date"
-            name="targetDate"
-            id="targetDate"
-            value="{{ control.targetDate ? control.targetDate|date('Y-m-d') : '' }}"
-            class="form-control"
-        >
+    <div class="row">
+        <div class="col-md-12">
+            <div class="mb-3">
+                {{ form_label(form.implementationPercentage) }}
+                <div class="flex-center-gap-md">
+                    {{ form_widget(form.implementationPercentage, {
+                        'attr': {
+                            'type': 'range',
+                            'class': 'flex-1',
+                            'min': '0',
+                            'max': '100',
+                            'oninput': 'document.getElementById(\'percentageValue\').textContent = this.value + \'%\'; document.getElementById(\'progressBar\').style.width = this.value + \'%\'; document.getElementById(\'progressBar\').textContent = this.value + \'%\';'
+                        }
+                    }) }}
+                    <span id="percentageValue" class="badge bg-info badge-fs-1-p-sm-md">
+                        {{ form.vars.data.implementationPercentage }}%
+                    </span>
+                </div>
+                <div class="progress mt-2">
+                    <div id="progressBar" class="progress-bar" style="width: {{ form.vars.data.implementationPercentage }}%">
+                        {{ form.vars.data.implementationPercentage }}%
+                    </div>
+                </div>
+                {{ form_help(form.implementationPercentage) }}
+                {{ form_errors(form.implementationPercentage) }}
+            </div>
+        </div>
     </div>
-
-    <div class="d-flex gap-2 mt-4">
-        <button type="submit" class="btn btn-success">
-            💾 {{ 'common.save_changes'|trans({}, 'messages') }}
-        </button>
-        <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-secondary">
-            ❌ {{ 'common.cancel'|trans({}, 'messages') }}
-        </a>
+    <div class="row">
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.implementationNotes,
+                'label_key': form.implementationNotes.vars.label,
+                'translation_domain': 'control',
+                'required': form.implementationNotes.vars.required
+            } %}
+        </div>
     </div>
-</form>
+</fieldset>
 
-<script>
-// Update range input value display in real-time
-function initializeSOAPercentageSlider() {
-    const rangeInput = document.getElementById('implementationPercentage');
-    const progressBar = document.querySelector('.progress-bar');
+{# Responsibility Section #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">{{ 'control.section.responsibility'|trans({}, 'control') }}</legend>
+    <div class="row">
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.responsiblePerson,
+                'label_key': form.responsiblePerson.vars.label,
+                'translation_domain': 'control',
+                'required': form.responsiblePerson.vars.required
+            } %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.targetDate,
+                'label_key': form.targetDate.vars.label,
+                'translation_domain': 'control',
+                'required': form.targetDate.vars.required
+            } %}
+        </div>
+    </div>
+</fieldset>
 
-    if (!rangeInput || !progressBar) return; // Elements not present on page
+{# Review Section #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">{{ 'control.section.review'|trans({}, 'control') }}</legend>
+    <div class="row">
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.lastReviewDate,
+                'label_key': form.lastReviewDate.vars.label,
+                'translation_domain': 'control',
+                'required': form.lastReviewDate.vars.required
+            } %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.nextReviewDate,
+                'label_key': form.nextReviewDate.vars.label,
+                'translation_domain': 'control',
+                'required': form.nextReviewDate.vars.required
+            } %}
+        </div>
+    </div>
+</fieldset>
 
-    // Prevent duplicate listeners
-    if (rangeInput.dataset.initialized === 'true') return;
-    rangeInput.dataset.initialized = 'true';
+{# Assets Section #}
+<fieldset class="mb-4">
+    <legend class="h5 mb-3">{{ 'control.section.assets'|trans({}, 'control') }}</legend>
+    <div class="row">
+        <div class="col-md-12">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.protectedAssets,
+                'label_key': form.protectedAssets.vars.label,
+                'translation_domain': 'control',
+                'required': form.protectedAssets.vars.required
+            } %}
+        </div>
+    </div>
+</fieldset>
 
-    rangeInput.addEventListener('input', function() {
-        const value = this.value;
-        document.getElementById('percentageValue').textContent = value + '%';
-        progressBar.style.width = value + '%';
-        progressBar.textContent = value + '%';
-    });
-}
+<div class="d-flex gap-2 mt-4">
+    <button type="submit" class="btn btn-success">
+        {{ 'common.save_changes'|trans({}, 'messages') }}
+    </button>
+    <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-secondary">
+        {{ 'common.cancel'|trans({}, 'messages') }}
+    </a>
+</div>
 
-// Cleanup before Turbo caches the page to allow re-initialization on back navigation
-document.addEventListener('turbo:before-cache', function() {
-    const rangeInput = document.getElementById('implementationPercentage');
-    if (rangeInput) delete rangeInput.dataset.initialized;
-});
+{{ form_end(form) }}
 
-// Initialize on both DOMContentLoaded (first page load) and turbo:load (Turbo navigation)
-document.addEventListener('DOMContentLoaded', initializeSOAPercentageSlider);
-document.addEventListener('turbo:load', initializeSOAPercentageSlider);
-</script>
 {% endblock %}

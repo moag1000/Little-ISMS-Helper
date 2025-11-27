@@ -8,9 +8,11 @@ use App\Repository\AuditLogRepository;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\IncidentRepository;
 use App\Service\EmailNotificationService;
+use App\Service\GdprBreachAssessmentService;
 use App\Service\IncidentBCMImpactService;
 use App\Service\IncidentEscalationWorkflowService;
 use App\Service\PdfExportService;
+use App\Service\TenantContext;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -30,12 +32,14 @@ class IncidentController extends AbstractController
         private ComplianceFrameworkRepository $frameworkRepository,
         private EntityManagerInterface $entityManager,
         private EmailNotificationService $emailService,
+        private GdprBreachAssessmentService $gdprAssessmentService,
         private IncidentBCMImpactService $bcmImpactService,
         private PdfExportService $pdfService,
         private UserRepository $userRepository,
         private TranslatorInterface $translator,
         private Security $security,
-        private IncidentEscalationWorkflowService $escalationService
+        private IncidentEscalationWorkflowService $escalationService,
+        private TenantContext $tenantContext
     ) {}
 
     #[Route('/', name: 'app_incident_index')]
@@ -143,6 +147,8 @@ class IncidentController extends AbstractController
     public function new(Request $request): Response
     {
         $incident = new Incident();
+        $incident->setTenant($this->tenantContext->getCurrentTenant());
+
         $form = $this->createForm(IncidentType::class, $incident);
         $form->handleRequest($request);
 
@@ -164,6 +170,30 @@ class IncidentController extends AbstractController
             'incident' => $incident,
             'form' => $form,
         ]);
+    }
+
+    /**
+     * GDPR Breach Wizard - Calculate risk assessment
+     *
+     * JSON API endpoint for GDPR wizard to calculate breach risk
+     * based on data types and affected count.
+     */
+    #[Route('/gdpr-wizard-result', name: 'app_incident_gdpr_wizard_result', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function gdprWizardResult(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['dataTypes']) || !isset($data['scale'])) {
+            return $this->json(['error' => 'Missing required parameters'], 400);
+        }
+
+        $assessment = $this->gdprAssessmentService->assessBreachRisk(
+            $data['dataTypes'],
+            $data['scale']
+        );
+
+        return $this->json($assessment);
     }
 
     #[Route('/bulk-delete', name: 'app_incident_bulk_delete', methods: ['POST'])]
@@ -485,5 +515,65 @@ class IncidentController extends AbstractController
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
             'Content-Length' => strlen($pdf),
         ]);
+    }
+
+    /**
+     * AJAX Endpoint for Escalation Preview
+     *
+     * Shows users what will happen BEFORE they create/update an incident.
+     * Returns preview information without triggering actual workflows.
+     */
+    #[Route('/escalation-preview', name: 'app_incident_escalation_preview', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
+    public function escalationPreview(Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+
+        // Validate input
+        if (!isset($data['severity'])) {
+            return $this->json(['error' => 'Missing severity parameter'], 400);
+        }
+
+        $severity = $data['severity'];
+        $dataBreachOccurred = $data['dataBreachOccurred'] ?? false;
+
+        // Validate severity value
+        $validSeverities = ['low', 'medium', 'high', 'critical'];
+        if (!in_array($severity, $validSeverities)) {
+            return $this->json(['error' => 'Invalid severity value'], 400);
+        }
+
+        // Create temporary incident object for preview
+        $incident = new Incident();
+        $incident->setSeverity($severity);
+        $incident->setDataBreachOccurred((bool) $dataBreachOccurred);
+
+        // Get preview from escalation service
+        $preview = $this->escalationService->previewEscalation($incident);
+
+        // Format response for JSON
+        $response = [
+            'will_escalate' => $preview['will_escalate'],
+            'escalation_level' => $preview['escalation_level'],
+            'workflow_name' => $preview['workflow_name'],
+            'notified_roles' => $preview['notified_roles'],
+            'notified_users' => array_map(function($user) {
+                return [
+                    'id' => $user->getId(),
+                    'name' => $user->getFirstName() . ' ' . $user->getLastName(),
+                    'email' => $user->getEmail(),
+                    'avatar' => $user->getAvatar(),
+                ];
+            }, $preview['notified_users']),
+            'sla_hours' => $preview['sla_hours'],
+            'sla_description' => $preview['sla_description'],
+            'is_gdpr_breach' => $preview['is_gdpr_breach'],
+            'gdpr_deadline' => $preview['gdpr_deadline'] ? $preview['gdpr_deadline']->format('Y-m-d H:i:s') : null,
+            'requires_approval' => $preview['requires_approval'],
+            'approval_steps' => $preview['approval_steps'],
+            'estimated_completion_time' => $preview['estimated_completion_time'],
+        ];
+
+        return $this->json($response);
     }
 }

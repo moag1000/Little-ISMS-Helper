@@ -139,10 +139,11 @@ class IncidentEscalationWorkflowService
         $this->notifyDataBreach($incident, $dpo, $ciso, $ceo, $deadline);
 
         // Audit log
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'incident_escalation',
             'data_breach_workflow_started',
             $incident->getId(),
+            null,
             [
                 'incident_number' => $incident->getIncidentNumber(),
                 'deadline' => $deadline->format('Y-m-d H:i:s'),
@@ -152,7 +153,8 @@ class IncidentEscalationWorkflowService
                     'ciso' => $ciso?->getEmail(),
                     'ceo' => $ceo?->getEmail(),
                 ],
-            ]
+            ],
+            null
         );
 
         return [
@@ -226,15 +228,17 @@ class IncidentEscalationWorkflowService
         }
 
         // Audit log
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'incident_escalation',
             'critical_incident_escalated',
             $incident->getId(),
+            null,
             [
                 'incident_number' => $incident->getIncidentNumber(),
                 'sla_deadline' => $slaDeadline->format('Y-m-d H:i:s'),
                 'notified_count' => count($notifiedUsers),
-            ]
+            ],
+            null
         );
 
         return [
@@ -299,14 +303,16 @@ class IncidentEscalationWorkflowService
             $notifiedUsers[] = $ciso;
         }
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'incident_escalation',
             'high_incident_escalated',
             $incident->getId(),
+            null,
             [
                 'incident_number' => $incident->getIncidentNumber(),
                 'sla_deadline' => $slaDeadline->format('Y-m-d H:i:s'),
-            ]
+            ],
+            null
         );
 
         return [
@@ -357,11 +363,13 @@ class IncidentEscalationWorkflowService
             $this->emailService->sendIncidentEscalationNotification($incidentManager, $incident, 'medium', $slaDeadline, $incidentUrl);
         }
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'incident_escalation',
             'medium_incident_escalated',
             $incident->getId(),
-            ['incident_number' => $incident->getIncidentNumber()]
+            null,
+            ['incident_number' => $incident->getIncidentNumber()],
+            null
         );
 
         return [
@@ -401,11 +409,13 @@ class IncidentEscalationWorkflowService
             $this->emailService->sendIncidentEscalationNotification($incidentManager, $incident, 'low', $slaDeadline, $incidentUrl);
         }
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'incident_escalation',
             'low_incident_logged',
             $incident->getId(),
-            ['incident_number' => $incident->getIncidentNumber()]
+            null,
+            ['incident_number' => $incident->getIncidentNumber()],
+            null
         );
 
         return [
@@ -545,5 +555,124 @@ class IncidentEscalationWorkflowService
             self::SEVERITY_MEDIUM => 'medium',
             default => 'low',
         };
+    }
+
+    /**
+     * Generate escalation preview without actually triggering workflows
+     *
+     * Shows users what will happen BEFORE they create/update an incident,
+     * so they understand workflow implications.
+     *
+     * @param Incident $incident Incident object (can be unsaved)
+     * @return array Preview information
+     */
+    public function previewEscalation(Incident $incident): array
+    {
+        $severity = $incident->getSeverity();
+        $isDataBreach = $incident->isDataBreachOccurred();
+        $escalationLevel = $this->determineEscalationLevel($incident);
+
+        // Determine workflow name based on escalation level
+        $workflowName = match ($escalationLevel) {
+            'data_breach' => 'Data Breach Notification',
+            'critical' => 'Critical Incident Response',
+            'high' => 'High Severity Incident',
+            'medium' => 'Medium Severity Incident',
+            default => null,
+        };
+
+        // Determine if escalation will occur
+        $willEscalate = in_array($severity, [self::SEVERITY_MEDIUM, self::SEVERITY_HIGH, self::SEVERITY_CRITICAL]) || $isDataBreach;
+
+        // Get SLA hours
+        $slaHours = match ($escalationLevel) {
+            'data_breach' => self::SLA_BREACH,
+            'critical' => self::SLA_CRITICAL,
+            'high' => self::SLA_HIGH,
+            'medium' => self::SLA_MEDIUM,
+            default => self::SLA_LOW,
+        };
+
+        // Build SLA description
+        $slaDescription = match ($escalationLevel) {
+            'data_breach' => 'Immediate response required (1 hour)',
+            'critical' => 'Response within 2 hours',
+            'high' => 'Response within 8 hours',
+            'medium' => 'Response within 24 hours (1 day)',
+            default => 'Response within 48 hours (2 days)',
+        };
+
+        // Determine notified roles and get actual users
+        $notifiedRoles = [];
+        $notifiedUsers = [];
+
+        if ($isDataBreach) {
+            $notifiedRoles = ['DPO', 'CISO', 'CEO'];
+            $dpo = $this->findUserByRole('ROLE_DPO');
+            $ciso = $this->findUserByRole('ROLE_CISO');
+            $ceo = $this->findUserByRole('ROLE_CEO');
+            $notifiedUsers = array_filter([$dpo, $ciso, $ceo]);
+        } elseif ($severity === self::SEVERITY_CRITICAL) {
+            $notifiedRoles = ['Incident Manager', 'CISO', 'Management'];
+            $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
+            $ciso = $this->findUserByRole('ROLE_CISO');
+            $management = $this->findUsersByRole('ROLE_MANAGER');
+            $notifiedUsers = array_filter(array_merge(
+                $incidentManager ? [$incidentManager] : [],
+                $ciso ? [$ciso] : [],
+                $management
+            ));
+        } elseif ($severity === self::SEVERITY_HIGH) {
+            $notifiedRoles = ['Incident Manager', 'CISO'];
+            $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
+            $ciso = $this->findUserByRole('ROLE_CISO');
+            $notifiedUsers = array_filter([$incidentManager, $ciso]);
+        } elseif ($severity === self::SEVERITY_MEDIUM) {
+            $notifiedRoles = ['Incident Manager'];
+            $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
+            $notifiedUsers = $incidentManager ? [$incidentManager] : [];
+        }
+
+        // GDPR deadline calculation
+        $gdprDeadline = null;
+        if ($isDataBreach) {
+            $detectedAt = $incident->getDetectedAt() ?? new \DateTimeImmutable();
+            $gdprDeadline = $detectedAt->modify('+' . self::GDPR_BREACH_DEADLINE_HOURS . ' hours');
+        }
+
+        // Approval requirements
+        $requiresApproval = $isDataBreach;
+        $approvalSteps = [];
+        if ($isDataBreach) {
+            $approvalSteps = [
+                ['name' => 'DPO Review', 'role' => 'Data Protection Officer'],
+                ['name' => 'CISO Approval', 'role' => 'Chief Information Security Officer'],
+                ['name' => 'CEO Final Approval', 'role' => 'Chief Executive Officer'],
+            ];
+        }
+
+        // Estimated completion time
+        $estimatedCompletionTime = match ($escalationLevel) {
+            'data_breach' => '72 hours (GDPR compliance required)',
+            'critical' => '2-4 hours with immediate management attention',
+            'high' => '8-24 hours with senior oversight',
+            'medium' => '1-2 days standard process',
+            default => '2-3 days standard process',
+        };
+
+        return [
+            'will_escalate' => $willEscalate,
+            'escalation_level' => $escalationLevel,
+            'workflow_name' => $workflowName,
+            'notified_roles' => $notifiedRoles,
+            'notified_users' => $notifiedUsers,
+            'sla_hours' => $slaHours,
+            'sla_description' => $slaDescription,
+            'is_gdpr_breach' => $isDataBreach,
+            'gdpr_deadline' => $gdprDeadline,
+            'requires_approval' => $requiresApproval,
+            'approval_steps' => $approvalSteps,
+            'estimated_completion_time' => $estimatedCompletionTime,
+        ];
     }
 }

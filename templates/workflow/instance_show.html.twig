@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'workflows' %}
+{% import '_macros/workflow.html.twig' as workflow_macros %}
 
 {% block title %}{{ instance.name }} - {{ 'workflow.title.instance_show'|trans({}, 'workflows') }} - Little ISMS Helper{% endblock %}
 
@@ -90,6 +91,14 @@
             </div>
         </div>
     </div>
+
+    {# SLA Timeline #}
+    {% if instance.dueDate and instance.status in ['pending', 'active'] %}
+    <div class="mt-3">
+        <h2 class="fs-1-mb-sm">{{ 'workflow.field.due_date'|trans({}, 'workflows') }}</h2>
+        {{ workflow_macros.sla_timeline(instance.dueDate, null, null, instance.createdAt) }}
+    </div>
+    {% endif %}
 </div>
 
 {# Workflow Steps #}
@@ -129,8 +138,9 @@
             {% endif %}
 
             {% if step.dueDate %}
-            <div class="mt-1">
-                <small><strong>{{ 'workflow.field.due_date'|trans({}, 'workflows') }}:</strong> {{ step.dueDate|date('d.m.Y H:i') }}</small>
+            <div class="mt-2">
+                <small><strong>{{ 'workflow.field.due_date'|trans({}, 'workflows') }}:</strong></small>
+                {{ workflow_macros.sla_timeline(step.dueDate, null, null, instance.createdAt, true) }}
             </div>
             {% endif %}
         </div>

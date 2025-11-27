@@ -94,4 +94,61 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
             'cancelled' => (clone $qb)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', 'cancelled')->getQuery()->getSingleScalarResult(),
         ];
     }
+
+    /**
+     * Find pending workflow instances for a specific user.
+     *
+     * @param \App\Entity\User $user User to filter by
+     * @return WorkflowInstance[] Array of pending instances sorted by due date (earliest first)
+     */
+    public function findPendingForUser(\App\Entity\User $user): array
+    {
+        // Get user roles for role-based filtering
+        $userRoles = $user->getRoles();
+
+        // Query for workflows where user is approver by user ID or role
+        $qb = $this->createQueryBuilder('wi')
+            ->leftJoin('wi.currentStep', 'step')
+            ->where('wi.status IN (:statuses)')
+            ->setParameter('statuses', ['pending', 'in_progress'])
+            ->orderBy('wi.dueDate', 'ASC');
+
+        // Build OR conditions for user matching
+        $orConditions = $qb->expr()->orX();
+
+        // Match by user ID in approverUsers array
+        $orConditions->add($qb->expr()->like('step.approverUsers', ':userId'));
+        $qb->setParameter('userId', '%"' . $user->getId() . '"%');
+
+        // Match by role in approverRole field
+        foreach ($userRoles as $role) {
+            $paramName = 'role_' . md5($role);
+            $orConditions->add($qb->expr()->eq('step.approverRole', ':' . $paramName));
+            $qb->setParameter($paramName, $role);
+        }
+
+        $qb->andWhere($orConditions);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Find workflow instances with upcoming deadlines.
+     *
+     * @param \DateTimeInterface $within Time window for upcoming deadlines
+     * @return WorkflowInstance[] Array of instances with upcoming deadlines
+     */
+    public function findUpcomingDeadlines(\DateTimeInterface $within): array
+    {
+        return $this->createQueryBuilder('wi')
+            ->where('wi.status IN (:statuses)')
+            ->andWhere('wi.dueDate IS NOT NULL')
+            ->andWhere('wi.dueDate BETWEEN :now AND :within')
+            ->setParameter('statuses', ['pending', 'in_progress'])
+            ->setParameter('now', new \DateTimeImmutable())
+            ->setParameter('within', $within)
+            ->orderBy('wi.dueDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

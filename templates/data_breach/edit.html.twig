@@ -28,7 +28,58 @@
         </div>
         <div class="card-body">
             {{ form_start(form) }}
-                {{ form_widget(form) }}
+                {% include '_components/_auto_form.html.twig' with {
+                    'form': form,
+                    'sections': {
+                        'basic_info': {
+                            'label': '<i class="bi bi-info-circle" aria-hidden="true"></i> Basic Information'|raw,
+                            'fields': ['title', 'incident', 'processingActivity']
+                        },
+                        'notification_content': {
+                            'label': '<i class="bi bi-file-text" aria-hidden="true"></i> Art. 33(3) - Content of Notification'|raw,
+                            'fields': ['affectedDataSubjects', 'dataCategories', 'dataSubjectCategories', 'breachNature', 'likelyConsequences', 'measuresTaken', 'mitigationMeasures']
+                        },
+                        'risk_assessment': {
+                            'label': '<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Risk Assessment'|raw,
+                            'fields': ['riskLevel', 'riskAssessment', 'specialCategoriesAffected', 'criminalDataAffected']
+                        },
+                        'notification_requirements': {
+                            'label': '<i class="bi bi-bell" aria-hidden="true"></i> Notification Requirements'|raw,
+                            'fields': ['requiresAuthorityNotification', 'requiresSubjectNotification', 'noSubjectNotificationReason']
+                        },
+                        'investigation': {
+                            'label': '<i class="bi bi-search" aria-hidden="true"></i> Investigation & Follow-up'|raw,
+                            'fields': ['rootCause', 'lessonsLearned']
+                        },
+                        'responsible_persons': {
+                            'label': '<i class="bi bi-person-badge" aria-hidden="true"></i> Responsible Persons'|raw,
+                            'fields': ['dataProtectionOfficer']
+                        }
+                    },
+                    'col_widths': {
+                        'title': 8,
+                        'incident': 6,
+                        'processingActivity': 6,
+                        'affectedDataSubjects': 12,
+                        'dataCategories': 12,
+                        'dataSubjectCategories': 12,
+                        'breachNature': 12,
+                        'likelyConsequences': 12,
+                        'measuresTaken': 12,
+                        'mitigationMeasures': 12,
+                        'riskLevel': 6,
+                        'riskAssessment': 6,
+                        'specialCategoriesAffected': 6,
+                        'criminalDataAffected': 6,
+                        'requiresAuthorityNotification': 6,
+                        'requiresSubjectNotification': 6,
+                        'noSubjectNotificationReason': 12,
+                        'rootCause': 12,
+                        'lessonsLearned': 12,
+                        'dataProtectionOfficer': 12
+                    },
+                    'translation_domain': 'privacy'
+                } %}
 
                 <div class="mt-4">
                     <button type="submit" class="btn btn-success">

@@ -6,6 +6,7 @@ use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Repository\WorkflowRepository;
 use App\Repository\WorkflowInstanceRepository;
+use App\Service\TenantContext;
 use App\Service\WorkflowService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,7 +25,8 @@ class WorkflowController extends AbstractController
         private WorkflowInstanceRepository $workflowInstanceRepository,
         private WorkflowService $workflowService,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private TenantContext $tenantContext
     ) {}
 
     #[Route('/', name: 'app_workflow_index')]
@@ -225,6 +227,8 @@ class WorkflowController extends AbstractController
     public function newDefinition(Request $request): Response
     {
         $workflow = new Workflow();
+        $workflow->setTenant($this->tenantContext->getCurrentTenant());
+
         $form = $this->createForm(\App\Form\WorkflowType::class, $workflow);
         $form->handleRequest($request);
 

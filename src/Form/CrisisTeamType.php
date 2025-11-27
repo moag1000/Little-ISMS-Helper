@@ -59,7 +59,7 @@ class CrisisTeamType extends AbstractType
                 ],
                 'expanded' => true,
                 'required' => true,
-                    'choice_translation_domain' => 'crisis_team',
+                    'choice_translation_domain' => 'messages',
             ])
             ->add('teamLeader', EntityType::class, [
                 'label' => 'crisis_team.field.team_leader',
@@ -169,7 +169,7 @@ class CrisisTeamType extends AbstractType
             ->add('businessContinuityPlans', EntityType::class, [
                 'label' => 'crisis_team.field.business_continuity_plans',
                 'class' => BusinessContinuityPlan::class,
-                'choice_label' => 'title',
+                'choice_label' => 'name',
                 'multiple' => true,
                 'required' => false,
                 'help' => 'crisis_team.help.business_continuity_plans',

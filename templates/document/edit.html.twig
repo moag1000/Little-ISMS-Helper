@@ -24,12 +24,42 @@
 
 <div class="card">
     <div class="card-body">
+        <div class="alert alert-info" role="status">
+            <i class="bi bi-info-circle" aria-hidden="true"></i>
+            {{ 'document.help.edit_file'|trans({}, 'document') }}
+        </div>
+
         {{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
-            {% include 'document/_form.html.twig' with {
-                'button_label': 'document.action.update'|trans({}, 'document'),
-                'button_icon': 'bi-check-circle',
-                'is_edit_mode': true
+            {% include '_components/_auto_form.html.twig' with {
+                'form': form,
+                'sections': {
+                    'basic_info': {
+                        'label': 'document.section.basic_info'|trans({}, 'document'),
+                        'fields': ['originalFilename', 'description', 'category']
+                    },
+                    'file_upload': {
+                        'label': 'document.section.file_upload'|trans({}, 'document'),
+                        'fields': ['file']
+                    }
+                },
+                'col_widths': {
+                    'originalFilename': 12,
+                    'description': 12,
+                    'category': 6,
+                    'file': 12
+                }
             } %}
+
+            <div class="form-actions d-flex gap-2 justify-content-end">
+                <a href="{{ path('app_document_show', {id: document.id}) }}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle" aria-hidden="true"></i>
+                    {{ 'common.cancel'|trans({}, 'messages') }}
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi-check-circle" aria-hidden="true"></i>
+                    {{ 'document.action.update'|trans({}, 'document') }}
+                </button>
+            </div>
         {{ form_end(form) }}
     </div>
 </div>

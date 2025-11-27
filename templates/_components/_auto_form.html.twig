@@ -42,7 +42,7 @@
 
 {% for section_key, section in sections %}
     <fieldset class="mb-4">
-        <legend class="h5 mb-3">{{ section.label }}</legend>
+        <legend class="h5 mb-3">{{ section.label|raw }}</legend>
 
         {% set current_row_fields = [] %}
         {% set current_row_width = 0 %}

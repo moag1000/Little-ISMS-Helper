@@ -181,3 +181,28 @@ incident:
         view_incident: 'View Incident'
         automated_notification: 'This is an automated notification from the Incident Management System.'
         iso_reference: 'ISO 27001 A.16.1 - Management of Information Security Incidents'
+    escalation_preview:
+        title: 'Escalation Preview'
+        select_severity: 'Select a severity to see escalation preview'
+        workflow_name: Workflow
+        escalation_level: 'Escalation Level'
+        automatic: Automatic
+        notified_users: 'Who will be notified:'
+        emails: 'emails will be sent'
+        sla_requirement: 'SLA Requirement'
+        gdpr_warning: 'GDPR Data Breach - 72h Deadline'
+        gdpr_deadline: 'Deadline:'
+        gdpr_reference: 'GDPR Art. 33 requires notification to supervisory authority within 72 hours of becoming aware of the breach.'
+        approval_required: 'Approval Required'
+        approval_steps: 'Approval Steps'
+        estimated_time: 'Estimated Time:'
+        summary_title: 'What will happen:'
+        actions:
+            workflow_started: 'Workflow will start automatically'
+            notifications_sent: 'Email notifications will be sent to stakeholders'
+            approval_required: 'Approval steps will be initiated'
+            sla_tracked: 'SLA tracking will begin'
+    field:
+        data_breach_occurred: 'Data Breach Occurred'
+    help:
+        data_breach_occurred: 'Mark this as a data breach if personal data is affected (GDPR Art. 33)'

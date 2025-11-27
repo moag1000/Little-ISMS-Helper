@@ -38,150 +38,116 @@
                 </ul>
             </div>
 
+            {# GDPR Breach Wizard Modal #}
+            {% include 'incident/_gdpr_breach_wizard_modal.html.twig' %}
+
             <div class="card">
                 <div class="card-header bg-primary text-white">
                     <h2 class="mb-0">{{ 'incident.new'|trans({}, 'incident') }}</h2>
                 </div>
-                <div class="card-body">
+                <div class="card-body" data-controller="incident-escalation-preview"
+                     data-incident-escalation-preview-preview-url-value="{{ path('app_incident_escalation_preview') }}">
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'incident-form'}}) }}
 
-                    {# Basic Information Section #}
+                    {# Basic Info Section #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-info-square" aria-hidden="true"></i>
-                            {{ 'incident.section.basic_info'|trans({}, 'incident') }}
-                        </legend>
-
+                        <legend class="h5 mb-3">{{ 'incident.section.basic_info'|trans({}, 'incident') }}</legend>
                         <div class="row">
                             <div class="col-md-8">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.title,
-                                    'label': 'incident.field.title'|trans({}, 'incident'),
-                                    'required': true
-                                } %}
+                                {{ form_row(form.title) }}
                             </div>
                             <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.category,
-                                    'label': 'incident.field.category'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.category) }}
                             </div>
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.description,
-                                    'label': 'incident.field.description'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.description) }}
                             </div>
                         </div>
                     </fieldset>
 
-                    {# Severity & Status Section #}
+                    {# Severity & Status Section with Escalation Preview #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-thermometer-half" aria-hidden="true"></i>
-                            {{ 'incident.section.severity_status'|trans({}, 'incident') }}
-                        </legend>
-
+                        <legend class="h5 mb-3">{{ 'incident.section.severity_status'|trans({}, 'incident') }}</legend>
                         <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.severity,
-                                    'label': 'incident.field.severity'|trans({}, 'incident'),
-                                    'required': true
-                                } %}
+                            <div class="col-md-4">
+                                {{ form_row(form.severity, {
+                                    'attr': {
+                                        'data-incident-escalation-preview-target': 'severitySelect',
+                                        'data-action': 'change->incident-escalation-preview#updatePreview'
+                                    }
+                                }) }}
                             </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.status,
-                                    'label': 'incident.field.status'|trans({}, 'incident')
-                                } %}
+                            <div class="col-md-4" data-incident-escalation-preview-target="breachCheckbox">
+                                {{ form_row(form.dataBreachOccurred, {
+                                    'row_attr': {
+                                        'data-action': 'change->incident-escalation-preview#updatePreview'
+                                    }
+                                }) }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form_row(form.status) }}
                             </div>
                         </div>
+
+                        {# GDPR Breach Wizard Button #}
+                        <div class="mt-3">
+                            <button type="button" class="btn btn-outline-warning" data-controller="gdpr-breach-wizard" data-action="click->gdpr-breach-wizard#open">
+                                <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+                                {{ 'privacy.wizard.trigger_button'|trans({}, 'privacy') }}
+                            </button>
+                            <small class="d-block mt-2 text-muted">{{ 'privacy.wizard.trigger_hint'|trans({}, 'privacy') }}</small>
+                        </div>
                     </fieldset>
+
+                    {# Escalation Preview Panel - Shows workflow implications #}
+                    <div data-incident-escalation-preview-target="previewPanel" style="display: none;" class="mb-4">
+                        {% include 'incident/_escalation_preview_panel.html.twig' %}
+                    </div>
 
                     {# Detection & Reporting Section #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-calendar-event" aria-hidden="true"></i>
-                            {{ 'incident.section.detection_reporting'|trans({}, 'incident') }}
-                        </legend>
-
+                        <legend class="h5 mb-3">{{ 'incident.section.detection_reporting'|trans({}, 'incident') }}</legend>
                         <div class="row">
                             <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.detectedAt,
-                                    'label': 'incident.field.detected_at'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.detectedAt) }}
                             </div>
                             <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.occurredAt,
-                                    'label': 'incident.field.occurred_at'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.occurredAt) }}
                             </div>
                             <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.reportedBy,
-                                    'label': 'incident.field.reported_by'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.reportedBy) }}
                             </div>
                         </div>
                     </fieldset>
 
-                    {# Affected Systems & Assets Section #}
+                    {# Affected Systems Section #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-hdd-network" aria-hidden="true"></i>
-                            {{ 'incident.section.affected_systems'|trans({}, 'incident') }}
-                        </legend>
-
+                        <legend class="h5 mb-3">{{ 'incident.section.affected_systems'|trans({}, 'incident') }}</legend>
                         <div class="row">
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.affectedSystems,
-                                    'label': 'incident.field.affected_systems'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.affectedSystems) }}
                             </div>
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.affectedAssets,
-                                    'label': 'incident.field.affected_assets'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.affectedAssets) }}
                             </div>
                         </div>
                     </fieldset>
 
                     {# Analysis Section #}
                     <fieldset class="mb-4">
-                        <legend class="h5 mb-3">
-                            <i class="bi bi-search" aria-hidden="true"></i>
-                            {{ 'incident.section.analysis'|trans({}, 'incident') }}
-                        </legend>
-
+                        <legend class="h5 mb-3">{{ 'incident.section.analysis'|trans({}, 'incident') }}</legend>
                         <div class="row">
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.rootCause,
-                                    'label': 'incident.field.root_cause'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.rootCause) }}
                             </div>
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.correctiveActions,
-                                    'label': 'incident.field.corrective_actions'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.correctiveActions) }}
                             </div>
                             <div class="col-md-12">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.lessonsLearned,
-                                    'label': 'incident.field.lessons_learned'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.lessonsLearned) }}
                             </div>
                             <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.closedAt,
-                                    'label': 'incident.field.closed_at'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.closedAt) }}
                             </div>
                         </div>
                     </fieldset>
@@ -203,16 +169,10 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.nis2Category,
-                                    'label': 'incident.field.nis2_category'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.nis2Category) }}
                             </div>
                             <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.crossBorderImpact,
-                                    'label': 'incident.field.cross_border_impact'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.crossBorderImpact) }}
                             </div>
                         </div>
 
@@ -224,54 +184,33 @@
 
                         <div class="row">
                             <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.earlyWarningReportedAt,
-                                    'label': 'incident.field.early_warning_reported_at'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.earlyWarningReportedAt) }}
                             </div>
                             <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.detailedNotificationReportedAt,
-                                    'label': 'incident.field.detailed_notification_reported_at'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.detailedNotificationReportedAt) }}
                             </div>
                             <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.finalReportSubmittedAt,
-                                    'label': 'incident.field.final_report_submitted_at'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.finalReportSubmittedAt) }}
                             </div>
                         </div>
 
                         {# Impact Assessment #}
                         <div class="row mt-3">
                             <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.affectedUsersCount,
-                                    'label': 'incident.field.affected_users_count'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.affectedUsersCount) }}
                             </div>
                             <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.estimatedFinancialImpact,
-                                    'label': 'incident.field.estimated_financial_impact'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.estimatedFinancialImpact) }}
                             </div>
                         </div>
 
                         {# Authority Notification #}
                         <div class="row">
                             <div class="col-md-8">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.nationalAuthorityNotified,
-                                    'label': 'incident.field.national_authority_notified'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.nationalAuthorityNotified) }}
                             </div>
                             <div class="col-md-4">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.authorityReferenceNumber,
-                                    'label': 'incident.field.authority_reference_number'|trans({}, 'incident')
-                                } %}
+                                {{ form_row(form.authorityReferenceNumber) }}
                             </div>
                         </div>
                     </fieldset>

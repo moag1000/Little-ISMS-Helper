@@ -1,0 +1,383 @@
+{# GDPR Data Breach Assessment Wizard Modal #}
+{% trans_default_domain 'privacy' %}
+
+<div data-controller="gdpr-breach-wizard" class="gdpr-wizard">
+    {# Modal Backdrop #}
+    <div data-gdpr-breach-wizard-target="backdrop"
+         class="modal-backdrop"
+         data-action="click->gdpr-breach-wizard#close"
+         style="display: none;">
+    </div>
+
+    {# Modal Container #}
+    <div data-gdpr-breach-wizard-target="modal"
+         class="modal fade"
+         tabindex="-1"
+         role="dialog"
+         aria-labelledby="gdpr-wizard-title"
+         aria-modal="true"
+         style="display: none;">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                {# Modal Header #}
+                <div class="modal-header bg-warning text-dark">
+                    <div class="w-100">
+                        <h5 class="modal-title" id="gdpr-wizard-title">
+                            <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+                            {{ 'privacy.wizard.title'|trans({}, 'privacy') }}
+                        </h5>
+                        <p class="mb-0 small">{{ 'privacy.wizard.subtitle'|trans({}, 'privacy') }}</p>
+
+                        {# Progress Bar #}
+                        <div class="progress mt-3" style="height: 8px;" role="progressbar" aria-label="Wizard progress">
+                            <div data-gdpr-breach-wizard-target="progressBar"
+                                 class="progress-bar bg-dark"
+                                 style="width: 25%"
+                                 aria-valuenow="25"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+                        <div class="text-end mt-1">
+                            <small data-gdpr-breach-wizard-target="progressText">1 of 4</small>
+                        </div>
+                    </div>
+                    <button type="button"
+                            class="btn-close"
+                            data-action="click->gdpr-breach-wizard#close"
+                            aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+                    </button>
+                </div>
+
+                {# Modal Body #}
+                <div class="modal-body">
+                    {# Step 1: Personal Data Involvement Check #}
+                    <div data-gdpr-breach-wizard-target="step1" class="wizard-step">
+                        <h6 class="fw-bold mb-3">
+                            <span class="badge bg-dark me-2">1</span>
+                            {{ 'privacy.wizard.step1_title'|trans({}, 'privacy') }}
+                        </h6>
+                        <p class="mb-4">{{ 'privacy.wizard.personal_data_question'|trans({}, 'privacy') }}</p>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="personalDataInvolved"
+                                   id="personalDataYes"
+                                   data-gdpr-breach-wizard-target="personalDataYes"
+                                   value="1">
+                            <label class="form-check-label fw-bold text-danger" for="personalDataYes">
+                                {{ 'common.yes'|trans({}, 'messages') }} - {{ 'privacy.wizard.personal_data_yes'|trans({}, 'privacy') }}
+                            </label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="personalDataInvolved"
+                                   id="personalDataNo"
+                                   data-gdpr-breach-wizard-target="personalDataNo"
+                                   value="0">
+                            <label class="form-check-label" for="personalDataNo">
+                                {{ 'common.no'|trans({}, 'messages') }} - {{ 'privacy.wizard.personal_data_no'|trans({}, 'privacy') }}
+                            </label>
+                        </div>
+
+                        <div class="alert alert-info mt-4" role="alert">
+                            <small>
+                                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                {{ 'privacy.wizard.personal_data_hint'|trans({}, 'privacy') }}
+                            </small>
+                        </div>
+                    </div>
+
+                    {# Step 2: Data Type Classification #}
+                    <div data-gdpr-breach-wizard-target="step2" class="wizard-step d-none">
+                        <h6 class="fw-bold mb-3">
+                            <span class="badge bg-dark me-2">2</span>
+                            {{ 'privacy.wizard.step2_title'|trans({}, 'privacy') }}
+                        </h6>
+                        <p class="mb-4">{{ 'privacy.wizard.data_type_question'|trans({}, 'privacy') }}</p>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   data-gdpr-breach-wizard-target="dataTypeCheckbox"
+                                   value="names_contact"
+                                   id="dataType1">
+                            <label class="form-check-label" for="dataType1">
+                                <strong>{{ 'privacy.wizard.data_types.names_contact'|trans({}, 'privacy') }}</strong>
+                                <br><small class="text-muted">{{ 'privacy.wizard.data_types.names_contact_desc'|trans({}, 'privacy') }}</small>
+                                <span class="badge bg-success ms-2">{{ 'privacy.wizard.risk_score'|trans({}, 'privacy') }}: 1</span>
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   data-gdpr-breach-wizard-target="dataTypeCheckbox"
+                                   value="financial"
+                                   id="dataType2">
+                            <label class="form-check-label" for="dataType2">
+                                <strong>{{ 'privacy.wizard.data_types.financial'|trans({}, 'privacy') }}</strong>
+                                <br><small class="text-muted">{{ 'privacy.wizard.data_types.financial_desc'|trans({}, 'privacy') }}</small>
+                                <span class="badge bg-warning text-dark ms-2">{{ 'privacy.wizard.risk_score'|trans({}, 'privacy') }}: 2</span>
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   data-gdpr-breach-wizard-target="dataTypeCheckbox"
+                                   value="health_biometric"
+                                   id="dataType3">
+                            <label class="form-check-label" for="dataType3">
+                                <strong>{{ 'privacy.wizard.data_types.health_biometric'|trans({}, 'privacy') }}</strong>
+                                <br><small class="text-muted">{{ 'privacy.wizard.data_types.health_biometric_desc'|trans({}, 'privacy') }}</small>
+                                <span class="badge bg-danger ms-2">{{ 'privacy.wizard.risk_score'|trans({}, 'privacy') }}: 3</span>
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   data-gdpr-breach-wizard-target="dataTypeCheckbox"
+                                   value="special_category_art9"
+                                   id="dataType4">
+                            <label class="form-check-label" for="dataType4">
+                                <strong>{{ 'privacy.wizard.data_types.special_category_art9'|trans({}, 'privacy') }}</strong>
+                                <br><small class="text-muted">{{ 'privacy.wizard.data_types.special_category_art9_desc'|trans({}, 'privacy') }}</small>
+                                <span class="badge bg-dark ms-2">{{ 'privacy.wizard.risk_score'|trans({}, 'privacy') }}: 4</span>
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   data-gdpr-breach-wizard-target="dataTypeCheckbox"
+                                   value="criminal_records_art10"
+                                   id="dataType5">
+                            <label class="form-check-label" for="dataType5">
+                                <strong>{{ 'privacy.wizard.data_types.criminal_records_art10'|trans({}, 'privacy') }}</strong>
+                                <br><small class="text-muted">{{ 'privacy.wizard.data_types.criminal_records_art10_desc'|trans({}, 'privacy') }}</small>
+                                <span class="badge bg-dark ms-2">{{ 'privacy.wizard.risk_score'|trans({}, 'privacy') }}: 4</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    {# Step 3: Scale Assessment #}
+                    <div data-gdpr-breach-wizard-target="step3" class="wizard-step d-none">
+                        <h6 class="fw-bold mb-3">
+                            <span class="badge bg-dark me-2">3</span>
+                            {{ 'privacy.wizard.step3_title'|trans({}, 'privacy') }}
+                        </h6>
+                        <p class="mb-4">{{ 'privacy.wizard.affected_count_question'|trans({}, 'privacy') }}</p>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="scale"
+                                   data-gdpr-breach-wizard-target="scaleRadio"
+                                   value="under_100"
+                                   id="scale1">
+                            <label class="form-check-label" for="scale1">
+                                <strong>{{ 'privacy.wizard.scale_options.under_100'|trans({}, 'privacy') }}</strong>
+                                <span class="badge bg-success ms-2">{{ 'privacy.wizard.scale_score'|trans({}, 'privacy') }}: 1</span>
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="scale"
+                                   data-gdpr-breach-wizard-target="scaleRadio"
+                                   value="100_to_1000"
+                                   id="scale2">
+                            <label class="form-check-label" for="scale2">
+                                <strong>{{ 'privacy.wizard.scale_options.100_to_1000'|trans({}, 'privacy') }}</strong>
+                                <span class="badge bg-warning text-dark ms-2">{{ 'privacy.wizard.scale_score'|trans({}, 'privacy') }}: 2</span>
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="scale"
+                                   data-gdpr-breach-wizard-target="scaleRadio"
+                                   value="1001_to_10000"
+                                   id="scale3">
+                            <label class="form-check-label" for="scale3">
+                                <strong>{{ 'privacy.wizard.scale_options.1001_to_10000'|trans({}, 'privacy') }}</strong>
+                                <span class="badge bg-danger ms-2">{{ 'privacy.wizard.scale_score'|trans({}, 'privacy') }}: 3</span>
+                            </label>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="scale"
+                                   data-gdpr-breach-wizard-target="scaleRadio"
+                                   value="over_10000"
+                                   id="scale4">
+                            <label class="form-check-label" for="scale4">
+                                <strong>{{ 'privacy.wizard.scale_options.over_10000'|trans({}, 'privacy') }}</strong>
+                                <span class="badge bg-dark ms-2">{{ 'privacy.wizard.scale_score'|trans({}, 'privacy') }}: 4</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    {# Step 4: Results & Recommendation #}
+                    <div data-gdpr-breach-wizard-target="step4" class="wizard-step d-none">
+                        <h6 class="fw-bold mb-3">
+                            <span class="badge bg-dark me-2">4</span>
+                            {{ 'privacy.wizard.step4_title'|trans({}, 'privacy') }}
+                        </h6>
+
+                        {# Risk Level #}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">{{ 'privacy.wizard.risk_level_label'|trans({}, 'privacy') }}</h6>
+                                <div data-gdpr-breach-wizard-target="resultRiskLevel" class="badge bg-secondary fs-5">
+                                    Calculating...
+                                </div>
+                            </div>
+                        </div>
+
+                        {# GDPR Art. 33 Requirement #}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    {{ 'privacy.wizard.gdpr_article_33_requirement'|trans({}, 'privacy') }}
+                                </h6>
+                                <div data-gdpr-breach-wizard-target="resultReportable" class="badge bg-secondary fs-6">
+                                    Calculating...
+                                </div>
+                            </div>
+                        </div>
+
+                        {# 72h Deadline (conditional) #}
+                        <div class="alert alert-danger d-none" role="alert">
+                            <strong>
+                                <i class="bi bi-clock-fill" aria-hidden="true"></i>
+                                {{ 'privacy.wizard.deadline_warning'|trans({}, 'privacy') }}
+                            </strong>
+                            <p class="mb-0 mt-2">
+                                {{ 'privacy.wizard.deadline_date'|trans({}, 'privacy') }}:
+                                <strong data-gdpr-breach-wizard-target="resultDeadline">--</strong>
+                            </p>
+                        </div>
+
+                        {# Recommendation #}
+                        <div class="card border-warning">
+                            <div class="card-header bg-warning text-dark">
+                                <strong>{{ 'privacy.wizard.recommendation_label'|trans({}, 'privacy') }}</strong>
+                            </div>
+                            <div class="card-body">
+                                <p data-gdpr-breach-wizard-target="resultRecommendation" class="mb-0">
+                                    Calculating recommendation...
+                                </p>
+                            </div>
+                        </div>
+
+                        {# Legal References #}
+                        <div class="mt-4 p-3 bg-light border rounded">
+                            <small class="text-muted">
+                                <strong>{{ 'privacy.wizard.legal_references'|trans({}, 'privacy') }}:</strong><br>
+                                GDPR Art. 33 (Notification to supervisory authority)<br>
+                                GDPR Art. 34 (Communication to data subjects)<br>
+                                ISO 27001 A.16.1.6 (Learning from information security incidents)
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                {# Modal Footer #}
+                <div class="modal-footer">
+                    <button type="button"
+                            class="btn btn-outline-secondary"
+                            data-gdpr-breach-wizard-target="backBtn"
+                            data-action="click->gdpr-breach-wizard#back">
+                        <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                        {{ 'common.back'|trans({}, 'messages') }}
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-warning"
+                            data-gdpr-breach-wizard-target="nextBtn"
+                            data-action="click->gdpr-breach-wizard#next">
+                        {{ 'common.next'|trans({}, 'messages') }}
+                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    </button>
+
+                    <button type="button"
+                            class="btn btn-primary d-none"
+                            data-gdpr-breach-wizard-target="completeBtn"
+                            data-action="click->gdpr-breach-wizard#completeWizard">
+                        <i class="bi bi-check-circle" aria-hidden="true"></i>
+                        {{ 'privacy.wizard.complete_and_create'|trans({}, 'privacy') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Modal styling */
+.gdpr-wizard .modal {
+    display: block !important;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.gdpr-wizard .modal.modal-open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.gdpr-wizard .modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    display: none !important;
+}
+
+.gdpr-wizard .modal-backdrop.modal-backdrop-show {
+    display: block !important;
+}
+
+.gdpr-wizard .modal-dialog {
+    z-index: 1050;
+}
+
+/* Wizard step animations */
+.wizard-step {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Form check enhancements */
+.form-check-input:checked {
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.form-check-label {
+    cursor: pointer;
+}
+</style>
