@@ -254,7 +254,7 @@
                 <td class="text-center">
                     {% if asset.dataClassification %}
                         <span class="{{ badge_classification(asset.dataClassification) }}">
-                            {{ ('asset.classification.' ~ asset.dataClassification)|trans|upper }}
+                            {{ ('asset.classification.' ~ asset.dataClassification)|trans({}, 'asset')|upper }}
                         </span>
                     {% else %}
                         <span class="text-muted">-</span>

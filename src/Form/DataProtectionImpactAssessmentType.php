@@ -38,7 +38,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
             ->add('referenceNumber', TextType::class, [
                 'label' => 'dpia.form.reference_number',
                 'help' => 'dpia.help.reference_number',
-                'required' => false,
+                'required' => true,
             ])
             ->add('processingActivity', EntityType::class, [
                 'label' => 'dpia.form.processing_activity',
@@ -301,7 +301,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 ],
                 'expanded' => true,
                 'required' => false,
-                    'choice_translation_domain' => 'privacy',
+                    'choice_translation_domain' => 'messages',
             ])
             ->add('dataSubjectConsultationDetails', TextareaType::class, [
                 'label' => 'dpia.form.data_subject_consultation_details',

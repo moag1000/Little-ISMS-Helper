@@ -41,7 +41,7 @@
             {% for change in pending_approval %}
             <li>
                 <a href="{{ path('app_change_request_show', {id: change.id}) }}">{{ change.changeNumber }} - {{ change.title }}</a>
-                ({{ change.priority }})
+                ({{ ('change_request.priority.' ~ change.priority)|trans({}, 'change_requests') }})
             </li>
             {% endfor %}
         </ul>
@@ -88,9 +88,9 @@
                     <tr>
                         <td><a href="{{ path('app_change_request_show', {id: change.id}) }}">{{ change.changeNumber }}</a></td>
                         <td>{{ change.title|slice(0, 40) }}...</td>
-                        <td><span class="badge badge-{{ change.changeType }}">{{ change.changeType }}</span></td>
-                        <td><span class="badge badge-{{ change.priority }}">{{ change.priority }}</span></td>
-                        <td><span class="badge badge-{{ change.status }}">{{ change.status }}</span></td>
+                        <td><span class="badge badge-{{ change.changeType }}">{{ ('change_request.change_type.' ~ change.changeType)|trans({}, 'change_requests') }}</span></td>
+                        <td><span class="badge badge-{{ change.priority }}">{{ ('change_request.priority.' ~ change.priority)|trans({}, 'change_requests') }}</span></td>
+                        <td><span class="badge badge-{{ change.status }}">{{ ('change_request.status.' ~ change.status)|trans({}, 'change_requests') }}</span></td>
                         <td>{{ change.getComplexityScore() }}</td>
                         <td>{{ change.requestedDate|date('Y-m-d') }}</td>
                         <td>

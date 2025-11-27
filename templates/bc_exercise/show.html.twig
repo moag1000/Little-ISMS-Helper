@@ -150,11 +150,11 @@
                 </div>
             {% endif %}
 
-            {% if bc_exercise.relatedBCPlans|length > 0 %}
+            {% if bc_exercise.testedPlans|length > 0 %}
             <div class="detail-section">
-                <h3>{{ 'bc_exercises.section.related_plans'|trans({}, 'bc_exercises') }} ({{ bc_exercise.relatedBCPlans|length }})</h3>
+                <h3>{{ 'bc_exercises.section.related_plans'|trans({}, 'bc_exercises') }} ({{ bc_exercise.testedPlans|length }})</h3>
                 <ul>
-                    {% for plan in bc_exercise.relatedBCPlans %}
+                    {% for plan in bc_exercise.testedPlans %}
                     <li><a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a></li>
                     {% endfor %}
                 </ul>

@@ -173,14 +173,14 @@
                         </td>
                         <td>
                             <span class="badge bg-secondary">
-                                {{ ('training.type.' ~ training.trainingType)|trans }}
+                                {{ ('training.type.' ~ training.trainingType)|trans({}, 'training') }}
                             </span>
                         </td>
                         <td>
                             <i class="bi bi-clock" aria-hidden="true"></i>
                             {{ training.scheduledDate|date('d.m.Y H:i') }}
                         </td>
-                        <td>{{ ('training.delivery.' ~ training.deliveryMethod)|trans }}</td>
+                        <td>{{ ('training.delivery.' ~ training.deliveryMethod)|trans({}, 'training') }}</td>
                         <td>
                             {% if training.mandatory %}
                             <span class="text-warning"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> {{ 'common.yes'|trans({}, 'messages') }}</span>
@@ -262,14 +262,14 @@
                         </td>
                         <td>
                             <span class="badge bg-secondary">
-                                {{ ('training.type.' ~ training.trainingType)|trans }}
+                                {{ ('training.type.' ~ training.trainingType)|trans({}, 'training') }}
                             </span>
                         </td>
                         <td>{{ training.scheduledDate|date('d.m.Y H:i') }}</td>
                         <td>{{ training.duration }} {{ 'training.minutes'|trans({}, 'training') }}</td>
                         <td>
                             <span class="{{ badge_status(training.status) }}">
-                                {{ ('training.status.' ~ training.status)|trans }}
+                                {{ ('training.status.' ~ training.status)|trans({}, 'training') }}
                             </span>
                         </td>
                         <td>

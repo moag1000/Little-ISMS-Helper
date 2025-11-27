@@ -219,7 +219,7 @@
                 {{ inheritance.small_badge(control, currentTenant) }}
             </td>
             <td>
-                <span class="badge bg-info">{{ ('soa.category.' ~ control.category)|trans }}</span>
+                <span class="badge bg-info">{{ ('soa.category.' ~ control.category)|trans({}, 'soa') }}</span>
             </td>
             <td class="text-center">
                 {% if control.applicable %}

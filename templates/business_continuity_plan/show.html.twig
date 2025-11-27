@@ -139,11 +139,11 @@
             </div>
             {% endif %}
 
-            {% if bc_plan.relatedRisks|length > 0 %}
+            {% if bc_plan.businessProcess and bc_plan.businessProcess.identifiedRisks|length > 0 %}
             <div class="detail-section">
-                <h3>{{ 'bc_plans.section.related_risks'|trans({}, 'bc_plans') }} ({{ bc_plan.relatedRisks|length }})</h3>
+                <h3>{{ 'bc_plans.section.related_risks'|trans({}, 'bc_plans') }} ({{ bc_plan.businessProcess.identifiedRisks|length }})</h3>
                 <ul>
-                    {% for risk in bc_plan.relatedRisks %}
+                    {% for risk in bc_plan.businessProcess.identifiedRisks %}
                     <li><a href="{{ path('app_risk_show', {id: risk.id}) }}">{{ risk.title }}</a></li>
                     {% endfor %}
                 </ul>

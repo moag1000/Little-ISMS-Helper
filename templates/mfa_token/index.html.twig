@@ -110,7 +110,7 @@
                                             {% elseif token.tokenType == 'webauthn' %}
                                                 <i class="bi bi-key" aria-hidden="true"></i>
                                             {% endif %}
-                                            {{ ('mfa_token.type.' ~ token.tokenType)|trans }}
+                                            {{ ('mfa_token.type.' ~ token.tokenType)|trans({}, 'mfa') }}
                                         </span>
                                     </td>
                                     <td>

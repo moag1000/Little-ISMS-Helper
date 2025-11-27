@@ -28,6 +28,30 @@ class DataBreachService
     }
 
     /**
+     * Prepare a new DataBreach entity with tenant and reference number already set
+     * Used for form binding (validation requires these fields)
+     */
+    public function prepareNewBreach(): DataBreach
+    {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if (!$tenant) {
+            throw new \RuntimeException('No tenant context available');
+        }
+
+        $referenceNumber = $this->repository->getNextReferenceNumber($tenant);
+
+        $breach = new DataBreach();
+        $breach->setTenant($tenant);
+        $breach->setReferenceNumber($referenceNumber);
+        $breach->setStatus('draft');
+        // Defaults to false - user decides based on risk assessment
+        $breach->setRequiresAuthorityNotification(false);
+        $breach->setRequiresSubjectNotification(false);
+
+        return $breach;
+    }
+
+    /**
      * Create new data breach from incident
      * Pre-populates fields from incident for data reuse
      */
@@ -67,7 +91,7 @@ class DataBreachService
         $this->entityManager->persist($breach);
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'data_breach.created',
             DataBreach::class,
             $breach->getId(),
@@ -89,7 +113,44 @@ class DataBreachService
     }
 
     /**
-     * Create standalone data breach (without incident)
+     * Create standalone data breach (without linking to a security incident)
+     * Used when the breach is not caused by/related to a security incident
+     * (e.g., accidental email to wrong recipient, paper documents lost)
+     */
+    public function createStandalone(
+        User $createdBy,
+        \DateTimeInterface $detectedAt,
+        ?ProcessingActivity $processingActivity = null
+    ): DataBreach {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if (!$tenant) {
+            throw new \RuntimeException('No tenant context available');
+        }
+
+        // Generate reference number
+        $referenceNumber = $this->repository->getNextReferenceNumber($tenant);
+
+        $breach = new DataBreach();
+        $breach->setTenant($tenant);
+        $breach->setReferenceNumber($referenceNumber);
+        $breach->setDetectedAt($detectedAt);
+        $breach->setCreatedBy($createdBy);
+
+        // Link processing activity if provided
+        if ($processingActivity) {
+            $breach->setProcessingActivity($processingActivity);
+        }
+
+        // Set defaults per Art. 33(1)
+        $breach->setRequiresAuthorityNotification(true);
+        $breach->setRequiresSubjectNotification(false);
+        $breach->setStatus('draft');
+
+        return $breach;
+    }
+
+    /**
+     * @deprecated Use createStandalone() or createFromIncident() instead
      */
     public function create(Incident $incident, User $createdBy): DataBreach
     {
@@ -97,15 +158,23 @@ class DataBreachService
     }
 
     /**
-     * Update data breach
+     * Save (create or update) data breach
      */
     public function update(DataBreach $breach, User $updatedBy): DataBreach
     {
+        $isNew = $breach->getId() === null;
         $breach->setUpdatedBy($updatedBy);
+
+        // Persist if new entity
+        if ($isNew) {
+            $this->entityManager->persist($breach);
+        }
+
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
-            'data_breach.updated',
+        $action = $isNew ? 'data_breach.created' : 'data_breach.updated';
+        $this->auditLogger->logCustom(
+            $action,
             DataBreach::class,
             $breach->getId(),
             null,
@@ -114,6 +183,13 @@ class DataBreachService
                 'updated_by' => $updatedBy->getEmail(),
             ]
         );
+
+        if ($isNew) {
+            $this->logger->info('Data breach created (standalone)', [
+                'breach_id' => $breach->getId(),
+                'reference_number' => $breach->getReferenceNumber(),
+            ]);
+        }
 
         return $breach;
     }
@@ -125,7 +201,7 @@ class DataBreachService
     {
         $referenceNumber = $breach->getReferenceNumber();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'data_breach.deleted',
             DataBreach::class,
             $breach->getId(),
@@ -167,7 +243,7 @@ class DataBreachService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'data_breach.submitted_for_assessment',
             DataBreach::class,
             $breach->getId(),
@@ -229,7 +305,7 @@ class DataBreachService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'data_breach.authority_notified',
             DataBreach::class,
             $breach->getId(),
@@ -267,7 +343,7 @@ class DataBreachService
         $breach->setNotificationDelayReason($delayReason);
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'data_breach.notification_delay_recorded',
             DataBreach::class,
             $breach->getId(),
@@ -308,7 +384,7 @@ class DataBreachService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'data_breach.subjects_notified',
             DataBreach::class,
             $breach->getId(),
@@ -342,7 +418,7 @@ class DataBreachService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'data_breach.subject_notification_exemption',
             DataBreach::class,
             $breach->getId(),
@@ -379,7 +455,7 @@ class DataBreachService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'data_breach.closed',
             DataBreach::class,
             $breach->getId(),
@@ -412,7 +488,7 @@ class DataBreachService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'data_breach.reopened',
             DataBreach::class,
             $breach->getId(),

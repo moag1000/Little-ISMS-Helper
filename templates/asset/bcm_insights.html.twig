@@ -206,7 +206,7 @@
                 {% endif %}
             </td>
             <td>
-                <span class="badge bg-info">{{ ('asset.assetType.' ~ asset.assetType)|trans }}</span>
+                <span class="badge bg-info">{{ ('asset.type.' ~ asset.assetType)|trans({}, 'asset') }}</span>
             </td>
             <td>
                 {% set criticalityColors = {
@@ -216,7 +216,7 @@
                     'low': 'secondary'
                 } %}
                 <span class="badge badge-{{ criticalityColors[asset.businessCriticality] ?? 'secondary' }}">
-                    {{ ('asset.criticality.' ~ asset.businessCriticality)|trans }}
+                    {{ ('asset.criticality.' ~ asset.businessCriticality)|trans({}, 'asset') }}
                 </span>
             </td>
             <td>

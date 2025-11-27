@@ -76,7 +76,7 @@
                     'consultant': 'info'
                 } %}
                 <span class="badge badge-{{ typeColors[person.personType] ?? 'secondary' }}">
-                    {{ ('person.type.' ~ person.personType)|trans }}
+                    {{ ('person.type.' ~ person.personType)|trans({}, 'people') }}
                 </span>
             </td>
             <td>

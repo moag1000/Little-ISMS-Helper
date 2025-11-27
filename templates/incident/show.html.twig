@@ -116,7 +116,7 @@
                     {% set nis2Status = incident.nis2ComplianceStatus %}
                     <span class="{{ badge_nis2(nis2Status) }}">
                         <i class="bi bi-shield-check" aria-hidden="true"></i>
-                        {{ ('incident.nis2_compliance.' ~ nis2Status)|trans }}
+                        {{ ('incident.nis2_compliance.' ~ nis2Status)|trans({}, 'incident') }}
                     </span>
                 {% endif %}
             </div>
@@ -273,7 +273,7 @@
                         {% if incident.nis2Category %}
                             <div class="impact-item">
                                 <span class="label">{{ 'incident.field.nis2_category'|trans({}, 'incident') }}:</span>
-                                <span class="value">{{ ('incident.nis2_category.' ~ incident.nis2Category)|trans }}</span>
+                                <span class="value">{{ ('incident.nis2_category.' ~ incident.nis2Category)|trans({}, 'incident') }}</span>
                             </div>
                         {% endif %}
                         <div class="impact-item">

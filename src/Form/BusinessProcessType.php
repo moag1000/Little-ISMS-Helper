@@ -109,7 +109,7 @@ class BusinessProcessType extends AbstractType
                     'business_process.impact_level.high' => 4,
                     'business_process.impact_level.very_high' => 5,
                 ],
-                'choice_translation_domain' => 'bcm',
+                'choice_translation_domain' => 'business_process',
                 'attr' => ['class' => 'form-select'],
                 'constraints' => [new NotBlank()],
             ])
@@ -122,7 +122,7 @@ class BusinessProcessType extends AbstractType
                     'business_process.impact_level.high' => 4,
                     'business_process.impact_level.very_high' => 5,
                 ],
-                'choice_translation_domain' => 'bcm',
+                'choice_translation_domain' => 'business_process',
                 'attr' => ['class' => 'form-select'],
                 'constraints' => [new NotBlank()],
             ])
@@ -135,7 +135,7 @@ class BusinessProcessType extends AbstractType
                     'business_process.impact_level.high' => 4,
                     'business_process.impact_level.very_high' => 5,
                 ],
-                'choice_translation_domain' => 'bcm',
+                'choice_translation_domain' => 'business_process',
                 'attr' => ['class' => 'form-select'],
                 'constraints' => [new NotBlank()],
             ])

@@ -51,15 +51,15 @@ class DataProtectionImpactAssessmentService
         $this->entityManager->persist($dpia);
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
-            'dpia.created',
+        $this->auditLogger->logCreate(
             'DataProtectionImpactAssessment',
             $dpia->getId(),
             [
                 'reference_number' => $dpia->getReferenceNumber(),
                 'title' => $dpia->getTitle(),
                 'processing_activity_id' => $dpia->getProcessingActivity()?->getId(),
-            ]
+            ],
+            'DPIA created: ' . $dpia->getReferenceNumber()
         );
 
         return $dpia;
@@ -75,10 +75,10 @@ class DataProtectionImpactAssessmentService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
-            'dpia.updated',
+        $this->auditLogger->logUpdate(
             'DataProtectionImpactAssessment',
             $dpia->getId(),
+            [],
             [
                 'reference_number' => $dpia->getReferenceNumber(),
                 'status' => $dpia->getStatus(),
@@ -100,11 +100,11 @@ class DataProtectionImpactAssessmentService
         $this->entityManager->remove($dpia);
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
-            'dpia.deleted',
+        $this->auditLogger->logDelete(
             'DataProtectionImpactAssessment',
             $id,
-            ['reference_number' => $referenceNumber]
+            ['reference_number' => $referenceNumber],
+            'DPIA deleted: ' . $referenceNumber
         );
     }
 
@@ -257,7 +257,7 @@ class DataProtectionImpactAssessmentService
         $dpia->setStatus('in_review');
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'dpia.submitted_for_review',
             'DataProtectionImpactAssessment',
             $dpia->getId(),
@@ -293,7 +293,7 @@ class DataProtectionImpactAssessmentService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'dpia.approved',
             'DataProtectionImpactAssessment',
             $dpia->getId(),
@@ -329,7 +329,7 @@ class DataProtectionImpactAssessmentService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'dpia.rejected',
             'DataProtectionImpactAssessment',
             $dpia->getId(),
@@ -358,7 +358,7 @@ class DataProtectionImpactAssessmentService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'dpia.revision_requested',
             'DataProtectionImpactAssessment',
             $dpia->getId(),
@@ -385,7 +385,7 @@ class DataProtectionImpactAssessmentService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'dpia.reopened',
             'DataProtectionImpactAssessment',
             $dpia->getId(),
@@ -410,7 +410,7 @@ class DataProtectionImpactAssessmentService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'dpia.dpo_consulted',
             'DataProtectionImpactAssessment',
             $dpia->getId(),
@@ -437,7 +437,7 @@ class DataProtectionImpactAssessmentService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'dpia.supervisory_consulted',
             'DataProtectionImpactAssessment',
             $dpia->getId(),
@@ -467,7 +467,7 @@ class DataProtectionImpactAssessmentService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'dpia.marked_for_review',
             'DataProtectionImpactAssessment',
             $dpia->getId(),
@@ -504,7 +504,7 @@ class DataProtectionImpactAssessmentService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'dpia.review_completed',
             'DataProtectionImpactAssessment',
             $dpia->getId(),
@@ -745,7 +745,7 @@ class DataProtectionImpactAssessmentService
         $this->entityManager->persist($clone);
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'dpia.cloned',
             'DataProtectionImpactAssessment',
             $clone->getId(),
