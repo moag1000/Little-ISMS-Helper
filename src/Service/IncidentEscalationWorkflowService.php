@@ -53,13 +53,13 @@ class IncidentEscalationWorkflowService
     private const SLA_BREACH = 1;      // 1 hour (immediate)
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private WorkflowService $workflowService,
-        private EmailNotificationService $emailService,
-        private UserRepository $userRepository,
-        private AuditLogger $auditLogger,
-        private LoggerInterface $logger,
-        private UrlGeneratorInterface $urlGenerator
+        private readonly EntityManagerInterface $entityManager,
+        private readonly WorkflowService $workflowService,
+        private readonly EmailNotificationService $emailService,
+        private readonly UserRepository $userRepository,
+        private readonly AuditLogger $auditLogger,
+        private readonly LoggerInterface $logger,
+        private readonly UrlGeneratorInterface $urlGenerator
     ) {}
 
     /**
