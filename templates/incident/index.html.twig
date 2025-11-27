@@ -246,7 +246,7 @@
                 </td>
                 <td class="text-center">
                     {% if incident.affectedAssets|length > 0 %}
-                        <a href="{{ path('app_incident_assets', {id: incident.id}) }}" class="badge bg-warning text-dark">
+                        <a href="{{ path('app_incident_show', {id: incident.id}) }}#affected-assets" class="badge bg-warning text-dark" title="{{ 'incident.field.affected_assets'|trans({}, 'incident') }}">
                             {{ incident.affectedAssets|length }}
                         </a>
                     {% else %}
