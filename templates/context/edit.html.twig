@@ -36,58 +36,55 @@
                 <div class="card-body">
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
-                    {# Organization Information #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-building" aria-hidden="true"></i> {{ 'context.section.organization'|trans({}, 'context') }}</legend>
-                        {% include '_components/_form_field.html.twig' with {'field': form.organizationName, 'label': 'context.field.organization_name'|trans({}, 'context'), 'help': 'context.help.organization_name'|trans({}, 'context'), 'required': true} %}
-                    </fieldset>
-
-                    {# ISMS Scope #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'context.section.scope'|trans({}, 'context') }}</legend>
-                        {% include '_components/_form_field.html.twig' with {'field': form.ismsScope, 'label': 'context.field.isms_scope'|trans({}, 'context'), 'help': 'context.help.isms_scope'|trans({}, 'context')} %}
-                        {% include '_components/_form_field.html.twig' with {'field': form.scopeExclusions, 'label': 'context.field.scope_exclusions'|trans({}, 'context'), 'help': 'context.help.scope_exclusions'|trans({}, 'context')} %}
-                    </fieldset>
-
-                    {# Context Analysis #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-search" aria-hidden="true"></i> {{ 'context.section.context_analysis'|trans({}, 'context') }}</legend>
-                        <div class="row">
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.externalIssues, 'label': 'context.field.external_issues'|trans({}, 'context'), 'help': 'context.help.external_issues'|trans({}, 'context')} %}</div>
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.internalIssues, 'label': 'context.field.internal_issues'|trans({}, 'context'), 'help': 'context.help.internal_issues'|trans({}, 'context')} %}</div>
-                        </div>
-                    </fieldset>
-
-                    {# Stakeholders #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-people" aria-hidden="true"></i> {{ 'context.section.stakeholders'|trans({}, 'context') }}</legend>
-                        {% include '_components/_form_field.html.twig' with {'field': form.interestedParties, 'label': 'context.field.interested_parties'|trans({}, 'context'), 'help': 'context.help.interested_parties'|trans({}, 'context')} %}
-                        {% include '_components/_form_field.html.twig' with {'field': form.interestedPartiesRequirements, 'label': 'context.field.interested_parties_requirements'|trans({}, 'context'), 'help': 'context.help.interested_parties_requirements'|trans({}, 'context')} %}
-                    </fieldset>
-
-                    {# Compliance Requirements #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'context.section.compliance'|trans({}, 'context') }}</legend>
-                        {% include '_components/_form_field.html.twig' with {'field': form.legalRequirements, 'label': 'context.field.legal_requirements'|trans({}, 'context'), 'help': 'context.help.legal_requirements'|trans({}, 'context')} %}
-                        {% include '_components/_form_field.html.twig' with {'field': form.regulatoryRequirements, 'label': 'context.field.regulatory_requirements'|trans({}, 'context'), 'help': 'context.help.regulatory_requirements'|trans({}, 'context')} %}
-                        {% include '_components/_form_field.html.twig' with {'field': form.contractualObligations, 'label': 'context.field.contractual_obligations'|trans({}, 'context'), 'help': 'context.help.contractual_obligations'|trans({}, 'context')} %}
-                    </fieldset>
-
-                    {# Policy & Governance #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-file-earmark-ruled" aria-hidden="true"></i> {{ 'context.section.policy'|trans({}, 'context') }}</legend>
-                        {% include '_components/_form_field.html.twig' with {'field': form.ismsPolicy, 'label': 'context.field.isms_policy'|trans({}, 'context'), 'help': 'context.help.isms_policy'|trans({}, 'context')} %}
-                        {% include '_components/_form_field.html.twig' with {'field': form.rolesAndResponsibilities, 'label': 'context.field.roles_and_responsibilities'|trans({}, 'context'), 'help': 'context.help.roles_and_responsibilities'|trans({}, 'context')} %}
-                    </fieldset>
-
-                    {# Review Schedule #}
-                    <fieldset class="mb-4">
-                        <legend class="h5 mb-3"><i class="bi bi-calendar-check" aria-hidden="true"></i> {{ 'context.section.review'|trans({}, 'context') }}</legend>
-                        <div class="row">
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.lastReviewDate, 'label': 'context.field.last_review_date'|trans({}, 'context'), 'help': 'context.help.last_review_date'|trans({}, 'context')} %}</div>
-                            <div class="col-md-6">{% include '_components/_form_field.html.twig' with {'field': form.nextReviewDate, 'label': 'context.field.next_review_date'|trans({}, 'context'), 'help': 'context.help.next_review_date'|trans({}, 'context')} %}</div>
-                        </div>
-                    </fieldset>
+                    {% include '_components/_auto_form.html.twig' with {
+                        'form': form,
+                        'sections': {
+                            'organization': {
+                                'label': '<i class="bi bi-building" aria-hidden="true"></i> ' ~ 'context.section.organization'|trans({}, 'context'),
+                                'fields': ['organizationName']
+                            },
+                            'scope': {
+                                'label': '<i class="bi bi-diagram-3" aria-hidden="true"></i> ' ~ 'context.section.scope'|trans({}, 'context'),
+                                'fields': ['ismsScope', 'scopeExclusions']
+                            },
+                            'context_analysis': {
+                                'label': '<i class="bi bi-search" aria-hidden="true"></i> ' ~ 'context.section.context_analysis'|trans({}, 'context'),
+                                'fields': ['externalIssues', 'internalIssues']
+                            },
+                            'stakeholders': {
+                                'label': '<i class="bi bi-people" aria-hidden="true"></i> ' ~ 'context.section.stakeholders'|trans({}, 'context'),
+                                'fields': ['interestedParties', 'interestedPartiesRequirements']
+                            },
+                            'compliance': {
+                                'label': '<i class="bi bi-shield-check" aria-hidden="true"></i> ' ~ 'context.section.compliance'|trans({}, 'context'),
+                                'fields': ['legalRequirements', 'regulatoryRequirements', 'contractualObligations']
+                            },
+                            'policy': {
+                                'label': '<i class="bi bi-file-earmark-ruled" aria-hidden="true"></i> ' ~ 'context.section.policy'|trans({}, 'context'),
+                                'fields': ['ismsPolicy', 'rolesAndResponsibilities']
+                            },
+                            'review': {
+                                'label': '<i class="bi bi-calendar-check" aria-hidden="true"></i> ' ~ 'context.section.review'|trans({}, 'context'),
+                                'fields': ['lastReviewDate', 'nextReviewDate']
+                            }
+                        },
+                        'col_widths': {
+                            'organizationName': 12,
+                            'ismsScope': 12,
+                            'scopeExclusions': 12,
+                            'externalIssues': 6,
+                            'internalIssues': 6,
+                            'interestedParties': 12,
+                            'interestedPartiesRequirements': 12,
+                            'legalRequirements': 12,
+                            'regulatoryRequirements': 12,
+                            'contractualObligations': 12,
+                            'ismsPolicy': 12,
+                            'rolesAndResponsibilities': 12,
+                            'lastReviewDate': 6,
+                            'nextReviewDate': 6
+                        }
+                    } %}
 
                     {# Form Actions #}
                     <div class="form-actions d-flex gap-2 justify-content-between pt-3 border-top">

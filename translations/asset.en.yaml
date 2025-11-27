@@ -12,7 +12,9 @@ asset:
         basic_info: 'Basic Information'
         assignment: Assignment
         financial: 'Financial Information'
+        classification: 'Classification & Status'
         cia_values: 'CIA assessment (protection needs)'
+        policies: 'Policies & Instructions'
         valuation: Valuation
         compliance: Compliance
         cia_triad: 'CIA triad'

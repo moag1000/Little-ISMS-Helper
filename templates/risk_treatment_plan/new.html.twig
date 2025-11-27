@@ -27,153 +27,46 @@
 
 {{ form_start(form) }}
 
-{# Basic Information #}
-<fieldset class="mb-4">
-    <legend class="h5 mb-3">
-        <i class="bi bi-info-square" aria-hidden="true"></i>
-        {{ 'risk_treatment_plan.section.basic_info'|trans({}, 'risk_treatment_plan') }}
-    </legend>
-
-    <div class="row">
-        <div class="col-md-6">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.risk,
-                'label': 'risk_treatment_plan.field.risk'|trans({}, 'risk_treatment_plan'),
-                'required': true,
-                'domain': 'risk_treatment_plan'
-            } %}
-        </div>
-        <div class="col-md-6">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.title,
-                'label': 'risk_treatment_plan.field.title'|trans({}, 'risk_treatment_plan'),
-                'required': true,
-                'domain': 'risk_treatment_plan'
-            } %}
-        </div>
-        <div class="col-12">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.description,
-                'label': 'risk_treatment_plan.field.description'|trans({}, 'risk_treatment_plan'),
-                'domain': 'risk_treatment_plan'
-            } %}
-        </div>
-    </div>
-</fieldset>
-
-{# Status & Progress #}
-<fieldset class="mb-4">
-    <legend class="h5 mb-3">
-        <i class="bi bi-graph-up" aria-hidden="true"></i>
-        {{ 'risk_treatment_plan.section.status_progress'|trans({}, 'risk_treatment_plan') }}
-    </legend>
-
-    <div class="row">
-        <div class="col-md-4">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.status,
-                'label': 'risk_treatment_plan.field.status'|trans({}, 'risk_treatment_plan'),
-                'domain': 'risk_treatment_plan'
-            } %}
-        </div>
-        <div class="col-md-4">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.priority,
-                'label': 'risk_treatment_plan.field.priority'|trans({}, 'risk_treatment_plan'),
-                'domain': 'risk_treatment_plan'
-            } %}
-        </div>
-        <div class="col-md-4">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.completionPercentage,
-                'label': 'risk_treatment_plan.field.completion_percentage'|trans({}, 'risk_treatment_plan'),
-                'domain': 'risk_treatment_plan'
-            } %}
-        </div>
-    </div>
-</fieldset>
-
-{# Timeline #}
-<fieldset class="mb-4">
-    <legend class="h5 mb-3">
-        <i class="bi bi-calendar-range" aria-hidden="true"></i>
-        {{ 'risk_treatment_plan.section.timeline'|trans({}, 'risk_treatment_plan') }}
-    </legend>
-
-    <div class="row">
-        <div class="col-md-4">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.startDate,
-                'label': 'risk_treatment_plan.field.start_date'|trans({}, 'risk_treatment_plan'),
-                'domain': 'risk_treatment_plan'
-            } %}
-        </div>
-        <div class="col-md-4">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.targetCompletionDate,
-                'label': 'risk_treatment_plan.field.target_completion_date'|trans({}, 'risk_treatment_plan'),
-                'domain': 'risk_treatment_plan'
-            } %}
-        </div>
-        <div class="col-md-4">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.actualCompletionDate,
-                'label': 'risk_treatment_plan.field.actual_completion_date'|trans({}, 'risk_treatment_plan'),
-                'domain': 'risk_treatment_plan'
-            } %}
-        </div>
-    </div>
-</fieldset>
-
-{# Responsibility & Resources #}
-<fieldset class="mb-4">
-    <legend class="h5 mb-3">
-        <i class="bi bi-person-badge" aria-hidden="true"></i>
-        {{ 'risk_treatment_plan.section.responsibility_resources'|trans({}, 'risk_treatment_plan') }}
-    </legend>
-
-    <div class="row">
-        <div class="col-md-6">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.responsiblePerson,
-                'label': 'risk_treatment_plan.field.responsible_person'|trans({}, 'risk_treatment_plan'),
-                'domain': 'risk_treatment_plan'
-            } %}
-        </div>
-        <div class="col-md-6">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.budget,
-                'label': 'risk_treatment_plan.field.budget'|trans({}, 'risk_treatment_plan'),
-                'domain': 'risk_treatment_plan'
-            } %}
-        </div>
-    </div>
-</fieldset>
-
-{# Controls & Implementation #}
-<fieldset class="mb-4">
-    <legend class="h5 mb-3">
-        <i class="bi bi-shield-check" aria-hidden="true"></i>
-        {{ 'risk_treatment_plan.section.controls_implementation'|trans({}, 'risk_treatment_plan') }}
-    </legend>
-
-    <div class="row">
-        <div class="col-12">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.controls,
-                'label': 'risk_treatment_plan.field.controls'|trans({}, 'risk_treatment_plan'),
-                'domain': 'risk_treatment_plan'
-            } %}
-        </div>
-        <div class="col-12">
-            {% include '_components/_form_field.html.twig' with {
-                'field': form.implementationNotes,
-                'label': 'risk_treatment_plan.field.implementation_notes'|trans({}, 'risk_treatment_plan'),
-                'domain': 'risk_treatment_plan'
-            } %}
-        </div>
-    </div>
-</fieldset>
+{% include '_components/_auto_form.html.twig' with {
+    'form': form,
+    'sections': {
+        'basic_info': {
+            'label': 'risk_treatment_plan.section.basic_info'|trans({}, 'risk_treatment_plan'),
+            'fields': ['risk', 'title', 'description']
+        },
+        'status_progress': {
+            'label': 'risk_treatment_plan.section.status_progress'|trans({}, 'risk_treatment_plan'),
+            'fields': ['status', 'priority', 'completionPercentage']
+        },
+        'timeline': {
+            'label': 'risk_treatment_plan.section.timeline'|trans({}, 'risk_treatment_plan'),
+            'fields': ['startDate', 'targetCompletionDate', 'actualCompletionDate']
+        },
+        'responsibility_resources': {
+            'label': 'risk_treatment_plan.section.responsibility_resources'|trans({}, 'risk_treatment_plan'),
+            'fields': ['responsiblePerson', 'budget']
+        },
+        'controls_implementation': {
+            'label': 'risk_treatment_plan.section.controls_implementation'|trans({}, 'risk_treatment_plan'),
+            'fields': ['controls', 'implementationNotes']
+        }
+    },
+    'col_widths': {
+        'risk': 6,
+        'title': 6,
+        'description': 12,
+        'status': 4,
+        'priority': 4,
+        'completionPercentage': 4,
+        'startDate': 4,
+        'targetCompletionDate': 4,
+        'actualCompletionDate': 4,
+        'responsiblePerson': 6,
+        'budget': 6,
+        'controls': 12,
+        'implementationNotes': 12
+    }
+} %}
 
 <div class="form-actions">
     <button type="submit" class="btn btn-primary">

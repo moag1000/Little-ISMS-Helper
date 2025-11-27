@@ -96,6 +96,7 @@ incident:
         authority_reference_number: 'Aktenzeichen der Behörde'
         detected_date: Erkennungsdatum
         closed_date: Abschlussdatum
+        data_breach_occurred: 'Datenschutzverletzung aufgetreten'
     nis2_compliance:
         title: 'NIS2 Compliance-Status'
         not_applicable: 'Nicht NIS2-relevant'
@@ -198,3 +199,26 @@ incident:
         view_incident: 'Vorfall anzeigen'
         automated_notification: 'Dies ist eine automatisierte Benachrichtigung des Vorfallmanagement-Systems.'
         iso_reference: 'ISO 27001 A.16.1 - Management von Informationssicherheitsvorfällen'
+    escalation_preview:
+        title: 'Eskalations-Vorschau'
+        select_severity: 'Wählen Sie einen Schweregrad aus, um die Eskalationsvorschau zu sehen'
+        workflow_name: Workflow
+        escalation_level: Eskalationsstufe
+        automatic: Automatisch
+        notified_users: 'Wer wird benachrichtigt:'
+        emails: 'E-Mails werden gesendet'
+        sla_requirement: 'SLA-Anforderung'
+        gdpr_warning: 'DSGVO-Datenpanne - 72h Frist'
+        gdpr_deadline: 'Frist:'
+        gdpr_reference: 'DSGVO Art. 33 erfordert Meldung an Aufsichtsbehörde innerhalb von 72 Stunden nach Bekanntwerden der Verletzung.'
+        approval_required: 'Genehmigung erforderlich'
+        approval_steps: Genehmigungsschritte
+        estimated_time: 'Geschätzte Zeit:'
+        summary_title: 'Was wird passieren:'
+        actions:
+            workflow_started: 'Workflow wird automatisch gestartet'
+            notifications_sent: 'E-Mail-Benachrichtigungen werden an Stakeholder gesendet'
+            approval_required: 'Genehmigungsschritte werden initiiert'
+            sla_tracked: 'SLA-Tracking wird gestartet'
+    help:
+        data_breach_occurred: 'Kennzeichnen Sie dies als Datenschutzverletzung, wenn personenbezogene Daten betroffen sind (DSGVO Art. 33)'

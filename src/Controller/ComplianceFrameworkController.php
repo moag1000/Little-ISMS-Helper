@@ -78,6 +78,8 @@ class ComplianceFrameworkController extends AbstractController
     public function new(Request $request): Response
     {
         $framework = new ComplianceFramework();
+        $framework->setTenant($this->tenantContext->getCurrentTenant());
+
         $form = $this->createForm(ComplianceFrameworkType::class, $framework);
         $form->handleRequest($request);
 

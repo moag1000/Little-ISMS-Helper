@@ -6,6 +6,7 @@ use App\Entity\DataProtectionImpactAssessment;
 use App\Form\DataProtectionImpactAssessmentType;
 use App\Service\DataProtectionImpactAssessmentService;
 use App\Service\PdfExportService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +23,8 @@ class DPIAController extends AbstractController
         private DataProtectionImpactAssessmentService $service,
         private PdfExportService $pdfService,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private TenantContext $tenantContext
     ) {}
 
     /**
@@ -66,6 +68,8 @@ class DPIAController extends AbstractController
     public function new(Request $request): Response
     {
         $dpia = new DataProtectionImpactAssessment();
+        $dpia->setTenant($this->tenantContext->getCurrentTenant());
+
         $form = $this->createForm(DataProtectionImpactAssessmentType::class, $dpia);
         $form->handleRequest($request);
 

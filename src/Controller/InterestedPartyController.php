@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\InterestedParty;
 use App\Form\InterestedPartyType;
 use App\Repository\InterestedPartyRepository;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +20,8 @@ class InterestedPartyController extends AbstractController
     public function __construct(
         private InterestedPartyRepository $interestedPartyRepository,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private TenantContext $tenantContext
     ) {}
 
     #[Route('/', name: 'app_interested_party_index')]
@@ -42,6 +44,8 @@ class InterestedPartyController extends AbstractController
     public function new(Request $request): Response
     {
         $interestedParty = new InterestedParty();
+        $interestedParty->setTenant($this->tenantContext->getCurrentTenant());
+
         $form = $this->createForm(InterestedPartyType::class, $interestedParty);
         $form->handleRequest($request);
 

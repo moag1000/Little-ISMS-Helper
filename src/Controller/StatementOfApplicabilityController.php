@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Control;
+use App\Form\ControlType;
 use App\Repository\ControlRepository;
 use App\Service\SoAReportService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -144,29 +145,25 @@ class StatementOfApplicabilityController extends AbstractController
     #[Route('/{id}/edit', name: 'app_soa_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Control $control): Response
     {
-        if ($request->isMethod('POST')) {
-            $control->setApplicable($request->request->get('applicable') === '1');
-            $control->setJustification($request->request->get('justification'));
-            $control->setImplementationStatus($request->request->get('implementationStatus'));
-            $control->setImplementationPercentage((int)$request->request->get('implementationPercentage'));
-            $control->setImplementationNotes($request->request->get('implementationNotes'));
-            $control->setResponsiblePerson($request->request->get('responsiblePerson'));
+        $form = $this->createForm(ControlType::class, $control, [
+            'allow_control_id_edit' => false,
+        ]);
 
-            if ($request->request->get('targetDate')) {
-                $control->setTargetDate(new \DateTime($request->request->get('targetDate')));
-            }
+        $form->handleRequest($request);
 
+        if ($form->isSubmitted() && $form->isValid()) {
             $control->setUpdatedAt(new \DateTimeImmutable());
 
             $this->entityManager->flush();
 
-            $this->addFlash('success', $this->translator->trans('control.success.updated'));
+            $this->addFlash('success', $this->translator->trans('control.success.updated', [], 'control'));
 
             return $this->redirectToRoute('app_soa_show', ['id' => $control->getId()]);
         }
 
         return $this->render('soa/edit.html.twig', [
             'control' => $control,
+            'form' => $form,
         ]);
     }
 

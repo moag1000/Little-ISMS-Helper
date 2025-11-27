@@ -48,6 +48,9 @@ mfa_token:
     edit.subtitle: Subtitle
     new: New
     new.subtitle: Subtitle
+    section:
+        basic_info: 'Basic Information'
+        settings: 'Token Settings'
     field:
         status: Status
         token_type: 'Token Type'
@@ -56,8 +59,10 @@ mfa_token:
         last_used: 'Last Used'
         usage_count: 'Usage Count'
         user: User
+        is_active: 'Active'
         is_primary: 'Is Primary'
         expires_at: 'Expires At'
+        phone_number: 'Phone Number'
         verification_code: 'Verification Code'
     status:
         active: Active
