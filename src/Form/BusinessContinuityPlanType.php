@@ -19,33 +19,33 @@ class BusinessContinuityPlanType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'business_continuity_plan.field.name',
+                'label' => 'bc_plans.field.name',
                 'required' => true,
                 'attr' => ['maxlength' => 255],
             ])
             ->add('businessProcess', EntityType::class, [
-                'label' => 'business_continuity_plan.field.business_process',
+                'label' => 'bc_plans.field.business_process',
                 'class' => BusinessProcess::class,
                 'choice_label' => 'name',
                 'required' => true,
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'business_continuity_plan.field.description',
+                'label' => 'bc_plans.field.description',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('planOwner', TextType::class, [
-                'label' => 'business_continuity_plan.field.plan_owner',
+                'label' => 'bc_plans.field.plan_owner',
                 'required' => true,
                 'attr' => ['maxlength' => 100],
             ])
             ->add('bcTeam', TextareaType::class, [
-                'label' => 'business_continuity_plan.field.bc_team',
+                'label' => 'bc_plans.field.bc_team',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('status', ChoiceType::class, [
-                'label' => 'business_continuity_plan.field.status',
+                'label' => 'bc_plans.field.status',
                 'choices' => [
                     'bc_plans.status.draft' => 'draft',
                     'bc_plans.status.under_review' => 'under_review',
@@ -56,87 +56,87 @@ class BusinessContinuityPlanType extends AbstractType
                 'required' => true,
             ])
             ->add('activationCriteria', TextareaType::class, [
-                'label' => 'business_continuity_plan.field.activation_criteria',
+                'label' => 'bc_plans.field.activation_criteria',
                 'required' => true,
                 'attr' => ['rows' => 4],
             ])
             ->add('rolesAndResponsibilities', TextareaType::class, [
-                'label' => 'business_continuity_plan.field.roles_and_responsibilities',
+                'label' => 'bc_plans.field.roles_and_responsibilities',
                 'required' => false,
                 'attr' => ['rows' => 4],
             ])
             ->add('recoveryProcedures', TextareaType::class, [
-                'label' => 'business_continuity_plan.field.recovery_procedures',
+                'label' => 'bc_plans.field.recovery_procedures',
                 'required' => true,
                 'attr' => ['rows' => 6],
             ])
             ->add('communicationPlan', TextareaType::class, [
-                'label' => 'business_continuity_plan.field.communication_plan',
+                'label' => 'bc_plans.field.communication_plan',
                 'required' => false,
                 'attr' => ['rows' => 4],
             ])
             ->add('internalCommunication', TextareaType::class, [
-                'label' => 'business_continuity_plan.field.internal_communication',
+                'label' => 'bc_plans.field.internal_communication',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('externalCommunication', TextareaType::class, [
-                'label' => 'business_continuity_plan.field.external_communication',
+                'label' => 'bc_plans.field.external_communication',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('alternativeSite', TextareaType::class, [
-                'label' => 'business_continuity_plan.field.alternative_site',
+                'label' => 'bc_plans.field.alternative_site',
                 'required' => false,
                 'attr' => ['rows' => 2],
             ])
             ->add('alternativeSiteAddress', TextareaType::class, [
-                'label' => 'business_continuity_plan.field.alternative_site_address',
+                'label' => 'bc_plans.field.alternative_site_address',
                 'required' => false,
                 'attr' => ['rows' => 2],
             ])
             ->add('alternativeSiteCapacity', TextareaType::class, [
-                'label' => 'business_continuity_plan.field.alternative_site_capacity',
+                'label' => 'bc_plans.field.alternative_site_capacity',
                 'required' => false,
                 'attr' => ['rows' => 2],
             ])
             ->add('backupProcedures', TextareaType::class, [
-                'label' => 'business_continuity_plan.field.backup_procedures',
+                'label' => 'bc_plans.field.backup_procedures',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('restoreProcedures', TextareaType::class, [
-                'label' => 'business_continuity_plan.field.restore_procedures',
+                'label' => 'bc_plans.field.restore_procedures',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
             ->add('version', TextType::class, [
-                'label' => 'business_continuity_plan.field.version',
+                'label' => 'bc_plans.field.version',
                 'required' => true,
                 'attr' => ['maxlength' => 20],
             ])
             ->add('lastTested', DateType::class, [
-                'label' => 'business_continuity_plan.field.last_tested',
+                'label' => 'bc_plans.field.last_tested',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('nextTestDate', DateType::class, [
-                'label' => 'business_continuity_plan.field.next_test_date',
+                'label' => 'bc_plans.field.next_test_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('lastReviewDate', DateType::class, [
-                'label' => 'business_continuity_plan.field.last_review_date',
+                'label' => 'bc_plans.field.last_review_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('nextReviewDate', DateType::class, [
-                'label' => 'business_continuity_plan.field.next_review_date',
+                'label' => 'bc_plans.field.next_review_date',
                 'widget' => 'single_text',
                 'required' => false,
             ])
             ->add('reviewNotes', TextareaType::class, [
-                'label' => 'business_continuity_plan.field.review_notes',
+                'label' => 'bc_plans.field.review_notes',
                 'required' => false,
                 'attr' => ['rows' => 3],
             ])
@@ -148,6 +148,13 @@ class BusinessContinuityPlanType extends AbstractType
         $resolver->setDefaults([
             'data_class' => BusinessContinuityPlan::class,
             'translation_domain' => 'bc_plans',
+            'label_translation_parameters' => [
+                '%business_process%' => '{{ businessProcess.name }}',
+            ],
+            'attr' => [
+                'novalidate' => 'novalidate',
+            ],
+            'empty_data' => 'new'
         ]);
     }
 }

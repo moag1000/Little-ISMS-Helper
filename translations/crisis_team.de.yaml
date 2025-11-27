@@ -5,6 +5,14 @@ crisis_team:
     empty: 'Noch keine Krisenstäbe definiert.'
     kpi:
         active: 'Aktive Teams'
+    section:
+        basic_info: 'Grundinformationen'
+        leadership: 'Führung'
+        contact: 'Kontaktdaten'
+        meeting_locations: 'Versammlungsorte'
+        procedures: 'Verfahren'
+        training: 'Training'
+        plans: 'Pläne & Notizen'
     field:
         team_name: Teamname
         description: Beschreibung
@@ -50,6 +58,7 @@ crisis_team:
         team_leader: 'Leiter des Krisenstabs'
         deputy_leader: 'Stellvertreter bei Abwesenheit des Leiters'
         primary_phone: 'Zentrale Rufnummer für Krisenstab'
+        meeting_location: 'Physischer Treffpunkt bei Krisen'
         virtual_meeting_url: 'Teams, Zoom, etc. für virtuelle Treffen'
         alert_procedures: 'Wie wird der Krisenstab alarmiert und aktiviert?'
         decision_authority: 'Befugnisse und Eskalationswege'

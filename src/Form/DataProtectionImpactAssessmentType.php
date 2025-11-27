@@ -85,7 +85,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'multiple' => true,
                 'required' => true,
                 'attr' => ['class' => 'select2'],
-                    'choice_translation_domain' => 'privacy',
+                'choice_translation_domain' => 'privacy',
             ])
             ->add('dataSubjectCategories', ChoiceType::class, [
                 'label' => 'dpia.form.data_subject_categories',

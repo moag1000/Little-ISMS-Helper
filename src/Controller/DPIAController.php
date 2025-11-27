@@ -73,7 +73,7 @@ class DPIAController extends AbstractController
             $this->service->create($dpia);
 
             $this->addFlash('success', $this->translator->trans('dpia.created'));
-            return $this->redirectToRoute('app_dpia_show', ['id' => $dpia->getId()]);
+            return $this->redirectToRoute('app_dpia_show', ['id' => $dpia->getId()],Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('dpia/new.html.twig', [
@@ -101,7 +101,7 @@ class DPIAController extends AbstractController
             $this->service->update($dpia);
 
             $this->addFlash('success', $this->translator->trans('dpia.updated'));
-            return $this->redirectToRoute('app_dpia_show', ['id' => $dpia->getId()]);
+            return $this->redirectToRoute('app_dpia_show', ['id' => $dpia->getId()], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('dpia/edit.html.twig', [
