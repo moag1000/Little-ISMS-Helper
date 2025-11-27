@@ -30,7 +30,6 @@ audit:
     team_size: Teamgröße
     result: Ergebnis
     conclusion: Fazit
-    scope_type: Prüfungsumfang
     iso_27001_requirement: 'ISO 27001: Internes Audit (Klausel 9.2)'
     iso_27001_clause_info: 'Interne Audits müssen in geplanten Abständen durchgeführt werden, um zu prüfen, ob das ISMS die Anforderungen erfüllt und wirksam umgesetzt/aufrechterhalten wird.'
     confirm_delete: 'Audit löschen?'
