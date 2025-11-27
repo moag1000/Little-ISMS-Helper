@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use DateTime;
+use DateTimeInterface;
 use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Repository\RiskRepository;
@@ -23,10 +25,9 @@ use Psr\Log\LoggerInterface;
 class RiskReviewService
 {
     public function __construct(
-        private RiskRepository $riskRepository,
-        private EntityManagerInterface $entityManager,
-        private RiskMatrixService $riskMatrixService,
-        private LoggerInterface $logger
+        private readonly RiskRepository $riskRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LoggerInterface $logger
     ) {
     }
 
@@ -58,34 +59,32 @@ class RiskReviewService
      * - reviewDate is in the past, OR
      * - reviewDate is null (never reviewed)
      *
-     * @param Tenant $tenant
      * @return array<Risk>
      */
     public function getOverdueReviews(Tenant $tenant): array
     {
-        $qb = $this->riskRepository->createQueryBuilder('r')
+        $queryBuilder = $this->riskRepository->createQueryBuilder('r')
             ->where('r.tenant = :tenant')
             ->andWhere('r.reviewDate < :today OR r.reviewDate IS NULL')
             ->setParameter('tenant', $tenant)
-            ->setParameter('today', new \DateTime())
+            ->setParameter('today', new DateTime())
             ->orderBy('r.reviewDate', 'ASC');
 
-        return $qb->getQuery()->getResult();
+        return $queryBuilder->getQuery()->getResult();
     }
 
     /**
      * Get risks approaching review date (within next N days)
      *
-     * @param Tenant $tenant
      * @param int $daysAhead Number of days to look ahead (default: 30)
      * @return array<Risk>
      */
     public function getUpcomingReviews(Tenant $tenant, int $daysAhead = 30): array
     {
-        $today = new \DateTime();
+        $today = new DateTime();
         $futureDate = (clone $today)->modify("+{$daysAhead} days");
 
-        $qb = $this->riskRepository->createQueryBuilder('r')
+        $queryBuilder = $this->riskRepository->createQueryBuilder('r')
             ->where('r.tenant = :tenant')
             ->andWhere('r.reviewDate BETWEEN :today AND :futureDate')
             ->setParameter('tenant', $tenant)
@@ -93,7 +92,7 @@ class RiskReviewService
             ->setParameter('futureDate', $futureDate)
             ->orderBy('r.reviewDate', 'ASC');
 
-        return $qb->getQuery()->getResult();
+        return $queryBuilder->getQuery()->getResult();
     }
 
     /**
@@ -104,17 +103,15 @@ class RiskReviewService
      * - Risk level thresholds
      * - Review interval configuration
      *
-     * @param Risk $risk
      * @param bool $flush Whether to persist changes immediately
-     * @return \DateTimeInterface
      */
-    public function scheduleNextReview(Risk $risk, bool $flush = true): \DateTimeInterface
+    public function scheduleNextReview(Risk $risk, bool $flush = true): DateTimeInterface
     {
         $riskLevel = $this->getRiskLevel($risk);
         $schedule = $this->getReviewSchedule();
         $interval = $schedule[$riskLevel] ?? 365; // Default to 1 year
 
-        $nextReview = (new \DateTime())->modify("+{$interval} days");
+        $nextReview = new DateTime()->modify("+{$interval} days");
         $risk->setReviewDate($nextReview);
 
         if ($flush) {
@@ -136,21 +133,24 @@ class RiskReviewService
      * Determine risk level based on risk score
      * Uses centralized thresholds from RiskMatrixService
      *
-     * @param Risk $risk
      * @return string 'critical'|'high'|'medium'|'low'
      */
     private function getRiskLevel(Risk $risk): string
     {
         $riskScore = ($risk->getProbability() ?? 1) * ($risk->getImpact() ?? 1);
-
         // Use the same thresholds as RiskMatrixService for consistency
         if ($riskScore >= 20) {
             return 'critical';
-        } elseif ($riskScore >= 12) {
+        }
+        if ($riskScore >= 12) {
             return 'high';
-        } elseif ($riskScore >= 6) {
+        }
+
+        // Use the same thresholds as RiskMatrixService for consistency
+        if ($riskScore >= 6) {
             return 'medium';
-        } else {
+        }
+        else {
             return 'low';
         }
     }
@@ -165,7 +165,6 @@ class RiskReviewService
      * - upcoming_7: Reviews due in next 7 days
      * - never_reviewed: Risks without review date
      *
-     * @param Tenant $tenant
      * @return array<string, int>
      */
     public function getReviewStatistics(Tenant $tenant): array
@@ -197,7 +196,6 @@ class RiskReviewService
      *
      * Useful for initial setup or after importing risks
      *
-     * @param Tenant $tenant
      * @return int Number of risks scheduled
      */
     public function bulkScheduleReviews(Tenant $tenant): int

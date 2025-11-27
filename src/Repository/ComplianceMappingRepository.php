@@ -31,14 +31,14 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     /**
      * Find all mappings where the given requirement is the source (outbound mappings).
      *
-     * @param ComplianceRequirement $requirement Source requirement entity
+     * @param ComplianceRequirement $complianceRequirement Source requirement entity
      * @return ComplianceMapping[] Array of mappings sorted by strength (strongest first)
      */
-    public function findMappingsFromRequirement(ComplianceRequirement $requirement): array
+    public function findMappingsFromRequirement(ComplianceRequirement $complianceRequirement): array
     {
         return $this->createQueryBuilder('cm')
             ->where('cm.sourceRequirement = :requirement')
-            ->setParameter('requirement', $requirement)
+            ->setParameter('requirement', $complianceRequirement)
             ->orderBy('cm.mappingPercentage', 'DESC')
             ->getQuery()
             ->getResult();
@@ -47,14 +47,14 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     /**
      * Find all mappings where the given requirement is the target (inbound mappings).
      *
-     * @param ComplianceRequirement $requirement Target requirement entity
+     * @param ComplianceRequirement $complianceRequirement Target requirement entity
      * @return ComplianceMapping[] Array of mappings sorted by strength (strongest first)
      */
-    public function findMappingsToRequirement(ComplianceRequirement $requirement): array
+    public function findMappingsToRequirement(ComplianceRequirement $complianceRequirement): array
     {
         return $this->createQueryBuilder('cm')
             ->where('cm.targetRequirement = :requirement')
-            ->setParameter('requirement', $requirement)
+            ->setParameter('requirement', $complianceRequirement)
             ->orderBy('cm.mappingPercentage', 'DESC')
             ->getQuery()
             ->getResult();
@@ -139,8 +139,8 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             }
         }
 
-        foreach ($coveredRequirements as $coverage) {
-            $totalCoveragePercentage += min(100, $coverage); // Cap at 100% per requirement
+        foreach ($coveredRequirements as $coveredRequirement) {
+            $totalCoveragePercentage += min(100, $coveredRequirement); // Cap at 100% per requirement
         }
 
         $averageCoverage = $targetRequirements > 0
@@ -153,9 +153,9 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             'total_target_requirements' => $targetRequirements,
             'covered_requirements' => count($coveredRequirements),
             'coverage_percentage' => $averageCoverage,
-            'strong_mappings' => count(array_filter($coveredRequirements, fn($c) => $c >= 100)),
-            'partial_mappings' => count(array_filter($coveredRequirements, fn($c) => $c >= 50 && $c < 100)),
-            'weak_mappings' => count(array_filter($coveredRequirements, fn($c) => $c < 50)),
+            'strong_mappings' => count(array_filter($coveredRequirements, fn(int $c): bool => $c >= 100)),
+            'partial_mappings' => count(array_filter($coveredRequirements, fn(int $c): bool => $c >= 50 && $c < 100)),
+            'weak_mappings' => count(array_filter($coveredRequirements, fn(int $c): bool => $c < 50)),
         ];
     }
 
@@ -207,8 +207,8 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             }
         }
 
-        foreach ($targetRequirementsHelped as $contribution) {
-            $totalBenefit += $contribution;
+        foreach ($targetRequirementsHelped as $targetRequirementHelped) {
+            $totalBenefit += $targetRequirementHelped;
         }
 
         $targetReqCount = $targetFramework->getRequirements()->count();
@@ -274,8 +274,8 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     ): array {
         $categoryStats = [];
 
-        foreach ($sourceFramework->getRequirements() as $req) {
-            $category = $req->getCategory() ?? 'Uncategorized';
+        foreach ($sourceFramework->getRequirements() as $requirement) {
+            $category = $requirement->getCategory() ?? 'Uncategorized';
 
             if (!isset($categoryStats[$category])) {
                 $categoryStats[$category] = [
@@ -291,36 +291,36 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             $categoryStats[$category]['total']++;
 
             // Find mapping to target framework
-            $mapping = $this->findMappingBetweenRequirementAndFramework($req, $targetFramework);
+            $mapping = $this->findMappingBetweenRequirementAndFramework($requirement, $targetFramework);
 
-            if ($mapping) {
+            if ($mapping instanceof ComplianceMapping) {
                 $categoryStats[$category]['mapped']++;
                 $categoryStats[$category]['quality_sum'] += $mapping->getMappingPercentage();
             } else {
                 $categoryStats[$category]['unmapped_requirements'][] = [
-                    'id' => $req->getRequirementId(),
-                    'title' => $req->getTitle(),
-                    'priority' => $req->getPriority(),
+                    'id' => $requirement->getRequirementId(),
+                    'title' => $requirement->getTitle(),
+                    'priority' => $requirement->getPriority(),
                 ];
             }
         }
 
         // Calculate percentages and averages
-        foreach ($categoryStats as $cat => &$stats) {
-            $stats['coverage'] = $stats['total'] > 0
-                ? round(($stats['mapped'] / $stats['total']) * 100, 1)
+        foreach ($categoryStats as &$categoryStat) {
+            $categoryStat['coverage'] = $categoryStat['total'] > 0
+                ? round(($categoryStat['mapped'] / $categoryStat['total']) * 100, 1)
                 : 0;
 
-            $stats['avg_quality'] = $stats['mapped'] > 0
-                ? round($stats['quality_sum'] / $stats['mapped'], 1)
+            $categoryStat['avg_quality'] = $categoryStat['mapped'] > 0
+                ? round($categoryStat['quality_sum'] / $categoryStat['mapped'], 1)
                 : 0;
 
             // Remove quality_sum as it's just for calculation
-            unset($stats['quality_sum']);
+            unset($categoryStat['quality_sum']);
         }
 
         // Sort by coverage (lowest first to highlight problem areas)
-        uasort($categoryStats, fn($a, $b) => $a['coverage'] <=> $b['coverage']);
+        uasort($categoryStats, fn($a, $b): int => $a['coverage'] <=> $b['coverage']);
 
         return $categoryStats;
     }
@@ -328,21 +328,21 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     /**
      * Find the best mapping between a requirement and any requirement in the target framework.
      *
-     * @param ComplianceRequirement $requirement Source requirement
-     * @param ComplianceFramework $targetFramework Target framework
+     * @param ComplianceRequirement $complianceRequirement Source requirement
+     * @param ComplianceFramework $complianceFramework Target framework
      * @return ComplianceMapping|null Best mapping found, or null if no mapping exists
      */
     private function findMappingBetweenRequirementAndFramework(
-        ComplianceRequirement $requirement,
-        ComplianceFramework $targetFramework
+        ComplianceRequirement $complianceRequirement,
+        ComplianceFramework $complianceFramework
     ): ?ComplianceMapping {
         // Check outbound mappings (where requirement is source)
         $outboundMappings = $this->createQueryBuilder('cm')
             ->join('cm.targetRequirement', 'tr')
             ->where('cm.sourceRequirement = :requirement')
             ->andWhere('tr.framework = :targetFramework')
-            ->setParameter('requirement', $requirement)
-            ->setParameter('targetFramework', $targetFramework)
+            ->setParameter('requirement', $complianceRequirement)
+            ->setParameter('targetFramework', $complianceFramework)
             ->orderBy('cm.mappingPercentage', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
@@ -357,14 +357,14 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->join('cm.sourceRequirement', 'sr')
             ->where('cm.targetRequirement = :requirement')
             ->andWhere('sr.framework = :targetFramework')
-            ->setParameter('requirement', $requirement)
-            ->setParameter('targetFramework', $targetFramework)
+            ->setParameter('requirement', $complianceRequirement)
+            ->setParameter('targetFramework', $complianceFramework)
             ->orderBy('cm.mappingPercentage', 'DESC')
             ->setMaxResults(1)
             ->getQuery()
             ->getResult();
 
-        return !empty($inboundMappings) ? $inboundMappings[0] : null;
+        return empty($inboundMappings) ? null : $inboundMappings[0];
     }
 
     /**
@@ -373,12 +373,12 @@ class ComplianceMappingRepository extends ServiceEntityRepository
      * Weights gaps by requirement priority to focus on high-impact compliance issues.
      * Priority weights: critical=4.0, high=2.0, medium=1.0, low=0.5
      *
-     * @param ComplianceFramework $framework Framework to analyze
+     * @param ComplianceFramework $complianceFramework Framework to analyze
      * @param array $gaps Array of gap requirements (unfulfilled requirements)
      * @return array{weighted_gap_score: float, total_weight: float, risk_score: int, uncovered_critical: array, uncovered_high: array, priority_distribution: array, recommendations: array} Priority-weighted gap analysis
      */
     public function calculatePriorityWeightedGaps(
-        ComplianceFramework $framework,
+        ComplianceFramework $complianceFramework,
         array $gaps
     ): array {
         $priorityWeights = [
@@ -494,10 +494,10 @@ class ComplianceMappingRepository extends ServiceEntityRepository
      */
     public function getMappingStatistics(): array
     {
-        $qb = $this->createQueryBuilder('cm');
+        $queryBuilder = $this->createQueryBuilder('cm');
 
         return [
-            'total_mappings' => $qb->select('COUNT(cm.id)')
+            'total_mappings' => $queryBuilder->select('COUNT(cm.id)')
                 ->getQuery()
                 ->getSingleScalarResult(),
 
@@ -642,12 +642,12 @@ class ComplianceMappingRepository extends ServiceEntityRepository
      * More critical/widely-used frameworks get higher multipliers to reflect
      * their higher business value.
      *
-     * @param ComplianceFramework $framework The framework
+     * @param ComplianceFramework $complianceFramework The framework
      * @return float Priority multiplier (1.0 - 2.0)
      */
-    private function getFrameworkPriorityMultiplier(ComplianceFramework $framework): float
+    private function getFrameworkPriorityMultiplier(ComplianceFramework $complianceFramework): float
     {
-        $code = $framework->getCode();
+        $code = $complianceFramework->getCode();
 
         // Critical frameworks (legal requirements, industry standards)
         if (in_array($code, ['GDPR', 'ISO27001', 'SOC2', 'HIPAA', 'PCI-DSS'], true)) {
@@ -689,7 +689,6 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         ];
 
         $categoryPatterns = [];
-        $dependencyBlockers = [];
 
         foreach ($gaps as $gap) {
             $fulfillment = $gap->getFulfillmentPercentage() ?? 0;
@@ -739,27 +738,27 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         }
 
         // Calculate category patterns
-        foreach ($categoryPatterns as $cat => &$pattern) {
-            $pattern['avg_fulfillment'] = $pattern['count'] > 0
-                ? round($pattern['total_fulfillment'] / $pattern['count'], 1)
+        foreach ($categoryPatterns as &$categoryPattern) {
+            $categoryPattern['avg_fulfillment'] = $categoryPattern['count'] > 0
+                ? round($categoryPattern['total_fulfillment'] / $categoryPattern['count'], 1)
                 : 0;
 
             // Determine dominant root cause for category
-            if ($pattern['avg_fulfillment'] === 0) {
-                $pattern['dominant_root_cause'] = 'not_started';
-            } elseif ($pattern['avg_fulfillment'] < 30) {
-                $pattern['dominant_root_cause'] = 'missing_control';
-            } elseif ($pattern['avg_fulfillment'] < 80) {
-                $pattern['dominant_root_cause'] = 'incomplete_implementation';
+            if ($categoryPattern['avg_fulfillment'] === 0) {
+                $categoryPattern['dominant_root_cause'] = 'not_started';
+            } elseif ($categoryPattern['avg_fulfillment'] < 30) {
+                $categoryPattern['dominant_root_cause'] = 'missing_control';
+            } elseif ($categoryPattern['avg_fulfillment'] < 80) {
+                $categoryPattern['dominant_root_cause'] = 'incomplete_implementation';
             } else {
-                $pattern['dominant_root_cause'] = 'missing_evidence';
+                $categoryPattern['dominant_root_cause'] = 'missing_evidence';
             }
 
-            unset($pattern['total_fulfillment']); // Remove helper field
+            unset($categoryPattern['total_fulfillment']); // Remove helper field
         }
 
         // Sort categories by gap count (most problematic first)
-        uasort($categoryPatterns, fn($a, $b) => $b['count'] <=> $a['count']);
+        uasort($categoryPatterns, fn($a, $b): int => $b['count'] <=> $a['count']);
 
         // Generate targeted recommendations based on root causes
         $recommendations = $this->generateRootCauseRecommendations($rootCauses, $categoryPatterns);
@@ -928,7 +927,6 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     /**
      * Find mappings with low confidence
      *
-     * @param int $confidenceThreshold
      * @return ComplianceMapping[]
      */
     public function findLowConfidenceMappings(int $confidenceThreshold = 60): array
@@ -944,7 +942,6 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     /**
      * Find mappings with low quality score
      *
-     * @param int $qualityThreshold
      * @return ComplianceMapping[]
      */
     public function findLowQualityMappings(int $qualityThreshold = 50): array
@@ -973,14 +970,12 @@ class ComplianceMappingRepository extends ServiceEntityRepository
 
     /**
      * Get quality statistics for all mappings
-     *
-     * @return array
      */
     public function getQualityStatistics(): array
     {
-        $qb = $this->createQueryBuilder('cm');
+        $queryBuilder = $this->createQueryBuilder('cm');
 
-        $totalMappings = $qb->select('COUNT(cm.id)')
+        $totalMappings = $queryBuilder->select('COUNT(cm.id)')
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -1054,12 +1049,10 @@ class ComplianceMappingRepository extends ServiceEntityRepository
 
     /**
      * Get quality distribution by confidence levels
-     *
-     * @return array
      */
     public function getQualityDistribution(): array
     {
-        $results = $this->createQueryBuilder('cm')
+        return $this->createQueryBuilder('cm')
             ->select('
                 CASE
                     WHEN cm.analysisConfidence >= 80 THEN \'high\'
@@ -1074,8 +1067,6 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->groupBy('confidence_level')
             ->getQuery()
             ->getResult();
-
-        return $results;
     }
 
     /**
@@ -1098,19 +1089,17 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     /**
      * Get top quality mappings for a framework
      *
-     * @param ComplianceFramework $framework
-     * @param int $limit
      * @return ComplianceMapping[]
      */
     public function getTopQualityMappings(
-        \App\Entity\ComplianceFramework $framework,
+        ComplianceFramework $complianceFramework,
         int $limit = 10
     ): array {
         return $this->createQueryBuilder('cm')
             ->join('cm.sourceRequirement', 'sr')
             ->where('sr.framework = :framework')
             ->andWhere('cm.qualityScore IS NOT NULL')
-            ->setParameter('framework', $framework)
+            ->setParameter('framework', $complianceFramework)
             ->orderBy('cm.qualityScore', 'DESC')
             ->setMaxResults($limit)
             ->getQuery()
@@ -1119,12 +1108,10 @@ class ComplianceMappingRepository extends ServiceEntityRepository
 
     /**
      * Get framework quality comparison
-     *
-     * @return array
      */
     public function getFrameworkQualityComparison(): array
     {
-        $results = $this->createQueryBuilder('cm')
+        return $this->createQueryBuilder('cm')
             ->select('
                 sf.code as source_framework,
                 tf.code as target_framework,
@@ -1143,14 +1130,11 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->orderBy('avg_quality', 'DESC')
             ->getQuery()
             ->getResult();
-
-        return $results;
     }
 
     /**
      * Get mappings by review status
      *
-     * @param string $status
      * @return ComplianceMapping[]
      */
     public function findByReviewStatus(string $status): array
@@ -1165,12 +1149,10 @@ class ComplianceMappingRepository extends ServiceEntityRepository
 
     /**
      * Get similarity distribution statistics
-     *
-     * @return array
      */
     public function getSimilarityDistribution(): array
     {
-        $results = $this->createQueryBuilder('cm')
+        return $this->createQueryBuilder('cm')
             ->select('
                 CASE
                     WHEN cm.textualSimilarity >= 0.8 THEN \'very_high\'
@@ -1185,7 +1167,5 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             ->groupBy('similarity_level')
             ->getQuery()
             ->getResult();
-
-        return $results;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use RuntimeException;
+use DateTime;
 use App\Entity\DataBreach;
 use App\Form\DataBreachType;
 use App\Service\DataBreachService;
@@ -12,66 +14,66 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/data-breach', name: 'app_data_breach_')]
+#[Route(name: 'app_data_breach_')]
 #[IsGranted('ROLE_USER')]
 class DataBreachController extends AbstractController
 {
     public function __construct(
-        private DataBreachService $service,
-        private PdfExportService $pdfService,
+        private readonly DataBreachService $dataBreachService,
+        private readonly PdfExportService $pdfExportService,
     ) {
     }
 
     /**
      * List all data breaches with filters
      */
-    #[Route('', name: 'index', methods: ['GET'])]
+    #[Route('/data-breach', name: 'app_data_breach_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $filter = $request->query->get('filter', 'all');
 
         $breaches = match ($filter) {
-            'draft' => $this->service->findByStatus('draft'),
-            'under_assessment' => $this->service->findByStatus('under_assessment'),
-            'authority_notified' => $this->service->findByStatus('authority_notified'),
-            'subjects_notified' => $this->service->findByStatus('subjects_notified'),
-            'closed' => $this->service->findByStatus('closed'),
-            'high_risk' => $this->service->findHighRisk(),
-            'critical_risk' => $this->service->findByRiskLevel('critical'),
-            'pending_authority' => $this->service->findRequiringAuthorityNotification(),
-            'overdue' => $this->service->findAuthorityNotificationOverdue(),
-            'pending_subjects' => $this->service->findRequiringSubjectNotification(),
-            'special_categories' => $this->service->findWithSpecialCategories(),
-            'incomplete' => $this->service->findIncomplete(),
-            default => $this->service->findAll(),
+            'draft' => $this->dataBreachService->findByStatus('draft'),
+            'under_assessment' => $this->dataBreachService->findByStatus('under_assessment'),
+            'authority_notified' => $this->dataBreachService->findByStatus('authority_notified'),
+            'subjects_notified' => $this->dataBreachService->findByStatus('subjects_notified'),
+            'closed' => $this->dataBreachService->findByStatus('closed'),
+            'high_risk' => $this->dataBreachService->findHighRisk(),
+            'critical_risk' => $this->dataBreachService->findByRiskLevel('critical'),
+            'pending_authority' => $this->dataBreachService->findRequiringAuthorityNotification(),
+            'overdue' => $this->dataBreachService->findAuthorityNotificationOverdue(),
+            'pending_subjects' => $this->dataBreachService->findRequiringSubjectNotification(),
+            'special_categories' => $this->dataBreachService->findWithSpecialCategories(),
+            'incomplete' => $this->dataBreachService->findIncomplete(),
+            default => $this->dataBreachService->findAll(),
         };
 
         return $this->render('data_breach/index.html.twig', [
             'breaches' => $breaches,
             'current_filter' => $filter,
-            'statistics' => $this->service->getDashboardStatistics(),
-            'compliance_score' => $this->service->calculateComplianceScore(),
+            'statistics' => $this->dataBreachService->getDashboardStatistics(),
+            'compliance_score' => $this->dataBreachService->calculateComplianceScore(),
         ]);
     }
 
     /**
      * Dashboard with action items and compliance overview
      */
-    #[Route('/dashboard', name: 'dashboard', methods: ['GET'])]
+    #[Route('/data-breach/dashboard', name: 'app_data_breach_dashboard', methods: ['GET'])]
     public function dashboard(): Response
     {
-        $statistics = $this->service->getDashboardStatistics();
-        $complianceScore = $this->service->calculateComplianceScore();
-        $actionItems = $this->service->getActionItems();
+        $statistics = $this->dataBreachService->getDashboardStatistics();
+        $complianceScore = $this->dataBreachService->calculateComplianceScore();
+        $actionItems = $this->dataBreachService->getActionItems();
 
         return $this->render('data_breach/dashboard.html.twig', [
             'statistics' => $statistics,
             'compliance_score' => $complianceScore,
             'action_items' => $actionItems,
-            'overdue_breaches' => $this->service->findAuthorityNotificationOverdue(),
-            'pending_authority' => $this->service->findRequiringAuthorityNotification(),
-            'pending_subjects' => $this->service->findRequiringSubjectNotification(),
-            'recent_breaches' => $this->service->findRecent(30),
+            'overdue_breaches' => $this->dataBreachService->findAuthorityNotificationOverdue(),
+            'pending_authority' => $this->dataBreachService->findRequiringAuthorityNotification(),
+            'pending_subjects' => $this->dataBreachService->findRequiringSubjectNotification(),
+            'recent_breaches' => $this->dataBreachService->findRecent(30),
         ]);
     }
 
@@ -79,12 +81,12 @@ class DataBreachController extends AbstractController
      * Create new data breach
      * Supports both standalone breaches and incident-linked breaches
      */
-    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
+    #[Route('/data-breach/new', name: 'app_data_breach_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function new(Request $request): Response
     {
         // Create a new breach with tenant and reference number pre-set
-        $breach = $this->service->prepareNewBreach();
+        $breach = $this->dataBreachService->prepareNewBreach();
 
         $form = $this->createForm(DataBreachType::class, $breach);
         $form->handleRequest($request);
@@ -92,7 +94,7 @@ class DataBreachController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Form data is already bound to $breach via handleRequest
             // Just save it
-            $this->service->update($breach, $this->getUser());
+            $this->dataBreachService->update($breach, $this->getUser());
 
             $this->addFlash('success', sprintf(
                 'Data breach %s created successfully.',
@@ -110,39 +112,39 @@ class DataBreachController extends AbstractController
     /**
      * Show data breach details
      */
-    #[Route('/{id}', name: 'show', methods: ['GET'])]
-    public function show(DataBreach $breach): Response
+    #[Route('/data-breach/{id}', name: 'app_data_breach_show', methods: ['GET'])]
+    public function show(DataBreach $dataBreach): Response
     {
         return $this->render('data_breach/show.html.twig', [
-            'breach' => $breach,
+            'breach' => $dataBreach,
         ]);
     }
 
     /**
      * Edit data breach
      */
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
+    #[Route('/data-breach/{id}/edit', name: 'app_data_breach_edit', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_AUDITOR')]
-    public function edit(Request $request, DataBreach $breach): Response
+    public function edit(Request $request, DataBreach $dataBreach): Response
     {
-        if (!in_array($breach->getStatus(), ['draft', 'under_assessment'])) {
+        if (!in_array($dataBreach->getStatus(), ['draft', 'under_assessment'])) {
             $this->addFlash('error', 'Cannot edit data breach in current status.');
-            return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+            return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
-        $form = $this->createForm(DataBreachType::class, $breach);
+        $form = $this->createForm(DataBreachType::class, $dataBreach);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->service->update($breach, $this->getUser());
+            $this->dataBreachService->update($dataBreach, $this->getUser());
 
             $this->addFlash('success', 'Data breach updated successfully.');
 
-            return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+            return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         return $this->render('data_breach/edit.html.twig', [
-            'breach' => $breach,
+            'breach' => $dataBreach,
             'form' => $form,
         ]);
     }
@@ -150,17 +152,17 @@ class DataBreachController extends AbstractController
     /**
      * Delete data breach
      */
-    #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
+    #[Route('/data-breach/{id}/delete', name: 'app_data_breach_delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function delete(Request $request, DataBreach $breach): Response
+    public function delete(Request $request, DataBreach $dataBreach): Response
     {
         $token = $request->request->get('_token');
-        if (!$this->isCsrfTokenValid('delete' . $breach->getId(), $token)) {
+        if (!$this->isCsrfTokenValid('delete' . $dataBreach->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');
             return $this->redirectToRoute('app_data_breach_index');
         }
 
-        $this->service->delete($breach);
+        $this->dataBreachService->delete($dataBreach);
 
         $this->addFlash('success', 'Data breach deleted successfully.');
 
@@ -174,37 +176,37 @@ class DataBreachController extends AbstractController
     /**
      * Submit data breach for assessment
      */
-    #[Route('/{id}/submit-for-assessment', name: 'submit_for_assessment', methods: ['POST'])]
+    #[Route('/data-breach/{id}/submit-for-assessment', name: 'app_data_breach_submit_for_assessment', methods: ['POST'])]
     #[IsGranted('ROLE_AUDITOR')]
-    public function submitForAssessment(Request $request, DataBreach $breach): Response
+    public function submitForAssessment(Request $request, DataBreach $dataBreach): Response
     {
         $token = $request->request->get('_token');
-        if (!$this->isCsrfTokenValid('submit' . $breach->getId(), $token)) {
+        if (!$this->isCsrfTokenValid('submit' . $dataBreach->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');
-            return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+            return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         try {
-            $this->service->submitForAssessment($breach, $this->getUser());
+            $this->dataBreachService->submitForAssessment($dataBreach, $this->getUser());
             $this->addFlash('success', 'Data breach submitted for assessment.');
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+        return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
     }
 
     /**
      * Notify supervisory authority (Art. 33 GDPR)
      */
-    #[Route('/{id}/notify-authority', name: 'notify_authority', methods: ['POST'])]
+    #[Route('/data-breach/{id}/notify-authority', name: 'app_data_breach_notify_authority', methods: ['POST'])]
     #[IsGranted('ROLE_AUDITOR')]
-    public function notifyAuthority(Request $request, DataBreach $breach): Response
+    public function notifyAuthority(Request $request, DataBreach $dataBreach): Response
     {
         $token = $request->request->get('_token');
-        if (!$this->isCsrfTokenValid('notify_authority' . $breach->getId(), $token)) {
+        if (!$this->isCsrfTokenValid('notify_authority' . $dataBreach->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');
-            return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+            return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         $authorityName = $request->request->get('authority_name');
@@ -214,12 +216,12 @@ class DataBreachController extends AbstractController
 
         if (!$authorityName || !$notificationMethod) {
             $this->addFlash('error', 'Authority name and notification method are required.');
-            return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+            return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         try {
-            $this->service->notifySupervisoryAuthority(
-                $breach,
+            $this->dataBreachService->notifySupervisoryAuthority(
+                $dataBreach,
                 $authorityName,
                 $notificationMethod,
                 $authorityReference,
@@ -227,29 +229,29 @@ class DataBreachController extends AbstractController
             );
 
             // Record delay reason if overdue
-            if ($delayReason && $breach->isAuthorityNotificationOverdue()) {
-                $this->service->recordNotificationDelay($breach, $delayReason);
+            if ($delayReason && $dataBreach->isAuthorityNotificationOverdue()) {
+                $this->dataBreachService->recordNotificationDelay($dataBreach, $delayReason);
             }
 
             $this->addFlash('success', 'Supervisory authority notification recorded.');
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+        return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
     }
 
     /**
      * Notify data subjects (Art. 34 GDPR)
      */
-    #[Route('/{id}/notify-subjects', name: 'notify_subjects', methods: ['POST'])]
+    #[Route('/data-breach/{id}/notify-subjects', name: 'app_data_breach_notify_subjects', methods: ['POST'])]
     #[IsGranted('ROLE_AUDITOR')]
-    public function notifySubjects(Request $request, DataBreach $breach): Response
+    public function notifySubjects(Request $request, DataBreach $dataBreach): Response
     {
         $token = $request->request->get('_token');
-        if (!$this->isCsrfTokenValid('notify_subjects' . $breach->getId(), $token)) {
+        if (!$this->isCsrfTokenValid('notify_subjects' . $dataBreach->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');
-            return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+            return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         $notificationMethod = $request->request->get('notification_method');
@@ -257,124 +259,124 @@ class DataBreachController extends AbstractController
 
         if (!$notificationMethod || $subjectsNotified <= 0) {
             $this->addFlash('error', 'Notification method and number of subjects are required.');
-            return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+            return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         try {
-            $this->service->notifyDataSubjects($breach, $notificationMethod, $subjectsNotified, []);
+            $this->dataBreachService->notifyDataSubjects($dataBreach, $notificationMethod, $subjectsNotified, []);
             $this->addFlash('success', 'Data subject notification recorded.');
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+        return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
     }
 
     /**
      * Record exemption from data subject notification (Art. 34(3) GDPR)
      */
-    #[Route('/{id}/subject-notification-exemption', name: 'subject_notification_exemption', methods: ['POST'])]
+    #[Route('/data-breach/{id}/subject-notification-exemption', name: 'app_data_breach_subject_notification_exemption', methods: ['POST'])]
     #[IsGranted('ROLE_AUDITOR')]
-    public function subjectNotificationExemption(Request $request, DataBreach $breach): Response
+    public function subjectNotificationExemption(Request $request, DataBreach $dataBreach): Response
     {
         $token = $request->request->get('_token');
-        if (!$this->isCsrfTokenValid('exemption' . $breach->getId(), $token)) {
+        if (!$this->isCsrfTokenValid('exemption' . $dataBreach->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');
-            return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+            return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         $exemptionReason = $request->request->get('exemption_reason');
 
         if (!$exemptionReason) {
             $this->addFlash('error', 'Exemption reason is required.');
-            return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+            return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         try {
-            $this->service->recordSubjectNotificationExemption($breach, $exemptionReason);
+            $this->dataBreachService->recordSubjectNotificationExemption($dataBreach, $exemptionReason);
             $this->addFlash('success', 'Subject notification exemption recorded.');
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+        return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
     }
 
     /**
      * Close data breach investigation
      */
-    #[Route('/{id}/close', name: 'close', methods: ['POST'])]
+    #[Route('/data-breach/{id}/close', name: 'app_data_breach_close', methods: ['POST'])]
     #[IsGranted('ROLE_AUDITOR')]
-    public function close(Request $request, DataBreach $breach): Response
+    public function close(Request $request, DataBreach $dataBreach): Response
     {
         $token = $request->request->get('_token');
-        if (!$this->isCsrfTokenValid('close' . $breach->getId(), $token)) {
+        if (!$this->isCsrfTokenValid('close' . $dataBreach->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');
-            return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+            return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         try {
-            $this->service->close($breach, $this->getUser());
+            $this->dataBreachService->close($dataBreach, $this->getUser());
             $this->addFlash('success', 'Data breach closed successfully.');
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+        return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
     }
 
     /**
      * Reopen closed data breach
      */
-    #[Route('/{id}/reopen', name: 'reopen', methods: ['POST'])]
+    #[Route('/data-breach/{id}/reopen', name: 'app_data_breach_reopen', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
-    public function reopen(Request $request, DataBreach $breach): Response
+    public function reopen(Request $request, DataBreach $dataBreach): Response
     {
         $token = $request->request->get('_token');
-        if (!$this->isCsrfTokenValid('reopen' . $breach->getId(), $token)) {
+        if (!$this->isCsrfTokenValid('reopen' . $dataBreach->getId(), $token)) {
             $this->addFlash('error', 'Invalid CSRF token.');
-            return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+            return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         $reopenReason = $request->request->get('reopen_reason');
 
         if (!$reopenReason) {
             $this->addFlash('error', 'Reopen reason is required.');
-            return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+            return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
         }
 
         try {
-            $this->service->reopen($breach, $this->getUser(), $reopenReason);
+            $this->dataBreachService->reopen($dataBreach, $this->getUser(), $reopenReason);
             $this->addFlash('success', 'Data breach reopened successfully.');
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             $this->addFlash('error', $e->getMessage());
         }
 
-        return $this->redirectToRoute('app_data_breach_show', ['id' => $breach->getId()]);
+        return $this->redirectToRoute('app_data_breach_show', ['id' => $dataBreach->getId()]);
     }
 
     /**
      * Export data breach as PDF
      */
-    #[Route('/{id}/export/pdf', name: 'export_pdf', methods: ['GET'])]
-    public function exportPdf(DataBreach $breach): Response
+    #[Route('/data-breach/{id}/export/pdf', name: 'app_data_breach_export_pdf', methods: ['GET'])]
+    public function exportPdf(DataBreach $dataBreach): Response
     {
         // Generate version from last update date (Format: Year.Month.Day)
-        $lastUpdate = $breach->getUpdatedAt() ?? $breach->getCreatedAt() ?? new \DateTime();
+        $lastUpdate = $dataBreach->getUpdatedAt() ?? $dataBreach->getCreatedAt() ?? new DateTime();
         $version = $lastUpdate->format('Y.m.d');
 
-        $pdf = $this->pdfService->generatePdf('data_breach/data_breach_pdf.html.twig', [
-            'breach' => $breach,
+        $pdf = $this->pdfExportService->generatePdf('data_breach/data_breach_pdf.html.twig', [
+            'breach' => $dataBreach,
             'version' => $version,
         ]);
 
         $filename = sprintf(
             'data_breach_%s_%s.pdf',
-            $breach->getReferenceNumber(),
-            (new \DateTime())->format('Y-m-d')
+            $dataBreach->getReferenceNumber(),
+            new DateTime()->format('Y-m-d')
         );
 
-        return new Response($pdf, 200, [
+        return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
         ]);

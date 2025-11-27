@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+use Exception;
+use DateTimeImmutable;
 use App\Entity\Supplier;
 use App\Form\SupplierType;
 use App\Repository\SupplierRepository;
@@ -15,18 +18,16 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/supplier')]
 class SupplierController extends AbstractController
 {
     public function __construct(
-        private SupplierRepository $supplierRepository,
-        private SupplierService $supplierService,
-        private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator,
-        private Security $security
+        private readonly SupplierRepository $supplierRepository,
+        private readonly SupplierService $supplierService,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
+        private readonly Security $security
     ) {}
-
-    #[Route('/', name: 'app_supplier_index')]
+    #[Route('/supplier/', name: 'app_supplier_index')]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
@@ -40,22 +41,14 @@ class SupplierController extends AbstractController
         // Get suppliers based on view filter
         if ($tenant) {
             // Determine which suppliers to load based on view parameter
-            switch ($view) {
-                case 'own':
-                    // Only own suppliers
-                    $suppliers = $this->supplierRepository->findByTenant($tenant);
-                    break;
-                case 'subsidiaries':
-                    // Own + from all subsidiaries (for parent companies)
-                    $suppliers = $this->supplierRepository->findByTenantIncludingSubsidiaries($tenant);
-                    break;
-                case 'inherited':
-                default:
-                    // Own + inherited from parents (default behavior)
-                    $suppliers = $this->supplierService->getSuppliersForTenant($tenant);
-                    break;
-            }
-
+            $suppliers = match ($view) {
+                // Only own suppliers
+                'own' => $this->supplierRepository->findByTenant($tenant),
+                // Own + from all subsidiaries (for parent companies)
+                'subsidiaries' => $this->supplierRepository->findByTenantIncludingSubsidiaries($tenant),
+                // Own + inherited from parents (default behavior)
+                default => $this->supplierService->getSuppliersForTenant($tenant),
+            };
             $statistics = $this->supplierRepository->getStatisticsByTenant($tenant);
             $criticalSuppliers = $this->supplierRepository->findCriticalSuppliersByTenant($tenant);
             $overdueAssessments = $this->supplierRepository->findOverdueAssessmentsByTenant($tenant);
@@ -96,8 +89,7 @@ class SupplierController extends AbstractController
             'detailedStats' => $detailedStats,
         ]);
     }
-
-    #[Route('/new', name: 'app_supplier_new')]
+    #[Route('/supplier/new', name: 'app_supplier_new')]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -105,7 +97,7 @@ class SupplierController extends AbstractController
 
         // Set tenant from current user
         $user = $this->security->getUser();
-        if ($user && $user->getTenant()) {
+        if ($user instanceof UserInterface && $user->getTenant()) {
             $supplier->setTenant($user->getTenant());
         }
 
@@ -125,8 +117,7 @@ class SupplierController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/bulk-delete', name: 'app_supplier_bulk_delete', methods: ['POST'])]
+    #[Route('/supplier/bulk-delete', name: 'app_supplier_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function bulkDelete(Request $request): Response
     {
@@ -147,7 +138,7 @@ class SupplierController extends AbstractController
             try {
                 $supplier = $this->supplierRepository->find($id);
 
-                if (!$supplier) {
+                if (!$supplier instanceof Supplier) {
                     $errors[] = "Supplier ID $id not found";
                     continue;
                 }
@@ -160,7 +151,7 @@ class SupplierController extends AbstractController
 
                 $this->entityManager->remove($supplier);
                 $deleted++;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $errors[] = "Error deleting supplier ID $id: " . $e->getMessage();
             }
         }
@@ -169,7 +160,7 @@ class SupplierController extends AbstractController
             $this->entityManager->flush();
         }
 
-        if (!empty($errors)) {
+        if ($errors !== []) {
             return $this->json([
                 'success' => $deleted > 0,
                 'deleted' => $deleted,
@@ -183,9 +174,7 @@ class SupplierController extends AbstractController
             'message' => "$deleted suppliers deleted successfully"
         ]);
     }
-
-
-    #[Route('/{id}', name: 'app_supplier_show', requirements: ['id' => '\d+'])]
+    #[Route('/supplier/{id}', name: 'app_supplier_show', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function show(Supplier $supplier): Response
     {
@@ -208,8 +197,7 @@ class SupplierController extends AbstractController
             'currentTenant' => $tenant,
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'app_supplier_edit', requirements: ['id' => '\d+'])]
+    #[Route('/supplier/{id}/edit', name: 'app_supplier_edit', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Supplier $supplier): Response
     {
@@ -226,7 +214,7 @@ class SupplierController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $supplier->setUpdatedAt(new \DateTimeImmutable());
+            $supplier->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('supplier.success.updated'));
@@ -238,8 +226,7 @@ class SupplierController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}/delete', name: 'app_supplier_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/supplier/{id}/delete', name: 'app_supplier_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Supplier $supplier): Response
     {
@@ -261,7 +248,6 @@ class SupplierController extends AbstractController
 
         return $this->redirectToRoute('app_supplier_index');
     }
-
     /**
      * Calculate detailed statistics showing breakdown by origin
      */

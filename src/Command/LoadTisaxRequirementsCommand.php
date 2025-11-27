@@ -17,20 +17,20 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LoadTisaxRequirementsCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
         // Create or get TISAX framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'TISAX']);
 
-        if (!$framework) {
+        if (!$framework instanceof ComplianceFramework) {
             $framework = new ComplianceFramework();
             $framework->setCode('TISAX')
                 ->setName('TISAX (Trusted Information Security Assessment Exchange)')
@@ -62,7 +62,7 @@ class LoadTisaxRequirementsCommand extends Command
 
         $this->entityManager->flush();
 
-        $io->success(sprintf('Successfully loaded %d TISAX requirements', count($requirements)));
+        $symfonyStyle->success(sprintf('Successfully loaded %d TISAX requirements', count($requirements)));
 
         return Command::SUCCESS;
     }

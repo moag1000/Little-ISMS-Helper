@@ -17,20 +17,20 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LoadGxpRequirementsCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
         // Create or get GxP framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'GXP']);
 
-        if (!$framework) {
+        if (!$framework instanceof ComplianceFramework) {
             $framework = new ComplianceFramework();
             $framework->setCode('GXP')
                 ->setName('GxP - Good Practice für Pharma und Life Sciences')
@@ -62,7 +62,7 @@ class LoadGxpRequirementsCommand extends Command
 
         $this->entityManager->flush();
 
-        $io->success(sprintf('Successfully loaded %d GxP requirements', count($requirements)));
+        $symfonyStyle->success(sprintf('Successfully loaded %d GxP requirements', count($requirements)));
 
         return Command::SUCCESS;
     }

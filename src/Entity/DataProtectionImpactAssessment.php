@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use App\Repository\DataProtectionImpactAssessmentRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -256,7 +258,7 @@ class DataProtectionImpactAssessment
      * Date DPO was consulted
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $dpoConsultationDate = null;
+    private ?DateTimeInterface $dpoConsultationDate = null;
 
     /**
      * DPO advice/feedback
@@ -296,7 +298,7 @@ class DataProtectionImpactAssessment
      * Date supervisory authority was consulted
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $supervisoryConsultationDate = null;
+    private ?DateTimeInterface $supervisoryConsultationDate = null;
 
     /**
      * Supervisory authority feedback/decision
@@ -333,7 +335,7 @@ class DataProtectionImpactAssessment
      * Date of approval
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $approvalDate = null;
+    private ?DateTimeInterface $approvalDate = null;
 
     /**
      * Approval comments
@@ -361,13 +363,13 @@ class DataProtectionImpactAssessment
      * Date of last review
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $lastReviewDate = null;
+    private ?DateTimeInterface $lastReviewDate = null;
 
     /**
      * Next scheduled review date
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $nextReviewDate = null;
+    private ?DateTimeInterface $nextReviewDate = null;
 
     /**
      * Review frequency in months (e.g., 12 = annually)
@@ -386,10 +388,10 @@ class DataProtectionImpactAssessment
     // ============================================================================
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
@@ -402,11 +404,8 @@ class DataProtectionImpactAssessment
     public function __construct()
     {
         $this->implementedControls = new ArrayCollection();
-        $this->dataCategories = [];
-        $this->dataSubjectCategories = [];
-        $this->identifiedRisks = [];
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     // ============================================================================
@@ -416,7 +415,7 @@ class DataProtectionImpactAssessment
     #[ORM\PreUpdate]
     public function setUpdatedAtValue(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     // ============================================================================
@@ -428,17 +427,17 @@ class DataProtectionImpactAssessment
      */
     public function isComplete(): bool
     {
-        return !empty($this->title)
-            && !empty($this->processingDescription)
-            && !empty($this->processingPurposes)
-            && !empty($this->dataCategories)
-            && !empty($this->dataSubjectCategories)
-            && !empty($this->necessityAssessment)
-            && !empty($this->proportionalityAssessment)
-            && !empty($this->legalBasis)
-            && !empty($this->riskLevel)
-            && !empty($this->technicalMeasures)
-            && !empty($this->organizationalMeasures);
+        return !in_array($this->title, [null, '', '0'], true)
+            && !in_array($this->processingDescription, [null, '', '0'], true)
+            && !in_array($this->processingPurposes, [null, '', '0'], true)
+            && $this->dataCategories !== []
+            && $this->dataSubjectCategories !== []
+            && !in_array($this->necessityAssessment, [null, '', '0'], true)
+            && !in_array($this->proportionalityAssessment, [null, '', '0'], true)
+            && !in_array($this->legalBasis, [null, '', '0'], true)
+            && !in_array($this->riskLevel, [null, '', '0'], true)
+            && !in_array($this->technicalMeasures, [null, '', '0'], true)
+            && !in_array($this->organizationalMeasures, [null, '', '0'], true);
     }
 
     /**
@@ -447,18 +446,18 @@ class DataProtectionImpactAssessment
     public function getCompletenessPercentage(): int
     {
         $fields = [
-            'title' => !empty($this->title),
-            'referenceNumber' => !empty($this->referenceNumber),
-            'processingDescription' => !empty($this->processingDescription),
-            'processingPurposes' => !empty($this->processingPurposes),
-            'dataCategories' => !empty($this->dataCategories),
-            'dataSubjectCategories' => !empty($this->dataSubjectCategories),
-            'necessityAssessment' => !empty($this->necessityAssessment),
-            'proportionalityAssessment' => !empty($this->proportionalityAssessment),
-            'legalBasis' => !empty($this->legalBasis),
-            'riskLevel' => !empty($this->riskLevel),
-            'technicalMeasures' => !empty($this->technicalMeasures),
-            'organizationalMeasures' => !empty($this->organizationalMeasures),
+            'title' => !in_array($this->title, [null, '', '0'], true),
+            'referenceNumber' => !in_array($this->referenceNumber, [null, '', '0'], true),
+            'processingDescription' => !in_array($this->processingDescription, [null, '', '0'], true),
+            'processingPurposes' => !in_array($this->processingPurposes, [null, '', '0'], true),
+            'dataCategories' => $this->dataCategories !== [],
+            'dataSubjectCategories' => $this->dataSubjectCategories !== [],
+            'necessityAssessment' => !in_array($this->necessityAssessment, [null, '', '0'], true),
+            'proportionalityAssessment' => !in_array($this->proportionalityAssessment, [null, '', '0'], true),
+            'legalBasis' => !in_array($this->legalBasis, [null, '', '0'], true),
+            'riskLevel' => !in_array($this->riskLevel, [null, '', '0'], true),
+            'technicalMeasures' => !in_array($this->technicalMeasures, [null, '', '0'], true),
+            'organizationalMeasures' => !in_array($this->organizationalMeasures, [null, '', '0'], true),
         ];
 
         $filledCount = count(array_filter($fields));
@@ -803,18 +802,18 @@ class DataProtectionImpactAssessment
         return $this->dataProtectionOfficer;
     }
 
-    public function setDataProtectionOfficer(?User $dataProtectionOfficer): static
+    public function setDataProtectionOfficer(?User $user): static
     {
-        $this->dataProtectionOfficer = $dataProtectionOfficer;
+        $this->dataProtectionOfficer = $user;
         return $this;
     }
 
-    public function getDpoConsultationDate(): ?\DateTimeInterface
+    public function getDpoConsultationDate(): ?DateTimeInterface
     {
         return $this->dpoConsultationDate;
     }
 
-    public function setDpoConsultationDate(?\DateTimeInterface $dpoConsultationDate): static
+    public function setDpoConsultationDate(?DateTimeInterface $dpoConsultationDate): static
     {
         $this->dpoConsultationDate = $dpoConsultationDate;
         return $this;
@@ -875,12 +874,12 @@ class DataProtectionImpactAssessment
         return $this;
     }
 
-    public function getSupervisoryConsultationDate(): ?\DateTimeInterface
+    public function getSupervisoryConsultationDate(): ?DateTimeInterface
     {
         return $this->supervisoryConsultationDate;
     }
 
-    public function setSupervisoryConsultationDate(?\DateTimeInterface $supervisoryConsultationDate): static
+    public function setSupervisoryConsultationDate(?DateTimeInterface $supervisoryConsultationDate): static
     {
         $this->supervisoryConsultationDate = $supervisoryConsultationDate;
         return $this;
@@ -913,9 +912,9 @@ class DataProtectionImpactAssessment
         return $this->conductor;
     }
 
-    public function setConductor(?User $conductor): static
+    public function setConductor(?User $user): static
     {
-        $this->conductor = $conductor;
+        $this->conductor = $user;
         return $this;
     }
 
@@ -924,18 +923,18 @@ class DataProtectionImpactAssessment
         return $this->approver;
     }
 
-    public function setApprover(?User $approver): static
+    public function setApprover(?User $user): static
     {
-        $this->approver = $approver;
+        $this->approver = $user;
         return $this;
     }
 
-    public function getApprovalDate(): ?\DateTimeInterface
+    public function getApprovalDate(): ?DateTimeInterface
     {
         return $this->approvalDate;
     }
 
-    public function setApprovalDate(?\DateTimeInterface $approvalDate): static
+    public function setApprovalDate(?DateTimeInterface $approvalDate): static
     {
         $this->approvalDate = $approvalDate;
         return $this;
@@ -974,23 +973,23 @@ class DataProtectionImpactAssessment
         return $this;
     }
 
-    public function getLastReviewDate(): ?\DateTimeInterface
+    public function getLastReviewDate(): ?DateTimeInterface
     {
         return $this->lastReviewDate;
     }
 
-    public function setLastReviewDate(?\DateTimeInterface $lastReviewDate): static
+    public function setLastReviewDate(?DateTimeInterface $lastReviewDate): static
     {
         $this->lastReviewDate = $lastReviewDate;
         return $this;
     }
 
-    public function getNextReviewDate(): ?\DateTimeInterface
+    public function getNextReviewDate(): ?DateTimeInterface
     {
         return $this->nextReviewDate;
     }
 
-    public function setNextReviewDate(?\DateTimeInterface $nextReviewDate): static
+    public function setNextReviewDate(?DateTimeInterface $nextReviewDate): static
     {
         $this->nextReviewDate = $nextReviewDate;
         return $this;
@@ -1018,23 +1017,23 @@ class DataProtectionImpactAssessment
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -1045,9 +1044,9 @@ class DataProtectionImpactAssessment
         return $this->createdBy;
     }
 
-    public function setCreatedBy(?User $createdBy): static
+    public function setCreatedBy(?User $user): static
     {
-        $this->createdBy = $createdBy;
+        $this->createdBy = $user;
         return $this;
     }
 
@@ -1056,9 +1055,9 @@ class DataProtectionImpactAssessment
         return $this->updatedBy;
     }
 
-    public function setUpdatedBy(?User $updatedBy): static
+    public function setUpdatedBy(?User $user): static
     {
-        $this->updatedBy = $updatedBy;
+        $this->updatedBy = $user;
         return $this;
     }
 }

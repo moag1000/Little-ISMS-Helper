@@ -1,17 +1,17 @@
 # Little ISMS Helper Security Audit Report
 ## OWASP Top 10 Compliance Analysis
 
-**Berichtsdatum:** 2025-11-11
+**Berichtsdatum:** 2025-11-27
 **Geprüfte Version:** Little ISMS Helper Symfony 6.4 + React 19.1.1
 **Prüfumfang:** OWASP Top 10 2021 (Final Release)
-**Gesamtbewertung:** 7.3/10 (BEFRIEDIGEND)
+**Gesamtbewertung:** 7.4/10 (BEFRIEDIGEND)
 
 ---
 
 ## Executive Summary
 
 Little ISMS Helper zeigt eine **starke Sicherheitsposition** mit umfassenden Schutzmaßnahmen auf allen Ebenen.
-Die automatisierte Prüfung hat **7.3333333333333** von 10 möglichen Punkten erreicht.
+Die automatisierte Prüfung hat **7.4444444444444** von 10 möglichen Punkten erreicht.
 
 ### Kritische Stärken ✅
 - Durchgängige Verwendung von Doctrine ORM (SQL Injection Prevention)
@@ -24,9 +24,11 @@ Die automatisierte Prüfung hat **7.3333333333333** von 10 möglichen Punkten er
 #### P0 - URGENT
 
 - **Credentials in Git Repository**: .env file is tracked in git. This exposes sensitive credentials. Use git rm --cached .env and ensure .gitignore is properly configured.
+- **Raw SQL queries detected**: Found 1 potential raw SQL queries. Use Doctrine ORM/QueryBuilder with parameterized queries.
 
 #### P1 - HIGH
 
+- **Unprotected shell command execution**: Found 5 shell command executions without escapeshellarg(). Ensure proper input sanitization.
 - **No package-lock.json file**: Run npm install to generate package-lock.json for reproducible builds
 
 ---
@@ -37,8 +39,8 @@ Die automatisierte Prüfung hat **7.3333333333333** von 10 möglichen Punkten er
 |----------------|--------|-------|----------|
 | A01: Broken Access Control | ✅ Good | 8.0/10 | 1 |
 | A02: Cryptographic Failures | 🔴 Critical | 6.0/10 | 1 |
-| A03: Injection | 🔴 Critical | 6.0/10 | 1 |
-| A04: Insecure Design | ✅ Good | 8.0/10 | 2 |
+| A03: Injection | 🔴 Critical | 6.0/10 | 3 |
+| A04: Insecure Design | ✅ Excellent | 9.0/10 | 1 |
 | A05: Security Misconfiguration | ✅ Good | 8.0/10 | 1 |
 | A06: Vulnerable and Outdated Components | 🔴 Critical | 0.0/10 | 1 |
 | A07: Identification and Authentication Failures | 🔴 Critical | 6.0/10 | 0 |
@@ -55,7 +57,7 @@ Die automatisierte Prüfung hat **7.3333333333333** von 10 möglichen Punkten er
 
 #### [P2-MEDIUM] Low authorization check coverage
 
-Only 14 authorization checks found. Consider adding more granular access controls.
+Only 24 authorization checks found. Consider adding more granular access controls.
 
 ### A02: Cryptographic Failures
 
@@ -65,19 +67,23 @@ Only 14 authorization checks found. Consider adding more granular access control
 
 ### A03: Injection
 
+#### [P0-URGENT] Raw SQL queries detected
+
+Found 1 potential raw SQL queries. Use Doctrine ORM/QueryBuilder with parameterized queries.
+
+#### [P1-HIGH] Unprotected shell command execution
+
+Found 5 shell command executions without escapeshellarg(). Ensure proper input sanitization.
+
 #### [P2-MEDIUM] No SBOM available
 
 Consider generating a Software Bill of Materials (SBOM) using tools like cyclonedx-php-composer or npm sbom. This helps track dependencies and vulnerabilities.
 
 ### A04: Insecure Design
 
-#### [P2-MEDIUM] No threat modeling documentation
-
-No threat modeling or security architecture documentation found in /docs. Consider documenting security design decisions.
-
 #### [P2-MEDIUM] Limited input validation coverage
 
-Only 0 validation checks found. Consider implementing comprehensive input validation across all user inputs.
+Only 6 validation checks found. Consider implementing comprehensive input validation across all user inputs.
 
 ### A05: Security Misconfiguration
 
@@ -101,7 +107,7 @@ Run npm install to generate package-lock.json for reproducible builds
 
 #### [P2-MEDIUM] Potential SSRF vectors (2021)
 
-Found 8 URL fetching operations. Ensure URL validation and whitelist allowed domains.
+Found 21 URL fetching operations. Ensure URL validation and whitelist allowed domains.
 
 
 
@@ -114,33 +120,36 @@ Found 8 URL fetching operations. Ensure URL validation and whitelist allowed dom
 1. **Credentials in Git Repository**
    - .env file is tracked in git. This exposes sensitive credentials. Use git rm --cached .env and ensure .gitignore is properly configured.
 
+2. **Raw SQL queries detected**
+   - Found 1 potential raw SQL queries. Use Doctrine ORM/QueryBuilder with parameterized queries.
+
 ### P1 - HIGH (Within 1 Week)
 
-1. **No package-lock.json file**
+1. **Unprotected shell command execution**
+   - Found 5 shell command executions without escapeshellarg(). Ensure proper input sanitization.
+
+2. **No package-lock.json file**
    - Run npm install to generate package-lock.json for reproducible builds
 
 ### P2 - MEDIUM (Within 1 Month)
 
 1. **Low authorization check coverage**
-   - Only 14 authorization checks found. Consider adding more granular access controls.
+   - Only 24 authorization checks found. Consider adding more granular access controls.
 
-2. **No threat modeling documentation**
-   - No threat modeling or security architecture documentation found in /docs. Consider documenting security design decisions.
+2. **Limited input validation coverage**
+   - Only 6 validation checks found. Consider implementing comprehensive input validation across all user inputs.
 
-3. **Limited input validation coverage**
-   - Only 0 validation checks found. Consider implementing comprehensive input validation across all user inputs.
-
-4. **Missing .env.example**
+3. **Missing .env.example**
    - Create .env.example as template for environment configuration
 
-5. **Regular dependency audits needed**
+4. **Regular dependency audits needed**
    - Ensure regular execution of "composer audit" and "npm audit" to detect known vulnerabilities. Consider integrating these checks into CI/CD pipeline.
 
-6. **No SBOM available**
+5. **No SBOM available**
    - Consider generating a Software Bill of Materials (SBOM) using tools like cyclonedx-php-composer or npm sbom. This helps track dependencies and vulnerabilities.
 
-7. **Potential SSRF vectors (2021)**
-   - Found 8 URL fetching operations. Ensure URL validation and whitelist allowed domains.
+6. **Potential SSRF vectors (2021)**
+   - Found 21 URL fetching operations. Ensure URL validation and whitelist allowed domains.
 
 
 
@@ -157,4 +166,4 @@ Found 8 URL fetching operations. Ensure URL validation and whitelist allowed dom
 ---
 
 *Report generated automatically by scripts/generate-security-audit.php*
-*Last updated: 2025-11-11 15:33:15*
+*Last updated: 2025-11-27 17:30:38*

@@ -1,5 +1,7 @@
 bcm:
     title:
+        asset_insights: Asset-Einblicke
+        bcm_insights: BCM-Einblicke
         critical: 'Kritische Geschäftskontinuität'
     description:
         critical: 'Übersicht über kritische Assets und Prozesse inklusive RTO/RPO und Handlungsbedarf'
@@ -8,6 +10,8 @@ bcm:
         medium_level: 'Spürbare Beeinträchtigung, jedoch mit Puffer. Mittelfristige Maßnahmen ausreichend.'
         action_items: 'Empfohlene Maßnahmen zur Verbesserung der Wiederherstellungsfähigkeit und Reduktion der Ausfallzeiten.'
     action:
+        add_process: 'Prozess hinzufügen'
+        data_reuse: 'Daten wiederverwenden'
         view_insights: 'Insights anzeigen'
         export: Exportieren
         plan: Wiederherstellungsplan
@@ -15,16 +19,30 @@ bcm:
         critical_assets_count: '%count% kritische Assets identifiziert'
         critical_message: 'Bitte prüfen Sie RTO/RPO, Wiederherstellungspläne und Teststände dieser Assets.'
     stats:
+        high_priority: 'Hohe Priorität'
         critical_assets: 'Kritische Assets'
         critical_processes: 'Kritische Prozesse'
         avg_rto: 'Ø RTO'
         missing_recovery_plans: 'Fehlende Wiederherstellungspläne'
     section:
+        protection_analysis: Schutzbedarfsanalyse
+        business_processes: Geschäftsprozesse
+        asset_details: Asset-Details
+        rto_legend: RTO-Legende
         criticality_overview: 'Übersicht Geschäfts­kritikalität'
         critical_assets_list: 'Liste kritischer Assets'
         critical_processes: 'Kritische Geschäftsprozesse'
         action_items: Maßnahmen
     field:
+        confidentiality: Vertraulichkeit
+        integrity: Integrität
+        availability: Verfügbarkeit
+        overall_protection_level: Gesamtschutzbedarf
+        reputational_impact: Reputationsschaden
+        regulatory_impact: 'Regulatorische Auswirkungen'
+        operational_impact: 'Operative Auswirkungen'
+        mtpd: 'MTPD (Maximum Tolerable Period of Disruption)'
+        supporting_assets: 'Unterstützende Assets'
         assets: Assets
         asset_name: Asset-Name
         type: Typ
@@ -41,12 +59,15 @@ bcm:
         impact_of_loss: 'Auswirkungsgrad bei Ausfall'
         avg_rto: 'Ø RTO'
     badge:
+        urgent: Dringend
         no_recovery_plan: 'Kein Wiederherstellungsplan'
         immediate: Sofort
         exists: vorhanden
         missing: fehlt
         test_overdue: 'Test überfällig'
     message:
+        no_processes: 'Keine Geschäftsprozesse zugeordnet'
+        no_critical_processes_desc: 'Es sind derzeit keine kritischen Prozesse definiert'
         never_tested: 'Nie getestet'
         no_critical_assets: 'Keine kritischen Assets vorhanden – gute Arbeit!'
         no_critical_processes: 'Keine kritischen Prozesse vorhanden'
@@ -75,6 +96,9 @@ bcm:
         high: Hoch
         medium: Mittel
         low: Niedrig
+    rto:
+        standard: Standard
+        flexible: Flexibel
     data_reuse:
         asset_recommendations_title: 'Asset Empfehlungen Titel'
         benefits_title: 'Benefits Title'

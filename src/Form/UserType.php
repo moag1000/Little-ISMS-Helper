@@ -133,16 +133,14 @@ class UserType extends AbstractType
                 'multiple' => true,
                 'expanded' => true,
                 'required' => false,
-                'data' => !$isEdit ? ['ROLE_USER'] : null, // Default only for new users
+                'data' => $isEdit ? null : ['ROLE_USER'], // Default only for new users
                 'choice_translation_domain' => 'user',
                 'help' => 'Systemrollen definieren grundlegende Zugriffsrechte',
             ])
             ->add('customRoles', EntityType::class, [
                 'label' => 'user.field.custom_roles',
                 'class' => Role::class,
-                'choice_label' => function (Role $role) {
-                    return $role->getName() . ' - ' . $role->getDescription();
-                },
+                'choice_label' => fn(Role $role): string => $role->getName() . ' - ' . $role->getDescription(),
                 'multiple' => true,
                 'expanded' => true,
                 'required' => false,
@@ -153,25 +151,21 @@ class UserType extends AbstractType
             ->add('tenant', EntityType::class, [
                 'label' => 'user.field.tenant',
                 'class' => Tenant::class,
-                'choice_label' => function (Tenant $tenant) {
-                    return $tenant->getName() . ' (' . $tenant->getCode() . ')';
-                },
+                'choice_label' => fn(Tenant $tenant): string => $tenant->getName() . ' (' . $tenant->getCode() . ')',
                 'placeholder' => 'user.placeholder.tenant',
                 'required' => false,
                 'help' => 'user.field.tenant_help',
-                'query_builder' => function ($repository) {
-                    return $repository->createQueryBuilder('t')
-                        ->where('t.isActive = :active')
-                        ->setParameter('active', true)
-                        ->orderBy('t.name', 'ASC');
-                },
+                'query_builder' => fn($repository) => $repository->createQueryBuilder('t')
+                    ->where('t.isActive = :active')
+                    ->setParameter('active', true)
+                    ->orderBy('t.name', 'ASC'),
             ])
 
             // Status
             ->add('isActive', CheckboxType::class, [
                 'label' => 'user.field.active',
                 'required' => false,
-                'data' => !$isEdit ? true : null, // Default only for new users
+                'data' => $isEdit ? null : true, // Default only for new users
                 'help' => 'Nur aktive Benutzer können sich anmelden',
                 'attr' => ['class' => 'form-check-input'],
             ])

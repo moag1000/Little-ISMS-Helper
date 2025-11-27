@@ -4,7 +4,6 @@ namespace App\Tests\Service;
 
 use App\Entity\AuditLog;
 use App\Entity\User;
-use App\Service\AuditLogger;
 use App\Service\BackupService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -16,7 +15,6 @@ use Psr\Log\LoggerInterface;
 class BackupServiceTest extends TestCase
 {
     private MockObject $entityManager;
-    private MockObject $auditLogger;
     private MockObject $logger;
     private string $projectDir;
     private BackupService $service;
@@ -24,7 +22,6 @@ class BackupServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->entityManager = $this->createMock(EntityManagerInterface::class);
-        $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->projectDir = sys_get_temp_dir() . '/backup_test_' . uniqid();
 
@@ -35,7 +32,6 @@ class BackupServiceTest extends TestCase
 
         $this->service = new BackupService(
             $this->entityManager,
-            $this->auditLogger,
             $this->logger,
             $this->projectDir
         );

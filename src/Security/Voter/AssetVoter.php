@@ -2,6 +2,7 @@
 
 namespace App\Security\Voter;
 
+use App\Entity\Tenant;
 use App\Entity\Asset;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -62,7 +63,7 @@ class AssetVoter extends Voter
         return match ($attribute) {
             self::VIEW => $this->canView($asset, $user),
             self::EDIT => $this->canEdit($asset, $user),
-            self::DELETE => $this->canDelete($asset, $user),
+            self::DELETE => $this->canDelete($user),
             default => false,
         };
     }
@@ -70,16 +71,16 @@ class AssetVoter extends Voter
     private function canView(Asset $asset, User $user): bool
     {
         // Security: Multi-tenancy - users can view assets from their tenant
-        return $asset->getTenant() === $user->getTenant() && $user->getTenant() !== null;
+        return $asset->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant;
     }
 
     private function canEdit(Asset $asset, User $user): bool
     {
         // Security: Only users from same tenant can edit
-        return $asset->getTenant() === $user->getTenant() && $user->getTenant() !== null;
+        return $asset->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant;
     }
 
-    private function canDelete(Asset $asset, User $user): bool
+    private function canDelete(User $user): bool
     {
         // Security: Only admins can delete
         return in_array('ROLE_ADMIN', $user->getRoles());

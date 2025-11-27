@@ -17,20 +17,20 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LoadBsiRequirementsCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
         // Create or get BSI framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'BSI-Grundschutz']);
 
-        if (!$framework) {
+        if (!$framework instanceof ComplianceFramework) {
             $framework = new ComplianceFramework();
             $framework->setCode('BSI-Grundschutz')
                 ->setName('BSI IT-Grundschutz')
@@ -62,7 +62,7 @@ class LoadBsiRequirementsCommand extends Command
 
         $this->entityManager->flush();
 
-        $io->success(sprintf('Successfully loaded %d BSI IT-Grundschutz requirements', count($requirements)));
+        $symfonyStyle->success(sprintf('Successfully loaded %d BSI IT-Grundschutz requirements', count($requirements)));
 
         return Command::SUCCESS;
     }

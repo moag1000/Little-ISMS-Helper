@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
+use DateTime;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -94,11 +97,11 @@ class Person
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['person:read', 'person:write'])]
-    private ?\DateTimeInterface $accessValidFrom = null;
+    private ?DateTimeInterface $accessValidFrom = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['person:read', 'person:write'])]
-    private ?\DateTimeInterface $accessValidUntil = null;
+    private ?DateTimeInterface $accessValidUntil = null;
 
     #[ORM\OneToMany(targetEntity: PhysicalAccessLog::class, mappedBy: 'person')]
     private Collection $accessLogs;
@@ -109,15 +112,15 @@ class Person
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['person:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['person:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
         $this->accessLogs = new ArrayCollection();
     }
 
@@ -247,23 +250,23 @@ class Person
         return $this;
     }
 
-    public function getAccessValidFrom(): ?\DateTimeInterface
+    public function getAccessValidFrom(): ?DateTimeInterface
     {
         return $this->accessValidFrom;
     }
 
-    public function setAccessValidFrom(?\DateTimeInterface $accessValidFrom): static
+    public function setAccessValidFrom(?DateTimeInterface $accessValidFrom): static
     {
         $this->accessValidFrom = $accessValidFrom;
         return $this;
     }
 
-    public function getAccessValidUntil(): ?\DateTimeInterface
+    public function getAccessValidUntil(): ?DateTimeInterface
     {
         return $this->accessValidUntil;
     }
 
-    public function setAccessValidUntil(?\DateTimeInterface $accessValidUntil): static
+    public function setAccessValidUntil(?DateTimeInterface $accessValidUntil): static
     {
         $this->accessValidUntil = $accessValidUntil;
         return $this;
@@ -277,22 +280,20 @@ class Person
         return $this->accessLogs;
     }
 
-    public function addAccessLog(PhysicalAccessLog $accessLog): static
+    public function addAccessLog(PhysicalAccessLog $physicalAccessLog): static
     {
-        if (!$this->accessLogs->contains($accessLog)) {
-            $this->accessLogs->add($accessLog);
-            $accessLog->setPerson($this);
+        if (!$this->accessLogs->contains($physicalAccessLog)) {
+            $this->accessLogs->add($physicalAccessLog);
+            $physicalAccessLog->setPerson($this);
         }
 
         return $this;
     }
 
-    public function removeAccessLog(PhysicalAccessLog $accessLog): static
+    public function removeAccessLog(PhysicalAccessLog $physicalAccessLog): static
     {
-        if ($this->accessLogs->removeElement($accessLog)) {
-            if ($accessLog->getPerson() === $this) {
-                $accessLog->setPerson(null);
-            }
+        if ($this->accessLogs->removeElement($physicalAccessLog) && $physicalAccessLog->getPerson() === $this) {
+            $physicalAccessLog->setPerson(null);
         }
 
         return $this;
@@ -309,23 +310,23 @@ class Person
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -336,21 +337,16 @@ class Person
      */
     public function hasValidAccess(): bool
     {
-        $now = new \DateTime();
+        $now = new DateTime();
 
         if (!$this->active) {
             return false;
         }
 
-        if ($this->accessValidFrom && $this->accessValidFrom > $now) {
+        if ($this->accessValidFrom instanceof DateTimeInterface && $this->accessValidFrom > $now) {
             return false;
         }
-
-        if ($this->accessValidUntil && $this->accessValidUntil < $now) {
-            return false;
-        }
-
-        return true;
+        return !($this->accessValidUntil instanceof DateTimeInterface && $this->accessValidUntil < $now);
     }
 
     /**

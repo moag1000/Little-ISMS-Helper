@@ -233,9 +233,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'label' => 'dpia.form.implemented_controls',
                 'help' => 'dpia.help.implemented_controls',
                 'class' => Control::class,
-                'choice_label' => function (Control $control) {
-                    return $control->getControlId() . ' - ' . $control->getName();
-                },
+                'choice_label' => fn(Control $control): string => $control->getControlId() . ' - ' . $control->getName(),
                 'multiple' => true,
                 'required' => false,
                 'attr' => ['class' => 'select2'],
@@ -273,9 +271,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'label' => 'dpia.form.data_protection_officer',
                 'help' => 'dpia.help.data_protection_officer',
                 'class' => User::class,
-                'choice_label' => function (User $user) {
-                    return $user->getFirstName() . ' ' . $user->getLastName();
-                },
+                'choice_label' => fn(User $user): string => $user->getFirstName() . ' ' . $user->getLastName(),
                 'required' => false,
                 'placeholder' => 'dpia.placeholder.data_protection_officer',
                 'attr' => ['class' => 'select2'],
@@ -344,9 +340,7 @@ class DataProtectionImpactAssessmentType extends AbstractType
                 'label' => 'dpia.form.conductor',
                 'help' => 'dpia.help.conductor',
                 'class' => User::class,
-                'choice_label' => function (User $user) {
-                    return $user->getFirstName() . ' ' . $user->getLastName();
-                },
+                'choice_label' => fn(User $user): string => $user->getFirstName() . ' ' . $user->getLastName(),
                 'required' => false,
                 'placeholder' => 'dpia.placeholder.conductor',
                 'attr' => ['class' => 'select2'],

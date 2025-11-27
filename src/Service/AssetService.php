@@ -13,9 +13,9 @@ use App\Repository\CorporateGovernanceRepository;
 class AssetService
 {
     public function __construct(
-        private AssetRepository $assetRepository,
-        private ?CorporateStructureService $corporateStructureService = null,
-        private ?CorporateGovernanceRepository $governanceRepository = null
+        private readonly AssetRepository $assetRepository,
+        private readonly ?CorporateStructureService $corporateStructureService = null,
+        private readonly ?CorporateGovernanceRepository $corporateGovernanceRepository = null
     ) {}
 
     /**
@@ -29,16 +29,16 @@ class AssetService
         $parent = $tenant->getParent();
 
         // No parent or no corporate structure service - return own assets only
-        if (!$parent || !$this->corporateStructureService || !$this->governanceRepository) {
+        if (!$parent instanceof Tenant || !$this->corporateStructureService instanceof CorporateStructureService || !$this->corporateGovernanceRepository) {
             return $this->assetRepository->findByTenant($tenant);
         }
 
         // Check governance model for assets
-        $governance = $this->governanceRepository->findGovernanceForScope($tenant, 'asset');
+        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'asset');
 
         if (!$governance) {
             // No specific governance for assets - use default
-            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
 
         $governanceModel = $governance?->getGovernanceModel();
@@ -62,7 +62,7 @@ class AssetService
     {
         $parent = $tenant->getParent();
 
-        if (!$parent || !$this->governanceRepository) {
+        if (!$parent instanceof Tenant || !$this->corporateGovernanceRepository) {
             return [
                 'hasParent' => false,
                 'canInherit' => false,
@@ -70,10 +70,10 @@ class AssetService
             ];
         }
 
-        $governance = $this->governanceRepository->findGovernanceForScope($tenant, 'asset');
+        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'asset');
 
         if (!$governance) {
-            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
 
         $governanceModel = $governance?->getGovernanceModel();
@@ -97,7 +97,7 @@ class AssetService
     {
         $assetTenant = $asset->getTenant();
 
-        if (!$assetTenant) {
+        if (!$assetTenant instanceof Tenant) {
             return false;
         }
 

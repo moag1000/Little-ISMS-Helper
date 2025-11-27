@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use DateTimeImmutable;
+use Exception;
 use App\Entity\Incident;
 use App\Repository\IncidentRepository;
 use App\Service\EmailNotificationService;
@@ -36,14 +38,10 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 )]
 class Nis2NotificationCommand extends Command
 {
-    private const EARLY_WARNING_HOURS = 24;
-    private const DETAILED_NOTIFICATION_HOURS = 72;
-    private const FINAL_REPORT_DAYS = 30;
-
     // Notification thresholds (hours before deadline)
-    private const EARLY_WARNING_THRESHOLDS = [4, 2, 1]; // 20h, 22h, 23h
-    private const DETAILED_NOTIFICATION_THRESHOLDS = [4, 2, 1]; // 68h, 70h, 71h
-    private const FINAL_REPORT_THRESHOLDS = [168, 72, 24]; // 7 days, 3 days, 1 day (in hours)
+    private const array EARLY_WARNING_THRESHOLDS = [4, 2, 1]; // 20h, 22h, 23h
+    private const array DETAILED_NOTIFICATION_THRESHOLDS = [4, 2, 1]; // 68h, 70h, 71h
+    private const array FINAL_REPORT_THRESHOLDS = [168, 72, 24]; // 7 days, 3 days, 1 day (in hours)
 
     public function __construct(
         private readonly IncidentRepository $incidentRepository,
@@ -74,14 +72,14 @@ HELP
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
         $dryRun = $input->getOption('dry-run');
 
         if ($dryRun) {
-            $io->warning('DRY RUN MODE - No notifications will be sent');
+            $symfonyStyle->warning('DRY RUN MODE - No notifications will be sent');
         }
 
-        $io->title('NIS2 Incident Reporting Deadline Check');
+        $symfonyStyle->title('NIS2 Incident Reporting Deadline Check');
 
         // Find all incidents that require NIS2 reporting (crossBorderImpact or nis2Category set)
         $incidents = $this->incidentRepository->createQueryBuilder('i')
@@ -91,35 +89,35 @@ HELP
             ->getQuery()
             ->getResult();
 
-        $io->info(sprintf('Found %d incidents requiring NIS2 reporting', count($incidents)));
+        $symfonyStyle->info(sprintf('Found %d incidents requiring NIS2 reporting', count($incidents)));
 
         $notificationsSent = 0;
 
         foreach ($incidents as $incident) {
-            $notificationsSent += $this->checkEarlyWarningDeadline($incident, $io, $dryRun);
-            $notificationsSent += $this->checkDetailedNotificationDeadline($incident, $io, $dryRun);
-            $notificationsSent += $this->checkFinalReportDeadline($incident, $io, $dryRun);
+            $notificationsSent += $this->checkEarlyWarningDeadline($incident, $symfonyStyle, $dryRun);
+            $notificationsSent += $this->checkDetailedNotificationDeadline($incident, $symfonyStyle, $dryRun);
+            $notificationsSent += $this->checkFinalReportDeadline($incident, $symfonyStyle, $dryRun);
         }
 
         $this->entityManager->flush();
 
         if ($notificationsSent > 0) {
-            $io->success(sprintf(
+            $symfonyStyle->success(sprintf(
                 '%s %d notification(s)',
                 $dryRun ? 'Would send' : 'Sent',
                 $notificationsSent
             ));
         } else {
-            $io->info('No notifications needed at this time');
+            $symfonyStyle->info('No notifications needed at this time');
         }
 
         return Command::SUCCESS;
     }
 
-    private function checkEarlyWarningDeadline(Incident $incident, SymfonyStyle $io, bool $dryRun): int
+    private function checkEarlyWarningDeadline(Incident $incident, SymfonyStyle $symfonyStyle, bool $dryRun): int
     {
         // Skip if already reported
-        if ($incident->getEarlyWarningReportedAt() !== null) {
+        if ($incident->getEarlyWarningReportedAt() instanceof DateTimeImmutable) {
             return 0;
         }
 
@@ -137,7 +135,7 @@ HELP
                     $this->sendNotification($incident, 'Early Warning Deadline', $message, 'critical');
                 }
 
-                $io->warning(sprintf(
+                $symfonyStyle->warning(sprintf(
                     '[Early Warning] Incident #%d "%s" - %d hours remaining',
                     $incident->getId(),
                     $incident->getTitle(),
@@ -159,7 +157,7 @@ HELP
                 $this->sendNotification($incident, 'Early Warning OVERDUE', $message, 'critical');
             }
 
-            $io->error(sprintf(
+            $symfonyStyle->error(sprintf(
                 '[OVERDUE] Incident #%d "%s" - Early Warning deadline missed!',
                 $incident->getId(),
                 $incident->getTitle()
@@ -171,10 +169,10 @@ HELP
         return 0;
     }
 
-    private function checkDetailedNotificationDeadline(Incident $incident, SymfonyStyle $io, bool $dryRun): int
+    private function checkDetailedNotificationDeadline(Incident $incident, SymfonyStyle $symfonyStyle, bool $dryRun): int
     {
         // Skip if already reported
-        if ($incident->getDetailedNotificationReportedAt() !== null) {
+        if ($incident->getDetailedNotificationReportedAt() instanceof DateTimeImmutable) {
             return 0;
         }
 
@@ -192,7 +190,7 @@ HELP
                     $this->sendNotification($incident, 'Detailed Notification Deadline', $message, 'high');
                 }
 
-                $io->warning(sprintf(
+                $symfonyStyle->warning(sprintf(
                     '[Detailed Notification] Incident #%d "%s" - %d hours remaining',
                     $incident->getId(),
                     $incident->getTitle(),
@@ -214,7 +212,7 @@ HELP
                 $this->sendNotification($incident, 'Detailed Notification OVERDUE', $message, 'critical');
             }
 
-            $io->error(sprintf(
+            $symfonyStyle->error(sprintf(
                 '[OVERDUE] Incident #%d "%s" - Detailed Notification deadline missed!',
                 $incident->getId(),
                 $incident->getTitle()
@@ -226,10 +224,10 @@ HELP
         return 0;
     }
 
-    private function checkFinalReportDeadline(Incident $incident, SymfonyStyle $io, bool $dryRun): int
+    private function checkFinalReportDeadline(Incident $incident, SymfonyStyle $symfonyStyle, bool $dryRun): int
     {
         // Skip if already reported
-        if ($incident->getFinalReportSubmittedAt() !== null) {
+        if ($incident->getFinalReportSubmittedAt() instanceof DateTimeImmutable) {
             return 0;
         }
 
@@ -249,7 +247,7 @@ HELP
                     $this->sendNotification($incident, 'Final Report Deadline', $message, 'medium');
                 }
 
-                $io->warning(sprintf(
+                $symfonyStyle->warning(sprintf(
                     '[Final Report] Incident #%d "%s" - %d days remaining',
                     $incident->getId(),
                     $incident->getTitle(),
@@ -271,7 +269,7 @@ HELP
                 $this->sendNotification($incident, 'Final Report OVERDUE', $message, 'critical');
             }
 
-            $io->error(sprintf(
+            $symfonyStyle->error(sprintf(
                 '[OVERDUE] Incident #%d "%s" - Final Report deadline missed!',
                 $incident->getId(),
                 $incident->getTitle()
@@ -295,9 +293,9 @@ HELP
 
             // TODO: Add logic to fetch CISO/admin emails from User repository
 
-            foreach ($recipients as $email) {
+            foreach ($recipients as $recipient) {
                 $this->emailNotificationService->sendEmail(
-                    to: $email,
+                    to: $recipient,
                     subject: sprintf('[NIS2 Alert] %s', $subject),
                     template: 'email/nis2_deadline_alert.html.twig',
                     context: [
@@ -313,7 +311,7 @@ HELP
                 'subject' => $subject,
                 'priority' => $priority,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to send NIS2 notification', [
                 'incident_id' => $incident->getId(),
                 'error' => $e->getMessage(),

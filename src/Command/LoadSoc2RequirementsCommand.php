@@ -18,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LoadSoc2RequirementsCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
@@ -30,17 +30,17 @@ class LoadSoc2RequirementsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
         $updateMode = $input->getOption('update');
 
-        $io->title('Loading SOC 2 Trust Services Criteria');
-        $io->text(sprintf('Mode: %s', $updateMode ? 'UPDATE existing' : 'CREATE new (skip existing)'));
+        $symfonyStyle->title('Loading SOC 2 Trust Services Criteria');
+        $symfonyStyle->text(sprintf('Mode: %s', $updateMode ? 'UPDATE existing' : 'CREATE new (skip existing)'));
 
         // Create or get SOC 2 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'SOC2']);
 
-        if (!$framework) {
+        if (!$framework instanceof ComplianceFramework) {
             $framework = new ComplianceFramework();
             $framework->setCode('SOC2')
                 ->setName('SOC 2 Type II')
@@ -53,9 +53,9 @@ class LoadSoc2RequirementsCommand extends Command
                 ->setActive(true);
 
             $this->entityManager->persist($framework);
-            $io->text('✓ Created framework');
+            $symfonyStyle->text('✓ Created framework');
         } else {
-            $io->text('✓ Framework exists');
+            $symfonyStyle->text('✓ Framework exists');
         }
 
         $requirements = $this->getSoc2Requirements();
@@ -68,7 +68,7 @@ class LoadSoc2RequirementsCommand extends Command
                     'requirementId' => $reqData['id']
                 ]);
 
-            if ($existing) {
+            if ($existing instanceof ComplianceRequirement) {
                 if ($updateMode) {
                     $existing->setTitle($reqData['title'])
                         ->setDescription($reqData['description'])
@@ -101,8 +101,8 @@ class LoadSoc2RequirementsCommand extends Command
 
         $this->entityManager->flush();
 
-        $io->success('SOC 2 requirements loaded!');
-        $io->table(
+        $symfonyStyle->success('SOC 2 requirements loaded!');
+        $symfonyStyle->table(
             ['Action', 'Count'],
             [
                 ['Created', $stats['created']],

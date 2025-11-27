@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTimeImmutable;
 use App\Entity\RiskTreatmentPlan;
 use App\Form\RiskTreatmentPlanType;
 use App\Repository\AuditLogRepository;
@@ -15,18 +16,16 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/risk-treatment-plan')]
 class RiskTreatmentPlanController extends AbstractController
 {
     public function __construct(
-        private RiskTreatmentPlanRepository $treatmentPlanRepository,
-        private AuditLogRepository $auditLogRepository,
-        private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator,
-        private TenantContext $tenantContext
+        private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository,
+        private readonly AuditLogRepository $auditLogRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
+        private readonly TenantContext $tenantContext
     ) {}
-
-    #[Route('/', name: 'app_risk_treatment_plan_index')]
+    #[Route('/risk-treatment-plan/', name: 'app_risk_treatment_plan_index')]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
@@ -37,21 +36,21 @@ class RiskTreatmentPlanController extends AbstractController
         $overdueOnly = $request->query->get('overdue_only');
 
         // Get all treatment plans
-        $plans = $this->treatmentPlanRepository->findAll();
+        $plans = $this->riskTreatmentPlanRepository->findAll();
 
         // Apply filters
         if ($status) {
-            $plans = array_filter($plans, fn($plan) => $plan->getStatus() === $status);
+            $plans = array_filter($plans, fn($plan): bool => $plan->getStatus() === $status);
         }
 
         if ($priority) {
-            $plans = array_filter($plans, fn($plan) => $plan->getPriority() === $priority);
+            $plans = array_filter($plans, fn($plan): bool => $plan->getPriority() === $priority);
         }
 
         if ($responsiblePerson) {
-            $plans = array_filter($plans, fn($plan) =>
+            $plans = array_filter($plans, fn($plan): bool =>
                 $plan->getResponsiblePerson() &&
-                stripos($plan->getResponsiblePerson()->getFullName(), $responsiblePerson) !== false
+                stripos((string) $plan->getResponsiblePerson()->getFullName(), $responsiblePerson) !== false
             );
         }
 
@@ -63,9 +62,9 @@ class RiskTreatmentPlanController extends AbstractController
         $plans = array_values($plans);
 
         // Get statistics
-        $stats = $this->treatmentPlanRepository->getStatisticsForTenant(null);
-        $overduePlans = $this->treatmentPlanRepository->findOverdueForTenant(null);
-        $criticalPlans = $this->treatmentPlanRepository->findCriticalPlans(null);
+        $stats = $this->riskTreatmentPlanRepository->getStatisticsForTenant(null);
+        $overduePlans = $this->riskTreatmentPlanRepository->findOverdueForTenant(null);
+        $criticalPlans = $this->riskTreatmentPlanRepository->findCriticalPlans(null);
 
         return $this->render('risk_treatment_plan/index.html.twig', [
             'plans' => $plans,
@@ -74,73 +73,69 @@ class RiskTreatmentPlanController extends AbstractController
             'criticalPlans' => $criticalPlans,
         ]);
     }
-
-    #[Route('/new', name: 'app_risk_treatment_plan_new')]
+    #[Route('/risk-treatment-plan/new', name: 'app_risk_treatment_plan_new')]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
-        $plan = new RiskTreatmentPlan();
-        $plan->setTenant($this->tenantContext->getCurrentTenant());
+        $riskTreatmentPlan = new RiskTreatmentPlan();
+        $riskTreatmentPlan->setTenant($this->tenantContext->getCurrentTenant());
 
-        $form = $this->createForm(RiskTreatmentPlanType::class, $plan);
+        $form = $this->createForm(RiskTreatmentPlanType::class, $riskTreatmentPlan);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($plan);
+            $this->entityManager->persist($riskTreatmentPlan);
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('risk_treatment_plan.success.created'));
-            return $this->redirectToRoute('app_risk_treatment_plan_show', ['id' => $plan->getId()]);
+            return $this->redirectToRoute('app_risk_treatment_plan_show', ['id' => $riskTreatmentPlan->getId()]);
         }
 
         return $this->render('risk_treatment_plan/new.html.twig', [
-            'plan' => $plan,
+            'plan' => $riskTreatmentPlan,
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}', name: 'app_risk_treatment_plan_show', requirements: ['id' => '\d+'])]
+    #[Route('/risk-treatment-plan/{id}', name: 'app_risk_treatment_plan_show', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
-    public function show(RiskTreatmentPlan $plan): Response
+    public function show(RiskTreatmentPlan $riskTreatmentPlan): Response
     {
         // Get audit log history for this plan (last 10 entries)
-        $auditLogs = $this->auditLogRepository->findByEntity('RiskTreatmentPlan', $plan->getId());
+        $auditLogs = $this->auditLogRepository->findByEntity('RiskTreatmentPlan', $riskTreatmentPlan->getId());
         $recentAuditLogs = array_slice($auditLogs, 0, 10);
 
         return $this->render('risk_treatment_plan/show.html.twig', [
-            'plan' => $plan,
+            'plan' => $riskTreatmentPlan,
             'auditLogs' => $recentAuditLogs,
             'totalAuditLogs' => count($auditLogs),
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'app_risk_treatment_plan_edit', requirements: ['id' => '\d+'])]
+    #[Route('/risk-treatment-plan/{id}/edit', name: 'app_risk_treatment_plan_edit', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
-    public function edit(Request $request, RiskTreatmentPlan $plan): Response
+    public function edit(Request $request, RiskTreatmentPlan $riskTreatmentPlan): Response
     {
-        $form = $this->createForm(RiskTreatmentPlanType::class, $plan);
+        $form = $this->createForm(RiskTreatmentPlanType::class, $riskTreatmentPlan);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $plan->setUpdatedAt(new \DateTimeImmutable());
+            $riskTreatmentPlan->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('risk_treatment_plan.success.updated'));
-            return $this->redirectToRoute('app_risk_treatment_plan_show', ['id' => $plan->getId()]);
+            return $this->redirectToRoute('app_risk_treatment_plan_show', ['id' => $riskTreatmentPlan->getId()]);
         }
 
         return $this->render('risk_treatment_plan/edit.html.twig', [
-            'plan' => $plan,
+            'plan' => $riskTreatmentPlan,
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}/delete', name: 'app_risk_treatment_plan_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/risk-treatment-plan/{id}/delete', name: 'app_risk_treatment_plan_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function delete(Request $request, RiskTreatmentPlan $plan): Response
+    public function delete(Request $request, RiskTreatmentPlan $riskTreatmentPlan): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$plan->getId(), $request->request->get('_token'))) {
-            $this->entityManager->remove($plan);
+        if ($this->isCsrfTokenValid('delete'.$riskTreatmentPlan->getId(), $request->request->get('_token'))) {
+            $this->entityManager->remove($riskTreatmentPlan);
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('risk_treatment_plan.success.deleted'));

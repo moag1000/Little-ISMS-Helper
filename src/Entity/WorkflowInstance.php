@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
 use App\Entity\Tenant;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -32,11 +33,11 @@ class WorkflowInstance
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
-    private ?User $initiatedBy = null;
+    private ?User $user = null;
 
     #[ORM\ManyToOne(targetEntity: WorkflowStep::class)]
     #[ORM\JoinColumn(nullable: true)]
-    private ?WorkflowStep $currentStep = null;
+    private ?WorkflowStep $workflowStep = null;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]
     private ?array $completedSteps = []; // Array of step IDs
@@ -48,13 +49,13 @@ class WorkflowInstance
     private ?string $comments = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $startedAt = null;
+    private ?DateTimeImmutable $startedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $completedAt = null;
+    private ?DateTimeImmutable $completedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $dueDate = null;
+    private ?DateTimeImmutable $dueDate = null;
 
     
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
@@ -63,9 +64,7 @@ class WorkflowInstance
 
 public function __construct()
     {
-        $this->startedAt = new \DateTimeImmutable();
-        $this->completedSteps = [];
-        $this->approvalHistory = [];
+        $this->startedAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -119,23 +118,23 @@ public function __construct()
 
     public function getInitiatedBy(): ?User
     {
-        return $this->initiatedBy;
+        return $this->user;
     }
 
-    public function setInitiatedBy(?User $initiatedBy): static
+    public function setInitiatedBy(?User $user): static
     {
-        $this->initiatedBy = $initiatedBy;
+        $this->user = $user;
         return $this;
     }
 
     public function getCurrentStep(): ?WorkflowStep
     {
-        return $this->currentStep;
+        return $this->workflowStep;
     }
 
-    public function setCurrentStep(?WorkflowStep $currentStep): static
+    public function setCurrentStep(?WorkflowStep $workflowStep): static
     {
-        $this->currentStep = $currentStep;
+        $this->workflowStep = $workflowStep;
         return $this;
     }
 
@@ -186,34 +185,34 @@ public function __construct()
         return $this;
     }
 
-    public function getStartedAt(): ?\DateTimeImmutable
+    public function getStartedAt(): ?DateTimeImmutable
     {
         return $this->startedAt;
     }
 
-    public function setStartedAt(\DateTimeImmutable $startedAt): static
+    public function setStartedAt(DateTimeImmutable $startedAt): static
     {
         $this->startedAt = $startedAt;
         return $this;
     }
 
-    public function getCompletedAt(): ?\DateTimeImmutable
+    public function getCompletedAt(): ?DateTimeImmutable
     {
         return $this->completedAt;
     }
 
-    public function setCompletedAt(?\DateTimeImmutable $completedAt): static
+    public function setCompletedAt(?DateTimeImmutable $completedAt): static
     {
         $this->completedAt = $completedAt;
         return $this;
     }
 
-    public function getDueDate(): ?\DateTimeImmutable
+    public function getDueDate(): ?DateTimeImmutable
     {
         return $this->dueDate;
     }
 
-    public function setDueDate(?\DateTimeImmutable $dueDate): static
+    public function setDueDate(?DateTimeImmutable $dueDate): static
     {
         $this->dueDate = $dueDate;
         return $this;
@@ -224,11 +223,11 @@ public function __construct()
      */
     public function isOverdue(): bool
     {
-        if ($this->dueDate === null) {
+        if (!$this->dueDate instanceof DateTimeImmutable) {
             return false;
         }
 
-        return $this->dueDate < new \DateTimeImmutable() && $this->completedAt === null;
+        return $this->dueDate < new DateTimeImmutable() && !$this->completedAt instanceof DateTimeImmutable;
     }
 
     /**

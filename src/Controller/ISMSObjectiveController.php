@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use DateTime;
+use DateTimeImmutable;
 use App\Entity\ISMSObjective;
 use App\Form\ISMSObjectiveType;
 use App\Repository\ISMSObjectiveRepository;
@@ -14,31 +16,27 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/objective')]
 class ISMSObjectiveController extends AbstractController
 {
     public function __construct(
-        private ISMSObjectiveRepository $objectiveRepository,
-        private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator,
-        private TenantContext $tenantContext
+        private readonly ISMSObjectiveRepository $ismsObjectiveRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
+        private readonly TenantContext $tenantContext
     ) {}
-
-    #[Route('/', name: 'app_objective_index')]
+    #[Route('/objective/', name: 'app_objective_index')]
     public function index(): Response
     {
-        $objectives = $this->objectiveRepository->findAll();
-        $active = $this->objectiveRepository->findActive();
+        $objectives = $this->ismsObjectiveRepository->findAll();
+        $active = $this->ismsObjectiveRepository->findActive();
 
         $statistics = [
             'total' => count($objectives),
             'active' => count($active),
-            'achieved' => count($this->objectiveRepository->findBy(['status' => 'achieved'])),
-            'delayed' => count(array_filter($objectives, function($obj) {
-                return $obj->getStatus() === 'in_progress' &&
-                       $obj->getTargetDate() < new \DateTime() &&
-                       !$obj->getAchievedDate();
-            })),
+            'achieved' => count($this->ismsObjectiveRepository->findBy(['status' => 'achieved'])),
+            'delayed' => count(array_filter($objectives, fn($obj): bool => $obj->getStatus() === 'in_progress' &&
+                   $obj->getTargetDate() < new DateTime() &&
+                   !$obj->getAchievedDate())),
         ];
 
         return $this->render('objective/index.html.twig', [
@@ -46,76 +44,72 @@ class ISMSObjectiveController extends AbstractController
             'statistics' => $statistics,
         ]);
     }
-
-    #[Route('/new', name: 'app_objective_new', methods: ['GET', 'POST'])]
+    #[Route('/objective/new', name: 'app_objective_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function new(Request $request): Response
     {
-        $objective = new ISMSObjective();
-        $objective->setTenant($this->tenantContext->getCurrentTenant());
+        $ismsObjective = new ISMSObjective();
+        $ismsObjective->setTenant($this->tenantContext->getCurrentTenant());
 
-        $form = $this->createForm(ISMSObjectiveType::class, $objective);
+        $form = $this->createForm(ISMSObjectiveType::class, $ismsObjective);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $objective->setUpdatedAt(new \DateTimeImmutable());
+            $ismsObjective->setUpdatedAt(new DateTimeImmutable());
 
-            $this->entityManager->persist($objective);
+            $this->entityManager->persist($ismsObjective);
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('objective.success.created'));
-            return $this->redirectToRoute('app_objective_show', ['id' => $objective->getId()]);
+            return $this->redirectToRoute('app_objective_show', ['id' => $ismsObjective->getId()]);
         }
 
         return $this->render('objective/new.html.twig', [
-            'objective' => $objective,
+            'objective' => $ismsObjective,
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}', name: 'app_objective_show', requirements: ['id' => '\d+'])]
-    public function show(ISMSObjective $objective): Response
+    #[Route('/objective/{id}', name: 'app_objective_show', requirements: ['id' => '\d+'])]
+    public function show(ISMSObjective $ismsObjective): Response
     {
         return $this->render('objective/show.html.twig', [
-            'objective' => $objective,
+            'objective' => $ismsObjective,
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'app_objective_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[Route('/objective/{id}/edit', name: 'app_objective_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function edit(Request $request, ISMSObjective $objective): Response
+    public function edit(Request $request, ISMSObjective $ismsObjective): Response
     {
-        $form = $this->createForm(ISMSObjectiveType::class, $objective);
+        $form = $this->createForm(ISMSObjectiveType::class, $ismsObjective);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $objective->setUpdatedAt(new \DateTimeImmutable());
+            $ismsObjective->setUpdatedAt(new DateTimeImmutable());
 
             // Automatically set achieved date when status changes to achieved
-            if ($objective->getStatus() === 'achieved' && !$objective->getAchievedDate()) {
-                $objective->setAchievedDate(new \DateTime());
+            if ($ismsObjective->getStatus() === 'achieved' && !$ismsObjective->getAchievedDate()) {
+                $ismsObjective->setAchievedDate(new DateTime());
             }
 
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('objective.success.updated'));
-            return $this->redirectToRoute('app_objective_show', ['id' => $objective->getId()]);
+            return $this->redirectToRoute('app_objective_show', ['id' => $ismsObjective->getId()]);
         }
 
         return $this->render('objective/edit.html.twig', [
-            'objective' => $objective,
+            'objective' => $ismsObjective,
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}/delete', name: 'app_objective_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/objective/{id}/delete', name: 'app_objective_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function delete(Request $request, ISMSObjective $objective): Response
+    public function delete(Request $request, ISMSObjective $ismsObjective): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$objective->getId(), $request->request->get('_token'))) {
-            $this->entityManager->remove($objective);
+        if ($this->isCsrfTokenValid('delete'.$ismsObjective->getId(), $request->request->get('_token'))) {
+            $this->entityManager->remove($ismsObjective);
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('objective.success.deleted'));

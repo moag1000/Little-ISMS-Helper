@@ -2,6 +2,9 @@
 
 namespace App\Repository;
 
+use DateTimeInterface;
+use DateTime;
+use DateTimeImmutable;
 use App\Entity\AuditLog;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -94,7 +97,7 @@ class AuditLogRepository extends ServiceEntityRepository
     /**
      * Find audit logs by date range
      */
-    public function findByDateRange(\DateTimeInterface $start, \DateTimeInterface $end): array
+    public function findByDateRange(DateTimeInterface $start, DateTimeInterface $end): array
     {
         return $this->createQueryBuilder('a')
             ->where('a.createdAt >= :start')
@@ -148,7 +151,7 @@ class AuditLogRepository extends ServiceEntityRepository
      */
     public function getRecentActivity(int $hours = 24): array
     {
-        $since = new \DateTime("-{$hours} hours");
+        $since = new DateTime("-{$hours} hours");
 
         return $this->createQueryBuilder('a')
             ->where('a.createdAt >= :since')
@@ -163,34 +166,34 @@ class AuditLogRepository extends ServiceEntityRepository
      */
     public function search(array $criteria): array
     {
-        $qb = $this->createQueryBuilder('a');
+        $queryBuilder = $this->createQueryBuilder('a');
 
         if (!empty($criteria['entityType'])) {
-            $qb->andWhere('a.entityType = :entityType')
+            $queryBuilder->andWhere('a.entityType = :entityType')
                ->setParameter('entityType', $criteria['entityType']);
         }
 
         if (!empty($criteria['action'])) {
-            $qb->andWhere('a.action = :action')
+            $queryBuilder->andWhere('a.action = :action')
                ->setParameter('action', $criteria['action']);
         }
 
         if (!empty($criteria['userName'])) {
-            $qb->andWhere('a.userName LIKE :userName')
+            $queryBuilder->andWhere('a.userName LIKE :userName')
                ->setParameter('userName', '%' . $criteria['userName'] . '%');
         }
 
         if (!empty($criteria['dateFrom'])) {
-            $qb->andWhere('a.createdAt >= :dateFrom')
+            $queryBuilder->andWhere('a.createdAt >= :dateFrom')
                ->setParameter('dateFrom', $criteria['dateFrom']);
         }
 
         if (!empty($criteria['dateTo'])) {
-            $qb->andWhere('a.createdAt <= :dateTo')
+            $queryBuilder->andWhere('a.createdAt <= :dateTo')
                ->setParameter('dateTo', $criteria['dateTo']);
         }
 
-        return $qb->orderBy('a.createdAt', 'DESC')
+        return $queryBuilder->orderBy('a.createdAt', 'DESC')
                   ->setMaxResults($criteria['limit'] ?? 100)
                   ->getQuery()
                   ->getResult();
@@ -199,10 +202,10 @@ class AuditLogRepository extends ServiceEntityRepository
     /**
      * Count audit logs older than cutoff date
      *
-     * @param \DateTimeImmutable $cutoffDate Logs older than this date will be counted
+     * @param DateTimeImmutable $cutoffDate Logs older than this date will be counted
      * @return int Number of logs older than cutoff date
      */
-    public function countOldLogs(\DateTimeImmutable $cutoffDate): int
+    public function countOldLogs(DateTimeImmutable $cutoffDate): int
     {
         return $this->createQueryBuilder('a')
             ->select('COUNT(a.id)')
@@ -215,11 +218,11 @@ class AuditLogRepository extends ServiceEntityRepository
     /**
      * Find audit logs older than cutoff date
      *
-     * @param \DateTimeImmutable $cutoffDate Logs older than this date will be returned
+     * @param DateTimeImmutable $cutoffDate Logs older than this date will be returned
      * @param int $limit Maximum number of logs to return
      * @return AuditLog[] Array of audit logs
      */
-    public function findOldLogs(\DateTimeImmutable $cutoffDate, int $limit = 100): array
+    public function findOldLogs(DateTimeImmutable $cutoffDate, int $limit = 100): array
     {
         return $this->createQueryBuilder('a')
             ->where('a.createdAt < :cutoffDate')
@@ -236,10 +239,10 @@ class AuditLogRepository extends ServiceEntityRepository
      * DSGVO Art. 5.1(e) - Storage Limitation compliance
      * NIS2 Art. 21.2 - Audit log retention policy
      *
-     * @param \DateTimeImmutable $cutoffDate Logs older than this date will be deleted
+     * @param DateTimeImmutable $cutoffDate Logs older than this date will be deleted
      * @return int Number of deleted logs
      */
-    public function deleteOldLogs(\DateTimeImmutable $cutoffDate): int
+    public function deleteOldLogs(DateTimeImmutable $cutoffDate): int
     {
         return $this->createQueryBuilder('a')
             ->delete()

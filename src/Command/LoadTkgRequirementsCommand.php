@@ -17,20 +17,20 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LoadTkgRequirementsCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
         // Create or get TKG framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'TKG-2024']);
 
-        if (!$framework) {
+        if (!$framework instanceof ComplianceFramework) {
             $framework = new ComplianceFramework();
             $framework->setCode('TKG-2024')
                 ->setName('TKG 2024 - Telekommunikationsgesetz mit TK-Sicherheitsverordnung')
@@ -62,7 +62,7 @@ class LoadTkgRequirementsCommand extends Command
 
         $this->entityManager->flush();
 
-        $io->success(sprintf('Successfully loaded %d TKG 2024 requirements', count($requirements)));
+        $symfonyStyle->success(sprintf('Successfully loaded %d TKG 2024 requirements', count($requirements)));
 
         return Command::SUCCESS;
     }

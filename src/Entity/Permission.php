@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Stringable;
+use DateTimeImmutable;
 use App\Repository\PermissionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,7 +14,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[ORM\Entity(repositoryClass: PermissionRepository::class)]
 #[ORM\Table(name: 'permissions')]
 #[UniqueEntity(fields: ['name'], message: 'This permission name is already in use')]
-class Permission
+class Permission implements Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -35,7 +37,7 @@ class Permission
     private bool $isSystemPermission = false;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     /**
      * @var Collection<int, Role>
@@ -46,7 +48,7 @@ class Permission
     public function __construct()
     {
         $this->roles = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -109,12 +111,12 @@ class Permission
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;

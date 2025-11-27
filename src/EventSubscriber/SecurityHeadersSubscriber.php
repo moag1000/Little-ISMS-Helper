@@ -48,14 +48,14 @@ class SecurityHeadersSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onKernelResponse(ResponseEvent $event): void
+    public function onKernelResponse(ResponseEvent $responseEvent): void
     {
         // Only apply security headers in production
         if ($this->environment !== 'prod') {
             return;
         }
 
-        $response = $event->getResponse();
+        $response = $responseEvent->getResponse();
 
         // Security: X-Content-Type-Options
         // Prevents MIME-type sniffing attacks
@@ -110,7 +110,7 @@ class SecurityHeadersSubscriber implements EventSubscriberInterface
         // - max-age: How long browsers should remember (in seconds)
         // - includeSubDomains: Also applies to all subdomains (can break dev/staging!)
         // - preload: For inclusion in browser HSTS preload lists (use with extreme caution!)
-        if ($event->getRequest()->isSecure()) {
+        if ($responseEvent->getRequest()->isSecure()) {
             // Use shorter max-age initially (6 months), increase to 2 years after testing
             // Remove includeSubDomains if you have HTTP-only subdomains (dev, staging, etc.)
             $response->headers->set('Strict-Transport-Security', 'max-age=15768000');

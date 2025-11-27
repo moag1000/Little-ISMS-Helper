@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -69,7 +71,7 @@ class PhysicalAccessLog
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['physical_access:read', 'physical_access:write'])]
     #[Assert\NotBlank]
-    private ?\DateTimeInterface $accessTime = null;
+    private ?DateTimeInterface $accessTime = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['physical_access:read', 'physical_access:write'])]
@@ -110,7 +112,7 @@ class PhysicalAccessLog
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['physical_access:read'])]
-    private ?\DateTimeInterface $exitTime = null;
+    private ?DateTimeInterface $exitTime = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
@@ -123,12 +125,12 @@ class PhysicalAccessLog
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['physical_access:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->accessTime = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
+        $this->accessTime = new DateTimeImmutable();
     }
 
     // Getters and Setters
@@ -182,12 +184,12 @@ class PhysicalAccessLog
         return $this;
     }
 
-    public function getAccessTime(): ?\DateTimeInterface
+    public function getAccessTime(): ?DateTimeInterface
     {
         return $this->accessTime;
     }
 
-    public function setAccessTime(\DateTimeInterface $accessTime): static
+    public function setAccessTime(DateTimeInterface $accessTime): static
     {
         $this->accessTime = $accessTime;
         return $this;
@@ -292,12 +294,12 @@ class PhysicalAccessLog
         return $this;
     }
 
-    public function getExitTime(): ?\DateTimeInterface
+    public function getExitTime(): ?DateTimeInterface
     {
         return $this->exitTime;
     }
 
-    public function setExitTime(?\DateTimeInterface $exitTime): static
+    public function setExitTime(?DateTimeInterface $exitTime): static
     {
         $this->exitTime = $exitTime;
         return $this;
@@ -325,12 +327,12 @@ class PhysicalAccessLog
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
@@ -346,7 +348,7 @@ class PhysicalAccessLog
         $this->person = $person;
 
         // Sync legacy field for backward compatibility
-        if ($person) {
+        if ($person instanceof Person) {
             $this->personName = $person->getFullName();
             $this->badgeId = $person->getBadgeId();
             $this->company = $person->getCompany();
@@ -360,13 +362,13 @@ class PhysicalAccessLog
         return $this->locationEntity;
     }
 
-    public function setLocationEntity(?Location $locationEntity): static
+    public function setLocationEntity(?Location $location): static
     {
-        $this->locationEntity = $locationEntity;
+        $this->locationEntity = $location;
 
         // Sync legacy field for backward compatibility
-        if ($locationEntity) {
-            $this->location = $locationEntity->getName();
+        if ($location instanceof Location) {
+            $this->location = $location->getName();
         }
 
         return $this;

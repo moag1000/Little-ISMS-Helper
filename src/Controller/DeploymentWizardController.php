@@ -2,6 +2,12 @@
 
 namespace App\Controller;
 
+use RuntimeException;
+use Exception;
+use App\Entity\Risk;
+use App\Entity\Asset;
+use DateTimeImmutable;
+use PDO;
 use App\Entity\Tenant;
 use App\Form\AdminUserType;
 use App\Form\ComplianceFrameworkSelectionType;
@@ -31,24 +37,22 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Psr\Log\LoggerInterface;
 
-#[Route('/setup')]
 class DeploymentWizardController extends AbstractController
 {
     public function __construct(
-        private readonly SystemRequirementsChecker $requirementsChecker,
-        private readonly ModuleConfigurationService $moduleConfigService,
+        private readonly SystemRequirementsChecker $systemRequirementsChecker,
+        private readonly ModuleConfigurationService $moduleConfigurationService,
         private readonly DataImportService $dataImportService,
         private readonly TranslatorInterface $translator,
-        private readonly SetupAccessChecker $setupChecker,
-        private readonly EnvironmentWriter $envWriter,
-        private readonly DatabaseTestService $dbTestService,
+        private readonly SetupAccessChecker $setupAccessChecker,
+        private readonly EnvironmentWriter $environmentWriter,
+        private readonly DatabaseTestService $databaseTestService,
         private readonly KernelInterface $kernel,
-        private readonly ComplianceFrameworkLoaderService $complianceLoader,
+        private readonly ComplianceFrameworkLoaderService $complianceFrameworkLoaderService,
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantRepository $tenantRepository,
         private readonly AssetRepository $assetRepository,
@@ -56,15 +60,14 @@ class DeploymentWizardController extends AbstractController
         private readonly IncidentRepository $incidentRepository,
     ) {
     }
-
     /**
      * Wizard Start / Welcome
      */
-    #[Route('/', name: 'setup_wizard_index')]
+    #[Route('/setup/', name: 'setup_wizard_index')]
     public function index(): Response
     {
         // Check if setup is already complete
-        $setupComplete = $this->setupChecker->isSetupComplete();
+        $setupComplete = $this->setupAccessChecker->isSetupComplete();
 
         if ($setupComplete) {
             // Setup already complete - show admin panel message
@@ -76,11 +79,10 @@ class DeploymentWizardController extends AbstractController
         // Setup not complete - start wizard
         return $this->redirectToRoute('setup_step0_welcome');
     }
-
     /**
      * Step 0: Welcome & Language Selection
      */
-    #[Route('/step0-welcome', name: 'setup_step0_welcome')]
+    #[Route('/setup/step0-welcome', name: 'setup_step0_welcome')]
     public function step0Welcome(SessionInterface $session): Response
     {
         // State recovery: Only if there's an active session with progress
@@ -90,13 +92,13 @@ class DeploymentWizardController extends AbstractController
                              $session->get('setup_selected_modules');
 
         if ($hasSessionProgress) {
-            $state = $this->setupChecker->detectSetupState();
+            $state = $this->setupAccessChecker->detectSetupState();
 
             if ($state['database_configured']) {
                 $this->addFlash('info', $this->translator->trans('setup.state.recovery_detected'));
 
                 // Redirect to appropriate step
-                $nextStep = $this->setupChecker->getRecommendedNextStep();
+                $nextStep = $this->setupAccessChecker->getRecommendedNextStep();
                 if ($nextStep !== 'setup_wizard_index') {
                     return $this->redirectToRoute($nextStep);
                 }
@@ -105,15 +107,14 @@ class DeploymentWizardController extends AbstractController
 
         return $this->render('setup/step0_welcome.html.twig');
     }
-
     /**
      * Step 2: Database Configuration
      */
-    #[Route('/step2-database-config', name: 'setup_step2_database_config')]
+    #[Route('/setup/step2-database-config', name: 'setup_step2_database_config')]
     public function step2DatabaseConfig(Request $request, SessionInterface $session): Response
     {
         // Check if system requirements are met (step 1)
-        if (!$this->requirementsChecker->isSystemReady()) {
+        if (!$this->systemRequirementsChecker->isSystemReady()) {
             $this->addFlash('error', $this->translator->trans('deployment.error.fix_requirements'));
             return $this->redirectToRoute('setup_step1_requirements');
         }
@@ -121,10 +122,10 @@ class DeploymentWizardController extends AbstractController
         // For Docker standalone deployments: Database is already configured by init-mysql.sh
         // Skip database configuration and go directly to step 3 (restore backup)
         $isDockerStandalone = @file_exists('/run/mysqld/mysqld.sock') || @file_exists('/.dockerenv');
-        $envLocalPath = $this->envWriter->getEnvLocalPath();
+        $envLocalPath = $this->environmentWriter->getEnvLocalPath();
 
         if ($isDockerStandalone && file_exists($envLocalPath)) {
-            $envVars = $this->envWriter->readEnvLocal();
+            $envVars = $this->environmentWriter->readEnvLocal();
             if (!empty($envVars['DATABASE_URL'])) {
                 // Database already configured by init-mysql.sh - mark as done
                 $session->set('setup_database_configured', true);
@@ -136,7 +137,7 @@ class DeploymentWizardController extends AbstractController
         }
 
         // Pre-check: Filesystem permissions
-        $permCheck = $this->envWriter->checkWritePermissions();
+        $permCheck = $this->environmentWriter->checkWritePermissions();
         if (!$permCheck['writable']) {
             $this->addFlash('error', $permCheck['message']);
         }
@@ -154,13 +155,13 @@ class DeploymentWizardController extends AbstractController
         }
 
         // Second priority: Try to load from .env.local if it exists
-        $envLocalPath = $this->envWriter->getEnvLocalPath();
+        $envLocalPath = $this->environmentWriter->getEnvLocalPath();
 
         if (empty($defaultData) && file_exists($envLocalPath)) {
-            $envVars = $this->envWriter->readEnvLocal();
+            $envVars = $this->environmentWriter->readEnvLocal();
 
             // Enrich from DATABASE_URL if DB_TYPE or DB_SERVER_VERSION are missing
-            $envVars = $this->envWriter->enrichFromDatabaseUrl($envVars);
+            $envVars = $this->environmentWriter->enrichFromDatabaseUrl($envVars);
 
             if (!empty($envVars['DB_TYPE']) || !empty($envVars['DB_HOST'])) {
                 // For Docker standalone: If password is empty in .env.local, try to get it from auto-generated credentials
@@ -220,11 +221,11 @@ class DeploymentWizardController extends AbstractController
             }
 
             // Test database connection
-            $testResult = $this->dbTestService->testConnection($config);
+            $testResult = $this->databaseTestService->testConnection($config);
 
             if ($testResult['success']) {
                 // Check for existing tables (warn user)
-                $existingTables = $this->dbTestService->checkExistingTables($config);
+                $existingTables = $this->databaseTestService->checkExistingTables($config);
                 if ($existingTables['has_tables']) {
                     $this->addFlash('warning', $this->translator->trans('setup.database.existing_tables', [
                         '%count%' => $existingTables['count'],
@@ -235,14 +236,14 @@ class DeploymentWizardController extends AbstractController
                 // Test passed - save configuration
                 try {
                     // Ensure APP_SECRET exists
-                    $this->envWriter->ensureAppSecret();
+                    $this->environmentWriter->ensureAppSecret();
 
                     // Write database configuration
-                    $this->envWriter->writeDatabaseConfig($config);
+                    $this->environmentWriter->writeDatabaseConfig($config);
 
                     // Create database if needed
                     if ($testResult['create_needed'] ?? false) {
-                        $createResult = $this->dbTestService->createDatabaseIfNotExists($config);
+                        $createResult = $this->databaseTestService->createDatabaseIfNotExists($config);
 
                         if (!$createResult['success']) {
                             $this->addFlash('error', $createResult['message']);
@@ -267,7 +268,7 @@ class DeploymentWizardController extends AbstractController
                     $this->addFlash('success', $this->translator->trans('setup.database.config_saved'));
 
                     return $this->redirectToRoute('setup_step3_restore_backup');
-                } catch (\RuntimeException $e) {
+                } catch (RuntimeException $e) {
                     // File system errors (permissions, disk full, etc.)
                     if (str_contains($e->getMessage(), 'Failed to write') || str_contains($e->getMessage(), 'Failed to rename')) {
                         $this->addFlash('error', $this->translator->trans('setup.database.write_failed',  [
@@ -279,7 +280,7 @@ class DeploymentWizardController extends AbstractController
                     }
                     // Redirect to same page to show error (Turbo compatibility)
                     return $this->redirectToRoute('setup_step2_database_config');
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->addFlash('error', $this->translator->trans('setup.database.config_failed') . ': ' . $e->getMessage());
                     // Redirect to same page to show error (Turbo compatibility)
                     return $this->redirectToRoute('setup_step2_database_config');
@@ -307,17 +308,16 @@ class DeploymentWizardController extends AbstractController
         ]);
 
         if ($form->isSubmitted() && !$form->isValid()) {
-            $response->setStatusCode(422);
+            $response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         return $response;
     }
-
     /**
      * Step 3: Backup Restore (Optional)
      * User can restore an existing backup or skip to create fresh installation
      */
-    #[Route('/step3-restore-backup', name: 'setup_step3_restore_backup')]
+    #[Route('/setup/step3-restore-backup', name: 'setup_step3_restore_backup')]
     public function step3RestoreBackup(SessionInterface $session): Response
     {
         // Check if database is configured
@@ -338,11 +338,10 @@ class DeploymentWizardController extends AbstractController
             'schema_created' => $schemaCreated,
         ]);
     }
-
     /**
      * Step 3: Create Database Schema (run migrations)
      */
-    #[Route('/step3-restore-backup/create-schema', name: 'setup_step3_create_schema', methods: ['POST'])]
+    #[Route('/setup/step3-restore-backup/create-schema', name: 'setup_step3_create_schema', methods: ['POST'])]
     public function step3CreateSchema(
         Request $request,
         SessionInterface $session,
@@ -385,7 +384,7 @@ class DeploymentWizardController extends AbstractController
             $this->addFlash('success', 'Datenbank-Struktur wurde erfolgreich erstellt. Sie können jetzt ein Backup wiederherstellen.');
 
             return $this->redirectToRoute('setup_step3_restore_backup');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $logger->error('Schema creation failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
@@ -394,11 +393,10 @@ class DeploymentWizardController extends AbstractController
             return $this->redirectToRoute('setup_step3_restore_backup');
         }
     }
-
     /**
      * Step 3: Process Backup Restore Upload
      */
-    #[Route('/step3-restore-backup/upload', name: 'setup_step3_restore_backup_upload', methods: ['POST'])]
+    #[Route('/setup/step3-restore-backup/upload', name: 'setup_step3_restore_backup_upload', methods: ['POST'])]
     public function step3RestoreBackupUpload(
         Request $request,
         SessionInterface $session,
@@ -486,9 +484,7 @@ class DeploymentWizardController extends AbstractController
 
             // Detect risks without asset assignment
             $allRisks = $this->riskRepository->findAll();
-            $risksWithoutAssets = array_filter($allRisks, function($risk) {
-                return $risk->getAsset() === null;
-            });
+            $risksWithoutAssets = array_filter($allRisks, fn(Risk $risk): bool => !$risk->getAsset() instanceof Asset);
 
             $restoreResult = [
                 'success' => true,
@@ -527,7 +523,7 @@ class DeploymentWizardController extends AbstractController
 
             // Redirect back to step 3 to show orphan repair UI (if needed)
             return $this->redirectToRoute('setup_step3_restore_backup');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $logger->error('Backup restore failed during setup step 3', [
                 'error' => $e->getMessage(),
             ]);
@@ -542,11 +538,10 @@ class DeploymentWizardController extends AbstractController
             return $this->redirectToRoute('setup_step3_restore_backup');
         }
     }
-
     /**
      * Step 3: Skip Backup Restore
      */
-    #[Route('/step3-restore-backup/skip', name: 'setup_step3_restore_backup_skip', methods: ['POST'])]
+    #[Route('/setup/step3-restore-backup/skip', name: 'setup_step3_restore_backup_skip', methods: ['POST'])]
     public function step3RestoreBackupSkip(SessionInterface $session): Response
     {
         // Validate database is configured
@@ -557,11 +552,10 @@ class DeploymentWizardController extends AbstractController
         // Proceed to step 4 (admin user creation)
         return $this->redirectToRoute('setup_step4_admin_user');
     }
-
     /**
      * Step 3: Repair Orphaned Entities
      */
-    #[Route('/step3-restore-backup/repair-orphans', name: 'setup_step3_repair_orphans', methods: ['POST'])]
+    #[Route('/setup/step3-restore-backup/repair-orphans', name: 'setup_step3_repair_orphans', methods: ['POST'])]
     public function step3RepairOrphans(
         Request $request,
         SessionInterface $session,
@@ -593,8 +587,8 @@ class DeploymentWizardController extends AbstractController
                 ->getQuery()
                 ->getResult();
 
-            foreach ($orphanedAssets as $asset) {
-                $asset->setTenant($targetTenant);
+            foreach ($orphanedAssets as $orphanedAsset) {
+                $orphanedAsset->setTenant($targetTenant);
             }
 
             // Repair orphaned Risks
@@ -603,8 +597,8 @@ class DeploymentWizardController extends AbstractController
                 ->getQuery()
                 ->getResult();
 
-            foreach ($orphanedRisks as $risk) {
-                $risk->setTenant($targetTenant);
+            foreach ($orphanedRisks as $orphanedRisk) {
+                $orphanedRisk->setTenant($targetTenant);
             }
 
             // Repair orphaned Incidents
@@ -613,8 +607,8 @@ class DeploymentWizardController extends AbstractController
                 ->getQuery()
                 ->getResult();
 
-            foreach ($orphanedIncidents as $incident) {
-                $incident->setTenant($targetTenant);
+            foreach ($orphanedIncidents as $orphanedIncident) {
+                $orphanedIncident->setTenant($targetTenant);
             }
 
             $this->entityManager->flush();
@@ -638,7 +632,7 @@ class DeploymentWizardController extends AbstractController
 
             // Redirect to step 11 to complete setup
             return $this->redirectToRoute('setup_step11_complete');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $logger->error('Failed to repair orphaned entities', [
                 'error' => $e->getMessage(),
             ]);
@@ -647,11 +641,10 @@ class DeploymentWizardController extends AbstractController
             return $this->redirectToRoute('setup_step3_restore_backup');
         }
     }
-
     /**
      * Step 4: Admin User Creation
      */
-    #[Route('/step4-admin-user', name: 'setup_step4_admin_user')]
+    #[Route('/setup/step4-admin-user', name: 'setup_step4_admin_user')]
     public function step4AdminUser(Request $request, SessionInterface $session): Response
     {
         // If backup was restored in step 3, skip to completion
@@ -698,7 +691,7 @@ class DeploymentWizardController extends AbstractController
             $data = $form->getData();
 
             // Normalize email to lowercase for consistent lookup
-            $data['email'] = strtolower($data['email']);
+            $data['email'] = strtolower((string) $data['email']);
 
             try {
                 $session->set('debug_processing', 'Step 2: Starting admin user creation process');
@@ -710,8 +703,8 @@ class DeploymentWizardController extends AbstractController
 
                 // Try to get defaults from .env.local if session is empty
                 $envDefaults = [];
-                if (file_exists($this->envWriter->getEnvLocalPath())) {
-                    $envVars = $this->envWriter->readEnvLocal();
+                if (file_exists($this->environmentWriter->getEnvLocalPath())) {
+                    $envVars = $this->environmentWriter->readEnvLocal();
                     if (!empty($envVars['DB_TYPE']) || !empty($envVars['DB_HOST'])) {
                         $envDefaults = [
                             'type' => $envVars['DB_TYPE'] ?? 'mysql',
@@ -745,7 +738,7 @@ class DeploymentWizardController extends AbstractController
                 // Ensure DATABASE_URL is written to .env.local before running migrations
                 // This is critical because migrations use Doctrine which reads from .env.local
                 $session->set('debug_processing', 'Step 2d: Writing DATABASE_URL to .env.local');
-                $this->envWriter->writeDatabaseConfig([
+                $this->environmentWriter->writeDatabaseConfig([
                     'type' => $dbConfig['type'],
                     'host' => $dbConfig['host'],
                     'port' => $dbConfig['port'],
@@ -787,12 +780,11 @@ class DeploymentWizardController extends AbstractController
                     $this->addFlash('success', $this->translator->trans('setup.admin.user_created'));
 
                     return $this->redirectToRoute('setup_step5_email_config');
-                } else {
-                    $session->set('debug_error', 'Step 4 ERROR: Admin user creation failed: ' . $result['message']);
-                    // Turbo requires redirect after POST
-                    return $this->redirectToRoute('setup_step4_admin_user');
                 }
-            } catch (\Exception $e) {
+                $session->set('debug_error', 'Step 4 ERROR: Admin user creation failed: ' . $result['message']);
+                // Turbo requires redirect after POST
+                return $this->redirectToRoute('setup_step4_admin_user');
+            } catch (Exception $e) {
                 $session->set('debug_error', 'EXCEPTION: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
                 // Turbo requires redirect after POST
                 return $this->redirectToRoute('setup_step4_admin_user');
@@ -806,16 +798,15 @@ class DeploymentWizardController extends AbstractController
 
         // If form was submitted but invalid, set 422 status
         if ($form->isSubmitted() && !$form->isValid()) {
-            $response->setStatusCode(422);
+            $response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         return $response;
     }
-
     /**
      * Step 5: Email Configuration (Optional)
      */
-    #[Route('/step5-email-config', name: 'setup_step5_email_config')]
+    #[Route('/setup/step5-email-config', name: 'setup_step5_email_config')]
     public function step5EmailConfig(Request $request, SessionInterface $session): Response
     {
         // If backup was restored in step 3, skip to completion
@@ -849,8 +840,8 @@ class DeploymentWizardController extends AbstractController
 
                     $mailerDsn = sprintf(
                         'smtp://%s:%s@%s:%s',
-                        urlencode($username),
-                        urlencode($password),
+                        urlencode((string) $username),
+                        urlencode((string) $password),
                         $host,
                         $port
                     );
@@ -875,13 +866,13 @@ class DeploymentWizardController extends AbstractController
                     $envVars['MAILER_FROM_NAME'] = $data['from_name'];
                 }
 
-                $this->envWriter->writeEnvVariables($envVars);
+                $this->environmentWriter->writeEnvVariables($envVars);
 
                 $session->set('setup_email_configured', true);
                 $this->addFlash('success', $this->translator->trans('setup.email.config_saved'));
 
                 return $this->redirectToRoute('setup_step6_organisation_info');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->addFlash('error', $this->translator->trans('setup.email.config_failed') . ': ' . $e->getMessage());
             }
         }
@@ -892,16 +883,15 @@ class DeploymentWizardController extends AbstractController
         ]);
 
         if ($form->isSubmitted() && !$form->isValid()) {
-            $response->setStatusCode(422);
+            $response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         return $response;
     }
-
     /**
      * Step 5: Skip Email Configuration
      */
-    #[Route('/step5-email-config/skip', name: 'setup_step5_email_config_skip', methods: ['POST'])]
+    #[Route('/setup/step5-email-config/skip', name: 'setup_step5_email_config_skip', methods: ['POST'])]
     public function step5EmailConfigSkip(Request $request, SessionInterface $session): Response
     {
         // Validate CSRF token
@@ -916,11 +906,10 @@ class DeploymentWizardController extends AbstractController
 
         return $this->redirectToRoute('setup_step6_organisation_info');
     }
-
     /**
      * Step 6: Organisation Information
      */
-    #[Route('/step6-organisation-info', name: 'setup_step6_organisation_info')]
+    #[Route('/setup/step6-organisation-info', name: 'setup_step6_organisation_info')]
     public function step6OrganisationInfo(Request $request, SessionInterface $session): Response
     {
         // If backup was restored in step 3, skip to completion
@@ -957,7 +946,7 @@ class DeploymentWizardController extends AbstractController
                 $this->addFlash('success', $this->translator->trans('setup.organisation.info_saved'));
 
                 return $this->redirectToRoute('setup_step7_modules');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->addFlash('error', $this->translator->trans('setup.organisation.info_failed') . ': ' . $e->getMessage());
             }
         }
@@ -968,32 +957,30 @@ class DeploymentWizardController extends AbstractController
         ]);
 
         if ($form->isSubmitted() && !$form->isValid()) {
-            $response->setStatusCode(422);
+            $response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         return $response;
     }
-
     /**
      * Step 1: System Requirements Check
      * This is the first step - checks if system meets minimum requirements
      */
-    #[Route('/step1-requirements', name: 'setup_step1_requirements')]
+    #[Route('/setup/step1-requirements', name: 'setup_step1_requirements')]
     public function step1Requirements(SessionInterface $session): Response
     {
         // No prerequisites - this is the first step after welcome
-        $results = $this->requirementsChecker->checkAll();
+        $results = $this->systemRequirementsChecker->checkAll();
 
         return $this->render('setup/step1_requirements.html.twig', [
             'results' => $results,
             'can_proceed' => $results['overall']['can_proceed'],
         ]);
     }
-
     /**
      * Step 7: Module Selection
      */
-    #[Route('/step7-modules', name: 'setup_step7_modules')]
+    #[Route('/setup/step7-modules', name: 'setup_step7_modules')]
     public function step7Modules(SessionInterface $session): Response
     {
         // If backup was restored in step 3, skip to completion
@@ -1003,14 +990,14 @@ class DeploymentWizardController extends AbstractController
         }
 
         // Check if requirements passed
-        if (!$this->requirementsChecker->isSystemReady()) {
+        if (!$this->systemRequirementsChecker->isSystemReady()) {
             $this->addFlash('error', $this->translator->trans('deployment.error.fix_requirements'));
             return $this->redirectToRoute('setup_step1_requirements');
         }
 
-        $allModules = $this->moduleConfigService->getAllModules();
-        $requiredModules = array_keys($this->moduleConfigService->getRequiredModules());
-        $optionalModules = $this->moduleConfigService->getOptionalModules();
+        $allModules = $this->moduleConfigurationService->getAllModules();
+        $requiredModules = array_keys($this->moduleConfigurationService->getRequiredModules());
+        $optionalModules = $this->moduleConfigurationService->getOptionalModules();
 
         // Get organization context for recommendations
         $organisationIndustries = $session->get('setup_organisation_industries', ['other']);
@@ -1032,14 +1019,13 @@ class DeploymentWizardController extends AbstractController
             'optional_modules' => $optionalModules,
             'selected_modules' => $selectedModules,
             'recommended_modules' => $recommendedModules,
-            'dependency_graph' => $this->moduleConfigService->getDependencyGraph(),
+            'dependency_graph' => $this->moduleConfigurationService->getDependencyGraph(),
         ]);
     }
-
     /**
      * Step 7: Save Module Selection
      */
-    #[Route('/step7-modules/save', name: 'setup_step7_modules_save', methods: ['POST'])]
+    #[Route('/setup/step7-modules/save', name: 'setup_step7_modules_save', methods: ['POST'])]
     public function step7ModulesSave(Request $request, SessionInterface $session): Response
     {
         // Validate CSRF token
@@ -1052,7 +1038,7 @@ class DeploymentWizardController extends AbstractController
         $selectedModules = $request->request->all('modules') ?? [];
 
         // Validate and resolve dependencies
-        $validation = $this->moduleConfigService->validateModuleSelection($selectedModules);
+        $validation = $this->moduleConfigurationService->validateModuleSelection($selectedModules);
 
         if (!$validation['valid']) {
             foreach ($validation['errors'] as $error) {
@@ -1063,14 +1049,14 @@ class DeploymentWizardController extends AbstractController
         }
 
         // Resolve dependencies
-        $resolved = $this->moduleConfigService->resolveModuleDependencies($selectedModules);
+        $resolved = $this->moduleConfigurationService->resolveModuleDependencies($selectedModules);
 
         // Save to session
         $session->set('setup_selected_modules', $resolved['modules']);
 
         // Show added modules
         foreach ($resolved['added'] as $addedModule) {
-            $module = $this->moduleConfigService->getModule($addedModule);
+            $module = $this->moduleConfigurationService->getModule($addedModule);
             $this->addFlash('info', $this->translator->trans('deployment.info.module_added_auto', ['name' => $module['name']]));
         }
 
@@ -1080,11 +1066,10 @@ class DeploymentWizardController extends AbstractController
 
         return $this->redirectToRoute('setup_step8_compliance_frameworks');
     }
-
     /**
      * Step 8: Compliance Frameworks Selection
      */
-    #[Route('/step8-compliance-frameworks', name: 'setup_step8_compliance_frameworks')]
+    #[Route('/setup/step8-compliance-frameworks', name: 'setup_step8_compliance_frameworks')]
     public function step8ComplianceFrameworks(Request $request, SessionInterface $session): Response
     {
         // If backup was restored in step 3, skip to completion
@@ -1101,7 +1086,7 @@ class DeploymentWizardController extends AbstractController
         }
 
         // Get available frameworks
-        $availableFrameworks = $this->complianceLoader->getAvailableFrameworks();
+        $availableFrameworks = $this->complianceFrameworkLoaderService->getAvailableFrameworks();
 
         // Get context for recommendations
         $organisationIndustries = $session->get('setup_organisation_industries', ['other']);
@@ -1146,12 +1131,11 @@ class DeploymentWizardController extends AbstractController
         ]);
 
         if ($form->isSubmitted() && !$form->isValid()) {
-            $response->setStatusCode(422);
+            $response->setStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         return $response;
     }
-
     /**
      * Get recommended compliance frameworks based on industry, size, and location
      *
@@ -1268,11 +1252,6 @@ class DeploymentWizardController extends AbstractController
                 break;
 
             case 'it_services':
-                $recommendations[] = $privacyFramework;
-                if ($isNis2Size) {
-                    $recommendations[] = 'NIS2';
-                }
-                break;
 
             case 'manufacturing':
                 $recommendations[] = $privacyFramework;
@@ -1306,7 +1285,6 @@ class DeploymentWizardController extends AbstractController
 
         return array_unique($recommendations);
     }
-
     /**
      * Get recommended modules based on industry and company size
      *
@@ -1339,13 +1317,16 @@ class DeploymentWizardController extends AbstractController
                 break;
 
             case 'financial_services':
+
+            case 'energy':
+            case 'telecommunications':
+            case 'critical_infrastructure':
                 // DORA requires BCM and incident management
                 $recommendations[] = 'bcm';
                 $recommendations[] = 'incident_management';
                 $recommendations[] = 'compliance';
                 $recommendations[] = 'audit_management';
                 break;
-
             case 'healthcare':
                 // Healthcare needs incident tracking and compliance
                 $recommendations[] = 'incident_management';
@@ -1355,7 +1336,6 @@ class DeploymentWizardController extends AbstractController
                     $recommendations[] = 'bcm';
                 }
                 break;
-
             case 'pharmaceutical':
                 // GxP requires strong training and audit
                 $recommendations[] = 'compliance';
@@ -1363,19 +1343,8 @@ class DeploymentWizardController extends AbstractController
                 $recommendations[] = 'training';
                 $recommendations[] = 'document_management';
                 break;
-
             case 'digital_health':
                 // DiGA needs compliance and audit trail
-                $recommendations[] = 'compliance';
-                $recommendations[] = 'audit_management';
-                break;
-
-            case 'energy':
-            case 'telecommunications':
-            case 'critical_infrastructure':
-                // Critical infrastructure needs BCM and incident management
-                $recommendations[] = 'bcm';
-                $recommendations[] = 'incident_management';
                 $recommendations[] = 'compliance';
                 $recommendations[] = 'audit_management';
                 break;
@@ -1428,7 +1397,6 @@ class DeploymentWizardController extends AbstractController
 
         return array_unique($recommendations);
     }
-
     /**
      * Get recommended compliance frameworks for multiple industries (corporate structures)
      *
@@ -1448,7 +1416,6 @@ class DeploymentWizardController extends AbstractController
 
         return array_unique($allRecommendations);
     }
-
     /**
      * Get recommended modules for multiple industries (corporate structures)
      *
@@ -1467,11 +1434,10 @@ class DeploymentWizardController extends AbstractController
 
         return array_unique($allRecommendations);
     }
-
     /**
      * Step 9: Base Data Import
      */
-    #[Route('/step9-base-data', name: 'setup_step9_base_data')]
+    #[Route('/setup/step9-base-data', name: 'setup_step9_base_data')]
     public function step9BaseData(SessionInterface $session): Response
     {
         // If backup was restored in step 3, skip to completion
@@ -1487,18 +1453,17 @@ class DeploymentWizardController extends AbstractController
             return $this->redirectToRoute('setup_step7_modules');
         }
 
-        $baseData = $this->moduleConfigService->getBaseData();
+        $baseData = $this->moduleConfigurationService->getBaseData();
 
         return $this->render('setup/step9_base_data.html.twig', [
             'selected_modules' => $selectedModules,
             'base_data' => $baseData,
         ]);
     }
-
     /**
      * Step 9: Import Base Data
      */
-    #[Route('/step9-base-data/import', name: 'setup_step9_base_data_import', methods: ['POST'])]
+    #[Route('/setup/step9-base-data/import', name: 'setup_step9_base_data_import', methods: ['POST'])]
     public function step9BaseDataImport(Request $request, SessionInterface $session): Response
     {
         // Validate CSRF token
@@ -1529,11 +1494,10 @@ class DeploymentWizardController extends AbstractController
 
         return $this->redirectToRoute('setup_step10_sample_data');
     }
-
     /**
      * Step 10: Sample Data (Optional)
      */
-    #[Route('/step10-sample-data', name: 'setup_step10_sample_data')]
+    #[Route('/setup/step10-sample-data', name: 'setup_step10_sample_data')]
     public function step10SampleData(SessionInterface $session): Response
     {
         // If backup was restored in step 3, skip to completion
@@ -1549,7 +1513,7 @@ class DeploymentWizardController extends AbstractController
             return $this->redirectToRoute('setup_step7_modules');
         }
 
-        $sampleData = $this->moduleConfigService->getAvailableSampleData($selectedModules);
+        $sampleData = $this->moduleConfigurationService->getAvailableSampleData($selectedModules);
 
         // Check for backup restore result from session (set after POST redirect)
         $backupRestoreResult = $session->get('backup_restore_result');
@@ -1568,11 +1532,10 @@ class DeploymentWizardController extends AbstractController
             'backup_restore_result' => $backupRestoreResult,
         ]);
     }
-
     /**
      * Step 10: Import Sample Data
      */
-    #[Route('/step10-sample-data/import', name: 'setup_step10_sample_data_import', methods: ['POST'])]
+    #[Route('/setup/step10-sample-data/import', name: 'setup_step10_sample_data_import', methods: ['POST'])]
     public function step10SampleDataImport(Request $request, SessionInterface $session): Response
     {
         // Validate CSRF token
@@ -1597,11 +1560,10 @@ class DeploymentWizardController extends AbstractController
 
         return $this->redirectToRoute('setup_step11_complete');
     }
-
     /**
      * Step 10: Skip Sample Data
      */
-    #[Route('/step10-sample-data/skip', name: 'setup_step10_sample_data_skip', methods: ['POST'])]
+    #[Route('/setup/step10-sample-data/skip', name: 'setup_step10_sample_data_skip', methods: ['POST'])]
     public function step10SampleDataSkip(Request $request): Response
     {
         // Validate CSRF token
@@ -1614,12 +1576,10 @@ class DeploymentWizardController extends AbstractController
         $this->addFlash('info', $this->translator->trans('deployment.info.sample_data_skipped'));
         return $this->redirectToRoute('setup_step11_complete');
     }
-
-
     /**
      * Step 11: Setup Complete
      */
-    #[Route('/step11-complete', name: 'setup_step11_complete')]
+    #[Route('/setup/step11-complete', name: 'setup_step11_complete')]
     public function step11Complete(SessionInterface $session): Response
     {
         $backupRestored = $session->get('setup_backup_restored', false);
@@ -1634,16 +1594,16 @@ class DeploymentWizardController extends AbstractController
 
         // Save active modules (only if we have any)
         if (!empty($selectedModules)) {
-            $this->moduleConfigService->saveActiveModules($selectedModules);
+            $this->moduleConfigurationService->saveActiveModules($selectedModules);
         }
 
         // Save organization data to Tenant settings
         $this->saveOrganisationDataToTenant($session);
 
         // Mark setup as complete
-        $this->setupChecker->markSetupComplete();
+        $this->setupAccessChecker->markSetupComplete();
 
-        $statistics = $this->moduleConfigService->getStatistics();
+        $statistics = $this->moduleConfigurationService->getStatistics();
 
         return $this->render('setup/step11_complete.html.twig', [
             'selected_modules' => $selectedModules,
@@ -1651,11 +1611,10 @@ class DeploymentWizardController extends AbstractController
             'admin_email' => $session->get('setup_admin_email'),
         ]);
     }
-
     /**
      * Reset Setup (Development Only)
      */
-    #[Route('/reset', name: 'setup_wizard_reset')]
+    #[Route('/setup/reset', name: 'setup_wizard_reset')]
     public function reset(SessionInterface $session): Response
     {
         // Only allow in dev environment
@@ -1664,7 +1623,7 @@ class DeploymentWizardController extends AbstractController
         }
 
         // Reset setup
-        $this->setupChecker->resetSetup();
+        $this->setupAccessChecker->resetSetup();
 
         // Clear session
         $session->clear();
@@ -1672,7 +1631,6 @@ class DeploymentWizardController extends AbstractController
         $this->addFlash('success', $this->translator->trans('deployment.success.reset'));
         return $this->redirectToRoute('setup_wizard_index');
     }
-
     /**
      * Save organization data to Tenant settings
      *
@@ -1710,7 +1668,7 @@ class DeploymentWizardController extends AbstractController
                 'description' => $session->get('setup_organisation_description', ''),
                 'selected_modules' => $session->get('setup_selected_modules', []),
                 'selected_frameworks' => $session->get('setup_selected_frameworks', []),
-                'setup_completed_at' => (new \DateTimeImmutable())->format('c'),
+                'setup_completed_at' => new DateTimeImmutable()->format('c'),
             ];
 
             $tenant->setSettings($settings);
@@ -1722,12 +1680,11 @@ class DeploymentWizardController extends AbstractController
             }
 
             $this->entityManager->flush();
-        } catch (\Exception $e) {
+        } catch (Exception) {
             // Log error but don't fail setup
             // The organization data is already saved in session and modules are configured
         }
     }
-
     /**
      * Helper: Run database migrations
      *
@@ -1739,16 +1696,16 @@ class DeploymentWizardController extends AbstractController
             $application = new Application($this->kernel);
             $application->setAutoExit(false);
 
-            $input = new ArrayInput([
+            $arrayInput = new ArrayInput([
                 'command' => 'doctrine:migrations:migrate',
                 '--no-interaction' => true,
                 '--allow-no-migration' => true,
             ]);
 
-            $output = new BufferedOutput();
-            $exitCode = $application->run($input, $output);
+            $bufferedOutput = new BufferedOutput();
+            $exitCode = $application->run($arrayInput, $bufferedOutput);
 
-            $outputText = $output->fetch();
+            $outputText = $bufferedOutput->fetch();
 
             if ($exitCode === 0) {
                 return [
@@ -1763,15 +1720,14 @@ class DeploymentWizardController extends AbstractController
                 'message' => 'Migration failed with exit code ' . $exitCode . ': ' . $outputText,
                 'output' => $outputText,
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'success' => false,
                 'message' => 'Migration exception: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine(),
-                'exception' => get_class($e),
+                'exception' => $e::class,
             ];
         }
     }
-
     /**
      * Helper: Create admin user via console command
      *
@@ -1784,7 +1740,7 @@ class DeploymentWizardController extends AbstractController
             $application = new Application($this->kernel);
             $application->setAutoExit(false);
 
-            $input = new ArrayInput([
+            $arrayInput = new ArrayInput([
                 'command' => 'app:setup-permissions',
                 '--admin-email' => $data['email'],
                 '--admin-password' => $data['password'],
@@ -1793,8 +1749,8 @@ class DeploymentWizardController extends AbstractController
                 '--no-interaction' => true,
             ]);
 
-            $output = new BufferedOutput();
-            $exitCode = $application->run($input, $output);
+            $bufferedOutput = new BufferedOutput();
+            $exitCode = $application->run($arrayInput, $bufferedOutput);
 
             if ($exitCode === 0) {
                 return [
@@ -1805,16 +1761,15 @@ class DeploymentWizardController extends AbstractController
 
             return [
                 'success' => false,
-                'message' => 'Failed to create admin user: ' . $output->fetch(),
+                'message' => 'Failed to create admin user: ' . $bufferedOutput->fetch(),
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'success' => false,
                 'message' => $e->getMessage(),
             ];
         }
     }
-
     /**
      * Clean up database connection state to prevent savepoint errors
      */
@@ -1827,12 +1782,12 @@ class DeploymentWizardController extends AbstractController
             while ($connection->isTransactionActive()) {
                 try {
                     $connection->rollBack();
-                } catch (\Exception $e) {
+                } catch (Exception) {
                     // If rollback fails, close the connection
                     // Doctrine will automatically reconnect on next use
                     try {
                         $connection->close();
-                    } catch (\Exception $closeException) {
+                    } catch (Exception) {
                         // Ignore - connection might already be closed
                     }
                     break;
@@ -1841,11 +1796,10 @@ class DeploymentWizardController extends AbstractController
 
             // Clear EntityManager cache
             $this->entityManager->clear();
-        } catch (\Exception $e) {
+        } catch (Exception) {
             // Silently ignore - the setup command will handle connection issues
         }
     }
-
     /**
      * Drop and recreate database to ensure clean state
      */
@@ -1867,7 +1821,6 @@ class DeploymentWizardController extends AbstractController
         // This avoids permission issues and connection problems with existing Doctrine connections
         $this->truncateAllTables($config);
     }
-
     /**
      * Truncate all tables in database (fallback if DROP DATABASE fails)
      */
@@ -1880,7 +1833,7 @@ class DeploymentWizardController extends AbstractController
             if ($type === 'postgresql') {
                 // PostgreSQL: Get all tables and truncate
                 $stmt = $pdo->query("SELECT tablename FROM pg_tables WHERE schemaname = 'public'");
-                $tables = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+                $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
                 foreach ($tables as $table) {
                     $pdo->exec("TRUNCATE TABLE \"{$table}\" CASCADE");
                 }
@@ -1888,49 +1841,20 @@ class DeploymentWizardController extends AbstractController
                 // MySQL/MariaDB: Disable foreign key checks, truncate all, re-enable
                 $pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
                 $stmt = $pdo->query("SHOW TABLES");
-                $tables = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+                $tables = $stmt->fetchAll(PDO::FETCH_COLUMN);
                 foreach ($tables as $table) {
                     $pdo->exec("DROP TABLE IF EXISTS `{$table}`");
                 }
                 $pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
             }
-        } catch (\Exception $e) {
+        } catch (Exception) {
             // Silently fail - migrations will handle it
         }
     }
-
-    /**
-     * Connect to database server (without selecting database)
-     */
-    private function connectToDatabase(array $config): \PDO
-    {
-        $type = $config['type'] ?? 'mysql';
-        $host = $config['host'] ?? 'localhost';
-        $port = $config['port'] ?? ($type === 'postgresql' ? 5432 : 3306);
-        $user = $config['user'] ?? 'root';
-        $password = $config['password'] ?? '';
-        $unixSocket = $config['unixSocket'] ?? null;
-
-        if ($type === 'postgresql') {
-            $dsn = "pgsql:host={$host};port={$port};dbname=postgres";
-        } else {
-            if (!empty($unixSocket)) {
-                $dsn = "mysql:unix_socket={$unixSocket};charset=utf8mb4";
-            } else {
-                $dsn = "mysql:host={$host};port={$port};charset=utf8mb4";
-            }
-        }
-
-        return new \PDO($dsn, $user, $password, [
-            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-            \PDO::ATTR_TIMEOUT => 5,
-        ]);
-    }
-
     /**
      * Connect to specific database
      */
-    private function connectToDatabaseWithDbName(array $config): \PDO
+    private function connectToDatabaseWithDbName(array $config): PDO
     {
         $type = $config['type'] ?? 'mysql';
         $host = $config['host'] ?? 'localhost';
@@ -1942,20 +1866,17 @@ class DeploymentWizardController extends AbstractController
 
         if ($type === 'postgresql') {
             $dsn = "pgsql:host={$host};port={$port};dbname={$name}";
+        } elseif (!empty($unixSocket)) {
+            $dsn = "mysql:unix_socket={$unixSocket};dbname={$name};charset=utf8mb4";
         } else {
-            if (!empty($unixSocket)) {
-                $dsn = "mysql:unix_socket={$unixSocket};dbname={$name};charset=utf8mb4";
-            } else {
-                $dsn = "mysql:host={$host};port={$port};dbname={$name};charset=utf8mb4";
-            }
+            $dsn = "mysql:host={$host};port={$port};dbname={$name};charset=utf8mb4";
         }
 
-        return new \PDO($dsn, $user, $password, [
-            \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-            \PDO::ATTR_TIMEOUT => 5,
+        return new PDO($dsn, $user, $password, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_TIMEOUT => 5,
         ]);
     }
-
     /**
      * Get Docker MySQL password from auto-generated credentials file
      */

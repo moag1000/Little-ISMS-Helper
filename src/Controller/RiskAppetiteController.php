@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTimeImmutable;
 use App\Entity\RiskAppetite;
 use App\Form\RiskAppetiteType;
 use App\Repository\AuditLogRepository;
@@ -15,18 +16,16 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/risk-appetite')]
 class RiskAppetiteController extends AbstractController
 {
     public function __construct(
-        private RiskAppetiteRepository $riskAppetiteRepository,
-        private RiskRepository $riskRepository,
-        private AuditLogRepository $auditLogRepository,
-        private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private readonly RiskAppetiteRepository $riskAppetiteRepository,
+        private readonly RiskRepository $riskRepository,
+        private readonly AuditLogRepository $auditLogRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator
     ) {}
-
-    #[Route('/', name: 'app_risk_appetite_index')]
+    #[Route('/risk-appetite/', name: 'app_risk_appetite_index')]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
@@ -40,14 +39,14 @@ class RiskAppetiteController extends AbstractController
         // Apply filters
         if ($category !== null && $category !== '') {
             if ($category === 'global') {
-                $appetites = array_filter($appetites, fn($appetite) => $appetite->isGlobal());
+                $appetites = array_filter($appetites, fn(RiskAppetite $riskAppetite): bool => $riskAppetite->isGlobal());
             } else {
-                $appetites = array_filter($appetites, fn($appetite) => $appetite->getCategory() === $category);
+                $appetites = array_filter($appetites, fn(RiskAppetite $riskAppetite): bool => $riskAppetite->getCategory() === $category);
             }
         }
 
         if ($activeOnly === '1') {
-            $appetites = array_filter($appetites, fn($appetite) => $appetite->isActive());
+            $appetites = array_filter($appetites, fn(RiskAppetite $riskAppetite): bool => $riskAppetite->isActive());
         }
 
         // Re-index array after filtering to avoid gaps in keys
@@ -60,10 +59,10 @@ class RiskAppetiteController extends AbstractController
 
         // Calculate risks exceeding appetite
         $risksExceedingAppetite = [];
-        if ($globalAppetite) {
-            foreach ($allRisks as $risk) {
-                if (!$globalAppetite->isRiskAcceptable($risk->getRiskScore())) {
-                    $risksExceedingAppetite[] = $risk;
+        if ($globalAppetite instanceof RiskAppetite) {
+            foreach ($allRisks as $allRisk) {
+                if (!$globalAppetite->isRiskAcceptable($allRisk->getRiskScore())) {
+                    $risksExceedingAppetite[] = $allRisk;
                 }
             }
         }
@@ -76,86 +75,82 @@ class RiskAppetiteController extends AbstractController
             'risksExceedingAppetite' => $risksExceedingAppetite,
         ]);
     }
-
-    #[Route('/new', name: 'app_risk_appetite_new')]
+    #[Route('/risk-appetite/new', name: 'app_risk_appetite_new')]
     #[IsGranted('ROLE_ADMIN')]
     public function new(Request $request): Response
     {
-        $appetite = new RiskAppetite();
-        $form = $this->createForm(RiskAppetiteType::class, $appetite);
+        $riskAppetite = new RiskAppetite();
+        $form = $this->createForm(RiskAppetiteType::class, $riskAppetite);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($appetite);
+            $this->entityManager->persist($riskAppetite);
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('risk_appetite.success.created'));
-            return $this->redirectToRoute('app_risk_appetite_show', ['id' => $appetite->getId()]);
+            return $this->redirectToRoute('app_risk_appetite_show', ['id' => $riskAppetite->getId()]);
         }
 
         return $this->render('risk_appetite/new.html.twig', [
-            'appetite' => $appetite,
+            'appetite' => $riskAppetite,
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}', name: 'app_risk_appetite_show', requirements: ['id' => '\d+'])]
+    #[Route('/risk-appetite/{id}', name: 'app_risk_appetite_show', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
-    public function show(RiskAppetite $appetite): Response
+    public function show(RiskAppetite $riskAppetite): Response
     {
         // Get all risks to show which ones exceed this appetite
         $allRisks = $this->riskRepository->findAll();
         $risksExceedingAppetite = [];
         $risksWithinAppetite = [];
 
-        foreach ($allRisks as $risk) {
-            if ($appetite->isRiskAcceptable($risk->getRiskScore())) {
-                $risksWithinAppetite[] = $risk;
+        foreach ($allRisks as $allRisk) {
+            if ($riskAppetite->isRiskAcceptable($allRisk->getRiskScore())) {
+                $risksWithinAppetite[] = $allRisk;
             } else {
-                $risksExceedingAppetite[] = $risk;
+                $risksExceedingAppetite[] = $allRisk;
             }
         }
 
         // Get audit log history for this appetite (last 10 entries)
-        $auditLogs = $this->auditLogRepository->findByEntity('RiskAppetite', $appetite->getId());
+        $auditLogs = $this->auditLogRepository->findByEntity('RiskAppetite', $riskAppetite->getId());
         $recentAuditLogs = array_slice($auditLogs, 0, 10);
 
         return $this->render('risk_appetite/show.html.twig', [
-            'appetite' => $appetite,
+            'appetite' => $riskAppetite,
             'risksExceedingAppetite' => $risksExceedingAppetite,
             'risksWithinAppetite' => $risksWithinAppetite,
             'auditLogs' => $recentAuditLogs,
             'totalAuditLogs' => count($auditLogs),
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'app_risk_appetite_edit', requirements: ['id' => '\d+'])]
+    #[Route('/risk-appetite/{id}/edit', name: 'app_risk_appetite_edit', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function edit(Request $request, RiskAppetite $appetite): Response
+    public function edit(Request $request, RiskAppetite $riskAppetite): Response
     {
-        $form = $this->createForm(RiskAppetiteType::class, $appetite);
+        $form = $this->createForm(RiskAppetiteType::class, $riskAppetite);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $appetite->setUpdatedAt(new \DateTimeImmutable());
+            $riskAppetite->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('risk_appetite.success.updated'));
-            return $this->redirectToRoute('app_risk_appetite_show', ['id' => $appetite->getId()]);
+            return $this->redirectToRoute('app_risk_appetite_show', ['id' => $riskAppetite->getId()]);
         }
 
         return $this->render('risk_appetite/edit.html.twig', [
-            'appetite' => $appetite,
+            'appetite' => $riskAppetite,
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}/delete', name: 'app_risk_appetite_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/risk-appetite/{id}/delete', name: 'app_risk_appetite_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function delete(Request $request, RiskAppetite $appetite): Response
+    public function delete(Request $request, RiskAppetite $riskAppetite): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$appetite->getId(), $request->request->get('_token'))) {
-            $this->entityManager->remove($appetite);
+        if ($this->isCsrfTokenValid('delete'.$riskAppetite->getId(), $request->request->get('_token'))) {
+            $this->entityManager->remove($riskAppetite);
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('risk_appetite.success.deleted'));

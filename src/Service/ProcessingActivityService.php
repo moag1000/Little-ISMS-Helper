@@ -2,9 +2,10 @@
 
 namespace App\Service;
 
+use DateTime;
+use DateTimeInterface;
+use RuntimeException;
 use App\Entity\ProcessingActivity;
-use App\Entity\Tenant;
-use App\Entity\User;
 use App\Repository\ProcessingActivityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -18,11 +19,11 @@ use Symfony\Bundle\SecurityBundle\Security;
 class ProcessingActivityService
 {
     public function __construct(
-        private ProcessingActivityRepository $repository,
-        private EntityManagerInterface $entityManager,
-        private TenantContext $tenantContext,
-        private Security $security,
-        private AuditLogger $auditLogger
+        private readonly ProcessingActivityRepository $processingActivityRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TenantContext $tenantContext,
+        private readonly Security $security,
+        private readonly AuditLogger $auditLogger
     ) {}
 
     /**
@@ -102,7 +103,7 @@ class ProcessingActivityService
     public function findAll(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        return $this->repository->findByTenant($tenant);
+        return $this->processingActivityRepository->findByTenant($tenant);
     }
 
     /**
@@ -111,7 +112,7 @@ class ProcessingActivityService
     public function findActive(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        return $this->repository->findActiveByTenant($tenant);
+        return $this->processingActivityRepository->findActiveByTenant($tenant);
     }
 
     /**
@@ -120,7 +121,7 @@ class ProcessingActivityService
     public function findRequiringDPIA(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        return $this->repository->findRequiringDPIA($tenant);
+        return $this->processingActivityRepository->findRequiringDPIA($tenant);
     }
 
     /**
@@ -129,7 +130,7 @@ class ProcessingActivityService
     public function findIncomplete(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        return $this->repository->findIncomplete($tenant);
+        return $this->processingActivityRepository->findIncomplete($tenant);
     }
 
     /**
@@ -138,7 +139,7 @@ class ProcessingActivityService
     public function findDueForReview(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        return $this->repository->findDueForReview($tenant);
+        return $this->processingActivityRepository->findDueForReview($tenant);
     }
 
     /**
@@ -147,7 +148,7 @@ class ProcessingActivityService
     public function search(string $query): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        return $this->repository->search($tenant, $query);
+        return $this->processingActivityRepository->search($tenant, $query);
     }
 
     /**
@@ -156,7 +157,7 @@ class ProcessingActivityService
     public function getDashboardStatistics(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        $stats = $this->repository->getStatistics($tenant);
+        $stats = $this->processingActivityRepository->getStatistics($tenant);
 
         // Add compliance score
         $all = $this->findAll();
@@ -164,10 +165,10 @@ class ProcessingActivityService
         $stats['completeness_rate'] = count($all) > 0 ? round(($completeCount / count($all)) * 100) : 0;
 
         // Add breakdown by legal basis
-        $stats['by_legal_basis'] = $this->repository->countByLegalBasis($tenant);
+        $stats['by_legal_basis'] = $this->processingActivityRepository->countByLegalBasis($tenant);
 
         // Add breakdown by risk level
-        $stats['by_risk_level'] = $this->repository->countByRiskLevel($tenant);
+        $stats['by_risk_level'] = $this->processingActivityRepository->countByRiskLevel($tenant);
 
         return $stats;
     }
@@ -177,74 +178,74 @@ class ProcessingActivityService
      *
      * Returns array of validation errors (empty if valid)
      */
-    public function validate(ProcessingActivity $pa): array
+    public function validate(ProcessingActivity $processingActivity): array
     {
         $errors = [];
 
         // Mandatory fields per Art. 30(1)
-        if (empty($pa->getName())) {
+        if (in_array($processingActivity->getName(), [null, '', '0'], true)) {
             $errors[] = 'Name of processing activity is required (Art. 30(1)(a))';
         }
 
-        if (empty($pa->getPurposes())) {
+        if ($processingActivity->getPurposes() === []) {
             $errors[] = 'Purpose(s) of processing are required (Art. 30(1)(a))';
         }
 
-        if (empty($pa->getDataSubjectCategories())) {
+        if ($processingActivity->getDataSubjectCategories() === []) {
             $errors[] = 'Categories of data subjects are required (Art. 30(1)(b))';
         }
 
-        if (empty($pa->getPersonalDataCategories())) {
+        if ($processingActivity->getPersonalDataCategories() === []) {
             $errors[] = 'Categories of personal data are required (Art. 30(1)(c))';
         }
 
-        if (empty($pa->getLegalBasis())) {
+        if (in_array($processingActivity->getLegalBasis(), [null, '', '0'], true)) {
             $errors[] = 'Legal basis for processing is required (Art. 6 GDPR)';
         }
 
-        if (empty($pa->getRetentionPeriod())) {
+        if (in_array($processingActivity->getRetentionPeriod(), [null, '', '0'], true)) {
             $errors[] = 'Retention period/deletion deadline is required (Art. 30(1)(f))';
         }
 
-        if (empty($pa->getTechnicalOrganizationalMeasures())) {
+        if (in_array($processingActivity->getTechnicalOrganizationalMeasures(), [null, '', '0'], true)) {
             $errors[] = 'Technical and organizational measures must be described (Art. 30(1)(g))';
         }
 
         // Conditional validations
-        if ($pa->getLegalBasis() === 'legitimate_interests' && empty($pa->getLegalBasisDetails())) {
+        if ($processingActivity->getLegalBasis() === 'legitimate_interests' && in_array($processingActivity->getLegalBasisDetails(), [null, '', '0'], true)) {
             $errors[] = 'Legitimate interests must be detailed and documented (Art. 6(1)(f))';
         }
 
-        if ($pa->getProcessesSpecialCategories() && empty($pa->getLegalBasisSpecialCategories())) {
+        if ($processingActivity->getProcessesSpecialCategories() && in_array($processingActivity->getLegalBasisSpecialCategories(), [null, '', '0'], true)) {
             $errors[] = 'Legal basis for processing special categories must be specified (Art. 9(2))';
         }
 
-        if ($pa->getProcessesSpecialCategories() && empty($pa->getSpecialCategoriesDetails())) {
+        if ($processingActivity->getProcessesSpecialCategories() && in_array($processingActivity->getSpecialCategoriesDetails(), [null, []], true)) {
             $errors[] = 'Which special categories are processed must be specified (Art. 9)';
         }
 
-        if ($pa->getHasThirdCountryTransfer() && empty($pa->getThirdCountries())) {
+        if ($processingActivity->getHasThirdCountryTransfer() && in_array($processingActivity->getThirdCountries(), [null, []], true)) {
             $errors[] = 'Third countries receiving data must be listed (Art. 30(1)(e))';
         }
 
-        if ($pa->getHasThirdCountryTransfer() && empty($pa->getTransferSafeguards())) {
+        if ($processingActivity->getHasThirdCountryTransfer() && in_array($processingActivity->getTransferSafeguards(), [null, '', '0'], true)) {
             $errors[] = 'Legal safeguards for third country transfer must be specified (Art. 44-49)';
         }
 
-        if ($pa->getInvolvesProcessors() && empty($pa->getProcessors())) {
+        if ($processingActivity->getInvolvesProcessors() && in_array($processingActivity->getProcessors(), [null, []], true)) {
             $errors[] = 'Processor details must be provided (Art. 28)';
         }
 
-        if ($pa->getIsJointController() && empty($pa->getJointControllerDetails())) {
+        if ($processingActivity->getIsJointController() && in_array($processingActivity->getJointControllerDetails(), [null, []], true)) {
             $errors[] = 'Joint controller arrangement must be documented (Art. 26)';
         }
 
-        if ($pa->getHasAutomatedDecisionMaking() && empty($pa->getAutomatedDecisionMakingDetails())) {
+        if ($processingActivity->getHasAutomatedDecisionMaking() && in_array($processingActivity->getAutomatedDecisionMakingDetails(), [null, '', '0'], true)) {
             $errors[] = 'Automated decision-making logic and implications must be explained (Art. 22)';
         }
 
         // DPIA requirement check
-        if ($pa->requiresDPIA() && !$pa->getDpiaCompleted()) {
+        if ($processingActivity->requiresDPIA() && !$processingActivity->getDpiaCompleted()) {
             $errors[] = 'Data Protection Impact Assessment (DPIA) is required for this processing activity (Art. 35)';
         }
 
@@ -254,44 +255,44 @@ class ProcessingActivityService
     /**
      * Check if processing activity is compliant with GDPR Art. 30
      */
-    public function isCompliant(ProcessingActivity $pa): bool
+    public function isCompliant(ProcessingActivity $processingActivity): bool
     {
-        return empty($this->validate($pa));
+        return $this->validate($processingActivity) === [];
     }
 
     /**
      * Generate compliance report for a processing activity
      */
-    public function generateComplianceReport(ProcessingActivity $pa): array
+    public function generateComplianceReport(ProcessingActivity $processingActivity): array
     {
-        $errors = $this->validate($pa);
-        $completeness = $pa->getCompletenessPercentage();
+        $errors = $this->validate($processingActivity);
+        $completeness = $processingActivity->getCompletenessPercentage();
 
         return [
-            'processing_activity_id' => $pa->getId(),
-            'name' => $pa->getName(),
-            'status' => $pa->getStatus(),
+            'processing_activity_id' => $processingActivity->getId(),
+            'name' => $processingActivity->getName(),
+            'status' => $processingActivity->getStatus(),
             'completeness_percentage' => $completeness,
-            'is_compliant' => empty($errors),
+            'is_compliant' => $errors === [],
             'validation_errors' => $errors,
             'compliance_checks' => [
                 'art_30_mandatory_fields' => $completeness === 100,
-                'legal_basis_documented' => !empty($pa->getLegalBasis()),
-                'retention_period_defined' => !empty($pa->getRetentionPeriod()),
-                'toms_documented' => !empty($pa->getTechnicalOrganizationalMeasures()),
-                'dpia_completed_if_required' => !$pa->requiresDPIA() || $pa->getDpiaCompleted(),
-                'special_categories_legal_basis' => !$pa->getProcessesSpecialCategories() || !empty($pa->getLegalBasisSpecialCategories()),
-                'third_country_safeguards' => !$pa->getHasThirdCountryTransfer() || !empty($pa->getTransferSafeguards()),
+                'legal_basis_documented' => !in_array($processingActivity->getLegalBasis(), [null, '', '0'], true),
+                'retention_period_defined' => !in_array($processingActivity->getRetentionPeriod(), [null, '', '0'], true),
+                'toms_documented' => !in_array($processingActivity->getTechnicalOrganizationalMeasures(), [null, '', '0'], true),
+                'dpia_completed_if_required' => !$processingActivity->requiresDPIA() || $processingActivity->getDpiaCompleted(),
+                'special_categories_legal_basis' => !$processingActivity->getProcessesSpecialCategories() || !in_array($processingActivity->getLegalBasisSpecialCategories(), [null, '', '0'], true),
+                'third_country_safeguards' => !$processingActivity->getHasThirdCountryTransfer() || !in_array($processingActivity->getTransferSafeguards(), [null, '', '0'], true),
             ],
             'risk_assessment' => [
-                'is_high_risk' => $pa->getIsHighRisk(),
-                'requires_dpia' => $pa->requiresDPIA(),
-                'dpia_completed' => $pa->getDpiaCompleted(),
-                'risk_level' => $pa->getRiskLevel(),
-                'processes_special_categories' => $pa->getProcessesSpecialCategories(),
-                'processes_criminal_data' => $pa->getProcessesCriminalData(),
-                'has_automated_decision_making' => $pa->getHasAutomatedDecisionMaking(),
-                'has_third_country_transfer' => $pa->getHasThirdCountryTransfer(),
+                'is_high_risk' => $processingActivity->getIsHighRisk(),
+                'requires_dpia' => $processingActivity->requiresDPIA(),
+                'dpia_completed' => $processingActivity->getDpiaCompleted(),
+                'risk_level' => $processingActivity->getRiskLevel(),
+                'processes_special_categories' => $processingActivity->getProcessesSpecialCategories(),
+                'processes_criminal_data' => $processingActivity->getProcessesCriminalData(),
+                'has_automated_decision_making' => $processingActivity->getHasAutomatedDecisionMaking(),
+                'has_third_country_transfer' => $processingActivity->getHasThirdCountryTransfer(),
             ],
         ];
     }
@@ -304,102 +305,102 @@ class ProcessingActivityService
     public function generateVVTExport(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        $processingActivities = $this->repository->findActiveByTenant($tenant);
+        $processingActivities = $this->processingActivityRepository->findActiveByTenant($tenant);
 
         $export = [
             'tenant' => [
                 'name' => $tenant->getName(),
                 'code' => $tenant->getCode(),
             ],
-            'generated_at' => new \DateTime(),
+            'generated_at' => new DateTime(),
             'generated_by' => $this->security->getUser()?->getUserIdentifier(),
             'total_activities' => count($processingActivities),
             'processing_activities' => [],
         ];
 
-        foreach ($processingActivities as $pa) {
+        foreach ($processingActivities as $processingActivity) {
             $export['processing_activities'][] = [
-                'id' => $pa->getId(),
-                'name' => $pa->getName(),
-                'description' => $pa->getDescription(),
+                'id' => $processingActivity->getId(),
+                'name' => $processingActivity->getName(),
+                'description' => $processingActivity->getDescription(),
 
                 // Art. 30(1)(a)
-                'purposes' => $pa->getPurposes(),
+                'purposes' => $processingActivity->getPurposes(),
 
                 // Art. 30(1)(b)
-                'data_subject_categories' => $pa->getDataSubjectCategories(),
-                'estimated_data_subjects_count' => $pa->getEstimatedDataSubjectsCount(),
+                'data_subject_categories' => $processingActivity->getDataSubjectCategories(),
+                'estimated_data_subjects_count' => $processingActivity->getEstimatedDataSubjectsCount(),
 
                 // Art. 30(1)(c)
-                'personal_data_categories' => $pa->getPersonalDataCategories(),
-                'processes_special_categories' => $pa->getProcessesSpecialCategories(),
-                'special_categories_details' => $pa->getSpecialCategoriesDetails(),
-                'processes_criminal_data' => $pa->getProcessesCriminalData(),
+                'personal_data_categories' => $processingActivity->getPersonalDataCategories(),
+                'processes_special_categories' => $processingActivity->getProcessesSpecialCategories(),
+                'special_categories_details' => $processingActivity->getSpecialCategoriesDetails(),
+                'processes_criminal_data' => $processingActivity->getProcessesCriminalData(),
 
                 // Art. 30(1)(d)
-                'recipient_categories' => $pa->getRecipientCategories(),
-                'recipient_details' => $pa->getRecipientDetails(),
+                'recipient_categories' => $processingActivity->getRecipientCategories(),
+                'recipient_details' => $processingActivity->getRecipientDetails(),
 
                 // Art. 30(1)(e)
-                'has_third_country_transfer' => $pa->getHasThirdCountryTransfer(),
-                'third_countries' => $pa->getThirdCountries(),
-                'transfer_safeguards' => $pa->getTransferSafeguards(),
+                'has_third_country_transfer' => $processingActivity->getHasThirdCountryTransfer(),
+                'third_countries' => $processingActivity->getThirdCountries(),
+                'transfer_safeguards' => $processingActivity->getTransferSafeguards(),
 
                 // Art. 30(1)(f)
-                'retention_period' => $pa->getRetentionPeriod(),
-                'retention_period_days' => $pa->getRetentionPeriodDays(),
-                'retention_legal_basis' => $pa->getRetentionLegalBasis(),
+                'retention_period' => $processingActivity->getRetentionPeriod(),
+                'retention_period_days' => $processingActivity->getRetentionPeriodDays(),
+                'retention_legal_basis' => $processingActivity->getRetentionLegalBasis(),
 
                 // Art. 30(1)(g)
-                'technical_organizational_measures' => $pa->getTechnicalOrganizationalMeasures(),
+                'technical_organizational_measures' => $processingActivity->getTechnicalOrganizationalMeasures(),
                 'implemented_controls' => array_map(
-                    fn($control) => [
+                    fn($control): array => [
                         'id' => $control->getControlId(),
                         'name' => $control->getName(),
                     ],
-                    $pa->getImplementedControls()->toArray()
+                    $processingActivity->getImplementedControls()->toArray()
                 ),
 
                 // Legal basis
-                'legal_basis' => $pa->getLegalBasis(),
-                'legal_basis_details' => $pa->getLegalBasisDetails(),
-                'legal_basis_special_categories' => $pa->getLegalBasisSpecialCategories(),
+                'legal_basis' => $processingActivity->getLegalBasis(),
+                'legal_basis_details' => $processingActivity->getLegalBasisDetails(),
+                'legal_basis_special_categories' => $processingActivity->getLegalBasisSpecialCategories(),
 
                 // Organizational
-                'responsible_department' => $pa->getResponsibleDepartment(),
-                'contact_person' => $pa->getContactPerson()?->getUsername(),
-                'data_protection_officer' => $pa->getDataProtectionOfficer()?->getUsername(),
+                'responsible_department' => $processingActivity->getResponsibleDepartment(),
+                'contact_person' => $processingActivity->getContactPerson()?->getUsername(),
+                'data_protection_officer' => $processingActivity->getDataProtectionOfficer()?->getUsername(),
 
                 // Processors & Joint Controllers
-                'involves_processors' => $pa->getInvolvesProcessors(),
-                'processors' => $pa->getProcessors(),
-                'is_joint_controller' => $pa->getIsJointController(),
-                'joint_controller_details' => $pa->getJointControllerDetails(),
+                'involves_processors' => $processingActivity->getInvolvesProcessors(),
+                'processors' => $processingActivity->getProcessors(),
+                'is_joint_controller' => $processingActivity->getIsJointController(),
+                'joint_controller_details' => $processingActivity->getJointControllerDetails(),
 
                 // Risk & DPIA
-                'is_high_risk' => $pa->getIsHighRisk(),
-                'requires_dpia' => $pa->requiresDPIA(),
-                'dpia_completed' => $pa->getDpiaCompleted(),
-                'dpia_date' => $pa->getDpiaDate()?->format('Y-m-d'),
-                'risk_level' => $pa->getRiskLevel(),
+                'is_high_risk' => $processingActivity->getIsHighRisk(),
+                'requires_dpia' => $processingActivity->requiresDPIA(),
+                'dpia_completed' => $processingActivity->getDpiaCompleted(),
+                'dpia_date' => $processingActivity->getDpiaDate()?->format('Y-m-d'),
+                'risk_level' => $processingActivity->getRiskLevel(),
 
                 // Automated decision-making
-                'has_automated_decision_making' => $pa->getHasAutomatedDecisionMaking(),
-                'automated_decision_making_details' => $pa->getAutomatedDecisionMakingDetails(),
+                'has_automated_decision_making' => $processingActivity->getHasAutomatedDecisionMaking(),
+                'automated_decision_making_details' => $processingActivity->getAutomatedDecisionMakingDetails(),
 
                 // Data sources
-                'data_sources' => $pa->getDataSources(),
+                'data_sources' => $processingActivity->getDataSources(),
 
                 // Status & Dates
-                'status' => $pa->getStatus(),
-                'start_date' => $pa->getStartDate()?->format('Y-m-d'),
-                'end_date' => $pa->getEndDate()?->format('Y-m-d'),
-                'last_review_date' => $pa->getLastReviewDate()?->format('Y-m-d'),
-                'next_review_date' => $pa->getNextReviewDate()?->format('Y-m-d'),
+                'status' => $processingActivity->getStatus(),
+                'start_date' => $processingActivity->getStartDate()?->format('Y-m-d'),
+                'end_date' => $processingActivity->getEndDate()?->format('Y-m-d'),
+                'last_review_date' => $processingActivity->getLastReviewDate()?->format('Y-m-d'),
+                'next_review_date' => $processingActivity->getNextReviewDate()?->format('Y-m-d'),
 
                 // Compliance
-                'completeness_percentage' => $pa->getCompletenessPercentage(),
-                'is_complete' => $pa->isComplete(),
+                'completeness_percentage' => $processingActivity->getCompletenessPercentage(),
+                'is_complete' => $processingActivity->isComplete(),
             ];
         }
 
@@ -409,20 +410,20 @@ class ProcessingActivityService
     /**
      * Mark a processing activity for review
      */
-    public function markForReview(ProcessingActivity $pa, ?\DateTimeInterface $reviewDate = null): void
+    public function markForReview(ProcessingActivity $processingActivity, ?DateTimeInterface $reviewDate = null): void
     {
-        if ($reviewDate === null) {
+        if (!$reviewDate instanceof DateTimeInterface) {
             // Default: review in 12 months
-            $reviewDate = new \DateTime('+12 months');
+            $reviewDate = new DateTime('+12 months');
         }
 
-        $pa->setNextReviewDate($reviewDate);
+        $processingActivity->setNextReviewDate($reviewDate);
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(
             'processing_activity.marked_for_review',
             'ProcessingActivity',
-            $pa->getId(),
+            $processingActivity->getId(),
             ['review_date' => $reviewDate->format('Y-m-d')]
         );
     }
@@ -430,17 +431,17 @@ class ProcessingActivityService
     /**
      * Complete review of a processing activity
      */
-    public function completeReview(ProcessingActivity $pa): void
+    public function completeReview(ProcessingActivity $processingActivity): void
     {
-        $pa->setLastReviewDate(new \DateTime());
-        $pa->setNextReviewDate(new \DateTime('+12 months')); // Schedule next review
+        $processingActivity->setLastReviewDate(new DateTime());
+        $processingActivity->setNextReviewDate(new DateTime('+12 months')); // Schedule next review
 
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(
             'processing_activity.review_completed',
             'ProcessingActivity',
-            $pa->getId(),
+            $processingActivity->getId(),
             []
         );
     }
@@ -448,88 +449,88 @@ class ProcessingActivityService
     /**
      * Activate a draft processing activity
      */
-    public function activate(ProcessingActivity $pa): void
+    public function activate(ProcessingActivity $processingActivity): void
     {
         // Validate before activation
-        $errors = $this->validate($pa);
-        if (!empty($errors)) {
-            throw new \RuntimeException(
+        $errors = $this->validate($processingActivity);
+        if ($errors !== []) {
+            throw new RuntimeException(
                 'Cannot activate processing activity with validation errors: ' . implode(', ', $errors)
             );
         }
 
-        $pa->setStatus('active');
-        $pa->setStartDate(new \DateTime());
+        $processingActivity->setStatus('active');
+        $processingActivity->setStartDate(new DateTime());
 
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(
             'processing_activity.activated',
             'ProcessingActivity',
-            $pa->getId(),
-            ['name' => $pa->getName()]
+            $processingActivity->getId(),
+            ['name' => $processingActivity->getName()]
         );
     }
 
     /**
      * Archive a processing activity (when processing ends)
      */
-    public function archive(ProcessingActivity $pa): void
+    public function archive(ProcessingActivity $processingActivity): void
     {
-        $pa->setStatus('archived');
-        $pa->setEndDate(new \DateTime());
+        $processingActivity->setStatus('archived');
+        $processingActivity->setEndDate(new DateTime());
 
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(
             'processing_activity.archived',
             'ProcessingActivity',
-            $pa->getId(),
-            ['name' => $pa->getName()]
+            $processingActivity->getId(),
+            ['name' => $processingActivity->getName()]
         );
     }
 
     /**
      * Clone a processing activity (for creating similar activities)
      */
-    public function clone(ProcessingActivity $source, string $newName): ProcessingActivity
+    public function clone(ProcessingActivity $processingActivity, string $newName): ProcessingActivity
     {
         $clone = new ProcessingActivity();
         $clone->setName($newName);
-        $clone->setDescription($source->getDescription());
-        $clone->setPurposes($source->getPurposes());
-        $clone->setDataSubjectCategories($source->getDataSubjectCategories());
-        $clone->setPersonalDataCategories($source->getPersonalDataCategories());
-        $clone->setProcessesSpecialCategories($source->getProcessesSpecialCategories());
-        $clone->setSpecialCategoriesDetails($source->getSpecialCategoriesDetails());
-        $clone->setProcessesCriminalData($source->getProcessesCriminalData());
-        $clone->setRecipientCategories($source->getRecipientCategories());
-        $clone->setHasThirdCountryTransfer($source->getHasThirdCountryTransfer());
-        $clone->setThirdCountries($source->getThirdCountries());
-        $clone->setTransferSafeguards($source->getTransferSafeguards());
-        $clone->setRetentionPeriod($source->getRetentionPeriod());
-        $clone->setRetentionPeriodDays($source->getRetentionPeriodDays());
-        $clone->setRetentionLegalBasis($source->getRetentionLegalBasis());
-        $clone->setTechnicalOrganizationalMeasures($source->getTechnicalOrganizationalMeasures());
-        $clone->setLegalBasis($source->getLegalBasis());
-        $clone->setLegalBasisDetails($source->getLegalBasisDetails());
-        $clone->setLegalBasisSpecialCategories($source->getLegalBasisSpecialCategories());
-        $clone->setResponsibleDepartment($source->getResponsibleDepartment());
-        $clone->setContactPerson($source->getContactPerson());
-        $clone->setDataProtectionOfficer($source->getDataProtectionOfficer());
-        $clone->setInvolvesProcessors($source->getInvolvesProcessors());
-        $clone->setProcessors($source->getProcessors());
-        $clone->setIsJointController($source->getIsJointController());
-        $clone->setJointControllerDetails($source->getJointControllerDetails());
-        $clone->setIsHighRisk($source->getIsHighRisk());
-        $clone->setRiskLevel($source->getRiskLevel());
-        $clone->setDataSources($source->getDataSources());
-        $clone->setHasAutomatedDecisionMaking($source->getHasAutomatedDecisionMaking());
-        $clone->setAutomatedDecisionMakingDetails($source->getAutomatedDecisionMakingDetails());
+        $clone->setDescription($processingActivity->getDescription());
+        $clone->setPurposes($processingActivity->getPurposes());
+        $clone->setDataSubjectCategories($processingActivity->getDataSubjectCategories());
+        $clone->setPersonalDataCategories($processingActivity->getPersonalDataCategories());
+        $clone->setProcessesSpecialCategories($processingActivity->getProcessesSpecialCategories());
+        $clone->setSpecialCategoriesDetails($processingActivity->getSpecialCategoriesDetails());
+        $clone->setProcessesCriminalData($processingActivity->getProcessesCriminalData());
+        $clone->setRecipientCategories($processingActivity->getRecipientCategories());
+        $clone->setHasThirdCountryTransfer($processingActivity->getHasThirdCountryTransfer());
+        $clone->setThirdCountries($processingActivity->getThirdCountries());
+        $clone->setTransferSafeguards($processingActivity->getTransferSafeguards());
+        $clone->setRetentionPeriod($processingActivity->getRetentionPeriod());
+        $clone->setRetentionPeriodDays($processingActivity->getRetentionPeriodDays());
+        $clone->setRetentionLegalBasis($processingActivity->getRetentionLegalBasis());
+        $clone->setTechnicalOrganizationalMeasures($processingActivity->getTechnicalOrganizationalMeasures());
+        $clone->setLegalBasis($processingActivity->getLegalBasis());
+        $clone->setLegalBasisDetails($processingActivity->getLegalBasisDetails());
+        $clone->setLegalBasisSpecialCategories($processingActivity->getLegalBasisSpecialCategories());
+        $clone->setResponsibleDepartment($processingActivity->getResponsibleDepartment());
+        $clone->setContactPerson($processingActivity->getContactPerson());
+        $clone->setDataProtectionOfficer($processingActivity->getDataProtectionOfficer());
+        $clone->setInvolvesProcessors($processingActivity->getInvolvesProcessors());
+        $clone->setProcessors($processingActivity->getProcessors());
+        $clone->setIsJointController($processingActivity->getIsJointController());
+        $clone->setJointControllerDetails($processingActivity->getJointControllerDetails());
+        $clone->setIsHighRisk($processingActivity->getIsHighRisk());
+        $clone->setRiskLevel($processingActivity->getRiskLevel());
+        $clone->setDataSources($processingActivity->getDataSources());
+        $clone->setHasAutomatedDecisionMaking($processingActivity->getHasAutomatedDecisionMaking());
+        $clone->setAutomatedDecisionMakingDetails($processingActivity->getAutomatedDecisionMakingDetails());
 
         // Clone controls
-        foreach ($source->getImplementedControls() as $control) {
-            $clone->addImplementedControl($control);
+        foreach ($processingActivity->getImplementedControls() as $implementedControl) {
+            $clone->addImplementedControl($implementedControl);
         }
 
         // Set status to draft
@@ -544,7 +545,7 @@ class ProcessingActivityService
     public function findProcessingSpecialCategories(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        return $this->repository->findProcessingSpecialCategories($tenant);
+        return $this->processingActivityRepository->findProcessingSpecialCategories($tenant);
     }
 
     /**
@@ -553,7 +554,7 @@ class ProcessingActivityService
     public function findWithThirdCountryTransfers(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        return $this->repository->findWithThirdCountryTransfers($tenant);
+        return $this->processingActivityRepository->findWithThirdCountryTransfers($tenant);
     }
 
     /**
@@ -563,7 +564,7 @@ class ProcessingActivityService
     {
         $all = $this->findAll();
 
-        if (empty($all)) {
+        if ($all === []) {
             return [
                 'overall_score' => 0,
                 'total_activities' => 0,

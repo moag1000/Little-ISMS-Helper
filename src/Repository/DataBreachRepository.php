@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use DateTime;
+use DateTimeInterface;
 use App\Entity\DataBreach;
 use App\Entity\Tenant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -100,7 +102,7 @@ class DataBreachRepository extends ServiceEntityRepository
      */
     public function findAuthorityNotificationOverdue(Tenant $tenant): array
     {
-        $deadline = new \DateTime('-72 hours');
+        $deadline = new DateTime('-72 hours');
 
         return $this->createQueryBuilder('db')
             ->innerJoin('db.incident', 'i')
@@ -169,9 +171,7 @@ class DataBreachRepository extends ServiceEntityRepository
     {
         $allBreaches = $this->findByTenant($tenant);
 
-        return array_filter($allBreaches, function(DataBreach $breach) {
-            return !$breach->isComplete();
-        });
+        return array_filter($allBreaches, fn(DataBreach $dataBreach): bool => !$dataBreach->isComplete());
     }
 
     /**
@@ -192,7 +192,7 @@ class DataBreachRepository extends ServiceEntityRepository
     /**
      * Find data breaches within a date range
      */
-    public function findByDateRange(Tenant $tenant, \DateTimeInterface $start, \DateTimeInterface $end): array
+    public function findByDateRange(Tenant $tenant, DateTimeInterface $start, DateTimeInterface $end): array
     {
         return $this->createQueryBuilder('db')
             ->innerJoin('db.incident', 'i')
@@ -211,11 +211,11 @@ class DataBreachRepository extends ServiceEntityRepository
      */
     public function getDashboardStatistics(Tenant $tenant): array
     {
-        $qb = $this->createQueryBuilder('db')
+        $queryBuilder = $this->createQueryBuilder('db')
             ->where('db.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
-        $total = (clone $qb)->select('COUNT(db.id)')->getQuery()->getSingleScalarResult();
+        $total = (clone $queryBuilder)->select('COUNT(db.id)')->getQuery()->getSingleScalarResult();
 
         $byStatus = $this->createQueryBuilder('db')
             ->select('db.status, COUNT(db.id) as count')
@@ -303,8 +303,8 @@ class DataBreachRepository extends ServiceEntityRepository
         // Calculate completeness
         $allBreaches = $this->findByTenant($tenant);
         $completenessSum = 0;
-        foreach ($allBreaches as $breach) {
-            $completenessSum += $breach->getCompletenessPercentage();
+        foreach ($allBreaches as $allBreach) {
+            $completenessSum += $allBreach->getCompletenessPercentage();
         }
         $completenessRate = $total > 0 ? (int) round($completenessSum / $total) : 0;
 
@@ -312,8 +312,6 @@ class DataBreachRepository extends ServiceEntityRepository
             'total' => (int) $total,
             'draft' => $statusCounts['draft'],
             'under_assessment' => $statusCounts['under_assessment'],
-            'authority_notified' => $statusCounts['authority_notified'],
-            'subjects_notified' => $statusCounts['subjects_notified'],
             'closed' => $statusCounts['closed'],
             'low_risk' => $riskCounts['low'],
             'medium_risk' => $riskCounts['medium'],
@@ -351,7 +349,7 @@ class DataBreachRepository extends ServiceEntityRepository
             return $prefix . '001';
         }
 
-        $lastNumber = (int) substr($lastBreach->getReferenceNumber(), -3);
+        $lastNumber = (int) substr((string) $lastBreach->getReferenceNumber(), -3);
         $nextNumber = $lastNumber + 1;
 
         return $prefix . str_pad((string) $nextNumber, 3, '0', STR_PAD_LEFT);
@@ -378,7 +376,7 @@ class DataBreachRepository extends ServiceEntityRepository
      */
     public function findRecent(Tenant $tenant, int $days = 30): array
     {
-        $since = new \DateTime(sprintf('-%d days', $days));
+        $since = new DateTime(sprintf('-%d days', $days));
 
         return $this->createQueryBuilder('db')
             ->where('db.tenant = :tenant')

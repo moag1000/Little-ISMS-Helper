@@ -13,9 +13,9 @@ use App\Repository\CorporateGovernanceRepository;
 class RiskService
 {
     public function __construct(
-        private RiskRepository $riskRepository,
-        private ?CorporateStructureService $corporateStructureService = null,
-        private ?CorporateGovernanceRepository $governanceRepository = null
+        private readonly RiskRepository $riskRepository,
+        private readonly ?CorporateStructureService $corporateStructureService = null,
+        private readonly ?CorporateGovernanceRepository $corporateGovernanceRepository = null
     ) {}
 
     /**
@@ -29,16 +29,16 @@ class RiskService
         $parent = $tenant->getParent();
 
         // No parent or no corporate structure service - return own risks only
-        if (!$parent || !$this->corporateStructureService || !$this->governanceRepository) {
+        if (!$parent instanceof Tenant || !$this->corporateStructureService instanceof CorporateStructureService || !$this->corporateGovernanceRepository) {
             return $this->riskRepository->findByTenant($tenant);
         }
 
         // Check governance model for risks
-        $governance = $this->governanceRepository->findGovernanceForScope($tenant, 'risk');
+        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'risk');
 
         if (!$governance) {
             // No specific governance for risks - use default
-            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
 
         $governanceModel = $governance?->getGovernanceModel();
@@ -62,7 +62,7 @@ class RiskService
     {
         $parent = $tenant->getParent();
 
-        if (!$parent || !$this->governanceRepository) {
+        if (!$parent instanceof Tenant || !$this->corporateGovernanceRepository) {
             return [
                 'hasParent' => false,
                 'canInherit' => false,
@@ -70,10 +70,10 @@ class RiskService
             ];
         }
 
-        $governance = $this->governanceRepository->findGovernanceForScope($tenant, 'risk');
+        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'risk');
 
         if (!$governance) {
-            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
 
         $governanceModel = $governance?->getGovernanceModel();
@@ -97,7 +97,7 @@ class RiskService
     {
         $riskTenant = $risk->getTenant();
 
-        if (!$riskTenant) {
+        if (!$riskTenant instanceof Tenant) {
             return false;
         }
 
@@ -153,7 +153,7 @@ class RiskService
     {
         $allRisks = $this->getRisksForTenant($tenant);
 
-        return array_filter($allRisks, function (Risk $risk) use ($threshold) {
+        return array_filter($allRisks, function (Risk $risk) use ($threshold): bool {
             $riskScore = ($risk->getProbability() ?? 0) * ($risk->getImpact() ?? 0);
             return $riskScore >= $threshold;
         });

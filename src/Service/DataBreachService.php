@@ -2,6 +2,10 @@
 
 namespace App\Service;
 
+use RuntimeException;
+use DateTimeInterface;
+use Deprecated;
+use DateTime;
 use App\Entity\DataBreach;
 use App\Entity\Incident;
 use App\Entity\ProcessingActivity;
@@ -19,11 +23,11 @@ use Psr\Log\LoggerInterface;
 class DataBreachService
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private DataBreachRepository $repository,
-        private TenantContext $tenantContext,
-        private AuditLogger $auditLogger,
-        private LoggerInterface $logger,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly DataBreachRepository $dataBreachRepository,
+        private readonly TenantContext $tenantContext,
+        private readonly AuditLogger $auditLogger,
+        private readonly LoggerInterface $logger,
     ) {
     }
 
@@ -34,21 +38,21 @@ class DataBreachService
     public function prepareNewBreach(): DataBreach
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
-            throw new \RuntimeException('No tenant context available');
+        if (!$tenant instanceof Tenant) {
+            throw new RuntimeException('No tenant context available');
         }
 
-        $referenceNumber = $this->repository->getNextReferenceNumber($tenant);
+        $referenceNumber = $this->dataBreachRepository->getNextReferenceNumber($tenant);
 
-        $breach = new DataBreach();
-        $breach->setTenant($tenant);
-        $breach->setReferenceNumber($referenceNumber);
-        $breach->setStatus('draft');
+        $dataBreach = new DataBreach();
+        $dataBreach->setTenant($tenant);
+        $dataBreach->setReferenceNumber($referenceNumber);
+        $dataBreach->setStatus('draft');
         // Defaults to false - user decides based on risk assessment
-        $breach->setRequiresAuthorityNotification(false);
-        $breach->setRequiresSubjectNotification(false);
+        $dataBreach->setRequiresAuthorityNotification(false);
+        $dataBreach->setRequiresSubjectNotification(false);
 
-        return $breach;
+        return $dataBreach;
     }
 
     /**
@@ -57,59 +61,59 @@ class DataBreachService
      */
     public function createFromIncident(
         Incident $incident,
-        User $createdBy,
+        User $user,
         ?ProcessingActivity $processingActivity = null
     ): DataBreach {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
-            throw new \RuntimeException('No tenant context available');
+        if (!$tenant instanceof Tenant) {
+            throw new RuntimeException('No tenant context available');
         }
 
         // Generate reference number
-        $referenceNumber = $this->repository->getNextReferenceNumber($tenant);
+        $referenceNumber = $this->dataBreachRepository->getNextReferenceNumber($tenant);
 
-        $breach = new DataBreach();
-        $breach->setTenant($tenant);
-        $breach->setReferenceNumber($referenceNumber);
-        $breach->setIncident($incident);
-        $breach->setCreatedBy($createdBy);
+        $dataBreach = new DataBreach();
+        $dataBreach->setTenant($tenant);
+        $dataBreach->setReferenceNumber($referenceNumber);
+        $dataBreach->setIncident($incident);
+        $dataBreach->setCreatedBy($user);
 
         // Pre-populate from incident (data reuse!)
-        $breach->setTitle(sprintf('Data Breach: %s', $incident->getTitle()));
-        $breach->setSeverity($incident->getSeverity());
+        $dataBreach->setTitle(sprintf('Data Breach: %s', $incident->getTitle()));
+        $dataBreach->setSeverity($incident->getSeverity());
 
         // Link processing activity if provided
-        if ($processingActivity) {
-            $breach->setProcessingActivity($processingActivity);
+        if ($processingActivity instanceof ProcessingActivity) {
+            $dataBreach->setProcessingActivity($processingActivity);
         }
 
         // Set defaults per Art. 33(1) - notification required unless unlikely to result in risk
-        $breach->setRequiresAuthorityNotification(true);
-        $breach->setRequiresSubjectNotification(false);
-        $breach->setStatus('draft');
+        $dataBreach->setRequiresAuthorityNotification(true);
+        $dataBreach->setRequiresSubjectNotification(false);
+        $dataBreach->setStatus('draft');
 
-        $this->entityManager->persist($breach);
+        $this->entityManager->persist($dataBreach);
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(
             'data_breach.created',
             DataBreach::class,
-            $breach->getId(),
+            $dataBreach->getId(),
             null,
             [
                 'reference_number' => $referenceNumber,
                 'incident_id' => $incident->getId(),
-                'created_by' => $createdBy->getEmail(),
+                'created_by' => $user->getEmail(),
             ]
         );
 
         $this->logger->info('Data breach created from incident', [
-            'breach_id' => $breach->getId(),
+            'breach_id' => $dataBreach->getId(),
             'reference_number' => $referenceNumber,
             'incident_id' => $incident->getId(),
         ]);
 
-        return $breach;
+        return $dataBreach;
     }
 
     /**
@@ -118,56 +122,54 @@ class DataBreachService
      * (e.g., accidental email to wrong recipient, paper documents lost)
      */
     public function createStandalone(
-        User $createdBy,
-        \DateTimeInterface $detectedAt,
+        User $user,
+        DateTimeInterface $detectedAt,
         ?ProcessingActivity $processingActivity = null
     ): DataBreach {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
-            throw new \RuntimeException('No tenant context available');
+        if (!$tenant instanceof Tenant) {
+            throw new RuntimeException('No tenant context available');
         }
 
         // Generate reference number
-        $referenceNumber = $this->repository->getNextReferenceNumber($tenant);
+        $referenceNumber = $this->dataBreachRepository->getNextReferenceNumber($tenant);
 
-        $breach = new DataBreach();
-        $breach->setTenant($tenant);
-        $breach->setReferenceNumber($referenceNumber);
-        $breach->setDetectedAt($detectedAt);
-        $breach->setCreatedBy($createdBy);
+        $dataBreach = new DataBreach();
+        $dataBreach->setTenant($tenant);
+        $dataBreach->setReferenceNumber($referenceNumber);
+        $dataBreach->setDetectedAt($detectedAt);
+        $dataBreach->setCreatedBy($user);
 
         // Link processing activity if provided
-        if ($processingActivity) {
-            $breach->setProcessingActivity($processingActivity);
+        if ($processingActivity instanceof ProcessingActivity) {
+            $dataBreach->setProcessingActivity($processingActivity);
         }
 
         // Set defaults per Art. 33(1)
-        $breach->setRequiresAuthorityNotification(true);
-        $breach->setRequiresSubjectNotification(false);
-        $breach->setStatus('draft');
+        $dataBreach->setRequiresAuthorityNotification(true);
+        $dataBreach->setRequiresSubjectNotification(false);
+        $dataBreach->setStatus('draft');
 
-        return $breach;
+        return $dataBreach;
     }
 
-    /**
-     * @deprecated Use createStandalone() or createFromIncident() instead
-     */
-    public function create(Incident $incident, User $createdBy): DataBreach
+    #[Deprecated(message: 'Use createStandalone() or createFromIncident() instead')]
+    public function create(Incident $incident, User $user): DataBreach
     {
-        return $this->createFromIncident($incident, $createdBy);
+        return $this->createFromIncident($incident, $user);
     }
 
     /**
      * Save (create or update) data breach
      */
-    public function update(DataBreach $breach, User $updatedBy): DataBreach
+    public function update(DataBreach $dataBreach, User $user): DataBreach
     {
-        $isNew = $breach->getId() === null;
-        $breach->setUpdatedBy($updatedBy);
+        $isNew = $dataBreach->getId() === null;
+        $dataBreach->setUpdatedBy($user);
 
         // Persist if new entity
         if ($isNew) {
-            $this->entityManager->persist($breach);
+            $this->entityManager->persist($dataBreach);
         }
 
         $this->entityManager->flush();
@@ -176,40 +178,40 @@ class DataBreachService
         $this->auditLogger->logCustom(
             $action,
             DataBreach::class,
-            $breach->getId(),
+            $dataBreach->getId(),
             null,
             [
-                'reference_number' => $breach->getReferenceNumber(),
-                'updated_by' => $updatedBy->getEmail(),
+                'reference_number' => $dataBreach->getReferenceNumber(),
+                'updated_by' => $user->getEmail(),
             ]
         );
 
         if ($isNew) {
             $this->logger->info('Data breach created (standalone)', [
-                'breach_id' => $breach->getId(),
-                'reference_number' => $breach->getReferenceNumber(),
+                'breach_id' => $dataBreach->getId(),
+                'reference_number' => $dataBreach->getReferenceNumber(),
             ]);
         }
 
-        return $breach;
+        return $dataBreach;
     }
 
     /**
      * Delete data breach
      */
-    public function delete(DataBreach $breach): void
+    public function delete(DataBreach $dataBreach): void
     {
-        $referenceNumber = $breach->getReferenceNumber();
+        $referenceNumber = $dataBreach->getReferenceNumber();
 
         $this->auditLogger->logCustom(
             'data_breach.deleted',
             DataBreach::class,
-            $breach->getId(),
+            $dataBreach->getId(),
             null,
             ['reference_number' => $referenceNumber]
         );
 
-        $this->entityManager->remove($breach);
+        $this->entityManager->remove($dataBreach);
         $this->entityManager->flush();
 
         $this->logger->info('Data breach deleted', [
@@ -225,42 +227,42 @@ class DataBreachService
      * Submit data breach for assessment
      * Validates completeness before submission
      */
-    public function submitForAssessment(DataBreach $breach, User $assessor): DataBreach
+    public function submitForAssessment(DataBreach $dataBreach, User $user): DataBreach
     {
-        if ($breach->getStatus() !== 'draft') {
-            throw new \RuntimeException('Only draft data breaches can be submitted for assessment');
+        if ($dataBreach->getStatus() !== 'draft') {
+            throw new RuntimeException('Only draft data breaches can be submitted for assessment');
         }
 
-        if (!$breach->isComplete()) {
-            throw new \RuntimeException(sprintf(
+        if (!$dataBreach->isComplete()) {
+            throw new RuntimeException(sprintf(
                 'Data breach must be complete before assessment (currently %d%% complete)',
-                $breach->getCompletenessPercentage()
+                $dataBreach->getCompletenessPercentage()
             ));
         }
 
-        $breach->setStatus('under_assessment');
-        $breach->setAssessor($assessor);
+        $dataBreach->setStatus('under_assessment');
+        $dataBreach->setAssessor($user);
 
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(
             'data_breach.submitted_for_assessment',
             DataBreach::class,
-            $breach->getId(),
+            $dataBreach->getId(),
             null,
             [
-                'reference_number' => $breach->getReferenceNumber(),
-                'assessor' => $assessor->getEmail(),
+                'reference_number' => $dataBreach->getReferenceNumber(),
+                'assessor' => $user->getEmail(),
             ]
         );
 
         $this->logger->info('Data breach submitted for assessment', [
-            'breach_id' => $breach->getId(),
-            'reference_number' => $breach->getReferenceNumber(),
-            'assessor_email' => $assessor->getEmail(),
+            'breach_id' => $dataBreach->getId(),
+            'reference_number' => $dataBreach->getReferenceNumber(),
+            'assessor_email' => $user->getEmail(),
         ]);
 
-        return $breach;
+        return $dataBreach;
     }
 
     /**
@@ -268,129 +270,129 @@ class DataBreachService
      * CRITICAL: Must be done within 72 hours of detection!
      */
     public function notifySupervisoryAuthority(
-        DataBreach $breach,
+        DataBreach $dataBreach,
         string $authorityName,
         string $notificationMethod,
         ?string $authorityReference = null,
         array $documents = []
     ): DataBreach {
-        if (!$breach->isRequiresAuthorityNotification()) {
-            throw new \RuntimeException('This data breach does not require supervisory authority notification');
+        if (!$dataBreach->isRequiresAuthorityNotification()) {
+            throw new RuntimeException('This data breach does not require supervisory authority notification');
         }
 
-        if ($breach->getSupervisoryAuthorityNotifiedAt()) {
-            throw new \RuntimeException('Supervisory authority has already been notified');
+        if ($dataBreach->getSupervisoryAuthorityNotifiedAt() instanceof DateTimeInterface) {
+            throw new RuntimeException('Supervisory authority has already been notified');
         }
 
-        $notifiedAt = new \DateTime();
-        $breach->setSupervisoryAuthorityNotifiedAt($notifiedAt);
-        $breach->setSupervisoryAuthorityName($authorityName);
-        $breach->setNotificationMethod($notificationMethod);
-        $breach->setSupervisoryAuthorityReference($authorityReference);
-        $breach->setNotificationDocuments($documents);
+        $notifiedAt = new DateTime();
+        $dataBreach->setSupervisoryAuthorityNotifiedAt($notifiedAt);
+        $dataBreach->setSupervisoryAuthorityName($authorityName);
+        $dataBreach->setNotificationMethod($notificationMethod);
+        $dataBreach->setSupervisoryAuthorityReference($authorityReference);
+        $dataBreach->setNotificationDocuments($documents);
 
         // Check if notification is overdue (>72h)
-        if ($breach->isAuthorityNotificationOverdue()) {
-            $hoursLate = abs($breach->getHoursUntilAuthorityDeadline());
+        if ($dataBreach->isAuthorityNotificationOverdue()) {
+            $hoursLate = abs($dataBreach->getHoursUntilAuthorityDeadline());
             $this->logger->warning('Supervisory authority notification is OVERDUE', [
-                'breach_id' => $breach->getId(),
-                'reference_number' => $breach->getReferenceNumber(),
+                'breach_id' => $dataBreach->getId(),
+                'reference_number' => $dataBreach->getReferenceNumber(),
                 'hours_late' => $hoursLate,
-                'detected_at' => $breach->getIncident()->getDetectedAt()->format('Y-m-d H:i:s'),
+                'detected_at' => $dataBreach->getIncident()->getDetectedAt()->format('Y-m-d H:i:s'),
                 'notified_at' => $notifiedAt->format('Y-m-d H:i:s'),
             ]);
         }
 
-        $breach->setStatus('authority_notified');
+        $dataBreach->setStatus('authority_notified');
 
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(
             'data_breach.authority_notified',
             DataBreach::class,
-            $breach->getId(),
+            $dataBreach->getId(),
             null,
             [
-                'reference_number' => $breach->getReferenceNumber(),
+                'reference_number' => $dataBreach->getReferenceNumber(),
                 'authority_name' => $authorityName,
                 'notification_method' => $notificationMethod,
                 'notified_at' => $notifiedAt->format('Y-m-d H:i:s'),
-                'hours_until_deadline' => $breach->getHoursUntilAuthorityDeadline(),
-                'overdue' => $breach->isAuthorityNotificationOverdue(),
+                'hours_until_deadline' => $dataBreach->getHoursUntilAuthorityDeadline(),
+                'overdue' => $dataBreach->isAuthorityNotificationOverdue(),
             ]
         );
 
         $this->logger->info('Supervisory authority notified of data breach', [
-            'breach_id' => $breach->getId(),
-            'reference_number' => $breach->getReferenceNumber(),
+            'breach_id' => $dataBreach->getId(),
+            'reference_number' => $dataBreach->getReferenceNumber(),
             'authority_name' => $authorityName,
-            'hours_until_deadline' => $breach->getHoursUntilAuthorityDeadline(),
+            'hours_until_deadline' => $dataBreach->getHoursUntilAuthorityDeadline(),
         ]);
 
-        return $breach;
+        return $dataBreach;
     }
 
     /**
      * Record delayed notification reason (Art. 33(1) GDPR)
      * Required when notification exceeds 72-hour deadline
      */
-    public function recordNotificationDelay(DataBreach $breach, string $delayReason): DataBreach
+    public function recordNotificationDelay(DataBreach $dataBreach, string $delayReason): DataBreach
     {
-        if (!$breach->isAuthorityNotificationOverdue()) {
-            throw new \RuntimeException('Notification is not overdue - delay reason not needed');
+        if (!$dataBreach->isAuthorityNotificationOverdue()) {
+            throw new RuntimeException('Notification is not overdue - delay reason not needed');
         }
 
-        $breach->setNotificationDelayReason($delayReason);
+        $dataBreach->setNotificationDelayReason($delayReason);
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(
             'data_breach.notification_delay_recorded',
             DataBreach::class,
-            $breach->getId(),
+            $dataBreach->getId(),
             null,
             [
-                'reference_number' => $breach->getReferenceNumber(),
+                'reference_number' => $dataBreach->getReferenceNumber(),
                 'delay_reason' => $delayReason,
-                'hours_late' => abs($breach->getHoursUntilAuthorityDeadline()),
+                'hours_late' => abs($dataBreach->getHoursUntilAuthorityDeadline()),
             ]
         );
 
-        return $breach;
+        return $dataBreach;
     }
 
     /**
      * Notify data subjects (Art. 34 GDPR)
      */
     public function notifyDataSubjects(
-        DataBreach $breach,
+        DataBreach $dataBreach,
         string $notificationMethod,
         int $subjectsNotified,
         array $documents = []
     ): DataBreach {
-        if (!$breach->isRequiresSubjectNotification()) {
-            throw new \RuntimeException('This data breach does not require data subject notification');
+        if (!$dataBreach->isRequiresSubjectNotification()) {
+            throw new RuntimeException('This data breach does not require data subject notification');
         }
 
-        if ($breach->getDataSubjectsNotifiedAt()) {
-            throw new \RuntimeException('Data subjects have already been notified');
+        if ($dataBreach->getDataSubjectsNotifiedAt() instanceof DateTimeInterface) {
+            throw new RuntimeException('Data subjects have already been notified');
         }
 
-        $notifiedAt = new \DateTime();
-        $breach->setDataSubjectsNotifiedAt($notifiedAt);
-        $breach->setSubjectNotificationMethod($notificationMethod);
-        $breach->setSubjectsNotified($subjectsNotified);
-        $breach->setSubjectNotificationDocuments($documents);
-        $breach->setStatus('subjects_notified');
+        $notifiedAt = new DateTime();
+        $dataBreach->setDataSubjectsNotifiedAt($notifiedAt);
+        $dataBreach->setSubjectNotificationMethod($notificationMethod);
+        $dataBreach->setSubjectsNotified($subjectsNotified);
+        $dataBreach->setSubjectNotificationDocuments($documents);
+        $dataBreach->setStatus('subjects_notified');
 
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(
             'data_breach.subjects_notified',
             DataBreach::class,
-            $breach->getId(),
+            $dataBreach->getId(),
             null,
             [
-                'reference_number' => $breach->getReferenceNumber(),
+                'reference_number' => $dataBreach->getReferenceNumber(),
                 'notification_method' => $notificationMethod,
                 'subjects_notified' => $subjectsNotified,
                 'notified_at' => $notifiedAt->format('Y-m-d H:i:s'),
@@ -398,109 +400,109 @@ class DataBreachService
         );
 
         $this->logger->info('Data subjects notified of data breach', [
-            'breach_id' => $breach->getId(),
-            'reference_number' => $breach->getReferenceNumber(),
+            'breach_id' => $dataBreach->getId(),
+            'reference_number' => $dataBreach->getReferenceNumber(),
             'subjects_notified' => $subjectsNotified,
         ]);
 
-        return $breach;
+        return $dataBreach;
     }
 
     /**
      * Record exemption from data subject notification (Art. 34(3) GDPR)
      */
     public function recordSubjectNotificationExemption(
-        DataBreach $breach,
+        DataBreach $dataBreach,
         string $exemptionReason
     ): DataBreach {
-        $breach->setRequiresSubjectNotification(false);
-        $breach->setNoSubjectNotificationReason($exemptionReason);
+        $dataBreach->setRequiresSubjectNotification(false);
+        $dataBreach->setNoSubjectNotificationReason($exemptionReason);
 
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(
             'data_breach.subject_notification_exemption',
             DataBreach::class,
-            $breach->getId(),
+            $dataBreach->getId(),
             null,
             [
-                'reference_number' => $breach->getReferenceNumber(),
+                'reference_number' => $dataBreach->getReferenceNumber(),
                 'exemption_reason' => $exemptionReason,
             ]
         );
 
-        return $breach;
+        return $dataBreach;
     }
 
     /**
      * Close data breach investigation
      */
-    public function close(DataBreach $breach, User $closedBy): DataBreach
+    public function close(DataBreach $dataBreach, User $user): DataBreach
     {
-        if (!in_array($breach->getStatus(), ['authority_notified', 'subjects_notified'])) {
-            throw new \RuntimeException('Data breach must be in authority_notified or subjects_notified status to close');
+        if (!in_array($dataBreach->getStatus(), ['authority_notified', 'subjects_notified'])) {
+            throw new RuntimeException('Data breach must be in authority_notified or subjects_notified status to close');
         }
 
         // Validate required notifications are complete
-        if ($breach->isRequiresAuthorityNotification() && !$breach->getSupervisoryAuthorityNotifiedAt()) {
-            throw new \RuntimeException('Supervisory authority notification required before closing');
+        if ($dataBreach->isRequiresAuthorityNotification() && !$dataBreach->getSupervisoryAuthorityNotifiedAt()) {
+            throw new RuntimeException('Supervisory authority notification required before closing');
         }
 
-        if ($breach->isRequiresSubjectNotification() && !$breach->getDataSubjectsNotifiedAt()) {
-            throw new \RuntimeException('Data subject notification required before closing');
+        if ($dataBreach->isRequiresSubjectNotification() && !$dataBreach->getDataSubjectsNotifiedAt()) {
+            throw new RuntimeException('Data subject notification required before closing');
         }
 
-        $breach->setStatus('closed');
-        $breach->setUpdatedBy($closedBy);
+        $dataBreach->setStatus('closed');
+        $dataBreach->setUpdatedBy($user);
 
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(
             'data_breach.closed',
             DataBreach::class,
-            $breach->getId(),
+            $dataBreach->getId(),
             null,
             [
-                'reference_number' => $breach->getReferenceNumber(),
-                'closed_by' => $closedBy->getEmail(),
+                'reference_number' => $dataBreach->getReferenceNumber(),
+                'closed_by' => $user->getEmail(),
             ]
         );
 
         $this->logger->info('Data breach closed', [
-            'breach_id' => $breach->getId(),
-            'reference_number' => $breach->getReferenceNumber(),
+            'breach_id' => $dataBreach->getId(),
+            'reference_number' => $dataBreach->getReferenceNumber(),
         ]);
 
-        return $breach;
+        return $dataBreach;
     }
 
     /**
      * Reopen closed data breach
      */
-    public function reopen(DataBreach $breach, User $reopenedBy, string $reopenReason): DataBreach
+    public function reopen(DataBreach $dataBreach, User $user, string $reopenReason): DataBreach
     {
-        if ($breach->getStatus() !== 'closed') {
-            throw new \RuntimeException('Only closed data breaches can be reopened');
+        if ($dataBreach->getStatus() !== 'closed') {
+            throw new RuntimeException('Only closed data breaches can be reopened');
         }
 
-        $breach->setStatus('under_assessment');
-        $breach->setUpdatedBy($reopenedBy);
+        $dataBreach->setStatus('under_assessment');
+        $dataBreach->setUpdatedBy($user);
 
         $this->entityManager->flush();
 
         $this->auditLogger->logCustom(
             'data_breach.reopened',
             DataBreach::class,
-            $breach->getId(),
+            $dataBreach->getId(),
             null,
             [
-                'reference_number' => $breach->getReferenceNumber(),
-                'reopened_by' => $reopenedBy->getEmail(),
+                'reference_number' => $dataBreach->getReferenceNumber(),
+                'reopened_by' => $user->getEmail(),
                 'reopen_reason' => $reopenReason,
             ]
         );
 
-        return $breach;
+        return $dataBreach;
     }
 
     // =========================================================================
@@ -510,46 +512,46 @@ class DataBreachService
     public function findAll(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant instanceof Tenant) {
             return [];
         }
 
-        return $this->repository->findByTenant($tenant);
+        return $this->dataBreachRepository->findByTenant($tenant);
     }
 
     public function findById(int $id): ?DataBreach
     {
-        return $this->repository->find($id);
+        return $this->dataBreachRepository->find($id);
     }
 
     public function findByStatus(string $status): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant instanceof Tenant) {
             return [];
         }
 
-        return $this->repository->findByStatus($tenant, $status);
+        return $this->dataBreachRepository->findByStatus($tenant, $status);
     }
 
     public function findByRiskLevel(string $riskLevel): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant instanceof Tenant) {
             return [];
         }
 
-        return $this->repository->findByRiskLevel($tenant, $riskLevel);
+        return $this->dataBreachRepository->findByRiskLevel($tenant, $riskLevel);
     }
 
     public function findHighRisk(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant instanceof Tenant) {
             return [];
         }
 
-        return $this->repository->findHighRisk($tenant);
+        return $this->dataBreachRepository->findHighRisk($tenant);
     }
 
     /**
@@ -558,11 +560,11 @@ class DataBreachService
     public function findRequiringAuthorityNotification(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant instanceof Tenant) {
             return [];
         }
 
-        return $this->repository->findRequiringAuthorityNotification($tenant);
+        return $this->dataBreachRepository->findRequiringAuthorityNotification($tenant);
     }
 
     /**
@@ -571,61 +573,61 @@ class DataBreachService
     public function findAuthorityNotificationOverdue(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant instanceof Tenant) {
             return [];
         }
 
-        return $this->repository->findAuthorityNotificationOverdue($tenant);
+        return $this->dataBreachRepository->findAuthorityNotificationOverdue($tenant);
     }
 
     public function findRequiringSubjectNotification(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant instanceof Tenant) {
             return [];
         }
 
-        return $this->repository->findRequiringSubjectNotification($tenant);
+        return $this->dataBreachRepository->findRequiringSubjectNotification($tenant);
     }
 
     public function findWithSpecialCategories(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant instanceof Tenant) {
             return [];
         }
 
-        return $this->repository->findWithSpecialCategories($tenant);
+        return $this->dataBreachRepository->findWithSpecialCategories($tenant);
     }
 
     public function findIncomplete(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant instanceof Tenant) {
             return [];
         }
 
-        return $this->repository->findIncomplete($tenant);
+        return $this->dataBreachRepository->findIncomplete($tenant);
     }
 
     public function findByProcessingActivity(ProcessingActivity $processingActivity): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant instanceof Tenant) {
             return [];
         }
 
-        return $this->repository->findByProcessingActivity($tenant, $processingActivity->getId());
+        return $this->dataBreachRepository->findByProcessingActivity($tenant, $processingActivity->getId());
     }
 
     public function findRecent(int $days = 30): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant instanceof Tenant) {
             return [];
         }
 
-        return $this->repository->findRecent($tenant, $days);
+        return $this->dataBreachRepository->findRecent($tenant, $days);
     }
 
     // =========================================================================
@@ -638,11 +640,11 @@ class DataBreachService
     public function getDashboardStatistics(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant instanceof Tenant) {
             return $this->getEmptyStatistics();
         }
 
-        return $this->repository->getDashboardStatistics($tenant);
+        return $this->dataBreachRepository->getDashboardStatistics($tenant);
     }
 
     /**
@@ -651,7 +653,7 @@ class DataBreachService
     public function calculateComplianceScore(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant instanceof Tenant) {
             return [
                 'overall_score' => 0,
                 'notification_compliance' => 0,
@@ -662,9 +664,9 @@ class DataBreachService
             ];
         }
 
-        $statistics = $this->repository->getDashboardStatistics($tenant);
-        $allBreaches = $this->repository->findByTenant($tenant);
-        $overdueCount = count($this->repository->findAuthorityNotificationOverdue($tenant));
+        $statistics = $this->dataBreachRepository->getDashboardStatistics($tenant);
+        $allBreaches = $this->dataBreachRepository->findByTenant($tenant);
+        $overdueCount = count($this->dataBreachRepository->findAuthorityNotificationOverdue($tenant));
 
         $total = count($allBreaches);
         if ($total === 0) {
@@ -707,7 +709,7 @@ class DataBreachService
             'completeness_score' => (int) round($completenessScore),
             'total_breaches' => $total,
             'overdue_notifications' => $overdueCount,
-            'total_affected_subjects' => $this->repository->getTotalAffectedDataSubjects($tenant),
+            'total_affected_subjects' => $this->dataBreachRepository->getTotalAffectedDataSubjects($tenant),
         ];
     }
 
@@ -717,14 +719,14 @@ class DataBreachService
     public function getActionItems(): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant instanceof Tenant) {
             return [];
         }
 
         $items = [];
 
         // CRITICAL: Overdue authority notifications
-        $overdueBreaches = $this->repository->findAuthorityNotificationOverdue($tenant);
+        $overdueBreaches = $this->dataBreachRepository->findAuthorityNotificationOverdue($tenant);
         foreach ($overdueBreaches as $breach) {
             $items[] = [
                 'priority' => 'critical',
@@ -740,7 +742,7 @@ class DataBreachService
         }
 
         // HIGH: Pending authority notifications (within 72h)
-        $pendingAuthority = $this->repository->findRequiringAuthorityNotification($tenant);
+        $pendingAuthority = $this->dataBreachRepository->findRequiringAuthorityNotification($tenant);
         foreach ($pendingAuthority as $breach) {
             if (!in_array($breach->getId(), array_column($overdueBreaches, 'id'))) {
                 $hoursRemaining = $breach->getHoursUntilAuthorityDeadline();
@@ -759,7 +761,7 @@ class DataBreachService
         }
 
         // MEDIUM: Pending subject notifications
-        $pendingSubjects = $this->repository->findRequiringSubjectNotification($tenant);
+        $pendingSubjects = $this->dataBreachRepository->findRequiringSubjectNotification($tenant);
         foreach ($pendingSubjects as $breach) {
             $items[] = [
                 'priority' => 'medium',
@@ -771,26 +773,24 @@ class DataBreachService
         }
 
         // LOW: Incomplete breaches
-        $incompleteBreaches = $this->repository->findIncomplete($tenant);
-        foreach ($incompleteBreaches as $breach) {
+        $incompleteBreaches = $this->dataBreachRepository->findIncomplete($tenant);
+        foreach ($incompleteBreaches as $incompleteBreach) {
             $items[] = [
                 'priority' => 'low',
                 'type' => 'incomplete',
-                'breach_id' => $breach->getId(),
-                'reference_number' => $breach->getReferenceNumber(),
+                'breach_id' => $incompleteBreach->getId(),
+                'reference_number' => $incompleteBreach->getReferenceNumber(),
                 'title' => sprintf(
                     'Incomplete data breach (%d%% complete)',
-                    $breach->getCompletenessPercentage()
+                    $incompleteBreach->getCompletenessPercentage()
                 ),
-                'completeness' => $breach->getCompletenessPercentage(),
+                'completeness' => $incompleteBreach->getCompletenessPercentage(),
             ];
         }
 
         // Sort by priority: critical → high → medium → low
         $priorityOrder = ['critical' => 1, 'high' => 2, 'medium' => 3, 'low' => 4];
-        usort($items, function($a, $b) use ($priorityOrder) {
-            return $priorityOrder[$a['priority']] <=> $priorityOrder[$b['priority']];
-        });
+        usort($items, fn(array $a, array $b): int => $priorityOrder[$a['priority']] <=> $priorityOrder[$b['priority']]);
 
         return $items;
     }
@@ -801,8 +801,6 @@ class DataBreachService
             'total' => 0,
             'draft' => 0,
             'under_assessment' => 0,
-            'authority_notified' => 0,
-            'subjects_notified' => 0,
             'closed' => 0,
             'low_risk' => 0,
             'medium_risk' => 0,

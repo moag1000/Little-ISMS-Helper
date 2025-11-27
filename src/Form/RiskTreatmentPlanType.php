@@ -145,9 +145,7 @@ class RiskTreatmentPlanType extends AbstractType
             ->add('responsiblePerson', EntityType::class, [
                 'label' => 'risk_treatment_plan.field.responsible_person',
                 'class' => User::class,
-                'choice_label' => function(User $user) {
-                    return $user->getFullName() . ' (' . $user->getEmail() . ')';
-                },
+                'choice_label' => fn(User $user): string => $user->getFullName() . ' (' . $user->getEmail() . ')',
                 'placeholder' => 'risk_treatment_plan.placeholder.responsible_person',
                 'required' => false,
                 'attr' => [
@@ -158,9 +156,7 @@ class RiskTreatmentPlanType extends AbstractType
             ->add('controls', EntityType::class, [
                 'label' => 'risk_treatment_plan.field.controls',
                 'class' => Control::class,
-                'choice_label' => function(Control $control) {
-                    return $control->getControlId() . ': ' . $control->getName();
-                },
+                'choice_label' => fn(Control $control): string => $control->getControlId() . ': ' . $control->getName(),
                 'multiple' => true,
                 'required' => false,
                 'attr' => [

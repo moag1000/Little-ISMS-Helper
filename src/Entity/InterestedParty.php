@@ -2,10 +2,9 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Metadata\ApiFilter;
+use DateTimeInterface;
+use DateTimeImmutable;
+use DateTime;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -136,14 +135,14 @@ class InterestedParty
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['interested_party:read', 'interested_party:write'])]
-    private ?\DateTimeInterface $lastCommunication = null;
+    private ?DateTimeInterface $lastCommunication = null;
 
     /**
      * Next planned communication
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['interested_party:read', 'interested_party:write'])]
-    private ?\DateTimeInterface $nextCommunication = null;
+    private ?DateTimeInterface $nextCommunication = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['interested_party:read', 'interested_party:write'])]
@@ -166,24 +165,24 @@ class InterestedParty
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['interested_party:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['interested_party:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
     public function updateTimestamps(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
-        if ($this->createdAt === null) {
-            $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
+        if (!$this->createdAt instanceof DateTimeInterface) {
+            $this->createdAt = new DateTimeImmutable();
         }
     }
 
@@ -335,23 +334,23 @@ class InterestedParty
         return $this;
     }
 
-    public function getLastCommunication(): ?\DateTimeInterface
+    public function getLastCommunication(): ?DateTimeInterface
     {
         return $this->lastCommunication;
     }
 
-    public function setLastCommunication(?\DateTimeInterface $lastCommunication): static
+    public function setLastCommunication(?DateTimeInterface $lastCommunication): static
     {
         $this->lastCommunication = $lastCommunication;
         return $this;
     }
 
-    public function getNextCommunication(): ?\DateTimeInterface
+    public function getNextCommunication(): ?DateTimeInterface
     {
         return $this->nextCommunication;
     }
 
-    public function setNextCommunication(?\DateTimeInterface $nextCommunication): static
+    public function setNextCommunication(?DateTimeInterface $nextCommunication): static
     {
         $this->nextCommunication = $nextCommunication;
         return $this;
@@ -390,23 +389,23 @@ class InterestedParty
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -417,11 +416,11 @@ class InterestedParty
      */
     public function isCommunicationOverdue(): bool
     {
-        if (!$this->nextCommunication) {
+        if (!$this->nextCommunication instanceof DateTimeInterface) {
             return false;
         }
 
-        return $this->nextCommunication < new \DateTime();
+        return $this->nextCommunication < new DateTime();
     }
 
     /**
@@ -429,7 +428,7 @@ class InterestedParty
      */
     public function getCommunicationStatus(): string
     {
-        if ($this->lastCommunication === null) {
+        if (!$this->lastCommunication instanceof DateTimeInterface) {
             return 'never_communicated';
         }
 
@@ -437,8 +436,8 @@ class InterestedParty
             return 'overdue';
         }
 
-        if ($this->nextCommunication) {
-            $sevenDaysFromNow = new \DateTime('+7 days');
+        if ($this->nextCommunication instanceof DateTimeInterface) {
+            $sevenDaysFromNow = new DateTime('+7 days');
             if ($this->nextCommunication < $sevenDaysFromNow) {
                 return 'due_soon';
             }
@@ -460,15 +459,19 @@ class InterestedParty
         }
 
         // Communication recency (30%)
-        if ($this->lastCommunication) {
-            $daysSinceLastComm = (new \DateTime())->diff($this->lastCommunication)->days;
-            if ($daysSinceLastComm <= 30) $score += 30;
-            elseif ($daysSinceLastComm <= 90) $score += 20;
-            elseif ($daysSinceLastComm <= 180) $score += 10;
+        if ($this->lastCommunication instanceof DateTimeInterface) {
+            $daysSinceLastComm = new DateTime()->diff($this->lastCommunication)->days;
+            if ($daysSinceLastComm <= 30) {
+                $score += 30;
+            } elseif ($daysSinceLastComm <= 90) {
+                $score += 20;
+            } elseif ($daysSinceLastComm <= 180) {
+                $score += 10;
+            }
         }
 
         // No outstanding issues (20%)
-        if (empty($this->issues)) {
+        if (in_array($this->issues, [null, '', '0'], true)) {
             $score += 20;
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use Exception;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ComplianceMappingRepository;
@@ -20,73 +21,72 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class MappingQualitySanityCheckCommand extends Command
 {
     public function __construct(
-        private ComplianceFrameworkRepository $frameworkRepository,
-        private ComplianceRequirementRepository $requirementRepository,
-        private ComplianceMappingRepository $mappingRepository,
-        private MappingGapItemRepository $gapItemRepository,
-        private Connection $connection
+        private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
+        private readonly ComplianceRequirementRepository $complianceRequirementRepository,
+        private readonly ComplianceMappingRepository $complianceMappingRepository,
+        private readonly MappingGapItemRepository $mappingGapItemRepository,
+        private readonly Connection $connection
     ) {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
-        $io->title('Mapping Quality Analysis - Sanity Check');
-        $io->text('Verifying system prerequisites...');
-        $io->newLine();
+        $symfonyStyle->title('Mapping Quality Analysis - Sanity Check');
+        $symfonyStyle->text('Verifying system prerequisites...');
+        $symfonyStyle->newLine();
 
         $allChecks = true;
 
         // Check 1: Database tables exist
-        $io->section('1. Database Schema');
-        $allChecks = $this->checkDatabaseSchema($io) && $allChecks;
-        $io->newLine();
+        $symfonyStyle->section('1. Database Schema');
+        $allChecks = $this->checkDatabaseSchema($symfonyStyle) && $allChecks;
+        $symfonyStyle->newLine();
 
         // Check 2: Frameworks
-        $io->section('2. Compliance Frameworks');
-        $allChecks = $this->checkFrameworks($io) && $allChecks;
-        $io->newLine();
+        $symfonyStyle->section('2. Compliance Frameworks');
+        $allChecks = $this->checkFrameworks($symfonyStyle) && $allChecks;
+        $symfonyStyle->newLine();
 
         // Check 3: Requirements
-        $io->section('3. Compliance Requirements');
-        $allChecks = $this->checkRequirements($io) && $allChecks;
-        $io->newLine();
+        $symfonyStyle->section('3. Compliance Requirements');
+        $allChecks = $this->checkRequirements($symfonyStyle) && $allChecks;
+        $symfonyStyle->newLine();
 
         // Check 4: Mappings
-        $io->section('4. Compliance Mappings');
-        $allChecks = $this->checkMappings($io) && $allChecks;
-        $io->newLine();
+        $symfonyStyle->section('4. Compliance Mappings');
+        $allChecks = $this->checkMappings($symfonyStyle) && $allChecks;
+        $symfonyStyle->newLine();
 
         // Check 5: Migration status
-        $io->section('5. Quality Analysis Fields');
-        $allChecks = $this->checkQualityFields($io) && $allChecks;
-        $io->newLine();
+        $symfonyStyle->section('5. Quality Analysis Fields');
+        $allChecks = $this->checkQualityFields($symfonyStyle) && $allChecks;
+        $symfonyStyle->newLine();
 
         // Summary
-        $io->section('Summary');
+        $symfonyStyle->section('Summary');
         if ($allChecks) {
-            $io->success('✅ All checks passed! System is ready for mapping quality analysis.');
-            $io->text([
+            $symfonyStyle->success('✅ All checks passed! System is ready for mapping quality analysis.');
+            $symfonyStyle->text([
                 'Next steps:',
                 '  1. Run analysis: php bin/console app:analyze-mapping-quality',
                 '  2. Open dashboard: /compliance/mapping-quality/',
             ]);
             return Command::SUCCESS;
-        } else {
-            $io->error('❌ Some checks failed. Please resolve the issues above before running analysis.');
-            $io->text([
-                'Common fixes:',
-                '  - Run migration: php bin/console doctrine:migrations:migrate',
-                '  - Import frameworks: php bin/console app:import-framework ISO27001',
-                '  - Create mappings: php bin/console app:create-cross-framework-mappings',
-            ]);
-            return Command::FAILURE;
         }
+        $symfonyStyle->error('❌ Some checks failed. Please resolve the issues above before running analysis.');
+        $symfonyStyle->text([
+            'Common fixes:',
+            '  - Run migration: php bin/console doctrine:migrations:migrate',
+            '  - Import frameworks: php bin/console app:import-framework ISO27001',
+            '  - Create mappings: php bin/console app:create-cross-framework-mappings',
+        ]);
+        return Command::FAILURE;
     }
 
-    private function checkDatabaseSchema(SymfonyStyle $io): bool
+    private function checkDatabaseSchema(SymfonyStyle $symfonyStyle): bool
     {
         $requiredTables = [
             'compliance_framework',
@@ -99,61 +99,61 @@ class MappingQualitySanityCheckCommand extends Command
         $existingTables = $schemaManager->listTableNames();
 
         $allTablesExist = true;
-        foreach ($requiredTables as $table) {
-            if (in_array($table, $existingTables)) {
-                $io->writeln("  ✅ Table <info>$table</info> exists");
+        foreach ($requiredTables as $requiredTable) {
+            if (in_array($requiredTable, $existingTables)) {
+                $symfonyStyle->writeln("  ✅ Table <info>{$requiredTable}</info> exists");
             } else {
-                $io->writeln("  ❌ Table <error>$table</error> NOT FOUND");
+                $symfonyStyle->writeln("  ❌ Table <error>{$requiredTable}</error> NOT FOUND");
                 $allTablesExist = false;
             }
         }
 
         if (!$allTablesExist) {
-            $io->warning('Missing tables detected. Run: php bin/console doctrine:migrations:migrate');
+            $symfonyStyle->warning('Missing tables detected. Run: php bin/console doctrine:migrations:migrate');
         }
 
         return $allTablesExist;
     }
 
-    private function checkFrameworks(SymfonyStyle $io): bool
+    private function checkFrameworks(SymfonyStyle $symfonyStyle): bool
     {
-        $count = $this->frameworkRepository->count([]);
+        $count = $this->complianceFrameworkRepository->count([]);
 
         if ($count === 0) {
-            $io->error("❌ No frameworks found (0)");
-            $io->text('  Fix: Import frameworks with: php bin/console app:import-framework ISO27001');
+            $symfonyStyle->error("❌ No frameworks found (0)");
+            $symfonyStyle->text('  Fix: Import frameworks with: php bin/console app:import-framework ISO27001');
             return false;
         }
 
-        $io->success("✅ Frameworks found: $count");
+        $symfonyStyle->success("✅ Frameworks found: $count");
 
         // Show available frameworks
-        $frameworks = $this->frameworkRepository->findAll();
+        $frameworks = $this->complianceFrameworkRepository->findAll();
         $frameworkCodes = array_map(fn($f) => $f->getCode(), $frameworks);
-        $io->text('  Available: ' . implode(', ', array_slice($frameworkCodes, 0, 10)));
+        $symfonyStyle->text('  Available: ' . implode(', ', array_slice($frameworkCodes, 0, 10)));
 
         if (count($frameworkCodes) > 10) {
-            $io->text('  ... and ' . (count($frameworkCodes) - 10) . ' more');
+            $symfonyStyle->text('  ... and ' . (count($frameworkCodes) - 10) . ' more');
         }
 
         return true;
     }
 
-    private function checkRequirements(SymfonyStyle $io): bool
+    private function checkRequirements(SymfonyStyle $symfonyStyle): bool
     {
-        $count = $this->requirementRepository->count([]);
+        $count = $this->complianceRequirementRepository->count([]);
 
         if ($count === 0) {
-            $io->error("❌ No requirements found (0)");
-            $io->text('  Fix: Requirements are usually imported with frameworks');
+            $symfonyStyle->error("❌ No requirements found (0)");
+            $symfonyStyle->text('  Fix: Requirements are usually imported with frameworks');
             return false;
         }
 
         if ($count < 50) {
-            $io->warning("⚠️  Only $count requirements found (minimum 50 recommended)");
-            $io->text('  Consider importing more frameworks for better analysis');
+            $symfonyStyle->warning("⚠️  Only $count requirements found (minimum 50 recommended)");
+            $symfonyStyle->text('  Consider importing more frameworks for better analysis');
         } else {
-            $io->success("✅ Requirements found: $count");
+            $symfonyStyle->success("✅ Requirements found: $count");
         }
 
         // Show distribution by framework
@@ -167,30 +167,30 @@ class MappingQualitySanityCheckCommand extends Command
         ";
         $result = $this->connection->fetchAllAssociative($sql);
 
-        if (!empty($result)) {
-            $io->text('  Top frameworks by requirement count:');
+        if ($result !== []) {
+            $symfonyStyle->text('  Top frameworks by requirement count:');
             foreach ($result as $row) {
-                $io->text(sprintf('    - %s: %d requirements', $row['code'], $row['req_count']));
+                $symfonyStyle->text(sprintf('    - %s: %d requirements', $row['code'], $row['req_count']));
             }
         }
 
         return $count > 0;
     }
 
-    private function checkMappings(SymfonyStyle $io): bool
+    private function checkMappings(SymfonyStyle $symfonyStyle): bool
     {
-        $count = $this->mappingRepository->count([]);
+        $count = $this->complianceMappingRepository->count([]);
 
         if ($count === 0) {
-            $io->error("❌ No mappings found (0)");
-            $io->text('  Fix: Create mappings with: php bin/console app:create-cross-framework-mappings');
+            $symfonyStyle->error("❌ No mappings found (0)");
+            $symfonyStyle->text('  Fix: Create mappings with: php bin/console app:create-cross-framework-mappings');
             return false;
         }
 
         if ($count < 10) {
-            $io->warning("⚠️  Only $count mappings found (minimum 10 recommended)");
+            $symfonyStyle->warning("⚠️  Only $count mappings found (minimum 10 recommended)");
         } else {
-            $io->success("✅ Mappings found: $count");
+            $symfonyStyle->success("✅ Mappings found: $count");
         }
 
         // Show mapping statistics
@@ -203,7 +203,7 @@ class MappingQualitySanityCheckCommand extends Command
         ";
         $stats = $this->connection->fetchAssociative($sql);
 
-        $io->text(sprintf(
+        $symfonyStyle->text(sprintf(
             '  Status: %d analyzed, %d unanalyzed',
             $stats['analyzed'] ?? 0,
             $stats['unanalyzed'] ?? 0
@@ -212,7 +212,7 @@ class MappingQualitySanityCheckCommand extends Command
         return $count > 0;
     }
 
-    private function checkQualityFields(SymfonyStyle $io): bool
+    private function checkQualityFields(SymfonyStyle $symfonyStyle): bool
     {
         // Check if quality analysis fields exist in compliance_mapping
         $requiredColumns = [
@@ -236,43 +236,43 @@ class MappingQualitySanityCheckCommand extends Command
             $allColumnsExist = true;
             $missingColumns = [];
 
-            foreach ($requiredColumns as $column) {
-                if (!in_array($column, $columnNames)) {
-                    $missingColumns[] = $column;
+            foreach ($requiredColumns as $requiredColumn) {
+                if (!in_array($requiredColumn, $columnNames)) {
+                    $missingColumns[] = $requiredColumn;
                     $allColumnsExist = false;
                 }
             }
 
             if (!$allColumnsExist) {
-                $io->error('❌ Quality analysis fields missing from compliance_mapping table');
-                $io->text('  Missing columns: ' . implode(', ', $missingColumns));
-                $io->warning('  Fix: Run migration: php bin/console doctrine:migrations:migrate');
+                $symfonyStyle->error('❌ Quality analysis fields missing from compliance_mapping table');
+                $symfonyStyle->text('  Missing columns: ' . implode(', ', $missingColumns));
+                $symfonyStyle->warning('  Fix: Run migration: php bin/console doctrine:migrations:migrate');
                 return false;
             }
 
-            $io->success('✅ All quality analysis fields exist in compliance_mapping');
+            $symfonyStyle->success('✅ All quality analysis fields exist in compliance_mapping');
 
             // Check gap_item table
             if (!in_array('mapping_gap_item', $schemaManager->listTableNames())) {
-                $io->error('❌ mapping_gap_item table not found');
-                $io->warning('  Fix: Run migration: php bin/console doctrine:migrations:migrate');
+                $symfonyStyle->error('❌ mapping_gap_item table not found');
+                $symfonyStyle->warning('  Fix: Run migration: php bin/console doctrine:migrations:migrate');
                 return false;
             }
 
-            $io->success('✅ mapping_gap_item table exists');
+            $symfonyStyle->success('✅ mapping_gap_item table exists');
 
             // Check if any gaps have been created
-            $gapCount = $this->gapItemRepository->count([]);
+            $gapCount = $this->mappingGapItemRepository->count([]);
             if ($gapCount > 0) {
-                $io->text("  Gap items found: $gapCount");
+                $symfonyStyle->text("  Gap items found: $gapCount");
             } else {
-                $io->text('  Gap items: 0 (will be created after first analysis)');
+                $symfonyStyle->text('  Gap items: 0 (will be created after first analysis)');
             }
 
             return true;
 
-        } catch (\Exception $e) {
-            $io->error('❌ Error checking database schema: ' . $e->getMessage());
+        } catch (Exception $e) {
+            $symfonyStyle->error('❌ Error checking database schema: ' . $e->getMessage());
             return false;
         }
     }

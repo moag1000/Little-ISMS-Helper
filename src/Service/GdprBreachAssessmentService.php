@@ -19,7 +19,7 @@ class GdprBreachAssessmentService
     /**
      * Data type risk scores (1-4 scale)
      */
-    private const DATA_TYPE_SCORES = [
+    private const array DATA_TYPE_SCORES = [
         'names_contact' => 1,
         'financial' => 2,
         'health_biometric' => 3,
@@ -30,7 +30,7 @@ class GdprBreachAssessmentService
     /**
      * Scale scores based on number of affected individuals (1-4 scale)
      */
-    private const SCALE_SCORES = [
+    private const array SCALE_SCORES = [
         'under_100' => 1,
         '100_to_1000' => 2,
         '1001_to_10000' => 3,
@@ -41,7 +41,7 @@ class GdprBreachAssessmentService
      * GDPR Art. 33 reporting threshold
      * Score >= 5 is considered reportable
      */
-    private const REPORTABLE_THRESHOLD = 5;
+    private const int REPORTABLE_THRESHOLD = 5;
 
     /**
      * Assess breach risk based on data types and affected count
@@ -103,11 +103,14 @@ class GdprBreachAssessmentService
     {
         if ($score < 3) {
             return 'low';
-        } elseif ($score < 5) {
+        }
+        if ($score < 5) {
             return 'medium';
-        } elseif ($score < 7) {
+        }
+        if ($score < 7) {
             return 'high';
-        } else {
+        }
+        else {
             return 'very_high';
         }
     }
@@ -143,11 +146,14 @@ class GdprBreachAssessmentService
     {
         if ($affectedCount < 100) {
             return 'under_100';
-        } elseif ($affectedCount <= 1000) {
+        }
+        if ($affectedCount <= 1000) {
             return '100_to_1000';
-        } elseif ($affectedCount <= 10000) {
+        }
+        if ($affectedCount <= 10000) {
             return '1001_to_10000';
-        } else {
+        }
+        else {
             return 'over_10000';
         }
     }

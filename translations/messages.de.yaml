@@ -87,6 +87,7 @@ close: Schließen
 confirm: Bestätigen
 back: Zurück
 common:
+    next: Weiter
     yes: 'Ja'
     no: 'Nein'
     new: 'Neu'

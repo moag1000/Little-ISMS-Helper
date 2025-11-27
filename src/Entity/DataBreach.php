@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
+use DateTime;
 use App\Repository\DataBreachRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -60,7 +61,7 @@ class DataBreach
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Assert\NotNull]
-    private ?\DateTimeInterface $detectedAt = null;
+    private ?DateTimeInterface $detectedAt = null;
 
     /**
      * Related processing activity (VVT Art. 30)
@@ -188,7 +189,7 @@ class DataBreach
      * Date/time supervisory authority was notified (must be within 72h!)
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeInterface $supervisoryAuthorityNotifiedAt = null;
+    private ?DateTimeInterface $supervisoryAuthorityNotifiedAt = null;
 
     /**
      * Name of supervisory authority notified
@@ -221,7 +222,7 @@ class DataBreach
      * Notification documents/evidence (JSON: file paths, emails, etc.)
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $notificationDocuments = null;
+    private ?array $notificationDocuments = [];
 
     // ============================================================================
     // Art. 34 - Communication to Data Subjects
@@ -247,7 +248,7 @@ class DataBreach
      * Date/time data subjects were notified
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeInterface $dataSubjectsNotifiedAt = null;
+    private ?DateTimeInterface $dataSubjectsNotifiedAt = null;
 
     /**
      * Method of subject notification (email, letter, website, public notice)
@@ -267,7 +268,7 @@ class DataBreach
      * Subject notification documents/evidence
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $subjectNotificationDocuments = null;
+    private ?array $subjectNotificationDocuments = [];
 
     // ============================================================================
     // Risk Assessment
@@ -325,17 +326,17 @@ class DataBreach
      * Follow-up actions (JSON array of action items)
      */
     #[ORM\Column(type: Types::JSON, nullable: true)]
-    private ?array $followUpActions = null;
+    private ?array $followUpActions = [];
 
     // ============================================================================
     // Metadata
     // ============================================================================
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
@@ -347,13 +348,8 @@ class DataBreach
 
     public function __construct()
     {
-        $this->dataCategories = [];
-        $this->dataSubjectCategories = [];
-        $this->notificationDocuments = [];
-        $this->subjectNotificationDocuments = [];
-        $this->followUpActions = [];
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     // ============================================================================
@@ -363,7 +359,7 @@ class DataBreach
     #[ORM\PreUpdate]
     public function setUpdatedAtValue(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     // ============================================================================
@@ -377,16 +373,16 @@ class DataBreach
     public function getHoursUntilAuthorityDeadline(): ?int
     {
         $detectedAt = $this->getEffectiveDetectedAt();
-        if (!$detectedAt) {
+        if (!$detectedAt instanceof DateTimeInterface) {
             return null;
         }
 
-        if ($this->supervisoryAuthorityNotifiedAt) {
+        if ($this->supervisoryAuthorityNotifiedAt instanceof DateTimeInterface) {
             return null; // Already notified
         }
 
-        $deadline = \DateTime::createFromInterface($detectedAt)->modify('+72 hours');
-        $now = new \DateTime();
+        $deadline = DateTime::createFromInterface($detectedAt)->modify('+72 hours');
+        $now = new DateTime();
 
         $diff = $now->diff($deadline);
         $hours = ($diff->days * 24) + $diff->h;
@@ -397,14 +393,14 @@ class DataBreach
     /**
      * Get the effective detection date (from incident or direct field)
      */
-    public function getEffectiveDetectedAt(): ?\DateTimeInterface
+    public function getEffectiveDetectedAt(): ?DateTimeInterface
     {
         // Prefer the direct detectedAt field
-        if ($this->detectedAt) {
+        if ($this->detectedAt instanceof DateTimeInterface) {
             return $this->detectedAt;
         }
         // Fallback to incident's detected date if linked
-        if ($this->incident && $this->incident->getDetectedAt()) {
+        if ($this->incident instanceof Incident && $this->incident->getDetectedAt() instanceof DateTimeInterface) {
             return $this->incident->getDetectedAt();
         }
         return null;
@@ -422,14 +418,14 @@ class DataBreach
     /**
      * Get deadline for authority notification (72h from detection)
      */
-    public function getAuthorityNotificationDeadline(): ?\DateTimeInterface
+    public function getAuthorityNotificationDeadline(): ?DateTimeInterface
     {
         $detectedAt = $this->getEffectiveDetectedAt();
-        if (!$detectedAt) {
+        if (!$detectedAt instanceof DateTimeInterface) {
             return null;
         }
 
-        return \DateTime::createFromInterface($detectedAt)->modify('+72 hours');
+        return DateTime::createFromInterface($detectedAt)->modify('+72 hours');
     }
 
     /**
@@ -438,23 +434,23 @@ class DataBreach
     public function isComplete(): bool
     {
         $mandatory = [
-            !empty($this->title),
-            !empty($this->severity),
-            !empty($this->dataCategories),
-            !empty($this->dataSubjectCategories),
-            !empty($this->breachNature),
-            !empty($this->likelyConsequences),
-            !empty($this->measuresTaken),
+            !in_array($this->title, [null, '', '0'], true),
+            !in_array($this->severity, [null, '', '0'], true),
+            $this->dataCategories !== [],
+            $this->dataSubjectCategories !== [],
+            !in_array($this->breachNature, [null, '', '0'], true),
+            !in_array($this->likelyConsequences, [null, '', '0'], true),
+            !in_array($this->measuresTaken, [null, '', '0'], true),
         ];
 
         // If authority notification required, check those fields
         if ($this->requiresAuthorityNotification) {
-            $mandatory[] = $this->supervisoryAuthorityNotifiedAt !== null;
+            $mandatory[] = $this->supervisoryAuthorityNotifiedAt instanceof DateTimeInterface;
         }
 
         // If subject notification required, check those fields
         if ($this->requiresSubjectNotification) {
-            $mandatory[] = $this->dataSubjectsNotifiedAt !== null;
+            $mandatory[] = $this->dataSubjectsNotifiedAt instanceof DateTimeInterface;
         }
 
         return !in_array(false, $mandatory, true);
@@ -466,24 +462,24 @@ class DataBreach
     public function getCompletenessPercentage(): int
     {
         $fields = [
-            'title' => !empty($this->title),
-            'severity' => !empty($this->severity),
-            'dataCategories' => !empty($this->dataCategories),
-            'dataSubjectCategories' => !empty($this->dataSubjectCategories),
-            'breachNature' => !empty($this->breachNature),
-            'likelyConsequences' => !empty($this->likelyConsequences),
-            'measuresTaken' => !empty($this->measuresTaken),
-            'riskAssessment' => !empty($this->riskAssessment),
-            'rootCause' => !empty($this->rootCause),
+            'title' => !in_array($this->title, [null, '', '0'], true),
+            'severity' => !in_array($this->severity, [null, '', '0'], true),
+            'dataCategories' => $this->dataCategories !== [],
+            'dataSubjectCategories' => $this->dataSubjectCategories !== [],
+            'breachNature' => !in_array($this->breachNature, [null, '', '0'], true),
+            'likelyConsequences' => !in_array($this->likelyConsequences, [null, '', '0'], true),
+            'measuresTaken' => !in_array($this->measuresTaken, [null, '', '0'], true),
+            'riskAssessment' => !in_array($this->riskAssessment, [null, '', '0'], true),
+            'rootCause' => !in_array($this->rootCause, [null, '', '0'], true),
         ];
 
         // Conditional fields
         if ($this->requiresAuthorityNotification) {
-            $fields['supervisoryAuthorityNotifiedAt'] = $this->supervisoryAuthorityNotifiedAt !== null;
+            $fields['supervisoryAuthorityNotifiedAt'] = $this->supervisoryAuthorityNotifiedAt instanceof DateTimeInterface;
         }
 
         if ($this->requiresSubjectNotification) {
-            $fields['dataSubjectsNotifiedAt'] = $this->dataSubjectsNotifiedAt !== null;
+            $fields['dataSubjectsNotifiedAt'] = $this->dataSubjectsNotifiedAt instanceof DateTimeInterface;
         }
 
         $filledCount = count(array_filter($fields));
@@ -527,18 +523,18 @@ class DataBreach
     {
         $this->incident = $incident;
         // Sync detectedAt from incident if set and detectedAt is empty
-        if ($incident && $incident->getDetectedAt() && !$this->detectedAt) {
+        if ($incident instanceof Incident && $incident->getDetectedAt() instanceof DateTimeInterface && !$this->detectedAt) {
             $this->detectedAt = $incident->getDetectedAt();
         }
         return $this;
     }
 
-    public function getDetectedAt(): ?\DateTimeInterface
+    public function getDetectedAt(): ?DateTimeInterface
     {
         return $this->detectedAt;
     }
 
-    public function setDetectedAt(?\DateTimeInterface $detectedAt): static
+    public function setDetectedAt(?DateTimeInterface $detectedAt): static
     {
         $this->detectedAt = $detectedAt;
         return $this;
@@ -681,9 +677,9 @@ class DataBreach
         return $this->dataProtectionOfficer;
     }
 
-    public function setDataProtectionOfficer(?User $dataProtectionOfficer): static
+    public function setDataProtectionOfficer(?User $user): static
     {
-        $this->dataProtectionOfficer = $dataProtectionOfficer;
+        $this->dataProtectionOfficer = $user;
         return $this;
     }
 
@@ -709,12 +705,12 @@ class DataBreach
         return $this;
     }
 
-    public function getSupervisoryAuthorityNotifiedAt(): ?\DateTimeInterface
+    public function getSupervisoryAuthorityNotifiedAt(): ?DateTimeInterface
     {
         return $this->supervisoryAuthorityNotifiedAt;
     }
 
-    public function setSupervisoryAuthorityNotifiedAt(?\DateTimeInterface $supervisoryAuthorityNotifiedAt): static
+    public function setSupervisoryAuthorityNotifiedAt(?DateTimeInterface $supervisoryAuthorityNotifiedAt): static
     {
         $this->supervisoryAuthorityNotifiedAt = $supervisoryAuthorityNotifiedAt;
         return $this;
@@ -797,12 +793,12 @@ class DataBreach
         return $this;
     }
 
-    public function getDataSubjectsNotifiedAt(): ?\DateTimeInterface
+    public function getDataSubjectsNotifiedAt(): ?DateTimeInterface
     {
         return $this->dataSubjectsNotifiedAt;
     }
 
-    public function setDataSubjectsNotifiedAt(?\DateTimeInterface $dataSubjectsNotifiedAt): static
+    public function setDataSubjectsNotifiedAt(?DateTimeInterface $dataSubjectsNotifiedAt): static
     {
         $this->dataSubjectsNotifiedAt = $dataSubjectsNotifiedAt;
         return $this;
@@ -901,9 +897,9 @@ class DataBreach
         return $this->assessor;
     }
 
-    public function setAssessor(?User $assessor): static
+    public function setAssessor(?User $user): static
     {
-        $this->assessor = $assessor;
+        $this->assessor = $user;
         return $this;
     }
 
@@ -929,23 +925,23 @@ class DataBreach
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -956,9 +952,9 @@ class DataBreach
         return $this->createdBy;
     }
 
-    public function setCreatedBy(?User $createdBy): static
+    public function setCreatedBy(?User $user): static
     {
-        $this->createdBy = $createdBy;
+        $this->createdBy = $user;
         return $this;
     }
 
@@ -967,9 +963,9 @@ class DataBreach
         return $this->updatedBy;
     }
 
-    public function setUpdatedBy(?User $updatedBy): static
+    public function setUpdatedBy(?User $user): static
     {
-        $this->updatedBy = $updatedBy;
+        $this->updatedBy = $user;
         return $this;
     }
 }

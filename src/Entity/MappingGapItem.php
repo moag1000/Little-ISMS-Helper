@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use App\Repository\MappingGapItemRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -20,7 +22,7 @@ class MappingGapItem
 
     #[ORM\ManyToOne(targetEntity: ComplianceMapping::class, inversedBy: 'gapItems')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private ?ComplianceMapping $mapping = null;
+    private ?ComplianceMapping $complianceMapping = null;
 
     /**
      * Type of gap identified
@@ -88,14 +90,14 @@ class MappingGapItem
     private string $status = 'identified'; // identified, planned, in_progress, resolved, wont_fix
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -105,12 +107,12 @@ class MappingGapItem
 
     public function getMapping(): ?ComplianceMapping
     {
-        return $this->mapping;
+        return $this->complianceMapping;
     }
 
-    public function setMapping(?ComplianceMapping $mapping): static
+    public function setMapping(?ComplianceMapping $complianceMapping): static
     {
-        $this->mapping = $mapping;
+        $this->complianceMapping = $complianceMapping;
         return $this;
     }
 
@@ -224,23 +226,23 @@ class MappingGapItem
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;

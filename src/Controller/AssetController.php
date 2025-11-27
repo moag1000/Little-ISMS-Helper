@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Exception;
 use App\Entity\Asset;
 use App\Form\AssetType;
 use App\Repository\AssetRepository;
@@ -20,23 +21,21 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/asset')]
 class AssetController extends AbstractController
 {
     public function __construct(
-        private AssetRepository $assetRepository,
-        private AssetService $assetService,
-        private AuditLogRepository $auditLogRepository,
-        private ProtectionRequirementService $protectionRequirementService,
-        private BusinessProcessRepository $businessProcessRepository,
-        private RiskRepository $riskRepository,
-        private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator,
-        private Security $security,
-        private TenantContext $tenantContext
+        private readonly AssetRepository $assetRepository,
+        private readonly AssetService $assetService,
+        private readonly AuditLogRepository $auditLogRepository,
+        private readonly ProtectionRequirementService $protectionRequirementService,
+        private readonly BusinessProcessRepository $businessProcessRepository,
+        private readonly RiskRepository $riskRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
+        private readonly Security $security,
+        private readonly TenantContext $tenantContext
     ) {}
-
-    #[Route('/', name: 'app_asset_index')]
+    #[Route('/asset/', name: 'app_asset_index')]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
@@ -54,22 +53,14 @@ class AssetController extends AbstractController
         // Get assets based on view filter
         if ($tenant) {
             // Determine which assets to load based on view parameter
-            switch ($view) {
-                case 'own':
-                    // Only own assets
-                    $assets = $this->assetRepository->findByTenant($tenant);
-                    break;
-                case 'subsidiaries':
-                    // Own + from all subsidiaries (for parent companies)
-                    $assets = $this->assetRepository->findByTenantIncludingSubsidiaries($tenant);
-                    break;
-                case 'inherited':
-                default:
-                    // Own + inherited from parents (default behavior)
-                    $assets = $this->assetService->getAssetsForTenant($tenant);
-                    break;
-            }
-
+            $assets = match ($view) {
+                // Only own assets
+                'own' => $this->assetRepository->findByTenant($tenant),
+                // Own + from all subsidiaries (for parent companies)
+                'subsidiaries' => $this->assetRepository->findByTenantIncludingSubsidiaries($tenant),
+                // Own + inherited from parents (default behavior)
+                default => $this->assetService->getAssetsForTenant($tenant),
+            };
             $inheritanceInfo = $this->assetService->getAssetInheritanceInfo($tenant);
             $inheritanceInfo['hasSubsidiaries'] = $tenant->getSubsidiaries()->count() > 0;
             $inheritanceInfo['currentView'] = $view;
@@ -85,22 +76,22 @@ class AssetController extends AbstractController
         }
 
         // Filter to active only first
-        $assets = array_filter($assets, fn($asset) => $asset->getStatus() === 'active');
+        $assets = array_filter($assets, fn(Asset $asset): bool => $asset->getStatus() === 'active');
 
         if ($type) {
-            $assets = array_filter($assets, fn($asset) => $asset->getAssetType() === $type);
+            $assets = array_filter($assets, fn(Asset $asset): bool => $asset->getAssetType() === $type);
         }
 
         if ($classification) {
-            $assets = array_filter($assets, fn($asset) => $asset->getDataClassification() === $classification);
+            $assets = array_filter($assets, fn(Asset $asset): bool => $asset->getDataClassification() === $classification);
         }
 
         if ($owner) {
-            $assets = array_filter($assets, fn($asset) => stripos($asset->getOwner(), $owner) !== false);
+            $assets = array_filter($assets, fn(Asset $asset): bool => stripos((string) $asset->getOwner(), $owner) !== false);
         }
 
         if ($status) {
-            $assets = array_filter($assets, fn($asset) => $asset->getStatus() === $status);
+            $assets = array_filter($assets, fn(Asset $asset): bool => $asset->getStatus() === $status);
         }
 
         // Re-index array after filtering to avoid gaps in keys
@@ -117,7 +108,7 @@ class AssetController extends AbstractController
 
             $assetRecommendations[$asset->getId()] = [
                 'availability_analysis' => $analysis['availability'],
-                'has_bcm_data' => !empty($processes),
+                'has_bcm_data' => $processes !== [],
                 'process_count' => count($processes),
                 'processes' => $processes,
                 'risk_count' => count($risks),
@@ -140,8 +131,7 @@ class AssetController extends AbstractController
             'detailedStats' => $detailedStats,
         ]);
     }
-
-    #[Route('/new', name: 'app_asset_new')]
+    #[Route('/asset/new', name: 'app_asset_new')]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -164,8 +154,7 @@ class AssetController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/bulk-delete', name: 'app_asset_bulk_delete', methods: ['POST'])]
+    #[Route('/asset/bulk-delete', name: 'app_asset_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function bulkDelete(Request $request): Response
     {
@@ -205,7 +194,7 @@ class AssetController extends AbstractController
 
                 $this->entityManager->remove($asset);
                 $deleted++;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $errors[] = "Error deleting asset ID $id: " . $e->getMessage();
             }
         }
@@ -218,7 +207,7 @@ class AssetController extends AbstractController
             ? $this->translator->trans('asset.bulk_delete.success', ['count' => $deleted])
             : $this->translator->trans('asset.bulk_delete.no_items');
 
-        if (!empty($errors)) {
+        if ($errors !== []) {
             return $this->json([
                 'success' => $deleted > 0,
                 'deleted' => $deleted,
@@ -233,8 +222,7 @@ class AssetController extends AbstractController
             'message' => $message
         ]);
     }
-
-    #[Route('/{id}', name: 'app_asset_show', requirements: ['id' => '\d+'])]
+    #[Route('/asset/{id}', name: 'app_asset_show', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function show(Asset $asset): Response
     {
@@ -268,8 +256,7 @@ class AssetController extends AbstractController
             'currentTenant' => $tenant,
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'app_asset_edit', requirements: ['id' => '\d+'])]
+    #[Route('/asset/{id}/edit', name: 'app_asset_edit', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Asset $asset): Response
     {
@@ -297,8 +284,7 @@ class AssetController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}/delete', name: 'app_asset_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/asset/{id}/delete', name: 'app_asset_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Asset $asset): Response
     {
@@ -320,8 +306,7 @@ class AssetController extends AbstractController
 
         return $this->redirectToRoute('app_asset_index');
     }
-
-    #[Route('/{id}/bcm-insights', name: 'app_asset_bcm_insights', requirements: ['id' => '\d+'])]
+    #[Route('/asset/{id}/bcm-insights', name: 'app_asset_bcm_insights', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function bcmInsights(int $id): Response
     {
@@ -355,7 +340,6 @@ class AssetController extends AbstractController
             'currentTenant' => $tenant,
         ]);
     }
-
     /**
      * Calculate detailed statistics showing breakdown by origin
      */

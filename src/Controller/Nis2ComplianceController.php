@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\MfaTokenRepository;
@@ -24,12 +25,11 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  * Note: This dashboard is only available when the NIS2 framework is installed and active.
  * NIS2 is only mandatory for essential/important entities as defined in the directive.
  */
-#[Route('/nis2-compliance')]
 #[IsGranted('ROLE_MANAGER')]
 class Nis2ComplianceController extends AbstractController
 {
     public function __construct(
-        private readonly ComplianceFrameworkRepository $frameworkRepository,
+        private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
         private readonly IncidentRepository $incidentRepository,
         private readonly MfaTokenRepository $mfaTokenRepository,
         private readonly UserRepository $userRepository,
@@ -39,11 +39,11 @@ class Nis2ComplianceController extends AbstractController
     ) {
     }
 
-    #[Route('', name: 'app_nis2_compliance_dashboard')]
+    #[Route('/nis2-compliance', name: 'app_nis2_compliance_dashboard')]
     public function dashboard(): Response
     {
         // Check if NIS2 framework exists and is active
-        $nis2Framework = $this->frameworkRepository->findOneBy(['code' => 'NIS2']);
+        $nis2Framework = $this->complianceFrameworkRepository->findOneBy(['code' => 'NIS2']);
 
         if (!$nis2Framework) {
             // NIS2 framework not installed - redirect to compliance overview
@@ -87,20 +87,20 @@ class Nis2ComplianceController extends AbstractController
         $finalReportCompliant = 0;
         $overdueIncidents = [];
 
-        foreach ($nis2Incidents as $incident) {
-            if ($incident->getEarlyWarningReportedAt() !== null && !$incident->isEarlyWarningOverdue()) {
+        foreach ($nis2Incidents as $nis2Incident) {
+            if ($nis2Incident->getEarlyWarningReportedAt() !== null && !$nis2Incident->isEarlyWarningOverdue()) {
                 $earlyWarningCompliant++;
             }
-            if ($incident->getDetailedNotificationReportedAt() !== null && !$incident->isDetailedNotificationOverdue()) {
+            if ($nis2Incident->getDetailedNotificationReportedAt() !== null && !$nis2Incident->isDetailedNotificationOverdue()) {
                 $detailedNotificationCompliant++;
             }
-            if ($incident->getFinalReportSubmittedAt() !== null && !$incident->isFinalReportOverdue()) {
+            if ($nis2Incident->getFinalReportSubmittedAt() !== null && !$nis2Incident->isFinalReportOverdue()) {
                 $finalReportCompliant++;
             }
 
             // Track overdue incidents
-            if ($incident->isEarlyWarningOverdue() || $incident->isDetailedNotificationOverdue() || $incident->isFinalReportOverdue()) {
-                $overdueIncidents[] = $incident;
+            if ($nis2Incident->isEarlyWarningOverdue() || $nis2Incident->isDetailedNotificationOverdue() || $nis2Incident->isFinalReportOverdue()) {
+                $overdueIncidents[] = $nis2Incident;
             }
         }
 
@@ -115,7 +115,7 @@ class Nis2ComplianceController extends AbstractController
         $overdueVulnerabilities = $this->vulnerabilityRepository->createQueryBuilder('v')
             ->where('v.remediationDeadline < :now')
             ->andWhere('v.status NOT IN (:closedStatuses)')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new DateTime())
             ->setParameter('closedStatuses', ['closed', 'false_positive'])
             ->getQuery()
             ->getResult();

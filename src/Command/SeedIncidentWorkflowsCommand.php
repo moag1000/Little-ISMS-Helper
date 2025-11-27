@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use Exception;
 use App\Entity\Workflow;
 use App\Entity\WorkflowStep;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,9 +26,9 @@ class SeedIncidentWorkflowsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
-        $io->title('Seeding Incident Escalation Workflows');
+        $symfonyStyle->title('Seeding Incident Escalation Workflows');
 
         $workflows = $this->getWorkflowDefinitions();
 
@@ -42,8 +43,8 @@ class SeedIncidentWorkflowsCommand extends Command
                 $existingWorkflow = $this->entityManager->getRepository(Workflow::class)
                     ->findOneBy(['name' => $workflowData['name']]);
 
-                if ($existingWorkflow) {
-                    $io->text(sprintf('  <fg=gray>Skipped:</> %s (already exists)', $workflowData['name']));
+                if ($existingWorkflow instanceof Workflow) {
+                    $symfonyStyle->text(sprintf('  <fg=gray>Skipped:</> %s (already exists)', $workflowData['name']));
                     $skippedCount++;
                     continue;
                 }
@@ -71,23 +72,23 @@ class SeedIncidentWorkflowsCommand extends Command
 
                 $this->entityManager->persist($workflow);
                 $createdCount++;
-                $io->text(sprintf('  <info>Created:</info> %s (%d steps)', $workflowData['name'], count($workflowData['steps'])));
+                $symfonyStyle->text(sprintf('  <info>Created:</info> %s (%d steps)', $workflowData['name'], count($workflowData['steps'])));
             }
 
             $this->entityManager->flush();
             $this->entityManager->commit();
 
-            $io->newLine();
-            $io->success(sprintf(
+            $symfonyStyle->newLine();
+            $symfonyStyle->success(sprintf(
                 'Incident workflows seeded successfully! Created: %d, Skipped: %d',
                 $createdCount,
                 $skippedCount
             ));
 
             return Command::SUCCESS;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->entityManager->rollback();
-            $io->error('Failed to seed workflows: ' . $e->getMessage());
+            $symfonyStyle->error('Failed to seed workflows: ' . $e->getMessage());
             return Command::FAILURE;
         }
     }

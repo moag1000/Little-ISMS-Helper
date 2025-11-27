@@ -13,9 +13,9 @@ use App\Repository\CorporateGovernanceRepository;
 class SupplierService
 {
     public function __construct(
-        private SupplierRepository $supplierRepository,
-        private ?CorporateStructureService $corporateStructureService = null,
-        private ?CorporateGovernanceRepository $governanceRepository = null
+        private readonly SupplierRepository $supplierRepository,
+        private readonly ?CorporateStructureService $corporateStructureService = null,
+        private readonly ?CorporateGovernanceRepository $corporateGovernanceRepository = null
     ) {}
 
     /**
@@ -29,16 +29,16 @@ class SupplierService
         $parent = $tenant->getParent();
 
         // No parent or no corporate structure service - return own suppliers only
-        if (!$parent || !$this->corporateStructureService || !$this->governanceRepository) {
+        if (!$parent instanceof Tenant || !$this->corporateStructureService instanceof CorporateStructureService || !$this->corporateGovernanceRepository) {
             return $this->supplierRepository->findByTenant($tenant);
         }
 
         // Check governance model for suppliers
-        $governance = $this->governanceRepository->findGovernanceForScope($tenant, 'supplier');
+        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'supplier');
 
         if (!$governance) {
             // No specific governance for suppliers - use default
-            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
 
         $governanceModel = $governance?->getGovernanceModel();
@@ -62,7 +62,7 @@ class SupplierService
     {
         $parent = $tenant->getParent();
 
-        if (!$parent || !$this->governanceRepository) {
+        if (!$parent instanceof Tenant || !$this->corporateGovernanceRepository) {
             return [
                 'hasParent' => false,
                 'canInherit' => false,
@@ -70,10 +70,10 @@ class SupplierService
             ];
         }
 
-        $governance = $this->governanceRepository->findGovernanceForScope($tenant, 'supplier');
+        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'supplier');
 
         if (!$governance) {
-            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
 
         $governanceModel = $governance?->getGovernanceModel();
@@ -97,7 +97,7 @@ class SupplierService
     {
         $supplierTenant = $supplier->getTenant();
 
-        if (!$supplierTenant) {
+        if (!$supplierTenant instanceof Tenant) {
             return false;
         }
 

@@ -2,10 +2,8 @@
 
 namespace App\Service;
 
+use DateTime;
 use App\Entity\Asset;
-use App\Entity\BusinessProcess;
-use App\Entity\Incident;
-use App\Entity\Risk;
 use App\Repository\BusinessProcessRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
@@ -19,9 +17,9 @@ use App\Repository\RiskRepository;
 class ProtectionRequirementService
 {
     public function __construct(
-        private BusinessProcessRepository $businessProcessRepository,
-        private IncidentRepository $incidentRepository,
-        private RiskRepository $riskRepository
+        private readonly BusinessProcessRepository $businessProcessRepository,
+        private readonly IncidentRepository $incidentRepository,
+        private readonly RiskRepository $riskRepository
     ) {}
 
     /**
@@ -186,7 +184,7 @@ class ProtectionRequirementService
             'confidentiality' => $this->calculateConfidentialityRequirement($asset),
             'integrity' => $this->calculateIntegrityRequirement($asset),
             'availability' => $this->calculateAvailabilityRequirement($asset),
-            'timestamp' => new \DateTime()
+            'timestamp' => new DateTime()
         ];
     }
 

@@ -17,10 +17,10 @@ use App\Entity\ComplianceRequirement;
  */
 class MappingQualityAnalysisService
 {
-    private const ALGORITHM_VERSION = '1.0.0';
+    private const string ALGORITHM_VERSION = '1.0.0';
 
     // Security and compliance keywords by category
-    private const SECURITY_KEYWORDS = [
+    private const array SECURITY_KEYWORDS = [
         'access_control' => ['access', 'authentication', 'authorization', 'identity', 'login', 'password', 'credential', 'privileged', 'least privilege', 'role', 'rbac', 'permission'],
         'encryption' => ['encryption', 'encrypted', 'cryptographic', 'cipher', 'key management', 'tls', 'ssl', 'hash', 'secure communication'],
         'audit' => ['audit', 'logging', 'log', 'monitoring', 'review', 'trail', 'tracking', 'surveillance', 'recording'],
@@ -41,13 +41,13 @@ class MappingQualityAnalysisService
     /**
      * Analyze a compliance mapping and calculate all quality metrics
      *
-     * @param ComplianceMapping $mapping The mapping to analyze
+     * @param ComplianceMapping $complianceMapping The mapping to analyze
      * @return array Analysis results with all metrics
      */
-    public function analyzeMappingQuality(ComplianceMapping $mapping): array
+    public function analyzeMappingQuality(ComplianceMapping $complianceMapping): array
     {
-        $source = $mapping->getSourceRequirement();
-        $target = $mapping->getTargetRequirement();
+        $source = $complianceMapping->getSourceRequirement();
+        $target = $complianceMapping->getTargetRequirement();
 
         // Extract and preprocess text
         $sourceText = $this->extractRequirementText($source);
@@ -80,7 +80,7 @@ class MappingQualityAnalysisService
         $qualityScore = $this->calculateQualityScore(
             $calculatedPercentage,
             $confidence,
-            $mapping
+            $complianceMapping
         );
 
         return [
@@ -102,15 +102,15 @@ class MappingQualityAnalysisService
     /**
      * Extract combined text from requirement (title + description)
      */
-    private function extractRequirementText(ComplianceRequirement $requirement): string
+    private function extractRequirementText(ComplianceRequirement $complianceRequirement): string
     {
         $parts = [];
 
-        if ($title = $requirement->getTitle()) {
+        if ($title = $complianceRequirement->getTitle()) {
             $parts[] = $title;
         }
 
-        if ($description = $requirement->getDescription()) {
+        if ($description = $complianceRequirement->getDescription()) {
             $parts[] = $description;
         }
 
@@ -156,7 +156,7 @@ class MappingQualityAnalysisService
         $keywords1 = $this->extractKeywords($text1);
         $keywords2 = $this->extractKeywords($text2);
 
-        if (empty($keywords1) || empty($keywords2)) {
+        if ($keywords1 === [] || $keywords2 === []) {
             return 0.0;
         }
 
@@ -175,8 +175,6 @@ class MappingQualityAnalysisService
     /**
      * Calculate structural similarity (category, priority, scope alignment)
      *
-     * @param ComplianceRequirement $source
-     * @param ComplianceRequirement $target
      * @return float Structural similarity (0-1)
      */
     private function calculateStructuralSimilarity(
@@ -203,7 +201,7 @@ class MappingQualityAnalysisService
 
         // Data source mapping quality (30% weight)
         $dataSourceMapping = $source->getDataSourceMapping();
-        if (!empty($dataSourceMapping) && isset($dataSourceMapping['iso_controls'])) {
+        if ($dataSourceMapping !== null && $dataSourceMapping !== [] && isset($dataSourceMapping['iso_controls'])) {
             $factors++;
             $isoControls = is_array($dataSourceMapping['iso_controls'])
                 ? $dataSourceMapping['iso_controls']
@@ -220,11 +218,6 @@ class MappingQualityAnalysisService
     /**
      * Calculate combined mapping percentage from all similarity metrics
      *
-     * @param float $textualSimilarity
-     * @param float $keywordOverlap
-     * @param float $structuralSimilarity
-     * @param ComplianceRequirement $source
-     * @param ComplianceRequirement $target
      * @return int Percentage (0-150)
      */
     private function calculateCombinedPercentage(
@@ -264,7 +257,7 @@ class MappingQualityAnalysisService
         $targetFramework = $target->getFramework()->getCode();
 
         // ISO family bonus
-        if (str_starts_with($sourceFramework, 'ISO') && str_starts_with($targetFramework, 'ISO')) {
+        if (str_starts_with((string) $sourceFramework, 'ISO') && str_starts_with((string) $targetFramework, 'ISO')) {
             $baseScore += 5;
         }
 
@@ -276,7 +269,7 @@ class MappingQualityAnalysisService
 
         // Penalty for very different scopes
         $dataSourceMapping = $source->getDataSourceMapping();
-        if (!empty($dataSourceMapping) && isset($dataSourceMapping['iso_controls'])) {
+        if ($dataSourceMapping !== null && $dataSourceMapping !== [] && isset($dataSourceMapping['iso_controls'])) {
             $isoControls = is_array($dataSourceMapping['iso_controls'])
                 ? $dataSourceMapping['iso_controls']
                 : [$dataSourceMapping['iso_controls']];
@@ -348,7 +341,7 @@ class MappingQualityAnalysisService
     private function calculateQualityScore(
         int $calculatedPercentage,
         int $confidence,
-        ComplianceMapping $mapping
+        ComplianceMapping $complianceMapping
     ): int {
         // Quality is based on:
         // - Confidence (40%)
@@ -359,9 +352,9 @@ class MappingQualityAnalysisService
         $strengthScore = min(100, $calculatedPercentage) * 0.3;
 
         $verificationScore = 0;
-        if ($mapping->getVerifiedBy() !== null) {
+        if ($complianceMapping->getVerifiedBy() !== null) {
             $verificationScore = 30; // Full verification points
-        } elseif ($mapping->getReviewedBy() !== null) {
+        } elseif ($complianceMapping->getReviewedBy() !== null) {
             $verificationScore = 20; // Partial points for review
         }
 
@@ -373,7 +366,6 @@ class MappingQualityAnalysisService
     /**
      * Extract security-relevant keywords from text
      *
-     * @param string $text
      * @return array Keywords found
      */
     private function extractKeywords(string $text): array
@@ -381,10 +373,10 @@ class MappingQualityAnalysisService
         $text = $this->normalizeText($text);
         $keywords = [];
 
-        foreach (self::SECURITY_KEYWORDS as $category => $categoryKeywords) {
-            foreach ($categoryKeywords as $keyword) {
-                if (stripos($text, $keyword) !== false) {
-                    $keywords[] = $keyword;
+        foreach (self::SECURITY_KEYWORDS as $categoryKeywords) {
+            foreach ($categoryKeywords as $categoryKeyword) {
+                if (stripos($text, $categoryKeyword) !== false) {
+                    $keywords[] = $categoryKeyword;
                 }
             }
         }
@@ -403,7 +395,7 @@ class MappingQualityAnalysisService
         $commonCategories = array_intersect($categories1, $categories2);
         $totalCategories = array_unique(array_merge($categories1, $categories2));
 
-        return empty($totalCategories) ? 0.0 : count($commonCategories) / count($totalCategories);
+        return $totalCategories === [] ? 0.0 : count($commonCategories) / count($totalCategories);
     }
 
     /**
@@ -446,14 +438,7 @@ class MappingQualityAnalysisService
             ['audit', 'logging', 'monitoring'],
             ['risk management', 'risk assessment'],
         ];
-
-        foreach ($relatedCategories as $group) {
-            if (in_array($cat1, $group, true) && in_array($cat2, $group, true)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($relatedCategories, fn($group): bool => in_array($cat1, $group, true) && in_array($cat2, $group, true));
     }
 
     /**
@@ -489,9 +474,9 @@ class MappingQualityAnalysisService
         $text = preg_replace('/[^a-z0-9\s]/u', ' ', $text);
 
         // Remove extra whitespace
-        $text = preg_replace('/\s+/', ' ', $text);
+        $text = preg_replace('/\s+/', ' ', (string) $text);
 
-        return trim($text);
+        return trim((string) $text);
     }
 
     /**
@@ -504,9 +489,7 @@ class MappingQualityAnalysisService
         // Remove stopwords and short words
         $stopwords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'as', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'shall'];
 
-        $words = array_filter($words, function($word) use ($stopwords) {
-            return strlen($word) > 2 && !in_array($word, $stopwords, true);
-        });
+        $words = array_filter($words, fn($word): bool => strlen((string) $word) > 2 && !in_array($word, $stopwords, true));
 
         return array_values($words);
     }
@@ -516,11 +499,11 @@ class MappingQualityAnalysisService
      */
     private function jaccardSimilarity(array $set1, array $set2): float
     {
-        if (empty($set1) && empty($set2)) {
+        if ($set1 === [] && $set2 === []) {
             return 1.0;
         }
 
-        if (empty($set1) || empty($set2)) {
+        if ($set1 === [] || $set2 === []) {
             return 0.0;
         }
 
@@ -538,7 +521,7 @@ class MappingQualityAnalysisService
         $words1 = $this->tokenize($text1);
         $words2 = $this->tokenize($text2);
 
-        if (empty($words1) || empty($words2)) {
+        if ($words1 === [] || $words2 === []) {
             return 0.0;
         }
 
@@ -547,17 +530,18 @@ class MappingQualityAnalysisService
         $vector1 = [];
         $vector2 = [];
 
-        foreach ($allWords as $word) {
-            $vector1[] = count(array_filter($words1, fn($w) => $w === $word));
-            $vector2[] = count(array_filter($words2, fn($w) => $w === $word));
+        foreach ($allWords as $allWord) {
+            $vector1[] = count(array_filter($words1, fn($w): bool => $w === $allWord));
+            $vector2[] = count(array_filter($words2, fn($w): bool => $w === $allWord));
         }
 
         // Calculate cosine similarity
         $dotProduct = 0;
         $magnitude1 = 0;
         $magnitude2 = 0;
+        $counter = count($vector1);
 
-        for ($i = 0; $i < count($vector1); $i++) {
+        for ($i = 0; $i < $counter; $i++) {
             $dotProduct += $vector1[$i] * $vector2[$i];
             $magnitude1 += $vector1[$i] * $vector1[$i];
             $magnitude2 += $vector2[$i] * $vector2[$i];
@@ -578,7 +562,7 @@ class MappingQualityAnalysisService
      */
     private function variance(array $numbers): float
     {
-        if (empty($numbers)) {
+        if ($numbers === []) {
             return 0.0;
         }
 
@@ -586,7 +570,7 @@ class MappingQualityAnalysisService
         $variance = 0;
 
         foreach ($numbers as $number) {
-            $variance += pow($number - $mean, 2);
+            $variance += ($number - $mean) ** 2;
         }
 
         return $variance / count($numbers);

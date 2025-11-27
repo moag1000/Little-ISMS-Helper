@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use Exception;
 use App\Entity\Permission;
 use App\Entity\Role;
 use App\Entity\User;
@@ -24,11 +25,11 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class SetupPermissionsCommand extends Command
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private PermissionRepository $permissionRepository,
-        private RoleRepository $roleRepository,
-        private UserRepository $userRepository,
-        private UserPasswordHasherInterface $passwordHasher
+        private readonly EntityManagerInterface $entityManager,
+        private readonly PermissionRepository $permissionRepository,
+        private readonly RoleRepository $roleRepository,
+        private readonly UserRepository $userRepository,
+        private readonly UserPasswordHasherInterface $userPasswordHasher
     ) {
         parent::__construct();
     }
@@ -45,19 +46,19 @@ class SetupPermissionsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
         if ($input->getOption('reset')) {
-            if (!$io->confirm('This will delete all existing permissions and roles. Continue?', false)) {
-                $io->warning('Operation cancelled.');
+            if (!$symfonyStyle->confirm('This will delete all existing permissions and roles. Continue?', false)) {
+                $symfonyStyle->warning('Operation cancelled.');
                 return Command::SUCCESS;
             }
 
             $this->resetPermissions();
-            $io->success('Reset completed.');
+            $symfonyStyle->success('Reset completed.');
         }
 
-        $io->title('Setting up Permissions and Roles');
+        $symfonyStyle->title('Setting up Permissions and Roles');
 
         // Ensure EntityManager is in a clean state (important when called from web context)
         // Roll back ALL nested transactions/savepoints, not just one level
@@ -67,13 +68,13 @@ class SetupPermissionsCommand extends Command
         while ($connection->isTransactionActive()) {
             try {
                 $connection->rollBack();
-            } catch (\Exception $e) {
+            } catch (Exception) {
                 // If rollback fails due to missing savepoint, close the connection
                 // Doctrine will automatically reconnect on next use
                 try {
                     $connection->close();
-                } catch (\Exception $closeException) {
-                    $io->warning('Could not close database connection: ' . $closeException->getMessage());
+                } catch (Exception $closeException) {
+                    $symfonyStyle->warning('Could not close database connection: ' . $closeException->getMessage());
                 }
                 break; // Exit loop to avoid infinite attempts
             }
@@ -83,26 +84,26 @@ class SetupPermissionsCommand extends Command
         $this->entityManager->clear();
 
         // Create permissions
-        $io->section('Creating Permissions');
-        $this->createPermissions($io);
+        $symfonyStyle->section('Creating Permissions');
+        $this->createPermissions($symfonyStyle);
 
         // Create roles
-        $io->section('Creating Roles');
-        $this->createRoles($io);
+        $symfonyStyle->section('Creating Roles');
+        $this->createRoles($symfonyStyle);
 
         // Create admin user if requested
         if ($input->getOption('admin-email') && $input->getOption('admin-password')) {
-            $io->section('Creating Admin User');
+            $symfonyStyle->section('Creating Admin User');
             $this->createAdminUser(
                 $input->getOption('admin-email'),
                 $input->getOption('admin-password'),
                 $input->getOption('admin-firstname'),
                 $input->getOption('admin-lastname'),
-                $io
+                $symfonyStyle
             );
         }
 
-        $io->success('Permissions and roles setup completed successfully!');
+        $symfonyStyle->success('Permissions and roles setup completed successfully!');
 
         return Command::SUCCESS;
     }
@@ -118,7 +119,7 @@ class SetupPermissionsCommand extends Command
         $this->entityManager->createQuery('DELETE FROM App\Entity\Role')->execute();
     }
 
-    private function createPermissions(SymfonyStyle $io): void
+    private function createPermissions(SymfonyStyle $symfonyStyle): void
     {
         $permissions = [
             // User permissions
@@ -185,7 +186,7 @@ class SetupPermissionsCommand extends Command
         $count = 0;
         foreach ($permissions as $permData) {
             $existingPerm = $this->permissionRepository->findByName($permData[0]);
-            if (!$existingPerm) {
+            if (!$existingPerm instanceof Permission) {
                 $permission = new Permission();
                 $permission->setName($permData[0]);
                 $permission->setDescription($permData[1]);
@@ -200,14 +201,14 @@ class SetupPermissionsCommand extends Command
 
         try {
             $this->entityManager->flush();
-            $io->success("Created $count permissions.");
-        } catch (\Exception $e) {
-            $io->error("Failed to create permissions: " . $e->getMessage());
+            $symfonyStyle->success("Created $count permissions.");
+        } catch (Exception $e) {
+            $symfonyStyle->error("Failed to create permissions: " . $e->getMessage());
             throw $e;
         }
     }
 
-    private function createRoles(SymfonyStyle $io): void
+    private function createRoles(SymfonyStyle $symfonyStyle): void
     {
         $roles = [
             'ROLE_USER' => [
@@ -246,7 +247,7 @@ class SetupPermissionsCommand extends Command
         $count = 0;
         foreach ($roles as $roleName => $roleData) {
             $existingRole = $this->roleRepository->findByName($roleName);
-            if (!$existingRole) {
+            if (!$existingRole instanceof Role) {
                 $role = new Role();
                 $role->setName($roleName);
                 $role->setDescription($roleData['description']);
@@ -256,13 +257,13 @@ class SetupPermissionsCommand extends Command
                 if ($roleData['permissions'] === '*') {
                     // Add all permissions for admin
                     $allPermissions = $this->permissionRepository->findAll();
-                    foreach ($allPermissions as $permission) {
-                        $role->addPermission($permission);
+                    foreach ($allPermissions as $allPermission) {
+                        $role->addPermission($allPermission);
                     }
                 } else {
                     foreach ($roleData['permissions'] as $permName) {
                         $permission = $this->permissionRepository->findByName($permName);
-                        if ($permission) {
+                        if ($permission instanceof Permission) {
                             $role->addPermission($permission);
                         }
                     }
@@ -275,18 +276,18 @@ class SetupPermissionsCommand extends Command
 
         try {
             $this->entityManager->flush();
-            $io->success("Created $count roles.");
-        } catch (\Exception $e) {
-            $io->error("Failed to create roles: " . $e->getMessage());
+            $symfonyStyle->success("Created $count roles.");
+        } catch (Exception $e) {
+            $symfonyStyle->error("Failed to create roles: " . $e->getMessage());
             throw $e;
         }
     }
 
-    private function createAdminUser(string $email, string $password, string $firstName, string $lastName, SymfonyStyle $io): void
+    private function createAdminUser(string $email, string $password, string $firstName, string $lastName, SymfonyStyle $symfonyStyle): void
     {
         $existingUser = $this->userRepository->findOneBy(['email' => $email]);
         if ($existingUser) {
-            $io->warning("User with email $email already exists.");
+            $symfonyStyle->warning("User with email $email already exists.");
             return;
         }
 
@@ -299,16 +300,16 @@ class SetupPermissionsCommand extends Command
         $user->setIsActive(true);
         $user->setIsVerified(true);
 
-        $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
+        $hashedPassword = $this->userPasswordHasher->hashPassword($user, $password);
         $user->setPassword($hashedPassword);
 
         $this->entityManager->persist($user);
 
         try {
             $this->entityManager->flush();
-            $io->success("Admin user created: $firstName $lastName ($email)");
-        } catch (\Exception $e) {
-            $io->error("Failed to create admin user: " . $e->getMessage());
+            $symfonyStyle->success("Admin user created: $firstName $lastName ($email)");
+        } catch (Exception $e) {
+            $symfonyStyle->error("Failed to create admin user: " . $e->getMessage());
             throw $e;
         }
     }

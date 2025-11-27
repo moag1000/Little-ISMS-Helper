@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use App\Repository\ComplianceRequirementRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,7 +20,7 @@ class ComplianceRequirement
 
     #[ORM\ManyToOne(inversedBy: 'requirements')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?ComplianceFramework $framework = null;
+    private ?ComplianceFramework $complianceFramework = null;
 
     #[ORM\Column(length: 50)]
     private ?string $requirementId = null;
@@ -40,7 +42,7 @@ class ComplianceRequirement
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'detailedRequirements')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
-    private ?ComplianceRequirement $parentRequirement = null;
+    private ?ComplianceRequirement $complianceRequirement = null;
 
     /**
      * @var Collection<int, ComplianceRequirement>
@@ -71,17 +73,17 @@ class ComplianceRequirement
     private ?array $dataSourceMapping = null; // Maps to Asset, Risk, BCM, etc.
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     public function __construct()
     {
         $this->mappedControls = new ArrayCollection();
         $this->trainings = new ArrayCollection();
         $this->detailedRequirements = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -91,12 +93,12 @@ class ComplianceRequirement
 
     public function getFramework(): ?ComplianceFramework
     {
-        return $this->framework;
+        return $this->complianceFramework;
     }
 
-    public function setFramework(?ComplianceFramework $framework): static
+    public function setFramework(?ComplianceFramework $complianceFramework): static
     {
-        $this->framework = $framework;
+        $this->complianceFramework = $complianceFramework;
         return $this;
     }
 
@@ -248,23 +250,23 @@ class ComplianceRequirement
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -282,12 +284,12 @@ class ComplianceRequirement
         $totalImplementation = 0;
         $implementedControls = 0;
 
-        foreach ($this->mappedControls as $control) {
-            if ($control->getImplementationStatus() === 'implemented') {
-                $totalImplementation += $control->getImplementationPercentage() ?? 100;
+        foreach ($this->mappedControls as $mappedControl) {
+            if ($mappedControl->getImplementationStatus() === 'implemented') {
+                $totalImplementation += $mappedControl->getImplementationPercentage() ?? 100;
                 $implementedControls++;
-            } elseif ($control->getImplementationStatus() === 'in_progress') {
-                $totalImplementation += ($control->getImplementationPercentage() ?? 50);
+            } elseif ($mappedControl->getImplementationStatus() === 'in_progress') {
+                $totalImplementation += ($mappedControl->getImplementationPercentage() ?? 50);
             }
         }
 
@@ -320,12 +322,12 @@ class ComplianceRequirement
 
     public function getParentRequirement(): ?self
     {
-        return $this->parentRequirement;
+        return $this->complianceRequirement;
     }
 
     public function setParentRequirement(?self $parentRequirement): static
     {
-        $this->parentRequirement = $parentRequirement;
+        $this->complianceRequirement = $parentRequirement;
         return $this;
     }
 
@@ -337,22 +339,20 @@ class ComplianceRequirement
         return $this->detailedRequirements;
     }
 
-    public function addDetailedRequirement(ComplianceRequirement $detailedRequirement): static
+    public function addDetailedRequirement(ComplianceRequirement $complianceRequirement): static
     {
-        if (!$this->detailedRequirements->contains($detailedRequirement)) {
-            $this->detailedRequirements->add($detailedRequirement);
-            $detailedRequirement->setParentRequirement($this);
+        if (!$this->detailedRequirements->contains($complianceRequirement)) {
+            $this->detailedRequirements->add($complianceRequirement);
+            $complianceRequirement->setParentRequirement($this);
         }
 
         return $this;
     }
 
-    public function removeDetailedRequirement(ComplianceRequirement $detailedRequirement): static
+    public function removeDetailedRequirement(ComplianceRequirement $complianceRequirement): static
     {
-        if ($this->detailedRequirements->removeElement($detailedRequirement)) {
-            if ($detailedRequirement->getParentRequirement() === $this) {
-                $detailedRequirement->setParentRequirement(null);
-            }
+        if ($this->detailedRequirements->removeElement($complianceRequirement) && $complianceRequirement->getParentRequirement() === $this) {
+            $complianceRequirement->setParentRequirement(null);
         }
 
         return $this;
@@ -363,7 +363,7 @@ class ComplianceRequirement
      */
     public function isCoreRequirement(): bool
     {
-        return $this->parentRequirement === null && $this->requirementType === 'core';
+        return $this->complianceRequirement === null && $this->requirementType === 'core';
     }
 
     /**

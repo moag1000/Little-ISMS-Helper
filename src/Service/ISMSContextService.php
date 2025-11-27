@@ -2,6 +2,11 @@
 
 namespace App\Service;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+use DateTimeImmutable;
+use App\Entity\Tenant;
+use DateTimeInterface;
+use DateTime;
 use App\Entity\ISMSContext;
 use App\Repository\ISMSContextRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,10 +15,10 @@ use Symfony\Bundle\SecurityBundle\Security;
 class ISMSContextService
 {
     public function __construct(
-        private ISMSContextRepository $contextRepository,
-        private EntityManagerInterface $entityManager,
-        private ?CorporateStructureService $corporateStructureService = null,
-        private ?Security $security = null
+        private readonly ISMSContextRepository $ismsContextRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ?CorporateStructureService $corporateStructureService = null,
+        private readonly ?Security $security = null
     ) {}
 
     /**
@@ -29,9 +34,9 @@ class ISMSContextService
         // Try to get context for current tenant
         $context = null;
         if ($currentTenant) {
-            $context = $this->contextRepository->getContextForTenant($currentTenant);
+            $context = $this->ismsContextRepository->getContextForTenant($currentTenant);
         } else {
-            $context = $this->contextRepository->getCurrentContext();
+            $context = $this->ismsContextRepository->getCurrentContext();
         }
 
         if (!$context) {
@@ -55,12 +60,12 @@ class ISMSContextService
      */
     private function getCurrentUserTenant(): ?object
     {
-        if (!$this->security) {
+        if (!$this->security instanceof Security) {
             return null;
         }
 
         $user = $this->security->getUser();
-        if (!$user || !method_exists($user, 'getTenant')) {
+        if (!$user instanceof UserInterface || !method_exists($user, 'getTenant')) {
             return null;
         }
 
@@ -71,15 +76,15 @@ class ISMSContextService
      * Save or update ISMS context
      * Automatically syncs organization name from tenant if available
      */
-    public function saveContext(ISMSContext $context): void
+    public function saveContext(ISMSContext $ismsContext): void
     {
         // Auto-sync organization name from tenant
-        $this->syncOrganizationNameFromTenant($context);
+        $this->syncOrganizationNameFromTenant($ismsContext);
 
-        $context->setUpdatedAt(new \DateTimeImmutable());
+        $ismsContext->setUpdatedAt(new DateTimeImmutable());
 
-        if (!$context->getId()) {
-            $this->entityManager->persist($context);
+        if (!$ismsContext->getId()) {
+            $this->entityManager->persist($ismsContext);
         }
 
         $this->entityManager->flush();
@@ -89,35 +94,35 @@ class ISMSContextService
      * Sync organization name from associated tenant
      * This prevents redundancy between Tenant.name and ISMSContext.organizationName
      */
-    public function syncOrganizationNameFromTenant(ISMSContext $context): void
+    public function syncOrganizationNameFromTenant(ISMSContext $ismsContext): void
     {
-        $tenant = $context->getTenant();
-        if ($tenant) {
-            $context->setOrganizationName($tenant->getName());
+        $tenant = $ismsContext->getTenant();
+        if ($tenant instanceof Tenant) {
+            $ismsContext->setOrganizationName($tenant->getName());
         }
     }
 
     /**
      * Calculate completeness percentage of ISMS context
      */
-    public function calculateCompleteness(ISMSContext $context): int
+    public function calculateCompleteness(ISMSContext $ismsContext): int
     {
         $fields = [
-            $context->getOrganizationName(),
-            $context->getIsmsScope(),
-            $context->getExternalIssues(),
-            $context->getInternalIssues(),
-            $context->getInterestedParties(),
-            $context->getInterestedPartiesRequirements(),
-            $context->getLegalRequirements(),
-            $context->getRegulatoryRequirements(),
-            $context->getContractualObligations(),
-            $context->getIsmsPolicy(),
-            $context->getRolesAndResponsibilities(),
+            $ismsContext->getOrganizationName(),
+            $ismsContext->getIsmsScope(),
+            $ismsContext->getExternalIssues(),
+            $ismsContext->getInternalIssues(),
+            $ismsContext->getInterestedParties(),
+            $ismsContext->getInterestedPartiesRequirements(),
+            $ismsContext->getLegalRequirements(),
+            $ismsContext->getRegulatoryRequirements(),
+            $ismsContext->getContractualObligations(),
+            $ismsContext->getIsmsPolicy(),
+            $ismsContext->getRolesAndResponsibilities(),
         ];
 
         $totalFields = count($fields);
-        $filledFields = count(array_filter($fields, fn($field) => !empty($field)));
+        $filledFields = count(array_filter($fields, fn(?string $field): bool => !in_array($field, [null, '', '0'], true)));
 
         return $totalFields > 0 ? (int)(($filledFields / $totalFields) * 100) : 0;
     }
@@ -125,65 +130,65 @@ class ISMSContextService
     /**
      * Check if review is due
      */
-    public function isReviewDue(ISMSContext $context): bool
+    public function isReviewDue(ISMSContext $ismsContext): bool
     {
-        $nextReview = $context->getNextReviewDate();
+        $nextReview = $ismsContext->getNextReviewDate();
 
-        if (!$nextReview) {
+        if (!$nextReview instanceof DateTimeInterface) {
             return true; // No review date set, consider it due
         }
 
-        return $nextReview <= new \DateTime();
+        return $nextReview <= new DateTime();
     }
 
     /**
      * Get days until next review
      */
-    public function getDaysUntilReview(ISMSContext $context): ?int
+    public function getDaysUntilReview(ISMSContext $ismsContext): ?int
     {
-        $nextReview = $context->getNextReviewDate();
+        $nextReview = $ismsContext->getNextReviewDate();
 
-        if (!$nextReview) {
+        if (!$nextReview instanceof DateTimeInterface) {
             return null;
         }
 
-        $now = new \DateTime();
-        $interval = $now->diff($nextReview);
+        $now = new DateTime();
+        $dateInterval = $now->diff($nextReview);
 
-        return $interval->invert ? -$interval->days : $interval->days;
+        return $dateInterval->invert ? -$dateInterval->days : $dateInterval->days;
     }
 
     /**
      * Schedule next review (default: 1 year from last review or today)
      */
-    public function scheduleNextReview(ISMSContext $context, ?\DateTime $baseDate = null): void
+    public function scheduleNextReview(ISMSContext $ismsContext, ?DateTime $baseDate = null): void
     {
-        $baseDate = $baseDate ?? $context->getLastReviewDate() ?? new \DateTime();
+        $baseDate ??= $ismsContext->getLastReviewDate() ?? new DateTime();
         $nextReview = (clone $baseDate)->modify('+1 year');
 
-        $context->setNextReviewDate($nextReview);
+        $ismsContext->setNextReviewDate($nextReview);
     }
 
     /**
      * Validate ISMS context for completeness
      */
-    public function validateContext(ISMSContext $context): array
+    public function validateContext(ISMSContext $ismsContext): array
     {
         $errors = [];
 
-        if (empty($context->getOrganizationName())) {
+        if (in_array($ismsContext->getOrganizationName(), [null, '', '0'], true)) {
             $errors[] = 'Organisationsname ist erforderlich.';
         }
 
-        if (empty($context->getIsmsScope())) {
+        if (in_array($ismsContext->getIsmsScope(), [null, '', '0'], true)) {
             $errors[] = 'ISMS-Geltungsbereich ist erforderlich.';
         }
 
-        if (empty($context->getIsmsPolicy())) {
+        if (in_array($ismsContext->getIsmsPolicy(), [null, '', '0'], true)) {
             $errors[] = 'ISMS-Richtlinie ist erforderlich.';
         }
 
-        if (empty($context->getRolesAndResponsibilities())) {
+        if (in_array($ismsContext->getRolesAndResponsibilities(), [null, '', '0'], true)) {
             $errors[] = 'Rollen und Verantwortlichkeiten sind erforderlich.';
         }
 
@@ -194,40 +199,40 @@ class ISMSContextService
      * Get effective ISMS context considering corporate structure
      * Returns inherited context if governance model is HIERARCHICAL
      */
-    public function getEffectiveContext(?ISMSContext $context = null): ISMSContext
+    public function getEffectiveContext(?ISMSContext $ismsContext = null): ISMSContext
     {
-        if (!$context) {
-            $context = $this->getCurrentContext();
+        if (!$ismsContext instanceof ISMSContext) {
+            $ismsContext = $this->getCurrentContext();
         }
 
-        $tenant = $context->getTenant();
+        $tenant = $ismsContext->getTenant();
 
         // If no corporate structure service or no tenant, return as-is
-        if (!$this->corporateStructureService || !$tenant) {
-            return $context;
+        if (!$this->corporateStructureService instanceof CorporateStructureService || !$tenant instanceof Tenant) {
+            return $ismsContext;
         }
 
         // Use corporate structure service to get effective context
         $effectiveContext = $this->corporateStructureService->getEffectiveISMSContext($tenant);
 
-        return $effectiveContext ?? $context;
+        return $effectiveContext ?? $ismsContext;
     }
 
     /**
      * Get information about context inheritance
      * Returns array with: isInherited, inheritedFrom, effectiveContext
      */
-    public function getContextInheritanceInfo(?ISMSContext $context = null): array
+    public function getContextInheritanceInfo(?ISMSContext $ismsContext = null): array
     {
-        if (!$context) {
-            $context = $this->getCurrentContext();
+        if (!$ismsContext instanceof ISMSContext) {
+            $ismsContext = $this->getCurrentContext();
         }
 
-        $tenant = $context->getTenant();
-        $effectiveContext = $this->getEffectiveContext($context);
+        $tenant = $ismsContext->getTenant();
+        $effectiveContext = $this->getEffectiveContext($ismsContext);
 
         // Check if contexts are different (null-safe comparison)
-        $contextId = $context->getId();
+        $contextId = $ismsContext->getId();
         $effectiveContextId = $effectiveContext->getId();
         $isInherited = $contextId !== null && $effectiveContextId !== null && $effectiveContextId !== $contextId;
         $inheritedFrom = $isInherited ? $effectiveContext->getTenant() : null;
@@ -236,8 +241,8 @@ class ISMSContextService
             'isInherited' => $isInherited,
             'inheritedFrom' => $inheritedFrom,
             'effectiveContext' => $effectiveContext,
-            'ownContext' => $context,
-            'hasParent' => $tenant && $tenant->getParent() !== null,
+            'ownContext' => $ismsContext,
+            'hasParent' => $tenant instanceof Tenant && $tenant->getParent() instanceof Tenant,
         ];
     }
 
@@ -245,16 +250,16 @@ class ISMSContextService
      * Check if current user's tenant can edit this context
      * Subsidiaries with HIERARCHICAL governance can only view, not edit
      */
-    public function canEditContext(ISMSContext $context): bool
+    public function canEditContext(ISMSContext $ismsContext): bool
     {
-        $tenant = $context->getTenant();
+        $tenant = $ismsContext->getTenant();
 
-        if (!$tenant || !$this->security) {
+        if (!$tenant instanceof Tenant || !$this->security instanceof Security) {
             return true; // Default: allow if no restrictions
         }
 
         $user = $this->security->getUser();
-        if (!$user || !method_exists($user, 'getTenant')) {
+        if (!$user instanceof UserInterface || !method_exists($user, 'getTenant')) {
             return true;
         }
 
@@ -265,7 +270,7 @@ class ISMSContextService
 
         // If different tenant, check corporate access
         if ($userTenant->getId() !== $tenant->getId()) {
-            if (!$this->corporateStructureService) {
+            if (!$this->corporateStructureService instanceof CorporateStructureService) {
                 return false;
             }
 
@@ -273,7 +278,7 @@ class ISMSContextService
         }
 
         // Same tenant: Check if using inherited context
-        $inheritanceInfo = $this->getContextInheritanceInfo($context);
+        $inheritanceInfo = $this->getContextInheritanceInfo($ismsContext);
 
         // If context is inherited, user cannot edit (must edit at parent level)
         return !$inheritanceInfo['isInherited'];

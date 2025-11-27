@@ -2,6 +2,8 @@
 
 namespace App\Security;
 
+use DateTimeImmutable;
+use TheNetworg\OAuth2\Client\Provider\AzureResourceOwner;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -21,10 +23,10 @@ use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface
 class AzureOAuthAuthenticator extends OAuth2Authenticator implements AuthenticationEntryPointInterface
 {
     public function __construct(
-        private ClientRegistry $clientRegistry,
-        private EntityManagerInterface $entityManager,
-        private UserRepository $userRepository,
-        private RouterInterface $router
+        private readonly ClientRegistry $clientRegistry,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly UserRepository $userRepository,
+        private readonly RouterInterface $router
     ) {
     }
 
@@ -36,26 +38,26 @@ class AzureOAuthAuthenticator extends OAuth2Authenticator implements Authenticat
 
     public function authenticate(Request $request): Passport
     {
-        $client = $this->clientRegistry->getClient('azure');
-        $accessToken = $this->fetchAccessToken($client);
+        $oAuth2Client = $this->clientRegistry->getClient('azure');
+        $accessToken = $this->fetchAccessToken($oAuth2Client);
 
         return new SelfValidatingPassport(
-            new UserBadge($accessToken->getToken(), function() use ($accessToken, $client) {
-                /** @var \TheNetworg\OAuth2\Client\Provider\AzureResourceOwner $azureUser */
-                $azureUser = $client->fetchUserFromToken($accessToken);
+            new UserBadge($accessToken->getToken(), function() use ($accessToken, $oAuth2Client) {
+                /** @var AzureResourceOwner $resourceOwner */
+                $resourceOwner = $oAuth2Client->fetchUserFromToken($accessToken);
 
                 // Extract user data from Azure
-                $email = $azureUser->claim('email') ?? $azureUser->claim('upn');
-                $azureObjectId = $azureUser->getId();
-                $firstName = $azureUser->claim('given_name') ?? '';
-                $lastName = $azureUser->claim('family_name') ?? '';
-                $jobTitle = $azureUser->claim('jobTitle');
-                $department = $azureUser->claim('department');
+                $email = $resourceOwner->claim('email') ?? $resourceOwner->claim('upn');
+                $azureObjectId = $resourceOwner->getId();
+                $firstName = $resourceOwner->claim('given_name') ?? '';
+                $lastName = $resourceOwner->claim('family_name') ?? '';
+                $jobTitle = $resourceOwner->claim('jobTitle');
+                $department = $resourceOwner->claim('department');
 
                 // Find or create user
                 $user = $this->userRepository->findByAzureObjectId($azureObjectId);
 
-                if (!$user) {
+                if (!$user instanceof User) {
                     $user = $this->userRepository->findOneBy(['email' => $email]);
                 }
 
@@ -68,7 +70,7 @@ class AzureOAuthAuthenticator extends OAuth2Authenticator implements Authenticat
 
                 // Update user data from Azure
                 $user->setAzureObjectId($azureObjectId);
-                $user->setAzureTenantId($azureUser->claim('tid'));
+                $user->setAzureTenantId($resourceOwner->claim('tid'));
                 $user->setAuthProvider('azure_oauth');
                 $user->setFirstName($firstName);
                 $user->setLastName($lastName);
@@ -82,14 +84,14 @@ class AzureOAuthAuthenticator extends OAuth2Authenticator implements Authenticat
 
                 // Store additional Azure metadata
                 $user->setAzureMetadata([
-                    'upn' => $azureUser->claim('upn'),
+                    'upn' => $resourceOwner->claim('upn'),
                     'oid' => $azureObjectId,
-                    'tid' => $azureUser->claim('tid'),
-                    'preferred_username' => $azureUser->claim('preferred_username'),
+                    'tid' => $resourceOwner->claim('tid'),
+                    'preferred_username' => $resourceOwner->claim('preferred_username'),
                 ]);
 
-                $user->setLastLoginAt(new \DateTimeImmutable());
-                $user->setUpdatedAt(new \DateTimeImmutable());
+                $user->setLastLoginAt(new DateTimeImmutable());
+                $user->setUpdatedAt(new DateTimeImmutable());
 
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();

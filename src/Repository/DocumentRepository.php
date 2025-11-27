@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Tenant;
 use App\Entity\Document;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -59,7 +60,7 @@ class DocumentRepository extends ServiceEntityRepository
     /**
      * Find all documents for a tenant (own documents only)
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find documents for
+     * @param Tenant $tenant The tenant to find documents for
      * @return Document[] Array of Document entities
      */
     public function findByTenant($tenant): array
@@ -77,8 +78,8 @@ class DocumentRepository extends ServiceEntityRepository
      * Find documents by tenant including all ancestors (for hierarchical governance)
      * This allows viewing inherited documents from parent companies, grandparents, etc.
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find documents for
-     * @param \App\Entity\Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
+     * @param Tenant $tenant The tenant to find documents for
+     * @param Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
      * @return Document[] Array of Document entities (own + inherited from all ancestors)
      */
     public function findByTenantIncludingParent($tenant, $parentTenant = null): array
@@ -86,18 +87,18 @@ class DocumentRepository extends ServiceEntityRepository
         // Get all ancestors (parent, grandparent, great-grandparent, etc.)
         $ancestors = $tenant->getAllAncestors();
 
-        $qb = $this->createQueryBuilder('d')
+        $queryBuilder = $this->createQueryBuilder('d')
             ->where('d.tenant = :tenant')
             ->andWhere('d.isArchived = false')
             ->setParameter('tenant', $tenant);
 
         // Include documents from all ancestors in the hierarchy
         if (!empty($ancestors)) {
-            $qb->orWhere('d.tenant IN (:ancestors) AND d.isArchived = false')
+            $queryBuilder->orWhere('d.tenant IN (:ancestors) AND d.isArchived = false')
                ->setParameter('ancestors', $ancestors);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('d.uploadedAt', 'DESC')
             ->getQuery()
             ->getResult();
@@ -106,7 +107,7 @@ class DocumentRepository extends ServiceEntityRepository
     /**
      * Find documents by category for a specific tenant
      *
-     * @param \App\Entity\Tenant $tenant The tenant
+     * @param Tenant $tenant The tenant
      * @param string $category Document category
      * @return Document[] Array of Document entities
      */
@@ -127,7 +128,7 @@ class DocumentRepository extends ServiceEntityRepository
      * Find documents by tenant including all subsidiaries (for corporate parent view)
      * This allows viewing aggregated documents from all subsidiary companies
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find documents for
+     * @param Tenant $tenant The tenant to find documents for
      * @return Document[] Array of Document entities (own + from all subsidiaries)
      */
     public function findByTenantIncludingSubsidiaries($tenant): array
@@ -135,18 +136,18 @@ class DocumentRepository extends ServiceEntityRepository
         // Get all subsidiaries recursively
         $subsidiaries = $tenant->getAllSubsidiaries();
 
-        $qb = $this->createQueryBuilder('d')
+        $queryBuilder = $this->createQueryBuilder('d')
             ->where('d.tenant = :tenant')
             ->andWhere('d.isArchived = false')
             ->setParameter('tenant', $tenant);
 
         // Include documents from all subsidiaries in the hierarchy
         if (!empty($subsidiaries)) {
-            $qb->orWhere('d.tenant IN (:subsidiaries) AND d.isArchived = false')
+            $queryBuilder->orWhere('d.tenant IN (:subsidiaries) AND d.isArchived = false')
                ->setParameter('subsidiaries', $subsidiaries);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('d.uploadedAt', 'DESC')
             ->getQuery()
             ->getResult();

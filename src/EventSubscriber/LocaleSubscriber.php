@@ -26,16 +26,16 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class LocaleSubscriber implements EventSubscriberInterface
 {
-    public function __construct(private string $defaultLocale = 'de')
+    public function __construct(private readonly string $defaultLocale = 'de')
     {
     }
 
-    public function onKernelRequest(RequestEvent $event): void
+    public function onKernelRequest(RequestEvent $requestEvent): void
     {
-        $request = $event->getRequest();
+        $request = $requestEvent->getRequest();
 
         // Skip subrequests
-        if (!$event->isMainRequest()) {
+        if (!$requestEvent->isMainRequest()) {
             return;
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use DateTimeImmutable;
 use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\Tenant;
 use App\Entity\ComplianceRequirement;
@@ -26,24 +27,20 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
 
     /**
      * Find or create fulfillment record for tenant and requirement
-     *
-     * @param Tenant $tenant
-     * @param ComplianceRequirement $requirement
-     * @return ComplianceRequirementFulfillment
      */
     public function findOrCreateForTenantAndRequirement(
         Tenant $tenant,
-        ComplianceRequirement $requirement
+        ComplianceRequirement $complianceRequirement
     ): ComplianceRequirementFulfillment {
         $fulfillment = $this->findOneBy([
             'tenant' => $tenant,
-            'requirement' => $requirement,
+            'requirement' => $complianceRequirement,
         ]);
 
         if (!$fulfillment) {
             $fulfillment = new ComplianceRequirementFulfillment();
             $fulfillment->setTenant($tenant);
-            $fulfillment->setRequirement($requirement);
+            $fulfillment->setRequirement($complianceRequirement);
         }
 
         return $fulfillment;
@@ -52,7 +49,6 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
     /**
      * Get all fulfillments for a tenant (own only, no inheritance)
      *
-     * @param Tenant $tenant
      * @return ComplianceRequirementFulfillment[]
      */
     public function findByTenant(Tenant $tenant): array
@@ -70,7 +66,7 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
      */
     public function findByTenantIncludingParent(Tenant $tenant, ?Tenant $parent = null): array
     {
-        if (!$parent) {
+        if (!$parent instanceof Tenant) {
             return $this->findByTenant($tenant);
         }
 
@@ -87,17 +83,15 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
     /**
      * Get all fulfillments for a framework and tenant
      *
-     * @param ComplianceFramework $framework
-     * @param Tenant $tenant
      * @return ComplianceRequirementFulfillment[]
      */
-    public function findByFrameworkAndTenant(ComplianceFramework $framework, Tenant $tenant): array
+    public function findByFrameworkAndTenant(ComplianceFramework $complianceFramework, Tenant $tenant): array
     {
         return $this->createQueryBuilder('f')
             ->join('f.requirement', 'r')
             ->where('r.framework = :framework')
             ->andWhere('f.tenant = :tenant')
-            ->setParameter('framework', $framework)
+            ->setParameter('framework', $complianceFramework)
             ->setParameter('tenant', $tenant)
             ->orderBy('r.requirementId', 'ASC')
             ->getQuery()
@@ -107,18 +101,16 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
     /**
      * Calculate average fulfillment percentage for a framework and tenant
      *
-     * @param ComplianceFramework $framework
-     * @param Tenant $tenant
      * @return float Average percentage (0-100)
      */
-    public function getAverageFulfillmentPercentage(ComplianceFramework $framework, Tenant $tenant): float
+    public function getAverageFulfillmentPercentage(ComplianceFramework $complianceFramework, Tenant $tenant): float
     {
         $result = $this->createQueryBuilder('f')
             ->select('AVG(CASE WHEN f.applicable = true THEN f.fulfillmentPercentage ELSE 100 END) as avg_percentage')
             ->join('f.requirement', 'r')
             ->where('r.framework = :framework')
             ->andWhere('f.tenant = :tenant')
-            ->setParameter('framework', $framework)
+            ->setParameter('framework', $complianceFramework)
             ->setParameter('tenant', $tenant)
             ->getQuery()
             ->getSingleScalarResult();
@@ -129,7 +121,6 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
     /**
      * Get fulfillments that are overdue for review
      *
-     * @param Tenant $tenant
      * @return ComplianceRequirementFulfillment[]
      */
     public function findOverdueForReview(Tenant $tenant): array
@@ -138,7 +129,7 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
             ->where('f.tenant = :tenant')
             ->andWhere('f.nextReviewDate < :now')
             ->setParameter('tenant', $tenant)
-            ->setParameter('now', new \DateTimeImmutable())
+            ->setParameter('now', new DateTimeImmutable())
             ->orderBy('f.nextReviewDate', 'ASC')
             ->getQuery()
             ->getResult();
@@ -147,8 +138,6 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
     /**
      * Get fulfillments by status
      *
-     * @param Tenant $tenant
-     * @param string $status
      * @return ComplianceRequirementFulfillment[]
      */
     public function findByStatus(Tenant $tenant, string $status): array
@@ -165,14 +154,13 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
     /**
      * Get compliance statistics for a tenant
      *
-     * @param Tenant $tenant
      * @return array{total: int, applicable: int, not_applicable: int, fully_implemented: int, in_progress: int, not_started: int, avg_fulfillment: float}
      */
     public function getComplianceStats(Tenant $tenant): array
     {
-        $qb = $this->createQueryBuilder('f');
+        $queryBuilder = $this->createQueryBuilder('f');
 
-        $result = $qb
+        $result = $queryBuilder
             ->select([
                 'COUNT(f.id) as total',
                 'SUM(CASE WHEN f.applicable = true THEN 1 ELSE 0 END) as applicable',

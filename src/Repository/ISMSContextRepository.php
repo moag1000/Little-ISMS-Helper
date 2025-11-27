@@ -49,7 +49,7 @@ class ISMSContextRepository extends ServiceEntityRepository
      */
     public function getContextForTenant(?Tenant $tenant): ?ISMSContext
     {
-        if (!$tenant) {
+        if (!$tenant instanceof Tenant) {
             return $this->getCurrentContext();
         }
 

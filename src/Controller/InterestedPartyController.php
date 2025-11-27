@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTimeImmutable;
 use App\Entity\InterestedParty;
 use App\Form\InterestedPartyType;
 use App\Repository\InterestedPartyRepository;
@@ -14,17 +15,15 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/interested-party')]
 class InterestedPartyController extends AbstractController
 {
     public function __construct(
-        private InterestedPartyRepository $interestedPartyRepository,
-        private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator,
-        private TenantContext $tenantContext
+        private readonly InterestedPartyRepository $interestedPartyRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
+        private readonly TenantContext $tenantContext
     ) {}
-
-    #[Route('/', name: 'app_interested_party_index')]
+    #[Route('/interested-party/', name: 'app_interested_party_index')]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
@@ -38,8 +37,7 @@ class InterestedPartyController extends AbstractController
             'high_importance' => $highImportance,
         ]);
     }
-
-    #[Route('/new', name: 'app_interested_party_new')]
+    #[Route('/interested-party/new', name: 'app_interested_party_new')]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -62,8 +60,7 @@ class InterestedPartyController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}', name: 'app_interested_party_show', requirements: ['id' => '\d+'])]
+    #[Route('/interested-party/{id}', name: 'app_interested_party_show', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function show(InterestedParty $interestedParty): Response
     {
@@ -71,8 +68,7 @@ class InterestedPartyController extends AbstractController
             'interested_party' => $interestedParty,
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'app_interested_party_edit', requirements: ['id' => '\d+'])]
+    #[Route('/interested-party/{id}/edit', name: 'app_interested_party_edit', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, InterestedParty $interestedParty): Response
     {
@@ -80,7 +76,7 @@ class InterestedPartyController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $interestedParty->setUpdatedAt(new \DateTimeImmutable());
+            $interestedParty->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('interested_party.success.updated'));
@@ -92,8 +88,7 @@ class InterestedPartyController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}/delete', name: 'app_interested_party_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/interested-party/{id}/delete', name: 'app_interested_party_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, InterestedParty $interestedParty): Response
     {

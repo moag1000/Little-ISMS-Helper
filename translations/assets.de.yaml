@@ -1,0 +1,9 @@
+asset:
+    field:
+        type: Typ
+        status: Status
+        owner: Eigentümer
+        location: Standort
+        availability: Verfügbarkeit
+    message:
+        inherited_asset: 'Geerbtes Asset'

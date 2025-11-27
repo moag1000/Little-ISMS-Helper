@@ -2,6 +2,9 @@
 
 namespace App\EventSubscriber;
 
+use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use App\Service\SecurityEventLogger;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -40,7 +43,7 @@ use Symfony\Component\Security\Http\Event\LogoutEvent;
 class SecurityEventSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly SecurityEventLogger $securityLogger
+        private readonly SecurityEventLogger $securityEventLogger
     ) {}
 
     public static function getSubscribedEvents(): array
@@ -56,62 +59,62 @@ class SecurityEventSubscriber implements EventSubscriberInterface
     /**
      * Security: Log successful login
      */
-    public function onLoginSuccess(LoginSuccessEvent $event): void
+    public function onLoginSuccess(LoginSuccessEvent $loginSuccessEvent): void
     {
-        $user = $event->getUser();
-        $this->securityLogger->logLoginSuccess($user);
+        $user = $loginSuccessEvent->getUser();
+        $this->securityEventLogger->logLoginSuccess($user);
     }
 
     /**
      * Security: Log failed login attempt
      */
-    public function onLoginFailure(LoginFailureEvent $event): void
+    public function onLoginFailure(LoginFailureEvent $loginFailureEvent): void
     {
-        $passport = $event->getPassport();
+        $passport = $loginFailureEvent->getPassport();
 
         // Try to get username from passport, then from request, fallback to 'unknown'
         $username = 'unknown';
-        if ($passport !== null) {
-            $username = $passport->getUser()?->getUserIdentifier() ?? 'unknown';
+        if ($passport instanceof Passport) {
+            $username = $passport->getUser()->getUserIdentifier() ?? 'unknown';
         }
 
         // If still unknown, try to get from request
         if ($username === 'unknown') {
-            $request = $event->getRequest();
+            $request = $loginFailureEvent->getRequest();
             $username = $request->request->get('_username')
                 ?? $request->request->get('email')
                 ?? $request->request->get('username')
                 ?? 'unknown';
         }
 
-        $exception = $event->getException();
-        $this->securityLogger->logLoginFailure($username, $exception->getMessage());
+        $authenticationException = $loginFailureEvent->getException();
+        $this->securityEventLogger->logLoginFailure($username, $authenticationException->getMessage());
     }
 
     /**
      * Security: Log logout
      */
-    public function onLogout(LogoutEvent $event): void
+    public function onLogout(LogoutEvent $logoutEvent): void
     {
-        $token = $event->getToken();
-        if ($token && $token->getUser()) {
-            $this->securityLogger->logLogout($token->getUser());
+        $token = $logoutEvent->getToken();
+        if ($token instanceof TokenInterface && $token->getUser() instanceof UserInterface) {
+            $this->securityEventLogger->logLogout($token->getUser());
         }
     }
 
     /**
      * Security: Log access denied exceptions
      */
-    public function onKernelException(ExceptionEvent $event): void
+    public function onKernelException(ExceptionEvent $exceptionEvent): void
     {
-        $exception = $event->getThrowable();
+        $throwable = $exceptionEvent->getThrowable();
 
         // Log access denied
-        if ($exception instanceof AccessDeniedException) {
-            $request = $event->getRequest();
+        if ($throwable instanceof AccessDeniedException) {
+            $request = $exceptionEvent->getRequest();
             $user = $request->attributes->get('_security_token')?->getUser();
 
-            $this->securityLogger->logAccessDenied(
+            $this->securityEventLogger->logAccessDenied(
                 $request->getPathInfo(),
                 $request->getMethod(),
                 $user
@@ -119,9 +122,9 @@ class SecurityEventSubscriber implements EventSubscriberInterface
         }
 
         // Log authentication failures
-        if ($exception instanceof AuthenticationException) {
-            $this->securityLogger->logSuspiciousActivity(
-                'Authentication exception: ' . $exception->getMessage()
+        if ($throwable instanceof AuthenticationException) {
+            $this->securityEventLogger->logSuspiciousActivity(
+                'Authentication exception: ' . $throwable->getMessage()
             );
         }
     }

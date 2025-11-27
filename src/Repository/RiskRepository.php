@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Tenant;
 use App\Entity\Risk;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -59,7 +60,7 @@ class RiskRepository extends ServiceEntityRepository
     /**
      * Find all risks for a tenant (own risks only)
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find risks for
+     * @param Tenant $tenant The tenant to find risks for
      * @return Risk[] Array of Risk entities
      */
     public function findByTenant($tenant): array
@@ -76,8 +77,8 @@ class RiskRepository extends ServiceEntityRepository
      * Find risks by tenant including all ancestors (for hierarchical governance)
      * This allows viewing inherited risks from parent companies, grandparents, etc.
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find risks for
-     * @param \App\Entity\Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
+     * @param Tenant $tenant The tenant to find risks for
+     * @param Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
      * @return Risk[] Array of Risk entities (own + inherited from all ancestors)
      */
     public function findByTenantIncludingParent($tenant, $parentTenant = null): array
@@ -85,17 +86,17 @@ class RiskRepository extends ServiceEntityRepository
         // Get all ancestors (parent, grandparent, great-grandparent, etc.)
         $ancestors = $tenant->getAllAncestors();
 
-        $qb = $this->createQueryBuilder('r')
+        $queryBuilder = $this->createQueryBuilder('r')
             ->where('r.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
         // Include risks from all ancestors in the hierarchy
         if (!empty($ancestors)) {
-            $qb->orWhere('r.tenant IN (:ancestors)')
+            $queryBuilder->orWhere('r.tenant IN (:ancestors)')
                ->setParameter('ancestors', $ancestors);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('r.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
@@ -104,7 +105,7 @@ class RiskRepository extends ServiceEntityRepository
     /**
      * Get risk statistics for a specific tenant
      *
-     * @param \App\Entity\Tenant $tenant The tenant
+     * @param Tenant $tenant The tenant
      * @return array{total: int, high: int, medium: int, low: int} Risk statistics
      */
     public function getRiskStatsByTenant($tenant): array
@@ -136,7 +137,7 @@ class RiskRepository extends ServiceEntityRepository
     /**
      * Find high risks for a specific tenant
      *
-     * @param \App\Entity\Tenant $tenant The tenant
+     * @param Tenant $tenant The tenant
      * @param int $threshold Minimum risk score threshold (default: 12)
      * @return Risk[] Array of high-risk entities
      */
@@ -157,7 +158,7 @@ class RiskRepository extends ServiceEntityRepository
      * Find risks by tenant including all subsidiaries (for corporate parent view)
      * This allows viewing aggregated risks from all subsidiary companies
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find risks for
+     * @param Tenant $tenant The tenant to find risks for
      * @return Risk[] Array of Risk entities (own + from all subsidiaries)
      */
     public function findByTenantIncludingSubsidiaries($tenant): array
@@ -165,17 +166,17 @@ class RiskRepository extends ServiceEntityRepository
         // Get all subsidiaries recursively
         $subsidiaries = $tenant->getAllSubsidiaries();
 
-        $qb = $this->createQueryBuilder('r')
+        $queryBuilder = $this->createQueryBuilder('r')
             ->where('r.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
         // Include risks from all subsidiaries in the hierarchy
         if (!empty($subsidiaries)) {
-            $qb->orWhere('r.tenant IN (:subsidiaries)')
+            $queryBuilder->orWhere('r.tenant IN (:subsidiaries)')
                ->setParameter('subsidiaries', $subsidiaries);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('r.createdAt', 'DESC')
             ->getQuery()
             ->getResult();

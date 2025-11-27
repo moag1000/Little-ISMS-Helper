@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use DateTime;
 use App\Repository\AuditLogRepository;
 use App\Repository\CryptographicOperationRepository;
 use App\Repository\IncidentRepository;
@@ -17,20 +18,20 @@ use App\Repository\ThreatIntelligenceRepository;
 class SiemExportService
 {
     public function __construct(
-        private AuditLogRepository $auditLogRepository,
-        private IncidentRepository $incidentRepository,
-        private CryptographicOperationRepository $cryptoRepository,
-        private ThreatIntelligenceRepository $threatRepository,
-        private PhysicalAccessLogRepository $physicalAccessRepository
+        private readonly AuditLogRepository $auditLogRepository,
+        private readonly IncidentRepository $incidentRepository,
+        private readonly CryptographicOperationRepository $cryptographicOperationRepository,
+        private readonly ThreatIntelligenceRepository $threatIntelligenceRepository,
+        private readonly PhysicalAccessLogRepository $physicalAccessLogRepository
     ) {}
 
     /**
      * Export events in Common Event Format (CEF)
      * Used by ArcSight, QRadar, Splunk and other SIEM solutions
      */
-    public function exportToCef(string $eventType, ?\DateTime $startDate = null, ?\DateTime $endDate = null): array
+    public function exportToCef(string $eventType, ?DateTime $startDate = null, ?DateTime $endDate = null): array
     {
-        $events = $this->getEvents($eventType, $startDate, $endDate);
+        $events = $this->getEvents($eventType);
         $cefEvents = [];
 
         foreach ($events as $event) {
@@ -44,9 +45,9 @@ class SiemExportService
      * Export events in JSON format
      * Universal format for modern SIEM solutions
      */
-    public function exportToJson(string $eventType, ?\DateTime $startDate = null, ?\DateTime $endDate = null): string
+    public function exportToJson(string $eventType, ?DateTime $startDate = null, ?DateTime $endDate = null): string
     {
-        $events = $this->getEvents($eventType, $startDate, $endDate);
+        $events = $this->getEvents($eventType);
         $jsonEvents = [];
 
         foreach ($events as $event) {
@@ -56,7 +57,7 @@ class SiemExportService
         return json_encode([
             'events' => $jsonEvents,
             'event_type' => $eventType,
-            'export_timestamp' => (new \DateTime())->format('c'),
+            'export_timestamp' => new DateTime()->format('c'),
             'total_events' => count($jsonEvents),
             'date_range' => [
                 'start' => $startDate?->format('c'),
@@ -68,9 +69,9 @@ class SiemExportService
     /**
      * Export events in Syslog format (RFC 5424)
      */
-    public function exportToSyslog(string $eventType, ?\DateTime $startDate = null, ?\DateTime $endDate = null): array
+    public function exportToSyslog(string $eventType, ?DateTime $startDate = null, ?DateTime $endDate = null): array
     {
-        $events = $this->getEvents($eventType, $startDate, $endDate);
+        $events = $this->getEvents($eventType);
         $syslogEvents = [];
 
         foreach ($events as $event) {
@@ -83,10 +84,10 @@ class SiemExportService
     /**
      * Get aggregated security statistics for SIEM dashboards
      */
-    public function getSecurityStatistics(?\DateTime $startDate = null, ?\DateTime $endDate = null): array
+    public function getSecurityStatistics(?DateTime $startDate = null, ?DateTime $endDate = null): array
     {
         return [
-            'timestamp' => (new \DateTime())->format('c'),
+            'timestamp' => new DateTime()->format('c'),
             'period' => [
                 'start' => $startDate?->format('c') ?? 'all_time',
                 'end' => $endDate?->format('c') ?? 'now',
@@ -97,9 +98,9 @@ class SiemExportService
                 'high' => count($this->incidentRepository->findBy(['severity' => 'high'])),
                 'open' => count($this->incidentRepository->findBy(['status' => 'open'])),
             ],
-            'threats' => $this->threatRepository->getStatistics(),
-            'cryptographic_operations' => $this->cryptoRepository->getStatistics($startDate, $endDate),
-            'physical_access' => $this->physicalAccessRepository->getStatistics($startDate, $endDate),
+            'threats' => $this->threatIntelligenceRepository->getStatistics(),
+            'cryptographic_operations' => $this->cryptographicOperationRepository->getStatistics($startDate, $endDate),
+            'physical_access' => $this->physicalAccessLogRepository->getStatistics($startDate, $endDate),
             'audit_events' => [
                 'total' => count($this->auditLogRepository->findAll()),
             ],
@@ -109,17 +110,17 @@ class SiemExportService
     /**
      * Get events by type
      */
-    private function getEvents(string $eventType, ?\DateTime $startDate = null, ?\DateTime $endDate = null): array
+    private function getEvents(string $eventType): array
     {
         return match ($eventType) {
             'incidents' => $this->incidentRepository->findAll(),
-            'threats' => $this->threatRepository->findAll(),
-            'crypto_operations' => $this->cryptoRepository->findAll(),
-            'physical_access' => $this->physicalAccessRepository->findAll(),
+            'threats' => $this->threatIntelligenceRepository->findAll(),
+            'crypto_operations' => $this->cryptographicOperationRepository->findAll(),
+            'physical_access' => $this->physicalAccessLogRepository->findAll(),
             'audit_logs' => $this->auditLogRepository->findAll(),
             'security_incidents' => array_merge(
                 $this->incidentRepository->findBy(['severity' => ['critical', 'high']]),
-                $this->physicalAccessRepository->findRecentSecurityIncidents(30)
+                $this->physicalAccessLogRepository->findRecentSecurityIncidents(30)
             ),
             default => [],
         };
@@ -402,7 +403,7 @@ class SiemExportService
         $severity = 6; // Informational
         $hostname = gethostname() ?: 'little-isms-helper';
         $appName = 'ISMS';
-        $timestamp = (new \DateTime())->format('c');
+        $timestamp = new DateTime()->format('c');
 
         $message = $this->buildSyslogMessage($event, $eventType);
 

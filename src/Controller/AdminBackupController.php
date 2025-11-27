@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use Exception;
+use InvalidArgumentException;
+use DateTimeInterface;
 use App\Service\BackupService;
 use App\Service\RestoreService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,18 +20,17 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/admin/data')]
 #[IsGranted('ROLE_ADMIN')]
 class AdminBackupController extends AbstractController
 {
     public function __construct(
-        private BackupService $backupService,
-        private RestoreService $restoreService,
-        private LoggerInterface $logger
+        private readonly BackupService $backupService,
+        private readonly RestoreService $restoreService,
+        private readonly LoggerInterface $logger
     ) {
     }
 
-    #[Route('/backup', name: 'data_backup_index', methods: ['GET'])]
+    #[Route('/admin/data/backup', name: 'data_backup_index', methods: ['GET'])]
     public function index(): Response
     {
         $backups = $this->backupService->listBackups();
@@ -38,7 +40,7 @@ class AdminBackupController extends AbstractController
         ]);
     }
 
-    #[Route('/backup/create', name: 'data_backup_create', methods: ['POST'])]
+    #[Route('/admin/data/backup/create', name: 'data_backup_create', methods: ['POST'])]
     public function createBackup(Request $request): JsonResponse
     {
         try {
@@ -63,7 +65,7 @@ class AdminBackupController extends AbstractController
                 'filename' => basename($filepath),
                 'statistics' => $backup['statistics'],
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Backup creation failed', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
@@ -76,7 +78,7 @@ class AdminBackupController extends AbstractController
         }
     }
 
-    #[Route('/backup/download/{filename}', name: 'data_backup_download', methods: ['GET'])]
+    #[Route('/admin/data/backup/download/{filename}', name: 'data_backup_download', methods: ['GET'])]
     public function downloadBackup(string $filename): Response
     {
         // Validate filename to prevent directory traversal (accept both backup_ and uploaded_ files)
@@ -91,7 +93,7 @@ class AdminBackupController extends AbstractController
             throw $this->createNotFoundException('Backup file not found');
         }
 
-        $response = new StreamedResponse(function () use ($filepath) {
+        $streamedResponse = new StreamedResponse(function () use ($filepath): void {
             $outputStream = fopen('php://output', 'wb');
             $fileStream = fopen($filepath, 'rb');
             stream_copy_to_stream($fileStream, $outputStream);
@@ -101,14 +103,14 @@ class AdminBackupController extends AbstractController
 
         // Set content type based on file extension
         $contentType = str_ends_with($filename, '.gz') ? 'application/gzip' : 'application/json';
-        $response->headers->set('Content-Type', $contentType);
-        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
-        $response->headers->set('Content-Length', (string) filesize($filepath));
+        $streamedResponse->headers->set('Content-Type', $contentType);
+        $streamedResponse->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        $streamedResponse->headers->set('Content-Length', (string) filesize($filepath));
 
-        return $response;
+        return $streamedResponse;
     }
 
-    #[Route('/backup/upload', name: 'data_backup_upload', methods: ['POST'])]
+    #[Route('/admin/data/backup/upload', name: 'data_backup_upload', methods: ['POST'])]
     public function uploadBackup(Request $request): JsonResponse
     {
         try {
@@ -161,20 +163,20 @@ class AdminBackupController extends AbstractController
         }
     }
 
-    #[Route('/backup/validate/{filename}', name: 'data_backup_validate', methods: ['POST'])]
+    #[Route('/admin/data/backup/validate/{filename}', name: 'data_backup_validate', methods: ['POST'])]
     public function validateBackup(string $filename): JsonResponse
     {
         try {
             // Validate filename
             if (!preg_match('/^(backup_|uploaded_).+\.(json|gz)$/', $filename)) {
-                throw new \InvalidArgumentException('Invalid backup filename');
+                throw new InvalidArgumentException('Invalid backup filename');
             }
 
             $backupDir = $this->getParameter('kernel.project_dir') . '/var/backups';
             $filepath = $backupDir . '/' . $filename;
 
             if (!file_exists($filepath)) {
-                throw new \InvalidArgumentException('Backup file not found');
+                throw new InvalidArgumentException('Backup file not found');
             }
 
             // Load and validate backup
@@ -188,7 +190,7 @@ class AdminBackupController extends AbstractController
                 'warnings' => $validation['warnings'],
                 'metadata' => $backup['metadata'] ?? [],
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Backup validation failed', [
                 'filename' => $filename,
                 'error' => $e->getMessage(),
@@ -201,20 +203,20 @@ class AdminBackupController extends AbstractController
         }
     }
 
-    #[Route('/backup/preview/{filename}', name: 'data_backup_preview', methods: ['GET'])]
+    #[Route('/admin/data/backup/preview/{filename}', name: 'data_backup_preview', methods: ['GET'])]
     public function previewRestore(string $filename): JsonResponse
     {
         try {
             // Validate filename
             if (!preg_match('/^(backup_|uploaded_).+\.(json|gz)$/', $filename)) {
-                throw new \InvalidArgumentException('Invalid backup filename');
+                throw new InvalidArgumentException('Invalid backup filename');
             }
 
             $backupDir = $this->getParameter('kernel.project_dir') . '/var/backups';
             $filepath = $backupDir . '/' . $filename;
 
             if (!file_exists($filepath)) {
-                throw new \InvalidArgumentException('Backup file not found');
+                throw new InvalidArgumentException('Backup file not found');
             }
 
             // Load backup and get preview
@@ -225,7 +227,7 @@ class AdminBackupController extends AbstractController
                 'success' => true,
                 'preview' => $preview,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Backup preview failed', [
                 'filename' => $filename,
                 'error' => $e->getMessage(),
@@ -238,20 +240,20 @@ class AdminBackupController extends AbstractController
         }
     }
 
-    #[Route('/backup/restore/{filename}', name: 'data_backup_restore', methods: ['POST'])]
+    #[Route('/admin/data/backup/restore/{filename}', name: 'data_backup_restore', methods: ['POST'])]
     public function restoreBackup(string $filename, Request $request): JsonResponse
     {
         try {
             // Validate filename
             if (!preg_match('/^(backup_|uploaded_).+\.(json|gz)$/', $filename)) {
-                throw new \InvalidArgumentException('Invalid backup filename');
+                throw new InvalidArgumentException('Invalid backup filename');
             }
 
             $backupDir = $this->getParameter('kernel.project_dir') . '/var/backups';
             $filepath = $backupDir . '/' . $filename;
 
             if (!file_exists($filepath)) {
-                throw new \InvalidArgumentException('Backup file not found');
+                throw new InvalidArgumentException('Backup file not found');
             }
 
             // Get restore options from request
@@ -285,7 +287,7 @@ class AdminBackupController extends AbstractController
                 'warnings' => $result['warnings'],
                 'dry_run' => $result['dry_run'],
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Restore failed', [
                 'filename' => $filename,
                 'error' => $e->getMessage(),
@@ -299,20 +301,20 @@ class AdminBackupController extends AbstractController
         }
     }
 
-    #[Route('/backup/delete/{filename}', name: 'data_backup_delete', methods: ['DELETE'])]
+    #[Route('/admin/data/backup/delete/{filename}', name: 'data_backup_delete', methods: ['DELETE'])]
     public function deleteBackup(string $filename): JsonResponse
     {
         try {
             // Validate filename
             if (!preg_match('/^(backup_|uploaded_).+\.(json|gz)$/', $filename)) {
-                throw new \InvalidArgumentException('Invalid backup filename');
+                throw new InvalidArgumentException('Invalid backup filename');
             }
 
             $backupDir = $this->getParameter('kernel.project_dir') . '/var/backups';
             $filepath = $backupDir . '/' . $filename;
 
             if (!file_exists($filepath)) {
-                throw new \InvalidArgumentException('Backup file not found');
+                throw new InvalidArgumentException('Backup file not found');
             }
 
             unlink($filepath);
@@ -326,7 +328,7 @@ class AdminBackupController extends AbstractController
                 'success' => true,
                 'message' => 'Backup erfolgreich gelöscht',
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Backup deletion failed', [
                 'filename' => $filename,
                 'error' => $e->getMessage(),
@@ -339,11 +341,11 @@ class AdminBackupController extends AbstractController
         }
     }
 
-    #[Route('/export', name: 'data_export_index', methods: ['GET'])]
-    public function exportIndex(EntityManagerInterface $em): Response
+    #[Route('/admin/data/export', name: 'data_export_index', methods: ['GET'])]
+    public function exportIndex(EntityManagerInterface $entityManager): Response
     {
         // Get all entity class names
-        $metadata = $em->getMetadataFactory()->getAllMetadata();
+        $metadata = $entityManager->getMetadataFactory()->getAllMetadata();
         $entities = [];
 
         foreach ($metadata as $meta) {
@@ -358,17 +360,17 @@ class AdminBackupController extends AbstractController
         }
 
         // Sort by name
-        usort($entities, fn($a, $b) => strcmp($a['name'], $b['name']));
+        usort($entities, fn(array $a, array $b): int => strcmp((string) $a['name'], (string) $b['name']));
 
         return $this->render('data_management/export.html.twig', [
             'entities' => $entities,
         ]);
     }
 
-    #[Route('/export/execute', name: 'data_export_execute', methods: ['POST'])]
+    #[Route('/admin/data/export/execute', name: 'data_export_execute', methods: ['POST'])]
     public function exportExecute(
         Request $request,
-        EntityManagerInterface $em,
+        EntityManagerInterface $entityManager,
         TranslatorInterface $translator
     ): Response {
         if (!$this->isCsrfTokenValid('data_export', $request->request->get('_token'))) {
@@ -379,7 +381,7 @@ class AdminBackupController extends AbstractController
         $selectedEntities = $request->request->all('entities') ?? [];
         $format = $request->request->get('format', 'json');
 
-        if (empty($selectedEntities)) {
+        if ($selectedEntities === []) {
             $this->addFlash('error', $translator->trans('data.export.error.no_entities'));
             return $this->redirectToRoute('data_export_index');
         }
@@ -389,24 +391,24 @@ class AdminBackupController extends AbstractController
 
         $exportData = [];
 
-        foreach ($selectedEntities as $entityClass) {
+        foreach ($selectedEntities as $selectedEntity) {
             // Security: Only allow App\Entity namespace
-            if (!str_starts_with($entityClass, 'App\\Entity\\')) {
+            if (!str_starts_with((string) $selectedEntity, 'App\\Entity\\')) {
                 continue;
             }
 
             try {
-                $repository = $em->getRepository($entityClass);
+                $repository = $entityManager->getRepository($selectedEntity);
                 $entities = $repository->findAll();
 
-                $shortName = substr($entityClass, strrpos($entityClass, '\\') + 1);
+                $shortName = substr((string) $selectedEntity, strrpos((string) $selectedEntity, '\\') + 1);
                 $exportData[$shortName] = [];
 
                 foreach ($entities as $entity) {
                     // Convert entity to array (simplified)
-                    $exportData[$shortName][] = $this->entityToArray($entity, $em);
+                    $exportData[$shortName][] = $this->entityToArray($entity, $entityManager);
                 }
-            } catch (\Exception $e) {
+            } catch (Exception) {
                 // Skip entities that can't be exported
                 continue;
             }
@@ -415,18 +417,17 @@ class AdminBackupController extends AbstractController
         // Return response based on format
         if ($format === 'json') {
             return $this->createJsonExportResponse($exportData);
-        } else {
-            return $this->createCsvExportResponse($exportData);
         }
+        return $this->createCsvExportResponse($exportData);
     }
 
-    #[Route('/import', name: 'data_import_index', methods: ['GET'])]
+    #[Route('/admin/data/import', name: 'data_import_index', methods: ['GET'])]
     public function importIndex(): Response
     {
         return $this->render('data_management/import.html.twig');
     }
 
-    #[Route('/import/upload', name: 'data_import_upload', methods: ['POST'])]
+    #[Route('/admin/data/import/upload', name: 'data_import_upload', methods: ['POST'])]
     public function importUpload(
         Request $request,
         TranslatorInterface $translator
@@ -448,14 +449,14 @@ class AdminBackupController extends AbstractController
             $data = json_decode($content, true);
 
             if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new \Exception('Invalid JSON: ' . json_last_error_msg());
+                throw new Exception('Invalid JSON: ' . json_last_error_msg());
             }
 
             // Store data in session for preview
             $request->getSession()->set('import_preview_data', $data);
 
             return $this->redirectToRoute('data_import_preview');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->addFlash('error', $translator->trans('data.import.error.invalid_file', [
                 'error' => $e->getMessage(),
             ]));
@@ -463,7 +464,7 @@ class AdminBackupController extends AbstractController
         }
     }
 
-    #[Route('/import/preview', name: 'data_import_preview', methods: ['GET'])]
+    #[Route('/admin/data/import/preview', name: 'data_import_preview', methods: ['GET'])]
     public function importPreview(Request $request): Response
     {
         $data = $request->getSession()->get('import_preview_data');
@@ -484,10 +485,10 @@ class AdminBackupController extends AbstractController
         ]);
     }
 
-    #[Route('/import/execute', name: 'data_import_execute', methods: ['POST'])]
+    #[Route('/admin/data/import/execute', name: 'data_import_execute', methods: ['POST'])]
     public function importExecute(
         Request $request,
-        EntityManagerInterface $em,
+        EntityManagerInterface $entityManager,
         TranslatorInterface $translator
     ): Response {
         if (!$this->isCsrfTokenValid('data_import_execute', $request->request->get('_token'))) {
@@ -502,9 +503,6 @@ class AdminBackupController extends AbstractController
             return $this->redirectToRoute('data_import_index');
         }
 
-        $imported = 0;
-        $errors = [];
-
         // NOTE: This is a simplified implementation
         // In production, you'd need proper entity creation, validation, and relationship handling
 
@@ -517,22 +515,22 @@ class AdminBackupController extends AbstractController
     /**
      * Convert entity to array (simplified)
      */
-    private function entityToArray($entity, EntityManagerInterface $em): array
+    private function entityToArray(object $entity, EntityManagerInterface $entityManager): array
     {
-        $metadata = $em->getClassMetadata(get_class($entity));
+        $classMetadata = $entityManager->getClassMetadata($entity::class);
         $data = [];
 
-        foreach ($metadata->getFieldNames() as $field) {
+        foreach ($classMetadata->getFieldNames() as $field) {
             try {
-                $value = $metadata->getFieldValue($entity, $field);
+                $value = $classMetadata->getFieldValue($entity, $field);
 
                 // Handle DateTime objects
-                if ($value instanceof \DateTimeInterface) {
+                if ($value instanceof DateTimeInterface) {
                     $value = $value->format('Y-m-d H:i:s');
                 }
 
                 $data[$field] = $value;
-            } catch (\Exception $e) {
+            } catch (Exception) {
                 // Skip fields that can't be accessed
             }
         }
@@ -558,7 +556,7 @@ class AdminBackupController extends AbstractController
      */
     private function createCsvExportResponse(array $data): StreamedResponse
     {
-        $response = new StreamedResponse(function() use ($data) {
+        $streamedResponse = new StreamedResponse(function() use ($data): void {
             $handle = fopen('php://output', 'w');
 
             foreach ($data as $entityName => $entities) {
@@ -567,28 +565,28 @@ class AdminBackupController extends AbstractController
                 }
 
                 // Write entity header
-                fputcsv($handle, ['# ' . $entityName]);
+                fputcsv($handle, ['# ' . $entityName], escape: '\\');
 
                 // Write column headers
                 $headers = array_keys($entities[0]);
-                fputcsv($handle, $headers);
+                fputcsv($handle, $headers, escape: '\\');
 
                 // Write data
                 foreach ($entities as $entity) {
-                    fputcsv($handle, $entity);
+                    fputcsv($handle, $entity, escape: '\\');
                 }
 
                 // Empty line between entities
-                fputcsv($handle, []);
+                fputcsv($handle, [], escape: '\\');
             }
 
             fclose($handle);
         });
 
-        $response->headers->set('Content-Type', 'text/csv');
-        $response->headers->set('Content-Disposition',
+        $streamedResponse->headers->set('Content-Type', 'text/csv');
+        $streamedResponse->headers->set('Content-Disposition',
             'attachment; filename="export_' . date('Y-m-d_H-i-s') . '.csv"');
 
-        return $response;
+        return $streamedResponse;
     }
 }

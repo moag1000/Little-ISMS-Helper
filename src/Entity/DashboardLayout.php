@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
 use App\Repository\DashboardLayoutRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -53,15 +54,15 @@ class DashboardLayout
     private array $layoutConfig = [];
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
         $this->layoutConfig = $this->getDefaultLayoutConfig();
     }
 
@@ -100,27 +101,27 @@ class DashboardLayout
     public function setLayoutConfig(array $layoutConfig): static
     {
         $this->layoutConfig = $layoutConfig;
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -160,8 +161,8 @@ class DashboardLayout
         }
 
         // Ensure layout and theme exist
-        $this->layoutConfig['layout'] = $this->layoutConfig['layout'] ?? $defaults['layout'];
-        $this->layoutConfig['theme'] = $this->layoutConfig['theme'] ?? $defaults['theme'];
+        $this->layoutConfig['layout'] ??= $defaults['layout'];
+        $this->layoutConfig['theme'] ??= $defaults['theme'];
     }
 
     /**
@@ -186,7 +187,7 @@ class DashboardLayout
             $config
         );
 
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
 
         return $this;
     }

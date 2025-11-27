@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use InvalidArgumentException;
+use DateTimeImmutable;
 use App\Entity\MfaToken;
 use App\Entity\User;
 use App\Repository\MfaTokenRepository;
@@ -21,10 +23,8 @@ use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
  */
 class MfaService
 {
-    private const BACKUP_CODES_COUNT = 10;
-    private const BACKUP_CODE_LENGTH = 8;
-    private const MAX_VERIFICATION_ATTEMPTS = 5;
-    private const VERIFICATION_WINDOW = 300; // 5 minutes
+    private const int BACKUP_CODES_COUNT = 10;
+    private const int BACKUP_CODE_LENGTH = 8; // 5 minutes
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
@@ -78,7 +78,7 @@ class MfaService
     public function generateQrCode(MfaToken $mfaToken): string
     {
         if ($mfaToken->getTokenType() !== 'totp') {
-            throw new \InvalidArgumentException('QR codes can only be generated for TOTP tokens');
+            throw new InvalidArgumentException('QR codes can only be generated for TOTP tokens');
         }
 
         $user = $mfaToken->getUser();
@@ -89,7 +89,7 @@ class MfaService
         $provisioningUri = $totp->getProvisioningUri();
 
         // Generate QR code
-        $result = (new Builder(
+        $result = new Builder(
             writer: new PngWriter(),
             writerOptions: [],
             data: $provisioningUri,
@@ -98,7 +98,7 @@ class MfaService
             size: 300,
             margin: 10,
             roundBlockSizeMode: RoundBlockSizeMode::Margin,
-        ))->build();
+        )->build();
 
         // Return base64 encoded PNG
         return base64_encode($result->getString());
@@ -110,7 +110,7 @@ class MfaService
     public function verifyTotp(MfaToken $mfaToken, string $code, bool $isSetup = false): bool
     {
         if ($mfaToken->getTokenType() !== 'totp') {
-            throw new \InvalidArgumentException('Can only verify TOTP tokens');
+            throw new InvalidArgumentException('Can only verify TOTP tokens');
         }
 
         // Rate limiting check
@@ -168,7 +168,7 @@ class MfaService
 
         // Check if code matches any hashed backup code
         foreach ($backupCodes as $index => $hashedCode) {
-            if (password_verify($code, $hashedCode)) {
+            if (password_verify($code, (string) $hashedCode)) {
                 // Remove used backup code
                 unset($backupCodes[$index]);
                 $mfaToken->setBackupCodes(array_values($backupCodes));
@@ -315,7 +315,7 @@ class MfaService
      */
     private function hashBackupCodes(array $codes): array
     {
-        return array_map(fn($code) => password_hash($code, PASSWORD_ARGON2ID), $codes);
+        return array_map(fn($code): string => password_hash((string) $code, PASSWORD_ARGON2ID), $codes);
     }
 
     /**
@@ -328,8 +328,8 @@ class MfaService
 
         $lastUsed = $mfaToken->getLastUsedAt();
 
-        if ($lastUsed) {
-            $now = new \DateTimeImmutable();
+        if ($lastUsed instanceof DateTimeImmutable) {
+            $now = new DateTimeImmutable();
             $diff = $now->getTimestamp() - $lastUsed->getTimestamp();
 
             // If last attempt was < 2 seconds ago, rate limit
