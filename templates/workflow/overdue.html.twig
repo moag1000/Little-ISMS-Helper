@@ -13,41 +13,51 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
-            ← {{ 'common.back'|trans({}, 'messages') }}
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
 
 {# Alert Banner #}
-{% if overdueInstances|length > 0 %}
-<div class="info-box mb-4 alert-danger-border">
-    <p><strong>⚠️ {{ 'workflow.warning.overdue_count'|trans({'%count%': overdueInstances|length}, 'workflows') }}</strong></p>
-    <p class="mt-xs">{{ 'workflow.warning.overdue_message'|trans({}, 'workflows') }}</p>
+{% if overdue_workflows|length > 0 %}
+<div class="alert alert-danger mb-4">
+    <p><strong><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'workflow.warning.overdue_count'|trans({'%count%': overdue_workflows|length}, 'workflows') }}</strong></p>
+    <p class="mb-0">{{ 'workflow.warning.overdue_message'|trans({}, 'workflows') }}</p>
 </div>
 {% endif %}
 
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.overdue'|trans({}, 'workflows'), overdueInstances|length, null, null, 'danger', 'border-danger') }}
+        {{ cards.kpi_card('workflow.stats.overdue'|trans({}, 'workflows'), overdue_workflows|length, null, null, 'danger', 'border-danger') }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.my_overdue'|trans({}, 'workflows'), overdueInstances|filter(i => i.assignee and i.assignee.id == app.user.id)|length, null, null, 'warning', null) }}
+        {% set myOverdue = 0 %}
+        {% for instance in overdue_workflows %}
+            {% if instance.initiatedBy and instance.initiatedBy.id == app.user.id %}
+                {% set myOverdue = myOverdue + 1 %}
+            {% endif %}
+        {% endfor %}
+        {{ cards.kpi_card('workflow.stats.my_overdue'|trans({}, 'workflows'), myOverdue, null, null, 'warning', null) }}
     </div>
     <div class="col-auto">
         {% set totalDaysOverdue = 0 %}
-        {% for instance in overdueInstances %}
-            {% set daysOverdue = ('now'|date('U') - instance.dueDate.timestamp) / 86400 %}
-            {% set totalDaysOverdue = totalDaysOverdue + daysOverdue %}
+        {% for instance in overdue_workflows %}
+            {% if instance.dueDate %}
+                {% set daysOverdue = ('now'|date('U') - instance.dueDate.timestamp) / 86400 %}
+                {% set totalDaysOverdue = totalDaysOverdue + daysOverdue %}
+            {% endif %}
         {% endfor %}
-        {{ cards.kpi_card('workflow.stats.overdue_days_avg'|trans({}, 'workflows'), overdueInstances|length > 0 ? (totalDaysOverdue / overdueInstances|length)|round : 0, null, null, 'info', null) }}
+        {{ cards.kpi_card('workflow.stats.overdue_days_avg'|trans({}, 'workflows'), overdue_workflows|length > 0 ? (totalDaysOverdue / overdue_workflows|length)|round : 0, null, null, 'info', null) }}
     </div>
     <div class="col-auto">
         {% set criticalOverdue = 0 %}
-        {% for instance in overdueInstances %}
-            {% set daysOverdue = ('now'|date('U') - instance.dueDate.timestamp) / 86400 %}
-            {% if daysOverdue > 7 %}
-                {% set criticalOverdue = criticalOverdue + 1 %}
+        {% for instance in overdue_workflows %}
+            {% if instance.dueDate %}
+                {% set daysOverdue = ('now'|date('U') - instance.dueDate.timestamp) / 86400 %}
+                {% if daysOverdue > 7 %}
+                    {% set criticalOverdue = criticalOverdue + 1 %}
+                {% endif %}
             {% endif %}
         {% endfor %}
         {{ cards.kpi_card('workflow.stats.critical_overdue'|trans({}, 'workflows'), criticalOverdue, null, null, 'danger', null) }}
@@ -56,47 +66,54 @@
 
 {# Overdue Workflows Table #}
 {% embed '_components/_table.html.twig' with {
-    'class': 'table-container',
+    'wrapperClass': 'table-container',
     'noMargin': true
 } %}
     {% block table_head %}
         <tr>
-            <th scope="col">{{ 'workflow.field.name'|trans({}, 'workflows') }}</th>
-            <th scope="col">{{ 'workflow.field.definition'|trans({}, 'workflows') }}</th>
+            <th scope="col">{{ 'workflow.field.entity'|trans({}, 'workflows') }}</th>
+            <th scope="col">{{ 'workflow.field.workflow'|trans({}, 'workflows') }}</th>
             <th scope="col">{{ 'workflow.field.current_step'|trans({}, 'workflows') }}</th>
-            <th scope="col">{{ 'workflow.field.assignee'|trans({}, 'workflows') }}</th>
+            <th scope="col">{{ 'workflow.field.status'|trans({}, 'workflows') }}</th>
+            <th scope="col">{{ 'workflow.field.initiated_by'|trans({}, 'workflows') }}</th>
             <th scope="col">{{ 'workflow.field.due_date'|trans({}, 'workflows') }}</th>
             <th scope="col" class="text-center">{{ 'workflow.field.days_overdue'|trans({}, 'workflows') }}</th>
-            <th scope="col">{{ 'workflow.field.priority'|trans({}, 'workflows') }}</th>
             <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
     {% block table_body %}
-        {% for instance in overdueInstances %}
-        {% set daysOverdue = ('now'|date('U') - instance.dueDate.timestamp) / 86400 %}
+        {% for instance in overdue_workflows %}
+        {% set daysOverdue = instance.dueDate ? (('now'|date('U') - instance.dueDate.timestamp) / 86400)|round : 0 %}
         <tr class="{% if daysOverdue > 7 %}table-danger{% else %}table-warning{% endif %}">
             <td>
-                <strong>{{ instance.name }}</strong>
+                <strong>{{ instance.entityType|split('\\')|last }} #{{ instance.entityId }}</strong>
                 {% if daysOverdue > 7 %}
-                    <span class="badge bg-danger ml-xs">
+                    <span class="badge bg-danger ms-1">
                         {{ 'workflow.badge.critical'|trans({}, 'workflows') }}
                     </span>
                 {% endif %}
             </td>
             <td>
-                <span class="badge bg-info">{{ instance.definition ? instance.definition.name : '-' }}</span>
+                <span class="badge bg-info">{{ instance.workflow ? instance.workflow.name : '-' }}</span>
+            </td>
+            <td>{{ instance.currentStep ? instance.currentStep.name : '-' }}</td>
+            <td>
+                {% set statusColors = {
+                    'pending': 'warning',
+                    'in_progress': 'info',
+                    'approved': 'success',
+                    'rejected': 'danger',
+                    'cancelled': 'secondary'
+                } %}
+                <span class="badge bg-{{ statusColors[instance.status] ?? 'secondary' }}">
+                    {{ ('workflow.status.' ~ instance.status)|trans({}, 'workflows') }}
+                </span>
             </td>
             <td>
-                {{ instance.currentStep ? instance.currentStep.name : '-' }}
-                <br><small class="text-muted">
-                    {{ ('workflow.status.' ~ instance.status)|trans() }}
-                </small>
-            </td>
-            <td>
-                {% if instance.assignee %}
-                    {{ instance.assignee.fullName }}
-                    {% if instance.assignee.id == app.user.id %}
-                        <span class="badge bg-success ml-xs">
+                {% if instance.initiatedBy %}
+                    {{ instance.initiatedBy.firstName ~ ' ' ~ instance.initiatedBy.lastName }}
+                    {% if instance.initiatedBy.id == app.user.id %}
+                        <span class="badge bg-success ms-1">
                             {{ 'workflow.badge.my_task'|trans({}, 'workflows') }}
                         </span>
                     {% endif %}
@@ -105,36 +122,29 @@
                 {% endif %}
             </td>
             <td>
-                {{ instance.dueDate|date('d.m.Y H:i') }}
+                {% if instance.dueDate %}
+                    {{ instance.dueDate|date('d.m.Y H:i') }}
+                {% else %}
+                    <span class="text-muted">-</span>
+                {% endif %}
             </td>
             <td class="text-center">
                 <span class="badge bg-danger fw-bold">
-                    {{ daysOverdue|round }} {{ 'workflow.days'|trans({}, 'workflows') }}
-                </span>
-            </td>
-            <td>
-                {% set priorityColors = {
-                    'low': 'secondary',
-                    'medium': 'info',
-                    'high': 'warning',
-                    'critical': 'danger'
-                } %}
-                <span class="badge badge-{{ priorityColors[instance.priority] ?? 'secondary' }}">
-                    {{ ('workflow.priority.' ~ instance.priority)|trans({}, 'workflows') }}
+                    {{ daysOverdue }} {{ 'workflow.days'|trans({}, 'workflows') }}
                 </span>
             </td>
             <td class="text-center">
-                <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm">
-                    👁 {{ 'common.view'|trans({}, 'messages') }}
+                <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
                 </a>
             </td>
         </tr>
         {% else %}
         <tr>
-            <td colspan="8" class="text-center-p-xl-muted">
-                <div class="fs-2-mb-sm">✅</div>
+            <td colspan="8" class="text-center text-muted p-4">
+                <div class="fs-2 mb-2"><i class="bi bi-check-circle text-success" aria-hidden="true"></i></div>
                 <p><strong>{{ 'workflow.message.no_overdue'|trans({}, 'workflows') }}</strong></p>
-                <p class="text-muted-mt-xs">
+                <p class="text-muted mb-0">
                     {{ 'workflow.message.no_overdue_desc'|trans({}, 'workflows') }}
                 </p>
             </td>
