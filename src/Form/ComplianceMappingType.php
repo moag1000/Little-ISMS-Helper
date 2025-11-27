@@ -21,7 +21,7 @@ class ComplianceMappingType extends AbstractType
     {
         $builder
             ->add('sourceRequirement', EntityType::class, [
-                'label' => 'mapping.field.source_requirement',
+                'label' => 'compliance_mapping.field.source_requirement',
                 'class' => ComplianceRequirement::class,
                 'choice_label' => function(ComplianceRequirement $req) {
                     return $req->getFramework()->getCode() . ' - ' . $req->getRequirementId() . ': ' . $req->getTitle();
@@ -30,12 +30,12 @@ class ComplianceMappingType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'mapping.validation.source_requirement_required'])
+                    new Assert\NotBlank(['message' => 'compliance_mapping.validation.source_requirement_required'])
                 ],
-                'help' => 'mapping.help.source_requirement'
+                'help' => 'compliance_mapping.help.source_requirement'
             ])
             ->add('targetRequirement', EntityType::class, [
-                'label' => 'mapping.field.target_requirement',
+                'label' => 'compliance_mapping.field.target_requirement',
                 'class' => ComplianceRequirement::class,
                 'choice_label' => function(ComplianceRequirement $req) {
                     return $req->getFramework()->getCode() . ' - ' . $req->getRequirementId() . ': ' . $req->getTitle();
@@ -44,12 +44,12 @@ class ComplianceMappingType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'mapping.validation.target_requirement_required'])
+                    new Assert\NotBlank(['message' => 'compliance_mapping.validation.target_requirement_required'])
                 ],
-                'help' => 'mapping.help.target_requirement'
+                'help' => 'compliance_mapping.help.target_requirement'
             ])
             ->add('mappingPercentage', IntegerType::class, [
-                'label' => 'mapping.field.mapping_percentage',
+                'label' => 'compliance_mapping.field.mapping_percentage',
                 'attr' => [
                     'class' => 'form-control',
                     'min' => 0,
@@ -57,44 +57,44 @@ class ComplianceMappingType extends AbstractType
                     'placeholder' => '0-150'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'mapping.validation.mapping_percentage_required']),
+                    new Assert\NotBlank(['message' => 'compliance_mapping.validation.mapping_percentage_required']),
                     new Assert\Range([
                         'min' => 0,
                         'max' => 150,
-                        'notInRangeMessage' => 'mapping.validation.mapping_percentage_range'
+                        'notInRangeMessage' => 'compliance_mapping.validation.mapping_percentage_range'
                     ])
                 ],
-                'help' => 'mapping.help.mapping_percentage'
+                'help' => 'compliance_mapping.help.mapping_percentage'
             ])
             ->add('mappingType', ChoiceType::class, [
-                'label' => 'mapping.field.mapping_type',
+                'label' => 'compliance_mapping.field.mapping_type',
                 'choices' => [
-                    'mapping_type.weak' => 'weak',
-                    'mapping_type.partial' => 'partial',
-                    'mapping_type.full' => 'full',
-                    'mapping_type.exceeds' => 'exceeds',
+                    'compliance_mapping.mapping_type.weak' => 'weak',
+                    'compliance_mapping.mapping_type.partial' => 'partial',
+                    'compliance_mapping.mapping_type.full' => 'full',
+                    'compliance_mapping.mapping_type.exceeds' => 'exceeds',
                 ],
                 'choice_translation_domain' => 'compliance',
                 'attr' => [
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'mapping.validation.mapping_type_required'])
+                    new Assert\NotBlank(['message' => 'compliance_mapping.validation.mapping_type_required'])
                 ],
-                'help' => 'mapping.help.mapping_type'
+                'help' => 'compliance_mapping.help.mapping_type'
             ])
             ->add('mappingRationale', TextareaType::class, [
-                'label' => 'mapping.field.mapping_rationale',
+                'label' => 'compliance_mapping.field.mapping_rationale',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
                     'rows' => 4,
-                    'placeholder' => 'mapping.placeholder.mapping_rationale'
+                    'placeholder' => 'compliance_mapping.placeholder.mapping_rationale'
                 ],
-                'help' => 'mapping.help.mapping_rationale'
+                'help' => 'compliance_mapping.help.mapping_rationale'
             ])
             ->add('bidirectional', CheckboxType::class, [
-                'label' => 'mapping.field.bidirectional',
+                'label' => 'compliance_mapping.field.bidirectional',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-check-input'
@@ -102,38 +102,38 @@ class ComplianceMappingType extends AbstractType
                 'label_attr' => [
                     'class' => 'form-check-label'
                 ],
-                'help' => 'mapping.help.bidirectional'
+                'help' => 'compliance_mapping.help.bidirectional'
             ])
             ->add('confidence', ChoiceType::class, [
-                'label' => 'mapping.field.confidence',
+                'label' => 'compliance_mapping.field.confidence',
                 'choices' => [
-                    'confidence.low' => 'low',
-                    'confidence.medium' => 'medium',
-                    'confidence.high' => 'high',
+                    'compliance_mapping.confidence.low' => 'low',
+                    'compliance_mapping.confidence.medium' => 'medium',
+                    'compliance_mapping.confidence.high' => 'high',
                 ],
                 'choice_translation_domain' => 'compliance',
                 'attr' => [
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'mapping.validation.confidence_required'])
+                    new Assert\NotBlank(['message' => 'compliance_mapping.validation.confidence_required'])
                 ],
-                'help' => 'mapping.help.confidence'
+                'help' => 'compliance_mapping.help.confidence'
             ])
             ->add('verifiedBy', TextType::class, [
-                'label' => 'mapping.field.verified_by',
+                'label' => 'compliance_mapping.field.verified_by',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'mapping.placeholder.verified_by'
+                    'placeholder' => 'compliance_mapping.placeholder.verified_by'
                 ],
                 'constraints' => [
                     new Assert\Length([
                         'max' => 100,
-                        'maxMessage' => 'mapping.validation.verified_by_max_length'
+                        'maxMessage' => 'compliance_mapping.validation.verified_by_max_length'
                     ])
                 ],
-                'help' => 'mapping.help.verified_by'
+                'help' => 'compliance_mapping.help.verified_by'
             ])
         ;
     }
