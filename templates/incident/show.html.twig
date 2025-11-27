@@ -349,10 +349,10 @@
                 </div>
             {% endif %}
 
-            {% if incident.closedDate %}
+            {% if incident.closedAt %}
                 <div class="detail-section">
-                    <h3>Closure</h3>
-                    <p>Closed on: <strong>{{ incident.closedDate|date('d.m.Y H:i') }}</strong></p>
+                    <h3>{{ 'incident.section.closure'|trans({}, 'incident') }}</h3>
+                    <p>{{ 'incident.field.closed_date'|trans({}, 'incident') }}: <strong>{{ incident.closedAt|date('d.m.Y H:i') }}</strong></p>
                 </div>
             {% endif %}
 

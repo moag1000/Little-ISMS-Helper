@@ -52,6 +52,9 @@ export default class extends Controller {
             assessment: null
         };
 
+        // Load translations from DOM
+        this.loadTranslations();
+
         // Bind keyboard handler
         this.boundHandleEscape = this.handleEscape.bind(this);
 
@@ -61,6 +64,23 @@ export default class extends Controller {
         if (triggerBtn) {
             triggerBtn.addEventListener('click', this.boundOpen);
             console.log('GDPR Wizard: External trigger button connected');
+        }
+    }
+
+    /**
+     * Load translations from DOM data attribute
+     */
+    loadTranslations() {
+        const wizardElement = document.querySelector('.gdpr-wizard');
+        if (wizardElement && wizardElement.dataset.translations) {
+            try {
+                this.translations = JSON.parse(wizardElement.dataset.translations);
+            } catch (e) {
+                console.error('Failed to parse wizard translations:', e);
+                this.translations = {};
+            }
+        } else {
+            this.translations = {};
         }
     }
 
@@ -196,7 +216,8 @@ export default class extends Controller {
         const percentage = (this.currentStep / this.totalSteps) * 100;
         this.progressBarTarget.style.width = `${percentage}%`;
         this.progressBarTarget.setAttribute('aria-valuenow', percentage);
-        this.progressTextTarget.textContent = `${this.currentStep} of ${this.totalSteps}`;
+        const stepOf = this.translations.step_of || 'of';
+        this.progressTextTarget.textContent = `${this.currentStep} ${stepOf} ${this.totalSteps}`;
     }
 
     /**
@@ -208,11 +229,13 @@ export default class extends Controller {
                 // Personal data involvement must be selected
                 return this.personalDataYesTarget.checked || this.personalDataNoTarget.checked;
             case 2:
-                // At least one data type must be selected
-                return this.wizardData.dataTypes.length > 0;
+                // At least one data type must be selected - check checkboxes directly
+                const checkedTypes = this.dataTypeCheckboxTargets.filter(cb => cb.checked);
+                return checkedTypes.length > 0;
             case 3:
-                // Scale must be selected
-                return this.wizardData.scale !== null;
+                // Scale must be selected - check radio buttons directly
+                const selectedScale = this.scaleRadioTargets.find(radio => radio.checked);
+                return selectedScale !== undefined;
             default:
                 return true;
         }
@@ -290,8 +313,10 @@ export default class extends Controller {
         this.resultRiskLevelTarget.textContent = riskLevelText;
         this.resultRiskLevelTarget.className = `badge ${riskLevelClass} fs-5`;
 
-        // Reportable status
-        const reportableText = assessment.is_reportable ? 'YES - Reportable to Supervisory Authority' : 'NO - Not Reportable';
+        // Reportable status (translated)
+        const yesText = this.translations.yes_reportable || 'YES - Reportable to Supervisory Authority';
+        const noText = this.translations.no_not_reportable || 'NO - Not Reportable';
+        const reportableText = assessment.is_reportable ? yesText : noText;
         const reportableBadge = assessment.is_reportable ? 'bg-danger' : 'bg-success';
         this.resultReportableTarget.textContent = reportableText;
         this.resultReportableTarget.className = `badge ${reportableBadge} fs-6`;
@@ -305,9 +330,9 @@ export default class extends Controller {
             const deadline = new Date();
             deadline.setHours(deadline.getHours() + 72);
             this.resultDeadlineTarget.textContent = deadline.toLocaleString();
-            this.resultDeadlineTarget.parentElement.classList.remove('d-none');
+            this.resultDeadlineTarget.parentElement.parentElement.classList.remove('d-none');
         } else {
-            this.resultDeadlineTarget.parentElement.classList.add('d-none');
+            this.resultDeadlineTarget.parentElement.parentElement.classList.add('d-none');
         }
     }
 
@@ -403,13 +428,8 @@ export default class extends Controller {
      * Get risk level translation
      */
     getRiskLevelTranslation(level) {
-        const translations = {
-            'low': 'Low Risk',
-            'medium': 'Medium Risk',
-            'high': 'High Risk',
-            'very_high': 'Very High Risk'
-        };
-        return translations[level] || level;
+        const key = `risk_${level}`;
+        return this.translations[key] || level;
     }
 
     /**
@@ -429,14 +449,8 @@ export default class extends Controller {
      * Get recommendation translation
      */
     getRecommendationTranslation(recommendation) {
-        const translations = {
-            'not_reportable': 'This breach is unlikely to result in a risk to rights and freedoms. Documentation recommended, but no mandatory reporting to supervisory authority.',
-            'reportable_low': 'Report to supervisory authority within 72 hours (Art. 33). Document the breach thoroughly.',
-            'reportable_medium': 'Report to supervisory authority within 72 hours (Art. 33). Begin impact assessment and prepare for potential data subject notification.',
-            'reportable_high': 'URGENT: Report to supervisory authority within 72 hours (Art. 33). Consider notifying affected data subjects (Art. 34). Immediate action required.',
-            'reportable_very_high': 'CRITICAL: Report to supervisory authority within 72 hours (Art. 33). Notify affected data subjects without undue delay (Art. 34). Immediate escalation required.'
-        };
-        return translations[recommendation] || recommendation;
+        const key = `recommendation_${recommendation}`;
+        return this.translations[key] || recommendation;
     }
 
     /**
