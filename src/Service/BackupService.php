@@ -195,15 +195,19 @@ class BackupService
             throw new FileException('Could not write backup file: ' . $filepath);
         }
 
-        // Compress the backup file
+        // Compress the backup file (if ext-zlib is available)
         $this->compressBackupFile($filepath);
 
+        // Determine final filepath (compressed or uncompressed)
+        $finalPath = file_exists($filepath . '.gz') ? $filepath . '.gz' : $filepath;
+
         $this->logger->info('Backup saved to file', [
-            'file' => $filepath,
-            'size' => filesize($filepath . '.gz'),
+            'file' => $finalPath,
+            'size' => filesize($finalPath),
+            'compressed' => file_exists($filepath . '.gz'),
         ]);
 
-        return $filepath . '.gz';
+        return $finalPath;
     }
 
     /**
@@ -220,8 +224,10 @@ class BackupService
         }
 
         // Include both created backups (backup_*) and uploaded files (uploaded_*)
+        // Support both compressed (.gz) and uncompressed (.json) files
         $files = array_merge(
             glob($backupDir . '/backup_*.json.gz') ?: [],
+            glob($backupDir . '/backup_*.json') ?: [],
             glob($backupDir . '/uploaded_*.json.gz') ?: [],
             glob($backupDir . '/uploaded_*.json') ?: [],
             glob($backupDir . '/uploaded_*.gz') ?: []
@@ -259,6 +265,11 @@ class BackupService
 
         // Decompress if needed
         if (str_ends_with($filepath, '.gz')) {
+            // Check if zlib extension is available
+            if (!extension_loaded('zlib')) {
+                throw new \RuntimeException('Cannot decompress backup: ext-zlib extension not available');
+            }
+
             $json = @gzdecode(file_get_contents($filepath)); // Suppress warning for intentionally corrupted test files
             if ($json === false) {
                 throw new \RuntimeException('Failed to decompress backup file');
@@ -334,13 +345,19 @@ class BackupService
     }
 
     /**
-     * Compress backup file using gzip
+     * Compress backup file using gzip (if ext-zlib is available)
      *
      * @param string $filepath
      * @return void
      */
     private function compressBackupFile(string $filepath): void
     {
+        // Check if zlib extension is available
+        if (!extension_loaded('zlib')) {
+            $this->logger->info('ext-zlib not available, skipping compression', ['file' => $filepath]);
+            return;
+        }
+
         $content = file_get_contents($filepath);
         $compressed = gzencode($content, 9);
 
