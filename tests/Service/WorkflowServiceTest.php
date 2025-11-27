@@ -84,8 +84,24 @@ class WorkflowServiceTest extends TestCase
         $this->workflowRepository->method('findOneBy')
             ->willReturn($this->createWorkflow('Test', 'Risk'));
 
-        $this->workflowInstanceRepository->method('findOneBy')
-            ->willReturn($existingInstance);
+        // Mock the QueryBuilder chain that WorkflowService uses
+        $query = $this->getMockBuilder(\Doctrine\ORM\Query::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getOneOrNullResult'])
+            ->getMock();
+        $query->method('getOneOrNullResult')->willReturn($existingInstance);
+
+        $qb = $this->createMock(\Doctrine\ORM\QueryBuilder::class);
+        $qb->method('select')->willReturnSelf();
+        $qb->method('from')->willReturnSelf();
+        $qb->method('where')->willReturnSelf();
+        $qb->method('andWhere')->willReturnSelf();
+        $qb->method('setParameter')->willReturnSelf();
+        $qb->method('setMaxResults')->willReturnSelf();
+        $qb->method('getQuery')->willReturn($query);
+        $qb->method('expr')->willReturn(new \Doctrine\ORM\Query\Expr());
+
+        $this->entityManager->method('createQueryBuilder')->willReturn($qb);
 
         $instance = $this->service->startWorkflow('Risk', 123);
 

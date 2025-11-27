@@ -42,6 +42,7 @@ export default class extends Controller {
     };
 
     connect() {
+        console.log('GDPR Breach Wizard Controller connected!', this.element);
         this.currentStep = 1;
         this.totalSteps = 4;
         this.wizardData = this.loadFromLocalStorage() || {
@@ -53,16 +54,31 @@ export default class extends Controller {
 
         // Bind keyboard handler
         this.boundHandleEscape = this.handleEscape.bind(this);
+
+        // Connect external trigger button (outside controller scope)
+        this.boundOpen = this.open.bind(this);
+        const triggerBtn = document.getElementById('gdpr-wizard-trigger-btn');
+        if (triggerBtn) {
+            triggerBtn.addEventListener('click', this.boundOpen);
+            console.log('GDPR Wizard: External trigger button connected');
+        }
     }
 
     disconnect() {
         document.removeEventListener('keydown', this.boundHandleEscape);
+
+        // Cleanup external trigger button listener
+        const triggerBtn = document.getElementById('gdpr-wizard-trigger-btn');
+        if (triggerBtn && this.boundOpen) {
+            triggerBtn.removeEventListener('click', this.boundOpen);
+        }
     }
 
     /**
      * Open wizard modal
      */
     open(event) {
+        console.log('GDPR Breach Wizard open() called!');
         if (event) event.preventDefault();
 
         // Reset wizard to step 1
@@ -424,23 +440,46 @@ export default class extends Controller {
     }
 
     /**
-     * Save wizard data to localStorage
+     * Save wizard data to localStorage with TTL
      */
     saveToLocalStorage() {
         try {
-            localStorage.setItem('gdpr_wizard_data', JSON.stringify(this.wizardData));
+            const data = {
+                ...this.wizardData,
+                _timestamp: Date.now(),
+                _ttl: 30 * 60 * 1000 // 30 minutes TTL
+            };
+            localStorage.setItem('gdpr_wizard_data', JSON.stringify(data));
         } catch (error) {
             console.error('Failed to save wizard data:', error);
         }
     }
 
     /**
-     * Load wizard data from localStorage
+     * Load wizard data from localStorage with TTL check
      */
     loadFromLocalStorage() {
         try {
-            const data = localStorage.getItem('gdpr_wizard_data');
-            return data ? JSON.parse(data) : null;
+            const stored = localStorage.getItem('gdpr_wizard_data');
+            if (!stored) return null;
+
+            const data = JSON.parse(stored);
+
+            // Check if data has expired
+            if (data._timestamp && data._ttl) {
+                const isExpired = Date.now() - data._timestamp > data._ttl;
+                if (isExpired) {
+                    console.log('GDPR wizard data expired, clearing...');
+                    this.clearLocalStorage();
+                    return null;
+                }
+            }
+
+            // Remove metadata before returning
+            delete data._timestamp;
+            delete data._ttl;
+
+            return data;
         } catch (error) {
             console.error('Failed to load wizard data:', error);
             return null;

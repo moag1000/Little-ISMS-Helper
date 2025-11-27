@@ -38,9 +38,6 @@
                 </ul>
             </div>
 
-            {# GDPR Breach Wizard Modal #}
-            {% include 'incident/_gdpr_breach_wizard_modal.html.twig' %}
-
             <div class="card">
                 <div class="card-header bg-primary text-white">
                     <h2 class="mb-0">{{ 'incident.new'|trans({}, 'incident') }}</h2>
@@ -91,7 +88,7 @@
 
                         {# GDPR Breach Wizard Button #}
                         <div class="mt-3">
-                            <button type="button" class="btn btn-outline-warning" data-action="click->gdpr-breach-wizard#open">
+                            <button type="button" class="btn btn-outline-warning" id="gdpr-wizard-trigger-btn">
                                 <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
                                 {{ 'privacy.wizard.trigger_button'|trans({}, 'privacy') }}
                             </button>
@@ -239,6 +236,12 @@
             </div>
         </div>
     </div>
+</div>
+
+{# GDPR Breach Wizard - placed outside all containers for proper modal positioning #}
+<div data-controller="gdpr-breach-wizard"
+     data-gdpr-breach-wizard-assessment-url-value="{{ path('app_incident_gdpr_wizard_result') }}">
+    {% include 'incident/_gdpr_breach_wizard_modal.html.twig' %}
 </div>
 
 <script>
