@@ -34,8 +34,8 @@ use Psr\Log\LoggerInterface;
 class WorkflowAutoTriggerListener
 {
     public function __construct(
-        private WorkflowAutoTriggerService $workflowAutoTriggerService,
-        private LoggerInterface $logger
+        private readonly WorkflowAutoTriggerService $workflowAutoTriggerService,
+        private readonly LoggerInterface $logger
     ) {}
 
     /**
