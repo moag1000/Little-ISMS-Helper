@@ -3,11 +3,8 @@
 namespace App\Service;
 
 use App\Entity\Document;
-use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Document Approval Service
@@ -15,23 +12,21 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  * ISO 27001:2022 Clause 5.2.3 (Information security policy) compliant
  * ISO 27001:2022 Clause 7.5 (Documented information) compliant
  *
- * Implements automatic approval workflow for critical documents:
- * - Policies: Multi-level approval (Document Owner → CISO → Management)
- * - Procedures: Two-level approval (Document Owner → CISO)
- * - Guidelines: Single approval (Document Owner or CISO)
- * - Other documents: No approval required (auto-approved)
+ * Implements automatic approval workflow for critical documents based on category.
  *
- * Features:
- * - Automatic approval routing based on document category
- * - Multi-level approval chain for policies
- * - Role-based notification to appropriate approvers
- * - Version control integration
- * - Audit trail for compliance
+ * Approval Levels (based on category):
+ * - Policy: 3-level approval (Document Owner → CISO → Management, 120h SLA)
+ * - Procedure: 2-level approval (Document Owner → CISO, 72h SLA)
+ * - Guideline: 1-level approval (Document Owner or CISO, 48h SLA)
+ * - Other categories: No approval required
  *
- * Approval Levels:
- * - Level 1 (Guidelines): Document Owner or CISO
- * - Level 2 (Procedures): Document Owner + CISO
- * - Level 3 (Policies): Document Owner + CISO + Management
+ * Prerequisites:
+ * - Workflow definition must exist in database with entityType='Document'
+ * - Workflow should be created via: php bin/console app:seed-workflow-definitions
+ *
+ * Usage:
+ * - Automatically triggered by WorkflowAutoTriggerListener on Document postPersist
+ * - Manual trigger: $service->requestApproval($document, $isNew)
  */
 class DocumentApprovalService
 {
@@ -40,19 +35,12 @@ class DocumentApprovalService
     private const CATEGORY_PROCEDURE = 'procedure';
     private const CATEGORY_GUIDELINE = 'guideline';
 
-    // Approval SLAs (hours)
-    private const SLA_POLICY = 120;      // 5 days
-    private const SLA_PROCEDURE = 72;    // 3 days
-    private const SLA_GUIDELINE = 48;    // 2 days
-
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
         private readonly WorkflowService $workflowService,
         private readonly EmailNotificationService $emailService,
         private readonly UserRepository $userRepository,
         private readonly AuditLogger $auditLogger,
-        private readonly LoggerInterface $logger,
-        private readonly UrlGeneratorInterface $urlGenerator
+        private readonly LoggerInterface $logger
     ) {}
 
     /**
@@ -68,6 +56,7 @@ class DocumentApprovalService
             'document_id' => $document->getId(),
             'category' => $document->getCategory(),
             'is_new' => $isNewDocument,
+            'filename' => $document->getOriginalFilename(),
         ]);
 
         // Check if document category requires approval
@@ -86,31 +75,18 @@ class DocumentApprovalService
 
         // Determine approval level based on category
         $approvalLevel = $this->determineApprovalLevel($document);
-        $slaHours = $this->getSlaForApprovalLevel($approvalLevel);
 
-        // Get approvers based on level
-        $approvers = $this->getApproversForLevel($approvalLevel, $document);
+        // Check if workflow already exists for this document
+        $existingWorkflow = $this->workflowService->getWorkflowInstance(
+            'Document',
+            $document->getId()
+        );
 
-        if (empty($approvers)) {
-            $this->logger->warning('No approvers found for document', [
-                'document_id' => $document->getId(),
-                'approval_level' => $approvalLevel,
-            ]);
-
-            return [
-                'approval_level' => $approvalLevel,
-                'workflow_started' => false,
-                'reason' => 'no_approvers_found',
-                'sla_hours' => $slaHours,
-            ];
-        }
-
-        // Check for existing active workflow to prevent duplicates
-        $existingWorkflow = $this->workflowService->getActiveWorkflowForEntity($document);
-        if ($existingWorkflow) {
+        if ($existingWorkflow && in_array($existingWorkflow->getStatus(), ['pending', 'in_progress'])) {
             $this->logger->info('Active workflow already exists for document', [
                 'document_id' => $document->getId(),
                 'workflow_id' => $existingWorkflow->getId(),
+                'status' => $existingWorkflow->getStatus(),
             ]);
 
             return [
@@ -121,43 +97,66 @@ class DocumentApprovalService
             ];
         }
 
-        // Create workflow instance
+        // Start workflow using WorkflowService
+        // This will look for a Workflow definition with entityType='Document'
         try {
-            $workflow = $this->createApprovalWorkflow($document, $approvalLevel, $approvers, $slaHours, $isNewDocument);
+            $workflowInstance = $this->workflowService->startWorkflow(
+                'Document',
+                $document->getId(),
+                'document_approval' // Optional: specific workflow name
+            );
 
-            // Send notifications
-            $this->sendApprovalNotifications($document, $approvers, $approvalLevel, $isNewDocument);
+            if (!$workflowInstance) {
+                $this->logger->warning('No workflow definition found for Document', [
+                    'document_id' => $document->getId(),
+                ]);
+
+                return [
+                    'approval_level' => $approvalLevel,
+                    'workflow_started' => false,
+                    'reason' => 'no_workflow_definition',
+                    'message' => 'Workflow definition for Document not found. Please run: php bin/console app:seed-workflow-definitions',
+                ];
+            }
+
+            // Send notifications to approvers
+            $this->sendApprovalNotifications($document, $workflowInstance, $approvalLevel, $isNewDocument);
 
             // Log audit event
-            $this->auditLogger->log(
+            $this->auditLogger->logCustom(
                 'document_approval_requested',
                 'Document',
                 $document->getId(),
+                null, // oldValues
                 [
                     'approval_level' => $approvalLevel,
+                    'workflow_id' => $workflowInstance->getId(),
                     'category' => $document->getCategory(),
-                    'approvers' => array_map(fn($u) => $u->getEmail(), $approvers),
-                    'is_new' => $isNewDocument,
-                    'sla_hours' => $slaHours,
-                ]
+                    'is_new_document' => $isNewDocument,
+                ], // newValues
+                sprintf('Approval requested for %s document (level: %s, file: %s)',
+                    $document->getCategory(),
+                    $approvalLevel,
+                    $document->getOriginalFilename()
+                ) // description
             );
 
-            $this->logger->info('Document approval workflow created', [
+            $this->logger->info('Document approval workflow started', [
                 'document_id' => $document->getId(),
-                'workflow_id' => $workflow->getId(),
+                'workflow_id' => $workflowInstance->getId(),
                 'approval_level' => $approvalLevel,
+                'status' => $workflowInstance->getStatus(),
             ]);
 
             return [
                 'approval_level' => $approvalLevel,
                 'workflow_started' => true,
-                'workflow_id' => $workflow->getId(),
-                'approvers_count' => count($approvers),
-                'sla_hours' => $slaHours,
+                'workflow_id' => $workflowInstance->getId(),
+                'status' => $workflowInstance->getStatus(),
             ];
 
         } catch (\Exception $e) {
-            $this->logger->error('Failed to create document approval workflow', [
+            $this->logger->error('Failed to start document approval workflow', [
                 'document_id' => $document->getId(),
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
@@ -166,7 +165,7 @@ class DocumentApprovalService
             return [
                 'approval_level' => $approvalLevel,
                 'workflow_started' => false,
-                'reason' => 'workflow_creation_failed',
+                'reason' => 'workflow_start_failed',
                 'error' => $e->getMessage(),
             ];
         }
@@ -204,237 +203,81 @@ class DocumentApprovalService
     }
 
     /**
-     * Get SLA hours for approval level
-     *
-     * @param string $approvalLevel
-     * @return int SLA hours
-     */
-    private function getSlaForApprovalLevel(string $approvalLevel): int
-    {
-        return match ($approvalLevel) {
-            'policy' => self::SLA_POLICY,
-            'procedure' => self::SLA_PROCEDURE,
-            'guideline' => self::SLA_GUIDELINE,
-            default => 48,
-        };
-    }
-
-    /**
-     * Get approvers for approval level
-     *
-     * @param string $approvalLevel
-     * @param Document $document
-     * @return User[] Array of users who can approve
-     */
-    private function getApproversForLevel(string $approvalLevel, Document $document): array
-    {
-        $approvers = [];
-
-        // Level 1: Document Owner (uploader) - always included for all levels
-        $documentOwner = $document->getUploadedBy();
-        if ($documentOwner) {
-            $approvers[] = $documentOwner;
-        }
-
-        // Level 2+: CISO (for procedures and policies)
-        if (in_array($approvalLevel, ['procedure', 'policy'])) {
-            $cisos = $this->userRepository->findByRole('ROLE_CISO');
-            $approvers = array_merge($approvers, $cisos);
-        }
-
-        // Level 3: Management (for policies only)
-        if ($approvalLevel === 'policy') {
-            $management = $this->userRepository->findByRole('ROLE_MANAGEMENT');
-            $approvers = array_merge($approvers, $management);
-        }
-
-        // For guidelines, if no document owner or CISO found, use admins
-        if ($approvalLevel === 'guideline' && empty($approvers)) {
-            $cisos = $this->userRepository->findByRole('ROLE_CISO');
-            if (!empty($cisos)) {
-                $approvers = $cisos;
-            }
-        }
-
-        // Fallback: If no specific role found, use admins
-        if (empty($approvers)) {
-            $this->logger->warning('No role-specific approvers found, falling back to admins', [
-                'approval_level' => $approvalLevel,
-                'document_id' => $document->getId(),
-            ]);
-            $approvers = $this->userRepository->findByRole('ROLE_ADMIN');
-        }
-
-        return array_unique($approvers, SORT_REGULAR);
-    }
-
-    /**
-     * Create approval workflow instance
+     * Send approval notifications to workflow approvers
      *
      * @param Document $document
-     * @param string $approvalLevel
-     * @param User[] $approvers
-     * @param int $slaHours
-     * @param bool $isNewDocument
-     * @return \App\Entity\WorkflowInstance
-     */
-    private function createApprovalWorkflow(
-        Document $document,
-        string $approvalLevel,
-        array $approvers,
-        int $slaHours,
-        bool $isNewDocument
-    ): \App\Entity\WorkflowInstance {
-        // Find or create workflow definition
-        $workflowType = $isNewDocument ? 'document_approval_new' : 'document_approval_revision';
-        $workflowDefinition = $this->workflowService->findOrCreateWorkflowDefinition(
-            $workflowType,
-            ucfirst($approvalLevel) . ' Document Approval',
-            sprintf('Approval workflow for %s documents (%s)', $approvalLevel, $isNewDocument ? 'new' : 'revision')
-        );
-
-        // Calculate deadline
-        $deadline = new \DateTime();
-        $deadline->modify(sprintf('+%d hours', $slaHours));
-
-        // Create workflow instance
-        $instance = $this->workflowService->startWorkflow(
-            $workflowDefinition,
-            $document,
-            [
-                'approval_level' => $approvalLevel,
-                'category' => $document->getCategory(),
-                'is_new_document' => $isNewDocument,
-                'filename' => $document->getOriginalFilename(),
-                'approvers' => array_map(fn($u) => $u->getId(), $approvers),
-                'deadline' => $deadline->format('Y-m-d H:i:s'),
-            ]
-        );
-
-        // Add approval steps based on level
-        $this->addApprovalSteps($instance, $approvalLevel, $approvers, $document);
-
-        return $instance;
-    }
-
-    /**
-     * Add approval steps to workflow instance
-     *
-     * @param \App\Entity\WorkflowInstance $instance
-     * @param string $approvalLevel
-     * @param User[] $approvers
-     * @param Document $document
-     */
-    private function addApprovalSteps(
-        \App\Entity\WorkflowInstance $instance,
-        string $approvalLevel,
-        array $approvers,
-        Document $document
-    ): void {
-        $stepOrder = 1;
-
-        // Step 1: Document Owner review (for all levels)
-        $documentOwner = $document->getUploadedBy();
-        if ($documentOwner && in_array($documentOwner, $approvers)) {
-            $this->workflowService->addWorkflowStep(
-                $instance,
-                'owner_review',
-                'Document Owner Review',
-                $documentOwner,
-                $stepOrder++
-            );
-        }
-
-        // Step 2: CISO approval (for procedures and policies)
-        if (in_array($approvalLevel, ['procedure', 'policy'])) {
-            $cisos = array_filter($approvers, fn($u) => in_array('ROLE_CISO', $u->getRoles()));
-            if (!empty($cisos)) {
-                $this->workflowService->addWorkflowStep(
-                    $instance,
-                    'ciso_approval',
-                    'CISO Approval',
-                    reset($cisos),
-                    $stepOrder++
-                );
-            }
-        }
-
-        // Step 3: Management approval (for policies only)
-        if ($approvalLevel === 'policy') {
-            $management = array_filter($approvers, fn($u) => in_array('ROLE_MANAGEMENT', $u->getRoles()));
-            if (!empty($management)) {
-                $this->workflowService->addWorkflowStep(
-                    $instance,
-                    'management_approval',
-                    'Management Approval',
-                    reset($management),
-                    $stepOrder++
-                );
-            }
-        }
-
-        // For guidelines with no owner, add CISO step
-        if ($approvalLevel === 'guideline' && !$documentOwner) {
-            $cisos = array_filter($approvers, fn($u) => in_array('ROLE_CISO', $u->getRoles()));
-            if (!empty($cisos)) {
-                $this->workflowService->addWorkflowStep(
-                    $instance,
-                    'ciso_review',
-                    'CISO Review',
-                    reset($cisos),
-                    $stepOrder++
-                );
-            }
-        }
-    }
-
-    /**
-     * Send approval notifications to approvers
-     *
-     * @param Document $document
-     * @param User[] $approvers
+     * @param \App\Entity\WorkflowInstance $workflowInstance
      * @param string $approvalLevel
      * @param bool $isNewDocument
      */
     private function sendApprovalNotifications(
         Document $document,
-        array $approvers,
+        \App\Entity\WorkflowInstance $workflowInstance,
         string $approvalLevel,
         bool $isNewDocument
     ): void {
-        $documentUrl = $this->urlGenerator->generate(
-            'app_document_show',
-            ['id' => $document->getId()],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
+        // Get current step approver
+        $currentStep = $workflowInstance->getCurrentStep();
+        if (!$currentStep) {
+            return;
+        }
 
-        foreach ($approvers as $approver) {
-            try {
-                $this->emailService->sendEmail(
-                    $approver->getEmail(),
-                    sprintf('Document Approval Required: %s', $document->getOriginalFilename()),
-                    'emails/document_approval_notification.html.twig',
-                    [
-                        'document' => $document,
-                        'approver' => $approver,
-                        'approval_level' => $approvalLevel,
-                        'is_new_document' => $isNewDocument,
-                        'document_url' => $documentUrl,
-                    ]
-                );
+        $assignedUser = $currentStep->getAssignedUser();
+        $assignedRole = $currentStep->getAssignedRole();
 
-                $this->logger->info('Approval notification sent', [
-                    'document_id' => $document->getId(),
-                    'approver_email' => $approver->getEmail(),
-                ]);
+        // Send to specific user if assigned
+        if ($assignedUser) {
+            $this->sendNotificationToUser($document, $assignedUser, $approvalLevel, $isNewDocument);
+        }
 
-            } catch (\Exception $e) {
-                $this->logger->error('Failed to send approval notification', [
-                    'document_id' => $document->getId(),
-                    'approver_email' => $approver->getEmail(),
-                    'error' => $e->getMessage(),
-                ]);
+        // Send to all users with assigned role
+        if ($assignedRole) {
+            $roleUsers = $this->userRepository->findByRole($assignedRole);
+            foreach ($roleUsers as $user) {
+                $this->sendNotificationToUser($document, $user, $approvalLevel, $isNewDocument);
             }
+        }
+    }
+
+    /**
+     * Send notification email to a specific user
+     *
+     * @param Document $document
+     * @param \App\Entity\User $user
+     * @param string $approvalLevel
+     * @param bool $isNewDocument
+     */
+    private function sendNotificationToUser(
+        Document $document,
+        \App\Entity\User $user,
+        string $approvalLevel,
+        bool $isNewDocument
+    ): void {
+        try {
+            $this->emailService->sendEmail(
+                $user->getEmail(),
+                sprintf('Document Approval Required: %s', $document->getOriginalFilename()),
+                'emails/document_approval_notification.html.twig',
+                [
+                    'document' => $document,
+                    'user' => $user,
+                    'approval_level' => $approvalLevel,
+                    'is_new_document' => $isNewDocument,
+                    'category' => $document->getCategory(),
+                ]
+            );
+
+            $this->logger->info('Approval notification sent', [
+                'document_id' => $document->getId(),
+                'user_email' => $user->getEmail(),
+            ]);
+
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to send approval notification', [
+                'document_id' => $document->getId(),
+                'user_email' => $user->getEmail(),
+                'error' => $e->getMessage(),
+            ]);
         }
     }
 }

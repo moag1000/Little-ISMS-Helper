@@ -7,8 +7,10 @@ use App\Entity\Incident;
 use App\Entity\Risk;
 use App\Entity\RiskTreatmentPlan;
 use App\Entity\User;
+use App\Service\DocumentApprovalService;
 use App\Service\IncidentEscalationWorkflowService;
 use App\Service\RiskAcceptanceWorkflowService;
+use App\Service\RiskTreatmentPlanApprovalService;
 use App\Service\WorkflowAutoTriggerService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -23,6 +25,8 @@ class WorkflowAutoTriggerServiceTest extends TestCase
 {
     private MockObject $incidentEscalationService;
     private MockObject $riskAcceptanceService;
+    private MockObject $treatmentPlanApprovalService;
+    private MockObject $documentApprovalService;
     private MockObject $logger;
     private WorkflowAutoTriggerService $service;
 
@@ -30,11 +34,15 @@ class WorkflowAutoTriggerServiceTest extends TestCase
     {
         $this->incidentEscalationService = $this->createMock(IncidentEscalationWorkflowService::class);
         $this->riskAcceptanceService = $this->createMock(RiskAcceptanceWorkflowService::class);
+        $this->treatmentPlanApprovalService = $this->createMock(RiskTreatmentPlanApprovalService::class);
+        $this->documentApprovalService = $this->createMock(DocumentApprovalService::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
         $this->service = new WorkflowAutoTriggerService(
             $this->incidentEscalationService,
             $this->riskAcceptanceService,
+            $this->treatmentPlanApprovalService,
+            $this->documentApprovalService,
             $this->logger
         );
     }
