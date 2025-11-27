@@ -4,6 +4,20 @@ incident_management:
     open_incidents: 'Open Incidents'
     total_recorded: 'Total Recorded'
 incident:
+    breadcrumb: 'Incident Management'
+    header:
+        title: 'Incident Management'
+        subtitle: 'Documentation and handling of information security incidents'
+        action:
+            report: 'Report Incident'
+            export: 'Export'
+    kpi:
+        total: 'Total Incidents'
+        open: 'Open Incidents'
+        critical: 'Critical Incidents'
+        avg_resolution: 'Avg. Resolution Time'
+        unit:
+            days: 'Days'
     action:
         report_new: 'Report New Incident'
         edit: Edit
@@ -114,8 +128,17 @@ incident:
     nis2_compliance:
         not_applicable: 'Not Applicable'
     empty: Empty
+    empty:
+        title: 'No Incidents Recorded'
+        description: 'Great! No security incidents have been reported so far. If an incident occurs, you can quickly document it here.'
+    severity_distribution:
+        title: 'Severity Distribution'
     list:
         title: Title
+        all_incidents: 'All Incidents (%count%)'
+    filter:
+        all_status: 'All Status'
+        all_severity: 'All Severity'
     controls_should_prevent: 'Controls Should Prevent'
     workflow:
         active: 'Active Workflow'
