@@ -146,8 +146,14 @@ class IncidentController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
+        $tenant = $this->tenantContext->getCurrentTenant();
+        if (!$tenant) {
+            throw $this->createAccessDeniedException('No tenant context available');
+        }
+
         $incident = new Incident();
-        $incident->setTenant($this->tenantContext->getCurrentTenant());
+        $incident->setTenant($tenant);
+        $incident->setIncidentNumber($this->incidentRepository->getNextIncidentNumber($tenant));
 
         $form = $this->createForm(IncidentType::class, $incident);
         $form->handleRequest($request);

@@ -75,11 +75,13 @@ class IncidentType extends AbstractType
             ->add('detectedAt', DateTimeType::class, [
                 'label' => 'incident.field.detected_at',
                 'widget' => 'single_text',
+                'input' => 'datetime_immutable',
                 'required' => true,
             ])
             ->add('occurredAt', DateTimeType::class, [
                 'label' => 'incident.field.occurred_at',
                 'widget' => 'single_text',
+                'input' => 'datetime_immutable',
                 'required' => false,
             ])
             ->add('reportedBy', TextType::class, [
@@ -138,6 +140,7 @@ class IncidentType extends AbstractType
             ->add('closedAt', DateTimeType::class, [
                 'label' => 'incident.field.closed_date',
                 'widget' => 'single_text',
+                'input' => 'datetime_immutable',
                 'required' => false,
             ])
 
@@ -158,18 +161,21 @@ class IncidentType extends AbstractType
             ->add('earlyWarningReportedAt', DateTimeType::class, [
                 'label' => 'incident.field.early_warning_reported_at',
                 'widget' => 'single_text',
+                'input' => 'datetime_immutable',
                 'required' => false,
                 'help' => 'incident.help.early_warning_24h',
             ])
             ->add('detailedNotificationReportedAt', DateTimeType::class, [
                 'label' => 'incident.field.detailed_notification_reported_at',
                 'widget' => 'single_text',
+                'input' => 'datetime_immutable',
                 'required' => false,
                 'help' => 'incident.help.detailed_notification_72h',
             ])
             ->add('finalReportSubmittedAt', DateTimeType::class, [
                 'label' => 'incident.field.final_report_submitted_at',
                 'widget' => 'single_text',
+                'input' => 'datetime_immutable',
                 'required' => false,
                 'help' => 'incident.help.final_report_1month',
             ])

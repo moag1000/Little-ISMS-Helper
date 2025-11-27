@@ -89,6 +89,10 @@ back: Back
 common:
     yes: 'Yes'
     no: 'No'
+    new: 'New'
+    today: 'Today'
+    yesterday: 'Yesterday'
+    days_ago: '%days% days ago'
     overview: Overview
     name: Name
     description: Description
