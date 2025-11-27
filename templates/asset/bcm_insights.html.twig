@@ -1,270 +1,197 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'bcm' %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}{{ 'asset.title.bcm_insights'|trans({}, 'asset') }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'bcm.title.asset_insights'|trans({}, 'bcm') }}: {{ asset.name }} - Little ISMS Helper{% endblock %}
 
 {% block body %}
-<div class="page-header">
-    <div>
-        <h1>{{ 'asset.title.bcm_insights'|trans({}, 'asset') }}</h1>
-        <p class="text-muted">{{ 'asset.description.bcm_insights'|trans({}, 'asset') }}</p>
-    </div>
-    <div class="button-group">
-        <a href="{{ path('app_bcm_critical') }}" class="btn btn-secondary">
-            🔴 {{ 'asset.action.view_critical'|trans({}, 'asset') }}
-        </a>
-        <a href="{{ path('app_asset_index') }}" class="btn btn-secondary">
-            ← {{ 'common.back'|trans({}, 'messages') }}
-        </a>
-    </div>
-</div>
-
-{# Statistics Cards #}
-<div class="kpi-grid">
-    <div class="col-auto">
-        {{ cards.kpi_card('asset.stats.total_assets'|trans({}, 'asset'), totalAssets, null, null, null, null) }}
-    </div>
-    <div class="col-auto">
-        {{ cards.kpi_card('asset.stats.critical_assets'|trans({}, 'asset'), criticalAssets, null, null, 'danger', 'border-danger') }}
-    </div>
-    <div class="col-auto">
-        {{ cards.kpi_card('asset.stats.high_risk_assets'|trans({}, 'asset'), highRiskAssets, null, null, 'warning', null) }}
-    </div>
-    <div class="col-auto">
-        {{ cards.kpi_card('asset.stats.avg_rto'|trans({}, 'asset'), avgRTO ~ 'h', null, null, null, null) }}
-    </div>
-</div>
-
-{# Business Impact Analysis #}
-<h2>{{ 'asset.section.business_impact'|trans({}, 'asset') }}</h2>
-
-<div class="module-grid mb-4">
-    <div class="card card-border-left-danger">
-        <div class="fs-2-mb-sm">🔴</div>
-        <h2>{{ 'asset.impact.critical'|trans({}, 'asset') }}</h2>
-        <div class="mt-2">
-            <strong class="fs-15-danger">{{ assetsByImpact.critical|length }}</strong>
-        </div>
-        <p class="text-muted-mt-xs">
-            {{ 'asset.description.critical_impact'|trans({}, 'asset') }}
-        </p>
-        <div class="mt-2">
-            <small><strong>{{ 'asset.field.avg_rto'|trans({}, 'asset') }}:</strong> {{ avgRTOByCriticality.critical }}h</small>
-        </div>
-    </div>
-
-    <div class="card card-border-left-warning">
-        <div class="fs-2-mb-sm">🟡</div>
-        <h2>{{ 'asset.impact.high'|trans({}, 'asset') }}</h2>
-        <div class="mt-2">
-            <strong class="fs-15-warning">{{ assetsByImpact.high|length }}</strong>
-        </div>
-        <p class="text-muted-mt-xs">
-            {{ 'asset.description.high_impact'|trans({}, 'asset') }}
-        </p>
-        <div class="mt-2">
-            <small><strong>{{ 'asset.field.avg_rto'|trans({}, 'asset') }}:</strong> {{ avgRTOByCriticality.high }}h</small>
-        </div>
-    </div>
-
-    <div class="card card-border-left-info">
-        <div class="fs-2-mb-sm">🔵</div>
-        <h3>{{ 'asset.impact.medium'|trans({}, 'asset') }}</h3>
-        <div class="mt-2">
-            <strong class="fs-15-info">{{ assetsByImpact.medium|length }}</strong>
-        </div>
-        <p class="text-muted-mt-xs">
-            {{ 'asset.description.medium_impact'|trans({}, 'asset') }}
-        </p>
-        <div class="mt-2">
-            <small><strong>{{ 'asset.field.avg_rto'|trans({}, 'asset') }}:</strong> {{ avgRTOByCriticality.medium }}h</small>
-        </div>
-    </div>
-
-    <div class="card card-border-left-secondary">
-        <div class="fs-2-mb-sm">⚪</div>
-        <h3>{{ 'asset.impact.low'|trans({}, 'asset') }}</h3>
-        <div class="mt-2">
-            <strong class="fs-4">{{ assetsByImpact.low|length }}</strong>
-        </div>
-        <p class="text-muted-mt-xs">
-            {{ 'asset.description.low_impact'|trans({}, 'asset') }}
-        </p>
-        <div class="mt-2">
-            <small><strong>{{ 'asset.field.avg_rto'|trans({}, 'asset') }}:</strong> {{ avgRTOByCriticality.low }}h</small>
-        </div>
-    </div>
-</div>
-
-{# Recovery Time Objectives (RTO) Analysis #}
-<h2>{{ 'asset.section.rto_analysis'|trans({}, 'asset') }}</h2>
-
-<div class="card mb-4">
-    <p class="text-muted-mb-md">
-        {{ 'asset.description.rto_analysis'|trans({}, 'asset') }}
-    </p>
-
-    {% embed '_components/_table.html.twig' with {
-        'noMargin': true,
-        'responsive': true
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.assets'|trans({}, 'nav'), url: path('app_asset_index') },
+            { label: asset.name, url: path('app_asset_show', {id: asset.id}) },
+            { label: 'bcm.title.bcm_insights'|trans({}, 'bcm') }
+        ]
     } %}
-        {% block table_head %}
-            <tr>
-                <th scope="col">{{ 'asset.field.rto_category'|trans({}, 'asset') }}</th>
-                <th scope="col" class="text-center">{{ 'asset.field.asset_count'|trans({}, 'asset') }}</th>
-                <th scope="col">{{ 'asset.field.examples'|trans({}, 'asset') }}</th>
-            </tr>
-        {% endblock %}
-        {% block table_body %}
-            <tr>
-                <td>
-                    <strong>{{ 'asset.rto.immediate'|trans({}, 'asset') }}</strong>
-                    <br><small class="text-muted">&lt; 1h</small>
-                </td>
-                <td class="text-center">
-                    <span class="badge bg-danger">{{ rtoCategories.immediate|length }}</span>
-                </td>
-                <td>
-                    {% for asset in rtoCategories.immediate|slice(0, 3) %}
-                        <span class="badge bg-secondary mr-xs">{{ asset.name }}</span>
-                    {% endfor %}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <strong>{{ 'asset.rto.urgent'|trans({}, 'asset') }}</strong>
-                    <br><small class="text-muted">1-4h</small>
-                </td>
-                <td class="text-center">
-                    <span class="badge bg-warning">{{ rtoCategories.urgent|length }}</span>
-                </td>
-                <td>
-                    {% for asset in rtoCategories.urgent|slice(0, 3) %}
-                        <span class="badge bg-secondary mr-xs">{{ asset.name }}</span>
-                    {% endfor %}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <strong>{{ 'asset.rto.standard'|trans({}, 'asset') }}</strong>
-                    <br><small class="text-muted">4-24h</small>
-                </td>
-                <td class="text-center">
-                    <span class="badge bg-info">{{ rtoCategories.standard|length }}</span>
-                </td>
-                <td>
-                    {% for asset in rtoCategories.standard|slice(0, 3) %}
-                        <span class="badge bg-secondary mr-xs">{{ asset.name }}</span>
-                    {% endfor %}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <strong>{{ 'asset.rto.flexible'|trans({}, 'asset') }}</strong>
-                    <br><small class="text-muted">&gt; 24h</small>
-                </td>
-                <td class="text-center">
-                    <span class="badge bg-secondary">{{ rtoCategories.flexible|length }}</span>
-                </td>
-                <td>
-                    {% for asset in rtoCategories.flexible|slice(0, 3) %}
-                        <span class="badge bg-secondary mr-xs">{{ asset.name }}</span>
-                    {% endfor %}
-                </td>
-            </tr>
-        {% endblock %}
-    {% endembed %}
-</div>
 
-{# Critical Assets Details #}
-<h2>{{ 'asset.section.critical_assets'|trans({}, 'asset') }}</h2>
+    <div class="page-header">
+        <div>
+            <h1><i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'bcm.title.asset_insights'|trans({}, 'bcm') }}</h1>
+            <p class="text-muted">{{ asset.name }}</p>
+        </div>
+        <div class="button-group">
+            <a href="{{ path('app_asset_show', {id: asset.id}) }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+            </a>
+            {% if canEdit %}
+            <a href="{{ path('app_asset_edit', {id: asset.id}) }}" class="btn btn-primary">
+                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+            </a>
+            {% endif %}
+        </div>
+    </div>
 
-{% embed '_components/_table.html.twig' with {
-    'noMargin': true,
-    'responsive': true
-} %}
-    {% block table_head %}
-        <tr>
-            <th scope="col">{{ 'asset.field.asset_name'|trans({}, 'asset') }}</th>
-            <th scope="col">{{ 'asset.field.type'|trans({}, 'asset') }}</th>
-            <th scope="col">{{ 'asset.field.business_criticality'|trans({}, 'asset') }}</th>
-            <th scope="col">{{ 'asset.field.rto'|trans({}, 'asset') }}</th>
-            <th scope="col">{{ 'asset.field.rpo'|trans({}, 'asset') }}</th>
-            <th scope="col">{{ 'asset.field.recovery_strategy'|trans({}, 'asset') }}</th>
-            <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
-        </tr>
-    {% endblock %}
-    {% block table_body %}
-        {% for asset in criticalAssetsList %}
-        <tr>
-            <td>
-                <strong>{{ asset.name }}</strong>
-                {% if asset.isBusinessCritical %}
-                    <span class="badge bg-danger ml-xs">
-                        {{ 'asset.badge.business_critical'|trans({}, 'asset') }}
-                    </span>
+    {# Protection Requirement Analysis #}
+    {% if analysis %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="mb-0">{{ 'bcm.section.protection_analysis'|trans({}, 'bcm') }}</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% if analysis.confidentiality is defined %}
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5>{{ 'bcm.field.confidentiality'|trans({}, 'bcm') }}</h5>
+                            {% set confLevel = analysis.confidentiality.level|default('normal') %}
+                            {% set levelColors = {'very_high': 'danger', 'high': 'warning', 'normal': 'info', 'low': 'secondary'} %}
+                            <span class="badge bg-{{ levelColors[confLevel]|default('secondary') }} fs-5">
+                                {{ ('bcm.level.' ~ confLevel)|trans({}, 'bcm') }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
                 {% endif %}
-            </td>
-            <td>
-                <span class="badge bg-info">{{ ('asset.type.' ~ asset.assetType)|trans({}, 'asset') }}</span>
-            </td>
-            <td>
-                {% set criticalityColors = {
-                    'critical': 'danger',
-                    'high': 'warning',
-                    'medium': 'info',
-                    'low': 'secondary'
-                } %}
-                <span class="badge badge-{{ criticalityColors[asset.businessCriticality] ?? 'secondary' }}">
-                    {{ ('asset.criticality.' ~ asset.businessCriticality)|trans({}, 'asset') }}
-                </span>
-            </td>
-            <td>
-                <strong>{{ asset.rto }}h</strong>
-            </td>
-            <td>
-                <strong>{{ asset.rpo }}h</strong>
-            </td>
-            <td>
-                <small class="text-muted">
-                    {{ asset.recoveryStrategy|default('-') }}
-                </small>
-            </td>
-            <td class="text-center">
-                <a href="{{ path('app_asset_show', {id: asset.id}) }}" class="btn btn-sm">
-                    👁 {{ 'common.view'|trans({}, 'messages') }}
+
+                {% if analysis.integrity is defined %}
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5>{{ 'bcm.field.integrity'|trans({}, 'bcm') }}</h5>
+                            {% set intLevel = analysis.integrity.level|default('normal') %}
+                            <span class="badge bg-{{ levelColors[intLevel]|default('secondary') }} fs-5">
+                                {{ ('bcm.level.' ~ intLevel)|trans({}, 'bcm') }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {% if analysis.availability is defined %}
+                <div class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body text-center">
+                            <h5>{{ 'bcm.field.availability'|trans({}, 'bcm') }}</h5>
+                            {% set availLevel = analysis.availability.level|default('normal') %}
+                            <span class="badge bg-{{ levelColors[availLevel]|default('secondary') }} fs-5">
+                                {{ ('bcm.level.' ~ availLevel)|trans({}, 'bcm') }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            {% if analysis.overallLevel is defined %}
+            <div class="alert alert-info mt-3">
+                <strong>{{ 'bcm.field.overall_protection_level'|trans({}, 'bcm') }}:</strong>
+                {{ ('bcm.level.' ~ analysis.overallLevel)|trans({}, 'bcm') }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# Associated Business Processes #}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h2 class="mb-0">{{ 'bcm.section.business_processes'|trans({}, 'bcm') }}</h2>
+        </div>
+        <div class="card-body">
+            {% if processes|length > 0 %}
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>{{ 'bcm.field.process_name'|trans({}, 'bcm') }}</th>
+                        <th>{{ 'bcm.field.criticality'|trans({}, 'bcm') }}</th>
+                        <th>{{ 'bcm.field.rto'|trans({}, 'bcm') }}</th>
+                        <th>{{ 'bcm.field.rpo'|trans({}, 'bcm') }}</th>
+                        <th class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for process in processes %}
+                    <tr>
+                        <td>
+                            <strong>{{ process.name }}</strong>
+                            {% if process.description %}
+                            <br><small class="text-muted">{{ process.description|slice(0, 100) }}{% if process.description|length > 100 %}...{% endif %}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% set critColors = {'critical': 'danger', 'high': 'warning', 'medium': 'info', 'low': 'secondary'} %}
+                            <span class="badge bg-{{ critColors[process.criticality]|default('secondary') }}">
+                                {{ ('bcm.criticality.' ~ process.criticality)|trans({}, 'bcm') }}
+                            </span>
+                        </td>
+                        <td>{{ process.rto|default('-') }}h</td>
+                        <td>{{ process.rpo|default('-') }}h</td>
+                        <td class="text-center">
+                            <a href="{{ path('app_business_process_show', {id: process.id}) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye" aria-hidden="true"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="text-center text-muted py-4">
+                <i class="bi bi-diagram-3 fs-1 d-block mb-2"></i>
+                <p>{{ 'bcm.message.no_processes'|trans({}, 'bcm') }}</p>
+                <a href="{{ path('app_business_process_new') }}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-lg" aria-hidden="true"></i> {{ 'bcm.action.add_process'|trans({}, 'bcm') }}
                 </a>
-            </td>
-        </tr>
-        {% else %}
-        <tr>
-            <td colspan="7" class="text-center-p-xl">
-                {{ 'asset.message.no_critical_assets'|trans({}, 'asset') }}
-            </td>
-        </tr>
-        {% endfor %}
-    {% endblock %}
-{% endembed %}
-
-{# Dependency Map #}
-<div class="card mt-4">
-    <h2>{{ 'asset.section.dependency_insights'|trans({}, 'asset') }}</h2>
-    <p class="text-muted-mt-sm-mb-md">
-        {{ 'asset.description.dependencies'|trans({}, 'asset') }}
-    </p>
-
-    <div class="stats-grid grid-auto-fit-250">
-        <div class="stat-item">
-            <strong>{{ assetsWithDependencies }}</strong>
-            <span>{{ 'asset.stats.with_dependencies'|trans({}, 'asset') }}</span>
+            </div>
+            {% endif %}
         </div>
-        <div class="stat-item">
-            <strong>{{ avgDependencies|round(1) }}</strong>
-            <span>{{ 'asset.stats.avg_dependencies'|trans({}, 'asset') }}</span>
+    </div>
+
+    {# Asset Details #}
+    <div class="card">
+        <div class="card-header">
+            <h2 class="mb-0">{{ 'bcm.section.asset_details'|trans({}, 'bcm') }}</h2>
         </div>
-        <div class="stat-item">
-            <strong>{{ singlePointsOfFailure }}</strong>
-            <span>{{ 'asset.stats.single_points_failure'|trans({}, 'asset') }}</span>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">{{ 'asset.field.type'|trans({}, 'assets') }}</dt>
+                        <dd class="col-sm-8">{{ asset.assetType|default('-') }}</dd>
+
+                        <dt class="col-sm-4">{{ 'asset.field.status'|trans({}, 'assets') }}</dt>
+                        <dd class="col-sm-8">{{ asset.status|default('-') }}</dd>
+
+                        <dt class="col-sm-4">{{ 'asset.field.owner'|trans({}, 'assets') }}</dt>
+                        <dd class="col-sm-8">{{ asset.owner|default('-') }}</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <dl class="row">
+                        <dt class="col-sm-4">{{ 'asset.field.location'|trans({}, 'assets') }}</dt>
+                        <dd class="col-sm-8">{{ asset.location ? asset.location.name : '-' }}</dd>
+
+                        <dt class="col-sm-4">{{ 'asset.field.criticality'|trans({}, 'assets') }}</dt>
+                        <dd class="col-sm-8">
+                            {% if asset.businessCriticality %}
+                            <span class="badge bg-{{ critColors[asset.businessCriticality]|default('secondary') }}">
+                                {{ asset.businessCriticality }}
+                            </span>
+                            {% else %}
+                            -
+                            {% endif %}
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            {% if isInherited %}
+            <div class="alert alert-info mt-3">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                {{ 'asset.message.inherited_asset'|trans({}, 'assets') }}
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
