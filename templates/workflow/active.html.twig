@@ -13,7 +13,7 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
-            ← {{ 'common.back'|trans({}, 'messages') }}
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
@@ -21,96 +21,100 @@
 {# Statistics Cards #}
 <div class="kpi-grid">
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.active'|trans({}, 'workflows'), activeInstances|length, null, null, 'info', null) }}
+        {{ cards.kpi_card('workflow.stats.active'|trans({}, 'workflows'), active_workflows|length, null, null, 'info', null) }}
     </div>
     <div class="col-auto">
-        {% set totalProgress = 0 %}
-        {% for instance in activeInstances %}
-            {% set totalProgress = totalProgress + (instance.completedSteps|length / instance.definition.steps|length * 100) %}
+        {% set overdueCount = 0 %}
+        {% for instance in active_workflows %}
+            {% if instance.dueDate and instance.dueDate < date() and instance.status not in ['approved', 'rejected', 'cancelled'] %}
+                {% set overdueCount = overdueCount + 1 %}
+            {% endif %}
         {% endfor %}
-        {% set avgProgress = activeInstances|length > 0 ? (totalProgress / activeInstances|length)|round : 0 %}
-        {{ cards.kpi_card('workflow.stats.avg_progress'|trans({}, 'workflows'), avgProgress ~ '%', null, avgProgress, 'primary', null) }}
+        {{ cards.kpi_card('workflow.stats.overdue'|trans({}, 'workflows'), overdueCount, null, null, 'danger', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.overdue'|trans({}, 'workflows'), activeInstances|filter(i => i.overdue)|length, null, null, 'danger', null) }}
-    </div>
-    <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.my_workflows'|trans({}, 'workflows'), activeInstances|filter(i => i.assignee and i.assignee.id == app.user.id)|length, null, null, 'success', null) }}
+        {% set myCount = 0 %}
+        {% for instance in active_workflows %}
+            {% if instance.initiatedBy and instance.initiatedBy.id == app.user.id %}
+                {% set myCount = myCount + 1 %}
+            {% endif %}
+        {% endfor %}
+        {{ cards.kpi_card('workflow.stats.my_workflows'|trans({}, 'workflows'), myCount, null, null, 'success', null) }}
     </div>
 </div>
 
 {# Active Workflows Table #}
 {% embed '_components/_table.html.twig' with {
-    'class': 'table-container',
+    'wrapperClass': 'table-container',
     'noMargin': true
 } %}
     {% block table_head %}
         <tr>
-            <th scope="col">{{ 'workflow.field.name'|trans({}, 'workflows') }}</th>
-            <th scope="col">{{ 'workflow.field.definition'|trans({}, 'workflows') }}</th>
+            <th scope="col">{{ 'workflow.field.entity'|trans({}, 'workflows') }}</th>
+            <th scope="col">{{ 'workflow.field.workflow'|trans({}, 'workflows') }}</th>
             <th scope="col">{{ 'workflow.field.current_step'|trans({}, 'workflows') }}</th>
-            <th scope="col">{{ 'workflow.field.assignee'|trans({}, 'workflows') }}</th>
-            <th scope="col" class="text-center">{{ 'workflow.field.progress'|trans({}, 'workflows') }}</th>
+            <th scope="col">{{ 'workflow.field.status'|trans({}, 'workflows') }}</th>
+            <th scope="col">{{ 'workflow.field.initiated_by'|trans({}, 'workflows') }}</th>
             <th scope="col">{{ 'workflow.field.due_date'|trans({}, 'workflows') }}</th>
             <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
     {% block table_body %}
-        {% for instance in activeInstances %}
-        <tr{% if instance.overdue %} class="bg-danger-light"{% endif %}>
+        {% for instance in active_workflows %}
+        {% set isOverdue = instance.dueDate and instance.dueDate < date() and instance.status not in ['approved', 'rejected', 'cancelled'] %}
+        <tr{% if isOverdue %} class="table-danger"{% endif %}>
             <td>
-                <strong>{{ instance.name }}</strong>
-                {% if instance.overdue %}
-                    <span class="badge bg-danger ml-xs">
+                <strong>{{ instance.entityType|split('\\')|last }} #{{ instance.entityId }}</strong>
+                {% if isOverdue %}
+                    <span class="badge bg-danger ms-1">
                         {{ 'workflow.badge.overdue'|trans({}, 'workflows') }}
                     </span>
                 {% endif %}
             </td>
             <td>
-                <span class="badge bg-info">{{ instance.definition ? instance.definition.name : '-' }}</span>
+                <span class="badge bg-info">{{ instance.workflow ? instance.workflow.name : '-' }}</span>
+            </td>
+            <td>{{ instance.currentStep ? instance.currentStep.name : '-' }}</td>
+            <td>
+                {% set statusColors = {
+                    'pending': 'warning',
+                    'in_progress': 'info',
+                    'approved': 'success',
+                    'rejected': 'danger',
+                    'cancelled': 'secondary'
+                } %}
+                <span class="badge bg-{{ statusColors[instance.status] ?? 'secondary' }}">
+                    {{ ('workflow.status.' ~ instance.status)|trans({}, 'workflows') }}
+                </span>
             </td>
             <td>
-                {{ instance.currentStep ? instance.currentStep.name : '-' }}
-                <br><small class="text-muted-color">
-                    {{ 'workflow.step'|trans({}, 'workflows') }} {{ instance.currentStepNumber }} / {{ instance.definition ? instance.definition.steps|length : 0 }}
-                </small>
-            </td>
-            <td>
-                {% if instance.assignee %}
-                    {{ instance.assignee.fullName }}
-                    {% if instance.assignee.id == app.user.id %}
-                        <span class="badge bg-success ml-xs">
+                {% if instance.initiatedBy %}
+                    {{ instance.initiatedBy.firstName ~ ' ' ~ instance.initiatedBy.lastName }}
+                    {% if instance.initiatedBy.id == app.user.id %}
+                        <span class="badge bg-success ms-1">
                             {{ 'workflow.badge.my_task'|trans({}, 'workflows') }}
                         </span>
                     {% endif %}
                 {% else %}
-                    <span class="text-muted-color">{{ 'workflow.message.unassigned'|trans({}, 'workflows') }}</span>
+                    <span class="text-muted">{{ 'workflow.message.unassigned'|trans({}, 'workflows') }}</span>
                 {% endif %}
-            </td>
-            <td>
-                {% set progress = (instance.completedSteps|length / instance.definition.steps|length * 100)|round %}
-                <div class="progress progress-inline">
-                    <div class="progress-bar progress-bar-fs-075" style="width: {{ progress }}%;">
-                        {{ progress }}%
-                    </div>
-                </div>
             </td>
             <td>
                 {% if instance.dueDate %}
                     {{ instance.dueDate|date('d.m.Y') }}
                 {% else %}
-                    <span class="text-muted-color">-</span>
+                    <span class="text-muted">-</span>
                 {% endif %}
             </td>
             <td class="text-center">
-                <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm">
-                    👁 {{ 'common.view'|trans({}, 'messages') }}
+                <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
                 </a>
             </td>
         </tr>
         {% else %}
         <tr>
-            <td colspan="7" class="text-center-p-xl-muted">
+            <td colspan="7" class="text-center text-muted p-4">
                 {{ 'workflow.message.no_active'|trans({}, 'workflows') }}
             </td>
         </tr>
