@@ -33,24 +33,26 @@ Dieses Dokument enthält die vollständige Projekt-Roadmap mit allen Phasen, Mei
 Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicherstellung der Zertifizierungsbereitschaft.
 
 **Aktueller Stand:**
-- **Technische Vollständigkeit:** ~85%
-- **Test Coverage:** ~60% (1618 Tests, 4711 Assertions - Ziel: 80%+)
+- **Technische Vollständigkeit:** ~90%
+- **Test Coverage:** ~65% (1689 Tests, 5066 Assertions - Ziel: 80%+)
 - **Test Success Rate:** 100% (alle Tests bestehen)
-- **Zertifizierungsbereitschaft:** ISO 27001: 94.5%, ISO 22301: 100%, **NIS2: 90%+** ✅
+- **Zertifizierungsbereitschaft:** ISO 27001: 96%, ISO 22301: 100%, **NIS2: 90%+** ✅
 
 ### ✅ Abgeschlossene Subphasen
-- ✅ Phase 6A: Form Types (5 von 6)
-- ✅ Phase 6C: Workflow-Management
+- ✅ Phase 6A: Form Types (Komplett - alle Formulare auf _auto_form migriert)
+- ✅ Phase 6C: Workflow-Management (inkl. Auto-Trigger & GDPR Breach Wizard)
 - ✅ Phase 6D: Compliance-Detail-Management
 - ✅ Phase 6F: ISO 27001 Inhaltliche Vervollständigung
 - ✅ Phase 6H: NIS2 Compliance Completion (90%+ compliant)
 - ✅ Phase 6L: Multi-Tenancy & Subsidiary Management
+- ✅ Phase 6N: Automated Workflows (GDPR Breach, Incident Escalation, Approvals)
 
 ### 🚧 In Arbeit
-- 🧪 Phase 6B: Test Coverage (Aktuell: ~60%, Ziel: 80%+)
-  - ✅ Umfangreiche Test-Suite (1618 Tests, 4711 Assertions)
+- 🧪 Phase 6B: Test Coverage (Aktuell: ~65%, Ziel: 80%+)
+  - ✅ Umfangreiche Test-Suite (1689 Tests, 5066 Assertions)
   - ✅ 100% Success Rate
   - ✅ Compliance-Tests für Multi-Framework Support
+  - ✅ Workflow Service Tests (6 neue Test-Klassen)
   - 🔄 Weitere Controller-Tests ausstehend
 
 ### 🔄 Ausstehend
@@ -475,16 +477,16 @@ Phase 7 führt umfassende Management-Reporting-Funktionen und erweiterte Analyti
 ## 📈 Projekt-Metriken
 
 ### Aktueller Stand (Nov 2025 - Phase 6)
-- **Codezeilen:** ~35,000+ LOC
-- **Entities:** 33 Doctrine Entities
-- **Controllers:** 30+ Controllers
-- **Templates:** 160+ Twig Templates
-- **Services:** 20+ Business Logic Services
-- **Commands:** 9+ Console Commands
-- **Tests:** 909 tests, 2.570 assertions (100% passing)
-- **Test Coverage:** ~34% (Ziel Phase 6B: 80%+)
+- **Codezeilen:** ~43,600+ LOC
+- **Entities:** 39 Doctrine Entities
+- **Controllers:** 38+ Controllers
+- **Templates:** 197+ Twig Templates
+- **Services:** 47+ Business Logic Services
+- **Commands:** 31+ Console Commands
+- **Tests:** 1689 tests, 5066 assertions (100% passing)
+- **Test Coverage:** ~65% (Ziel Phase 6B: 80%+)
 - **API Endpoints:** 30+ REST Endpoints
-- **Report Types:** 10 (5 PDF + 5 Excel)
+- **Report Types:** 11 (6 PDF + 5 Excel)
 
 ### Erwarteter Stand (Phase 7 Ende)
 - **Controllers:** +3 (ReportCenter, Enhanced Analytics, ReportBuilder)
@@ -522,7 +524,7 @@ Phase 7 führt umfassende Management-Reporting-Funktionen und erweiterte Analyti
 
 ---
 
-**Stand:** 2025-11-18
-**Version:** 1.1
-**Letzte Änderung:** Phase 7 (Advanced Analytics & Management Reporting) hinzugefügt
+**Stand:** 2025-11-27
+**Version:** 1.2
+**Letzte Änderung:** Phase 6N (Automated Workflows) abgeschlossen, v2.1.0 Release
 **Nächste Aktualisierung:** Nach Abschluss Phase 6B (Test Coverage)
