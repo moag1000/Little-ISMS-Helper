@@ -68,6 +68,8 @@ workflow:
         statistics: Statistiken
     field:
         name: Name
+        entity: Entität
+        workflow: Workflow
         definition: Definition
         definition_name: Definitionsname
         description: Beschreibung
@@ -77,6 +79,7 @@ workflow:
         current_step: 'Aktueller Schritt'
         status: Status
         assignee: Zuständig
+        initiated_by: 'Initiiert von'
         due_date: 'Fällig am'
         created_at: 'Erstellt am'
         completed_at: 'Abgeschlossen am'
@@ -93,7 +96,9 @@ workflow:
     status:
         pending: Ausstehend
         active: Aktiv
+        in_progress: 'In Bearbeitung'
         completed: Abgeschlossen
+        approved: Genehmigt
         cancelled: Abgebrochen
         rejected: Abgelehnt
         inactive: Inaktiv
