@@ -63,7 +63,8 @@
 
     <div class="card">
         <div class="card-header">
-            <h2>{{ 'change_request.list.title'|trans({'count': change_requests|length}, 'change_requests') }}</h2>
+            {%- set requestCount = change_requests|length -%}
+            <h2>{{ 'change_request.list.title'|trans({'count': requestCount}, 'change_requests') }}</h2>
         </div>
         <div class="card-content">
             {% if change_requests|length > 0 %}

@@ -198,7 +198,8 @@
     <footer class="footer" role="contentinfo">
         <p>{{ 'app.footer'|trans({}, 'messages') }}</p>
         <p class="footer-smallall">
-            {{ 'app.powered_by'|trans({'%version%': constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION')}, 'messages') }}
+            {%- set symfonyVersion = constant('Symfony\\Component\\HttpKernel\\Kernel::VERSION') -%}
+            {{ 'app.powered_by'|trans({'%version%': symfonyVersion}, 'messages') }}
             <span class="opacity-50">• Press <kbd>?</kbd> for shortcuts • <kbd>⌘K</kbd> to search</span>
             <span class="opacity-70"> • <a href="{{ path('app_reports_overview') }}" class="text-inherit text-decoration-none"><i class="bi bi-file-earmark-bar-graph" aria-hidden="true"></i> Reports</a></span>
         </p>
