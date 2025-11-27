@@ -67,7 +67,7 @@ class WorkflowAutoTriggerListenerTest extends TestCase
                     $this->equalTo('Auto-triggering incident workflows'),
                     $this->equalTo('Incident workflows triggered')
                 ),
-                $this->isType('array')
+                $this->isArray()
             );
 
         $this->listener->postPersist($incident, $args);
