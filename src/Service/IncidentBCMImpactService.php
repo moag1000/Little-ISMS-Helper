@@ -2,12 +2,11 @@
 
 namespace App\Service;
 
+use DateTimeImmutable;
+use DateTimeInterface;
 use App\Entity\Incident;
 use App\Entity\BusinessProcess;
-use App\Entity\Asset;
 use App\Repository\BusinessProcessRepository;
-use App\Repository\AssetRepository;
-use Doctrine\ORM\EntityManagerInterface;
 
 /**
  * CRITICAL-05: Incident ↔ BCM Integration Service
@@ -23,10 +22,8 @@ use Doctrine\ORM\EntityManagerInterface;
 class IncidentBCMImpactService
 {
     public function __construct(
-        private BusinessProcessRepository $businessProcessRepository,
-        private AssetRepository $assetRepository,
-        private EntityManagerInterface $entityManager,
-        private TenantContext $tenantContext
+        private readonly BusinessProcessRepository $businessProcessRepository,
+        private readonly TenantContext $tenantContext
     ) {}
 
     /**
@@ -45,7 +42,7 @@ class IncidentBCMImpactService
      */
     public function analyzeBusinessImpact(Incident $incident, ?int $estimatedDowntimeHours = null): array
     {
-        $tenant = $this->tenantContext->getCurrentTenant();
+        $this->tenantContext->getCurrentTenant();
 
         // Calculate actual or estimated downtime
         $downtimeHours = $estimatedDowntimeHours ?? $this->calculateActualDowntime($incident);
@@ -66,22 +63,22 @@ class IncidentBCMImpactService
         $criticalProcessCount = 0;
         $rtoViolations = [];
 
-        foreach ($allProcesses as $process) {
-            $impact = $this->calculateDowntimeImpact($process, $downtimeHours);
+        foreach ($allProcesses as $allProcess) {
+            $impact = $this->calculateDowntimeImpact($allProcess, $downtimeHours);
             $processImpacts[] = $impact;
 
             $totalFinancialImpact += $impact['financial_impact'];
 
-            if ($process->getCriticality() === 'critical') {
+            if ($allProcess->getCriticality() === 'critical') {
                 $criticalProcessCount++;
             }
 
             if ($impact['rto_violated']) {
                 $rtoViolations[] = [
-                    'process' => $process,
-                    'rto_hours' => $process->getRto(),
+                    'process' => $allProcess,
+                    'rto_hours' => $allProcess->getRto(),
                     'actual_hours' => $downtimeHours,
-                    'excess_hours' => $downtimeHours - $process->getRto(),
+                    'excess_hours' => $downtimeHours - $allProcess->getRto(),
                 ];
             }
         }
@@ -157,18 +154,18 @@ class IncidentBCMImpactService
 
         // Get manually linked processes to avoid duplicates
         $manualProcessIds = $incident->getAffectedBusinessProcesses()
-            ->map(fn($p) => $p->getId())
+            ->map(fn($p): ?int => $p->getId())
             ->toArray();
 
         $autoDetectedProcesses = [];
 
         // Find processes that use these affected assets
-        foreach ($affectedAssets as $asset) {
+        foreach ($affectedAssets as $affectedAsset) {
             $processes = $this->businessProcessRepository->createQueryBuilder('bp')
                 ->join('bp.supportingAssets', 'a')
                 ->where('a.id = :assetId')
                 ->andWhere('bp.tenant = :tenant')
-                ->setParameter('assetId', $asset->getId())
+                ->setParameter('assetId', $affectedAsset->getId())
                 ->setParameter('tenant', $tenant)
                 ->getQuery()
                 ->getResult();
@@ -189,44 +186,44 @@ class IncidentBCMImpactService
      *
      * Data Reuse: BIA financial impact, RTO, criticality, impact scores
      *
-     * @param BusinessProcess $process The affected process
+     * @param BusinessProcess $businessProcess The affected process
      * @param int $downtimeHours Downtime duration in hours
      * @return array Detailed impact analysis
      */
-    public function calculateDowntimeImpact(BusinessProcess $process, int $downtimeHours): array
+    public function calculateDowntimeImpact(BusinessProcess $businessProcess, int $downtimeHours): array
     {
-        $impactPerHour = (float) ($process->getFinancialImpactPerHour() ?? 0);
-        $impactPerDay = (float) ($process->getFinancialImpactPerDay() ?? 0);
+        $impactPerHour = (float) ($businessProcess->getFinancialImpactPerHour() ?? 0);
+        $impactPerDay = (float) ($businessProcess->getFinancialImpactPerDay() ?? 0);
 
         // Calculate financial impact
         $financialImpact = $impactPerHour * $downtimeHours;
 
         // Check RTO compliance
-        $rto = $process->getRto();
+        $rto = $businessProcess->getRto();
         $rtoViolated = $downtimeHours > $rto;
         $rtoExcessHours = max(0, $downtimeHours - $rto);
 
         // Check MTPD (Maximum Tolerable Period of Disruption)
-        $mtpd = $process->getMtpd();
+        $mtpd = $businessProcess->getMtpd();
         $mtpdViolated = $downtimeHours > $mtpd;
 
         // Calculate impact severity
         $impactSeverity = $this->calculateImpactSeverity(
-            $process,
+            $businessProcess,
             $downtimeHours,
             $rtoViolated,
             $mtpdViolated
         );
 
         return [
-            'process_id' => $process->getId(),
-            'process_name' => $process->getName(),
-            'process_owner' => $process->getProcessOwner(),
-            'criticality' => $process->getCriticality(),
+            'process_id' => $businessProcess->getId(),
+            'process_name' => $businessProcess->getName(),
+            'process_owner' => $businessProcess->getProcessOwner(),
+            'criticality' => $businessProcess->getCriticality(),
 
             'bia_data' => [
                 'rto_hours' => $rto,
-                'rpo_hours' => $process->getRpo(),
+                'rpo_hours' => $businessProcess->getRpo(),
                 'mtpd_hours' => $mtpd,
                 'financial_impact_per_hour' => $impactPerHour,
                 'financial_impact_per_day' => $impactPerDay,
@@ -246,15 +243,15 @@ class IncidentBCMImpactService
             'mtpd_violated' => $mtpdViolated,
 
             'impact_scores' => [
-                'reputational' => $process->getReputationalImpact(),
-                'regulatory' => $process->getRegulatoryImpact(),
-                'operational' => $process->getOperationalImpact(),
-                'aggregated' => $process->getBusinessImpactScore(),
+                'reputational' => $businessProcess->getReputationalImpact(),
+                'regulatory' => $businessProcess->getRegulatoryImpact(),
+                'operational' => $businessProcess->getOperationalImpact(),
+                'aggregated' => $businessProcess->getBusinessImpactScore(),
             ],
 
             'impact_severity' => $impactSeverity,
 
-            'recovery_strategy' => $process->getRecoveryStrategy(),
+            'recovery_strategy' => $businessProcess->getRecoveryStrategy(),
         ];
     }
 
@@ -273,7 +270,7 @@ class IncidentBCMImpactService
      */
     public function suggestRecoveryPriority(Incident $incident, array $affectedProcesses): array
     {
-        if (empty($affectedProcesses)) {
+        if ($affectedProcesses === []) {
             return [
                 'level' => 'medium',
                 'reasoning' => 'No business processes identified - standard incident priority',
@@ -290,13 +287,13 @@ class IncidentBCMImpactService
         $mostCriticalProcess = null;
         $criticalCount = 0;
 
-        foreach ($affectedProcesses as $process) {
-            if ($process->getRto() < $lowestRTO) {
-                $lowestRTO = $process->getRto();
-                $mostCriticalProcess = $process;
+        foreach ($affectedProcesses as $affectedProcess) {
+            if ($affectedProcess->getRto() < $lowestRTO) {
+                $lowestRTO = $affectedProcess->getRto();
+                $mostCriticalProcess = $affectedProcess;
             }
 
-            if ($process->getCriticality() === 'critical') {
+            if ($affectedProcess->getCriticality() === 'critical') {
                 $criticalCount++;
             }
         }
@@ -366,7 +363,7 @@ class IncidentBCMImpactService
         $analysis = $this->analyzeBusinessImpact($incident);
 
         return [
-            'report_generated_at' => new \DateTimeImmutable(),
+            'report_generated_at' => new DateTimeImmutable(),
             'incident' => [
                 'number' => $incident->getIncidentNumber(),
                 'title' => $incident->getTitle(),
@@ -384,14 +381,13 @@ class IncidentBCMImpactService
     /**
      * Calculate actual downtime from incident timestamps
      *
-     * @param Incident $incident
      * @return int Downtime in hours (0 if not resolved, 24 if estimated)
      */
     private function calculateActualDowntime(Incident $incident): int
     {
-        if ($incident->getResolvedAt() === null) {
+        if (!$incident->getResolvedAt() instanceof DateTimeInterface) {
             // Not resolved yet - estimate 24 hours or time since detection
-            $now = new \DateTimeImmutable();
+            $now = new DateTimeImmutable();
             $interval = $incident->getDetectedAt()->diff($now);
             return min(24, ($interval->days * 24) + $interval->h);
         }
@@ -403,7 +399,6 @@ class IncidentBCMImpactService
     /**
      * Get historical context for affected processes
      *
-     * @param array $processes
      * @return array Historical statistics
      */
     private function getHistoricalContext(array $processes): array
@@ -435,14 +430,10 @@ class IncidentBCMImpactService
     /**
      * Calculate impact severity (low/medium/high/critical)
      *
-     * @param BusinessProcess $process
-     * @param int $downtimeHours
-     * @param bool $rtoViolated
-     * @param bool $mtpdViolated
      * @return string Severity level
      */
     private function calculateImpactSeverity(
-        BusinessProcess $process,
+        BusinessProcess $businessProcess,
         int $downtimeHours,
         bool $rtoViolated,
         bool $mtpdViolated
@@ -453,18 +444,18 @@ class IncidentBCMImpactService
         }
 
         // Critical process or severe RTO violation
-        if ($process->getCriticality() === 'critical' ||
-            ($rtoViolated && $downtimeHours > $process->getRto() * 2)) {
+        if ($businessProcess->getCriticality() === 'critical' ||
+            ($rtoViolated && $downtimeHours > $businessProcess->getRto() * 2)) {
             return 'critical';
         }
 
         // RTO violation or high business impact
-        if ($rtoViolated || $process->getBusinessImpactScore() >= 4) {
+        if ($rtoViolated || $businessProcess->getBusinessImpactScore() >= 4) {
             return 'high';
         }
 
         // Moderate impact
-        if ($process->getBusinessImpactScore() >= 3) {
+        if ($businessProcess->getBusinessImpactScore() >= 3) {
             return 'medium';
         }
 
@@ -474,9 +465,6 @@ class IncidentBCMImpactService
     /**
      * Generate actionable recommendations
      *
-     * @param Incident $incident
-     * @param array $processes
-     * @param array $rtoViolations
      * @return array List of recommendations
      */
     private function generateRecommendations(Incident $incident, array $processes, array $rtoViolations): array
@@ -543,7 +531,7 @@ class IncidentBCMImpactService
                 ),
                 sprintf(
                     'Recovery priority: %s (%s)',
-                    strtoupper($analysis['recovery_priority']['level']),
+                    strtoupper((string) $analysis['recovery_priority']['level']),
                     $analysis['recovery_priority']['reasoning']
                 ),
                 $analysis['rto_compliance']['is_compliant']
@@ -564,7 +552,7 @@ class IncidentBCMImpactService
         $processes = $analysis['affected_processes']['processes'];
 
         return [
-            'financial_by_process' => array_map(fn($p) => [
+            'financial_by_process' => array_map(fn(array $p): array => [
                 'name' => $p['process_name'],
                 'value' => $p['financial_impact'],
             ], $processes),
@@ -572,8 +560,8 @@ class IncidentBCMImpactService
             'criticality_distribution' => $this->aggregateBy($processes, 'criticality'),
 
             'rto_compliance' => [
-                'compliant' => count(array_filter($processes, fn($p) => !$p['rto_violated'])),
-                'violated' => count(array_filter($processes, fn($p) => $p['rto_violated'])),
+                'compliant' => count(array_filter($processes, fn(array $p): bool => !$p['rto_violated'])),
+                'violated' => count(array_filter($processes, fn(array $p) => $p['rto_violated'])),
             ],
 
             'impact_severity' => $this->aggregateBy($processes, 'impact_severity'),
@@ -583,8 +571,6 @@ class IncidentBCMImpactService
     /**
      * Helper: Aggregate data by field
      *
-     * @param array $items
-     * @param string $field
      * @return array Aggregated counts
      */
     private function aggregateBy(array $items, string $field): array

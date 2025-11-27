@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use RuntimeException;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -28,9 +29,7 @@ class DatabaseConfigurationType extends AbstractType
         if (extension_loaded('pdo_mysql')) {
             $availableTypes['MySQL'] = 'mysql';
             $availableTypes['MariaDB'] = 'mariadb';
-            if ($defaultType === null) {
-                $defaultType = 'mysql';
-            }
+            $defaultType = 'mysql';
         }
 
         // Check for PostgreSQL support
@@ -44,12 +43,12 @@ class DatabaseConfigurationType extends AbstractType
         // Check for SQLite support (usually available)
         if (extension_loaded('pdo_sqlite')) {
             $availableTypes['SQLite'] = 'sqlite';
-            $defaultType = $defaultType ?? 'sqlite';
+            $defaultType ??= 'sqlite';
         }
 
         // If no PDO extensions available, show error
-        if (empty($availableTypes)) {
-            throw new \RuntimeException(
+        if ($availableTypes === []) {
+            throw new RuntimeException(
                 'No PDO database extensions found. Please install at least one of: pdo_mysql, pdo_pgsql, or pdo_sqlite'
             );
         }
@@ -134,7 +133,7 @@ class DatabaseConfigurationType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\Regex(
-                        pattern: '/^[a-zA-Z0-9_]+$/',
+                        pattern: '/^\w+$/',
                         message: 'setup.database.name_invalid'
                     ),
                 ],
@@ -188,8 +187,8 @@ class DatabaseConfigurationType extends AbstractType
             ]);
 
         // Add event listener to set default values based on database type
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
-            $data = $event->getData();
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $formEvent): void {
+            $data = $formEvent->getData();
             $type = $data['type'] ?? 'mysql';
 
             // Set default port if not provided
@@ -219,7 +218,7 @@ class DatabaseConfigurationType extends AbstractType
                 };
             }
 
-            $event->setData($data);
+            $formEvent->setData($data);
         });
     }
 
@@ -244,7 +243,7 @@ class DatabaseConfigurationType extends AbstractType
     {
         // Check if DATABASE_URL contains the local socket configuration (safe check)
         $dbUrl = $_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? '';
-        $usesLocalSocket = str_contains($dbUrl, 'unix_socket=/run/mysqld');
+        $usesLocalSocket = str_contains((string) $dbUrl, 'unix_socket=/run/mysqld');
 
         // Check for Docker-specific environment variables
         $isDocker = isset($_ENV['DOCKER_CONTAINER']) || isset($_SERVER['DOCKER_CONTAINER']);
@@ -253,14 +252,9 @@ class DatabaseConfigurationType extends AbstractType
         if ($usesLocalSocket) {
             return true;
         }
-
         // Check if .dockerenv exists (only within project directory to avoid open_basedir issues)
         // This is a secondary check if no DATABASE_URL socket configuration is found
-        if ($isDocker) {
-            return true;
-        }
-
-        return false;
+        return $isDocker;
     }
 
     /**
@@ -333,7 +327,7 @@ class DatabaseConfigurationType extends AbstractType
             $config['name'] = isset($parsed['path']) ? ltrim($parsed['path'], '/') : null;
         }
 
-        return array_filter($config, fn($v) => $v !== null);
+        return array_filter($config, fn($v): bool => $v !== null);
     }
 
     /**
@@ -344,18 +338,9 @@ class DatabaseConfigurationType extends AbstractType
      */
     private function detectUnixSocket(): ?string
     {
-        // Common socket paths - we'll suggest the most likely one based on OS
-        // but won't actually check if they exist to avoid open_basedir issues
-        $commonPaths = [
-            '/var/run/mysqld/mysqld.sock',      // Debian/Ubuntu
-            '/var/lib/mysql/mysql.sock',        // RHEL/CentOS
-            '/tmp/mysql.sock',                  // macOS/FreeBSD
-            '/run/mysqld/mysqld.sock',          // Alpine/Docker
-        ];
-
         // Check if any socket path is already configured in DATABASE_URL
         $dbUrl = $_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? '';
-        if (preg_match('/unix_socket=([^&]+)/', $dbUrl, $matches)) {
+        if (preg_match('/unix_socket=([^&]+)/', (string) $dbUrl, $matches)) {
             return $matches[1];
         }
 

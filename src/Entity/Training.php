@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use App\Entity\Tenant;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
@@ -30,24 +32,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Get(
-            security: "is_granted('ROLE_USER')",
-            description: 'Retrieve a specific security awareness training by ID'
+            description: 'Retrieve a specific security awareness training by ID',
+            security: "is_granted('ROLE_USER')"
         ),
         new GetCollection(
-            security: "is_granted('ROLE_USER')",
-            description: 'Retrieve the collection of security awareness trainings with filtering by type, status, and date'
+            description: 'Retrieve the collection of security awareness trainings with filtering by type, status, and date',
+            security: "is_granted('ROLE_USER')"
         ),
         new Post(
-            security: "is_granted('ROLE_USER')",
-            description: 'Create a new security awareness training event'
+            description: 'Create a new security awareness training event',
+            security: "is_granted('ROLE_USER')"
         ),
         new Put(
-            security: "is_granted('ROLE_USER')",
-            description: 'Update an existing training event'
+            description: 'Update an existing training event',
+            security: "is_granted('ROLE_USER')"
         ),
         new Delete(
-            security: "is_granted('ROLE_ADMIN')",
-            description: 'Delete a training event (Admin only)'
+            description: 'Delete a training event (Admin only)',
+            security: "is_granted('ROLE_ADMIN')"
         ),
     ],
     normalizationContext: ['groups' => ['training:read']],
@@ -84,7 +86,7 @@ class Training
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['training:read', 'training:write'])]
     #[Assert\NotNull(message: 'Scheduled date is required')]
-    private ?\DateTimeInterface $scheduledDate = null;
+    private ?DateTimeInterface $scheduledDate = null;
 
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
@@ -141,15 +143,15 @@ class Training
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['training:read', 'training:write'])]
-    private ?\DateTimeInterface $completionDate = null;
+    private ?DateTimeInterface $completionDate = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['training:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['training:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     /**
      * @var Collection<int, Control>
@@ -179,7 +181,7 @@ public function __construct()
     {
         $this->coveredControls = new ArrayCollection();
         $this->complianceRequirements = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -220,12 +222,12 @@ public function __construct()
         return $this;
     }
 
-    public function getScheduledDate(): ?\DateTimeInterface
+    public function getScheduledDate(): ?DateTimeInterface
     {
         return $this->scheduledDate;
     }
 
-    public function setScheduledDate(\DateTimeInterface $scheduledDate): static
+    public function setScheduledDate(DateTimeInterface $scheduledDate): static
     {
         $this->scheduledDate = $scheduledDate;
         return $this;
@@ -341,34 +343,34 @@ public function __construct()
         return $this;
     }
 
-    public function getCompletionDate(): ?\DateTimeInterface
+    public function getCompletionDate(): ?DateTimeInterface
     {
         return $this->completionDate;
     }
 
-    public function setCompletionDate(?\DateTimeInterface $completionDate): static
+    public function setCompletionDate(?DateTimeInterface $completionDate): static
     {
         $this->completionDate = $completionDate;
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -418,8 +420,8 @@ public function __construct()
         }
 
         $totalImplementation = 0;
-        foreach ($this->coveredControls as $control) {
-            $totalImplementation += $control->getImplementationPercentage() ?? 0;
+        foreach ($this->coveredControls as $coveredControl) {
+            $totalImplementation += $coveredControl->getImplementationPercentage() ?? 0;
         }
 
         return round($totalImplementation / $this->coveredControls->count(), 2);
@@ -433,8 +435,8 @@ public function __construct()
     public function getCoveredCategories(): array
     {
         $categories = [];
-        foreach ($this->coveredControls as $control) {
-            $category = $control->getCategory();
+        foreach ($this->coveredControls as $coveredControl) {
+            $category = $coveredControl->getCategory();
             if (!in_array($category, $categories)) {
                 $categories[] = $category;
             }
@@ -449,8 +451,8 @@ public function __construct()
     #[Groups(['training:read'])]
     public function hasCriticalControls(): bool
     {
-        foreach ($this->coveredControls as $control) {
-            if (!$control->isApplicable() || $control->getImplementationPercentage() < 50) {
+        foreach ($this->coveredControls as $coveredControl) {
+            if (!$coveredControl->isApplicable() || $coveredControl->getImplementationPercentage() < 50) {
                 return true; // Training addresses controls that need attention
             }
         }
@@ -465,17 +467,17 @@ public function __construct()
         return $this->complianceRequirements;
     }
 
-    public function addComplianceRequirement(ComplianceRequirement $requirement): static
+    public function addComplianceRequirement(ComplianceRequirement $complianceRequirement): static
     {
-        if (!$this->complianceRequirements->contains($requirement)) {
-            $this->complianceRequirements->add($requirement);
+        if (!$this->complianceRequirements->contains($complianceRequirement)) {
+            $this->complianceRequirements->add($complianceRequirement);
         }
         return $this;
     }
 
-    public function removeComplianceRequirement(ComplianceRequirement $requirement): static
+    public function removeComplianceRequirement(ComplianceRequirement $complianceRequirement): static
     {
-        $this->complianceRequirements->removeElement($requirement);
+        $this->complianceRequirements->removeElement($complianceRequirement);
         return $this;
     }
 
@@ -497,8 +499,8 @@ public function __construct()
     public function getCoveredFrameworks(): array
     {
         $frameworkNames = [];
-        foreach ($this->complianceRequirements as $requirement) {
-            $framework = $requirement->getFramework();
+        foreach ($this->complianceRequirements as $complianceRequirement) {
+            $framework = $complianceRequirement->getFramework();
             if ($framework) {
                 $name = $framework->getName();
                 if ($name && !in_array($name, $frameworkNames)) {
@@ -517,8 +519,8 @@ public function __construct()
      */
     public function coversFramework(string $frameworkName): bool
     {
-        foreach ($this->complianceRequirements as $requirement) {
-            $framework = $requirement->getFramework();
+        foreach ($this->complianceRequirements as $complianceRequirement) {
+            $framework = $complianceRequirement->getFramework();
             if ($framework && $framework->getName() === $frameworkName) {
                 return true;
             }

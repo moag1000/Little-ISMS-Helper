@@ -6,9 +6,7 @@ use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -122,9 +120,7 @@ class ComplianceRequirementType extends AbstractType
             ->add('parentRequirement', EntityType::class, [
                 'label' => 'compliance_requirement.field.parent_requirement',
                 'class' => ComplianceRequirement::class,
-                'choice_label' => function(ComplianceRequirement $req) {
-                    return $req->getRequirementId() . ' - ' . $req->getTitle();
-                },
+                'choice_label' => fn(ComplianceRequirement $complianceRequirement): string => $complianceRequirement->getRequirementId() . ' - ' . $complianceRequirement->getTitle(),
                 'required' => false,
                 'attr' => [
                     'class' => 'form-select'

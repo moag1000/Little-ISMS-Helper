@@ -2,6 +2,9 @@
 
 namespace App\Service;
 
+use InvalidArgumentException;
+use RuntimeException;
+use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
@@ -15,11 +18,11 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
  */
 class EnvironmentWriter
 {
-    private const ENV_LOCAL_FILE = '/.env.local';
-    private const BACKUP_SUFFIX = '.backup';
+    private const string ENV_LOCAL_FILE = '/.env.local';
+    private const string BACKUP_SUFFIX = '.backup';
 
     public function __construct(
-        private readonly ParameterBagInterface $params
+        private readonly ParameterBagInterface $parameterBag
     ) {
     }
 
@@ -27,7 +30,7 @@ class EnvironmentWriter
      * Write database configuration to .env.local
      *
      * @param array $config Configuration array with keys: type, host, port, name, user, password, unixSocket
-     * @throws \RuntimeException if write fails
+     * @throws RuntimeException if write fails
      */
     public function writeDatabaseConfig(array $config): void
     {
@@ -61,9 +64,9 @@ class EnvironmentWriter
             // Build DATABASE_URL using variable references
             // This avoids URL-encoding issues with special characters in passwords
             $databaseUrl = match ($type) {
-                'mysql', 'mariadb' => $this->buildMysqlDatabaseUrlWithVars($envVars['DB_SERVER_VERSION'], $unixSocket),
+                'mysql', 'mariadb' => $this->buildMysqlDatabaseUrlWithVars($unixSocket),
                 'postgresql' => 'postgresql://${DB_USER}:${DB_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?serverVersion=${DB_SERVER_VERSION}&charset=utf8',
-                default => throw new \InvalidArgumentException("Unsupported database type: {$type}")
+                default => throw new InvalidArgumentException("Unsupported database type: {$type}")
             };
         } else {
             // SQLite doesn't need credentials
@@ -84,10 +87,10 @@ class EnvironmentWriter
      * Build MySQL/MariaDB DATABASE_URL using environment variable references
      * This avoids URL-encoding issues with special characters in passwords
      */
-    private function buildMysqlDatabaseUrlWithVars(string $serverVersion, ?string $unixSocket = null): string
+    private function buildMysqlDatabaseUrlWithVars(?string $unixSocket = null): string
     {
         // Use Unix socket if explicitly provided
-        if (!empty($unixSocket)) {
+        if (!in_array($unixSocket, [null, '', '0'], true)) {
             // Unix socket connection (better performance, no TCP overhead)
             return sprintf(
                 'mysql://${DB_USER}:${DB_PASS}@localhost/${DB_NAME}?unix_socket=%s&serverVersion=${DB_SERVER_VERSION}&charset=utf8mb4',
@@ -100,46 +103,10 @@ class EnvironmentWriter
     }
 
     /**
-     * Build MySQL/MariaDB DATABASE_URL with optional Unix socket support
-     * @deprecated Use buildMysqlDatabaseUrlWithVars() instead to avoid special character issues
-     */
-    private function buildMysqlDatabaseUrl(string $host, int $port, string $user, string $password, string $name, string $serverVersion, ?string $unixSocket = null): string
-    {
-        // URL-encode user and password
-        // The resulting URL will contain % which will trigger escapeEnvValue() to wrap it in quotes
-        $encodedUser = urlencode($user);
-        $encodedPassword = urlencode($password);
-
-        // Use Unix socket if explicitly provided
-        if (!empty($unixSocket)) {
-            // Unix socket connection (better performance, no TCP overhead)
-            return sprintf(
-                'mysql://%s:%s@localhost/%s?unix_socket=%s&serverVersion=%s&charset=utf8mb4',
-                $encodedUser,
-                $encodedPassword,
-                $name,
-                $unixSocket,  // Raw path, not URL-encoded
-                $serverVersion
-            );
-        }
-
-        // Standard TCP connection
-        return sprintf(
-            'mysql://%s:%s@%s:%s/%s?serverVersion=%s&charset=utf8mb4',
-            $encodedUser,
-            $encodedPassword,
-            $host,
-            $port,
-            $name,
-            $serverVersion
-        );
-    }
-
-    /**
      * Write arbitrary environment variables to .env.local
      *
      * @param array $variables Key-value pairs of environment variables
-     * @throws \RuntimeException if write fails
+     * @throws RuntimeException if write fails
      */
     public function writeEnvVariables(array $variables): void
     {
@@ -148,7 +115,7 @@ class EnvironmentWriter
         // Validate variable names
         foreach (array_keys($variables) as $key) {
             if (!$this->isValidVariableName($key)) {
-                throw new \InvalidArgumentException("Invalid environment variable name: {$key}");
+                throw new InvalidArgumentException("Invalid environment variable name: {$key}");
             }
         }
 
@@ -175,7 +142,7 @@ class EnvironmentWriter
             $bytesWritten = file_put_contents($tmpFilePath, $content);
 
             if ($bytesWritten === false || $bytesWritten !== strlen($content)) {
-                throw new \RuntimeException("Failed to write to temporary file {$tmpFilePath}");
+                throw new RuntimeException("Failed to write to temporary file {$tmpFilePath}");
             }
 
             // Set proper permissions before rename
@@ -183,9 +150,9 @@ class EnvironmentWriter
 
             // Atomic rename (this is atomic on POSIX systems)
             if (!rename($tmpFilePath, $envFilePath)) {
-                throw new \RuntimeException("Failed to rename temporary file to {$envFilePath}");
+                throw new RuntimeException("Failed to rename temporary file to {$envFilePath}");
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Cleanup: Remove temp file if it exists
             if (file_exists($tmpFilePath)) {
                 @unlink($tmpFilePath);
@@ -199,7 +166,7 @@ class EnvironmentWriter
      */
     public function ensureAppSecret(): void
     {
-        $envFilePath = $this->getEnvLocalPath();
+        $this->getEnvLocalPath();
         $existingVars = $this->readEnvLocal();
 
         // Check if APP_SECRET already exists and is not empty
@@ -236,9 +203,11 @@ class EnvironmentWriter
 
         foreach ($lines as $line) {
             $line = trim($line);
-
             // Skip empty lines and comments
-            if ($line === '' || str_starts_with($line, '#')) {
+            if ($line === '') {
+                continue;
+            }
+            if (str_starts_with($line, '#')) {
                 continue;
             }
 
@@ -276,9 +245,7 @@ class EnvironmentWriter
         $databaseUrl = $envVars['DATABASE_URL'];
 
         // Replace ${VAR} references with actual values from envVars
-        $databaseUrl = preg_replace_callback('/\$\{([A-Z_]+)\}/', function($matches) use ($envVars) {
-            return $envVars[$matches[1]] ?? $matches[0];
-        }, $databaseUrl);
+        $databaseUrl = preg_replace_callback('/\$\{([A-Z_]+)\}/', fn($matches) => $envVars[$matches[1]] ?? $matches[0], (string) $databaseUrl);
 
         // Parse DATABASE_URL: mysql://user:pass@host:port/dbname?serverVersion=X&charset=Y
         // Example: mysql://banda:MeinSicheresPw987%21@127.0.0.1:3306/LittleHelper?serverVersion=11.4.1-MariaDB
@@ -293,7 +260,7 @@ class EnvironmentWriter
 
             // Extract serverVersion from query string
             $serverVersion = null;
-            if ($queryString) {
+            if ($queryString !== '' && $queryString !== '0') {
                 parse_str($queryString, $queryParams);
                 $serverVersion = $queryParams['serverVersion'] ?? null;
             }
@@ -438,7 +405,7 @@ class EnvironmentWriter
      */
     public function getEnvLocalPath(): string
     {
-        return $this->params->get('kernel.project_dir') . self::ENV_LOCAL_FILE;
+        return $this->parameterBag->get('kernel.project_dir') . self::ENV_LOCAL_FILE;
     }
 
     /**
@@ -457,7 +424,7 @@ class EnvironmentWriter
     public function checkWritePermissions(): array
     {
         $envFilePath = $this->getEnvLocalPath();
-        $projectDir = $this->params->get('kernel.project_dir');
+        $projectDir = $this->parameterBag->get('kernel.project_dir');
 
         // Check if .env.local exists
         if (file_exists($envFilePath)) {
@@ -468,26 +435,22 @@ class EnvironmentWriter
                     'message' => "File {$envFilePath} exists but is not writable. Please check file permissions (should be 0600 or 0644).",
                 ];
             }
-        } else {
+        } elseif (!is_writable($projectDir)) {
             // File doesn't exist - check if parent directory is writable
-            if (!is_writable($projectDir)) {
-                return [
-                    'writable' => false,
-                    'message' => "Project directory {$projectDir} is not writable. Cannot create .env.local file.",
-                ];
-            }
+            return [
+                'writable' => false,
+                'message' => "Project directory {$projectDir} is not writable. Cannot create .env.local file.",
+            ];
         }
 
         // Check var/ directory (needed for SQLite)
         $varDir = $projectDir . '/var';
-        if (!is_dir($varDir)) {
-            // Try to create it
-            if (!@mkdir($varDir, 0755, true)) {
-                return [
-                    'writable' => false,
-                    'message' => "Cannot create var/ directory. Please create it manually with: mkdir -p {$varDir} && chmod 755 {$varDir}",
-                ];
-            }
+        // Try to create it
+        if (!is_dir($varDir) && !@mkdir($varDir, 0755, true)) {
+            return [
+                'writable' => false,
+                'message' => "Cannot create var/ directory. Please create it manually with: mkdir -p {$varDir} && chmod 755 {$varDir}",
+            ];
         }
 
         if (!is_writable($varDir)) {
@@ -519,7 +482,7 @@ class EnvironmentWriter
         // Parse DATABASE_URL to extract components
         $url = $vars['DATABASE_URL'];
 
-        if (preg_match('/^(\w+):\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/([^?]+)/', $url, $matches)) {
+        if (preg_match('/^(\w+):\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/([^?]+)/', (string) $url, $matches)) {
             return [
                 'type' => $matches[1] === 'postgresql' ? 'postgresql' : 'mysql',
                 'user' => $matches[2],
@@ -530,10 +493,10 @@ class EnvironmentWriter
             ];
         }
 
-        if (str_starts_with($url, 'sqlite://')) {
+        if (str_starts_with((string) $url, 'sqlite://')) {
             return [
                 'type' => 'sqlite',
-                'name' => basename($url, '.db'),
+                'name' => basename((string) $url, '.db'),
             ];
         }
 

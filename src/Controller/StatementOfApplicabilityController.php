@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use DateTime;
+use DateTimeImmutable;
 use App\Entity\Control;
 use App\Form\ControlType;
 use App\Repository\ControlRepository;
@@ -14,18 +16,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/soa')]
 class StatementOfApplicabilityController extends AbstractController
 {
     public function __construct(
-        private ControlRepository $controlRepository,
-        private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator,
-        private SoAReportService $soaReportService,
-        private Security $security
+        private readonly ControlRepository $controlRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
+        private readonly SoAReportService $soaReportService,
+        private readonly Security $security
     ) {}
-
-    #[Route('/', name: 'app_soa_index')]
+    #[Route('/soa/', name: 'app_soa_index')]
     public function index(Request $request): Response
     {
         // Get current user's tenant
@@ -37,26 +37,17 @@ class StatementOfApplicabilityController extends AbstractController
 
         // Get controls based on view filter
         if ($tenant) {
-            switch ($view) {
-                case 'own':
-                    $controls = $this->controlRepository->findByTenant($tenant);
-                    break;
-                case 'subsidiaries':
-                    $controls = $this->controlRepository->findByTenantIncludingSubsidiaries($tenant);
-                    break;
-                case 'inherited':
-                default:
-                    $controls = $this->controlRepository->findByTenantIncludingParent($tenant);
-                    break;
-            }
-
+            $controls = match ($view) {
+                'own' => $this->controlRepository->findByTenant($tenant),
+                'subsidiaries' => $this->controlRepository->findByTenantIncludingSubsidiaries($tenant),
+                default => $this->controlRepository->findByTenantIncludingParent($tenant),
+            };
             // Sort by ISO order using natural sort for proper numeric ordering (A.5.2 before A.5.10)
-            usort($controls, function($a, $b) {
+            usort($controls, function($a, $b): int {
                 $aRef = $a->getIsoReference() ?? $a->getControlId() ?? '';
                 $bRef = $b->getIsoReference() ?? $b->getControlId() ?? '';
                 return strnatcmp($aRef, $bRef);
             });
-
             $inheritanceInfo = [
                 'hasParent' => $tenant->getParent() !== null,
                 'hasSubsidiaries' => $tenant->getSubsidiaries()->count() > 0,
@@ -90,8 +81,7 @@ class StatementOfApplicabilityController extends AbstractController
             'detailedStats' => $detailedStats,
         ]);
     }
-
-    #[Route('/category/{category}', name: 'app_soa_by_category')]
+    #[Route('/soa/category/{category}', name: 'app_soa_by_category')]
     public function byCategory(string $category): Response
     {
         $controls = $this->controlRepository->findByCategoryInIsoOrder($category);
@@ -101,8 +91,7 @@ class StatementOfApplicabilityController extends AbstractController
             'controls' => $controls,
         ]);
     }
-
-    #[Route('/report/export', name: 'app_soa_export')]
+    #[Route('/soa/report/export', name: 'app_soa_export')]
     public function export(Request $request): Response
     {
         $controls = $this->controlRepository->findAllInIsoOrder();
@@ -112,12 +101,10 @@ class StatementOfApplicabilityController extends AbstractController
 
         return $this->render('soa/export.html.twig', [
             'controls' => $controls,
-            'generatedAt' => new \DateTime(),
+            'generatedAt' => new DateTime(),
         ]);
     }
-
-
-    #[Route('/report/pdf', name: 'app_soa_export_pdf')]
+    #[Route('/soa/report/pdf', name: 'app_soa_export_pdf')]
     public function exportPdf(Request $request): Response
     {
         // Close session to prevent blocking other requests during PDF generation
@@ -125,24 +112,19 @@ class StatementOfApplicabilityController extends AbstractController
 
         return $this->soaReportService->downloadSoAReport();
     }
-
-
-    #[Route('/report/pdf/preview', name: 'app_soa_preview_pdf')]
+    #[Route('/soa/report/pdf/preview', name: 'app_soa_preview_pdf')]
     public function previewPdf(): Response
     {
         return $this->soaReportService->streamSoAReport();
     }
-
-
-    #[Route('/{id}', name: 'app_soa_show')]
+    #[Route('/soa/{id}', name: 'app_soa_show')]
     public function show(Control $control): Response
     {
         return $this->render('soa/show.html.twig', [
             'control' => $control,
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'app_soa_edit', methods: ['GET', 'POST'])]
+    #[Route('/soa/{id}/edit', name: 'app_soa_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Control $control): Response
     {
         $form = $this->createForm(ControlType::class, $control, [
@@ -152,7 +134,7 @@ class StatementOfApplicabilityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $control->setUpdatedAt(new \DateTimeImmutable());
+            $control->setUpdatedAt(new DateTimeImmutable());
 
             $this->entityManager->flush();
 
@@ -166,7 +148,6 @@ class StatementOfApplicabilityController extends AbstractController
             'form' => $form,
         ]);
     }
-
     /**
      * Calculate detailed statistics showing breakdown by origin
      */

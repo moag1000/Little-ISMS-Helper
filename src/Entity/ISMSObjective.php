@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use App\Entity\Tenant;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
@@ -77,7 +79,7 @@ class ISMSObjective
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['isms_objective:read', 'isms_objective:write'])]
     #[Assert\NotBlank]
-    private ?\DateTimeInterface $targetDate = null;
+    private ?DateTimeInterface $targetDate = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['isms_objective:read', 'isms_objective:write'])]
@@ -90,15 +92,15 @@ class ISMSObjective
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['isms_objective:read'])]
-    private ?\DateTimeInterface $achievedDate = null;
+    private ?DateTimeInterface $achievedDate = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['isms_objective:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['isms_objective:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
@@ -107,7 +109,7 @@ class ISMSObjective
 
 public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -203,12 +205,12 @@ public function __construct()
         return $this;
     }
 
-    public function getTargetDate(): ?\DateTimeInterface
+    public function getTargetDate(): ?DateTimeInterface
     {
         return $this->targetDate;
     }
 
-    public function setTargetDate(\DateTimeInterface $targetDate): static
+    public function setTargetDate(DateTimeInterface $targetDate): static
     {
         $this->targetDate = $targetDate;
         return $this;
@@ -236,34 +238,34 @@ public function __construct()
         return $this;
     }
 
-    public function getAchievedDate(): ?\DateTimeInterface
+    public function getAchievedDate(): ?DateTimeInterface
     {
         return $this->achievedDate;
     }
 
-    public function setAchievedDate(?\DateTimeInterface $achievedDate): static
+    public function setAchievedDate(?DateTimeInterface $achievedDate): static
     {
         $this->achievedDate = $achievedDate;
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;

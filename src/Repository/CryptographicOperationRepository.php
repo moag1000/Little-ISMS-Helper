@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use DateTime;
 use App\Entity\CryptographicOperation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -45,7 +46,7 @@ class CryptographicOperationRepository extends ServiceEntityRepository
     /**
      * Get operations within date range
      */
-    public function findByDateRange(\DateTime $start, \DateTime $end): array
+    public function findByDateRange(DateTime $start, DateTime $end): array
     {
         return $this->createQueryBuilder('c')
             ->andWhere('c.timestamp >= :start')
@@ -60,45 +61,45 @@ class CryptographicOperationRepository extends ServiceEntityRepository
     /**
      * Get statistics for cryptographic operations
      */
-    public function getStatistics(?\DateTime $startDate = null, ?\DateTime $endDate = null): array
+    public function getStatistics(?DateTime $startDate = null, ?DateTime $endDate = null): array
     {
-        $qb = $this->createQueryBuilder('c');
+        $queryBuilder = $this->createQueryBuilder('c');
 
-        if ($startDate) {
-            $qb->andWhere('c.timestamp >= :startDate')
+        if ($startDate instanceof DateTime) {
+            $queryBuilder->andWhere('c.timestamp >= :startDate')
                ->setParameter('startDate', $startDate);
         }
 
-        if ($endDate) {
-            $qb->andWhere('c.timestamp <= :endDate')
+        if ($endDate instanceof DateTime) {
+            $queryBuilder->andWhere('c.timestamp <= :endDate')
                ->setParameter('endDate', $endDate);
         }
 
         return [
-            'total' => (int) $qb->select('COUNT(c.id)')->getQuery()->getSingleScalarResult(),
+            'total' => (int) $queryBuilder->select('COUNT(c.id)')->getQuery()->getSingleScalarResult(),
             'by_type' => $this->getCountByType($startDate, $endDate),
             'by_status' => $this->getCountByStatus($startDate, $endDate),
             'recent_failures' => count($this->findFailedOperations()),
         ];
     }
 
-    private function getCountByType(?\DateTime $startDate = null, ?\DateTime $endDate = null): array
+    private function getCountByType(?DateTime $startDate = null, ?DateTime $endDate = null): array
     {
-        $qb = $this->createQueryBuilder('c')
+        $queryBuilder = $this->createQueryBuilder('c')
             ->select('c.operationType as type, COUNT(c.id) as count')
             ->groupBy('c.operationType');
 
-        if ($startDate) {
-            $qb->andWhere('c.timestamp >= :startDate')
+        if ($startDate instanceof DateTime) {
+            $queryBuilder->andWhere('c.timestamp >= :startDate')
                ->setParameter('startDate', $startDate);
         }
 
-        if ($endDate) {
-            $qb->andWhere('c.timestamp <= :endDate')
+        if ($endDate instanceof DateTime) {
+            $queryBuilder->andWhere('c.timestamp <= :endDate')
                ->setParameter('endDate', $endDate);
         }
 
-        $results = $qb->getQuery()->getResult();
+        $results = $queryBuilder->getQuery()->getResult();
 
         $counts = [];
         foreach ($results as $result) {
@@ -108,23 +109,23 @@ class CryptographicOperationRepository extends ServiceEntityRepository
         return $counts;
     }
 
-    private function getCountByStatus(?\DateTime $startDate = null, ?\DateTime $endDate = null): array
+    private function getCountByStatus(?DateTime $startDate = null, ?DateTime $endDate = null): array
     {
-        $qb = $this->createQueryBuilder('c')
+        $queryBuilder = $this->createQueryBuilder('c')
             ->select('c.status, COUNT(c.id) as count')
             ->groupBy('c.status');
 
-        if ($startDate) {
-            $qb->andWhere('c.timestamp >= :startDate')
+        if ($startDate instanceof DateTime) {
+            $queryBuilder->andWhere('c.timestamp >= :startDate')
                ->setParameter('startDate', $startDate);
         }
 
-        if ($endDate) {
-            $qb->andWhere('c.timestamp <= :endDate')
+        if ($endDate instanceof DateTime) {
+            $queryBuilder->andWhere('c.timestamp <= :endDate')
                ->setParameter('endDate', $endDate);
         }
 
-        $results = $qb->getQuery()->getResult();
+        $results = $queryBuilder->getQuery()->getResult();
 
         $counts = [];
         foreach ($results as $result) {

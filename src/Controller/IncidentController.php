@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Tenant;
+use Exception;
+use DateTime;
 use App\Entity\Incident;
 use App\Form\IncidentType;
 use App\Repository\AuditLogRepository;
@@ -23,26 +26,24 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/incident')]
 class IncidentController extends AbstractController
 {
     public function __construct(
-        private IncidentRepository $incidentRepository,
-        private AuditLogRepository $auditLogRepository,
-        private ComplianceFrameworkRepository $frameworkRepository,
-        private EntityManagerInterface $entityManager,
-        private EmailNotificationService $emailService,
-        private GdprBreachAssessmentService $gdprAssessmentService,
-        private IncidentBCMImpactService $bcmImpactService,
-        private PdfExportService $pdfService,
-        private UserRepository $userRepository,
-        private TranslatorInterface $translator,
-        private Security $security,
-        private IncidentEscalationWorkflowService $escalationService,
-        private TenantContext $tenantContext
+        private readonly IncidentRepository $incidentRepository,
+        private readonly AuditLogRepository $auditLogRepository,
+        private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly EmailNotificationService $emailNotificationService,
+        private readonly GdprBreachAssessmentService $gdprBreachAssessmentService,
+        private readonly IncidentBCMImpactService $incidentBCMImpactService,
+        private readonly PdfExportService $pdfExportService,
+        private readonly UserRepository $userRepository,
+        private readonly TranslatorInterface $translator,
+        private readonly Security $security,
+        private readonly IncidentEscalationWorkflowService $incidentEscalationWorkflowService,
+        private readonly TenantContext $tenantContext
     ) {}
-
-    #[Route('/', name: 'app_incident_index')]
+    #[Route('/incident/', name: 'app_incident_index')]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
@@ -65,18 +66,18 @@ class IncidentController extends AbstractController
                 case 'own':
                     // Only own incidents
                     $allIncidents = $this->incidentRepository->findByTenant($tenant);
-                    $openIncidents = array_filter($allIncidents, fn($i) => in_array($i->getStatus(), ['new', 'in_progress', 'investigating']));
+                    $openIncidents = array_filter($allIncidents, fn(Incident $incident): bool => in_array($incident->getStatus(), ['new', 'in_progress', 'investigating']));
                     break;
                 case 'subsidiaries':
                     // Own + from all subsidiaries (for parent companies)
                     $allIncidents = $this->incidentRepository->findByTenantIncludingSubsidiaries($tenant);
-                    $openIncidents = array_filter($allIncidents, fn($i) => in_array($i->getStatus(), ['new', 'in_progress', 'investigating']));
+                    $openIncidents = array_filter($allIncidents, fn(Incident $incident): bool => in_array($incident->getStatus(), ['new', 'in_progress', 'investigating']));
                     break;
                 case 'inherited':
                 default:
                     // Own + inherited from parents (default behavior)
                     $allIncidents = $this->incidentRepository->findByTenantIncludingParent($tenant);
-                    $openIncidents = array_filter($allIncidents, fn($i) => in_array($i->getStatus(), ['new', 'in_progress', 'investigating']));
+                    $openIncidents = array_filter($allIncidents, fn(Incident $incident): bool => in_array($incident->getStatus(), ['new', 'in_progress', 'investigating']));
                     break;
             }
 
@@ -98,23 +99,23 @@ class IncidentController extends AbstractController
 
         // Apply filters
         if ($severity) {
-            $allIncidents = array_filter($allIncidents, fn($incident) => $incident->getSeverity() === $severity);
+            $allIncidents = array_filter($allIncidents, fn(Incident $incident): bool => $incident->getSeverity() === $severity);
         }
 
         if ($category) {
-            $allIncidents = array_filter($allIncidents, fn($incident) => $incident->getCategory() === $category);
+            $allIncidents = array_filter($allIncidents, fn(Incident $incident): bool => $incident->getCategory() === $category);
         }
 
         if ($status) {
-            $allIncidents = array_filter($allIncidents, fn($incident) => $incident->getStatus() === $status);
+            $allIncidents = array_filter($allIncidents, fn(Incident $incident): bool => $incident->getStatus() === $status);
         }
 
         if ($dataBreachOnly === '1') {
-            $allIncidents = array_filter($allIncidents, fn($incident) => $incident->isDataBreachOccurred());
+            $allIncidents = array_filter($allIncidents, fn(Incident $incident): ?bool => $incident->isDataBreachOccurred());
         }
 
         if ($nis2Only === '1') {
-            $allIncidents = array_filter($allIncidents, fn($incident) => $incident->requiresNis2Reporting());
+            $allIncidents = array_filter($allIncidents, fn(Incident $incident): bool => $incident->requiresNis2Reporting());
         }
 
         // Re-index arrays after filtering to avoid gaps in keys
@@ -141,13 +142,12 @@ class IncidentController extends AbstractController
             'detailedStats' => $detailedStats,
         ]);
     }
-
-    #[Route('/new', name: 'app_incident_new')]
+    #[Route('/incident/new', name: 'app_incident_new')]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        if (!$tenant) {
+        if (!$tenant instanceof Tenant) {
             throw $this->createAccessDeniedException('No tenant context available');
         }
 
@@ -165,7 +165,7 @@ class IncidentController extends AbstractController
             // Send notification for high/critical severity incidents
             if (in_array($incident->getSeverity(), ['high', 'critical'])) {
                 $admins = $this->userRepository->findByRole('ROLE_ADMIN');
-                $this->emailService->sendIncidentNotification($incident, $admins);
+                $this->emailNotificationService->sendIncidentNotification($incident, $admins);
             }
 
             $this->addFlash('success', $this->translator->trans('incident.success.reported'));
@@ -177,14 +177,13 @@ class IncidentController extends AbstractController
             'form' => $form,
         ]);
     }
-
     /**
      * GDPR Breach Wizard - Calculate risk assessment
      *
      * JSON API endpoint for GDPR wizard to calculate breach risk
      * based on data types and affected count.
      */
-    #[Route('/gdpr-wizard-result', name: 'app_incident_gdpr_wizard_result', methods: ['POST'])]
+    #[Route('/incident/gdpr-wizard-result', name: 'app_incident_gdpr_wizard_result', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function gdprWizardResult(Request $request): Response
     {
@@ -194,15 +193,14 @@ class IncidentController extends AbstractController
             return $this->json(['error' => 'Missing required parameters'], 400);
         }
 
-        $assessment = $this->gdprAssessmentService->assessBreachRisk(
+        $assessment = $this->gdprBreachAssessmentService->assessBreachRisk(
             $data['dataTypes'],
             $data['scale']
         );
 
         return $this->json($assessment);
     }
-
-    #[Route('/bulk-delete', name: 'app_incident_bulk_delete', methods: ['POST'])]
+    #[Route('/incident/bulk-delete', name: 'app_incident_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function bulkDelete(Request $request): Response
     {
@@ -236,7 +234,7 @@ class IncidentController extends AbstractController
 
                 $this->entityManager->remove($incident);
                 $deleted++;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $errors[] = "Error deleting incident ID $id: " . $e->getMessage();
             }
         }
@@ -245,7 +243,7 @@ class IncidentController extends AbstractController
             $this->entityManager->flush();
         }
 
-        if (!empty($errors)) {
+        if ($errors !== []) {
             return $this->json([
                 'success' => $deleted > 0,
                 'deleted' => $deleted,
@@ -259,8 +257,7 @@ class IncidentController extends AbstractController
             'message' => "$deleted incidents deleted successfully"
         ]);
     }
-
-    #[Route('/{id}', name: 'app_incident_show', requirements: ['id' => '\d+'])]
+    #[Route('/incident/{id}', name: 'app_incident_show', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function show(Incident $incident): Response
     {
@@ -269,7 +266,7 @@ class IncidentController extends AbstractController
         $recentAuditLogs = array_slice($auditLogs, 0, 10);
 
         // Get workflow status
-        $workflowStatus = $this->escalationService->getEscalationStatus($incident);
+        $workflowStatus = $this->incidentEscalationWorkflowService->getEscalationStatus($incident);
 
         return $this->render('incident/show.html.twig', [
             'incident' => $incident,
@@ -278,8 +275,7 @@ class IncidentController extends AbstractController
             'workflowStatus' => $workflowStatus,
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'app_incident_edit', requirements: ['id' => '\d+'])]
+    #[Route('/incident/{id}/edit', name: 'app_incident_edit', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Incident $incident): Response
     {
@@ -294,7 +290,7 @@ class IncidentController extends AbstractController
             if ($originalStatus !== $incident->getStatus()) {
                 $admins = $this->userRepository->findByRole('ROLE_ADMIN');
                 $changeDescription = "Status changed from {$originalStatus} to {$incident->getStatus()}";
-                $this->emailService->sendIncidentUpdateNotification($incident, $admins, $changeDescription);
+                $this->emailNotificationService->sendIncidentUpdateNotification($incident, $admins, $changeDescription);
             }
 
             $this->addFlash('success', $this->translator->trans('incident.success.updated'));
@@ -306,8 +302,7 @@ class IncidentController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}/delete', name: 'app_incident_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/incident/{id}/delete', name: 'app_incident_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Incident $incident): Response
     {
@@ -320,7 +315,6 @@ class IncidentController extends AbstractController
 
         return $this->redirectToRoute('app_incident_index');
     }
-
     /**
      * Download NIS2 Incident Report as PDF
      *
@@ -329,12 +323,12 @@ class IncidentController extends AbstractController
      *
      * Note: Only available when NIS2 framework is installed and active.
      */
-    #[Route('/{id}/nis2-report.pdf', name: 'app_incident_nis2_report', requirements: ['id' => '\d+'])]
+    #[Route('/incident/{id}/nis2-report.pdf', name: 'app_incident_nis2_report', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function downloadNis2Report(Request $request, Incident $incident): Response
     {
         // Check if NIS2 framework exists and is active
-        $nis2Framework = $this->frameworkRepository->findOneBy(['code' => 'NIS2']);
+        $nis2Framework = $this->complianceFrameworkRepository->findOneBy(['code' => 'NIS2']);
 
         if (!$nis2Framework || !$nis2Framework->isActive()) {
             $this->addFlash('warning', $this->translator->trans(
@@ -366,11 +360,11 @@ class IncidentController extends AbstractController
         );
 
         // Generate version from last update date (Format: Year.Month.Day)
-        $lastUpdate = $incident->getUpdatedAt() ?? $incident->getCreatedAt() ?? new \DateTime();
+        $lastUpdate = $incident->getUpdatedAt() ?? $incident->getCreatedAt() ?? new DateTime();
         $version = $lastUpdate->format('Y.m.d');
 
         // Generate PDF
-        $pdf = $this->pdfService->generatePdf(
+        $pdf = $this->pdfExportService->generatePdf(
             'incident/nis2_report_pdf.html.twig',
             [
                 'incident' => $incident,
@@ -380,13 +374,12 @@ class IncidentController extends AbstractController
         );
 
         // Return PDF as download
-        return new Response($pdf, 200, [
+        return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
-            'Content-Length' => strlen($pdf),
+            'Content-Length' => strlen((string) $pdf),
         ]);
     }
-
     /**
      * Calculate detailed statistics showing breakdown by origin
      */
@@ -428,55 +421,51 @@ class IncidentController extends AbstractController
             'total' => $ownCount + $inheritedCount + $subsidiariesCount
         ];
     }
-
     // CRITICAL-05: BCM Integration Actions
-
     /**
      * Display BCM impact analysis for an incident
      */
-    #[Route('/{id}/bcm-impact', name: 'app_incident_bcm_impact', methods: ['GET'])]
+    #[Route('/incident/{id}/bcm-impact', name: 'app_incident_bcm_impact', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function bcmImpact(Incident $incident): Response
     {
-        $analysis = $this->bcmImpactService->analyzeBusinessImpact($incident);
+        $analysis = $this->incidentBCMImpactService->analyzeBusinessImpact($incident);
 
         return $this->render('incident/bcm_impact.html.twig', [
             'incident' => $incident,
             'analysis' => $analysis,
         ]);
     }
-
     /**
      * JSON API endpoint for BCM impact analysis
      */
-    #[Route('/{id}/bcm-impact/api', name: 'app_incident_bcm_impact_api', methods: ['GET'])]
+    #[Route('/incident/{id}/bcm-impact/api', name: 'app_incident_bcm_impact_api', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function bcmImpactApi(Incident $incident, Request $request): Response
     {
         $downtimeHours = $request->query->get('downtime_hours');
 
-        $analysis = $this->bcmImpactService->analyzeBusinessImpact(
+        $analysis = $this->incidentBCMImpactService->analyzeBusinessImpact(
             $incident,
             $downtimeHours ? (int) $downtimeHours : null
         );
 
         return $this->json($analysis);
     }
-
     /**
      * Auto-detect affected business processes via assets
      */
-    #[Route('/{id}/auto-detect-processes', name: 'app_incident_auto_detect_processes', methods: ['POST'])]
+    #[Route('/incident/{id}/auto-detect-processes', name: 'app_incident_auto_detect_processes', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function autoDetectProcesses(Incident $incident): Response
     {
-        $detectedProcesses = $this->bcmImpactService->identifyAffectedProcesses($incident);
+        $detectedProcesses = $this->incidentBCMImpactService->identifyAffectedProcesses($incident);
 
         // Link detected processes to incident
         $added = 0;
-        foreach ($detectedProcesses as $process) {
-            if (!$incident->getAffectedBusinessProcesses()->contains($process)) {
-                $incident->addAffectedBusinessProcess($process);
+        foreach ($detectedProcesses as $detectedProcess) {
+            if (!$incident->getAffectedBusinessProcesses()->contains($detectedProcess)) {
+                $incident->addAffectedBusinessProcess($detectedProcess);
                 $added++;
             }
         }
@@ -499,37 +488,35 @@ class IncidentController extends AbstractController
 
         return $this->redirectToRoute('app_incident_show', ['id' => $incident->getId()]);
     }
-
     /**
      * Generate BCM impact report (PDF)
      */
-    #[Route('/{id}/bcm-impact/report', name: 'app_incident_bcm_impact_report', methods: ['GET'])]
+    #[Route('/incident/{id}/bcm-impact/report', name: 'app_incident_bcm_impact_report', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function bcmImpactReport(Incident $incident): Response
     {
-        $reportData = $this->bcmImpactService->generateImpactReport($incident);
+        $reportData = $this->incidentBCMImpactService->generateImpactReport($incident);
 
-        $pdf = $this->pdfService->generatePdf('incident/bcm_impact_report_pdf.html.twig', $reportData);
+        $pdf = $this->pdfExportService->generatePdf('incident/bcm_impact_report_pdf.html.twig', $reportData);
 
         $filename = sprintf('BCM_Impact_Analysis_%s_%s.pdf',
             $incident->getIncidentNumber(),
             date('Y-m-d')
         );
 
-        return new Response($pdf, 200, [
+        return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
-            'Content-Length' => strlen($pdf),
+            'Content-Length' => strlen((string) $pdf),
         ]);
     }
-
     /**
      * AJAX Endpoint for Escalation Preview
      *
      * Shows users what will happen BEFORE they create/update an incident.
      * Returns preview information without triggering actual workflows.
      */
-    #[Route('/escalation-preview', name: 'app_incident_escalation_preview', methods: ['POST'])]
+    #[Route('/incident/escalation-preview', name: 'app_incident_escalation_preview', methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
     public function escalationPreview(Request $request): Response
     {
@@ -555,7 +542,7 @@ class IncidentController extends AbstractController
         $incident->setDataBreachOccurred((bool) $dataBreachOccurred);
 
         // Get preview from escalation service
-        $preview = $this->escalationService->previewEscalation($incident);
+        $preview = $this->incidentEscalationWorkflowService->previewEscalation($incident);
 
         // Format response for JSON
         $response = [
@@ -563,13 +550,11 @@ class IncidentController extends AbstractController
             'escalation_level' => $preview['escalation_level'],
             'workflow_name' => $preview['workflow_name'],
             'notified_roles' => $preview['notified_roles'],
-            'notified_users' => array_map(function($user) {
-                return [
-                    'id' => $user->getId(),
-                    'name' => $user->getFirstName() . ' ' . $user->getLastName(),
-                    'email' => $user->getEmail(),
-                ];
-            }, $preview['notified_users']),
+            'notified_users' => array_map(fn($user): array => [
+                'id' => $user->getId(),
+                'name' => $user->getFirstName() . ' ' . $user->getLastName(),
+                'email' => $user->getEmail(),
+            ], $preview['notified_users']),
             'sla_hours' => $preview['sla_hours'],
             'sla_description' => $preview['sla_description'],
             'is_gdpr_breach' => $preview['is_gdpr_breach'],

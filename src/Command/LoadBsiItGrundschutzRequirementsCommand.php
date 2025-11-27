@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use DateTimeImmutable;
+use Exception;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,20 +19,20 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LoadBsiItGrundschutzRequirementsCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
         // Create or get BSI IT-Grundschutz framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'BSI_GRUNDSCHUTZ']);
 
-        if (!$framework) {
+        if (!$framework instanceof ComplianceFramework) {
             $framework = new ComplianceFramework();
             $framework->setCode('BSI_GRUNDSCHUTZ')
                 ->setName('BSI IT-Grundschutz')
@@ -49,8 +51,8 @@ class LoadBsiItGrundschutzRequirementsCommand extends Command
                 ->getRepository(ComplianceRequirement::class)
                 ->findBy(['framework' => $framework]);
 
-            if (!empty($existingRequirements)) {
-                $io->warning(sprintf(
+            if ($existingRequirements !== []) {
+                $symfonyStyle->warning(sprintf(
                     'Framework BSI IT-Grundschutz already has %d requirements loaded. Skipping to avoid duplicates.',
                     count($existingRequirements)
                 ));
@@ -58,7 +60,7 @@ class LoadBsiItGrundschutzRequirementsCommand extends Command
             }
 
             // Framework exists but has no requirements - update timestamp
-            $framework->setUpdatedAt(new \DateTimeImmutable());
+            $framework->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->persist($framework);
         }
 
@@ -83,10 +85,10 @@ class LoadBsiItGrundschutzRequirementsCommand extends Command
             $this->entityManager->flush();
             $this->entityManager->commit();
 
-            $io->success(sprintf('Successfully loaded %d BSI IT-Grundschutz requirements', count($requirements)));
-        } catch (\Exception $e) {
+            $symfonyStyle->success(sprintf('Successfully loaded %d BSI IT-Grundschutz requirements', count($requirements)));
+        } catch (Exception $e) {
             $this->entityManager->rollback();
-            $io->error('Failed to load BSI IT-Grundschutz requirements: ' . $e->getMessage());
+            $symfonyStyle->error('Failed to load BSI IT-Grundschutz requirements: ' . $e->getMessage());
             return Command::FAILURE;
         }
 

@@ -75,6 +75,12 @@ admin:
             view_all: 'Alle anzeigen'
     licensing:
         attributions_provided: 'Attributionen in der Anwendung bereitstellen (erledigt ✓)'
+    data_export:
+        title: Daten-Export
+        format: Export-Format
+        format_selection: 'Export-Format Auswahl'
+    data_management:
+        title: Daten-Verwaltung
     settings:
         required_for_iso27001: 'Erforderlich für ISO 27001'
         title: Systemeinstellungen
@@ -102,6 +108,7 @@ admin:
         security:
             title: Sicherheitseinstellungen
             description: 'Konfiguration von Authentifizierung, Session-Management und Passwortrichtlinien (ISO 27001 Anhang A 5.17, 5.18)'
+            2fa_settings: 'Zwei-Faktor-Authentifizierung Einstellungen'
             session_lifetime: Session-Laufzeit
             max_login_attempts: 'Max. Anmeldeversuche'
             require_2fa: 'MFA erzwingen'
@@ -121,6 +128,7 @@ admin:
         features:
             title: Feature-Einstellungen
             description: 'Aktivierung und Konfiguration von optionalen Funktionen'
+            feature_toggles: Feature-Schalter
             dark_mode: 'Dark Mode'
             global_search: 'Globale Suche'
             audit_log: 'Audit Log'
@@ -214,6 +222,12 @@ admin:
         no_active: 'Keine aktiven Module'
         inactive_modules: 'Inaktive Module'
         activate: Aktivieren
+data_management:
+    export:
+        includes_all_records: 'Enthält alle Datensätze Ihres Tenants'
+        sensitive_data_warning: 'Warnung: Dieser Export kann sensible Daten enthalten. Bitte sicher aufbewahren.'
+        large_exports_warning: 'Hinweis: Große Datenmengen können einige Zeit zum Export benötigen.'
+        relationships_warning: 'Info: Beziehungen zwischen Entitäten werden als IDs exportiert.'
 setup:
     organisation:
         country:

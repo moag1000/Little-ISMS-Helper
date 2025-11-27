@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
@@ -33,24 +35,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Get(
-            security: "is_granted('ROLE_USER')",
-            description: 'Retrieve a specific security incident by ID'
+            description: 'Retrieve a specific security incident by ID',
+            security: "is_granted('ROLE_USER')"
         ),
         new GetCollection(
-            security: "is_granted('ROLE_USER')",
-            description: 'Retrieve the collection of security incidents with filtering by severity, status, and category'
+            description: 'Retrieve the collection of security incidents with filtering by severity, status, and category',
+            security: "is_granted('ROLE_USER')"
         ),
         new Post(
-            security: "is_granted('ROLE_USER')",
-            description: 'Create a new security incident report'
+            description: 'Create a new security incident report',
+            security: "is_granted('ROLE_USER')"
         ),
         new Put(
-            security: "is_granted('ROLE_USER')",
-            description: 'Update an existing security incident'
+            description: 'Update an existing security incident',
+            security: "is_granted('ROLE_USER')"
         ),
         new Delete(
-            security: "is_granted('ROLE_ADMIN')",
-            description: 'Delete a security incident (Admin only)'
+            description: 'Delete a security incident (Admin only)',
+            security: "is_granted('ROLE_ADMIN')"
         ),
     ],
     normalizationContext: ['groups' => ['incident:read']],
@@ -77,7 +79,7 @@ class Incident
     #[ORM\ManyToOne(targetEntity: ThreatIntelligence::class, inversedBy: 'resultingIncidents')]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
-    private ?ThreatIntelligence $originatingThreat = null;
+    private ?ThreatIntelligence $threatIntelligence = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['incident:read', 'incident:write'])]
@@ -123,11 +125,11 @@ class Incident
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['incident:read', 'incident:write'])]
     #[Assert\NotNull(message: 'Detection date is required')]
-    private ?\DateTimeInterface $detectedAt = null;
+    private ?DateTimeInterface $detectedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
-    private ?\DateTimeInterface $occurredAt = null;
+    private ?DateTimeInterface $occurredAt = null;
 
     #[ORM\Column(length: 100)]
     #[Groups(['incident:read', 'incident:write'])]
@@ -166,11 +168,11 @@ class Incident
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
-    private ?\DateTimeInterface $resolvedAt = null;
+    private ?DateTimeInterface $resolvedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
-    private ?\DateTimeInterface $closedAt = null;
+    private ?DateTimeInterface $closedAt = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['incident:read', 'incident:write'])]
@@ -187,21 +189,21 @@ class Incident
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
-    private ?\DateTimeImmutable $earlyWarningReportedAt = null;
+    private ?DateTimeImmutable $earlyWarningReportedAt = null;
 
     /**
      * NIS2 Article 23 - Detailed Notification (72h deadline)
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
-    private ?\DateTimeImmutable $detailedNotificationReportedAt = null;
+    private ?DateTimeImmutable $detailedNotificationReportedAt = null;
 
     /**
      * NIS2 Article 23 - Final Report (1 month deadline)
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
-    private ?\DateTimeImmutable $finalReportSubmittedAt = null;
+    private ?DateTimeImmutable $finalReportSubmittedAt = null;
 
     /**
      * NIS2 incident category according to Article 23
@@ -255,11 +257,11 @@ class Incident
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['incident:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['incident:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     /**
      * @var Collection<int, Control>
@@ -314,8 +316,8 @@ class Incident
         $this->realizedRisks = new ArrayCollection();
         $this->failedControls = new ArrayCollection();
         $this->affectedBusinessProcesses = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
-        $this->detectedAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
+        $this->detectedAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -400,23 +402,23 @@ class Incident
         return $this;
     }
 
-    public function getDetectedAt(): ?\DateTimeInterface
+    public function getDetectedAt(): ?DateTimeInterface
     {
         return $this->detectedAt;
     }
 
-    public function setDetectedAt(\DateTimeInterface $detectedAt): static
+    public function setDetectedAt(DateTimeInterface $detectedAt): static
     {
         $this->detectedAt = $detectedAt;
         return $this;
     }
 
-    public function getOccurredAt(): ?\DateTimeInterface
+    public function getOccurredAt(): ?DateTimeInterface
     {
         return $this->occurredAt;
     }
 
-    public function setOccurredAt(?\DateTimeInterface $occurredAt): static
+    public function setOccurredAt(?DateTimeInterface $occurredAt): static
     {
         $this->occurredAt = $occurredAt;
         return $this;
@@ -510,23 +512,23 @@ class Incident
         return $this;
     }
 
-    public function getResolvedAt(): ?\DateTimeInterface
+    public function getResolvedAt(): ?DateTimeInterface
     {
         return $this->resolvedAt;
     }
 
-    public function setResolvedAt(?\DateTimeInterface $resolvedAt): static
+    public function setResolvedAt(?DateTimeInterface $resolvedAt): static
     {
         $this->resolvedAt = $resolvedAt;
         return $this;
     }
 
-    public function getClosedAt(): ?\DateTimeInterface
+    public function getClosedAt(): ?DateTimeInterface
     {
         return $this->closedAt;
     }
 
-    public function setClosedAt(?\DateTimeInterface $closedAt): static
+    public function setClosedAt(?DateTimeInterface $closedAt): static
     {
         $this->closedAt = $closedAt;
         return $this;
@@ -554,23 +556,23 @@ class Incident
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -644,12 +646,12 @@ class Incident
 
     public function getOriginatingThreat(): ?ThreatIntelligence
     {
-        return $this->originatingThreat;
+        return $this->threatIntelligence;
     }
 
-    public function setOriginatingThreat(?ThreatIntelligence $originatingThreat): static
+    public function setOriginatingThreat(?ThreatIntelligence $threatIntelligence): static
     {
-        $this->originatingThreat = $originatingThreat;
+        $this->threatIntelligence = $threatIntelligence;
         return $this;
     }
 
@@ -683,17 +685,17 @@ class Incident
         return $this->affectedBusinessProcesses;
     }
 
-    public function addAffectedBusinessProcess(BusinessProcess $process): static
+    public function addAffectedBusinessProcess(BusinessProcess $businessProcess): static
     {
-        if (!$this->affectedBusinessProcesses->contains($process)) {
-            $this->affectedBusinessProcesses->add($process);
+        if (!$this->affectedBusinessProcesses->contains($businessProcess)) {
+            $this->affectedBusinessProcesses->add($businessProcess);
         }
         return $this;
     }
 
-    public function removeAffectedBusinessProcess(BusinessProcess $process): static
+    public function removeAffectedBusinessProcess(BusinessProcess $businessProcess): static
     {
-        $this->affectedBusinessProcesses->removeElement($process);
+        $this->affectedBusinessProcesses->removeElement($businessProcess);
         return $this;
     }
 
@@ -704,7 +706,7 @@ class Incident
     #[Groups(['incident:read'])]
     public function hasCriticalAssetsAffected(): bool
     {
-        return $this->affectedAssets->exists(fn($k, $asset) => $asset->isHighRisk());
+        return $this->affectedAssets->exists(fn($k, $asset): bool => $asset->isHighRisk());
     }
 
     /**
@@ -725,8 +727,8 @@ class Incident
     public function getTotalAssetImpact(): int
     {
         $total = 0;
-        foreach ($this->affectedAssets as $asset) {
-            $total += $asset->getTotalValue();
+        foreach ($this->affectedAssets as $affectedAsset) {
+            $total += $affectedAsset->getTotalValue();
         }
         return $total;
     }
@@ -743,34 +745,34 @@ class Incident
 
     // NIS2 Article 23 - Getters and Setters
 
-    public function getEarlyWarningReportedAt(): ?\DateTimeImmutable
+    public function getEarlyWarningReportedAt(): ?DateTimeImmutable
     {
         return $this->earlyWarningReportedAt;
     }
 
-    public function setEarlyWarningReportedAt(?\DateTimeImmutable $earlyWarningReportedAt): static
+    public function setEarlyWarningReportedAt(?DateTimeImmutable $earlyWarningReportedAt): static
     {
         $this->earlyWarningReportedAt = $earlyWarningReportedAt;
         return $this;
     }
 
-    public function getDetailedNotificationReportedAt(): ?\DateTimeImmutable
+    public function getDetailedNotificationReportedAt(): ?DateTimeImmutable
     {
         return $this->detailedNotificationReportedAt;
     }
 
-    public function setDetailedNotificationReportedAt(?\DateTimeImmutable $detailedNotificationReportedAt): static
+    public function setDetailedNotificationReportedAt(?DateTimeImmutable $detailedNotificationReportedAt): static
     {
         $this->detailedNotificationReportedAt = $detailedNotificationReportedAt;
         return $this;
     }
 
-    public function getFinalReportSubmittedAt(): ?\DateTimeImmutable
+    public function getFinalReportSubmittedAt(): ?DateTimeImmutable
     {
         return $this->finalReportSubmittedAt;
     }
 
-    public function setFinalReportSubmittedAt(?\DateTimeImmutable $finalReportSubmittedAt): static
+    public function setFinalReportSubmittedAt(?DateTimeImmutable $finalReportSubmittedAt): static
     {
         $this->finalReportSubmittedAt = $finalReportSubmittedAt;
         return $this;
@@ -848,42 +850,42 @@ class Incident
      * Get early warning deadline (24 hours from detection)
      */
     #[Groups(['incident:read'])]
-    public function getEarlyWarningDeadline(): ?\DateTimeImmutable
+    public function getEarlyWarningDeadline(): ?DateTimeImmutable
     {
-        if ($this->detectedAt === null) {
+        if (!$this->detectedAt instanceof DateTimeInterface) {
             return null;
         }
-        return $this->detectedAt instanceof \DateTimeImmutable
+        return $this->detectedAt instanceof DateTimeImmutable
             ? $this->detectedAt->modify('+24 hours')
-            : \DateTimeImmutable::createFromMutable($this->detectedAt)->modify('+24 hours');
+            : DateTimeImmutable::createFromMutable($this->detectedAt)->modify('+24 hours');
     }
 
     /**
      * Get detailed notification deadline (72 hours from detection)
      */
     #[Groups(['incident:read'])]
-    public function getDetailedNotificationDeadline(): ?\DateTimeImmutable
+    public function getDetailedNotificationDeadline(): ?DateTimeImmutable
     {
-        if ($this->detectedAt === null) {
+        if (!$this->detectedAt instanceof DateTimeInterface) {
             return null;
         }
-        return $this->detectedAt instanceof \DateTimeImmutable
+        return $this->detectedAt instanceof DateTimeImmutable
             ? $this->detectedAt->modify('+72 hours')
-            : \DateTimeImmutable::createFromMutable($this->detectedAt)->modify('+72 hours');
+            : DateTimeImmutable::createFromMutable($this->detectedAt)->modify('+72 hours');
     }
 
     /**
      * Get final report deadline (1 month from detection)
      */
     #[Groups(['incident:read'])]
-    public function getFinalReportDeadline(): ?\DateTimeImmutable
+    public function getFinalReportDeadline(): ?DateTimeImmutable
     {
-        if ($this->detectedAt === null) {
+        if (!$this->detectedAt instanceof DateTimeInterface) {
             return null;
         }
-        return $this->detectedAt instanceof \DateTimeImmutable
+        return $this->detectedAt instanceof DateTimeImmutable
             ? $this->detectedAt->modify('+1 month')
-            : \DateTimeImmutable::createFromMutable($this->detectedAt)->modify('+1 month');
+            : DateTimeImmutable::createFromMutable($this->detectedAt)->modify('+1 month');
     }
 
     /**
@@ -892,14 +894,14 @@ class Incident
     #[Groups(['incident:read'])]
     public function isEarlyWarningOverdue(): bool
     {
-        if ($this->earlyWarningReportedAt !== null) {
+        if ($this->earlyWarningReportedAt instanceof DateTimeImmutable) {
             return false; // Already reported
         }
         $deadline = $this->getEarlyWarningDeadline();
-        if ($deadline === null) {
+        if (!$deadline instanceof DateTimeImmutable) {
             return false; // No deadline if detectedAt is not set
         }
-        return new \DateTimeImmutable() > $deadline;
+        return new DateTimeImmutable() > $deadline;
     }
 
     /**
@@ -908,14 +910,14 @@ class Incident
     #[Groups(['incident:read'])]
     public function isDetailedNotificationOverdue(): bool
     {
-        if ($this->detailedNotificationReportedAt !== null) {
+        if ($this->detailedNotificationReportedAt instanceof DateTimeImmutable) {
             return false; // Already reported
         }
         $deadline = $this->getDetailedNotificationDeadline();
-        if ($deadline === null) {
+        if (!$deadline instanceof DateTimeImmutable) {
             return false; // No deadline if detectedAt is not set
         }
-        return new \DateTimeImmutable() > $deadline;
+        return new DateTimeImmutable() > $deadline;
     }
 
     /**
@@ -924,14 +926,14 @@ class Incident
     #[Groups(['incident:read'])]
     public function isFinalReportOverdue(): bool
     {
-        if ($this->finalReportSubmittedAt !== null) {
+        if ($this->finalReportSubmittedAt instanceof DateTimeImmutable) {
             return false; // Already submitted
         }
         $deadline = $this->getFinalReportDeadline();
-        if ($deadline === null) {
+        if (!$deadline instanceof DateTimeImmutable) {
             return false; // No deadline if detectedAt is not set
         }
-        return new \DateTimeImmutable() > $deadline;
+        return new DateTimeImmutable() > $deadline;
     }
 
     /**
@@ -940,14 +942,14 @@ class Incident
     #[Groups(['incident:read'])]
     public function getHoursUntilEarlyWarningDeadline(): int
     {
-        if ($this->earlyWarningReportedAt !== null) {
+        if ($this->earlyWarningReportedAt instanceof DateTimeImmutable) {
             return 0;
         }
         $deadline = $this->getEarlyWarningDeadline();
-        if ($deadline === null) {
+        if (!$deadline instanceof DateTimeImmutable) {
             return 0; // No deadline if detectedAt is not set
         }
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
         $diff = $now->diff($deadline);
         return $diff->invert ? 0 : ($diff->days * 24 + $diff->h);
     }
@@ -958,14 +960,14 @@ class Incident
     #[Groups(['incident:read'])]
     public function getHoursUntilDetailedNotificationDeadline(): int
     {
-        if ($this->detailedNotificationReportedAt !== null) {
+        if ($this->detailedNotificationReportedAt instanceof DateTimeImmutable) {
             return 0;
         }
         $deadline = $this->getDetailedNotificationDeadline();
-        if ($deadline === null) {
+        if (!$deadline instanceof DateTimeImmutable) {
             return 0; // No deadline if detectedAt is not set
         }
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
         $diff = $now->diff($deadline);
         return $diff->invert ? 0 : ($diff->days * 24 + $diff->h);
     }
@@ -976,14 +978,14 @@ class Incident
     #[Groups(['incident:read'])]
     public function getDaysUntilFinalReportDeadline(): int
     {
-        if ($this->finalReportSubmittedAt !== null) {
+        if ($this->finalReportSubmittedAt instanceof DateTimeImmutable) {
             return 0;
         }
         $deadline = $this->getFinalReportDeadline();
-        if ($deadline === null) {
+        if (!$deadline instanceof DateTimeImmutable) {
             return 0; // No deadline if detectedAt is not set
         }
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
         $diff = $now->diff($deadline);
         return $diff->invert ? 0 : $diff->days;
     }
@@ -997,7 +999,7 @@ class Incident
     public function requiresNis2Reporting(): bool
     {
         // NIS2 reporting requires a detected date
-        if ($this->detectedAt === null) {
+        if (!$this->detectedAt instanceof DateTimeInterface) {
             return false;
         }
 
@@ -1017,7 +1019,7 @@ class Incident
             return 'not_applicable';
         }
 
-        if ($this->finalReportSubmittedAt !== null) {
+        if ($this->finalReportSubmittedAt instanceof DateTimeImmutable) {
             return 'compliant';
         }
 
@@ -1025,11 +1027,11 @@ class Incident
             return 'overdue';
         }
 
-        if ($this->earlyWarningReportedAt !== null && $this->detailedNotificationReportedAt !== null) {
+        if ($this->earlyWarningReportedAt instanceof DateTimeImmutable && $this->detailedNotificationReportedAt instanceof DateTimeImmutable) {
             return 'awaiting_final';
         }
 
-        if ($this->earlyWarningReportedAt !== null) {
+        if ($this->earlyWarningReportedAt instanceof DateTimeImmutable) {
             return 'awaiting_detailed';
         }
 
@@ -1046,7 +1048,7 @@ class Incident
     public function hasCriticalProcessesAffected(): bool
     {
         return $this->affectedBusinessProcesses->exists(
-            fn($k, $process) => $process->getCriticality() === 'critical'
+            fn($k, $process): bool => $process->getCriticality() === 'critical'
         );
     }
 
@@ -1071,7 +1073,7 @@ class Incident
         }
 
         $processes = $this->affectedBusinessProcesses->toArray();
-        usort($processes, fn($a, $b) => $a->getRto() <=> $b->getRto());
+        usort($processes, fn($a, $b): int => $a->getRto() <=> $b->getRto());
         return $processes[0];
     }
 
@@ -1086,8 +1088,8 @@ class Incident
     {
         $totalImpact = 0.0;
 
-        foreach ($this->affectedBusinessProcesses as $process) {
-            $impactPerHour = (float) ($process->getFinancialImpactPerHour() ?? 0);
+        foreach ($this->affectedBusinessProcesses as $affectedBusinessProcess) {
+            $impactPerHour = (float) ($affectedBusinessProcess->getFinancialImpactPerHour() ?? 0);
             $totalImpact += $impactPerHour * $estimatedDowntimeHours;
         }
 
@@ -1108,7 +1110,7 @@ class Incident
         }
 
         $mostCritical = $this->getMostCriticalAffectedProcess();
-        if ($mostCritical === null) {
+        if (!$mostCritical instanceof BusinessProcess) {
             return 'medium';
         }
 
@@ -1134,8 +1136,8 @@ class Incident
      */
     public function isRTOViolated(int $actualDowntimeHours): bool
     {
-        foreach ($this->affectedBusinessProcesses as $process) {
-            if ($actualDowntimeHours > $process->getRto()) {
+        foreach ($this->affectedBusinessProcesses as $affectedBusinessProcess) {
+            if ($actualDowntimeHours > $affectedBusinessProcess->getRto()) {
                 return true;
             }
         }
@@ -1158,8 +1160,8 @@ class Incident
         $totalScore = 0;
         $count = 0;
 
-        foreach ($this->affectedBusinessProcesses as $process) {
-            $totalScore += $process->getBusinessImpactScore();
+        foreach ($this->affectedBusinessProcesses as $affectedBusinessProcess) {
+            $totalScore += $affectedBusinessProcess->getBusinessImpactScore();
             $count++;
         }
 

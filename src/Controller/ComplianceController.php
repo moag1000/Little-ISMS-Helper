@@ -2,13 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Tenant;
+use DateTime;
+use Exception;
 use App\Entity\ComplianceMapping;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Repository\ComplianceMappingRepository;
 use App\Service\ComplianceAssessmentService;
 use App\Service\ComplianceMappingService;
-use App\Service\ComplianceFrameworkLoaderService;
 use App\Service\ComplianceRequirementFulfillmentService;
 use App\Service\ExcelExportService;
 use App\Service\ModuleConfigurationService;
@@ -23,37 +25,34 @@ use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/compliance')]
 class ComplianceController extends AbstractController
 {
     public function __construct(
-        private ComplianceFrameworkRepository $frameworkRepository,
-        private ComplianceRequirementRepository $requirementRepository,
-        private ComplianceMappingRepository $mappingRepository,
-        private ComplianceAssessmentService $assessmentService,
-        private ComplianceMappingService $mappingService,
-        private ComplianceFrameworkLoaderService $frameworkLoaderService,
-        private CsrfTokenManagerInterface $csrfTokenManager,
-        private ExcelExportService $excelExportService,
-        private ModuleConfigurationService $moduleConfigurationService,
-        private PdfExportService $pdfExportService,
-        private ComplianceRequirementFulfillmentService $fulfillmentService,
-        private TenantContext $tenantContext
+        private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
+        private readonly ComplianceRequirementRepository $complianceRequirementRepository,
+        private readonly ComplianceMappingRepository $complianceMappingRepository,
+        private readonly ComplianceAssessmentService $complianceAssessmentService,
+        private readonly ComplianceMappingService $complianceMappingService,
+        private readonly CsrfTokenManagerInterface $csrfTokenManager,
+        private readonly ExcelExportService $excelExportService,
+        private readonly ModuleConfigurationService $moduleConfigurationService,
+        private readonly PdfExportService $pdfExportService,
+        private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
+        private readonly TenantContext $tenantContext
     ) {}
-
-    #[Route('/', name: 'app_compliance_index')]
+    #[Route('/compliance/', name: 'app_compliance_index')]
     public function index(): Response
     {
-        $frameworks = $this->frameworkRepository->findActiveFrameworks();
-        $overview = $this->frameworkRepository->getComplianceOverview();
-        $mappingStats = $this->mappingRepository->getMappingStatistics();
+        $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
+        $overview = $this->complianceFrameworkRepository->getComplianceOverview();
+        $mappingStats = $this->complianceMappingRepository->getMappingStatistics();
 
         // Calculate total data reuse value
         $totalTimeSavings = 0;
         foreach ($frameworks as $framework) {
-            $requirements = $this->requirementRepository->findApplicableByFramework($framework);
+            $requirements = $this->complianceRequirementRepository->findApplicableByFramework($framework);
             foreach ($requirements as $requirement) {
-                $reuseValue = $this->mappingService->calculateDataReuseValue($requirement);
+                $reuseValue = $this->complianceMappingService->calculateDataReuseValue($requirement);
                 $totalTimeSavings += $reuseValue['estimated_hours_saved'];
             }
         }
@@ -66,18 +65,17 @@ class ComplianceController extends AbstractController
             'total_days_savings' => round($totalTimeSavings / 8, 1),
         ]);
     }
-
-    #[Route('/framework/{id}', name: 'app_compliance_framework', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}', name: 'app_compliance_framework', requirements: ['id' => '\d+'])]
     public function frameworkDashboard(int $id): Response
     {
-        $framework = $this->frameworkRepository->find($id);
+        $framework = $this->complianceFrameworkRepository->find($id);
 
         if (!$framework) {
             throw $this->createNotFoundException('Framework not found');
         }
 
-        $dashboard = $this->assessmentService->getComplianceDashboard($framework);
-        $requirements = $this->requirementRepository->findByFramework($framework);
+        $dashboard = $this->complianceAssessmentService->getComplianceDashboard($framework);
+        $requirements = $this->complianceRequirementRepository->findByFramework($framework);
 
         $allModules = $this->moduleConfigurationService->getAllModules();
         $activeModules = $this->moduleConfigurationService->getActiveModules();
@@ -91,15 +89,15 @@ class ComplianceController extends AbstractController
         // Including detailed requirements (nested)
         // For SUPER_ADMIN without tenant, show empty fulfillments
         $fulfillments = [];
-        if ($tenant) {
+        if ($tenant instanceof Tenant) {
             foreach ($requirements as $requirement) {
-                $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+                $fulfillment = $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $requirement);
                 $fulfillments[$requirement->getId()] = $fulfillment;
 
                 // Also load fulfillments for detailed requirements
                 if ($requirement->hasDetailedRequirements()) {
                     foreach ($requirement->getDetailedRequirements() as $detailedRequirement) {
-                        $detailedFulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $detailedRequirement);
+                        $detailedFulfillment = $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $detailedRequirement);
                         $fulfillments[$detailedRequirement->getId()] = $detailedFulfillment;
                     }
                 }
@@ -115,23 +113,22 @@ class ComplianceController extends AbstractController
             'active_modules' => $activeModules,
         ]);
     }
-
-    #[Route('/framework/{id}/gaps', name: 'app_compliance_gaps', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/gaps', name: 'app_compliance_gaps', requirements: ['id' => '\d+'])]
     public function gapAnalysis(int $id): Response
     {
-        $framework = $this->frameworkRepository->find($id);
+        $framework = $this->complianceFrameworkRepository->find($id);
 
         if (!$framework) {
             throw $this->createNotFoundException('Framework not found');
         }
 
-        $gaps = $this->requirementRepository->findGapsByFramework($framework);
-        $criticalGaps = $this->requirementRepository->findByFrameworkAndPriority($framework, 'critical');
+        $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework);
+        $criticalGaps = $this->complianceRequirementRepository->findByFrameworkAndPriority($framework, 'critical');
 
         // Analyze each gap for detailed insights
         $gapAnalysis = [];
         foreach ($gaps as $gap) {
-            $analysis = $this->assessmentService->assessRequirement($gap);
+            $analysis = $this->complianceAssessmentService->assessRequirement($gap);
             $gapAnalysis[] = [
                 'requirement' => $gap,
                 'analysis' => $analysis,
@@ -145,23 +142,22 @@ class ComplianceController extends AbstractController
             'total_gaps' => count($gaps),
         ]);
     }
-
-    #[Route('/framework/{id}/data-reuse', name: 'app_compliance_data_reuse', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/data-reuse', name: 'app_compliance_data_reuse', requirements: ['id' => '\d+'])]
     public function dataReuseInsights(int $id): Response
     {
-        $framework = $this->frameworkRepository->find($id);
+        $framework = $this->complianceFrameworkRepository->find($id);
 
         if (!$framework) {
             throw $this->createNotFoundException('Framework not found');
         }
 
-        $requirements = $this->requirementRepository->findApplicableByFramework($framework);
+        $requirements = $this->complianceRequirementRepository->findApplicableByFramework($framework);
         $dataReuseAnalysis = [];
         $totalTimeSavings = 0;
 
         foreach ($requirements as $requirement) {
-            $analysis = $this->mappingService->getDataReuseAnalysis($requirement);
-            $reuseValue = $this->mappingService->calculateDataReuseValue($requirement);
+            $analysis = $this->complianceMappingService->getDataReuseAnalysis($requirement);
+            $reuseValue = $this->complianceMappingService->calculateDataReuseValue($requirement);
 
             $dataReuseAnalysis[] = [
                 'requirement' => $requirement,
@@ -179,23 +175,22 @@ class ComplianceController extends AbstractController
             'total_days_savings' => round($totalTimeSavings / 8, 1),
         ]);
     }
-
-    #[Route('/framework/{id}/data-reuse/export', name: 'app_compliance_export_reuse', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/data-reuse/export', name: 'app_compliance_export_reuse', requirements: ['id' => '\d+'])]
     public function exportDataReuse(Request $request, int $id): Response
     {
-        $framework = $this->frameworkRepository->find($id);
+        $framework = $this->complianceFrameworkRepository->find($id);
 
         if (!$framework) {
             throw $this->createNotFoundException('Framework not found');
         }
 
-        $requirements = $this->requirementRepository->findApplicableByFramework($framework);
+        $requirements = $this->complianceRequirementRepository->findApplicableByFramework($framework);
         $dataReuseAnalysis = [];
         $totalTimeSavings = 0;
 
         foreach ($requirements as $requirement) {
-            $analysis = $this->mappingService->getDataReuseAnalysis($requirement);
-            $reuseValue = $this->mappingService->calculateDataReuseValue($requirement);
+            $analysis = $this->complianceMappingService->getDataReuseAnalysis($requirement);
+            $reuseValue = $this->complianceMappingService->calculateDataReuseValue($requirement);
 
             $dataReuseAnalysis[] = [
                 'requirement' => $requirement,
@@ -237,10 +232,10 @@ class ComplianceController extends AbstractController
         ];
 
         // CSV Data - Requirements
-        foreach ($dataReuseAnalysis as $item) {
-            $requirement = $item['requirement'];
-            $value = $item['value'];
-            $analysis = $item['analysis'];
+        foreach ($dataReuseAnalysis as $dataReuseAnalysi) {
+            $requirement = $dataReuseAnalysi['requirement'];
+            $value = $dataReuseAnalysi['value'];
+            $analysis = $dataReuseAnalysi['analysis'];
 
             $reusableDataSources = [];
             if (!empty($analysis['reusable_data'])) {
@@ -253,8 +248,8 @@ class ComplianceController extends AbstractController
                 $requirement->getRequirementId(),
                 $requirement->getTitle(),
                 $requirement->getCategory() ?? '-',
-                !empty($analysis['reusable_data']) ? count($analysis['reusable_data']) : 0,
-                !empty($reusableDataSources) ? implode(', ', $reusableDataSources) : '-',
+                empty($analysis['reusable_data']) ? 0 : count($analysis['reusable_data']),
+                $reusableDataSources === [] ? '-' : implode(', ', $reusableDataSources),
                 $value['estimated_hours_saved'] ?? 0,
                 $value['reuse_percentage'] ?? 0,
                 $value['confidence'] ?? 'low',
@@ -278,7 +273,7 @@ class ComplianceController extends AbstractController
         // Create CSV content
         $handle = fopen('php://temp', 'r+');
         foreach ($csv as $row) {
-            fputcsv($handle, $row, ';');
+            fputcsv($handle, $row, ';', escape: '\\');
         }
         rewind($handle);
         $csvContent .= stream_get_contents($handle);
@@ -288,23 +283,22 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-
-    #[Route('/framework/{id}/data-reuse/export/excel', name: 'app_compliance_export_reuse_excel', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/data-reuse/export/excel', name: 'app_compliance_export_reuse_excel', requirements: ['id' => '\d+'])]
     public function exportDataReuseExcel(Request $request, int $id): Response
     {
-        $framework = $this->frameworkRepository->find($id);
+        $framework = $this->complianceFrameworkRepository->find($id);
 
         if (!$framework) {
             throw $this->createNotFoundException('Framework not found');
         }
 
-        $requirements = $this->requirementRepository->findApplicableByFramework($framework);
+        $requirements = $this->complianceRequirementRepository->findApplicableByFramework($framework);
         $dataReuseAnalysis = [];
         $totalTimeSavings = 0;
 
         foreach ($requirements as $requirement) {
-            $analysis = $this->mappingService->getDataReuseAnalysis($requirement);
-            $reuseValue = $this->mappingService->calculateDataReuseValue($requirement);
+            $analysis = $this->complianceMappingService->getDataReuseAnalysis($requirement);
+            $reuseValue = $this->complianceMappingService->calculateDataReuseValue($requirement);
 
             $dataReuseAnalysis[] = [
                 'requirement' => $requirement,
@@ -322,8 +316,8 @@ class ComplianceController extends AbstractController
         $spreadsheet = $this->excelExportService->createSpreadsheet('Data Reuse Insights Report');
 
         // Tab 1: Summary
-        $summarySheet = $spreadsheet->getActiveSheet();
-        $summarySheet->setTitle('Zusammenfassung');
+        $worksheet = $spreadsheet->getActiveSheet();
+        $worksheet->setTitle('Zusammenfassung');
 
         $metrics = [
             'Framework' => $framework->getName() . ' (' . $framework->getCode() . ')',
@@ -333,8 +327,8 @@ class ComplianceController extends AbstractController
             'Export-Datum' => date('d.m.Y H:i'),
         ];
 
-        $this->excelExportService->addSummarySection($summarySheet, $metrics, 1, 'Data Reuse Insights');
-        $this->excelExportService->autoSizeColumns($summarySheet);
+        $this->excelExportService->addSummarySection($worksheet, $metrics, 1, 'Data Reuse Insights');
+        $this->excelExportService->autoSizeColumns($worksheet);
 
         // Tab 2: Details
         $detailsSheet = $this->excelExportService->createSheet($spreadsheet, 'Reuse Details');
@@ -343,10 +337,10 @@ class ComplianceController extends AbstractController
         $this->excelExportService->addFormattedHeaderRow($detailsSheet, $headers, 1, true);
 
         $data = [];
-        foreach ($dataReuseAnalysis as $item) {
-            $requirement = $item['requirement'];
-            $value = $item['value'];
-            $analysis = $item['analysis'];
+        foreach ($dataReuseAnalysis as $dataReuseAnalysi) {
+            $requirement = $dataReuseAnalysi['requirement'];
+            $value = $dataReuseAnalysi['value'];
+            $analysis = $dataReuseAnalysi['analysis'];
 
             $reusableDataSources = [];
             if (!empty($analysis['reusable_data'])) {
@@ -359,8 +353,8 @@ class ComplianceController extends AbstractController
                 $requirement->getRequirementId(),
                 $requirement->getTitle(),
                 $requirement->getCategory() ?? '-',
-                !empty($analysis['reusable_data']) ? count($analysis['reusable_data']) : 0,
-                !empty($reusableDataSources) ? implode(', ', array_slice($reusableDataSources, 0, 3)) : '-',
+                empty($analysis['reusable_data']) ? 0 : count($analysis['reusable_data']),
+                $reusableDataSources === [] ? '-' : implode(', ', array_slice($reusableDataSources, 0, 3)),
                 round($value['estimated_hours_saved'] ?? 0, 1),
                 round($value['reuse_percentage'] ?? 0, 1),
                 $value['confidence'] ?? 'low',
@@ -390,24 +384,23 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-
-    #[Route('/framework/{id}/data-reuse/export/pdf', name: 'app_compliance_export_reuse_pdf', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/data-reuse/export/pdf', name: 'app_compliance_export_reuse_pdf', requirements: ['id' => '\d+'])]
     public function exportDataReusePdf(Request $request, int $id): Response
     {
-        $framework = $this->frameworkRepository->find($id);
+        $framework = $this->complianceFrameworkRepository->find($id);
 
         if (!$framework) {
             throw $this->createNotFoundException('Framework not found');
         }
 
-        $requirements = $this->requirementRepository->findApplicableByFramework($framework);
+        $requirements = $this->complianceRequirementRepository->findApplicableByFramework($framework);
         $dataReuseAnalysis = [];
         $totalTimeSavings = 0;
         $totalReusePercentage = 0;
 
         foreach ($requirements as $requirement) {
-            $analysis = $this->mappingService->getDataReuseAnalysis($requirement);
-            $reuseValue = $this->mappingService->calculateDataReuseValue($requirement);
+            $analysis = $this->complianceMappingService->getDataReuseAnalysis($requirement);
+            $reuseValue = $this->complianceMappingService->calculateDataReuseValue($requirement);
 
             $dataReuseAnalysis[] = [
                 'requirement' => $requirement,
@@ -425,7 +418,7 @@ class ComplianceController extends AbstractController
         $request->getSession()->save();
 
         // Generate version from generation date (Format: Year.Month.Day)
-        $pdfGenerationDate = new \DateTime();
+        $pdfGenerationDate = new DateTime();
         $version = $pdfGenerationDate->format('Y.m.d');
 
         // Generate PDF
@@ -449,24 +442,23 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-
-    #[Route('/framework/{id}/gaps/export', name: 'app_compliance_export_gaps', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/gaps/export', name: 'app_compliance_export_gaps', requirements: ['id' => '\d+'])]
     public function exportGaps(Request $request, int $id): Response
     {
-        $framework = $this->frameworkRepository->find($id);
+        $framework = $this->complianceFrameworkRepository->find($id);
 
         if (!$framework) {
             throw $this->createNotFoundException('Framework not found');
         }
 
-        $gaps = $this->requirementRepository->findGapsByFramework($framework);
-        $requirements = $this->requirementRepository->findByFramework($framework);
+        $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework);
+        $requirements = $this->complianceRequirementRepository->findByFramework($framework);
         $metRequirements = count($requirements) - count($gaps);
 
         // Analyze each gap
         $gapAnalysis = [];
         foreach ($gaps as $gap) {
-            $analysis = $this->assessmentService->assessRequirement($gap);
+            $analysis = $this->complianceAssessmentService->assessRequirement($gap);
             $gapAnalysis[] = [
                 'requirement' => $gap,
                 'analysis' => $analysis,
@@ -501,19 +493,12 @@ class ComplianceController extends AbstractController
 
         foreach ($gapAnalysis as $item) {
             $priority = $item['requirement']->getPriority() ?? 'low';
-            switch ($priority) {
-                case 'critical':
-                    $criticalCount++;
-                    break;
-                case 'high':
-                    $highCount++;
-                    break;
-                case 'medium':
-                    $mediumCount++;
-                    break;
-                default:
-                    $lowCount++;
-            }
+            match ($priority) {
+                'critical' => $criticalCount++,
+                'high' => $highCount++,
+                'medium' => $mediumCount++,
+                default => $lowCount++,
+            };
         }
 
         $csv[] = ['Gaps nach Severity'];
@@ -536,9 +521,9 @@ class ComplianceController extends AbstractController
         ];
 
         // CSV Data - Gaps
-        foreach ($gapAnalysis as $item) {
-            $requirement = $item['requirement'];
-            $analysis = $item['analysis'];
+        foreach ($gapAnalysis as $gapAnalysi) {
+            $requirement = $gapAnalysi['requirement'];
+            $analysis = $gapAnalysi['analysis'];
 
             // Translate priority
             $priorityMap = [
@@ -586,7 +571,7 @@ class ComplianceController extends AbstractController
         // Create CSV content
         $handle = fopen('php://temp', 'r+');
         foreach ($csv as $row) {
-            fputcsv($handle, $row, ';');
+            fputcsv($handle, $row, ';', escape: '\\');
         }
         rewind($handle);
         $csvContent .= stream_get_contents($handle);
@@ -596,18 +581,17 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-
-    #[Route('/framework/{id}/gaps/export/excel', name: 'app_compliance_export_gaps_excel', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/gaps/export/excel', name: 'app_compliance_export_gaps_excel', requirements: ['id' => '\d+'])]
     public function exportGapsExcel(Request $request, int $id): Response
     {
-        $framework = $this->frameworkRepository->find($id);
+        $framework = $this->complianceFrameworkRepository->find($id);
 
         if (!$framework) {
             throw $this->createNotFoundException('Framework not found');
         }
 
-        $gaps = $this->requirementRepository->findGapsByFramework($framework);
-        $requirements = $this->requirementRepository->findByFramework($framework);
+        $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework);
+        $requirements = $this->complianceRequirementRepository->findByFramework($framework);
         $metRequirements = count($requirements) - count($gaps);
 
         // Analyze gaps
@@ -615,7 +599,7 @@ class ComplianceController extends AbstractController
         $severityCounts = ['critical' => 0, 'high' => 0, 'medium' => 0, 'low' => 0];
 
         foreach ($gaps as $gap) {
-            $analysis = $this->assessmentService->assessRequirement($gap);
+            $analysis = $this->complianceAssessmentService->assessRequirement($gap);
             $priority = $gap->getPriority() ?? 'low';
             $severityCounts[$priority]++;
 
@@ -632,8 +616,8 @@ class ComplianceController extends AbstractController
         $spreadsheet = $this->excelExportService->createSpreadsheet('Gap Analysis Report');
 
         // Tab 1: Summary
-        $summarySheet = $spreadsheet->getActiveSheet();
-        $summarySheet->setTitle('Zusammenfassung');
+        $worksheet = $spreadsheet->getActiveSheet();
+        $worksheet->setTitle('Zusammenfassung');
 
         $complianceScore = count($requirements) > 0 ? round(($metRequirements / count($requirements)) * 100, 1) : 0;
 
@@ -646,7 +630,7 @@ class ComplianceController extends AbstractController
             'Export-Datum' => date('d.m.Y H:i'),
         ];
 
-        $nextRow = $this->excelExportService->addSummarySection($summarySheet, $metrics, 1, 'Gap Analysis');
+        $nextRow = $this->excelExportService->addSummarySection($worksheet, $metrics, 1, 'Gap Analysis');
 
         // Severity breakdown
         $severityMetrics = [
@@ -655,8 +639,8 @@ class ComplianceController extends AbstractController
             'Mittlere Gaps' => $severityCounts['medium'],
             'Niedrige Gaps' => $severityCounts['low'],
         ];
-        $this->excelExportService->addSummarySection($summarySheet, $severityMetrics, $nextRow, 'Severity Breakdown');
-        $this->excelExportService->autoSizeColumns($summarySheet);
+        $this->excelExportService->addSummarySection($worksheet, $severityMetrics, $nextRow, 'Severity Breakdown');
+        $this->excelExportService->autoSizeColumns($worksheet);
 
         // Tab 2: Gap Details
         $detailsSheet = $this->excelExportService->createSheet($spreadsheet, 'Gap Details');
@@ -665,9 +649,9 @@ class ComplianceController extends AbstractController
         $this->excelExportService->addFormattedHeaderRow($detailsSheet, $headers, 1, true);
 
         $data = [];
-        foreach ($gapAnalysis as $item) {
-            $requirement = $item['requirement'];
-            $analysis = $item['analysis'];
+        foreach ($gapAnalysis as $gapAnalysi) {
+            $requirement = $gapAnalysi['requirement'];
+            $analysis = $gapAnalysi['analysis'];
 
             $priorityMap = ['critical' => 'Kritisch', 'high' => 'Hoch', 'medium' => 'Mittel', 'low' => 'Niedrig'];
             $statusMap = [
@@ -718,18 +702,17 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-
-    #[Route('/framework/{id}/gaps/export/pdf', name: 'app_compliance_export_gaps_pdf', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/gaps/export/pdf', name: 'app_compliance_export_gaps_pdf', requirements: ['id' => '\d+'])]
     public function exportGapsPdf(Request $request, int $id): Response
     {
-        $framework = $this->frameworkRepository->find($id);
+        $framework = $this->complianceFrameworkRepository->find($id);
 
         if (!$framework) {
             throw $this->createNotFoundException('Framework not found');
         }
 
-        $gaps = $this->requirementRepository->findGapsByFramework($framework);
-        $requirements = $this->requirementRepository->findByFramework($framework);
+        $gaps = $this->complianceRequirementRepository->findGapsByFramework($framework);
+        $requirements = $this->complianceRequirementRepository->findByFramework($framework);
         $metRequirements = count($requirements) - count($gaps);
 
         // Get current tenant for fulfillment data
@@ -745,13 +728,13 @@ class ComplianceController extends AbstractController
         $severityCounts = ['critical' => 0, 'high' => 0, 'medium' => 0, 'low' => 0];
 
         foreach ($gaps as $gap) {
-            $analysis = $this->assessmentService->assessRequirement($gap);
+            $analysis = $this->complianceAssessmentService->assessRequirement($gap);
             $priority = $gap->getPriority() ?? 'low';
             $severityCounts[$priority]++;
 
             // Get tenant-specific fulfillment for this gap (only if tenant exists)
-            if ($tenant) {
-                $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $gap);
+            if ($tenant instanceof Tenant) {
+                $fulfillment = $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $gap);
                 $gapFulfillments[$gap->getId()] = $fulfillment;
             }
 
@@ -765,10 +748,10 @@ class ComplianceController extends AbstractController
         $complianceScore = count($requirements) > 0 ? round(($metRequirements / count($requirements)) * 100, 1) : 0;
 
         // Calculate priority-weighted gap analysis
-        $priorityWeightedAnalysis = $this->mappingRepository->calculatePriorityWeightedGaps($framework, $gaps);
+        $priorityWeightedAnalysis = $this->complianceMappingRepository->calculatePriorityWeightedGaps($framework, $gaps);
 
         // Perform root cause analysis for gaps
-        $rootCauseAnalysis = $this->mappingRepository->analyzeGapRootCauses($gaps);
+        $rootCauseAnalysis = $this->complianceMappingRepository->analyzeGapRootCauses($gaps);
 
         // Calculate weighted compliance score (how well critical/high requirements are met)
         $totalRequirements = count($requirements);
@@ -780,12 +763,12 @@ class ComplianceController extends AbstractController
 
             // TODO: This needs to be refactored to use tenant-specific fulfillment data
             // For now, using basic calculation without fulfillment percentages
-            foreach ($requirements as $req) {
-                $priority = $req->getPriority() ?? 'medium';
+            foreach ($requirements as $requirement) {
+                $priority = $requirement->getPriority() ?? 'medium';
                 $weight = $priorityWeights[$priority] ?? 1.0;
                 $totalPossibleWeight += $weight;
                 // Simplified: assume 0% fulfillment for gaps, 100% for met requirements
-                $isGap = in_array($req, $gaps, true);
+                $isGap = in_array($requirement, $gaps, true);
                 $achievedWeight += $isGap ? 0 : $weight;
             }
 
@@ -798,7 +781,7 @@ class ComplianceController extends AbstractController
         $request->getSession()->save();
 
         // Generate version from generation date (Format: Year.Month.Day)
-        $pdfGenerationDate = new \DateTime();
+        $pdfGenerationDate = new DateTime();
         $version = $pdfGenerationDate->format('Y.m.d');
 
         // Generate PDF
@@ -837,37 +820,36 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-
-    #[Route('/cross-framework', name: 'app_compliance_cross_framework')]
+    #[Route('/compliance/cross-framework', name: 'app_compliance_cross_framework')]
     public function crossFrameworkMappings(): Response
     {
-        $frameworks = $this->frameworkRepository->findActiveFrameworks();
+        $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
         $crossMappings = [];
         $coverageMatrix = [];
 
         // Generate cross-framework coverage matrix
-        foreach ($frameworks as $sourceFramework) {
+        foreach ($frameworks as $framework) {
             foreach ($frameworks as $targetFramework) {
-                if ($sourceFramework->getId() === $targetFramework->getId()) {
+                if ($framework->getId() === $targetFramework->getId()) {
                     continue;
                 }
 
-                $coverage = $this->mappingRepository->calculateFrameworkCoverage(
-                    $sourceFramework,
+                $coverage = $this->complianceMappingRepository->calculateFrameworkCoverage(
+                    $framework,
                     $targetFramework
                 );
 
-                $coverageMatrix[$sourceFramework->getCode()][$targetFramework->getCode()] = $coverage;
+                $coverageMatrix[$framework->getCode()][$targetFramework->getCode()] = $coverage;
 
                 // Get detailed mappings
-                $mappings = $this->mappingRepository->findCrossFrameworkMappings(
-                    $sourceFramework,
+                $mappings = $this->complianceMappingRepository->findCrossFrameworkMappings(
+                    $framework,
                     $targetFramework
                 );
 
                 if (!empty($mappings)) {
                     $crossMappings[] = [
-                        'source' => $sourceFramework,
+                        'source' => $framework,
                         'target' => $targetFramework,
                         'mappings' => $mappings,
                         'coverage' => $coverage,
@@ -882,11 +864,10 @@ class ComplianceController extends AbstractController
             'coverage_matrix' => $coverageMatrix,
         ]);
     }
-
-    #[Route('/transitive-compliance', name: 'app_compliance_transitive')]
+    #[Route('/compliance/transitive-compliance', name: 'app_compliance_transitive')]
     public function transitiveCompliance(): Response
     {
-        $frameworks = $this->frameworkRepository->findActiveFrameworks();
+        $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
         $transitiveAnalysis = [];
         $mappingMatrix = [];
         $crossMappings = [];
@@ -895,29 +876,29 @@ class ComplianceController extends AbstractController
         $frameworksLeveragedSet = [];
 
         // Build mapping coverage matrix for template
-        foreach ($frameworks as $sourceFramework) {
+        foreach ($frameworks as $framework) {
             foreach ($frameworks as $targetFramework) {
-                if ($sourceFramework->getId() === $targetFramework->getId()) {
+                if ($framework->getId() === $targetFramework->getId()) {
                     continue;
                 }
 
                 // Calculate coverage for matrix
-                $coverage = $this->mappingRepository->calculateFrameworkCoverage(
-                    $sourceFramework,
+                $coverage = $this->complianceMappingRepository->calculateFrameworkCoverage(
+                    $framework,
                     $targetFramework
                 );
 
-                $mappingMatrix[$sourceFramework->getId()][$targetFramework->getId()] = [
+                $mappingMatrix[$framework->getId()][$targetFramework->getId()] = [
                     'coverage' => $coverage['coverage_percentage'] ?? 0,
                     'has_mapping' => ($coverage['coverage_percentage'] ?? 0) > 0
                 ];
 
                 // Build coverage matrix for cross-framework display
-                $coverageMatrix[$sourceFramework->getCode()][$targetFramework->getCode()] = $coverage;
+                $coverageMatrix[$framework->getCode()][$targetFramework->getCode()] = $coverage;
 
                 // Transitive analysis
-                $transitive = $this->mappingRepository->getTransitiveCompliance(
-                    $sourceFramework,
+                $transitive = $this->complianceMappingRepository->getTransitiveCompliance(
+                    $framework,
                     $targetFramework
                 );
 
@@ -926,14 +907,14 @@ class ComplianceController extends AbstractController
                 }
 
                 // Get detailed cross-framework mappings
-                $mappings = $this->mappingRepository->findCrossFrameworkMappings(
-                    $sourceFramework,
+                $mappings = $this->complianceMappingRepository->findCrossFrameworkMappings(
+                    $framework,
                     $targetFramework
                 );
 
                 if (!empty($mappings) && ($coverage['coverage_percentage'] ?? 0) > 0) {
                     $crossMappings[] = [
-                        'source' => $sourceFramework,
+                        'source' => $framework,
                         'target' => $targetFramework,
                         'mappings' => $mappings,
                         'coverage' => $coverage,
@@ -941,8 +922,8 @@ class ComplianceController extends AbstractController
 
                     // Build framework relationships for KPI cards
                     $frameworkRelationships[] = (object)[
-                        'id' => $sourceFramework->getId() . '_' . $targetFramework->getId(),
-                        'sourceFramework' => $sourceFramework,
+                        'id' => $framework->getId() . '_' . $targetFramework->getId(),
+                        'sourceFramework' => $framework,
                         'targetFramework' => $targetFramework,
                         'mappedRequirements' => $coverage['covered_requirements'] ?? 0,
                         'coveragePercentage' => round($coverage['coverage_percentage'] ?? 0),
@@ -967,11 +948,10 @@ class ComplianceController extends AbstractController
             'frameworks_leveraged' => count($frameworksLeveragedSet),
         ]);
     }
-
-    #[Route('/compare', name: 'app_compliance_compare')]
+    #[Route('/compliance/compare', name: 'app_compliance_compare')]
     public function compareFrameworks(Request $request): Response
     {
-        $frameworks = $this->frameworkRepository->findActiveFrameworks();
+        $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
 
         $selectedFramework1 = null;
         $selectedFramework2 = null;
@@ -986,11 +966,11 @@ class ComplianceController extends AbstractController
         $framework2Id = $request->query->get('framework2');
 
         if ($framework1Id && $framework2Id) {
-            $selectedFramework1 = $this->frameworkRepository->find($framework1Id);
-            $selectedFramework2 = $this->frameworkRepository->find($framework2Id);
+            $selectedFramework1 = $this->complianceFrameworkRepository->find($framework1Id);
+            $selectedFramework2 = $this->complianceFrameworkRepository->find($framework2Id);
 
             if ($selectedFramework1 && $selectedFramework2) {
-                $comparison = $this->assessmentService->compareFrameworks([$selectedFramework1, $selectedFramework2]);
+                $comparison = $this->complianceAssessmentService->compareFrameworks([$selectedFramework1, $selectedFramework2]);
                 $framework1Requirements = count($selectedFramework1->getRequirements());
                 $framework2Requirements = count($selectedFramework2->getRequirements());
 
@@ -1010,20 +990,20 @@ class ComplianceController extends AbstractController
                 $comparisonDetails = [];
                 $mappedCount = 0;
 
-                foreach ($selectedFramework1->getRequirements() as $req1) {
+                foreach ($selectedFramework1->getRequirements() as $requirement) {
                     $mappedRequirement = null;
                     $matchQuality = null;
                     $isMapped = false;
 
                     // Find mappings where req1 is the source
-                    $sourceMappings = $this->mappingRepository->findBy([
-                        'sourceRequirement' => $req1
+                    $sourceMappings = $this->complianceMappingRepository->findBy([
+                        'sourceRequirement' => $requirement
                     ]);
 
-                    foreach ($sourceMappings as $mapping) {
-                        if ($mapping->getTargetRequirement()->getFramework()->getId() === $selectedFramework2->getId()) {
-                            $mappedRequirement = $mapping->getTargetRequirement();
-                            $matchQuality = $mapping->getMappingPercentage();
+                    foreach ($sourceMappings as $sourceMapping) {
+                        if ($sourceMapping->getTargetRequirement()->getFramework()->getId() === $selectedFramework2->getId()) {
+                            $mappedRequirement = $sourceMapping->getTargetRequirement();
+                            $matchQuality = $sourceMapping->getMappingPercentage();
                             $isMapped = true;
                             $mappedCount++;
                             break;
@@ -1032,14 +1012,14 @@ class ComplianceController extends AbstractController
 
                     // Also check reverse mappings where req1 is the target
                     if (!$isMapped) {
-                        $targetMappings = $this->mappingRepository->findBy([
-                            'targetRequirement' => $req1
+                        $targetMappings = $this->complianceMappingRepository->findBy([
+                            'targetRequirement' => $requirement
                         ]);
 
-                        foreach ($targetMappings as $mapping) {
-                            if ($mapping->getSourceRequirement()->getFramework()->getId() === $selectedFramework2->getId()) {
-                                $mappedRequirement = $mapping->getSourceRequirement();
-                                $matchQuality = $mapping->getMappingPercentage();
+                        foreach ($targetMappings as $targetMapping) {
+                            if ($targetMapping->getSourceRequirement()->getFramework()->getId() === $selectedFramework2->getId()) {
+                                $mappedRequirement = $targetMapping->getSourceRequirement();
+                                $matchQuality = $targetMapping->getMappingPercentage();
                                 $isMapped = true;
                                 $mappedCount++;
                                 break;
@@ -1048,7 +1028,7 @@ class ComplianceController extends AbstractController
                     }
 
                     $comparisonDetails[] = [
-                        'framework1Requirement' => $req1,
+                        'framework1Requirement' => $requirement,
                         'mapped' => $isMapped,
                         'framework2Requirement' => $mappedRequirement,
                         'matchQuality' => $matchQuality,
@@ -1070,9 +1050,9 @@ class ComplianceController extends AbstractController
 
                 // Framework 2 unique requirements
                 $mappedFramework2Ids = [];
-                foreach ($comparisonDetails as $detail) {
-                    if ($detail['mapped'] && $detail['framework2Requirement']) {
-                        $mappedFramework2Ids[] = $detail['framework2Requirement']->getId();
+                foreach ($comparisonDetails as $comparisonDetail) {
+                    if ($comparisonDetail['mapped'] && $comparisonDetail['framework2Requirement']) {
+                        $mappedFramework2Ids[] = $comparisonDetail['framework2Requirement']->getId();
                     }
                 }
 
@@ -1101,18 +1081,17 @@ class ComplianceController extends AbstractController
             'framework2Unique' => $framework2Unique ?? [],
         ]);
     }
-
-    #[Route('/framework/{id}/assess', name: 'app_compliance_assess', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/assess', name: 'app_compliance_assess', requirements: ['id' => '\d+'])]
     public function assessFramework(int $id): Response
     {
-        $framework = $this->frameworkRepository->find($id);
+        $framework = $this->complianceFrameworkRepository->find($id);
 
         if (!$framework) {
             throw $this->createNotFoundException('Framework not found');
         }
 
         // Run assessment and update all requirement fulfillment percentages
-        $assessmentResults = $this->assessmentService->assessFramework($framework);
+        $assessmentResults = $this->complianceAssessmentService->assessFramework($framework);
 
         $this->addFlash('success', sprintf(
             'Assessment completed for %s. %d requirements assessed.',
@@ -1122,41 +1101,40 @@ class ComplianceController extends AbstractController
 
         return $this->redirectToRoute('app_compliance_framework', ['id' => $id]);
     }
-
-        /**
+    /**
      * Redirect to admin framework management
      * Framework management is now centralized in the admin panel
      */
-    #[Route('/frameworks/manage', name: 'app_compliance_manage_frameworks')]
+    #[Route('/compliance/frameworks/manage', name: 'app_compliance_manage_frameworks')]
     #[IsGranted('ROLE_ADMIN')]
     public function manageFrameworks(): Response
     {
         // Redirect to centralized admin framework management
         return $this->redirectToRoute('admin_compliance_index');
     }
-    #[Route('/export/transitive', name: 'app_compliance_export_transitive')]
+    #[Route('/compliance/export/transitive', name: 'app_compliance_export_transitive')]
     public function exportTransitive(Request $request): Response
     {
-        $frameworks = $this->frameworkRepository->findActiveFrameworks();
+        $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
         $transitiveAnalysis = [];
         $frameworkRelationships = [];
 
         // Build transitive analysis data (same as in transitiveCompliance method)
-        foreach ($frameworks as $sourceFramework) {
+        foreach ($frameworks as $framework) {
             foreach ($frameworks as $targetFramework) {
-                if ($sourceFramework->getId() === $targetFramework->getId()) {
+                if ($framework->getId() === $targetFramework->getId()) {
                     continue;
                 }
 
                 // Calculate coverage
-                $coverage = $this->mappingRepository->calculateFrameworkCoverage(
-                    $sourceFramework,
+                $coverage = $this->complianceMappingRepository->calculateFrameworkCoverage(
+                    $framework,
                     $targetFramework
                 );
 
                 // Get transitive analysis
-                $transitive = $this->mappingRepository->getTransitiveCompliance(
-                    $sourceFramework,
+                $transitive = $this->complianceMappingRepository->getTransitiveCompliance(
+                    $framework,
                     $targetFramework
                 );
 
@@ -1165,14 +1143,14 @@ class ComplianceController extends AbstractController
                 }
 
                 // Get detailed cross-framework mappings
-                $mappings = $this->mappingRepository->findCrossFrameworkMappings(
-                    $sourceFramework,
+                $mappings = $this->complianceMappingRepository->findCrossFrameworkMappings(
+                    $framework,
                     $targetFramework
                 );
 
                 if (!empty($mappings) && ($coverage['coverage_percentage'] ?? 0) > 0) {
                     $frameworkRelationships[] = [
-                        'sourceFramework' => $sourceFramework,
+                        'sourceFramework' => $framework,
                         'targetFramework' => $targetFramework,
                         'mappedRequirements' => $coverage['covered_requirements'] ?? 0,
                         'totalRequirements' => $coverage['total_requirements'] ?? 0,
@@ -1200,13 +1178,13 @@ class ComplianceController extends AbstractController
         ];
 
         // CSV Data - Framework Relationships
-        foreach ($frameworkRelationships as $relationship) {
+        foreach ($frameworkRelationships as $frameworkRelationship) {
             $csv[] = [
-                $relationship['sourceFramework']->getName() . ' (' . $relationship['sourceFramework']->getCode() . ')',
-                $relationship['targetFramework']->getName() . ' (' . $relationship['targetFramework']->getCode() . ')',
-                $relationship['mappedRequirements'],
-                $relationship['totalRequirements'],
-                $relationship['coveragePercentage'],
+                $frameworkRelationship['sourceFramework']->getName() . ' (' . $frameworkRelationship['sourceFramework']->getCode() . ')',
+                $frameworkRelationship['targetFramework']->getName() . ' (' . $frameworkRelationship['targetFramework']->getCode() . ')',
+                $frameworkRelationship['mappedRequirements'],
+                $frameworkRelationship['totalRequirements'],
+                $frameworkRelationship['coveragePercentage'],
             ];
         }
 
@@ -1219,7 +1197,7 @@ class ComplianceController extends AbstractController
         $csv[] = ['Anzahl Framework-Beziehungen', count($frameworkRelationships)];
         $csv[] = ['Transitive Compliance Opportunities', count($transitiveAnalysis)];
 
-        if (!empty($transitiveAnalysis)) {
+        if ($transitiveAnalysis !== []) {
             $totalRequirementsHelped = array_sum(array_column($transitiveAnalysis, 'requirements_helped'));
             $csv[] = ['Gesamt unterstützte Anforderungen', $totalRequirementsHelped];
         }
@@ -1240,7 +1218,7 @@ class ComplianceController extends AbstractController
         // Create CSV content
         $handle = fopen('php://temp', 'r+');
         foreach ($csv as $row) {
-            fputcsv($handle, $row, ';'); // Use semicolon as delimiter for Excel compatibility
+            fputcsv($handle, $row, ';', escape: '\\'); // Use semicolon as delimiter for Excel compatibility
         }
         rewind($handle);
         $csvContent .= stream_get_contents($handle);
@@ -1250,33 +1228,32 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-
-    #[Route('/export/transitive/excel', name: 'app_compliance_export_transitive_excel')]
+    #[Route('/compliance/export/transitive/excel', name: 'app_compliance_export_transitive_excel')]
     public function exportTransitiveExcel(Request $request): Response
     {
-        $frameworks = $this->frameworkRepository->findActiveFrameworks();
+        $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
         $transitiveAnalysis = [];
         $frameworkRelationships = [];
 
         // Build data
-        foreach ($frameworks as $sourceFramework) {
+        foreach ($frameworks as $framework) {
             foreach ($frameworks as $targetFramework) {
-                if ($sourceFramework->getId() === $targetFramework->getId()) {
+                if ($framework->getId() === $targetFramework->getId()) {
                     continue;
                 }
 
-                $coverage = $this->mappingRepository->calculateFrameworkCoverage($sourceFramework, $targetFramework);
-                $transitive = $this->mappingRepository->getTransitiveCompliance($sourceFramework, $targetFramework);
+                $coverage = $this->complianceMappingRepository->calculateFrameworkCoverage($framework, $targetFramework);
+                $transitive = $this->complianceMappingRepository->getTransitiveCompliance($framework, $targetFramework);
 
                 if ($transitive['requirements_helped'] > 0) {
                     $transitiveAnalysis[] = $transitive;
                 }
 
-                $mappings = $this->mappingRepository->findCrossFrameworkMappings($sourceFramework, $targetFramework);
+                $mappings = $this->complianceMappingRepository->findCrossFrameworkMappings($framework, $targetFramework);
 
                 if (!empty($mappings) && ($coverage['coverage_percentage'] ?? 0) > 0) {
                     $frameworkRelationships[] = [
-                        'source' => $sourceFramework,
+                        'source' => $framework,
                         'target' => $targetFramework,
                         'mapped' => $coverage['covered_requirements'] ?? 0,
                         'total' => $coverage['total_requirements'] ?? 0,
@@ -1293,10 +1270,10 @@ class ComplianceController extends AbstractController
         $spreadsheet = $this->excelExportService->createSpreadsheet('Transitive Compliance Report');
 
         // Tab 1: Summary
-        $summarySheet = $spreadsheet->getActiveSheet();
-        $summarySheet->setTitle('Zusammenfassung');
+        $worksheet = $spreadsheet->getActiveSheet();
+        $worksheet->setTitle('Zusammenfassung');
 
-        $totalHelped = !empty($transitiveAnalysis) ? array_sum(array_column($transitiveAnalysis, 'requirements_helped')) : 0;
+        $totalHelped = $transitiveAnalysis === [] ? 0 : array_sum(array_column($transitiveAnalysis, 'requirements_helped'));
 
         $metrics = [
             'Aktive Frameworks' => count($frameworks),
@@ -1306,8 +1283,8 @@ class ComplianceController extends AbstractController
             'Export-Datum' => date('d.m.Y H:i'),
         ];
 
-        $this->excelExportService->addSummarySection($summarySheet, $metrics, 1, 'Transitive Compliance');
-        $this->excelExportService->autoSizeColumns($summarySheet);
+        $this->excelExportService->addSummarySection($worksheet, $metrics, 1, 'Transitive Compliance');
+        $this->excelExportService->autoSizeColumns($worksheet);
 
         // Tab 2: Framework Relationships
         $relationshipsSheet = $this->excelExportService->createSheet($spreadsheet, 'Framework-Beziehungen');
@@ -1316,13 +1293,13 @@ class ComplianceController extends AbstractController
         $this->excelExportService->addFormattedHeaderRow($relationshipsSheet, $headers, 1, true);
 
         $data = [];
-        foreach ($frameworkRelationships as $rel) {
+        foreach ($frameworkRelationships as $frameworkRelationship) {
             $data[] = [
-                $rel['source']->getName() . ' (' . $rel['source']->getCode() . ')',
-                $rel['target']->getName() . ' (' . $rel['target']->getCode() . ')',
-                $rel['mapped'],
-                $rel['total'],
-                $rel['coverage'],
+                $frameworkRelationship['source']->getName() . ' (' . $frameworkRelationship['source']->getCode() . ')',
+                $frameworkRelationship['target']->getName() . ' (' . $frameworkRelationship['target']->getCode() . ')',
+                $frameworkRelationship['mapped'],
+                $frameworkRelationship['total'],
+                $frameworkRelationship['coverage'],
             ];
         }
 
@@ -1349,11 +1326,10 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-
-    #[Route('/export/transitive/pdf', name: 'app_compliance_export_transitive_pdf')]
+    #[Route('/compliance/export/transitive/pdf', name: 'app_compliance_export_transitive_pdf')]
     public function exportTransitivePdf(Request $request): Response
     {
-        $frameworks = $this->frameworkRepository->findActiveFrameworks();
+        $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
         $transitiveAnalysis = [];
         $frameworkRelationships = [];
         $totalHelped = 0;
@@ -1373,21 +1349,21 @@ class ComplianceController extends AbstractController
         $qualitySum = 0;
         $qualityCount = 0;
 
-        foreach ($frameworks as $sourceFramework) {
+        foreach ($frameworks as $framework) {
             foreach ($frameworks as $targetFramework) {
-                if ($sourceFramework->getId() === $targetFramework->getId()) {
+                if ($framework->getId() === $targetFramework->getId()) {
                     continue;
                 }
 
-                $coverage = $this->mappingRepository->calculateFrameworkCoverage($sourceFramework, $targetFramework);
-                $transitive = $this->mappingRepository->getTransitiveCompliance($sourceFramework, $targetFramework);
+                $coverage = $this->complianceMappingRepository->calculateFrameworkCoverage($framework, $targetFramework);
+                $transitive = $this->complianceMappingRepository->getTransitiveCompliance($framework, $targetFramework);
 
                 if ($transitive['requirements_helped'] > 0) {
                     $transitiveAnalysis[] = $transitive;
                     $totalHelped += $transitive['requirements_helped'];
                 }
 
-                $mappings = $this->mappingRepository->findCrossFrameworkMappings($sourceFramework, $targetFramework);
+                $mappings = $this->complianceMappingRepository->findCrossFrameworkMappings($framework, $targetFramework);
 
                 // Calculate quality distribution for these mappings
                 foreach ($mappings as $mapping) {
@@ -1412,14 +1388,14 @@ class ComplianceController extends AbstractController
                     $coveragePercentage = round($coverage['coverage_percentage'] ?? 0, 1);
 
                     // Calculate impact score and ROI
-                    $impactAnalysis = $this->mappingRepository->calculateFrameworkImpactScore(
-                        $sourceFramework,
+                    $impactAnalysis = $this->complianceMappingRepository->calculateFrameworkImpactScore(
+                        $framework,
                         $targetFramework,
                         $coveragePercentage
                     );
 
                     $relationship = [
-                        'source' => $sourceFramework,
+                        'source' => $framework,
                         'target' => $targetFramework,
                         'mapped' => $coverage['covered_requirements'] ?? 0,
                         'total' => $coverage['total_requirements'] ?? 0,
@@ -1450,14 +1426,14 @@ class ComplianceController extends AbstractController
         $avgMappingQuality = $qualityCount > 0 ? round($qualitySum / $qualityCount, 1) : 0;
 
         // Sort framework relationships by impact score (highest first)
-        usort($frameworkRelationships, fn($a, $b) => $b['impact_score'] <=> $a['impact_score']);
-        usort($quickWins, fn($a, $b) => $b['roi'] <=> $a['roi']);
-        usort($highImpactRelationships, fn($a, $b) => $b['impact_score'] <=> $a['impact_score']);
+        usort($frameworkRelationships, fn(array $a, array $b): int => $b['impact_score'] <=> $a['impact_score']);
+        usort($quickWins, fn(array $a, array $b): int => $b['roi'] <=> $a['roi']);
+        usort($highImpactRelationships, fn(array $a, array $b): int => $b['impact_score'] <=> $a['impact_score']);
 
         // Calculate average coverage and impact
         $avgCoverage = 0;
         $avgImpactScore = 0;
-        if (!empty($frameworkRelationships)) {
+        if ($frameworkRelationships !== []) {
             $totalCoverage = array_sum(array_column($frameworkRelationships, 'coverage'));
             $avgCoverage = $totalCoverage / count($frameworkRelationships);
             $avgImpactScore = $totalImpactScore / count($frameworkRelationships);
@@ -1467,7 +1443,7 @@ class ComplianceController extends AbstractController
         $request->getSession()->save();
 
         // Generate version from generation date (Format: Year.Month.Day)
-        $pdfGenerationDate = new \DateTime();
+        $pdfGenerationDate = new DateTime();
         $version = $pdfGenerationDate->format('Y.m.d');
 
         // Generate PDF
@@ -1503,8 +1479,7 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-
-    #[Route('/export/comparison', name: 'app_compliance_export_comparison')]
+    #[Route('/compliance/export/comparison', name: 'app_compliance_export_comparison')]
     public function exportComparison(Request $request): Response
     {
         $framework1Id = $request->query->get('framework1');
@@ -1515,8 +1490,8 @@ class ComplianceController extends AbstractController
             return $this->redirectToRoute('app_compliance_compare');
         }
 
-        $framework1 = $this->frameworkRepository->find($framework1Id);
-        $framework2 = $this->frameworkRepository->find($framework2Id);
+        $framework1 = $this->complianceFrameworkRepository->find($framework1Id);
+        $framework2 = $this->complianceFrameworkRepository->find($framework2Id);
 
         if (!$framework1 || !$framework2) {
             $this->addFlash('error', 'Ein oder beide Frameworks wurden nicht gefunden.');
@@ -1526,20 +1501,20 @@ class ComplianceController extends AbstractController
         // Build detailed comparison data
         $comparisonDetails = [];
 
-        foreach ($framework1->getRequirements() as $req1) {
+        foreach ($framework1->getRequirements() as $requirement) {
             $mappedRequirement = null;
             $matchQuality = null;
             $isMapped = false;
 
             // Find mappings where req1 is the source
-            $sourceMappings = $this->mappingRepository->findBy([
-                'sourceRequirement' => $req1
+            $sourceMappings = $this->complianceMappingRepository->findBy([
+                'sourceRequirement' => $requirement
             ]);
 
-            foreach ($sourceMappings as $mapping) {
-                if ($mapping->getTargetRequirement()->getFramework()->getId() === $framework2->getId()) {
-                    $mappedRequirement = $mapping->getTargetRequirement();
-                    $matchQuality = $mapping->getMappingPercentage();
+            foreach ($sourceMappings as $sourceMapping) {
+                if ($sourceMapping->getTargetRequirement()->getFramework()->getId() === $framework2->getId()) {
+                    $mappedRequirement = $sourceMapping->getTargetRequirement();
+                    $matchQuality = $sourceMapping->getMappingPercentage();
                     $isMapped = true;
                     break;
                 }
@@ -1547,14 +1522,14 @@ class ComplianceController extends AbstractController
 
             // Also check reverse mappings where req1 is the target
             if (!$isMapped) {
-                $targetMappings = $this->mappingRepository->findBy([
-                    'targetRequirement' => $req1
+                $targetMappings = $this->complianceMappingRepository->findBy([
+                    'targetRequirement' => $requirement
                 ]);
 
-                foreach ($targetMappings as $mapping) {
-                    if ($mapping->getSourceRequirement()->getFramework()->getId() === $framework2->getId()) {
-                        $mappedRequirement = $mapping->getSourceRequirement();
-                        $matchQuality = $mapping->getMappingPercentage();
+                foreach ($targetMappings as $targetMapping) {
+                    if ($targetMapping->getSourceRequirement()->getFramework()->getId() === $framework2->getId()) {
+                        $mappedRequirement = $targetMapping->getSourceRequirement();
+                        $matchQuality = $targetMapping->getMappingPercentage();
                         $isMapped = true;
                         break;
                     }
@@ -1562,7 +1537,7 @@ class ComplianceController extends AbstractController
             }
 
             $comparisonDetails[] = [
-                'framework1Requirement' => $req1,
+                'framework1Requirement' => $requirement,
                 'mapped' => $isMapped,
                 'framework2Requirement' => $mappedRequirement,
                 'matchQuality' => $matchQuality,
@@ -1588,16 +1563,16 @@ class ComplianceController extends AbstractController
         ];
 
         // CSV Data
-        foreach ($comparisonDetails as $detail) {
+        foreach ($comparisonDetails as $comparisonDetail) {
             $csv[] = [
-                $detail['framework1Requirement']->getRequirementId(),
-                $detail['framework1Requirement']->getTitle(),
-                $detail['framework1Requirement']->getCategory() ?? '-',
-                $detail['mapped'] ? 'Gemapped' : 'Nicht gemapped',
-                $detail['matchQuality'] ?? '-',
-                $detail['framework2Requirement'] ? $detail['framework2Requirement']->getRequirementId() : '-',
-                $detail['framework2Requirement'] ? $detail['framework2Requirement']->getTitle() : '-',
-                $detail['framework2Requirement'] ? ($detail['framework2Requirement']->getCategory() ?? '-') : '-',
+                $comparisonDetail['framework1Requirement']->getRequirementId(),
+                $comparisonDetail['framework1Requirement']->getTitle(),
+                $comparisonDetail['framework1Requirement']->getCategory() ?? '-',
+                $comparisonDetail['mapped'] ? 'Gemapped' : 'Nicht gemapped',
+                $comparisonDetail['matchQuality'] ?? '-',
+                $comparisonDetail['framework2Requirement'] ? $comparisonDetail['framework2Requirement']->getRequirementId() : '-',
+                $comparisonDetail['framework2Requirement'] ? $comparisonDetail['framework2Requirement']->getTitle() : '-',
+                $comparisonDetail['framework2Requirement'] ? ($comparisonDetail['framework2Requirement']->getCategory() ?? '-') : '-',
             ];
         }
 
@@ -1619,7 +1594,7 @@ class ComplianceController extends AbstractController
         // Create CSV content
         $handle = fopen('php://temp', 'r+');
         foreach ($csv as $row) {
-            fputcsv($handle, $row, ';'); // Use semicolon as delimiter for Excel compatibility
+            fputcsv($handle, $row, ';', escape: '\\'); // Use semicolon as delimiter for Excel compatibility
         }
         rewind($handle);
         $csvContent .= stream_get_contents($handle);
@@ -1629,8 +1604,7 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-
-    #[Route('/export/comparison/excel', name: 'app_compliance_export_comparison_excel')]
+    #[Route('/compliance/export/comparison/excel', name: 'app_compliance_export_comparison_excel')]
     public function exportComparisonExcel(Request $request): Response
     {
         $framework1Id = $request->query->get('framework1');
@@ -1641,8 +1615,8 @@ class ComplianceController extends AbstractController
             return $this->redirectToRoute('app_compliance_compare');
         }
 
-        $framework1 = $this->frameworkRepository->find($framework1Id);
-        $framework2 = $this->frameworkRepository->find($framework2Id);
+        $framework1 = $this->complianceFrameworkRepository->find($framework1Id);
+        $framework2 = $this->complianceFrameworkRepository->find($framework2Id);
 
         if (!$framework1 || !$framework2) {
             $this->addFlash('error', 'Ein oder beide Frameworks wurden nicht gefunden.');
@@ -1653,17 +1627,17 @@ class ComplianceController extends AbstractController
         $comparisonDetails = [];
         $mappedCount = 0;
 
-        foreach ($framework1->getRequirements() as $req1) {
+        foreach ($framework1->getRequirements() as $requirement) {
             $mappedRequirement = null;
             $matchQuality = null;
             $isMapped = false;
 
             // Find mappings
-            $sourceMappings = $this->mappingRepository->findBy(['sourceRequirement' => $req1]);
-            foreach ($sourceMappings as $mapping) {
-                if ($mapping->getTargetRequirement()->getFramework()->getId() === $framework2->getId()) {
-                    $mappedRequirement = $mapping->getTargetRequirement();
-                    $matchQuality = $mapping->getMappingPercentage();
+            $sourceMappings = $this->complianceMappingRepository->findBy(['sourceRequirement' => $requirement]);
+            foreach ($sourceMappings as $sourceMapping) {
+                if ($sourceMapping->getTargetRequirement()->getFramework()->getId() === $framework2->getId()) {
+                    $mappedRequirement = $sourceMapping->getTargetRequirement();
+                    $matchQuality = $sourceMapping->getMappingPercentage();
                     $isMapped = true;
                     $mappedCount++;
                     break;
@@ -1671,11 +1645,11 @@ class ComplianceController extends AbstractController
             }
 
             if (!$isMapped) {
-                $targetMappings = $this->mappingRepository->findBy(['targetRequirement' => $req1]);
-                foreach ($targetMappings as $mapping) {
-                    if ($mapping->getSourceRequirement()->getFramework()->getId() === $framework2->getId()) {
-                        $mappedRequirement = $mapping->getSourceRequirement();
-                        $matchQuality = $mapping->getMappingPercentage();
+                $targetMappings = $this->complianceMappingRepository->findBy(['targetRequirement' => $requirement]);
+                foreach ($targetMappings as $targetMapping) {
+                    if ($targetMapping->getSourceRequirement()->getFramework()->getId() === $framework2->getId()) {
+                        $mappedRequirement = $targetMapping->getSourceRequirement();
+                        $matchQuality = $targetMapping->getMappingPercentage();
                         $isMapped = true;
                         $mappedCount++;
                         break;
@@ -1684,7 +1658,7 @@ class ComplianceController extends AbstractController
             }
 
             $comparisonDetails[] = [
-                'framework1Requirement' => $req1,
+                'framework1Requirement' => $requirement,
                 'mapped' => $isMapped,
                 'framework2Requirement' => $mappedRequirement,
                 'matchQuality' => $matchQuality,
@@ -1698,8 +1672,8 @@ class ComplianceController extends AbstractController
         $spreadsheet = $this->excelExportService->createSpreadsheet('Framework Comparison Report');
 
         // === TAB 1: Summary ===
-        $summarySheet = $spreadsheet->getActiveSheet();
-        $summarySheet->setTitle('Zusammenfassung');
+        $worksheet = $spreadsheet->getActiveSheet();
+        $worksheet->setTitle('Zusammenfassung');
 
         $framework1Count = count($framework1->getRequirements());
         $framework2Count = count($framework2->getRequirements());
@@ -1715,8 +1689,8 @@ class ComplianceController extends AbstractController
             'Export-Datum' => date('d.m.Y H:i'),
         ];
 
-        $this->excelExportService->addSummarySection($summarySheet, $metrics, 1, 'Framework Vergleich');
-        $this->excelExportService->autoSizeColumns($summarySheet);
+        $this->excelExportService->addSummarySection($worksheet, $metrics, 1, 'Framework Vergleich');
+        $this->excelExportService->autoSizeColumns($worksheet);
 
         // === TAB 2: Detailed Comparison ===
         $detailsSheet = $this->excelExportService->createSheet($spreadsheet, 'Detaillierter Vergleich');
@@ -1765,9 +1739,9 @@ class ComplianceController extends AbstractController
         $this->excelExportService->autoSizeColumns($detailsSheet);
 
         // === TAB 3: Framework 1 Unique ===
-        $framework1Unique = array_filter($comparisonDetails, fn($d) => !$d['mapped']);
-        if (!empty($framework1Unique)) {
-            $unique1Sheet = $this->excelExportService->createSheet($spreadsheet, 'Unique ' . substr($framework1->getCode(), 0, 10));
+        $framework1Unique = array_filter($comparisonDetails, fn(array $d): bool => !$d['mapped']);
+        if ($framework1Unique !== []) {
+            $unique1Sheet = $this->excelExportService->createSheet($spreadsheet, 'Unique ' . substr((string) $framework1->getCode(), 0, 10));
 
             $uniqueHeaders = ['ID', 'Titel', 'Kategorie', 'Beschreibung'];
             $this->excelExportService->addFormattedHeaderRow($unique1Sheet, $uniqueHeaders, 1, true);
@@ -1804,8 +1778,7 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-
-    #[Route('/export/comparison/pdf', name: 'app_compliance_export_comparison_pdf')]
+    #[Route('/compliance/export/comparison/pdf', name: 'app_compliance_export_comparison_pdf')]
     public function exportComparisonPdf(Request $request): Response
     {
         $framework1Id = $request->query->get('framework1');
@@ -1816,8 +1789,8 @@ class ComplianceController extends AbstractController
             return $this->redirectToRoute('app_compliance_compare');
         }
 
-        $framework1 = $this->frameworkRepository->find($framework1Id);
-        $framework2 = $this->frameworkRepository->find($framework2Id);
+        $framework1 = $this->complianceFrameworkRepository->find($framework1Id);
+        $framework2 = $this->complianceFrameworkRepository->find($framework2Id);
 
         if (!$framework1 || !$framework2) {
             $this->addFlash('error', 'Ein oder beide Frameworks wurden nicht gefunden.');
@@ -1829,17 +1802,17 @@ class ComplianceController extends AbstractController
         $mappedCount = 0;
         $highQualityMappings = 0;
 
-        foreach ($framework1->getRequirements() as $req1) {
+        foreach ($framework1->getRequirements() as $requirement) {
             $mappedRequirement = null;
             $matchQuality = null;
             $isMapped = false;
 
             // Find mappings
-            $sourceMappings = $this->mappingRepository->findBy(['sourceRequirement' => $req1]);
-            foreach ($sourceMappings as $mapping) {
-                if ($mapping->getTargetRequirement()->getFramework()->getId() === $framework2->getId()) {
-                    $mappedRequirement = $mapping->getTargetRequirement();
-                    $matchQuality = $mapping->getMappingPercentage();
+            $sourceMappings = $this->complianceMappingRepository->findBy(['sourceRequirement' => $requirement]);
+            foreach ($sourceMappings as $sourceMapping) {
+                if ($sourceMapping->getTargetRequirement()->getFramework()->getId() === $framework2->getId()) {
+                    $mappedRequirement = $sourceMapping->getTargetRequirement();
+                    $matchQuality = $sourceMapping->getMappingPercentage();
                     $isMapped = true;
                     $mappedCount++;
                     if ($matchQuality >= 80) {
@@ -1850,11 +1823,11 @@ class ComplianceController extends AbstractController
             }
 
             if (!$isMapped) {
-                $targetMappings = $this->mappingRepository->findBy(['targetRequirement' => $req1]);
-                foreach ($targetMappings as $mapping) {
-                    if ($mapping->getSourceRequirement()->getFramework()->getId() === $framework2->getId()) {
-                        $mappedRequirement = $mapping->getSourceRequirement();
-                        $matchQuality = $mapping->getMappingPercentage();
+                $targetMappings = $this->complianceMappingRepository->findBy(['targetRequirement' => $requirement]);
+                foreach ($targetMappings as $targetMapping) {
+                    if ($targetMapping->getSourceRequirement()->getFramework()->getId() === $framework2->getId()) {
+                        $mappedRequirement = $targetMapping->getSourceRequirement();
+                        $matchQuality = $targetMapping->getMappingPercentage();
                         $isMapped = true;
                         $mappedCount++;
                         if ($matchQuality >= 80) {
@@ -1866,7 +1839,7 @@ class ComplianceController extends AbstractController
             }
 
             $comparisonDetails[] = [
-                'framework1Requirement' => $req1,
+                'framework1Requirement' => $requirement,
                 'mapped' => $isMapped,
                 'framework2Requirement' => $mappedRequirement,
                 'matchQuality' => $matchQuality,
@@ -1880,14 +1853,14 @@ class ComplianceController extends AbstractController
         $unmapped = $framework1Count - $mappedCount;
 
         // Find unique requirements
-        $uniqueFramework1 = array_filter($comparisonDetails, fn($d) => !$d['mapped']);
+        $uniqueFramework1 = array_filter($comparisonDetails, fn(array $d): bool => !$d['mapped']);
 
         // Calculate bidirectional coverage
-        $bidirectionalCoverage = $this->mappingRepository->calculateBidirectionalCoverage($framework1, $framework2);
+        $bidirectionalCoverage = $this->complianceMappingRepository->calculateBidirectionalCoverage($framework1, $framework2);
 
         // Calculate category-specific coverage (both directions)
-        $categoryCoverageF1toF2 = $this->mappingRepository->calculateCategoryCoverage($framework1, $framework2);
-        $categoryCoverageF2toF1 = $this->mappingRepository->calculateCategoryCoverage($framework2, $framework1);
+        $categoryCoverageF1toF2 = $this->complianceMappingRepository->calculateCategoryCoverage($framework1, $framework2);
+        $categoryCoverageF2toF1 = $this->complianceMappingRepository->calculateCategoryCoverage($framework2, $framework1);
 
         // Calculate mapping quality distribution
         $qualityDistribution = [
@@ -1899,9 +1872,9 @@ class ComplianceController extends AbstractController
         $qualitySum = 0;
         $qualityCount = 0;
 
-        foreach ($comparisonDetails as $detail) {
-            if ($detail['mapped'] && $detail['matchQuality'] !== null) {
-                $quality = $detail['matchQuality'];
+        foreach ($comparisonDetails as $comparisonDetail) {
+            if ($comparisonDetail['mapped'] && $comparisonDetail['matchQuality'] !== null) {
+                $quality = $comparisonDetail['matchQuality'];
                 $qualitySum += $quality;
                 $qualityCount++;
 
@@ -1923,7 +1896,7 @@ class ComplianceController extends AbstractController
         $request->getSession()->save();
 
         // Generate version from generation date (Format: Year.Month.Day)
-        $pdfGenerationDate = new \DateTime();
+        $pdfGenerationDate = new DateTime();
         $version = $pdfGenerationDate->format('Y.m.d');
 
         // Generate PDF
@@ -1968,8 +1941,7 @@ class ComplianceController extends AbstractController
 
         return $response;
     }
-
-    #[Route('/frameworks/create-comparison-mappings', name: 'app_compliance_create_comparison_mappings', methods: ['POST'])]
+    #[Route('/compliance/frameworks/create-comparison-mappings', name: 'app_compliance_create_comparison_mappings', methods: ['POST'])]
     public function createComparisonMappings(Request $request): JsonResponse
     {
         // Validate CSRF token
@@ -1978,7 +1950,7 @@ class ComplianceController extends AbstractController
             return new JsonResponse([
                 'success' => false,
                 'message' => 'Invalid CSRF token'
-            ], 403);
+            ], Response::HTTP_FORBIDDEN);
         }
 
         try {
@@ -1990,34 +1962,34 @@ class ComplianceController extends AbstractController
                 return new JsonResponse([
                     'success' => false,
                     'message' => 'Beide Framework IDs müssen angegeben werden!'
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
 
             if ($framework1Id === $framework2Id) {
                 return new JsonResponse([
                     'success' => false,
                     'message' => 'Die beiden Frameworks müssen unterschiedlich sein!'
-                ], 400);
+                ], Response::HTTP_BAD_REQUEST);
             }
 
-            $em = $this->frameworkRepository->getEntityManager();
+            $em = $this->complianceFrameworkRepository->getEntityManager();
 
             // Load frameworks
-            $framework1 = $this->frameworkRepository->find($framework1Id);
-            $framework2 = $this->frameworkRepository->find($framework2Id);
+            $framework1 = $this->complianceFrameworkRepository->find($framework1Id);
+            $framework2 = $this->complianceFrameworkRepository->find($framework2Id);
 
             if (!$framework1 || !$framework2) {
                 return new JsonResponse([
                     'success' => false,
                     'message' => 'Ein oder beide Frameworks wurden nicht gefunden!'
-                ], 404);
+                ], Response::HTTP_NOT_FOUND);
             }
 
             // Check if ISO 27001 exists (needed for transitive mappings)
-            $iso27001 = $this->frameworkRepository->findOneBy(['code' => 'ISO27001']);
+            $iso27001 = $this->complianceFrameworkRepository->findOneBy(['code' => 'ISO27001']);
 
             // Load existing mappings to avoid duplicates (incremental approach)
-            $existingMappings = $this->mappingRepository->findAll();
+            $existingMappings = $this->complianceMappingRepository->findAll();
             $existingPairs = [];
             foreach ($existingMappings as $mapping) {
                 $sourceId = $mapping->getSourceRequirement()->getId();
@@ -2030,8 +2002,8 @@ class ComplianceController extends AbstractController
             $createdPairs = [];
 
             // Get requirements for both frameworks
-            $requirements1 = $this->requirementRepository->findBy(['framework' => $framework1]);
-            $requirements2 = $this->requirementRepository->findBy(['framework' => $framework2]);
+            $requirements1 = $this->complianceRequirementRepository->findBy(['framework' => $framework1]);
+            $requirements2 = $this->complianceRequirementRepository->findBy(['framework' => $framework2]);
 
             // Strategy 1: Direct mapping via ISO controls if available
             if ($iso27001) {
@@ -2046,8 +2018,8 @@ class ComplianceController extends AbstractController
                             ? $dataSourceMapping['iso_controls']
                             : [$dataSourceMapping['iso_controls']];
 
-                        foreach ($isoControls as $controlId) {
-                            $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $controlId);
+                        foreach ($isoControls as $isoControl) {
+                            $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $isoControl);
                             if (!isset($framework1IsoMap[$normalizedId])) {
                                 $framework1IsoMap[$normalizedId] = [];
                             }
@@ -2063,8 +2035,8 @@ class ComplianceController extends AbstractController
                             ? $dataSourceMapping['iso_controls']
                             : [$dataSourceMapping['iso_controls']];
 
-                        foreach ($isoControls as $controlId) {
-                            $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $controlId);
+                        foreach ($isoControls as $isoControl) {
+                            $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $isoControl);
                             if (!isset($framework2IsoMap[$normalizedId])) {
                                 $framework2IsoMap[$normalizedId] = [];
                             }
@@ -2140,40 +2112,40 @@ class ComplianceController extends AbstractController
 
                     // Build map of other framework's requirements by ISO control
                     $otherByIsoControl = [];
-                    foreach ($otherRequirements as $req) {
-                        $dataSourceMapping = $req->getDataSourceMapping();
+                    foreach ($otherRequirements as $otherRequirement) {
+                        $dataSourceMapping = $otherRequirement->getDataSourceMapping();
                         if (!empty($dataSourceMapping['iso_controls'])) {
                             $isoControls = is_array($dataSourceMapping['iso_controls'])
                                 ? $dataSourceMapping['iso_controls']
                                 : [$dataSourceMapping['iso_controls']];
 
-                            foreach ($isoControls as $controlId) {
-                                $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $controlId);
+                            foreach ($isoControls as $isoControl) {
+                                $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $isoControl);
                                 if (!isset($otherByIsoControl[$normalizedId])) {
                                     $otherByIsoControl[$normalizedId] = [];
                                 }
-                                $otherByIsoControl[$normalizedId][] = $req;
+                                $otherByIsoControl[$normalizedId][] = $otherRequirement;
                             }
                         }
                     }
 
                     // Map ISO requirements directly to other framework requirements
-                    foreach ($isoRequirements as $isoReq) {
-                        $isoControlId = $isoReq->getRequirementId(); // e.g., 'A.5.1'
+                    foreach ($isoRequirements as $isoRequirement) {
+                        $isoControlId = $isoRequirement->getRequirementId(); // e.g., 'A.5.1'
 
                         if (isset($otherByIsoControl[$isoControlId])) {
                             $otherReqs = $otherByIsoControl[$isoControlId];
 
                             foreach ($otherReqs as $otherReq) {
-                                $pairKey = $isoReq->getId() . '-' . $otherReq->getId();
-                                $reversePairKey = $otherReq->getId() . '-' . $isoReq->getId();
+                                $pairKey = $isoRequirement->getId() . '-' . $otherReq->getId();
+                                $reversePairKey = $otherReq->getId() . '-' . $isoRequirement->getId();
 
                                 if (!isset($createdPairs[$pairKey]) && !isset($createdPairs[$reversePairKey])
                                     && !isset($existingPairs[$pairKey]) && !isset($existingPairs[$reversePairKey])) {
 
                                     // Forward mapping: ISO → Other
                                     $mapping = new ComplianceMapping();
-                                    $mapping->setSourceRequirement($isoReq)
+                                    $mapping->setSourceRequirement($isoRequirement)
                                         ->setTargetRequirement($otherReq)
                                         ->setMappingPercentage(90)
                                         ->setMappingType('partial')
@@ -2192,7 +2164,7 @@ class ComplianceController extends AbstractController
                                     // Reverse mapping: Other → ISO
                                     $reverseMapping = new ComplianceMapping();
                                     $reverseMapping->setSourceRequirement($otherReq)
-                                        ->setTargetRequirement($isoReq)
+                                        ->setTargetRequirement($isoRequirement)
                                         ->setMappingPercentage(90)
                                         ->setMappingType('partial')
                                         ->setBidirectional(true)
@@ -2236,15 +2208,14 @@ class ComplianceController extends AbstractController
                 'framework2' => $framework2->getName(),
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return new JsonResponse([
                 'success' => false,
                 'message' => 'Fehler beim Erstellen der Mappings: ' . $e->getMessage()
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-    #[Route('/frameworks/create-mappings', name: 'app_compliance_create_mappings', methods: ['POST'])]
+    #[Route('/compliance/frameworks/create-mappings', name: 'app_compliance_create_mappings', methods: ['POST'])]
     public function createCrossFrameworkMappings(Request $request): JsonResponse
     {
         // Validate CSRF token
@@ -2253,7 +2224,7 @@ class ComplianceController extends AbstractController
             return new JsonResponse([
                 'success' => false,
                 'message' => 'Invalid CSRF token'
-            ], 403);
+            ], Response::HTTP_FORBIDDEN);
         }
 
         try {
@@ -2262,10 +2233,10 @@ class ComplianceController extends AbstractController
             $currentBatch = $data['batch'] ?? 0;
             $batchSize = $data['batch_size'] ?? 50; // Process 50 mappings per batch
 
-            $em = $this->frameworkRepository->getEntityManager();
+            $em = $this->complianceFrameworkRepository->getEntityManager();
 
             // Check if ISO 27001 exists
-            $iso27001 = $this->frameworkRepository->findOneBy(['code' => 'ISO27001']);
+            $iso27001 = $this->complianceFrameworkRepository->findOneBy(['code' => 'ISO27001']);
             if (!$iso27001) {
                 return new JsonResponse([
                     'success' => false,
@@ -2274,7 +2245,7 @@ class ComplianceController extends AbstractController
             }
 
             // Get all frameworks
-            $frameworks = $this->frameworkRepository->findAll();
+            $frameworks = $this->complianceFrameworkRepository->findAll();
             if (count($frameworks) < 2) {
                 return new JsonResponse([
                     'success' => false,
@@ -2283,7 +2254,7 @@ class ComplianceController extends AbstractController
             }
 
             // Load existing mappings to avoid duplicates (incremental approach)
-            $existingMappings = $this->mappingRepository->findAll();
+            $existingMappings = $this->complianceMappingRepository->findAll();
             $existingPairs = [];
             foreach ($existingMappings as $mapping) {
                 $sourceId = $mapping->getSourceRequirement()->getId();
@@ -2302,11 +2273,14 @@ class ComplianceController extends AbstractController
                     continue;
                 }
 
-                $requirements = $this->requirementRepository->findBy(['framework' => $framework]);
+                $requirements = $this->complianceRequirementRepository->findBy(['framework' => $framework]);
 
                 foreach ($requirements as $requirement) {
                     $dataSourceMapping = $requirement->getDataSourceMapping();
-                    if (empty($dataSourceMapping) || empty($dataSourceMapping['iso_controls'])) {
+                    if (empty($dataSourceMapping)) {
+                        continue;
+                    }
+                    if (empty($dataSourceMapping['iso_controls'])) {
                         continue;
                     }
 
@@ -2315,10 +2289,10 @@ class ComplianceController extends AbstractController
                         $isoControls = [$isoControls];
                     }
 
-                    foreach ($isoControls as $controlId) {
-                        $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $controlId);
+                    foreach ($isoControls as $isoControl) {
+                        $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $isoControl);
 
-                        $isoRequirement = $this->requirementRepository->findOneBy([
+                        $isoRequirement = $this->complianceRequirementRepository->findOneBy([
                             'framework' => $iso27001,
                             'requirementId' => $normalizedId
                         ]);
@@ -2355,9 +2329,9 @@ class ComplianceController extends AbstractController
 
             // 2. Collect transitive mappings between non-ISO frameworks
             // If Framework A → ISO Control X and Framework B → ISO Control X, then A ↔ B
-            $isoRequirements = $this->requirementRepository->findBy(['framework' => $iso27001]);
+            $isoRequirements = $this->complianceRequirementRepository->findBy(['framework' => $iso27001]);
 
-            foreach ($isoRequirements as $isoReq) {
+            foreach ($isoRequirements as $isoRequirement) {
                 // Find all frameworks that map to this ISO requirement
                 $mappedToThisISO = [];
 
@@ -2366,11 +2340,14 @@ class ComplianceController extends AbstractController
                         continue;
                     }
 
-                    $requirements = $this->requirementRepository->findBy(['framework' => $framework]);
+                    $requirements = $this->complianceRequirementRepository->findBy(['framework' => $framework]);
 
-                    foreach ($requirements as $req) {
-                        $dataSourceMapping = $req->getDataSourceMapping();
-                        if (empty($dataSourceMapping) || empty($dataSourceMapping['iso_controls'])) {
+                    foreach ($requirements as $requirement) {
+                        $dataSourceMapping = $requirement->getDataSourceMapping();
+                        if (empty($dataSourceMapping)) {
+                            continue;
+                        }
+                        if (empty($dataSourceMapping['iso_controls'])) {
                             continue;
                         }
 
@@ -2379,18 +2356,20 @@ class ComplianceController extends AbstractController
                             $isoControls = [$isoControls];
                         }
 
-                        foreach ($isoControls as $controlId) {
-                            $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $controlId);
+                        foreach ($isoControls as $isoControl) {
+                            $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $isoControl);
 
-                            if ($normalizedId === $isoReq->getRequirementId()) {
-                                $mappedToThisISO[] = $req;
+                            if ($normalizedId === $isoRequirement->getRequirementId()) {
+                                $mappedToThisISO[] = $requirement;
                             }
                         }
                     }
                 }
+                // Collect cross-mappings between all requirements that map to same ISO control
+                $counter = count($mappedToThisISO);
 
                 // Collect cross-mappings between all requirements that map to same ISO control
-                for ($i = 0; $i < count($mappedToThisISO); $i++) {
+                for ($i = 0; $i < $counter; $i++) {
                     for ($j = $i + 1; $j < count($mappedToThisISO); $j++) {
                         $req1 = $mappedToThisISO[$i];
                         $req2 = $mappedToThisISO[$j];
@@ -2404,7 +2383,7 @@ class ComplianceController extends AbstractController
                                 'source' => $req1,
                                 'target' => $req2,
                                 'pairKey' => $pairKey,
-                                'isoControl' => $isoReq->getRequirementId()
+                                'isoControl' => $isoRequirement->getRequirementId()
                             ];
 
                             $potentialMappings[] = [
@@ -2412,7 +2391,7 @@ class ComplianceController extends AbstractController
                                 'source' => $req2,
                                 'target' => $req1,
                                 'pairKey' => $reversePairKey,
-                                'isoControl' => $isoReq->getRequirementId()
+                                'isoControl' => $isoRequirement->getRequirementId()
                             ];
                         }
                     }
@@ -2470,9 +2449,9 @@ class ComplianceController extends AbstractController
 
             // Debug info
             $frameworkCounts = [];
-            foreach ($frameworks as $fw) {
-                $reqCount = count($this->requirementRepository->findBy(['framework' => $fw]));
-                $frameworkCounts[$fw->getCode()] = $reqCount;
+            foreach ($frameworks as $framework) {
+                $reqCount = count($this->complianceRequirementRepository->findBy(['framework' => $framework]));
+                $frameworkCounts[$framework->getCode()] = $reqCount;
             }
 
             $processedSoFar = min($endIndex, $totalPotentialMappings);
@@ -2514,19 +2493,19 @@ class ComplianceController extends AbstractController
             ];
 
             // Check if TISAX exists and has ISO controls
-            $tisax = $this->frameworkRepository->findOneBy(['code' => 'TISAX']);
+            $tisax = $this->complianceFrameworkRepository->findOneBy(['code' => 'TISAX']);
             if ($tisax) {
-                $tisaxReqs = $this->requirementRepository->findBy(['framework' => $tisax]);
+                $tisaxReqs = $this->complianceRequirementRepository->findBy(['framework' => $tisax]);
                 $tisaxWithIsoControls = 0;
                 $sampleIsoControls = [];
 
-                foreach ($tisaxReqs as $req) {
-                    $dataSourceMapping = $req->getDataSourceMapping();
+                foreach ($tisaxReqs as $tisaxReq) {
+                    $dataSourceMapping = $tisaxReq->getDataSourceMapping();
                     if (!empty($dataSourceMapping['iso_controls'])) {
                         $tisaxWithIsoControls++;
                         if (count($sampleIsoControls) < 5) {
                             $sampleIsoControls[] = [
-                                'requirement_id' => $req->getRequirementId(),
+                                'requirement_id' => $tisaxReq->getRequirementId(),
                                 'iso_controls' => $dataSourceMapping['iso_controls']
                             ];
                         }
@@ -2557,11 +2536,11 @@ class ComplianceController extends AbstractController
                 'debug' => $debugInfo
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return new JsonResponse([
                 'success' => false,
                 'message' => 'Fehler beim Erstellen der Mappings: ' . $e->getMessage()
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

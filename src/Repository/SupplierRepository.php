@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use DateTime;
+use App\Entity\Tenant;
 use App\Entity\Supplier;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -24,7 +26,7 @@ class SupplierRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('s')
             ->where('s.nextAssessmentDate < :now')
             ->orWhere('s.lastSecurityAssessment IS NULL AND s.status = :active')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new DateTime())
             ->setParameter('active', 'active')
             ->orderBy('s.criticality', 'DESC')
             ->getQuery()
@@ -67,9 +69,9 @@ class SupplierRepository extends ServiceEntityRepository
      */
     public function getStatistics(): array
     {
-        $qb = $this->createQueryBuilder('s');
+        $queryBuilder = $this->createQueryBuilder('s');
 
-        $total = $qb->select('COUNT(s.id)')
+        $total = $queryBuilder->select('COUNT(s.id)')
             ->where('s.status = :active')
             ->setParameter('active', 'active')
             ->getQuery()
@@ -96,7 +98,7 @@ class SupplierRepository extends ServiceEntityRepository
         $overdue = $this->createQueryBuilder('s')
             ->select('COUNT(s.id)')
             ->where('s.nextAssessmentDate < :now OR (s.lastSecurityAssessment IS NULL AND s.status = :active)')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new DateTime())
             ->setParameter('active', 'active')
             ->getQuery()
             ->getSingleScalarResult();
@@ -125,7 +127,7 @@ class SupplierRepository extends ServiceEntityRepository
     /**
      * Find all suppliers for a tenant (own suppliers only)
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find suppliers for
+     * @param Tenant $tenant The tenant to find suppliers for
      * @return Supplier[] Array of Supplier entities
      */
     public function findByTenant($tenant): array
@@ -142,8 +144,8 @@ class SupplierRepository extends ServiceEntityRepository
      * Find suppliers by tenant including all ancestors (for hierarchical governance)
      * This allows viewing inherited suppliers from parent companies, grandparents, etc.
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find suppliers for
-     * @param \App\Entity\Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
+     * @param Tenant $tenant The tenant to find suppliers for
+     * @param Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
      * @return Supplier[] Array of Supplier entities (own + inherited from all ancestors)
      */
     public function findByTenantIncludingParent($tenant, $parentTenant = null): array
@@ -151,17 +153,17 @@ class SupplierRepository extends ServiceEntityRepository
         // Get all ancestors (parent, grandparent, great-grandparent, etc.)
         $ancestors = $tenant->getAllAncestors();
 
-        $qb = $this->createQueryBuilder('s')
+        $queryBuilder = $this->createQueryBuilder('s')
             ->where('s.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
         // Include suppliers from all ancestors in the hierarchy
         if (!empty($ancestors)) {
-            $qb->orWhere('s.tenant IN (:ancestors)')
+            $queryBuilder->orWhere('s.tenant IN (:ancestors)')
                ->setParameter('ancestors', $ancestors);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('s.name', 'ASC')
             ->getQuery()
             ->getResult();
@@ -170,14 +172,14 @@ class SupplierRepository extends ServiceEntityRepository
     /**
      * Get supplier statistics for a specific tenant
      *
-     * @param \App\Entity\Tenant $tenant The tenant
+     * @param Tenant $tenant The tenant
      * @return array Supplier statistics
      */
     public function getStatisticsByTenant($tenant): array
     {
-        $qb = $this->createQueryBuilder('s');
+        $queryBuilder = $this->createQueryBuilder('s');
 
-        $total = $qb->select('COUNT(s.id)')
+        $total = $queryBuilder->select('COUNT(s.id)')
             ->where('s.tenant = :tenant')
             ->andWhere('s.status = :active')
             ->setParameter('tenant', $tenant)
@@ -212,7 +214,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->where('s.tenant = :tenant')
             ->andWhere('(s.nextAssessmentDate < :now OR (s.lastSecurityAssessment IS NULL AND s.status = :active))')
             ->setParameter('tenant', $tenant)
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new DateTime())
             ->setParameter('active', 'active')
             ->getQuery()
             ->getSingleScalarResult();
@@ -243,7 +245,7 @@ class SupplierRepository extends ServiceEntityRepository
     /**
      * Find critical suppliers for a specific tenant
      *
-     * @param \App\Entity\Tenant $tenant The tenant
+     * @param Tenant $tenant The tenant
      * @return Supplier[] Array of critical supplier entities
      */
     public function findCriticalSuppliersByTenant($tenant): array
@@ -263,7 +265,7 @@ class SupplierRepository extends ServiceEntityRepository
     /**
      * Find suppliers with overdue assessments for a specific tenant
      *
-     * @param \App\Entity\Tenant $tenant The tenant
+     * @param Tenant $tenant The tenant
      * @return Supplier[] Array of suppliers with overdue assessments
      */
     public function findOverdueAssessmentsByTenant($tenant): array
@@ -272,7 +274,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->where('s.tenant = :tenant')
             ->andWhere('(s.nextAssessmentDate < :now OR (s.lastSecurityAssessment IS NULL AND s.status = :active))')
             ->setParameter('tenant', $tenant)
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new DateTime())
             ->setParameter('active', 'active')
             ->orderBy('s.criticality', 'DESC')
             ->getQuery()
@@ -282,7 +284,7 @@ class SupplierRepository extends ServiceEntityRepository
     /**
      * Find non-compliant suppliers for a specific tenant
      *
-     * @param \App\Entity\Tenant $tenant The tenant
+     * @param Tenant $tenant The tenant
      * @return Supplier[] Array of non-compliant supplier entities
      */
     public function findNonCompliantByTenant($tenant): array
@@ -304,7 +306,7 @@ class SupplierRepository extends ServiceEntityRepository
      * Find suppliers by tenant including all subsidiaries (for corporate parent view)
      * This allows viewing aggregated suppliers from all subsidiary companies
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find suppliers for
+     * @param Tenant $tenant The tenant to find suppliers for
      * @return Supplier[] Array of Supplier entities (own + from all subsidiaries)
      */
     public function findByTenantIncludingSubsidiaries($tenant): array
@@ -312,17 +314,17 @@ class SupplierRepository extends ServiceEntityRepository
         // Get all subsidiaries recursively
         $subsidiaries = $tenant->getAllSubsidiaries();
 
-        $qb = $this->createQueryBuilder('s')
+        $queryBuilder = $this->createQueryBuilder('s')
             ->where('s.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
         // Include suppliers from all subsidiaries in the hierarchy
         if (!empty($subsidiaries)) {
-            $qb->orWhere('s.tenant IN (:subsidiaries)')
+            $queryBuilder->orWhere('s.tenant IN (:subsidiaries)')
                ->setParameter('subsidiaries', $subsidiaries);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('s.name', 'ASC')
             ->getQuery()
             ->getResult();

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -140,15 +142,15 @@ class Location
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['location:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['location:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
         $this->childLocations = new ArrayCollection();
         $this->accessLogs = new ArrayCollection();
         $this->assets = new ArrayCollection();
@@ -278,10 +280,8 @@ class Location
 
     public function removeChildLocation(self $childLocation): static
     {
-        if ($this->childLocations->removeElement($childLocation)) {
-            if ($childLocation->getParentLocation() === $this) {
-                $childLocation->setParentLocation(null);
-            }
+        if ($this->childLocations->removeElement($childLocation) && $childLocation->getParentLocation() === $this) {
+            $childLocation->setParentLocation(null);
         }
 
         return $this;
@@ -424,23 +424,23 @@ class Location
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -454,7 +454,7 @@ class Location
         $path = [$this->name];
         $parent = $this->parentLocation;
 
-        while ($parent !== null) {
+        while ($parent instanceof \App\Entity\Location) {
             array_unshift($path, $parent->getName());
             $parent = $parent->getParentLocation();
         }

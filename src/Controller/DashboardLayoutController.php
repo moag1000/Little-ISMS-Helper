@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\Tenant;
 use App\Repository\DashboardLayoutRepository;
 use App\Service\TenantContext;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,47 +13,46 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/dashboard-layout')]
 #[IsGranted('ROLE_USER')]
 class DashboardLayoutController extends AbstractController
 {
     public function __construct(
-        private DashboardLayoutRepository $dashboardLayoutRepository,
-        private TenantContext $tenantContext
+        private readonly DashboardLayoutRepository $dashboardLayoutRepository,
+        private readonly TenantContext $tenantContext
     ) {}
 
     /**
      * Get current user's dashboard layout configuration
      */
-    #[Route('/config', name: 'app_dashboard_layout_get', methods: ['GET'])]
+    #[Route('/dashboard-layout/config', name: 'app_dashboard_layout_get', methods: ['GET'])]
     public function getLayout(): JsonResponse
     {
         $user = $this->getUser();
         $tenant = $this->tenantContext->getCurrentTenant();
 
-        if (!$user || !$tenant) {
+        if (!$user instanceof UserInterface || !$tenant instanceof Tenant) {
             return $this->json(['error' => 'User or tenant not found'], Response::HTTP_UNAUTHORIZED);
         }
 
-        $layout = $this->dashboardLayoutRepository->findOrCreateForUser($user, $tenant);
+        $dashboardLayout = $this->dashboardLayoutRepository->findOrCreateForUser($user, $tenant);
 
         return $this->json([
             'success' => true,
-            'layout' => $layout->getLayoutConfig(),
-            'updated_at' => $layout->getUpdatedAt()->format('c'),
+            'layout' => $dashboardLayout->getLayoutConfig(),
+            'updated_at' => $dashboardLayout->getUpdatedAt()->format('c'),
         ]);
     }
 
     /**
      * Save dashboard layout configuration
      */
-    #[Route('/config', name: 'app_dashboard_layout_save', methods: ['POST'])]
+    #[Route('/dashboard-layout/config', name: 'app_dashboard_layout_save', methods: ['POST'])]
     public function saveLayout(Request $request): JsonResponse
     {
         $user = $this->getUser();
         $tenant = $this->tenantContext->getCurrentTenant();
 
-        if (!$user || !$tenant) {
+        if (!$user instanceof UserInterface || !$tenant instanceof Tenant) {
             return $this->json(['error' => 'User or tenant not found'], Response::HTTP_UNAUTHORIZED);
         }
 
@@ -61,50 +62,50 @@ class DashboardLayoutController extends AbstractController
             return $this->json(['error' => 'Invalid JSON data'], Response::HTTP_BAD_REQUEST);
         }
 
-        $layout = $this->dashboardLayoutRepository->findOrCreateForUser($user, $tenant);
-        $layout->setLayoutConfig($data);
+        $dashboardLayout = $this->dashboardLayoutRepository->findOrCreateForUser($user, $tenant);
+        $dashboardLayout->setLayoutConfig($data);
 
-        $this->dashboardLayoutRepository->saveLayout($layout);
+        $this->dashboardLayoutRepository->saveLayout($dashboardLayout);
 
         return $this->json([
             'success' => true,
             'message' => 'Dashboard layout saved successfully',
-            'updated_at' => $layout->getUpdatedAt()->format('c'),
+            'updated_at' => $dashboardLayout->getUpdatedAt()->format('c'),
         ]);
     }
 
     /**
      * Reset dashboard to defaults
      */
-    #[Route('/reset', name: 'app_dashboard_layout_reset', methods: ['POST'])]
+    #[Route('/dashboard-layout/reset', name: 'app_dashboard_layout_reset', methods: ['POST'])]
     public function resetLayout(): JsonResponse
     {
         $user = $this->getUser();
         $tenant = $this->tenantContext->getCurrentTenant();
 
-        if (!$user || !$tenant) {
+        if (!$user instanceof UserInterface || !$tenant instanceof Tenant) {
             return $this->json(['error' => 'User or tenant not found'], Response::HTTP_UNAUTHORIZED);
         }
 
-        $layout = $this->dashboardLayoutRepository->resetToDefaults($user, $tenant);
+        $dashboardLayout = $this->dashboardLayoutRepository->resetToDefaults($user, $tenant);
 
         return $this->json([
             'success' => true,
             'message' => 'Dashboard reset to defaults',
-            'layout' => $layout->getLayoutConfig(),
+            'layout' => $dashboardLayout->getLayoutConfig(),
         ]);
     }
 
     /**
      * Update single widget configuration
      */
-    #[Route('/widget/{widgetId}', name: 'app_dashboard_widget_update', methods: ['PATCH'])]
+    #[Route('/dashboard-layout/widget/{widgetId}', name: 'app_dashboard_widget_update', methods: ['PATCH'])]
     public function updateWidget(string $widgetId, Request $request): JsonResponse
     {
         $user = $this->getUser();
         $tenant = $this->tenantContext->getCurrentTenant();
 
-        if (!$user || !$tenant) {
+        if (!$user instanceof UserInterface || !$tenant instanceof Tenant) {
             return $this->json(['error' => 'User or tenant not found'], Response::HTTP_UNAUTHORIZED);
         }
 
@@ -114,15 +115,15 @@ class DashboardLayoutController extends AbstractController
             return $this->json(['error' => 'Invalid JSON data'], Response::HTTP_BAD_REQUEST);
         }
 
-        $layout = $this->dashboardLayoutRepository->findOrCreateForUser($user, $tenant);
-        $layout->updateWidgetConfig($widgetId, $data);
+        $dashboardLayout = $this->dashboardLayoutRepository->findOrCreateForUser($user, $tenant);
+        $dashboardLayout->updateWidgetConfig($widgetId, $data);
 
-        $this->dashboardLayoutRepository->saveLayout($layout);
+        $this->dashboardLayoutRepository->saveLayout($dashboardLayout);
 
         return $this->json([
             'success' => true,
             'message' => 'Widget configuration updated',
-            'widget' => $layout->getWidgetConfig($widgetId),
+            'widget' => $dashboardLayout->getWidgetConfig($widgetId),
         ]);
     }
 }

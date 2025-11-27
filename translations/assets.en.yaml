@@ -1,0 +1,9 @@
+asset:
+    field:
+        type: Type
+        status: Status
+        owner: Owner
+        location: Location
+        availability: Availability
+    message:
+        inherited_asset: 'Inherited Asset'

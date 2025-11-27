@@ -19,7 +19,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class CreateCrossFrameworkMappingsCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
@@ -31,57 +31,50 @@ class CreateCrossFrameworkMappingsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
-        $io->title('Creating Comprehensive Cross-Framework Compliance Mappings');
+        $symfonyStyle = new SymfonyStyle($input, $output);
+        $symfonyStyle->title('Creating Comprehensive Cross-Framework Compliance Mappings');
 
         if ($input->getOption('clear')) {
-            $io->section('Clearing existing mappings');
+            $symfonyStyle->section('Clearing existing mappings');
             $this->clearExistingMappings();
-            $io->success('Existing mappings cleared');
+            $symfonyStyle->success('Existing mappings cleared');
         }
 
         // Get all frameworks
         $frameworks = $this->entityManager->getRepository(ComplianceFramework::class)->findAll();
-        $iso27001Framework = null;
-
-        foreach ($frameworks as $framework) {
-            if ($framework->getCode() === 'ISO27001') {
-                $iso27001Framework = $framework;
-                break;
-            }
-        }
+        $iso27001Framework = array_find($frameworks, fn($framework): bool => $framework->getCode() === 'ISO27001');
 
         if (!$iso27001Framework) {
-            $io->error('ISO 27001 framework not found! Please run app:load-iso27001-requirements first.');
+            $symfonyStyle->error('ISO 27001 framework not found! Please run app:load-iso27001-requirements first.');
             return Command::FAILURE;
         }
 
-        $io->section('Step 1: Creating mappings from other frameworks TO ISO 27001');
-        $this->createMappingsToIso27001($iso27001Framework, $io);
+        $symfonyStyle->section('Step 1: Creating mappings from other frameworks TO ISO 27001');
+        $this->createMappingsToIso27001($iso27001Framework, $symfonyStyle);
 
-        $io->section('Step 2: Creating reverse mappings FROM ISO 27001 to other frameworks');
-        $this->createMappingsFromIso27001($iso27001Framework, $io);
+        $symfonyStyle->section('Step 2: Creating reverse mappings FROM ISO 27001 to other frameworks');
+        $this->createMappingsFromIso27001($iso27001Framework, $symfonyStyle);
 
-        $io->section('Step 3: Creating transitive mappings between frameworks (via ISO 27001)');
-        $this->createTransitiveMappings($iso27001Framework, $io);
+        $symfonyStyle->section('Step 3: Creating transitive mappings between frameworks (via ISO 27001)');
+        $this->createTransitiveMappings($symfonyStyle);
 
         $this->entityManager->flush();
 
         $totalMappings = $this->entityManager->getRepository(ComplianceMapping::class)->count([]);
-        $io->success(sprintf('Successfully created %d cross-framework compliance mappings!', $totalMappings));
-        $io->note('These mappings enable automatic data reuse across frameworks.');
+        $symfonyStyle->success(sprintf('Successfully created %d cross-framework compliance mappings!', $totalMappings));
+        $symfonyStyle->note('These mappings enable automatic data reuse across frameworks.');
 
         return Command::SUCCESS;
     }
 
     private function clearExistingMappings(): void
     {
-        $qb = $this->entityManager->createQueryBuilder();
-        $qb->delete(ComplianceMapping::class, 'm');
-        $qb->getQuery()->execute();
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $queryBuilder->delete(ComplianceMapping::class, 'm');
+        $queryBuilder->getQuery()->execute();
     }
 
-    private function createMappingsToIso27001(ComplianceFramework $iso27001Framework, SymfonyStyle $io): void
+    private function createMappingsToIso27001(ComplianceFramework $complianceFramework, SymfonyStyle $symfonyStyle): void
     {
         $frameworks = $this->entityManager->getRepository(ComplianceFramework::class)->findAll();
         $mappingCount = 0;
@@ -91,14 +84,17 @@ class CreateCrossFrameworkMappingsCommand extends Command
                 continue; // Skip ISO27001 itself
             }
 
-            $io->writeln(sprintf('  Processing %s...', $framework->getName()));
+            $symfonyStyle->writeln(sprintf('  Processing %s...', $framework->getName()));
 
             $requirements = $this->entityManager->getRepository(ComplianceRequirement::class)
                 ->findBy(['framework' => $framework]);
 
             foreach ($requirements as $requirement) {
                 $dataSourceMapping = $requirement->getDataSourceMapping();
-                if (empty($dataSourceMapping) || empty($dataSourceMapping['iso_controls'])) {
+                if (empty($dataSourceMapping)) {
+                    continue;
+                }
+                if (empty($dataSourceMapping['iso_controls'])) {
                     continue;
                 }
 
@@ -107,27 +103,27 @@ class CreateCrossFrameworkMappingsCommand extends Command
                     $isoControls = [$isoControls];
                 }
 
-                foreach ($isoControls as $controlId) {
+                foreach ($isoControls as $isoControl) {
                     // Normalize control ID (remove 'A.' prefix if present, then add it back)
-                    $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $controlId);
+                    $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $isoControl);
 
                     // Find corresponding ISO 27001 requirement
                     $isoRequirement = $this->entityManager->getRepository(ComplianceRequirement::class)
                         ->findOneBy([
-                            'framework' => $iso27001Framework,
+                            'framework' => $complianceFramework,
                             'requirementId' => $normalizedId
                         ]);
 
-                    if (!$isoRequirement) {
+                    if (!$isoRequirement instanceof ComplianceRequirement) {
                         // Try without the 'A.' prefix
                         $isoRequirement = $this->entityManager->getRepository(ComplianceRequirement::class)
                             ->findOneBy([
-                                'framework' => $iso27001Framework,
-                                'requirementId' => $controlId
+                                'framework' => $complianceFramework,
+                                'requirementId' => $isoControl
                             ]);
                     }
 
-                    if ($isoRequirement) {
+                    if ($isoRequirement instanceof ComplianceRequirement) {
                         // Calculate mapping strength based on number of controls mapped
                         $mappingPercentage = $this->calculateMappingPercentage($requirement, $isoControls);
                         $mappingType = $this->getMappingType($mappingPercentage);
@@ -152,31 +148,34 @@ class CreateCrossFrameworkMappingsCommand extends Command
                 }
             }
 
-            $io->writeln(sprintf('    Created %d mappings', $mappingCount));
+            $symfonyStyle->writeln(sprintf('    Created %d mappings', $mappingCount));
         }
     }
 
-    private function createMappingsFromIso27001(ComplianceFramework $iso27001Framework, SymfonyStyle $io): void
+    private function createMappingsFromIso27001(ComplianceFramework $complianceFramework, SymfonyStyle $symfonyStyle): void
     {
         $frameworks = $this->entityManager->getRepository(ComplianceFramework::class)->findAll();
         $mappingCount = 0;
 
         $isoRequirements = $this->entityManager->getRepository(ComplianceRequirement::class)
-            ->findBy(['framework' => $iso27001Framework]);
+            ->findBy(['framework' => $complianceFramework]);
 
         foreach ($isoRequirements as $isoRequirement) {
-            foreach ($frameworks as $targetFramework) {
-                if ($targetFramework->getCode() === 'ISO27001') {
+            foreach ($frameworks as $framework) {
+                if ($framework->getCode() === 'ISO27001') {
                     continue;
                 }
 
                 // Find all requirements in target framework that map to this ISO control
                 $targetRequirements = $this->entityManager->getRepository(ComplianceRequirement::class)
-                    ->findBy(['framework' => $targetFramework]);
+                    ->findBy(['framework' => $framework]);
 
                 foreach ($targetRequirements as $targetRequirement) {
                     $dataSourceMapping = $targetRequirement->getDataSourceMapping();
-                    if (empty($dataSourceMapping) || empty($dataSourceMapping['iso_controls'])) {
+                    if (empty($dataSourceMapping)) {
+                        continue;
+                    }
+                    if (empty($dataSourceMapping['iso_controls'])) {
                         continue;
                     }
 
@@ -188,9 +187,9 @@ class CreateCrossFrameworkMappingsCommand extends Command
                     // Check if this ISO requirement is in the target's mapped controls
                     $isoReqId = $isoRequirement->getRequirementId();
                     $matched = false;
-                    foreach ($isoControls as $controlId) {
-                        $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $controlId);
-                        if ($normalizedId === $isoReqId || $controlId === $isoReqId || str_replace('A.', '', $controlId) === str_replace('A.', '', $isoReqId)) {
+                    foreach ($isoControls as $isoControl) {
+                        $normalizedId = 'A.' . str_replace(['A.', 'A'], '', $isoControl);
+                        if ($normalizedId === $isoReqId || $isoControl === $isoReqId || str_replace('A.', '', $isoControl) === str_replace('A.', '', $isoReqId)) {
                             $matched = true;
                             break;
                         }
@@ -204,8 +203,8 @@ class CreateCrossFrameworkMappingsCommand extends Command
                                 'targetRequirement' => $targetRequirement
                             ]);
 
-                        if (!$existingMapping) {
-                            $mappingPercentage = $this->calculateReverseMappingPercentage($isoRequirement, count($isoControls));
+                        if (!$existingMapping instanceof ComplianceMapping) {
+                            $mappingPercentage = $this->calculateReverseMappingPercentage(count($isoControls));
                             $mappingType = $this->getMappingType($mappingPercentage);
 
                             $mapping = new ComplianceMapping();
@@ -214,11 +213,11 @@ class CreateCrossFrameworkMappingsCommand extends Command
                                 ->setMappingPercentage($mappingPercentage)
                                 ->setMappingType($mappingType)
                                 ->setBidirectional(true)
-                                ->setConfidence($this->determineConfidence($targetFramework->getCode()))
+                                ->setConfidence($this->determineConfidence($framework->getCode()))
                                 ->setMappingRationale(sprintf(
                                     'ISO 27001 %s supports %s requirement %s',
                                     $isoReqId,
-                                    $targetFramework->getCode(),
+                                    $framework->getCode(),
                                     $targetRequirement->getRequirementId()
                                 ));
 
@@ -230,10 +229,10 @@ class CreateCrossFrameworkMappingsCommand extends Command
             }
         }
 
-        $io->writeln(sprintf('  Created %d reverse mappings', $mappingCount));
+        $symfonyStyle->writeln(sprintf('  Created %d reverse mappings', $mappingCount));
     }
 
-    private function createTransitiveMappings(ComplianceFramework $iso27001Framework, SymfonyStyle $io): void
+    private function createTransitiveMappings(SymfonyStyle $symfonyStyle): void
     {
         $frameworks = $this->entityManager->getRepository(ComplianceFramework::class)->findAll();
         $mappingCount = 0;
@@ -241,24 +240,29 @@ class CreateCrossFrameworkMappingsCommand extends Command
         // Create transitive mappings: if Framework A -> ISO 27001 Control X, and Framework B -> ISO 27001 Control X
         // Then create Framework A <-> Framework B mapping
 
-        foreach ($frameworks as $sourceFramework) {
-            if ($sourceFramework->getCode() === 'ISO27001') {
+        foreach ($frameworks as $framework) {
+            if ($framework->getCode() === 'ISO27001') {
                 continue;
             }
 
             foreach ($frameworks as $targetFramework) {
-                if ($targetFramework->getCode() === 'ISO27001' || $sourceFramework->getId() === $targetFramework->getId()) {
+                if ($targetFramework->getCode() === 'ISO27001') {
                     continue;
                 }
-
-                $io->writeln(sprintf('  Processing %s <-> %s...', $sourceFramework->getCode(), $targetFramework->getCode()));
+                if ($framework->getId() === $targetFramework->getId()) {
+                    continue;
+                }
+                $symfonyStyle->writeln(sprintf('  Processing %s <-> %s...', $framework->getCode(), $targetFramework->getCode()));
 
                 $sourceRequirements = $this->entityManager->getRepository(ComplianceRequirement::class)
-                    ->findBy(['framework' => $sourceFramework]);
+                    ->findBy(['framework' => $framework]);
 
-                foreach ($sourceRequirements as $sourceReq) {
-                    $sourceMapping = $sourceReq->getDataSourceMapping();
-                    if (empty($sourceMapping) || empty($sourceMapping['iso_controls'])) {
+                foreach ($sourceRequirements as $sourceRequirement) {
+                    $sourceMapping = $sourceRequirement->getDataSourceMapping();
+                    if (empty($sourceMapping)) {
+                        continue;
+                    }
+                    if (empty($sourceMapping['iso_controls'])) {
                         continue;
                     }
 
@@ -270,9 +274,12 @@ class CreateCrossFrameworkMappingsCommand extends Command
                     $targetRequirements = $this->entityManager->getRepository(ComplianceRequirement::class)
                         ->findBy(['framework' => $targetFramework]);
 
-                    foreach ($targetRequirements as $targetReq) {
-                        $targetMapping = $targetReq->getDataSourceMapping();
-                        if (empty($targetMapping) || empty($targetMapping['iso_controls'])) {
+                    foreach ($targetRequirements as $targetRequirement) {
+                        $targetMapping = $targetRequirement->getDataSourceMapping();
+                        if (empty($targetMapping)) {
+                            continue;
+                        }
+                        if (empty($targetMapping['iso_controls'])) {
                             continue;
                         }
 
@@ -283,34 +290,34 @@ class CreateCrossFrameworkMappingsCommand extends Command
 
                         // Find common ISO controls
                         $commonControls = array_intersect(
-                            array_map(fn($c) => str_replace('A.', '', $c), $sourceIsoControls),
-                            array_map(fn($c) => str_replace('A.', '', $c), $targetIsoControls)
+                            array_map(fn($c): string|array => str_replace('A.', '', $c), $sourceIsoControls),
+                            array_map(fn($c): string|array => str_replace('A.', '', $c), $targetIsoControls)
                         );
 
-                        if (!empty($commonControls)) {
+                        if ($commonControls !== []) {
                             // Check if mapping already exists
                             $existingMapping = $this->entityManager->getRepository(ComplianceMapping::class)
                                 ->findOneBy([
-                                    'sourceRequirement' => $sourceReq,
-                                    'targetRequirement' => $targetReq
+                                    'sourceRequirement' => $sourceRequirement,
+                                    'targetRequirement' => $targetRequirement
                                 ]);
 
-                            if (!$existingMapping) {
+                            if (!$existingMapping instanceof ComplianceMapping) {
                                 // Calculate mapping strength based on overlap
                                 $overlapPercentage = (count($commonControls) / max(count($sourceIsoControls), count($targetIsoControls))) * 100;
                                 $mappingPercentage = min(100, (int)$overlapPercentage);
                                 $mappingType = $this->getMappingType($mappingPercentage);
 
                                 $mapping = new ComplianceMapping();
-                                $mapping->setSourceRequirement($sourceReq)
-                                    ->setTargetRequirement($targetReq)
+                                $mapping->setSourceRequirement($sourceRequirement)
+                                    ->setTargetRequirement($targetRequirement)
                                     ->setMappingPercentage($mappingPercentage)
                                     ->setMappingType($mappingType)
                                     ->setBidirectional(true)
                                     ->setConfidence('medium')
                                     ->setMappingRationale(sprintf(
                                         'Transitive mapping via shared ISO 27001 controls: %s',
-                                        implode(', ', array_map(fn($c) => 'A.' . $c, $commonControls))
+                                        implode(', ', array_map(fn($c): string => 'A.' . $c, $commonControls))
                                     ));
 
                                 $this->entityManager->persist($mapping);
@@ -322,10 +329,10 @@ class CreateCrossFrameworkMappingsCommand extends Command
             }
         }
 
-        $io->writeln(sprintf('  Created %d transitive mappings', $mappingCount));
+        $symfonyStyle->writeln(sprintf('  Created %d transitive mappings', $mappingCount));
     }
 
-    private function calculateMappingPercentage(ComplianceRequirement $requirement, array $isoControls): int
+    private function calculateMappingPercentage(ComplianceRequirement $complianceRequirement, array $isoControls): int
     {
         // Base mapping percentage on:
         // - Number of ISO controls mapped (more = higher specificity but potentially lower per-control coverage)
@@ -333,11 +340,11 @@ class CreateCrossFrameworkMappingsCommand extends Command
 
         $basePercentage = 85; // Default high confidence mapping
 
-        if ($requirement->getPriority() === 'critical') {
+        if ($complianceRequirement->getPriority() === 'critical') {
             $basePercentage = 95;
-        } elseif ($requirement->getPriority() === 'high') {
+        } elseif ($complianceRequirement->getPriority() === 'high') {
             $basePercentage = 90;
-        } elseif ($requirement->getPriority() === 'medium') {
+        } elseif ($complianceRequirement->getPriority() === 'medium') {
             $basePercentage = 80;
         } else {
             $basePercentage = 70;
@@ -356,7 +363,7 @@ class CreateCrossFrameworkMappingsCommand extends Command
         return $basePercentage;
     }
 
-    private function calculateReverseMappingPercentage(ComplianceRequirement $isoRequirement, int $targetControlCount): int
+    private function calculateReverseMappingPercentage(int $targetControlCount): int
     {
         // When mapping FROM ISO 27001 TO other frameworks
         // One ISO control might partially satisfy a broader requirement
@@ -374,9 +381,11 @@ class CreateCrossFrameworkMappingsCommand extends Command
     {
         if ($percentage >= 100) {
             return 'full';
-        } elseif ($percentage >= 75) {
+        }
+        if ($percentage >= 75) {
             return 'partial';
-        } else {
+        }
+        else {
             return 'weak';
         }
     }
@@ -385,12 +394,8 @@ class CreateCrossFrameworkMappingsCommand extends Command
     {
         // Confidence levels based on framework maturity and mapping quality
         $highConfidence = ['TISAX', 'NIS2', 'DORA', 'GDPR', 'NIST-CSF', 'CIS-CONTROLS', 'SOC2'];
-        $mediumConfidence = ['BSI', 'ISO27701', 'ISO22301'];
-
         if (in_array($frameworkCode, $highConfidence)) {
             return 'high';
-        } elseif (in_array($frameworkCode, $mediumConfidence)) {
-            return 'medium';
         }
 
         return 'medium';

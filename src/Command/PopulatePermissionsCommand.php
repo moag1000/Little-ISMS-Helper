@@ -35,10 +35,10 @@ class PopulatePermissionsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
         $force = $input->getOption('force');
 
-        $io->title('Populating System Permissions');
+        $symfonyStyle->title('Populating System Permissions');
 
         $allPermissions = PermissionVoter::getAllPermissions();
         $createdCount = 0;
@@ -46,7 +46,7 @@ class PopulatePermissionsCommand extends Command
         $skippedCount = 0;
 
         foreach ($allPermissions as $category => $permissions) {
-            $io->section(sprintf('Category: %s', ucfirst($category)));
+            $symfonyStyle->section(sprintf('Category: %s', ucfirst((string) $category)));
 
             foreach ($permissions as $name => $description) {
                 // Check if permission already exists
@@ -59,10 +59,10 @@ class PopulatePermissionsCommand extends Command
                         $permission->setCategory($category);
                         $this->entityManager->persist($permission);
                         $updatedCount++;
-                        $io->text(sprintf('  <comment>Updated:</comment> %s', $name));
+                        $symfonyStyle->text(sprintf('  <comment>Updated:</comment> %s', $name));
                     } else {
                         $skippedCount++;
-                        $io->text(sprintf('  <fg=gray>Skipped:</> %s (already exists)', $name));
+                        $symfonyStyle->text(sprintf('  <fg=gray>Skipped:</> %s (already exists)', $name));
                     }
                 } else {
                     // Create new permission
@@ -72,7 +72,7 @@ class PopulatePermissionsCommand extends Command
                     $permission->setCategory($category);
 
                     // Parse action from name (e.g., USER_EDIT -> edit)
-                    $parts = explode('_', $name);
+                    $parts = explode('_', (string) $name);
                     $action = strtolower(end($parts));
                     $permission->setAction($action);
 
@@ -80,7 +80,7 @@ class PopulatePermissionsCommand extends Command
 
                     $this->entityManager->persist($permission);
                     $createdCount++;
-                    $io->text(sprintf('  <info>Created:</info> %s', $name));
+                    $symfonyStyle->text(sprintf('  <info>Created:</info> %s', $name));
                 }
             }
         }
@@ -88,8 +88,8 @@ class PopulatePermissionsCommand extends Command
         // Flush all changes
         $this->entityManager->flush();
 
-        $io->newLine();
-        $io->success(sprintf(
+        $symfonyStyle->newLine();
+        $symfonyStyle->success(sprintf(
             'Permissions populated successfully! Created: %d, Updated: %d, Skipped: %d',
             $createdCount,
             $updatedCount,
@@ -97,7 +97,7 @@ class PopulatePermissionsCommand extends Command
         ));
 
         if ($skippedCount > 0 && !$force) {
-            $io->note('Use --force to update existing permissions');
+            $symfonyStyle->note('Use --force to update existing permissions');
         }
 
         return Command::SUCCESS;

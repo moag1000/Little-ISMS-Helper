@@ -2,6 +2,10 @@
 
 namespace App\Controller;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+use App\Entity\Tenant;
+use DateTimeImmutable;
+use DateTime;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
@@ -10,25 +14,22 @@ use App\Service\DashboardStatisticsService;
 use App\Service\ISOComplianceIntelligenceService;
 use App\Service\RiskReviewService;
 use App\Service\TenantContext;
-use App\Service\WorkflowService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 class HomeController extends AbstractController
 {
     public function __construct(
-        private readonly DashboardStatisticsService $statisticsService,
-        private readonly ISOComplianceIntelligenceService $isoComplianceService,
+        private readonly DashboardStatisticsService $dashboardStatisticsService,
+        private readonly ISOComplianceIntelligenceService $isoComplianceIntelligenceService,
         private readonly AssetRepository $assetRepository,
         private readonly RiskRepository $riskRepository,
         private readonly RiskReviewService $riskReviewService,
-        private readonly RiskTreatmentPlanRepository $treatmentPlanRepository,
+        private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository,
         private readonly WorkflowInstanceRepository $workflowInstanceRepository,
-        private readonly WorkflowService $workflowService,
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator
     ) {}
@@ -41,7 +42,7 @@ class HomeController extends AbstractController
             ?? 'de';
 
         // Not authenticated → redirect to login (without locale)
-        if (!$this->getUser()) {
+        if (!$this->getUser() instanceof UserInterface) {
             return $this->redirectToRoute('app_login');
         }
 
@@ -53,7 +54,7 @@ class HomeController extends AbstractController
     public function dashboard(): Response
     {
         // Get all statistics from service (better separation of concerns)
-        $stats = $this->statisticsService->getDashboardStatistics();
+        $stats = $this->dashboardStatisticsService->getDashboardStatistics();
 
         // Build KPIs array for template
         $kpis = [
@@ -87,7 +88,7 @@ class HomeController extends AbstractController
         $activities = $this->getRecentActivities();
 
         // ISO Compliance Dashboard - zusätzliche Compliance-Informationen
-        $isoCompliance = $this->isoComplianceService->getComplianceDashboard();
+        $isoCompliance = $this->isoComplianceIntelligenceService->getComplianceDashboard();
 
         // Risk Review Data (ISO 27001:2022 Clause 6.1.3.d)
         $tenant = $this->tenantContext->getCurrentTenant();
@@ -98,19 +99,19 @@ class HomeController extends AbstractController
         }
 
         // If no tenant (SUPER_ADMIN case), set review data to empty
-        $overdueReviews = $tenant ? $this->riskReviewService->getOverdueReviews($tenant) : [];
-        $upcomingReviews = $tenant ? $this->riskReviewService->getUpcomingReviews($tenant, 30) : [];
+        $overdueReviews = $tenant instanceof Tenant ? $this->riskReviewService->getOverdueReviews($tenant) : [];
+        $upcomingReviews = $tenant instanceof Tenant ? $this->riskReviewService->getUpcomingReviews($tenant, 30) : [];
 
         // Treatment Plan Monitoring (ISO 27001:2022 Clause 6.1.3 - Priority 2.4)
-        $overdueTreatmentPlans = $tenant ? $this->treatmentPlanRepository->findOverdueForTenant($tenant) : [];
-        $approachingTreatmentPlans = $tenant ? $this->treatmentPlanRepository->findDueWithinDays(7, $tenant) : [];
+        $overdueTreatmentPlans = $tenant instanceof Tenant ? $this->riskTreatmentPlanRepository->findOverdueForTenant($tenant) : [];
+        $approachingTreatmentPlans = $tenant instanceof Tenant ? $this->riskTreatmentPlanRepository->findDueWithinDays(7, $tenant) : [];
 
         // Workflow Approvals (UX High Priority #1 - Single-pane visibility)
         $user = $this->getUser();
-        $pendingWorkflows = $user ? $this->workflowInstanceRepository->findPendingForUser($user) : [];
+        $pendingWorkflows = $user instanceof UserInterface ? $this->workflowInstanceRepository->findPendingForUser($user) : [];
         $overdueWorkflows = $this->workflowInstanceRepository->findOverdue();
         $upcomingDeadlines = $this->workflowInstanceRepository->findUpcomingDeadlines(
-            new \DateTimeImmutable('+24 hours')
+            new DateTimeImmutable('+24 hours')
         );
 
         return $this->render('home/dashboard.html.twig', [
@@ -134,10 +135,10 @@ class HomeController extends AbstractController
 
         // Beispiel-Aktivitäten (später durch echte Daten ersetzen)
         $recentAssets = array_slice($this->assetRepository->findActiveAssets(), 0, 3);
-        foreach ($recentAssets as $asset) {
-            $createdAt = $asset->getCreatedAt();
+        foreach ($recentAssets as $recentAsset) {
+            $createdAt = $recentAsset->getCreatedAt();
             if ($createdAt) {
-                $diff = $createdAt->diff(new \DateTime());
+                $diff = $createdAt->diff(new DateTime());
                 $minutes = $diff->i;
                 $hours = $diff->h;
                 $days = $diff->d;
@@ -157,17 +158,17 @@ class HomeController extends AbstractController
                 'icon' => 'bi-server',
                 'color' => 'primary',
                 'title' => $this->translator->trans('dashboard.activity.asset_added', [], 'dashboard'),
-                'description' => $asset->getName(),
+                'description' => $recentAsset->getName(),
                 'time' => $timeAgo,
-                'user' => $asset->getOwner() ?? $this->translator->trans('dashboard.activity.system', [], 'dashboard'),
+                'user' => $recentAsset->getOwner() ?? $this->translator->trans('dashboard.activity.system', [], 'dashboard'),
             ];
         }
 
         $recentRisks = array_slice($this->riskRepository->findAll(), 0, 3);
-        foreach ($recentRisks as $risk) {
-            $createdAt = $risk->getCreatedAt();
+        foreach ($recentRisks as $recentRisk) {
+            $createdAt = $recentRisk->getCreatedAt();
             if ($createdAt) {
-                $diff = $createdAt->diff(new \DateTime());
+                $diff = $createdAt->diff(new DateTime());
                 $minutes = $diff->i;
                 $hours = $diff->h;
                 $days = $diff->d;
@@ -187,16 +188,14 @@ class HomeController extends AbstractController
                 'icon' => 'bi-exclamation-triangle',
                 'color' => 'warning',
                 'title' => $this->translator->trans('dashboard.activity.risk_identified', [], 'dashboard'),
-                'description' => $risk->getDescription() ?? $this->translator->trans('dashboard.activity.new_risk', [], 'dashboard'),
+                'description' => $recentRisk->getDescription() ?? $this->translator->trans('dashboard.activity.new_risk', [], 'dashboard'),
                 'time' => $timeAgo,
                 'user' => $this->translator->trans('dashboard.activity.security_team', [], 'dashboard'),
             ];
         }
 
         // Nach Zeit sortieren (neueste zuerst)
-        usort($activities, function($a, $b) {
-            return strcmp($b['time'], $a['time']);
-        });
+        usort($activities, fn(array $a, array $b): int => strcmp((string) $b['time'], (string) $a['time']));
 
         return array_slice($activities, 0, 10);
     }

@@ -49,9 +49,7 @@ class PatchType extends AbstractType
             ->add('vulnerability', EntityType::class, [
                 'label' => 'patch.field.vulnerability',
                 'class' => Vulnerability::class,
-                'choice_label' => function(Vulnerability $vuln) {
-                    return ($vuln->getCveId() ?? 'N/A') . ' - ' . $vuln->getTitle();
-                },
+                'choice_label' => fn(Vulnerability $vulnerability): string => ($vulnerability->getCveId() ?? 'N/A') . ' - ' . $vulnerability->getTitle(),
                 'placeholder' => 'patch.placeholder.vulnerability',
                 'required' => false,
                 'help' => 'patch.help.vulnerability',

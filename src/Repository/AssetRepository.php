@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Tenant;
 use App\Entity\Asset;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -59,7 +60,7 @@ class AssetRepository extends ServiceEntityRepository
     /**
      * Find all assets for a tenant (own assets only)
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find assets for
+     * @param Tenant $tenant The tenant to find assets for
      * @return Asset[] Array of Asset entities
      */
     public function findByTenant($tenant): array
@@ -76,8 +77,8 @@ class AssetRepository extends ServiceEntityRepository
      * Find assets by tenant including all ancestors (for hierarchical governance)
      * This allows viewing inherited assets from parent companies, grandparents, etc.
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find assets for
-     * @param \App\Entity\Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
+     * @param Tenant $tenant The tenant to find assets for
+     * @param Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
      * @return Asset[] Array of Asset entities (own + inherited from all ancestors)
      */
     public function findByTenantIncludingParent($tenant, $parentTenant = null): array
@@ -85,17 +86,17 @@ class AssetRepository extends ServiceEntityRepository
         // Get all ancestors (parent, grandparent, great-grandparent, etc.)
         $ancestors = $tenant->getAllAncestors();
 
-        $qb = $this->createQueryBuilder('a')
+        $queryBuilder = $this->createQueryBuilder('a')
             ->where('a.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
         // Include assets from all ancestors in the hierarchy
         if (!empty($ancestors)) {
-            $qb->orWhere('a.tenant IN (:ancestors)')
+            $queryBuilder->orWhere('a.tenant IN (:ancestors)')
                ->setParameter('ancestors', $ancestors);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('a.name', 'ASC')
             ->getQuery()
             ->getResult();
@@ -104,7 +105,7 @@ class AssetRepository extends ServiceEntityRepository
     /**
      * Get asset statistics for a specific tenant
      *
-     * @param \App\Entity\Tenant $tenant The tenant
+     * @param Tenant $tenant The tenant
      * @return array{total: int, active: int, inactive: int} Asset statistics
      */
     public function getAssetStatsByTenant($tenant): array
@@ -135,7 +136,7 @@ class AssetRepository extends ServiceEntityRepository
     /**
      * Find active assets for a specific tenant
      *
-     * @param \App\Entity\Tenant $tenant The tenant
+     * @param Tenant $tenant The tenant
      * @return Asset[] Array of active asset entities
      */
     public function findActiveAssetsByTenant($tenant): array
@@ -154,7 +155,7 @@ class AssetRepository extends ServiceEntityRepository
      * Find assets by tenant including all subsidiaries (for corporate parent view)
      * This allows viewing aggregated assets from all subsidiary companies
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find assets for
+     * @param Tenant $tenant The tenant to find assets for
      * @return Asset[] Array of Asset entities (own + from all subsidiaries)
      */
     public function findByTenantIncludingSubsidiaries($tenant): array
@@ -162,17 +163,17 @@ class AssetRepository extends ServiceEntityRepository
         // Get all subsidiaries recursively
         $subsidiaries = $tenant->getAllSubsidiaries();
 
-        $qb = $this->createQueryBuilder('a')
+        $queryBuilder = $this->createQueryBuilder('a')
             ->where('a.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
         // Include assets from all subsidiaries in the hierarchy
         if (!empty($subsidiaries)) {
-            $qb->orWhere('a.tenant IN (:subsidiaries)')
+            $queryBuilder->orWhere('a.tenant IN (:subsidiaries)')
                ->setParameter('subsidiaries', $subsidiaries);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('a.name', 'ASC')
             ->getQuery()
             ->getResult();

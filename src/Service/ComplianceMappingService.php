@@ -19,21 +19,21 @@ use App\Repository\InternalAuditRepository;
 class ComplianceMappingService
 {
     public function __construct(
-        private ControlRepository $controlRepository,
-        private AssetRepository $assetRepository,
-        private BusinessProcessRepository $businessProcessRepository,
-        private IncidentRepository $incidentRepository,
-        private InternalAuditRepository $internalAuditRepository,
-        private ComplianceRequirementFulfillmentService $fulfillmentService,
-        private TenantContext $tenantContext
+        private readonly ControlRepository $controlRepository,
+        private readonly AssetRepository $assetRepository,
+        private readonly BusinessProcessRepository $businessProcessRepository,
+        private readonly IncidentRepository $incidentRepository,
+        private readonly InternalAuditRepository $internalAuditRepository,
+        private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
+        private readonly TenantContext $tenantContext
     ) {}
 
     /**
      * Map ISO 27001 controls to a requirement automatically
      */
-    public function mapControlsToRequirement(ComplianceRequirement $requirement): array
+    public function mapControlsToRequirement(ComplianceRequirement $complianceRequirement): array
     {
-        $mapping = $requirement->getDataSourceMapping() ?? [];
+        $mapping = $complianceRequirement->getDataSourceMapping() ?? [];
         $mappedControls = [];
 
         // Check if there are explicit ISO control mappings
@@ -42,7 +42,7 @@ class ComplianceMappingService
                 $controls = $this->controlRepository->findBy(['controlId' => $controlId]);
                 foreach ($controls as $control) {
                     $mappedControls[] = $control;
-                    $requirement->addMappedControl($control);
+                    $complianceRequirement->addMappedControl($control);
                 }
             }
         }
@@ -57,24 +57,24 @@ class ComplianceMappingService
      * Architecture: Tenant-aware analysis
      * - Returns tenant-specific fulfillment percentage from ComplianceRequirementFulfillment
      */
-    public function getDataReuseAnalysis(ComplianceRequirement $requirement): array
+    public function getDataReuseAnalysis(ComplianceRequirement $complianceRequirement): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+        $fulfillment = $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $complianceRequirement);
 
         $analysis = [
-            'requirement_id' => $requirement->getRequirementId(),
-            'title' => $requirement->getTitle(),
+            'requirement_id' => $complianceRequirement->getRequirementId(),
+            'title' => $complianceRequirement->getTitle(),
             'sources' => [],
             'confidence' => 'unknown',
             'fulfillment_percentage' => $fulfillment->getFulfillmentPercentage(),
         ];
 
-        $mapping = $requirement->getDataSourceMapping() ?? [];
+        $mapping = $complianceRequirement->getDataSourceMapping() ?? [];
 
         // Analyze mapped controls
-        if (!$requirement->getMappedControls()->isEmpty()) {
-            $controlsAnalysis = $this->analyzeControlsContribution($requirement);
+        if (!$complianceRequirement->getMappedControls()->isEmpty()) {
+            $controlsAnalysis = $this->analyzeControlsContribution($complianceRequirement);
             $analysis['sources']['controls'] = $controlsAnalysis;
         }
 
@@ -111,33 +111,33 @@ class ComplianceMappingService
     /**
      * Analyze how controls contribute to requirement fulfillment
      */
-    private function analyzeControlsContribution(ComplianceRequirement $requirement): array
+    private function analyzeControlsContribution(ComplianceRequirement $complianceRequirement): array
     {
-        $controls = $requirement->getMappedControls();
+        $mappedControls = $complianceRequirement->getMappedControls();
         $totalImplementation = 0;
         $implementedCount = 0;
         $controlDetails = [];
 
-        foreach ($controls as $control) {
-            $implementation = $control->getImplementationPercentage() ?? 0;
+        foreach ($mappedControls as $mappedControl) {
+            $implementation = $mappedControl->getImplementationPercentage() ?? 0;
             $totalImplementation += $implementation;
 
-            if ($control->getImplementationStatus() === 'implemented') {
+            if ($mappedControl->getImplementationStatus() === 'implemented') {
                 $implementedCount++;
             }
 
             $controlDetails[] = [
-                'id' => $control->getControlId(),
-                'name' => $control->getName(),
-                'status' => $control->getImplementationStatus(),
+                'id' => $mappedControl->getControlId(),
+                'name' => $mappedControl->getName(),
+                'status' => $mappedControl->getImplementationStatus(),
                 'implementation' => $implementation,
             ];
         }
 
-        $avgImplementation = $controls->count() > 0 ? $totalImplementation / $controls->count() : 0;
+        $avgImplementation = $mappedControls->count() > 0 ? $totalImplementation / $mappedControls->count() : 0;
 
         return [
-            'count' => $controls->count(),
+            'count' => $mappedControls->count(),
             'implemented' => $implementedCount,
             'average_implementation' => round($avgImplementation, 2),
             'controls' => $controlDetails,
@@ -153,8 +153,8 @@ class ComplianceMappingService
         $totalAssets = $this->assetRepository->count([]);
         $typedAssets = 0;
 
-        foreach ($assetTypes as $type) {
-            $typedAssets += $this->assetRepository->count(['assetType' => $type]);
+        foreach ($assetTypes as $assetType) {
+            $typedAssets += $this->assetRepository->count(['assetType' => $assetType]);
         }
 
         return [
@@ -218,7 +218,7 @@ class ComplianceMappingService
      */
     private function calculateConfidence(array $sources): string
     {
-        if (empty($sources)) {
+        if ($sources === []) {
             return 'low';
         }
 
@@ -232,12 +232,14 @@ class ComplianceMappingService
         }
 
         $ratio = $contributingSources / $totalSources;
-
         if ($ratio >= 0.8) {
             return 'high';
-        } elseif ($ratio >= 0.5) {
+        }
+
+        if ($ratio >= 0.5) {
             return 'medium';
-        } else {
+        }
+        else {
             return 'low';
         }
     }
@@ -269,9 +271,9 @@ class ComplianceMappingService
     /**
      * Calculate potential time savings from data reuse
      */
-    public function calculateDataReuseValue(ComplianceRequirement $requirement): array
+    public function calculateDataReuseValue(ComplianceRequirement $complianceRequirement): array
     {
-        $analysis = $this->getDataReuseAnalysis($requirement);
+        $analysis = $this->getDataReuseAnalysis($complianceRequirement);
         $sourceCount = count($analysis['sources']);
 
         // Estimate hours saved per data source reused (conservative estimate)
@@ -279,7 +281,7 @@ class ComplianceMappingService
         $hoursSaved = $sourceCount * $hoursPerSource;
 
         return [
-            'requirement_id' => $requirement->getRequirementId(),
+            'requirement_id' => $complianceRequirement->getRequirementId(),
             'data_sources_reused' => $sourceCount,
             'estimated_hours_saved' => $hoursSaved,
             'confidence' => $analysis['confidence'],

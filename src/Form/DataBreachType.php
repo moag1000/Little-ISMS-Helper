@@ -47,9 +47,7 @@ class DataBreachType extends AbstractType
             ->add('incident', EntityType::class, [
                 'label' => 'data_breach.form.incident',
                 'class' => Incident::class,
-                'choice_label' => function (Incident $incident) {
-                    return sprintf('%s - %s', $incident->getIncidentNumber(), $incident->getTitle());
-                },
+                'choice_label' => fn(Incident $incident): string => sprintf('%s - %s', $incident->getIncidentNumber(), $incident->getTitle()),
                 'placeholder' => 'data_breach.placeholder.incident',
                 'required' => false,
                 'attr' => ['class' => 'form-select select2'],
@@ -271,9 +269,7 @@ class DataBreachType extends AbstractType
             ->add('dataProtectionOfficer', EntityType::class, [
                 'label' => 'data_breach.form.data_protection_officer',
                 'class' => User::class,
-                'choice_label' => function (User $user) {
-                    return sprintf('%s %s (%s)', $user->getFirstName(), $user->getLastName(), $user->getEmail());
-                },
+                'choice_label' => fn(User $user): string => sprintf('%s %s (%s)', $user->getFirstName(), $user->getLastName(), $user->getEmail()),
                 'placeholder' => 'data_breach.placeholder.data_protection_officer',
                 'required' => false,
                 'attr' => ['class' => 'form-select select2'],

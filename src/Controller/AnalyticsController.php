@@ -2,6 +2,10 @@
 
 namespace App\Controller;
 
+use DateTime;
+use App\Entity\Risk;
+use App\Entity\Asset;
+use App\Entity\Incident;
 use App\Repository\AssetRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
@@ -12,23 +16,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/analytics')]
 class AnalyticsController extends AbstractController
 {
     public function __construct(
-        private AssetRepository $assetRepository,
-        private RiskRepository $riskRepository,
-        private IncidentRepository $incidentRepository,
-        private ControlRepository $controlRepository
+        private readonly AssetRepository $assetRepository,
+        private readonly RiskRepository $riskRepository,
+        private readonly IncidentRepository $incidentRepository,
+        private readonly ControlRepository $controlRepository
     ) {}
-
-    #[Route('', name: 'app_analytics_dashboard')]
+    #[Route('/analytics', name: 'app_analytics_dashboard')]
     public function dashboard(): Response
     {
         return $this->render('analytics/dashboard.html.twig');
     }
-
-    #[Route('/api/heat-map', name: 'app_analytics_heat_map_data')]
+    #[Route('/analytics/api/heat-map', name: 'app_analytics_heat_map_data')]
     public function getHeatMapData(): JsonResponse
     {
         $risks = $this->riskRepository->findAll();
@@ -76,8 +77,7 @@ class AnalyticsController extends AbstractController
             'total_risks' => count($risks)
         ]);
     }
-
-    #[Route('/api/compliance-radar', name: 'app_analytics_compliance_radar_data')]
+    #[Route('/analytics/api/compliance-radar', name: 'app_analytics_compliance_radar_data')]
     public function getComplianceRadarData(): JsonResponse
     {
         $controls = $this->controlRepository->findAll();
@@ -115,17 +115,14 @@ class AnalyticsController extends AbstractController
         }
 
         // Sort by annex number
-        usort($radarData, function($a, $b) {
-            return strcmp($a['label'], $b['label']);
-        });
+        usort($radarData, fn(array $a, array $b): int => strcmp((string) $a['label'], (string) $b['label']));
 
         return new JsonResponse([
             'data' => $radarData,
             'overall_compliance' => $this->calculateOverallCompliance($radarData)
         ]);
     }
-
-    #[Route('/api/trends', name: 'app_analytics_trends_data')]
+    #[Route('/analytics/api/trends', name: 'app_analytics_trends_data')]
     public function getTrendsData(Request $request): JsonResponse
     {
         $period = $request->query->get('period', '12'); // months
@@ -145,8 +142,7 @@ class AnalyticsController extends AbstractController
             'incidents' => $incidentTrend
         ]);
     }
-
-    #[Route('/api/export/{type}', name: 'app_analytics_export')]
+    #[Route('/analytics/api/export/{type}', name: 'app_analytics_export')]
     public function exportData(Request $request, string $type): Response
     {
         $data = [];
@@ -175,9 +171,7 @@ class AnalyticsController extends AbstractController
 
         return $response;
     }
-
     // Helper methods
-
     private function getRiskColor(int $score): string
     {
         if ($score >= 15) {
@@ -190,7 +184,6 @@ class AnalyticsController extends AbstractController
             return '#d1fae5'; // Low (1-3) - Light Green
         }
     }
-
     private function extractAnnex(string $controlId): string
     {
         // Extract annex from control ID (e.g., "A.5.1" -> "A.5")
@@ -199,10 +192,9 @@ class AnalyticsController extends AbstractController
         }
         return 'Other';
     }
-
     private function calculateOverallCompliance(array $radarData): float
     {
-        if (empty($radarData)) {
+        if ($radarData === []) {
             return 0;
         }
 
@@ -213,11 +205,10 @@ class AnalyticsController extends AbstractController
 
         return round($total / count($radarData), 1);
     }
-
     private function getRiskTrend(int $months): array
     {
         $trend = [];
-        $now = new \DateTime();
+        $now = new DateTime();
 
         for ($i = $months - 1; $i >= 0; $i--) {
             $date = (clone $now)->modify("-{$i} months");
@@ -225,15 +216,13 @@ class AnalyticsController extends AbstractController
             $monthEnd = (clone $date)->modify('last day of this month')->setTime(23, 59, 59);
 
             $risks = $this->riskRepository->findAll();
-            $monthRisks = array_filter($risks, function($risk) use ($monthEnd) {
-                return $risk->getCreatedAt() <= $monthEnd;
-            });
+            $monthRisks = array_filter($risks, fn(Risk $risk): bool => $risk->getCreatedAt() <= $monthEnd);
 
             // Count by level (using thresholds: 15/8/4)
-            $low = count(array_filter($monthRisks, fn($r) => $r->getInherentRiskLevel() < 4));
-            $medium = count(array_filter($monthRisks, fn($r) => $r->getInherentRiskLevel() >= 4 && $r->getInherentRiskLevel() < 8));
-            $high = count(array_filter($monthRisks, fn($r) => $r->getInherentRiskLevel() >= 8 && $r->getInherentRiskLevel() < 15));
-            $critical = count(array_filter($monthRisks, fn($r) => $r->getInherentRiskLevel() >= 15));
+            $low = count(array_filter($monthRisks, fn(Risk $risk): bool => $risk->getInherentRiskLevel() < 4));
+            $medium = count(array_filter($monthRisks, fn(Risk $risk): bool => $risk->getInherentRiskLevel() >= 4 && $risk->getInherentRiskLevel() < 8));
+            $high = count(array_filter($monthRisks, fn(Risk $risk): bool => $risk->getInherentRiskLevel() >= 8 && $risk->getInherentRiskLevel() < 15));
+            $critical = count(array_filter($monthRisks, fn(Risk $risk): bool => $risk->getInherentRiskLevel() >= 15));
 
             $trend[] = [
                 'month' => $date->format('M Y'),
@@ -247,20 +236,17 @@ class AnalyticsController extends AbstractController
 
         return $trend;
     }
-
     private function getAssetTrend(int $months): array
     {
         $trend = [];
-        $now = new \DateTime();
+        $now = new DateTime();
 
         for ($i = $months - 1; $i >= 0; $i--) {
             $date = (clone $now)->modify("-{$i} months");
             $monthEnd = (clone $date)->modify('last day of this month')->setTime(23, 59, 59);
 
             $assets = $this->assetRepository->findAll();
-            $monthAssets = array_filter($assets, function($asset) use ($monthEnd) {
-                return $asset->getCreatedAt() <= $monthEnd;
-            });
+            $monthAssets = array_filter($assets, fn(Asset $asset): bool => $asset->getCreatedAt() <= $monthEnd);
 
             $trend[] = [
                 'month' => $date->format('M Y'),
@@ -270,11 +256,10 @@ class AnalyticsController extends AbstractController
 
         return $trend;
     }
-
     private function getIncidentTrend(int $months): array
     {
         $trend = [];
-        $now = new \DateTime();
+        $now = new DateTime();
 
         for ($i = $months - 1; $i >= 0; $i--) {
             $date = (clone $now)->modify("-{$i} months");
@@ -282,16 +267,16 @@ class AnalyticsController extends AbstractController
             $monthEnd = (clone $date)->modify('last day of this month')->setTime(23, 59, 59);
 
             $incidents = $this->incidentRepository->findAll();
-            $monthIncidents = array_filter($incidents, function($incident) use ($monthStart, $monthEnd) {
+            $monthIncidents = array_filter($incidents, function(Incident $incident) use ($monthStart, $monthEnd): bool {
                 $occuredAt = $incident->getOccurredAt();
                 return $occuredAt >= $monthStart && $occuredAt <= $monthEnd;
             });
 
             // Count by severity
-            $low = count(array_filter($monthIncidents, fn($i) => $i->getSeverity() === 'low'));
-            $medium = count(array_filter($monthIncidents, fn($i) => $i->getSeverity() === 'medium'));
-            $high = count(array_filter($monthIncidents, fn($i) => $i->getSeverity() === 'high'));
-            $critical = count(array_filter($monthIncidents, fn($i) => $i->getSeverity() === 'critical'));
+            $low = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === 'low'));
+            $medium = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === 'medium'));
+            $high = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === 'high'));
+            $critical = count(array_filter($monthIncidents, fn(Incident $incident): bool => $incident->getSeverity() === 'critical'));
 
             $trend[] = [
                 'month' => $date->format('M Y'),
@@ -305,7 +290,6 @@ class AnalyticsController extends AbstractController
 
         return $trend;
     }
-
     private function exportRisks(): array
     {
         $risks = $this->riskRepository->findAll();
@@ -327,7 +311,6 @@ class AnalyticsController extends AbstractController
 
         return $data;
     }
-
     private function exportAssets(): array
     {
         $assets = $this->assetRepository->findAll();
@@ -348,7 +331,6 @@ class AnalyticsController extends AbstractController
 
         return $data;
     }
-
     private function exportCompliance(): array
     {
         $controls = $this->controlRepository->findAll();
@@ -367,13 +349,12 @@ class AnalyticsController extends AbstractController
 
         return $data;
     }
-
     private function generateCSV(array $data): string
     {
         $output = fopen('php://temp', 'r+');
 
         foreach ($data as $row) {
-            fputcsv($output, $row);
+            fputcsv($output, $row, escape: '\\');
         }
 
         rewind($output);

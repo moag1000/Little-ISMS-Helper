@@ -2,6 +2,10 @@
 
 namespace App\Controller;
 
+use Exception;
+use Throwable;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
 use App\Repository\AuditLogRepository;
 use App\Service\HealthAutoFixService;
 use Doctrine\DBAL\Connection;
@@ -13,10 +17,9 @@ use Symfony\Component\HttpKernel\Kernel;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/admin/monitoring')]
 class MonitoringController extends AbstractController
 {
-    #[Route('/health', name: 'monitoring_health', methods: ['GET'])]
+    #[Route('/admin/monitoring/health', name: 'monitoring_health', methods: ['GET'])]
     #[IsGranted('MONITORING_VIEW')]
     public function health(Connection $connection): Response
     {
@@ -31,7 +34,7 @@ class MonitoringController extends AbstractController
 
             // Get platform class name (DBAL 4.x compatible)
             $platform = $connection->getDatabasePlatform();
-            $platformClass = get_class($platform);
+            $platformClass = $platform::class;
             $platformName = substr($platformClass, strrpos($platformClass, '\\') + 1);
 
             $healthChecks['database'] = [
@@ -39,7 +42,7 @@ class MonitoringController extends AbstractController
                 'response_time' => $dbTime . ' ms',
                 'driver' => $platformName,
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $healthChecks['database'] = [
                 'status' => 'error',
                 'error' => $e->getMessage(),
@@ -66,16 +69,16 @@ class MonitoringController extends AbstractController
         $missingExtensions = [];
         $loadedExtensions = [];
 
-        foreach ($requiredExtensions as $ext) {
-            if (extension_loaded($ext)) {
-                $loadedExtensions[] = $ext;
+        foreach ($requiredExtensions as $requiredExtension) {
+            if (extension_loaded($requiredExtension)) {
+                $loadedExtensions[] = $requiredExtension;
             } else {
-                $missingExtensions[] = $ext;
+                $missingExtensions[] = $requiredExtension;
             }
         }
 
         $healthChecks['php'] = [
-            'status' => empty($missingExtensions) ? 'healthy' : 'error',
+            'status' => $missingExtensions === [] ? 'healthy' : 'error',
             'version' => PHP_VERSION,
             'memory_limit' => ini_get('memory_limit'),
             'max_execution_time' => ini_get('max_execution_time'),
@@ -125,7 +128,7 @@ class MonitoringController extends AbstractController
         }
 
         $healthChecks['permissions'] = [
-            'status' => empty($permissionIssues) ? 'healthy' : 'error',
+            'status' => $permissionIssues === [] ? 'healthy' : 'error',
             'var_writable' => is_writable($varDir),
             'uploads_writable' => is_dir($uploadsDir) ? is_writable($uploadsDir) : null,
             'issues' => $permissionIssues,
@@ -160,14 +163,14 @@ class MonitoringController extends AbstractController
         $requiredEnvVars = ['APP_ENV', 'APP_SECRET', 'DATABASE_URL'];
         $missingEnvVars = [];
 
-        foreach ($requiredEnvVars as $var) {
-            if (empty($_ENV[$var]) && empty($_SERVER[$var])) {
-                $missingEnvVars[] = $var;
+        foreach ($requiredEnvVars as $requiredEnvVar) {
+            if (empty($_ENV[$requiredEnvVar]) && empty($_SERVER[$requiredEnvVar])) {
+                $missingEnvVars[] = $requiredEnvVar;
             }
         }
 
         $healthChecks['environment'] = [
-            'status' => empty($missingEnvVars) ? 'healthy' : 'error',
+            'status' => $missingEnvVars === [] ? 'healthy' : 'error',
             'env_file_exists' => file_exists($envFile),
             'env_local_exists' => file_exists($envLocalFile),
             'missing_vars' => $missingEnvVars,
@@ -179,7 +182,7 @@ class MonitoringController extends AbstractController
             try {
                 $opcacheStatus = @opcache_get_status(false);
                 $opcacheEnabled = $opcacheStatus !== false && isset($opcacheStatus['opcache_enabled']) && $opcacheStatus['opcache_enabled'];
-            } catch (\Exception $e) {
+            } catch (Exception) {
                 // OPcache not available
                 $opcacheEnabled = false;
             }
@@ -198,7 +201,7 @@ class MonitoringController extends AbstractController
         }
 
         $healthChecks['php_config'] = [
-            'status' => empty($configIssues) ? 'healthy' : 'warning',
+            'status' => $configIssues === [] ? 'healthy' : 'warning',
             'opcache_enabled' => $opcacheEnabled,
             'memory_limit' => $memoryLimit,
             'memory_sufficient' => $memoryLimitBytes >= $recommendedMemory || $memoryLimitBytes === -1,
@@ -207,14 +210,14 @@ class MonitoringController extends AbstractController
 
         // 11. Session Storage Check
         $sessionSavePath = session_save_path();
-        if (empty($sessionSavePath)) {
+        if (in_array($sessionSavePath, ['', '0', false], true)) {
             $sessionSavePath = sys_get_temp_dir();
         }
 
         // Handle open_basedir restrictions gracefully
         try {
             $sessionWritable = @is_writable($sessionSavePath);
-        } catch (\Throwable $e) {
+        } catch (Throwable) {
             $sessionWritable = false;
         }
 
@@ -241,11 +244,11 @@ class MonitoringController extends AbstractController
 
         // Calculate overall status
         $overallStatus = 'healthy';
-        foreach ($healthChecks as $check) {
-            if ($check['status'] === 'error') {
+        foreach ($healthChecks as $healthCheck) {
+            if ($healthCheck['status'] === 'error') {
                 $overallStatus = 'error';
                 break;
-            } elseif ($check['status'] === 'warning' && $overallStatus !== 'error') {
+            } elseif ($healthCheck['status'] === 'warning' && $overallStatus !== 'error') {
                 $overallStatus = 'warning';
             }
         }
@@ -255,8 +258,7 @@ class MonitoringController extends AbstractController
             'overall_status' => $overallStatus,
         ]);
     }
-
-    #[Route('/health/json', name: 'monitoring_health_json', methods: ['GET'])]
+    #[Route('/admin/monitoring/health/json', name: 'monitoring_health_json', methods: ['GET'])]
     #[IsGranted('MONITORING_VIEW')]
     public function healthJson(Connection $connection): JsonResponse
     {
@@ -267,7 +269,7 @@ class MonitoringController extends AbstractController
                 'status' => 'healthy',
                 'timestamp' => time(),
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->json([
                 'status' => 'error',
                 'error' => $e->getMessage(),
@@ -275,12 +277,10 @@ class MonitoringController extends AbstractController
             ], 503);
         }
     }
-
-    #[Route('/performance', name: 'monitoring_performance', methods: ['GET'])]
+    #[Route('/admin/monitoring/performance', name: 'monitoring_performance', methods: ['GET'])]
     #[IsGranted('MONITORING_VIEW')]
     public function performance(
-        AuditLogRepository $auditLogRepository,
-        Request $request
+        AuditLogRepository $auditLogRepository
     ): Response {
         // Get performance metrics from audit log (basic implementation)
         // In production, you'd use a proper monitoring solution like New Relic, Datadog, etc.
@@ -307,8 +307,8 @@ class MonitoringController extends AbstractController
 
         // Group by entity type
         $entityCounts = [];
-        foreach ($recentLogs as $log) {
-            $entityType = $log->getEntityType();
+        foreach ($recentLogs as $recentLog) {
+            $entityType = $recentLog->getEntityType();
             if ($entityType && $entityType !== 'User') { // Skip user login events
                 if (!isset($entityCounts[$entityType])) {
                     $entityCounts[$entityType] = 0;
@@ -336,8 +336,7 @@ class MonitoringController extends AbstractController
             'memory_limit' => $memoryLimit,
         ]);
     }
-
-    #[Route('/errors', name: 'monitoring_errors', methods: ['GET'])]
+    #[Route('/admin/monitoring/errors', name: 'monitoring_errors', methods: ['GET'])]
     #[IsGranted('MONITORING_VIEW')]
     public function errors(Request $request): Response
     {
@@ -377,8 +376,7 @@ class MonitoringController extends AbstractController
             'has_log' => file_exists($logFile),
         ]);
     }
-
-    #[Route('/audit-log', name: 'monitoring_audit_log', methods: ['GET'])]
+    #[Route('/admin/monitoring/audit-log', name: 'monitoring_audit_log', methods: ['GET'])]
     #[IsGranted('AUDIT_VIEW')]
     public function auditLog(
         AuditLogRepository $auditLogRepository,
@@ -388,22 +386,15 @@ class MonitoringController extends AbstractController
         $filter = $request->query->get('filter', 'all');
         $limit = (int) $request->query->get('limit', 100);
 
-        switch ($filter) {
-            case 'today':
-                $logs = $auditLogRepository->getRecentActivity(24);
-                break;
-            case 'week':
-                $logs = $auditLogRepository->getRecentActivity(168); // 7 days
-                break;
-            case 'critical':
-                $logs = $auditLogRepository->search([
-                    'action' => ['delete', 'destroy', 'remove'],
-                    'limit' => $limit,
-                ]);
-                break;
-            default:
-                $logs = $auditLogRepository->findAllOrdered($limit);
-        }
+        $logs = match ($filter) {
+            'today' => $auditLogRepository->getRecentActivity(24),
+            'week' => $auditLogRepository->getRecentActivity(168),
+            'critical' => $auditLogRepository->search([
+                'action' => ['delete', 'destroy', 'remove'],
+                'limit' => $limit,
+            ]),
+            default => $auditLogRepository->findAllOrdered($limit),
+        };
 
         $statistics = [
             'total' => $auditLogRepository->countAll(),
@@ -417,7 +408,6 @@ class MonitoringController extends AbstractController
             'current_filter' => $filter,
         ]);
     }
-
     /**
      * Parse log file and extract errors
      */
@@ -477,97 +467,85 @@ class MonitoringController extends AbstractController
 
         return $errors;
     }
-
-    #[Route('/health/fix/cache', name: 'monitoring_health_fix_cache', methods: ['POST'])]
+    #[Route('/admin/monitoring/health/fix/cache', name: 'monitoring_health_fix_cache', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
-    public function fixCache(HealthAutoFixService $autoFixService): JsonResponse
+    public function fixCache(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
-        $result = $autoFixService->fixCachePermissions();
+        $result = $healthAutoFixService->fixCachePermissions();
         return $this->json($result);
     }
-
-    #[Route('/health/fix/logs', name: 'monitoring_health_fix_logs', methods: ['POST'])]
+    #[Route('/admin/monitoring/health/fix/logs', name: 'monitoring_health_fix_logs', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
-    public function fixLogs(HealthAutoFixService $autoFixService): JsonResponse
+    public function fixLogs(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
-        $result = $autoFixService->fixLogPermissions();
+        $result = $healthAutoFixService->fixLogPermissions();
         return $this->json($result);
     }
-
-    #[Route('/health/fix/clear-cache', name: 'monitoring_health_clear_cache', methods: ['POST'])]
+    #[Route('/admin/monitoring/health/fix/clear-cache', name: 'monitoring_health_clear_cache', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
-    public function clearCache(HealthAutoFixService $autoFixService): JsonResponse
+    public function clearCache(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
-        $result = $autoFixService->clearCache();
+        $result = $healthAutoFixService->clearCache();
         return $this->json($result);
     }
-
-    #[Route('/health/fix/clean-logs', name: 'monitoring_health_clean_logs', methods: ['POST'])]
+    #[Route('/admin/monitoring/health/fix/clean-logs', name: 'monitoring_health_clean_logs', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
-    public function cleanLogs(HealthAutoFixService $autoFixService, Request $request): JsonResponse
+    public function cleanLogs(HealthAutoFixService $healthAutoFixService, Request $request): JsonResponse
     {
         $days = (int) $request->request->get('days', 30);
-        $result = $autoFixService->cleanOldLogs($days);
+        $result = $healthAutoFixService->cleanOldLogs($days);
         return $this->json($result);
     }
-
-    #[Route('/health/fix/rotate-logs', name: 'monitoring_health_rotate_logs', methods: ['POST'])]
+    #[Route('/admin/monitoring/health/fix/rotate-logs', name: 'monitoring_health_rotate_logs', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
-    public function rotateLogs(HealthAutoFixService $autoFixService): JsonResponse
+    public function rotateLogs(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
-        $result = $autoFixService->rotateLogs();
+        $result = $healthAutoFixService->rotateLogs();
         return $this->json($result);
     }
-
-    #[Route('/health/fix/optimize-disk', name: 'monitoring_health_optimize_disk', methods: ['POST'])]
+    #[Route('/admin/monitoring/health/fix/optimize-disk', name: 'monitoring_health_optimize_disk', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
-    public function optimizeDisk(HealthAutoFixService $autoFixService): JsonResponse
+    public function optimizeDisk(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
-        $result = $autoFixService->optimizeDiskSpace();
+        $result = $healthAutoFixService->optimizeDiskSpace();
         return $this->json($result);
     }
-
-    #[Route('/health/fix/var-permissions', name: 'monitoring_health_fix_var', methods: ['POST'])]
+    #[Route('/admin/monitoring/health/fix/var-permissions', name: 'monitoring_health_fix_var', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
-    public function fixVarPermissions(HealthAutoFixService $autoFixService): JsonResponse
+    public function fixVarPermissions(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
-        $result = $autoFixService->fixVarPermissions();
+        $result = $healthAutoFixService->fixVarPermissions();
         return $this->json($result);
     }
-
-    #[Route('/health/fix/uploads-permissions', name: 'monitoring_health_fix_uploads', methods: ['POST'])]
+    #[Route('/admin/monitoring/health/fix/uploads-permissions', name: 'monitoring_health_fix_uploads', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
-    public function fixUploadsPermissions(HealthAutoFixService $autoFixService): JsonResponse
+    public function fixUploadsPermissions(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
-        $result = $autoFixService->fixUploadsPermissions();
+        $result = $healthAutoFixService->fixUploadsPermissions();
         return $this->json($result);
     }
-
-    #[Route('/health/fix/session-permissions', name: 'monitoring_health_fix_sessions', methods: ['POST'])]
+    #[Route('/admin/monitoring/health/fix/session-permissions', name: 'monitoring_health_fix_sessions', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
-    public function fixSessionPermissions(HealthAutoFixService $autoFixService): JsonResponse
+    public function fixSessionPermissions(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
-        $result = $autoFixService->fixSessionPermissions();
+        $result = $healthAutoFixService->fixSessionPermissions();
         return $this->json($result);
     }
-
-    #[Route('/health/fix/clean-uploads', name: 'monitoring_health_clean_uploads', methods: ['POST'])]
+    #[Route('/admin/monitoring/health/fix/clean-uploads', name: 'monitoring_health_clean_uploads', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
-    public function cleanUploads(HealthAutoFixService $autoFixService, Request $request): JsonResponse
+    public function cleanUploads(HealthAutoFixService $healthAutoFixService, Request $request): JsonResponse
     {
         $days = (int) $request->request->get('days', 90);
-        $result = $autoFixService->clearOldUploads($days);
+        $result = $healthAutoFixService->clearOldUploads($days);
         return $this->json($result);
     }
-
-    #[Route('/health/fix/composer-install', name: 'monitoring_health_composer_install', methods: ['POST'])]
+    #[Route('/admin/monitoring/health/fix/composer-install', name: 'monitoring_health_composer_install', methods: ['POST'])]
     #[IsGranted('MONITORING_MANAGE')]
-    public function composerInstall(HealthAutoFixService $autoFixService): JsonResponse
+    public function composerInstall(HealthAutoFixService $healthAutoFixService): JsonResponse
     {
-        $result = $autoFixService->runComposerInstall();
+        $result = $healthAutoFixService->runComposerInstall();
         return $this->json($result);
     }
-
     /**
      * Format bytes to human-readable format
      */
@@ -583,7 +561,6 @@ class MonitoringController extends AbstractController
 
         return round($bytes, $precision) . ' ' . $units[$pow];
     }
-
     /**
      * Convert PHP memory notation to bytes
      */
@@ -597,28 +574,22 @@ class MonitoringController extends AbstractController
         }
 
         // Handle empty or invalid values
-        if (empty($value)) {
+        if ($value === '' || $value === '0') {
             return 0;
         }
 
         $lastChar = strtolower($value[strlen($value) - 1]);
         $numericValue = (int) $value;
 
-        switch ($lastChar) {
-            case 'g':
-                $numericValue *= 1024 * 1024 * 1024;
-                break;
-            case 'm':
-                $numericValue *= 1024 * 1024;
-                break;
-            case 'k':
-                $numericValue *= 1024;
-                break;
-        }
+        match ($lastChar) {
+            'g' => $numericValue *= 1024 * 1024 * 1024,
+            'm' => $numericValue *= 1024 * 1024,
+            'k' => $numericValue *= 1024,
+            default => $numericValue,
+        };
 
         return $numericValue;
     }
-
     /**
      * Get directory size in bytes
      */
@@ -631,8 +602,8 @@ class MonitoringController extends AbstractController
         }
 
         try {
-            $files = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS)
+            $files = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS)
             );
 
             foreach ($files as $file) {
@@ -640,7 +611,7 @@ class MonitoringController extends AbstractController
                     $size += $file->getSize();
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception) {
             // Directory not accessible
             return 0;
         }

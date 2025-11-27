@@ -2,9 +2,9 @@
 
 namespace App\Service;
 
+use DateTime;
 use App\Repository\ControlRepository;
 use Symfony\Component\HttpFoundation\Response;
-use Twig\Environment;
 
 /**
  * Statement of Applicability (SoA) Report Service
@@ -19,8 +19,7 @@ class SoAReportService
 {
     public function __construct(
         private readonly ControlRepository $controlRepository,
-        private readonly PdfExportService $pdfExportService,
-        private readonly Environment $twig
+        private readonly PdfExportService $pdfExportService
     ) {
     }
 
@@ -58,7 +57,7 @@ class SoAReportService
 
         // Use current date if no controls have been updated
         if ($latestUpdate === null) {
-            $latestUpdate = new \DateTime();
+            $latestUpdate = new DateTime();
         }
 
         // Format version as Year.Month.Day (e.g., 2025.11.20)
@@ -69,7 +68,7 @@ class SoAReportService
             'controlsByCategory' => $controlsByCategory,
             'stats' => $stats,
             'categoryStats' => $categoryStats,
-            'generatedAt' => new \DateTime(),
+            'generatedAt' => new DateTime(),
             'totalControls' => 93,
             'version' => $version,
         ];
@@ -86,7 +85,6 @@ class SoAReportService
      *
      * @param string|null $filename Custom filename (default: auto-generated with timestamp)
      * @param array $options PDF generation options
-     * @return Response
      */
     public function downloadSoAReport(?string $filename = null, array $options = []): Response
     {
@@ -117,7 +115,6 @@ class SoAReportService
      *
      * @param string|null $filename Custom filename
      * @param array $options PDF generation options
-     * @return Response
      */
     public function streamSoAReport(?string $filename = null, array $options = []): Response
     {
@@ -144,7 +141,6 @@ class SoAReportService
     /**
      * Group controls by their category (A.5, A.6, A.7, A.8)
      *
-     * @param array $controls
      * @return array Associative array with category as key
      */
     private function groupControlsByCategory(array $controls): array
@@ -208,24 +204,22 @@ class SoAReportService
         $allControls = $this->controlRepository->findAllInIsoOrder();
         $requiresAttention = [];
 
-        foreach ($allControls as $control) {
+        foreach ($allControls as $allControl) {
             // Not applicable without justification
-            if (!$control->isApplicable() && empty($control->getJustification())) {
+            if (!$allControl->isApplicable() && empty($allControl->getJustification())) {
                 $requiresAttention[] = [
-                    'control' => $control,
+                    'control' => $allControl,
                     'reason' => 'not_applicable_no_justification',
                 ];
                 continue;
             }
 
             // Overdue implementation
-            if ($control->getTargetDate() !== null && $control->getTargetDate() < new \DateTime()) {
-                if ($control->getImplementationStatus() !== 'implemented') {
-                    $requiresAttention[] = [
-                        'control' => $control,
-                        'reason' => 'overdue',
-                    ];
-                }
+            if ($allControl->getTargetDate() !== null && $allControl->getTargetDate() < new DateTime() && $allControl->getImplementationStatus() !== 'implemented') {
+                $requiresAttention[] = [
+                    'control' => $allControl,
+                    'reason' => 'overdue',
+                ];
             }
         }
 

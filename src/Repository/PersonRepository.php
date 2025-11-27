@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use DateTime;
 use App\Entity\Person;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -59,7 +60,7 @@ class PersonRepository extends ServiceEntityRepository
      */
     public function findWithExpiringAccess(int $days = 30): array
     {
-        $futureDate = (new \DateTime())->modify("+$days days");
+        $futureDate = new DateTime()->modify("+$days days");
 
         return $this->createQueryBuilder('p')
             ->andWhere('p.active = :active')
@@ -68,7 +69,7 @@ class PersonRepository extends ServiceEntityRepository
             ->andWhere('p.accessValidUntil >= :now')
             ->setParameter('active', true)
             ->setParameter('futureDate', $futureDate)
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new DateTime())
             ->orderBy('p.accessValidUntil', 'ASC')
             ->getQuery()
             ->getResult();
@@ -82,7 +83,7 @@ class PersonRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('p')
             ->andWhere('p.accessValidUntil IS NOT NULL')
             ->andWhere('p.accessValidUntil < :now')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new DateTime())
             ->orderBy('p.accessValidUntil', 'DESC')
             ->getQuery()
             ->getResult();

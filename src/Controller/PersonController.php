@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Person;
 use App\Form\PersonType;
 use App\Repository\PersonRepository;
@@ -14,17 +15,15 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/person')]
 class PersonController extends AbstractController
 {
     public function __construct(
-        private PersonRepository $personRepository,
-        private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator,
-        private Security $security
+        private readonly PersonRepository $personRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
+        private readonly Security $security
     ) {}
-
-    #[Route('/', name: 'app_person_index')]
+    #[Route('/person/', name: 'app_person_index')]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
@@ -36,8 +35,7 @@ class PersonController extends AbstractController
             'statistics' => $statistics,
         ]);
     }
-
-    #[Route('/new', name: 'app_person_new')]
+    #[Route('/person/new', name: 'app_person_new')]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -45,7 +43,7 @@ class PersonController extends AbstractController
 
         // Set tenant from current user
         $user = $this->security->getUser();
-        if ($user && $user->getTenant()) {
+        if ($user instanceof UserInterface && $user->getTenant()) {
             $person->setTenant($user->getTenant());
         }
 
@@ -65,8 +63,7 @@ class PersonController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}', name: 'app_person_show', requirements: ['id' => '\d+'])]
+    #[Route('/person/{id}', name: 'app_person_show', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function show(Person $person): Response
     {
@@ -77,8 +74,7 @@ class PersonController extends AbstractController
             'access_logs' => $accessLogs,
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'app_person_edit', requirements: ['id' => '\d+'])]
+    #[Route('/person/{id}/edit', name: 'app_person_edit', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Person $person): Response
     {
@@ -97,8 +93,7 @@ class PersonController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}/delete', name: 'app_person_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/person/{id}/delete', name: 'app_person_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Person $person): Response
     {

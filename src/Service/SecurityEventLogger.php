@@ -2,10 +2,11 @@
 
 namespace App\Service;
 
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use DateTime;
 use App\Entity\User;
 use App\Service\AuditLogger;
 use App\Service\SessionManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -32,7 +33,6 @@ class SecurityEventLogger
     public function __construct(
         private readonly LoggerInterface $logger,
         private readonly RequestStack $requestStack,
-        private readonly EntityManagerInterface $entityManager,
         private readonly AuditLogger $auditLogger,
         private readonly SessionManager $sessionManager
     ) {}
@@ -63,7 +63,7 @@ class SecurityEventLogger
             $request = $this->requestStack->getCurrentRequest();
             $session = $request?->getSession();
 
-            if ($session) {
+            if ($session instanceof SessionInterface) {
                 // SessionManager now checks table existence and handles errors internally
                 $this->sessionManager->createSession($user, $session->getId());
             }
@@ -116,7 +116,7 @@ class SecurityEventLogger
         $request = $this->requestStack->getCurrentRequest();
         $session = $request?->getSession();
 
-        if ($session) {
+        if ($session instanceof SessionInterface) {
             // SessionManager now checks table existence and handles errors internally
             $this->sessionManager->endSession($session->getId(), 'logout');
         }
@@ -212,7 +212,7 @@ class SecurityEventLogger
 
         $context = [
             'event_type' => $eventType,
-            'timestamp' => (new \DateTime())->format('Y-m-d H:i:s'),
+            'timestamp' => new DateTime()->format('Y-m-d H:i:s'),
             'ip_address' => $request?->getClientIp() ?? 'CLI',
             'user_agent' => $request?->headers->get('User-Agent') ?? 'N/A',
             'request_uri' => $request?->getRequestUri() ?? 'N/A',
@@ -234,9 +234,9 @@ class SecurityEventLogger
     {
         $sensitiveFields = ['password', 'token', 'secret', 'api_key', 'private_key'];
 
-        foreach ($changes as $field => $value) {
+        foreach (array_keys($changes) as $field) {
             foreach ($sensitiveFields as $sensitiveField) {
-                if (stripos($field, $sensitiveField) !== false) {
+                if (stripos((string) $field, $sensitiveField) !== false) {
                     $changes[$field] = '***REDACTED***';
                 }
             }

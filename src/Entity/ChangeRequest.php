@@ -2,10 +2,8 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Metadata\ApiFilter;
+use DateTimeInterface;
+use DateTimeImmutable;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -101,7 +99,7 @@ class ChangeRequest
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotNull]
     #[Groups(['change_request:read', 'change_request:write'])]
-    private ?\DateTimeInterface $requestedDate = null;
+    private ?DateTimeInterface $requestedDate = null;
 
     /**
      * Priority: critical, high, medium, low
@@ -196,14 +194,14 @@ class ChangeRequest
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['change_request:read', 'change_request:write'])]
-    private ?\DateTimeInterface $plannedImplementationDate = null;
+    private ?DateTimeInterface $plannedImplementationDate = null;
 
     /**
      * Actual implementation date
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['change_request:read', 'change_request:write'])]
-    private ?\DateTimeInterface $actualImplementationDate = null;
+    private ?DateTimeInterface $actualImplementationDate = null;
 
     /**
      * Approver
@@ -214,7 +212,7 @@ class ChangeRequest
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['change_request:read', 'change_request:write'])]
-    private ?\DateTimeInterface $approvedDate = null;
+    private ?DateTimeInterface $approvedDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['change_request:read', 'change_request:write'])]
@@ -240,7 +238,7 @@ class ChangeRequest
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['change_request:read', 'change_request:write'])]
-    private ?\DateTimeInterface $verifiedDate = null;
+    private ?DateTimeInterface $verifiedDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['change_request:read', 'change_request:write'])]
@@ -251,7 +249,7 @@ class ChangeRequest
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['change_request:read', 'change_request:write'])]
-    private ?\DateTimeInterface $closedDate = null;
+    private ?DateTimeInterface $closedDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['change_request:read', 'change_request:write'])]
@@ -267,11 +265,11 @@ class ChangeRequest
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['change_request:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['change_request:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     public function __construct()
     {
@@ -280,17 +278,17 @@ class ChangeRequest
         $this->affectedProcesses = new ArrayCollection();
         $this->associatedRisks = new ArrayCollection();
         $this->documents = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
-        $this->requestedDate = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
+        $this->requestedDate = new DateTimeImmutable();
     }
 
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
     public function updateTimestamps(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
-        if ($this->createdAt === null) {
-            $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
+        if (!$this->createdAt instanceof DateTimeInterface) {
+            $this->createdAt = new DateTimeImmutable();
         }
     }
 
@@ -376,12 +374,12 @@ class ChangeRequest
         return $this;
     }
 
-    public function getRequestedDate(): ?\DateTimeInterface
+    public function getRequestedDate(): ?DateTimeInterface
     {
         return $this->requestedDate;
     }
 
-    public function setRequestedDate(\DateTimeInterface $requestedDate): static
+    public function setRequestedDate(DateTimeInterface $requestedDate): static
     {
         $this->requestedDate = $requestedDate;
         return $this;
@@ -472,17 +470,17 @@ class ChangeRequest
         return $this->affectedProcesses;
     }
 
-    public function addAffectedProcess(BusinessProcess $process): static
+    public function addAffectedProcess(BusinessProcess $businessProcess): static
     {
-        if (!$this->affectedProcesses->contains($process)) {
-            $this->affectedProcesses->add($process);
+        if (!$this->affectedProcesses->contains($businessProcess)) {
+            $this->affectedProcesses->add($businessProcess);
         }
         return $this;
     }
 
-    public function removeAffectedProcess(BusinessProcess $process): static
+    public function removeAffectedProcess(BusinessProcess $businessProcess): static
     {
-        $this->affectedProcesses->removeElement($process);
+        $this->affectedProcesses->removeElement($businessProcess);
         return $this;
     }
 
@@ -552,23 +550,23 @@ class ChangeRequest
         return $this;
     }
 
-    public function getPlannedImplementationDate(): ?\DateTimeInterface
+    public function getPlannedImplementationDate(): ?DateTimeInterface
     {
         return $this->plannedImplementationDate;
     }
 
-    public function setPlannedImplementationDate(?\DateTimeInterface $plannedImplementationDate): static
+    public function setPlannedImplementationDate(?DateTimeInterface $plannedImplementationDate): static
     {
         $this->plannedImplementationDate = $plannedImplementationDate;
         return $this;
     }
 
-    public function getActualImplementationDate(): ?\DateTimeInterface
+    public function getActualImplementationDate(): ?DateTimeInterface
     {
         return $this->actualImplementationDate;
     }
 
-    public function setActualImplementationDate(?\DateTimeInterface $actualImplementationDate): static
+    public function setActualImplementationDate(?DateTimeInterface $actualImplementationDate): static
     {
         $this->actualImplementationDate = $actualImplementationDate;
         return $this;
@@ -585,12 +583,12 @@ class ChangeRequest
         return $this;
     }
 
-    public function getApprovedDate(): ?\DateTimeInterface
+    public function getApprovedDate(): ?DateTimeInterface
     {
         return $this->approvedDate;
     }
 
-    public function setApprovedDate(?\DateTimeInterface $approvedDate): static
+    public function setApprovedDate(?DateTimeInterface $approvedDate): static
     {
         $this->approvedDate = $approvedDate;
         return $this;
@@ -640,12 +638,12 @@ class ChangeRequest
         return $this;
     }
 
-    public function getVerifiedDate(): ?\DateTimeInterface
+    public function getVerifiedDate(): ?DateTimeInterface
     {
         return $this->verifiedDate;
     }
 
-    public function setVerifiedDate(?\DateTimeInterface $verifiedDate): static
+    public function setVerifiedDate(?DateTimeInterface $verifiedDate): static
     {
         $this->verifiedDate = $verifiedDate;
         return $this;
@@ -662,12 +660,12 @@ class ChangeRequest
         return $this;
     }
 
-    public function getClosedDate(): ?\DateTimeInterface
+    public function getClosedDate(): ?DateTimeInterface
     {
         return $this->closedDate;
     }
 
-    public function setClosedDate(?\DateTimeInterface $closedDate): static
+    public function setClosedDate(?DateTimeInterface $closedDate): static
     {
         $this->closedDate = $closedDate;
         return $this;
@@ -706,23 +704,23 @@ class ChangeRequest
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;

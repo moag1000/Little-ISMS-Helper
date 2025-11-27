@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use DateTimeImmutable;
+use Exception;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,25 +19,25 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class SupplementTisaxRequirementsCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
         // Get existing TISAX framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'TISAX']);
 
-        if (!$framework) {
-            $io->error('TISAX framework not found. Please run app:load-tisax-requirements first.');
+        if (!$framework instanceof ComplianceFramework) {
+            $symfonyStyle->error('TISAX framework not found. Please run app:load-tisax-requirements first.');
             return Command::FAILURE;
         }
 
-        $io->info('Adding additional VDA ISA 6.0.2 requirements to TISAX framework...');
+        $symfonyStyle->info('Adding additional VDA ISA 6.0.2 requirements to TISAX framework...');
 
         try {
             $this->entityManager->beginTransaction();
@@ -43,42 +45,42 @@ class SupplementTisaxRequirementsCommand extends Command
             $additionalRequirements = $this->getAdditionalTisaxRequirements();
             $addedCount = 0;
 
-            foreach ($additionalRequirements as $reqData) {
+            foreach ($additionalRequirements as $additionalRequirement) {
                 // Check if requirement already exists
                 $existing = $this->entityManager
                     ->getRepository(ComplianceRequirement::class)
                     ->findOneBy([
                         'framework' => $framework,
-                        'requirementId' => $reqData['id']
+                        'requirementId' => $additionalRequirement['id']
                     ]);
 
-                if ($existing) {
+                if ($existing instanceof ComplianceRequirement) {
                     continue;
                 }
 
                 $requirement = new ComplianceRequirement();
                 $requirement->setFramework($framework)
-                    ->setRequirementId($reqData['id'])
-                    ->setTitle($reqData['title'])
-                    ->setDescription($reqData['description'])
-                    ->setCategory($reqData['category'])
-                    ->setPriority($reqData['priority'])
-                    ->setDataSourceMapping($reqData['data_source_mapping']);
+                    ->setRequirementId($additionalRequirement['id'])
+                    ->setTitle($additionalRequirement['title'])
+                    ->setDescription($additionalRequirement['description'])
+                    ->setCategory($additionalRequirement['category'])
+                    ->setPriority($additionalRequirement['priority'])
+                    ->setDataSourceMapping($additionalRequirement['data_source_mapping']);
 
                 $this->entityManager->persist($requirement);
                 $addedCount++;
             }
 
-            $framework->setUpdatedAt(new \DateTimeImmutable());
+            $framework->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->persist($framework);
 
             $this->entityManager->flush();
             $this->entityManager->commit();
 
-            $io->success(sprintf('Successfully added %d additional requirements to TISAX framework', $addedCount));
-        } catch (\Exception $e) {
+            $symfonyStyle->success(sprintf('Successfully added %d additional requirements to TISAX framework', $addedCount));
+        } catch (Exception $e) {
             $this->entityManager->rollback();
-            $io->error('Failed to supplement TISAX requirements: ' . $e->getMessage());
+            $symfonyStyle->error('Failed to supplement TISAX requirements: ' . $e->getMessage());
             return Command::FAILURE;
         }
 

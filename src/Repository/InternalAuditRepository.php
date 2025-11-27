@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use DateTime;
+use App\Entity\Tenant;
 use App\Entity\InternalAudit;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -36,7 +38,7 @@ class InternalAuditRepository extends ServiceEntityRepository
             ->where('a.status = :status')
             ->andWhere('a.plannedDate >= :today')
             ->setParameter('status', 'planned')
-            ->setParameter('today', new \DateTime())
+            ->setParameter('today', new DateTime())
             ->orderBy('a.plannedDate', 'ASC')
             ->getQuery()
             ->getResult();
@@ -45,7 +47,7 @@ class InternalAuditRepository extends ServiceEntityRepository
     /**
      * Find all audits visible to a tenant (own audits + corporate audits covering this tenant)
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find audits for
+     * @param Tenant $tenant The tenant to find audits for
      * @return InternalAudit[] Array of InternalAudit entities
      */
     public function findByTenantIncludingCorporate($tenant): array
@@ -63,7 +65,7 @@ class InternalAuditRepository extends ServiceEntityRepository
     /**
      * Find all corporate-wide audits created by a parent tenant
      *
-     * @param \App\Entity\Tenant $tenant The parent tenant
+     * @param Tenant $tenant The parent tenant
      * @return InternalAudit[] Array of corporate audit entities
      */
     public function findCorporateAudits($tenant): array
@@ -81,7 +83,7 @@ class InternalAuditRepository extends ServiceEntityRepository
     /**
      * Find all audits that cover a specific subsidiary
      *
-     * @param \App\Entity\Tenant $subsidiary The subsidiary tenant
+     * @param Tenant $subsidiary The subsidiary tenant
      * @return InternalAudit[] Array of audits covering this subsidiary
      */
     public function findAuditsCoveringSubsidiary($subsidiary): array

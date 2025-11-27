@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTimeImmutable;
 use App\Entity\BCExercise;
 use App\Form\BCExerciseType;
 use App\Repository\BCExerciseRepository;
@@ -14,17 +15,15 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/bc-exercise')]
 class BCExerciseController extends AbstractController
 {
     public function __construct(
-        private BCExerciseRepository $bcExerciseRepository,
-        private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator,
-        private TenantContext $tenantContext
+        private readonly BCExerciseRepository $bcExerciseRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
+        private readonly TenantContext $tenantContext
     ) {}
-
-    #[Route('/', name: 'app_bc_exercise_index')]
+    #[Route('/bc-exercise/', name: 'app_bc_exercise_index')]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
@@ -40,8 +39,7 @@ class BCExerciseController extends AbstractController
             'incomplete_reports' => $incompleteReports,
         ]);
     }
-
-    #[Route('/new', name: 'app_bc_exercise_new')]
+    #[Route('/bc-exercise/new', name: 'app_bc_exercise_new')]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -64,8 +62,7 @@ class BCExerciseController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}', name: 'app_bc_exercise_show', requirements: ['id' => '\d+'])]
+    #[Route('/bc-exercise/{id}', name: 'app_bc_exercise_show', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function show(BCExercise $bcExercise): Response
     {
@@ -73,8 +70,7 @@ class BCExerciseController extends AbstractController
             'bc_exercise' => $bcExercise,
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'app_bc_exercise_edit', requirements: ['id' => '\d+'])]
+    #[Route('/bc-exercise/{id}/edit', name: 'app_bc_exercise_edit', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, BCExercise $bcExercise): Response
     {
@@ -82,7 +78,7 @@ class BCExerciseController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $bcExercise->setUpdatedAt(new \DateTimeImmutable());
+            $bcExercise->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('bc_exercise.success.updated'));
@@ -94,8 +90,7 @@ class BCExerciseController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}/delete', name: 'app_bc_exercise_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/bc-exercise/{id}/delete', name: 'app_bc_exercise_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, BCExercise $bcExercise): Response
     {

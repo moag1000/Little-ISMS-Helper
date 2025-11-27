@@ -2,6 +2,18 @@
 
 namespace App\Service;
 
+use Exception;
+use App\Entity\Asset;
+use App\Entity\Risk;
+use App\Entity\Control;
+use App\Entity\Incident;
+use App\Entity\BusinessProcess;
+use App\Entity\InternalAudit;
+use App\Entity\Training;
+use App\Entity\ComplianceFramework;
+use App\Entity\ComplianceRequirement;
+use DateTime;
+use ReflectionClass;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -36,7 +48,7 @@ class DataImportService
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly KernelInterface $kernel,
-        private readonly ModuleConfigurationService $moduleConfigService,
+        private readonly ModuleConfigurationService $moduleConfigurationService,
         private readonly string $projectDir
     ) {
     }
@@ -47,7 +59,7 @@ class DataImportService
     public function importBaseData(array $activeModules): array
     {
         $this->importLog = [];
-        $baseData = $this->moduleConfigService->getBaseData();
+        $baseData = $this->moduleConfigurationService->getBaseData();
         $results = [];
 
         foreach ($baseData as $data) {
@@ -55,8 +67,8 @@ class DataImportService
 
             // Prüfe ob erforderliche Module aktiv sind
             $canImport = true;
-            foreach ($requiredModules as $module) {
-                if (!in_array($module, $activeModules)) {
+            foreach ($requiredModules as $requiredModule) {
+                if (!in_array($requiredModule, $activeModules)) {
                     $canImport = false;
                     break;
                 }
@@ -102,7 +114,7 @@ class DataImportService
     public function importSampleData(array $selectedSamples, array $activeModules): array
     {
         $this->importLog = [];
-        $sampleData = $this->moduleConfigService->getSampleData();
+        $sampleData = $this->moduleConfigurationService->getSampleData();
         $results = [];
 
         foreach ($selectedSamples as $sampleKey => $selected) {
@@ -125,8 +137,8 @@ class DataImportService
             $requiredModules = $data['required_modules'] ?? [];
             $canImport = true;
 
-            foreach ($requiredModules as $module) {
-                if (!in_array($module, $activeModules)) {
+            foreach ($requiredModules as $requiredModule) {
+                if (!in_array($requiredModule, $activeModules)) {
                     $canImport = false;
                     break;
                 }
@@ -175,14 +187,14 @@ class DataImportService
             $application = new Application($this->kernel);
             $application->setAutoExit(false);
 
-            $input = new ArrayInput([
+            $arrayInput = new ArrayInput([
                 'command' => $commandName,
             ]);
 
-            $output = new BufferedOutput();
-            $returnCode = $application->run($input, $output);
+            $bufferedOutput = new BufferedOutput();
+            $returnCode = $application->run($arrayInput, $bufferedOutput);
 
-            $outputContent = $output->fetch();
+            $outputContent = $bufferedOutput->fetch();
             $this->addLog("Command '{$commandName}' executed with return code {$returnCode}");
             $this->addLog($outputContent);
 
@@ -194,7 +206,7 @@ class DataImportService
                 'output' => $outputContent,
                 'return_code' => $returnCode,
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->addLog("Error executing command '{$commandName}': " . $e->getMessage());
 
             return [
@@ -233,7 +245,7 @@ class DataImportService
                 'message' => "{$imported} Datensätze importiert",
                 'count' => $imported,
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->addLog("Error importing from file '{$file}': " . $e->getMessage());
 
             return [
@@ -264,7 +276,7 @@ class DataImportService
                     $entity = $this->createEntity($entityClass, $entityData);
                     $this->entityManager->persist($entity);
                     $count++;
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->addLog("Error creating entity {$entityClass}: " . $e->getMessage());
                 }
             }
@@ -282,15 +294,15 @@ class DataImportService
     private function resolveEntityClass(string $entityType): ?string
     {
         $mapping = [
-            'assets' => \App\Entity\Asset::class,
-            'risks' => \App\Entity\Risk::class,
-            'controls' => \App\Entity\Control::class,
-            'incidents' => \App\Entity\Incident::class,
-            'business_processes' => \App\Entity\BusinessProcess::class,
-            'audits' => \App\Entity\InternalAudit::class,
-            'trainings' => \App\Entity\Training::class,
-            'compliance_frameworks' => \App\Entity\ComplianceFramework::class,
-            'compliance_requirements' => \App\Entity\ComplianceRequirement::class,
+            'assets' => Asset::class,
+            'risks' => Risk::class,
+            'controls' => Control::class,
+            'incidents' => Incident::class,
+            'business_processes' => BusinessProcess::class,
+            'audits' => InternalAudit::class,
+            'trainings' => Training::class,
+            'compliance_frameworks' => ComplianceFramework::class,
+            'compliance_requirements' => ComplianceRequirement::class,
         ];
 
         return $mapping[$entityType] ?? null;
@@ -304,12 +316,12 @@ class DataImportService
         $entity = new $entityClass();
 
         foreach ($data as $property => $value) {
-            $setter = 'set' . ucfirst($property);
+            $setter = 'set' . ucfirst((string) $property);
 
             if (method_exists($entity, $setter)) {
                 // Handle DateTime
-                if ($value instanceof \DateTime || (is_string($value) && strtotime($value))) {
-                    $value = is_string($value) ? new \DateTime($value) : $value;
+                if ($value instanceof DateTime || (is_string($value) && strtotime($value))) {
+                    $value = is_string($value) ? new DateTime($value) : $value;
                 }
 
                 $entity->$setter($value);
@@ -344,12 +356,12 @@ class DataImportService
             $missingTables = array_diff($requiredTables, $tables);
 
             return [
-                'initialized' => empty($missingTables),
+                'initialized' => $missingTables === [],
                 'total_tables' => count($tables),
                 'missing_tables' => $missingTables,
                 'existing_tables' => array_intersect($requiredTables, $tables),
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'initialized' => false,
                 'error' => $e->getMessage(),
@@ -370,7 +382,7 @@ class DataImportService
                 'message' => $result['message'],
                 'output' => $result['output'] ?? null,
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'success' => false,
                 'message' => 'Fehler beim Ausführen der Migrationen: ' . $e->getMessage(),
@@ -403,7 +415,7 @@ class DataImportService
      */
     public function exportModuleData(string $moduleKey): array
     {
-        $module = $this->moduleConfigService->getModule($moduleKey);
+        $module = $this->moduleConfigurationService->getModule($moduleKey);
 
         if (!$module) {
             return [
@@ -415,8 +427,8 @@ class DataImportService
         $entities = $module['entities'] ?? [];
         $exportData = [];
 
-        foreach ($entities as $entityName) {
-            $entityClass = $this->resolveEntityClass(strtolower($entityName) . 's');
+        foreach ($entities as $entity) {
+            $entityClass = $this->resolveEntityClass(strtolower((string) $entity) . 's');
 
             if (!$entityClass) {
                 continue;
@@ -425,15 +437,13 @@ class DataImportService
             $repository = $this->entityManager->getRepository($entityClass);
             $records = $repository->findAll();
 
-            $exportData[$entityName] = array_map(function ($record) {
-                return $this->entityToArray($record);
-            }, $records);
+            $exportData[$entity] = array_map($this->entityToArray(...), $records);
         }
 
         return [
             'success' => true,
             'data' => $exportData,
-            'count' => array_sum(array_map('count', $exportData)),
+            'count' => array_sum(array_map(count(...), $exportData)),
         ];
     }
 
@@ -442,19 +452,20 @@ class DataImportService
      */
     private function entityToArray(object $entity): array
     {
-        $reflection = new \ReflectionClass($entity);
+        $reflectionClass = new ReflectionClass($entity);
         $data = [];
 
-        foreach ($reflection->getProperties() as $property) {
-            $property->setAccessible(true);
-            $value = $property->getValue($entity);
-
+        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+            $value = $reflectionProperty->getValue($entity);
             // Skip ID und Relations
-            if ($property->getName() === 'id' || is_object($value)) {
+            if ($reflectionProperty->getName() === 'id') {
+                continue;
+            }
+            if (is_object($value)) {
                 continue;
             }
 
-            $data[$property->getName()] = $value;
+            $data[$reflectionProperty->getName()] = $value;
         }
 
         return $data;

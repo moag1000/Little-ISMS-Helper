@@ -2,6 +2,7 @@
 
 namespace App\Twig;
 
+use Override;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -20,7 +21,7 @@ class BadgeExtension extends AbstractExtension
     /**
      * Severity level to Bootstrap color mapping
      */
-    private const SEVERITY_MAP = [
+    private const array SEVERITY_MAP = [
         'critical' => 'danger',
         'high' => 'warning',
         'medium' => 'info',
@@ -37,7 +38,7 @@ class BadgeExtension extends AbstractExtension
     /**
      * Status to Bootstrap color mapping
      */
-    private const STATUS_MAP = [
+    private const array STATUS_MAP = [
         // Incident statuses
         'open' => 'danger',
         'in_progress' => 'warning',
@@ -90,7 +91,7 @@ class BadgeExtension extends AbstractExtension
     /**
      * Risk level to Bootstrap color mapping
      */
-    private const RISK_MAP = [
+    private const array RISK_MAP = [
         'critical' => 'danger',
         'high' => 'warning',
         'medium' => 'info',
@@ -102,7 +103,7 @@ class BadgeExtension extends AbstractExtension
     /**
      * NIS2 compliance to Bootstrap color mapping
      */
-    private const NIS2_MAP = [
+    private const array NIS2_MAP = [
         'compliant' => 'success',
         'partial' => 'warning',
         'non_compliant' => 'danger',
@@ -113,7 +114,7 @@ class BadgeExtension extends AbstractExtension
     /**
      * Action type to Bootstrap color mapping (for audit logs)
      */
-    private const ACTION_MAP = [
+    private const array ACTION_MAP = [
         'create' => 'success',
         'update' => 'info',
         'delete' => 'danger',
@@ -125,25 +126,26 @@ class BadgeExtension extends AbstractExtension
     /**
      * Data classification to Bootstrap color mapping
      */
-    private const CLASSIFICATION_MAP = [
+    private const array CLASSIFICATION_MAP = [
         'public' => 'success',
         'internal' => 'info',
         'confidential' => 'warning',
         'restricted' => 'danger',
     ];
 
+    #[Override]
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('badge_severity', [$this, 'getSeverityBadgeClass']),
-            new TwigFunction('badge_status', [$this, 'getStatusBadgeClass']),
-            new TwigFunction('badge_risk', [$this, 'getRiskBadgeClass']),
-            new TwigFunction('badge_nis2', [$this, 'getNis2BadgeClass']),
-            new TwigFunction('badge_action', [$this, 'getActionBadgeClass']),
-            new TwigFunction('badge_classification', [$this, 'getClassificationBadgeClass']),
-            new TwigFunction('badge_score', [$this, 'getScoreBadgeClass']),
-            new TwigFunction('badge_completion', [$this, 'getCompletionBadgeClass']),
-            new TwigFunction('badge_priority', [$this, 'getPriorityBadgeClass']),
+            new TwigFunction('badge_severity', $this->getSeverityBadgeClass(...)),
+            new TwigFunction('badge_status', $this->getStatusBadgeClass(...)),
+            new TwigFunction('badge_risk', $this->getRiskBadgeClass(...)),
+            new TwigFunction('badge_nis2', $this->getNis2BadgeClass(...)),
+            new TwigFunction('badge_action', $this->getActionBadgeClass(...)),
+            new TwigFunction('badge_classification', $this->getClassificationBadgeClass(...)),
+            new TwigFunction('badge_score', $this->getScoreBadgeClass(...)),
+            new TwigFunction('badge_completion', $this->getCompletionBadgeClass(...)),
+            new TwigFunction('badge_priority', $this->getPriorityBadgeClass(...)),
         ];
     }
 

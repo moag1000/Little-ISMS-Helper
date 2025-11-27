@@ -2,7 +2,6 @@
 
 namespace App\Command;
 
-use App\Entity\Tenant;
 use App\Repository\TenantRepository;
 use App\Service\RiskReviewService;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -32,8 +31,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class RiskScheduleReviewsCommand extends Command
 {
     public function __construct(
-        private RiskReviewService $riskReviewService,
-        private TenantRepository $tenantRepository
+        private readonly RiskReviewService $riskReviewService,
+        private readonly TenantRepository $tenantRepository
     ) {
         parent::__construct();
     }
@@ -68,54 +67,54 @@ HELP
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
-        $io->title('Risk Review Scheduling (ISO 27001:2022 Clause 6.1.3.d)');
+        $symfonyStyle->title('Risk Review Scheduling (ISO 27001:2022 Clause 6.1.3.d)');
 
         // Get tenants to process
         $tenantId = $input->getOption('tenant');
         if ($tenantId) {
             $tenant = $this->tenantRepository->find($tenantId);
             if (!$tenant) {
-                $io->error("Tenant with ID {$tenantId} not found.");
+                $symfonyStyle->error("Tenant with ID {$tenantId} not found.");
                 return Command::FAILURE;
             }
             $tenants = [$tenant];
-            $io->info("Processing tenant: {$tenant->getName()} (ID: {$tenant->getId()})");
+            $symfonyStyle->info("Processing tenant: {$tenant->getName()} (ID: {$tenant->getId()})");
         } else {
             $tenants = $this->tenantRepository->findAll();
-            $io->info('Processing all tenants: ' . count($tenants));
+            $symfonyStyle->info('Processing all tenants: ' . count($tenants));
         }
 
         $totalScheduled = 0;
 
         foreach ($tenants as $tenant) {
-            $io->section("Tenant: {$tenant->getName()} (ID: {$tenant->getId()})");
+            $symfonyStyle->section("Tenant: {$tenant->getName()} (ID: {$tenant->getId()})");
 
             // Get statistics before scheduling
             $statsBefore = $this->riskReviewService->getReviewStatistics($tenant);
 
-            $io->text([
+            $symfonyStyle->text([
                 "Total risks: {$statsBefore['total']}",
                 "Risks without review date: {$statsBefore['never_reviewed']}",
                 "Overdue reviews: {$statsBefore['overdue']}",
             ]);
 
             if ($statsBefore['never_reviewed'] === 0) {
-                $io->success('All risks already have review dates scheduled.');
+                $symfonyStyle->success('All risks already have review dates scheduled.');
                 continue;
             }
 
             // Schedule reviews
-            $io->text('Scheduling reviews based on risk levels...');
+            $symfonyStyle->text('Scheduling reviews based on risk levels...');
             $scheduled = $this->riskReviewService->bulkScheduleReviews($tenant);
 
-            $io->success("✓ Scheduled {$scheduled} risk reviews");
+            $symfonyStyle->success("✓ Scheduled {$scheduled} risk reviews");
 
             // Show statistics after scheduling
             $statsAfter = $this->riskReviewService->getReviewStatistics($tenant);
 
-            $io->table(
+            $symfonyStyle->table(
                 ['Metric', 'Value'],
                 [
                     ['Total Risks', $statsAfter['total']],
@@ -129,10 +128,10 @@ HELP
             $totalScheduled += $scheduled;
         }
 
-        $io->newLine();
-        $io->success("Total reviews scheduled across all tenants: {$totalScheduled}");
+        $symfonyStyle->newLine();
+        $symfonyStyle->success("Total reviews scheduled across all tenants: {$totalScheduled}");
 
-        $io->note([
+        $symfonyStyle->note([
             'Review Schedule (ISO 27001:2022):',
             '  • Critical risks: Every 90 days (quarterly)',
             '  • High risks: Every 180 days (semi-annually)',

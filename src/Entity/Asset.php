@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
@@ -28,24 +30,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Get(
-            security: "is_granted('ROLE_USER')",
-            description: 'Retrieve a specific asset by ID'
+            description: 'Retrieve a specific asset by ID',
+            security: "is_granted('ROLE_USER')"
         ),
         new GetCollection(
-            security: "is_granted('ROLE_USER')",
-            description: 'Retrieve the collection of assets with pagination and filtering'
+            description: 'Retrieve the collection of assets with pagination and filtering',
+            security: "is_granted('ROLE_USER')"
         ),
         new Post(
-            security: "is_granted('ROLE_USER')",
-            description: 'Create a new asset with protection requirements'
+            description: 'Create a new asset with protection requirements',
+            security: "is_granted('ROLE_USER')"
         ),
         new Put(
-            security: "is_granted('ROLE_USER')",
-            description: 'Update an existing asset'
+            description: 'Update an existing asset',
+            security: "is_granted('ROLE_USER')"
         ),
         new Delete(
-            security: "is_granted('ROLE_ADMIN')",
-            description: 'Delete an asset (Admin only)'
+            description: 'Delete an asset (Admin only)',
+            security: "is_granted('ROLE_ADMIN')"
         ),
     ],
     normalizationContext: ['groups' => ['asset:read']],
@@ -170,7 +172,7 @@ class Asset
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['asset:read', 'asset:write'])]
-    private ?\DateTimeInterface $returnDate = null;
+    private ?DateTimeInterface $returnDate = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['asset:read', 'asset:write'])]
@@ -183,11 +185,11 @@ class Asset
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['asset:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['asset:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     /**
      * @var Collection<int, Risk>
@@ -218,7 +220,7 @@ class Asset
         $this->risks = new ArrayCollection();
         $this->incidents = new ArrayCollection();
         $this->protectingControls = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -358,23 +360,23 @@ class Asset
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -399,10 +401,8 @@ class Asset
 
     public function removeRisk(Risk $risk): static
     {
-        if ($this->risks->removeElement($risk)) {
-            if ($risk->getAsset() === $this) {
-                $risk->setAsset(null);
-            }
+        if ($this->risks->removeElement($risk) && $risk->getAsset() === $this) {
+            $risk->setAsset(null);
         }
         return $this;
     }
@@ -484,7 +484,7 @@ class Asset
         }
 
         // Assets with active risks are high-risk
-        $activeRisks = $this->risks->filter(fn($r) => $r->getStatus() === 'active')->count();
+        $activeRisks = $this->risks->filter(fn($r): bool => $r->getStatus() === 'active')->count();
         return $activeRisks > 0;
     }
 
@@ -534,12 +534,12 @@ class Asset
         return $this;
     }
 
-    public function getReturnDate(): ?\DateTimeInterface
+    public function getReturnDate(): ?DateTimeInterface
     {
         return $this->returnDate;
     }
 
-    public function setReturnDate(?\DateTimeInterface $returnDate): static
+    public function setReturnDate(?DateTimeInterface $returnDate): static
     {
         $this->returnDate = $returnDate;
         return $this;
@@ -555,7 +555,7 @@ class Asset
         $this->physicalLocation = $physicalLocation;
 
         // Sync legacy field for backward compatibility
-        if ($physicalLocation) {
+        if ($physicalLocation instanceof Location) {
             $this->location = $physicalLocation->getName();
         }
 

@@ -164,9 +164,9 @@ class ISMSContextType extends AbstractType
         ;
 
         // Dynamically set organizationName to readonly if tenant is assigned
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-            $context = $event->getData();
-            $form = $event->getForm();
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $formEvent): void {
+            $context = $formEvent->getData();
+            $form = $formEvent->getForm();
 
             if ($context && $context->getTenant() !== null) {
                 // Re-add organizationName field with readonly attribute

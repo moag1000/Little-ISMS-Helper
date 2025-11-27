@@ -150,9 +150,7 @@ class RiskType extends AbstractType
             ->add('person', EntityType::class, [
                 'label' => 'risk.field.person',
                 'class' => Person::class,
-                'choice_label' => function(Person $person) {
-                    return $person->getFullName();
-                },
+                'choice_label' => fn(Person $person): ?string => $person->getFullName(),
                 'placeholder' => 'risk.placeholder.person',
                 'required' => false,
                 'help' => 'risk.help.person',
@@ -209,9 +207,7 @@ class RiskType extends AbstractType
             ->add('riskOwner', EntityType::class, [
                 'label' => 'risk.field.risk_owner',
                 'class' => User::class,
-                'choice_label' => function(User $user) {
-                    return $user->getFullName() . ' (' . $user->getEmail() . ')';
-                },
+                'choice_label' => fn(User $user): string => $user->getFullName() . ' (' . $user->getEmail() . ')',
                 'placeholder' => 'risk.placeholder.risk_owner',
                 'required' => true,
                 'help' => 'risk.help.risk_owner',

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -96,11 +98,11 @@ class ThreatIntelligence
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['threat:read', 'threat:write'])]
-    private ?\DateTimeInterface $detectionDate = null;
+    private ?DateTimeInterface $detectionDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['threat:read', 'threat:write'])]
-    private ?\DateTimeInterface $mitigationDate = null;
+    private ?DateTimeInterface $mitigationDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['threat:read', 'threat:write'])]
@@ -109,7 +111,7 @@ class ThreatIntelligence
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
     #[Groups(['threat:read'])]
-    private ?User $assignedTo = null;
+    private ?User $user = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
     #[Groups(['threat:read', 'threat:write'])]
@@ -125,11 +127,11 @@ class ThreatIntelligence
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['threat:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['threat:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
     #[ORM\JoinColumn(nullable: true)]
@@ -144,8 +146,8 @@ class ThreatIntelligence
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->detectionDate = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
+        $this->detectionDate = new DateTimeImmutable();
         $this->affectedAssets = new ArrayCollection();
         $this->resultingIncidents = new ArrayCollection();
     }
@@ -267,23 +269,23 @@ class ThreatIntelligence
         return $this;
     }
 
-    public function getDetectionDate(): ?\DateTimeInterface
+    public function getDetectionDate(): ?DateTimeInterface
     {
         return $this->detectionDate;
     }
 
-    public function setDetectionDate(\DateTimeInterface $detectionDate): static
+    public function setDetectionDate(DateTimeInterface $detectionDate): static
     {
         $this->detectionDate = $detectionDate;
         return $this;
     }
 
-    public function getMitigationDate(): ?\DateTimeInterface
+    public function getMitigationDate(): ?DateTimeInterface
     {
         return $this->mitigationDate;
     }
 
-    public function setMitigationDate(?\DateTimeInterface $mitigationDate): static
+    public function setMitigationDate(?DateTimeInterface $mitigationDate): static
     {
         $this->mitigationDate = $mitigationDate;
         return $this;
@@ -302,12 +304,12 @@ class ThreatIntelligence
 
     public function getAssignedTo(): ?User
     {
-        return $this->assignedTo;
+        return $this->user;
     }
 
-    public function setAssignedTo(?User $assignedTo): static
+    public function setAssignedTo(?User $user): static
     {
-        $this->assignedTo = $assignedTo;
+        $this->user = $user;
         return $this;
     }
 
@@ -344,23 +346,23 @@ class ThreatIntelligence
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -421,10 +423,8 @@ class ThreatIntelligence
 
     public function removeResultingIncident(Incident $incident): static
     {
-        if ($this->resultingIncidents->removeElement($incident)) {
-            if ($incident->getOriginatingThreat() === $this) {
-                $incident->setOriginatingThreat(null);
-            }
+        if ($this->resultingIncidents->removeElement($incident) && $incident->getOriginatingThreat() === $this) {
+            $incident->setOriginatingThreat(null);
         }
 
         return $this;

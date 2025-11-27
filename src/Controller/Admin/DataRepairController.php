@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Tenant;
+use App\Entity\Control;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\IncidentRepository;
@@ -17,7 +17,6 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/admin/data-repair')]
 #[IsGranted('ROLE_ADMIN')]
 class DataRepairController extends AbstractController
 {
@@ -33,7 +32,7 @@ class DataRepairController extends AbstractController
     ) {
     }
 
-    #[Route('/', name: 'admin_data_repair_index')]
+    #[Route('/admin/data-repair/', name: 'admin_data_repair_index')]
     public function index(): Response
     {
         // Get all tenants
@@ -78,23 +77,20 @@ class DataRepairController extends AbstractController
 
         // Build a set of control IDs that are mapped to compliance requirements
         $controlsWithFrameworks = [];
-        foreach ($allComplianceRequirements as $requirement) {
-            foreach ($requirement->getMappedControls() as $control) {
+        foreach ($allComplianceRequirements as $allComplianceRequirement) {
+            foreach ($allComplianceRequirement->getMappedControls() as $control) {
                 $controlsWithFrameworks[$control->getId()] = true;
             }
         }
 
-        $controlsWithoutRisks = array_filter($allControls, function($control) use ($controlsWithFrameworks) {
+        $controlsWithoutRisks = array_filter($allControls, fn(Control $control): bool =>
             // Only show controls that are applicable AND have no risks AND no framework assignments
-            return $control->isApplicable()
-                && $control->getRisks()->isEmpty()
-                && !isset($controlsWithFrameworks[$control->getId()]);
-        });
+            $control->isApplicable()
+            && $control->getRisks()->isEmpty()
+            && !isset($controlsWithFrameworks[$control->getId()]));
 
         // Find controls without assets (applicable controls with no protected assets)
-        $controlsWithoutAssets = array_filter($allControls, function($control) {
-            return $control->isApplicable() && $control->getProtectedAssets()->isEmpty();
-        });
+        $controlsWithoutAssets = array_filter($allControls, fn(Control $control): bool => $control->isApplicable() && $control->getProtectedAssets()->isEmpty());
 
         // Find broken references
         $brokenReferences = $this->findBrokenReferences();
@@ -114,7 +110,7 @@ class DataRepairController extends AbstractController
         ]);
     }
 
-    #[Route('/assign-orphans', name: 'admin_data_repair_assign_orphans', methods: ['POST'])]
+    #[Route('/admin/data-repair/assign-orphans', name: 'admin_data_repair_assign_orphans', methods: ['POST'])]
     public function assignOrphans(Request $request): Response
     {
         $tenantId = $request->request->get('tenant_id');
@@ -191,8 +187,8 @@ class DataRepairController extends AbstractController
                     ->where('i.tenant IS NULL')
                     ->getQuery()
                     ->getResult();
-                foreach ($orphanedIncidents as $entity) {
-                    $entity->setTenant($tenant);
+                foreach ($orphanedIncidents as $orphanedIncident) {
+                    $orphanedIncident->setTenant($tenant);
                     $count++;
                 }
                 break;
@@ -212,7 +208,7 @@ class DataRepairController extends AbstractController
         return $this->redirectToRoute('admin_data_repair_index');
     }
 
-    #[Route('/reassign-entity/{type}/{id}', name: 'admin_data_repair_reassign_entity', methods: ['POST'])]
+    #[Route('/admin/data-repair/reassign-entity/{type}/{id}', name: 'admin_data_repair_reassign_entity', methods: ['POST'])]
     public function reassignEntity(Request $request, string $type, int $id): Response
     {
         $tenantId = $request->request->get('tenant_id');
@@ -262,7 +258,7 @@ class DataRepairController extends AbstractController
         return $this->redirectToRoute('admin_data_repair_index');
     }
 
-    #[Route('/assign-asset/{type}/{id}', name: 'admin_data_repair_assign_asset', methods: ['POST'])]
+    #[Route('/admin/data-repair/assign-asset/{type}/{id}', name: 'admin_data_repair_assign_asset', methods: ['POST'])]
     public function assignAsset(Request $request, string $type, int $id): Response
     {
         $assetId = $request->request->get('asset_id');
@@ -325,7 +321,7 @@ class DataRepairController extends AbstractController
         return $this->redirectToRoute('admin_data_repair_index');
     }
 
-    #[Route('/assign-risk/{id}', name: 'admin_data_repair_assign_risk', methods: ['POST'])]
+    #[Route('/admin/data-repair/assign-risk/{id}', name: 'admin_data_repair_assign_risk', methods: ['POST'])]
     public function assignRisk(Request $request, int $id): Response
     {
         $riskId = $request->request->get('risk_id');
@@ -365,7 +361,7 @@ class DataRepairController extends AbstractController
         return $this->redirectToRoute('admin_data_repair_index');
     }
 
-    #[Route('/assign-asset-to-control/{id}', name: 'admin_data_repair_assign_asset_to_control', methods: ['POST'])]
+    #[Route('/admin/data-repair/assign-asset-to-control/{id}', name: 'admin_data_repair_assign_asset_to_control', methods: ['POST'])]
     public function assignAssetToControl(Request $request, int $id): Response
     {
         $assetId = $request->request->get('asset_id');
@@ -430,14 +426,14 @@ class DataRepairController extends AbstractController
 
         // Check incidents with invalid asset references
         $allIncidents = $this->incidentRepository->findAll();
-        foreach ($allIncidents as $incident) {
-            foreach ($incident->getAffectedAssets() as $asset) {
+        foreach ($allIncidents as $allIncident) {
+            foreach ($allIncident->getAffectedAssets() as $asset) {
                 if (!$this->entityManager->contains($asset)) {
                     $broken[] = [
                         'type' => 'incident_invalid_asset',
                         'entity_type' => 'Incident',
-                        'entity_id' => $incident->getId(),
-                        'entity_name' => $incident->getTitle(),
+                        'entity_id' => $allIncident->getId(),
+                        'entity_name' => $allIncident->getTitle(),
                         'issue' => 'References non-existent asset',
                     ];
                     break;
@@ -447,14 +443,14 @@ class DataRepairController extends AbstractController
 
         // Check controls with invalid risk references
         $allControls = $this->controlRepository->findAll();
-        foreach ($allControls as $control) {
-            foreach ($control->getRisks() as $risk) {
+        foreach ($allControls as $allControl) {
+            foreach ($allControl->getRisks() as $risk) {
                 if (!$this->entityManager->contains($risk)) {
                     $broken[] = [
                         'type' => 'control_invalid_risk',
                         'entity_type' => 'Control',
-                        'entity_id' => $control->getId(),
-                        'entity_name' => $control->getName(),
+                        'entity_id' => $allControl->getId(),
+                        'entity_name' => $allControl->getName(),
                         'issue' => 'References non-existent risk',
                     ];
                     break;

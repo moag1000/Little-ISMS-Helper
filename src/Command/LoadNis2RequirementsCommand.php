@@ -17,20 +17,20 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LoadNis2RequirementsCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
         // Create or get NIS2 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'NIS2']);
 
-        if (!$framework) {
+        if (!$framework instanceof ComplianceFramework) {
             $framework = new ComplianceFramework();
             $framework->setCode('NIS2')
                 ->setName('NIS2 Directive (EU 2022/2555)')
@@ -62,7 +62,7 @@ class LoadNis2RequirementsCommand extends Command
 
         $this->entityManager->flush();
 
-        $io->success(sprintf('Successfully loaded %d NIS2 requirements', count($requirements)));
+        $symfonyStyle->success(sprintf('Successfully loaded %d NIS2 requirements', count($requirements)));
 
         return Command::SUCCESS;
     }

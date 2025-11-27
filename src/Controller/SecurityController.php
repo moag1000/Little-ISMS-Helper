@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+use LogicException;
+use Exception;
 use App\Security\SamlAuthFactory;
 use KnpU\OAuth2ClientBundle\Client\ClientRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,7 +18,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class SecurityController extends AbstractController
 {
     public function __construct(
-        private readonly RateLimiterFactory $loginLimiter,
+        private readonly RateLimiterFactory $rateLimiterFactory,
         private readonly SamlAuthFactory $samlAuthFactory,
         private readonly TranslatorInterface $translator
     ) {}
@@ -24,7 +27,7 @@ class SecurityController extends AbstractController
     public function login(Request $request, AuthenticationUtils $authenticationUtils): Response
     {
         // Security: Rate limit login attempts to prevent brute force attacks
-        $limiter = $this->loginLimiter->create($request->getClientIp());
+        $limiter = $this->rateLimiterFactory->create($request->getClientIp());
 
         if (false === $limiter->consume(1)->isAccepted()) {
             $this->addFlash('error', $this->translator->trans('security.error.too_many_attempts'));
@@ -54,7 +57,7 @@ class SecurityController extends AbstractController
         $request->setLocale($locale);
 
         // If user is already logged in, redirect to dashboard with locale
-        if ($this->getUser()) {
+        if ($this->getUser() instanceof UserInterface) {
             return $this->redirectToRoute('app_dashboard', ['_locale' => $locale]);
         }
 
@@ -83,7 +86,7 @@ class SecurityController extends AbstractController
     public function logout(): void
     {
         // This method can be blank - it will be intercepted by the logout key on your firewall
-        throw new \LogicException('This method should never be reached.');
+        throw new LogicException('This method should never be reached.');
     }
 
     /**
@@ -123,7 +126,7 @@ class SecurityController extends AbstractController
 
             // This will never be reached as login() redirects
             return new Response('Redirecting to SAML IdP...');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->addFlash('error', $this->translator->trans('security.error.saml_login_error') . ': ' . $e->getMessage());
             return $this->redirectToRoute('app_login');
         }
@@ -152,14 +155,14 @@ class SecurityController extends AbstractController
             $errors = $settings->validateMetadata($metadata);
 
             if (!empty($errors)) {
-                throw new \Exception('Invalid SP metadata: ' . implode(', ', $errors));
+                throw new Exception('Invalid SP metadata: ' . implode(', ', $errors));
             }
 
             $response = new Response($metadata);
             $response->headers->set('Content-Type', 'text/xml');
 
             return $response;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $this->createNotFoundException('Metadata generation failed: ' . $e->getMessage());
         }
     }
@@ -176,11 +179,11 @@ class SecurityController extends AbstractController
 
             $errors = $samlAuth->getErrors();
             if (!empty($errors)) {
-                throw new \Exception('SAML SLO Error: ' . implode(', ', $errors));
+                throw new Exception('SAML SLO Error: ' . implode(', ', $errors));
             }
 
             return $this->redirectToRoute('app_login');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->addFlash('error', $this->translator->trans('security.error.saml_logout_error') . ': ' . $e->getMessage());
             return $this->redirectToRoute('app_login');
         }

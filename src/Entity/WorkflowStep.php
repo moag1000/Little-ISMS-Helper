@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use InvalidArgumentException;
 use App\Entity\Tenant;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -70,11 +71,11 @@ class WorkflowStep
 
     public function setName(string $name): static
     {
-        if (empty(trim($name))) {
-            throw new \InvalidArgumentException('Step name cannot be empty');
+        if (in_array(trim($name), ['', '0'], true)) {
+            throw new InvalidArgumentException('Step name cannot be empty');
         }
         if (strlen($name) > 255) {
-            throw new \InvalidArgumentException('Step name must be 255 characters or less');
+            throw new InvalidArgumentException('Step name must be 255 characters or less');
         }
         $this->name = $name;
         return $this;
@@ -99,7 +100,7 @@ class WorkflowStep
     public function setStepOrder(int $stepOrder): static
     {
         if ($stepOrder < 0) {
-            throw new \InvalidArgumentException('Step order must be non-negative');
+            throw new InvalidArgumentException('Step order must be non-negative');
         }
         $this->stepOrder = $stepOrder;
         return $this;
@@ -114,7 +115,7 @@ class WorkflowStep
     {
         $allowedTypes = ['approval', 'notification', 'auto_action'];
         if (!in_array($stepType, $allowedTypes, true)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Invalid step type "%s". Allowed types: %s',
                 $stepType,
                 implode(', ', $allowedTypes)
@@ -143,11 +144,11 @@ class WorkflowStep
     public function setApproverUsers(?array $approverUsers): static
     {
         if ($approverUsers !== null) {
-            foreach ($approverUsers as $userId) {
-                if (!is_int($userId) || $userId < 1) {
-                    throw new \InvalidArgumentException(sprintf(
+            foreach ($approverUsers as $approverUser) {
+                if (!is_int($approverUser) || $approverUser < 1) {
+                    throw new InvalidArgumentException(sprintf(
                         'Invalid user ID "%s". User IDs must be positive integers',
-                        $userId
+                        $approverUser
                     ));
                 }
             }
@@ -175,10 +176,10 @@ class WorkflowStep
     public function setDaysToComplete(?int $daysToComplete): static
     {
         if ($daysToComplete !== null && $daysToComplete < 1) {
-            throw new \InvalidArgumentException('Days to complete must be at least 1');
+            throw new InvalidArgumentException('Days to complete must be at least 1');
         }
         if ($daysToComplete !== null && $daysToComplete > 365) {
-            throw new \InvalidArgumentException('Days to complete cannot exceed 365');
+            throw new InvalidArgumentException('Days to complete cannot exceed 365');
         }
         $this->daysToComplete = $daysToComplete;
         return $this;

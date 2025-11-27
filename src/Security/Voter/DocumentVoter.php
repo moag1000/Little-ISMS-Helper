@@ -2,6 +2,7 @@
 
 namespace App\Security\Voter;
 
+use App\Entity\Tenant;
 use App\Entity\Document;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -71,7 +72,7 @@ class DocumentVoter extends Voter
         return match ($attribute) {
             self::VIEW, self::DOWNLOAD => $this->canView($document, $user),
             self::EDIT => $this->canEdit($document, $user),
-            self::DELETE => $this->canDelete($document, $user),
+            self::DELETE => $this->canDelete($user),
             default => false,
         };
     }
@@ -82,13 +83,8 @@ class DocumentVoter extends Voter
         if ($document->getUploadedBy() === $user) {
             return true;
         }
-
         // Security: Multi-tenancy - users can view documents from their tenant
-        if ($document->getUploadedBy()?->getTenant() === $user->getTenant() && $user->getTenant() !== null) {
-            return true;
-        }
-
-        return false;
+        return $document->getUploadedBy()?->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant;
     }
 
     private function canEdit(Document $document, User $user): bool
@@ -97,7 +93,7 @@ class DocumentVoter extends Voter
         return $document->getUploadedBy() === $user;
     }
 
-    private function canDelete(Document $document, User $user): bool
+    private function canDelete(User $user): bool
     {
         // Security: Only admins can delete (enforced by IsGranted in controller)
         return in_array('ROLE_ADMIN', $user->getRoles());

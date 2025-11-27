@@ -2,6 +2,9 @@
 
 namespace App\Repository;
 
+use DateTimeImmutable;
+use App\Entity\User;
+use DateTimeInterface;
 use App\Entity\WorkflowInstance;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -51,7 +54,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
             ->where('wi.status IN (:statuses)')
             ->andWhere('wi.dueDate < :now')
             ->setParameter('statuses', ['pending', 'in_progress'])
-            ->setParameter('now', new \DateTimeImmutable())
+            ->setParameter('now', new DateTimeImmutable())
             ->orderBy('wi.dueDate', 'ASC')
             ->getQuery()
             ->getResult();
@@ -83,69 +86,69 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
      */
     public function getStatistics(): array
     {
-        $qb = $this->createQueryBuilder('wi');
+        $queryBuilder = $this->createQueryBuilder('wi');
 
         return [
-            'total' => $qb->select('COUNT(wi.id)')->getQuery()->getSingleScalarResult(),
-            'pending' => (clone $qb)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', 'pending')->getQuery()->getSingleScalarResult(),
-            'in_progress' => (clone $qb)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', 'in_progress')->getQuery()->getSingleScalarResult(),
-            'approved' => (clone $qb)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', 'approved')->getQuery()->getSingleScalarResult(),
-            'rejected' => (clone $qb)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', 'rejected')->getQuery()->getSingleScalarResult(),
-            'cancelled' => (clone $qb)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', 'cancelled')->getQuery()->getSingleScalarResult(),
+            'total' => $queryBuilder->select('COUNT(wi.id)')->getQuery()->getSingleScalarResult(),
+            'pending' => (clone $queryBuilder)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', 'pending')->getQuery()->getSingleScalarResult(),
+            'in_progress' => (clone $queryBuilder)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', 'in_progress')->getQuery()->getSingleScalarResult(),
+            'approved' => (clone $queryBuilder)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', 'approved')->getQuery()->getSingleScalarResult(),
+            'rejected' => (clone $queryBuilder)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', 'rejected')->getQuery()->getSingleScalarResult(),
+            'cancelled' => (clone $queryBuilder)->select('COUNT(wi.id)')->where('wi.status = :status')->setParameter('status', 'cancelled')->getQuery()->getSingleScalarResult(),
         ];
     }
 
     /**
      * Find pending workflow instances for a specific user.
      *
-     * @param \App\Entity\User $user User to filter by
+     * @param User $user User to filter by
      * @return WorkflowInstance[] Array of pending instances sorted by due date (earliest first)
      */
-    public function findPendingForUser(\App\Entity\User $user): array
+    public function findPendingForUser(User $user): array
     {
         // Get user roles for role-based filtering
         $userRoles = $user->getRoles();
 
         // Query for workflows where user is approver by user ID or role
-        $qb = $this->createQueryBuilder('wi')
+        $queryBuilder = $this->createQueryBuilder('wi')
             ->leftJoin('wi.currentStep', 'step')
             ->where('wi.status IN (:statuses)')
             ->setParameter('statuses', ['pending', 'in_progress'])
             ->orderBy('wi.dueDate', 'ASC');
 
         // Build OR conditions for user matching
-        $orConditions = $qb->expr()->orX();
+        $orx = $queryBuilder->expr()->orX();
 
         // Match by user ID in approverUsers array
-        $orConditions->add($qb->expr()->like('step.approverUsers', ':userId'));
-        $qb->setParameter('userId', '%"' . $user->getId() . '"%');
+        $orx->add($queryBuilder->expr()->like('step.approverUsers', ':userId'));
+        $queryBuilder->setParameter('userId', '%"' . $user->getId() . '"%');
 
         // Match by role in approverRole field
-        foreach ($userRoles as $role) {
-            $paramName = 'role_' . md5($role);
-            $orConditions->add($qb->expr()->eq('step.approverRole', ':' . $paramName));
-            $qb->setParameter($paramName, $role);
+        foreach ($userRoles as $userRole) {
+            $paramName = 'role_' . md5($userRole);
+            $orx->add($queryBuilder->expr()->eq('step.approverRole', ':' . $paramName));
+            $queryBuilder->setParameter($paramName, $userRole);
         }
 
-        $qb->andWhere($orConditions);
+        $queryBuilder->andWhere($orx);
 
-        return $qb->getQuery()->getResult();
+        return $queryBuilder->getQuery()->getResult();
     }
 
     /**
      * Find workflow instances with upcoming deadlines.
      *
-     * @param \DateTimeInterface $within Time window for upcoming deadlines
+     * @param DateTimeInterface $within Time window for upcoming deadlines
      * @return WorkflowInstance[] Array of instances with upcoming deadlines
      */
-    public function findUpcomingDeadlines(\DateTimeInterface $within): array
+    public function findUpcomingDeadlines(DateTimeInterface $within): array
     {
         return $this->createQueryBuilder('wi')
             ->where('wi.status IN (:statuses)')
             ->andWhere('wi.dueDate IS NOT NULL')
             ->andWhere('wi.dueDate BETWEEN :now AND :within')
             ->setParameter('statuses', ['pending', 'in_progress'])
-            ->setParameter('now', new \DateTimeImmutable())
+            ->setParameter('now', new DateTimeImmutable())
             ->setParameter('within', $within)
             ->orderBy('wi.dueDate', 'ASC')
             ->getQuery()

@@ -2,6 +2,10 @@
 
 namespace App\Controller;
 
+use DateTimeImmutable;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Exception;
+use App\Entity\MfaToken;
 use App\Entity\User;
 use App\Entity\Role;
 use App\Form\UserType;
@@ -20,18 +24,16 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/admin/users')]
 class UserManagementController extends AbstractController
 {
     public function __construct(
-        private readonly FileUploadSecurityService $fileUploadService,
+        private readonly FileUploadSecurityService $fileUploadSecurityService,
         private readonly SluggerInterface $slugger,
         private readonly LoggerInterface $logger,
         private readonly AuditLogger $auditLogger,
@@ -39,8 +41,7 @@ class UserManagementController extends AbstractController
         private readonly string $uploadsDirectory = 'uploads/users',
     ) {
     }
-
-    #[Route('', name: 'user_management_index')]
+    #[Route('/admin/users', name: 'user_management_index')]
     public function index(UserRepository $userRepository): Response
     {
         $this->denyAccessUnlessGranted(UserVoter::VIEW_ALL);
@@ -58,12 +59,11 @@ class UserManagementController extends AbstractController
             'initial_admin_id' => $initialAdminId,
         ]);
     }
-
-    #[Route('/new', name: 'user_management_new')]
+    #[Route('/admin/users/new', name: 'user_management_new')]
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher,
+        UserPasswordHasherInterface $userPasswordHasher,
         TranslatorInterface $translator
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::CREATE);
@@ -79,8 +79,8 @@ class UserManagementController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Hash password if provided (and not empty)
             $plainPassword = $form->get('plainPassword')->getData();
-            if (!empty($plainPassword) && trim($plainPassword) !== '') {
-                $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+            if (!empty($plainPassword) && trim((string) $plainPassword) !== '') {
+                $hashedPassword = $userPasswordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($hashedPassword);
             }
 
@@ -131,8 +131,7 @@ class UserManagementController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/bulk-actions', name: 'user_management_bulk_actions', methods: ['POST'])]
+    #[Route('/admin/users/bulk-actions', name: 'user_management_bulk_actions', methods: ['POST'])]
     public function bulkActions(
         Request $request,
         UserRepository $userRepository,
@@ -145,7 +144,7 @@ class UserManagementController extends AbstractController
         $action = $request->request->get('action');
         $userIds = $request->request->all('user_ids') ?? [];
 
-        if (empty($userIds)) {
+        if ($userIds === []) {
             $this->addFlash('error', $translator->trans('user.error.no_users_selected'));
             return $this->redirectToRoute('user_management_index');
         }
@@ -163,7 +162,7 @@ class UserManagementController extends AbstractController
                 case 'activate':
                     if ($this->isGranted(UserVoter::EDIT, $user)) {
                         $user->setIsActive(true);
-                        $user->setUpdatedAt(new \DateTimeImmutable());
+                        $user->setUpdatedAt(new DateTimeImmutable());
                         $count++;
                     } else {
                         $skipped = true;
@@ -175,7 +174,7 @@ class UserManagementController extends AbstractController
                     if ($this->isGranted(UserVoter::EDIT, $user)) {
                         // Protect initial setup admin and current user
                         $isInitialAdmin = $this->initialAdminService->isInitialAdmin($user);
-                        $isCurrentUser = $this->getUser() && $this->getUser()->getId() === $user->getId();
+                        $isCurrentUser = $this->getUser() instanceof UserInterface && $this->getUser()->getId() === $user->getId();
 
                         if ($isInitialAdmin) {
                             $skipped = true;
@@ -185,7 +184,7 @@ class UserManagementController extends AbstractController
                             $skipReason = 'current_user';
                         } else {
                             $user->setIsActive(false);
-                            $user->setUpdatedAt(new \DateTimeImmutable());
+                            $user->setUpdatedAt(new DateTimeImmutable());
                             $count++;
                         }
                     } else {
@@ -201,7 +200,7 @@ class UserManagementController extends AbstractController
                     if ($role && $this->isGranted(UserVoter::EDIT, $user)) {
                         if (!$user->getCustomRoles()->contains($role)) {
                             $user->addCustomRole($role);
-                            $user->setUpdatedAt(new \DateTimeImmutable());
+                            $user->setUpdatedAt(new DateTimeImmutable());
                             $count++;
                         } else {
                             $skipped = true;
@@ -209,7 +208,7 @@ class UserManagementController extends AbstractController
                         }
                     } else {
                         $skipped = true;
-                        $skipReason = !$role ? 'role_not_found' : 'no_permission';
+                        $skipReason = $role ? 'no_permission' : 'role_not_found';
                     }
                     break;
 
@@ -288,16 +287,14 @@ class UserManagementController extends AbstractController
                 ], 'messages');
             }
 
-            foreach ($reasonMessages as $message) {
-                $this->addFlash('info', $message);
+            foreach ($reasonMessages as $reasonMessage) {
+                $this->addFlash('info', $reasonMessage);
             }
         }
 
         return $this->redirectToRoute('user_management_index');
     }
-
-
-    #[Route('/export', name: 'user_management_export', methods: ['GET'])]
+    #[Route('/admin/users/export', name: 'user_management_export', methods: ['GET'])]
     public function export(
         UserRepository $userRepository
     ): StreamedResponse {
@@ -305,7 +302,7 @@ class UserManagementController extends AbstractController
 
         $users = $userRepository->findAll();
 
-        $response = new StreamedResponse(function () use ($users) {
+        $streamedResponse = new StreamedResponse(function () use ($users): void {
             $handle = fopen('php://output', 'w');
 
             // CSV Header
@@ -321,13 +318,12 @@ class UserManagementController extends AbstractController
                 'Auth Provider',
                 'Created At',
                 'Last Login',
-            ]);
+            ],
+            escape: '\\');
 
             // CSV Rows
             foreach ($users as $user) {
-                $roles = array_map(function ($role) {
-                    return $role->getName();
-                }, $user->getCustomRoles()->toArray());
+                $roles = array_map(fn(Role $role): ?string => $role->getName(), $user->getCustomRoles()->toArray());
 
                 fputcsv($handle, [
                     $user->getId(),
@@ -341,24 +337,23 @@ class UserManagementController extends AbstractController
                     $user->getAuthProvider(),
                     $user->getCreatedAt()?->format('Y-m-d H:i:s'),
                     $user->getLastLoginAt()?->format('Y-m-d H:i:s'),
-                ]);
+                ],
+                escape: '\\');
             }
 
             fclose($handle);
         });
 
-        $response->headers->set('Content-Type', 'text/csv');
-        $response->headers->set('Content-Disposition', 'attachment; filename="users_export_' . date('Y-m-d_H-i-s') . '.csv"');
+        $streamedResponse->headers->set('Content-Type', 'text/csv');
+        $streamedResponse->headers->set('Content-Disposition', 'attachment; filename="users_export_' . date('Y-m-d_H-i-s') . '.csv"');
 
-        return $response;
+        return $streamedResponse;
     }
-
-
-    #[Route('/import', name: 'user_management_import', methods: ['GET', 'POST'])]
+    #[Route('/admin/users/import', name: 'user_management_import', methods: ['GET', 'POST'])]
     public function import(
         Request $request,
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher,
+        UserPasswordHasherInterface $userPasswordHasher,
         RoleRepository $roleRepository,
         TranslatorInterface $translator
     ): Response {
@@ -373,12 +368,12 @@ class UserManagementController extends AbstractController
             }
 
             $handle = fopen($file->getPathname(), 'r');
-            $header = fgetcsv($handle); // Skip header
+            $header = fgetcsv($handle, escape: '\\'); // Skip header
 
             $imported = 0;
             $errors = [];
 
-            while (($row = fgetcsv($handle)) !== false) {
+            while (($row = fgetcsv($handle, escape: '\\')) !== false) {
                 try {
                     // Expected CSV format: email, first_name, last_name, password, is_active, roles
                     $email = $row[0] ?? null;
@@ -395,7 +390,7 @@ class UserManagementController extends AbstractController
 
                     // Check if user already exists
                     $existingUser = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
-                    if ($existingUser) {
+                    if ($existingUser instanceof User) {
                         $errors[] = "Skipped: User with email {$email} already exists";
                         continue;
                     }
@@ -409,12 +404,12 @@ class UserManagementController extends AbstractController
 
                     // Set password
                     if ($password) {
-                        $hashedPassword = $passwordHasher->hashPassword($user, $password);
+                        $hashedPassword = $userPasswordHasher->hashPassword($user, $password);
                         $user->setPassword($hashedPassword);
                     } else {
                         // Generate random password if not provided
                         $randomPassword = bin2hex(random_bytes(16));
-                        $hashedPassword = $passwordHasher->hashPassword($user, $randomPassword);
+                        $hashedPassword = $userPasswordHasher->hashPassword($user, $randomPassword);
                         $user->setPassword($hashedPassword);
                     }
 
@@ -429,7 +424,7 @@ class UserManagementController extends AbstractController
 
                     $entityManager->persist($user);
                     $imported++;
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $errors[] = "Error importing row: " . $e->getMessage();
                 }
             }
@@ -440,10 +435,8 @@ class UserManagementController extends AbstractController
 
             $this->addFlash('success', $translator->trans('user.success.imported', ['count' => $imported]));
 
-            if (!empty($errors)) {
-                foreach ($errors as $error) {
-                    $this->addFlash('warning', $error);
-                }
+            foreach ($errors as $error) {
+                $this->addFlash('warning', $error);
             }
 
             return $this->redirectToRoute('user_management_index');
@@ -451,9 +444,7 @@ class UserManagementController extends AbstractController
 
         return $this->render('user_management/import.html.twig');
     }
-
-
-    #[Route('/{id}', name: 'user_management_show', requirements: ['id' => '\d+'])]
+    #[Route('/admin/users/{id}', name: 'user_management_show', requirements: ['id' => '\d+'])]
     public function show(User $user): Response
     {
         $this->denyAccessUnlessGranted(UserVoter::VIEW, $user);
@@ -466,13 +457,12 @@ class UserManagementController extends AbstractController
             'is_initial_admin' => $isInitialAdmin,
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'user_management_edit', requirements: ['id' => '\d+'])]
+    #[Route('/admin/users/{id}/edit', name: 'user_management_edit', requirements: ['id' => '\d+'])]
     public function edit(
         User $user,
         Request $request,
         EntityManagerInterface $entityManager,
-        UserPasswordHasherInterface $passwordHasher,
+        UserPasswordHasherInterface $userPasswordHasher,
         TranslatorInterface $translator
     ): Response {
         $this->denyAccessUnlessGranted(UserVoter::EDIT, $user);
@@ -500,7 +490,7 @@ class UserManagementController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Check if user is editing themselves
-            $isEditingSelf = $this->getUser() && $this->getUser()->getId() === $user->getId();
+            $isEditingSelf = $this->getUser() instanceof UserInterface && $this->getUser()->getId() === $user->getId();
 
             // Protect initial setup admin from being deactivated
             if ($isInitialAdmin && !$user->isActive()) {
@@ -533,8 +523,8 @@ class UserManagementController extends AbstractController
 
             // Update password only if provided (and not empty)
             $plainPassword = $form->get('plainPassword')->getData();
-            if (!empty($plainPassword) && trim($plainPassword) !== '') {
-                $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+            if (!empty($plainPassword) && trim((string) $plainPassword) !== '') {
+                $hashedPassword = $userPasswordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($hashedPassword);
 
                 // Warn user if they changed their own password
@@ -565,7 +555,7 @@ class UserManagementController extends AbstractController
                 $user->setRoles($roles);
             }
 
-            $user->setUpdatedAt(new \DateTimeImmutable());
+            $user->setUpdatedAt(new DateTimeImmutable());
             $entityManager->flush();
 
             // Audit log with before/after values
@@ -624,8 +614,7 @@ class UserManagementController extends AbstractController
             'is_initial_admin' => $isInitialAdmin,
         ]);
     }
-
-    #[Route('/{id}/delete', name: 'user_management_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route('/admin/users/{id}/delete', name: 'user_management_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function delete(
         User $user,
         Request $request,
@@ -681,8 +670,7 @@ class UserManagementController extends AbstractController
 
         return $this->redirectToRoute('user_management_index');
     }
-
-    #[Route('/{id}/toggle-active', name: 'user_management_toggle_active', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route('/admin/users/{id}/toggle-active', name: 'user_management_toggle_active', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function toggleActive(
         User $user,
         Request $request,
@@ -710,7 +698,7 @@ class UserManagementController extends AbstractController
 
             $previousStatus = $user->isActive();
             $user->setIsActive(!$user->isActive());
-            $user->setUpdatedAt(new \DateTimeImmutable());
+            $user->setUpdatedAt(new DateTimeImmutable());
             $entityManager->flush();
 
             // Audit log
@@ -733,8 +721,7 @@ class UserManagementController extends AbstractController
 
         return $this->redirectToRoute('user_management_show', ['id' => $user->getId()]);
     }
-
-    #[Route('/{id}/activity', name: 'user_management_activity', requirements: ['id' => '\d+'])]
+    #[Route('/admin/users/{id}/activity', name: 'user_management_activity', requirements: ['id' => '\d+'])]
     public function activity(
         User $user,
         AuditLogRepository $auditLogRepository,
@@ -773,8 +760,7 @@ class UserManagementController extends AbstractController
             'total_activities' => count($activities),
         ]);
     }
-
-    #[Route('/{id}/mfa', name: 'user_management_mfa', requirements: ['id' => '\d+'])]
+    #[Route('/admin/users/{id}/mfa', name: 'user_management_mfa', requirements: ['id' => '\d+'])]
     public function mfa(
         User $user,
         MfaTokenRepository $mfaTokenRepository
@@ -784,10 +770,10 @@ class UserManagementController extends AbstractController
         $mfaTokens = $mfaTokenRepository->findBy(['user' => $user], ['createdAt' => 'DESC']);
 
         // Calculate MFA statistics
-        $activeTokens = array_filter($mfaTokens, fn($token) => $token->isActive());
+        $activeTokens = array_filter($mfaTokens, fn(MfaToken $mfaToken): bool => $mfaToken->isActive());
         $tokensByType = [];
-        foreach ($mfaTokens as $token) {
-            $type = $token->getTokenType();
+        foreach ($mfaTokens as $mfaToken) {
+            $type = $mfaToken->getTokenType();
             if (!isset($tokensByType[$type])) {
                 $tokensByType[$type] = 0;
             }
@@ -802,8 +788,7 @@ class UserManagementController extends AbstractController
             'mfa_enabled' => count($activeTokens) > 0,
         ]);
     }
-
-    #[Route('/{id}/mfa/{tokenId}/reset', name: 'user_management_mfa_reset', requirements: ['id' => '\d+', 'tokenId' => '\d+'], methods: ['POST'])]
+    #[Route('/admin/users/{id}/mfa/{tokenId}/reset', name: 'user_management_mfa_reset', requirements: ['id' => '\d+', 'tokenId' => '\d+'], methods: ['POST'])]
     public function mfaReset(
         User $user,
         int $tokenId,
@@ -830,24 +815,22 @@ class UserManagementController extends AbstractController
 
         return $this->redirectToRoute('user_management_mfa', ['id' => $user->getId()]);
     }
-
-    #[Route('/{id}/impersonate', name: 'user_management_impersonate', requirements: ['id' => '\d+'])]
+    #[Route('/admin/users/{id}/impersonate', name: 'user_management_impersonate', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_SUPER_ADMIN')]
     public function impersonate(User $user): Response
     {
         // Redirect to the homepage with the impersonation parameter
         // Using direct URL with _switch_user parameter for Symfony's user impersonation
-        return $this->redirect('/?_switch_user=' . urlencode($user->getEmail()));
+        return $this->redirect('/?_switch_user=' . urlencode((string) $user->getEmail()));
     }
-
     /**
      * Handle avatar upload with security validation
      */
-    private function handleAvatarUpload(UploadedFile $file, User $user): ?string
+    private function handleAvatarUpload(UploadedFile $uploadedFile, User $user): ?string
     {
         try {
             // Security validation using FileUploadSecurityService
-            $validation = $this->fileUploadService->validateUpload($file);
+            $validation = $this->fileUploadSecurityService->validateUpload($uploadedFile);
 
             if (!$validation['valid']) {
                 $this->addFlash('warning', 'Avatar upload failed: ' . $validation['error']);
@@ -859,13 +842,13 @@ class UserManagementController extends AbstractController
             }
 
             // Generate safe filename
-            $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
             $safeFilename = $this->slugger->slug($originalFilename);
             $newFilename = sprintf(
                 'user-%d-%s.%s',
                 $user->getId() ?: uniqid(),
                 uniqid(),
-                $file->guessExtension()
+                $uploadedFile->guessExtension()
             );
 
             // Move file to uploads directory
@@ -876,7 +859,7 @@ class UserManagementController extends AbstractController
                 mkdir($uploadsPath, 0755, true);
             }
 
-            $file->move($uploadsPath, $newFilename);
+            $uploadedFile->move($uploadsPath, $newFilename);
 
             $this->logger->info('Avatar uploaded successfully', [
                 'user_email' => $user->getEmail(),
@@ -885,7 +868,7 @@ class UserManagementController extends AbstractController
 
             return $this->uploadsDirectory . '/' . $newFilename;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Avatar upload failed', [
                 'user_email' => $user->getEmail(),
                 'error' => $e->getMessage(),
@@ -894,7 +877,6 @@ class UserManagementController extends AbstractController
             return null;
         }
     }
-
     /**
      * Delete old avatar file
      */
@@ -906,7 +888,7 @@ class UserManagementController extends AbstractController
                 unlink($fullPath);
                 $this->logger->info('Old avatar deleted', ['path' => $avatarPath]);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to delete old avatar', [
                 'path' => $avatarPath,
                 'error' => $e->getMessage(),

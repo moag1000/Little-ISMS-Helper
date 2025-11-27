@@ -2,6 +2,10 @@
 
 namespace App\Service;
 
+use App\Entity\WorkflowInstance;
+use Exception;
+use App\Entity\WorkflowStep;
+use App\Entity\User;
 use App\Entity\Document;
 use App\Repository\UserRepository;
 use Psr\Log\LoggerInterface;
@@ -31,13 +35,13 @@ use Psr\Log\LoggerInterface;
 class DocumentApprovalService
 {
     // Document categories requiring approval
-    private const CATEGORY_POLICY = 'policy';
-    private const CATEGORY_PROCEDURE = 'procedure';
-    private const CATEGORY_GUIDELINE = 'guideline';
+    private const string CATEGORY_POLICY = 'policy';
+    private const string CATEGORY_PROCEDURE = 'procedure';
+    private const string CATEGORY_GUIDELINE = 'guideline';
 
     public function __construct(
         private readonly WorkflowService $workflowService,
-        private readonly EmailNotificationService $emailService,
+        private readonly EmailNotificationService $emailNotificationService,
         private readonly UserRepository $userRepository,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger
@@ -82,7 +86,7 @@ class DocumentApprovalService
             $document->getId()
         );
 
-        if ($existingWorkflow && in_array($existingWorkflow->getStatus(), ['pending', 'in_progress'])) {
+        if ($existingWorkflow instanceof WorkflowInstance && in_array($existingWorkflow->getStatus(), ['pending', 'in_progress'])) {
             $this->logger->info('Active workflow already exists for document', [
                 'document_id' => $document->getId(),
                 'workflow_id' => $existingWorkflow->getId(),
@@ -106,7 +110,7 @@ class DocumentApprovalService
                 'document_approval' // Optional: specific workflow name
             );
 
-            if (!$workflowInstance) {
+            if (!$workflowInstance instanceof WorkflowInstance) {
                 $this->logger->warning('No workflow definition found for Document', [
                     'document_id' => $document->getId(),
                 ]);
@@ -155,7 +159,7 @@ class DocumentApprovalService
                 'status' => $workflowInstance->getStatus(),
             ];
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to start document approval workflow', [
                 'document_id' => $document->getId(),
                 'error' => $e->getMessage(),
@@ -173,9 +177,6 @@ class DocumentApprovalService
 
     /**
      * Check if document requires approval based on category
-     *
-     * @param Document $document
-     * @return bool
      */
     private function requiresApproval(Document $document): bool
     {
@@ -189,7 +190,6 @@ class DocumentApprovalService
     /**
      * Determine approval level based on document category
      *
-     * @param Document $document
      * @return string Approval level (policy, procedure, guideline)
      */
     private function determineApprovalLevel(Document $document): string
@@ -204,21 +204,16 @@ class DocumentApprovalService
 
     /**
      * Send approval notifications to workflow approvers
-     *
-     * @param Document $document
-     * @param \App\Entity\WorkflowInstance $workflowInstance
-     * @param string $approvalLevel
-     * @param bool $isNewDocument
      */
     private function sendApprovalNotifications(
         Document $document,
-        \App\Entity\WorkflowInstance $workflowInstance,
+        WorkflowInstance $workflowInstance,
         string $approvalLevel,
         bool $isNewDocument
     ): void {
         // Get current step approver
         $currentStep = $workflowInstance->getCurrentStep();
-        if (!$currentStep) {
+        if (!$currentStep instanceof WorkflowStep) {
             return;
         }
 
@@ -233,28 +228,23 @@ class DocumentApprovalService
         // Send to all users with assigned role
         if ($assignedRole) {
             $roleUsers = $this->userRepository->findByRole($assignedRole);
-            foreach ($roleUsers as $user) {
-                $this->sendNotificationToUser($document, $user, $approvalLevel, $isNewDocument);
+            foreach ($roleUsers as $roleUser) {
+                $this->sendNotificationToUser($document, $roleUser, $approvalLevel, $isNewDocument);
             }
         }
     }
 
     /**
      * Send notification email to a specific user
-     *
-     * @param Document $document
-     * @param \App\Entity\User $user
-     * @param string $approvalLevel
-     * @param bool $isNewDocument
      */
     private function sendNotificationToUser(
         Document $document,
-        \App\Entity\User $user,
+        User $user,
         string $approvalLevel,
         bool $isNewDocument
     ): void {
         try {
-            $this->emailService->sendEmail(
+            $this->emailNotificationService->sendEmail(
                 $user->getEmail(),
                 sprintf('Document Approval Required: %s', $document->getOriginalFilename()),
                 'emails/document_approval_notification.html.twig',
@@ -272,7 +262,7 @@ class DocumentApprovalService
                 'user_email' => $user->getEmail(),
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to send approval notification', [
                 'document_id' => $document->getId(),
                 'user_email' => $user->getEmail(),

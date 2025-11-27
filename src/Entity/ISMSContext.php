@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use App\Entity\Tenant;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
@@ -86,19 +88,19 @@ class ISMSContext
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['isms_context:read', 'isms_context:write'])]
-    private ?\DateTimeInterface $lastReviewDate = null;
+    private ?DateTimeInterface $lastReviewDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['isms_context:read', 'isms_context:write'])]
-    private ?\DateTimeInterface $nextReviewDate = null;
+    private ?DateTimeInterface $nextReviewDate = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['isms_context:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['isms_context:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
     #[ORM\JoinColumn(nullable: true)]
@@ -106,7 +108,7 @@ class ISMSContext
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -246,45 +248,45 @@ class ISMSContext
         return $this;
     }
 
-    public function getLastReviewDate(): ?\DateTimeInterface
+    public function getLastReviewDate(): ?DateTimeInterface
     {
         return $this->lastReviewDate;
     }
 
-    public function setLastReviewDate(?\DateTimeInterface $lastReviewDate): static
+    public function setLastReviewDate(?DateTimeInterface $lastReviewDate): static
     {
         $this->lastReviewDate = $lastReviewDate;
         return $this;
     }
 
-    public function getNextReviewDate(): ?\DateTimeInterface
+    public function getNextReviewDate(): ?DateTimeInterface
     {
         return $this->nextReviewDate;
     }
 
-    public function setNextReviewDate(?\DateTimeInterface $nextReviewDate): static
+    public function setNextReviewDate(?DateTimeInterface $nextReviewDate): static
     {
         $this->nextReviewDate = $nextReviewDate;
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;

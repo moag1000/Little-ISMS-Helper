@@ -87,6 +87,7 @@ close: Close
 confirm: Confirm
 back: Back
 common:
+    next: Next
     yes: 'Yes'
     no: 'No'
     new: 'New'
@@ -242,6 +243,8 @@ activity:
 person:
     title: ''
     name: Person
+    section:
+        access: 'Access Permissions'
     full_name: 'Full Name'
     person_type: 'Person Type'
     badge_id: 'Badge ID'
@@ -1378,3 +1381,7 @@ label:
     classification_confidential_upper: ''
 report:
     default_approver: ''
+yes: Yes
+no: No
+notifications:
+    title: Notifications

@@ -2,6 +2,7 @@
 
 namespace App\Security\Voter;
 
+use App\Entity\Tenant;
 use App\Entity\Control;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -62,7 +63,7 @@ class ControlVoter extends Voter
         return match ($attribute) {
             self::VIEW => $this->canView($control, $user),
             self::EDIT => $this->canEdit($control, $user),
-            self::DELETE => $this->canDelete($control, $user),
+            self::DELETE => $this->canDelete($user),
             default => false,
         };
     }
@@ -70,17 +71,17 @@ class ControlVoter extends Voter
     private function canView(Control $control, User $user): bool
     {
         // Security: Multi-tenancy - users can view controls from their tenant
-        return $control->getTenant() === $user->getTenant() && $user->getTenant() !== null;
+        return $control->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant;
     }
 
     private function canEdit(Control $control, User $user): bool
     {
         // Security: Users can edit controls from their tenant
         // Could be extended with control owner checks
-        return $control->getTenant() === $user->getTenant() && $user->getTenant() !== null;
+        return $control->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant;
     }
 
-    private function canDelete(Control $control, User $user): bool
+    private function canDelete(User $user): bool
     {
         // Security: Only admins can delete
         return in_array('ROLE_ADMIN', $user->getRoles());

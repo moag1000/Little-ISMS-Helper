@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
+use InvalidArgumentException;
 use App\Repository\ComplianceRequirementFulfillmentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -54,7 +56,7 @@ class ComplianceRequirementFulfillment
      */
     #[ORM\ManyToOne(targetEntity: ComplianceRequirement::class)]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    private ?ComplianceRequirement $requirement = null;
+    private ?ComplianceRequirement $complianceRequirement = null;
 
     /**
      * Is this requirement applicable to this tenant?
@@ -95,14 +97,14 @@ class ComplianceRequirementFulfillment
      * ISO 27001: Annual reviews required
      */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $lastReviewDate = null;
+    private ?DateTimeImmutable $lastReviewDate = null;
 
     /**
      * Next review date
      * ISO 27001: Scheduled compliance reviews
      */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $nextReviewDate = null;
+    private ?DateTimeImmutable $nextReviewDate = null;
 
     /**
      * Responsible person for implementing this requirement
@@ -118,10 +120,10 @@ class ComplianceRequirementFulfillment
     private string $status = 'not_started'; // not_started, in_progress, implemented, verified
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
 
     /**
      * User who last updated this fulfillment
@@ -132,7 +134,7 @@ class ComplianceRequirementFulfillment
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -153,12 +155,12 @@ class ComplianceRequirementFulfillment
 
     public function getRequirement(): ?ComplianceRequirement
     {
-        return $this->requirement;
+        return $this->complianceRequirement;
     }
 
-    public function setRequirement(?ComplianceRequirement $requirement): static
+    public function setRequirement(?ComplianceRequirement $complianceRequirement): static
     {
-        $this->requirement = $requirement;
+        $this->complianceRequirement = $complianceRequirement;
         return $this;
     }
 
@@ -218,23 +220,23 @@ class ComplianceRequirementFulfillment
         return $this;
     }
 
-    public function getLastReviewDate(): ?\DateTimeImmutable
+    public function getLastReviewDate(): ?DateTimeImmutable
     {
         return $this->lastReviewDate;
     }
 
-    public function setLastReviewDate(?\DateTimeImmutable $lastReviewDate): static
+    public function setLastReviewDate(?DateTimeImmutable $lastReviewDate): static
     {
         $this->lastReviewDate = $lastReviewDate;
         return $this;
     }
 
-    public function getNextReviewDate(): ?\DateTimeImmutable
+    public function getNextReviewDate(): ?DateTimeImmutable
     {
         return $this->nextReviewDate;
     }
 
-    public function setNextReviewDate(?\DateTimeImmutable $nextReviewDate): static
+    public function setNextReviewDate(?DateTimeImmutable $nextReviewDate): static
     {
         $this->nextReviewDate = $nextReviewDate;
         return $this;
@@ -245,9 +247,9 @@ class ComplianceRequirementFulfillment
         return $this->responsiblePerson;
     }
 
-    public function setResponsiblePerson(?User $responsiblePerson): static
+    public function setResponsiblePerson(?User $user): static
     {
-        $this->responsiblePerson = $responsiblePerson;
+        $this->responsiblePerson = $user;
         return $this;
     }
 
@@ -260,7 +262,7 @@ class ComplianceRequirementFulfillment
     {
         $allowedStatuses = ['not_started', 'in_progress', 'implemented', 'verified'];
         if (!in_array($status, $allowedStatuses)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new InvalidArgumentException(sprintf(
                 'Invalid status "%s". Allowed: %s',
                 $status,
                 implode(', ', $allowedStatuses)
@@ -270,17 +272,17 @@ class ComplianceRequirementFulfillment
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(?DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -291,9 +293,9 @@ class ComplianceRequirementFulfillment
         return $this->lastUpdatedBy;
     }
 
-    public function setLastUpdatedBy(?User $lastUpdatedBy): static
+    public function setLastUpdatedBy(?User $user): static
     {
-        $this->lastUpdatedBy = $lastUpdatedBy;
+        $this->lastUpdatedBy = $user;
         return $this;
     }
 
@@ -303,7 +305,7 @@ class ComplianceRequirementFulfillment
     #[ORM\PreUpdate]
     public function onPreUpdate(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     /**
@@ -328,11 +330,11 @@ class ComplianceRequirementFulfillment
      */
     public function isOverdueForReview(): bool
     {
-        if (!$this->nextReviewDate) {
+        if (!$this->nextReviewDate instanceof DateTimeImmutable) {
             return false;
         }
 
-        return $this->nextReviewDate < new \DateTimeImmutable();
+        return $this->nextReviewDate < new DateTimeImmutable();
     }
 
     /**

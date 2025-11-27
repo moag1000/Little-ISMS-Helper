@@ -23,7 +23,7 @@ class ComplianceFrameworkRepository extends ServiceEntityRepository
 {
     public function __construct(
         ManagerRegistry $registry,
-        private readonly ComplianceRequirementRepository $requirementRepository,
+        private readonly ComplianceRequirementRepository $complianceRequirementRepository,
         private readonly TenantContext $tenantContext
     ) {
         parent::__construct($registry, ComplianceFramework::class);
@@ -95,7 +95,7 @@ class ComplianceFrameworkRepository extends ServiceEntityRepository
 
         foreach ($frameworks as $framework) {
             // Get tenant-specific statistics
-            $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
+            $stats = $this->complianceRequirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
 
             // Calculate compliance percentage
             $compliancePercentage = $stats['applicable'] > 0

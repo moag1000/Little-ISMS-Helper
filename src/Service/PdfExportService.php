@@ -26,13 +26,13 @@ use Twig\Environment;
 class PdfExportService
 {
     public function __construct(
-        private readonly Environment $twig
+        private readonly Environment $twigEnvironment
     ) {
     }
 
     public function generatePdf(string $template, array $data, array $options = []): string
     {
-        $html = $this->twig->render($template, $data);
+        $html = $this->twigEnvironment->render($template, $data);
 
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'DejaVu Sans');

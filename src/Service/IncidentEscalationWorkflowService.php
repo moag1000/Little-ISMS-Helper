@@ -2,10 +2,11 @@
 
 namespace App\Service;
 
+use DateTimeImmutable;
+use App\Entity\WorkflowInstance;
 use App\Entity\Incident;
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -37,25 +38,24 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class IncidentEscalationWorkflowService
 {
     // Escalation thresholds based on ISO 27035-2:2016
-    private const SEVERITY_LOW = 'low';
-    private const SEVERITY_MEDIUM = 'medium';
-    private const SEVERITY_HIGH = 'high';
-    private const SEVERITY_CRITICAL = 'critical';
+    private const string SEVERITY_LOW = 'low';
+    private const string SEVERITY_MEDIUM = 'medium';
+    private const string SEVERITY_HIGH = 'high';
+    private const string SEVERITY_CRITICAL = 'critical';
 
     // GDPR breach notification deadline (hours)
-    private const GDPR_BREACH_DEADLINE_HOURS = 72;
+    private const int GDPR_BREACH_DEADLINE_HOURS = 72;
 
     // Response time SLAs (hours)
-    private const SLA_LOW = 48;        // 2 days
-    private const SLA_MEDIUM = 24;     // 1 day
-    private const SLA_HIGH = 8;        // 8 hours
-    private const SLA_CRITICAL = 2;    // 2 hours
-    private const SLA_BREACH = 1;      // 1 hour (immediate)
+    private const int SLA_LOW = 48;        // 2 days
+    private const int SLA_MEDIUM = 24;     // 1 day
+    private const int SLA_HIGH = 8;        // 8 hours
+    private const int SLA_CRITICAL = 2;    // 2 hours
+    private const int SLA_BREACH = 1;      // 1 hour (immediate)
 
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
         private readonly WorkflowService $workflowService,
-        private readonly EmailNotificationService $emailService,
+        private readonly EmailNotificationService $emailNotificationService,
         private readonly UserRepository $userRepository,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
@@ -98,9 +98,6 @@ class IncidentEscalationWorkflowService
      * Escalate data breach incident - GDPR 72h compliance
      *
      * ISO 27001:2022 Clause 8.3.2 + GDPR Art. 33 + BDSG § 42
-     *
-     * @param Incident $incident
-     * @return array
      */
     private function escalateDataBreach(Incident $incident): array
     {
@@ -110,11 +107,11 @@ class IncidentEscalationWorkflowService
         ]);
 
         // Calculate 72h deadline
-        $detectedAt = $incident->getDetectedAt() ?? new \DateTimeImmutable();
+        $detectedAt = $incident->getDetectedAt() ?? new DateTimeImmutable();
         $deadline = $detectedAt->modify('+' . self::GDPR_BREACH_DEADLINE_HOURS . ' hours');
 
         // Calculate time remaining
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
         $hoursRemaining = ($deadline->getTimestamp() - $now->getTimestamp()) / 3600;
 
         // Find DPO, CISO, and CEO
@@ -129,7 +126,7 @@ class IncidentEscalationWorkflowService
             'Data Breach Notification'
         );
 
-        if (!$workflowInstance) {
+        if (!$workflowInstance instanceof WorkflowInstance) {
             $this->logger->warning('No workflow found for Data Breach Notification', [
                 'incident_id' => $incident->getId(),
             ]);
@@ -153,13 +150,12 @@ class IncidentEscalationWorkflowService
                     'ciso' => $ciso?->getEmail(),
                     'ceo' => $ceo?->getEmail(),
                 ],
-            ],
-            null
+            ]
         );
 
         return [
             'escalation_level' => 'data_breach',
-            'workflow_started' => $workflowInstance !== null,
+            'workflow_started' => $workflowInstance instanceof WorkflowInstance,
             'workflow_instance' => $workflowInstance,
             'deadline' => $deadline,
             'hours_remaining' => round($hoursRemaining, 1),
@@ -173,9 +169,6 @@ class IncidentEscalationWorkflowService
      * Escalate critical severity incident
      *
      * Notifies: Incident Manager + CISO + Management
-     *
-     * @param Incident $incident
-     * @return array
      */
     private function escalateCritical(Incident $incident): array
     {
@@ -190,7 +183,7 @@ class IncidentEscalationWorkflowService
         $management = $this->findUsersByRole('ROLE_MANAGER');
 
         // Calculate SLA deadline
-        $slaDeadline = (new \DateTimeImmutable())->modify('+' . self::SLA_CRITICAL . ' hours');
+        $slaDeadline = new DateTimeImmutable()->modify('+' . self::SLA_CRITICAL . ' hours');
 
         // Create workflow for critical incident response
         $workflowInstance = $this->workflowService->startWorkflow(
@@ -199,7 +192,7 @@ class IncidentEscalationWorkflowService
             'Critical Incident Response'
         );
 
-        if (!$workflowInstance) {
+        if (!$workflowInstance instanceof WorkflowInstance) {
             $this->logger->warning('No workflow found for Critical Incident Response', [
                 'incident_id' => $incident->getId(),
             ]);
@@ -214,16 +207,16 @@ class IncidentEscalationWorkflowService
 
         // Send notifications
         $notifiedUsers = [];
-        if ($incidentManager) {
-            $this->emailService->sendIncidentEscalationNotification($incidentManager, $incident, 'critical', $slaDeadline, $incidentUrl);
+        if ($incidentManager instanceof User) {
+            $this->emailNotificationService->sendIncidentEscalationNotification($incidentManager, $incident, 'critical', $slaDeadline, $incidentUrl);
             $notifiedUsers[] = $incidentManager;
         }
-        if ($ciso) {
-            $this->emailService->sendIncidentEscalationNotification($ciso, $incident, 'critical', $slaDeadline, $incidentUrl);
+        if ($ciso instanceof User) {
+            $this->emailNotificationService->sendIncidentEscalationNotification($ciso, $incident, 'critical', $slaDeadline, $incidentUrl);
             $notifiedUsers[] = $ciso;
         }
         foreach ($management as $manager) {
-            $this->emailService->sendIncidentEscalationNotification($manager, $incident, 'critical', $slaDeadline, $incidentUrl);
+            $this->emailNotificationService->sendIncidentEscalationNotification($manager, $incident, 'critical', $slaDeadline, $incidentUrl);
             $notifiedUsers[] = $manager;
         }
 
@@ -237,13 +230,12 @@ class IncidentEscalationWorkflowService
                 'incident_number' => $incident->getIncidentNumber(),
                 'sla_deadline' => $slaDeadline->format('Y-m-d H:i:s'),
                 'notified_count' => count($notifiedUsers),
-            ],
-            null
+            ]
         );
 
         return [
             'escalation_level' => 'critical',
-            'workflow_started' => $workflowInstance !== null,
+            'workflow_started' => $workflowInstance instanceof WorkflowInstance,
             'workflow_instance' => $workflowInstance,
             'sla_deadline' => $slaDeadline,
             'sla_hours' => self::SLA_CRITICAL,
@@ -257,9 +249,6 @@ class IncidentEscalationWorkflowService
      * Escalate high severity incident
      *
      * Notifies: Incident Manager + CISO
-     *
-     * @param Incident $incident
-     * @return array
      */
     private function escalateHigh(Incident $incident): array
     {
@@ -271,7 +260,7 @@ class IncidentEscalationWorkflowService
         $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
         $ciso = $this->findUserByRole('ROLE_CISO');
 
-        $slaDeadline = (new \DateTimeImmutable())->modify('+' . self::SLA_HIGH . ' hours');
+        $slaDeadline = new DateTimeImmutable()->modify('+' . self::SLA_HIGH . ' hours');
 
         // Create workflow for high severity response
         $workflowInstance = $this->workflowService->startWorkflow(
@@ -280,7 +269,7 @@ class IncidentEscalationWorkflowService
             'High Severity Incident'
         );
 
-        if (!$workflowInstance) {
+        if (!$workflowInstance instanceof WorkflowInstance) {
             $this->logger->warning('No workflow found for High Severity Incident', [
                 'incident_id' => $incident->getId(),
             ]);
@@ -294,12 +283,12 @@ class IncidentEscalationWorkflowService
         );
 
         $notifiedUsers = [];
-        if ($incidentManager) {
-            $this->emailService->sendIncidentEscalationNotification($incidentManager, $incident, 'high', $slaDeadline, $incidentUrl);
+        if ($incidentManager instanceof User) {
+            $this->emailNotificationService->sendIncidentEscalationNotification($incidentManager, $incident, 'high', $slaDeadline, $incidentUrl);
             $notifiedUsers[] = $incidentManager;
         }
-        if ($ciso) {
-            $this->emailService->sendIncidentEscalationNotification($ciso, $incident, 'high', $slaDeadline, $incidentUrl);
+        if ($ciso instanceof User) {
+            $this->emailNotificationService->sendIncidentEscalationNotification($ciso, $incident, 'high', $slaDeadline, $incidentUrl);
             $notifiedUsers[] = $ciso;
         }
 
@@ -311,13 +300,12 @@ class IncidentEscalationWorkflowService
             [
                 'incident_number' => $incident->getIncidentNumber(),
                 'sla_deadline' => $slaDeadline->format('Y-m-d H:i:s'),
-            ],
-            null
+            ]
         );
 
         return [
             'escalation_level' => 'high',
-            'workflow_started' => $workflowInstance !== null,
+            'workflow_started' => $workflowInstance instanceof WorkflowInstance,
             'workflow_instance' => $workflowInstance,
             'sla_deadline' => $slaDeadline,
             'sla_hours' => self::SLA_HIGH,
@@ -331,14 +319,11 @@ class IncidentEscalationWorkflowService
      * Escalate medium severity incident
      *
      * Notifies: Incident Manager
-     *
-     * @param Incident $incident
-     * @return array
      */
     private function escalateMedium(Incident $incident): array
     {
         $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
-        $slaDeadline = (new \DateTimeImmutable())->modify('+' . self::SLA_MEDIUM . ' hours');
+        $slaDeadline = new DateTimeImmutable()->modify('+' . self::SLA_MEDIUM . ' hours');
 
         $workflowInstance = $this->workflowService->startWorkflow(
             'Incident',
@@ -346,7 +331,7 @@ class IncidentEscalationWorkflowService
             'Medium Severity Incident'
         );
 
-        if (!$workflowInstance) {
+        if (!$workflowInstance instanceof WorkflowInstance) {
             $this->logger->warning('No workflow found for Medium Severity Incident', [
                 'incident_id' => $incident->getId(),
             ]);
@@ -359,8 +344,8 @@ class IncidentEscalationWorkflowService
             UrlGeneratorInterface::ABSOLUTE_URL
         );
 
-        if ($incidentManager) {
-            $this->emailService->sendIncidentEscalationNotification($incidentManager, $incident, 'medium', $slaDeadline, $incidentUrl);
+        if ($incidentManager instanceof User) {
+            $this->emailNotificationService->sendIncidentEscalationNotification($incidentManager, $incident, 'medium', $slaDeadline, $incidentUrl);
         }
 
         $this->auditLogger->logCustom(
@@ -368,17 +353,16 @@ class IncidentEscalationWorkflowService
             'medium_incident_escalated',
             $incident->getId(),
             null,
-            ['incident_number' => $incident->getIncidentNumber()],
-            null
+            ['incident_number' => $incident->getIncidentNumber()]
         );
 
         return [
             'escalation_level' => 'medium',
-            'workflow_started' => $workflowInstance !== null,
+            'workflow_started' => $workflowInstance instanceof WorkflowInstance,
             'workflow_instance' => $workflowInstance,
             'sla_deadline' => $slaDeadline,
             'sla_hours' => self::SLA_MEDIUM,
-            'notified_users' => $incidentManager ? [$incidentManager] : [],
+            'notified_users' => $incidentManager instanceof User ? [$incidentManager] : [],
             'requires_approval' => false,
             'auto_notification' => true,
         ];
@@ -388,14 +372,11 @@ class IncidentEscalationWorkflowService
      * Escalate low severity incident
      *
      * Notifies: Incident Manager (low priority)
-     *
-     * @param Incident $incident
-     * @return array
      */
     private function escalateLow(Incident $incident): array
     {
         $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
-        $slaDeadline = (new \DateTimeImmutable())->modify('+' . self::SLA_LOW . ' hours');
+        $slaDeadline = new DateTimeImmutable()->modify('+' . self::SLA_LOW . ' hours');
 
         // Generate incident URL for email
         $incidentUrl = $this->urlGenerator->generate(
@@ -405,8 +386,8 @@ class IncidentEscalationWorkflowService
         );
 
         // No workflow for low severity - just track SLA
-        if ($incidentManager) {
-            $this->emailService->sendIncidentEscalationNotification($incidentManager, $incident, 'low', $slaDeadline, $incidentUrl);
+        if ($incidentManager instanceof User) {
+            $this->emailNotificationService->sendIncidentEscalationNotification($incidentManager, $incident, 'low', $slaDeadline, $incidentUrl);
         }
 
         $this->auditLogger->logCustom(
@@ -414,8 +395,7 @@ class IncidentEscalationWorkflowService
             'low_incident_logged',
             $incident->getId(),
             null,
-            ['incident_number' => $incident->getIncidentNumber()],
-            null
+            ['incident_number' => $incident->getIncidentNumber()]
         );
 
         return [
@@ -424,7 +404,7 @@ class IncidentEscalationWorkflowService
             'workflow_instance' => null,
             'sla_deadline' => $slaDeadline,
             'sla_hours' => self::SLA_LOW,
-            'notified_users' => $incidentManager ? [$incidentManager] : [],
+            'notified_users' => $incidentManager instanceof User ? [$incidentManager] : [],
             'requires_approval' => false,
             'auto_notification' => true,
         ];
@@ -432,19 +412,13 @@ class IncidentEscalationWorkflowService
 
     /**
      * Send data breach notifications to DPO, CISO, CEO
-     *
-     * @param Incident $incident
-     * @param User|null $dpo
-     * @param User|null $ciso
-     * @param User|null $ceo
-     * @param \DateTimeImmutable $deadline
      */
     private function notifyDataBreach(
         Incident $incident,
         ?User $dpo,
         ?User $ciso,
         ?User $ceo,
-        \DateTimeImmutable $deadline
+        DateTimeImmutable $deadline
     ): void {
         // Generate incident URL for email
         $incidentUrl = $this->urlGenerator->generate(
@@ -461,24 +435,21 @@ class IncidentEscalationWorkflowService
             'incident_url' => $incidentUrl,
         ];
 
-        if ($dpo) {
-            $this->emailService->sendDataBreachNotification($dpo, $context);
+        if ($dpo instanceof User) {
+            $this->emailNotificationService->sendDataBreachNotification($dpo, $context);
         }
 
-        if ($ciso) {
-            $this->emailService->sendDataBreachNotification($ciso, $context);
+        if ($ciso instanceof User) {
+            $this->emailNotificationService->sendDataBreachNotification($ciso, $context);
         }
 
-        if ($ceo) {
-            $this->emailService->sendDataBreachNotification($ceo, $context);
+        if ($ceo instanceof User) {
+            $this->emailNotificationService->sendDataBreachNotification($ceo, $context);
         }
     }
 
     /**
      * Find user by role
-     *
-     * @param string $role
-     * @return User|null
      */
     private function findUserByRole(string $role): ?User
     {
@@ -488,9 +459,6 @@ class IncidentEscalationWorkflowService
 
     /**
      * Find all users with a specific role
-     *
-     * @param string $role
-     * @return array
      */
     private function findUsersByRole(string $role): array
     {
@@ -499,27 +467,23 @@ class IncidentEscalationWorkflowService
 
     /**
      * Check if incident requires immediate escalation
-     *
-     * @param Incident $incident
-     * @return bool
      */
     public function requiresImmediateEscalation(Incident $incident): bool
     {
-        return $incident->isDataBreachOccurred()
-            || $incident->getSeverity() === self::SEVERITY_CRITICAL;
+        if ($incident->isDataBreachOccurred()) {
+            return true;
+        }
+        return $incident->getSeverity() === self::SEVERITY_CRITICAL;
     }
 
     /**
      * Get escalation status for an incident
-     *
-     * @param Incident $incident
-     * @return array
      */
     public function getEscalationStatus(Incident $incident): array
     {
         $workflowInstance = $this->workflowService->getWorkflowInstance('Incident', $incident->getId());
 
-        if (!$workflowInstance) {
+        if (!$workflowInstance instanceof WorkflowInstance) {
             return [
                 'has_active_workflow' => false,
                 'escalation_level' => null,
@@ -539,9 +503,6 @@ class IncidentEscalationWorkflowService
 
     /**
      * Determine escalation level based on incident properties
-     *
-     * @param Incident $incident
-     * @return string
      */
     private function determineEscalationLevel(Incident $incident): string
     {
@@ -618,8 +579,8 @@ class IncidentEscalationWorkflowService
             $ciso = $this->findUserByRole('ROLE_CISO');
             $management = $this->findUsersByRole('ROLE_MANAGER');
             $notifiedUsers = array_filter(array_merge(
-                $incidentManager ? [$incidentManager] : [],
-                $ciso ? [$ciso] : [],
+                $incidentManager instanceof User ? [$incidentManager] : [],
+                $ciso instanceof User ? [$ciso] : [],
                 $management
             ));
         } elseif ($severity === self::SEVERITY_HIGH) {
@@ -630,13 +591,13 @@ class IncidentEscalationWorkflowService
         } elseif ($severity === self::SEVERITY_MEDIUM) {
             $notifiedRoles = ['Incident Manager'];
             $incidentManager = $this->findUserByRole('ROLE_INCIDENT_MANAGER');
-            $notifiedUsers = $incidentManager ? [$incidentManager] : [];
+            $notifiedUsers = $incidentManager instanceof User ? [$incidentManager] : [];
         }
 
         // GDPR deadline calculation
         $gdprDeadline = null;
         if ($isDataBreach) {
-            $detectedAt = $incident->getDetectedAt() ?? new \DateTimeImmutable();
+            $detectedAt = $incident->getDetectedAt() ?? new DateTimeImmutable();
             $gdprDeadline = $detectedAt->modify('+' . self::GDPR_BREACH_DEADLINE_HOURS . ' hours');
         }
 

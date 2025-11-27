@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Tenant;
 use App\Entity\BusinessProcess;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -86,10 +87,10 @@ class BusinessProcessRepository extends ServiceEntityRepository
      */
     public function getStatistics(): array
     {
-        $qb = $this->createQueryBuilder('bp');
+        $queryBuilder = $this->createQueryBuilder('bp');
 
         return [
-            'total' => $qb->select('COUNT(bp.id)')
+            'total' => $queryBuilder->select('COUNT(bp.id)')
                 ->getQuery()
                 ->getSingleScalarResult(),
 
@@ -139,7 +140,7 @@ class BusinessProcessRepository extends ServiceEntityRepository
     /**
      * Find all business processes for a tenant (own processes only)
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find processes for
+     * @param Tenant $tenant The tenant to find processes for
      * @return BusinessProcess[] Array of BusinessProcess entities
      */
     public function findByTenant($tenant): array
@@ -156,8 +157,8 @@ class BusinessProcessRepository extends ServiceEntityRepository
      * Find business processes by tenant including all ancestors (for hierarchical governance)
      * This allows viewing inherited processes from parent companies, grandparents, etc.
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find processes for
-     * @param \App\Entity\Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
+     * @param Tenant $tenant The tenant to find processes for
+     * @param Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
      * @return BusinessProcess[] Array of BusinessProcess entities (own + inherited from all ancestors)
      */
     public function findByTenantIncludingParent($tenant, $parentTenant = null): array
@@ -165,17 +166,17 @@ class BusinessProcessRepository extends ServiceEntityRepository
         // Get all ancestors (parent, grandparent, great-grandparent, etc.)
         $ancestors = $tenant->getAllAncestors();
 
-        $qb = $this->createQueryBuilder('bp')
+        $queryBuilder = $this->createQueryBuilder('bp')
             ->where('bp.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
         // Include processes from all ancestors in the hierarchy
         if (!empty($ancestors)) {
-            $qb->orWhere('bp.tenant IN (:ancestors)')
+            $queryBuilder->orWhere('bp.tenant IN (:ancestors)')
                ->setParameter('ancestors', $ancestors);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('bp.name', 'ASC')
             ->getQuery()
             ->getResult();
@@ -185,7 +186,7 @@ class BusinessProcessRepository extends ServiceEntityRepository
      * Find business processes by tenant including all subsidiaries (for corporate parent view)
      * This allows viewing aggregated processes from all subsidiary companies
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find processes for
+     * @param Tenant $tenant The tenant to find processes for
      * @return BusinessProcess[] Array of BusinessProcess entities (own + from all subsidiaries)
      */
     public function findByTenantIncludingSubsidiaries($tenant): array
@@ -193,17 +194,17 @@ class BusinessProcessRepository extends ServiceEntityRepository
         // Get all subsidiaries recursively
         $subsidiaries = $tenant->getAllSubsidiaries();
 
-        $qb = $this->createQueryBuilder('bp')
+        $queryBuilder = $this->createQueryBuilder('bp')
             ->where('bp.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
         // Include processes from all subsidiaries in the hierarchy
         if (!empty($subsidiaries)) {
-            $qb->orWhere('bp.tenant IN (:subsidiaries)')
+            $queryBuilder->orWhere('bp.tenant IN (:subsidiaries)')
                ->setParameter('subsidiaries', $subsidiaries);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('bp.name', 'ASC')
             ->getQuery()
             ->getResult();

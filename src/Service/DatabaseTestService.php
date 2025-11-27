@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use Exception;
 use PDO;
 use PDOException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -17,7 +18,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 class DatabaseTestService
 {
     public function __construct(
-        private readonly ParameterBagInterface $params
+        private readonly ParameterBagInterface $parameterBag
     ) {
     }
     /**
@@ -40,7 +41,7 @@ class DatabaseTestService
                     'message' => "Unsupported database type: {$type}",
                 ],
             };
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'success' => false,
                 'message' => $this->sanitizeErrorMessage($e->getMessage()),
@@ -68,7 +69,7 @@ class DatabaseTestService
                     'message' => "Unsupported database type: {$type}",
                 ],
             };
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'success' => false,
                 'message' => $this->sanitizeErrorMessage($e->getMessage()),
@@ -82,7 +83,7 @@ class DatabaseTestService
     private function testSqliteConnection(array $config): array
     {
         $dbName = $config['name'] ?? 'little_isms_helper';
-        $dbPath = $this->params->get('kernel.project_dir') . "/var/{$dbName}.db";
+        $dbPath = $this->parameterBag->get('kernel.project_dir') . "/var/{$dbName}.db";
 
         try {
             $pdo = new PDO("sqlite:{$dbPath}");
@@ -204,7 +205,7 @@ class DatabaseTestService
     private function createSqliteDatabase(array $config): array
     {
         $dbName = $config['name'] ?? 'little_isms_helper';
-        $dbPath = $this->params->get('kernel.project_dir') . "/var/{$dbName}.db";
+        $dbPath = $this->parameterBag->get('kernel.project_dir') . "/var/{$dbName}.db";
         $dbDir = dirname($dbPath);
 
         // Ensure var directory exists
@@ -353,7 +354,7 @@ class DatabaseTestService
                     'tables' => [],
                 ],
             };
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'has_tables' => false,
                 'count' => 0,
@@ -369,7 +370,7 @@ class DatabaseTestService
     private function checkSqliteTables(array $config): array
     {
         $dbName = $config['name'] ?? 'little_isms_helper';
-        $dbPath = $this->params->get('kernel.project_dir') . "/var/{$dbName}.db";
+        $dbPath = $this->parameterBag->get('kernel.project_dir') . "/var/{$dbName}.db";
 
         if (!file_exists($dbPath)) {
             return ['has_tables' => false, 'count' => 0, 'tables' => []];
@@ -452,8 +453,8 @@ class DatabaseTestService
         $message = preg_replace('/password[=:][^\s]+/i', 'password=***', $message);
 
         // Limit message length
-        if (strlen($message) > 200) {
-            $message = substr($message, 0, 200) . '...';
+        if (strlen((string) $message) > 200) {
+            return substr((string) $message, 0, 200) . '...';
         }
 
         return $message;

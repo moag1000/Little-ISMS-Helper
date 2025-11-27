@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Repository\AuditLogRepository;
 use App\Repository\UserRepository;
 use App\Service\SessionManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,10 +14,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/admin/sessions')]
 class SessionController extends AbstractController
 {
-    #[Route('', name: 'session_index', methods: ['GET'])]
+    #[Route('/admin/sessions', name: 'session_index', methods: ['GET'])]
     #[IsGranted('SESSION_VIEW')]
     public function index(
         SessionManager $sessionManager,
@@ -40,21 +39,18 @@ class SessionController extends AbstractController
             'search_email' => $userEmail,
         ]);
     }
-
-    #[Route('/statistics', name: 'session_statistics', methods: ['GET'])]
+    #[Route('/admin/sessions/statistics', name: 'session_statistics', methods: ['GET'])]
     public function statistics(
         AuditLogRepository $auditLogRepository
     ): JsonResponse {
         // Get login statistics for the last 30 days
-        $thirtyDaysAgo = new \DateTime('-30 days');
-        $now = new \DateTime();
+        $thirtyDaysAgo = new DateTime('-30 days');
+        $now = new DateTime();
 
         $loginEvents = $auditLogRepository->findByDateRange($thirtyDaysAgo, $now);
 
         // Filter for login events
-        $logins = array_filter($loginEvents, function ($log) {
-            return in_array($log->getAction(), ['login', 'login_success', 'authentication']);
-        });
+        $logins = array_filter($loginEvents, fn($log): bool => in_array($log->getAction(), ['login', 'login_success', 'authentication']));
 
         // Group by date
         $loginsByDate = [];
@@ -67,9 +63,7 @@ class SessionController extends AbstractController
         }
 
         // Get unique users
-        $uniqueUsers = array_unique(array_map(function ($log) {
-            return $log->getUserName();
-        }, $logins));
+        $uniqueUsers = array_unique(array_map(fn($log) => $log->getUserName(), $logins));
 
         return $this->json([
             'total_logins' => count($logins),
@@ -81,9 +75,7 @@ class SessionController extends AbstractController
             ],
         ]);
     }
-
-
-    #[Route('/{userName}/show', name: 'session_show', methods: ['GET'])]
+    #[Route('/admin/sessions/{userName}/show', name: 'session_show', methods: ['GET'])]
     #[IsGranted('SESSION_VIEW')]
     public function show(
         string $userName,
@@ -93,30 +85,24 @@ class SessionController extends AbstractController
         $userActivities = $auditLogRepository->findByUser($userName, 500);
 
         // Filter activities from last 7 days
-        $sevenDaysAgo = new \DateTime('-7 days');
-        $recentActivities = array_filter($userActivities, function ($log) use ($sevenDaysAgo) {
-            return $log->getCreatedAt() >= $sevenDaysAgo;
-        });
+        $sevenDaysAgo = new DateTime('-7 days');
+        $recentActivities = array_filter($userActivities, fn($log): bool => $log->getCreatedAt() >= $sevenDaysAgo);
 
         // Group by date for timeline
         $activityTimeline = [];
-        foreach ($recentActivities as $activity) {
-            $date = $activity->getCreatedAt()->format('Y-m-d');
+        foreach ($recentActivities as $recentActivity) {
+            $date = $recentActivity->getCreatedAt()->format('Y-m-d');
             if (!isset($activityTimeline[$date])) {
                 $activityTimeline[$date] = [];
             }
-            $activityTimeline[$date][] = $activity;
+            $activityTimeline[$date][] = $recentActivity;
         }
 
         // Get unique IP addresses
-        $ipAddresses = array_unique(array_map(function ($log) {
-            return $log->getIpAddress();
-        }, $recentActivities));
+        $ipAddresses = array_unique(array_map(fn($log) => $log->getIpAddress(), $recentActivities));
 
         // Get unique user agents
-        $userAgents = array_unique(array_filter(array_map(function ($log) {
-            return $log->getUserAgent();
-        }, $recentActivities)));
+        $userAgents = array_unique(array_filter(array_map(fn($log) => $log->getUserAgent(), $recentActivities)));
 
         return $this->render('session/show.html.twig', [
             'user_name' => $userName,
@@ -127,8 +113,7 @@ class SessionController extends AbstractController
             'total_activities' => count($recentActivities),
         ]);
     }
-
-    #[Route('/terminate/{userName}', name: 'session_terminate', methods: ['POST'])]
+    #[Route('/admin/sessions/terminate/{userName}', name: 'session_terminate', methods: ['POST'])]
     #[IsGranted('SESSION_TERMINATE')]
     public function terminate(
         string $userName,
@@ -171,8 +156,7 @@ class SessionController extends AbstractController
 
         return $this->redirectToRoute('session_index');
     }
-
-    #[Route('/terminate-session/{sessionId}', name: 'session_terminate_single', methods: ['POST'])]
+    #[Route('/admin/sessions/terminate-session/{sessionId}', name: 'session_terminate_single', methods: ['POST'])]
     #[IsGranted('SESSION_TERMINATE')]
     public function terminateSingle(
         string $sessionId,
