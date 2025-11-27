@@ -34,7 +34,6 @@ notes: Notes
 type: Type
 team_size: 'Team size'
 conclusion: 'Conclusion'
-scope_type: 'Audit Scope'
 result: Result
 iso_27001_requirement: 'ISO 27001: Internal Audit (Clause 9.2)'
 iso_27001_clause_info: 'Internal audits shall be conducted at planned intervals to provide information on whether the ISMS conforms to requirements and is effectively implemented and maintained.'
