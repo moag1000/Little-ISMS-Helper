@@ -145,7 +145,7 @@
                                 'cancelled': 'danger'
                             } %}
                             <span class="badge bg-{{ statusClass[review.status] ?? 'secondary' }}">
-                                {{ ('management_review.status.' ~ review.status)|trans }}
+                                {{ ('management_review.status.' ~ review.status)|trans({}, 'management_review') }}
                             </span>
                         </td>
                         <td>

@@ -93,5 +93,30 @@ change_request:
         delete: Löschen
     details:
         title: Titel
+    change_type:
+        isms_policy: 'ISMS Richtlinie'
+        isms_scope: 'ISMS Geltungsbereich'
+        control: 'Kontrolle'
+        asset: 'Asset'
+        process: 'Prozess'
+        technology: 'Technologie'
+        supplier: 'Lieferant'
+        organizational: 'Organisatorisch'
+        other: 'Sonstige'
+    priority:
+        critical: 'Kritisch'
+        high: 'Hoch'
+        medium: 'Mittel'
+        low: 'Niedrig'
     status:
+        draft: 'Entwurf'
+        submitted: 'Eingereicht'
+        under_review: 'In Prüfung'
+        approved: 'Genehmigt'
+        rejected: 'Abgelehnt'
+        scheduled: 'Eingeplant'
+        implemented: 'Umgesetzt'
+        verified: 'Verifiziert'
+        closed: 'Abgeschlossen'
+        cancelled: 'Abgebrochen'
         not_scheduled: 'Nicht eingeplant'

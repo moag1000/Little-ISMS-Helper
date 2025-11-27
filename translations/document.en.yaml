@@ -102,3 +102,5 @@ document:
     uploaded_at: 'Uploaded at'
     edit_button: 'Edit document'
     drag_files: 'Drag files here or click to upload'
+    validation:
+        mime_types: 'Please select a valid file (PDF, Word, Excel, Image or Text)'

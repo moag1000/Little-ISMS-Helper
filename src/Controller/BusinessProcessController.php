@@ -139,18 +139,6 @@ class BusinessProcessController extends AbstractController
             $this->entityManager->persist($businessProcess);
             $this->entityManager->flush();
 
-            // Check if this is a Turbo Stream request
-            if ($request->getPreferredFormat() === 'turbo_stream' ||
-                $request->headers->get('Accept') === 'text/vnd.turbo-stream.html') {
-
-                $totalCount = $this->businessProcessRepository->count([]);
-
-                return $this->render('business_process/create.turbo_stream.html.twig', [
-                    'business_process' => $businessProcess,
-                    'total_count' => $totalCount,
-                ]);
-            }
-
             $this->addFlash('success', $this->translator->trans('business_process.success.created'));
             return $this->redirectToRoute('app_business_process_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -234,15 +222,6 @@ class BusinessProcessController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            // Check if this is a Turbo Stream request
-            if ($request->getPreferredFormat() === 'turbo_stream' ||
-                $request->headers->get('Accept') === 'text/vnd.turbo-stream.html') {
-
-                return $this->render('business_process/update.turbo_stream.html.twig', [
-                    'business_process' => $businessProcess,
-                ]);
-            }
-
             $this->addFlash('success', $translator->trans('business_process.success.updated'));
             return $this->redirectToRoute('app_business_process_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -254,33 +233,11 @@ class BusinessProcessController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_business_process_delete', methods: ['POST'])]
-    public function delete(Request $request, BusinessProcess $businessProcess, EntityManagerInterface $entityManager, BusinessProcessRepository $businessProcessRepository, TranslatorInterface $translator): Response
+    public function delete(Request $request, BusinessProcess $businessProcess, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         if ($this->isCsrfTokenValid('delete'.$businessProcess->getId(), $request->request->get('_token'))) {
-            $processId = $businessProcess->getId();
-            $wasCritical = $businessProcess->getCriticality() === 'critical';
-            $wasHigh = $businessProcess->getCriticality() === 'high';
-
             $entityManager->remove($businessProcess);
             $entityManager->flush();
-
-            // Check if this is a Turbo Stream request
-            if ($request->getPreferredFormat() === 'turbo_stream' ||
-                $request->headers->get('Accept') === 'text/vnd.turbo-stream.html') {
-
-                $totalCount = $businessProcessRepository->count([]);
-                $criticalCount = $businessProcessRepository->count(['criticality' => 'critical']);
-                $highCount = $businessProcessRepository->count(['criticality' => 'high']);
-
-                return $this->render('business_process/delete.turbo_stream.html.twig', [
-                    'business_process_id' => $processId,
-                    'total_count' => $totalCount,
-                    'critical_count' => $criticalCount,
-                    'high_count' => $highCount,
-                    'was_critical' => $wasCritical,
-                    'was_high' => $wasHigh,
-                ]);
-            }
 
             $this->addFlash('success', $translator->trans('business_process.success.deleted'));
         }

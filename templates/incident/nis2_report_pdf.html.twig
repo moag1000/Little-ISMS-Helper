@@ -209,10 +209,10 @@
                 <th scope="col">Status</th>
             </tr>
             <tr>
-                <td>{{ ('incident.category.' ~ incident.category)|trans }}</td>
+                <td>{{ ('incident.category.' ~ incident.category)|trans({}, 'incident') }}</td>
                 <td>{{ incident.nis2Category ? ('incident.nis2_category.' ~ incident.nis2Category)|trans : 'N/A' }}</td>
-                <td>{{ ('incident.severity.' ~ incident.severity)|trans }}</td>
-                <td>{{ ('incident.status.' ~ incident.status)|trans }}</td>
+                <td>{{ ('incident.severity.' ~ incident.severity)|trans({}, 'incident') }}</td>
+                <td>{{ ('incident.status.' ~ incident.status)|trans({}, 'incident') }}</td>
             </tr>
         </table>
     </div>

@@ -143,7 +143,7 @@
                                     </small>
                                 </td>
                                 <td>
-                                    {{ ('processing_activity.legal_basis.' ~ pa.legalBasis)|trans }}
+                                    {{ ('processing_activity.legal_basis.' ~ pa.legalBasis)|trans({}, 'privacy') }}
                                 </td>
                                 <td>
                                     {{ pa.dataSubjectCategories|length }} {{ 'processing_activity.table.categories'|trans }}<br>
@@ -159,7 +159,7 @@
                                             'high': 'warning',
                                             'critical': 'danger'
                                         }[pa.riskLevel] %}
-                                        <span class="badge bg-{{ risk_class }}">{{ ('processing_activity.risk_level.' ~ pa.riskLevel)|trans }}</span>
+                                        <span class="badge bg-{{ risk_class }}">{{ ('processing_activity.risk_level.' ~ pa.riskLevel)|trans({}, 'privacy') }}</span>
                                     {% else %}
                                         <span class="text-muted">—</span>
                                     {% endif %}
@@ -170,7 +170,7 @@
                                         'active': 'success',
                                         'archived': 'dark'
                                     }[pa.status] %}
-                                    <span class="badge bg-{{ status_class }}">{{ ('processing_activity.status.' ~ pa.status)|trans }}</span>
+                                    <span class="badge bg-{{ status_class }}">{{ ('processing_activity.status.' ~ pa.status)|trans({}, 'privacy') }}</span>
                                 </td>
                                 <td>
                                     <div class="progress" style="height: 20px;">

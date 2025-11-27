@@ -102,7 +102,7 @@
                     <div class="d-flex align-items-center">
                         <i class="bi bi-{{ required_level == 'automatic' ? 'check-circle-fill' : (required_level == 'manager' ? 'person-fill' : 'person-badge-fill') }} fs-3 me-3" aria-hidden="true"></i>
                         <div>
-                            <strong class="d-block">{{ ('risk.acceptance.approval_levels.' ~ required_level)|trans }}</strong>
+                            <strong class="d-block">{{ ('risk.acceptance.approval_levels.' ~ required_level)|trans({}, 'risk') }}</strong>
                             <small>{{ 'risk.acceptance.approval_threshold_info'|trans({'%score%': risk.residualRiskLevel}, 'risk') }}</small>
                         </div>
                     </div>

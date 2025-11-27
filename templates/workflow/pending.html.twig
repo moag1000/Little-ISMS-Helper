@@ -94,7 +94,7 @@
                     'critical': 'danger'
                 } %}
                 <span class="badge badge-{{ priorityColors[instance.priority] ?? 'secondary' }}">
-                    {{ ('workflow.priority.' ~ instance.priority)|trans }}
+                    {{ ('workflow.priority.' ~ instance.priority)|trans({}, 'workflows') }}
                 </span>
             </td>
             <td class="text-center">
