@@ -13,16 +13,16 @@ export default class extends Controller {
     static targets = ['modal', 'input', 'results', 'noResults'];
 
     commands = [
-        // Navigation
+        // Navigation (paths match actual routes without locale prefix)
         { id: 'goto-dashboard', label: 'Dashboard öffnen', category: 'Navigation', icon: 'bi-speedometer2', url: '/dashboard', keywords: ['home', 'start', 'übersicht'] },
-        { id: 'goto-assets', label: 'Assets verwalten', category: 'Navigation', icon: 'bi-server', url: '/assets', keywords: ['asset', 'inventory', 'bestände'] },
-        { id: 'goto-risks', label: 'Risiken anzeigen', category: 'Navigation', icon: 'bi-exclamation-triangle', url: '/risks', keywords: ['risk', 'risiko', 'gefahr'] },
-        { id: 'goto-incidents', label: 'Vorfälle anzeigen', category: 'Navigation', icon: 'bi-bug', url: '/incidents', keywords: ['incident', 'vorfall', 'security'] },
+        { id: 'goto-assets', label: 'Assets verwalten', category: 'Navigation', icon: 'bi-server', url: '/asset', keywords: ['asset', 'inventory', 'bestände'] },
+        { id: 'goto-risks', label: 'Risiken anzeigen', category: 'Navigation', icon: 'bi-exclamation-triangle', url: '/risk', keywords: ['risk', 'risiko', 'gefahr'] },
+        { id: 'goto-incidents', label: 'Vorfälle anzeigen', category: 'Navigation', icon: 'bi-bug', url: '/incident', keywords: ['incident', 'vorfall', 'security'] },
         { id: 'goto-soa', label: 'Statement of Applicability', category: 'Navigation', icon: 'bi-shield-check', url: '/soa', keywords: ['soa', 'controls', 'iso', '27001'] },
         { id: 'goto-trainings', label: 'Schulungen verwalten', category: 'Navigation', icon: 'bi-mortarboard', url: '/training', keywords: ['training', 'schulung', 'awareness'] },
         { id: 'goto-audits', label: 'Audits anzeigen', category: 'Navigation', icon: 'bi-clipboard-check', url: '/audit', keywords: ['audit', 'prüfung', 'review'] },
         { id: 'goto-compliance', label: 'Compliance Frameworks', category: 'Navigation', icon: 'bi-patch-check', url: '/compliance', keywords: ['compliance', 'tisax', 'dora'] },
-        { id: 'goto-bcm', label: 'Business Continuity', category: 'Navigation', icon: 'bi-graph-up', url: '/business-process', keywords: ['bcm', 'bia', 'continuity', 'rto', 'rpo'] },
+        { id: 'goto-bcm', label: 'Business Continuity', category: 'Navigation', icon: 'bi-graph-up', url: '/bcm/business-process', keywords: ['bcm', 'bia', 'continuity', 'rto', 'rpo'] },
 
         // Actions
         { id: 'create-asset', label: 'Neues Asset erstellen', category: 'Erstellen', icon: 'bi-plus-circle', url: '/asset/new', keywords: ['new', 'create', 'neu', 'anlegen'] },
@@ -37,8 +37,8 @@ export default class extends Controller {
         { id: 'export-risks', label: 'Risikoregister exportieren', category: 'Export', icon: 'bi-download', url: '/reports/risks/export', keywords: ['export', 'risks', 'pdf'] },
 
         // Settings
-        { id: 'goto-users', label: 'Benutzerverwaltung', category: 'Administration', icon: 'bi-people', url: '/user-management', keywords: ['user', 'benutzer', 'admin', 'rolle'] },
-        { id: 'goto-audit-log', label: 'Audit Log anzeigen', category: 'Administration', icon: 'bi-clock-history', url: '/audit-log', keywords: ['log', 'history', 'änderungen'] },
+        { id: 'goto-users', label: 'Benutzerverwaltung', category: 'Administration', icon: 'bi-people', url: '/admin/users', keywords: ['user', 'benutzer', 'admin', 'rolle'] },
+        { id: 'goto-audit-log', label: 'Audit Log anzeigen', category: 'Administration', icon: 'bi-clock-history', url: '/admin/audit-log', keywords: ['log', 'history', 'änderungen'] },
     ];
 
     filteredCommands = [];
@@ -237,9 +237,38 @@ export default class extends Controller {
     executeCommand(command) {
         this.close();
 
-        // Navigate using Turbo
+        // Navigate using Turbo with locale prefix
         if (command.url) {
-            window.Turbo.visit(command.url);
+            const url = this.addLocalePrefix(command.url);
+            window.Turbo.visit(url);
         }
+    }
+
+    /**
+     * Add locale prefix to URL if not already present
+     * @param {string} url - URL path (e.g., '/dashboard')
+     * @returns {string} URL with locale prefix (e.g., '/de/dashboard')
+     */
+    addLocalePrefix(url) {
+        const locale = this.getCurrentLocale();
+        // Check if URL already has locale prefix
+        if (url.match(/^\/[a-z]{2}\//)) {
+            return url;
+        }
+        return `/${locale}${url}`;
+    }
+
+    /**
+     * Get current locale from URL path
+     * @returns {string} Current locale (default: 'de')
+     */
+    getCurrentLocale() {
+        const pathParts = window.location.pathname.split('/');
+        const possibleLocale = pathParts[1];
+        // Check if it's a valid locale (de, en, etc.)
+        if (possibleLocale && /^[a-z]{2}$/.test(possibleLocale)) {
+            return possibleLocale;
+        }
+        return 'de';
     }
 }
