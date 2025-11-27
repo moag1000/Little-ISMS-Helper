@@ -35,6 +35,7 @@ incident:
         nis2_reporting: NIS2‑Meldung
         nis2_info: 'Aktivieren Sie diesen Abschnitt, wenn der Vorfall NIS2‑relevant ist.'
         history: History
+        closure: Abschluss
     modern:
         breadcrumb: Vorfallsmanagement
         header:
