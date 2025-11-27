@@ -2,8 +2,6 @@
 
 namespace App\Command;
 
-use App\Entity\ComplianceFramework;
-use App\Entity\ComplianceRequirement;
 use App\Entity\ComplianceMapping;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
@@ -22,43 +20,43 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class MapIso27701VersionsCommand extends Command
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private ComplianceFrameworkRepository $frameworkRepository,
-        private ComplianceRequirementRepository $requirementRepository,
-        private ComplianceMappingRepository $mappingRepository
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
+        private readonly ComplianceRequirementRepository $complianceRequirementRepository,
+        private readonly ComplianceMappingRepository $complianceMappingRepository
     ) {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
         // Get both frameworks
-        $framework2019 = $this->frameworkRepository->findOneBy(['code' => 'ISO27701']);
-        $framework2025 = $this->frameworkRepository->findOneBy(['code' => 'ISO27701_2025']);
+        $framework2019 = $this->complianceFrameworkRepository->findOneBy(['code' => 'ISO27701']);
+        $framework2025 = $this->complianceFrameworkRepository->findOneBy(['code' => 'ISO27701_2025']);
 
         if (!$framework2019) {
-            $io->error('ISO 27701:2019 framework not found. Please load it first using app:load-iso27701-requirements');
+            $symfonyStyle->error('ISO 27701:2019 framework not found. Please load it first using app:load-iso27701-requirements');
             return Command::FAILURE;
         }
 
         if (!$framework2025) {
-            $io->error('ISO 27701:2025 framework not found. Please load it first using app:load-iso27701v2025-requirements');
+            $symfonyStyle->error('ISO 27701:2025 framework not found. Please load it first using app:load-iso27701v2025-requirements');
             return Command::FAILURE;
         }
 
         // Get all requirements
-        $requirements2019 = $this->requirementRepository->findBy(['framework' => $framework2019]);
-        $requirements2025 = $this->requirementRepository->findBy(['framework' => $framework2025]);
+        $requirements2019 = $this->complianceRequirementRepository->findBy(['framework' => $framework2019]);
+        $requirements2025 = $this->complianceRequirementRepository->findBy(['framework' => $framework2025]);
 
         if (empty($requirements2019)) {
-            $io->error('No ISO 27701:2019 requirements found. Please load them first.');
+            $symfonyStyle->error('No ISO 27701:2019 requirements found. Please load them first.');
             return Command::FAILURE;
         }
 
         if (empty($requirements2025)) {
-            $io->error('No ISO 27701:2025 requirements found. Please load them first.');
+            $symfonyStyle->error('No ISO 27701:2025 requirements found. Please load them first.');
             return Command::FAILURE;
         }
 
@@ -86,14 +84,14 @@ class MapIso27701VersionsCommand extends Command
             $reqId2019 = $versionMappings[$reqId2025];
 
             if (!isset($index2019[$reqId2019])) {
-                $io->warning("2019 requirement $reqId2019 not found in database");
+                $symfonyStyle->warning("2019 requirement $reqId2019 not found in database");
                 continue;
             }
 
             $req2019 = $index2019[$reqId2019];
 
             // Check if mapping already exists
-            $existingMapping = $this->mappingRepository->findOneBy([
+            $existingMapping = $this->complianceMappingRepository->findOneBy([
                 'sourceRequirement' => $req2025,
                 'targetRequirement' => $req2019,
             ]);
@@ -127,14 +125,14 @@ class MapIso27701VersionsCommand extends Command
 
         $this->entityManager->flush();
 
-        $io->success(sprintf(
+        $symfonyStyle->success(sprintf(
             'Created %d bidirectional mappings between ISO 27701:2019 and ISO 27701:2025 (skipped %d existing)',
             $createdMappings,
             $skippedMappings
         ));
 
         $newRequirements2025 = count($requirements2025) - (count($versionMappings));
-        $io->info(sprintf(
+        $symfonyStyle->info(sprintf(
             'ISO 27701:2025 has %d new requirements not present in 2019 version (AI, Digital Ecosystems, Enhanced Security)',
             $newRequirements2025
         ));

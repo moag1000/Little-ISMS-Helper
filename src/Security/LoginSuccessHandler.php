@@ -18,8 +18,8 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 class LoginSuccessHandler implements AuthenticationSuccessHandlerInterface
 {
     public function __construct(
-        private UrlGeneratorInterface $urlGenerator,
-        private MfaService $mfaService
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly MfaService $mfaService
     ) {
     }
 

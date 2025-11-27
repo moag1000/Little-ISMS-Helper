@@ -2,6 +2,7 @@
 
 namespace App\EventSubscriber;
 
+use App\Entity\Tenant;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -9,7 +10,6 @@ use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 
 /**
  * Handles 404 errors when Tenant entities are not found
@@ -18,8 +18,8 @@ use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 class TenantNotFoundSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private UrlGeneratorInterface $urlGenerator,
-        private RequestStack $requestStack
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly RequestStack $requestStack
     ) {
     }
 
@@ -30,23 +30,23 @@ class TenantNotFoundSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onKernelException(ExceptionEvent $event): void
+    public function onKernelException(ExceptionEvent $exceptionEvent): void
     {
-        $exception = $event->getThrowable();
+        $throwable = $exceptionEvent->getThrowable();
 
         // Only handle NotFoundHttpException
-        if (!$exception instanceof NotFoundHttpException) {
+        if (!$throwable instanceof NotFoundHttpException) {
             return;
         }
 
         // Check if it's a Tenant-related 404
-        $message = $exception->getMessage();
-        if (!str_contains($message, 'App\Entity\Tenant')) {
+        $message = $throwable->getMessage();
+        if (!str_contains($message, Tenant::class)) {
             return;
         }
 
         // Get the request path to determine where to redirect
-        $request = $event->getRequest();
+        $request = $exceptionEvent->getRequest();
         $path = $request->getPathInfo();
         $route = $request->attributes->get('_route');
 
@@ -78,7 +78,7 @@ class TenantNotFoundSubscriber implements EventSubscriberInterface
             $redirectUrl = $this->urlGenerator->generate('admin_dashboard');
         }
 
-        $response = new RedirectResponse($redirectUrl);
-        $event->setResponse($response);
+        $redirectResponse = new RedirectResponse($redirectUrl);
+        $exceptionEvent->setResponse($redirectResponse);
     }
 }

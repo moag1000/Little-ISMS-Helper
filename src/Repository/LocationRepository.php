@@ -96,11 +96,11 @@ class LocationRepository extends ServiceEntityRepository
     /**
      * Find child locations of a parent
      */
-    public function findChildren(Location $parent): array
+    public function findChildren(Location $location): array
     {
         return $this->createQueryBuilder('l')
             ->andWhere('l.parentLocation = :parent')
-            ->setParameter('parent', $parent)
+            ->setParameter('parent', $location)
             ->orderBy('l.name', 'ASC')
             ->getQuery()
             ->getResult();

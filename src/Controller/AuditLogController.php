@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use DateTime;
+use App\Entity\AuditLog;
 use App\Repository\AuditLogRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -9,15 +11,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/admin/audit-log')]
 #[IsGranted('ROLE_ADMIN')]
 class AuditLogController extends AbstractController
 {
     public function __construct(
-        private AuditLogRepository $auditLogRepository
+        private readonly AuditLogRepository $auditLogRepository
     ) {}
 
-    #[Route('/', name: 'app_audit_log_index')]
+    #[Route('/admin/audit-log/', name: 'app_audit_log_index')]
     public function index(Request $request): Response
     {
         $page = max(1, $request->query->getInt('page', 1));
@@ -29,13 +30,13 @@ class AuditLogController extends AbstractController
             'entityType' => $request->query->get('entityType'),
             'action' => $request->query->get('action'),
             'userName' => $request->query->get('userName'),
-            'dateFrom' => $request->query->get('dateFrom') ? new \DateTime($request->query->get('dateFrom')) : null,
-            'dateTo' => $request->query->get('dateTo') ? new \DateTime($request->query->get('dateTo')) : null,
+            'dateFrom' => $request->query->get('dateFrom') ? new DateTime($request->query->get('dateFrom')) : null,
+            'dateTo' => $request->query->get('dateTo') ? new DateTime($request->query->get('dateTo')) : null,
             'limit' => $limit
         ];
 
         // Remove empty filters
-        $filters = array_filter($filters, fn($value) => $value !== null && $value !== '');
+        $filters = array_filter($filters, fn(int|DateTime|string|null $value): bool => $value !== null && $value !== '');
 
         // Get logs based on filters
         if (count($filters) > 1) { // More than just 'limit'
@@ -55,8 +56,8 @@ class AuditLogController extends AbstractController
 
         // Get unique values for filters
         $allLogs = $this->auditLogRepository->findAll();
-        $entityTypes = array_unique(array_map(fn($log) => $log->getEntityType(), $allLogs));
-        $actions = array_unique(array_map(fn($log) => $log->getAction(), $allLogs));
+        $entityTypes = array_unique(array_map(fn(AuditLog $auditLog): ?string => $auditLog->getEntityType(), $allLogs));
+        $actions = array_unique(array_map(fn(AuditLog $auditLog): ?string => $auditLog->getAction(), $allLogs));
 
         sort($entityTypes);
         sort($actions);
@@ -75,7 +76,7 @@ class AuditLogController extends AbstractController
         ]);
     }
 
-    #[Route('/entity/{entityType}/{entityId}', name: 'app_audit_log_entity')]
+    #[Route('/admin/audit-log/entity/{entityType}/{entityId}', name: 'app_audit_log_entity')]
     public function entityHistory(string $entityType, int $entityId): Response
     {
         $auditLogs = $this->auditLogRepository->findByEntity($entityType, $entityId);
@@ -87,7 +88,7 @@ class AuditLogController extends AbstractController
         ]);
     }
 
-    #[Route('/user/{userName}', name: 'app_audit_log_user')]
+    #[Route('/admin/audit-log/user/{userName}', name: 'app_audit_log_user')]
     public function userActivity(string $userName): Response
     {
         $auditLogs = $this->auditLogRepository->findByUser($userName);
@@ -98,7 +99,7 @@ class AuditLogController extends AbstractController
         ]);
     }
 
-    #[Route('/statistics', name: 'app_audit_log_statistics')]
+    #[Route('/admin/audit-log/statistics', name: 'app_audit_log_statistics')]
     public function statistics(): Response
     {
         $actionStats = $this->auditLogRepository->getActionStatistics();
@@ -108,7 +109,7 @@ class AuditLogController extends AbstractController
         // Get activity by day for the last 30 days
         $activityByDay = [];
         for ($i = 29; $i >= 0; $i--) {
-            $date = new \DateTime("-{$i} days");
+            $date = new DateTime("-{$i} days");
             $nextDate = clone $date;
             $nextDate->modify('+1 day');
 
@@ -124,7 +125,7 @@ class AuditLogController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_audit_log_detail', requirements: ['id' => '\d+'])]
+    #[Route('/admin/audit-log/{id}', name: 'app_audit_log_detail', requirements: ['id' => '\d+'])]
     public function detail(int $id): Response
     {
         $auditLog = $this->auditLogRepository->find($id);

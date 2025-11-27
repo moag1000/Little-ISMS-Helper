@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
+use DateTime;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
@@ -19,7 +22,6 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -35,24 +37,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Get(
-            security: "is_granted('ROLE_USER')",
-            description: 'Retrieve a specific supplier by ID'
+            description: 'Retrieve a specific supplier by ID',
+            security: "is_granted('ROLE_USER')"
         ),
         new GetCollection(
-            security: "is_granted('ROLE_USER')",
-            description: 'Retrieve the collection of suppliers with filtering'
+            description: 'Retrieve the collection of suppliers with filtering',
+            security: "is_granted('ROLE_USER')"
         ),
         new Post(
-            security: "is_granted('ROLE_USER')",
-            description: 'Create a new supplier'
+            description: 'Create a new supplier',
+            security: "is_granted('ROLE_USER')"
         ),
         new Put(
-            security: "is_granted('ROLE_USER')",
-            description: 'Update an existing supplier'
+            description: 'Update an existing supplier',
+            security: "is_granted('ROLE_USER')"
         ),
         new Delete(
-            security: "is_granted('ROLE_ADMIN')",
-            description: 'Delete a supplier (Admin only)'
+            description: 'Delete a supplier (Admin only)',
+            security: "is_granted('ROLE_ADMIN')"
         ),
     ],
     normalizationContext: ['groups' => ['supplier:read']],
@@ -137,11 +139,11 @@ class Supplier
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['supplier:read', 'supplier:write'])]
-    private ?\DateTimeInterface $lastSecurityAssessment = null;
+    private ?DateTimeInterface $lastSecurityAssessment = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['supplier:read', 'supplier:write'])]
-    private ?\DateTimeInterface $nextAssessmentDate = null;
+    private ?DateTimeInterface $nextAssessmentDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['supplier:read', 'supplier:write'])]
@@ -160,11 +162,11 @@ class Supplier
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['supplier:read', 'supplier:write'])]
-    private ?\DateTimeInterface $contractStartDate = null;
+    private ?DateTimeInterface $contractStartDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['supplier:read', 'supplier:write'])]
-    private ?\DateTimeInterface $contractEndDate = null;
+    private ?DateTimeInterface $contractEndDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['supplier:read', 'supplier:write'])]
@@ -194,7 +196,7 @@ class Supplier
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['supplier:read', 'supplier:write'])]
-    private ?\DateTimeInterface $dpaSignedDate = null;
+    private ?DateTimeInterface $dpaSignedDate = null;
 
     /**
      * @var Collection<int, Asset>
@@ -222,27 +224,27 @@ class Supplier
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['supplier:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['supplier:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     public function __construct()
     {
         $this->supportedAssets = new ArrayCollection();
         $this->identifiedRisks = new ArrayCollection();
         $this->documents = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
     public function updateTimestamps(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
-        if ($this->createdAt === null) {
-            $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
+        if (!$this->createdAt instanceof DateTimeInterface) {
+            $this->createdAt = new DateTimeImmutable();
         }
     }
 
@@ -372,23 +374,23 @@ class Supplier
         return $this;
     }
 
-    public function getLastSecurityAssessment(): ?\DateTimeInterface
+    public function getLastSecurityAssessment(): ?DateTimeInterface
     {
         return $this->lastSecurityAssessment;
     }
 
-    public function setLastSecurityAssessment(?\DateTimeInterface $lastSecurityAssessment): static
+    public function setLastSecurityAssessment(?DateTimeInterface $lastSecurityAssessment): static
     {
         $this->lastSecurityAssessment = $lastSecurityAssessment;
         return $this;
     }
 
-    public function getNextAssessmentDate(): ?\DateTimeInterface
+    public function getNextAssessmentDate(): ?DateTimeInterface
     {
         return $this->nextAssessmentDate;
     }
 
-    public function setNextAssessmentDate(?\DateTimeInterface $nextAssessmentDate): static
+    public function setNextAssessmentDate(?DateTimeInterface $nextAssessmentDate): static
     {
         $this->nextAssessmentDate = $nextAssessmentDate;
         return $this;
@@ -427,23 +429,23 @@ class Supplier
         return $this;
     }
 
-    public function getContractStartDate(): ?\DateTimeInterface
+    public function getContractStartDate(): ?DateTimeInterface
     {
         return $this->contractStartDate;
     }
 
-    public function setContractStartDate(?\DateTimeInterface $contractStartDate): static
+    public function setContractStartDate(?DateTimeInterface $contractStartDate): static
     {
         $this->contractStartDate = $contractStartDate;
         return $this;
     }
 
-    public function getContractEndDate(): ?\DateTimeInterface
+    public function getContractEndDate(): ?DateTimeInterface
     {
         return $this->contractEndDate;
     }
 
-    public function setContractEndDate(?\DateTimeInterface $contractEndDate): static
+    public function setContractEndDate(?DateTimeInterface $contractEndDate): static
     {
         $this->contractEndDate = $contractEndDate;
         return $this;
@@ -504,12 +506,12 @@ class Supplier
         return $this;
     }
 
-    public function getDpaSignedDate(): ?\DateTimeInterface
+    public function getDpaSignedDate(): ?DateTimeInterface
     {
         return $this->dpaSignedDate;
     }
 
-    public function setDpaSignedDate(?\DateTimeInterface $dpaSignedDate): static
+    public function setDpaSignedDate(?DateTimeInterface $dpaSignedDate): static
     {
         $this->dpaSignedDate = $dpaSignedDate;
         return $this;
@@ -581,23 +583,23 @@ class Supplier
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -628,14 +630,22 @@ class Supplier
         }
 
         // Missing certifications (15%)
-        if (!$this->hasISO27001) $score += 10;
-        if (!$this->hasISO22301 && $this->criticality === 'critical') $score += 5;
+        if (!$this->hasISO27001) {
+            $score += 10;
+        }
+        if (!$this->hasISO22301 && $this->criticality === 'critical') {
+            $score += 5;
+        }
 
         // Missing DPA (10%)
-        if (!$this->hasDPA) $score += 10;
+        if (!$this->hasDPA) {
+            $score += 10;
+        }
 
         // Overdue assessment (5%)
-        if ($this->isAssessmentOverdue()) $score += 5;
+        if ($this->isAssessmentOverdue()) {
+            $score += 5;
+        }
 
         return min(100, (int)$score);
     }
@@ -645,11 +655,11 @@ class Supplier
      */
     public function isAssessmentOverdue(): bool
     {
-        if (!$this->nextAssessmentDate) {
-            return $this->lastSecurityAssessment === null;
+        if (!$this->nextAssessmentDate instanceof DateTimeInterface) {
+            return !$this->lastSecurityAssessment instanceof DateTimeInterface;
         }
 
-        return $this->nextAssessmentDate < new \DateTime();
+        return $this->nextAssessmentDate < new DateTime();
     }
 
     /**
@@ -657,7 +667,7 @@ class Supplier
      */
     public function getAssessmentStatus(): string
     {
-        if ($this->lastSecurityAssessment === null) {
+        if (!$this->lastSecurityAssessment instanceof DateTimeInterface) {
             return 'not_assessed';
         }
 
@@ -665,8 +675,8 @@ class Supplier
             return 'overdue';
         }
 
-        $thirtyDaysFromNow = new \DateTime('+30 days');
-        if ($this->nextAssessmentDate && $this->nextAssessmentDate < $thirtyDaysFromNow) {
+        $thirtyDaysFromNow = new DateTime('+30 days');
+        if ($this->nextAssessmentDate instanceof DateTimeInterface && $this->nextAssessmentDate < $thirtyDaysFromNow) {
             return 'due_soon';
         }
 
@@ -685,16 +695,22 @@ class Supplier
         $totalResidualRisk = 0;
         $count = 0;
 
-        foreach ($this->identifiedRisks as $risk) {
-            $totalResidualRisk += $risk->getResidualRiskLevel();
+        foreach ($this->identifiedRisks as $identifiedRisk) {
+            $totalResidualRisk += $identifiedRisk->getResidualRiskLevel();
             $count++;
         }
 
         $avgRisk = $count > 0 ? $totalResidualRisk / $count : 0;
 
-        if ($avgRisk >= 16) return 'critical';
-        if ($avgRisk >= 9) return 'high';
-        if ($avgRisk >= 4) return 'medium';
+        if ($avgRisk >= 16) {
+            return 'critical';
+        }
+        if ($avgRisk >= 9) {
+            return 'high';
+        }
+        if ($avgRisk >= 4) {
+            return 'medium';
+        }
         return 'low';
     }
 
@@ -703,8 +719,8 @@ class Supplier
      */
     public function supportsCriticalAssets(): bool
     {
-        foreach ($this->supportedAssets as $asset) {
-            if ($asset->isHighRisk()) {
+        foreach ($this->supportedAssets as $supportedAsset) {
+            if ($supportedAsset->isHighRisk()) {
                 return true;
             }
         }

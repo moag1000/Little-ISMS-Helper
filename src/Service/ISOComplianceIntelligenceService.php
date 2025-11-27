@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Risk;
 use App\Repository\BCExerciseRepository;
 use App\Repository\BusinessContinuityPlanRepository;
 use App\Repository\ChangeRequestRepository;
@@ -18,12 +19,12 @@ use App\Repository\SupplierRepository;
 class ISOComplianceIntelligenceService
 {
     public function __construct(
-        private SupplierRepository $supplierRepository,
-        private InterestedPartyRepository $interestedPartyRepository,
-        private BusinessContinuityPlanRepository $bcPlanRepository,
-        private BCExerciseRepository $bcExerciseRepository,
-        private ChangeRequestRepository $changeRequestRepository,
-        private RiskRepository $riskRepository
+        private readonly SupplierRepository $supplierRepository,
+        private readonly InterestedPartyRepository $interestedPartyRepository,
+        private readonly BusinessContinuityPlanRepository $businessContinuityPlanRepository,
+        private readonly BCExerciseRepository $bcExerciseRepository,
+        private readonly ChangeRequestRepository $changeRequestRepository,
+        private readonly RiskRepository $riskRepository
     ) {}
 
     /**
@@ -88,20 +89,20 @@ class ISOComplianceIntelligenceService
      */
     public function getISO22301Compliance(): array
     {
-        $bcPlans = $this->bcPlanRepository->findAll();
-        $activePlans = $this->bcPlanRepository->findActivePlans();
-        $overdueTests = $this->bcPlanRepository->findOverdueTests();
-        $overdueReviews = $this->bcPlanRepository->findOverdueReviews();
+        $bcPlans = $this->businessContinuityPlanRepository->findAll();
+        $activePlans = $this->businessContinuityPlanRepository->findActivePlans();
+        $overdueTests = $this->businessContinuityPlanRepository->findOverdueTests();
+        $overdueReviews = $this->businessContinuityPlanRepository->findOverdueReviews();
         $bcExerciseStats = $this->bcExerciseRepository->getStatistics();
 
         $score = 100;
 
         // BC Plans exist
-        if (count($bcPlans) == 0) {
+        if (count($bcPlans) === 0) {
             $score = 20;
         } else {
             // Active plans
-            if (count($activePlans) == 0) {
+            if (count($activePlans) === 0) {
                 $score -= 30;
             }
 
@@ -143,19 +144,17 @@ class ISOComplianceIntelligenceService
     public function getISO27005Compliance(): array
     {
         $risks = $this->riskRepository->findAll();
-        $acceptedRisks = array_filter($risks, fn($r) => $r->getTreatmentStrategy() === 'accept');
-        $pendingApproval = array_filter($acceptedRisks, fn($r) => $r->isAcceptanceApprovalRequired());
+        $acceptedRisks = array_filter($risks, fn(Risk $risk): bool => $risk->getTreatmentStrategy() === 'accept');
+        $pendingApproval = array_filter($acceptedRisks, fn(Risk $risk): bool => $risk->isAcceptanceApprovalRequired());
 
         $score = 100;
 
-        if (count($risks) == 0) {
+        if (count($risks) === 0) {
             $score = 30;
-        } else {
+        } elseif (count($pendingApproval) > 0) {
             // Penalty for accepted risks without formal approval
-            if (count($pendingApproval) > 0) {
-                $penaltyPercentage = (count($pendingApproval) / count($risks)) * 50;
-                $score -= $penaltyPercentage;
-            }
+            $penaltyPercentage = (count($pendingApproval) / count($risks)) * 50;
+            $score -= $penaltyPercentage;
         }
 
         return [
@@ -190,7 +189,7 @@ class ISOComplianceIntelligenceService
         }
 
         // Risk integration
-        if (count($risks) == 0) {
+        if (count($risks) === 0) {
             $score -= 30;
         }
 
@@ -236,42 +235,42 @@ class ISOComplianceIntelligenceService
             ];
         }
 
-        foreach ($criticalSuppliers as $supplier) {
-            if ($supplier->calculateRiskScore() > 70) {
+        foreach ($criticalSuppliers as $criticalSupplier) {
+            if ($criticalSupplier->calculateRiskScore() > 70) {
                 $actions[] = [
                     'priority' => 'critical',
                     'category' => 'supplier',
-                    'action' => "High risk supplier requires immediate review: {$supplier->getName()}",
-                    'risk_score' => $supplier->calculateRiskScore(),
+                    'action' => "High risk supplier requires immediate review: {$criticalSupplier->getName()}",
+                    'risk_score' => $criticalSupplier->calculateRiskScore(),
                 ];
             }
         }
 
         // BC critical actions
-        $overdueTests = $this->bcPlanRepository->findOverdueTests();
-        foreach ($overdueTests as $plan) {
+        $overdueTests = $this->businessContinuityPlanRepository->findOverdueTests();
+        foreach ($overdueTests as $overdueTest) {
             $actions[] = [
                 'priority' => 'high',
                 'category' => 'bc',
-                'action' => "Schedule BC test for: {$plan->getName()}",
-                'overdue_since' => $plan->getNextTestDate(),
+                'action' => "Schedule BC test for: {$overdueTest->getName()}",
+                'overdue_since' => $overdueTest->getNextTestDate(),
             ];
         }
 
         // Interested party actions
         $overdueComms = $this->interestedPartyRepository->findOverdueCommunications();
-        foreach ($overdueComms as $party) {
+        foreach ($overdueComms as $overdueComm) {
             $actions[] = [
                 'priority' => 'medium',
                 'category' => 'stakeholder',
-                'action' => "Contact overdue for: {$party->getName()}",
-                'due_date' => $party->getNextCommunication(),
+                'action' => "Contact overdue for: {$overdueComm->getName()}",
+                'due_date' => $overdueComm->getNextCommunication(),
             ];
         }
 
         // Risk acceptance actions
         $risks = $this->riskRepository->findAll();
-        $pendingApproval = array_filter($risks, fn($r) => $r->isAcceptanceApprovalRequired());
+        $pendingApproval = array_filter($risks, fn(Risk $risk): bool => $risk->isAcceptanceApprovalRequired());
         foreach ($pendingApproval as $risk) {
             $actions[] = [
                 'priority' => 'high',
@@ -326,13 +325,13 @@ class ISOComplianceIntelligenceService
      */
     private function calculateBCReadiness(array $bcPlans): int
     {
-        if (empty($bcPlans)) {
+        if ($bcPlans === []) {
             return 0;
         }
 
         $totalReadiness = 0;
-        foreach ($bcPlans as $plan) {
-            $totalReadiness += $plan->getReadinessScore();
+        foreach ($bcPlans as $bcPlan) {
+            $totalReadiness += $bcPlan->getReadinessScore();
         }
 
         return round($totalReadiness / count($bcPlans));

@@ -13,31 +13,29 @@ use App\Entity\MappingGapItem;
  */
 class AutomatedGapAnalysisService
 {
-    private const CONFIDENCE_THRESHOLD_HIGH = 80;
-    private const CONFIDENCE_THRESHOLD_MEDIUM = 60;
+    private const int CONFIDENCE_THRESHOLD_HIGH = 80;
 
     /**
      * Analyze mapping and generate gap items
      *
-     * @param ComplianceMapping $mapping
      * @param array $analysisResults Results from MappingQualityAnalysisService
      * @return array Array of MappingGapItem entities
      */
-    public function analyzeGaps(ComplianceMapping $mapping, array $analysisResults): array
+    public function analyzeGaps(ComplianceMapping $complianceMapping, array $analysisResults): array
     {
         $gapItems = [];
 
-        $source = $mapping->getSourceRequirement();
-        $target = $mapping->getTargetRequirement();
+        $source = $complianceMapping->getSourceRequirement();
+        $target = $complianceMapping->getTargetRequirement();
 
         $sourceKeywords = $analysisResults['extracted_keywords']['source'] ?? [];
         $targetKeywords = $analysisResults['extracted_keywords']['target'] ?? [];
 
         // 1. Identify missing keywords/concepts
         $missingKeywords = array_diff($targetKeywords, $sourceKeywords);
-        if (!empty($missingKeywords)) {
-            $gap = $this->createMissingKeywordsGap($mapping, $missingKeywords, $target);
-            if ($gap) {
+        if ($missingKeywords !== []) {
+            $gap = $this->createMissingKeywordsGap($complianceMapping, $missingKeywords);
+            if ($gap instanceof MappingGapItem) {
                 $gapItems[] = $gap;
             }
         }
@@ -45,8 +43,8 @@ class AutomatedGapAnalysisService
         // 2. Identify partial coverage issues
         $textualSimilarity = $analysisResults['textual_similarity'] ?? 0;
         if ($textualSimilarity > 0.3 && $textualSimilarity < 0.7) {
-            $gap = $this->createPartialCoverageGap($mapping, $textualSimilarity);
-            if ($gap) {
+            $gap = $this->createPartialCoverageGap($complianceMapping, $textualSimilarity);
+            if ($gap instanceof MappingGapItem) {
                 $gapItems[] = $gap;
             }
         }
@@ -54,22 +52,22 @@ class AutomatedGapAnalysisService
         // 3. Identify scope differences
         $structuralSimilarity = $analysisResults['structural_similarity'] ?? 0;
         if ($structuralSimilarity < 0.5) {
-            $gap = $this->createScopeDifferenceGap($mapping, $source, $target);
-            if ($gap) {
+            $gap = $this->createScopeDifferenceGap($complianceMapping, $source, $target);
+            if ($gap instanceof MappingGapItem) {
                 $gapItems[] = $gap;
             }
         }
 
         // 4. Identify additional requirements in target
-        $gap = $this->identifyAdditionalRequirements($mapping, $source, $target, $targetKeywords, $sourceKeywords);
-        if ($gap) {
+        $gap = $this->identifyAdditionalRequirements($complianceMapping, $source, $target, $targetKeywords, $sourceKeywords);
+        if ($gap instanceof MappingGapItem) {
             $gapItems[] = $gap;
         }
 
         // 5. Check for evidence gaps
-        if ($this->hasEvidenceGap($mapping, $source, $target)) {
-            $gap = $this->createEvidenceGap($mapping);
-            if ($gap) {
+        if ($this->hasEvidenceGap($complianceMapping)) {
+            $gap = $this->createEvidenceGap($complianceMapping);
+            if ($gap instanceof MappingGapItem) {
                 $gapItems[] = $gap;
             }
         }
@@ -81,17 +79,16 @@ class AutomatedGapAnalysisService
      * Create gap item for missing keywords/concepts
      */
     private function createMissingKeywordsGap(
-        ComplianceMapping $mapping,
-        array $missingKeywords,
-        ComplianceRequirement $target
+        ComplianceMapping $complianceMapping,
+        array $missingKeywords
     ): ?MappingGapItem {
-        if (empty($missingKeywords)) {
+        if ($missingKeywords === []) {
             return null;
         }
 
-        $gap = new MappingGapItem();
-        $gap->setMapping($mapping);
-        $gap->setGapType('missing_control');
+        $mappingGapItem = new MappingGapItem();
+        $mappingGapItem->setMapping($complianceMapping);
+        $mappingGapItem->setGapType('missing_control');
 
         // Categorize missing keywords by importance
         $criticalKeywords = ['encryption', 'authentication', 'authorization', 'audit', 'logging'];
@@ -100,17 +97,17 @@ class AutomatedGapAnalysisService
         $criticalMissing = array_intersect($missingKeywords, $criticalKeywords);
         $highMissing = array_intersect($missingKeywords, $highKeywords);
 
-        if (!empty($criticalMissing)) {
-            $gap->setPriority('critical');
+        if ($criticalMissing !== []) {
+            $mappingGapItem->setPriority('critical');
             $impact = 30;
-        } elseif (!empty($highMissing)) {
-            $gap->setPriority('high');
+        } elseif ($highMissing !== []) {
+            $mappingGapItem->setPriority('high');
             $impact = 20;
         } elseif (count($missingKeywords) > 5) {
-            $gap->setPriority('high');
+            $mappingGapItem->setPriority('high');
             $impact = 25;
         } else {
-            $gap->setPriority('medium');
+            $mappingGapItem->setPriority('medium');
             $impact = 15;
         }
 
@@ -121,35 +118,35 @@ class AutomatedGapAnalysisService
             $keywordList
         );
 
-        $gap->setDescription($description);
-        $gap->setMissingKeywords(array_values($missingKeywords));
-        $gap->setPercentageImpact($impact);
-        $gap->setConfidence($this->calculateGapConfidence(count($missingKeywords), 'keyword'));
+        $mappingGapItem->setDescription($description);
+        $mappingGapItem->setMissingKeywords(array_values($missingKeywords));
+        $mappingGapItem->setPercentageImpact($impact);
+        $mappingGapItem->setConfidence($this->calculateGapConfidence(count($missingKeywords), 'keyword'));
 
         // Generate recommendations
-        $recommendations = $this->generateKeywordRecommendations($missingKeywords, $target);
-        $gap->setRecommendedAction($recommendations);
+        $recommendations = $this->generateKeywordRecommendations($missingKeywords);
+        $mappingGapItem->setRecommendedAction($recommendations);
 
         // Estimate effort (1-2 hours per missing critical concept)
-        $effort = count($criticalMissing) * 2 + count($highMissing) * 1 + (count($missingKeywords) - count($criticalMissing) - count($highMissing)) * 0.5;
-        $gap->setEstimatedEffort((int) ceil($effort));
+        $effort = count($criticalMissing) * 2 + count($highMissing) + (count($missingKeywords) - count($criticalMissing) - count($highMissing)) * 0.5;
+        $mappingGapItem->setEstimatedEffort((int) ceil($effort));
 
-        $gap->setIdentificationSource('algorithm');
-        $gap->setStatus('identified');
+        $mappingGapItem->setIdentificationSource('algorithm');
+        $mappingGapItem->setStatus('identified');
 
-        return $gap;
+        return $mappingGapItem;
     }
 
     /**
      * Create gap item for partial coverage
      */
     private function createPartialCoverageGap(
-        ComplianceMapping $mapping,
+        ComplianceMapping $complianceMapping,
         float $textualSimilarity
-    ): ?MappingGapItem {
-        $gap = new MappingGapItem();
-        $gap->setMapping($mapping);
-        $gap->setGapType('partial_coverage');
+    ): MappingGapItem {
+        $mappingGapItem = new MappingGapItem();
+        $mappingGapItem->setMapping($complianceMapping);
+        $mappingGapItem->setGapType('partial_coverage');
 
         $coveragePercent = (int) round($textualSimilarity * 100);
 
@@ -160,35 +157,35 @@ class AutomatedGapAnalysisService
             $coveragePercent
         );
 
-        $gap->setDescription($description);
-        $gap->setPriority($coveragePercent < 50 ? 'high' : 'medium');
-        $gap->setPercentageImpact((int) round((1 - $textualSimilarity) * 30));
-        $gap->setConfidence($this->calculateGapConfidence($textualSimilarity, 'similarity'));
+        $mappingGapItem->setDescription($description);
+        $mappingGapItem->setPriority($coveragePercent < 50 ? 'high' : 'medium');
+        $mappingGapItem->setPercentageImpact((int) round((1 - $textualSimilarity) * 30));
+        $mappingGapItem->setConfidence($this->calculateGapConfidence($textualSimilarity, 'similarity'));
 
-        $gap->setRecommendedAction(
+        $mappingGapItem->setRecommendedAction(
             'Detaillierte Gap-Analyse durchführen: Target-Requirement mit Source-Requirement vergleichen und ' .
             'spezifische fehlende Aspekte identifizieren. Anschließend ergänzende Kontrollen implementieren oder ' .
             'bestehende Kontrollen erweitern.'
         );
 
-        $gap->setEstimatedEffort((int) round((1 - $textualSimilarity) * 10));
-        $gap->setIdentificationSource('algorithm');
-        $gap->setStatus('identified');
+        $mappingGapItem->setEstimatedEffort((int) round((1 - $textualSimilarity) * 10));
+        $mappingGapItem->setIdentificationSource('algorithm');
+        $mappingGapItem->setStatus('identified');
 
-        return $gap;
+        return $mappingGapItem;
     }
 
     /**
      * Create gap item for scope differences
      */
     private function createScopeDifferenceGap(
-        ComplianceMapping $mapping,
+        ComplianceMapping $complianceMapping,
         ComplianceRequirement $source,
         ComplianceRequirement $target
-    ): ?MappingGapItem {
-        $gap = new MappingGapItem();
-        $gap->setMapping($mapping);
-        $gap->setGapType('scope_difference');
+    ): MappingGapItem {
+        $mappingGapItem = new MappingGapItem();
+        $mappingGapItem->setMapping($complianceMapping);
+        $mappingGapItem->setGapType('scope_difference');
 
         $sourceCategory = $source->getCategory() ?? 'Unbekannt';
         $targetCategory = $target->getCategory() ?? 'Unbekannt';
@@ -201,28 +198,28 @@ class AutomatedGapAnalysisService
             $targetCategory
         );
 
-        $gap->setDescription($description);
-        $gap->setPriority('medium');
-        $gap->setPercentageImpact(15);
-        $gap->setConfidence($this->calculateGapConfidence(0.3, 'scope'));
+        $mappingGapItem->setDescription($description);
+        $mappingGapItem->setPriority('medium');
+        $mappingGapItem->setPercentageImpact(15);
+        $mappingGapItem->setConfidence($this->calculateGapConfidence(0.3, 'scope'));
 
-        $gap->setRecommendedAction(
+        $mappingGapItem->setRecommendedAction(
             'Prüfen, ob die unterschiedlichen Scopes durch Kombination mehrerer Source-Requirements abgedeckt werden können, ' .
             'oder ob zusätzliche spezifische Kontrollen für den Target-Scope erforderlich sind.'
         );
 
-        $gap->setEstimatedEffort(4);
-        $gap->setIdentificationSource('algorithm');
-        $gap->setStatus('identified');
+        $mappingGapItem->setEstimatedEffort(4);
+        $mappingGapItem->setIdentificationSource('algorithm');
+        $mappingGapItem->setStatus('identified');
 
-        return $gap;
+        return $mappingGapItem;
     }
 
     /**
      * Identify additional requirements in target
      */
     private function identifyAdditionalRequirements(
-        ComplianceMapping $mapping,
+        ComplianceMapping $complianceMapping,
         ComplianceRequirement $source,
         ComplianceRequirement $target,
         array $targetKeywords,
@@ -237,9 +234,9 @@ class AutomatedGapAnalysisService
 
         // If target is significantly longer (>50% more) and has unique keywords
         if ($targetLength > $sourceLength * 1.5 && count(array_diff($targetKeywords, $sourceKeywords)) > 5) {
-            $gap = new MappingGapItem();
-            $gap->setMapping($mapping);
-            $gap->setGapType('additional_requirement');
+            $mappingGapItem = new MappingGapItem();
+            $mappingGapItem->setMapping($complianceMapping);
+            $mappingGapItem->setGapType('additional_requirement');
 
             $uniqueKeywords = array_diff($targetKeywords, $sourceKeywords);
 
@@ -249,23 +246,23 @@ class AutomatedGapAnalysisService
                 count($uniqueKeywords)
             );
 
-            $gap->setDescription($description);
-            $gap->setMissingKeywords(array_values(array_slice($uniqueKeywords, 0, 20)));
-            $gap->setPriority('high');
-            $gap->setPercentageImpact(25);
-            $gap->setConfidence($this->calculateGapConfidence(count($uniqueKeywords), 'additional'));
+            $mappingGapItem->setDescription($description);
+            $mappingGapItem->setMissingKeywords(array_values(array_slice($uniqueKeywords, 0, 20)));
+            $mappingGapItem->setPriority('high');
+            $mappingGapItem->setPercentageImpact(25);
+            $mappingGapItem->setConfidence($this->calculateGapConfidence(count($uniqueKeywords), 'additional'));
 
-            $gap->setRecommendedAction(
+            $mappingGapItem->setRecommendedAction(
                 'Die zusätzlichen Anforderungen des Target-Requirements müssen separat implementiert werden. ' .
                 'Prüfen Sie, ob andere Requirements des Source-Frameworks diese Aspekte abdecken, ' .
                 'oder ob neue Kontrollen erforderlich sind.'
             );
 
-            $gap->setEstimatedEffort((int) ceil(count($uniqueKeywords) * 0.5));
-            $gap->setIdentificationSource('algorithm');
-            $gap->setStatus('identified');
+            $mappingGapItem->setEstimatedEffort((int) ceil(count($uniqueKeywords) * 0.5));
+            $mappingGapItem->setIdentificationSource('algorithm');
+            $mappingGapItem->setStatus('identified');
 
-            return $gap;
+            return $mappingGapItem;
         }
 
         return null;
@@ -275,17 +272,15 @@ class AutomatedGapAnalysisService
      * Check if there's an evidence gap
      */
     private function hasEvidenceGap(
-        ComplianceMapping $mapping,
-        ComplianceRequirement $source,
-        ComplianceRequirement $target
+        ComplianceMapping $complianceMapping
     ): bool {
         // Evidence gap exists if:
         // - Mapping percentage is high (>80)
         // - But textual similarity is medium (0.5-0.7)
         // - Suggesting control exists but documentation is weak
 
-        $mappingPercentage = $mapping->getMappingPercentage();
-        $textualSimilarity = $mapping->getTextualSimilarity() ?? 0;
+        $mappingPercentage = $complianceMapping->getMappingPercentage();
+        $textualSimilarity = $complianceMapping->getTextualSimilarity() ?? 0;
 
         return $mappingPercentage > 80 && $textualSimilarity > 0.5 && $textualSimilarity < 0.7;
     }
@@ -293,37 +288,37 @@ class AutomatedGapAnalysisService
     /**
      * Create evidence gap
      */
-    private function createEvidenceGap(ComplianceMapping $mapping): ?MappingGapItem {
-        $gap = new MappingGapItem();
-        $gap->setMapping($mapping);
-        $gap->setGapType('evidence_gap');
+    private function createEvidenceGap(ComplianceMapping $complianceMapping): MappingGapItem {
+        $mappingGapItem = new MappingGapItem();
+        $mappingGapItem->setMapping($complianceMapping);
+        $mappingGapItem->setGapType('evidence_gap');
 
         $description = 'Die Kontrolle scheint grundsätzlich vorhanden zu sein, jedoch fehlt möglicherweise ' .
             'vollständige Dokumentation oder Nachweise (Evidenz) für die Umsetzung. ' .
             'Die Mapping-Percentage ist hoch, aber die textuelle Übereinstimmung deutet auf Lücken hin.';
 
-        $gap->setDescription($description);
-        $gap->setPriority('medium');
-        $gap->setPercentageImpact(10);
-        $gap->setConfidence($this->calculateGapConfidence(0.6, 'evidence'));
+        $mappingGapItem->setDescription($description);
+        $mappingGapItem->setPriority('medium');
+        $mappingGapItem->setPercentageImpact(10);
+        $mappingGapItem->setConfidence($this->calculateGapConfidence(0.6, 'evidence'));
 
-        $gap->setRecommendedAction(
+        $mappingGapItem->setRecommendedAction(
             'Dokumentation vervollständigen: Erstellen Sie ausführliche Beschreibungen der implementierten Kontrollen, ' .
             'sammeln Sie Nachweise (Screenshots, Policies, Protokolle) und dokumentieren Sie die Umsetzung gemäß ' .
             'den Anforderungen des Target-Frameworks.'
         );
 
-        $gap->setEstimatedEffort(3);
-        $gap->setIdentificationSource('algorithm');
-        $gap->setStatus('identified');
+        $mappingGapItem->setEstimatedEffort(3);
+        $mappingGapItem->setIdentificationSource('algorithm');
+        $mappingGapItem->setStatus('identified');
 
-        return $gap;
+        return $mappingGapItem;
     }
 
     /**
      * Calculate confidence for a gap identification
      */
-    private function calculateGapConfidence($value, string $type): int
+    private function calculateGapConfidence(int|float $value, string $type): int
     {
         $confidence = 50; // Base confidence
 
@@ -379,7 +374,7 @@ class AutomatedGapAnalysisService
     /**
      * Generate recommendations for missing keywords
      */
-    private function generateKeywordRecommendations(array $missingKeywords, ComplianceRequirement $target): string
+    private function generateKeywordRecommendations(array $missingKeywords): string
     {
         $recommendations = ['Folgende Maßnahmen werden empfohlen:'];
 
@@ -400,9 +395,9 @@ class AutomatedGapAnalysisService
         ];
 
         $added = [];
-        foreach ($missingKeywords as $keyword) {
+        foreach ($missingKeywords as $missingKeyword) {
             foreach ($categories as $key => $recommendation) {
-                if (stripos($keyword, $key) !== false && !in_array($recommendation, $added, true)) {
+                if (stripos((string) $missingKeyword, $key) !== false && !in_array($recommendation, $added, true)) {
                     $recommendations[] = '- ' . $recommendation;
                     $added[] = $recommendation;
                     break;
@@ -422,15 +417,15 @@ class AutomatedGapAnalysisService
     /**
      * Get requirement text (title + description)
      */
-    private function getRequirementText(ComplianceRequirement $requirement): string
+    private function getRequirementText(ComplianceRequirement $complianceRequirement): string
     {
         $parts = [];
 
-        if ($title = $requirement->getTitle()) {
+        if ($title = $complianceRequirement->getTitle()) {
             $parts[] = $title;
         }
 
-        if ($description = $requirement->getDescription()) {
+        if ($description = $complianceRequirement->getDescription()) {
             $parts[] = $description;
         }
 
@@ -444,8 +439,8 @@ class AutomatedGapAnalysisService
     {
         $totalImpact = 0;
 
-        foreach ($gapItems as $gap) {
-            $totalImpact += $gap->getPercentageImpact();
+        foreach ($gapItems as $gapItem) {
+            $totalImpact += $gapItem->getPercentageImpact();
         }
 
         return min(100, $totalImpact);
@@ -465,26 +460,26 @@ class AutomatedGapAnalysisService
             'high_confidence_gaps' => 0,
         ];
 
-        foreach ($gapItems as $gap) {
+        foreach ($gapItems as $gapItem) {
             // By type
-            $type = $gap->getGapType();
+            $type = $gapItem->getGapType();
             if (!isset($summary['by_type'][$type])) {
                 $summary['by_type'][$type] = 0;
             }
             $summary['by_type'][$type]++;
 
             // By priority
-            $priority = $gap->getPriority();
+            $priority = $gapItem->getPriority();
             if (!isset($summary['by_priority'][$priority])) {
                 $summary['by_priority'][$priority] = 0;
             }
             $summary['by_priority'][$priority]++;
 
             // Total effort
-            $summary['total_effort'] += $gap->getEstimatedEffort() ?? 0;
+            $summary['total_effort'] += $gapItem->getEstimatedEffort() ?? 0;
 
             // High confidence gaps
-            if ($gap->getConfidence() >= self::CONFIDENCE_THRESHOLD_HIGH) {
+            if ($gapItem->getConfidence() >= self::CONFIDENCE_THRESHOLD_HIGH) {
                 $summary['high_confidence_gaps']++;
             }
         }

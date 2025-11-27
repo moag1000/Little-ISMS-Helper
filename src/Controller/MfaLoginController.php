@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Repository\MfaTokenRepository;
 use App\Repository\UserRepository;
 use App\Service\AuditLogger;
@@ -51,7 +50,7 @@ class MfaLoginController extends AbstractController
         // Get active MFA tokens
         $mfaTokens = $this->mfaTokenRepository->findActiveByUser($user);
 
-        if (empty($mfaTokens)) {
+        if ($mfaTokens === []) {
             // User has no active MFA tokens anymore - mark as verified and continue
             $session->set('_security.mfa_verified', true);
             $session->remove('_security.mfa_required');
@@ -87,7 +86,7 @@ class MfaLoginController extends AbstractController
         $code = trim($request->request->get('code', ''));
         $tokenId = (int) $request->request->get('token_id');
 
-        if (empty($code)) {
+        if ($code === '' || $code === '0') {
             $this->addFlash('mfa_error', $this->translator->trans('mfa.challenge.error.code_required'));
             return $this->redirectToRoute('app_mfa_challenge', ['_locale' => $request->getLocale()]);
         }

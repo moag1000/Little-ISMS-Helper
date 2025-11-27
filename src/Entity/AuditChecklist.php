@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use App\Entity\Tenant;
 use App\Repository\AuditChecklistRepository;
 use Doctrine\DBAL\Types\Types;
@@ -21,11 +23,11 @@ class AuditChecklist
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?InternalAudit $audit = null;
+    private ?InternalAudit $internalAudit = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?ComplianceRequirement $requirement = null;
+    private ?ComplianceRequirement $complianceRequirement = null;
 
     #[ORM\Column(length: 50)]
     private string $verificationStatus = 'not_checked'; // not_checked, compliant, partial, non_compliant, not_applicable
@@ -49,13 +51,13 @@ class AuditChecklist
     private ?string $auditor = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeInterface $verifiedAt = null;
+    private ?DateTimeInterface $verifiedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
@@ -64,7 +66,7 @@ class AuditChecklist
 
 public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -74,23 +76,23 @@ public function __construct()
 
     public function getAudit(): ?InternalAudit
     {
-        return $this->audit;
+        return $this->internalAudit;
     }
 
-    public function setAudit(?InternalAudit $audit): static
+    public function setAudit(?InternalAudit $internalAudit): static
     {
-        $this->audit = $audit;
+        $this->internalAudit = $internalAudit;
         return $this;
     }
 
     public function getRequirement(): ?ComplianceRequirement
     {
-        return $this->requirement;
+        return $this->complianceRequirement;
     }
 
-    public function setRequirement(?ComplianceRequirement $requirement): static
+    public function setRequirement(?ComplianceRequirement $complianceRequirement): static
     {
-        $this->requirement = $requirement;
+        $this->complianceRequirement = $complianceRequirement;
         return $this;
     }
 
@@ -171,34 +173,34 @@ public function __construct()
         return $this;
     }
 
-    public function getVerifiedAt(): ?\DateTimeInterface
+    public function getVerifiedAt(): ?DateTimeInterface
     {
         return $this->verifiedAt;
     }
 
-    public function setVerifiedAt(?\DateTimeInterface $verifiedAt): static
+    public function setVerifiedAt(?DateTimeInterface $verifiedAt): static
     {
         $this->verifiedAt = $verifiedAt;
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -240,7 +242,7 @@ public function __construct()
     public function markAsVerified(string $auditor): static
     {
         $this->auditor = $auditor;
-        $this->verifiedAt = new \DateTimeImmutable();
+        $this->verifiedAt = new DateTimeImmutable();
         return $this;
     }
 
@@ -249,7 +251,7 @@ public function __construct()
      */
     public function isVerified(): bool
     {
-        return $this->verifiedAt !== null;
+        return $this->verifiedAt instanceof DateTimeInterface;
     }
 
     /**
@@ -257,7 +259,7 @@ public function __construct()
      */
     public function hasFindings(): bool
     {
-        return !empty($this->findings);
+        return !in_array($this->findings, [null, '', '0'], true);
     }
 
     public function getTenant(): ?Tenant

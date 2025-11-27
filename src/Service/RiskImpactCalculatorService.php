@@ -26,8 +26,8 @@ use Psr\Log\LoggerInterface;
 class RiskImpactCalculatorService
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private LoggerInterface $logger
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LoggerInterface $logger
     ) {}
 
     /**
@@ -47,7 +47,7 @@ class RiskImpactCalculatorService
     {
         $asset = $risk->getAsset();
 
-        if (!$asset) {
+        if (!$asset instanceof Asset) {
             $this->logger->debug('Risk has no associated asset', ['risk_id' => $risk->getId()]);
             return null;
         }
@@ -81,7 +81,6 @@ class RiskImpactCalculatorService
     /**
      * Get detailed impact calculation breakdown
      *
-     * @param Risk $risk
      * @return array{suggested_impact: int|null, current_impact: int|null, monetary_value: string|null, rationale: string, should_update: bool}
      */
     public function getImpactCalculationDetails(Risk $risk): array
@@ -168,17 +167,17 @@ class RiskImpactCalculatorService
      */
     public function findMisalignedRisks(): array
     {
-        $riskRepository = $this->entityManager->getRepository(Risk::class);
-        $allRisks = $riskRepository->findAll();
+        $entityRepository = $this->entityManager->getRepository(Risk::class);
+        $allRisks = $entityRepository->findAll();
 
         $misaligned = [];
 
-        foreach ($allRisks as $risk) {
-            $details = $this->getImpactCalculationDetails($risk);
+        foreach ($allRisks as $allRisk) {
+            $details = $this->getImpactCalculationDetails($allRisk);
 
             if ($details['should_update']) {
                 $misaligned[] = [
-                    'risk' => $risk,
+                    'risk' => $allRisk,
                     'details' => $details
                 ];
             }
@@ -198,7 +197,6 @@ class RiskImpactCalculatorService
      * Safe Guard: This method only SUGGESTS, it does not auto-update
      * User must explicitly call updateRiskImpact() to apply
      *
-     * @param Risk $risk
      * @return array{success: bool, message: string, old_impact: int|null, new_impact: int|null}
      */
     public function getSuggestion(Risk $risk): array
@@ -242,7 +240,6 @@ class RiskImpactCalculatorService
      * Safe Guard: Requires explicit user action, never auto-updates
      * Audit logging tracks who made the change
      *
-     * @param Risk $risk
      * @param int $newImpact The impact value to set (1-5)
      * @param bool $userConfirmed User must confirm the change
      * @return array{success: bool, message: string}

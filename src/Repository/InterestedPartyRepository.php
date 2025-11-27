@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use DateTime;
 use App\Entity\InterestedParty;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -23,7 +24,7 @@ class InterestedPartyRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->where('p.nextCommunication < :now')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new DateTime())
             ->orderBy('p.importance', 'DESC')
             ->getQuery()
             ->getResult();
@@ -75,7 +76,7 @@ class InterestedPartyRepository extends ServiceEntityRepository
         $overdueCommunications = $this->createQueryBuilder('p')
             ->select('COUNT(p.id)')
             ->where('p.nextCommunication < :now')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new DateTime())
             ->getQuery()
             ->getSingleScalarResult();
 

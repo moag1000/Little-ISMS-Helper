@@ -2,11 +2,10 @@
 
 namespace App\Controller;
 
+use Exception;
 use App\Entity\MfaToken;
 use App\Entity\User;
-use App\Form\MfaTokenType;
 use App\Repository\MfaTokenRepository;
-use App\Repository\UserRepository;
 use App\Service\AuditLogger;
 use App\Service\MfaService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,43 +16,38 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/admin/mfa')]
 class MfaTokenController extends AbstractController
 {
     public function __construct(
         private readonly MfaTokenRepository $mfaTokenRepository,
-        private readonly UserRepository $userRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly MfaService $mfaService,
         private readonly AuditLogger $auditLogger,
-        private readonly LoggerInterface $logger,
-        private readonly TranslatorInterface $translator
+        private readonly LoggerInterface $logger
     ) {}
-
-    #[Route('', name: 'admin_mfa_index')]
+    #[Route('/admin/mfa', name: 'admin_mfa_index')]
     #[IsGranted('MFA_VIEW')]
     public function index(): Response
     {
         $mfaTokens = $this->mfaTokenRepository->findAll();
 
         // Statistics
-        $activeCount = count(array_filter($mfaTokens, fn($t) => $t->isActive()));
-        $totpCount = count(array_filter($mfaTokens, fn($t) => $t->getTokenType() === 'totp'));
-        $webauthnCount = count(array_filter($mfaTokens, fn($t) => $t->getTokenType() === 'webauthn'));
+        $activeCount = count(array_filter($mfaTokens, fn(MfaToken $mfaToken): bool => $mfaToken->isActive()));
+        $totpCount = count(array_filter($mfaTokens, fn(MfaToken $mfaToken): bool => $mfaToken->getTokenType() === 'totp'));
+        $webauthnCount = count(array_filter($mfaTokens, fn(MfaToken $mfaToken): bool => $mfaToken->getTokenType() === 'webauthn'));
 
         // Group tokens by user
         $tokensByUser = [];
-        foreach ($mfaTokens as $token) {
-            $userId = $token->getUser()->getId();
+        foreach ($mfaTokens as $mfaToken) {
+            $userId = $mfaToken->getUser()->getId();
             if (!isset($tokensByUser[$userId])) {
                 $tokensByUser[$userId] = [
-                    'user' => $token->getUser(),
+                    'user' => $mfaToken->getUser(),
                     'tokens' => [],
                 ];
             }
-            $tokensByUser[$userId]['tokens'][] = $token;
+            $tokensByUser[$userId]['tokens'][] = $mfaToken;
         }
 
         return $this->render('mfa_token/index.html.twig', [
@@ -64,8 +58,7 @@ class MfaTokenController extends AbstractController
             'webauthn_count' => $webauthnCount,
         ]);
     }
-
-    #[Route('/user/{id}/setup-totp', name: 'admin_mfa_setup_totp', requirements: ['id' => '\d+'])]
+    #[Route('/admin/mfa/user/{id}/setup-totp', name: 'admin_mfa_setup_totp', requirements: ['id' => '\d+'])]
     #[IsGranted('MFA_SETUP')]
     public function setupTotp(User $user, Request $request): Response
     {
@@ -102,15 +95,14 @@ class MfaTokenController extends AbstractController
             'secret' => $mfaToken->getSecret(),
         ]);
     }
-
-    #[Route('/{id}/verify', name: 'admin_mfa_verify', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route('/admin/mfa/{id}/verify', name: 'admin_mfa_verify', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('MFA_MANAGE')]
     public function verify(MfaToken $mfaToken, Request $request): JsonResponse
     {
         $code = $request->request->get('code');
 
         if (!$code) {
-            return new JsonResponse(['success' => false, 'message' => 'Code is required'], 400);
+            return new JsonResponse(['success' => false, 'message' => 'Code is required'], Response::HTTP_BAD_REQUEST);
         }
 
         try {
@@ -132,9 +124,9 @@ class MfaTokenController extends AbstractController
             return new JsonResponse([
                 'success' => false,
                 'message' => 'Invalid verification code',
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('MFA verification failed', [
                 'error' => $e->getMessage(),
                 'token_id' => $mfaToken->getId(),
@@ -143,11 +135,10 @@ class MfaTokenController extends AbstractController
             return new JsonResponse([
                 'success' => false,
                 'message' => 'Verification failed: ' . $e->getMessage(),
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-    #[Route('/{id}/regenerate-backup-codes', name: 'admin_mfa_regenerate_backup', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route('/admin/mfa/{id}/regenerate-backup-codes', name: 'admin_mfa_regenerate_backup', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('MFA_MANAGE')]
     public function regenerateBackupCodes(MfaToken $mfaToken, Request $request): Response
     {
@@ -170,8 +161,7 @@ class MfaTokenController extends AbstractController
             'backup_codes' => $backupCodes,
         ]);
     }
-
-    #[Route('/{id}', name: 'admin_mfa_show', requirements: ['id' => '\d+'])]
+    #[Route('/admin/mfa/{id}', name: 'admin_mfa_show', requirements: ['id' => '\d+'])]
     #[IsGranted('MFA_VIEW')]
     public function show(MfaToken $mfaToken): Response
     {
@@ -182,8 +172,7 @@ class MfaTokenController extends AbstractController
             'remaining_backup_codes' => $remainingBackupCodes,
         ]);
     }
-
-    #[Route('/{id}/disable', name: 'admin_mfa_disable', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route('/admin/mfa/{id}/disable', name: 'admin_mfa_disable', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('MFA_MANAGE')]
     public function disable(MfaToken $mfaToken, Request $request): Response
     {
@@ -205,8 +194,7 @@ class MfaTokenController extends AbstractController
 
         return $this->redirectToRoute('admin_mfa_index');
     }
-
-    #[Route('/{id}/delete', name: 'admin_mfa_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route('/admin/mfa/{id}/delete', name: 'admin_mfa_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('MFA_DELETE')]
     public function delete(MfaToken $mfaToken, Request $request): Response
     {
@@ -215,7 +203,7 @@ class MfaTokenController extends AbstractController
             return $this->redirectToRoute('admin_mfa_index');
         }
 
-        $userId = $mfaToken->getUser()->getId();
+        $mfaToken->getUser()->getId();
         $userEmail = $mfaToken->getUser()->getEmail();
         $tokenType = $mfaToken->getTokenType();
         $tokenId = $mfaToken->getId();

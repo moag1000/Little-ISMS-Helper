@@ -18,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LoadIso27001RequirementsCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
@@ -30,17 +30,17 @@ class LoadIso27001RequirementsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
         $updateMode = $input->getOption('update');
 
-        $io->title('Loading ISO 27001:2022 Annex A Requirements');
-        $io->text(sprintf('Mode: %s', $updateMode ? 'UPDATE existing' : 'CREATE new (skip existing)'));
+        $symfonyStyle->title('Loading ISO 27001:2022 Annex A Requirements');
+        $symfonyStyle->text(sprintf('Mode: %s', $updateMode ? 'UPDATE existing' : 'CREATE new (skip existing)'));
 
         // Create or get ISO 27001 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'ISO27001']);
 
-        if (!$framework) {
+        if (!$framework instanceof ComplianceFramework) {
             $framework = new ComplianceFramework();
             $framework->setCode('ISO27001')
                 ->setName('ISO/IEC 27001:2022')
@@ -53,9 +53,9 @@ class LoadIso27001RequirementsCommand extends Command
                 ->setActive(true);
 
             $this->entityManager->persist($framework);
-            $io->text('✓ Created framework');
+            $symfonyStyle->text('✓ Created framework');
         } else {
-            $io->text('✓ Framework exists');
+            $symfonyStyle->text('✓ Framework exists');
         }
 
         $requirements = $this->getIso27001Requirements();
@@ -68,7 +68,7 @@ class LoadIso27001RequirementsCommand extends Command
                     'requirementId' => $reqData['id']
                 ]);
 
-            if ($existing) {
+            if ($existing instanceof ComplianceRequirement) {
                 if ($updateMode) {
                     $existing->setTitle($reqData['title'])
                         ->setDescription($reqData['description'])
@@ -101,8 +101,8 @@ class LoadIso27001RequirementsCommand extends Command
 
         $this->entityManager->flush();
 
-        $io->success('ISO 27001:2022 Annex A requirements loaded!');
-        $io->table(
+        $symfonyStyle->success('ISO 27001:2022 Annex A requirements loaded!');
+        $symfonyStyle->table(
             ['Action', 'Count'],
             [
                 ['Created', $stats['created']],
@@ -111,7 +111,7 @@ class LoadIso27001RequirementsCommand extends Command
                 ['Total', count($requirements)],
             ]
         );
-        $io->note('These ComplianceRequirements enable cross-framework mappings (separate from Control entities for implementation tracking).');
+        $symfonyStyle->note('These ComplianceRequirements enable cross-framework mappings (separate from Control entities for implementation tracking).');
 
         return Command::SUCCESS;
     }

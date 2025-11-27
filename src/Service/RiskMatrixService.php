@@ -27,8 +27,8 @@ use App\Repository\RiskRepository;
  */
 class RiskMatrixService
 {
-    private const MATRIX_SIZE = 5;
-    private const LIKELIHOOD_LABELS = [
+    private const int MATRIX_SIZE = 5;
+    private const array LIKELIHOOD_LABELS = [
         1 => 'Sehr selten',
         2 => 'Selten',
         3 => 'Gelegentlich',
@@ -36,7 +36,7 @@ class RiskMatrixService
         5 => 'Sehr wahrscheinlich',
     ];
 
-    private const IMPACT_LABELS = [
+    private const array IMPACT_LABELS = [
         1 => 'Unbedeutend',
         2 => 'Gering',
         3 => 'Moderat',
@@ -45,10 +45,10 @@ class RiskMatrixService
     ];
 
     public function __construct(
-        private RiskRepository $riskRepository,
-        private int $criticalThreshold = 20,
-        private int $highThreshold = 12,
-        private int $mediumThreshold = 6
+        private readonly RiskRepository $riskRepository,
+        private readonly int $criticalThreshold = 20,
+        private readonly int $highThreshold = 12,
+        private readonly int $mediumThreshold = 6
     ) {}
 
     /**

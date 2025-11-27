@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use DateTimeImmutable;
 use App\Entity\CrisisTeam;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -73,7 +74,7 @@ class CrisisTeamRepository extends ServiceEntityRepository
             ->where('ct.nextTrainingAt IS NOT NULL')
             ->andWhere('ct.nextTrainingAt < :now')
             ->andWhere('ct.isActive = :active')
-            ->setParameter('now', new \DateTimeImmutable())
+            ->setParameter('now', new DateTimeImmutable())
             ->setParameter('active', true)
             ->orderBy('ct.nextTrainingAt', 'ASC')
             ->getQuery()

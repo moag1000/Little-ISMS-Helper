@@ -2,6 +2,11 @@
 
 namespace App\Service;
 
+use Symfony\Component\HttpFoundation\Request;
+use DateTimeInterface;
+use ReflectionClass;
+use Doctrine\Common\Collections\Collection;
+use Exception;
 use App\Entity\AuditLog;
 use App\Entity\Risk;
 use App\Entity\User;
@@ -11,19 +16,17 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class AuditLogger
 {
-    private const ACTION_CREATE = 'create';
-    private const ACTION_UPDATE = 'update';
-    private const ACTION_DELETE = 'delete';
-    private const ACTION_VIEW = 'view';
-    private const ACTION_LOGIN = 'login';
-    private const ACTION_LOGOUT = 'logout';
-    private const ACTION_EXPORT = 'export';
-    private const ACTION_IMPORT = 'import';
+    private const string ACTION_CREATE = 'create';
+    private const string ACTION_UPDATE = 'update';
+    private const string ACTION_DELETE = 'delete';
+    private const string ACTION_VIEW = 'view';
+    private const string ACTION_EXPORT = 'export';
+    private const string ACTION_IMPORT = 'import';
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private RequestStack $requestStack,
-        private Security $security
+        private readonly EntityManagerInterface $entityManager,
+        private readonly RequestStack $requestStack,
+        private readonly Security $security
     ) {}
 
     /**
@@ -114,11 +117,11 @@ class AuditLogger
         $auditLog->setDescription($description);
 
         // Set user information (use provided userName or get from security context)
-        $userName = $userName ?? $this->getCurrentUserName();
+        $userName ??= $this->getCurrentUserName();
         $auditLog->setUserName($userName);
 
         // Set request information if available
-        if ($request) {
+        if ($request instanceof Request) {
             $auditLog->setIpAddress($request->getClientIp());
             $auditLog->setUserAgent($request->headers->get('User-Agent'));
         }
@@ -166,10 +169,10 @@ class AuditLogger
             $oldValue = $oldValues[$key] ?? null;
 
             // Convert objects to strings for comparison
-            if ($oldValue instanceof \DateTimeInterface) {
+            if ($oldValue instanceof DateTimeInterface) {
                 $oldValue = $oldValue->format('Y-m-d H:i:s');
             }
-            if ($newValue instanceof \DateTimeInterface) {
+            if ($newValue instanceof DateTimeInterface) {
                 $newValue = $newValue->format('Y-m-d H:i:s');
             }
 
@@ -195,13 +198,13 @@ class AuditLogger
 
         foreach ($values as $key => $value) {
             // Skip password fields
-            if (stripos($key, 'password') !== false || stripos($key, 'token') !== false) {
+            if (stripos((string) $key, 'password') !== false || stripos((string) $key, 'token') !== false) {
                 $sanitized[$key] = '***';
                 continue;
             }
 
             // Convert DateTime objects
-            if ($value instanceof \DateTimeInterface) {
+            if ($value instanceof DateTimeInterface) {
                 $sanitized[$key] = $value->format('Y-m-d H:i:s');
                 continue;
             }
@@ -229,7 +232,7 @@ class AuditLogger
      */
     public function getEntityTypeName(object $entity): string
     {
-        $className = get_class($entity);
+        $className = $entity::class;
         return substr($className, strrpos($className, '\\') + 1);
     }
 
@@ -239,10 +242,10 @@ class AuditLogger
     public function extractEntityValues(object $entity): array
     {
         $values = [];
-        $reflection = new \ReflectionClass($entity);
+        $reflectionClass = new ReflectionClass($entity);
 
-        foreach ($reflection->getProperties() as $property) {
-            $name = $property->getName();
+        foreach ($reflectionClass->getProperties() as $reflectionProperty) {
+            $name = $reflectionProperty->getName();
 
             // Skip certain properties
             if (in_array($name, ['risks', '__initializer__', '__cloner__', '__isInitialized__'])) {
@@ -250,15 +253,15 @@ class AuditLogger
             }
 
             try {
-                $value = $property->getValue($entity);
+                $value = $reflectionProperty->getValue($entity);
 
                 // Skip collections and complex objects
-                if ($value instanceof \Doctrine\Common\Collections\Collection) {
+                if ($value instanceof Collection) {
                     continue;
                 }
 
                 $values[$name] = $value;
-            } catch (\Exception $e) {
+            } catch (Exception) {
                 // Skip properties that can't be accessed
                 continue;
             }
@@ -324,7 +327,7 @@ class AuditLogger
     /**
      * Log risk acceptance approval
      */
-    public function logRiskAcceptanceApproved(Risk $risk, User $approver, string $comments): void
+    public function logRiskAcceptanceApproved(Risk $risk, User $user, string $comments): void
     {
         $this->logCustom(
             action: 'risk_acceptance_approved',
@@ -333,23 +336,23 @@ class AuditLogger
             newValues: [
                 'risk_title' => $risk->getTitle(),
                 'risk_score' => $risk->getResidualRiskLevel(),
-                'approved_by' => $approver->getFullName(),
+                'approved_by' => $user->getFullName(),
                 'comments' => $comments,
             ],
             description: sprintf(
                 'Risk "%s" (ID: %d) acceptance approved by %s',
                 $risk->getTitle(),
                 $risk->getId(),
-                $approver->getFullName()
+                $user->getFullName()
             ),
-            userName: $approver->getEmail()
+            userName: $user->getEmail()
         );
     }
 
     /**
      * Log risk acceptance rejection
      */
-    public function logRiskAcceptanceRejected(Risk $risk, User $rejector, string $reason): void
+    public function logRiskAcceptanceRejected(Risk $risk, User $user, string $reason): void
     {
         $this->logCustom(
             action: 'risk_acceptance_rejected',
@@ -358,17 +361,17 @@ class AuditLogger
             newValues: [
                 'risk_title' => $risk->getTitle(),
                 'risk_score' => $risk->getResidualRiskLevel(),
-                'rejected_by' => $rejector->getFullName(),
+                'rejected_by' => $user->getFullName(),
                 'reason' => $reason,
             ],
             description: sprintf(
                 'Risk "%s" (ID: %d) acceptance rejected by %s: %s',
                 $risk->getTitle(),
                 $risk->getId(),
-                $rejector->getFullName(),
+                $user->getFullName(),
                 $reason
             ),
-            userName: $rejector->getEmail()
+            userName: $user->getEmail()
         );
     }
 }

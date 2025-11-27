@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use App\Entity\Tenant;
 use App\Repository\ManagementReviewRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -22,7 +24,7 @@ class ManagementReview
     private ?string $title = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTimeInterface $reviewDate = null;
+    private ?DateTimeInterface $reviewDate = null;
 
     #[ORM\ManyToMany(targetEntity: User::class)]
     private Collection $participants;
@@ -65,10 +67,10 @@ class ManagementReview
     private ?string $status = 'planned';
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
 
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
@@ -77,7 +79,7 @@ class ManagementReview
 
     // Neue, formularkompatible Felder (Option B)
     #[ORM\ManyToOne(targetEntity: User::class)]
-    private ?User $reviewedBy = null;
+    private ?User $user = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $nonconformitiesReview = null;
@@ -105,7 +107,7 @@ class ManagementReview
 
 public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
         $this->participants = new ArrayCollection();
     }
 
@@ -125,12 +127,12 @@ public function __construct()
         return $this;
     }
 
-    public function getReviewDate(): ?\DateTimeInterface
+    public function getReviewDate(): ?DateTimeInterface
     {
         return $this->reviewDate;
     }
 
-    public function setReviewDate(\DateTimeInterface $reviewDate): static
+    public function setReviewDate(DateTimeInterface $reviewDate): static
     {
         $this->reviewDate = $reviewDate;
         return $this;
@@ -290,23 +292,23 @@ public function __construct()
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -325,12 +327,12 @@ public function __construct()
 
     public function getReviewedBy(): ?User
     {
-        return $this->reviewedBy;
+        return $this->user;
     }
 
-    public function setReviewedBy(?User $reviewedBy): static
+    public function setReviewedBy(?User $user): static
     {
-        $this->reviewedBy = $reviewedBy;
+        $this->user = $user;
         return $this;
     }
 

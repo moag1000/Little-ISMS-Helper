@@ -2,6 +2,7 @@
 
 namespace App\Security\Voter;
 
+use ReflectionClass;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Vote;
@@ -85,8 +86,8 @@ class EntityVoter extends Voter
         }
 
         // Get entity name
-        $entityClass = get_class($subject);
-        $entityName = strtolower((new \ReflectionClass($entityClass))->getShortName());
+        $entityClass = $subject::class;
+        $entityName = strtolower(new ReflectionClass($entityClass)->getShortName());
 
         // Check permission based on entity and action
         $permissionName = $entityName . '.' . $attribute;

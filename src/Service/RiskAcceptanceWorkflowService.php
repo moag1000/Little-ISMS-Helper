@@ -2,13 +2,16 @@
 
 namespace App\Service;
 
+use DomainException;
+use DateTime;
+use App\Entity\WorkflowInstance;
+use Exception;
 use App\Entity\Risk;
 use App\Entity\User;
 use App\Entity\Tenant;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Risk Acceptance Workflow Service
@@ -32,34 +35,34 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class RiskAcceptanceWorkflowService
 {
     // Approval level thresholds (from Appendix B of audit report)
-    private const APPROVAL_AUTOMATIC = 3;     // Score <= 3: Auto-accept
-    private const APPROVAL_MANAGER = 7;       // Score 4-7: Manager approval
-    private const APPROVAL_EXECUTIVE = 25;    // Score 8-25: Executive approval
+    private const int APPROVAL_AUTOMATIC = 3;     // Score <= 3: Auto-accept
+    private const int APPROVAL_MANAGER = 7;       // Score 4-7: Manager approval
+    private const int APPROVAL_EXECUTIVE = 25;    // Score 8-25: Executive approval
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private RiskAppetitePrioritizationService $appetiteService,
-        private WorkflowService $workflowService,
-        private EmailNotificationService $emailService,
-        private UserRepository $userRepository,
-        private AuditLogger $auditLogger,
-        private LoggerInterface $logger
+        private readonly EntityManagerInterface $entityManager,
+        private readonly RiskAppetitePrioritizationService $riskAppetitePrioritizationService,
+        private readonly WorkflowService $workflowService,
+        private readonly EmailNotificationService $emailNotificationService,
+        private readonly UserRepository $userRepository,
+        private readonly AuditLogger $auditLogger,
+        private readonly LoggerInterface $logger
     ) {}
 
     /**
      * Request formal acceptance for a risk
      *
      * @param Risk $risk The risk to be accepted
-     * @param User $requester User requesting the acceptance
+     * @param User $user User requesting the acceptance
      * @param string $justification Justification for accepting the risk
-     * @throws \DomainException If risk does not qualify for acceptance
+     * @throws DomainException If risk does not qualify for acceptance
      * @return array Status information about the acceptance request
      */
-    public function requestAcceptance(Risk $risk, User $requester, string $justification): array
+    public function requestAcceptance(Risk $risk, User $user, string $justification): array
     {
         $this->logger->info('Risk acceptance requested', [
             'risk_id' => $risk->getId(),
-            'requester' => $requester->getEmail(),
+            'requester' => $user->getEmail(),
         ]);
 
         // 1. Validate risk qualifies for acceptance
@@ -69,7 +72,7 @@ class RiskAcceptanceWorkflowService
         $appetiteCheck = $this->validateRiskAppetite($risk);
 
         if (!$appetiteCheck['acceptable']) {
-            throw new \DomainException($appetiteCheck['reason']);
+            throw new DomainException($appetiteCheck['reason']);
         }
 
         // 3. Determine required approval level
@@ -80,52 +83,49 @@ class RiskAcceptanceWorkflowService
 
         // 5. Handle based on approval level
         if ($approvalLevel === 'automatic') {
-            return $this->processAutomaticAcceptance($risk, $requester);
-        } else {
-            return $this->createApprovalWorkflow($risk, $requester, $approvalLevel);
+            return $this->processAutomaticAcceptance($risk, $user);
         }
+        return $this->createApprovalWorkflow($risk, $user, $approvalLevel);
     }
 
     /**
      * Validate if risk qualifies for acceptance strategy
      *
-     * @param Risk $risk
-     * @throws \DomainException If risk doesn't qualify
+     * @throws DomainException If risk doesn't qualify
      */
     private function validateRiskForAcceptance(Risk $risk): void
     {
         // Check if risk has "accept" treatment strategy
         if ($risk->getTreatmentStrategy() !== 'accept') {
-            throw new \DomainException(
+            throw new DomainException(
                 'Risk must have "accept" treatment strategy. Current strategy: ' . $risk->getTreatmentStrategy()
             );
         }
 
         // Risk must have assessment completed
         if (!$risk->getProbability() || !$risk->getImpact()) {
-            throw new \DomainException('Risk assessment must be completed before acceptance');
+            throw new DomainException('Risk assessment must be completed before acceptance');
         }
 
         // Residual risk should be assessed
         if (!$risk->getResidualProbability() || !$risk->getResidualImpact()) {
-            throw new \DomainException('Residual risk must be assessed before acceptance');
+            throw new DomainException('Residual risk must be assessed before acceptance');
         }
 
         // Check if already formally accepted
         if ($risk->isFormallyAccepted()) {
-            throw new \DomainException('Risk is already formally accepted');
+            throw new DomainException('Risk is already formally accepted');
         }
     }
 
     /**
      * Validate risk against organizational risk appetite
      *
-     * @param Risk $risk
      * @return array ['acceptable' => bool, 'reason' => string]
      */
     private function validateRiskAppetite(Risk $risk): array
     {
-        $appetite = $this->appetiteService->getApplicableAppetite($risk);
+        $appetite = $this->riskAppetitePrioritizationService->getApplicableAppetite($risk);
 
         if (!$appetite) {
             // No appetite defined - log warning but allow
@@ -151,7 +151,7 @@ class RiskAcceptanceWorkflowService
         }
 
         // Check if residual risk exceeds appetite
-        $exceedsAppetite = $this->appetiteService->exceedsAppetite($risk);
+        $exceedsAppetite = $this->riskAppetitePrioritizationService->exceedsAppetite($risk);
 
         if ($exceedsAppetite) {
             return [
@@ -175,18 +175,19 @@ class RiskAcceptanceWorkflowService
     /**
      * Determine required approval level based on residual risk score
      *
-     * @param Risk $risk
      * @return string 'automatic', 'manager', or 'executive'
      */
     public function determineApprovalLevel(Risk $risk): string
     {
         $residualScore = $risk->getResidualRiskLevel();
-
         if ($residualScore <= self::APPROVAL_AUTOMATIC) {
             return 'automatic';
-        } elseif ($residualScore <= self::APPROVAL_MANAGER) {
+        }
+
+        if ($residualScore <= self::APPROVAL_MANAGER) {
             return 'manager';
-        } else {
+        }
+        else {
             return 'executive';
         }
     }
@@ -194,16 +195,14 @@ class RiskAcceptanceWorkflowService
     /**
      * Process automatic acceptance for low risks
      *
-     * @param Risk $risk
-     * @param User $requester
      * @return array Status information
      */
-    private function processAutomaticAcceptance(Risk $risk, User $requester): array
+    private function processAutomaticAcceptance(Risk $risk, User $user): array
     {
-        $now = new \DateTime();
+        $now = new DateTime();
 
         $risk->setFormallyAccepted(true);
-        $risk->setAcceptanceApprovedBy($requester->getFullName() . ' (automatic)');
+        $risk->setAcceptanceApprovedBy($user->getFullName() . ' (automatic)');
         $risk->setAcceptanceApprovedAt($now);
         $risk->setStatus('accepted');
 
@@ -213,7 +212,7 @@ class RiskAcceptanceWorkflowService
         // Log acceptance
         $this->auditLogger->logRiskAcceptance(
             $risk,
-            $requester,
+            $user,
             'Automatically accepted (score <= 3)'
         );
 
@@ -233,18 +232,15 @@ class RiskAcceptanceWorkflowService
     /**
      * Create approval workflow for manager or executive approval
      *
-     * @param Risk $risk
-     * @param User $requester
-     * @param string $approvalLevel
      * @return array Status information
      */
-    private function createApprovalWorkflow(Risk $risk, User $requester, string $approvalLevel): array
+    private function createApprovalWorkflow(Risk $risk, User $user, string $approvalLevel): array
     {
         $tenant = $risk->getTenant();
         $approver = $this->getRequiredApprover($tenant, $approvalLevel);
 
-        if (!$approver) {
-            throw new \DomainException(
+        if (!$approver instanceof User) {
+            throw new DomainException(
                 sprintf('No %s approver configured for tenant', $approvalLevel)
             );
         }
@@ -256,10 +252,10 @@ class RiskAcceptanceWorkflowService
             workflowName: 'risk_acceptance_' . $approvalLevel
         );
 
-        if (!$workflowInstance) {
+        if (!$workflowInstance instanceof WorkflowInstance) {
             // Fallback: Manual tracking if no workflow defined
             $this->logger->warning('No workflow configured for risk acceptance, using manual tracking');
-            return $this->createManualApprovalRequest($risk, $requester, $approver, $approvalLevel);
+            return $this->createManualApprovalRequest($risk, $approver, $approvalLevel);
         }
 
         // Send notification to approver
@@ -268,7 +264,7 @@ class RiskAcceptanceWorkflowService
         // Log workflow creation
         $this->auditLogger->logRiskAcceptanceRequested(
             $risk,
-            $requester,
+            $user,
             $approver,
             $approvalLevel
         );
@@ -288,14 +284,8 @@ class RiskAcceptanceWorkflowService
 
     /**
      * Create manual approval request (fallback when workflow not configured)
-     *
-     * @param Risk $risk
-     * @param User $requester
-     * @param User $approver
-     * @param string $approvalLevel
-     * @return array
      */
-    private function createManualApprovalRequest(Risk $risk, User $requester, User $approver, string $approvalLevel): array
+    private function createManualApprovalRequest(Risk $risk, User $user, string $approvalLevel): array
     {
         // Set status to indicate pending approval
         $risk->setStatus('assessed'); // Keep in assessed until approved
@@ -304,15 +294,15 @@ class RiskAcceptanceWorkflowService
         $this->entityManager->flush();
 
         // Send notification
-        $this->sendApprovalNotification($risk, $approver, $approvalLevel);
+        $this->sendApprovalNotification($risk, $user, $approvalLevel);
 
         return [
             'status' => 'pending_approval',
             'approval_level' => $approvalLevel,
-            'approver' => $approver->getFullName(),
+            'approver' => $user->getFullName(),
             'message' => sprintf(
                 'Approval request sent to %s. Manual approval required.',
-                $approver->getFullName()
+                $user->getFullName()
             ),
             'workflow_id' => null,
         ];
@@ -320,10 +310,6 @@ class RiskAcceptanceWorkflowService
 
     /**
      * Get required approver based on approval level
-     *
-     * @param Tenant $tenant
-     * @param string $approvalLevel
-     * @return User|null
      */
     private function getRequiredApprover(Tenant $tenant, string $approvalLevel): ?User
     {
@@ -347,24 +333,20 @@ class RiskAcceptanceWorkflowService
 
     /**
      * Send email notification to approver
-     *
-     * @param Risk $risk
-     * @param User $approver
-     * @param string $approvalLevel
      */
-    private function sendApprovalNotification(Risk $risk, User $approver, string $approvalLevel): void
+    private function sendApprovalNotification(Risk $risk, User $user, string $approvalLevel): void
     {
         try {
-            $this->emailService->sendRiskAcceptanceRequest(
+            $this->emailNotificationService->sendRiskAcceptanceRequest(
                 risk: $risk,
-                approver: $approver,
+                approver: $user,
                 approvalLevel: $approvalLevel
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to send approval notification', [
                 'error' => $e->getMessage(),
                 'risk_id' => $risk->getId(),
-                'approver' => $approver->getEmail(),
+                'approver' => $user->getEmail(),
             ]);
         }
     }
@@ -372,17 +354,15 @@ class RiskAcceptanceWorkflowService
     /**
      * Approve risk acceptance
      *
-     * @param Risk $risk
-     * @param User $approver
      * @param string $comments Optional approval comments
      * @return array Status information
      */
-    public function approveAcceptance(Risk $risk, User $approver, string $comments = ''): array
+    public function approveAcceptance(Risk $risk, User $user, string $comments = ''): array
     {
-        $now = new \DateTime();
+        $now = new DateTime();
 
         $risk->setFormallyAccepted(true);
-        $risk->setAcceptanceApprovedBy($approver->getFullName());
+        $risk->setAcceptanceApprovedBy($user->getFullName());
         $risk->setAcceptanceApprovedAt($now);
         $risk->setStatus('accepted');
 
@@ -392,24 +372,24 @@ class RiskAcceptanceWorkflowService
         // Log approval
         $this->auditLogger->logRiskAcceptanceApproved(
             $risk,
-            $approver,
+            $user,
             $comments
         );
 
         $this->logger->info('Risk acceptance approved', [
             'risk_id' => $risk->getId(),
-            'approver' => $approver->getEmail(),
+            'approver' => $user->getEmail(),
         ]);
 
         // Send email notification to risk owner
-        if ($risk->getRiskOwner()) {
+        if ($risk->getRiskOwner() instanceof User) {
             try {
-                $this->emailService->sendRiskAcceptanceApproved(
+                $this->emailNotificationService->sendRiskAcceptanceApproved(
                     $risk,
                     $risk->getRiskOwner(),
-                    $approver
+                    $user
                 );
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logger->error('Failed to send approval notification', [
                     'error' => $e->getMessage(),
                     'risk_id' => $risk->getId(),
@@ -419,7 +399,7 @@ class RiskAcceptanceWorkflowService
 
         return [
             'status' => 'accepted',
-            'approved_by' => $approver->getFullName(),
+            'approved_by' => $user->getFullName(),
             'approved_at' => $now,
             'message' => 'Risk acceptance has been approved',
         ];
@@ -428,12 +408,10 @@ class RiskAcceptanceWorkflowService
     /**
      * Reject risk acceptance
      *
-     * @param Risk $risk
-     * @param User $rejector
      * @param string $reason Reason for rejection
      * @return array Status information
      */
-    public function rejectAcceptance(Risk $risk, User $rejector, string $reason): array
+    public function rejectAcceptance(Risk $risk, User $user, string $reason): array
     {
         $risk->setStatus('assessed'); // Return to assessed status
         $risk->setFormallyAccepted(false);
@@ -444,26 +422,26 @@ class RiskAcceptanceWorkflowService
         // Log rejection
         $this->auditLogger->logRiskAcceptanceRejected(
             $risk,
-            $rejector,
+            $user,
             $reason
         );
 
         $this->logger->info('Risk acceptance rejected', [
             'risk_id' => $risk->getId(),
-            'rejector' => $rejector->getEmail(),
+            'rejector' => $user->getEmail(),
             'reason' => $reason,
         ]);
 
         // Send email notification to risk owner
-        if ($risk->getRiskOwner()) {
+        if ($risk->getRiskOwner() instanceof User) {
             try {
-                $this->emailService->sendRiskAcceptanceRejected(
+                $this->emailNotificationService->sendRiskAcceptanceRejected(
                     $risk,
                     $risk->getRiskOwner(),
                     $reason,
-                    $rejector
+                    $user
                 );
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logger->error('Failed to send rejection notification', [
                     'error' => $e->getMessage(),
                     'risk_id' => $risk->getId(),
@@ -473,7 +451,7 @@ class RiskAcceptanceWorkflowService
 
         return [
             'status' => 'rejected',
-            'rejected_by' => $rejector->getFullName(),
+            'rejected_by' => $user->getFullName(),
             'reason' => $reason,
             'message' => 'Risk acceptance has been rejected. Additional mitigation required.',
         ];

@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
 use App\Repository\UserSessionRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -63,19 +64,19 @@ class UserSession
      * When was this session created?
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     /**
      * When was the last activity in this session?
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $lastActivityAt = null;
+    private ?DateTimeImmutable $lastActivityAt = null;
 
     /**
      * When did this session end?
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $endedAt = null;
+    private ?DateTimeImmutable $endedAt = null;
 
     /**
      * How did this session end? (logout, timeout, forced, expired)
@@ -91,8 +92,8 @@ class UserSession
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->lastActivityAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
+        $this->lastActivityAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -155,23 +156,23 @@ class UserSession
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getLastActivityAt(): ?\DateTimeImmutable
+    public function getLastActivityAt(): ?DateTimeImmutable
     {
         return $this->lastActivityAt;
     }
 
-    public function setLastActivityAt(\DateTimeImmutable $lastActivityAt): static
+    public function setLastActivityAt(DateTimeImmutable $lastActivityAt): static
     {
         $this->lastActivityAt = $lastActivityAt;
         return $this;
@@ -179,16 +180,16 @@ class UserSession
 
     public function updateActivity(): static
     {
-        $this->lastActivityAt = new \DateTimeImmutable();
+        $this->lastActivityAt = new DateTimeImmutable();
         return $this;
     }
 
-    public function getEndedAt(): ?\DateTimeImmutable
+    public function getEndedAt(): ?DateTimeImmutable
     {
         return $this->endedAt;
     }
 
-    public function setEndedAt(?\DateTimeImmutable $endedAt): static
+    public function setEndedAt(?DateTimeImmutable $endedAt): static
     {
         $this->endedAt = $endedAt;
         return $this;
@@ -222,7 +223,7 @@ class UserSession
     public function terminate(string $reason = 'forced', ?string $terminatedBy = null): static
     {
         $this->isActive = false;
-        $this->endedAt = new \DateTimeImmutable();
+        $this->endedAt = new DateTimeImmutable();
         $this->endReason = $reason;
         $this->terminatedBy = $terminatedBy;
         return $this;
@@ -237,7 +238,7 @@ class UserSession
             return true;
         }
 
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
         $diff = $now->getTimestamp() - $this->lastActivityAt->getTimestamp();
 
         return $diff > $maxLifetime;
@@ -248,7 +249,7 @@ class UserSession
      */
     public function getDuration(): int
     {
-        $endTime = $this->endedAt ?? new \DateTimeImmutable();
+        $endTime = $this->endedAt ?? new DateTimeImmutable();
         return $endTime->getTimestamp() - $this->createdAt->getTimestamp();
     }
 

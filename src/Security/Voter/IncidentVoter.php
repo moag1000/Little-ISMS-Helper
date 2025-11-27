@@ -2,6 +2,7 @@
 
 namespace App\Security\Voter;
 
+use App\Entity\Tenant;
 use App\Entity\Incident;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -67,7 +68,7 @@ class IncidentVoter extends Voter
         return match ($attribute) {
             self::VIEW => $this->canView($incident, $user),
             self::EDIT => $this->canEdit($incident, $user),
-            self::DELETE => $this->canDelete($incident, $user),
+            self::DELETE => $this->canDelete($user),
             default => false,
         };
     }
@@ -75,17 +76,17 @@ class IncidentVoter extends Voter
     private function canView(Incident $incident, User $user): bool
     {
         // Security: Multi-tenancy - users can view incidents from their tenant
-        return $incident->getTenant() === $user->getTenant() && $user->getTenant() !== null;
+        return $incident->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant;
     }
 
     private function canEdit(Incident $incident, User $user): bool
     {
         // Security: Users can edit incidents from their tenant
         // Could be extended with reporter/assigned user checks
-        return $incident->getTenant() === $user->getTenant() && $user->getTenant() !== null;
+        return $incident->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant;
     }
 
-    private function canDelete(Incident $incident, User $user): bool
+    private function canDelete(User $user): bool
     {
         // Security: Only admins can delete
         return in_array('ROLE_ADMIN', $user->getRoles());

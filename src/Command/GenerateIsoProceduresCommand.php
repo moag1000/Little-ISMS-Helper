@@ -16,7 +16,7 @@ use Symfony\Component\Filesystem\Filesystem;
 )]
 class GenerateIsoProceduresCommand extends Command
 {
-    private Filesystem $filesystem;
+    private readonly Filesystem $filesystem;
 
     public function __construct()
     {
@@ -34,17 +34,17 @@ class GenerateIsoProceduresCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
         $outputDir = $input->getOption('output-dir');
         $format = $input->getOption('format');
 
-        $io->title('ISO 27001 Procedure Templates Generator');
-        $io->text('Generating comprehensive ISMS procedure templates...');
+        $symfonyStyle->title('ISO 27001 Procedure Templates Generator');
+        $symfonyStyle->text('Generating comprehensive ISMS procedure templates...');
 
         // Create output directory
         if (!$this->filesystem->exists($outputDir)) {
             $this->filesystem->mkdir($outputDir);
-            $io->success("Created output directory: $outputDir");
+            $symfonyStyle->success("Created output directory: $outputDir");
         }
 
         $procedures = $this->getProcedureTemplates();
@@ -70,10 +70,10 @@ class GenerateIsoProceduresCommand extends Command
             }
         }
 
-        $io->success("Successfully generated $generatedCount procedure templates in: $outputDir");
-        $io->table(
+        $symfonyStyle->success("Successfully generated $generatedCount procedure templates in: $outputDir");
+        $symfonyStyle->table(
             ['Category', 'Procedures'],
-            array_map(fn($cat, $procs) => [$cat, count($procs)], array_keys($procedures), $procedures)
+            array_map(fn($cat, $procs): array => [$cat, count($procs)], array_keys($procedures), $procedures)
         );
 
         return Command::SUCCESS;
@@ -837,10 +837,10 @@ MD;
         // Simple markdown to HTML conversion
         $html = $markdown;
         $html = preg_replace('/^# (.+)$/m', '<h1>$1</h1>', $html);
-        $html = preg_replace('/^## (.+)$/m', '<h2>$1</h2>', $html);
-        $html = preg_replace('/^### (.+)$/m', '<h3>$1</h3>', $html);
-        $html = preg_replace('/^\- (.+)$/m', '<li>$1</li>', $html);
-        $html = preg_replace('/\*\*(.+?)\*\*/','<strong>$1</strong>', $html);
+        $html = preg_replace('/^## (.+)$/m', '<h2>$1</h2>', (string) $html);
+        $html = preg_replace('/^### (.+)$/m', '<h3>$1</h3>', (string) $html);
+        $html = preg_replace('/^\- (.+)$/m', '<li>$1</li>', (string) $html);
+        $html = preg_replace('/\*\*(.+?)\*\*/','<strong>$1</strong>', (string) $html);
 
         return "<!DOCTYPE html>\n<html>\n<head>\n<meta charset='UTF-8'>\n<title>ISO 27001 Procedure</title>\n</head>\n<body>\n$html\n</body>\n</html>";
     }

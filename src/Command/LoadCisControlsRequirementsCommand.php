@@ -18,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LoadCisControlsRequirementsCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
@@ -30,17 +30,17 @@ class LoadCisControlsRequirementsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
         $updateMode = $input->getOption('update');
 
-        $io->title('Loading CIS Controls v8 Requirements');
-        $io->text(sprintf('Mode: %s', $updateMode ? 'UPDATE existing' : 'CREATE new (skip existing)'));
+        $symfonyStyle->title('Loading CIS Controls v8 Requirements');
+        $symfonyStyle->text(sprintf('Mode: %s', $updateMode ? 'UPDATE existing' : 'CREATE new (skip existing)'));
 
         // Create or get CIS Controls framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'CIS-CONTROLS']);
 
-        if (!$framework) {
+        if (!$framework instanceof ComplianceFramework) {
             $framework = new ComplianceFramework();
             $framework->setCode('CIS-CONTROLS')
                 ->setName('CIS Controls v8')
@@ -53,9 +53,9 @@ class LoadCisControlsRequirementsCommand extends Command
                 ->setActive(true);
 
             $this->entityManager->persist($framework);
-            $io->text('✓ Created framework');
+            $symfonyStyle->text('✓ Created framework');
         } else {
-            $io->text('✓ Framework exists');
+            $symfonyStyle->text('✓ Framework exists');
         }
 
         $requirements = $this->getCisControlsRequirements();
@@ -68,7 +68,7 @@ class LoadCisControlsRequirementsCommand extends Command
                     'requirementId' => $reqData['id']
                 ]);
 
-            if ($existing) {
+            if ($existing instanceof ComplianceRequirement) {
                 if ($updateMode) {
                     $existing->setTitle($reqData['title'])
                         ->setDescription($reqData['description'])
@@ -101,8 +101,8 @@ class LoadCisControlsRequirementsCommand extends Command
 
         $this->entityManager->flush();
 
-        $io->success('CIS Controls v8 requirements loaded!');
-        $io->table(
+        $symfonyStyle->success('CIS Controls v8 requirements loaded!');
+        $symfonyStyle->table(
             ['Action', 'Count'],
             [
                 ['Created', $stats['created']],

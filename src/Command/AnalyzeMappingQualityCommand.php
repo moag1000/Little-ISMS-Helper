@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use Exception;
 use App\Entity\ComplianceMapping;
 use App\Repository\ComplianceMappingRepository;
 use App\Service\MappingQualityAnalysisService;
@@ -21,14 +22,13 @@ use Symfony\Component\Console\Helper\ProgressBar;
 )]
 class AnalyzeMappingQualityCommand extends Command
 {
-    private const BATCH_SIZE = 50;
-    private const LOW_CONFIDENCE_THRESHOLD = 70;
+    private const int BATCH_SIZE = 50;
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private ComplianceMappingRepository $mappingRepository,
-        private MappingQualityAnalysisService $qualityAnalysisService,
-        private AutomatedGapAnalysisService $gapAnalysisService
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ComplianceMappingRepository $complianceMappingRepository,
+        private readonly MappingQualityAnalysisService $mappingQualityAnalysisService,
+        private readonly AutomatedGapAnalysisService $automatedGapAnalysisService
     ) {
         parent::__construct();
     }
@@ -45,8 +45,8 @@ class AnalyzeMappingQualityCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
-        $io->title('Compliance Mapping Quality Analysis');
+        $symfonyStyle = new SymfonyStyle($input, $output);
+        $symfonyStyle->title('Compliance Mapping Quality Analysis');
 
         $limit = $input->getOption('limit');
         $reanalyze = $input->getOption('reanalyze');
@@ -55,7 +55,7 @@ class AnalyzeMappingQualityCommand extends Command
         $dryRun = $input->getOption('dry-run');
 
         if ($dryRun) {
-            $io->note('Running in DRY-RUN mode - no changes will be saved');
+            $symfonyStyle->note('Running in DRY-RUN mode - no changes will be saved');
         }
 
         // Get mapping IDs to analyze (not full entities to avoid detached entity issues)
@@ -63,11 +63,11 @@ class AnalyzeMappingQualityCommand extends Command
         $totalMappings = count($mappingIds);
 
         if ($totalMappings === 0) {
-            $io->success('No mappings found to analyze.');
+            $symfonyStyle->success('No mappings found to analyze.');
             return Command::SUCCESS;
         }
 
-        $io->section(sprintf('Analyzing %d compliance mappings', $totalMappings));
+        $symfonyStyle->section(sprintf('Analyzing %d compliance mappings', $totalMappings));
 
         $progressBar = new ProgressBar($output, $totalMappings);
         $progressBar->setFormat('verbose');
@@ -93,8 +93,8 @@ class AnalyzeMappingQualityCommand extends Command
                 // Fetch fresh entity from database to avoid detached entity issues
                 $mapping = $this->entityManager->find(ComplianceMapping::class, $mappingId);
 
-                if (!$mapping) {
-                    $io->warning(sprintf('Mapping %d not found, skipping', $mappingId));
+                if (!$mapping instanceof ComplianceMapping) {
+                    $symfonyStyle->warning(sprintf('Mapping %d not found, skipping', $mappingId));
                     $progressBar->advance();
                     continue;
                 }
@@ -103,7 +103,7 @@ class AnalyzeMappingQualityCommand extends Command
                 $oldConfidence = $mapping->getAnalysisConfidence();
 
                 // Analyze quality
-                $analysisResults = $this->qualityAnalysisService->analyzeMappingQuality($mapping);
+                $analysisResults = $this->mappingQualityAnalysisService->analyzeMappingQuality($mapping);
 
                 // Apply results to mapping
                 $mapping->setCalculatedPercentage($analysisResults['calculated_percentage']);
@@ -124,7 +124,7 @@ class AnalyzeMappingQualityCommand extends Command
                 }
 
                 // Analyze gaps
-                $gapItems = $this->gapAnalysisService->analyzeGaps($mapping, $analysisResults);
+                $gapItems = $this->automatedGapAnalysisService->analyzeGaps($mapping, $analysisResults);
 
                 if (!$dryRun) {
                     foreach ($gapItems as $gapItem) {
@@ -172,9 +172,9 @@ class AnalyzeMappingQualityCommand extends Command
                     $this->entityManager->clear();
                 }
 
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $statistics['errors']++;
-                $io->error(sprintf(
+                $symfonyStyle->error(sprintf(
                     'Error analyzing mapping %d: %s',
                     $mappingId,
                     $e->getMessage()
@@ -189,13 +189,13 @@ class AnalyzeMappingQualityCommand extends Command
         }
 
         $progressBar->finish();
-        $io->newLine(2);
+        $symfonyStyle->newLine(2);
 
         // Display results
-        $this->displayResults($io, $statistics, $dryRun);
+        $this->displayResults($symfonyStyle, $statistics, $dryRun);
 
         // Display recommendations
-        $this->displayRecommendations($io, $statistics, $totalMappings);
+        $this->displayRecommendations($symfonyStyle, $statistics, $totalMappings);
 
         return Command::SUCCESS;
     }
@@ -210,48 +210,48 @@ class AnalyzeMappingQualityCommand extends Command
         bool $lowQualityOnly,
         ?int $limit
     ): array {
-        $qb = $this->entityManager->createQueryBuilder();
-        $qb->select('cm.id')
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $queryBuilder->select('cm.id')
             ->from(ComplianceMapping::class, 'cm')
             ->join('cm.sourceRequirement', 'sr')
             ->join('cm.targetRequirement', 'tr');
 
         // Filter by framework if specified
         if ($frameworkCode) {
-            $qb->join('sr.framework', 'sf')
+            $queryBuilder->join('sr.framework', 'sf')
                 ->andWhere('sf.code = :frameworkCode')
                 ->setParameter('frameworkCode', $frameworkCode);
         }
 
         // Filter by analysis status
         if (!$reanalyze) {
-            $qb->andWhere('cm.calculatedPercentage IS NULL OR cm.analysisConfidence IS NULL');
+            $queryBuilder->andWhere('cm.calculatedPercentage IS NULL OR cm.analysisConfidence IS NULL');
         }
 
         // Filter by quality
         if ($lowQualityOnly) {
-            $qb->andWhere('cm.qualityScore < 60 OR cm.qualityScore IS NULL');
+            $queryBuilder->andWhere('cm.qualityScore < 60 OR cm.qualityScore IS NULL');
         }
 
         // Apply limit
         if ($limit) {
-            $qb->setMaxResults((int) $limit);
+            $queryBuilder->setMaxResults((int) $limit);
         }
 
         // Order by priority (unanalyzed first, then low quality)
-        $qb->orderBy('cm.analysisConfidence', 'ASC')
+        $queryBuilder->orderBy('cm.analysisConfidence', 'ASC')
             ->addOrderBy('cm.qualityScore', 'ASC');
 
         // Return array of IDs only (flatten the result)
-        return array_column($qb->getQuery()->getResult(), 'id');
+        return array_column($queryBuilder->getQuery()->getResult(), 'id');
     }
 
     /**
      * Display analysis results
      */
-    private function displayResults(SymfonyStyle $io, array $statistics, bool $dryRun): void
+    private function displayResults(SymfonyStyle $symfonyStyle, array $statistics, bool $dryRun): void
     {
-        $io->section('Analysis Results');
+        $symfonyStyle->section('Analysis Results');
 
         $rows = [
             ['Total Analyzed', $statistics['analyzed']],
@@ -283,21 +283,21 @@ class AnalyzeMappingQualityCommand extends Command
             ['Errors', $statistics['errors']],
         ];
 
-        $io->table(['Metric', 'Value'], $rows);
+        $symfonyStyle->table(['Metric', 'Value'], $rows);
 
         if ($dryRun) {
-            $io->warning('DRY-RUN mode: No changes were saved to the database');
+            $symfonyStyle->warning('DRY-RUN mode: No changes were saved to the database');
         } else {
-            $io->success('Analysis complete! Results have been saved to the database.');
+            $symfonyStyle->success('Analysis complete! Results have been saved to the database.');
         }
     }
 
     /**
      * Display recommendations based on results
      */
-    private function displayRecommendations(SymfonyStyle $io, array $statistics, int $totalMappings): void
+    private function displayRecommendations(SymfonyStyle $symfonyStyle, array $statistics, int $totalMappings): void
     {
-        $io->section('Recommendations');
+        $symfonyStyle->section('Recommendations');
 
         $recommendations = [];
 
@@ -347,15 +347,15 @@ class AnalyzeMappingQualityCommand extends Command
         }
 
         if (empty($recommendations)) {
-            $io->success('All mappings analyzed successfully with no major issues!');
+            $symfonyStyle->success('All mappings analyzed successfully with no major issues!');
         } else {
             foreach ($recommendations as $recommendation) {
-                $io->writeln($recommendation);
+                $symfonyStyle->writeln($recommendation);
             }
         }
 
-        $io->newLine();
-        $io->note([
+        $symfonyStyle->newLine();
+        $symfonyStyle->note([
             'Next steps:',
             '1. Review low-confidence mappings in the web interface',
             '2. Address identified gaps with highest priority first',

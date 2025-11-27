@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Exception;
 use App\Service\LicenseReportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -114,14 +115,13 @@ class LicenseController extends AbstractController
                     'message' => 'License report generated successfully',
                     'report' => $result['report'],
                 ]);
-            } else {
-                return $this->json([
-                    'success' => false,
-                    'message' => 'License report generation failed',
-                    'error' => $result['error_output'] ?: $result['output'],
-                ], 500);
             }
-        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'message' => 'License report generation failed',
+                'error' => $result['error_output'] ?: $result['output'],
+            ], 500);
+        } catch (Exception $e) {
             return $this->json([
                 'success' => false,
                 'message' => 'Error generating license report: ' . $e->getMessage(),

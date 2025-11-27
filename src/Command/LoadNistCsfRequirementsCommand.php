@@ -18,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LoadNistCsfRequirementsCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
@@ -30,17 +30,17 @@ class LoadNistCsfRequirementsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
         $updateMode = $input->getOption('update');
 
-        $io->title('Loading NIST CSF 2.0 Requirements');
-        $io->text(sprintf('Mode: %s', $updateMode ? 'UPDATE existing' : 'CREATE new (skip existing)'));
+        $symfonyStyle->title('Loading NIST CSF 2.0 Requirements');
+        $symfonyStyle->text(sprintf('Mode: %s', $updateMode ? 'UPDATE existing' : 'CREATE new (skip existing)'));
 
         // Create or get NIST CSF framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'NIST-CSF']);
 
-        if (!$framework) {
+        if (!$framework instanceof ComplianceFramework) {
             $framework = new ComplianceFramework();
             $framework->setCode('NIST-CSF')
                 ->setName('NIST Cybersecurity Framework 2.0')
@@ -53,9 +53,9 @@ class LoadNistCsfRequirementsCommand extends Command
                 ->setActive(true);
 
             $this->entityManager->persist($framework);
-            $io->text('✓ Created framework');
+            $symfonyStyle->text('✓ Created framework');
         } else {
-            $io->text('✓ Framework exists');
+            $symfonyStyle->text('✓ Framework exists');
         }
 
         $requirements = $this->getNistCsfRequirements();
@@ -68,7 +68,7 @@ class LoadNistCsfRequirementsCommand extends Command
                     'requirementId' => $reqData['id']
                 ]);
 
-            if ($existing) {
+            if ($existing instanceof ComplianceRequirement) {
                 if ($updateMode) {
                     $existing->setTitle($reqData['title'])
                         ->setDescription($reqData['description'])
@@ -101,8 +101,8 @@ class LoadNistCsfRequirementsCommand extends Command
 
         $this->entityManager->flush();
 
-        $io->success('NIST CSF 2.0 requirements loaded!');
-        $io->table(
+        $symfonyStyle->success('NIST CSF 2.0 requirements loaded!');
+        $symfonyStyle->table(
             ['Action', 'Count'],
             [
                 ['Created', $stats['created']],

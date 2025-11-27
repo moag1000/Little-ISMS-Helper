@@ -2,6 +2,7 @@
 
 namespace App\EventListener;
 
+use Exception;
 use App\Entity\Incident;
 use App\Entity\RiskTreatmentPlan;
 use App\Entity\Document;
@@ -43,7 +44,7 @@ class WorkflowAutoTriggerListener
      *
      * Entity listeners receive the entity as first argument, then the event args
      */
-    public function postPersist(object $entity, PostPersistEventArgs $args): void
+    public function postPersist(object $entity, PostPersistEventArgs $postPersistEventArgs): void
     {
 
         // Check if this entity type requires workflow triggering
@@ -53,10 +54,10 @@ class WorkflowAutoTriggerListener
 
         try {
             $this->triggerWorkflowForEntity($entity, true);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Log error but don't fail the transaction
             $this->logger->error('Failed to trigger workflow for new entity', [
-                'entity_class' => get_class($entity),
+                'entity_class' => $entity::class,
                 'entity_id' => method_exists($entity, 'getId') ? $entity->getId() : null,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
@@ -69,9 +70,9 @@ class WorkflowAutoTriggerListener
      *
      * Entity listeners receive the entity as first argument, then the event args
      */
-    public function postUpdate(object $entity, PostUpdateEventArgs $args): void
+    public function postUpdate(object $entity, PostUpdateEventArgs $postUpdateEventArgs): void
     {
-        $changeSet = $args->getObjectManager()->getUnitOfWork()->getEntityChangeSet($entity);
+        $changeSet = $postUpdateEventArgs->getObjectManager()->getUnitOfWork()->getEntityChangeSet($entity);
 
         // Check if this entity change requires workflow triggering
         if (!$this->workflowAutoTriggerService->shouldTriggerWorkflow($entity, $changeSet)) {
@@ -80,10 +81,10 @@ class WorkflowAutoTriggerListener
 
         try {
             $this->triggerWorkflowForEntity($entity, false, $changeSet);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Log error but don't fail the transaction
             $this->logger->error('Failed to trigger workflow for updated entity', [
-                'entity_class' => get_class($entity),
+                'entity_class' => $entity::class,
                 'entity_id' => method_exists($entity, 'getId') ? $entity->getId() : null,
                 'changed_fields' => array_keys($changeSet),
                 'error' => $e->getMessage(),
@@ -94,10 +95,6 @@ class WorkflowAutoTriggerListener
 
     /**
      * Trigger appropriate workflow based on entity type
-     *
-     * @param object $entity
-     * @param bool $isNew
-     * @param array $changeSet
      */
     private function triggerWorkflowForEntity(object $entity, bool $isNew, array $changeSet = []): void
     {
@@ -112,10 +109,6 @@ class WorkflowAutoTriggerListener
 
     /**
      * Handle Incident workflow triggering
-     *
-     * @param Incident $incident
-     * @param bool $isNew
-     * @param array $changeSet
      */
     private function handleIncidentWorkflow(Incident $incident, bool $isNew, array $changeSet = []): void
     {
@@ -140,22 +133,20 @@ class WorkflowAutoTriggerListener
 
     /**
      * Handle RiskTreatmentPlan workflow triggering
-     *
-     * @param RiskTreatmentPlan $plan
      */
-    private function handleRiskTreatmentPlanWorkflow(RiskTreatmentPlan $plan): void
+    private function handleRiskTreatmentPlanWorkflow(RiskTreatmentPlan $riskTreatmentPlan): void
     {
         // Only trigger for new plans in 'planned' status
-        if ($plan->getStatus() === 'planned') {
+        if ($riskTreatmentPlan->getStatus() === 'planned') {
             $this->logger->info('Auto-triggering risk treatment plan workflows', [
-                'plan_id' => $plan->getId(),
-                'risk_id' => $plan->getRisk()?->getId(),
+                'plan_id' => $riskTreatmentPlan->getId(),
+                'risk_id' => $riskTreatmentPlan->getRisk()?->getId(),
             ]);
 
-            $results = $this->workflowAutoTriggerService->triggerRiskTreatmentPlanWorkflows($plan);
+            $results = $this->workflowAutoTriggerService->triggerRiskTreatmentPlanWorkflows($riskTreatmentPlan);
 
             $this->logger->info('Risk treatment plan workflows triggered', [
-                'plan_id' => $plan->getId(),
+                'plan_id' => $riskTreatmentPlan->getId(),
                 'results' => $results,
             ]);
         }
@@ -163,9 +154,6 @@ class WorkflowAutoTriggerListener
 
     /**
      * Handle Document workflow triggering
-     *
-     * @param Document $document
-     * @param bool $isNew
      */
     private function handleDocumentWorkflow(Document $document, bool $isNew): void
     {

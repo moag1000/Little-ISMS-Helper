@@ -105,9 +105,7 @@ class TenantType extends AbstractType
                 'help' => 'corporate.field.parent_help',
                 'required' => false,
                 'placeholder' => 'corporate.placeholder.parent',
-                'choice_label' => function (Tenant $tenant) {
-                    return $tenant->getName() . ' (' . $tenant->getCode() . ')';
-                },
+                'choice_label' => fn(Tenant $tenant): string => $tenant->getName() . ' (' . $tenant->getCode() . ')',
                 'query_builder' => function ($repository) use ($options) {
                     $qb = $repository->createQueryBuilder('t')
                         ->where('t.isActive = :active')

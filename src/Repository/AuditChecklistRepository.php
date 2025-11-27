@@ -30,14 +30,14 @@ class AuditChecklistRepository extends ServiceEntityRepository
     /**
      * Find all checklist items for a specific internal audit.
      *
-     * @param InternalAudit $audit Internal audit entity
+     * @param InternalAudit $internalAudit Internal audit entity
      * @return AuditChecklist[] Array of checklist items sorted by creation date
      */
-    public function findByAudit(InternalAudit $audit): array
+    public function findByAudit(InternalAudit $internalAudit): array
     {
         return $this->createQueryBuilder('ac')
             ->where('ac.audit = :audit')
-            ->setParameter('audit', $audit)
+            ->setParameter('audit', $internalAudit)
             ->orderBy('ac.createdAt', 'ASC')
             ->getQuery()
             ->getResult();
@@ -46,18 +46,18 @@ class AuditChecklistRepository extends ServiceEntityRepository
     /**
      * Find checklist items for a specific framework within an audit.
      *
-     * @param InternalAudit $audit Internal audit entity
-     * @param ComplianceFramework $framework Compliance framework to filter by
+     * @param InternalAudit $internalAudit Internal audit entity
+     * @param ComplianceFramework $complianceFramework Compliance framework to filter by
      * @return AuditChecklist[] Array of checklist items sorted by requirement ID
      */
-    public function findByAuditAndFramework(InternalAudit $audit, ComplianceFramework $framework): array
+    public function findByAuditAndFramework(InternalAudit $internalAudit, ComplianceFramework $complianceFramework): array
     {
         return $this->createQueryBuilder('ac')
             ->join('ac.requirement', 'r')
             ->where('ac.audit = :audit')
             ->andWhere('r.framework = :framework')
-            ->setParameter('audit', $audit)
-            ->setParameter('framework', $framework)
+            ->setParameter('audit', $internalAudit)
+            ->setParameter('framework', $complianceFramework)
             ->orderBy('r.requirementId', 'ASC')
             ->getQuery()
             ->getResult();
@@ -66,7 +66,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
     /**
      * Get comprehensive audit statistics for dashboard and reporting.
      *
-     * @param InternalAudit $audit Internal audit entity
+     * @param InternalAudit $internalAudit Internal audit entity
      * @return array<string, int|float> Statistics array containing:
      *   - total: Total checklist items
      *   - compliant: Count of compliant items
@@ -77,13 +77,13 @@ class AuditChecklistRepository extends ServiceEntityRepository
      *   - with_findings: Count of items with documented findings
      *   - average_score: Average compliance score (0-100)
      */
-    public function getAuditStatistics(InternalAudit $audit): array
+    public function getAuditStatistics(InternalAudit $internalAudit): array
     {
-        $qb = $this->createQueryBuilder('ac');
+        $queryBuilder = $this->createQueryBuilder('ac');
 
-        $total = $qb->select('COUNT(ac.id)')
+        $total = $queryBuilder->select('COUNT(ac.id)')
             ->where('ac.audit = :audit')
-            ->setParameter('audit', $audit)
+            ->setParameter('audit', $internalAudit)
             ->getQuery()
             ->getSingleScalarResult();
 
@@ -94,7 +94,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
                 ->select('COUNT(ac.id)')
                 ->where('ac.audit = :audit')
                 ->andWhere('ac.verificationStatus = :status')
-                ->setParameter('audit', $audit)
+                ->setParameter('audit', $internalAudit)
                 ->setParameter('status', 'compliant')
                 ->getQuery()
                 ->getSingleScalarResult(),
@@ -103,7 +103,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
                 ->select('COUNT(ac.id)')
                 ->where('ac.audit = :audit')
                 ->andWhere('ac.verificationStatus = :status')
-                ->setParameter('audit', $audit)
+                ->setParameter('audit', $internalAudit)
                 ->setParameter('status', 'partial')
                 ->getQuery()
                 ->getSingleScalarResult(),
@@ -112,7 +112,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
                 ->select('COUNT(ac.id)')
                 ->where('ac.audit = :audit')
                 ->andWhere('ac.verificationStatus = :status')
-                ->setParameter('audit', $audit)
+                ->setParameter('audit', $internalAudit)
                 ->setParameter('status', 'non_compliant')
                 ->getQuery()
                 ->getSingleScalarResult(),
@@ -121,7 +121,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
                 ->select('COUNT(ac.id)')
                 ->where('ac.audit = :audit')
                 ->andWhere('ac.verificationStatus = :status')
-                ->setParameter('audit', $audit)
+                ->setParameter('audit', $internalAudit)
                 ->setParameter('status', 'not_checked')
                 ->getQuery()
                 ->getSingleScalarResult(),
@@ -130,7 +130,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
                 ->select('COUNT(ac.id)')
                 ->where('ac.audit = :audit')
                 ->andWhere('ac.verifiedAt IS NOT NULL')
-                ->setParameter('audit', $audit)
+                ->setParameter('audit', $internalAudit)
                 ->getQuery()
                 ->getSingleScalarResult(),
 
@@ -139,7 +139,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
                 ->where('ac.audit = :audit')
                 ->andWhere('ac.findings IS NOT NULL')
                 ->andWhere('ac.findings != :empty')
-                ->setParameter('audit', $audit)
+                ->setParameter('audit', $internalAudit)
                 ->setParameter('empty', '')
                 ->getQuery()
                 ->getSingleScalarResult(),
@@ -148,7 +148,7 @@ class AuditChecklistRepository extends ServiceEntityRepository
                 ->select('AVG(ac.complianceScore)')
                 ->where('ac.audit = :audit')
                 ->andWhere('ac.verificationStatus != :na')
-                ->setParameter('audit', $audit)
+                ->setParameter('audit', $internalAudit)
                 ->setParameter('na', 'not_applicable')
                 ->getQuery()
                 ->getSingleScalarResult() ?? 0,
@@ -158,15 +158,15 @@ class AuditChecklistRepository extends ServiceEntityRepository
     /**
      * Find checklist items with non-compliances for corrective action planning.
      *
-     * @param InternalAudit $audit Internal audit entity
+     * @param InternalAudit $internalAudit Internal audit entity
      * @return AuditChecklist[] Array of non-compliant items sorted by score (worst first)
      */
-    public function findNonCompliances(InternalAudit $audit): array
+    public function findNonCompliances(InternalAudit $internalAudit): array
     {
         return $this->createQueryBuilder('ac')
             ->where('ac.audit = :audit')
             ->andWhere('ac.verificationStatus IN (:statuses)')
-            ->setParameter('audit', $audit)
+            ->setParameter('audit', $internalAudit)
             ->setParameter('statuses', ['non_compliant', 'partial'])
             ->orderBy('ac.complianceScore', 'ASC')
             ->getQuery()
@@ -176,15 +176,15 @@ class AuditChecklistRepository extends ServiceEntityRepository
     /**
      * Find checklist items not yet verified for audit progress tracking.
      *
-     * @param InternalAudit $audit Internal audit entity
+     * @param InternalAudit $internalAudit Internal audit entity
      * @return AuditChecklist[] Array of unchecked items
      */
-    public function findNotChecked(InternalAudit $audit): array
+    public function findNotChecked(InternalAudit $internalAudit): array
     {
         return $this->createQueryBuilder('ac')
             ->where('ac.audit = :audit')
             ->andWhere('ac.verificationStatus = :status')
-            ->setParameter('audit', $audit)
+            ->setParameter('audit', $internalAudit)
             ->setParameter('status', 'not_checked')
             ->getQuery()
             ->getResult();
@@ -193,16 +193,16 @@ class AuditChecklistRepository extends ServiceEntityRepository
     /**
      * Get checklist items organized by compliance framework for structured reporting.
      *
-     * @param InternalAudit $audit Internal audit entity
+     * @param InternalAudit $internalAudit Internal audit entity
      * @return array<string, AuditChecklist[]> Associative array with framework names as keys
      */
-    public function getGroupedByFramework(InternalAudit $audit): array
+    public function getGroupedByFramework(InternalAudit $internalAudit): array
     {
         $items = $this->createQueryBuilder('ac')
             ->join('ac.requirement', 'r')
             ->join('r.framework', 'f')
             ->where('ac.audit = :audit')
-            ->setParameter('audit', $audit)
+            ->setParameter('audit', $internalAudit)
             ->orderBy('f.name', 'ASC')
             ->addOrderBy('r.requirementId', 'ASC')
             ->getQuery()
@@ -223,16 +223,16 @@ class AuditChecklistRepository extends ServiceEntityRepository
     /**
      * Find checklist items for detailed requirements only (excluding high-level categories).
      *
-     * @param InternalAudit $audit Internal audit entity
+     * @param InternalAudit $internalAudit Internal audit entity
      * @return AuditChecklist[] Array of detailed requirement items sorted by requirement ID
      */
-    public function findDetailedRequirements(InternalAudit $audit): array
+    public function findDetailedRequirements(InternalAudit $internalAudit): array
     {
         return $this->createQueryBuilder('ac')
             ->join('ac.requirement', 'r')
             ->where('ac.audit = :audit')
             ->andWhere('r.requirementType IN (:types)')
-            ->setParameter('audit', $audit)
+            ->setParameter('audit', $internalAudit)
             ->setParameter('types', ['detailed', 'sub_requirement'])
             ->orderBy('r.requirementId', 'ASC')
             ->getQuery()

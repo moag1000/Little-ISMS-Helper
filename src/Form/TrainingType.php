@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\ComplianceFramework;
 use App\Entity\Training;
 use App\Entity\Control;
 use App\Entity\ComplianceRequirement;
@@ -153,9 +154,7 @@ class TrainingType extends AbstractType
             ->add('coveredControls', EntityType::class, [
                 'label' => 'training.field.covered_controls',
                 'class' => Control::class,
-                'choice_label' => function (Control $control) {
-                    return $control->getControlId() . ' - ' . $control->getName();
-                },
+                'choice_label' => fn(Control $control): string => $control->getControlId() . ' - ' . $control->getName(),
                 'multiple' => true,
                 'required' => false,
                 'attr' => [
@@ -167,10 +166,10 @@ class TrainingType extends AbstractType
             ->add('complianceRequirements', EntityType::class, [
                 'label' => 'training.field.compliance_requirements',
                 'class' => ComplianceRequirement::class,
-                'choice_label' => function (ComplianceRequirement $requirement) {
-                    $framework = $requirement->getFramework();
-                    $frameworkName = $framework ? $framework->getName() : 'N/A';
-                    return $frameworkName . ' - ' . $requirement->getRequirementId() . ': ' . $requirement->getTitle();
+                'choice_label' => function (ComplianceRequirement $complianceRequirement): string {
+                    $framework = $complianceRequirement->getFramework();
+                    $frameworkName = $framework instanceof ComplianceFramework ? $framework->getName() : 'N/A';
+                    return $frameworkName . ' - ' . $complianceRequirement->getRequirementId() . ': ' . $complianceRequirement->getTitle();
                 },
                 'multiple' => true,
                 'required' => false,

@@ -13,9 +13,9 @@ use App\Repository\CorporateGovernanceRepository;
 class DocumentService
 {
     public function __construct(
-        private DocumentRepository $documentRepository,
-        private ?CorporateStructureService $corporateStructureService = null,
-        private ?CorporateGovernanceRepository $governanceRepository = null
+        private readonly DocumentRepository $documentRepository,
+        private readonly ?CorporateStructureService $corporateStructureService = null,
+        private readonly ?CorporateGovernanceRepository $corporateGovernanceRepository = null
     ) {}
 
     /**
@@ -29,16 +29,16 @@ class DocumentService
         $parent = $tenant->getParent();
 
         // No parent or no corporate structure service - return own documents only
-        if (!$parent || !$this->corporateStructureService || !$this->governanceRepository) {
+        if (!$parent instanceof Tenant || !$this->corporateStructureService instanceof CorporateStructureService || !$this->corporateGovernanceRepository) {
             return $this->documentRepository->findByTenant($tenant);
         }
 
         // Check governance model for documents
-        $governance = $this->governanceRepository->findGovernanceForScope($tenant, 'document');
+        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'document');
 
         if (!$governance) {
             // No specific governance for documents - use default
-            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
 
         $governanceModel = $governance?->getGovernanceModel();
@@ -62,7 +62,7 @@ class DocumentService
     {
         $parent = $tenant->getParent();
 
-        if (!$parent || !$this->governanceRepository) {
+        if (!$parent instanceof Tenant || !$this->corporateGovernanceRepository) {
             return [
                 'hasParent' => false,
                 'canInherit' => false,
@@ -70,10 +70,10 @@ class DocumentService
             ];
         }
 
-        $governance = $this->governanceRepository->findGovernanceForScope($tenant, 'document');
+        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'document');
 
         if (!$governance) {
-            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
 
         $governanceModel = $governance?->getGovernanceModel();
@@ -97,7 +97,7 @@ class DocumentService
     {
         $documentTenant = $document->getTenant();
 
-        if (!$documentTenant) {
+        if (!$documentTenant instanceof Tenant) {
             return false;
         }
 

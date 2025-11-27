@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use RuntimeException;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
 /**
@@ -13,10 +14,10 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
  */
 class SetupAccessChecker
 {
-    private const SETUP_LOCK_FILE = '/config/setup_complete.lock';
+    private const string SETUP_LOCK_FILE = '/config/setup_complete.lock';
 
     public function __construct(
-        private readonly ParameterBagInterface $params
+        private readonly ParameterBagInterface $parameterBag
     ) {
     }
 
@@ -63,12 +64,12 @@ class SetupAccessChecker
     /**
      * Reset the setup (development only).
      *
-     * @throws \RuntimeException if not in development environment
+     * @throws RuntimeException if not in development environment
      */
     public function resetSetup(): void
     {
-        if ($this->params->get('kernel.environment') !== 'dev') {
-            throw new \RuntimeException('Setup reset is only allowed in development environment');
+        if ($this->parameterBag->get('kernel.environment') !== 'dev') {
+            throw new RuntimeException('Setup reset is only allowed in development environment');
         }
 
         $setupFile = $this->getSetupLockFilePath();
@@ -83,7 +84,7 @@ class SetupAccessChecker
      */
     private function getSetupLockFilePath(): string
     {
-        return $this->params->get('kernel.project_dir') . self::SETUP_LOCK_FILE;
+        return $this->parameterBag->get('kernel.project_dir') . self::SETUP_LOCK_FILE;
     }
 
     /**
@@ -122,7 +123,7 @@ class SetupAccessChecker
         ];
 
         // Check if .env.local exists and has DATABASE_URL
-        $envLocalPath = $this->params->get('kernel.project_dir') . '/.env.local';
+        $envLocalPath = $this->parameterBag->get('kernel.project_dir') . '/.env.local';
         if (file_exists($envLocalPath)) {
             $content = file_get_contents($envLocalPath);
             if ($content && str_contains($content, 'DATABASE_URL=')) {

@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Tenant;
+use DateTimeImmutable;
 use App\Entity\ComplianceFramework;
 use App\Form\ComplianceFrameworkType;
 use App\Repository\ComplianceFrameworkRepository;
@@ -16,19 +18,17 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/compliance/framework')]
 class ComplianceFrameworkController extends AbstractController
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private ComplianceFrameworkRepository $frameworkRepository,
-        private ComplianceRequirementRepository $requirementRepository,
-        private ComplianceRequirementFulfillmentService $fulfillmentService,
-        private TenantContext $tenantContext,
-        private TranslatorInterface $translator
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
+        private readonly ComplianceRequirementRepository $complianceRequirementRepository,
+        private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
+        private readonly TenantContext $tenantContext,
+        private readonly TranslatorInterface $translator
     ) {}
-
-    #[Route('/', name: 'app_compliance_framework_index', methods: ['GET'])]
+    #[Route('/compliance/framework/', name: 'app_compliance_framework_index', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function index(Request $request): Response
     {
@@ -38,7 +38,7 @@ class ComplianceFrameworkController extends AbstractController
             'industry' => $request->query->get('industry'),
         ];
 
-        $queryBuilder = $this->frameworkRepository->createQueryBuilder('f')
+        $queryBuilder = $this->complianceFrameworkRepository->createQueryBuilder('f')
             ->orderBy('f.name', 'ASC');
 
         // Apply filters
@@ -52,7 +52,7 @@ class ComplianceFrameworkController extends AbstractController
                 ->setParameter('mandatory', $filters['mandatory'] === '1');
         }
 
-        if (!empty($filters['industry'])) {
+        if (isset($filters['industry']) && ($filters['industry'] !== '' && $filters['industry'] !== '0')) {
             $queryBuilder->andWhere('f.applicableIndustry = :industry')
                 ->setParameter('industry', $filters['industry']);
         }
@@ -60,7 +60,7 @@ class ComplianceFrameworkController extends AbstractController
         $frameworks = $queryBuilder->getQuery()->getResult();
 
         // Get unique industries for filter
-        $industries = $this->frameworkRepository->createQueryBuilder('f')
+        $industries = $this->complianceFrameworkRepository->createQueryBuilder('f')
             ->select('DISTINCT f.applicableIndustry')
             ->orderBy('f.applicableIndustry', 'ASC')
             ->getQuery()
@@ -72,35 +72,33 @@ class ComplianceFrameworkController extends AbstractController
             'industries' => array_column($industries, 'applicableIndustry'),
         ]);
     }
-
-    #[Route('/new', name: 'app_compliance_framework_new', methods: ['GET', 'POST'])]
+    #[Route('/compliance/framework/new', name: 'app_compliance_framework_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function new(Request $request): Response
     {
-        $framework = new ComplianceFramework();
-        $framework->setTenant($this->tenantContext->getCurrentTenant());
+        $complianceFramework = new ComplianceFramework();
+        $complianceFramework->setTenant($this->tenantContext->getCurrentTenant());
 
-        $form = $this->createForm(ComplianceFrameworkType::class, $framework);
+        $form = $this->createForm(ComplianceFrameworkType::class, $complianceFramework);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($framework);
+            $this->entityManager->persist($complianceFramework);
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('compliance.framework.flash.created'));
 
-            return $this->redirectToRoute('app_compliance_framework_show', ['id' => $framework->getId()]);
+            return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->getId()]);
         }
 
         return $this->render('compliance/framework/new.html.twig', [
-            'framework' => $framework,
+            'framework' => $complianceFramework,
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}', name: 'app_compliance_framework_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}', name: 'app_compliance_framework_show', methods: ['GET'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
-    public function show(ComplianceFramework $framework): Response
+    public function show(ComplianceFramework $complianceFramework): Response
     {
         // Calculate statistics using tenant-specific fulfillment data
         $tenant = $this->tenantContext->getCurrentTenant();
@@ -109,8 +107,8 @@ class ComplianceFrameworkController extends AbstractController
         }
 
         // For SUPER_ADMIN without tenant, show empty statistics
-        if ($tenant) {
-            $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
+        if ($tenant instanceof Tenant) {
+            $stats = $this->complianceRequirementRepository->getFrameworkStatisticsForTenant($complianceFramework, $tenant);
         } else {
             $stats = ['total' => 0, 'applicable' => 0, 'fulfilled' => 0];
         }
@@ -124,14 +122,14 @@ class ComplianceFrameworkController extends AbstractController
 
         // Get fulfillments for all requirements (for template access)
         $requirementFulfillments = [];
-        foreach ($framework->getRequirements() as $requirement) {
-            $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+        foreach ($complianceFramework->getRequirements() as $requirement) {
+            $fulfillment = $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $requirement);
             $requirementFulfillments[$requirement->getId()] = $fulfillment;
         }
 
         // Group requirements by category
         $requirementsByCategory = [];
-        foreach ($framework->getRequirements() as $requirement) {
+        foreach ($complianceFramework->getRequirements() as $requirement) {
             $category = $requirement->getCategory() ?: 'Uncategorized';
             if (!isset($requirementsByCategory[$category])) {
                 $requirementsByCategory[$category] = [];
@@ -147,7 +145,7 @@ class ComplianceFrameworkController extends AbstractController
             'medium' => 0,
             'low' => 0,
         ];
-        foreach ($framework->getRequirements() as $requirement) {
+        foreach ($complianceFramework->getRequirements() as $requirement) {
             $priority = $requirement->getPriority();
             if (isset($priorityDistribution[$priority])) {
                 $priorityDistribution[$priority]++;
@@ -155,7 +153,7 @@ class ComplianceFrameworkController extends AbstractController
         }
 
         return $this->render('compliance/framework/show.html.twig', [
-            'framework' => $framework,
+            'framework' => $complianceFramework,
             'total_requirements' => $totalRequirements,
             'applicable_requirements' => $applicableRequirements,
             'fulfilled_requirements' => $fulfilledRequirements,
@@ -165,47 +163,45 @@ class ComplianceFrameworkController extends AbstractController
             'priority_distribution' => $priorityDistribution,
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'app_compliance_framework_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/edit', name: 'app_compliance_framework_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function edit(Request $request, ComplianceFramework $framework): Response
+    public function edit(Request $request, ComplianceFramework $complianceFramework): Response
     {
-        $form = $this->createForm(ComplianceFrameworkType::class, $framework);
+        $form = $this->createForm(ComplianceFrameworkType::class, $complianceFramework);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $framework->setUpdatedAt(new \DateTimeImmutable());
+            $complianceFramework->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('compliance.framework.flash.updated'));
 
-            return $this->redirectToRoute('app_compliance_framework_show', ['id' => $framework->getId()]);
+            return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->getId()]);
         }
 
         return $this->render('compliance/framework/edit.html.twig', [
-            'framework' => $framework,
+            'framework' => $complianceFramework,
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}/delete', name: 'app_compliance_framework_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/delete', name: 'app_compliance_framework_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function delete(Request $request, ComplianceFramework $framework): Response
+    public function delete(Request $request, ComplianceFramework $complianceFramework): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $framework->getId(), $request->request->get('_token'))) {
-            $frameworkName = $framework->getName();
+        if ($this->isCsrfTokenValid('delete' . $complianceFramework->getId(), $request->request->get('_token'))) {
+            $frameworkName = $complianceFramework->getName();
 
             // Check if framework has requirements
-            if ($framework->getRequirements()->count() > 0) {
+            if ($complianceFramework->getRequirements()->count() > 0) {
                 $this->addFlash('warning', $this->translator->trans('compliance.framework.flash.has_requirements', [
                     '%name%' => $frameworkName,
-                    '%count%' => $framework->getRequirements()->count(),
+                    '%count%' => $complianceFramework->getRequirements()->count(),
                 ]));
 
-                return $this->redirectToRoute('app_compliance_framework_show', ['id' => $framework->getId()]);
+                return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->getId()]);
             }
 
-            $this->entityManager->remove($framework);
+            $this->entityManager->remove($complianceFramework);
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('compliance.framework.flash.deleted', [
@@ -215,52 +211,50 @@ class ComplianceFrameworkController extends AbstractController
 
         return $this->redirectToRoute('app_compliance_framework_index');
     }
-
-    #[Route('/{id}/toggle', name: 'app_compliance_framework_toggle', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/toggle', name: 'app_compliance_framework_toggle', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function toggle(Request $request, ComplianceFramework $framework): Response
+    public function toggle(Request $request, ComplianceFramework $complianceFramework): Response
     {
-        if ($this->isCsrfTokenValid('toggle' . $framework->getId(), $request->request->get('_token'))) {
-            $framework->setActive(!$framework->isActive());
-            $framework->setUpdatedAt(new \DateTimeImmutable());
+        if ($this->isCsrfTokenValid('toggle' . $complianceFramework->getId(), $request->request->get('_token'))) {
+            $complianceFramework->setActive(!$complianceFramework->isActive());
+            $complianceFramework->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
-            $status = $framework->isActive() ? 'activated' : 'deactivated';
+            $status = $complianceFramework->isActive() ? 'activated' : 'deactivated';
             $this->addFlash('success', $this->translator->trans('compliance.framework.flash.' . $status, [
-                '%name%' => $framework->getName(),
+                '%name%' => $complianceFramework->getName(),
             ]));
         }
 
-        return $this->redirectToRoute('app_compliance_framework_show', ['id' => $framework->getId()]);
+        return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->getId()]);
     }
-
-    #[Route('/{id}/duplicate', name: 'app_compliance_framework_duplicate', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/duplicate', name: 'app_compliance_framework_duplicate', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function duplicate(Request $request, ComplianceFramework $framework): Response
+    public function duplicate(Request $request, ComplianceFramework $complianceFramework): Response
     {
-        if ($this->isCsrfTokenValid('duplicate' . $framework->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('duplicate' . $complianceFramework->getId(), $request->request->get('_token'))) {
             $newFramework = new ComplianceFramework();
-            $newFramework->setCode($framework->getCode() . '_COPY');
-            $newFramework->setName($framework->getName() . ' (Copy)');
-            $newFramework->setDescription($framework->getDescription());
-            $newFramework->setVersion($framework->getVersion());
-            $newFramework->setApplicableIndustry($framework->getApplicableIndustry());
-            $newFramework->setRegulatoryBody($framework->getRegulatoryBody());
-            $newFramework->setMandatory($framework->isMandatory());
-            $newFramework->setScopeDescription($framework->getScopeDescription());
+            $newFramework->setCode($complianceFramework->getCode() . '_COPY');
+            $newFramework->setName($complianceFramework->getName() . ' (Copy)');
+            $newFramework->setDescription($complianceFramework->getDescription());
+            $newFramework->setVersion($complianceFramework->getVersion());
+            $newFramework->setApplicableIndustry($complianceFramework->getApplicableIndustry());
+            $newFramework->setRegulatoryBody($complianceFramework->getRegulatoryBody());
+            $newFramework->setMandatory($complianceFramework->isMandatory());
+            $newFramework->setScopeDescription($complianceFramework->getScopeDescription());
             $newFramework->setActive(false); // Start inactive
-            $newFramework->setRequiredModules($framework->getRequiredModules());
+            $newFramework->setRequiredModules($complianceFramework->getRequiredModules());
 
             $this->entityManager->persist($newFramework);
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('compliance.framework.flash.duplicated', [
-                '%name%' => $framework->getName(),
+                '%name%' => $complianceFramework->getName(),
             ]));
 
             return $this->redirectToRoute('app_compliance_framework_edit', ['id' => $newFramework->getId()]);
         }
 
-        return $this->redirectToRoute('app_compliance_framework_show', ['id' => $framework->getId()]);
+        return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->getId()]);
     }
 }

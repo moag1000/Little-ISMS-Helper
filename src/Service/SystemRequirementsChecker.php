@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use Exception;
 use Symfony\Component\Yaml\Yaml;
 
 class SystemRequirementsChecker
@@ -66,22 +67,22 @@ class SystemRequirementsChecker
         $missingExtensions = [];
         $loadedExtensions = [];
 
-        foreach ($requiredExtensions as $extension) {
+        foreach ($requiredExtensions as $requiredExtension) {
             // Special handling for OPcache which is a Zend extension
-            if ($extension === 'opcache' || $extension === 'Zend OPcache') {
+            if ($requiredExtension === 'opcache' || $requiredExtension === 'Zend OPcache') {
                 if (extension_loaded('Zend OPcache') || function_exists('opcache_get_status')) {
-                    $loadedExtensions[] = $extension;
+                    $loadedExtensions[] = $requiredExtension;
                 } else {
-                    $missingExtensions[] = $extension;
+                    $missingExtensions[] = $requiredExtension;
                 }
-            } elseif (extension_loaded($extension)) {
-                $loadedExtensions[] = $extension;
+            } elseif (extension_loaded($requiredExtension)) {
+                $loadedExtensions[] = $requiredExtension;
             } else {
-                $missingExtensions[] = $extension;
+                $missingExtensions[] = $requiredExtension;
             }
         }
 
-        $allLoaded = empty($missingExtensions);
+        $allLoaded = $missingExtensions === [];
 
         return [
             'status' => $allLoaded ? 'success' : 'error',
@@ -116,7 +117,7 @@ class SystemRequirementsChecker
             }
 
             // Parse Database URL
-            $parsed = parse_url($databaseUrl);
+            $parsed = parse_url((string) $databaseUrl);
             $scheme = $parsed['scheme'] ?? 'unknown';
 
             return [
@@ -125,7 +126,7 @@ class SystemRequirementsChecker
                 'type' => $scheme,
                 'critical' => true,
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'status' => 'error',
                 'message' => 'Fehler bei Datenbankprüfung: ' . $e->getMessage(),
@@ -143,8 +144,8 @@ class SystemRequirementsChecker
         $notWritable = [];
         $writable = [];
 
-        foreach ($requiredDirs as $dir) {
-            $fullPath = $this->projectDir . '/' . $dir;
+        foreach ($requiredDirs as $requiredDir) {
+            $fullPath = $this->projectDir . '/' . $requiredDir;
 
             // Erstelle Verzeichnis wenn nicht vorhanden
             if (!is_dir($fullPath)) {
@@ -152,13 +153,13 @@ class SystemRequirementsChecker
             }
 
             if (is_writable($fullPath)) {
-                $writable[] = $dir;
+                $writable[] = $requiredDir;
             } else {
-                $notWritable[] = $dir;
+                $notWritable[] = $requiredDir;
             }
         }
 
-        $allWritable = empty($notWritable);
+        $allWritable = $notWritable === [];
 
         return [
             'status' => $allWritable ? 'success' : 'error',
@@ -359,7 +360,7 @@ class SystemRequirementsChecker
      */
     public function isSystemReady(): bool
     {
-        if (empty($this->results)) {
+        if ($this->results === []) {
             $this->checkAll();
         }
 

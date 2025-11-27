@@ -2,6 +2,10 @@
 
 namespace App\Controller;
 
+use Exception;
+use App\Entity\User;
+use App\Form\OrganisationInfoType;
+use DateTimeImmutable;
 use App\Entity\CorporateGovernance;
 use App\Entity\Tenant;
 use App\Enum\GovernanceModel;
@@ -25,16 +29,15 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
-#[Route('/admin/tenants')]
 class TenantManagementController extends AbstractController
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantRepository $tenantRepository,
-        private readonly CorporateGovernanceRepository $governanceRepository,
+        private readonly CorporateGovernanceRepository $corporateGovernanceRepository,
         private readonly LoggerInterface $logger,
         private readonly AuditLogger $auditLogger,
-        private readonly FileUploadSecurityService $fileUploadService,
+        private readonly FileUploadSecurityService $fileUploadSecurityService,
         private readonly SluggerInterface $slugger,
         private readonly CorporateStructureService $corporateStructureService,
         private readonly MultiTenantCheckService $multiTenantCheckService,
@@ -43,8 +46,7 @@ class TenantManagementController extends AbstractController
         private readonly string $uploadsDirectory = 'uploads/tenants',
     ) {
     }
-
-    #[Route('', name: 'tenant_management_index', methods: ['GET'])]
+    #[Route('/admin/tenants', name: 'tenant_management_index', methods: ['GET'])]
     #[IsGranted('TENANT_VIEW')]
     public function index(Request $request): Response
     {
@@ -81,8 +83,7 @@ class TenantManagementController extends AbstractController
             'inactiveCount' => count($this->tenantRepository->findBy(['isActive' => false])),
         ]);
     }
-
-    #[Route('/new', name: 'tenant_management_new', methods: ['GET', 'POST'])]
+    #[Route('/admin/tenants/new', name: 'tenant_management_new', methods: ['GET', 'POST'])]
     #[IsGranted('TENANT_CREATE')]
     public function new(Request $request): Response
     {
@@ -105,7 +106,7 @@ class TenantManagementController extends AbstractController
                 // Handle settings JSON
                 $settingsJson = $form->get('settings')->getData();
                 if ($settingsJson) {
-                    $tenant->setSettings(json_decode($settingsJson, true));
+                    $tenant->setSettings(json_decode((string) $settingsJson, true));
                 }
 
                 $this->entityManager->persist($tenant);
@@ -136,7 +137,7 @@ class TenantManagementController extends AbstractController
                 $this->addFlash('success', 'tenant.flash.created');
 
                 return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logger->error('Failed to create tenant', [
                     'error' => $e->getMessage(),
                     'trace' => $e->getTraceAsString(),
@@ -152,8 +153,7 @@ class TenantManagementController extends AbstractController
             'isEdit' => false,
         ]);
     }
-
-    #[Route('/corporate-structure', name: 'tenant_management_corporate_structure', methods: ['GET'])]
+    #[Route('/admin/tenants/corporate-structure', name: 'tenant_management_corporate_structure', methods: ['GET'])]
     #[IsGranted('TENANT_VIEW')]
     public function corporateStructure(): Response
     {
@@ -172,9 +172,7 @@ class TenantManagementController extends AbstractController
         }
 
         // Get standalone tenants (not part of any corporate structure)
-        $standaloneTenants = array_filter($allTenants, function ($tenant) {
-            return !$tenant->isPartOfCorporateStructure();
-        });
+        $standaloneTenants = array_filter($allTenants, fn(Tenant $tenant): bool => !$tenant->isPartOfCorporateStructure());
 
         return $this->render('admin/tenants/corporate_structure.html.twig', [
             'corporateGroups' => $corporateGroups,
@@ -185,15 +183,13 @@ class TenantManagementController extends AbstractController
             'activeTenantCount' => $this->multiTenantCheckService->getActiveTenantCount(),
         ]);
     }
-
-
-    #[Route('/{id}', name: 'tenant_management_show', methods: ['GET'])]
+    #[Route('/admin/tenants/{id}', name: 'tenant_management_show', methods: ['GET'])]
     #[IsGranted('TENANT_VIEW')]
     public function show(Tenant $tenant): Response
     {
         // Get user statistics
         $users = $tenant->getUsers();
-        $activeUsers = $users->filter(fn($user) => $user->isActive())->count();
+        $activeUsers = $users->filter(fn($user): bool => $user->isActive())->count();
 
         // Get recent activity from users
         $recentActivity = [];
@@ -206,8 +202,8 @@ class TenantManagementController extends AbstractController
 
         // Get default governance model
         $defaultGovernance = null;
-        if ($tenant->getParent()) {
-            $defaultGovernance = $this->governanceRepository->findDefaultGovernance($tenant);
+        if ($tenant->getParent() instanceof Tenant) {
+            $defaultGovernance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
 
         return $this->render('admin/tenants/show.html.twig', [
@@ -219,8 +215,7 @@ class TenantManagementController extends AbstractController
             'defaultGovernance' => $defaultGovernance,
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'tenant_management_edit', methods: ['GET', 'POST'])]
+    #[Route('/admin/tenants/{id}/edit', name: 'tenant_management_edit', methods: ['GET', 'POST'])]
     #[IsGranted('TENANT_EDIT')]
     public function edit(Request $request, Tenant $tenant): Response
     {
@@ -258,7 +253,7 @@ class TenantManagementController extends AbstractController
                 // Handle settings JSON
                 $settingsJson = $form->get('settings')->getData();
                 if ($settingsJson) {
-                    $tenant->setSettings(json_decode($settingsJson, true));
+                    $tenant->setSettings(json_decode((string) $settingsJson, true));
                 }
 
                 $this->entityManager->flush();
@@ -292,7 +287,7 @@ class TenantManagementController extends AbstractController
                 $this->addFlash('success', 'tenant.flash.updated');
 
                 return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logger->error('Failed to update tenant', [
                     'tenant_id' => $tenant->getId(),
                     'error' => $e->getMessage(),
@@ -309,8 +304,7 @@ class TenantManagementController extends AbstractController
             'isEdit' => true,
         ]);
     }
-
-    #[Route('/{id}/toggle', name: 'tenant_management_toggle', methods: ['POST'])]
+    #[Route('/admin/tenants/{id}/toggle', name: 'tenant_management_toggle', methods: ['POST'])]
     #[IsGranted('TENANT_EDIT')]
     public function toggle(Tenant $tenant): Response
     {
@@ -339,7 +333,7 @@ class TenantManagementController extends AbstractController
 
             $message = $tenant->isActive() ? 'tenant.flash.activated' : 'tenant.flash.deactivated';
             $this->addFlash('success', $message);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to toggle tenant status', [
                 'tenant_id' => $tenant->getId(),
                 'error' => $e->getMessage(),
@@ -351,8 +345,7 @@ class TenantManagementController extends AbstractController
 
         return $this->redirectToRoute('tenant_management_index');
     }
-
-    #[Route('/{id}/delete', name: 'tenant_management_delete', methods: ['POST'])]
+    #[Route('/admin/tenants/{id}/delete', name: 'tenant_management_delete', methods: ['POST'])]
     #[IsGranted('TENANT_DELETE')]
     public function delete(Request $request, Tenant $tenant): Response
     {
@@ -400,7 +393,7 @@ class TenantManagementController extends AbstractController
             );
 
             $this->addFlash('success', 'tenant.flash.deleted');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to delete tenant', [
                 'tenant_id' => $tenant->getId(),
                 'error' => $e->getMessage(),
@@ -412,15 +405,14 @@ class TenantManagementController extends AbstractController
 
         return $this->redirectToRoute('tenant_management_index');
     }
-
     /**
      * Handle logo upload with security validation
      */
-    private function handleLogoUpload(UploadedFile $file, Tenant $tenant): ?string
+    private function handleLogoUpload(UploadedFile $uploadedFile, Tenant $tenant): ?string
     {
         try {
             // Security validation using FileUploadSecurityService
-            $validation = $this->fileUploadService->validateUpload($file);
+            $validation = $this->fileUploadSecurityService->validateUpload($uploadedFile);
 
             if (!$validation['valid']) {
                 $this->addFlash('warning', 'Logo upload failed: ' . $validation['error']);
@@ -432,18 +424,18 @@ class TenantManagementController extends AbstractController
             }
 
             // Generate safe filename
-            $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $originalFilename = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
             $safeFilename = $this->slugger->slug($originalFilename);
             $newFilename = sprintf(
                 '%s-%s.%s',
                 $tenant->getCode(),
                 uniqid(),
-                $file->guessExtension()
+                $uploadedFile->guessExtension()
             );
 
             // Move file to uploads directory
             $uploadsPath = $this->getParameter('kernel.project_dir') . '/public/' . $this->uploadsDirectory;
-            $file->move($uploadsPath, $newFilename);
+            $uploadedFile->move($uploadsPath, $newFilename);
 
             $this->logger->info('Logo uploaded successfully', [
                 'tenant_code' => $tenant->getCode(),
@@ -452,7 +444,7 @@ class TenantManagementController extends AbstractController
 
             return $this->uploadsDirectory . '/' . $newFilename;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Logo upload failed', [
                 'tenant_code' => $tenant->getCode(),
                 'error' => $e->getMessage(),
@@ -461,7 +453,6 @@ class TenantManagementController extends AbstractController
             return null;
         }
     }
-
     /**
      * Delete old logo file
      */
@@ -473,15 +464,14 @@ class TenantManagementController extends AbstractController
                 unlink($fullPath);
                 $this->logger->info('Old logo deleted', ['path' => $logoPath]);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to delete old logo', [
                 'path' => $logoPath,
                 'error' => $e->getMessage(),
             ]);
         }
     }
-
-    #[Route('/{id}/set-parent', name: 'tenant_management_set_parent', methods: ['POST'])]
+    #[Route('/admin/tenants/{id}/set-parent', name: 'tenant_management_set_parent', methods: ['POST'])]
     #[IsGranted('TENANT_EDIT')]
     public function setParent(Request $request, Tenant $tenant): Response
     {
@@ -505,7 +495,7 @@ class TenantManagementController extends AbstractController
                 $parent->setIsCorporateParent(true);
 
                 // Create default governance rule
-                $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+                $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
                 if (!$governance) {
                     $governance = new CorporateGovernance();
                     $governance->setTenant($tenant);
@@ -519,7 +509,7 @@ class TenantManagementController extends AbstractController
 
                 // Validate structure
                 $errors = $this->corporateStructureService->validateStructure($tenant);
-                if (!empty($errors)) {
+                if ($errors !== []) {
                     $this->addFlash('danger', implode(', ', $errors));
                     return $this->redirectToRoute('tenant_management_corporate_structure');
                 }
@@ -553,7 +543,7 @@ class TenantManagementController extends AbstractController
             }
 
             $this->entityManager->flush();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to set tenant parent', [
                 'tenant_id' => $tenant->getId(),
                 'error' => $e->getMessage(),
@@ -564,8 +554,7 @@ class TenantManagementController extends AbstractController
 
         return $this->redirectToRoute('tenant_management_corporate_structure');
     }
-
-    #[Route('/{id}/update-governance', name: 'tenant_management_update_governance', methods: ['POST'])]
+    #[Route('/admin/tenants/{id}/update-governance', name: 'tenant_management_update_governance', methods: ['POST'])]
     #[IsGranted('TENANT_EDIT')]
     public function updateGovernance(Request $request, Tenant $tenant): Response
     {
@@ -578,7 +567,7 @@ class TenantManagementController extends AbstractController
 
         try {
             // Update default governance rule
-            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
             if ($governance) {
                 $governance->setGovernanceModel(GovernanceModel::from($governanceModel));
                 $this->entityManager->flush();
@@ -593,7 +582,7 @@ class TenantManagementController extends AbstractController
             } else {
                 $this->addFlash('warning', 'corporate.flash.no_governance_found');
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to update governance model', [
                 'tenant_id' => $tenant->getId(),
                 'error' => $e->getMessage(),
@@ -604,11 +593,10 @@ class TenantManagementController extends AbstractController
 
         return $this->redirectToRoute('tenant_management_corporate_structure');
     }
-
     /**
      * Add a user to the tenant
      */
-    #[Route('/{id}/add-user', name: 'tenant_management_add_user', methods: ['POST'])]
+    #[Route('/admin/tenants/{id}/add-user', name: 'tenant_management_add_user', methods: ['POST'])]
     #[IsGranted('TENANT_EDIT')]
     public function addUser(Request $request, Tenant $tenant): Response
     {
@@ -627,9 +615,9 @@ class TenantManagementController extends AbstractController
 
         try {
             // Find user by email
-            $user = $this->entityManager->getRepository(\App\Entity\User::class)->findOneBy(['email' => $userEmail]);
+            $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $userEmail]);
 
-            if (!$user) {
+            if (!$user instanceof User) {
                 $this->addFlash('warning', 'tenant.users.flash.user_not_found');
                 return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
             }
@@ -662,7 +650,7 @@ class TenantManagementController extends AbstractController
             );
 
             $this->addFlash('success', 'tenant.users.flash.user_added');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to add user to tenant', [
                 'tenant_id' => $tenant->getId(),
                 'user_email' => $userEmail,
@@ -674,11 +662,10 @@ class TenantManagementController extends AbstractController
 
         return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
     }
-
     /**
      * Remove a user from the tenant
      */
-    #[Route('/{id}/remove-user/{userId}', name: 'tenant_management_remove_user', methods: ['POST'])]
+    #[Route('/admin/tenants/{id}/remove-user/{userId}', name: 'tenant_management_remove_user', methods: ['POST'])]
     #[IsGranted('TENANT_EDIT')]
     public function removeUser(Request $request, Tenant $tenant, int $userId): Response
     {
@@ -689,9 +676,9 @@ class TenantManagementController extends AbstractController
         }
 
         try {
-            $user = $this->entityManager->getRepository(\App\Entity\User::class)->find($userId);
+            $user = $this->entityManager->getRepository(User::class)->find($userId);
 
-            if (!$user) {
+            if (!$user instanceof User) {
                 $this->addFlash('warning', 'tenant.users.flash.user_not_found');
                 return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
             }
@@ -726,7 +713,7 @@ class TenantManagementController extends AbstractController
             );
 
             $this->addFlash('success', 'tenant.users.flash.user_removed');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to remove user from tenant', [
                 'tenant_id' => $tenant->getId(),
                 'user_id' => $userId,
@@ -738,11 +725,10 @@ class TenantManagementController extends AbstractController
 
         return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
     }
-
     /**
      * API endpoint to get ISMS Context for a tenant
      */
-    #[Route('/api/tenants/{id}/isms-context', name: 'api_tenant_isms_context', methods: ['GET'])]
+    #[Route('/admin/tenants/api/tenants/{id}/isms-context', name: 'api_tenant_isms_context', methods: ['GET'])]
     #[IsGranted('TENANT_VIEW')]
     public function getISMSContext(Tenant $tenant): JsonResponse
     {
@@ -809,7 +795,7 @@ class TenantManagementController extends AbstractController
                 'editUrl' => $this->generateUrl('app_context_edit'),
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to get ISMS context for tenant', [
                 'tenant_id' => $tenant->getId(),
                 'error' => $e->getMessage(),
@@ -819,14 +805,13 @@ class TenantManagementController extends AbstractController
             return new JsonResponse([
                 'error' => true,
                 'message' => 'Failed to load ISMS context',
-            ], 500);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
     /**
      * Edit organisation context settings (industries, size, country)
      */
-    #[Route('/{id}/organisation-context', name: 'tenant_management_organisation_context', methods: ['GET', 'POST'])]
+    #[Route('/admin/tenants/{id}/organisation-context', name: 'tenant_management_organisation_context', methods: ['GET', 'POST'])]
     #[IsGranted('TENANT_EDIT')]
     public function editOrganisationContext(Request $request, Tenant $tenant): Response
     {
@@ -841,7 +826,7 @@ class TenantManagementController extends AbstractController
             'description' => $orgSettings['description'] ?? '',
         ];
 
-        $form = $this->createForm(\App\Form\OrganisationInfoType::class, $formData, [
+        $form = $this->createForm(OrganisationInfoType::class, $formData, [
             'include_name' => false, // Name is managed via Tenant entity
         ]);
         $form->handleRequest($request);
@@ -862,7 +847,7 @@ class TenantManagementController extends AbstractController
                     'selected_modules' => $orgSettings['selected_modules'] ?? [],
                     'selected_frameworks' => $orgSettings['selected_frameworks'] ?? [],
                     'setup_completed_at' => $orgSettings['setup_completed_at'] ?? null,
-                    'last_modified_at' => (new \DateTimeImmutable())->format('c'),
+                    'last_modified_at' => new DateTimeImmutable()->format('c'),
                 ];
 
                 $tenant->setSettings($settings);
@@ -881,7 +866,7 @@ class TenantManagementController extends AbstractController
                 $this->addFlash('success', 'tenant.flash.organisation_context_updated');
 
                 return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logger->error('Failed to update organisation context', [
                     'tenant_id' => $tenant->getId(),
                     'error' => $e->getMessage(),

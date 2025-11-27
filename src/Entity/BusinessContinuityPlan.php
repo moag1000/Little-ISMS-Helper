@@ -2,10 +2,9 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Metadata\ApiFilter;
+use DateTimeInterface;
+use DateTimeImmutable;
+use DateTime;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -241,19 +240,19 @@ class BusinessContinuityPlan
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['bc_plan:read', 'bc_plan:write'])]
-    private ?\DateTimeInterface $lastTested = null;
+    private ?DateTimeInterface $lastTested = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['bc_plan:read', 'bc_plan:write'])]
-    private ?\DateTimeInterface $nextTestDate = null;
+    private ?DateTimeInterface $nextTestDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['bc_plan:read', 'bc_plan:write'])]
-    private ?\DateTimeInterface $lastReviewDate = null;
+    private ?DateTimeInterface $lastReviewDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['bc_plan:read', 'bc_plan:write'])]
-    private ?\DateTimeInterface $nextReviewDate = null;
+    private ?DateTimeInterface $nextReviewDate = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['bc_plan:read', 'bc_plan:write'])]
@@ -261,27 +260,27 @@ class BusinessContinuityPlan
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['bc_plan:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['bc_plan:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     public function __construct()
     {
         $this->criticalSuppliers = new ArrayCollection();
         $this->criticalAssets = new ArrayCollection();
         $this->documents = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
     public function updateTimestamps(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
-        if ($this->createdAt === null) {
-            $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
+        if (!$this->createdAt instanceof DateTimeInterface) {
+            $this->createdAt = new DateTimeImmutable();
         }
     }
 
@@ -598,45 +597,45 @@ class BusinessContinuityPlan
         return $this;
     }
 
-    public function getLastTested(): ?\DateTimeInterface
+    public function getLastTested(): ?DateTimeInterface
     {
         return $this->lastTested;
     }
 
-    public function setLastTested(?\DateTimeInterface $lastTested): static
+    public function setLastTested(?DateTimeInterface $lastTested): static
     {
         $this->lastTested = $lastTested;
         return $this;
     }
 
-    public function getNextTestDate(): ?\DateTimeInterface
+    public function getNextTestDate(): ?DateTimeInterface
     {
         return $this->nextTestDate;
     }
 
-    public function setNextTestDate(?\DateTimeInterface $nextTestDate): static
+    public function setNextTestDate(?DateTimeInterface $nextTestDate): static
     {
         $this->nextTestDate = $nextTestDate;
         return $this;
     }
 
-    public function getLastReviewDate(): ?\DateTimeInterface
+    public function getLastReviewDate(): ?DateTimeInterface
     {
         return $this->lastReviewDate;
     }
 
-    public function setLastReviewDate(?\DateTimeInterface $lastReviewDate): static
+    public function setLastReviewDate(?DateTimeInterface $lastReviewDate): static
     {
         $this->lastReviewDate = $lastReviewDate;
         return $this;
     }
 
-    public function getNextReviewDate(): ?\DateTimeInterface
+    public function getNextReviewDate(): ?DateTimeInterface
     {
         return $this->nextReviewDate;
     }
 
-    public function setNextReviewDate(?\DateTimeInterface $nextReviewDate): static
+    public function setNextReviewDate(?DateTimeInterface $nextReviewDate): static
     {
         $this->nextReviewDate = $nextReviewDate;
         return $this;
@@ -653,23 +652,23 @@ class BusinessContinuityPlan
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -680,12 +679,12 @@ class BusinessContinuityPlan
      */
     public function isTestOverdue(): bool
     {
-        if (!$this->nextTestDate) {
+        if (!$this->nextTestDate instanceof DateTimeInterface) {
             // If never tested and status is active, it's overdue
-            return $this->status === 'active' && $this->lastTested === null;
+            return $this->status === 'active' && !$this->lastTested instanceof DateTimeInterface;
         }
 
-        return $this->nextTestDate < new \DateTime();
+        return $this->nextTestDate < new DateTime();
     }
 
     /**
@@ -693,11 +692,11 @@ class BusinessContinuityPlan
      */
     public function isReviewOverdue(): bool
     {
-        if (!$this->nextReviewDate) {
+        if (!$this->nextReviewDate instanceof DateTimeInterface) {
             return false;
         }
 
-        return $this->nextReviewDate < new \DateTime();
+        return $this->nextReviewDate < new DateTime();
     }
 
     /**
@@ -709,28 +708,45 @@ class BusinessContinuityPlan
         $score = 0;
 
         // Has all required sections (40%)
-        if (!empty($this->activationCriteria)) $score += 10;
-        if (!empty($this->recoveryProcedures)) $score += 10;
-        if (!empty($this->communicationPlan)) $score += 10;
-        if (!empty($this->responseTeam)) $score += 10;
+        if (!in_array($this->activationCriteria, [null, '', '0'], true)) {
+            $score += 10;
+        }
+        if (!in_array($this->recoveryProcedures, [null, '', '0'], true)) {
+            $score += 10;
+        }
+        if (!in_array($this->communicationPlan, [null, '', '0'], true)) {
+            $score += 10;
+        }
+        if ($this->responseTeam !== null && $this->responseTeam !== []) {
+            $score += 10;
+        }
 
         // Tested recently (30%)
-        if ($this->lastTested) {
-            $monthsSinceTest = (new \DateTime())->diff($this->lastTested)->m;
-            if ($monthsSinceTest <= 6) $score += 30;
-            elseif ($monthsSinceTest <= 12) $score += 20;
-            elseif ($monthsSinceTest <= 24) $score += 10;
+        if ($this->lastTested instanceof DateTimeInterface) {
+            $monthsSinceTest = new DateTime()->diff($this->lastTested)->m;
+            if ($monthsSinceTest <= 6) {
+                $score += 30;
+            } elseif ($monthsSinceTest <= 12) {
+                $score += 20;
+            } elseif ($monthsSinceTest <= 24) {
+                $score += 10;
+            }
         }
 
         // Reviewed recently (20%)
-        if ($this->lastReviewDate) {
-            $monthsSinceReview = (new \DateTime())->diff($this->lastReviewDate)->m;
-            if ($monthsSinceReview <= 6) $score += 20;
-            elseif ($monthsSinceReview <= 12) $score += 10;
+        if ($this->lastReviewDate instanceof DateTimeInterface) {
+            $monthsSinceReview = new DateTime()->diff($this->lastReviewDate)->m;
+            if ($monthsSinceReview <= 6) {
+                $score += 20;
+            } elseif ($monthsSinceReview <= 12) {
+                $score += 10;
+            }
         }
 
         // Status is active (10%)
-        if ($this->status === 'active') $score += 10;
+        if ($this->status === 'active') {
+            $score += 10;
+        }
 
         return $score;
     }
@@ -743,19 +759,45 @@ class BusinessContinuityPlan
         $total = 13; // Total number of key fields
         $completed = 0;
 
-        if (!empty($this->name)) $completed++;
-        if (!empty($this->planOwner)) $completed++;
-        if (!empty($this->activationCriteria)) $completed++;
-        if (!empty($this->recoveryProcedures)) $completed++;
-        if (!empty($this->communicationPlan)) $completed++;
-        if (!empty($this->responseTeam)) $completed++;
-        if (!empty($this->rolesAndResponsibilities)) $completed++;
-        if (!empty($this->alternativeSite)) $completed++;
-        if (!empty($this->backupProcedures)) $completed++;
-        if (!empty($this->restoreProcedures)) $completed++;
-        if (!$this->criticalAssets->isEmpty()) $completed++;
-        if (!empty($this->stakeholderContacts)) $completed++;
-        if (!empty($this->requiredResources)) $completed++;
+        if (!in_array($this->name, [null, '', '0'], true)) {
+            $completed++;
+        }
+        if (!in_array($this->planOwner, [null, '', '0'], true)) {
+            $completed++;
+        }
+        if (!in_array($this->activationCriteria, [null, '', '0'], true)) {
+            $completed++;
+        }
+        if (!in_array($this->recoveryProcedures, [null, '', '0'], true)) {
+            $completed++;
+        }
+        if (!in_array($this->communicationPlan, [null, '', '0'], true)) {
+            $completed++;
+        }
+        if ($this->responseTeam !== null && $this->responseTeam !== []) {
+            $completed++;
+        }
+        if (!in_array($this->rolesAndResponsibilities, [null, '', '0'], true)) {
+            $completed++;
+        }
+        if (!in_array($this->alternativeSite, [null, '', '0'], true)) {
+            $completed++;
+        }
+        if (!in_array($this->backupProcedures, [null, '', '0'], true)) {
+            $completed++;
+        }
+        if (!in_array($this->restoreProcedures, [null, '', '0'], true)) {
+            $completed++;
+        }
+        if (!$this->criticalAssets->isEmpty()) {
+            $completed++;
+        }
+        if ($this->stakeholderContacts !== null && $this->stakeholderContacts !== []) {
+            $completed++;
+        }
+        if ($this->requiredResources !== null && $this->requiredResources !== []) {
+            $completed++;
+        }
 
         return (int)(($completed / $total) * 100);
     }

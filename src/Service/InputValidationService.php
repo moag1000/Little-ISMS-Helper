@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use DateTime;
+
 /**
  * Security: Input Validation Service
  *
@@ -99,11 +101,11 @@ class InputValidationService
         $filename = preg_replace('/[^a-zA-Z0-9_\-\.]/', '_', $filename);
 
         // Limit length
-        $filename = substr($filename, 0, 255);
+        $filename = substr((string) $filename, 0, 255);
 
         // Prevent hidden files
         if (str_starts_with($filename, '.')) {
-            $filename = '_' . $filename;
+            return '_' . $filename;
         }
 
         return $filename;
@@ -121,7 +123,7 @@ class InputValidationService
         $slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
 
         // Remove leading/trailing dashes
-        $slug = trim($slug, '-');
+        $slug = trim((string) $slug, '-');
 
         // Limit length
         $slug = substr($slug, 0, 100);
@@ -163,9 +165,9 @@ class InputValidationService
     /**
      * Security: Validate date string
      */
-    public function validateDate(string $date, string $format = 'Y-m-d'): ?\DateTime
+    public function validateDate(string $date, string $format = 'Y-m-d'): ?DateTime
     {
-        $dateTime = \DateTime::createFromFormat($format, $date);
+        $dateTime = DateTime::createFromFormat($format, $date);
 
         if ($dateTime && $dateTime->format($format) === $date) {
             return $dateTime;
@@ -222,7 +224,7 @@ class InputValidationService
         }
 
         if (is_array($value)) {
-            return array_map([$this, 'sanitizeForJson'], $value);
+            return array_map($this->sanitizeForJson(...), $value);
         }
 
         return $value;
@@ -256,14 +258,7 @@ class InputValidationService
             '/eval\(/i',
             '/expression\(/i',
         ];
-
-        foreach ($xssPatterns as $pattern) {
-            if (preg_match($pattern, $input)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($xssPatterns, fn($pattern): int|false => preg_match($pattern, $input));
     }
 
     /**
@@ -291,13 +286,6 @@ class InputValidationService
             // Multiple statements (stacked queries)
             '/;\s*(DROP|DELETE|UPDATE|INSERT)\b/i',
         ];
-
-        foreach ($sqlPatterns as $pattern) {
-            if (preg_match($pattern, $input)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($sqlPatterns, fn($pattern): int|false => preg_match($pattern, $input));
     }
 }

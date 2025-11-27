@@ -116,13 +116,13 @@
                 } %}
                     {% block table_head %}
                         <tr>
-                            <th scope="col">{{ 'processing_activity.table.name'|trans }}</th>
-                            <th scope="col">{{ 'processing_activity.table.legal_basis'|trans }}</th>
-                            <th scope="col">{{ 'processing_activity.table.data_subjects'|trans }}</th>
-                            <th scope="col">{{ 'processing_activity.table.risk'|trans }}</th>
-                            <th scope="col">{{ 'processing_activity.table.status'|trans }}</th>
-                            <th scope="col">{{ 'processing_activity.table.completeness'|trans }}</th>
-                            <th scope="col">{{ 'processing_activity.table.actions'|trans }}</th>
+                            <th scope="col">{{ 'processing_activity.table.name'|trans({}, 'privacy') }}</th>
+                            <th scope="col">{{ 'processing_activity.table.legal_basis'|trans({}, 'privacy') }}</th>
+                            <th scope="col">{{ 'processing_activity.table.data_subjects'|trans({}, 'privacy') }}</th>
+                            <th scope="col">{{ 'processing_activity.table.risk'|trans({}, 'privacy') }}</th>
+                            <th scope="col">{{ 'processing_activity.table.status'|trans({}, 'privacy') }}</th>
+                            <th scope="col">{{ 'processing_activity.table.completeness'|trans({}, 'privacy') }}</th>
+                            <th scope="col">{{ 'processing_activity.table.actions'|trans({}, 'privacy') }}</th>
                         </tr>
                     {% endblock %}
                     {% block table_body %}
@@ -132,13 +132,13 @@
                                     <strong>{{ pa.name }}</strong><br>
                                     <small class="text-muted">
                                         {% if pa.processesSpecialCategories %}
-                                            <span class="badge bg-danger">{{ 'processing_activity.badge.special_categories'|trans }}</span>
+                                            <span class="badge bg-danger">{{ 'processing_activity.badge.special_categories'|trans({}, 'privacy') }}</span>
                                         {% endif %}
                                         {% if pa.hasThirdCountryTransfer %}
-                                            <span class="badge bg-warning">{{ 'processing_activity.badge.third_country'|trans }}</span>
+                                            <span class="badge bg-warning">{{ 'processing_activity.badge.third_country'|trans({}, 'privacy') }}</span>
                                         {% endif %}
                                         {% if pa.requiresDPIA and not pa.dpiaCompleted %}
-                                            <span class="badge bg-danger">{{ 'processing_activity.badge.dpia_required'|trans }}</span>
+                                            <span class="badge bg-danger">{{ 'processing_activity.badge.dpia_required'|trans({}, 'privacy') }}</span>
                                         {% endif %}
                                     </small>
                                 </td>
@@ -146,9 +146,9 @@
                                     {{ ('processing_activity.legal_basis.' ~ pa.legalBasis)|trans({}, 'privacy') }}
                                 </td>
                                 <td>
-                                    {{ pa.dataSubjectCategories|length }} {{ 'processing_activity.table.categories'|trans }}<br>
+                                    {{ pa.dataSubjectCategories|length }} {{ 'processing_activity.table.categories'|trans({}, 'privacy') }}<br>
                                     {% if pa.estimatedDataSubjectsCount %}
-                                        <small class="text-muted">~{{ pa.estimatedDataSubjectsCount }} {{ 'processing_activity.table.subjects'|trans }}</small>
+                                        <small class="text-muted">~{{ pa.estimatedDataSubjectsCount }} {{ 'processing_activity.table.subjects'|trans({}, 'privacy') }}</small>
                                     {% endif %}
                                 </td>
                                 <td>

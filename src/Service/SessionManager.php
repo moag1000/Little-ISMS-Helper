@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use Exception;
 use App\Entity\User;
 use App\Entity\UserSession;
 use App\Repository\UserSessionRepository;
@@ -25,14 +26,14 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class SessionManager
 {
-    private const MAX_CONCURRENT_SESSIONS = 5; // Maximum concurrent sessions per user
-    private const SESSION_LIFETIME = 3600; // 1 hour in seconds
+    private const int MAX_CONCURRENT_SESSIONS = 5; // Maximum concurrent sessions per user
+    private const int SESSION_LIFETIME = 3600; // 1 hour in seconds
 
     private ?bool $tableExists = null; // Cache for table existence check
 
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly UserSessionRepository $sessionRepository,
+        private readonly UserSessionRepository $userSessionRepository,
         private readonly RequestStack $requestStack,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
@@ -60,7 +61,7 @@ class SessionManager
             }
 
             return $this->tableExists;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to check if user_sessions table exists', [
                 'error' => $e->getMessage(),
             ]);
@@ -82,18 +83,18 @@ class SessionManager
         try {
             $request = $this->requestStack->getCurrentRequest();
 
-            $session = new UserSession();
-            $session->setUser($user);
-            $session->setSessionId($sessionId);
-            $session->setIpAddress($request?->getClientIp());
-            $session->setUserAgent($request?->headers->get('User-Agent'));
+            $userSession = new UserSession();
+            $userSession->setUser($user);
+            $userSession->setSessionId($sessionId);
+            $userSession->setIpAddress($request?->getClientIp());
+            $userSession->setUserAgent($request?->headers->get('User-Agent'));
 
             // Check concurrent session limit
-            $activeSessions = $this->sessionRepository->countActiveByUser($user);
+            $activeSessions = $this->userSessionRepository->countActiveByUser($user);
 
             if ($activeSessions >= self::MAX_CONCURRENT_SESSIONS) {
                 // Terminate oldest session
-                $oldestSession = $this->sessionRepository->findActiveByUser($user)[self::MAX_CONCURRENT_SESSIONS - 1] ?? null;
+                $oldestSession = $this->userSessionRepository->findActiveByUser($user)[self::MAX_CONCURRENT_SESSIONS - 1] ?? null;
 
                 if ($oldestSession) {
                     $this->terminateSession($oldestSession->getSessionId(), 'limit_exceeded');
@@ -105,17 +106,17 @@ class SessionManager
                 }
             }
 
-            $this->entityManager->persist($session);
+            $this->entityManager->persist($userSession);
             $this->entityManager->flush();
 
             $this->logger->info('Session created', [
                 'user_email' => $user->getEmail(),
                 'session_id' => substr($sessionId, 0, 8) . '...',
-                'ip_address' => $session->getIpAddress(),
+                'ip_address' => $userSession->getIpAddress(),
             ]);
 
-            return $session;
-        } catch (\Exception $e) {
+            return $userSession;
+        } catch (Exception $e) {
             $this->logger->error('Failed to create session record', [
                 'user' => $user->getEmail(),
                 'error' => $e->getMessage(),
@@ -136,13 +137,13 @@ class SessionManager
         }
 
         try {
-            $session = $this->sessionRepository->findBySessionId($sessionId);
+            $session = $this->userSessionRepository->findBySessionId($sessionId);
 
             if ($session && $session->isActive()) {
                 $session->updateActivity();
                 $this->entityManager->flush();
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->debug('Failed to update session activity', [
                 'session_id' => substr($sessionId, 0, 8) . '...',
                 'error' => $e->getMessage(),
@@ -160,7 +161,7 @@ class SessionManager
         }
 
         try {
-            $session = $this->sessionRepository->findBySessionId($sessionId);
+            $session = $this->userSessionRepository->findBySessionId($sessionId);
 
             if ($session && $session->isActive()) {
                 $session->terminate($reason);
@@ -181,7 +182,7 @@ class SessionManager
                     sprintf('Session ended for user %s (%s)', $session->getUser()->getEmail(), $reason)
                 );
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->debug('Failed to end session', [
                 'session_id' => substr($sessionId, 0, 8) . '...',
                 'error' => $e->getMessage(),
@@ -199,7 +200,7 @@ class SessionManager
         }
 
         try {
-            $session = $this->sessionRepository->findBySessionId($sessionId);
+            $session = $this->userSessionRepository->findBySessionId($sessionId);
 
             if (!$session || !$session->isActive()) {
                 return false;
@@ -225,7 +226,7 @@ class SessionManager
             );
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to terminate session', [
                 'session_id' => substr($sessionId, 0, 8) . '...',
                 'error' => $e->getMessage(),
@@ -244,7 +245,7 @@ class SessionManager
         }
 
         try {
-            $count = $this->sessionRepository->terminateUserSessions($user, 'forced', $terminatedBy);
+            $count = $this->userSessionRepository->terminateUserSessions($user, 'forced', $terminatedBy);
 
             if ($count > 0) {
                 $this->logger->warning('All user sessions terminated', [
@@ -264,7 +265,7 @@ class SessionManager
             }
 
             return $count;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to terminate user sessions', [
                 'user' => $user->getEmail(),
                 'error' => $e->getMessage(),
@@ -283,7 +284,7 @@ class SessionManager
         }
 
         try {
-            $session = $this->sessionRepository->findBySessionId($sessionId);
+            $session = $this->userSessionRepository->findBySessionId($sessionId);
 
             if (!$session) {
                 return false;
@@ -302,7 +303,7 @@ class SessionManager
             }
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->debug('Failed to validate session', [
                 'session_id' => substr($sessionId, 0, 8) . '...',
                 'error' => $e->getMessage(),
@@ -323,8 +324,8 @@ class SessionManager
         }
 
         try {
-            return $this->sessionRepository->findActiveByUser($user);
-        } catch (\Exception $e) {
+            return $this->userSessionRepository->findActiveByUser($user);
+        } catch (Exception $e) {
             $this->logger->error('Failed to get user active sessions', [
                 'user' => $user->getEmail(),
                 'error' => $e->getMessage(),
@@ -345,8 +346,8 @@ class SessionManager
         }
 
         try {
-            return $this->sessionRepository->getActiveSessions($limit, $userEmail);
-        } catch (\Exception $e) {
+            return $this->userSessionRepository->getActiveSessions($limit, $userEmail);
+        } catch (Exception $e) {
             $this->logger->error('Failed to get all active sessions', [
                 'error' => $e->getMessage(),
             ]);
@@ -368,8 +369,8 @@ class SessionManager
         }
 
         try {
-            return $this->sessionRepository->getStatistics();
-        } catch (\Exception $e) {
+            return $this->userSessionRepository->getStatistics();
+        } catch (Exception $e) {
             $this->logger->error('Failed to get session statistics', [
                 'error' => $e->getMessage(),
             ]);
@@ -391,14 +392,14 @@ class SessionManager
         }
 
         try {
-            $count = $this->sessionRepository->cleanupExpiredSessions(self::SESSION_LIFETIME);
+            $count = $this->userSessionRepository->cleanupExpiredSessions(self::SESSION_LIFETIME);
 
             if ($count > 0) {
                 $this->logger->info('Expired sessions cleaned up', ['count' => $count]);
             }
 
             return $count;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to cleanup expired sessions', [
                 'error' => $e->getMessage(),
             ]);

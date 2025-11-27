@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Patch;
 use App\Form\PatchType;
 use App\Repository\PatchRepository;
@@ -14,18 +15,17 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/patch')]
 #[IsGranted('ROLE_USER')]
 class PatchController extends AbstractController
 {
     public function __construct(
-        private PatchRepository $patchRepository,
-        private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator,
-        private Security $security
+        private readonly PatchRepository $patchRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
+        private readonly Security $security
     ) {}
 
-    #[Route('/', name: 'app_patch_index')]
+    #[Route('/patch/', name: 'app_patch_index')]
     public function index(Request $request): Response
     {
         // Get current user's tenant
@@ -37,19 +37,11 @@ class PatchController extends AbstractController
 
         // Get patches based on view filter
         if ($tenant) {
-            switch ($view) {
-                case 'own':
-                    $patches = $this->patchRepository->findByTenant($tenant);
-                    break;
-                case 'subsidiaries':
-                    $patches = $this->patchRepository->findByTenantIncludingSubsidiaries($tenant);
-                    break;
-                case 'inherited':
-                default:
-                    $patches = $this->patchRepository->findByTenantIncludingParent($tenant);
-                    break;
-            }
-
+            $patches = match ($view) {
+                'own' => $this->patchRepository->findByTenant($tenant),
+                'subsidiaries' => $this->patchRepository->findByTenantIncludingSubsidiaries($tenant),
+                default => $this->patchRepository->findByTenantIncludingParent($tenant),
+            };
             $inheritanceInfo = [
                 'hasParent' => $tenant->getParent() !== null,
                 'hasSubsidiaries' => $tenant->getSubsidiaries()->count() > 0,
@@ -66,7 +58,7 @@ class PatchController extends AbstractController
 
         // Statistics
         $deploymentStats = $this->patchRepository->getDeploymentStatistics();
-        $pendingPatches = array_filter($patches, fn($p) => in_array($p->getStatus(), ['available', 'tested', 'approved']));
+        $pendingPatches = array_filter($patches, fn(Patch $patch): bool => in_array($patch->getStatus(), ['available', 'tested', 'approved']));
 
         // Calculate detailed statistics based on origin
         if ($tenant) {
@@ -85,14 +77,14 @@ class PatchController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_patch_new')]
+    #[Route('/patch/new', name: 'app_patch_new')]
     public function new(Request $request): Response
     {
         $patch = new Patch();
 
         // Set tenant from current user
         $user = $this->security->getUser();
-        if ($user && $user->getTenant()) {
+        if ($user instanceof UserInterface && $user->getTenant()) {
             $patch->setTenant($user->getTenant());
         }
 
@@ -113,7 +105,7 @@ class PatchController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_patch_show', requirements: ['id' => '\d+'])]
+    #[Route('/patch/{id}', name: 'app_patch_show', requirements: ['id' => '\d+'])]
     public function show(Patch $patch): Response
     {
         return $this->render('patch/show.html.twig', [
@@ -121,7 +113,7 @@ class PatchController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_patch_edit', requirements: ['id' => '\d+'])]
+    #[Route('/patch/{id}/edit', name: 'app_patch_edit', requirements: ['id' => '\d+'])]
     public function edit(Request $request, Patch $patch): Response
     {
         $form = $this->createForm(PatchType::class, $patch);
@@ -140,7 +132,7 @@ class PatchController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'app_patch_delete', methods: ['POST'])]
+    #[Route('/patch/{id}/delete', name: 'app_patch_delete', methods: ['POST'])]
     public function delete(Request $request, Patch $patch): Response
     {
         if ($this->isCsrfTokenValid('delete'.$patch->getId(), $request->request->get('_token'))) {

@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use DateTimeImmutable;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use App\Repository\ComplianceRequirementRepository;
@@ -17,11 +18,11 @@ use Doctrine\ORM\EntityManagerInterface;
 class ComplianceAssessmentService
 {
     public function __construct(
-        private ComplianceRequirementRepository $requirementRepository,
-        private ComplianceMappingService $mappingService,
-        private EntityManagerInterface $entityManager,
-        private ComplianceRequirementFulfillmentService $fulfillmentService,
-        private TenantContext $tenantContext
+        private readonly ComplianceRequirementRepository $complianceRequirementRepository,
+        private readonly ComplianceMappingService $complianceMappingService,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
+        private readonly TenantContext $tenantContext
     ) {}
 
     /**
@@ -31,9 +32,9 @@ class ComplianceAssessmentService
      * - Updates the current tenant's ComplianceRequirementFulfillment records
      * - Does NOT modify the global ComplianceRequirement entity
      */
-    public function assessFramework(ComplianceFramework $framework): array
+    public function assessFramework(ComplianceFramework $complianceFramework): array
     {
-        $requirements = $this->requirementRepository->findByFramework($framework);
+        $requirements = $this->complianceRequirementRepository->findByFramework($complianceFramework);
         $assessmentResults = [];
         $tenant = $this->tenantContext->getCurrentTenant();
 
@@ -42,13 +43,13 @@ class ComplianceAssessmentService
             $assessmentResults[] = $result;
 
             // Update tenant-specific fulfillment (not global requirement!)
-            $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+            $fulfillment = $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $requirement);
 
             // Only update if tenant can edit (not inherited from parent)
-            if ($this->fulfillmentService->canEditFulfillment($fulfillment, $tenant)) {
+            if ($this->complianceRequirementFulfillmentService->canEditFulfillment($fulfillment, $tenant)) {
                 $fulfillment->setFulfillmentPercentage($result['calculated_fulfillment']);
-                $fulfillment->setLastReviewDate(new \DateTimeImmutable());
-                $fulfillment->setUpdatedAt(new \DateTimeImmutable());
+                $fulfillment->setLastReviewDate(new DateTimeImmutable());
+                $fulfillment->setUpdatedAt(new DateTimeImmutable());
 
                 // Auto-update status based on percentage
                 if ($result['calculated_fulfillment'] >= 100) {
@@ -69,14 +70,14 @@ class ComplianceAssessmentService
 
         // Calculate overall compliance from tenant-specific statistics
         $tenant = $this->tenantContext->getCurrentTenant();
-        $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
+        $stats = $this->complianceRequirementRepository->getFrameworkStatisticsForTenant($complianceFramework, $tenant);
         $overallCompliance = $stats['applicable'] > 0
             ? round(($stats['fulfilled'] / $stats['applicable']) * 100, 2)
             : 0;
 
         return [
-            'framework' => $framework->getName(),
-            'assessment_date' => new \DateTimeImmutable(),
+            'framework' => $complianceFramework->getName(),
+            'assessment_date' => new DateTimeImmutable(),
             'total_requirements' => count($requirements),
             'requirements_assessed' => count($assessmentResults),
             'overall_compliance' => $overallCompliance,
@@ -90,30 +91,30 @@ class ComplianceAssessmentService
      * Architecture: Tenant-aware assessment
      * - Checks tenant-specific applicability from ComplianceRequirementFulfillment
      */
-    public function assessRequirement(ComplianceRequirement $requirement): array
+    public function assessRequirement(ComplianceRequirement $complianceRequirement): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+        $fulfillment = $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $complianceRequirement);
 
         if (!$fulfillment->isApplicable()) {
             return [
-                'requirement_id' => $requirement->getRequirementId(),
+                'requirement_id' => $complianceRequirement->getRequirementId(),
                 'calculated_fulfillment' => 0,
                 'reason' => 'Not applicable',
                 'data_sources' => [],
             ];
         }
 
-        $dataAnalysis = $this->mappingService->getDataReuseAnalysis($requirement);
+        $dataAnalysis = $this->complianceMappingService->getDataReuseAnalysis($complianceRequirement);
         $calculatedFulfillment = $this->calculateFulfillmentFromSources($dataAnalysis['sources']);
 
         return [
-            'requirement_id' => $requirement->getRequirementId(),
-            'title' => $requirement->getTitle(),
+            'requirement_id' => $complianceRequirement->getRequirementId(),
+            'title' => $complianceRequirement->getTitle(),
             'calculated_fulfillment' => $calculatedFulfillment,
             'confidence' => $dataAnalysis['confidence'],
             'data_sources' => $dataAnalysis['sources'],
-            'gaps' => $this->identifyGaps($requirement, $calculatedFulfillment),
+            'gaps' => $this->identifyGaps($complianceRequirement, $calculatedFulfillment),
         ];
     }
 
@@ -122,16 +123,16 @@ class ComplianceAssessmentService
      */
     private function calculateFulfillmentFromSources(array $sources): int
     {
-        if (empty($sources)) {
+        if ($sources === []) {
             return 0;
         }
 
         $totalContribution = 0;
         $sourceCount = 0;
 
-        foreach ($sources as $sourceType => $sourceData) {
-            if (isset($sourceData['contribution'])) {
-                $totalContribution += $sourceData['contribution'];
+        foreach ($sources as $source) {
+            if (isset($source['contribution'])) {
+                $totalContribution += $source['contribution'];
                 $sourceCount++;
             }
         }
@@ -147,27 +148,27 @@ class ComplianceAssessmentService
     /**
      * Identify gaps between current state and full compliance
      */
-    private function identifyGaps(ComplianceRequirement $requirement, int $currentFulfillment): array
+    private function identifyGaps(ComplianceRequirement $complianceRequirement, int $currentFulfillment): array
     {
         $gaps = [];
 
         if ($currentFulfillment < 100) {
             $gap = 100 - $currentFulfillment;
 
-            if (!$requirement->getMappedControls()->isEmpty()) {
+            if (!$complianceRequirement->getMappedControls()->isEmpty()) {
                 $partialControls = [];
-                foreach ($requirement->getMappedControls() as $control) {
-                    if ($control->getImplementationStatus() !== 'implemented'
-                        || ($control->getImplementationPercentage() ?? 0) < 100) {
+                foreach ($complianceRequirement->getMappedControls() as $mappedControl) {
+                    if ($mappedControl->getImplementationStatus() !== 'implemented'
+                        || ($mappedControl->getImplementationPercentage() ?? 0) < 100) {
                         $partialControls[] = [
-                            'control_id' => $control->getControlId(),
-                            'status' => $control->getImplementationStatus(),
-                            'implementation' => $control->getImplementationPercentage() ?? 0,
+                            'control_id' => $mappedControl->getControlId(),
+                            'status' => $mappedControl->getImplementationStatus(),
+                            'implementation' => $mappedControl->getImplementationPercentage() ?? 0,
                         ];
                     }
                 }
 
-                if (!empty($partialControls)) {
+                if ($partialControls !== []) {
                     $gaps[] = [
                         'type' => 'incomplete_controls',
                         'severity' => $gap > 50 ? 'high' : 'medium',
@@ -184,7 +185,7 @@ class ComplianceAssessmentService
                 ];
             }
 
-            $mapping = $requirement->getDataSourceMapping() ?? [];
+            $mapping = $complianceRequirement->getDataSourceMapping() ?? [];
 
             // Check for missing BCM data if required
             if (isset($mapping['bcm_required']) && $mapping['bcm_required'] === true) {
@@ -213,19 +214,19 @@ class ComplianceAssessmentService
     /**
      * Get compliance dashboard data for a framework
      */
-    public function getComplianceDashboard(ComplianceFramework $framework): array
+    public function getComplianceDashboard(ComplianceFramework $complianceFramework): array
     {
         $tenant = $this->tenantContext->getCurrentTenant();
-        $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
-        $gaps = $this->requirementRepository->findGapsByFramework($framework);
-        $criticalGaps = $this->requirementRepository->findByFrameworkAndPriority($framework, 'critical');
+        $stats = $this->complianceRequirementRepository->getFrameworkStatisticsForTenant($complianceFramework, $tenant);
+        $gaps = $this->complianceRequirementRepository->findGapsByFramework($complianceFramework);
+        $criticalGaps = $this->complianceRequirementRepository->findByFrameworkAndPriority($complianceFramework, 'critical');
 
         // Calculate data reuse metrics
-        $requirements = $this->requirementRepository->findApplicableByFramework($framework);
+        $requirements = $this->complianceRequirementRepository->findApplicableByFramework($complianceFramework);
         $totalTimeSavings = 0;
 
         foreach ($requirements as $requirement) {
-            $reuseValue = $this->mappingService->calculateDataReuseValue($requirement);
+            $reuseValue = $this->complianceMappingService->calculateDataReuseValue($requirement);
             $totalTimeSavings += $reuseValue['estimated_hours_saved'];
         }
 
@@ -237,11 +238,11 @@ class ComplianceAssessmentService
 
         return [
             'framework' => [
-                'id' => $framework->getId(),
-                'code' => $framework->getCode(),
-                'name' => $framework->getName(),
-                'version' => $framework->getVersion(),
-                'mandatory' => $framework->isMandatory(),
+                'id' => $complianceFramework->getId(),
+                'code' => $complianceFramework->getCode(),
+                'name' => $complianceFramework->getName(),
+                'version' => $complianceFramework->getVersion(),
+                'mandatory' => $complianceFramework->isMandatory(),
             ],
             'statistics' => $stats,
             'compliance_percentage' => $compliancePercentage,
@@ -254,20 +255,20 @@ class ComplianceAssessmentService
                 'total_hours_saved' => $totalTimeSavings,
                 'total_days_saved' => round($totalTimeSavings / 8, 1),
             ],
-            'recommendations' => $this->generateRecommendations($framework, $gaps),
+            'recommendations' => $this->generateRecommendations($gaps),
         ];
     }
 
     /**
      * Generate recommendations for improving compliance
      */
-    private function generateRecommendations(ComplianceFramework $framework, array $gaps): array
+    private function generateRecommendations(array $gaps): array
     {
         $recommendations = [];
 
         if (count($gaps) > 0) {
             // Prioritize critical gaps
-            $criticalGaps = array_filter($gaps, fn($gap) => $gap->getPriority() === 'critical');
+            $criticalGaps = array_filter($gaps, fn($gap): bool => $gap->getPriority() === 'critical');
 
             if (count($criticalGaps) > 0) {
                 $recommendations[] = [
@@ -329,7 +330,7 @@ class ComplianceAssessmentService
 
         $tenant = $this->tenantContext->getCurrentTenant();
         foreach ($frameworks as $framework) {
-            $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
+            $stats = $this->complianceRequirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
 
             // Calculate compliance percentage from tenant-specific statistics
             $compliancePercentage = $stats['applicable'] > 0

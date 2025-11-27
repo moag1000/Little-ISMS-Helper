@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use Exception;
+use Symfony\Component\Security\Core\User\UserInterface;
+use DateTimeImmutable;
 use App\Entity\ComplianceMapping;
 use App\Repository\ComplianceMappingRepository;
 use App\Repository\MappingGapItemRepository;
@@ -15,37 +18,36 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/compliance/mapping-quality')]
 #[IsGranted('ROLE_USER')]
 class MappingQualityController extends AbstractController
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private ComplianceMappingRepository $mappingRepository,
-        private MappingGapItemRepository $gapItemRepository,
-        private MappingQualityAnalysisService $qualityAnalysisService,
-        private AutomatedGapAnalysisService $gapAnalysisService
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ComplianceMappingRepository $complianceMappingRepository,
+        private readonly MappingGapItemRepository $mappingGapItemRepository,
+        private readonly MappingQualityAnalysisService $mappingQualityAnalysisService,
+        private readonly AutomatedGapAnalysisService $automatedGapAnalysisService
     ) {}
 
     /**
      * Dashboard showing mapping quality overview
      */
-    #[Route('/', name: 'app_mapping_quality_dashboard')]
+    #[Route('/compliance/mapping-quality/', name: 'app_mapping_quality_dashboard')]
     public function dashboard(): Response
     {
         try {
             // Check if any mappings exist
-            $totalMappings = $this->mappingRepository->count([]);
+            $totalMappings = $this->complianceMappingRepository->count([]);
             if ($totalMappings === 0) {
                 $this->addFlash('warning', 'Keine Mappings gefunden. Bitte erstellen Sie zuerst Compliance-Mappings.');
                 return $this->redirectToRoute('app_compliance_index');
             }
 
-            $qualityStats = $this->mappingRepository->getQualityStatistics();
-            $qualityDistribution = $this->mappingRepository->getQualityDistribution();
-            $similarityDistribution = $this->mappingRepository->getSimilarityDistribution();
-            $gapStats = $this->gapItemRepository->getGapStatisticsByPriority();
-            $frameworkComparison = $this->mappingRepository->getFrameworkQualityComparison();
+            $qualityStats = $this->complianceMappingRepository->getQualityStatistics();
+            $qualityDistribution = $this->complianceMappingRepository->getQualityDistribution();
+            $similarityDistribution = $this->complianceMappingRepository->getSimilarityDistribution();
+            $gapStats = $this->mappingGapItemRepository->getGapStatisticsByPriority();
+            $frameworkComparison = $this->complianceMappingRepository->getFrameworkQualityComparison();
 
             // Check if analysis has been run
             if ($qualityStats['analyzed_mappings'] === 0) {
@@ -59,7 +61,7 @@ class MappingQualityController extends AbstractController
                 'gap_stats' => $gapStats,
                 'framework_comparison' => $frameworkComparison,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->addFlash('error', 'Fehler beim Laden des Dashboards: ' . $e->getMessage());
             return $this->redirectToRoute('app_compliance_index');
         }
@@ -68,20 +70,20 @@ class MappingQualityController extends AbstractController
     /**
      * List mappings requiring review
      */
-    #[Route('/review-queue', name: 'app_mapping_quality_review_queue')]
+    #[Route('/compliance/mapping-quality/review-queue', name: 'app_mapping_quality_review_queue')]
     public function reviewQueue(): Response
     {
         try {
-            $mappingsRequiringReview = $this->mappingRepository->findMappingsRequiringReview();
-            $lowConfidenceMappings = $this->mappingRepository->findLowConfidenceMappings(70);
-            $discrepancies = $this->mappingRepository->findMappingsWithDiscrepancies(20);
+            $mappingsRequiringReview = $this->complianceMappingRepository->findMappingsRequiringReview();
+            $lowConfidenceMappings = $this->complianceMappingRepository->findLowConfidenceMappings(70);
+            $discrepancies = $this->complianceMappingRepository->findMappingsWithDiscrepancies(20);
 
             return $this->render('compliance/mapping_quality/review_queue.html.twig', [
                 'mappings_requiring_review' => $mappingsRequiringReview,
                 'low_confidence_mappings' => $lowConfidenceMappings,
                 'discrepancies' => $discrepancies,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->addFlash('error', 'Fehler beim Laden der Review Queue: ' . $e->getMessage());
             return $this->redirectToRoute('app_mapping_quality_dashboard');
         }
@@ -90,19 +92,19 @@ class MappingQualityController extends AbstractController
     /**
      * Review a specific mapping
      */
-    #[Route('/review/{id}', name: 'app_mapping_quality_review', requirements: ['id' => '\d+'])]
+    #[Route('/compliance/mapping-quality/review/{id}', name: 'app_mapping_quality_review', requirements: ['id' => '\d+'])]
     public function review(int $id): Response
     {
-        $mapping = $this->mappingRepository->find($id);
+        $mapping = $this->complianceMappingRepository->find($id);
 
         if (!$mapping) {
             throw $this->createNotFoundException('Mapping not found');
         }
 
-        $gapItems = $this->gapItemRepository->findByMapping($mapping);
+        $gapItems = $this->mappingGapItemRepository->findByMapping($mapping);
 
         // Calculate gap summary
-        $gapSummary = $this->gapAnalysisService->getGapSummary($gapItems);
+        $gapSummary = $this->automatedGapAnalysisService->getGapSummary($gapItems);
 
         return $this->render('compliance/mapping_quality/review.html.twig', [
             'mapping' => $mapping,
@@ -114,11 +116,11 @@ class MappingQualityController extends AbstractController
     /**
      * Update mapping review status and percentage
      */
-    #[Route('/review/{id}/update', name: 'app_mapping_quality_review_update', methods: ['POST'])]
+    #[Route('/compliance/mapping-quality/review/{id}/update', name: 'app_mapping_quality_review_update', methods: ['POST'])]
     public function updateReview(int $id, Request $request): JsonResponse
     {
         try {
-            $mapping = $this->mappingRepository->find($id);
+            $mapping = $this->complianceMappingRepository->find($id);
 
             if (!$mapping) {
                 return $this->json(['success' => false, 'error' => 'Mapping not found'], 404);
@@ -166,11 +168,11 @@ class MappingQualityController extends AbstractController
 
             // Mark as reviewed
             $user = $this->getUser();
-            if ($user) {
+            if ($user instanceof UserInterface) {
                 $mapping->setReviewedBy($user->getUserIdentifier());
             }
-            $mapping->setReviewedAt(new \DateTimeImmutable());
-            $mapping->setUpdatedAt(new \DateTimeImmutable());
+            $mapping->setReviewedAt(new DateTimeImmutable());
+            $mapping->setUpdatedAt(new DateTimeImmutable());
 
             // If approved, mark as no longer requiring review
             if (isset($data['review_status']) && $data['review_status'] === 'approved') {
@@ -188,7 +190,7 @@ class MappingQualityController extends AbstractController
                     'reviewed_by' => $mapping->getReviewedBy(),
                 ],
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->json([
                 'success' => false,
                 'error' => 'Internal error: ' . $e->getMessage()
@@ -199,10 +201,10 @@ class MappingQualityController extends AbstractController
     /**
      * Re-analyze a specific mapping
      */
-    #[Route('/analyze/{id}', name: 'app_mapping_quality_analyze', methods: ['POST'])]
+    #[Route('/compliance/mapping-quality/analyze/{id}', name: 'app_mapping_quality_analyze', methods: ['POST'])]
     public function analyze(int $id): JsonResponse
     {
-        $mapping = $this->mappingRepository->find($id);
+        $mapping = $this->complianceMappingRepository->find($id);
 
         if (!$mapping) {
             return $this->json(['error' => 'Mapping not found'], 404);
@@ -210,7 +212,7 @@ class MappingQualityController extends AbstractController
 
         try {
             // Run quality analysis
-            $analysisResults = $this->qualityAnalysisService->analyzeMappingQuality($mapping);
+            $analysisResults = $this->mappingQualityAnalysisService->analyzeMappingQuality($mapping);
 
             // Apply results
             $mapping->setCalculatedPercentage($analysisResults['calculated_percentage']);
@@ -229,7 +231,7 @@ class MappingQualityController extends AbstractController
             $this->entityManager->flush();
 
             // Generate new gap items
-            $gapItems = $this->gapAnalysisService->analyzeGaps($mapping, $analysisResults);
+            $gapItems = $this->automatedGapAnalysisService->analyzeGaps($mapping, $analysisResults);
 
             foreach ($gapItems as $gapItem) {
                 $mapping->addGapItem($gapItem);
@@ -249,7 +251,7 @@ class MappingQualityController extends AbstractController
                 ],
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->json([
                 'success' => false,
                 'error' => $e->getMessage(),
@@ -260,15 +262,15 @@ class MappingQualityController extends AbstractController
     /**
      * List all gaps
      */
-    #[Route('/gaps', name: 'app_mapping_quality_gaps')]
+    #[Route('/compliance/mapping-quality/gaps', name: 'app_mapping_quality_gaps')]
     public function gaps(): Response
     {
         try {
-            $highPriorityGaps = $this->gapItemRepository->findHighPriorityGaps();
-            $lowConfidenceGaps = $this->gapItemRepository->findLowConfidenceGaps(60);
-            $gapStatsByType = $this->gapItemRepository->getGapStatisticsByType();
-            $gapStatsByPriority = $this->gapItemRepository->getGapStatisticsByPriority();
-            $remediationEffort = $this->gapItemRepository->calculateTotalRemediationEffort();
+            $highPriorityGaps = $this->mappingGapItemRepository->findHighPriorityGaps();
+            $lowConfidenceGaps = $this->mappingGapItemRepository->findLowConfidenceGaps(60);
+            $gapStatsByType = $this->mappingGapItemRepository->getGapStatisticsByType();
+            $gapStatsByPriority = $this->mappingGapItemRepository->getGapStatisticsByPriority();
+            $remediationEffort = $this->mappingGapItemRepository->calculateTotalRemediationEffort();
 
             return $this->render('compliance/mapping_quality/gaps.html.twig', [
                 'high_priority_gaps' => $highPriorityGaps,
@@ -277,7 +279,7 @@ class MappingQualityController extends AbstractController
                 'gap_stats_by_priority' => $gapStatsByPriority,
                 'remediation_effort' => $remediationEffort,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->addFlash('error', 'Fehler beim Laden der Gap-Übersicht: ' . $e->getMessage());
             return $this->redirectToRoute('app_mapping_quality_dashboard');
         }
@@ -286,11 +288,11 @@ class MappingQualityController extends AbstractController
     /**
      * Update gap item status
      */
-    #[Route('/gap/{id}/update', name: 'app_mapping_quality_gap_update', methods: ['POST'])]
+    #[Route('/compliance/mapping-quality/gap/{id}/update', name: 'app_mapping_quality_gap_update', methods: ['POST'])]
     public function updateGap(int $id, Request $request): JsonResponse
     {
         try {
-            $gap = $this->gapItemRepository->find($id);
+            $gap = $this->mappingGapItemRepository->find($id);
 
             if (!$gap) {
                 return $this->json(['success' => false, 'error' => 'Gap item not found'], 404);
@@ -342,7 +344,7 @@ class MappingQualityController extends AbstractController
                 $gap->setEstimatedEffort($effort);
             }
 
-            $gap->setUpdatedAt(new \DateTimeImmutable());
+            $gap->setUpdatedAt(new DateTimeImmutable());
 
             $this->entityManager->flush();
 
@@ -355,7 +357,7 @@ class MappingQualityController extends AbstractController
                     'estimated_effort' => $gap->getEstimatedEffort(),
                 ],
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->json([
                 'success' => false,
                 'error' => 'Internal error: ' . $e->getMessage()
@@ -366,7 +368,7 @@ class MappingQualityController extends AbstractController
     /**
      * Batch analyze mappings (for UI-based analysis in chunks)
      */
-    #[Route('/batch-analyze', name: 'app_mapping_quality_batch_analyze', methods: ['POST'])]
+    #[Route('/compliance/mapping-quality/batch-analyze', name: 'app_mapping_quality_batch_analyze', methods: ['POST'])]
     public function batchAnalyze(Request $request): JsonResponse
     {
         try {
@@ -383,7 +385,7 @@ class MappingQualityController extends AbstractController
             // Get parameters with defaults
             $limit = isset($data['limit']) ? (int) $data['limit'] : 10;
             $offset = isset($data['offset']) ? (int) $data['offset'] : 0;
-            $reanalyze = isset($data['reanalyze']) ? (bool) $data['reanalyze'] : false;
+            $reanalyze = isset($data['reanalyze']) && (bool) $data['reanalyze'];
 
             // Validate limit
             if ($limit < 1 || $limit > 100) {
@@ -411,7 +413,7 @@ class MappingQualityController extends AbstractController
 
             $mappingIds = array_column($qb->getQuery()->getResult(), 'id');
 
-            if (empty($mappingIds)) {
+            if ($mappingIds === []) {
                 return $this->json([
                     'success' => true,
                     'analyzed' => 0,
@@ -431,13 +433,13 @@ class MappingQualityController extends AbstractController
                     // Fetch fresh entity
                     $mapping = $this->entityManager->find(ComplianceMapping::class, $mappingId);
 
-                    if (!$mapping) {
+                    if (!$mapping instanceof ComplianceMapping) {
                         $errors++;
                         continue;
                     }
 
                     // Analyze quality
-                    $analysisResults = $this->qualityAnalysisService->analyzeMappingQuality($mapping);
+                    $analysisResults = $this->mappingQualityAnalysisService->analyzeMappingQuality($mapping);
 
                     // Apply results
                     $mapping->setCalculatedPercentage($analysisResults['calculated_percentage']);
@@ -458,7 +460,7 @@ class MappingQualityController extends AbstractController
                     }
 
                     // Analyze gaps
-                    $gapItems = $this->gapAnalysisService->analyzeGaps($mapping, $analysisResults);
+                    $gapItems = $this->automatedGapAnalysisService->analyzeGaps($mapping, $analysisResults);
 
                     foreach ($gapItems as $gapItem) {
                         $mapping->addGapItem($gapItem);
@@ -476,7 +478,7 @@ class MappingQualityController extends AbstractController
                         'gaps_found' => count($gapItems),
                     ];
 
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $errors++;
                     $results[] = [
                         'id' => $mappingId,
@@ -510,7 +512,7 @@ class MappingQualityController extends AbstractController
                 'results' => $results,
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->json([
                 'success' => false,
                 'error' => 'Internal error: ' . $e->getMessage()
@@ -521,7 +523,7 @@ class MappingQualityController extends AbstractController
     /**
      * Get analysis statistics (for UI polling)
      */
-    #[Route('/stats', name: 'app_mapping_quality_stats', methods: ['GET'])]
+    #[Route('/compliance/mapping-quality/stats', name: 'app_mapping_quality_stats', methods: ['GET'])]
     public function stats(): JsonResponse
     {
         try {
@@ -546,7 +548,7 @@ class MappingQualityController extends AbstractController
                 'percentage' => $total > 0 ? round(($analyzed / $total) * 100, 1) : 0,
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->json([
                 'success' => false,
                 'error' => $e->getMessage()
@@ -557,19 +559,19 @@ class MappingQualityController extends AbstractController
     /**
      * Export quality report
      */
-    #[Route('/export', name: 'app_mapping_quality_export')]
+    #[Route('/compliance/mapping-quality/export', name: 'app_mapping_quality_export')]
     public function export(): Response
     {
-        $qualityStats = $this->mappingRepository->getQualityStatistics();
-        $mappingsRequiringReview = $this->mappingRepository->findMappingsRequiringReview();
-        $highPriorityGaps = $this->gapItemRepository->findHighPriorityGaps();
+        $qualityStats = $this->complianceMappingRepository->getQualityStatistics();
+        $mappingsRequiringReview = $this->complianceMappingRepository->findMappingsRequiringReview();
+        $highPriorityGaps = $this->mappingGapItemRepository->findHighPriorityGaps();
 
         // For now, return JSON (can be extended to PDF/Excel later)
         return $this->json([
             'quality_statistics' => $qualityStats,
             'mappings_requiring_review_count' => count($mappingsRequiringReview),
             'high_priority_gaps_count' => count($highPriorityGaps),
-            'export_date' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+            'export_date' => new DateTimeImmutable()->format('Y-m-d H:i:s'),
         ]);
     }
 }

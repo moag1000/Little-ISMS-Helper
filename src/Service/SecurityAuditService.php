@@ -2,15 +2,13 @@
 
 namespace App\Service;
 
+use RuntimeException;
 use Symfony\Component\Process\Process;
 
 class SecurityAuditService
 {
-    private string $projectDir;
-
-    public function __construct(string $projectDir)
+    public function __construct(private readonly string $projectDir)
     {
-        $this->projectDir = $projectDir;
     }
 
     /**
@@ -21,7 +19,7 @@ class SecurityAuditService
         $scriptPath = $this->projectDir . '/scripts/generate-security-audit.php';
 
         if (!file_exists($scriptPath)) {
-            throw new \RuntimeException('Security audit script not found at: ' . $scriptPath);
+            throw new RuntimeException('Security audit script not found at: ' . $scriptPath);
         }
 
         // Execute the PHP script

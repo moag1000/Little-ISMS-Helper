@@ -97,8 +97,7 @@ class ComplianceFrameworkType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank(['message' => 'compliance_framework.validation.applicable_industry_required']),
                 ],
-                'help' => 'compliance_framework.help.applicable_industry',
-                'choice_translation_domain' => 'compliance',
+                'help' => 'compliance_framework.help.applicable_industry'
             ])
             ->add('regulatoryBody', TextType::class, [
                 'label' => 'compliance_framework.field.regulatory_body',

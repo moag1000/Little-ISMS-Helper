@@ -28,14 +28,14 @@ class ComplianceCacheInvalidationSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onKernelResponse(ResponseEvent $event): void
+    public function onKernelResponse(ResponseEvent $responseEvent): void
     {
-        if (!$event->isMainRequest()) {
+        if (!$responseEvent->isMainRequest()) {
             return;
         }
 
-        $request = $event->getRequest();
-        $response = $event->getResponse();
+        $request = $responseEvent->getRequest();
+        $response = $responseEvent->getResponse();
         $route = $request->attributes->get('_route');
 
         // Invalidate cache when frameworks are loaded, deleted, or modified

@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Permission;
+use DateTimeImmutable;
 use App\Entity\Role;
 use App\Form\RoleType;
 use App\Repository\RoleRepository;
@@ -12,13 +14,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/admin/roles')]
 class RoleManagementController extends AbstractController
 {
-    #[Route('', name: 'role_management_index')]
+    #[Route('/admin/roles', name: 'role_management_index')]
     public function index(RoleRepository $roleRepository): Response
     {
         $this->denyAccessUnlessGranted(RoleVoter::VIEW, new Role());
@@ -29,8 +29,7 @@ class RoleManagementController extends AbstractController
             'roles' => $roles,
         ]);
     }
-
-    #[Route('/new', name: 'role_management_new')]
+    #[Route('/admin/roles/new', name: 'role_management_new')]
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -60,8 +59,7 @@ class RoleManagementController extends AbstractController
             'permissions' => $permissions,
         ]);
     }
-
-    #[Route('/compare', name: 'role_management_compare')]
+    #[Route('/admin/roles/compare', name: 'role_management_compare')]
     public function compare(
         Request $request,
         RoleRepository $roleRepository,
@@ -72,12 +70,10 @@ class RoleManagementController extends AbstractController
         $roleIds = $request->query->all('roles') ?? [];
         $roles = [];
 
-        if (!empty($roleIds)) {
-            foreach ($roleIds as $roleId) {
-                $role = $roleRepository->findWithPermissions((int) $roleId);
-                if ($role) {
-                    $roles[] = $role;
-                }
+        foreach ($roleIds as $roleId) {
+            $role = $roleRepository->findWithPermissions((int) $roleId);
+            if ($role instanceof Role) {
+                $roles[] = $role;
             }
         }
 
@@ -116,9 +112,7 @@ class RoleManagementController extends AbstractController
             'selected_role_ids' => $roleIds,
         ]);
     }
-
-
-    #[Route('/templates', name: 'role_management_templates')]
+    #[Route('/admin/roles/templates', name: 'role_management_templates')]
     public function templates(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -146,7 +140,7 @@ class RoleManagementController extends AbstractController
                 // Add permissions based on template
                 foreach ($template['permissions'] as $permissionName) {
                     $permission = $permissionRepository->findByName($permissionName);
-                    if ($permission) {
+                    if ($permission instanceof Permission) {
                         $role->addPermission($permission);
                     }
                 }
@@ -166,9 +160,7 @@ class RoleManagementController extends AbstractController
             'templates' => $templates,
         ]);
     }
-
-
-    #[Route('/{id}', name: 'role_management_show', requirements: ['id' => '\d+'])]
+    #[Route('/admin/roles/{id}', name: 'role_management_show', requirements: ['id' => '\d+'])]
     public function show(Role $role, RoleRepository $roleRepository): Response
     {
         $this->denyAccessUnlessGranted(RoleVoter::VIEW, $role);
@@ -179,8 +171,7 @@ class RoleManagementController extends AbstractController
             'role' => $role,
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'role_management_edit', requirements: ['id' => '\d+'])]
+    #[Route('/admin/roles/{id}/edit', name: 'role_management_edit', requirements: ['id' => '\d+'])]
     public function edit(
         Role $role,
         Request $request,
@@ -201,7 +192,7 @@ class RoleManagementController extends AbstractController
                 $role->setIsSystemRole(true);
             }
 
-            $role->setUpdatedAt(new \DateTimeImmutable());
+            $role->setUpdatedAt(new DateTimeImmutable());
             $entityManager->flush();
 
             $this->addFlash('success', $translator->trans('role.success.updated'));
@@ -215,8 +206,7 @@ class RoleManagementController extends AbstractController
             'permissions' => $permissions,
         ]);
     }
-
-    #[Route('/{id}/delete', name: 'role_management_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route('/admin/roles/{id}/delete', name: 'role_management_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function delete(
         Role $role,
         Request $request,
@@ -234,7 +224,6 @@ class RoleManagementController extends AbstractController
 
         return $this->redirectToRoute('role_management_index');
     }
-
     /**
      * Define role templates with predefined permissions
      */

@@ -229,7 +229,7 @@
                     </h3>
                 </div>
                 <div class="card-body">
-                    <p class="small text-muted mb-2">{{ 'training.compliance_coverage_info'|trans }}</p>
+                    <p class="small text-muted mb-2">{{ 'training.compliance_coverage_info'|trans({}, 'training') }}</p>
                     <div class="d-flex flex-wrap gap-2">
                         {% for requirement in training.complianceRequirements %}
                             <span class="badge bg-info">
@@ -247,13 +247,13 @@
             <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
-                        <i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'training.statistics'|trans }}
+                        <i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'training.statistics'|trans({}, 'training') }}
                     </h3>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="small text-muted">{{ 'training.completion_rate'|trans }}</span>
+                            <span class="small text-muted">{{ 'training.completion_rate'|trans({}, 'training') }}</span>
                             <span class="small fw-bold">100%</span>
                         </div>
                         <div class="progress" style="height: 8px;">
@@ -261,12 +261,12 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-between small">
-                        <span class="text-muted">{{ 'training.attendee_count'|trans }}:</span>
+                        <span class="text-muted">{{ 'training.attendee_count'|trans({}, 'training') }}:</span>
                         <span class="fw-bold">{{ training.attendeeCount ?? 0 }}</span>
                     </div>
                     {% if training.completionDate %}
                     <div class="d-flex justify-content-between small mt-2">
-                        <span class="text-muted">{{ 'training.completed_on'|trans }}:</span>
+                        <span class="text-muted">{{ 'training.completed_on'|trans({}, 'training') }}:</span>
                         <span class="fw-bold">{{ training.completionDate|date('d.m.Y') }}</span>
                     </div>
                     {% endif %}

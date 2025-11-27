@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+use Exception;
 use App\Entity\Document;
 use App\Form\DocumentType;
 use App\Repository\DocumentRepository;
@@ -21,23 +23,22 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/document')]
 #[IsGranted('ROLE_USER')]
 class DocumentController extends AbstractController
 {
     public function __construct(
-        private DocumentRepository $documentRepository,
-        private DocumentService $documentService,
-        private EntityManagerInterface $entityManager,
-        private string $projectDir,
-        private RateLimiterFactory $documentUploadLimiter,
-        private FileUploadSecurityService $fileUploadSecurity,
-        private SecurityEventLogger $securityLogger,
-        private TranslatorInterface $translator,
-        private Security $security
+        private readonly DocumentRepository $documentRepository,
+        private readonly DocumentService $documentService,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly string $projectDir,
+        private readonly RateLimiterFactory $rateLimiterFactory,
+        private readonly FileUploadSecurityService $fileUploadSecurityService,
+        private readonly SecurityEventLogger $securityEventLogger,
+        private readonly TranslatorInterface $translator,
+        private readonly Security $security
     ) {}
 
-    #[Route('/', name: 'app_document_index')]
+    #[Route('/document/', name: 'app_document_index')]
     public function index(Request $request): Response
     {
         // Get current tenant
@@ -50,22 +51,14 @@ class DocumentController extends AbstractController
         // Get documents based on view filter
         if ($tenant) {
             // Determine which documents to load based on view parameter
-            switch ($view) {
-                case 'own':
-                    // Only own documents
-                    $allDocuments = $this->documentRepository->findByTenant($tenant);
-                    break;
-                case 'subsidiaries':
-                    // Own + from all subsidiaries (for parent companies)
-                    $allDocuments = $this->documentRepository->findByTenantIncludingSubsidiaries($tenant);
-                    break;
-                case 'inherited':
-                default:
-                    // Own + inherited from parents (default behavior)
-                    $allDocuments = $this->documentService->getDocumentsForTenant($tenant);
-                    break;
-            }
-
+            $allDocuments = match ($view) {
+                // Only own documents
+                'own' => $this->documentRepository->findByTenant($tenant),
+                // Own + from all subsidiaries (for parent companies)
+                'subsidiaries' => $this->documentRepository->findByTenantIncludingSubsidiaries($tenant),
+                // Own + inherited from parents (default behavior)
+                default => $this->documentService->getDocumentsForTenant($tenant),
+            };
             $inheritanceInfo = $this->documentService->getDocumentInheritanceInfo($tenant);
             $inheritanceInfo['hasSubsidiaries'] = $tenant->getSubsidiaries()->count() > 0;
             $inheritanceInfo['currentView'] = $view;
@@ -81,10 +74,10 @@ class DocumentController extends AbstractController
         }
 
         // Filter to active only
-        $documents = array_filter($allDocuments, fn($doc) => $doc->getStatus() === 'active');
+        $documents = array_filter($allDocuments, fn(Document $document): bool => $document->getStatus() === 'active');
 
         // Sort by upload date descending
-        usort($documents, fn($a, $b) => $b->getUploadedAt() <=> $a->getUploadedAt());
+        usort($documents, fn($a, $b): int => $b->getUploadedAt() <=> $a->getUploadedAt());
 
         // Calculate detailed statistics based on origin
         if ($tenant) {
@@ -101,14 +94,14 @@ class DocumentController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_document_new')]
+    #[Route('/document/new', name: 'app_document_new')]
     public function new(Request $request): Response
     {
         $document = new Document();
 
         // Set tenant from current user
         $user = $this->security->getUser();
-        if ($user && $user->getTenant()) {
+        if ($user instanceof UserInterface && $user->getTenant()) {
             $document->setTenant($user->getTenant());
         }
 
@@ -117,11 +110,11 @@ class DocumentController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             // Security: Rate limit document uploads to prevent abuse
-            $limiter = $this->documentUploadLimiter->create($request->getClientIp());
+            $limiter = $this->rateLimiterFactory->create($request->getClientIp());
 
             if (false === $limiter->consume(1)->isAccepted()) {
                 // Security: Log rate limit hit for monitoring
-                $this->securityLogger->logRateLimitHit('document_upload');
+                $this->securityEventLogger->logRateLimitHit('document_upload');
 
                 $this->addFlash('error', $this->translator->trans('document.error.too_many_uploads'));
 
@@ -135,10 +128,10 @@ class DocumentController extends AbstractController
             $uploadedFile = $form->get('file')->getData();
 
             try {
-                $this->fileUploadSecurity->validateUploadedFile($uploadedFile);
+                $this->fileUploadSecurityService->validateUploadedFile($uploadedFile);
 
                 // Security: Generate safe filename to prevent path traversal and overwrites
-                $safeFilename = $this->fileUploadSecurity->generateSafeFilename($uploadedFile);
+                $safeFilename = $this->fileUploadSecurityService->generateSafeFilename($uploadedFile);
 
                 // Extract metadata BEFORE moving file (temp file gets deleted after move)
                 $originalFilename = $uploadedFile->getClientOriginalName();
@@ -163,7 +156,7 @@ class DocumentController extends AbstractController
                 $this->entityManager->flush();
 
                 // Security: Log successful file upload
-                $this->securityLogger->logFileUpload(
+                $this->securityEventLogger->logFileUpload(
                     $safeFilename,
                     $mimeType,
                     $fileSize,
@@ -171,14 +164,14 @@ class DocumentController extends AbstractController
                 );
 
                 // Security: Log data change
-                $this->securityLogger->logDataChange('Document', $document->getId(), 'CREATE');
+                $this->securityEventLogger->logDataChange('Document', $document->getId(), 'CREATE');
 
                 $this->addFlash('success', $this->translator->trans('document.success.uploaded'));
                 return $this->redirectToRoute('app_document_show', ['id' => $document->getId()]);
 
             } catch (FileException $e) {
                 // Security: Log failed upload attempt (potential attack)
-                $this->securityLogger->logFileUpload(
+                $this->securityEventLogger->logFileUpload(
                     $uploadedFile->getClientOriginalName(),
                     $uploadedFile->getMimeType() ?? 'unknown',
                     $uploadedFile->getSize(),
@@ -201,7 +194,7 @@ class DocumentController extends AbstractController
         ]);
     }
 
-    #[Route('/bulk-delete', name: 'app_document_bulk_delete', methods: ['POST'])]
+    #[Route('/document/bulk-delete', name: 'app_document_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function bulkDelete(Request $request): Response
     {
@@ -241,7 +234,7 @@ class DocumentController extends AbstractController
 
                 $this->entityManager->remove($document);
                 $deleted++;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $errors[] = "Error deleting document ID $id: " . $e->getMessage();
             }
         }
@@ -250,7 +243,7 @@ class DocumentController extends AbstractController
             $this->entityManager->flush();
         }
 
-        if (!empty($errors)) {
+        if ($errors !== []) {
             return $this->json([
                 'success' => $deleted > 0,
                 'deleted' => $deleted,
@@ -265,7 +258,7 @@ class DocumentController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_document_show', requirements: ['id' => '\d+'])]
+    #[Route('/document/{id}', name: 'app_document_show', requirements: ['id' => '\d+'])]
     public function show(Document $document): Response
     {
         // Security: Check if user has permission to view this document (OWASP #1 - Broken Access Control)
@@ -291,7 +284,7 @@ class DocumentController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/download', name: 'app_document_download', requirements: ['id' => '\d+'])]
+    #[Route('/document/{id}/download', name: 'app_document_download', requirements: ['id' => '\d+'])]
     public function download(Document $document): Response
     {
         // Security: Check if user has permission to download this document (OWASP #1 - Broken Access Control)
@@ -316,19 +309,19 @@ class DocumentController extends AbstractController
             throw $this->createNotFoundException('File not found');
         }
 
-        $response = new BinaryFileResponse($filePath);
+        $binaryFileResponse = new BinaryFileResponse($filePath);
 
         // Security: Sanitize filename for content disposition header
         $safeOriginalName = preg_replace('/[^\w\s\.\-]/', '', $document->getOriginalName());
-        $response->setContentDisposition(
+        $binaryFileResponse->setContentDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             $safeOriginalName
         );
 
-        return $response;
+        return $binaryFileResponse;
     }
 
-    #[Route('/{id}/edit', name: 'app_document_edit', requirements: ['id' => '\d+'])]
+    #[Route('/document/{id}/edit', name: 'app_document_edit', requirements: ['id' => '\d+'])]
     public function edit(Request $request, Document $document): Response
     {
         // Security: Check if user has permission to edit this document (OWASP #1 - Broken Access Control)
@@ -359,7 +352,7 @@ class DocumentController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'app_document_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/document/{id}/delete', name: 'app_document_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Document $document): Response
     {
@@ -383,21 +376,17 @@ class DocumentController extends AbstractController
         return $this->redirectToRoute('app_document_index');
     }
 
-    #[Route('/type/{type}', name: 'app_document_by_type')]
+    #[Route('/document/type/{type}', name: 'app_document_by_type')]
     public function byType(string $type): Response
     {
         $user = $this->security->getUser();
         $tenant = $user?->getTenant();
 
         // Get documents: tenant-filtered if user has tenant, all if not
-        if ($tenant) {
-            $allDocuments = $this->documentService->getDocumentsForTenant($tenant);
-        } else {
-            $allDocuments = $this->documentRepository->findAll();
-        }
+        $allDocuments = $tenant ? $this->documentService->getDocumentsForTenant($tenant) : $this->documentRepository->findAll();
 
         // Filter by type
-        $documents = array_filter($allDocuments, fn($doc) => $doc->getType() === $type);
+        $documents = array_filter($allDocuments, fn(Document $document): bool => $document->getType() === $type);
 
         return $this->render('document/by_type.html.twig', [
             'documents' => $documents,

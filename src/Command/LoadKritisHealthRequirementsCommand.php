@@ -17,20 +17,20 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class LoadKritisHealthRequirementsCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
         // Create or get KRITIS Health framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'KRITIS-HEALTH']);
 
-        if (!$framework) {
+        if (!$framework instanceof ComplianceFramework) {
             $framework = new ComplianceFramework();
             $framework->setCode('KRITIS-HEALTH')
                 ->setName('KRITIS Health / KHPatSiG - Krankenhaus IT-Sicherheit')
@@ -62,7 +62,7 @@ class LoadKritisHealthRequirementsCommand extends Command
 
         $this->entityManager->flush();
 
-        $io->success(sprintf('Successfully loaded %d KRITIS Health / KHPatSiG requirements', count($requirements)));
+        $symfonyStyle->success(sprintf('Successfully loaded %d KRITIS Health / KHPatSiG requirements', count($requirements)));
 
         return Command::SUCCESS;
     }

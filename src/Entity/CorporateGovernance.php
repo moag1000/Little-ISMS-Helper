@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
 use App\Enum\GovernanceModel;
 use App\Repository\CorporateGovernanceRepository;
 use Doctrine\DBAL\Types\Types;
@@ -56,18 +57,18 @@ class CorporateGovernance
     private ?string $notes = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
-    private ?User $createdBy = null;
+    private ?User $user = null;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -91,9 +92,9 @@ class CorporateGovernance
         return $this->parent;
     }
 
-    public function setParent(?Tenant $parent): static
+    public function setParent(?Tenant $tenant): static
     {
-        $this->parent = $parent;
+        $this->parent = $tenant;
         return $this;
     }
 
@@ -141,23 +142,23 @@ class CorporateGovernance
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(?DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -165,19 +166,19 @@ class CorporateGovernance
 
     public function getCreatedBy(): ?User
     {
-        return $this->createdBy;
+        return $this->user;
     }
 
-    public function setCreatedBy(?User $createdBy): static
+    public function setCreatedBy(?User $user): static
     {
-        $this->createdBy = $createdBy;
+        $this->user = $user;
         return $this;
     }
 
     #[ORM\PreUpdate]
     public function setUpdatedAtValue(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     /**

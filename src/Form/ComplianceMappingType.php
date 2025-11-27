@@ -23,9 +23,7 @@ class ComplianceMappingType extends AbstractType
             ->add('sourceRequirement', EntityType::class, [
                 'label' => 'compliance_mapping.field.source_requirement',
                 'class' => ComplianceRequirement::class,
-                'choice_label' => function(ComplianceRequirement $req) {
-                    return $req->getFramework()->getCode() . ' - ' . $req->getRequirementId() . ': ' . $req->getTitle();
-                },
+                'choice_label' => fn(ComplianceRequirement $complianceRequirement): string => $complianceRequirement->getFramework()->getCode() . ' - ' . $complianceRequirement->getRequirementId() . ': ' . $complianceRequirement->getTitle(),
                 'attr' => [
                     'class' => 'form-select'
                 ],
@@ -37,9 +35,7 @@ class ComplianceMappingType extends AbstractType
             ->add('targetRequirement', EntityType::class, [
                 'label' => 'compliance_mapping.field.target_requirement',
                 'class' => ComplianceRequirement::class,
-                'choice_label' => function(ComplianceRequirement $req) {
-                    return $req->getFramework()->getCode() . ' - ' . $req->getRequirementId() . ': ' . $req->getTitle();
-                },
+                'choice_label' => fn(ComplianceRequirement $complianceRequirement): string => $complianceRequirement->getFramework()->getCode() . ' - ' . $complianceRequirement->getRequirementId() . ': ' . $complianceRequirement->getTitle(),
                 'attr' => [
                     'class' => 'form-select'
                 ],

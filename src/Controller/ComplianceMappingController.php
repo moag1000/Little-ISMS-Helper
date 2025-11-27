@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTimeImmutable;
 use App\Entity\ComplianceMapping;
 use App\Form\ComplianceMappingType;
 use App\Repository\ComplianceMappingRepository;
@@ -14,29 +15,28 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/compliance/mapping')]
 #[IsGranted('ROLE_USER')]
 class ComplianceMappingController extends AbstractController
 {
     public function __construct(
-        private ComplianceMappingRepository $mappingRepository,
-        private ComplianceRequirementRepository $requirementRepository,
-        private ComplianceMappingService $mappingService,
-        private EntityManagerInterface $entityManager
+        private readonly ComplianceMappingRepository $complianceMappingRepository,
+        private readonly ComplianceRequirementRepository $complianceRequirementRepository,
+        private readonly ComplianceMappingService $complianceMappingService,
+        private readonly EntityManagerInterface $entityManager
     ) {}
 
-    #[Route('/', name: 'app_compliance_mapping_index', methods: ['GET'])]
+    #[Route('/compliance/mapping/', name: 'app_compliance_mapping_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $requirementId = $request->query->get('requirement');
 
         if ($requirementId) {
-            $requirement = $this->requirementRepository->find($requirementId);
+            $requirement = $this->complianceRequirementRepository->find($requirementId);
             $mappings = $requirement
-                ? $this->mappingRepository->findBySourceRequirement($requirement)
+                ? $this->complianceMappingRepository->findBySourceRequirement($requirement)
                 : [];
         } else {
-            $mappings = $this->mappingRepository->findAll();
+            $mappings = $this->complianceMappingRepository->findAll();
         }
 
         return $this->render('compliance/mapping/index.html.twig', [
@@ -45,83 +45,83 @@ class ComplianceMappingController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_compliance_mapping_new', methods: ['GET', 'POST'])]
+    #[Route('/compliance/mapping/new', name: 'app_compliance_mapping_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
-        $mapping = new ComplianceMapping();
+        $complianceMapping = new ComplianceMapping();
 
         // Pre-select source requirement if provided
         $sourceId = $request->query->get('source');
         if ($sourceId) {
-            $source = $this->requirementRepository->find($sourceId);
+            $source = $this->complianceRequirementRepository->find($sourceId);
             if ($source) {
-                $mapping->setSourceRequirement($source);
+                $complianceMapping->setSourceRequirement($source);
             }
         }
 
-        $form = $this->createForm(ComplianceMappingType::class, $mapping);
+        $form = $this->createForm(ComplianceMappingType::class, $complianceMapping);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($mapping);
+            $this->entityManager->persist($complianceMapping);
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Compliance mapping created successfully.');
 
             return $this->redirectToRoute('app_compliance_mapping_show', [
-                'id' => $mapping->getId()
+                'id' => $complianceMapping->getId()
             ]);
         }
 
         return $this->render('compliance/mapping/new.html.twig', [
-            'mapping' => $mapping,
+            'mapping' => $complianceMapping,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_compliance_mapping_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(ComplianceMapping $mapping): Response
+    #[Route('/compliance/mapping/{id}', name: 'app_compliance_mapping_show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function show(ComplianceMapping $complianceMapping): Response
     {
         // Calculate transitive fulfillment
-        $transitiveFulfillment = $mapping->calculateTransitiveFulfillment();
+        $transitiveFulfillment = $complianceMapping->calculateTransitiveFulfillment();
 
         return $this->render('compliance/mapping/show.html.twig', [
-            'mapping' => $mapping,
+            'mapping' => $complianceMapping,
             'transitive_fulfillment' => $transitiveFulfillment,
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_compliance_mapping_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route('/compliance/mapping/{id}/edit', name: 'app_compliance_mapping_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
-    public function edit(Request $request, ComplianceMapping $mapping): Response
+    public function edit(Request $request, ComplianceMapping $complianceMapping): Response
     {
-        $form = $this->createForm(ComplianceMappingType::class, $mapping);
+        $form = $this->createForm(ComplianceMappingType::class, $complianceMapping);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $mapping->setUpdatedAt(new \DateTimeImmutable());
+            $complianceMapping->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Compliance mapping updated successfully.');
 
             return $this->redirectToRoute('app_compliance_mapping_show', [
-                'id' => $mapping->getId()
+                'id' => $complianceMapping->getId()
             ]);
         }
 
         return $this->render('compliance/mapping/edit.html.twig', [
-            'mapping' => $mapping,
+            'mapping' => $complianceMapping,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_compliance_mapping_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route('/compliance/mapping/{id}', name: 'app_compliance_mapping_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function delete(Request $request, ComplianceMapping $mapping): Response
+    public function delete(Request $request, ComplianceMapping $complianceMapping): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$mapping->getId(), $request->request->get('_token'))) {
-            $this->entityManager->remove($mapping);
+        if ($this->isCsrfTokenValid('delete'.$complianceMapping->getId(), $request->request->get('_token'))) {
+            $this->entityManager->remove($complianceMapping);
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Compliance mapping deleted successfully.');
@@ -130,39 +130,39 @@ class ComplianceMappingController extends AbstractController
         return $this->redirectToRoute('app_compliance_mapping_index');
     }
 
-    #[Route('/{id}/analyze', name: 'app_compliance_mapping_analyze', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route('/compliance/mapping/{id}/analyze', name: 'app_compliance_mapping_analyze', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function analyze(Request $request, ComplianceMapping $mapping): Response
+    public function analyze(Request $request, ComplianceMapping $complianceMapping): Response
     {
-        if (!$this->isCsrfTokenValid('analyze'.$mapping->getId(), $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('analyze'.$complianceMapping->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', 'Invalid CSRF token.');
-            return $this->redirectToRoute('app_compliance_mapping_show', ['id' => $mapping->getId()]);
+            return $this->redirectToRoute('app_compliance_mapping_show', ['id' => $complianceMapping->getId()]);
         }
 
         // Analyze mapping quality using the service
-        $analysis = $this->mappingService->analyzeMappingQuality($mapping);
+        $analysis = $this->complianceMappingService->analyzeMappingQuality($complianceMapping);
 
         // Update mapping with analysis results
         if (isset($analysis['calculated_percentage'])) {
-            $mapping->setCalculatedPercentage($analysis['calculated_percentage']);
+            $complianceMapping->setCalculatedPercentage($analysis['calculated_percentage']);
         }
         if (isset($analysis['confidence'])) {
-            $mapping->setAnalysisConfidence($analysis['confidence']);
+            $complianceMapping->setAnalysisConfidence($analysis['confidence']);
         }
         if (isset($analysis['textual_similarity'])) {
-            $mapping->setTextualSimilarity($analysis['textual_similarity']);
+            $complianceMapping->setTextualSimilarity($analysis['textual_similarity']);
         }
         if (isset($analysis['keyword_overlap'])) {
-            $mapping->setKeywordOverlap($analysis['keyword_overlap']);
+            $complianceMapping->setKeywordOverlap($analysis['keyword_overlap']);
         }
 
-        $mapping->setAnalysisAlgorithmVersion('1.0');
-        $mapping->setUpdatedAt(new \DateTimeImmutable());
+        $complianceMapping->setAnalysisAlgorithmVersion('1.0');
+        $complianceMapping->setUpdatedAt(new DateTimeImmutable());
 
         $this->entityManager->flush();
 
         $this->addFlash('success', 'Mapping analysis completed successfully.');
 
-        return $this->redirectToRoute('app_compliance_mapping_show', ['id' => $mapping->getId()]);
+        return $this->redirectToRoute('app_compliance_mapping_show', ['id' => $complianceMapping->getId()]);
     }
 }

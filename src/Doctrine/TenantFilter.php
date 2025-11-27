@@ -2,6 +2,8 @@
 
 namespace App\Doctrine;
 
+use App\Entity\Tenant;
+use App\Entity\User;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Query\Filter\SQLFilter;
 
@@ -25,18 +27,16 @@ class TenantFilter extends SQLFilter
     /**
      * Add tenant filter condition to SQL query
      *
-     * @param ClassMetadata $targetEntity
      * @param string $targetTableAlias
-     * @return string
      */
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias): string
     {
         // Skip filtering for Tenant entity itself and User entity
-        if ($targetEntity->getReflectionClass()->getName() === 'App\Entity\Tenant') {
+        if ($targetEntity->getReflectionClass()->getName() === Tenant::class) {
             return '';
         }
 
-        if ($targetEntity->getReflectionClass()->getName() === 'App\Entity\User') {
+        if ($targetEntity->getReflectionClass()->getName() === User::class) {
             return '';
         }
 
@@ -49,7 +49,7 @@ class TenantFilter extends SQLFilter
         $tenantId = $this->getParameter('tenant_id');
 
         // If no tenant ID is set, don't filter (admin mode)
-        if ($tenantId === null || $tenantId === 'null') {
+        if ($tenantId === 'null') {
             return '';
         }
 

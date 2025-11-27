@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Exception;
 use App\Service\LicenseReportService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,13 +15,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Admin wrapper for License Management
  * Integrates existing license functionality into admin panel
  */
-#[Route('/admin/licensing')]
 class AdminLicensingController extends AbstractController
 {
     /**
      * License Overview - Third-Party Licenses
      */
-    #[Route('', name: 'admin_licensing_index', methods: ['GET'])]
+    #[Route('/admin/licensing', name: 'admin_licensing_index', methods: ['GET'])]
     #[IsGranted('ADMIN_VIEW')]
     public function index(): Response
     {
@@ -42,11 +42,10 @@ class AdminLicensingController extends AbstractController
             'project_license' => $composerData['license'] ?? 'proprietary',
         ]);
     }
-
     /**
      * License Report - Detailed License Analysis
      */
-    #[Route('/report', name: 'admin_licensing_report', methods: ['GET'])]
+    #[Route('/admin/licensing/report', name: 'admin_licensing_report', methods: ['GET'])]
     #[IsGranted('ADMIN_VIEW')]
     public function report(): Response
     {
@@ -64,11 +63,10 @@ class AdminLicensingController extends AbstractController
             'report_content' => $reportContent,
         ]);
     }
-
     /**
      * License Summary - Statistics Overview
      */
-    #[Route('/summary', name: 'admin_licensing_summary', methods: ['GET'])]
+    #[Route('/admin/licensing/summary', name: 'admin_licensing_summary', methods: ['GET'])]
     #[IsGranted('ADMIN_VIEW')]
     public function summary(): Response
     {
@@ -131,11 +129,10 @@ class AdminLicensingController extends AbstractController
             'license_breakdown' => $licenseBreakdown,
         ]);
     }
-
     /**
      * Generate License Report
      */
-    #[Route('/generate', name: 'admin_licensing_generate', methods: ['POST'])]
+    #[Route('/admin/licensing/generate', name: 'admin_licensing_generate', methods: ['POST'])]
     #[IsGranted('ADMIN_VIEW')]
     public function generate(LicenseReportService $licenseReportService): JsonResponse
     {
@@ -150,16 +147,14 @@ class AdminLicensingController extends AbstractController
                     'message' => 'License report generated successfully',
                     'report' => $result['report'],
                 ]);
-            } else {
-                $this->addFlash('error', 'License report generation failed');
-
-                return $this->json([
-                    'success' => false,
-                    'message' => 'License report generation failed',
-                    'error' => $result['error_output'] ?: $result['output'],
-                ], 500);
             }
-        } catch (\Exception $e) {
+            $this->addFlash('error', 'License report generation failed');
+            return $this->json([
+                'success' => false,
+                'message' => 'License report generation failed',
+                'error' => $result['error_output'] ?: $result['output'],
+            ], 500);
+        } catch (Exception $e) {
             return $this->json([
                 'success' => false,
                 'message' => 'Error generating license report: ' . $e->getMessage(),

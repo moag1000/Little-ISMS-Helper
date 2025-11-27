@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Exception;
 use App\Entity\Training;
 use App\Form\TrainingType;
 use App\Repository\TrainingRepository;
@@ -15,18 +16,16 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/training')]
 class TrainingController extends AbstractController
 {
     public function __construct(
-        private TrainingRepository $trainingRepository,
-        private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator,
-        private Security $security,
-        private TenantContext $tenantContext
+        private readonly TrainingRepository $trainingRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
+        private readonly Security $security,
+        private readonly TenantContext $tenantContext
     ) {}
-
-    #[Route('/', name: 'app_training_index')]
+    #[Route('/training/', name: 'app_training_index')]
     public function index(Request $request): Response
     {
         $user = $this->security->getUser();
@@ -34,18 +33,11 @@ class TrainingController extends AbstractController
         $view = $request->query->get('view', 'inherited');
 
         if ($tenant) {
-            switch ($view) {
-                case 'own':
-                    $trainings = $this->trainingRepository->findByTenant($tenant);
-                    break;
-                case 'subsidiaries':
-                    $trainings = $this->trainingRepository->findByTenantIncludingSubsidiaries($tenant);
-                    break;
-                case 'inherited':
-                default:
-                    $trainings = $this->trainingRepository->findByTenantIncludingParent($tenant);
-                    break;
-            }
+            $trainings = match ($view) {
+                'own' => $this->trainingRepository->findByTenant($tenant),
+                'subsidiaries' => $this->trainingRepository->findByTenantIncludingSubsidiaries($tenant),
+                default => $this->trainingRepository->findByTenantIncludingParent($tenant),
+            };
             $inheritanceInfo = [
                 'hasParent' => $tenant->getParent() !== null,
                 'hasSubsidiaries' => $tenant->getSubsidiaries()->count() > 0,
@@ -60,8 +52,8 @@ class TrainingController extends AbstractController
         $statistics = [
             'total' => count($trainings),
             'upcoming' => count($upcoming),
-            'completed' => count(array_filter($trainings, fn($t) => $t->getStatus() === 'completed')),
-            'mandatory' => count(array_filter($trainings, fn($t) => $t->isMandatory())),
+            'completed' => count(array_filter($trainings, fn(Training $training): bool => $training->getStatus() === 'completed')),
+            'mandatory' => count(array_filter($trainings, fn(Training $training): bool => $training->isMandatory())),
         ];
 
         // Calculate detailed statistics based on origin
@@ -80,8 +72,7 @@ class TrainingController extends AbstractController
             'detailedStats' => $detailedStats,
         ]);
     }
-
-    #[Route('/new', name: 'app_training_new')]
+    #[Route('/training/new', name: 'app_training_new')]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -104,8 +95,7 @@ class TrainingController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/bulk-delete', name: 'app_training_bulk_delete', methods: ['POST'])]
+    #[Route('/training/bulk-delete', name: 'app_training_bulk_delete', methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function bulkDelete(Request $request): Response
     {
@@ -139,7 +129,7 @@ class TrainingController extends AbstractController
 
                 $this->entityManager->remove($training);
                 $deleted++;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $errors[] = "Error deleting training ID $id: " . $e->getMessage();
             }
         }
@@ -148,7 +138,7 @@ class TrainingController extends AbstractController
             $this->entityManager->flush();
         }
 
-        if (!empty($errors)) {
+        if ($errors !== []) {
             return $this->json([
                 'success' => $deleted > 0,
                 'deleted' => $deleted,
@@ -162,17 +152,14 @@ class TrainingController extends AbstractController
             'message' => "$deleted trainings deleted successfully"
         ]);
     }
-
-
-    #[Route('/{id}', name: 'app_training_show', requirements: ['id' => '\d+'])]
+    #[Route('/training/{id}', name: 'app_training_show', requirements: ['id' => '\d+'])]
     public function show(Training $training): Response
     {
         return $this->render('training/show.html.twig', [
             'training' => $training,
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'app_training_edit', requirements: ['id' => '\d+'])]
+    #[Route('/training/{id}/edit', name: 'app_training_edit', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Training $training): Response
     {
@@ -191,8 +178,7 @@ class TrainingController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}/delete', name: 'app_training_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/training/{id}/delete', name: 'app_training_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Training $training): Response
     {
@@ -205,7 +191,6 @@ class TrainingController extends AbstractController
 
         return $this->redirectToRoute('app_training_index');
     }
-
     /**
      * Calculate detailed statistics showing breakdown by origin
      */

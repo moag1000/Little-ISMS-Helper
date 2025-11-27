@@ -2,6 +2,9 @@
 
 namespace App\Service;
 
+use Doctrine\DBAL\Exception\TableNotFoundException;
+use Doctrine\DBAL\Exception\ConnectionException;
+use Exception;
 use App\Repository\TenantRepository;
 
 /**
@@ -14,7 +17,7 @@ class MultiTenantCheckService
     private ?bool $cachedIsMultiTenant = null;
 
     public function __construct(
-        private TenantRepository $tenantRepository
+        private readonly TenantRepository $tenantRepository
     ) {
     }
 
@@ -42,13 +45,13 @@ class MultiTenantCheckService
 
         try {
             $this->cachedCount = $this->tenantRepository->count(['isActive' => true]);
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
+        } catch (TableNotFoundException) {
             // Database tables not yet created (setup wizard not completed)
             $this->cachedCount = 0;
-        } catch (\Doctrine\DBAL\Exception\ConnectionException $e) {
+        } catch (ConnectionException) {
             // Database connection not available
             $this->cachedCount = 0;
-        } catch (\Exception $e) {
+        } catch (Exception) {
             // Any other database error during setup
             $this->cachedCount = 0;
         }

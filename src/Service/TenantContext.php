@@ -59,7 +59,7 @@ class TenantContext
      */
     public function hasTenant(): bool
     {
-        return $this->getCurrentTenant() !== null;
+        return $this->getCurrentTenant() instanceof Tenant;
     }
 
     /**
@@ -68,7 +68,7 @@ class TenantContext
     public function belongsToTenant(Tenant $tenant): bool
     {
         $currentTenant = $this->getCurrentTenant();
-        return $currentTenant && $currentTenant->getId() === $tenant->getId();
+        return $currentTenant instanceof Tenant && $currentTenant->getId() === $tenant->getId();
     }
 
     /**
@@ -124,7 +124,7 @@ class TenantContext
         }
 
         // Find root tenants (no parent)
-        $rootTenants = array_filter($activeTenants, fn(Tenant $t) => $t->getParent() === null);
+        $rootTenants = array_filter($activeTenants, fn(Tenant $tenant): bool => !$tenant->getParent() instanceof Tenant);
 
         if (count($rootTenants) === 1) {
             return reset($rootTenants);
@@ -132,14 +132,14 @@ class TenantContext
 
         if (count($rootTenants) > 1) {
             // Sort by createdAt ascending (oldest first)
-            usort($rootTenants, fn(Tenant $a, Tenant $b) =>
+            usort($rootTenants, fn(Tenant $a, Tenant $b): int =>
                 $a->getCreatedAt() <=> $b->getCreatedAt()
             );
             return $rootTenants[0];
         }
 
         // No root tenants found, return oldest tenant
-        usort($activeTenants, fn(Tenant $a, Tenant $b) =>
+        usort($activeTenants, fn(Tenant $a, Tenant $b): int =>
             $a->getCreatedAt() <=> $b->getCreatedAt()
         );
         return $activeTenants[0];

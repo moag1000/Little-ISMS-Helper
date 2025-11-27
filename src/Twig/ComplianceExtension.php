@@ -2,6 +2,8 @@
 
 namespace App\Twig;
 
+use Override;
+use Exception;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\ModuleConfigurationService;
@@ -20,20 +22,21 @@ use Twig\TwigFunction;
 class ComplianceExtension extends AbstractExtension
 {
     public function __construct(
-        private readonly ComplianceFrameworkRepository $frameworkRepository,
-        private readonly ComplianceRequirementRepository $requirementRepository,
-        private readonly ModuleConfigurationService $moduleConfigService,
+        private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
+        private readonly ComplianceRequirementRepository $complianceRequirementRepository,
+        private readonly ModuleConfigurationService $moduleConfigurationService,
         private readonly TenantContext $tenantContext,
         private readonly CacheInterface $cache
     ) {
     }
 
+    #[Override]
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('get_compliance_frameworks', [$this, 'getComplianceFrameworks']),
-            new TwigFunction('get_compliance_frameworks_quick', [$this, 'getComplianceFrameworksQuick']),
-            new TwigFunction('is_nis2_active', [$this, 'isNis2Active']),
+            new TwigFunction('get_compliance_frameworks', $this->getComplianceFrameworks(...)),
+            new TwigFunction('get_compliance_frameworks_quick', $this->getComplianceFrameworksQuick(...)),
+            new TwigFunction('is_nis2_active', $this->isNis2Active(...)),
         ];
     }
 
@@ -45,22 +48,22 @@ class ComplianceExtension extends AbstractExtension
     public function isNis2Active(): bool
     {
         // Return false if compliance module is not active
-        if (!$this->moduleConfigService->isModuleActive('compliance')) {
+        if (!$this->moduleConfigurationService->isModuleActive('compliance')) {
             return false;
         }
 
         try {
-            return $this->cache->get('nis2_framework_active', function (ItemInterface $item) {
+            return $this->cache->get('nis2_framework_active', function (ItemInterface $item): bool {
                 $item->expiresAfter(300); // Cache for 5 minutes
 
-                $nis2Framework = $this->frameworkRepository->findOneBy(['code' => 'NIS2']);
+                $nis2Framework = $this->complianceFrameworkRepository->findOneBy(['code' => 'NIS2']);
 
                 return $nis2Framework && $nis2Framework->isActive();
             });
-        } catch (\Exception $e) {
+        } catch (Exception) {
             // On cache failure, fallback to direct database query (no cache)
             // This ensures the application continues to work even if cache fails
-            $nis2Framework = $this->frameworkRepository->findOneBy(['code' => 'NIS2']);
+            $nis2Framework = $this->complianceFrameworkRepository->findOneBy(['code' => 'NIS2']);
             return $nis2Framework && $nis2Framework->isActive();
         }
     }
@@ -74,20 +77,20 @@ class ComplianceExtension extends AbstractExtension
     public function getComplianceFrameworks(): array
     {
         // Return empty if compliance module is not active
-        if (!$this->moduleConfigService->isModuleActive('compliance')) {
+        if (!$this->moduleConfigurationService->isModuleActive('compliance')) {
             return [];
         }
 
-        return $this->cache->get('compliance_nav_frameworks', function (ItemInterface $item) {
+        return $this->cache->get('compliance_nav_frameworks', function (ItemInterface $item): array {
             $item->expiresAfter(300); // Cache for 5 minutes
 
-            $frameworks = $this->frameworkRepository->findActiveFrameworks();
+            $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
             $tenant = $this->tenantContext->getCurrentTenant();
             $result = [];
 
             foreach ($frameworks as $framework) {
                 // Calculate tenant-specific compliance percentage
-                $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
+                $stats = $this->complianceRequirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
                 $compliancePercentage = $stats['applicable'] > 0
                     ? round(($stats['fulfilled'] / $stats['applicable']) * 100, 2)
                     : 0;
@@ -114,14 +117,14 @@ class ComplianceExtension extends AbstractExtension
     public function getComplianceFrameworksQuick(): array
     {
         // Return empty if compliance module is not active
-        if (!$this->moduleConfigService->isModuleActive('compliance')) {
+        if (!$this->moduleConfigurationService->isModuleActive('compliance')) {
             return [];
         }
 
-        return $this->cache->get('compliance_nav_quick', function (ItemInterface $item) {
+        return $this->cache->get('compliance_nav_quick', function (ItemInterface $item): array {
             $item->expiresAfter(300); // Cache for 5 minutes
 
-            $frameworks = $this->frameworkRepository->findActiveFrameworks();
+            $frameworks = $this->complianceFrameworkRepository->findActiveFrameworks();
             $result = [];
 
             foreach ($frameworks as $framework) {

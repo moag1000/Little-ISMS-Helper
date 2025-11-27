@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use DateTimeImmutable;
+use Exception;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,25 +19,25 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class SupplementDoraRtsRequirementsCommand extends Command
 {
-    public function __construct(private EntityManagerInterface $entityManager)
+    public function __construct(private readonly EntityManagerInterface $entityManager)
     {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
         // Get existing DORA framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'DORA']);
 
-        if (!$framework) {
-            $io->error('DORA framework not found. Please run app:load-dora-requirements first.');
+        if (!$framework instanceof ComplianceFramework) {
+            $symfonyStyle->error('DORA framework not found. Please run app:load-dora-requirements first.');
             return Command::FAILURE;
         }
 
-        $io->info('Adding RTS (Regulatory Technical Standards) requirements to DORA framework...');
+        $symfonyStyle->info('Adding RTS (Regulatory Technical Standards) requirements to DORA framework...');
 
         try {
             $this->entityManager->beginTransaction();
@@ -43,43 +45,43 @@ class SupplementDoraRtsRequirementsCommand extends Command
             $rtsRequirements = $this->getDoraRtsRequirements();
             $addedCount = 0;
 
-            foreach ($rtsRequirements as $reqData) {
+            foreach ($rtsRequirements as $rtRequirement) {
                 // Check if requirement already exists
                 $existing = $this->entityManager
                     ->getRepository(ComplianceRequirement::class)
                     ->findOneBy([
                         'framework' => $framework,
-                        'requirementId' => $reqData['id']
+                        'requirementId' => $rtRequirement['id']
                     ]);
 
-                if ($existing) {
-                    $io->note(sprintf('Requirement %s already exists, skipping...', $reqData['id']));
+                if ($existing instanceof ComplianceRequirement) {
+                    $symfonyStyle->note(sprintf('Requirement %s already exists, skipping...', $rtRequirement['id']));
                     continue;
                 }
 
                 $requirement = new ComplianceRequirement();
                 $requirement->setFramework($framework)
-                    ->setRequirementId($reqData['id'])
-                    ->setTitle($reqData['title'])
-                    ->setDescription($reqData['description'])
-                    ->setCategory($reqData['category'])
-                    ->setPriority($reqData['priority'])
-                    ->setDataSourceMapping($reqData['data_source_mapping']);
+                    ->setRequirementId($rtRequirement['id'])
+                    ->setTitle($rtRequirement['title'])
+                    ->setDescription($rtRequirement['description'])
+                    ->setCategory($rtRequirement['category'])
+                    ->setPriority($rtRequirement['priority'])
+                    ->setDataSourceMapping($rtRequirement['data_source_mapping']);
 
                 $this->entityManager->persist($requirement);
                 $addedCount++;
             }
 
-            $framework->setUpdatedAt(new \DateTimeImmutable());
+            $framework->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->persist($framework);
 
             $this->entityManager->flush();
             $this->entityManager->commit();
 
-            $io->success(sprintf('Successfully added %d RTS requirements to DORA framework', $addedCount));
-        } catch (\Exception $e) {
+            $symfonyStyle->success(sprintf('Successfully added %d RTS requirements to DORA framework', $addedCount));
+        } catch (Exception $e) {
             $this->entityManager->rollback();
-            $io->error('Failed to supplement DORA RTS requirements: ' . $e->getMessage());
+            $symfonyStyle->error('Failed to supplement DORA RTS requirements: ' . $e->getMessage());
             return Command::FAILURE;
         }
 

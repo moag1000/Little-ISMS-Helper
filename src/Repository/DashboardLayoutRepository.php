@@ -39,7 +39,7 @@ class DashboardLayoutRepository extends ServiceEntityRepository
     {
         $layout = $this->findForUser($user, $tenant);
 
-        if (!$layout) {
+        if (!$layout instanceof DashboardLayout) {
             $layout = new DashboardLayout();
             $layout->setUser($user);
             $layout->setTenant($tenant);
@@ -54,9 +54,9 @@ class DashboardLayoutRepository extends ServiceEntityRepository
     /**
      * Save layout configuration
      */
-    public function saveLayout(DashboardLayout $layout): void
+    public function saveLayout(DashboardLayout $dashboardLayout): void
     {
-        $this->getEntityManager()->persist($layout);
+        $this->getEntityManager()->persist($dashboardLayout);
         $this->getEntityManager()->flush();
     }
 
@@ -67,7 +67,7 @@ class DashboardLayoutRepository extends ServiceEntityRepository
     {
         $layout = $this->findForUser($user, $tenant);
 
-        if ($layout) {
+        if ($layout instanceof DashboardLayout) {
             $this->getEntityManager()->remove($layout);
             $this->getEntityManager()->flush();
         }

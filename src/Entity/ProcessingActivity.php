@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use App\Repository\ProcessingActivityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -336,7 +338,7 @@ class ProcessingActivity
      * Date of DPIA completion (if applicable)
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $dpiaDate = null;
+    private ?DateTimeInterface $dpiaDate = null;
 
     /**
      * Risk level assessment: low, medium, high, critical
@@ -383,31 +385,31 @@ class ProcessingActivity
      * Date when this processing activity started
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $startDate = null;
+    private ?DateTimeInterface $startDate = null;
 
     /**
      * Date when this processing activity ended (if applicable)
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $endDate = null;
+    private ?DateTimeInterface $endDate = null;
 
     /**
      * Last review date (VVT should be reviewed regularly)
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $lastReviewDate = null;
+    private ?DateTimeInterface $lastReviewDate = null;
 
     /**
      * Next planned review date
      */
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $nextReviewDate = null;
+    private ?DateTimeInterface $nextReviewDate = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
@@ -420,11 +422,8 @@ class ProcessingActivity
     public function __construct()
     {
         $this->implementedControls = new ArrayCollection();
-        $this->purposes = [];
-        $this->dataSubjectCategories = [];
-        $this->personalDataCategories = [];
-        $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     // ============================================================================
@@ -434,7 +433,7 @@ class ProcessingActivity
     #[ORM\PreUpdate]
     public function setUpdatedAtValue(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     // ============================================================================
@@ -458,12 +457,7 @@ class ProcessingActivity
         if ($this->processesSpecialCategories && $this->estimatedDataSubjectsCount > 1000) {
             return true;
         }
-
-        if ($this->isHighRisk) {
-            return true;
-        }
-
-        return false;
+        return $this->isHighRisk;
     }
 
     /**
@@ -473,9 +467,9 @@ class ProcessingActivity
     {
         $requiredFields = [
             'name' => $this->name !== null,
-            'purposes' => !empty($this->purposes),
-            'dataSubjectCategories' => !empty($this->dataSubjectCategories),
-            'personalDataCategories' => !empty($this->personalDataCategories),
+            'purposes' => $this->purposes !== [],
+            'dataSubjectCategories' => $this->dataSubjectCategories !== [],
+            'personalDataCategories' => $this->personalDataCategories !== [],
             'legalBasis' => $this->legalBasis !== null,
             'retentionPeriod' => $this->retentionPeriod !== null,
             'technicalOrganizationalMeasures' => $this->technicalOrganizationalMeasures !== null,
@@ -792,9 +786,9 @@ class ProcessingActivity
         return $this->contactPerson;
     }
 
-    public function setContactPerson(?User $contactPerson): static
+    public function setContactPerson(?User $user): static
     {
-        $this->contactPerson = $contactPerson;
+        $this->contactPerson = $user;
         return $this;
     }
 
@@ -803,9 +797,9 @@ class ProcessingActivity
         return $this->dataProtectionOfficer;
     }
 
-    public function setDataProtectionOfficer(?User $dataProtectionOfficer): static
+    public function setDataProtectionOfficer(?User $user): static
     {
-        $this->dataProtectionOfficer = $dataProtectionOfficer;
+        $this->dataProtectionOfficer = $user;
         return $this;
     }
 
@@ -875,12 +869,12 @@ class ProcessingActivity
         return $this;
     }
 
-    public function getDpiaDate(): ?\DateTimeInterface
+    public function getDpiaDate(): ?DateTimeInterface
     {
         return $this->dpiaDate;
     }
 
-    public function setDpiaDate(?\DateTimeInterface $dpiaDate): static
+    public function setDpiaDate(?DateTimeInterface $dpiaDate): static
     {
         $this->dpiaDate = $dpiaDate;
         return $this;
@@ -941,67 +935,67 @@ class ProcessingActivity
         return $this;
     }
 
-    public function getStartDate(): ?\DateTimeInterface
+    public function getStartDate(): ?DateTimeInterface
     {
         return $this->startDate;
     }
 
-    public function setStartDate(?\DateTimeInterface $startDate): static
+    public function setStartDate(?DateTimeInterface $startDate): static
     {
         $this->startDate = $startDate;
         return $this;
     }
 
-    public function getEndDate(): ?\DateTimeInterface
+    public function getEndDate(): ?DateTimeInterface
     {
         return $this->endDate;
     }
 
-    public function setEndDate(?\DateTimeInterface $endDate): static
+    public function setEndDate(?DateTimeInterface $endDate): static
     {
         $this->endDate = $endDate;
         return $this;
     }
 
-    public function getLastReviewDate(): ?\DateTimeInterface
+    public function getLastReviewDate(): ?DateTimeInterface
     {
         return $this->lastReviewDate;
     }
 
-    public function setLastReviewDate(?\DateTimeInterface $lastReviewDate): static
+    public function setLastReviewDate(?DateTimeInterface $lastReviewDate): static
     {
         $this->lastReviewDate = $lastReviewDate;
         return $this;
     }
 
-    public function getNextReviewDate(): ?\DateTimeInterface
+    public function getNextReviewDate(): ?DateTimeInterface
     {
         return $this->nextReviewDate;
     }
 
-    public function setNextReviewDate(?\DateTimeInterface $nextReviewDate): static
+    public function setNextReviewDate(?DateTimeInterface $nextReviewDate): static
     {
         $this->nextReviewDate = $nextReviewDate;
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -1012,9 +1006,9 @@ class ProcessingActivity
         return $this->createdBy;
     }
 
-    public function setCreatedBy(?User $createdBy): static
+    public function setCreatedBy(?User $user): static
     {
-        $this->createdBy = $createdBy;
+        $this->createdBy = $user;
         return $this;
     }
 
@@ -1023,9 +1017,9 @@ class ProcessingActivity
         return $this->updatedBy;
     }
 
-    public function setUpdatedBy(?User $updatedBy): static
+    public function setUpdatedBy(?User $user): static
     {
-        $this->updatedBy = $updatedBy;
+        $this->updatedBy = $user;
         return $this;
     }
 }

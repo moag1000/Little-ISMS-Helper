@@ -136,6 +136,7 @@ nav:
         compliance: Compliance
         admin: Administration
     admin: Administration
+    privacy: Datenschutz
     crisis_teams: Krisenteams
     mfa: 'Zwei-Faktor-Authentifizierung'
     reports: Berichte

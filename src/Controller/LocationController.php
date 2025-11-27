@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\Location;
 use App\Form\LocationType;
 use App\Repository\LocationRepository;
@@ -14,17 +15,15 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/location')]
 class LocationController extends AbstractController
 {
     public function __construct(
-        private LocationRepository $locationRepository,
-        private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator,
-        private Security $security
+        private readonly LocationRepository $locationRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
+        private readonly Security $security
     ) {}
-
-    #[Route('/', name: 'app_location_index')]
+    #[Route('/location/', name: 'app_location_index')]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
@@ -36,8 +35,7 @@ class LocationController extends AbstractController
             'top_level' => $topLevel,
         ]);
     }
-
-    #[Route('/new', name: 'app_location_new')]
+    #[Route('/location/new', name: 'app_location_new')]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -45,7 +43,7 @@ class LocationController extends AbstractController
 
         // Set tenant from current user
         $user = $this->security->getUser();
-        if ($user && $user->getTenant()) {
+        if ($user instanceof UserInterface && $user->getTenant()) {
             $location->setTenant($user->getTenant());
         }
 
@@ -65,8 +63,7 @@ class LocationController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}', name: 'app_location_show', requirements: ['id' => '\d+'])]
+    #[Route('/location/{id}', name: 'app_location_show', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function show(Location $location): Response
     {
@@ -81,8 +78,7 @@ class LocationController extends AbstractController
             'assets' => $assets,
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'app_location_edit', requirements: ['id' => '\d+'])]
+    #[Route('/location/{id}/edit', name: 'app_location_edit', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, Location $location): Response
     {
@@ -101,8 +97,7 @@ class LocationController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}/delete', name: 'app_location_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/location/{id}/delete', name: 'app_location_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Location $location): Response
     {

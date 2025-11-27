@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -86,7 +88,7 @@ class CryptographicOperation
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['crypto:read'])]
-    private ?\DateTimeInterface $timestamp = null;
+    private ?DateTimeInterface $timestamp = null;
 
     #[ORM\Column(length: 45, nullable: true)]
     #[Groups(['crypto:read', 'crypto:write'])]
@@ -106,7 +108,7 @@ class CryptographicOperation
 
     public function __construct()
     {
-        $this->timestamp = new \DateTimeImmutable();
+        $this->timestamp = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -224,12 +226,12 @@ class CryptographicOperation
         return $this;
     }
 
-    public function getTimestamp(): ?\DateTimeInterface
+    public function getTimestamp(): ?DateTimeInterface
     {
         return $this->timestamp;
     }
 
-    public function setTimestamp(\DateTimeInterface $timestamp): static
+    public function setTimestamp(DateTimeInterface $timestamp): static
     {
         $this->timestamp = $timestamp;
         return $this;

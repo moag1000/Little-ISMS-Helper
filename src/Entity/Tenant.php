@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
 use App\Repository\TenantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -46,10 +47,10 @@ class Tenant
     private ?string $logoPath = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
 
     #[ORM\OneToMany(mappedBy: 'tenant', targetEntity: User::class)]
     private Collection $users;
@@ -57,7 +58,7 @@ class Tenant
     // Corporate Structure fields
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'subsidiaries')]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
-    private ?Tenant $parent = null;
+    private ?Tenant $tenant = null;
 
     #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
     private Collection $subsidiaries;
@@ -72,7 +73,7 @@ class Tenant
     {
         $this->users = new ArrayCollection();
         $this->subsidiaries = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -157,23 +158,23 @@ class Tenant
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(?DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -199,10 +200,8 @@ class Tenant
 
     public function removeUser(User $user): static
     {
-        if ($this->users->removeElement($user)) {
-            if ($user->getTenant() === $this) {
-                $user->setTenant(null);
-            }
+        if ($this->users->removeElement($user) && $user->getTenant() === $this) {
+            $user->setTenant(null);
         }
 
         return $this;
@@ -211,18 +210,18 @@ class Tenant
     #[ORM\PreUpdate]
     public function setUpdatedAtValue(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     // Corporate Structure methods
     public function getParent(): ?Tenant
     {
-        return $this->parent;
+        return $this->tenant;
     }
 
-    public function setParent(?Tenant $parent): static
+    public function setParent(?Tenant $tenant): static
     {
-        $this->parent = $parent;
+        $this->tenant = $tenant;
         return $this;
     }
 
@@ -234,22 +233,20 @@ class Tenant
         return $this->subsidiaries;
     }
 
-    public function addSubsidiary(Tenant $subsidiary): static
+    public function addSubsidiary(Tenant $tenant): static
     {
-        if (!$this->subsidiaries->contains($subsidiary)) {
-            $this->subsidiaries->add($subsidiary);
-            $subsidiary->setParent($this);
+        if (!$this->subsidiaries->contains($tenant)) {
+            $this->subsidiaries->add($tenant);
+            $tenant->setParent($this);
         }
 
         return $this;
     }
 
-    public function removeSubsidiary(Tenant $subsidiary): static
+    public function removeSubsidiary(Tenant $tenant): static
     {
-        if ($this->subsidiaries->removeElement($subsidiary)) {
-            if ($subsidiary->getParent() === $this) {
-                $subsidiary->setParent(null);
-            }
+        if ($this->subsidiaries->removeElement($tenant) && $tenant->getParent() === $this) {
+            $tenant->setParent(null);
         }
 
         return $this;
@@ -282,7 +279,7 @@ class Tenant
      */
     public function isPartOfCorporateStructure(): bool
     {
-        return $this->parent !== null || $this->subsidiaries->count() > 0;
+        return $this->tenant !== null || $this->subsidiaries->count() > 0;
     }
 
     /**
@@ -291,7 +288,7 @@ class Tenant
     public function getRootParent(): Tenant
     {
         $current = $this;
-        while ($current->getParent() !== null) {
+        while ($current->getParent() instanceof \App\Entity\Tenant) {
             $current = $current->getParent();
         }
         return $current;
@@ -317,7 +314,7 @@ class Tenant
     {
         $depth = 0;
         $current = $this;
-        while ($current->getParent() !== null) {
+        while ($current->getParent() instanceof \App\Entity\Tenant) {
             $depth++;
             $current = $current->getParent();
         }
@@ -333,7 +330,7 @@ class Tenant
     public function getAllAncestors(): array
     {
         $ancestors = [];
-        $current = $this->parent;
+        $current = $this->tenant;
 
         while ($current !== null) {
             $ancestors[] = $current;

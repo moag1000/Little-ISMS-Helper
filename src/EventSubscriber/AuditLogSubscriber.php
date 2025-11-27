@@ -55,15 +55,15 @@ class AuditLogSubscriber
     private array $pendingUpdates = [];
 
     public function __construct(
-        private AuditLogger $auditLogger
+        private readonly AuditLogger $auditLogger
     ) {}
 
     /**
      * Log entity creation
      */
-    public function postPersist(PostPersistEventArgs $args): void
+    public function postPersist(PostPersistEventArgs $postPersistEventArgs): void
     {
-        $entity = $args->getObject();
+        $entity = $postPersistEventArgs->getObject();
 
         // Don't log AuditLog entities themselves to prevent infinite loops
         if ($entity instanceof AuditLog) {
@@ -90,9 +90,9 @@ class AuditLogSubscriber
     /**
      * Capture old values before update
      */
-    public function preUpdate(PreUpdateEventArgs $args): void
+    public function preUpdate(PreUpdateEventArgs $preUpdateEventArgs): void
     {
-        $entity = $args->getObject();
+        $entity = $preUpdateEventArgs->getObject();
 
         // Don't log AuditLog entities themselves
         if ($entity instanceof AuditLog) {
@@ -111,7 +111,7 @@ class AuditLogSubscriber
         $oldValues = [];
         $newValues = [];
 
-        foreach ($args->getEntityChangeSet() as $field => $changes) {
+        foreach ($preUpdateEventArgs->getEntityChangeSet() as $field => $changes) {
             $oldValues[$field] = $changes[0];
             $newValues[$field] = $changes[1];
         }
@@ -127,9 +127,9 @@ class AuditLogSubscriber
     /**
      * Log entity update after it's been saved
      */
-    public function postUpdate(PostUpdateEventArgs $args): void
+    public function postUpdate(PostUpdateEventArgs $postUpdateEventArgs): void
     {
-        $entity = $args->getObject();
+        $entity = $postUpdateEventArgs->getObject();
 
         // Don't log AuditLog entities themselves
         if ($entity instanceof AuditLog) {
@@ -160,9 +160,9 @@ class AuditLogSubscriber
     /**
      * Log entity deletion
      */
-    public function postRemove(PostRemoveEventArgs $args): void
+    public function postRemove(PostRemoveEventArgs $postRemoveEventArgs): void
     {
-        $entity = $args->getObject();
+        $entity = $postRemoveEventArgs->getObject();
 
         // Don't log AuditLog entities themselves
         if ($entity instanceof AuditLog) {

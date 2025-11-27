@@ -268,9 +268,7 @@ class ProcessingActivityType extends AbstractType
                 'label' => 'processing_activity.form.implemented_controls',
                 'help' => 'processing_activity.help.implemented_controls',
                 'class' => Control::class,
-                'choice_label' => function (Control $control) {
-                    return $control->getControlId() . ' - ' . $control->getName();
-                },
+                'choice_label' => fn(Control $control): string => $control->getControlId() . ' - ' . $control->getName(),
                 'multiple' => true,
                 'required' => false,
                 'attr' => ['class' => 'select2'],

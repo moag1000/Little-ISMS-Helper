@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
 use App\Repository\MfaTokenRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -101,7 +102,7 @@ class MfaToken
      * Last time this token was used
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $lastUsedAt = null;
+    private ?DateTimeImmutable $lastUsedAt = null;
 
     /**
      * Number of times this token has been used
@@ -113,24 +114,24 @@ class MfaToken
      * When this token was enrolled
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $enrolledAt = null;
+    private ?DateTimeImmutable $enrolledAt = null;
 
     /**
      * When this token expires (optional)
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $expiresAt = null;
+    private ?DateTimeImmutable $expiresAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->enrolledAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
+        $this->enrolledAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -265,12 +266,12 @@ class MfaToken
         return $this;
     }
 
-    public function getLastUsedAt(): ?\DateTimeImmutable
+    public function getLastUsedAt(): ?DateTimeImmutable
     {
         return $this->lastUsedAt;
     }
 
-    public function setLastUsedAt(?\DateTimeImmutable $lastUsedAt): static
+    public function setLastUsedAt(?DateTimeImmutable $lastUsedAt): static
     {
         $this->lastUsedAt = $lastUsedAt;
         return $this;
@@ -278,7 +279,7 @@ class MfaToken
 
     public function recordUsage(): static
     {
-        $this->lastUsedAt = new \DateTimeImmutable();
+        $this->lastUsedAt = new DateTimeImmutable();
         $this->usageCount++;
         return $this;
     }
@@ -294,23 +295,23 @@ class MfaToken
         return $this;
     }
 
-    public function getEnrolledAt(): ?\DateTimeImmutable
+    public function getEnrolledAt(): ?DateTimeImmutable
     {
         return $this->enrolledAt;
     }
 
-    public function setEnrolledAt(\DateTimeImmutable $enrolledAt): static
+    public function setEnrolledAt(DateTimeImmutable $enrolledAt): static
     {
         $this->enrolledAt = $enrolledAt;
         return $this;
     }
 
-    public function getExpiresAt(): ?\DateTimeImmutable
+    public function getExpiresAt(): ?DateTimeImmutable
     {
         return $this->expiresAt;
     }
 
-    public function setExpiresAt(?\DateTimeImmutable $expiresAt): static
+    public function setExpiresAt(?DateTimeImmutable $expiresAt): static
     {
         $this->expiresAt = $expiresAt;
         return $this;
@@ -318,30 +319,30 @@ class MfaToken
 
     public function isExpired(): bool
     {
-        if ($this->expiresAt === null) {
+        if (!$this->expiresAt instanceof DateTimeImmutable) {
             return false;
         }
 
-        return $this->expiresAt < new \DateTimeImmutable();
+        return $this->expiresAt < new DateTimeImmutable();
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(?DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;

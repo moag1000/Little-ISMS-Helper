@@ -20,14 +20,14 @@ class ComplianceFrameworkSelectionType extends AbstractType
 
         // Build choices from available frameworks
         $choices = [];
-        foreach ($availableFrameworks as $framework) {
+        foreach ($availableFrameworks as $availableFramework) {
             $label = sprintf(
                 '%s %s - %s',
-                $framework['icon'],
-                $framework['name'],
-                $framework['description']
+                $availableFramework['icon'],
+                $availableFramework['name'],
+                $availableFramework['description']
             );
-            $choices[$label] = $framework['code'];
+            $choices[$label] = $availableFramework['code'];
         }
 
         $builder

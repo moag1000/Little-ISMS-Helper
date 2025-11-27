@@ -25,14 +25,13 @@ class MappingGapItemRepository extends ServiceEntityRepository
     /**
      * Find all gap items for a specific mapping
      *
-     * @param ComplianceMapping $mapping
      * @return MappingGapItem[]
      */
-    public function findByMapping(ComplianceMapping $mapping): array
+    public function findByMapping(ComplianceMapping $complianceMapping): array
     {
         return $this->createQueryBuilder('g')
             ->where('g.mapping = :mapping')
-            ->setParameter('mapping', $mapping)
+            ->setParameter('mapping', $complianceMapping)
             ->orderBy('g.priority', 'ASC')
             ->addOrderBy('g.percentageImpact', 'DESC')
             ->getQuery()
@@ -59,47 +58,38 @@ class MappingGapItemRepository extends ServiceEntityRepository
 
     /**
      * Get gap statistics by type
-     *
-     * @return array
      */
     public function getGapStatisticsByType(): array
     {
-        $qb = $this->createQueryBuilder('g');
+        $queryBuilder = $this->createQueryBuilder('g');
 
-        $results = $qb
+        return $queryBuilder
             ->select('g.gapType, COUNT(g.id) as count, SUM(g.percentageImpact) as totalImpact')
             ->groupBy('g.gapType')
             ->orderBy('count', 'DESC')
             ->getQuery()
             ->getResult();
-
-        return $results;
     }
 
     /**
      * Get gap statistics by priority
-     *
-     * @return array
      */
     public function getGapStatisticsByPriority(): array
     {
-        $qb = $this->createQueryBuilder('g');
+        $queryBuilder = $this->createQueryBuilder('g');
 
-        $results = $qb
+        return $queryBuilder
             ->select('g.priority, COUNT(g.id) as count, SUM(g.percentageImpact) as totalImpact, AVG(g.estimatedEffort) as avgEffort')
             ->where('g.status NOT IN (:resolvedStatuses)')
             ->setParameter('resolvedStatuses', ['resolved', 'wont_fix'])
             ->groupBy('g.priority')
             ->getQuery()
             ->getResult();
-
-        return $results;
     }
 
     /**
      * Find gaps with low confidence that need manual review
      *
-     * @param int $confidenceThreshold
      * @return MappingGapItem[]
      */
     public function findLowConfidenceGaps(int $confidenceThreshold = 60): array
@@ -121,9 +111,9 @@ class MappingGapItemRepository extends ServiceEntityRepository
      */
     public function calculateTotalRemediationEffort(): array
     {
-        $qb = $this->createQueryBuilder('g');
+        $queryBuilder = $this->createQueryBuilder('g');
 
-        $totalGaps = $qb
+        $totalGaps = $queryBuilder
             ->select('COUNT(g.id)')
             ->where('g.status NOT IN (:resolvedStatuses)')
             ->setParameter('resolvedStatuses', ['resolved', 'wont_fix'])

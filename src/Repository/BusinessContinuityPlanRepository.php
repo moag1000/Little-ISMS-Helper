@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use DateTime;
 use App\Entity\BusinessContinuityPlan;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -23,7 +24,7 @@ class BusinessContinuityPlanRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->where('p.nextTestDate < :now OR (p.lastTested IS NULL AND p.status = :active)')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new DateTime())
             ->setParameter('active', 'active')
             ->orderBy('p.nextTestDate', 'ASC')
             ->getQuery()
@@ -37,7 +38,7 @@ class BusinessContinuityPlanRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('p')
             ->where('p.nextReviewDate < :now')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new DateTime())
             ->orderBy('p.nextReviewDate', 'ASC')
             ->getQuery()
             ->getResult();
@@ -75,7 +76,7 @@ class BusinessContinuityPlanRepository extends ServiceEntityRepository
         $overdueTests = $this->createQueryBuilder('p')
             ->select('COUNT(p.id)')
             ->where('p.nextTestDate < :now OR (p.lastTested IS NULL AND p.status = :active)')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new DateTime())
             ->setParameter('active', 'active')
             ->getQuery()
             ->getSingleScalarResult();
@@ -83,7 +84,7 @@ class BusinessContinuityPlanRepository extends ServiceEntityRepository
         $overdueReviews = $this->createQueryBuilder('p')
             ->select('COUNT(p.id)')
             ->where('p.nextReviewDate < :now')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new DateTime())
             ->getQuery()
             ->getSingleScalarResult();
 
