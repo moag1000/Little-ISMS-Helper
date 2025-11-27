@@ -18,80 +18,31 @@
                     </h3>
                 </div>
                 <div class="card-body">
-                    <form method="post">
-                        {# Locale Settings #}
-                        <div class="mb-4">
-                            <h4 class="border-bottom pb-2 mb-3">{{ 'admin.settings.application.locale_settings'|trans({}, 'admin') }}</h4>
+                    {{ form_start(form) }}
+                        {% include '_components/_auto_form.html.twig' with {
+                            'form': form,
+                            'sections': {
+                                'locale_settings': {
+                                    'label': 'admin.settings.application.locale_settings'|trans({}, 'admin'),
+                                    'fields': ['default_locale', 'supported_locales']
+                                },
+                                'display_settings': {
+                                    'label': 'admin.settings.application.display_settings'|trans({}, 'admin'),
+                                    'fields': ['items_per_page', 'timezone', 'date_format', 'datetime_format']
+                                }
+                            },
+                            'col_widths': {
+                                'default_locale': 12,
+                                'supported_locales': 12,
+                                'items_per_page': 12,
+                                'timezone': 12,
+                                'date_format': 12,
+                                'datetime_format': 12
+                            },
+                            'translation_domain': 'admin'
+                        } %}
 
-                            <div class="mb-3">
-                                <label for="default_locale" class="form-label">{{ 'admin.settings.application.default_locale'|trans({}, 'admin') }}</label>
-                                <select name="default_locale" id="default_locale" class="form-select">
-                                    <option value="de" {% if settings.default_locale == 'de' %}selected{% endif %}>Deutsch (de)</option>
-                                    <option value="en" {% if settings.default_locale == 'en' %}selected{% endif %}>English (en)</option>
-                                </select>
-                                <div class="form-text">{{ 'admin.settings.application.default_locale_help'|trans({}, 'admin') }}</div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label" id="supported-locales-label">{{ 'admin.settings.application.supported_locales'|trans({}, 'admin') }}</label>
-                                <div class="form-check" role="group" aria-labelledby="supported-locales-label">
-                                    <input class="form-check-input" type="checkbox" name="supported_locales[]" value="de" id="locale_de"
-                                           {% if 'de' in settings.supported_locales %}checked{% endif %}>
-                                    <label class="form-check-label" for="locale_de">Deutsch (de)</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="supported_locales[]" value="en" id="locale_en"
-                                           {% if 'en' in settings.supported_locales %}checked{% endif %}>
-                                    <label class="form-check-label" for="locale_en">English (en)</label>
-                                </div>
-                                <div class="form-text">{{ 'admin.settings.application.supported_locales_help'|trans({}, 'admin') }}</div>
-                            </div>
-                        </div>
-
-                        {# Display Settings #}
-                        <div class="mb-4">
-                            <h4 class="border-bottom pb-2 mb-3">{{ 'admin.settings.application.display_settings'|trans({}, 'admin') }}</h4>
-
-                            <div class="mb-3">
-                                <label for="items_per_page" class="form-label">{{ 'admin.settings.application.items_per_page'|trans({}, 'admin') }}</label>
-                                <input type="number" name="items_per_page" id="items_per_page" class="form-control"
-                                       value="{{ settings.items_per_page }}" min="10" max="100" step="5">
-                                <div class="form-text">{{ 'admin.settings.application.items_per_page_help'|trans({}, 'admin') }}</div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="timezone" class="form-label">{{ 'admin.settings.application.timezone'|trans({}, 'admin') }}</label>
-                                <select name="timezone" id="timezone" class="form-select">
-                                    <option value="Europe/Berlin" {% if settings.timezone == 'Europe/Berlin' %}selected{% endif %}>Europe/Berlin (GMT+1)</option>
-                                    <option value="Europe/London" {% if settings.timezone == 'Europe/London' %}selected{% endif %}>Europe/London (GMT)</option>
-                                    <option value="America/New_York" {% if settings.timezone == 'America/New_York' %}selected{% endif %}>America/New_York (GMT-5)</option>
-                                    <option value="UTC" {% if settings.timezone == 'UTC' %}selected{% endif %}>UTC</option>
-                                </select>
-                                <div class="form-text">{{ 'admin.settings.application.timezone_help'|trans({}, 'admin') }}</div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="date_format" class="form-label">{{ 'admin.settings.application.date_format'|trans({}, 'admin') }}</label>
-                                <select name="date_format" id="date_format" class="form-select">
-                                    <option value="d.m.Y" {% if settings.date_format == 'd.m.Y' %}selected{% endif %}>31.12.2024 (d.m.Y)</option>
-                                    <option value="Y-m-d" {% if settings.date_format == 'Y-m-d' %}selected{% endif %}>2024-12-31 (Y-m-d)</option>
-                                    <option value="m/d/Y" {% if settings.date_format == 'm/d/Y' %}selected{% endif %}>12/31/2024 (m/d/Y)</option>
-                                </select>
-                                <div class="form-text">{{ 'admin.settings.application.date_format_help'|trans({}, 'admin') }}</div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="datetime_format" class="form-label">{{ 'admin.settings.application.datetime_format'|trans({}, 'admin') }}</label>
-                                <select name="datetime_format" id="datetime_format" class="form-select">
-                                    <option value="d.m.Y H:i" {% if settings.datetime_format == 'd.m.Y H:i' %}selected{% endif %}>31.12.2024 23:59</option>
-                                    <option value="Y-m-d H:i:s" {% if settings.datetime_format == 'Y-m-d H:i:s' %}selected{% endif %}>2024-12-31 23:59:59</option>
-                                    <option value="m/d/Y g:i A" {% if settings.datetime_format == 'm/d/Y g:i A' %}selected{% endif %}>12/31/2024 11:59 PM</option>
-                                </select>
-                                <div class="form-text">{{ 'admin.settings.application.datetime_format_help'|trans({}, 'admin') }}</div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-between mt-4">
                             <a href="{{ path('admin_settings_index') }}" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                             </a>
@@ -99,7 +50,7 @@
                                 <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
                             </button>
                         </div>
-                    </form>
+                    {{ form_end(form) }}
                 </div>
             </div>
         </div>
