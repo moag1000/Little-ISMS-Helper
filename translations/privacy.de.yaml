@@ -809,3 +809,11 @@ dpia:
         in_review: 'In Prüfung'
         draft: Entwurf
         approved: Genehmigt
+
+# Flat keys for templates using full path
+'privacy.status_label.in_review': 'In Prüfung'
+'privacy.status_label.draft': 'Entwurf'
+'privacy.status_label.approved': 'Genehmigt'
+'privacy.chart.by_status': 'Nach Status'
+'privacy.chart.by_risk_level': 'Nach Risikostufe'
+'privacy.chart.by_legal_basis': 'Nach Rechtsgrundlage'

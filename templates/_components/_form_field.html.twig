@@ -19,18 +19,20 @@
         {# Bootstrap Floating Label wrapper #}
         <div class="form-floating">
             {# Input MUST come before label for floating effect #}
+            {# Use label_text (translated) as placeholder, override any existing placeholder #}
             {% set placeholder_text = label_text %}
+            {% set merged_attrs = field.vars.attr|merge({
+                'class': (field.vars.attr.class|default('') ~ (has_errors ? ' is-invalid' : ''))|trim,
+                'placeholder': placeholder_text,
+                'aria-invalid': has_errors ? 'true' : 'false',
+                'aria-describedby': [
+                    help_text ? field_id ~ '_help',
+                    has_errors ? field_id ~ '_error'
+                ]|filter(v => v)|join(' ')|default(null),
+                'aria-required': is_required ? 'true' : 'false'
+            }) %}
             {{ form_widget(field, {
-                'attr': {
-                    'class': (field.vars.attr.class|default('') ~ (has_errors ? ' is-invalid' : ''))|trim,
-                    'placeholder': placeholder_text,
-                    'aria-invalid': has_errors ? 'true' : 'false',
-                    'aria-describedby': [
-                        help_text ? field_id ~ '_help',
-                        has_errors ? field_id ~ '_error'
-                    ]|filter(v => v)|join(' ')|default(null),
-                    'aria-required': is_required ? 'true' : 'false'
-                }
+                'attr': merged_attrs
             }) }}
 
             {# Label comes AFTER input for floating labels #}
