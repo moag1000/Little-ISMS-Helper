@@ -149,11 +149,11 @@
                             </span>
                         </td>
                         <td>
-                            {% if review.participants %}
+                            {% if review.participants|length > 0 %}
                             <i class="bi bi-people" aria-hidden="true"></i>
-                            {{ review.participants|length > 50 ? (review.participants|slice(0, 50) ~ '...') : review.participants }}
+                            <span class="badge bg-primary">{{ review.participants|length }}</span>
                             {% else %}
-                            -
+                            <span class="text-muted">-</span>
                             {% endif %}
                         </td>
                         <td>

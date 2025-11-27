@@ -3,13 +3,12 @@
 namespace App\Form;
 
 use App\Entity\Training;
-use App\Entity\User;
 use App\Entity\Control;
 use App\Entity\ComplianceRequirement;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -58,7 +57,7 @@ class TrainingType extends AbstractType
                 'constraints' => [
                     new NotBlank(),
                 ],
-                    'choice_translation_domain' => 'training',
+                'choice_translation_domain' => 'training',
             ])
             ->add('deliveryMethod', ChoiceType::class, [
                 'label' => 'training.field.delivery_method',
@@ -70,9 +69,9 @@ class TrainingType extends AbstractType
                     'training.delivery_methods.workshop' => 'workshop',
                 ],
                 'attr' => ['class' => 'form-select'],
-                    'choice_translation_domain' => 'training',
+                'choice_translation_domain' => 'training',
             ])
-            ->add('scheduledDate', DateTimeType::class, [
+            ->add('scheduledDate', DateType::class, [
                 'label' => 'training.field.scheduled_date',
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
@@ -80,8 +79,9 @@ class TrainingType extends AbstractType
                     new NotBlank(['message' => 'training.validation.date_required']),
                 ],
             ])
-            ->add('duration', IntegerType::class, [
+            ->add('durationMinutes', IntegerType::class, [
                 'label' => 'training.field.duration',
+                'required' => false,
                 'attr' => [
                     'class' => 'form-control',
                     'min' => 15,
@@ -92,74 +92,63 @@ class TrainingType extends AbstractType
                 ],
                 'help' => 'training.help.duration',
             ])
-            ->add('location', TextType::class, [
-                'label' => 'training.field.location',
+            ->add('trainer', TextType::class, [
+                'label' => 'training.field.trainer',
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'training.placeholder.trainer',
+                ],
+                'constraints' => [
+                    new NotBlank(['message' => 'training.validation.trainer_required']),
+                ],
+            ])
+            ->add('targetAudience', TextType::class, [
+                'label' => 'training.field.target_audience',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'training.placeholder.location',
+                    'placeholder' => 'training.placeholder.target_audience',
                 ],
+                'help' => 'training.help.target_audience',
             ])
-            ->add('trainer', EntityType::class, [
-                'label' => 'training.field.trainer',
-                'class' => User::class,
-                'choice_label' => function (User $user) {
-                    return $user->getFirstName() . ' ' . $user->getLastName();
-                },
-                'placeholder' => 'common.please_select',
-                'required' => false,
-                'attr' => ['class' => 'form-select'],
-            ])
-            ->add('targetAudience', ChoiceType::class, [
-                'label' => 'training.field.target_audience',
-                'choices' => [
-                    'training.target_audiences.all_employees' => 'all_employees',
-                    'training.target_audiences.it_department' => 'it_department',
-                    'training.target_audiences.management' => 'management',
-                    'training.target_audiences.developers' => 'developers',
-                    'training.target_audiences.hr' => 'hr',
-                    'training.target_audiences.contractors' => 'contractors',
-                    'training.target_audiences.new_employees' => 'new_employees',
-                    'training.target_audiences.specific_departments' => 'specific_departments',
-                ],
-                'attr' => ['class' => 'form-select'],
-                    'choice_translation_domain' => 'training',
-            ])
-            ->add('participants', EntityType::class, [
+            ->add('participants', TextareaType::class, [
                 'label' => 'training.field.participants',
-                'class' => User::class,
-                'choice_label' => function (User $user) {
-                    return $user->getFirstName() . ' ' . $user->getLastName() . ' (' . $user->getDepartment() . ')';
-                },
-                'multiple' => true,
                 'required' => false,
                 'attr' => [
-                    'class' => 'form-select',
-                    'size' => 8,
+                    'class' => 'form-control',
+                    'rows' => 3,
+                    'placeholder' => 'training.placeholder.participants',
                 ],
                 'help' => 'training.help.participants',
+            ])
+            ->add('attendeeCount', IntegerType::class, [
+                'label' => 'training.field.attendee_count',
+                'required' => false,
+                'attr' => [
+                    'class' => 'form-control',
+                    'min' => 0,
+                ],
             ])
             ->add('status', ChoiceType::class, [
                 'label' => 'training.field.status',
                 'choices' => [
                     'training.statuses.planned' => 'planned',
-                    'training.statuses.confirmed' => 'confirmed',
+                    'training.statuses.scheduled' => 'scheduled',
+                    'training.statuses.in_progress' => 'in_progress',
                     'training.statuses.completed' => 'completed',
                     'training.statuses.cancelled' => 'cancelled',
-                    'training.statuses.postponed' => 'postponed',
                 ],
                 'attr' => ['class' => 'form-select'],
-                    'choice_translation_domain' => 'training',
+                'choice_translation_domain' => 'training',
             ])
             ->add('mandatory', ChoiceType::class, [
                 'label' => 'training.field.mandatory',
                 'choices' => [
-                    'training.mandatory_options.yes' => true,
-                    'training.mandatory_options.no' => false,
+                    'common.yes' => true,
+                    'common.no' => false,
                 ],
                 'expanded' => true,
-                'data' => true,
-                    'choice_translation_domain' => 'training',
+                'choice_translation_domain' => 'messages',
             ])
             ->add('coveredControls', EntityType::class, [
                 'label' => 'training.field.covered_controls',
@@ -208,6 +197,12 @@ class TrainingType extends AbstractType
                     'rows' => 4,
                 ],
                 'help' => 'training.help.feedback',
+            ])
+            ->add('completionDate', DateType::class, [
+                'label' => 'training.field.completion_date',
+                'widget' => 'single_text',
+                'required' => false,
+                'attr' => ['class' => 'form-control'],
             ]);
     }
 

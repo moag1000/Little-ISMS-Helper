@@ -35,43 +35,14 @@
                     'basic_info': {
                         'label': 'role_management.section.basic_info'|trans,
                         'fields': ['name', 'description', 'isSystemRole']
+                    },
+                    'permissions': {
+                        'label': 'role_management.section.permissions'|trans,
+                        'fields': ['permissions']
                     }
-                }
+                },
+                'translation_domain': 'role_management'
             } %}
-
-            <fieldset class="mb-4">
-                <legend class="h5 mb-3">{{ 'role_management.section.permissions'|trans }}</legend>
-
-                <div class="mb-3">
-                    <label class="form-label">{{ 'role_management.field.permissions'|trans }}</label>
-                    <small class="text-muted d-block mb-2">{{ 'role_management.help.permissions'|trans }}</small>
-
-                    {% for category, categoryPermissions in permissions %}
-                    <div class="card mb-2">
-                        <div class="card-header py-2">
-                            <strong>{{ category }}</strong>
-                        </div>
-                        <div class="card-body py-2">
-                            <div class="row">
-                                {% for permission in categoryPermissions %}
-                                <div class="col-md-4 col-lg-3">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input"
-                                               id="role_permissions_{{ permission.id }}"
-                                               name="role[permissions][]"
-                                               value="{{ permission.id }}">
-                                        <label class="form-check-label" for="role_permissions_{{ permission.id }}">
-                                            {{ permission.name }}
-                                        </label>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </fieldset>
 
             <div class="d-flex gap-2 mt-4">
                 <button type="submit" class="btn btn-success">

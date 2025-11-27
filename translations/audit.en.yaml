@@ -126,6 +126,8 @@ audit:
         scope_type: 'Scope Type'
         audit_type: 'Audit Type'
         audited_subsidiaries: 'Audited Subsidiaries'
+        audited_departments: 'Audited Departments'
+        scoped_assets: 'Scoped Assets'
         framework: Framework
         standard: Standard
         planned_date: 'Planned Date'
@@ -223,12 +225,31 @@ audit:
     confirm_delete: 'Confirm Delete'
     delete_warning: 'Delete Warning'
     status_in_progress: 'In Progress'
+    status_overview: 'Status Overview'
+    report_date: 'Report Date'
+    upcoming_audits: 'Upcoming Audits'
+    upcoming_audits_count: 'You have %count% upcoming audits planned.'
+    kpi:
+        total: 'Total Audits'
+        upcoming: Upcoming
+        in_progress: 'In Progress'
+        completed: Completed
+    list:
+        all: 'All Audits'
+    filter:
+        all_status: 'All Status'
+        search_placeholder: 'Search audits...'
+        no_results: 'No audits found matching the filter criteria.'
+    empty:
+        title: 'No Audits Yet'
+        description: 'Create your first internal audit to start planning.'
     validation:
         title_required: 'Please provide a title for the audit'
         date_required: 'Please select a planned date'
 audit_management:
-    title: Title
+    title: 'Internal Audit'
+    subtitle: 'Planning and conducting internal ISMS audits according to ISO 27001'
     no_audits: 'No Audits'
-    description: Description
+    description: 'Planning, execution and follow-up of internal and external audits'
     planned_audits: 'Planned Audits'
     total_audits: 'Total Audits'

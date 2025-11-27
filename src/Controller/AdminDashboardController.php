@@ -25,14 +25,15 @@ class AdminDashboardController extends AbstractController
     private const ACTIVE_SESSION_WINDOW_HOURS = 24;
 
     // Whitelist of allowed table names for statistics
+    // Maps logical module names to actual database table names
     private const ALLOWED_TABLES = [
-        'assets',
-        'risks',
-        'controls',
-        'incidents',
-        'audits',
-        'compliance_requirements',
-        'trainings',
+        'assets' => 'asset',
+        'risks' => 'risk',
+        'controls' => 'control',
+        'incidents' => 'incident',
+        'audits' => 'internal_audit',
+        'compliance_requirements' => 'compliance_requirement',
+        'trainings' => 'training',
     ];
 
     public function __construct(
@@ -82,14 +83,14 @@ class AdminDashboardController extends AbstractController
         $moduleStats = [];
         if ($currentTenant) {
             // Get corporate statistics for tenant-aware modules
-            foreach (self::ALLOWED_TABLES as $tableName) {
-                $moduleStats[$tableName] = $this->getCorporateTableStats($tableName, $currentTenant);
+            foreach (self::ALLOWED_TABLES as $moduleKey => $tableName) {
+                $moduleStats[$moduleKey] = $this->getCorporateTableStats($tableName, $currentTenant);
             }
         } else {
             // Fallback to global statistics if no tenant
-            foreach (self::ALLOWED_TABLES as $tableName) {
+            foreach (self::ALLOWED_TABLES as $moduleKey => $tableName) {
                 $count = $this->getTableCount($tableName);
-                $moduleStats[$tableName] = [
+                $moduleStats[$moduleKey] = [
                     'own' => $count,
                     'inherited' => 0,
                     'subsidiaries' => 0,
@@ -126,18 +127,16 @@ class AdminDashboardController extends AbstractController
 
     private function getCorporateTableStats(string $tableName, \App\Entity\Tenant $currentTenant): array
     {
-        // Security: Validate table name against whitelist
+        // Security: Validate table name against whitelist (values in the array)
         if (!in_array($tableName, self::ALLOWED_TABLES, true)) {
             $this->logger->warning('Attempted to query non-whitelisted table', [
                 'table' => $tableName,
-                'allowed_tables' => self::ALLOWED_TABLES,
+                'allowed_tables' => array_values(self::ALLOWED_TABLES),
             ]);
             return ['own' => 0, 'inherited' => 0, 'subsidiaries' => 0, 'total' => 0];
         }
 
         try {
-            $conn = $this->entityManager->getConnection();
-
             // Get own records
             $own = $this->getTenantTableCount($tableName, $currentTenant->getId());
 
@@ -187,11 +186,11 @@ class AdminDashboardController extends AbstractController
 
     private function getTableCount(string $tableName): int
     {
-        // Security: Validate table name against whitelist to prevent SQL injection
+        // Security: Validate table name against whitelist (values in the array) to prevent SQL injection
         if (!in_array($tableName, self::ALLOWED_TABLES, true)) {
             $this->logger->warning('Attempted to query non-whitelisted table', [
                 'table' => $tableName,
-                'allowed_tables' => self::ALLOWED_TABLES,
+                'allowed_tables' => array_values(self::ALLOWED_TABLES),
             ]);
             return 0;
         }

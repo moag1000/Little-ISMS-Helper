@@ -16,6 +16,8 @@ incident:
         open: 'Open Incidents'
         critical: 'Critical Incidents'
         avg_resolution: 'Avg. Resolution Time'
+        nis2_attention: 'NIS2 Requiring Attention'
+        categories: Categories
         unit:
             days: 'Days'
     action:
@@ -24,9 +26,6 @@ incident:
         back_to_list: 'Back to List'
         delete: Delete
         download_nis2_report: 'Download NIS2 Report'
-    kpi:
-        nis2_attention: 'NIS2 Requiring Attention'
-        categories: Categories
     modern:
         breadcrumb: 'Incident Management'
         header:
@@ -124,21 +123,19 @@ incident:
     filter:
         data_breach: 'Data Breach'
         data_breach_only: 'Data Breach Only'
-        nis2_only: 'Nis2 Only'
+        nis2_only: 'NIS2 Only'
+        all_status: 'All Status'
+        all_severity: 'All Severity'
     nis2_compliance:
         not_applicable: 'Not Applicable'
-    empty: Empty
     empty:
         title: 'No Incidents Recorded'
         description: 'Great! No security incidents have been reported so far. If an incident occurs, you can quickly document it here.'
     severity_distribution:
         title: 'Severity Distribution'
     list:
-        title: Title
+        title: 'Incident List'
         all_incidents: 'All Incidents (%count%)'
-    filter:
-        all_status: 'All Status'
-        all_severity: 'All Severity'
     controls_should_prevent: 'Controls Should Prevent'
     workflow:
         active: 'Active Workflow'

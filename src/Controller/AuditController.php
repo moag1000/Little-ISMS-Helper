@@ -78,6 +78,8 @@ class AuditController extends AbstractController
     {
         $audit = new InternalAudit();
         $audit->setTenant($this->tenantContext->getCurrentTenant());
+        // Auto-generate audit number before form handling (required for validation)
+        $audit->setAuditNumber($this->generateAuditNumber());
 
         $form = $this->createForm(InternalAuditType::class, $audit);
         $form->handleRequest($request);
@@ -241,5 +243,34 @@ class AuditController extends AbstractController
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="audit_' . $audit->getId() . '.pdf"',
         ]);
+    }
+
+    /**
+     * Generate unique audit number
+     * Format: AUDIT-YYYY-NNN (e.g., AUDIT-2025-001)
+     */
+    private function generateAuditNumber(): string
+    {
+        $year = date('Y');
+        $prefix = 'AUDIT-' . $year . '-';
+
+        // Find the highest audit number for current year
+        $lastAudit = $this->auditRepository->createQueryBuilder('a')
+            ->where('a.auditNumber LIKE :prefix')
+            ->setParameter('prefix', $prefix . '%')
+            ->orderBy('a.auditNumber', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+
+        if ($lastAudit) {
+            // Extract number from AUDIT-2025-123 → 123
+            $lastNumber = (int) substr($lastAudit->getAuditNumber(), -3);
+            $nextNumber = $lastNumber + 1;
+        } else {
+            $nextNumber = 1;
+        }
+
+        return $prefix . str_pad((string)$nextNumber, 3, '0', STR_PAD_LEFT);
     }
 }
