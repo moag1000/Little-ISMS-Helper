@@ -36,6 +36,8 @@ user:
         title: Title
         total: Total
         by_action: 'By Action'
+        filter:
+            show_count: 'Show count'
     import:
         title: Title
         description: Description

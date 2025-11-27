@@ -36,6 +36,8 @@ user:
         title: Benutzeraktivität
         total: Gesamtaktionen
         by_action: 'Nach Aktionstyp'
+        filter:
+            show_count: 'Anzahl anzeigen'
     import:
         title: 'Benutzer importieren'
         description: 'CSV-Import für Massenanlage von Benutzern'
