@@ -168,7 +168,6 @@ class DataProtectionImpactAssessment
      * JSON array of risk objects: [{title, description, likelihood, impact, severity}]
      */
     #[ORM\Column(type: Types::JSON)]
-    #[Assert\NotBlank]
     private array $identifiedRisks = [];
 
     /**
@@ -437,7 +436,6 @@ class DataProtectionImpactAssessment
             && !empty($this->necessityAssessment)
             && !empty($this->proportionalityAssessment)
             && !empty($this->legalBasis)
-            && !empty($this->identifiedRisks)
             && !empty($this->riskLevel)
             && !empty($this->technicalMeasures)
             && !empty($this->organizationalMeasures);
@@ -458,7 +456,6 @@ class DataProtectionImpactAssessment
             'necessityAssessment' => !empty($this->necessityAssessment),
             'proportionalityAssessment' => !empty($this->proportionalityAssessment),
             'legalBasis' => !empty($this->legalBasis),
-            'identifiedRisks' => !empty($this->identifiedRisks),
             'riskLevel' => !empty($this->riskLevel),
             'technicalMeasures' => !empty($this->technicalMeasures),
             'organizationalMeasures' => !empty($this->organizationalMeasures),

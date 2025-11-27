@@ -327,13 +327,13 @@
 <style>
 /* Modal styling */
 .gdpr-wizard .modal {
-    display: block !important;
+    display: none;
     opacity: 0;
-    pointer-events: none;
     transition: opacity 0.3s ease;
 }
 
 .gdpr-wizard .modal.modal-open {
+    display: block !important;
     opacity: 1;
     pointer-events: auto;
 }

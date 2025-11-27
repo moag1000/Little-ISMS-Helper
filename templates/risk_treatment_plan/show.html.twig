@@ -43,7 +43,7 @@
             <div class="info-label">{{ 'risk_treatment_plan.field.status'|trans({}, 'risk_treatment_plan') }}</div>
             <div class="info-value">
                 <span class="badge bg-{{ plan.status == 'completed' ? 'success' : (plan.status == 'in_progress' ? 'primary' : (plan.status == 'cancelled' ? 'secondary' : (plan.status == 'on_hold' ? 'warning' : 'info'))) }} fs-6">
-                    {{ ('risk_treatment_plan.status.' ~ plan.status)|trans }}
+                    {{ ('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan') }}
                 </span>
             </div>
         </div>
@@ -53,7 +53,7 @@
             <div class="info-label">{{ 'risk_treatment_plan.field.priority'|trans({}, 'risk_treatment_plan') }}</div>
             <div class="info-value">
                 <span class="badge bg-{{ plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : (plan.priority == 'medium' ? 'info' : 'secondary')) }} fs-6">
-                    {{ ('risk_treatment_plan.priority.' ~ plan.priority)|trans|upper }}
+                    {{ ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan')|upper }}
                 </span>
             </div>
         </div>

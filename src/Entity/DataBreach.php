@@ -46,12 +46,21 @@ class DataBreach
 
     /**
      * Related incident (security event that caused the breach)
-     * OneToOne relationship for data reuse
+     * Optional - data breaches can be reported directly without a prior security incident
+     * (e.g., accidental email to wrong recipient, paper documents in wrong hands)
      */
     #[ORM\OneToOne(targetEntity: Incident::class)]
-    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
-    #[Assert\NotNull]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Incident $incident = null;
+
+    /**
+     * Date/time the breach was detected
+     * Used for 72h deadline calculation if no incident is linked
+     * If incident is linked, this should match incident.detectedAt
+     */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
+    #[Assert\NotNull]
+    private ?\DateTimeInterface $detectedAt = null;
 
     /**
      * Related processing activity (VVT Art. 30)
@@ -367,7 +376,8 @@ class DataBreach
      */
     public function getHoursUntilAuthorityDeadline(): ?int
     {
-        if (!$this->incident || !$this->incident->getDetectedAt()) {
+        $detectedAt = $this->getEffectiveDetectedAt();
+        if (!$detectedAt) {
             return null;
         }
 
@@ -375,14 +385,29 @@ class DataBreach
             return null; // Already notified
         }
 
-        $detectedAt = $this->incident->getDetectedAt();
-        $deadline = (clone $detectedAt)->modify('+72 hours');
+        $deadline = \DateTime::createFromInterface($detectedAt)->modify('+72 hours');
         $now = new \DateTime();
 
         $diff = $now->diff($deadline);
         $hours = ($diff->days * 24) + $diff->h;
 
         return $diff->invert ? -$hours : $hours;
+    }
+
+    /**
+     * Get the effective detection date (from incident or direct field)
+     */
+    public function getEffectiveDetectedAt(): ?\DateTimeInterface
+    {
+        // Prefer the direct detectedAt field
+        if ($this->detectedAt) {
+            return $this->detectedAt;
+        }
+        // Fallback to incident's detected date if linked
+        if ($this->incident && $this->incident->getDetectedAt()) {
+            return $this->incident->getDetectedAt();
+        }
+        return null;
     }
 
     /**
@@ -399,14 +424,12 @@ class DataBreach
      */
     public function getAuthorityNotificationDeadline(): ?\DateTimeInterface
     {
-        if (!$this->incident || !$this->incident->getDetectedAt()) {
+        $detectedAt = $this->getEffectiveDetectedAt();
+        if (!$detectedAt) {
             return null;
         }
 
-        $deadline = clone $this->incident->getDetectedAt();
-        $deadline->modify('+72 hours');
-
-        return $deadline;
+        return \DateTime::createFromInterface($detectedAt)->modify('+72 hours');
     }
 
     /**
@@ -503,6 +526,21 @@ class DataBreach
     public function setIncident(?Incident $incident): static
     {
         $this->incident = $incident;
+        // Sync detectedAt from incident if set and detectedAt is empty
+        if ($incident && $incident->getDetectedAt() && !$this->detectedAt) {
+            $this->detectedAt = $incident->getDetectedAt();
+        }
+        return $this;
+    }
+
+    public function getDetectedAt(): ?\DateTimeInterface
+    {
+        return $this->detectedAt;
+    }
+
+    public function setDetectedAt(?\DateTimeInterface $detectedAt): static
+    {
+        $this->detectedAt = $detectedAt;
         return $this;
     }
 

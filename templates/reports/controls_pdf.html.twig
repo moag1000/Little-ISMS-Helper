@@ -76,11 +76,11 @@
             <tr>
                 <td>{{ control.controlId }}</td>
                 <td>{{ control.name|slice(0, 40) }}{% if control.name|length > 40 %}...{% endif %}</td>
-                <td>{{ ('soa.category.' ~ control.category)|trans|default(control.category) }}</td>
+                <td>{{ ('soa.category.' ~ control.category)|trans({}, 'soa')|default(control.category) }}</td>
                 <td class="{% if control.applicability == 'applicable' %}applicable{% else %}not-applicable{% endif %}">
                     {{ control.applicability == 'applicable' ? ('soa.value.yes'|trans({}, 'soa')) : ('soa.value.no'|trans({}, 'soa')) }}
                 </td>
-                <td>{{ ('soa.status.' ~ control.implementationStatus)|trans|default(control.implementationStatus) }}</td>
+                <td>{{ ('soa.status.' ~ control.implementationStatus)|trans({}, 'soa')|default(control.implementationStatus) }}</td>
                 <td>
                     <div class="progress-bar">
                         <div class="progress-fill" style="width: {{ control.implementationProgress }}%;"></div>

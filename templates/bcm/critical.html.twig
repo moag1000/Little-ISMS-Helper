@@ -138,11 +138,11 @@
                 {% endif %}
             </td>
             <td>
-                <span class="badge bg-info">{{ ('bcm.type.' ~ asset.assetType)|trans }}</span>
+                <span class="badge bg-info">{{ ('bcm.type.' ~ asset.assetType)|trans({}, 'bcm') }}</span>
             </td>
             <td>
                 <span class="{{ badge_severity(asset.criticality) }}">
-                    {{ ('bcm.criticality.' ~ asset.criticality)|trans }}
+                    {{ ('bcm.criticality.' ~ asset.criticality)|trans({}, 'bcm') }}
                 </span>
             </td>
             <td>
@@ -232,7 +232,7 @@
                 </small>
             </td>
             <td>
-                <span class="badge bg-danger">{{ ('bcm.impact.' ~ process.impactLevel)|trans }}</span>
+                <span class="badge bg-danger">{{ ('bcm.impact.' ~ process.impactLevel)|trans({}, 'bcm') }}</span>
             </td>
             <td class="text-center">
                 <a href="{{ path('app_bcm_process_show', {id: process.id}) }}" class="btn btn-sm">
@@ -267,7 +267,7 @@
             </div>
             <div>
                 <span class="{{ badge_priority(item.priority) }}">
-                    {{ ('bcm.priority.' ~ item.priority)|trans }}
+                    {{ ('bcm.priority.' ~ item.priority)|trans({}, 'bcm') }}
                 </span>
             </div>
         </li>

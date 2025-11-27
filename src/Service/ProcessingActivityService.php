@@ -419,7 +419,7 @@ class ProcessingActivityService
         $pa->setNextReviewDate($reviewDate);
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'processing_activity.marked_for_review',
             'ProcessingActivity',
             $pa->getId(),
@@ -437,7 +437,7 @@ class ProcessingActivityService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'processing_activity.review_completed',
             'ProcessingActivity',
             $pa->getId(),
@@ -463,7 +463,7 @@ class ProcessingActivityService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'processing_activity.activated',
             'ProcessingActivity',
             $pa->getId(),
@@ -481,7 +481,7 @@ class ProcessingActivityService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
+        $this->auditLogger->logCustom(
             'processing_activity.archived',
             'ProcessingActivity',
             $pa->getId(),

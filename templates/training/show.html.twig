@@ -24,7 +24,7 @@
                         <i class="bi bi-mortarboard" aria-hidden="true"></i> {{ training.title }}
                     </h1>
                     <span class="{{ badge_status(training.status) }} fs-6">
-                        {{ ('training.status.' ~ training.status)|trans }}
+                        {{ ('training.status.' ~ training.status)|trans({}, 'training') }}
                     </span>
                 </div>
                 <div class="card-body">
@@ -53,7 +53,7 @@
                             <h6 class="text-muted mb-2">{{ 'training.type'|trans({}, 'training') }}</h6>
                             <p>
                                 <span class="badge bg-secondary fs-6">
-                                    {{ ('training.type.' ~ training.trainingType)|trans }}
+                                    {{ ('training.type.' ~ training.trainingType)|trans({}, 'training') }}
                                 </span>
                             </p>
                         </div>
@@ -61,7 +61,7 @@
                             <h6 class="text-muted mb-2">{{ 'training.delivery_method'|trans({}, 'training') }}</h6>
                             <p>
                                 <span class="badge bg-info fs-6">
-                                    {{ ('training.delivery.' ~ training.deliveryMethod)|trans }}
+                                    {{ ('training.delivery.' ~ training.deliveryMethod)|trans({}, 'training') }}
                                 </span>
                             </p>
                         </div>
@@ -97,7 +97,7 @@
                         </h5>
                         <p>
                             <span class="badge bg-light text-dark border">
-                                {{ ('training.audience.' ~ training.targetAudience)|trans }}
+                                {{ ('training.audience.' ~ training.targetAudience)|trans({}, 'training') }}
                             </span>
                         </p>
                     </div>

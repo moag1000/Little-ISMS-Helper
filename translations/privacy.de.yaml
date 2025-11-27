@@ -71,21 +71,28 @@ privacy:
         section:
             status_workflow: 'Status & Workflow'
             linked_incident: 'Verknüpfter Sicherheitsvorfall'
+            detection_links: 'Erkennung & Verknüpfungen'
             authority: 'Art. 33 - Aufsichtsbehörde'
             subjects: 'Art. 34 - Betroffene Personen'
             nature: 'Art. 33(3) - Art der Verletzung'
             consequences: 'Art. 33(3)(b-d) - Folgen & Maßnahmen'
+        standalone_breach: 'Eigenständige Datenschutzverletzung (kein Sicherheitsvorfall)'
+        severity:
+            low: 'Niedrig'
+            medium: 'Mittel'
+            high: 'Hoch'
+            critical: 'Kritisch'
         field:
             status: Status
             completeness: Vollständigkeit
+            detected: 'Erkennungszeitpunkt'
+            incident: 'Sicherheitsvorfall'
+            severity: 'Schweregrad'
+            processing_activity: 'Verarbeitungstätigkeit (VVT)'
             assessor: 'Bewertende Person'
             affected_subjects: 'Betroffene Personen'
             risk_level: Risikostufe
             created: Erstellt
-            incident: Vorfall
-            detected: Erkannt
-            severity: Schweregrad
-            processing_activity: 'Verarbeitungstätigkeit (VVT)'
             notification_required: 'Meldung erforderlich'
             notified: Benachrichtigt
             authority: Behörde
@@ -125,7 +132,7 @@ privacy:
         lessons_learned: 'Erkenntnisse und gelernte Lektionen'
         follow_up_actions: 'Nachfolgende Maßnahmen'
         reopen_reason: 'Grund für Wiedereröffnung'
-    # Choice fields for DPIA form (privacy.* keys)
+    # Choice fields for DSFA form (privacy.* keys)
     personal_data:
         identification: 'Identifikationsdaten (Name, Ausweisnummer)'
         contact: 'Kontaktdaten (Adresse, E-Mail, Telefon)'
@@ -180,6 +187,71 @@ privacy:
         severe: Schwerwiegend
     supervisory_consultation:
         yes_high_risk: 'Ja (hohes Restrisiko - Art. 36)'
+    wizard:
+        trigger_button: 'DSGVO Verletzungs-Assistent starten'
+        trigger_hint: 'Nutzen Sie den Assistenten, um zu prüfen, ob eine DSGVO-Meldepflicht besteht (Art. 33)'
+        title: 'DSGVO Datenschutzverletzungs-Assistent'
+        subtitle: 'Schritt-für-Schritt-Bewertung gemäß Art. 33 DSGVO'
+
+        # Step 1
+        step1_title: 'Sind personenbezogene Daten betroffen?'
+        personal_data_question: 'Sind bei diesem Vorfall personenbezogene Daten betroffen (Daten, die sich auf identifizierte oder identifizierbare natürliche Personen beziehen)?'
+        personal_data_yes: 'Personenbezogene Daten sind betroffen'
+        personal_data_no: 'Keine personenbezogenen Daten betroffen (dann KEINE DSGVO-Verletzung)'
+        personal_data_hint: 'Personenbezogene Daten sind alle Informationen, die sich auf eine identifizierte oder identifizierbare natürliche Person beziehen (Name, E-Mail, IP-Adresse, Standortdaten, etc.).'
+
+        # Step 2
+        step2_title: 'Welche Art personenbezogener Daten?'
+        data_type_question: 'Wählen Sie alle betroffenen Datenkategorien aus (mehrere möglich):'
+        data_types:
+            names_contact: 'Namen und Kontaktdaten'
+            names_contact_desc: 'Name, Adresse, E-Mail, Telefonnummer'
+            financial: 'Finanzdaten'
+            financial_desc: 'Bankverbindung, Kreditkartennummern, Zahlungsinformationen'
+            health_biometric: 'Gesundheits-/Biometrische Daten'
+            health_biometric_desc: 'Gesundheitsinformationen, Fingerabdrücke, Gesichtserkennung'
+            special_category_art9: 'Besondere Kategorien (Art. 9 DSGVO)'
+            special_category_art9_desc: 'Ethnische Herkunft, politische Meinungen, religiöse Überzeugungen, Gewerkschaftszugehörigkeit, genetische Daten, Sexualleben'
+            criminal_records_art10: 'Strafrechtliche Daten (Art. 10 DSGVO)'
+            criminal_records_art10_desc: 'Strafrechtliche Verurteilungen und Straftaten'
+        risk_score: 'Risikoscore'
+
+        # Step 3
+        step3_title: 'Wie viele Personen sind betroffen?'
+        affected_count_question: 'Wählen Sie die Anzahl der betroffenen Personen:'
+        scale_options:
+            under_100: 'Weniger als 100 Personen'
+            100_to_1000: '100 bis 1.000 Personen'
+            1001_to_10000: '1.001 bis 10.000 Personen'
+            over_10000: 'Mehr als 10.000 Personen'
+        scale_score: 'Umfangs-Score'
+
+        # Step 4
+        step4_title: 'Ergebnis & Empfehlung'
+        risk_level_label: 'Risikostufe'
+        gdpr_article_33_requirement: 'DSGVO Art. 33 Meldepflicht'
+        deadline_warning: '72-Stunden-Frist läuft!'
+        deadline_date: 'Meldefrist (72h ab jetzt)'
+        recommendation_label: 'Empfehlung'
+        legal_references: 'Rechtsgrundlagen'
+        complete_and_create: 'Abschließen & Vorfall anlegen'
+
+        # Risk levels
+        risk_level:
+            low: 'Niedriges Risiko'
+            medium: 'Mittleres Risiko'
+            high: 'Hohes Risiko'
+            very_high: 'Sehr hohes Risiko'
+
+        # Recommendations
+        recommendation:
+            not_reportable: 'Diese Verletzung wird voraussichtlich NICHT zu einem Risiko für die Rechte und Freiheiten führen. Dokumentation empfohlen, aber keine verpflichtende Meldung an die Aufsichtsbehörde.'
+            reportable_low: 'Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Verletzung gründlich dokumentieren.'
+            reportable_medium: 'Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Folgenabschätzung beginnen und mögliche Benachrichtigung betroffener Personen vorbereiten.'
+            reportable_high: 'DRINGEND: Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Benachrichtigung betroffener Personen prüfen (Art. 34). Sofortiges Handeln erforderlich.'
+            reportable_very_high: 'KRITISCH: Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Benachrichtigung betroffener Personen unverzüglich (Art. 34). Sofortige Eskalation erforderlich.'
+
+
 processing_activity:
     title: 'VVT - Verzeichnis von Verarbeitungstätigkeiten'
     subtitle: 'Art. 30 DSGVO - Verzeichnis von Verarbeitungstätigkeiten'
@@ -494,9 +566,17 @@ common:
 data_breach:
     index:
         view_all_breaches: 'Alle Datenschutzverletzungen anzeigen'
+    section:
+        basic_info: 'Grundinformationen'
+        notification_content: 'Art. 33(3) - Inhalt der Meldung'
+        risk_assessment: 'Risikobewertung'
+        notification_requirements: 'Meldepflichten'
+        investigation: 'Untersuchung & Nachverfolgung'
+        responsible_persons: 'Verantwortliche Personen'
     form:
         title: 'Titel'
-        incident: 'Verknüpfter Sicherheitsvorfall'
+        detected_at: 'Erkennungszeitpunkt'
+        incident: 'Verknüpfter Sicherheitsvorfall (optional)'
         processing_activity: 'Verarbeitungstätigkeit (VVT)'
         affected_data_subjects: 'Anzahl betroffener Personen'
         data_categories: 'Kategorien personenbezogener Daten'
@@ -515,6 +595,12 @@ data_breach:
         root_cause: 'Grundursache'
         lessons_learned: 'Erkenntnisse'
         data_protection_officer: 'Datenschutzbeauftragter'
+        severity: 'Schweregrad'
+    severity:
+        low: 'Niedrig'
+        medium: 'Mittel'
+        high: 'Hoch'
+        critical: 'Kritisch'
     data_categories:
         personal_identification: 'Personenidentifikation (Name, ID-Nr.)'
         contact_information: 'Kontaktdaten (Adresse, E-Mail, Telefon)'
@@ -569,7 +655,11 @@ data_breach:
         root_cause: 'Ursachenanalyse...'
         lessons_learned: 'Aus dieser Verletzung gelernte Lektionen...'
         data_protection_officer: 'DSB auswählen...'
+        severity: 'Schweregrad auswählen...'
     help:
+        detected_at: 'Wann wurde die Datenschutzverletzung entdeckt? Die 72-Stunden-Frist beginnt ab diesem Zeitpunkt.'
+        incident: 'Optional: Falls die Verletzung durch einen Sicherheitsvorfall verursacht wurde, können Sie diesen hier verknüpfen.'
+        severity: 'Schweregrad der Datenschutzverletzung'
         processing_activity: 'Verknüpfung zum VVT (Art. 30 DSGVO)'
         affected_data_subjects: 'Art. 33(3)(a) DSGVO'
         data_categories: 'Art. 33(3)(a) DSGVO - Alle zutreffenden Kategorien auswählen'
@@ -581,12 +671,66 @@ data_breach:
         risk_level: 'Bewertung des Risikos für Rechte und Freiheiten'
         special_categories_affected: 'Art. 9 DSGVO - Rassische/ethnische Herkunft, politische Meinungen, religiöse Überzeugungen, Gesundheitsdaten, etc.'
         criminal_data_affected: 'Art. 10 DSGVO - Strafrechtliche Verurteilungen und Straftaten'
-        requires_authority_notification: 'Art. 33(1) DSGVO - Meldung erforderlich, es sei denn, es ist unwahrscheinlich, dass ein Risiko entsteht'
-        requires_subject_notification: 'Art. 34(1) DSGVO - Erforderlich, wenn die Verletzung wahrscheinlich zu einem HOHEN RISIKO führt'
+        requires_authority_notification: 'Art. 33(1) DSGVO - Meldung erforderlich, AUSSER Risiko für Rechte/Freiheiten ist unwahrscheinlich. Faktoren: Risikolevel, Anzahl Betroffene, Datenkategorien (Art. 9/10), Art der Verletzung, Schutzmaßnahmen vorhanden.'
+        requires_subject_notification: 'Art. 34(1) DSGVO - Nur bei HOHEM Risiko erforderlich. Faktoren: Sensible Daten (Art. 9), viele Betroffene, Identitätsdiebstahl/Betrug möglich, keine Verschlüsselung, keine schnelle Eindämmung.'
         no_subject_notification_reason: 'Art. 34(3) DSGVO Ausnahmen: (a) Schutzmaßnahmen, (b) Nachfolgende Maßnahmen, (c) Unverhältnismäßiger Aufwand'
         data_protection_officer: 'Datenschutzbeauftragter (Art. 35(4) DSGVO)'
 dpia:
+    new:
+        title: 'Neue DSFA'
+        page_title: 'Neue Datenschutz-Folgenabschätzung'
+        page_subtitle: 'Neue DSFA gemäß Art. 35 DSGVO erstellen'
+        breadcrumb_gdpr: 'DSGVO'
+        breadcrumb_dpia: 'DSFA'
+        breadcrumb_new: 'Neue DSFA'
+        button_cancel: 'Abbrechen'
+        form_title: 'DSFA Formular'
+        section_basic_info: 'Grundinformationen'
+        section_processing_operations: 'Art. 35(7)(a) - Beschreibung der Verarbeitungsvorgänge'
+        section_necessity_proportionality: 'Art. 35(7)(b) - Bewertung der Notwendigkeit und Verhältnismäßigkeit'
+        section_risk_assessment: 'Art. 35(7)(c) - Risikobewertung'
+        section_measures: 'Art. 35(7)(d) - Maßnahmen zur Bewältigung der Risiken'
+        section_consultation: 'Konsultation von Interessenträgern (Art. 35(4), 35(9))'
+        section_supervisory: 'Konsultation der Aufsichtsbehörde (Art. 36)'
+        section_workflow: 'Workflow & Überprüfung'
+        button_create: 'DSFA erstellen'
+        button_cancel_bottom: 'Abbrechen'
     index:
+        title: 'DPIA / DSFA'
+        page_title: 'Datenschutz-Folgenabschätzung (DSFA)'
+        page_subtitle: 'Art. 35 DSGVO'
+        button_dashboard: 'Dashboard'
+        button_new_dpia: 'Neue DSFA'
+        compliance_score: 'DSFA Compliance Score'
+        of: 'von'
+        dpias_approved: 'DSFA genehmigt'
+        due_for_review: 'zur Überprüfung fällig'
+        total_dpias: 'Gesamt-DSFA'
+        approved: 'genehmigt'
+        in_review: 'In Prüfung'
+        awaiting_approval: 'Warten auf Genehmigung'
+        high_risk: 'Hohes Risiko'
+        requires_attention: 'Erfordert Aufmerksamkeit'
+        completeness: 'Vollständigkeit'
+        filter_dpias: 'DSFA filtern'
+        all: 'Alle'
+        draft: 'Entwurf'
+        approved_filter: 'Genehmigt'
+        high_risk_filter: 'Hohes Risiko'
+        incomplete: 'Unvollständig'
+        awaiting_dpo: 'Wartet auf DSB'
+        requires_supervisory: 'Benötigt Aufsicht'
+        dpias_list: 'DSFA'
+        reference: 'Referenz'
+        title_col: 'Titel'
+        status: 'Status'
+        risk_level: 'Risikostufe'
+        residual_risk: 'Restrisiko'
+        dpo: 'DSB'
+        actions: 'Aktionen'
+        dpo_consulted: 'DSB konsultiert'
+        dpo_not_yet_consulted: 'DSB noch nicht konsultiert'
+        no_dpias_found: 'Keine DSFA für den ausgewählten Filter gefunden.'
         create_first_dpia: 'Erste Datenschutz-Folgenabschätzung erstellen'
     form:
         title: 'Titel der DSFA'
@@ -626,7 +770,7 @@ dpia:
         next_review_date: 'Nächstes Überprüfungsdatum (Art. 35(11))'
     help:
         title: 'Titel der DSFA (z.B. "DSFA Mitarbeiterüberwachungssystem")'
-        reference_number: 'Referenznummer (automatisch generiert falls leer, Format: DPIA-YYYY-XXX)'
+        reference_number: 'Referenznummer (automatisch generiert falls leer, Format: DSFA-YYYY-XXX)'
         processing_activity: 'Verknüpfung zur zugehörigen VVT-Verarbeitungstätigkeit (Art. 30)'
         processing_description: 'Systematische Beschreibung der geplanten Verarbeitungsvorgänge (Art. 35(7)(a))'
         processing_purposes: 'Zwecke der Verarbeitung (Art. 35(7)(a))'
@@ -681,6 +825,48 @@ dpia:
         footer_text: 'Datenschutz-Folgenabschätzung (DSFA) gemäß Art. 35 DSGVO'
     show:
         cancel_button: 'Abbrechen'
+        page_title: 'DSFA - %ref%'
+        section:
+            status_workflow: 'Status & Workflow'
+            risk_assessment: 'Risikobewertung'
+            consultations: 'Konsultationen'
+        field:
+            conductor: 'Durchgeführt von'
+            approver: 'Freigegeben von'
+            approval_date: 'Freigabedatum'
+            initial_risk: 'Initiales Risiko'
+            dpo_consultation: 'DSB-Konsultation'
+            supervisory_consultation: 'Konsultation Aufsichtsbehörde'
+        risk:
+            acceptable: 'Restrisiko akzeptabel'
+            requires_consultation: 'Erfordert Konsultation der Aufsichtsbehörde (Art. 36 DSGVO)'
+        not_yet_consulted: 'Noch nicht konsultiert'
+        required_not_completed: 'Erforderlich, aber noch nicht durchgeführt'
+        not_required: 'Nicht erforderlich'
+    action:
+        export_pdf: 'PDF exportieren'
+        submit_for_review: 'Zur Prüfung einreichen'
+        edit: 'Bearbeiten'
+        approve: 'Genehmigen'
+        reject: 'Ablehnen'
+        request_revision: 'Überarbeitung anfordern'
+        reopen: 'Wiedereröffnen'
+        clone: 'Klonen'
+    modal:
+        approve_title: 'DSFA genehmigen'
+        approval_comments: 'Genehmigungskommentare'
+        reject_title: 'DSFA ablehnen'
+        rejection_reason: 'Ablehnungsgrund'
+        revision_title: 'Überarbeitung anfordern'
+        revision_reason: 'Überarbeitungsgrund'
+    confirm:
+        delete: 'Sind Sie sicher, dass Sie diese DSFA löschen möchten?'
+    status:
+        draft: 'Entwurf'
+        in_review: 'In Prüfung'
+        approved: 'Genehmigt'
+        rejected: 'Abgelehnt'
+        requires_revision: 'Überarbeitung erforderlich'
     purpose:
         contract_fulfillment: Vertragserfüllung
         marketing: Marketing
@@ -905,10 +1091,6 @@ dpia:
         third_parties: 'Von Dritten'
         public_sources: 'Aus öffentlichen Quellen'
         other: 'Sonstige'
-    status:
-        draft: Entwurf
-        active: Aktiv
-        archived: Archiviert
     risk_level_choice:
         Low: Niedrig
         Medium: Mittel
@@ -944,66 +1126,3 @@ dpia:
 'privacy.chart.by_legal_basis': 'Nach Rechtsgrundlage'
 
 # GDPR Breach Wizard
-wizard:
-    trigger_button: 'DSGVO Verletzungs-Assistent starten'
-    trigger_hint: 'Nutzen Sie den Assistenten, um zu prüfen, ob eine DSGVO-Meldepflicht besteht (Art. 33)'
-    title: 'DSGVO Datenschutzverletzungs-Assistent'
-    subtitle: 'Schritt-für-Schritt-Bewertung gemäß Art. 33 DSGVO'
-
-    # Step 1
-    step1_title: 'Sind personenbezogene Daten betroffen?'
-    personal_data_question: 'Sind bei diesem Vorfall personenbezogene Daten betroffen (Daten, die sich auf identifizierte oder identifizierbare natürliche Personen beziehen)?'
-    personal_data_yes: 'Personenbezogene Daten sind betroffen'
-    personal_data_no: 'Keine personenbezogenen Daten betroffen (dann KEINE DSGVO-Verletzung)'
-    personal_data_hint: 'Personenbezogene Daten sind alle Informationen, die sich auf eine identifizierte oder identifizierbare natürliche Person beziehen (Name, E-Mail, IP-Adresse, Standortdaten, etc.).'
-
-    # Step 2
-    step2_title: 'Welche Art personenbezogener Daten?'
-    data_type_question: 'Wählen Sie alle betroffenen Datenkategorien aus (mehrere möglich):'
-    data_types:
-        names_contact: 'Namen und Kontaktdaten'
-        names_contact_desc: 'Name, Adresse, E-Mail, Telefonnummer'
-        financial: 'Finanzdaten'
-        financial_desc: 'Bankverbindung, Kreditkartennummern, Zahlungsinformationen'
-        health_biometric: 'Gesundheits-/Biometrische Daten'
-        health_biometric_desc: 'Gesundheitsinformationen, Fingerabdrücke, Gesichtserkennung'
-        special_category_art9: 'Besondere Kategorien (Art. 9 DSGVO)'
-        special_category_art9_desc: 'Ethnische Herkunft, politische Meinungen, religiöse Überzeugungen, Gewerkschaftszugehörigkeit, genetische Daten, Sexualleben'
-        criminal_records_art10: 'Strafrechtliche Daten (Art. 10 DSGVO)'
-        criminal_records_art10_desc: 'Strafrechtliche Verurteilungen und Straftaten'
-    risk_score: 'Risikoscore'
-
-    # Step 3
-    step3_title: 'Wie viele Personen sind betroffen?'
-    affected_count_question: 'Wählen Sie die Anzahl der betroffenen Personen:'
-    scale_options:
-        under_100: 'Weniger als 100 Personen'
-        100_to_1000: '100 bis 1.000 Personen'
-        1001_to_10000: '1.001 bis 10.000 Personen'
-        over_10000: 'Mehr als 10.000 Personen'
-    scale_score: 'Umfangs-Score'
-
-    # Step 4
-    step4_title: 'Ergebnis & Empfehlung'
-    risk_level_label: 'Risikostufe'
-    gdpr_article_33_requirement: 'DSGVO Art. 33 Meldepflicht'
-    deadline_warning: '72-Stunden-Frist läuft!'
-    deadline_date: 'Meldefrist (72h ab jetzt)'
-    recommendation_label: 'Empfehlung'
-    legal_references: 'Rechtsgrundlagen'
-    complete_and_create: 'Abschließen & Vorfall anlegen'
-
-    # Risk levels
-    risk_level:
-        low: 'Niedriges Risiko'
-        medium: 'Mittleres Risiko'
-        high: 'Hohes Risiko'
-        very_high: 'Sehr hohes Risiko'
-
-    # Recommendations
-    recommendation:
-        not_reportable: 'Diese Verletzung wird voraussichtlich NICHT zu einem Risiko für die Rechte und Freiheiten führen. Dokumentation empfohlen, aber keine verpflichtende Meldung an die Aufsichtsbehörde.'
-        reportable_low: 'Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Verletzung gründlich dokumentieren.'
-        reportable_medium: 'Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Folgenabschätzung beginnen und mögliche Benachrichtigung betroffener Personen vorbereiten.'
-        reportable_high: 'DRINGEND: Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Benachrichtigung betroffener Personen prüfen (Art. 34). Sofortiges Handeln erforderlich.'
-        reportable_very_high: 'KRITISCH: Meldung an Aufsichtsbehörde innerhalb von 72 Stunden (Art. 33). Benachrichtigung betroffener Personen unverzüglich (Art. 34). Sofortige Eskalation erforderlich.'

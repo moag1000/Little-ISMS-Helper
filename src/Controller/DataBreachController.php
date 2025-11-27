@@ -77,49 +77,21 @@ class DataBreachController extends AbstractController
 
     /**
      * Create new data breach
+     * Supports both standalone breaches and incident-linked breaches
      */
     #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function new(Request $request): Response
     {
-        $form = $this->createForm(DataBreachType::class);
+        // Create a new breach with tenant and reference number pre-set
+        $breach = $this->service->prepareNewBreach();
+
+        $form = $this->createForm(DataBreachType::class, $breach);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var DataBreach $breach */
-            $breach = $form->getData();
-            $incident = $breach->getIncident();
-            $processingActivity = $breach->getProcessingActivity();
-
-            $breach = $this->service->createFromIncident(
-                $incident,
-                $this->getUser(),
-                $processingActivity
-            );
-
-            // Update additional fields from form
-            $breach->setTitle($form->get('title')->getData());
-            $breach->setAffectedDataSubjects($form->get('affectedDataSubjects')->getData());
-            $breach->setDataCategories($form->get('dataCategories')->getData());
-            $breach->setDataSubjectCategories($form->get('dataSubjectCategories')->getData());
-            $breach->setBreachNature($form->get('breachNature')->getData());
-            $breach->setLikelyConsequences($form->get('likelyConsequences')->getData());
-            $breach->setMeasuresTaken($form->get('measuresTaken')->getData());
-            $breach->setMitigationMeasures($form->get('mitigationMeasures')->getData());
-            $breach->setRiskLevel($form->get('riskLevel')->getData());
-            $breach->setRiskAssessment($form->get('riskAssessment')->getData());
-            $breach->setSpecialCategoriesAffected($form->get('specialCategoriesAffected')->getData());
-            $breach->setCriminalDataAffected($form->get('criminalDataAffected')->getData());
-            $breach->setRequiresAuthorityNotification($form->get('requiresAuthorityNotification')->getData());
-            $breach->setRequiresSubjectNotification($form->get('requiresSubjectNotification')->getData());
-
-            if ($form->has('noSubjectNotificationReason')) {
-                $breach->setNoSubjectNotificationReason($form->get('noSubjectNotificationReason')->getData());
-            }
-            if ($form->has('dataProtectionOfficer')) {
-                $breach->setDataProtectionOfficer($form->get('dataProtectionOfficer')->getData());
-            }
-
+            // Form data is already bound to $breach via handleRequest
+            // Just save it
             $this->service->update($breach, $this->getUser());
 
             $this->addFlash('success', sprintf(

@@ -16,7 +16,7 @@
                 'cancelled': 'secondary'
             } %}
             <span class="badge badge-{{ statusColors[instance.status] ?? 'secondary' }}">
-                {{ ('workflow.status.' ~ instance.status)|trans }}
+                {{ ('workflow.status.' ~ instance.status)|trans({}, 'workflows') }}
             </span>
             {% if instance.overdue %}
                 <span class="badge bg-danger ml-xs">
@@ -172,7 +172,7 @@
                     <td>{{ activity.createdAt|date('d.m.Y H:i:s') }}</td>
                     <td>{{ activity.user.fullName }}</td>
                     <td>
-                        <span class="badge bg-info">{{ ('workflow.action.' ~ activity.action)|trans }}</span>
+                        <span class="badge bg-info">{{ ('workflow.action.' ~ activity.action)|trans({}, 'workflows') }}</span>
                     </td>
                     <td>
                         <small class="text-muted">{{ activity.details }}</small>

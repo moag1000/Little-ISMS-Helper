@@ -16,7 +16,7 @@
         <div class="col-lg-8">
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white d-flex justify-content-between"><h5 class="mb-0">{{ objective.title }}</h5>
-                    <span class="badge bg-{{ objective.status == 'achieved' ? 'success' : 'info' }} fs-6">{{ ('objective.status.' ~ objective.status)|trans }}</span>
+                    <span class="badge bg-{{ objective.status == 'achieved' ? 'success' : 'info' }} fs-6">{{ ('objective.status.' ~ objective.status)|trans({}, 'objective') }}</span>
                 </div>
                 <div class="card-body">
                     <p class="lead">{{ objective.description }}</p>

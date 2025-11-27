@@ -20,7 +20,7 @@
                         <strong>{{ alert.message|trans }}</strong>
                         {% if alert.count is defined %}
                             - {{ alert.count }}
-                            {{ (alert.count == 1 ? 'admin.dashboard.alerts.item' : 'admin.dashboard.alerts.items')|trans }}
+                            {{ (alert.count == 1 ? 'admin.dashboard.alerts.item' : 'admin.dashboard.alerts.items')|trans({}, 'admin') }}
                         {% endif %}
                         {% if alert.action %}
                             <a href="{{ alert.action }}" class="alert-link ms-2">{{ 'admin.dashboard.alerts.view'|trans({}, 'admin') }} →</a>

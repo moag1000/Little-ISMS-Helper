@@ -272,7 +272,7 @@
                                     </div>
                                 </div>
                                 <span class="badge bg-{{ plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : 'secondary') }} ms-2">
-                                    {{ ('risk_treatment_plan.priority.' ~ plan.priority)|trans }}
+                                    {{ ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan') }}
                                 </span>
                             </div>
                         </li>
