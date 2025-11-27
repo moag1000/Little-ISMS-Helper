@@ -12,13 +12,13 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_compliance_export_reuse_pdf', {id: framework.id}) }}" class="btn btn-danger" data-turbo="false">
-            📄 {{ 'compliance.action.export_pdf'|trans({}, 'compliance') }}
+            <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'compliance.action.export_pdf'|trans({}, 'compliance') }}
         </a>
         <a href="{{ path('app_compliance_export_reuse_excel', {id: framework.id}) }}" class="btn btn-success" data-turbo="false">
-            📊 {{ 'compliance.action.export_excel'|trans({}, 'compliance') }}
+            <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'compliance.action.export_excel'|trans({}, 'compliance') }}
         </a>
         <a href="{{ path('app_compliance_export_reuse', {id: framework.id}) }}" class="btn btn-secondary" data-turbo="false">
-            📄 {{ 'compliance.action.export_csv'|trans({}, 'compliance') }}
+            <i class="bi bi-file-text" aria-hidden="true"></i> {{ 'compliance.action.export_csv'|trans({}, 'compliance') }}
         </a>
     </div>
 </div>
@@ -66,11 +66,6 @@
             <span class="badge bg-success">{{ opportunity.reusePercentage }}% {{ 'compliance.badge.reusable'|trans({}, 'compliance') }}</span>
         </div>
 
-        <div class="mt-3">
-            <a href="{{ path('app_compliance_opportunity_details', {id: opportunity.id}) }}" class="btn btn-sm">
-                {{ 'common.view_details'|trans({}, 'messages') }}
-            </a>
-        </div>
     </div>
     {% else %}
     <div class="card grid-full">

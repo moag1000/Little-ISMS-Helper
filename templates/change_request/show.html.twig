@@ -159,7 +159,7 @@
                 <h3>{{ 'change_request.section.affected_controls'|trans({'%count%': change_request.affectedControls|length}, 'change_requests') }}</h3>
                 <ul>
                     {% for control in change_request.affectedControls %}
-                    <li><a href="{{ path('app_control_show', {id: control.id}) }}">{{ control.controlId }}</a></li>
+                    <li><a href="{{ path('app_soa_show', {id: control.id}) }}">{{ control.controlId }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
