@@ -6,7 +6,6 @@ use App\Entity\User;
 use App\Service\AuditLogger;
 use App\Service\SecurityEventLogger;
 use App\Service\SessionManager;
-use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -18,7 +17,6 @@ class SecurityEventLoggerTest extends TestCase
 {
     private MockObject $logger;
     private MockObject $requestStack;
-    private MockObject $entityManager;
     private MockObject $auditLogger;
     private MockObject $sessionManager;
     private SecurityEventLogger $securityLogger;
@@ -27,14 +25,12 @@ class SecurityEventLoggerTest extends TestCase
     {
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->requestStack = $this->createMock(RequestStack::class);
-        $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->sessionManager = $this->createMock(SessionManager::class);
 
         $this->securityLogger = new SecurityEventLogger(
             $this->logger,
             $this->requestStack,
-            $this->entityManager,
             $this->auditLogger,
             $this->sessionManager
         );

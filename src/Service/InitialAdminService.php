@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use Exception;
+use RuntimeException;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Psr\Log\LoggerInterface;
@@ -23,8 +25,8 @@ use Symfony\Contracts\Cache\ItemInterface;
  */
 class InitialAdminService
 {
-    private const CACHE_KEY = 'initial_admin_id';
-    private const CACHE_TTL = 300; // 5 minutes
+    private const string CACHE_KEY = 'initial_admin_id';
+    private const int CACHE_TTL = 300; // 5 minutes
 
     public function __construct(
         private readonly UserRepository $userRepository,
@@ -62,7 +64,7 @@ class InitialAdminService
             }
 
             return $this->userRepository->find($adminId);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to retrieve initial admin', [
                 'error' => $e->getMessage(),
             ]);
@@ -80,7 +82,7 @@ class InitialAdminService
     {
         $initialAdmin = $this->getInitialAdmin();
 
-        if ($initialAdmin === null) {
+        if (!$initialAdmin instanceof User) {
             return false;
         }
 
@@ -101,7 +103,7 @@ class InitialAdminService
         try {
             $this->cache->delete(self::CACHE_KEY);
             $this->logger->info('Initial admin cache cleared');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to clear initial admin cache', [
                 'error' => $e->getMessage(),
             ]);
@@ -114,7 +116,7 @@ class InitialAdminService
      *
      * @param User $user The user being operated on
      * @param string $operation The operation being performed (delete, deactivate, remove_admin_role)
-     * @throws \RuntimeException If operation is not allowed
+     * @throws RuntimeException If operation is not allowed
      */
     public function validateOperation(User $user, string $operation): void
     {
@@ -135,6 +137,6 @@ class InitialAdminService
             'operation' => $operation,
         ]);
 
-        throw new \RuntimeException($message);
+        throw new RuntimeException($message);
     }
 }

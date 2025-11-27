@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Tenant;
+use DateTimeImmutable;
+use Exception;
 use App\Repository\AuditLogRepository;
 use App\Repository\UserRepository;
 use Doctrine\DBAL\Platforms\MariaDBPlatform;
@@ -15,18 +18,17 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/admin')]
 #[IsGranted('ROLE_ADMIN')]
 class AdminDashboardController extends AbstractController
 {
     // Constants for configuration
-    private const RECENT_ACTIVITY_LIMIT = 10;
-    private const DATABASE_SIZE_WARNING_MB = 1024; // 1 GB
-    private const ACTIVE_SESSION_WINDOW_HOURS = 24;
+    private const int RECENT_ACTIVITY_LIMIT = 10;
+    private const int DATABASE_SIZE_WARNING_MB = 1024; // 1 GB
+    private const int ACTIVE_SESSION_WINDOW_HOURS = 24;
 
     // Whitelist of allowed table names for statistics
     // Maps logical module names to actual database table names
-    private const ALLOWED_TABLES = [
+    private const array ALLOWED_TABLES = [
         'assets' => 'asset',
         'risks' => 'risk',
         'controls' => 'control',
@@ -37,14 +39,14 @@ class AdminDashboardController extends AbstractController
     ];
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private UserRepository $userRepository,
-        private AuditLogRepository $auditLogRepository,
-        private LoggerInterface $logger
+        private readonly EntityManagerInterface $entityManager,
+        private readonly UserRepository $userRepository,
+        private readonly AuditLogRepository $auditLogRepository,
+        private readonly LoggerInterface $logger
     ) {
     }
 
-    #[Route('', name: 'admin_dashboard', methods: ['GET'])]
+    #[Route('/admin', name: 'admin_dashboard', methods: ['GET'])]
     public function index(): Response
     {
         // Get current user's tenant
@@ -72,7 +74,7 @@ class AdminDashboardController extends AbstractController
         ]);
     }
 
-    private function getSystemHealthStats(?\App\Entity\Tenant $currentTenant): array
+    private function getSystemHealthStats(?Tenant $currentTenant): array
     {
         // User Statistics
         $totalUsers = $this->userRepository->count([]);
@@ -81,7 +83,7 @@ class AdminDashboardController extends AbstractController
 
         // Module Statistics with Corporate Hierarchy
         $moduleStats = [];
-        if ($currentTenant) {
+        if ($currentTenant instanceof Tenant) {
             // Get corporate statistics for tenant-aware modules
             foreach (self::ALLOWED_TABLES as $moduleKey => $tableName) {
                 $moduleStats[$moduleKey] = $this->getCorporateTableStats($tableName, $currentTenant);
@@ -101,7 +103,7 @@ class AdminDashboardController extends AbstractController
 
         // Session Statistics (active sessions in configured time window)
         // Using audit log as proxy for activity
-        $windowStart = new \DateTimeImmutable('-' . self::ACTIVE_SESSION_WINDOW_HOURS . ' hours');
+        $windowStart = new DateTimeImmutable('-' . self::ACTIVE_SESSION_WINDOW_HOURS . ' hours');
         $activeSessions = $this->auditLogRepository->createQueryBuilder('a')
             ->select('COUNT(DISTINCT a.userName)')
             ->where('a.createdAt >= :windowStart')
@@ -125,7 +127,7 @@ class AdminDashboardController extends AbstractController
         ];
     }
 
-    private function getCorporateTableStats(string $tableName, \App\Entity\Tenant $currentTenant): array
+    private function getCorporateTableStats(string $tableName, Tenant $currentTenant): array
     {
         // Security: Validate table name against whitelist (values in the array)
         if (!in_array($tableName, self::ALLOWED_TABLES, true)) {
@@ -142,7 +144,7 @@ class AdminDashboardController extends AbstractController
 
             // Get inherited records from parent
             $inherited = 0;
-            if ($currentTenant->getParent()) {
+            if ($currentTenant->getParent() instanceof Tenant) {
                 $inherited = $this->getTenantTableCount($tableName, $currentTenant->getParent()->getId());
             }
 
@@ -158,7 +160,7 @@ class AdminDashboardController extends AbstractController
                 'subsidiaries' => $subsidiaries,
                 'total' => $own + $inherited + $subsidiaries,
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to get corporate table stats', [
                 'table' => $tableName,
                 'tenant' => $currentTenant->getId(),
@@ -178,7 +180,7 @@ class AdminDashboardController extends AbstractController
                 ['tenantId' => $tenantId]
             )->fetchAssociative();
             return (int) ($result['count'] ?? 0);
-        } catch (\Exception $e) {
+        } catch (Exception) {
             // Table might not have tenant_id column, return 0
             return 0;
         }
@@ -200,7 +202,7 @@ class AdminDashboardController extends AbstractController
             // Safe to use direct interpolation since $tableName is validated against whitelist
             $result = $conn->executeQuery("SELECT COUNT(*) as count FROM {$tableName}")->fetchAssociative();
             return (int) ($result['count'] ?? 0);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to get table count', [
                 'table' => $tableName,
                 'error' => $e->getMessage(),
@@ -249,7 +251,8 @@ class AdminDashboardController extends AbstractController
                     $unit = $matches[2];
                     if ($unit === 'GB') {
                         return $value * 1024;
-                    } elseif ($unit === 'kB') {
+                    }
+                    if ($unit === 'kB') {
                         return $value / 1024;
                     }
                     return $value;
@@ -257,10 +260,10 @@ class AdminDashboardController extends AbstractController
             }
 
             $this->logger->debug('Unsupported database platform for size calculation', [
-                'platform' => get_class($platform),
+                'platform' => $platform::class,
             ]);
             return 0.0;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to calculate database size', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),

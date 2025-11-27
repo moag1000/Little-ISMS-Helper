@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use DateTimeImmutable;
 use App\Entity\User;
 use App\Entity\UserSession;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -79,24 +80,24 @@ class UserSessionRepository extends ServiceEntityRepository
      */
     public function getActiveSessions(?int $limit = null, ?string $userEmail = null): array
     {
-        $qb = $this->createQueryBuilder('s')
+        $queryBuilder = $this->createQueryBuilder('s')
             ->leftJoin('s.user', 'u')
             ->addSelect('u')
             ->where('s.isActive = :active')
             ->setParameter('active', true);
 
         if ($userEmail) {
-            $qb->andWhere('u.email LIKE :email')
+            $queryBuilder->andWhere('u.email LIKE :email')
                 ->setParameter('email', '%' . $userEmail . '%');
         }
 
-        $qb->orderBy('s.lastActivityAt', 'DESC');
+        $queryBuilder->orderBy('s.lastActivityAt', 'DESC');
 
         if ($limit) {
-            $qb->setMaxResults($limit);
+            $queryBuilder->setMaxResults($limit);
         }
 
-        return $qb->getQuery()->getResult();
+        return $queryBuilder->getQuery()->getResult();
     }
 
     /**
@@ -104,16 +105,16 @@ class UserSessionRepository extends ServiceEntityRepository
      */
     public function getStatistics(): array
     {
-        $qb = $this->createQueryBuilder('s');
+        $queryBuilder = $this->createQueryBuilder('s');
 
-        $totalActive = (int) $qb->select('COUNT(s.id)')
+        $totalActive = (int) $queryBuilder->select('COUNT(s.id)')
             ->where('s.isActive = :active')
             ->setParameter('active', true)
             ->getQuery()
             ->getSingleScalarResult();
 
         // Get sessions from last 24 hours
-        $yesterday = new \DateTimeImmutable('-24 hours');
+        $yesterday = new DateTimeImmutable('-24 hours');
         $totalLast24h = (int) $this->createQueryBuilder('s')
             ->select('COUNT(s.id)')
             ->where('s.createdAt >= :since')
@@ -142,7 +143,7 @@ class UserSessionRepository extends ServiceEntityRepository
      */
     public function cleanupExpiredSessions(int $maxLifetime = 3600): int
     {
-        $expiryTime = new \DateTimeImmutable("-{$maxLifetime} seconds");
+        $expiryTime = new DateTimeImmutable("-{$maxLifetime} seconds");
 
         return $this->createQueryBuilder('s')
             ->update()
@@ -152,7 +153,7 @@ class UserSessionRepository extends ServiceEntityRepository
             ->where('s.isActive = :active')
             ->andWhere('s.lastActivityAt < :expiryTime')
             ->setParameter('inactive', false)
-            ->setParameter('endedAt', new \DateTimeImmutable())
+            ->setParameter('endedAt', new DateTimeImmutable())
             ->setParameter('reason', 'timeout')
             ->setParameter('active', true)
             ->setParameter('expiryTime', $expiryTime)
@@ -174,7 +175,7 @@ class UserSessionRepository extends ServiceEntityRepository
             ->where('s.user = :user')
             ->andWhere('s.isActive = :active')
             ->setParameter('inactive', false)
-            ->setParameter('endedAt', new \DateTimeImmutable())
+            ->setParameter('endedAt', new DateTimeImmutable())
             ->setParameter('reason', $reason)
             ->setParameter('terminatedBy', $terminatedBy)
             ->setParameter('user', $user)
@@ -197,7 +198,7 @@ class UserSessionRepository extends ServiceEntityRepository
             ->where('s.sessionId = :sessionId')
             ->andWhere('s.isActive = :active')
             ->setParameter('inactive', false)
-            ->setParameter('endedAt', new \DateTimeImmutable())
+            ->setParameter('endedAt', new DateTimeImmutable())
             ->setParameter('reason', $reason)
             ->setParameter('terminatedBy', $terminatedBy)
             ->setParameter('sessionId', $sessionId)

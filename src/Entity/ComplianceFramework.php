@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use App\Repository\ComplianceFrameworkRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -57,15 +59,15 @@ class ComplianceFramework
     private Collection $requirements;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     public function __construct()
     {
         $this->requirements = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -180,44 +182,42 @@ class ComplianceFramework
         return $this->requirements;
     }
 
-    public function addRequirement(ComplianceRequirement $requirement): static
+    public function addRequirement(ComplianceRequirement $complianceRequirement): static
     {
-        if (!$this->requirements->contains($requirement)) {
-            $this->requirements->add($requirement);
-            $requirement->setFramework($this);
+        if (!$this->requirements->contains($complianceRequirement)) {
+            $this->requirements->add($complianceRequirement);
+            $complianceRequirement->setFramework($this);
         }
 
         return $this;
     }
 
-    public function removeRequirement(ComplianceRequirement $requirement): static
+    public function removeRequirement(ComplianceRequirement $complianceRequirement): static
     {
-        if ($this->requirements->removeElement($requirement)) {
-            if ($requirement->getFramework() === $this) {
-                $requirement->setFramework(null);
-            }
+        if ($this->requirements->removeElement($complianceRequirement) && $complianceRequirement->getFramework() === $this) {
+            $complianceRequirement->setFramework(null);
         }
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;

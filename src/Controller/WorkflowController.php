@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\WorkflowStep;
+use App\Form\WorkflowType;
+use DateTimeImmutable;
 use App\Entity\Workflow;
 use App\Entity\WorkflowInstance;
 use App\Repository\WorkflowRepository;
@@ -16,20 +19,19 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/workflow')]
 #[IsGranted('ROLE_USER')]
 class WorkflowController extends AbstractController
 {
     public function __construct(
-        private WorkflowRepository $workflowRepository,
-        private WorkflowInstanceRepository $workflowInstanceRepository,
-        private WorkflowService $workflowService,
-        private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator,
-        private TenantContext $tenantContext
+        private readonly WorkflowRepository $workflowRepository,
+        private readonly WorkflowInstanceRepository $workflowInstanceRepository,
+        private readonly WorkflowService $workflowService,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
+        private readonly TenantContext $tenantContext
     ) {}
 
-    #[Route('/', name: 'app_workflow_index')]
+    #[Route('/workflow/', name: 'app_workflow_index')]
     public function index(): Response
     {
         $workflows = $this->workflowRepository->findAllActive();
@@ -43,7 +45,7 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/definitions', name: 'app_workflow_definitions')]
+    #[Route('/workflow/definitions', name: 'app_workflow_definitions')]
     #[IsGranted('ROLE_ADMIN')]
     public function definitions(): Response
     {
@@ -54,7 +56,7 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/pending', name: 'app_workflow_pending')]
+    #[Route('/workflow/pending', name: 'app_workflow_pending')]
     public function pending(): Response
     {
         $user = $this->getUser();
@@ -65,29 +67,29 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/instance/{id}', name: 'app_workflow_instance_show', requirements: ['id' => '\d+'])]
-    public function showInstance(WorkflowInstance $instance): Response
+    #[Route('/workflow/instance/{id}', name: 'app_workflow_instance_show', requirements: ['id' => '\d+'])]
+    public function showInstance(WorkflowInstance $workflowInstance): Response
     {
         $currentUser = $this->getUser();
-        $currentStep = $instance->getCurrentStep();
-        $canApprove = $currentStep && $this->workflowService->canUserApprove($currentUser, $currentStep);
+        $currentStep = $workflowInstance->getCurrentStep();
+        $canApprove = $currentStep instanceof WorkflowStep && $this->workflowService->canUserApprove($currentUser, $currentStep);
 
         return $this->render('workflow/instance_show.html.twig', [
-            'instance' => $instance,
+            'instance' => $workflowInstance,
             'can_approve' => $canApprove,
         ]);
     }
 
-    #[Route('/instance/{id}/approve', name: 'app_workflow_instance_approve', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function approveInstance(Request $request, WorkflowInstance $instance): Response
+    #[Route('/workflow/instance/{id}/approve', name: 'app_workflow_instance_approve', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function approveInstance(Request $request, WorkflowInstance $workflowInstance): Response
     {
-        if (!$this->isCsrfTokenValid('approve'.$instance->getId(), $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('approve'.$workflowInstance->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('error.csrf_invalid'));
-            return $this->redirectToRoute('app_workflow_instance_show', ['id' => $instance->getId()]);
+            return $this->redirectToRoute('app_workflow_instance_show', ['id' => $workflowInstance->getId()]);
         }
 
         $comments = $request->request->get('comments');
-        $success = $this->workflowService->approveStep($instance, $this->getUser(), $comments);
+        $success = $this->workflowService->approveStep($workflowInstance, $this->getUser(), $comments);
 
         if ($success) {
             $this->addFlash('success', $this->translator->trans('workflow.success.approved'));
@@ -95,25 +97,25 @@ class WorkflowController extends AbstractController
             $this->addFlash('error', $this->translator->trans('workflow.error.not_authorized_approve'));
         }
 
-        return $this->redirectToRoute('app_workflow_instance_show', ['id' => $instance->getId()]);
+        return $this->redirectToRoute('app_workflow_instance_show', ['id' => $workflowInstance->getId()]);
     }
 
-    #[Route('/instance/{id}/reject', name: 'app_workflow_instance_reject', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function rejectInstance(Request $request, WorkflowInstance $instance): Response
+    #[Route('/workflow/instance/{id}/reject', name: 'app_workflow_instance_reject', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function rejectInstance(Request $request, WorkflowInstance $workflowInstance): Response
     {
-        if (!$this->isCsrfTokenValid('reject'.$instance->getId(), $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('reject'.$workflowInstance->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('error.csrf_invalid'));
-            return $this->redirectToRoute('app_workflow_instance_show', ['id' => $instance->getId()]);
+            return $this->redirectToRoute('app_workflow_instance_show', ['id' => $workflowInstance->getId()]);
         }
 
         $comments = $request->request->get('comments');
 
         if (empty($comments)) {
             $this->addFlash('error', $this->translator->trans('workflow.error.comments_required'));
-            return $this->redirectToRoute('app_workflow_instance_show', ['id' => $instance->getId()]);
+            return $this->redirectToRoute('app_workflow_instance_show', ['id' => $workflowInstance->getId()]);
         }
 
-        $success = $this->workflowService->rejectStep($instance, $this->getUser(), $comments);
+        $success = $this->workflowService->rejectStep($workflowInstance, $this->getUser(), $comments);
 
         if ($success) {
             $this->addFlash('warning', $this->translator->trans('workflow.warning.rejected'));
@@ -121,27 +123,27 @@ class WorkflowController extends AbstractController
             $this->addFlash('error', $this->translator->trans('workflow.error.not_authorized_reject'));
         }
 
-        return $this->redirectToRoute('app_workflow_instance_show', ['id' => $instance->getId()]);
+        return $this->redirectToRoute('app_workflow_instance_show', ['id' => $workflowInstance->getId()]);
     }
 
-    #[Route('/instance/{id}/cancel', name: 'app_workflow_instance_cancel', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/workflow/instance/{id}/cancel', name: 'app_workflow_instance_cancel', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function cancelInstance(Request $request, WorkflowInstance $instance): Response
+    public function cancelInstance(Request $request, WorkflowInstance $workflowInstance): Response
     {
-        if (!$this->isCsrfTokenValid('cancel'.$instance->getId(), $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('cancel'.$workflowInstance->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('error.csrf_invalid'));
-            return $this->redirectToRoute('app_workflow_instance_show', ['id' => $instance->getId()]);
+            return $this->redirectToRoute('app_workflow_instance_show', ['id' => $workflowInstance->getId()]);
         }
 
         $reason = $request->request->get('reason', 'Cancelled by administrator');
-        $this->workflowService->cancelWorkflow($instance, $reason);
+        $this->workflowService->cancelWorkflow($workflowInstance, $reason);
 
         $this->addFlash('info', $this->translator->trans('workflow.info.cancelled'));
 
         return $this->redirectToRoute('app_workflow_index');
     }
 
-    #[Route('/active', name: 'app_workflow_active')]
+    #[Route('/workflow/active', name: 'app_workflow_active')]
     public function active(): Response
     {
         $activeWorkflows = $this->workflowService->getActiveWorkflows();
@@ -151,7 +153,7 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/overdue', name: 'app_workflow_overdue')]
+    #[Route('/workflow/overdue', name: 'app_workflow_overdue')]
     #[IsGranted('ROLE_ADMIN')]
     public function overdue(): Response
     {
@@ -162,12 +164,12 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/by-entity/{entityType}/{entityId}', name: 'app_workflow_by_entity', requirements: ['entityId' => '\d+'])]
+    #[Route('/workflow/by-entity/{entityType}/{entityId}', name: 'app_workflow_by_entity', requirements: ['entityId' => '\d+'])]
     public function byEntity(string $entityType, int $entityId): Response
     {
         $instance = $this->workflowService->getWorkflowInstance($entityType, $entityId);
 
-        if (!$instance) {
+        if (!$instance instanceof WorkflowInstance) {
             $this->addFlash('info', $this->translator->trans('workflow.info.no_active_workflow'));
             return $this->redirectToRoute('app_workflow_index');
         }
@@ -175,7 +177,7 @@ class WorkflowController extends AbstractController
         return $this->redirectToRoute('app_workflow_instance_show', ['id' => $instance->getId()]);
     }
 
-    #[Route('/start/{entityType}/{entityId}', name: 'app_workflow_start', requirements: ['entityId' => '\d+'])]
+    #[Route('/workflow/start/{entityType}/{entityId}', name: 'app_workflow_start', requirements: ['entityId' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function start(Request $request, string $entityType, int $entityId): Response
     {
@@ -183,20 +185,19 @@ class WorkflowController extends AbstractController
 
         $instance = $this->workflowService->startWorkflow($entityType, $entityId, $workflowName);
 
-        if ($instance) {
+        if ($instance instanceof WorkflowInstance) {
             $this->addFlash('success', $this->translator->trans('workflow.success.started'));
             return $this->redirectToRoute('app_workflow_instance_show', ['id' => $instance->getId()]);
-        } else {
-            $this->addFlash('error', $this->translator->trans('workflow.error.not_found'));
-            return $this->redirectToRoute('app_workflow_index');
         }
+        $this->addFlash('error', $this->translator->trans('workflow.error.not_found'));
+        return $this->redirectToRoute('app_workflow_index');
     }
 
     // ===========================================
     // Workflow Definition CRUD
     // ===========================================
 
-    #[Route('/definition/{id}', name: 'app_workflow_definition_show', requirements: ['id' => '\d+'])]
+    #[Route('/workflow/definition/{id}', name: 'app_workflow_definition_show', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function showDefinition(Workflow $workflow): Response
     {
@@ -212,7 +213,7 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/definition/{id}/builder', name: 'app_workflow_definition_builder', requirements: ['id' => '\d+'])]
+    #[Route('/workflow/definition/{id}/builder', name: 'app_workflow_definition_builder', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function builder(Workflow $workflow): Response
     {
@@ -222,14 +223,14 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/definition/new', name: 'app_workflow_definition_new', methods: ['GET', 'POST'])]
+    #[Route('/workflow/definition/new', name: 'app_workflow_definition_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function newDefinition(Request $request): Response
     {
         $workflow = new Workflow();
         $workflow->setTenant($this->tenantContext->getCurrentTenant());
 
-        $form = $this->createForm(\App\Form\WorkflowType::class, $workflow);
+        $form = $this->createForm(WorkflowType::class, $workflow);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -248,15 +249,15 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/definition/{id}/edit', name: 'app_workflow_definition_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[Route('/workflow/definition/{id}/edit', name: 'app_workflow_definition_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function editDefinition(Request $request, Workflow $workflow): Response
     {
-        $form = $this->createForm(\App\Form\WorkflowType::class, $workflow);
+        $form = $this->createForm(WorkflowType::class, $workflow);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $workflow->setUpdatedAt(new \DateTimeImmutable());
+            $workflow->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('workflow.success.definition_updated'));
@@ -271,7 +272,7 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/definition/{id}/delete', name: 'app_workflow_definition_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/workflow/definition/{id}/delete', name: 'app_workflow_definition_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function deleteDefinition(Request $request, Workflow $workflow): Response
     {
@@ -299,7 +300,7 @@ class WorkflowController extends AbstractController
         return $this->redirectToRoute('app_workflow_definitions');
     }
 
-    #[Route('/definition/{id}/toggle', name: 'app_workflow_definition_toggle', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/workflow/definition/{id}/toggle', name: 'app_workflow_definition_toggle', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function toggleDefinition(Request $request, Workflow $workflow): Response
     {
@@ -309,7 +310,7 @@ class WorkflowController extends AbstractController
         }
 
         $workflow->setIsActive(!$workflow->isActive());
-        $workflow->setUpdatedAt(new \DateTimeImmutable());
+        $workflow->setUpdatedAt(new DateTimeImmutable());
         $this->entityManager->flush();
 
         $status = $workflow->isActive() ? 'activated' : 'deactivated';

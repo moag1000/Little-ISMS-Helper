@@ -26,9 +26,9 @@ use Psr\Log\LoggerInterface;
 class RiskAppetitePrioritizationService
 {
     public function __construct(
-        private RiskRepository $riskRepository,
-        private RiskAppetiteRepository $riskAppetiteRepository,
-        private LoggerInterface $logger
+        private readonly RiskRepository $riskRepository,
+        private readonly RiskAppetiteRepository $riskAppetiteRepository,
+        private readonly LoggerInterface $logger
     ) {}
 
     /**
@@ -38,9 +38,6 @@ class RiskAppetitePrioritizationService
      * 1. Category-specific appetite (if defined)
      * 2. Global appetite
      * 3. null if no appetite defined
-     *
-     * @param Risk $risk
-     * @return RiskAppetite|null
      */
     public function getApplicableAppetite(Risk $risk): ?RiskAppetite
     {
@@ -57,7 +54,7 @@ class RiskAppetitePrioritizationService
                 'isActive' => true
             ]);
 
-            if ($categoryAppetite) {
+            if ($categoryAppetite instanceof RiskAppetite) {
                 return $categoryAppetite;
             }
         }
@@ -74,15 +71,12 @@ class RiskAppetitePrioritizationService
 
     /**
      * Check if a risk exceeds organizational risk appetite
-     *
-     * @param Risk $risk
-     * @return bool
      */
     public function exceedsAppetite(Risk $risk): bool
     {
         $appetite = $this->getApplicableAppetite($risk);
 
-        if (!$appetite) {
+        if (!$appetite instanceof RiskAppetite) {
             // No appetite defined = cannot determine
             return false;
         }
@@ -95,15 +89,12 @@ class RiskAppetitePrioritizationService
      * Get priority level for a risk based on appetite
      *
      * Returns: 'critical', 'high', 'medium', 'low', 'acceptable'
-     *
-     * @param Risk $risk
-     * @return string
      */
     public function getPriorityLevel(Risk $risk): string
     {
         $appetite = $this->getApplicableAppetite($risk);
 
-        if (!$appetite) {
+        if (!$appetite instanceof RiskAppetite) {
             // Fall back to absolute risk level if no appetite defined
             $residualRisk = $risk->getResidualRiskLevel();
             return $this->getAbsolutePriority($residualRisk);
@@ -129,7 +120,6 @@ class RiskAppetitePrioritizationService
     /**
      * Get detailed appetite analysis for a risk
      *
-     * @param Risk $risk
      * @return array{appetite: RiskAppetite|null, within_appetite: bool, priority: string, exceedance: int, percentage: float, requires_action: bool, recommendation: string}
      */
     public function analyzeRiskAppetite(Risk $risk): array
@@ -137,7 +127,7 @@ class RiskAppetitePrioritizationService
         $appetite = $this->getApplicableAppetite($risk);
         $residualRisk = $risk->getResidualRiskLevel();
 
-        if (!$appetite) {
+        if (!$appetite instanceof RiskAppetite) {
             return [
                 'appetite' => null,
                 'within_appetite' => null, // Unknown
@@ -155,7 +145,7 @@ class RiskAppetitePrioritizationService
         $percentage = $appetite->getAppetitePercentage($residualRisk);
         $priority = $this->getPriorityLevel($risk);
 
-        $recommendation = $this->getRecommendation($risk, $appetite, $withinAppetite, $exceedance);
+        $recommendation = $this->getRecommendation($withinAppetite, $exceedance);
 
         return [
             'appetite' => $appetite,
@@ -178,12 +168,12 @@ class RiskAppetitePrioritizationService
         $allRisks = $this->riskRepository->findAll();
         $exceedingRisks = [];
 
-        foreach ($allRisks as $risk) {
-            if ($this->exceedsAppetite($risk)) {
-                $analysis = $this->analyzeRiskAppetite($risk);
+        foreach ($allRisks as $allRisk) {
+            if ($this->exceedsAppetite($allRisk)) {
+                $analysis = $this->analyzeRiskAppetite($allRisk);
 
                 $exceedingRisks[] = [
-                    'risk' => $risk,
+                    'risk' => $allRisk,
                     'appetite' => $analysis['appetite'],
                     'exceedance' => $analysis['exceedance'],
                     'priority' => $analysis['priority'],
@@ -193,7 +183,7 @@ class RiskAppetitePrioritizationService
         }
 
         // Sort by exceedance (highest first)
-        usort($exceedingRisks, fn($a, $b) => $b['exceedance'] <=> $a['exceedance']);
+        usort($exceedingRisks, fn(array $a, array $b): int => $b['exceedance'] <=> $a['exceedance']);
 
         $this->logger->info('Found risks exceeding appetite', [
             'count' => count($exceedingRisks),
@@ -223,8 +213,8 @@ class RiskAppetitePrioritizationService
             'no_appetite_defined' => 0
         ];
 
-        foreach ($allRisks as $risk) {
-            $analysis = $this->analyzeRiskAppetite($risk);
+        foreach ($allRisks as $allRisk) {
+            $analysis = $this->analyzeRiskAppetite($allRisk);
 
             if ($analysis['appetite'] === null) {
                 $stats['no_appetite_defined']++;
@@ -275,48 +265,48 @@ class RiskAppetitePrioritizationService
         $allRisks = $this->riskRepository->findAll();
         $prioritized = [];
 
-        foreach ($allRisks as $risk) {
-            $analysis = $this->analyzeRiskAppetite($risk);
+        foreach ($allRisks as $allRisk) {
+            $analysis = $this->analyzeRiskAppetite($allRisk);
 
             $prioritized[] = [
-                'risk' => $risk,
+                'risk' => $allRisk,
                 'analysis' => $analysis,
                 // Composite score for sorting
-                'score' => $this->calculatePriorityScore($risk, $analysis)
+                'score' => $this->calculatePriorityScore($allRisk, $analysis)
             ];
         }
 
         // Sort by priority score (highest first)
-        usort($prioritized, fn($a, $b) => $b['score'] <=> $a['score']);
+        usort($prioritized, fn(array $a, array $b): int => $b['score'] <=> $a['score']);
 
         return array_slice($prioritized, 0, $limit);
     }
 
     // Helper Methods
-
     /**
      * Determine risk category based on risk properties
      *
      * This is a simplified mapping - can be extended with more sophisticated logic
-     *
-     * @param Risk $risk
-     * @return string|null
      */
     private function determineRiskCategory(Risk $risk): ?string
     {
-        $description = strtolower($risk->getDescription());
-        $title = strtolower($risk->getTitle());
+        $description = strtolower((string) $risk->getDescription());
+        $title = strtolower((string) $risk->getTitle());
         $combined = $description . ' ' . $title;
-
         if (str_contains($combined, 'financial') || str_contains($combined, 'monetary')) {
             return 'Financial';
-        } elseif (str_contains($combined, 'operational') || str_contains($combined, 'process')) {
+        }
+        if (str_contains($combined, 'operational') || str_contains($combined, 'process')) {
             return 'Operational';
-        } elseif (str_contains($combined, 'compliance') || str_contains($combined, 'regulatory')) {
+        }
+        if (str_contains($combined, 'compliance') || str_contains($combined, 'regulatory')) {
             return 'Compliance';
-        } elseif (str_contains($combined, 'strategic') || str_contains($combined, 'business')) {
+        }
+        if (str_contains($combined, 'strategic') || str_contains($combined, 'business')) {
             return 'Strategic';
-        } elseif (str_contains($combined, 'reputation') || str_contains($combined, 'brand')) {
+        }
+
+        if (str_contains($combined, 'reputation') || str_contains($combined, 'brand')) {
             return 'Reputational';
         }
 
@@ -325,49 +315,45 @@ class RiskAppetitePrioritizationService
 
     /**
      * Get absolute priority when no appetite is defined
-     *
-     * @param int $riskLevel
-     * @return string
      */
     private function getAbsolutePriority(int $riskLevel): string
     {
         if ($riskLevel >= 20) {
             return 'critical';
-        } elseif ($riskLevel >= 12) {
+        }
+        if ($riskLevel >= 12) {
             return 'high';
-        } elseif ($riskLevel >= 6) {
+        }
+        if ($riskLevel >= 6) {
             return 'medium';
-        } else {
+        }
+        else {
             return 'low';
         }
     }
 
     /**
      * Get recommendation based on appetite analysis
-     *
-     * @param Risk $risk
-     * @param RiskAppetite $appetite
-     * @param bool $withinAppetite
-     * @param int $exceedance
-     * @return string
      */
-    private function getRecommendation(Risk $risk, RiskAppetite $appetite, bool $withinAppetite, int $exceedance): string
+    private function getRecommendation(bool $withinAppetite, int $exceedance): string
     {
         if ($withinAppetite) {
             return 'Risk is within organizational appetite. Continue monitoring.';
         }
-
         if ($exceedance <= 3) {
             return sprintf(
                 'Risk slightly exceeds appetite by %d points. Review treatment options.',
                 $exceedance
             );
-        } elseif ($exceedance <= 6) {
+        }
+
+        if ($exceedance <= 6) {
             return sprintf(
                 'Risk significantly exceeds appetite by %d points. Additional controls required.',
                 $exceedance
             );
-        } else {
+        }
+        else {
             return sprintf(
                 'Risk far exceeds appetite by %d points. Immediate action and executive escalation required.',
                 $exceedance
@@ -377,10 +363,6 @@ class RiskAppetitePrioritizationService
 
     /**
      * Calculate composite priority score for sorting
-     *
-     * @param Risk $risk
-     * @param array $analysis
-     * @return int
      */
     private function calculatePriorityScore(Risk $risk, array $analysis): int
     {
@@ -403,8 +385,7 @@ class RiskAppetitePrioritizationService
             'acceptable' => 0,
             default => 0
         };
-        $score += $priorityBonus;
 
-        return $score;
+        return $score + $priorityBonus;
     }
 }

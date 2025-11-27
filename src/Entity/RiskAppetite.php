@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use App\Repository\RiskAppetiteRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -81,26 +83,26 @@ class RiskAppetite
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[Groups(['risk_appetite:read', 'risk_appetite:write'])]
-    private ?User $approvedBy = null;
+    private ?User $user = null;
 
     /**
      * Date when this risk appetite was approved
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['risk_appetite:read', 'risk_appetite:write'])]
-    private ?\DateTimeInterface $approvedAt = null;
+    private ?DateTimeInterface $approvedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['risk_appetite:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['risk_appetite:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -165,43 +167,43 @@ class RiskAppetite
 
     public function getApprovedBy(): ?User
     {
-        return $this->approvedBy;
+        return $this->user;
     }
 
-    public function setApprovedBy(?User $approvedBy): static
+    public function setApprovedBy(?User $user): static
     {
-        $this->approvedBy = $approvedBy;
+        $this->user = $user;
         return $this;
     }
 
-    public function getApprovedAt(): ?\DateTimeInterface
+    public function getApprovedAt(): ?DateTimeInterface
     {
         return $this->approvedAt;
     }
 
-    public function setApprovedAt(?\DateTimeInterface $approvedAt): static
+    public function setApprovedAt(?DateTimeInterface $approvedAt): static
     {
         $this->approvedAt = $approvedAt;
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -235,9 +237,11 @@ class RiskAppetite
     {
         if ($riskScore <= $this->maxAcceptableRisk) {
             return 'acceptable';
-        } elseif ($riskScore <= $this->maxAcceptableRisk * 1.5) {
+        }
+        if ($riskScore <= $this->maxAcceptableRisk * 1.5) {
             return 'review_required';
-        } else {
+        }
+        else {
             return 'exceeds_appetite';
         }
     }
@@ -272,6 +276,6 @@ class RiskAppetite
     #[Groups(['risk_appetite:read'])]
     public function isApproved(): bool
     {
-        return $this->approvedBy !== null && $this->approvedAt !== null;
+        return $this->user !== null && $this->approvedAt instanceof DateTimeInterface;
     }
 }

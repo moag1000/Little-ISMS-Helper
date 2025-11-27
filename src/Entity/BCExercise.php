@@ -2,10 +2,8 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
-use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
-use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
-use ApiPlatform\Metadata\ApiFilter;
+use DateTimeInterface;
+use DateTimeImmutable;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
@@ -113,7 +111,7 @@ class BCExercise
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Assert\NotNull]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
-    private ?\DateTimeInterface $exerciseDate = null;
+    private ?DateTimeInterface $exerciseDate = null;
 
     /**
      * Duration in hours
@@ -233,7 +231,7 @@ class BCExercise
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['bc_exercise:read', 'bc_exercise:write'])]
-    private ?\DateTimeInterface $reportDate = null;
+    private ?DateTimeInterface $reportDate = null;
 
     /**
      * Documents related to this exercise
@@ -245,26 +243,26 @@ class BCExercise
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['bc_exercise:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['bc_exercise:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     public function __construct()
     {
         $this->testedPlans = new ArrayCollection();
         $this->documents = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
     public function updateTimestamps(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
-        if ($this->createdAt === null) {
-            $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
+        if (!$this->createdAt instanceof DateTimeInterface) {
+            $this->createdAt = new DateTimeImmutable();
         }
     }
 
@@ -325,17 +323,17 @@ class BCExercise
         return $this->testedPlans;
     }
 
-    public function addTestedPlan(BusinessContinuityPlan $plan): static
+    public function addTestedPlan(BusinessContinuityPlan $businessContinuityPlan): static
     {
-        if (!$this->testedPlans->contains($plan)) {
-            $this->testedPlans->add($plan);
+        if (!$this->testedPlans->contains($businessContinuityPlan)) {
+            $this->testedPlans->add($businessContinuityPlan);
         }
         return $this;
     }
 
-    public function removeTestedPlan(BusinessContinuityPlan $plan): static
+    public function removeTestedPlan(BusinessContinuityPlan $businessContinuityPlan): static
     {
-        $this->testedPlans->removeElement($plan);
+        $this->testedPlans->removeElement($businessContinuityPlan);
         return $this;
     }
 
@@ -372,12 +370,12 @@ class BCExercise
         return $this;
     }
 
-    public function getExerciseDate(): ?\DateTimeInterface
+    public function getExerciseDate(): ?DateTimeInterface
     {
         return $this->exerciseDate;
     }
 
-    public function setExerciseDate(\DateTimeInterface $exerciseDate): static
+    public function setExerciseDate(DateTimeInterface $exerciseDate): static
     {
         $this->exerciseDate = $exerciseDate;
         return $this;
@@ -548,12 +546,12 @@ class BCExercise
         return $this;
     }
 
-    public function getReportDate(): ?\DateTimeInterface
+    public function getReportDate(): ?DateTimeInterface
     {
         return $this->reportDate;
     }
 
-    public function setReportDate(?\DateTimeInterface $reportDate): static
+    public function setReportDate(?DateTimeInterface $reportDate): static
     {
         $this->reportDate = $reportDate;
         return $this;
@@ -581,23 +579,23 @@ class BCExercise
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -616,12 +614,12 @@ class BCExercise
      */
     public function getSuccessPercentage(): int
     {
-        if (empty($this->successCriteria)) {
+        if ($this->successCriteria === null || $this->successCriteria === []) {
             return 0;
         }
 
         $total = count($this->successCriteria);
-        $met = count(array_filter($this->successCriteria, fn($value) => $value === true));
+        $met = count(array_filter($this->successCriteria, fn($value): bool => $value === true));
 
         return $total > 0 ? (int)(($met / $total) * 100) : 0;
     }
@@ -643,10 +641,14 @@ class BCExercise
         $score += $this->getSuccessPercentage() * 0.3;
 
         // Report completed (20%)
-        if ($this->reportCompleted) $score += 20;
+        if ($this->reportCompleted) {
+            $score += 20;
+        }
 
         // Action items documented (10%)
-        if (!empty($this->actionItems)) $score += 10;
+        if (!in_array($this->actionItems, [null, '', '0'], true)) {
+            $score += 10;
+        }
 
         return (int)$score;
     }

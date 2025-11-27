@@ -108,26 +108,26 @@ class CorporateGovernanceRepository extends ServiceEntityRepository
      * (useful for propagating changes from parent)
      */
     public function findHierarchicalSubsidiaries(
-        Tenant $parent,
+        Tenant $tenant,
         string $scope,
         ?string $scopeId = null
     ): array {
-        $qb = $this->createQueryBuilder('cg')
+        $queryBuilder = $this->createQueryBuilder('cg')
             ->where('cg.parent = :parent')
             ->andWhere('cg.governanceModel = :model')
             ->andWhere('cg.scope = :scope')
-            ->setParameter('parent', $parent)
+            ->setParameter('parent', $tenant)
             ->setParameter('model', GovernanceModel::HIERARCHICAL)
             ->setParameter('scope', $scope);
 
         if ($scopeId !== null) {
-            $qb->andWhere('cg.scopeId = :scopeId')
+            $queryBuilder->andWhere('cg.scopeId = :scopeId')
                ->setParameter('scopeId', $scopeId);
         } else {
-            $qb->andWhere('cg.scopeId IS NULL');
+            $queryBuilder->andWhere('cg.scopeId IS NULL');
         }
 
-        return $qb->getQuery()->getResult();
+        return $queryBuilder->getQuery()->getResult();
     }
 
     /**
@@ -135,7 +135,7 @@ class CorporateGovernanceRepository extends ServiceEntityRepository
      */
     public function getGovernanceStatistics(Tenant $tenant): array
     {
-        $conn = $this->getEntityManager()->getConnection();
+        $connection = $this->getEntityManager()->getConnection();
 
         $sql = '
             SELECT
@@ -146,7 +146,7 @@ class CorporateGovernanceRepository extends ServiceEntityRepository
             GROUP BY governance_model
         ';
 
-        $result = $conn->executeQuery($sql, ['tenantId' => $tenant->getId()])->fetchAllAssociative();
+        $result = $connection->executeQuery($sql, ['tenantId' => $tenant->getId()])->fetchAllAssociative();
 
         $stats = [
             'hierarchical' => 0,
@@ -178,7 +178,7 @@ class CorporateGovernanceRepository extends ServiceEntityRepository
      */
     public function deleteByScope(Tenant $tenant, string $scope, ?string $scopeId = null): int
     {
-        $qb = $this->createQueryBuilder('cg')
+        $queryBuilder = $this->createQueryBuilder('cg')
             ->delete()
             ->where('cg.tenant = :tenant')
             ->andWhere('cg.scope = :scope')
@@ -186,13 +186,13 @@ class CorporateGovernanceRepository extends ServiceEntityRepository
             ->setParameter('scope', $scope);
 
         if ($scopeId !== null) {
-            $qb->andWhere('cg.scopeId = :scopeId')
+            $queryBuilder->andWhere('cg.scopeId = :scopeId')
                ->setParameter('scopeId', $scopeId);
         } else {
-            $qb->andWhere('cg.scopeId IS NULL');
+            $queryBuilder->andWhere('cg.scopeId IS NULL');
         }
 
-        return $qb->getQuery()->execute();
+        return $queryBuilder->getQuery()->execute();
     }
 
     /**
@@ -200,7 +200,7 @@ class CorporateGovernanceRepository extends ServiceEntityRepository
      */
     public function getScopeBreakdown(Tenant $tenant): array
     {
-        $conn = $this->getEntityManager()->getConnection();
+        $connection = $this->getEntityManager()->getConnection();
 
         $sql = '
             SELECT
@@ -214,6 +214,6 @@ class CorporateGovernanceRepository extends ServiceEntityRepository
             ORDER BY scope
         ';
 
-        return $conn->executeQuery($sql, ['tenantId' => $tenant->getId()])->fetchAllAssociative();
+        return $connection->executeQuery($sql, ['tenantId' => $tenant->getId()])->fetchAllAssociative();
     }
 }

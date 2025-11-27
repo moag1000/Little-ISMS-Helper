@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use DateTimeImmutable;
 use App\Entity\MfaToken;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -110,7 +111,7 @@ class MfaTokenRepository extends ServiceEntityRepository
             ->where('m.expiresAt IS NOT NULL')
             ->andWhere('m.expiresAt < :now')
             ->andWhere('m.isActive = :active')
-            ->setParameter('now', new \DateTimeImmutable())
+            ->setParameter('now', new DateTimeImmutable())
             ->setParameter('active', true)
             ->getQuery()
             ->getResult();

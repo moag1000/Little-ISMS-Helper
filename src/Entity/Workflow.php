@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
 use App\Entity\Tenant;
 use App\Repository\WorkflowRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -38,10 +39,10 @@ class Workflow
     private Collection $steps;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
 
     
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
@@ -51,7 +52,7 @@ class Workflow
 public function __construct()
     {
         $this->steps = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -111,44 +112,42 @@ public function __construct()
         return $this->steps;
     }
 
-    public function addStep(WorkflowStep $step): static
+    public function addStep(WorkflowStep $workflowStep): static
     {
-        if (!$this->steps->contains($step)) {
-            $this->steps->add($step);
-            $step->setWorkflow($this);
+        if (!$this->steps->contains($workflowStep)) {
+            $this->steps->add($workflowStep);
+            $workflowStep->setWorkflow($this);
         }
 
         return $this;
     }
 
-    public function removeStep(WorkflowStep $step): static
+    public function removeStep(WorkflowStep $workflowStep): static
     {
-        if ($this->steps->removeElement($step)) {
-            if ($step->getWorkflow() === $this) {
-                $step->setWorkflow(null);
-            }
+        if ($this->steps->removeElement($workflowStep) && $workflowStep->getWorkflow() === $this) {
+            $workflowStep->setWorkflow(null);
         }
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(?DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;

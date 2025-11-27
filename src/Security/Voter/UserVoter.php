@@ -109,9 +109,11 @@ class UserVoter extends Voter
         if ($currentUser->getId() === $targetUser->getId()) {
             return true;
         }
-
         // Check if user has view permission
-        return $currentUser->hasPermission('user.view') || $currentUser->hasPermission('user.view_all');
+        if ($currentUser->hasPermission('user.view')) {
+            return true;
+        }
+        return $currentUser->hasPermission('user.view_all');
     }
 
     private function canEdit(User $currentUser, User $targetUser): bool

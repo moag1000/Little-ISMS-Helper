@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use Exception;
+use App\Entity\User;
 use App\Entity\Incident;
 use App\Entity\RiskTreatmentPlan;
 use App\Entity\Document;
@@ -29,9 +31,9 @@ use Psr\Log\LoggerInterface;
 class WorkflowAutoTriggerService
 {
     public function __construct(
-        private readonly IncidentEscalationWorkflowService $incidentEscalationService,
-        private readonly RiskAcceptanceWorkflowService $riskAcceptanceService,
-        private readonly RiskTreatmentPlanApprovalService $treatmentPlanApprovalService,
+        private readonly IncidentEscalationWorkflowService $incidentEscalationWorkflowService,
+        private readonly RiskAcceptanceWorkflowService $riskAcceptanceWorkflowService,
+        private readonly RiskTreatmentPlanApprovalService $riskTreatmentPlanApprovalService,
         private readonly DocumentApprovalService $documentApprovalService,
         private readonly LoggerInterface $logger
     ) {}
@@ -39,7 +41,6 @@ class WorkflowAutoTriggerService
     /**
      * Trigger workflows for a newly created or updated Incident
      *
-     * @param Incident $incident
      * @param bool $isNew Whether this is a new incident (true) or update (false)
      * @return array Workflow trigger results
      */
@@ -56,7 +57,7 @@ class WorkflowAutoTriggerService
 
         // Always auto-escalate incidents based on severity
         try {
-            $escalationResult = $this->incidentEscalationService->autoEscalate($incident);
+            $escalationResult = $this->incidentEscalationWorkflowService->autoEscalate($incident);
             $results['escalation'] = $escalationResult;
 
             $this->logger->info('Incident auto-escalation completed', [
@@ -64,7 +65,7 @@ class WorkflowAutoTriggerService
                 'escalation_level' => $escalationResult['escalation_level'],
                 'workflow_started' => $escalationResult['workflow_started'],
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to auto-escalate incident', [
                 'incident_id' => $incident->getId(),
                 'error' => $e->getMessage(),
@@ -80,33 +81,32 @@ class WorkflowAutoTriggerService
      *
      * ISO 27005:2022 Clause 8.5.7: Risk treatment plans should be reviewed and approved
      *
-     * @param RiskTreatmentPlan $plan
      * @return array Workflow trigger results
      */
-    public function triggerRiskTreatmentPlanWorkflows(RiskTreatmentPlan $plan): array
+    public function triggerRiskTreatmentPlanWorkflows(RiskTreatmentPlan $riskTreatmentPlan): array
     {
         $this->logger->info('Triggering risk treatment plan workflows', [
-            'plan_id' => $plan->getId(),
-            'risk_id' => $plan->getRisk()?->getId(),
-            'status' => $plan->getStatus(),
+            'plan_id' => $riskTreatmentPlan->getId(),
+            'risk_id' => $riskTreatmentPlan->getRisk()?->getId(),
+            'status' => $riskTreatmentPlan->getStatus(),
         ]);
 
         $results = [];
 
         // Only trigger approval workflow for new plans in 'planned' status
-        if ($plan->getStatus() === 'planned') {
+        if ($riskTreatmentPlan->getStatus() === 'planned') {
             try {
-                $approvalResult = $this->treatmentPlanApprovalService->requestApproval($plan);
+                $approvalResult = $this->riskTreatmentPlanApprovalService->requestApproval($riskTreatmentPlan);
                 $results['approval'] = $approvalResult;
 
                 $this->logger->info('Risk treatment plan approval workflow triggered', [
-                    'plan_id' => $plan->getId(),
+                    'plan_id' => $riskTreatmentPlan->getId(),
                     'workflow_started' => $approvalResult['workflow_started'],
                     'approval_level' => $approvalResult['approval_level'],
                 ]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logger->error('Failed to trigger treatment plan approval workflow', [
-                    'plan_id' => $plan->getId(),
+                    'plan_id' => $riskTreatmentPlan->getId(),
                     'error' => $e->getMessage(),
                 ]);
                 $results['approval'] = ['error' => $e->getMessage()];
@@ -121,7 +121,6 @@ class WorkflowAutoTriggerService
      *
      * ISO 27001:2022 Clause 5.2.3: Policies should be reviewed and approved
      *
-     * @param Document $document
      * @param bool $isNew Whether this is a new document
      * @return array Workflow trigger results
      */
@@ -147,7 +146,7 @@ class WorkflowAutoTriggerService
                     'workflow_started' => $approvalResult['workflow_started'],
                     'approval_level' => $approvalResult['approval_level'],
                 ]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logger->error('Failed to trigger document approval workflow', [
                     'document_id' => $document->getId(),
                     'error' => $e->getMessage(),
@@ -164,8 +163,7 @@ class WorkflowAutoTriggerService
      *
      * ISO 27005:2022 Clause 8.4.4: Risk acceptance requires formal approval
      *
-     * @param Risk $risk
-     * @param \App\Entity\User $requester User requesting acceptance
+     * @param User $requester User requesting acceptance
      * @param string $justification Justification for acceptance
      * @return array Workflow trigger results
      */
@@ -181,14 +179,14 @@ class WorkflowAutoTriggerService
 
         try {
             // Use existing RiskAcceptanceWorkflowService
-            $acceptanceResult = $this->riskAcceptanceService->requestAcceptance($risk, $requester, $justification);
+            $acceptanceResult = $this->riskAcceptanceWorkflowService->requestAcceptance($risk, $requester, $justification);
             $results['acceptance'] = $acceptanceResult;
 
             $this->logger->info('Risk acceptance workflow triggered', [
                 'risk_id' => $risk->getId(),
                 'approval_level' => $acceptanceResult['approval_level'] ?? 'unknown',
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to trigger risk acceptance workflow', [
                 'risk_id' => $risk->getId(),
                 'error' => $e->getMessage(),
@@ -202,15 +200,13 @@ class WorkflowAutoTriggerService
     /**
      * Determine if an entity change requires workflow triggering
      *
-     * @param object $entity
      * @param array $changeSet Array of changed fields
-     * @return bool
      */
     public function shouldTriggerWorkflow(object $entity, array $changeSet = []): bool
     {
         // Incident: trigger on creation or severity change
         if ($entity instanceof Incident) {
-            return empty($changeSet) || isset($changeSet['severity']) || isset($changeSet['dataBreachOccurred']);
+            return $changeSet === [] || isset($changeSet['severity']) || isset($changeSet['dataBreachOccurred']);
         }
 
         // RiskTreatmentPlan: trigger on creation with 'planned' status
@@ -234,7 +230,6 @@ class WorkflowAutoTriggerService
     /**
      * Get workflow trigger summary for an entity
      *
-     * @param object $entity
      * @return array Summary of applicable workflows
      */
     public function getApplicableWorkflows(object $entity): array

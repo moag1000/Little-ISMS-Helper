@@ -3,6 +3,7 @@ admin:
     breadcrumb:
         home: 'Admin Dashboard'
     section:
+        overview: Overview
         user_access: 'Users & Access'
         system_config: 'System Configuration'
         modules: 'Modules & Features'
@@ -74,6 +75,12 @@ admin:
             view_all: 'View all'
     licensing:
         attributions_provided: 'Attributions Provided'
+    data_export:
+        title: 'Data Export'
+        format: 'Export Format'
+        format_selection: 'Export Format Selection'
+    data_management:
+        title: 'Data Management'
     settings:
         required_for_iso27001: 'Required for ISO 27001'
         title: 'System Settings'
@@ -101,6 +108,7 @@ admin:
         security:
             title: 'Security Settings'
             description: 'Configuration of authentication, session management and password policies (ISO 27001 Annex A 5.17, 5.18)'
+            2fa_settings: 'Two-Factor Authentication Settings'
             session_lifetime: 'Session Lifetime'
             max_login_attempts: 'Max. Login Attempts'
             require_2fa: 'Require MFA'
@@ -213,3 +221,9 @@ admin:
         no_active: 'No Active'
         inactive_modules: 'Inactive Modules'
         activate: Activate
+data_management:
+    export:
+        includes_all_records: 'Includes all records from your tenant'
+        sensitive_data_warning: 'Warning: This export may contain sensitive data. Please store securely.'
+        large_exports_warning: 'Note: Large datasets may take some time to export.'
+        relationships_warning: 'Info: Relationships between entities are exported as IDs.'

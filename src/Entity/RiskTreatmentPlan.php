@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
+use DateTime;
 use App\Repository\RiskTreatmentPlanRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -89,16 +92,16 @@ class RiskTreatmentPlan
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
-    private ?\DateTimeInterface $startDate = null;
+    private ?DateTimeInterface $startDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
     #[Assert\NotNull(message: 'Target completion date is required')]
-    private ?\DateTimeInterface $targetCompletionDate = null;
+    private ?DateTimeInterface $targetCompletionDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
-    private ?\DateTimeInterface $actualCompletionDate = null;
+    private ?DateTimeInterface $actualCompletionDate = null;
 
     /**
      * Budget allocated for this treatment plan
@@ -115,7 +118,7 @@ class RiskTreatmentPlan
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
     #[MaxDepth(1)]
-    private ?User $responsiblePerson = null;
+    private ?User $user = null;
 
     /**
      * Controls implementing this treatment plan
@@ -143,16 +146,16 @@ class RiskTreatmentPlan
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['treatment_plan:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['treatment_plan:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     public function __construct()
     {
         $this->controls = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -226,34 +229,34 @@ class RiskTreatmentPlan
         return $this;
     }
 
-    public function getStartDate(): ?\DateTimeInterface
+    public function getStartDate(): ?DateTimeInterface
     {
         return $this->startDate;
     }
 
-    public function setStartDate(?\DateTimeInterface $startDate): static
+    public function setStartDate(?DateTimeInterface $startDate): static
     {
         $this->startDate = $startDate;
         return $this;
     }
 
-    public function getTargetCompletionDate(): ?\DateTimeInterface
+    public function getTargetCompletionDate(): ?DateTimeInterface
     {
         return $this->targetCompletionDate;
     }
 
-    public function setTargetCompletionDate(?\DateTimeInterface $targetCompletionDate): static
+    public function setTargetCompletionDate(?DateTimeInterface $targetCompletionDate): static
     {
         $this->targetCompletionDate = $targetCompletionDate;
         return $this;
     }
 
-    public function getActualCompletionDate(): ?\DateTimeInterface
+    public function getActualCompletionDate(): ?DateTimeInterface
     {
         return $this->actualCompletionDate;
     }
 
-    public function setActualCompletionDate(?\DateTimeInterface $actualCompletionDate): static
+    public function setActualCompletionDate(?DateTimeInterface $actualCompletionDate): static
     {
         $this->actualCompletionDate = $actualCompletionDate;
         return $this;
@@ -272,12 +275,12 @@ class RiskTreatmentPlan
 
     public function getResponsiblePerson(): ?User
     {
-        return $this->responsiblePerson;
+        return $this->user;
     }
 
-    public function setResponsiblePerson(?User $responsiblePerson): static
+    public function setResponsiblePerson(?User $user): static
     {
-        $this->responsiblePerson = $responsiblePerson;
+        $this->user = $user;
         return $this;
     }
 
@@ -325,23 +328,23 @@ class RiskTreatmentPlan
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -357,7 +360,7 @@ class RiskTreatmentPlan
             return false;
         }
 
-        $now = new \DateTime();
+        $now = new DateTime();
         return $this->targetCompletionDate < $now;
     }
 
@@ -367,9 +370,9 @@ class RiskTreatmentPlan
     #[Groups(['treatment_plan:read'])]
     public function getDaysUntilTarget(): int
     {
-        $now = new \DateTime();
-        $interval = $now->diff($this->targetCompletionDate);
-        return (int)($interval->invert ? -$interval->days : $interval->days);
+        $now = new DateTime();
+        $dateInterval = $now->diff($this->targetCompletionDate);
+        return (int)($dateInterval->invert ? -$dateInterval->days : $dateInterval->days);
     }
 
     /**
@@ -383,11 +386,11 @@ class RiskTreatmentPlan
             return true;
         }
 
-        if ($this->startDate === null) {
+        if (!$this->startDate instanceof DateTimeInterface) {
             return true; // Not started yet
         }
 
-        $now = new \DateTime();
+        $now = new DateTime();
         $totalDuration = $this->startDate->diff($this->targetCompletionDate)->days;
         $elapsedDuration = $this->startDate->diff($now)->days;
 
@@ -418,7 +421,7 @@ class RiskTreatmentPlan
     #[Groups(['treatment_plan:read'])]
     public function getResponsiblePersonName(): ?string
     {
-        return $this->responsiblePerson?->getFullName();
+        return $this->user?->getFullName();
     }
 
     /**
@@ -427,7 +430,7 @@ class RiskTreatmentPlan
     #[Groups(['treatment_plan:read'])]
     public function hasStarted(): bool
     {
-        return $this->startDate !== null && $this->startDate <= new \DateTime();
+        return $this->startDate instanceof DateTimeInterface && $this->startDate <= new DateTime();
     }
 
     /**
@@ -436,6 +439,6 @@ class RiskTreatmentPlan
     #[Groups(['treatment_plan:read'])]
     public function isComplete(): bool
     {
-        return $this->status === 'completed' && $this->actualCompletionDate !== null;
+        return $this->status === 'completed' && $this->actualCompletionDate instanceof DateTimeInterface;
     }
 }

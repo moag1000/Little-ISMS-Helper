@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use DateTime;
+use App\Entity\Tenant;
 use App\Entity\Training;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -36,7 +38,7 @@ class TrainingRepository extends ServiceEntityRepository
             ->where('t.status IN (:statuses)')
             ->andWhere('t.scheduledDate >= :today')
             ->setParameter('statuses', ['planned', 'scheduled'])
-            ->setParameter('today', new \DateTime())
+            ->setParameter('today', new DateTime())
             ->orderBy('t.scheduledDate', 'ASC')
             ->getQuery()
             ->getResult();
@@ -45,7 +47,7 @@ class TrainingRepository extends ServiceEntityRepository
     /**
      * Find all trainings for a tenant (own trainings only)
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find trainings for
+     * @param Tenant $tenant The tenant to find trainings for
      * @return Training[] Array of Training entities
      */
     public function findByTenant($tenant): array
@@ -62,8 +64,8 @@ class TrainingRepository extends ServiceEntityRepository
      * Find trainings by tenant including all ancestors (for hierarchical governance)
      * This allows viewing inherited trainings from parent companies, grandparents, etc.
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find trainings for
-     * @param \App\Entity\Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
+     * @param Tenant $tenant The tenant to find trainings for
+     * @param Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
      * @return Training[] Array of Training entities (own + inherited from all ancestors)
      */
     public function findByTenantIncludingParent($tenant, $parentTenant = null): array
@@ -71,17 +73,17 @@ class TrainingRepository extends ServiceEntityRepository
         // Get all ancestors (parent, grandparent, great-grandparent, etc.)
         $ancestors = $tenant->getAllAncestors();
 
-        $qb = $this->createQueryBuilder('t')
+        $queryBuilder = $this->createQueryBuilder('t')
             ->where('t.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
         // Include trainings from all ancestors in the hierarchy
         if (!empty($ancestors)) {
-            $qb->orWhere('t.tenant IN (:ancestors)')
+            $queryBuilder->orWhere('t.tenant IN (:ancestors)')
                ->setParameter('ancestors', $ancestors);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('t.scheduledDate', 'DESC')
             ->getQuery()
             ->getResult();
@@ -91,7 +93,7 @@ class TrainingRepository extends ServiceEntityRepository
      * Find trainings by tenant including all subsidiaries (for corporate parent view)
      * This allows viewing aggregated trainings from all subsidiary companies
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find trainings for
+     * @param Tenant $tenant The tenant to find trainings for
      * @return Training[] Array of Training entities (own + from all subsidiaries)
      */
     public function findByTenantIncludingSubsidiaries($tenant): array
@@ -99,17 +101,17 @@ class TrainingRepository extends ServiceEntityRepository
         // Get all subsidiaries recursively
         $subsidiaries = $tenant->getAllSubsidiaries();
 
-        $qb = $this->createQueryBuilder('t')
+        $queryBuilder = $this->createQueryBuilder('t')
             ->where('t.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
         // Include trainings from all subsidiaries in the hierarchy
         if (!empty($subsidiaries)) {
-            $qb->orWhere('t.tenant IN (:subsidiaries)')
+            $queryBuilder->orWhere('t.tenant IN (:subsidiaries)')
                ->setParameter('subsidiaries', $subsidiaries);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('t.scheduledDate', 'DESC')
             ->getQuery()
             ->getResult();

@@ -2,6 +2,9 @@
 
 namespace App\Service;
 
+use Exception;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -10,17 +13,15 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 class HealthAutoFixService
 {
-    private Filesystem $filesystem;
-    private LoggerInterface $logger;
+    private readonly Filesystem $filesystem;
 
     public function __construct(
         private readonly string $projectDir,
         private readonly string $cacheDir,
         private readonly string $logsDir,
-        LoggerInterface $logger
+        private readonly LoggerInterface $logger
     ) {
         $this->filesystem = new Filesystem();
-        $this->logger = $logger;
     }
 
     /**
@@ -40,7 +41,7 @@ class HealthAutoFixService
                 ]);
                 try {
                     $this->filesystem->mkdir($this->cacheDir, 0775);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->logger->error('Failed to create cache directory', [
                         'error' => $e->getMessage(),
                     ]);
@@ -102,7 +103,7 @@ class HealthAutoFixService
                 'success' => false,
                 'message' => 'Cache directory permissions could not be automatically fixed. The web server user may not have sufficient privileges.',
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to fix cache permissions', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
@@ -132,7 +133,7 @@ class HealthAutoFixService
                 ]);
                 try {
                     $this->filesystem->mkdir($this->logsDir, 0775);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->logger->error('Failed to create log directory', [
                         'error' => $e->getMessage(),
                     ]);
@@ -180,7 +181,7 @@ class HealthAutoFixService
                 'success' => false,
                 'message' => 'Log directory permissions could not be automatically fixed. The web server user may not have sufficient privileges.',
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to fix log permissions', [
                 'error' => $e->getMessage(),
             ]);
@@ -205,11 +206,11 @@ class HealthAutoFixService
 
             // Remove cache files (but keep the directory structure)
             $cacheFiles = glob($this->cacheDir . '/*');
-            foreach ($cacheFiles as $file) {
-                if (is_file($file)) {
-                    @unlink($file);
-                } elseif (is_dir($file) && basename($file) !== '.' && basename($file) !== '..') {
-                    $this->filesystem->remove($file);
+            foreach ($cacheFiles as $cacheFile) {
+                if (is_file($cacheFile)) {
+                    @unlink($cacheFile);
+                } elseif (is_dir($cacheFile) && basename($cacheFile) !== '.' && basename($cacheFile) !== '..') {
+                    $this->filesystem->remove($cacheFile);
                 }
             }
 
@@ -225,7 +226,7 @@ class HealthAutoFixService
                 'success' => true,
                 'message' => 'Cache cleared successfully. Freed: ' . $this->formatBytes($freedSpace),
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to clear cache', [
                 'error' => $e->getMessage(),
             ]);
@@ -266,9 +267,9 @@ class HealthAutoFixService
                 ];
             }
 
-            foreach ($logFiles as $file) {
-                if (is_file($file) && filemtime($file) < $cutoffTime) {
-                    @unlink($file);
+            foreach ($logFiles as $logFile) {
+                if (is_file($logFile) && filemtime($logFile) < $cutoffTime) {
+                    @unlink($logFile);
                     $deletedCount++;
                 }
             }
@@ -285,7 +286,7 @@ class HealthAutoFixService
                 'success' => true,
                 'message' => "Cleaned $deletedCount old log files. Freed: " . $this->formatBytes($freedSpace),
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to clean old logs', [
                 'error' => $e->getMessage(),
             ]);
@@ -323,15 +324,15 @@ class HealthAutoFixService
                 ];
             }
 
-            foreach ($logFiles as $file) {
-                if (is_file($file) && filesize($file) > 10 * 1024 * 1024) { // > 10MB
-                    $sizeBefore = filesize($file);
-                    $archiveName = $file . '.' . date('Y-m-d_His') . '.gz';
+            foreach ($logFiles as $logFile) {
+                if (is_file($logFile) && filesize($logFile) > 10 * 1024 * 1024) { // > 10MB
+                    $sizeBefore = filesize($logFile);
+                    $archiveName = $logFile . '.' . date('Y-m-d_His') . '.gz';
 
                     // Compress the file
-                    if ($this->compressFile($file, $archiveName)) {
+                    if ($this->compressFile($logFile, $archiveName)) {
                         // Clear the original log file
-                        file_put_contents($file, '');
+                        file_put_contents($logFile, '');
                         $rotatedCount++;
                         $freedSpace += $sizeBefore;
                     }
@@ -347,7 +348,7 @@ class HealthAutoFixService
                 'success' => true,
                 'message' => "Rotated $rotatedCount log files. Freed: " . $this->formatBytes($freedSpace),
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to rotate logs', [
                 'error' => $e->getMessage(),
             ]);
@@ -384,7 +385,7 @@ class HealthAutoFixService
                 'message' => 'Disk space optimized successfully',
                 'details' => $results,
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to optimize disk space', [
                 'error' => $e->getMessage(),
             ]);
@@ -407,8 +408,8 @@ class HealthAutoFixService
             return 0;
         }
 
-        $files = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS)
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS)
         );
 
         foreach ($files as $file) {
@@ -441,7 +442,7 @@ class HealthAutoFixService
             gzclose($destHandle);
 
             return file_exists($destination);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to compress file', [
                 'source' => $source,
                 'error' => $e->getMessage(),
@@ -469,7 +470,7 @@ class HealthAutoFixService
                 ]);
                 try {
                     $this->filesystem->mkdir($varDir, 0775);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->logger->error('Failed to create var/ directory', [
                         'error' => $e->getMessage(),
                     ]);
@@ -520,7 +521,7 @@ class HealthAutoFixService
                 'success' => false,
                 'message' => 'var/ directory permissions could not be automatically fixed. The web server user may not have sufficient privileges.',
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to fix var/ permissions', [
                 'error' => $e->getMessage(),
             ]);
@@ -571,7 +572,7 @@ class HealthAutoFixService
                 'success' => false,
                 'message' => 'uploads/ directory is not writable. Please check permissions manually.',
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to fix uploads/ permissions', [
                 'error' => $e->getMessage(),
             ]);
@@ -590,7 +591,7 @@ class HealthAutoFixService
     {
         try {
             $sessionSavePath = session_save_path();
-            if (empty($sessionSavePath)) {
+            if (in_array($sessionSavePath, ['', '0', false], true)) {
                 $sessionSavePath = sys_get_temp_dir();
             }
 
@@ -614,7 +615,7 @@ class HealthAutoFixService
                 'success' => false,
                 'message' => 'Session directory is not writable. Please check permissions manually.',
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to fix session permissions', [
                 'error' => $e->getMessage(),
             ]);
@@ -683,7 +684,7 @@ class HealthAutoFixService
                 'success' => true,
                 'message' => "Cleaned $deletedCount old uploads. Freed: " . $this->formatBytes($freedSpace),
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to clean old uploads', [
                 'error' => $e->getMessage(),
             ]);
@@ -740,7 +741,7 @@ class HealthAutoFixService
                 'success' => false,
                 'message' => 'Composer install failed. Check logs for details.',
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to run composer install', [
                 'error' => $e->getMessage(),
             ]);
@@ -758,9 +759,9 @@ class HealthAutoFixService
     private function fixDirectoryPermissionsRecursive(string $directory): void
     {
         try {
-            $items = new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($directory, \RecursiveDirectoryIterator::SKIP_DOTS),
-                \RecursiveIteratorIterator::SELF_FIRST
+            $items = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS),
+                RecursiveIteratorIterator::SELF_FIRST
             );
 
             foreach ($items as $item) {
@@ -770,7 +771,7 @@ class HealthAutoFixService
                     @chmod($item->getPathname(), 0664);
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->warning('Failed to fix some permissions recursively', [
                 'error' => $e->getMessage(),
             ]);

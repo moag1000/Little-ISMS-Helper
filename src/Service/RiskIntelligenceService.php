@@ -2,10 +2,8 @@
 
 namespace App\Service;
 
-use App\Entity\Control;
 use App\Entity\Incident;
 use App\Entity\Risk;
-use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 
 /**
@@ -19,8 +17,7 @@ use App\Repository\IncidentRepository;
 class RiskIntelligenceService
 {
     public function __construct(
-        private IncidentRepository $incidentRepository,
-        private ControlRepository $controlRepository
+        private readonly IncidentRepository $incidentRepository
     ) {}
 
     /**
@@ -35,9 +32,9 @@ class RiskIntelligenceService
 
         foreach ($incidents as $incident) {
             // Wenn ein Incident noch nicht zu einem Risk führte
-            $existingRisks = $this->findRelatedRisks($incident);
+            $existingRisks = $this->findRelatedRisks();
 
-            if (empty($existingRisks)) {
+            if ($existingRisks === []) {
                 $suggestions[] = [
                     'incident' => $incident,
                     'suggested_risk' => [
@@ -142,18 +139,18 @@ class RiskIntelligenceService
 
         $suggestedControls = [];
 
-        foreach ($similarIncidents as $incident) {
+        foreach ($similarIncidents as $similarIncident) {
             // Controls die bei diesem Incident zur Behebung führten
-            $relatedControls = $incident->getRelatedControls();
+            $relatedControls = $similarIncident->getRelatedControls();
 
-            foreach ($relatedControls as $control) {
-                if (!$risk->getControls()->contains($control)) {
+            foreach ($relatedControls as $relatedControl) {
+                if (!$risk->getControls()->contains($relatedControl)) {
                     $suggestedControls[] = [
-                        'control' => $control,
+                        'control' => $relatedControl,
                         'reason' => sprintf(
                             'Half bei Incident #%s: %s',
-                            $incident->getIncidentNumber(),
-                            $incident->getTitle()
+                            $similarIncident->getIncidentNumber(),
+                            $similarIncident->getTitle()
                         )
                     ];
                 }
@@ -210,7 +207,7 @@ class RiskIntelligenceService
 
     // Helper Methods
 
-    private function findRelatedRisks(Incident $incident): array
+    private function findRelatedRisks(): array
     {
         // Vereinfachte Logik - kann erweitert werden
         return [];
@@ -230,10 +227,18 @@ class RiskIntelligenceService
     {
         $count = $this->incidentRepository->count(['category' => $category]);
 
-        if ($count > 5) return 5;
-        if ($count > 3) return 4;
-        if ($count > 1) return 3;
-        if ($count > 0) return 2;
+        if ($count > 5) {
+            return 5;
+        }
+        if ($count > 3) {
+            return 4;
+        }
+        if ($count > 1) {
+            return 3;
+        }
+        if ($count > 0) {
+            return 2;
+        }
         return 1;
     }
 
@@ -251,7 +256,7 @@ class RiskIntelligenceService
     private function mapRiskToIncidentCategory(Risk $risk): string
     {
         // Vereinfachte Mapping-Logik
-        if (str_contains(strtolower($risk->getDescription()), 'cyber')) {
+        if (str_contains(strtolower((string) $risk->getDescription()), 'cyber')) {
             return 'cyber_attack';
         }
         return 'other';

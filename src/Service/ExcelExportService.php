@@ -2,13 +2,12 @@
 
 namespace App\Service;
 
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Style\Font;
 use PhpOffice\PhpSpreadsheet\Style\Border;
-use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 /**
@@ -45,15 +44,15 @@ class ExcelExportService
 
     public function addHeaderRow(Spreadsheet $spreadsheet, array $headers, int $row = 1): void
     {
-        $sheet = $spreadsheet->getActiveSheet();
+        $worksheet = $spreadsheet->getActiveSheet();
         $col = 'A';
 
         foreach ($headers as $header) {
             $cell = $col . $row;
-            $sheet->setCellValue($cell, $header);
+            $worksheet->setCellValue($cell, $header);
 
             // Style header
-            $sheet->getStyle($cell)->applyFromArray([
+            $worksheet->getStyle($cell)->applyFromArray([
                 'font' => [
                     'bold' => true,
                     'color' => ['rgb' => 'FFFFFF'],
@@ -68,14 +67,14 @@ class ExcelExportService
                 ],
             ]);
 
-            $sheet->getColumnDimension($col)->setAutoSize(true);
+            $worksheet->getColumnDimension($col)->setAutoSize(true);
             $col = str_increment($col);
         }
     }
 
     public function addDataRows(Spreadsheet $spreadsheet, array $data, int $startRow = 2): void
     {
-        $sheet = $spreadsheet->getActiveSheet();
+        $worksheet = $spreadsheet->getActiveSheet();
         $row = $startRow;
         $col = 'A'; // Initialize to prevent undefined variable when $data is empty
 
@@ -84,7 +83,7 @@ class ExcelExportService
             foreach ($rowData as $value) {
                 // Security: Prevent CSV/Excel Formula Injection (OWASP #3 - Injection)
                 $safeValue = $this->sanitizeFormulaInjection($value);
-                $sheet->setCellValue($col . $row, $safeValue);
+                $worksheet->setCellValue($col . $row, $safeValue);
                 $col = str_increment($col);
             }
             $row++;
@@ -92,8 +91,8 @@ class ExcelExportService
 
         // Apply zebra striping
         for ($i = $startRow; $i < $row; $i++) {
-            if ($i % 2 == 0) {
-                $sheet->getStyle('A' . $i . ':' . $col . $i)->applyFromArray([
+            if ($i % 2 === 0) {
+                $worksheet->getStyle('A' . $i . ':' . $col . $i)->applyFromArray([
                     'fill' => [
                         'fillType' => Fill::FILL_SOLID,
                         'startColor' => ['rgb' => 'F7FAFC'],
@@ -105,13 +104,12 @@ class ExcelExportService
 
     public function generateExcel(Spreadsheet $spreadsheet): string
     {
-        $writer = new Xlsx($spreadsheet);
+        $xlsx = new Xlsx($spreadsheet);
 
         ob_start();
-        $writer->save('php://output');
-        $content = ob_get_clean();
+        $xlsx->save('php://output');
 
-        return $content;
+        return ob_get_clean();
     }
 
     public function downloadExcel(Spreadsheet $spreadsheet, string $filename): void
@@ -159,7 +157,7 @@ class ExcelExportService
         // Check if value starts with dangerous characters
         if (preg_match('/^[\=\+\-\@\t\r]/', $value)) {
             // Prefix with a single quote to force text interpretation
-            $value = "'" . $value;
+            return "'" . $value;
         }
 
         return $value;
@@ -170,13 +168,13 @@ class ExcelExportService
     /**
      * Add a summary section with formatted key metrics
      */
-    public function addSummarySection(Worksheet $sheet, array $metrics, int $startRow = 1, string $title = 'Zusammenfassung'): int
+    public function addSummarySection(Worksheet $worksheet, array $metrics, int $startRow = 1, string $title = 'Zusammenfassung'): int
     {
         $currentRow = $startRow;
 
         // Title
-        $sheet->setCellValue('A' . $currentRow, $title);
-        $sheet->getStyle('A' . $currentRow)->applyFromArray([
+        $worksheet->setCellValue('A' . $currentRow, $title);
+        $worksheet->getStyle('A' . $currentRow)->applyFromArray([
             'font' => [
                 'bold' => true,
                 'size' => 14,
@@ -187,11 +185,11 @@ class ExcelExportService
 
         // Metrics
         foreach ($metrics as $label => $value) {
-            $sheet->setCellValue('A' . $currentRow, $label);
-            $sheet->setCellValue('B' . $currentRow, $value);
+            $worksheet->setCellValue('A' . $currentRow, $label);
+            $worksheet->setCellValue('B' . $currentRow, $value);
 
             // Style
-            $sheet->getStyle('A' . $currentRow . ':B' . $currentRow)->applyFromArray([
+            $worksheet->getStyle('A' . $currentRow . ':B' . $currentRow)->applyFromArray([
                 'fill' => [
                     'fillType' => Fill::FILL_SOLID,
                     'startColor' => ['rgb' => 'FFF2CC'],
@@ -203,7 +201,7 @@ class ExcelExportService
                 ],
             ]);
 
-            $sheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
+            $worksheet->getStyle('A' . $currentRow)->getFont()->setBold(true);
 
             $currentRow++;
         }
@@ -214,15 +212,15 @@ class ExcelExportService
     /**
      * Add a formatted header row with freeze panes
      */
-    public function addFormattedHeaderRow(Worksheet $sheet, array $headers, int $row = 1, bool $freezePane = true): void
+    public function addFormattedHeaderRow(Worksheet $worksheet, array $headers, int $row = 1, bool $freezePane = true): void
     {
         $col = 'A';
         foreach ($headers as $header) {
             $cell = $col . $row;
-            $sheet->setCellValue($cell, $header);
+            $worksheet->setCellValue($cell, $header);
 
             // Enhanced header styling
-            $sheet->getStyle($cell)->applyFromArray([
+            $worksheet->getStyle($cell)->applyFromArray([
                 'font' => [
                     'bold' => true,
                     'color' => ['rgb' => '1F4E78'],
@@ -249,14 +247,14 @@ class ExcelExportService
 
         // Freeze pane below header
         if ($freezePane) {
-            $sheet->freezePane('A' . ($row + 1));
+            $worksheet->freezePane('A' . ($row + 1));
         }
     }
 
     /**
      * Add data rows with conditional formatting
      */
-    public function addFormattedDataRows(Worksheet $sheet, array $data, int $startRow, array $conditionalFormatting = []): void
+    public function addFormattedDataRows(Worksheet $worksheet, array $data, int $startRow, array $conditionalFormatting = []): void
     {
         $currentRow = $startRow;
 
@@ -267,15 +265,15 @@ class ExcelExportService
             foreach ($row as $value) {
                 $cell = $col . $currentRow;
                 $safeValue = $this->sanitizeFormulaInjection($value);
-                $sheet->setCellValue($cell, $safeValue);
+                $worksheet->setCellValue($cell, $safeValue);
 
                 // Apply conditional formatting if specified for this column
                 if (isset($conditionalFormatting[$colIndex])) {
-                    $this->applyConditionalFormatting($sheet, $cell, $value, $conditionalFormatting[$colIndex]);
+                    $this->applyConditionalFormatting($worksheet, $cell, $value, $conditionalFormatting[$colIndex]);
                 }
 
                 // Basic border
-                $sheet->getStyle($cell)->applyFromArray([
+                $worksheet->getStyle($cell)->applyFromArray([
                     'borders' => [
                         'allBorders' => [
                             'borderStyle' => Border::BORDER_THIN,
@@ -294,7 +292,7 @@ class ExcelExportService
     /**
      * Apply conditional formatting based on rules
      */
-    private function applyConditionalFormatting(Worksheet $sheet, string $cell, mixed $value, array $rules): void
+    private function applyConditionalFormatting(Worksheet $worksheet, string $cell, mixed $value, array $rules): void
     {
         foreach ($rules as $condition => $config) {
             $matches = false;
@@ -339,7 +337,7 @@ class ExcelExportService
                     $style['font'] = array_merge($style['font'] ?? [], ['color' => ['rgb' => $fontColor]]);
                 }
 
-                $sheet->getStyle($cell)->applyFromArray($style);
+                $worksheet->getStyle($cell)->applyFromArray($style);
                 break;
             }
         }
@@ -348,14 +346,14 @@ class ExcelExportService
     /**
      * Auto-size all columns with optional max width
      */
-    public function autoSizeColumns(Worksheet $sheet, ?int $maxWidth = 50): void
+    public function autoSizeColumns(Worksheet $worksheet, ?int $maxWidth = 50): void
     {
-        $highestColumn = $sheet->getHighestColumn();
-        $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);
+        $highestColumn = $worksheet->getHighestColumn();
+        $highestColumnIndex = Coordinate::columnIndexFromString($highestColumn);
 
         for ($col = 1; $col <= $highestColumnIndex; $col++) {
-            $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col);
-            $sheet->getColumnDimension($columnLetter)->setAutoSize(true);
+            $columnLetter = Coordinate::stringFromColumnIndex($col);
+            $worksheet->getColumnDimension($columnLetter)->setAutoSize(true);
         }
     }
 
@@ -364,9 +362,9 @@ class ExcelExportService
      */
     public function createSheet(Spreadsheet $spreadsheet, string $title): Worksheet
     {
-        $sheet = $spreadsheet->createSheet();
-        $sheet->setTitle($this->sanitizeSheetName($title));
-        return $sheet;
+        $worksheet = $spreadsheet->createSheet();
+        $worksheet->setTitle($this->sanitizeSheetName($title));
+        return $worksheet;
     }
 
     /**
@@ -377,7 +375,7 @@ class ExcelExportService
         // Remove invalid characters
         $name = preg_replace('/[\[\]\:\*\?\/\\\\]/', '', $name);
         // Trim to 31 characters (Excel limit)
-        return substr($name, 0, 31);
+        return substr((string) $name, 0, 31);
     }
 
     /**

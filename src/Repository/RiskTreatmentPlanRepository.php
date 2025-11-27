@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use DateTime;
 use App\Entity\Risk;
 use App\Entity\RiskTreatmentPlan;
 use App\Entity\Tenant;
@@ -40,7 +41,7 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
      */
     public function findOverdueForTenant(?Tenant $tenant): array
     {
-        $now = new \DateTime();
+        $now = new DateTime();
 
         return $this->createQueryBuilder('rtp')
             ->where('rtp.targetCompletionDate < :now')
@@ -106,8 +107,8 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
      */
     public function findDueWithinDays(int $days, ?Tenant $tenant): array
     {
-        $now = new \DateTime();
-        $futureDate = (new \DateTime())->modify("+{$days} days");
+        $now = new DateTime();
+        $futureDate = new DateTime()->modify("+{$days} days");
 
         return $this->createQueryBuilder('rtp')
             ->where('rtp.targetCompletionDate BETWEEN :now AND :future')
@@ -128,7 +129,7 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
      */
     public function getStatisticsForTenant(?Tenant $tenant): array
     {
-        $qb = $this->createQueryBuilder('rtp')
+        $queryBuilder = $this->createQueryBuilder('rtp')
             ->select(
                 'COUNT(rtp.id) as total',
                 'SUM(CASE WHEN rtp.status = :planned THEN 1 ELSE 0 END) as planned',
@@ -146,7 +147,7 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
             ->setParameter('cancelled', 'cancelled')
             ->setParameter('on_hold', 'on_hold');
 
-        return $qb->getQuery()->getSingleResult();
+        return $queryBuilder->getQuery()->getSingleResult();
     }
 
     /**
@@ -154,7 +155,7 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
      */
     public function findCriticalPlans(?Tenant $tenant): array
     {
-        $now = new \DateTime();
+        new DateTime();
 
         return $this->createQueryBuilder('rtp')
             ->where('rtp.priority IN (:high_priorities)')
@@ -164,7 +165,7 @@ class RiskTreatmentPlanRepository extends ServiceEntityRepository
             ->setParameter('high_priorities', ['high', 'critical'])
             ->setParameter('completed_statuses', ['completed', 'cancelled'])
             ->setParameter('tenant', $tenant)
-            ->setParameter('future', (new \DateTime())->modify('+14 days'))
+            ->setParameter('future', new DateTime()->modify('+14 days'))
             ->orderBy('rtp.priority', 'DESC')
             ->addOrderBy('rtp.targetCompletionDate', 'ASC')
             ->getQuery()

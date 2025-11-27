@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\ISMSContext;
+use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\CorporateGovernance;
 use App\Entity\Tenant;
 use App\Enum\GovernanceModel;
@@ -16,22 +18,21 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/api/corporate-structure')]
 #[IsGranted('ROLE_ADMIN')]
 class CorporateStructureController extends AbstractController
 {
     public function __construct(
-        private TenantRepository $tenantRepository,
-        private CorporateGovernanceRepository $governanceRepository,
-        private CorporateStructureService $corporateStructureService,
-        private EntityManagerInterface $entityManager
+        private readonly TenantRepository $tenantRepository,
+        private readonly CorporateGovernanceRepository $corporateGovernanceRepository,
+        private readonly CorporateStructureService $corporateStructureService,
+        private readonly EntityManagerInterface $entityManager
     ) {
     }
 
     /**
      * Get corporate structure tree for a tenant
      */
-    #[Route('/tree/{id}', name: 'api_corporate_structure_tree', methods: ['GET'])]
+    #[Route('/api/corporate-structure/tree/{id}', name: 'api_corporate_structure_tree', methods: ['GET'])]
     public function getTree(Tenant $tenant): JsonResponse
     {
         $root = $tenant->getRootParent();
@@ -43,20 +44,20 @@ class CorporateStructureController extends AbstractController
     /**
      * Get all corporate groups (root parents)
      */
-    #[Route('/groups', name: 'api_corporate_structure_groups', methods: ['GET'])]
+    #[Route('/api/corporate-structure/groups', name: 'api_corporate_structure_groups', methods: ['GET'])]
     public function getGroups(): JsonResponse
     {
         $allTenants = $this->tenantRepository->findBy(['isActive' => true]);
         $groups = [];
 
-        foreach ($allTenants as $tenant) {
-            if ($tenant->isCorporateParent() && $tenant->getParent() === null) {
+        foreach ($allTenants as $allTenant) {
+            if ($allTenant->isCorporateParent() && $allTenant->getParent() === null) {
                 $groups[] = [
-                    'id' => $tenant->getId(),
-                    'code' => $tenant->getCode(),
-                    'name' => $tenant->getName(),
-                    'subsidiaryCount' => $tenant->getSubsidiaries()->count(),
-                    'totalSubsidiaries' => count($tenant->getAllSubsidiaries())
+                    'id' => $allTenant->getId(),
+                    'code' => $allTenant->getCode(),
+                    'name' => $allTenant->getName(),
+                    'subsidiaryCount' => $allTenant->getSubsidiaries()->count(),
+                    'totalSubsidiaries' => count($allTenant->getAllSubsidiaries())
                 ];
             }
         }
@@ -67,7 +68,7 @@ class CorporateStructureController extends AbstractController
     /**
      * Set parent for a tenant (create relationship)
      */
-    #[Route('/set-parent', name: 'api_corporate_structure_set_parent', methods: ['POST'])]
+    #[Route('/api/corporate-structure/set-parent', name: 'api_corporate_structure_set_parent', methods: ['POST'])]
     public function setParent(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -111,7 +112,7 @@ class CorporateStructureController extends AbstractController
             $parent->setIsCorporateParent(true);
 
             // Create or update default governance rule
-            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
             if (!$governance) {
                 $governance = new CorporateGovernance();
                 $governance->setTenant($tenant);
@@ -126,14 +127,14 @@ class CorporateStructureController extends AbstractController
 
         // Validate structure
         $errors = $this->corporateStructureService->validateStructure($tenant);
-        if (!empty($errors)) {
+        if ($errors !== []) {
             return $this->json(['errors' => $errors], Response::HTTP_BAD_REQUEST);
         }
 
         $this->entityManager->flush();
 
         // Get default governance for response
-        $defaultGovernance = $tenant->getParent() ? $this->governanceRepository->findDefaultGovernance($tenant) : null;
+        $defaultGovernance = $tenant->getParent() ? $this->corporateGovernanceRepository->findDefaultGovernance($tenant) : null;
 
         return $this->json([
             'success' => true,
@@ -153,7 +154,7 @@ class CorporateStructureController extends AbstractController
     /**
      * Update governance model for a tenant
      */
-    #[Route('/governance-model/{id}', name: 'api_corporate_structure_governance_model', methods: ['PATCH'])]
+    #[Route('/api/corporate-structure/governance-model/{id}', name: 'api_corporate_structure_governance_model', methods: ['PATCH'])]
     public function updateGovernanceModel(Tenant $tenant, Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -164,7 +165,7 @@ class CorporateStructureController extends AbstractController
         }
 
         // Update default governance rule
-        $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+        $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         if (!$governance) {
             return $this->json(['error' => 'No default governance found for this tenant'], Response::HTTP_NOT_FOUND);
         }
@@ -186,12 +187,12 @@ class CorporateStructureController extends AbstractController
     /**
      * Get effective ISMS context for a tenant
      */
-    #[Route('/effective-context/{id}', name: 'api_corporate_structure_effective_context', methods: ['GET'])]
+    #[Route('/api/corporate-structure/effective-context/{id}', name: 'api_corporate_structure_effective_context', methods: ['GET'])]
     public function getEffectiveContext(Tenant $tenant): JsonResponse
     {
         $context = $this->corporateStructureService->getEffectiveISMSContext($tenant);
 
-        if (!$context) {
+        if (!$context instanceof ISMSContext) {
             return $this->json(['error' => 'No ISMS context found'], Response::HTTP_NOT_FOUND);
         }
 
@@ -215,7 +216,7 @@ class CorporateStructureController extends AbstractController
     /**
      * Get all available governance models
      */
-    #[Route('/governance-models', name: 'api_corporate_structure_governance_models', methods: ['GET'])]
+    #[Route('/api/corporate-structure/governance-models', name: 'api_corporate_structure_governance_models', methods: ['GET'])]
     public function getGovernanceModels(): JsonResponse
     {
         $models = [];
@@ -233,11 +234,11 @@ class CorporateStructureController extends AbstractController
     /**
      * Check access permissions for a tenant
      */
-    #[Route('/check-access/{targetId}', name: 'api_corporate_structure_check_access', methods: ['GET'])]
+    #[Route('/api/corporate-structure/check-access/{targetId}', name: 'api_corporate_structure_check_access', methods: ['GET'])]
     public function checkAccess(int $targetId): JsonResponse
     {
         $user = $this->getUser();
-        if (!$user) {
+        if (!$user instanceof UserInterface) {
             return $this->json(['error' => 'User not authenticated'], Response::HTTP_UNAUTHORIZED);
         }
 
@@ -279,12 +280,12 @@ class CorporateStructureController extends AbstractController
     /**
      * Propagate ISMS context changes to subsidiaries
      */
-    #[Route('/propagate-context/{id}', name: 'api_corporate_structure_propagate_context', methods: ['POST'])]
+    #[Route('/api/corporate-structure/propagate-context/{id}', name: 'api_corporate_structure_propagate_context', methods: ['POST'])]
     public function propagateContext(Tenant $tenant): JsonResponse
     {
         $context = $this->corporateStructureService->getEffectiveISMSContext($tenant);
 
-        if (!$context) {
+        if (!$context instanceof ISMSContext) {
             return $this->json(['error' => 'No ISMS context found for tenant'], Response::HTTP_NOT_FOUND);
         }
 
@@ -304,7 +305,7 @@ class CorporateStructureController extends AbstractController
     /**
      * Get all governance rules for a tenant
      */
-    #[Route('/{tenantId}/governance', name: 'api_corporate_structure_get_governance', methods: ['GET'])]
+    #[Route('/api/corporate-structure/{tenantId}/governance', name: 'api_corporate_structure_get_governance', methods: ['GET'])]
     public function getGovernanceRules(int $tenantId): JsonResponse
     {
         $tenant = $this->tenantRepository->find($tenantId);
@@ -312,23 +313,21 @@ class CorporateStructureController extends AbstractController
             return $this->json(['error' => 'Tenant not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $rules = $this->governanceRepository->findBy(['tenant' => $tenant], ['scope' => 'ASC', 'scopeId' => 'ASC']);
+        $rules = $this->corporateGovernanceRepository->findBy(['tenant' => $tenant], ['scope' => 'ASC', 'scopeId' => 'ASC']);
 
-        $result = array_map(function ($rule) {
-            return [
-                'id' => $rule->getId(),
-                'scope' => $rule->getScope(),
-                'scopeId' => $rule->getScopeId(),
-                'governanceModel' => $rule->getGovernanceModel()->value,
-                'governanceLabel' => $rule->getGovernanceModel()->getLabel(),
-                'notes' => $rule->getNotes(),
-                'parent' => [
-                    'id' => $rule->getParent()->getId(),
-                    'name' => $rule->getParent()->getName(),
-                ],
-                'createdAt' => $rule->getCreatedAt()->format('Y-m-d H:i:s'),
-            ];
-        }, $rules);
+        $result = array_map(fn($rule): array => [
+            'id' => $rule->getId(),
+            'scope' => $rule->getScope(),
+            'scopeId' => $rule->getScopeId(),
+            'governanceModel' => $rule->getGovernanceModel()->value,
+            'governanceLabel' => $rule->getGovernanceModel()->getLabel(),
+            'notes' => $rule->getNotes(),
+            'parent' => [
+                'id' => $rule->getParent()->getId(),
+                'name' => $rule->getParent()->getName(),
+            ],
+            'createdAt' => $rule->getCreatedAt()->format('Y-m-d H:i:s'),
+        ], $rules);
 
         return $this->json([
             'tenant' => [
@@ -343,7 +342,7 @@ class CorporateStructureController extends AbstractController
     /**
      * Create or update governance rule for specific scope
      */
-    #[Route('/{tenantId}/governance/{scope}', name: 'api_corporate_structure_set_scope_governance', methods: ['POST'])]
+    #[Route('/api/corporate-structure/{tenantId}/governance/{scope}', name: 'api_corporate_structure_set_scope_governance', methods: ['POST'])]
     public function setScopeGovernance(int $tenantId, string $scope, Request $request): JsonResponse
     {
         $tenant = $this->tenantRepository->find($tenantId);
@@ -365,7 +364,7 @@ class CorporateStructureController extends AbstractController
         }
 
         // Find existing rule or create new one
-        $governance = $this->governanceRepository->findGovernanceForScope($tenant, $scope, $scopeId);
+        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, $scope, $scopeId);
 
         if (!$governance) {
             $governance = new CorporateGovernance();
@@ -400,7 +399,7 @@ class CorporateStructureController extends AbstractController
     /**
      * Delete governance rule for specific scope
      */
-    #[Route('/{tenantId}/governance/{scope}/{scopeId}', name: 'api_corporate_structure_delete_scope_governance', methods: ['DELETE'])]
+    #[Route('/api/corporate-structure/{tenantId}/governance/{scope}/{scopeId}', name: 'api_corporate_structure_delete_scope_governance', methods: ['DELETE'])]
     public function deleteScopeGovernance(int $tenantId, string $scope, ?string $scopeId = null): JsonResponse
     {
         $tenant = $this->tenantRepository->find($tenantId);
@@ -408,7 +407,7 @@ class CorporateStructureController extends AbstractController
             return $this->json(['error' => 'Tenant not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $governance = $this->governanceRepository->findGovernanceForScope($tenant, $scope, $scopeId);
+        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, $scope, $scopeId);
 
         if (!$governance) {
             return $this->json(['error' => 'Governance rule not found'], Response::HTTP_NOT_FOUND);

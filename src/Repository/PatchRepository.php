@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use DateTimeImmutable;
+use App\Entity\Tenant;
 use App\Entity\Patch;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -58,7 +60,7 @@ class PatchRepository extends ServiceEntityRepository
             ->where('p.deploymentDeadline IS NOT NULL')
             ->andWhere('p.deploymentDeadline < :now')
             ->andWhere('p.status NOT IN (:statuses)')
-            ->setParameter('now', new \DateTimeImmutable())
+            ->setParameter('now', new DateTimeImmutable())
             ->setParameter('statuses', ['deployed', 'not_applicable'])
             ->orderBy('p.deploymentDeadline', 'ASC')
             ->getQuery()
@@ -89,7 +91,7 @@ class PatchRepository extends ServiceEntityRepository
      */
     public function findCriticalDueSoon(int $days = 7): array
     {
-        $deadline = (new \DateTimeImmutable())->modify("+{$days} days");
+        $deadline = new DateTimeImmutable()->modify("+{$days} days");
 
         return $this->createQueryBuilder('p')
             ->where('p.priority IN (:priorities)')
@@ -147,7 +149,7 @@ class PatchRepository extends ServiceEntityRepository
      */
     public function findRecentlyDeployed(int $days = 30): array
     {
-        $since = (new \DateTimeImmutable())->modify("-{$days} days");
+        $since = new DateTimeImmutable()->modify("-{$days} days");
 
         return $this->createQueryBuilder('p')
             ->where('p.status = :status')
@@ -162,7 +164,7 @@ class PatchRepository extends ServiceEntityRepository
     /**
      * Find all patches for a tenant (own patches only)
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find patches for
+     * @param Tenant $tenant The tenant to find patches for
      * @return Patch[] Array of Patch entities
      */
     public function findByTenant($tenant): array
@@ -179,8 +181,8 @@ class PatchRepository extends ServiceEntityRepository
      * Find patches by tenant including all ancestors (for hierarchical governance)
      * This allows viewing inherited patches from parent companies, grandparents, etc.
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find patches for
-     * @param \App\Entity\Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
+     * @param Tenant $tenant The tenant to find patches for
+     * @param Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
      * @return Patch[] Array of Patch entities (own + inherited from all ancestors)
      */
     public function findByTenantIncludingParent($tenant, $parentTenant = null): array
@@ -188,17 +190,17 @@ class PatchRepository extends ServiceEntityRepository
         // Get all ancestors (parent, grandparent, great-grandparent, etc.)
         $ancestors = $tenant->getAllAncestors();
 
-        $qb = $this->createQueryBuilder('p')
+        $queryBuilder = $this->createQueryBuilder('p')
             ->where('p.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
         // Include patches from all ancestors in the hierarchy
         if (!empty($ancestors)) {
-            $qb->orWhere('p.tenant IN (:ancestors)')
+            $queryBuilder->orWhere('p.tenant IN (:ancestors)')
                ->setParameter('ancestors', $ancestors);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('p.releaseDate', 'DESC')
             ->getQuery()
             ->getResult();
@@ -208,7 +210,7 @@ class PatchRepository extends ServiceEntityRepository
      * Find patches by tenant including all subsidiaries (for corporate parent view)
      * This allows viewing aggregated patches from all subsidiary companies
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find patches for
+     * @param Tenant $tenant The tenant to find patches for
      * @return Patch[] Array of Patch entities (own + from all subsidiaries)
      */
     public function findByTenantIncludingSubsidiaries($tenant): array
@@ -216,17 +218,17 @@ class PatchRepository extends ServiceEntityRepository
         // Get all subsidiaries recursively
         $subsidiaries = $tenant->getAllSubsidiaries();
 
-        $qb = $this->createQueryBuilder('p')
+        $queryBuilder = $this->createQueryBuilder('p')
             ->where('p.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
         // Include patches from all subsidiaries in the hierarchy
         if (!empty($subsidiaries)) {
-            $qb->orWhere('p.tenant IN (:subsidiaries)')
+            $queryBuilder->orWhere('p.tenant IN (:subsidiaries)')
                ->setParameter('subsidiaries', $subsidiaries);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('p.releaseDate', 'DESC')
             ->getQuery()
             ->getResult();

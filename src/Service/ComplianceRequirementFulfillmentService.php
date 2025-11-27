@@ -26,57 +26,55 @@ use App\Repository\CorporateGovernanceRepository;
 class ComplianceRequirementFulfillmentService
 {
     public function __construct(
-        private readonly ComplianceRequirementFulfillmentRepository $fulfillmentRepository,
+        private readonly ComplianceRequirementFulfillmentRepository $complianceRequirementFulfillmentRepository,
         private readonly ?CorporateStructureService $corporateStructureService = null,
-        private readonly ?CorporateGovernanceRepository $governanceRepository = null
+        private readonly ?CorporateGovernanceRepository $corporateGovernanceRepository = null
     ) {}
 
     /**
      * Get all fulfillments visible to a tenant (own + inherited based on governance)
      *
      * @param Tenant $tenant The tenant
-     * @param ComplianceFramework|null $framework Optional framework filter
+     * @param ComplianceFramework|null $complianceFramework Optional framework filter
      * @return ComplianceRequirementFulfillment[] Array of fulfillments
      */
-    public function getFulfillmentsForTenant(Tenant $tenant, ?ComplianceFramework $framework = null): array
+    public function getFulfillmentsForTenant(Tenant $tenant, ?ComplianceFramework $complianceFramework = null): array
     {
         $parent = $tenant->getParent();
 
         // No parent or no corporate structure service - return own fulfillments only
-        if (!$parent || !$this->corporateStructureService || !$this->governanceRepository) {
-            return $framework
-                ? $this->fulfillmentRepository->findByFrameworkAndTenant($framework, $tenant)
-                : $this->fulfillmentRepository->findByTenant($tenant);
+        if (!$parent instanceof Tenant || !$this->corporateStructureService instanceof CorporateStructureService || !$this->corporateGovernanceRepository) {
+            return $complianceFramework instanceof ComplianceFramework
+                ? $this->complianceRequirementFulfillmentRepository->findByFrameworkAndTenant($complianceFramework, $tenant)
+                : $this->complianceRequirementFulfillmentRepository->findByTenant($tenant);
         }
 
         // Check governance model for compliance
-        $governance = $this->governanceRepository->findGovernanceForScope($tenant, 'compliance');
+        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'compliance');
 
         if (!$governance) {
             // No specific governance for compliance - use default
-            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
 
         $governanceModel = $governance?->getGovernanceModel();
 
         // If hierarchical governance, include parent fulfillments
         if ($governanceModel && $governanceModel->value === 'hierarchical') {
-            $fulfillments = $this->fulfillmentRepository->findByTenantIncludingParent($tenant, $parent);
+            $fulfillments = $this->complianceRequirementFulfillmentRepository->findByTenantIncludingParent($tenant, $parent);
 
             // Filter by framework if specified
-            if ($framework) {
-                return array_filter($fulfillments, function ($f) use ($framework) {
-                    return $f->getRequirement()->getFramework()->getId() === $framework->getId();
-                });
+            if ($complianceFramework instanceof ComplianceFramework) {
+                return array_filter($fulfillments, fn($f): bool => $f->getRequirement()->getFramework()->getId() === $complianceFramework->getId());
             }
 
             return $fulfillments;
         }
 
         // For shared or independent, return only own fulfillments
-        return $framework
-            ? $this->fulfillmentRepository->findByFrameworkAndTenant($framework, $tenant)
-            : $this->fulfillmentRepository->findByTenant($tenant);
+        return $complianceFramework instanceof ComplianceFramework
+            ? $this->complianceRequirementFulfillmentRepository->findByFrameworkAndTenant($complianceFramework, $tenant)
+            : $this->complianceRequirementFulfillmentRepository->findByTenant($tenant);
     }
 
     /**
@@ -89,7 +87,7 @@ class ComplianceRequirementFulfillmentService
     {
         $parent = $tenant->getParent();
 
-        if (!$parent || !$this->governanceRepository) {
+        if (!$parent instanceof Tenant || !$this->corporateGovernanceRepository) {
             return [
                 'hasParent' => false,
                 'canInherit' => false,
@@ -97,10 +95,10 @@ class ComplianceRequirementFulfillmentService
             ];
         }
 
-        $governance = $this->governanceRepository->findGovernanceForScope($tenant, 'compliance');
+        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'compliance');
 
         if (!$governance) {
-            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
 
         $governanceModel = $governance?->getGovernanceModel();
@@ -116,15 +114,15 @@ class ComplianceRequirementFulfillmentService
     /**
      * Check if a fulfillment is inherited from parent
      *
-     * @param ComplianceRequirementFulfillment $fulfillment The fulfillment to check
+     * @param ComplianceRequirementFulfillment $complianceRequirementFulfillment The fulfillment to check
      * @param Tenant $currentTenant The current tenant viewing the fulfillment
      * @return bool True if fulfillment belongs to parent tenant
      */
-    public function isInheritedFulfillment(ComplianceRequirementFulfillment $fulfillment, Tenant $currentTenant): bool
+    public function isInheritedFulfillment(ComplianceRequirementFulfillment $complianceRequirementFulfillment, Tenant $currentTenant): bool
     {
-        $fulfillmentTenant = $fulfillment->getTenant();
+        $fulfillmentTenant = $complianceRequirementFulfillment->getTenant();
 
-        if (!$fulfillmentTenant) {
+        if (!$fulfillmentTenant instanceof Tenant) {
             return false;
         }
 
@@ -142,27 +140,23 @@ class ComplianceRequirementFulfillmentService
     /**
      * Check if user can edit a fulfillment (not inherited)
      *
-     * @param ComplianceRequirementFulfillment $fulfillment The fulfillment
+     * @param ComplianceRequirementFulfillment $complianceRequirementFulfillment The fulfillment
      * @param Tenant $currentTenant The current tenant
      * @return bool True if fulfillment can be edited
      */
-    public function canEditFulfillment(ComplianceRequirementFulfillment $fulfillment, Tenant $currentTenant): bool
+    public function canEditFulfillment(ComplianceRequirementFulfillment $complianceRequirementFulfillment, Tenant $currentTenant): bool
     {
-        return !$this->isInheritedFulfillment($fulfillment, $currentTenant);
+        return !$this->isInheritedFulfillment($complianceRequirementFulfillment, $currentTenant);
     }
 
     /**
      * Get or create fulfillment record for tenant and requirement
      * Supports data reuse: if parent has fulfillment in hierarchical mode, inherit as starting point
-     *
-     * @param Tenant $tenant
-     * @param ComplianceRequirement $requirement
-     * @return ComplianceRequirementFulfillment
      */
-    public function getOrCreateFulfillment(Tenant $tenant, ComplianceRequirement $requirement): ComplianceRequirementFulfillment
+    public function getOrCreateFulfillment(Tenant $tenant, ComplianceRequirement $complianceRequirement): ComplianceRequirementFulfillment
     {
         // Try to find existing fulfillment
-        $fulfillment = $this->fulfillmentRepository->findOrCreateForTenantAndRequirement($tenant, $requirement);
+        $fulfillment = $this->complianceRequirementFulfillmentRepository->findOrCreateForTenantAndRequirement($tenant, $complianceRequirement);
 
         // If new fulfillment and we have parent with hierarchical governance, inherit initial values
         if (!$fulfillment->getId()) {
@@ -170,10 +164,10 @@ class ComplianceRequirementFulfillmentService
 
             if ($inheritanceInfo['canInherit']) {
                 $parent = $tenant->getParent();
-                if ($parent) {
-                    $parentFulfillment = $this->fulfillmentRepository->findOneBy([
+                if ($parent instanceof Tenant) {
+                    $parentFulfillment = $this->complianceRequirementFulfillmentRepository->findOneBy([
                         'tenant' => $parent,
-                        'requirement' => $requirement,
+                        'requirement' => $complianceRequirement,
                     ]);
 
                     if ($parentFulfillment) {
@@ -193,19 +187,19 @@ class ComplianceRequirementFulfillmentService
      * Get fulfillment statistics for a tenant including inherited data
      *
      * @param Tenant $tenant The tenant
-     * @param ComplianceFramework|null $framework Optional framework filter
+     * @param ComplianceFramework|null $complianceFramework Optional framework filter
      * @return array{total: int, own: int, inherited: int, avg_fulfillment: float}
      */
-    public function getFulfillmentStatsWithInheritance(Tenant $tenant, ?ComplianceFramework $framework = null): array
+    public function getFulfillmentStatsWithInheritance(Tenant $tenant, ?ComplianceFramework $complianceFramework = null): array
     {
-        $allFulfillments = $this->getFulfillmentsForTenant($tenant, $framework);
-        $ownFulfillments = $framework
-            ? $this->fulfillmentRepository->findByFrameworkAndTenant($framework, $tenant)
-            : $this->fulfillmentRepository->findByTenant($tenant);
+        $allFulfillments = $this->getFulfillmentsForTenant($tenant, $complianceFramework);
+        $ownFulfillments = $complianceFramework instanceof ComplianceFramework
+            ? $this->complianceRequirementFulfillmentRepository->findByFrameworkAndTenant($complianceFramework, $tenant)
+            : $this->complianceRequirementFulfillmentRepository->findByTenant($tenant);
 
-        $baseStats = $framework
-            ? $this->fulfillmentRepository->getComplianceStats($tenant)
-            : $this->fulfillmentRepository->getComplianceStats($tenant);
+        $baseStats = $complianceFramework instanceof ComplianceFramework
+            ? $this->complianceRequirementFulfillmentRepository->getComplianceStats($tenant)
+            : $this->complianceRequirementFulfillmentRepository->getComplianceStats($tenant);
 
         return array_merge($baseStats, [
             'own' => count($ownFulfillments),

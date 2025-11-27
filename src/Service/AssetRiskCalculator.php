@@ -44,7 +44,7 @@ class AssetRiskCalculator
         $score += $asset->getTotalValue() * 10;
 
         // Risks impact
-        $activeRisks = $asset->getRisks()->filter(fn($r) => $r->getStatus() === 'active')->count();
+        $activeRisks = $asset->getRisks()->filter(fn($r): bool => $r->getStatus() === 'active')->count();
         $score += $activeRisks * 5;
 
         // Incidents impact (recent incidents = higher risk)
@@ -84,13 +84,15 @@ class AssetRiskCalculator
     public function getProtectionStatus(Asset $asset): string
     {
         $controlCount = $asset->getProtectingControls()->count();
-        $riskCount = $asset->getRisks()->filter(fn($r) => $r->getStatus() === 'active')->count();
-
+        $riskCount = $asset->getRisks()->filter(fn($r): bool => $r->getStatus() === 'active')->count();
         if ($controlCount === 0 && $riskCount > 0) {
             return 'unprotected';
-        } elseif ($controlCount < $riskCount) {
+        }
+        if ($controlCount < $riskCount) {
             return 'under_protected';
-        } elseif ($controlCount >= $riskCount) {
+        }
+
+        if ($controlCount >= $riskCount) {
             return 'adequately_protected';
         }
 
@@ -108,7 +110,7 @@ class AssetRiskCalculator
     {
         $sixMonthsAgo = new DateTimeImmutable('-6 months');
 
-        return $asset->getIncidents()->filter(function($incident) use ($sixMonthsAgo) {
+        return $asset->getIncidents()->filter(function($incident) use ($sixMonthsAgo): bool {
             $detectedAt = $incident->getDetectedAt();
             return $detectedAt && $detectedAt >= $sixMonthsAgo;
         })->count();

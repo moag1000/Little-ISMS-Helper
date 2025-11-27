@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTimeImmutable;
 use App\Entity\ChangeRequest;
 use App\Form\ChangeRequestType;
 use App\Repository\ChangeRequestRepository;
@@ -14,17 +15,15 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/change-request')]
 class ChangeRequestController extends AbstractController
 {
     public function __construct(
-        private ChangeRequestRepository $changeRequestRepository,
-        private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator,
-        private TenantContext $tenantContext
+        private readonly ChangeRequestRepository $changeRequestRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
+        private readonly TenantContext $tenantContext
     ) {}
-
-    #[Route('/', name: 'app_change_request_index')]
+    #[Route('/change-request/', name: 'app_change_request_index')]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
@@ -40,8 +39,7 @@ class ChangeRequestController extends AbstractController
             'overdue' => $overdue,
         ]);
     }
-
-    #[Route('/new', name: 'app_change_request_new')]
+    #[Route('/change-request/new', name: 'app_change_request_new')]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
@@ -64,8 +62,7 @@ class ChangeRequestController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}', name: 'app_change_request_show', requirements: ['id' => '\d+'])]
+    #[Route('/change-request/{id}', name: 'app_change_request_show', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function show(ChangeRequest $changeRequest): Response
     {
@@ -73,8 +70,7 @@ class ChangeRequestController extends AbstractController
             'change_request' => $changeRequest,
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'app_change_request_edit', requirements: ['id' => '\d+'])]
+    #[Route('/change-request/{id}/edit', name: 'app_change_request_edit', requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_USER')]
     public function edit(Request $request, ChangeRequest $changeRequest): Response
     {
@@ -82,7 +78,7 @@ class ChangeRequestController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $changeRequest->setUpdatedAt(new \DateTimeImmutable());
+            $changeRequest->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('change_request.success.updated'));
@@ -94,8 +90,7 @@ class ChangeRequestController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}/delete', name: 'app_change_request_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/change-request/{id}/delete', name: 'app_change_request_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, ChangeRequest $changeRequest): Response
     {

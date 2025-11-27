@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use DateTime;
 use App\Entity\BCExercise;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -24,7 +25,7 @@ class BCExerciseRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('e')
             ->where('e.exerciseDate >= :now')
             ->andWhere('e.status IN (:statuses)')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new DateTime())
             ->setParameter('statuses', ['planned', 'in_progress'])
             ->orderBy('e.exerciseDate', 'ASC')
             ->getQuery()

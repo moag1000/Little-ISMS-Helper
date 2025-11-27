@@ -2,6 +2,9 @@
 
 namespace App\Service;
 
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\ORM\Exception\ORMException;
+use Exception;
 use App\Command\LoadTisaxRequirementsCommand;
 use App\Command\LoadDoraRequirementsCommand;
 use App\Command\LoadNis2RequirementsCommand;
@@ -27,22 +30,22 @@ use Symfony\Component\Console\Output\BufferedOutput;
 class ComplianceFrameworkLoaderService
 {
     public function __construct(
-        private ComplianceFrameworkRepository $frameworkRepository,
-        private LoadTisaxRequirementsCommand $tisaxCommand,
-        private LoadDoraRequirementsCommand $doraCommand,
-        private LoadNis2RequirementsCommand $nis2Command,
-        private LoadBsiItGrundschutzRequirementsCommand $bsiCommand,
-        private LoadGdprRequirementsCommand $gdprCommand,
-        private LoadIso27001RequirementsCommand $iso27001Command,
-        private LoadIso27701RequirementsCommand $iso27701Command,
-        private LoadIso27701v2025RequirementsCommand $iso27701v2025Command,
-        private LoadC5RequirementsCommand $c5Command,
-        private LoadC52025RequirementsCommand $c52025Command,
-        private LoadKritisRequirementsCommand $kritisCommand,
-        private LoadKritisHealthRequirementsCommand $kritisHealthCommand,
-        private LoadDigavRequirementsCommand $digavCommand,
-        private LoadTkgRequirementsCommand $tkgCommand,
-        private LoadGxpRequirementsCommand $gxpCommand,
+        private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
+        private readonly LoadTisaxRequirementsCommand $loadTisaxRequirementsCommand,
+        private readonly LoadDoraRequirementsCommand $loadDoraRequirementsCommand,
+        private readonly LoadNis2RequirementsCommand $loadNis2RequirementsCommand,
+        private readonly LoadBsiItGrundschutzRequirementsCommand $loadBsiItGrundschutzRequirementsCommand,
+        private readonly LoadGdprRequirementsCommand $loadGdprRequirementsCommand,
+        private readonly LoadIso27001RequirementsCommand $loadIso27001RequirementsCommand,
+        private readonly LoadIso27701RequirementsCommand $loadIso27701RequirementsCommand,
+        private readonly LoadIso27701v2025RequirementsCommand $loadIso27701v2025RequirementsCommand,
+        private readonly LoadC5RequirementsCommand $loadC5RequirementsCommand,
+        private readonly LoadC52025RequirementsCommand $loadC52025RequirementsCommand,
+        private readonly LoadKritisRequirementsCommand $loadKritisRequirementsCommand,
+        private readonly LoadKritisHealthRequirementsCommand $loadKritisHealthRequirementsCommand,
+        private readonly LoadDigavRequirementsCommand $loadDigavRequirementsCommand,
+        private readonly LoadTkgRequirementsCommand $loadTkgRequirementsCommand,
+        private readonly LoadGxpRequirementsCommand $loadGxpRequirementsCommand,
     ) {}
 
     /**
@@ -50,7 +53,7 @@ class ComplianceFrameworkLoaderService
      */
     public function getAvailableFrameworks(): array
     {
-        $loadedFrameworks = $this->frameworkRepository->findAll();
+        $loadedFrameworks = $this->complianceFrameworkRepository->findAll();
         $loadedCodes = array_map(fn($f) => $f->getCode(), $loadedFrameworks);
 
         return [
@@ -243,21 +246,21 @@ class ComplianceFrameworkLoaderService
     public function loadFramework(string $code): array
     {
         $command = match($code) {
-            'TISAX' => $this->tisaxCommand,
-            'DORA' => $this->doraCommand,
-            'NIS2' => $this->nis2Command,
-            'BSI_GRUNDSCHUTZ' => $this->bsiCommand,
-            'GDPR' => $this->gdprCommand,
-            'ISO27001' => $this->iso27001Command,
-            'ISO27701' => $this->iso27701Command,
-            'ISO27701_2025' => $this->iso27701v2025Command,
-            'BSI-C5' => $this->c5Command,
-            'BSI-C5-2025' => $this->c52025Command,
-            'KRITIS' => $this->kritisCommand,
-            'KRITIS-HEALTH' => $this->kritisHealthCommand,
-            'DIGAV' => $this->digavCommand,
-            'TKG-2024' => $this->tkgCommand,
-            'GXP' => $this->gxpCommand,
+            'TISAX' => $this->loadTisaxRequirementsCommand,
+            'DORA' => $this->loadDoraRequirementsCommand,
+            'NIS2' => $this->loadNis2RequirementsCommand,
+            'BSI_GRUNDSCHUTZ' => $this->loadBsiItGrundschutzRequirementsCommand,
+            'GDPR' => $this->loadGdprRequirementsCommand,
+            'ISO27001' => $this->loadIso27001RequirementsCommand,
+            'ISO27701' => $this->loadIso27701RequirementsCommand,
+            'ISO27701_2025' => $this->loadIso27701v2025RequirementsCommand,
+            'BSI-C5' => $this->loadC5RequirementsCommand,
+            'BSI-C5-2025' => $this->loadC52025RequirementsCommand,
+            'KRITIS' => $this->loadKritisRequirementsCommand,
+            'KRITIS-HEALTH' => $this->loadKritisHealthRequirementsCommand,
+            'DIGAV' => $this->loadDigavRequirementsCommand,
+            'TKG-2024' => $this->loadTkgRequirementsCommand,
+            'GXP' => $this->loadGxpRequirementsCommand,
             default => null,
         };
 
@@ -269,7 +272,7 @@ class ComplianceFrameworkLoaderService
         }
 
         // Check if already loaded with requirements
-        $existingFramework = $this->frameworkRepository->findOneBy(['code' => $code]);
+        $existingFramework = $this->complianceFrameworkRepository->findOneBy(['code' => $code]);
         if ($existingFramework) {
             $requirementsCount = $existingFramework->getRequirements()->count();
             if ($requirementsCount > 0) {
@@ -282,41 +285,40 @@ class ComplianceFrameworkLoaderService
         }
 
         // Execute the command
-        $input = new ArrayInput([]);
-        $output = new BufferedOutput();
+        $arrayInput = new ArrayInput([]);
+        $bufferedOutput = new BufferedOutput();
 
         try {
-            $returnCode = $command->run($input, $output);
+            $returnCode = $command->run($arrayInput, $bufferedOutput);
 
             if ($returnCode === 0) {
                 // Get framework ID for "Start Working" button
-                $framework = $this->frameworkRepository->findOneBy(['code' => $code]);
+                $framework = $this->complianceFrameworkRepository->findOneBy(['code' => $code]);
                 $frameworkId = $framework ? $framework->getId() : null;
 
                 return [
                     'success' => true,
                     'message' => sprintf('Successfully loaded %s framework', $code),
-                    'output' => $output->fetch(),
+                    'output' => $bufferedOutput->fetch(),
                     'framework_id' => $frameworkId,
                 ];
-            } else {
-                return [
-                    'success' => false,
-                    'message' => 'Failed to load framework',
-                    'output' => $output->fetch(),
-                ];
             }
-        } catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
+            return [
+                'success' => false,
+                'message' => 'Failed to load framework',
+                'output' => $bufferedOutput->fetch(),
+            ];
+        } catch (UniqueConstraintViolationException) {
             return [
                 'success' => false,
                 'message' => 'Framework or requirements already exist in database',
             ];
-        } catch (\Doctrine\ORM\Exception\ORMException $e) {
+        } catch (ORMException $e) {
             return [
                 'success' => false,
                 'message' => 'Database error: ' . $e->getMessage(),
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'success' => false,
                 'message' => 'Error loading framework: ' . $e->getMessage(),
@@ -330,9 +332,9 @@ class ComplianceFrameworkLoaderService
     public function getFrameworkStatistics(): array
     {
         $available = $this->getAvailableFrameworks();
-        $loaded = array_filter($available, fn($f) => $f['loaded']);
-        $mandatory = array_filter($available, fn($f) => $f['mandatory']);
-        $mandatoryLoaded = array_filter($mandatory, fn($f) => $f['loaded']);
+        $loaded = array_filter($available, fn(array $f) => $f['loaded']);
+        $mandatory = array_filter($available, fn(array $f) => $f['mandatory']);
+        $mandatoryLoaded = array_filter($mandatory, fn(array $f) => $f['loaded']);
 
         return [
             'total_available' => count($available),

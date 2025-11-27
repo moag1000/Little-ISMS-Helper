@@ -2,6 +2,7 @@
 
 namespace App\Twig;
 
+use Override;
 use App\Service\ModuleConfigurationService;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -20,16 +21,17 @@ use Twig\TwigFunction;
 class ModuleExtension extends AbstractExtension
 {
     public function __construct(
-        private readonly ModuleConfigurationService $moduleConfigService
+        private readonly ModuleConfigurationService $moduleConfigurationService
     ) {
     }
 
+    #[Override]
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('is_module_active', [$this, 'isModuleActive']),
-            new TwigFunction('get_active_modules', [$this, 'getActiveModules']),
-            new TwigFunction('get_module_info', [$this, 'getModuleInfo']),
+            new TwigFunction('is_module_active', $this->isModuleActive(...)),
+            new TwigFunction('get_active_modules', $this->getActiveModules(...)),
+            new TwigFunction('get_module_info', $this->getModuleInfo(...)),
         ];
     }
 
@@ -38,7 +40,7 @@ class ModuleExtension extends AbstractExtension
      */
     public function isModuleActive(string $moduleKey): bool
     {
-        return $this->moduleConfigService->isModuleActive($moduleKey);
+        return $this->moduleConfigurationService->isModuleActive($moduleKey);
     }
 
     /**
@@ -46,7 +48,7 @@ class ModuleExtension extends AbstractExtension
      */
     public function getActiveModules(): array
     {
-        return $this->moduleConfigService->getActiveModules();
+        return $this->moduleConfigurationService->getActiveModules();
     }
 
     /**
@@ -54,6 +56,6 @@ class ModuleExtension extends AbstractExtension
      */
     public function getModuleInfo(string $moduleKey): ?array
     {
-        return $this->moduleConfigService->getModule($moduleKey);
+        return $this->moduleConfigurationService->getModule($moduleKey);
     }
 }

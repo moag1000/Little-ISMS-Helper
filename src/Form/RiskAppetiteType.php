@@ -82,9 +82,7 @@ class RiskAppetiteType extends AbstractType
             ->add('approvedBy', EntityType::class, [
                 'label' => 'risk_appetite.field.approved_by',
                 'class' => User::class,
-                'choice_label' => function(User $user) {
-                    return $user->getFullName() . ' (' . $user->getEmail() . ')';
-                },
+                'choice_label' => fn(User $user): string => $user->getFullName() . ' (' . $user->getEmail() . ')',
                 'placeholder' => 'risk_appetite.placeholder.approved_by',
                 'required' => false,
                 'attr' => [

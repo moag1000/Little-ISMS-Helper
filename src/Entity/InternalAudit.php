@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use App\Entity\Tenant;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
@@ -30,24 +32,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Get(
-            security: "is_granted('ROLE_USER')",
-            description: 'Retrieve a specific internal audit by ID'
+            description: 'Retrieve a specific internal audit by ID',
+            security: "is_granted('ROLE_USER')"
         ),
         new GetCollection(
-            security: "is_granted('ROLE_USER')",
-            description: 'Retrieve the collection of internal ISMS audits with filtering by status, scope, and date'
+            description: 'Retrieve the collection of internal ISMS audits with filtering by status, scope, and date',
+            security: "is_granted('ROLE_USER')"
         ),
         new Post(
-            security: "is_granted('ROLE_USER')",
-            description: 'Create a new internal audit plan'
+            description: 'Create a new internal audit plan',
+            security: "is_granted('ROLE_USER')"
         ),
         new Put(
-            security: "is_granted('ROLE_USER')",
-            description: 'Update an existing internal audit'
+            description: 'Update an existing internal audit',
+            security: "is_granted('ROLE_USER')"
         ),
         new Delete(
-            security: "is_granted('ROLE_ADMIN')",
-            description: 'Delete an internal audit (Admin only)'
+            description: 'Delete an internal audit (Admin only)',
+            security: "is_granted('ROLE_ADMIN')"
         ),
     ],
     normalizationContext: ['groups' => ['audit:read']],
@@ -133,7 +135,7 @@ class InternalAudit
     #[ORM\JoinColumn(nullable: true)]
     #[Groups(['audit:read'])]
     #[MaxDepth(1)]
-    private ?ComplianceFramework $scopedFramework = null;
+    private ?ComplianceFramework $complianceFramework = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['audit:read', 'audit:write'])]
@@ -142,11 +144,11 @@ class InternalAudit
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(['audit:read', 'audit:write'])]
     #[Assert\NotNull(message: 'Planned date is required')]
-    private ?\DateTimeInterface $plannedDate = null;
+    private ?DateTimeInterface $plannedDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['audit:read', 'audit:write'])]
-    private ?\DateTimeInterface $actualDate = null;
+    private ?DateTimeInterface $actualDate = null;
 
     #[ORM\Column(length: 100)]
     #[Groups(['audit:read', 'audit:write'])]
@@ -193,15 +195,15 @@ class InternalAudit
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['audit:read', 'audit:write'])]
-    private ?\DateTimeInterface $reportDate = null;
+    private ?DateTimeInterface $reportDate = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['audit:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['audit:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
@@ -212,7 +214,7 @@ public function __construct()
     {
         $this->scopedAssets = new ArrayCollection();
         $this->auditedSubsidiaries = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -264,23 +266,23 @@ public function __construct()
         return $this;
     }
 
-    public function getPlannedDate(): ?\DateTimeInterface
+    public function getPlannedDate(): ?DateTimeInterface
     {
         return $this->plannedDate;
     }
 
-    public function setPlannedDate(\DateTimeInterface $plannedDate): static
+    public function setPlannedDate(DateTimeInterface $plannedDate): static
     {
         $this->plannedDate = $plannedDate;
         return $this;
     }
 
-    public function getActualDate(): ?\DateTimeInterface
+    public function getActualDate(): ?DateTimeInterface
     {
         return $this->actualDate;
     }
 
-    public function setActualDate(?\DateTimeInterface $actualDate): static
+    public function setActualDate(?DateTimeInterface $actualDate): static
     {
         $this->actualDate = $actualDate;
         return $this;
@@ -385,34 +387,34 @@ public function __construct()
         return $this;
     }
 
-    public function getReportDate(): ?\DateTimeInterface
+    public function getReportDate(): ?DateTimeInterface
     {
         return $this->reportDate;
     }
 
-    public function setReportDate(?\DateTimeInterface $reportDate): static
+    public function setReportDate(?DateTimeInterface $reportDate): static
     {
         $this->reportDate = $reportDate;
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -488,12 +490,12 @@ public function __construct()
 
     public function getScopedFramework(): ?ComplianceFramework
     {
-        return $this->scopedFramework;
+        return $this->complianceFramework;
     }
 
-    public function setScopedFramework(?ComplianceFramework $scopedFramework): static
+    public function setScopedFramework(?ComplianceFramework $complianceFramework): static
     {
-        $this->scopedFramework = $scopedFramework;
+        $this->complianceFramework = $complianceFramework;
         return $this;
     }
 
@@ -504,8 +506,8 @@ public function __construct()
     {
         return match($this->scopeType) {
             'full_isms' => 'Vollständiges ISMS Audit',
-            'compliance_framework' => $this->scopedFramework
-                ? 'Compliance Audit: ' . $this->scopedFramework->getName()
+            'compliance_framework' => $this->complianceFramework
+                ? 'Compliance Audit: ' . $this->complianceFramework->getName()
                 : 'Compliance Framework Audit',
             'asset' => sprintf('Asset Audit (%d Assets)', $this->scopedAssets->count()),
             'asset_type' => 'Asset-Typ Audit: ' . ($this->scopeDetails['type'] ?? 'N/A'),
@@ -531,7 +533,7 @@ public function __construct()
      */
     public function isComplianceAudit(): bool
     {
-        return $this->scopeType === 'compliance_framework' && $this->scopedFramework !== null;
+        return $this->scopeType === 'compliance_framework' && $this->complianceFramework !== null;
     }
 
     /**

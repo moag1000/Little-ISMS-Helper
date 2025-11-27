@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use App\Repository\ComplianceMappingRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -60,13 +62,13 @@ class ComplianceMapping
     private ?string $verifiedBy = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
-    private ?\DateTimeInterface $verificationDate = null;
+    private ?DateTimeInterface $verificationDate = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     /**
      * Collection of gap items for this mapping
@@ -153,11 +155,11 @@ class ComplianceMapping
      * Date when this mapping was reviewed
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeInterface $reviewedAt = null;
+    private ?DateTimeInterface $reviewedAt = null;
 
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
         $this->gapItems = new ArrayCollection();
     }
 
@@ -171,9 +173,9 @@ class ComplianceMapping
         return $this->sourceRequirement;
     }
 
-    public function setSourceRequirement(?ComplianceRequirement $sourceRequirement): static
+    public function setSourceRequirement(?ComplianceRequirement $complianceRequirement): static
     {
-        $this->sourceRequirement = $sourceRequirement;
+        $this->sourceRequirement = $complianceRequirement;
         return $this;
     }
 
@@ -182,9 +184,9 @@ class ComplianceMapping
         return $this->targetRequirement;
     }
 
-    public function setTargetRequirement(?ComplianceRequirement $targetRequirement): static
+    public function setTargetRequirement(?ComplianceRequirement $complianceRequirement): static
     {
-        $this->targetRequirement = $targetRequirement;
+        $this->targetRequirement = $complianceRequirement;
         return $this;
     }
 
@@ -271,34 +273,34 @@ class ComplianceMapping
         return $this;
     }
 
-    public function getVerificationDate(): ?\DateTimeInterface
+    public function getVerificationDate(): ?DateTimeInterface
     {
         return $this->verificationDate;
     }
 
-    public function setVerificationDate(?\DateTimeInterface $verificationDate): static
+    public function setVerificationDate(?DateTimeInterface $verificationDate): static
     {
         $this->verificationDate = $verificationDate;
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -338,7 +340,7 @@ class ComplianceMapping
      */
     public function calculateTransitiveFulfillment(): float
     {
-        if (!$this->sourceRequirement) {
+        if (!$this->sourceRequirement instanceof ComplianceRequirement) {
             return 0.0;
         }
 
@@ -356,22 +358,20 @@ class ComplianceMapping
         return $this->gapItems;
     }
 
-    public function addGapItem(MappingGapItem $gapItem): static
+    public function addGapItem(MappingGapItem $mappingGapItem): static
     {
-        if (!$this->gapItems->contains($gapItem)) {
-            $this->gapItems->add($gapItem);
-            $gapItem->setMapping($this);
+        if (!$this->gapItems->contains($mappingGapItem)) {
+            $this->gapItems->add($mappingGapItem);
+            $mappingGapItem->setMapping($this);
         }
 
         return $this;
     }
 
-    public function removeGapItem(MappingGapItem $gapItem): static
+    public function removeGapItem(MappingGapItem $mappingGapItem): static
     {
-        if ($this->gapItems->removeElement($gapItem)) {
-            if ($gapItem->getMapping() === $this) {
-                $gapItem->setMapping(null);
-            }
+        if ($this->gapItems->removeElement($mappingGapItem) && $mappingGapItem->getMapping() === $this) {
+            $mappingGapItem->setMapping(null);
         }
 
         return $this;
@@ -517,12 +517,12 @@ class ComplianceMapping
         return $this;
     }
 
-    public function getReviewedAt(): ?\DateTimeInterface
+    public function getReviewedAt(): ?DateTimeInterface
     {
         return $this->reviewedAt;
     }
 
-    public function setReviewedAt(?\DateTimeInterface $reviewedAt): static
+    public function setReviewedAt(?DateTimeInterface $reviewedAt): static
     {
         $this->reviewedAt = $reviewedAt;
         return $this;
@@ -564,8 +564,8 @@ class ComplianceMapping
     public function getTotalGapImpact(): int
     {
         $total = 0;
-        foreach ($this->gapItems as $gap) {
-            $total += $gap->getPercentageImpact();
+        foreach ($this->gapItems as $gapItem) {
+            $total += $gapItem->getPercentageImpact();
         }
         return $total;
     }
@@ -576,8 +576,8 @@ class ComplianceMapping
     public function getUnresolvedGapCount(): int
     {
         $count = 0;
-        foreach ($this->gapItems as $gap) {
-            if (!in_array($gap->getStatus(), ['resolved', 'wont_fix'], true)) {
+        foreach ($this->gapItems as $gapItem) {
+            if (!in_array($gapItem->getStatus(), ['resolved', 'wont_fix'], true)) {
                 $count++;
             }
         }

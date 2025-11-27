@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
 use App\Entity\Tenant;
 use App\Repository\PatchRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -116,19 +117,19 @@ class Patch
      * Date patch was released by vendor
      */
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?\DateTimeImmutable $releaseDate = null;
+    private ?DateTimeImmutable $releaseDate = null;
 
     /**
      * Deployment deadline (NIS2 compliance)
      */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $deploymentDeadline = null;
+    private ?DateTimeImmutable $deploymentDeadline = null;
 
     /**
      * Date patch was deployed
      */
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $deployedDate = null;
+    private ?DateTimeImmutable $deployedDate = null;
 
     /**
      * Responsible person for deployment
@@ -197,10 +198,10 @@ class Patch
     private ?string $documentationUrl = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
 
     
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
@@ -210,9 +211,8 @@ class Patch
 public function __construct()
     {
         $this->affectedAssets = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
-        $this->releaseDate = new \DateTimeImmutable();
-        $this->dependencies = [];
+        $this->createdAt = new DateTimeImmutable();
+        $this->releaseDate = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -353,34 +353,34 @@ public function __construct()
         return $this;
     }
 
-    public function getReleaseDate(): ?\DateTimeImmutable
+    public function getReleaseDate(): ?DateTimeImmutable
     {
         return $this->releaseDate;
     }
 
-    public function setReleaseDate(\DateTimeImmutable $releaseDate): static
+    public function setReleaseDate(DateTimeImmutable $releaseDate): static
     {
         $this->releaseDate = $releaseDate;
         return $this;
     }
 
-    public function getDeploymentDeadline(): ?\DateTimeImmutable
+    public function getDeploymentDeadline(): ?DateTimeImmutable
     {
         return $this->deploymentDeadline;
     }
 
-    public function setDeploymentDeadline(?\DateTimeImmutable $deploymentDeadline): static
+    public function setDeploymentDeadline(?DateTimeImmutable $deploymentDeadline): static
     {
         $this->deploymentDeadline = $deploymentDeadline;
         return $this;
     }
 
-    public function getDeployedDate(): ?\DateTimeImmutable
+    public function getDeployedDate(): ?DateTimeImmutable
     {
         return $this->deployedDate;
     }
 
-    public function setDeployedDate(?\DateTimeImmutable $deployedDate): static
+    public function setDeployedDate(?DateTimeImmutable $deployedDate): static
     {
         $this->deployedDate = $deployedDate;
         return $this;
@@ -507,23 +507,23 @@ public function __construct()
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(?DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -534,11 +534,11 @@ public function __construct()
      */
     public function isOverdue(): bool
     {
-        if ($this->deploymentDeadline === null || $this->status === 'deployed') {
+        if (!$this->deploymentDeadline instanceof DateTimeImmutable || $this->status === 'deployed') {
             return false;
         }
 
-        return $this->deploymentDeadline < new \DateTimeImmutable();
+        return $this->deploymentDeadline < new DateTimeImmutable();
     }
 
     /**
@@ -558,7 +558,7 @@ public function __construct()
     /**
      * Calculate recommended deployment deadline based on priority
      */
-    public function calculateDeploymentDeadline(): \DateTimeImmutable
+    public function calculateDeploymentDeadline(): DateTimeImmutable
     {
         $days = match($this->priority) {
             'critical' => 3,
@@ -576,11 +576,11 @@ public function __construct()
      */
     public function getDaysUntilDeadline(): ?int
     {
-        if ($this->deploymentDeadline === null) {
+        if (!$this->deploymentDeadline instanceof DateTimeImmutable) {
             return null;
         }
 
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
         $diff = $now->diff($this->deploymentDeadline);
 
         return $diff->invert ? -$diff->days : $diff->days;

@@ -28,7 +28,7 @@ class ModuleConfigurationService
     private array $modules;
     private array $baseData;
     private array $sampleData;
-    private string $configFile;
+    private readonly string $configFile;
 
     public function __construct(
         private readonly string $projectDir
@@ -70,7 +70,7 @@ class ModuleConfigurationService
      */
     public function getRequiredModules(): array
     {
-        return array_filter($this->modules, fn($module) => $module['required'] ?? false);
+        return array_filter($this->modules, fn(array $module) => $module['required'] ?? false);
     }
 
     /**
@@ -78,7 +78,7 @@ class ModuleConfigurationService
      */
     public function getOptionalModules(): array
     {
-        return array_filter($this->modules, fn($module) => !($module['required'] ?? false));
+        return array_filter($this->modules, fn(array $module): bool => !($module['required'] ?? false));
     }
 
     /**
@@ -98,11 +98,11 @@ class ModuleConfigurationService
         }
 
         // Prüfe Abhängigkeiten
-        foreach ($selectedModules as $moduleKey) {
-            $module = $this->getModule($moduleKey);
+        foreach ($selectedModules as $selectedModule) {
+            $module = $this->getModule($selectedModule);
 
             if (!$module) {
-                $errors[] = "Modul '{$moduleKey}' nicht gefunden";
+                $errors[] = "Modul '{$selectedModule}' nicht gefunden";
                 continue;
             }
 
@@ -115,7 +115,7 @@ class ModuleConfigurationService
         }
 
         return [
-            'valid' => empty($errors),
+            'valid' => $errors === [],
             'errors' => $errors,
             'warnings' => $warnings,
             'modules' => array_unique($selectedModules),
@@ -280,7 +280,7 @@ class ModuleConfigurationService
             }
         }
 
-        if (!empty($dependents)) {
+        if ($dependents !== []) {
             return [
                 'success' => false,
                 'error' => "Modul '{$module['name']}' kann nicht deaktiviert werden. Folgende Module sind davon abhängig: " . implode(', ', $dependents),
@@ -323,7 +323,7 @@ class ModuleConfigurationService
             $activeModules = $this->getActiveModules();
         }
 
-        return array_filter($this->sampleData, function ($data) use ($activeModules) {
+        return array_filter($this->sampleData, function (array $data) use ($activeModules): bool {
             $requiredModules = $data['required_modules'] ?? [];
 
             // Prüfe ob alle erforderlichen Module aktiv sind

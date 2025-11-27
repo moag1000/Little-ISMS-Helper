@@ -15,9 +15,9 @@ use Doctrine\ORM\EntityManagerInterface;
 class CorporateStructureService
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private ISMSContextRepository $ismsContextRepository,
-        private CorporateGovernanceRepository $governanceRepository
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ISMSContextRepository $ismsContextRepository,
+        private readonly CorporateGovernanceRepository $corporateGovernanceRepository
     ) {
     }
 
@@ -33,15 +33,15 @@ class CorporateStructureService
         $parent = $tenant->getParent();
 
         // No parent = use own context
-        if ($parent === null) {
+        if (!$parent instanceof Tenant) {
             return $this->ismsContextRepository->findOneBy(['tenant' => $tenant]);
         }
 
         // Get governance for ISMS context scope
-        $governance = $this->governanceRepository->findGovernanceForScope($tenant, 'isms_context');
+        $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'isms_context');
         if (!$governance) {
             // Fall back to default governance
-            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
 
         $governanceModel = $governance?->getGovernanceModel();
@@ -60,7 +60,7 @@ class CorporateStructureService
                 if ($context === null && $governanceModel === GovernanceModel::SHARED) {
                     // For shared model, create context based on parent as template
                     $parentContext = $this->getEffectiveISMSContext($parent);
-                    if ($parentContext) {
+                    if ($parentContext instanceof ISMSContext) {
                         $context = $this->createDerivedContext($tenant, $parentContext);
                     }
                 }
@@ -72,16 +72,16 @@ class CorporateStructureService
     /**
      * Create a new ISMS context for a subsidiary based on parent context
      */
-    private function createDerivedContext(Tenant $tenant, ISMSContext $parentContext): ISMSContext
+    private function createDerivedContext(Tenant $tenant, ISMSContext $ismsContext): ISMSContext
     {
         $context = new ISMSContext();
         $context->setTenant($tenant);
         $context->setOrganizationName($tenant->getName());
 
         // Copy relevant fields from parent as templates
-        $context->setIsmsPolicy($parentContext->getIsmsPolicy());
-        $context->setLegalRequirements($parentContext->getLegalRequirements());
-        $context->setRegulatoryRequirements($parentContext->getRegulatoryRequirements());
+        $context->setIsmsPolicy($ismsContext->getIsmsPolicy());
+        $context->setLegalRequirements($ismsContext->getLegalRequirements());
+        $context->setRegulatoryRequirements($ismsContext->getRegulatoryRequirements());
 
         // Note: scope and other specific fields should be set by the subsidiary
 
@@ -109,7 +109,7 @@ class CorporateStructureService
 
         // User's tenant is in same corporate group with SHARED governance
         if ($this->isInSameCorporateGroup($userTenant, $targetTenant)) {
-            $governance = $this->governanceRepository->findDefaultGovernance($targetTenant);
+            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($targetTenant);
             $targetGovernance = $governance?->getGovernanceModel();
             return $targetGovernance === GovernanceModel::SHARED;
         }
@@ -124,7 +124,7 @@ class CorporateStructureService
     {
         $current = $child->getParent();
 
-        while ($current !== null) {
+        while ($current instanceof Tenant) {
             if ($current->getId() === $parent->getId()) {
                 return true;
             }
@@ -164,8 +164,8 @@ class CorporateStructureService
         }
 
         // Validate governance model requirements
-        if ($tenant->getParent() !== null) {
-            $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+        if ($tenant->getParent() instanceof Tenant) {
+            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
             if (!$governance) {
                 $errors[] = 'Subsidiaries must have a default governance model defined';
             }
@@ -187,7 +187,7 @@ class CorporateStructureService
         $visited = [];
         $current = $tenant;
 
-        while ($current !== null) {
+        while ($current instanceof Tenant) {
             $id = $current->getId();
             if (isset($visited[$id])) {
                 return true; // Circular reference found
@@ -210,7 +210,7 @@ class CorporateStructureService
     private function buildTreeNode(Tenant $tenant): array
     {
         // Get default governance for this tenant
-        $governance = $this->governanceRepository->findDefaultGovernance($tenant);
+        $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
 
         $node = [
             'id' => $tenant->getId(),
@@ -233,12 +233,12 @@ class CorporateStructureService
     /**
      * Propagate ISMS context changes to subsidiaries (for HIERARCHICAL model)
      */
-    public function propagateContextChanges(Tenant $parent, ISMSContext $parentContext): int
+    public function propagateContextChanges(Tenant $tenant, ISMSContext $ismsContext): int
     {
         $updatedCount = 0;
 
-        foreach ($parent->getSubsidiaries() as $subsidiary) {
-            $governance = $this->governanceRepository->findDefaultGovernance($subsidiary);
+        foreach ($tenant->getSubsidiaries() as $subsidiary) {
+            $governance = $this->corporateGovernanceRepository->findDefaultGovernance($subsidiary);
             if ($governance && $governance->getGovernanceModel() === GovernanceModel::HIERARCHICAL) {
                 // Update or create context for hierarchical subsidiaries
                 $subsidiaryContext = $this->ismsContextRepository->findOneBy(['tenant' => $subsidiary]);
@@ -250,13 +250,13 @@ class CorporateStructureService
                 }
 
                 // Copy all fields from parent
-                $this->copyContextFields($parentContext, $subsidiaryContext);
+                $this->copyContextFields($ismsContext, $subsidiaryContext);
 
                 $this->entityManager->persist($subsidiaryContext);
                 $updatedCount++;
 
                 // Recursively propagate to sub-subsidiaries
-                $updatedCount += $this->propagateContextChanges($subsidiary, $parentContext);
+                $updatedCount += $this->propagateContextChanges($subsidiary, $ismsContext);
             }
         }
 

@@ -2,6 +2,7 @@
 
 namespace App\Security\Voter;
 
+use App\Entity\Tenant;
 use App\Entity\Risk;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -62,7 +63,7 @@ class RiskVoter extends Voter
         return match ($attribute) {
             self::VIEW => $this->canView($risk, $user),
             self::EDIT => $this->canEdit($risk, $user),
-            self::DELETE => $this->canDelete($risk, $user),
+            self::DELETE => $this->canDelete($user),
             default => false,
         };
     }
@@ -70,17 +71,17 @@ class RiskVoter extends Voter
     private function canView(Risk $risk, User $user): bool
     {
         // Security: Multi-tenancy - users can view risks from their tenant
-        return $risk->getTenant() === $user->getTenant() && $user->getTenant() !== null;
+        return $risk->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant;
     }
 
     private function canEdit(Risk $risk, User $user): bool
     {
         // Security: Users can edit risks from their tenant
         // Could be extended with risk owner checks
-        return $risk->getTenant() === $user->getTenant() && $user->getTenant() !== null;
+        return $risk->getTenant() === $user->getTenant() && $user->getTenant() instanceof Tenant;
     }
 
-    private function canDelete(Risk $risk, User $user): bool
+    private function canDelete(User $user): bool
     {
         // Security: Only admins can delete
         return in_array('ROLE_ADMIN', $user->getRoles());

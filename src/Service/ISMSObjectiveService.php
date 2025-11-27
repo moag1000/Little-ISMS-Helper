@@ -2,6 +2,9 @@
 
 namespace App\Service;
 
+use DateTimeImmutable;
+use DateTime;
+use DateTimeInterface;
 use App\Entity\ISMSObjective;
 use App\Repository\ISMSObjectiveRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -9,31 +12,31 @@ use Doctrine\ORM\EntityManagerInterface;
 class ISMSObjectiveService
 {
     public function __construct(
-        private ISMSObjectiveRepository $objectiveRepository,
-        private EntityManagerInterface $entityManager
+        private readonly ISMSObjectiveRepository $ismsObjectiveRepository,
+        private readonly EntityManagerInterface $entityManager
     ) {}
 
     /**
      * Create a new ISMS objective
      */
-    public function createObjective(ISMSObjective $objective): void
+    public function createObjective(ISMSObjective $ismsObjective): void
     {
-        $objective->setUpdatedAt(new \DateTimeImmutable());
+        $ismsObjective->setUpdatedAt(new DateTimeImmutable());
 
-        $this->entityManager->persist($objective);
+        $this->entityManager->persist($ismsObjective);
         $this->entityManager->flush();
     }
 
     /**
      * Update an existing ISMS objective
      */
-    public function updateObjective(ISMSObjective $objective): void
+    public function updateObjective(ISMSObjective $ismsObjective): void
     {
-        $objective->setUpdatedAt(new \DateTimeImmutable());
+        $ismsObjective->setUpdatedAt(new DateTimeImmutable());
 
         // Automatically set achieved date when status changes to achieved
-        if ($objective->getStatus() === 'achieved' && !$objective->getAchievedDate()) {
-            $objective->setAchievedDate(new \DateTime());
+        if ($ismsObjective->getStatus() === 'achieved' && !$ismsObjective->getAchievedDate()) {
+            $ismsObjective->setAchievedDate(new DateTime());
         }
 
         $this->entityManager->flush();
@@ -42,9 +45,9 @@ class ISMSObjectiveService
     /**
      * Delete an ISMS objective
      */
-    public function deleteObjective(ISMSObjective $objective): void
+    public function deleteObjective(ISMSObjective $ismsObjective): void
     {
-        $this->entityManager->remove($objective);
+        $this->entityManager->remove($ismsObjective);
         $this->entityManager->flush();
     }
 
@@ -53,18 +56,16 @@ class ISMSObjectiveService
      */
     public function getStatistics(): array
     {
-        $objectives = $this->objectiveRepository->findAll();
-        $active = $this->objectiveRepository->findActive();
+        $objectives = $this->ismsObjectiveRepository->findAll();
+        $active = $this->ismsObjectiveRepository->findActive();
 
         return [
             'total' => count($objectives),
             'active' => count($active),
-            'achieved' => count($this->objectiveRepository->findBy(['status' => 'achieved'])),
-            'delayed' => count(array_filter($objectives, function($obj) {
-                return $obj->getStatus() === 'in_progress' &&
-                       $obj->getTargetDate() < new \DateTime() &&
-                       !$obj->getAchievedDate();
-            })),
+            'achieved' => count($this->ismsObjectiveRepository->findBy(['status' => 'achieved'])),
+            'delayed' => count(array_filter($objectives, fn($obj): bool => $obj->getStatus() === 'in_progress' &&
+                   $obj->getTargetDate() < new DateTime() &&
+                   !$obj->getAchievedDate())),
             'at_risk' => $this->countAtRiskObjectives($objectives),
         ];
     }
@@ -74,13 +75,11 @@ class ISMSObjectiveService
      */
     private function countAtRiskObjectives(array $objectives): int
     {
-        $thirtyDaysFromNow = (new \DateTime())->modify('+30 days');
+        $thirtyDaysFromNow = new DateTime()->modify('+30 days');
 
-        return count(array_filter($objectives, function($obj) use ($thirtyDaysFromNow) {
-            return $obj->getStatus() === 'in_progress' &&
-                   $obj->getTargetDate() <= $thirtyDaysFromNow &&
-                   $obj->getTargetDate() >= new \DateTime();
-        }));
+        return count(array_filter($objectives, fn($obj): bool => $obj->getStatus() === 'in_progress' &&
+               $obj->getTargetDate() <= $thirtyDaysFromNow &&
+               $obj->getTargetDate() >= new DateTime()));
     }
 
     /**
@@ -88,7 +87,7 @@ class ISMSObjectiveService
      */
     public function getObjectivesByCategory(string $category): array
     {
-        return $this->objectiveRepository->findBy(['category' => $category]);
+        return $this->ismsObjectiveRepository->findBy(['category' => $category]);
     }
 
     /**
@@ -96,11 +95,9 @@ class ISMSObjectiveService
      */
     public function getOverdueObjectives(): array
     {
-        $objectives = $this->objectiveRepository->findActive();
+        $objectives = $this->ismsObjectiveRepository->findActive();
 
-        return array_filter($objectives, function($obj) {
-            return $obj->getTargetDate() < new \DateTime();
-        });
+        return array_filter($objectives, fn($obj): bool => $obj->getTargetDate() < new DateTime());
     }
 
     /**
@@ -108,13 +105,11 @@ class ISMSObjectiveService
      */
     public function getAtRiskObjectives(): array
     {
-        $objectives = $this->objectiveRepository->findActive();
-        $thirtyDaysFromNow = (new \DateTime())->modify('+30 days');
+        $objectives = $this->ismsObjectiveRepository->findActive();
+        $thirtyDaysFromNow = new DateTime()->modify('+30 days');
 
-        return array_filter($objectives, function($obj) use ($thirtyDaysFromNow) {
-            return $obj->getTargetDate() <= $thirtyDaysFromNow &&
-                   $obj->getTargetDate() >= new \DateTime();
-        });
+        return array_filter($objectives, fn($obj): bool => $obj->getTargetDate() <= $thirtyDaysFromNow &&
+               $obj->getTargetDate() >= new DateTime());
     }
 
     /**
@@ -122,7 +117,7 @@ class ISMSObjectiveService
      */
     public function calculateOverallProgress(): float
     {
-        $objectives = $this->objectiveRepository->findAll();
+        $objectives = $this->ismsObjectiveRepository->findAll();
 
         if (empty($objectives)) {
             return 0.0;
@@ -144,53 +139,53 @@ class ISMSObjectiveService
     /**
      * Update progress for an objective
      */
-    public function updateProgress(ISMSObjective $objective, float $currentValue, ?string $notes = null): void
+    public function updateProgress(ISMSObjective $ismsObjective, float $currentValue, ?string $notes = null): void
     {
-        $objective->setCurrentValue((string)$currentValue);
+        $ismsObjective->setCurrentValue((string)$currentValue);
 
         if ($notes) {
-            $existingNotes = $objective->getProgressNotes() ?? '';
-            $timestamp = (new \DateTime())->format('Y-m-d H:i');
+            $existingNotes = $ismsObjective->getProgressNotes() ?? '';
+            $timestamp = new DateTime()->format('Y-m-d H:i');
             $newNote = "[$timestamp] $notes";
 
-            $objective->setProgressNotes(
-                $existingNotes ? "$existingNotes\n\n$newNote" : $newNote
+            $ismsObjective->setProgressNotes(
+                $existingNotes !== '' && $existingNotes !== '0' ? "$existingNotes\n\n$newNote" : $newNote
             );
         }
 
         // Check if objective is now achieved
-        if ($objective->getTargetValue() && (float)$currentValue >= (float)$objective->getTargetValue()) {
-            $objective->setStatus('achieved');
-            $objective->setAchievedDate(new \DateTime());
+        if ($ismsObjective->getTargetValue() && $currentValue >= (float)$ismsObjective->getTargetValue()) {
+            $ismsObjective->setStatus('achieved');
+            $ismsObjective->setAchievedDate(new DateTime());
         }
 
-        $this->updateObjective($objective);
+        $this->updateObjective($ismsObjective);
     }
 
     /**
      * Validate objective data
      */
-    public function validateObjective(ISMSObjective $objective): array
+    public function validateObjective(ISMSObjective $ismsObjective): array
     {
         $errors = [];
 
-        if (empty($objective->getTitle())) {
+        if (in_array($ismsObjective->getTitle(), [null, '', '0'], true)) {
             $errors[] = 'Titel ist erforderlich.';
         }
 
-        if (empty($objective->getDescription())) {
+        if (in_array($ismsObjective->getDescription(), [null, '', '0'], true)) {
             $errors[] = 'Beschreibung ist erforderlich.';
         }
 
-        if (empty($objective->getCategory())) {
+        if (in_array($ismsObjective->getCategory(), [null, '', '0'], true)) {
             $errors[] = 'Kategorie ist erforderlich.';
         }
 
-        if (empty($objective->getResponsiblePerson())) {
+        if (in_array($ismsObjective->getResponsiblePerson(), [null, '', '0'], true)) {
             $errors[] = 'Verantwortliche Person ist erforderlich.';
         }
 
-        if (!$objective->getTargetDate()) {
+        if (!$ismsObjective->getTargetDate() instanceof DateTimeInterface) {
             $errors[] = 'Zieldatum ist erforderlich.';
         }
 
@@ -200,12 +195,12 @@ class ISMSObjectiveService
     /**
      * Generate recommendations for an objective
      */
-    public function generateRecommendations(ISMSObjective $objective): array
+    public function generateRecommendations(ISMSObjective $ismsObjective): array
     {
         $recommendations = [];
 
         // Check if target date is approaching
-        $daysUntilTarget = $this->getDaysUntilTarget($objective);
+        $daysUntilTarget = $this->getDaysUntilTarget($ismsObjective);
         if ($daysUntilTarget !== null && $daysUntilTarget > 0 && $daysUntilTarget <= 30) {
             $recommendations[] = "Das Zieldatum ist in $daysUntilTarget Tagen. Bitte überprüfen Sie den Fortschritt.";
         }
@@ -216,18 +211,18 @@ class ISMSObjectiveService
         }
 
         // Check progress
-        $progress = $objective->getProgressPercentage();
+        $progress = $ismsObjective->getProgressPercentage();
         if ($progress < 50 && $daysUntilTarget !== null && $daysUntilTarget <= 60) {
             $recommendations[] = 'Der Fortschritt liegt unter 50%. Erwägen Sie zusätzliche Ressourcen oder eine Anpassung des Zieldatums.';
         }
 
         // Check if measurable indicators are missing
-        if (empty($objective->getMeasurableIndicators())) {
+        if (in_array($ismsObjective->getMeasurableIndicators(), [null, '', '0'], true)) {
             $recommendations[] = 'Definieren Sie messbare Indikatoren, um den Fortschritt besser verfolgen zu können.';
         }
 
         // Check if values are missing
-        if (!$objective->getTargetValue()) {
+        if (!$ismsObjective->getTargetValue()) {
             $recommendations[] = 'Legen Sie einen Zielwert fest, um den Fortschritt quantifizieren zu können.';
         }
 
@@ -237,17 +232,17 @@ class ISMSObjectiveService
     /**
      * Get days until target date
      */
-    private function getDaysUntilTarget(ISMSObjective $objective): ?int
+    private function getDaysUntilTarget(ISMSObjective $ismsObjective): ?int
     {
-        $targetDate = $objective->getTargetDate();
+        $targetDate = $ismsObjective->getTargetDate();
 
-        if (!$targetDate) {
+        if (!$targetDate instanceof DateTimeInterface) {
             return null;
         }
 
-        $now = new \DateTime();
-        $interval = $now->diff($targetDate);
+        $now = new DateTime();
+        $dateInterval = $now->diff($targetDate);
 
-        return $interval->invert ? -$interval->days : $interval->days;
+        return $dateInterval->invert ? -$dateInterval->days : $dateInterval->days;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Tenant;
 use App\Entity\Incident;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -29,7 +30,7 @@ class IncidentRepository extends ServiceEntityRepository
      * Generate next incident number for a tenant.
      * Format: INC-YYYY-NNNN (e.g., INC-2025-0001)
      */
-    public function getNextIncidentNumber(\App\Entity\Tenant $tenant): string
+    public function getNextIncidentNumber(Tenant $tenant): string
     {
         $year = date('Y');
         $prefix = "INC-{$year}-";
@@ -101,7 +102,7 @@ class IncidentRepository extends ServiceEntityRepository
     /**
      * Find all incidents for a tenant (own incidents only)
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find incidents for
+     * @param Tenant $tenant The tenant to find incidents for
      * @return Incident[] Array of Incident entities
      */
     public function findByTenant($tenant): array
@@ -118,8 +119,8 @@ class IncidentRepository extends ServiceEntityRepository
      * Find incidents by tenant including all ancestors (for hierarchical governance)
      * This allows viewing inherited incidents from parent companies, grandparents, etc.
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find incidents for
-     * @param \App\Entity\Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
+     * @param Tenant $tenant The tenant to find incidents for
+     * @param Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
      * @return Incident[] Array of Incident entities (own + inherited from all ancestors)
      */
     public function findByTenantIncludingParent($tenant, $parentTenant = null): array
@@ -127,17 +128,17 @@ class IncidentRepository extends ServiceEntityRepository
         // Get all ancestors (parent, grandparent, great-grandparent, etc.)
         $ancestors = $tenant->getAllAncestors();
 
-        $qb = $this->createQueryBuilder('i')
+        $queryBuilder = $this->createQueryBuilder('i')
             ->where('i.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
         // Include incidents from all ancestors in the hierarchy
         if (!empty($ancestors)) {
-            $qb->orWhere('i.tenant IN (:ancestors)')
+            $queryBuilder->orWhere('i.tenant IN (:ancestors)')
                ->setParameter('ancestors', $ancestors);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('i.detectedAt', 'DESC')
             ->getQuery()
             ->getResult();
@@ -147,7 +148,7 @@ class IncidentRepository extends ServiceEntityRepository
      * Find incidents by tenant including all subsidiaries (for corporate parent view)
      * This allows viewing aggregated incidents from all subsidiary companies
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find incidents for
+     * @param Tenant $tenant The tenant to find incidents for
      * @return Incident[] Array of Incident entities (own + from all subsidiaries)
      */
     public function findByTenantIncludingSubsidiaries($tenant): array
@@ -155,17 +156,17 @@ class IncidentRepository extends ServiceEntityRepository
         // Get all subsidiaries recursively
         $subsidiaries = $tenant->getAllSubsidiaries();
 
-        $qb = $this->createQueryBuilder('i')
+        $queryBuilder = $this->createQueryBuilder('i')
             ->where('i.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
         // Include incidents from all subsidiaries in the hierarchy
         if (!empty($subsidiaries)) {
-            $qb->orWhere('i.tenant IN (:subsidiaries)')
+            $queryBuilder->orWhere('i.tenant IN (:subsidiaries)')
                ->setParameter('subsidiaries', $subsidiaries);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('i.detectedAt', 'DESC')
             ->getQuery()
             ->getResult();

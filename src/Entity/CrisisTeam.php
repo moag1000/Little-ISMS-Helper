@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use DateTimeImmutable;
 use App\Entity\Tenant;
 use App\Repository\CrisisTeamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -143,19 +144,19 @@ class CrisisTeam
      * Last activation date
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $lastActivatedAt = null;
+    private ?DateTimeImmutable $lastActivatedAt = null;
 
     /**
      * Last training/exercise date
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $lastTrainingAt = null;
+    private ?DateTimeImmutable $lastTrainingAt = null;
 
     /**
      * Next scheduled training date
      */
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $nextTrainingAt = null;
+    private ?DateTimeImmutable $nextTrainingAt = null;
 
     /**
      * Related business continuity plans
@@ -179,10 +180,10 @@ class CrisisTeam
     private ?string $notes = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?DateTimeImmutable $updatedAt = null;
 
     
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
@@ -192,11 +193,7 @@ class CrisisTeam
 public function __construct()
     {
         $this->businessContinuityPlans = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
-        $this->members = [];
-        $this->emergencyContacts = [];
-        $this->availableResources = [];
-        $this->documentation = [];
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -253,9 +250,9 @@ public function __construct()
         return $this->teamLeader;
     }
 
-    public function setTeamLeader(?User $teamLeader): static
+    public function setTeamLeader(?User $user): static
     {
-        $this->teamLeader = $teamLeader;
+        $this->teamLeader = $user;
         return $this;
     }
 
@@ -264,9 +261,9 @@ public function __construct()
         return $this->deputyLeader;
     }
 
-    public function setDeputyLeader(?User $deputyLeader): static
+    public function setDeputyLeader(?User $user): static
     {
-        $this->deputyLeader = $deputyLeader;
+        $this->deputyLeader = $user;
         return $this;
     }
 
@@ -422,34 +419,34 @@ public function __construct()
         return $this;
     }
 
-    public function getLastActivatedAt(): ?\DateTimeImmutable
+    public function getLastActivatedAt(): ?DateTimeImmutable
     {
         return $this->lastActivatedAt;
     }
 
-    public function setLastActivatedAt(?\DateTimeImmutable $lastActivatedAt): static
+    public function setLastActivatedAt(?DateTimeImmutable $lastActivatedAt): static
     {
         $this->lastActivatedAt = $lastActivatedAt;
         return $this;
     }
 
-    public function getLastTrainingAt(): ?\DateTimeImmutable
+    public function getLastTrainingAt(): ?DateTimeImmutable
     {
         return $this->lastTrainingAt;
     }
 
-    public function setLastTrainingAt(?\DateTimeImmutable $lastTrainingAt): static
+    public function setLastTrainingAt(?DateTimeImmutable $lastTrainingAt): static
     {
         $this->lastTrainingAt = $lastTrainingAt;
         return $this;
     }
 
-    public function getNextTrainingAt(): ?\DateTimeImmutable
+    public function getNextTrainingAt(): ?DateTimeImmutable
     {
         return $this->nextTrainingAt;
     }
 
-    public function setNextTrainingAt(?\DateTimeImmutable $nextTrainingAt): static
+    public function setNextTrainingAt(?DateTimeImmutable $nextTrainingAt): static
     {
         $this->nextTrainingAt = $nextTrainingAt;
         return $this;
@@ -463,18 +460,18 @@ public function __construct()
         return $this->businessContinuityPlans;
     }
 
-    public function addBusinessContinuityPlan(BusinessContinuityPlan $plan): static
+    public function addBusinessContinuityPlan(BusinessContinuityPlan $businessContinuityPlan): static
     {
-        if (!$this->businessContinuityPlans->contains($plan)) {
-            $this->businessContinuityPlans->add($plan);
+        if (!$this->businessContinuityPlans->contains($businessContinuityPlan)) {
+            $this->businessContinuityPlans->add($businessContinuityPlan);
         }
 
         return $this;
     }
 
-    public function removeBusinessContinuityPlan(BusinessContinuityPlan $plan): static
+    public function removeBusinessContinuityPlan(BusinessContinuityPlan $businessContinuityPlan): static
     {
-        $this->businessContinuityPlans->removeElement($plan);
+        $this->businessContinuityPlans->removeElement($businessContinuityPlan);
         return $this;
     }
 
@@ -500,23 +497,23 @@ public function __construct()
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function getUpdatedAt(): ?DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    public function setUpdatedAt(?DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -527,11 +524,11 @@ public function __construct()
      */
     public function isTrainingOverdue(): bool
     {
-        if ($this->nextTrainingAt === null) {
+        if (!$this->nextTrainingAt instanceof DateTimeImmutable) {
             return false;
         }
 
-        return $this->nextTrainingAt < new \DateTimeImmutable();
+        return $this->nextTrainingAt < new DateTimeImmutable();
     }
 
     /**
@@ -539,11 +536,11 @@ public function __construct()
      */
     public function getDaysSinceLastTraining(): ?int
     {
-        if ($this->lastTrainingAt === null) {
+        if (!$this->lastTrainingAt instanceof DateTimeImmutable) {
             return null;
         }
 
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
         $diff = $this->lastTrainingAt->diff($now);
 
         return $diff->days;
@@ -568,8 +565,8 @@ public function __construct()
      */
     public function isProperlyConfigured(): bool
     {
-        return $this->teamLeader !== null
-            && !empty($this->members)
+        return $this->teamLeader instanceof User
+            && $this->members !== []
             && $this->primaryPhone !== null
             && $this->primaryEmail !== null;
     }

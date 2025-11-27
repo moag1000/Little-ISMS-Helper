@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Tenant;
 use App\Entity\Control;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -115,9 +116,9 @@ class ControlRepository extends ServiceEntityRepository
             'not_applicable' => 0,
         ];
 
-        foreach ($rawStats as $stat) {
-            $status = $stat['implementationStatus'] ?? 'not_started';
-            $count = (int) $stat['count'];
+        foreach ($rawStats as $rawStat) {
+            $status = $rawStat['implementationStatus'] ?? 'not_started';
+            $count = (int) $rawStat['count'];
             $stats['total'] += $count;
 
             if (isset($stats[$status])) {
@@ -141,7 +142,7 @@ class ControlRepository extends ServiceEntityRepository
     /**
      * Find all controls for a tenant (own controls only)
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find controls for
+     * @param Tenant $tenant The tenant to find controls for
      * @return Control[] Array of Control entities
      */
     public function findByTenant($tenant): array
@@ -159,8 +160,8 @@ class ControlRepository extends ServiceEntityRepository
      * Find controls by tenant including all ancestors (for hierarchical governance)
      * This allows viewing inherited controls from parent companies, grandparents, etc.
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find controls for
-     * @param \App\Entity\Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
+     * @param Tenant $tenant The tenant to find controls for
+     * @param Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
      * @return Control[] Array of Control entities (own + inherited from all ancestors)
      */
     public function findByTenantIncludingParent($tenant, $parentTenant = null): array
@@ -168,17 +169,17 @@ class ControlRepository extends ServiceEntityRepository
         // Get all ancestors (parent, grandparent, great-grandparent, etc.)
         $ancestors = $tenant->getAllAncestors();
 
-        $qb = $this->createQueryBuilder('c')
+        $queryBuilder = $this->createQueryBuilder('c')
             ->where('c.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
         // Include controls from all ancestors in the hierarchy
         if (!empty($ancestors)) {
-            $qb->orWhere('c.tenant IN (:ancestors)')
+            $queryBuilder->orWhere('c.tenant IN (:ancestors)')
                ->setParameter('ancestors', $ancestors);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('LENGTH(c.controlId)', 'ASC')
             ->addOrderBy('c.controlId', 'ASC')
             ->getQuery()
@@ -189,7 +190,7 @@ class ControlRepository extends ServiceEntityRepository
      * Find a specific control by controlId and tenant
      *
      * @param string $controlId The ISO 27001 control ID (e.g., "5.1", "8.3")
-     * @param \App\Entity\Tenant $tenant The tenant
+     * @param Tenant $tenant The tenant
      * @return Control|null The control or null if not found
      */
     public function findByControlIdAndTenant(string $controlId, $tenant): ?Control
@@ -206,7 +207,7 @@ class ControlRepository extends ServiceEntityRepository
     /**
      * Get implementation statistics for a specific tenant
      *
-     * @param \App\Entity\Tenant $tenant The tenant
+     * @param Tenant $tenant The tenant
      * @return array{total: int, implemented: int, in_progress: int, not_started: int, not_applicable: int} Control statistics
      */
     public function getImplementationStatsByTenant($tenant): array
@@ -229,9 +230,9 @@ class ControlRepository extends ServiceEntityRepository
             'not_applicable' => 0,
         ];
 
-        foreach ($rawStats as $stat) {
-            $status = $stat['implementationStatus'] ?? 'not_started';
-            $count = (int) $stat['count'];
+        foreach ($rawStats as $rawStat) {
+            $status = $rawStat['implementationStatus'] ?? 'not_started';
+            $count = (int) $rawStat['count'];
             $stats['total'] += $count;
 
             if (isset($stats[$status])) {
@@ -257,7 +258,7 @@ class ControlRepository extends ServiceEntityRepository
      * Find controls by tenant including all subsidiaries (for corporate parent view)
      * This allows viewing aggregated controls from all subsidiary companies
      *
-     * @param \App\Entity\Tenant $tenant The tenant to find controls for
+     * @param Tenant $tenant The tenant to find controls for
      * @return Control[] Array of Control entities (own + from all subsidiaries)
      */
     public function findByTenantIncludingSubsidiaries($tenant): array
@@ -265,17 +266,17 @@ class ControlRepository extends ServiceEntityRepository
         // Get all subsidiaries recursively
         $subsidiaries = $tenant->getAllSubsidiaries();
 
-        $qb = $this->createQueryBuilder('c')
+        $queryBuilder = $this->createQueryBuilder('c')
             ->where('c.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
         // Include controls from all subsidiaries in the hierarchy
         if (!empty($subsidiaries)) {
-            $qb->orWhere('c.tenant IN (:subsidiaries)')
+            $queryBuilder->orWhere('c.tenant IN (:subsidiaries)')
                ->setParameter('subsidiaries', $subsidiaries);
         }
 
-        return $qb
+        return $queryBuilder
             ->orderBy('LENGTH(c.controlId)', 'ASC')
             ->addOrderBy('c.controlId', 'ASC')
             ->getQuery()

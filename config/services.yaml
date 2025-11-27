@@ -50,11 +50,6 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    # Configure Azure SAML Authenticator
-    App\Security\AzureSamlAuthenticator:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
     # Configure Data Import Service
     App\Service\DataImportService:
         arguments:
@@ -118,6 +113,8 @@ services:
     Symfony\Component\RateLimiter\RateLimiterFactory $apiLimiter: '@limiter.api'
     Symfony\Component\RateLimiter\RateLimiterFactory $passwordResetLimiter: '@limiter.password_reset'
     Symfony\Component\RateLimiter\RateLimiterFactory $documentUploadLimiter: '@limiter.document_upload'
+    # Aliases for Rector-renamed parameters
+    Symfony\Component\RateLimiter\RateLimiterFactory $rateLimiterFactory: '@limiter.document_upload'
 
     # Configure Security Headers Subscriber
     App\EventSubscriber\SecurityHeadersSubscriber:

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Symfony\Component\Security\Core\User\UserInterface;
 use App\Entity\BusinessProcess;
 use App\Form\BusinessProcessType;
 use App\Repository\BusinessProcessRepository;
@@ -13,17 +14,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-#[Route('/bcm/business-process')]
 class BusinessProcessController extends AbstractController
 {
     public function __construct(
-        private BusinessProcessRepository $businessProcessRepository,
-        private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator,
-        private Security $security
+        private readonly BusinessProcessRepository $businessProcessRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly TranslatorInterface $translator,
+        private readonly Security $security
     ) {}
-
-    #[Route('/', name: 'app_business_process_index', methods: ['GET'])]
+    #[Route('/bcm/business-process/', name: 'app_business_process_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         // Get current user's tenant
@@ -35,19 +34,11 @@ class BusinessProcessController extends AbstractController
 
         // Get business processes based on view filter
         if ($tenant) {
-            switch ($view) {
-                case 'own':
-                    $processes = $this->businessProcessRepository->findByTenant($tenant);
-                    break;
-                case 'subsidiaries':
-                    $processes = $this->businessProcessRepository->findByTenantIncludingSubsidiaries($tenant);
-                    break;
-                case 'inherited':
-                default:
-                    $processes = $this->businessProcessRepository->findByTenantIncludingParent($tenant);
-                    break;
-            }
-
+            $processes = match ($view) {
+                'own' => $this->businessProcessRepository->findByTenant($tenant),
+                'subsidiaries' => $this->businessProcessRepository->findByTenantIncludingSubsidiaries($tenant),
+                default => $this->businessProcessRepository->findByTenantIncludingParent($tenant),
+            };
             $inheritanceInfo = [
                 'hasParent' => $tenant->getParent() !== null,
                 'hasSubsidiaries' => $tenant->getSubsidiaries()->count() > 0,
@@ -120,15 +111,14 @@ class BusinessProcessController extends AbstractController
             'detailedStats' => $detailedStats,
         ]);
     }
-
-    #[Route('/new', name: 'app_business_process_new', methods: ['GET', 'POST'])]
+    #[Route('/bcm/business-process/new', name: 'app_business_process_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {
         $businessProcess = new BusinessProcess();
 
         // Set tenant from current user
         $user = $this->security->getUser();
-        if ($user && $user->getTenant()) {
+        if ($user instanceof UserInterface && $user->getTenant()) {
             $businessProcess->setTenant($user->getTenant());
         }
 
@@ -148,8 +138,7 @@ class BusinessProcessController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/api/stats', name: 'app_business_process_stats_api', methods: ['GET'])]
+    #[Route('/bcm/business-process/api/stats', name: 'app_business_process_stats_api', methods: ['GET'])]
     public function statsApi(BusinessProcessRepository $businessProcessRepository): Response
     {
         $processes = $businessProcessRepository->findAll();
@@ -191,9 +180,7 @@ class BusinessProcessController extends AbstractController
 
         return $this->json($stats);
     }
-
-
-    #[Route('/{id}', name: 'app_business_process_show', methods: ['GET'])]
+    #[Route('/bcm/business-process/{id}', name: 'app_business_process_show', methods: ['GET'])]
     public function show(BusinessProcess $businessProcess): Response
     {
         // Calculate additional metrics for display
@@ -212,8 +199,7 @@ class BusinessProcessController extends AbstractController
             'metrics' => $metrics,
         ]);
     }
-
-    #[Route('/{id}/edit', name: 'app_business_process_edit', methods: ['GET', 'POST'])]
+    #[Route('/bcm/business-process/{id}/edit', name: 'app_business_process_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, BusinessProcess $businessProcess, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         $form = $this->createForm(BusinessProcessType::class, $businessProcess);
@@ -231,8 +217,7 @@ class BusinessProcessController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}', name: 'app_business_process_delete', methods: ['POST'])]
+    #[Route('/bcm/business-process/{id}', name: 'app_business_process_delete', methods: ['POST'])]
     public function delete(Request $request, BusinessProcess $businessProcess, EntityManagerInterface $entityManager, TranslatorInterface $translator): Response
     {
         if ($this->isCsrfTokenValid('delete'.$businessProcess->getId(), $request->request->get('_token'))) {
@@ -244,8 +229,7 @@ class BusinessProcessController extends AbstractController
 
         return $this->redirectToRoute('app_business_process_index', [], Response::HTTP_SEE_OTHER);
     }
-
-    #[Route('/{id}/bia', name: 'app_business_process_bia', methods: ['GET'])]
+    #[Route('/bcm/business-process/{id}/bia', name: 'app_business_process_bia', methods: ['GET'])]
     public function bia(BusinessProcess $businessProcess): Response
     {
         // Business Impact Analysis view
@@ -267,7 +251,6 @@ class BusinessProcessController extends AbstractController
             'bia_data' => $biaData,
         ]);
     }
-
     /**
      * Calculate detailed statistics showing breakdown by origin
      */

@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\Workflow;
+use DateTimeImmutable;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Entity\User;
@@ -37,12 +37,12 @@ use Symfony\Bundle\SecurityBundle\Security;
 class WorkflowService
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private WorkflowRepository $workflowRepository,
-        private WorkflowInstanceRepository $workflowInstanceRepository,
-        private UserRepository $userRepository,
-        private EmailNotificationService $emailService,
-        private Security $security
+        private readonly EntityManagerInterface $entityManager,
+        private readonly WorkflowRepository $workflowRepository,
+        private readonly WorkflowInstanceRepository $workflowInstanceRepository,
+        private readonly UserRepository $userRepository,
+        private readonly EmailNotificationService $emailNotificationService,
+        private readonly Security $security
     ) {}
 
     /**
@@ -67,12 +67,12 @@ class WorkflowService
 
         // Check if workflow instance already exists
         // Note: findOneBy doesn't support array values, use QueryBuilder
-        $qb = $this->entityManager->createQueryBuilder();
-        $existingInstance = $qb->select('wi')
+        $queryBuilder = $this->entityManager->createQueryBuilder();
+        $existingInstance = $queryBuilder->select('wi')
             ->from(WorkflowInstance::class, 'wi')
             ->where('wi.entityType = :entityType')
             ->andWhere('wi.entityId = :entityId')
-            ->andWhere($qb->expr()->in('wi.status', ':statuses'))
+            ->andWhere($queryBuilder->expr()->in('wi.status', ':statuses'))
             ->setParameter('entityType', $entityType)
             ->setParameter('entityId', $entityId)
             ->setParameter('statuses', ['pending', 'in_progress'])
@@ -85,79 +85,79 @@ class WorkflowService
         }
 
         // Create new workflow instance
-        $instance = new WorkflowInstance();
-        $instance->setWorkflow($workflow);
-        $instance->setEntityType($entityType);
-        $instance->setEntityId($entityId);
-        $instance->setStatus('pending');
-        $instance->setInitiatedBy($this->security->getUser());
+        $workflowInstance = new WorkflowInstance();
+        $workflowInstance->setWorkflow($workflow);
+        $workflowInstance->setEntityType($entityType);
+        $workflowInstance->setEntityId($entityId);
+        $workflowInstance->setStatus('pending');
+        $workflowInstance->setInitiatedBy($this->security->getUser());
 
         // Set first step as current
         $steps = $workflow->getSteps();
         if ($steps->count() > 0) {
             $firstStep = $steps->first();
-            $instance->setCurrentStep($firstStep);
+            $workflowInstance->setCurrentStep($firstStep);
 
             // Calculate due date based on first step's SLA
             if ($firstStep->getDaysToComplete()) {
-                $dueDate = (new \DateTimeImmutable())->modify('+' . $firstStep->getDaysToComplete() . ' days');
-                $instance->setDueDate($dueDate);
+                $dueDate = new DateTimeImmutable()->modify('+' . $firstStep->getDaysToComplete() . ' days');
+                $workflowInstance->setDueDate($dueDate);
             }
 
-            $instance->setStatus('in_progress');
+            $workflowInstance->setStatus('in_progress');
 
             // Handle notification step auto-progression or send assignment notification
-            $this->handleStepAssignment($instance, $firstStep);
+            $this->handleStepAssignment($workflowInstance, $firstStep);
         }
 
-        $this->entityManager->persist($instance);
+        $this->entityManager->persist($workflowInstance);
 
         if ($autoFlush) {
             $this->entityManager->flush();
         }
 
-        return $instance;
+        return $workflowInstance;
     }
 
     /**
      * Approve a workflow step
      */
-    public function approveStep(WorkflowInstance $instance, User $approver, ?string $comments = null): bool
+    public function approveStep(WorkflowInstance $workflowInstance, User $user, ?string $comments = null): bool
     {
-        if ($instance->getStatus() !== 'in_progress') {
+        if ($workflowInstance->getStatus() !== 'in_progress') {
             return false;
         }
 
-        $currentStep = $instance->getCurrentStep();
-        if (!$currentStep) {
+        $currentStep = $workflowInstance->getCurrentStep();
+        if (!$currentStep instanceof WorkflowStep) {
             return false;
         }
 
         // Check if user is allowed to approve
-        if (!$this->canUserApprove($approver, $currentStep)) {
+        if (!$this->canUserApprove($user, $currentStep)) {
             return false;
         }
 
         // Add to approval history
-        $instance->addApprovalHistoryEntry([
+        $workflowInstance->addApprovalHistoryEntry([
             'step_id' => $currentStep->getId(),
             'step_name' => $currentStep->getName(),
             'action' => 'approved',
-            'approver_id' => $approver->getId(),
-            'approver_name' => $approver->getFirstName() . ' ' . $approver->getLastName(),
+            'approver_id' => $user->getId(),
+            'approver_name' => $user->getFirstName() . ' ' . $user->getLastName(),
             'comments' => $comments,
-            'timestamp' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+            'timestamp' => new DateTimeImmutable()->format('Y-m-d H:i:s'),
         ]);
 
         // Mark step as completed
-        $instance->addCompletedStep($currentStep->getId());
+        $workflowInstance->addCompletedStep($currentStep->getId());
 
         // Move to next step or complete workflow
-        $nextStep = $this->moveToNextStep($instance);
+        $nextStep = $this->moveToNextStep($workflowInstance);
 
         // Handle next step (notification or approval notification)
-        if ($nextStep) {
-            $this->handleStepAssignment($instance, $nextStep);
+        if ($nextStep instanceof WorkflowStep) {
+            $this->handleStepAssignment($workflowInstance, $nextStep);
         }
 
         $this->entityManager->flush();
@@ -168,36 +168,36 @@ class WorkflowService
     /**
      * Reject a workflow step
      */
-    public function rejectStep(WorkflowInstance $instance, User $approver, string $reason): bool
+    public function rejectStep(WorkflowInstance $workflowInstance, User $user, string $reason): bool
     {
-        if ($instance->getStatus() !== 'in_progress') {
+        if ($workflowInstance->getStatus() !== 'in_progress') {
             return false;
         }
 
-        $currentStep = $instance->getCurrentStep();
-        if (!$currentStep) {
+        $currentStep = $workflowInstance->getCurrentStep();
+        if (!$currentStep instanceof WorkflowStep) {
             return false;
         }
 
         // Check if user is allowed to reject
-        if (!$this->canUserApprove($approver, $currentStep)) {
+        if (!$this->canUserApprove($user, $currentStep)) {
             return false;
         }
 
         // Add to approval history
-        $instance->addApprovalHistoryEntry([
+        $workflowInstance->addApprovalHistoryEntry([
             'step_id' => $currentStep->getId(),
             'step_name' => $currentStep->getName(),
             'action' => 'rejected',
-            'approver_id' => $approver->getId(),
-            'approver_name' => $approver->getFirstName() . ' ' . $approver->getLastName(),
+            'approver_id' => $user->getId(),
+            'approver_name' => $user->getFirstName() . ' ' . $user->getLastName(),
             'reason' => $reason,
-            'timestamp' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+            'timestamp' => new DateTimeImmutable()->format('Y-m-d H:i:s'),
         ]);
 
-        $instance->setStatus('rejected');
-        $instance->setCompletedAt(new \DateTimeImmutable());
-        $instance->setComments($reason);
+        $workflowInstance->setStatus('rejected');
+        $workflowInstance->setCompletedAt(new DateTimeImmutable());
+        $workflowInstance->setComments($reason);
 
         $this->entityManager->flush();
 
@@ -207,11 +207,11 @@ class WorkflowService
     /**
      * Cancel a workflow instance
      */
-    public function cancelWorkflow(WorkflowInstance $instance, string $reason): void
+    public function cancelWorkflow(WorkflowInstance $workflowInstance, string $reason): void
     {
-        $instance->setStatus('cancelled');
-        $instance->setCompletedAt(new \DateTimeImmutable());
-        $instance->setComments($reason);
+        $workflowInstance->setStatus('cancelled');
+        $workflowInstance->setCompletedAt(new DateTimeImmutable());
+        $workflowInstance->setComments($reason);
 
         $this->entityManager->flush();
     }
@@ -221,10 +221,10 @@ class WorkflowService
      *
      * @return WorkflowStep|null The next step, or null if workflow is complete
      */
-    private function moveToNextStep(WorkflowInstance $instance): ?WorkflowStep
+    private function moveToNextStep(WorkflowInstance $workflowInstance): ?WorkflowStep
     {
-        $workflow = $instance->getWorkflow();
-        $currentStep = $instance->getCurrentStep();
+        $workflow = $workflowInstance->getWorkflow();
+        $currentStep = $workflowInstance->getCurrentStep();
 
         $steps = $workflow->getSteps()->toArray();
         $currentIndex = array_search($currentStep, $steps);
@@ -232,81 +232,79 @@ class WorkflowService
         if ($currentIndex !== false && isset($steps[$currentIndex + 1])) {
             // Move to next step
             $nextStep = $steps[$currentIndex + 1];
-            $instance->setCurrentStep($nextStep);
+            $workflowInstance->setCurrentStep($nextStep);
 
             // Update due date based on next step's SLA
             if ($nextStep->getDaysToComplete()) {
-                $dueDate = (new \DateTimeImmutable())->modify('+' . $nextStep->getDaysToComplete() . ' days');
-                $instance->setDueDate($dueDate);
+                $dueDate = new DateTimeImmutable()->modify('+' . $nextStep->getDaysToComplete() . ' days');
+                $workflowInstance->setDueDate($dueDate);
             }
 
             return $nextStep;
-        } else {
-            // Workflow completed
-            $instance->setStatus('approved');
-            $instance->setCompletedAt(new \DateTimeImmutable());
-            $instance->setCurrentStep(null);
-
-            return null;
         }
+        // Workflow completed
+        $workflowInstance->setStatus('approved');
+        $workflowInstance->setCompletedAt(new DateTimeImmutable());
+        $workflowInstance->setCurrentStep(null);
+        return null;
     }
 
     /**
      * Handle step assignment - send notifications or auto-progress notification steps
      */
-    private function handleStepAssignment(WorkflowInstance $instance, WorkflowStep $step): void
+    private function handleStepAssignment(WorkflowInstance $workflowInstance, WorkflowStep $workflowStep): void
     {
-        if ($step->getStepType() === 'notification') {
+        if ($workflowStep->getStepType() === 'notification') {
             // Auto-progress notification steps
-            $this->autoProgressNotificationStep($instance, $step);
+            $this->autoProgressNotificationStep($workflowInstance, $workflowStep);
         } else {
             // Send assignment notification for approval steps
-            $this->sendStepAssignmentNotification($instance, $step);
+            $this->sendStepAssignmentNotification($workflowInstance, $workflowStep);
         }
     }
 
     /**
      * Auto-progress a notification step (no approval required)
      */
-    private function autoProgressNotificationStep(WorkflowInstance $instance, WorkflowStep $step): void
+    private function autoProgressNotificationStep(WorkflowInstance $workflowInstance, WorkflowStep $workflowStep): void
     {
         // Add to history
-        $instance->addApprovalHistoryEntry([
-            'step_id' => $step->getId(),
-            'step_name' => $step->getName(),
+        $workflowInstance->addApprovalHistoryEntry([
+            'step_id' => $workflowStep->getId(),
+            'step_name' => $workflowStep->getName(),
             'action' => 'notification_sent',
             'approver_id' => null,
             'approver_name' => 'System',
             'comments' => 'Notification step automatically processed',
-            'timestamp' => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+            'timestamp' => new DateTimeImmutable()->format('Y-m-d H:i:s'),
         ]);
 
         // Mark step as completed
-        $instance->addCompletedStep($step->getId());
+        $workflowInstance->addCompletedStep($workflowStep->getId());
 
         // Send notification to assigned users
-        $recipients = $this->getStepApprovers($step);
-        if (!empty($recipients)) {
-            $this->emailService->sendWorkflowNotificationStepEmail($instance, $step, $recipients);
+        $recipients = $this->getStepApprovers($workflowStep);
+        if ($recipients !== []) {
+            $this->emailNotificationService->sendWorkflowNotificationStepEmail($workflowInstance, $workflowStep, $recipients);
         }
 
         // Move to next step
-        $nextStep = $this->moveToNextStep($instance);
+        $nextStep = $this->moveToNextStep($workflowInstance);
 
         // Handle next step recursively (in case of consecutive notification steps)
-        if ($nextStep) {
-            $this->handleStepAssignment($instance, $nextStep);
+        if ($nextStep instanceof WorkflowStep) {
+            $this->handleStepAssignment($workflowInstance, $nextStep);
         }
     }
 
     /**
      * Send notification to approvers when a step is assigned
      */
-    private function sendStepAssignmentNotification(WorkflowInstance $instance, WorkflowStep $step): void
+    private function sendStepAssignmentNotification(WorkflowInstance $workflowInstance, WorkflowStep $workflowStep): void
     {
-        $recipients = $this->getStepApprovers($step);
-        if (!empty($recipients)) {
-            $this->emailService->sendWorkflowAssignmentNotification($instance, $step, $recipients);
+        $recipients = $this->getStepApprovers($workflowStep);
+        if ($recipients !== []) {
+            $this->emailNotificationService->sendWorkflowAssignmentNotification($workflowInstance, $workflowStep, $recipients);
         }
     }
 
@@ -315,19 +313,19 @@ class WorkflowService
      *
      * @return User[]
      */
-    private function getStepApprovers(WorkflowStep $step): array
+    private function getStepApprovers(WorkflowStep $workflowStep): array
     {
         $recipients = [];
 
         // Get approvers by user IDs
-        $approverUserIds = $step->getApproverUsers() ?? [];
-        if (!empty($approverUserIds)) {
+        $approverUserIds = $workflowStep->getApproverUsers() ?? [];
+        if ($approverUserIds !== []) {
             $usersByIds = $this->userRepository->findBy(['id' => $approverUserIds]);
             $recipients = array_merge($recipients, $usersByIds);
         }
 
         // Get approvers by role
-        $approverRole = $step->getApproverRole();
+        $approverRole = $workflowStep->getApproverRole();
         if ($approverRole) {
             $usersByRole = $this->userRepository->findByRole($approverRole);
             $recipients = array_merge($recipients, $usersByRole);
@@ -336,10 +334,10 @@ class WorkflowService
         // Remove duplicates
         $recipientIds = [];
         $uniqueRecipients = [];
-        foreach ($recipients as $user) {
-            if (!in_array($user->getId(), $recipientIds)) {
-                $recipientIds[] = $user->getId();
-                $uniqueRecipients[] = $user;
+        foreach ($recipients as $recipient) {
+            if (!in_array($recipient->getId(), $recipientIds)) {
+                $recipientIds[] = $recipient->getId();
+                $uniqueRecipients[] = $recipient;
             }
         }
 
@@ -349,23 +347,14 @@ class WorkflowService
     /**
      * Check if user can approve a step
      */
-    public function canUserApprove(User $user, WorkflowStep $step): bool
+    public function canUserApprove(User $user, WorkflowStep $workflowStep): bool
     {
         // Check by role
-        if ($step->getApproverRole()) {
-            if (in_array($step->getApproverRole(), $user->getRoles())) {
-                return true;
-            }
+        if ($workflowStep->getApproverRole() && in_array($workflowStep->getApproverRole(), $user->getRoles())) {
+            return true;
         }
-
         // Check by user ID
-        if ($step->getApproverUsers()) {
-            if (in_array($user->getId(), $step->getApproverUsers())) {
-                return true;
-            }
-        }
-
-        return false;
+        return $workflowStep->getApproverUsers() && in_array($user->getId(), $workflowStep->getApproverUsers());
     }
 
     /**
@@ -416,6 +405,6 @@ class WorkflowService
             'status' => ['pending', 'in_progress']
         ]);
 
-        return array_filter($instances, fn($instance) => $instance->isOverdue());
+        return array_filter($instances, fn(WorkflowInstance $workflowInstance): bool => $workflowInstance->isOverdue());
     }
 }

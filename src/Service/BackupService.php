@@ -2,8 +2,14 @@
 
 namespace App\Service;
 
+use DateTime;
+use Exception;
+use App\Entity\UserSession;
+use RuntimeException;
+use InvalidArgumentException;
+use DateTimeInterface;
+use Composer\InstalledVersions;
 use App\Entity\AuditLog;
-use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -11,7 +17,7 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 class BackupService
 {
     // Entities that contain productive user data
-    private const PRODUCTIVE_ENTITIES = [
+    private const array PRODUCTIVE_ENTITIES = [
         'User',
         'Tenant',
         'Role',
@@ -51,14 +57,8 @@ class BackupService
         'RiskAppetite',
     ];
 
-    // Entities for logs
-    private const LOG_ENTITIES = [
-        'AuditLog',
-        'UserSession',
-    ];
-
     // Fields to exclude from backup (sensitive or regeneratable)
-    private const EXCLUDED_FIELDS = [
+    private const array EXCLUDED_FIELDS = [
         'password',
         'salt',
         'mfaSecret',
@@ -67,10 +67,9 @@ class BackupService
     ];
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private AuditLogger $auditLogger,
-        private LoggerInterface $logger,
-        private string $projectDir
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LoggerInterface $logger,
+        private readonly string $projectDir
     ) {
     }
 
@@ -91,7 +90,7 @@ class BackupService
         $backup = [
             'metadata' => [
                 'version' => '1.0',
-                'created_at' => (new \DateTime())->format('c'),
+                'created_at' => new DateTime()->format('c'),
                 'application_version' => $this->getApplicationVersion(),
                 'php_version' => PHP_VERSION,
                 'doctrine_version' => $this->getDoctrineVersion(),
@@ -117,7 +116,7 @@ class BackupService
                     'entity' => $entityName,
                     'count' => count($entities),
                 ]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logger->error('Error backing up entity', [
                     'entity' => $entityName,
                     'error' => $e->getMessage(),
@@ -134,14 +133,14 @@ class BackupService
                 $backup['statistics']['AuditLog'] = count($auditLogs);
 
                 $this->logger->info('Backed up audit log', ['count' => count($auditLogs)]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logger->error('Error backing up audit log', ['error' => $e->getMessage()]);
             }
         }
 
         // Backup user sessions if requested
         if ($includeUserSessions) {
-            $sessionClass = 'App\\Entity\\UserSession';
+            $sessionClass = UserSession::class;
             if (class_exists($sessionClass)) {
                 try {
                     $sessions = $this->entityManager->getRepository($sessionClass)->findAll();
@@ -149,7 +148,7 @@ class BackupService
                     $backup['statistics']['UserSession'] = count($sessions);
 
                     $this->logger->info('Backed up user sessions', ['count' => count($sessions)]);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->logger->error('Error backing up user sessions', ['error' => $e->getMessage()]);
                 }
             }
@@ -174,10 +173,8 @@ class BackupService
     {
         $backupDir = $this->projectDir . '/var/backups';
 
-        if (!is_dir($backupDir)) {
-            if (!mkdir($backupDir, 0755, true)) {
-                throw new FileException('Could not create backup directory: ' . $backupDir);
-            }
+        if (!is_dir($backupDir) && !mkdir($backupDir, 0755, true)) {
+            throw new FileException('Could not create backup directory: ' . $backupDir);
         }
 
         if ($filename === null) {
@@ -188,7 +185,7 @@ class BackupService
 
         $json = json_encode($backup, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
         if ($json === false) {
-            throw new \RuntimeException('Failed to encode backup data to JSON: ' . json_last_error_msg());
+            throw new RuntimeException('Failed to encode backup data to JSON: ' . json_last_error_msg());
         }
 
         if (file_put_contents($filepath, $json) === false) {
@@ -244,9 +241,7 @@ class BackupService
         }
 
         // Sort by creation date (newest first)
-        usort($backups, function ($a, $b) {
-            return $b['created_at'] <=> $a['created_at'];
-        });
+        usort($backups, fn(array $a, array $b): int => $b['created_at'] <=> $a['created_at']);
 
         return $backups;
     }
@@ -260,19 +255,19 @@ class BackupService
     public function loadBackupFromFile(string $filepath): array
     {
         if (!file_exists($filepath)) {
-            throw new \InvalidArgumentException('Backup file not found: ' . $filepath);
+            throw new InvalidArgumentException('Backup file not found: ' . $filepath);
         }
 
         // Decompress if needed
         if (str_ends_with($filepath, '.gz')) {
             // Check if zlib extension is available
             if (!extension_loaded('zlib')) {
-                throw new \RuntimeException('Cannot decompress backup: ext-zlib extension not available');
+                throw new RuntimeException('Cannot decompress backup: ext-zlib extension not available');
             }
 
             $json = @gzdecode(file_get_contents($filepath)); // Suppress warning for intentionally corrupted test files
             if ($json === false) {
-                throw new \RuntimeException('Failed to decompress backup file');
+                throw new RuntimeException('Failed to decompress backup file');
             }
         } else {
             $json = file_get_contents($filepath);
@@ -280,7 +275,7 @@ class BackupService
 
         $backup = json_decode($json, true);
         if ($backup === null) {
-            throw new \RuntimeException('Failed to decode backup JSON: ' . json_last_error_msg());
+            throw new RuntimeException('Failed to decode backup JSON: ' . json_last_error_msg());
         }
 
         return $backup;
@@ -288,9 +283,6 @@ class BackupService
 
     /**
      * Serialize entities to array
-     *
-     * @param array $entities
-     * @return array
      */
     private function serializeEntities(array $entities): array
     {
@@ -298,7 +290,7 @@ class BackupService
 
         foreach ($entities as $entity) {
             $serialized = [];
-            $metadata = $this->entityManager->getClassMetadata(get_class($entity));
+            $metadata = $this->entityManager->getClassMetadata($entity::class);
 
             // Serialize field mappings
             foreach ($metadata->getFieldNames() as $fieldName) {
@@ -309,7 +301,7 @@ class BackupService
                 $value = $metadata->getFieldValue($entity, $fieldName);
 
                 // Convert DateTime to ISO 8601 string
-                if ($value instanceof \DateTimeInterface) {
+                if ($value instanceof DateTimeInterface) {
                     $value = $value->format('c');
                 }
 
@@ -321,7 +313,7 @@ class BackupService
                 if ($metadata->isSingleValuedAssociation($assocName)) {
                     $value = $metadata->getFieldValue($entity, $assocName);
                     if ($value !== null) {
-                        $assocMetadata = $this->entityManager->getClassMetadata(get_class($value));
+                        $assocMetadata = $this->entityManager->getClassMetadata($value::class);
                         $serialized[$assocName . '_id'] = $assocMetadata->getIdentifierValues($value);
                     }
                 } else {
@@ -330,7 +322,7 @@ class BackupService
                     if ($collection !== null && count($collection) > 0) {
                         $ids = [];
                         foreach ($collection as $item) {
-                            $assocMetadata = $this->entityManager->getClassMetadata(get_class($item));
+                            $assocMetadata = $this->entityManager->getClassMetadata($item::class);
                             $ids[] = $assocMetadata->getIdentifierValues($item);
                         }
                         $serialized[$assocName . '_ids'] = $ids;
@@ -346,9 +338,6 @@ class BackupService
 
     /**
      * Compress backup file using gzip (if ext-zlib is available)
-     *
-     * @param string $filepath
-     * @return void
      */
     private function compressBackupFile(string $filepath): void
     {
@@ -372,8 +361,6 @@ class BackupService
 
     /**
      * Get application version from composer.json
-     *
-     * @return string
      */
     private function getApplicationVersion(): string
     {
@@ -387,17 +374,15 @@ class BackupService
 
     /**
      * Get Doctrine version
-     *
-     * @return string
      */
     private function getDoctrineVersion(): string
     {
         try {
-            if (class_exists(\Composer\InstalledVersions::class)) {
-                $packages = \Composer\InstalledVersions::getAllRawData()[0]['versions'] ?? [];
+            if (class_exists(InstalledVersions::class)) {
+                $packages = InstalledVersions::getAllRawData()[0]['versions'] ?? [];
                 return $packages['doctrine/orm']['version'] ?? 'unknown';
             }
-        } catch (\Exception $e) {
+        } catch (Exception) {
             // Fallback if Composer runtime API is not available
         }
         return 'unknown';

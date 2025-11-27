@@ -2,8 +2,8 @@
 
 namespace App\Form;
 
+use Doctrine\ORM\QueryBuilder;
 use App\Entity\InternalAudit;
-use App\Entity\User;
 use App\Entity\ComplianceFramework;
 use App\Entity\Tenant;
 use App\Repository\TenantRepository;
@@ -135,11 +135,9 @@ class InternalAuditType extends AbstractType
                 'choice_label' => 'name',
                 'multiple' => true,
                 'required' => false,
-                'query_builder' => function (TenantRepository $repo) {
-                    return $repo->createQueryBuilder('t')
-                        ->where('t.parent IS NOT NULL')
-                        ->orderBy('t.name', 'ASC');
-                },
+                'query_builder' => fn(TenantRepository $tenantRepository): QueryBuilder => $tenantRepository->createQueryBuilder('t')
+                    ->where('t.parent IS NOT NULL')
+                    ->orderBy('t.name', 'ASC'),
                 'attr' => [
                     'class' => 'form-select',
                     'size' => 8,

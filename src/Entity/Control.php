@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
@@ -32,24 +34,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Get(
-            security: "is_granted('ROLE_USER')",
-            description: 'Retrieve a specific ISO 27001 control by ID'
+            description: 'Retrieve a specific ISO 27001 control by ID',
+            security: "is_granted('ROLE_USER')"
         ),
         new GetCollection(
-            security: "is_granted('ROLE_USER')",
-            description: 'Retrieve the collection of ISO 27001 controls with filtering by category, status, and applicability'
+            description: 'Retrieve the collection of ISO 27001 controls with filtering by category, status, and applicability',
+            security: "is_granted('ROLE_USER')"
         ),
         new Post(
-            security: "is_granted('ROLE_USER')",
-            description: 'Create a new control implementation'
+            description: 'Create a new control implementation',
+            security: "is_granted('ROLE_USER')"
         ),
         new Put(
-            security: "is_granted('ROLE_USER')",
-            description: 'Update an existing control implementation status'
+            description: 'Update an existing control implementation status',
+            security: "is_granted('ROLE_USER')"
         ),
         new Delete(
-            security: "is_granted('ROLE_ADMIN')",
-            description: 'Delete a control (Admin only)'
+            description: 'Delete a control (Admin only)',
+            security: "is_granted('ROLE_ADMIN')"
         ),
     ],
     normalizationContext: ['groups' => ['control:read']],
@@ -137,23 +139,23 @@ class Control
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['control:read', 'control:write'])]
-    private ?\DateTimeInterface $targetDate = null;
+    private ?DateTimeInterface $targetDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['control:read', 'control:write'])]
-    private ?\DateTimeInterface $lastReviewDate = null;
+    private ?DateTimeInterface $lastReviewDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['control:read', 'control:write'])]
-    private ?\DateTimeInterface $nextReviewDate = null;
+    private ?DateTimeInterface $nextReviewDate = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['control:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['control:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     /**
      * @var Collection<int, Risk>
@@ -194,7 +196,7 @@ class Control
         $this->incidents = new ArrayCollection();
         $this->protectedAssets = new ArrayCollection();
         $this->trainings = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -323,56 +325,56 @@ class Control
         return $this;
     }
 
-    public function getTargetDate(): ?\DateTimeInterface
+    public function getTargetDate(): ?DateTimeInterface
     {
         return $this->targetDate;
     }
 
-    public function setTargetDate(?\DateTimeInterface $targetDate): static
+    public function setTargetDate(?DateTimeInterface $targetDate): static
     {
         $this->targetDate = $targetDate;
         return $this;
     }
 
-    public function getLastReviewDate(): ?\DateTimeInterface
+    public function getLastReviewDate(): ?DateTimeInterface
     {
         return $this->lastReviewDate;
     }
 
-    public function setLastReviewDate(?\DateTimeInterface $lastReviewDate): static
+    public function setLastReviewDate(?DateTimeInterface $lastReviewDate): static
     {
         $this->lastReviewDate = $lastReviewDate;
         return $this;
     }
 
-    public function getNextReviewDate(): ?\DateTimeInterface
+    public function getNextReviewDate(): ?DateTimeInterface
     {
         return $this->nextReviewDate;
     }
 
-    public function setNextReviewDate(?\DateTimeInterface $nextReviewDate): static
+    public function setNextReviewDate(?DateTimeInterface $nextReviewDate): static
     {
         $this->nextReviewDate = $nextReviewDate;
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -455,8 +457,8 @@ class Control
     public function getProtectedAssetValue(): int
     {
         $total = 0;
-        foreach ($this->protectedAssets as $asset) {
-            $total += $asset->getTotalValue();
+        foreach ($this->protectedAssets as $protectedAsset) {
+            $total += $protectedAsset->getTotalValue();
         }
         return $total;
     }
@@ -468,7 +470,7 @@ class Control
     #[Groups(['control:read'])]
     public function getHighRiskAssetCount(): int
     {
-        return $this->protectedAssets->filter(fn($asset) => $asset->isHighRisk())->count();
+        return $this->protectedAssets->filter(fn($asset): bool => $asset->isHighRisk())->count();
     }
 
     /**
@@ -486,8 +488,8 @@ class Control
         $incidentsAfterControl = 0;
         $implementationDate = $this->lastReviewDate ?? $this->createdAt;
 
-        foreach ($this->protectedAssets as $asset) {
-            foreach ($asset->getIncidents() as $incident) {
+        foreach ($this->protectedAssets as $protectedAsset) {
+            foreach ($protectedAsset->getIncidents() as $incident) {
                 if ($incident->getDetectedAt() >= $implementationDate) {
                     $incidentsAfterControl++;
                 }
@@ -513,22 +515,17 @@ class Control
     public function isReviewNeeded(): bool
     {
         // Check if there are recent incidents affecting protected assets
-        $threeMonthsAgo = new \DateTimeImmutable('-3 months');
+        $threeMonthsAgo = new DateTimeImmutable('-3 months');
 
-        foreach ($this->protectedAssets as $asset) {
-            foreach ($asset->getIncidents() as $incident) {
+        foreach ($this->protectedAssets as $protectedAsset) {
+            foreach ($protectedAsset->getIncidents() as $incident) {
                 if ($incident->getDetectedAt() >= $threeMonthsAgo) {
                     return true; // Recent incident = needs review
                 }
             }
         }
-
         // Also check regular review schedule
-        if ($this->nextReviewDate && $this->nextReviewDate < new \DateTimeImmutable()) {
-            return true;
-        }
-
-        return false;
+        return $this->nextReviewDate instanceof DateTimeInterface && $this->nextReviewDate < new DateTimeImmutable();
     }
 
     /**
@@ -600,7 +597,7 @@ class Control
 
         if ($hasCompleted) {
             // Check if training is outdated (>1 year old)
-            $oneYearAgo = new \DateTimeImmutable('-1 year');
+            $oneYearAgo = new DateTimeImmutable('-1 year');
             if ($mostRecentDate && $mostRecentDate < $oneYearAgo) {
                 return 'training_outdated';
             }

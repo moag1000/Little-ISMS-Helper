@@ -2,6 +2,16 @@
 
 namespace App\Service;
 
+use InvalidArgumentException;
+use Exception;
+use Doctrine\ORM\Events;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Id\AssignedGenerator;
+use ReflectionClass;
+use RuntimeException;
+use DateTimeImmutable;
+use DateTime;
+use Doctrine\ORM\Id\AbstractIdGenerator;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -10,7 +20,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class RestoreService
 {
-    private const SUPPORTED_VERSIONS = ['1.0'];
+    private const array SUPPORTED_VERSIONS = ['1.0'];
 
     // Strategies for handling missing fields
     public const STRATEGY_SKIP_FIELD = 'skip_field';
@@ -27,10 +37,10 @@ class RestoreService
     private array $statistics = [];
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private AuditLogger $auditLogger,
-        private LoggerInterface $logger,
-        private UserPasswordHasherInterface $passwordHasher
+        private readonly EntityManagerInterface $entityManager,
+        private readonly AuditLogger $auditLogger,
+        private readonly LoggerInterface $logger,
+        private readonly UserPasswordHasherInterface $userPasswordHasher
     ) {
     }
 
@@ -86,7 +96,7 @@ class RestoreService
         }
 
         return [
-            'valid' => empty($this->validationErrors),
+            'valid' => $this->validationErrors === [],
             'errors' => $this->validationErrors,
             'warnings' => $this->warnings,
         ];
@@ -151,7 +161,7 @@ class RestoreService
         // Validate first
         $validation = $this->validateBackup($backup);
         if (!$validation['valid']) {
-            throw new \InvalidArgumentException('Invalid backup: ' . implode(', ', $validation['errors']));
+            throw new InvalidArgumentException('Invalid backup: ' . implode(', ', $validation['errors']));
         }
 
         $this->logger->info('Starting restore', [
@@ -173,7 +183,7 @@ class RestoreService
                 $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 0');
                 $disableFKChecks = true;
                 $this->logger->info('Disabled foreign key checks for restore');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logger->warning('Could not disable foreign key checks', [
                     'error' => $e->getMessage(),
                 ]);
@@ -184,10 +194,10 @@ class RestoreService
             $eventManager = $this->entityManager->getEventManager();
             $originalListeners = [];
             $eventsToDisable = [
-                \Doctrine\ORM\Events::prePersist,
-                \Doctrine\ORM\Events::preUpdate,
-                \Doctrine\ORM\Events::postPersist,
-                \Doctrine\ORM\Events::postUpdate,
+                Events::prePersist,
+                Events::preUpdate,
+                Events::postPersist,
+                Events::postUpdate,
             ];
 
             // Get listeners for each event (Symfony's ContainerAwareEventManager requires event name)
@@ -198,7 +208,7 @@ class RestoreService
                     foreach ($listeners as $listener) {
                         $eventManager->removeEventListener($eventName, $listener);
                     }
-                } catch (\Exception $e) {
+                } catch (Exception) {
                     $originalListeners[$eventName] = [];
                     $this->logger->debug('No listeners for event', [
                         'event' => $eventName,
@@ -221,20 +231,20 @@ class RestoreService
                 }
             }
 
-            foreach ($orderedEntities as $entityName) {
-                if (in_array($entityName, $options['skip_entities'])) {
-                    $this->logger->info('Skipping entity as per options', ['entity' => $entityName]);
+            foreach ($orderedEntities as $orderedEntity) {
+                if (in_array($orderedEntity, $options['skip_entities'])) {
+                    $this->logger->info('Skipping entity as per options', ['entity' => $orderedEntity]);
                     continue;
                 }
 
-                $entities = $backup['data'][$entityName] ?? [];
-                $entityClass = 'App\\Entity\\' . $entityName;
+                $entities = $backup['data'][$orderedEntity] ?? [];
+                $entityClass = 'App\\Entity\\' . $orderedEntity;
 
                 if (!class_exists($entityClass)) {
                     continue;
                 }
 
-                $this->restoreEntity($entityClass, $entityName, $entities, $options);
+                $this->restoreEntity($entityClass, $orderedEntity, $entities, $options);
             }
 
             if ($options['dry_run']) {
@@ -246,7 +256,7 @@ class RestoreService
                     try {
                         $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 1');
                         $this->logger->info('Re-enabled foreign key checks after dry-run');
-                    } catch (\Exception $fkException) {
+                    } catch (Exception $fkException) {
                         $this->logger->error('Failed to re-enable foreign key checks', [
                             'error' => $fkException->getMessage(),
                         ]);
@@ -270,7 +280,7 @@ class RestoreService
                     if ($disableFKChecks) {
                         try {
                             $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 1');
-                        } catch (\Exception $fkException) {
+                        } catch (Exception $fkException) {
                             $this->logger->error('Failed to re-enable foreign key checks', [
                                 'error' => $fkException->getMessage(),
                             ]);
@@ -303,7 +313,7 @@ class RestoreService
                     try {
                         $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 1');
                         $this->logger->info('Re-enabled foreign key checks');
-                    } catch (\Exception $fkException) {
+                    } catch (Exception $fkException) {
                         $this->logger->error('Failed to re-enable foreign key checks', [
                             'error' => $fkException->getMessage(),
                         ]);
@@ -320,9 +330,9 @@ class RestoreService
 
                 // Log the restore operation
                 $totalRestored = 0;
-                foreach ($this->statistics as $entityStats) {
-                    if (is_array($entityStats) && isset($entityStats['created'])) {
-                        $totalRestored += $entityStats['created'] + ($entityStats['updated'] ?? 0);
+                foreach ($this->statistics as $statistic) {
+                    if (is_array($statistic) && isset($statistic['created'])) {
+                        $totalRestored += $statistic['created'] + ($statistic['updated'] ?? 0);
                     }
                 }
                 $this->auditLogger->logImport(
@@ -348,13 +358,13 @@ class RestoreService
                 'warnings' => $this->warnings,
                 'dry_run' => $options['dry_run'],
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Try to rollback, but EntityManager might be closed
             try {
                 if ($this->entityManager->isOpen() && $this->entityManager->getConnection()->isTransactionActive()) {
                     $this->entityManager->rollback();
                 }
-            } catch (\Exception $rollbackException) {
+            } catch (Exception $rollbackException) {
                 $this->logger->error('Rollback failed', [
                     'error' => $rollbackException->getMessage(),
                 ]);
@@ -364,7 +374,7 @@ class RestoreService
             if ($disableFKChecks) {
                 try {
                     $connection->executeStatement('SET FOREIGN_KEY_CHECKS = 1');
-                } catch (\Exception $fkException) {
+                } catch (Exception $fkException) {
                     $this->logger->error('Failed to re-enable foreign key checks after error', [
                         'error' => $fkException->getMessage(),
                     ]);
@@ -386,7 +396,7 @@ class RestoreService
             ]);
 
             // Check if this is an EntityManager closed error
-            if (strpos($e->getMessage(), 'EntityManager is closed') !== false) {
+            if (str_contains($e->getMessage(), 'EntityManager is closed')) {
                 return [
                     'success' => false,
                     'message' => 'Der EntityManager wurde geschlossen (Datenbankfehler). Bitte aktivieren Sie "Bestehende Daten löschen" um Konflikte zu vermeiden.',
@@ -433,7 +443,7 @@ class RestoreService
                 ]);
 
                 $this->statistics[$entityName . '_cleared'] = $deleted;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->warnings[] = sprintf(
                     'Failed to clear %s: %s',
                     $entityName,
@@ -449,24 +459,19 @@ class RestoreService
 
     /**
      * Validate entity data structure
-     *
-     * @param string $entityClass
-     * @param string $entityName
-     * @param array $entities
-     * @return void
      */
     private function validateEntityData(string $entityClass, string $entityName, array $entities): void
     {
-        if (empty($entities)) {
+        if ($entities === []) {
             return;
         }
 
-        $metadata = $this->entityManager->getClassMetadata($entityClass);
+        $classMetadata = $this->entityManager->getClassMetadata($entityClass);
         $requiredFields = [];
 
         // Check for required fields (not nullable)
-        foreach ($metadata->getFieldNames() as $fieldName) {
-            $mapping = $metadata->getFieldMapping($fieldName);
+        foreach ($classMetadata->getFieldNames() as $fieldName) {
+            $mapping = $classMetadata->getFieldMapping($fieldName);
             if (isset($mapping['nullable']) && !$mapping['nullable'] && $fieldName !== 'id') {
                 $requiredFields[] = $fieldName;
             }
@@ -474,11 +479,11 @@ class RestoreService
 
         // Validate first entity as sample
         $firstEntity = $entities[0];
-        foreach ($requiredFields as $field) {
-            if (!array_key_exists($field, $firstEntity) || $firstEntity[$field] === null) {
+        foreach ($requiredFields as $requiredField) {
+            if (!array_key_exists($requiredField, $firstEntity) || $firstEntity[$requiredField] === null) {
                 $this->warnings[] = sprintf(
                     'Required field "%s" missing in entity "%s" (can use default value strategy)',
-                    $field,
+                    $requiredField,
                     $entityName
                 );
             }
@@ -487,12 +492,6 @@ class RestoreService
 
     /**
      * Restore a single entity type
-     *
-     * @param string $entityClass
-     * @param string $entityName
-     * @param array $entities
-     * @param array $options
-     * @return void
      */
     private function restoreEntity(string $entityClass, string $entityName, array $entities, array $options): void
     {
@@ -501,8 +500,8 @@ class RestoreService
             'count' => count($entities),
         ]);
 
-        $metadata = $this->entityManager->getClassMetadata($entityClass);
-        $repository = $this->entityManager->getRepository($entityClass);
+        $classMetadata = $this->entityManager->getClassMetadata($entityClass);
+        $entityRepository = $this->entityManager->getRepository($entityClass);
         $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
         // If clear_before_restore is enabled, temporarily change ID generator to NONE
@@ -510,10 +509,10 @@ class RestoreService
         $originalIdGenerator = null;
         $originalGeneratorType = null;
         if ($options['clear_before_restore']) {
-            $originalIdGenerator = $metadata->idGenerator;
-            $originalGeneratorType = $metadata->generatorType;
-            $metadata->setIdGeneratorType(\Doctrine\ORM\Mapping\ClassMetadata::GENERATOR_TYPE_NONE);
-            $metadata->setIdGenerator(new \Doctrine\ORM\Id\AssignedGenerator());
+            $originalIdGenerator = $classMetadata->idGenerator;
+            $originalGeneratorType = $classMetadata->generatorType;
+            $classMetadata->setIdGeneratorType(ClassMetadata::GENERATOR_TYPE_NONE);
+            $classMetadata->setIdGenerator(new AssignedGenerator());
             $this->logger->debug('Changed ID generator to ASSIGNED for entity', [
                 'entity' => $entityName,
             ]);
@@ -527,7 +526,7 @@ class RestoreService
         ];
 
         // Get unique constraint fields for this entity (e.g., 'name' for Role)
-        $uniqueFields = $this->getUniqueConstraintFields($entityClass, $entityName);
+        $uniqueFields = $this->getUniqueConstraintFields($entityName);
 
         foreach ($entities as $index => $data) {
             try {
@@ -545,20 +544,20 @@ class RestoreService
                 $existingEntity = null;
                 $foundById = false;
                 if (isset($data['id'])) {
-                    $existingEntity = $repository->find($data['id']);
+                    $existingEntity = $entityRepository->find($data['id']);
                     $foundById = ($existingEntity !== null);
                 }
 
                 // If not found by ID, check by unique constraint fields
-                if ($existingEntity === null && !empty($uniqueFields)) {
+                if ($existingEntity === null && $uniqueFields !== []) {
                     $criteria = [];
-                    foreach ($uniqueFields as $field) {
-                        if (isset($data[$field])) {
-                            $criteria[$field] = $data[$field];
+                    foreach ($uniqueFields as $uniqueField) {
+                        if (isset($data[$uniqueField])) {
+                            $criteria[$uniqueField] = $data[$uniqueField];
                         }
                     }
-                    if (!empty($criteria)) {
-                        $existingEntity = $repository->findOneBy($criteria);
+                    if ($criteria !== []) {
+                        $existingEntity = $entityRepository->findOneBy($criteria);
                         $this->logger->debug('Unique field lookup', [
                             'entity' => $entityName,
                             'criteria' => $criteria,
@@ -571,15 +570,15 @@ class RestoreService
                 // Example: Backup has ID=1 name="A", DB has ID=1 name="B", DB also has ID=2 name="A"
                 // Updating ID=1 to name="A" would conflict with ID=2
                 $conflictingEntity = null;
-                if ($existingEntity !== null && $foundById && !empty($uniqueFields)) {
+                if ($existingEntity !== null && $foundById && $uniqueFields !== []) {
                     $criteria = [];
-                    foreach ($uniqueFields as $field) {
-                        if (isset($data[$field])) {
-                            $criteria[$field] = $data[$field];
+                    foreach ($uniqueFields as $uniqueField) {
+                        if (isset($data[$uniqueField])) {
+                            $criteria[$uniqueField] = $data[$uniqueField];
                         }
                     }
-                    if (!empty($criteria)) {
-                        $potentialConflict = $repository->findOneBy($criteria);
+                    if ($criteria !== []) {
+                        $potentialConflict = $entityRepository->findOneBy($criteria);
                         // If another entity (different ID) has the same unique field value
                         if ($potentialConflict !== null && $potentialConflict->getId() !== $existingEntity->getId()) {
                             $conflictingEntity = $potentialConflict;
@@ -626,9 +625,11 @@ class RestoreService
                     if ($options['existing_data_strategy'] === self::EXISTING_SKIP) {
                         $stats['skipped']++;
                         continue;
-                    } elseif ($options['existing_data_strategy'] === self::EXISTING_UPDATE) {
+                    }
+                    if ($options['existing_data_strategy'] === self::EXISTING_UPDATE) {
                         $entity = $existingEntity;
-                    } else {
+                    }
+                    else {
                         // REPLACE: remove old and create new
                         $this->entityManager->remove($existingEntity);
                         $entity = new $entityClass();
@@ -638,7 +639,7 @@ class RestoreService
                 }
 
                 // Set field values
-                foreach ($metadata->getFieldNames() as $fieldName) {
+                foreach ($classMetadata->getFieldNames() as $fieldName) {
                     if ($fieldName === 'id' && $existingEntity !== null) {
                         continue; // Don't overwrite ID of existing entity
                     }
@@ -648,17 +649,16 @@ class RestoreService
                     if ($fieldName === 'id' && $existingEntity === null && isset($data['id']) && $options['clear_before_restore']) {
                         // Set the ID using reflection to bypass Doctrine's ID generation
                         try {
-                            $reflection = new \ReflectionClass($entity);
+                            $reflection = new ReflectionClass($entity);
                             if ($reflection->hasProperty('id')) {
                                 $property = $reflection->getProperty('id');
-                                $property->setAccessible(true);
                                 $property->setValue($entity, $data['id']);
                                 $this->logger->debug('Set entity ID from backup', [
                                     'entity' => $entityName,
                                     'id' => $data['id'],
                                 ]);
                             }
-                        } catch (\Exception $e) {
+                        } catch (Exception $e) {
                             $this->logger->warning('Failed to set entity ID from backup', [
                                 'entity' => $entityName,
                                 'id' => $data['id'],
@@ -673,7 +673,7 @@ class RestoreService
                     if (str_ends_with($fieldName, '_id') && $fieldName !== 'id') {
                         // Check if this is actually a mapped association
                         $assocName = substr($fieldName, 0, -3); // Remove _id suffix
-                        if ($metadata->hasAssociation($assocName)) {
+                        if ($classMetadata->hasAssociation($assocName)) {
                             continue; // Will be handled in association restoration below
                         }
                     }
@@ -681,8 +681,10 @@ class RestoreService
                     if (!array_key_exists($fieldName, $data)) {
                         // Handle missing field
                         if ($options['missing_field_strategy'] === self::STRATEGY_FAIL) {
-                            throw new \RuntimeException(sprintf('Missing field: %s', $fieldName));
-                        } elseif ($options['missing_field_strategy'] === self::STRATEGY_SKIP_FIELD) {
+                            throw new RuntimeException(sprintf('Missing field: %s', $fieldName));
+                        }
+                        // Handle missing field
+                        if ($options['missing_field_strategy'] === self::STRATEGY_SKIP_FIELD) {
                             continue;
                         }
                         // USE_DEFAULT: continue with null or existing value
@@ -713,32 +715,28 @@ class RestoreService
                     }
 
                     // Convert ISO 8601 strings back to DateTime/DateTimeImmutable
-                    $type = $metadata->getTypeOfField($fieldName);
+                    $type = $classMetadata->getTypeOfField($fieldName);
                     if (in_array($type, ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'time', 'time_immutable'])) {
                         try {
                             // Check if type expects immutable or mutable
-                            $expectsImmutable = str_contains($type, 'immutable');
+                            $expectsImmutable = str_contains((string) $type, 'immutable');
 
                             if (is_string($value)) {
                                 // Convert string to appropriate DateTime type
-                                if ($expectsImmutable) {
-                                    $value = new \DateTimeImmutable($value);
-                                } else {
-                                    $value = new \DateTime($value);
-                                }
-                            } elseif ($value instanceof \DateTimeImmutable && !$expectsImmutable) {
+                                $value = $expectsImmutable ? new DateTimeImmutable($value) : new DateTime($value);
+                            } elseif ($value instanceof DateTimeImmutable && !$expectsImmutable) {
                                 // Convert DateTimeImmutable to DateTime for mutable types
-                                $value = \DateTime::createFromImmutable($value);
-                            } elseif ($value instanceof \DateTime && $expectsImmutable) {
+                                $value = DateTime::createFromImmutable($value);
+                            } elseif ($value instanceof DateTime && $expectsImmutable) {
                                 // Convert DateTime to DateTimeImmutable for immutable types
-                                $value = \DateTimeImmutable::createFromMutable($value);
+                                $value = DateTimeImmutable::createFromMutable($value);
                             }
                             // If value is already the correct type, leave it as is
-                        } catch (\Exception $dateException) {
+                        } catch (Exception $dateException) {
                             $this->logger->warning('Failed to parse date/time value', [
                                 'entity' => $entityName,
                                 'field' => $fieldName,
-                                'value' => is_object($value) ? get_class($value) : $value,
+                                'value' => is_object($value) ? $value::class : $value,
                                 'error' => $dateException->getMessage(),
                             ]);
                             // Keep original value and let Doctrine handle it
@@ -750,19 +748,18 @@ class RestoreService
                             $propertyAccessor->setValue($entity, $fieldName, $value);
                         } else {
                             // Use reflection for non-accessible properties
-                            $reflection = new \ReflectionClass($entity);
+                            $reflection = new ReflectionClass($entity);
                             if ($reflection->hasProperty($fieldName)) {
                                 $property = $reflection->getProperty($fieldName);
-                                $property->setAccessible(true);
                                 $property->setValue($entity, $value);
                             }
                         }
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         // Log but don't fail - try to continue with other fields
                         $this->logger->warning('Failed to set property', [
                             'entity' => $entityName,
                             'field' => $fieldName,
-                            'value_type' => is_object($value) ? get_class($value) : gettype($value),
+                            'value_type' => get_debug_type($value),
                             'error' => $e->getMessage(),
                         ]);
                         $this->warnings[] = sprintf(
@@ -775,11 +772,11 @@ class RestoreService
                 }
 
                 // Restore associations (ManyToOne, OneToOne)
-                foreach ($metadata->getAssociationNames() as $assocName) {
-                    if ($metadata->isSingleValuedAssociation($assocName)) {
+                foreach ($classMetadata->getAssociationNames() as $assocName) {
+                    if ($classMetadata->isSingleValuedAssociation($assocName)) {
                         $assocIdKey = $assocName . '_id';
                         if (isset($data[$assocIdKey])) {
-                            $targetClass = $metadata->getAssociationTargetClass($assocName);
+                            $targetClass = $classMetadata->getAssociationTargetClass($assocName);
                             $assocId = $data[$assocIdKey];
 
                             // Handle array format from backup (e.g., ['id' => 5])
@@ -791,7 +788,7 @@ class RestoreService
                                 try {
                                     $relatedEntity = $this->entityManager->getReference($targetClass, $assocId);
                                     $propertyAccessor->setValue($entity, $assocName, $relatedEntity);
-                                } catch (\Exception $e) {
+                                } catch (Exception $e) {
                                     $this->logger->warning('Failed to restore association', [
                                         'entity' => $entityName,
                                         'association' => $assocName,
@@ -813,7 +810,7 @@ class RestoreService
                 } else {
                     $stats['created']++;
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $stats['errors']++;
                 $this->warnings[] = sprintf(
                     'Error restoring %s entity at index %d: %s',
@@ -839,7 +836,7 @@ class RestoreService
         if ($this->entityManager->isOpen()) {
             try {
                 $this->entityManager->flush();
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $stats['errors']++;
                 $this->warnings[] = sprintf(
                     'Error flushing %s entities (database constraint error): %s',
@@ -862,9 +859,9 @@ class RestoreService
         }
 
         // Restore original ID generator if it was changed
-        if ($originalIdGenerator !== null && $originalGeneratorType !== null) {
-            $metadata->setIdGeneratorType($originalGeneratorType);
-            $metadata->setIdGenerator($originalIdGenerator);
+        if ($originalIdGenerator instanceof AbstractIdGenerator && $originalGeneratorType !== null) {
+            $classMetadata->setIdGeneratorType($originalGeneratorType);
+            $classMetadata->setIdGenerator($originalIdGenerator);
             $this->logger->debug('Restored original ID generator for entity', [
                 'entity' => $entityName,
             ]);
@@ -880,12 +877,8 @@ class RestoreService
 
     /**
      * Get unique constraint fields for an entity
-     *
-     * @param string $entityClass
-     * @param string $entityName
-     * @return array
      */
-    private function getUniqueConstraintFields(string $entityClass, string $entityName): array
+    private function getUniqueConstraintFields(string $entityName): array
     {
         // Map of entity names to their unique constraint fields
         $uniqueFieldsMap = [
@@ -904,9 +897,6 @@ class RestoreService
     /**
      * Order entities by dependency
      * Users and Tenants should be restored first
-     *
-     * @param array $entityNames
-     * @return array
      */
     private function orderEntitiesByDependency(array $entityNames): array
     {
@@ -950,7 +940,7 @@ class RestoreService
             'UserSession' => 91,
         ];
 
-        usort($entityNames, function ($a, $b) use ($priorityOrder) {
+        usort($entityNames, function ($a, $b) use ($priorityOrder): int {
             $priorityA = $priorityOrder[$a] ?? 50; // Default priority for unknown entities
             $priorityB = $priorityOrder[$b] ?? 50;
 
@@ -962,8 +952,6 @@ class RestoreService
 
     /**
      * Get validation errors
-     *
-     * @return array
      */
     public function getValidationErrors(): array
     {
@@ -972,8 +960,6 @@ class RestoreService
 
     /**
      * Get warnings
-     *
-     * @return array
      */
     public function getWarnings(): array
     {
@@ -984,7 +970,6 @@ class RestoreService
      * Set password for the first admin user after restore
      *
      * @param string $password Plain text password
-     * @return void
      */
     private function setAdminPassword(string $password): void
     {
@@ -1003,7 +988,7 @@ class RestoreService
             }
 
             if ($adminUser !== null) {
-                $hashedPassword = $this->passwordHasher->hashPassword($adminUser, $password);
+                $hashedPassword = $this->userPasswordHasher->hashPassword($adminUser, $password);
                 $adminUser->setPassword($hashedPassword);
                 $this->entityManager->flush();
 
@@ -1017,7 +1002,7 @@ class RestoreService
             } else {
                 $this->warnings[] = 'Kein Benutzer gefunden, um Admin-Passwort zu setzen.';
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->warnings[] = sprintf(
                 'Fehler beim Setzen des Admin-Passworts: %s',
                 $e->getMessage()
@@ -1030,8 +1015,6 @@ class RestoreService
 
     /**
      * Get statistics
-     *
-     * @return array
      */
     public function getStatistics(): array
     {

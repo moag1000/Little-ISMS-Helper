@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use App\Repository\DocumentRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -49,13 +51,13 @@ class Document
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $uploadedBy = null;
+    private ?User $user = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeInterface $uploadedAt = null;
+    private ?DateTimeInterface $uploadedAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     #[ORM\Column(length: 64, nullable: true)]
     private ?string $sha256Hash = null;
@@ -71,14 +73,14 @@ class Document
 
     public function __construct()
     {
-        $this->uploadedAt = new \DateTimeImmutable();
+        $this->uploadedAt = new DateTimeImmutable();
     }
 
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
     public function updateTimestamp(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     // Getters and Setters
@@ -126,12 +128,12 @@ class Document
     public function setEntityType(?string $entityType): static { $this->entityType = $entityType; return $this; }
     public function getEntityId(): ?int { return $this->entityId; }
     public function setEntityId(?int $entityId): static { $this->entityId = $entityId; return $this; }
-    public function getUploadedBy(): ?User { return $this->uploadedBy; }
-    public function setUploadedBy(?User $uploadedBy): static { $this->uploadedBy = $uploadedBy; return $this; }
-    public function getUploadedAt(): ?\DateTimeInterface { return $this->uploadedAt; }
-    public function setUploadedAt(\DateTimeInterface $uploadedAt): static { $this->uploadedAt = $uploadedAt; return $this; }
-    public function getUpdatedAt(): ?\DateTimeInterface { return $this->updatedAt; }
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static { $this->updatedAt = $updatedAt; return $this; }
+    public function getUploadedBy(): ?User { return $this->user; }
+    public function setUploadedBy(?User $user): static { $this->user = $user; return $this; }
+    public function getUploadedAt(): ?DateTimeInterface { return $this->uploadedAt; }
+    public function setUploadedAt(DateTimeInterface $uploadedAt): static { $this->uploadedAt = $uploadedAt; return $this; }
+    public function getUpdatedAt(): ?DateTimeInterface { return $this->updatedAt; }
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static { $this->updatedAt = $updatedAt; return $this; }
     public function getSha256Hash(): ?string { return $this->sha256Hash; }
     public function setSha256Hash(?string $sha256Hash): static { $this->sha256Hash = $sha256Hash; return $this; }
     public function isPublic(): bool { return $this->isPublic; }
@@ -143,12 +145,12 @@ class Document
 
     public function getFileExtension(): string
     {
-        return pathinfo($this->originalFilename, PATHINFO_EXTENSION);
+        return pathinfo((string) $this->originalFilename, PATHINFO_EXTENSION);
     }
 
     public function isImage(): bool
     {
-        return str_starts_with($this->mimeType, 'image/');
+        return str_starts_with((string) $this->mimeType, 'image/');
     }
 
     public function isPdf(): bool

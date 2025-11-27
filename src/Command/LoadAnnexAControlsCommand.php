@@ -17,16 +17,16 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class LoadAnnexAControlsCommand extends Command
 {
     public function __construct(
-        private EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager
     ) {
         parent::__construct();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
-        $io->title('Loading ISO 27001:2022 Annex A Controls');
+        $symfonyStyle->title('Loading ISO 27001:2022 Annex A Controls');
 
         $controls = $this->getAnnexAControls();
 
@@ -35,7 +35,7 @@ class LoadAnnexAControlsCommand extends Command
             $control = $this->entityManager->getRepository(Control::class)
                 ->findOneBy(['controlId' => $controlData['controlId']]);
 
-            if (!$control) {
+            if (!$control instanceof Control) {
                 $control = new Control();
                 $control->setControlId($controlData['controlId']);
             }
@@ -52,7 +52,7 @@ class LoadAnnexAControlsCommand extends Command
 
         $this->entityManager->flush();
 
-        $io->success(sprintf('Successfully loaded %d Annex A controls.', $loaded));
+        $symfonyStyle->success(sprintf('Successfully loaded %d Annex A controls.', $loaded));
 
         return Command::SUCCESS;
     }

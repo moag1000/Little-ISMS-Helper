@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use DateTime;
+use App\Entity\Risk;
+use App\Entity\Control;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\IncidentRepository;
@@ -18,24 +21,23 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/reports')]
 #[IsGranted('ROLE_USER')]
 class ReportController extends AbstractController
 {
     public function __construct(
-        private PdfExportService $pdfService,
-        private ExcelExportService $excelService,
-        private AssetRepository $assetRepository,
-        private RiskRepository $riskRepository,
-        private IncidentRepository $incidentRepository,
-        private InternalAuditRepository $auditRepository,
-        private TrainingRepository $trainingRepository,
-        private ControlRepository $controlRepository,
-        private ManagementReviewRepository $managementReviewRepository,
-        private ISMSObjectiveRepository $objectiveRepository
+        private readonly PdfExportService $pdfExportService,
+        private readonly ExcelExportService $excelExportService,
+        private readonly AssetRepository $assetRepository,
+        private readonly RiskRepository $riskRepository,
+        private readonly IncidentRepository $incidentRepository,
+        private readonly InternalAuditRepository $internalAuditRepository,
+        private readonly TrainingRepository $trainingRepository,
+        private readonly ControlRepository $controlRepository,
+        private readonly ManagementReviewRepository $managementReviewRepository,
+        private readonly ISMSObjectiveRepository $ismsObjectiveRepository
     ) {}
 
-    #[Route('/', name: 'app_reports_index')]
+    #[Route('/reports/', name: 'app_reports_index')]
     public function index(): Response
     {
         return $this->render('reports/index.html.twig');
@@ -43,7 +45,7 @@ class ReportController extends AbstractController
 
     // ===================== DASHBOARD REPORTS =====================
 
-    #[Route('/dashboard/pdf', name: 'app_reports_dashboard_pdf')]
+    #[Route('/reports/dashboard/pdf', name: 'app_reports_dashboard_pdf')]
     public function dashboardPdf(Request $request): Response
     {
         $data = $this->getDashboardData();
@@ -52,22 +54,22 @@ class ReportController extends AbstractController
         $request->getSession()->save();
 
         // Generate version from current date (Format: Year.Month.Day)
-        $generatedAt = new \DateTime();
+        $generatedAt = new DateTime();
         $version = $generatedAt->format('Y.m.d');
 
-        $pdf = $this->pdfService->generatePdf('reports/dashboard_pdf.html.twig', [
+        $pdf = $this->pdfExportService->generatePdf('reports/dashboard_pdf.html.twig', [
             'data' => $data,
             'generated_at' => $generatedAt,
             'version' => $version,
         ]);
 
-        return new Response($pdf, 200, [
+        return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="isms_dashboard_' . date('Y-m-d') . '.pdf"',
         ]);
     }
 
-    #[Route('/dashboard/excel', name: 'app_reports_dashboard_excel')]
+    #[Route('/reports/dashboard/excel', name: 'app_reports_dashboard_excel')]
     public function dashboardExcel(Request $request): Response
     {
         $data = $this->getDashboardData();
@@ -75,7 +77,7 @@ class ReportController extends AbstractController
         // Close session to prevent blocking other requests during Excel generation
         $request->getSession()->save();
 
-        $spreadsheet = $this->excelService->createSpreadsheet('ISMS Dashboard');
+        $spreadsheet = $this->excelExportService->createSpreadsheet('ISMS Dashboard');
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Dashboard');
 
@@ -101,9 +103,9 @@ class ReportController extends AbstractController
         $sheet->getColumnDimension('A')->setAutoSize(true);
         $sheet->getColumnDimension('B')->setAutoSize(true);
 
-        $excel = $this->excelService->generateExcel($spreadsheet);
+        $excel = $this->excelExportService->generateExcel($spreadsheet);
 
-        return new Response($excel, 200, [
+        return new Response($excel, Response::HTTP_OK, [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'Content-Disposition' => 'attachment; filename="isms_dashboard_' . date('Y-m-d') . '.xlsx"',
         ]);
@@ -111,7 +113,7 @@ class ReportController extends AbstractController
 
     // ===================== RISK REPORTS =====================
 
-    #[Route('/risks/pdf', name: 'app_reports_risks_pdf')]
+    #[Route('/reports/risks/pdf', name: 'app_reports_risks_pdf')]
     public function risksPdf(Request $request): Response
     {
         $risks = $this->riskRepository->findAll();
@@ -127,22 +129,22 @@ class ReportController extends AbstractController
                 $latestUpdate = $updateDate;
             }
         }
-        $latestUpdate = $latestUpdate ?? new \DateTime();
+        $latestUpdate ??= new DateTime();
         $version = $latestUpdate->format('Y.m.d');
 
-        $pdf = $this->pdfService->generatePdf('reports/risks_pdf.html.twig', [
+        $pdf = $this->pdfExportService->generatePdf('reports/risks_pdf.html.twig', [
             'risks' => $risks,
-            'generated_at' => new \DateTime(),
+            'generated_at' => new DateTime(),
             'version' => $version,
         ]);
 
-        return new Response($pdf, 200, [
+        return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="risk_register_' . date('Y-m-d') . '.pdf"',
         ]);
     }
 
-    #[Route('/risks/excel', name: 'app_reports_risks_excel')]
+    #[Route('/reports/risks/excel', name: 'app_reports_risks_excel')]
     public function risksExcel(Request $request): Response
     {
         $risks = $this->riskRepository->findAll();
@@ -161,16 +163,16 @@ class ReportController extends AbstractController
                 $risk->getLikelihood(),
                 $risk->getImpact(),
                 $risk->getRiskScore(),
-                $risk->getTreatmentPlan() ? substr($risk->getTreatmentPlan(), 0, 50) : '-',
+                $risk->getTreatmentPlan() ? substr((string) $risk->getTreatmentPlan(), 0, 50) : '-',
                 $risk->getStatus(),
                 $risk->getOwner() ? $risk->getOwner()->getEmail() : '-',
             ];
         }
 
-        $spreadsheet = $this->excelService->exportArray($data, $headers, 'Risk Register');
-        $excel = $this->excelService->generateExcel($spreadsheet);
+        $spreadsheet = $this->excelExportService->exportArray($data, $headers, 'Risk Register');
+        $excel = $this->excelExportService->generateExcel($spreadsheet);
 
-        return new Response($excel, 200, [
+        return new Response($excel, Response::HTTP_OK, [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'Content-Disposition' => 'attachment; filename="risk_register_' . date('Y-m-d') . '.xlsx"',
         ]);
@@ -178,7 +180,7 @@ class ReportController extends AbstractController
 
     // ===================== CONTROL REPORTS (SoA) =====================
 
-    #[Route('/controls/pdf', name: 'app_reports_controls_pdf')]
+    #[Route('/reports/controls/pdf', name: 'app_reports_controls_pdf')]
     public function controlsPdf(Request $request): Response
     {
         $controls = $this->controlRepository->findAll();
@@ -194,22 +196,22 @@ class ReportController extends AbstractController
                 $latestUpdate = $updateDate;
             }
         }
-        $latestUpdate = $latestUpdate ?? new \DateTime();
+        $latestUpdate ??= new DateTime();
         $version = $latestUpdate->format('Y.m.d');
 
-        $pdf = $this->pdfService->generatePdf('reports/controls_pdf.html.twig', [
+        $pdf = $this->pdfExportService->generatePdf('reports/controls_pdf.html.twig', [
             'controls' => $controls,
-            'generated_at' => new \DateTime(),
+            'generated_at' => new DateTime(),
             'version' => $version,
         ], ['orientation' => 'landscape']);
 
-        return new Response($pdf, 200, [
+        return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="statement_of_applicability_' . date('Y-m-d') . '.pdf"',
         ]);
     }
 
-    #[Route('/controls/excel', name: 'app_reports_controls_excel')]
+    #[Route('/reports/controls/excel', name: 'app_reports_controls_excel')]
     public function controlsExcel(Request $request): Response
     {
         $controls = $this->controlRepository->findAll();
@@ -233,10 +235,10 @@ class ReportController extends AbstractController
             ];
         }
 
-        $spreadsheet = $this->excelService->exportArray($data, $headers, 'Statement of Applicability');
-        $excel = $this->excelService->generateExcel($spreadsheet);
+        $spreadsheet = $this->excelExportService->exportArray($data, $headers, 'Statement of Applicability');
+        $excel = $this->excelExportService->generateExcel($spreadsheet);
 
-        return new Response($excel, 200, [
+        return new Response($excel, Response::HTTP_OK, [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'Content-Disposition' => 'attachment; filename="statement_of_applicability_' . date('Y-m-d') . '.xlsx"',
         ]);
@@ -244,7 +246,7 @@ class ReportController extends AbstractController
 
     // ===================== INCIDENT REPORTS =====================
 
-    #[Route('/incidents/pdf', name: 'app_reports_incidents_pdf')]
+    #[Route('/reports/incidents/pdf', name: 'app_reports_incidents_pdf')]
     public function incidentsPdf(Request $request): Response
     {
         $incidents = $this->incidentRepository->findAll();
@@ -260,22 +262,22 @@ class ReportController extends AbstractController
                 $latestUpdate = $updateDate;
             }
         }
-        $latestUpdate = $latestUpdate ?? new \DateTime();
+        $latestUpdate ??= new DateTime();
         $version = $latestUpdate->format('Y.m.d');
 
-        $pdf = $this->pdfService->generatePdf('reports/incidents_pdf.html.twig', [
+        $pdf = $this->pdfExportService->generatePdf('reports/incidents_pdf.html.twig', [
             'incidents' => $incidents,
-            'generated_at' => new \DateTime(),
+            'generated_at' => new DateTime(),
             'version' => $version,
         ]);
 
-        return new Response($pdf, 200, [
+        return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="incident_log_' . date('Y-m-d') . '.pdf"',
         ]);
     }
 
-    #[Route('/incidents/excel', name: 'app_reports_incidents_excel')]
+    #[Route('/reports/incidents/excel', name: 'app_reports_incidents_excel')]
     public function incidentsExcel(Request $request): Response
     {
         $incidents = $this->incidentRepository->findAll();
@@ -299,10 +301,10 @@ class ReportController extends AbstractController
             ];
         }
 
-        $spreadsheet = $this->excelService->exportArray($data, $headers, 'Incident Log');
-        $excel = $this->excelService->generateExcel($spreadsheet);
+        $spreadsheet = $this->excelExportService->exportArray($data, $headers, 'Incident Log');
+        $excel = $this->excelExportService->generateExcel($spreadsheet);
 
-        return new Response($excel, 200, [
+        return new Response($excel, Response::HTTP_OK, [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'Content-Disposition' => 'attachment; filename="incident_log_' . date('Y-m-d') . '.xlsx"',
         ]);
@@ -310,7 +312,7 @@ class ReportController extends AbstractController
 
     // ===================== TRAINING REPORTS =====================
 
-    #[Route('/trainings/pdf', name: 'app_reports_trainings_pdf')]
+    #[Route('/reports/trainings/pdf', name: 'app_reports_trainings_pdf')]
     public function trainingsPdf(Request $request): Response
     {
         $trainings = $this->trainingRepository->findAll();
@@ -326,22 +328,22 @@ class ReportController extends AbstractController
                 $latestUpdate = $updateDate;
             }
         }
-        $latestUpdate = $latestUpdate ?? new \DateTime();
+        $latestUpdate ??= new DateTime();
         $version = $latestUpdate->format('Y.m.d');
 
-        $pdf = $this->pdfService->generatePdf('reports/trainings_pdf.html.twig', [
+        $pdf = $this->pdfExportService->generatePdf('reports/trainings_pdf.html.twig', [
             'trainings' => $trainings,
-            'generated_at' => new \DateTime(),
+            'generated_at' => new DateTime(),
             'version' => $version,
         ]);
 
-        return new Response($pdf, 200, [
+        return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="training_log_' . date('Y-m-d') . '.pdf"',
         ]);
     }
 
-    #[Route('/trainings/excel', name: 'app_reports_trainings_excel')]
+    #[Route('/reports/trainings/excel', name: 'app_reports_trainings_excel')]
     public function trainingsExcel(Request $request): Response
     {
         $trainings = $this->trainingRepository->findAll();
@@ -365,10 +367,10 @@ class ReportController extends AbstractController
             ];
         }
 
-        $spreadsheet = $this->excelService->exportArray($data, $headers, 'Training Log');
-        $excel = $this->excelService->generateExcel($spreadsheet);
+        $spreadsheet = $this->excelExportService->exportArray($data, $headers, 'Training Log');
+        $excel = $this->excelExportService->generateExcel($spreadsheet);
 
-        return new Response($excel, 200, [
+        return new Response($excel, Response::HTTP_OK, [
             'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'Content-Disposition' => 'attachment; filename="training_log_' . date('Y-m-d') . '.xlsx"',
         ]);
@@ -379,14 +381,10 @@ class ReportController extends AbstractController
     private function getDashboardData(): array
     {
         $risks = $this->riskRepository->findAll();
-        $highRisks = array_filter($risks, function($risk) {
-            return $risk->getRiskScore() >= 12;
-        });
+        $highRisks = array_filter($risks, fn(Risk $risk): bool => $risk->getRiskScore() >= 12);
 
         $controls = $this->controlRepository->findAll();
-        $implementedControls = array_filter($controls, function($control) {
-            return $control->getImplementationStatus() === 'implemented';
-        });
+        $implementedControls = array_filter($controls, fn(Control $control): bool => $control->getImplementationStatus() === 'implemented');
 
         return [
             'assets_count' => $this->assetRepository->count([]),
@@ -397,7 +395,7 @@ class ReportController extends AbstractController
             'compliance_percentage' => count($controls) > 0 ? round((count($implementedControls) / count($controls)) * 100) : 0,
             'open_incidents' => $this->incidentRepository->count(['status' => ['new', 'investigating', 'in_progress']]),
             'total_trainings' => $this->trainingRepository->count([]),
-            'audits_this_year' => count($this->auditRepository->findBy(['status' => 'completed'])),
+            'audits_this_year' => count($this->internalAuditRepository->findBy(['status' => 'completed'])),
         ];
     }
 }

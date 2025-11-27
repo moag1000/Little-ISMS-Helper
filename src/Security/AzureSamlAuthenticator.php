@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use DateTimeImmutable;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,10 +24,9 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
     private ?Auth $samlAuth = null;
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private UserRepository $userRepository,
-        private RouterInterface $router,
-        private string $projectDir
+        private readonly EntityManagerInterface $entityManager,
+        private readonly UserRepository $userRepository,
+        private readonly RouterInterface $router
     ) {
     }
 
@@ -53,10 +53,10 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
             $email = $this->getSamlAttribute($attributes, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress', $nameId);
             $firstName = $this->getSamlAttribute($attributes, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname', '');
             $lastName = $this->getSamlAttribute($attributes, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname', '');
-            $objectId = $this->getSamlAttribute($attributes, 'http://schemas.microsoft.com/identity/claims/objectidentifier', null);
-            $tenantId = $this->getSamlAttribute($attributes, 'http://schemas.microsoft.com/identity/claims/tenantid', null);
-            $jobTitle = $this->getSamlAttribute($attributes, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/jobtitle', null);
-            $department = $this->getSamlAttribute($attributes, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/department', null);
+            $objectId = $this->getSamlAttribute($attributes, 'http://schemas.microsoft.com/identity/claims/objectidentifier');
+            $tenantId = $this->getSamlAttribute($attributes, 'http://schemas.microsoft.com/identity/claims/tenantid');
+            $jobTitle = $this->getSamlAttribute($attributes, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/jobtitle');
+            $department = $this->getSamlAttribute($attributes, 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/department');
 
             return new SelfValidatingPassport(
                 new UserBadge($email, function() use ($email, $firstName, $lastName, $objectId, $tenantId, $jobTitle, $department, $attributes) {
@@ -103,8 +103,8 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
                         'saml_nameid' => $email,
                     ]);
 
-                    $user->setLastLoginAt(new \DateTimeImmutable());
-                    $user->setUpdatedAt(new \DateTimeImmutable());
+                    $user->setLastLoginAt(new DateTimeImmutable());
+                    $user->setUpdatedAt(new DateTimeImmutable());
 
                     $this->entityManager->persist($user);
                     $this->entityManager->flush();
@@ -135,7 +135,7 @@ class AzureSamlAuthenticator extends AbstractAuthenticator
 
     private function getSamlAuth(Request $request): Auth
     {
-        if ($this->samlAuth !== null) {
+        if ($this->samlAuth instanceof Auth) {
             return $this->samlAuth;
         }
 

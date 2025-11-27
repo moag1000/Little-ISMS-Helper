@@ -2,6 +2,10 @@
 
 namespace App\Service;
 
+use App\Entity\WorkflowInstance;
+use Exception;
+use App\Entity\WorkflowStep;
+use App\Entity\User;
 use App\Entity\RiskTreatmentPlan;
 use App\Repository\UserRepository;
 use Psr\Log\LoggerInterface;
@@ -30,12 +34,12 @@ use Psr\Log\LoggerInterface;
 class RiskTreatmentPlanApprovalService
 {
     // Cost thresholds for approval levels (in EUR)
-    private const THRESHOLD_MEDIUM = 10000;  // €10,000
-    private const THRESHOLD_HIGH = 50000;    // €50,000
+    private const int THRESHOLD_MEDIUM = 10000;  // €10,000
+    private const int THRESHOLD_HIGH = 50000;    // €50,000
 
     public function __construct(
         private readonly WorkflowService $workflowService,
-        private readonly EmailNotificationService $emailService,
+        private readonly EmailNotificationService $emailNotificationService,
         private readonly UserRepository $userRepository,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger
@@ -44,29 +48,29 @@ class RiskTreatmentPlanApprovalService
     /**
      * Request approval for a risk treatment plan
      *
-     * @param RiskTreatmentPlan $plan The treatment plan requiring approval
+     * @param RiskTreatmentPlan $riskTreatmentPlan The treatment plan requiring approval
      * @return array Approval status and workflow information
      */
-    public function requestApproval(RiskTreatmentPlan $plan): array
+    public function requestApproval(RiskTreatmentPlan $riskTreatmentPlan): array
     {
         $this->logger->info('Requesting approval for risk treatment plan', [
-            'plan_id' => $plan->getId(),
-            'risk_id' => $plan->getRisk()?->getId(),
-            'budget' => $plan->getBudget(),
+            'plan_id' => $riskTreatmentPlan->getId(),
+            'risk_id' => $riskTreatmentPlan->getRisk()?->getId(),
+            'budget' => $riskTreatmentPlan->getBudget(),
         ]);
 
         // Determine approval level based on budget
-        $approvalLevel = $this->determineApprovalLevel($plan);
+        $approvalLevel = $this->determineApprovalLevel($riskTreatmentPlan);
 
         // Check if workflow already exists for this plan
         $existingWorkflow = $this->workflowService->getWorkflowInstance(
             'RiskTreatmentPlan',
-            $plan->getId()
+            $riskTreatmentPlan->getId()
         );
 
-        if ($existingWorkflow && in_array($existingWorkflow->getStatus(), ['pending', 'in_progress'])) {
+        if ($existingWorkflow instanceof WorkflowInstance && in_array($existingWorkflow->getStatus(), ['pending', 'in_progress'])) {
             $this->logger->info('Active workflow already exists for treatment plan', [
-                'plan_id' => $plan->getId(),
+                'plan_id' => $riskTreatmentPlan->getId(),
                 'workflow_id' => $existingWorkflow->getId(),
                 'status' => $existingWorkflow->getStatus(),
             ]);
@@ -84,13 +88,13 @@ class RiskTreatmentPlanApprovalService
         try {
             $workflowInstance = $this->workflowService->startWorkflow(
                 'RiskTreatmentPlan',
-                $plan->getId(),
+                $riskTreatmentPlan->getId(),
                 'risk_treatment_plan_approval' // Optional: specific workflow name
             );
 
-            if (!$workflowInstance) {
+            if (!$workflowInstance instanceof WorkflowInstance) {
                 $this->logger->warning('No workflow definition found for RiskTreatmentPlan', [
-                    'plan_id' => $plan->getId(),
+                    'plan_id' => $riskTreatmentPlan->getId(),
                 ]);
 
                 return [
@@ -102,27 +106,27 @@ class RiskTreatmentPlanApprovalService
             }
 
             // Send notifications to approvers
-            $this->sendApprovalNotifications($plan, $workflowInstance, $approvalLevel);
+            $this->sendApprovalNotifications($riskTreatmentPlan, $workflowInstance, $approvalLevel);
 
             // Log audit event
             $this->auditLogger->logCustom(
                 'risk_treatment_plan_approval_requested',
                 'RiskTreatmentPlan',
-                $plan->getId(),
+                $riskTreatmentPlan->getId(),
                 null, // oldValues
                 [
                     'approval_level' => $approvalLevel,
                     'workflow_id' => $workflowInstance->getId(),
-                    'budget' => $plan->getBudget(),
+                    'budget' => $riskTreatmentPlan->getBudget(),
                 ], // newValues
                 sprintf('Approval requested for treatment plan (level: %s, budget: %s)',
                     $approvalLevel,
-                    $plan->getBudget()
+                    $riskTreatmentPlan->getBudget()
                 ) // description
             );
 
             $this->logger->info('Treatment plan approval workflow started', [
-                'plan_id' => $plan->getId(),
+                'plan_id' => $riskTreatmentPlan->getId(),
                 'workflow_id' => $workflowInstance->getId(),
                 'approval_level' => $approvalLevel,
                 'status' => $workflowInstance->getStatus(),
@@ -135,9 +139,9 @@ class RiskTreatmentPlanApprovalService
                 'status' => $workflowInstance->getStatus(),
             ];
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to start treatment plan approval workflow', [
-                'plan_id' => $plan->getId(),
+                'plan_id' => $riskTreatmentPlan->getId(),
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
@@ -154,12 +158,11 @@ class RiskTreatmentPlanApprovalService
     /**
      * Determine approval level based on budget
      *
-     * @param RiskTreatmentPlan $plan
      * @return string Approval level (low_cost, medium_cost, high_cost)
      */
-    private function determineApprovalLevel(RiskTreatmentPlan $plan): string
+    private function determineApprovalLevel(RiskTreatmentPlan $riskTreatmentPlan): string
     {
-        $budget = $plan->getBudget() ? (float)$plan->getBudget() : 0;
+        $budget = $riskTreatmentPlan->getBudget() ? (float)$riskTreatmentPlan->getBudget() : 0;
 
         if ($budget >= self::THRESHOLD_HIGH) {
             return 'high_cost'; // > €50k: Management approval required
@@ -172,19 +175,15 @@ class RiskTreatmentPlanApprovalService
 
     /**
      * Send approval notifications to workflow approvers
-     *
-     * @param RiskTreatmentPlan $plan
-     * @param \App\Entity\WorkflowInstance $workflowInstance
-     * @param string $approvalLevel
      */
     private function sendApprovalNotifications(
-        RiskTreatmentPlan $plan,
-        \App\Entity\WorkflowInstance $workflowInstance,
+        RiskTreatmentPlan $riskTreatmentPlan,
+        WorkflowInstance $workflowInstance,
         string $approvalLevel
     ): void {
         // Get current step approver
         $currentStep = $workflowInstance->getCurrentStep();
-        if (!$currentStep) {
+        if (!$currentStep instanceof WorkflowStep) {
             return;
         }
 
@@ -193,51 +192,47 @@ class RiskTreatmentPlanApprovalService
 
         // Send to specific user if assigned
         if ($assignedUser) {
-            $this->sendNotificationToUser($plan, $assignedUser, $approvalLevel);
+            $this->sendNotificationToUser($riskTreatmentPlan, $assignedUser, $approvalLevel);
         }
 
         // Send to all users with assigned role
         if ($assignedRole) {
             $roleUsers = $this->userRepository->findByRole($assignedRole);
-            foreach ($roleUsers as $user) {
-                $this->sendNotificationToUser($plan, $user, $approvalLevel);
+            foreach ($roleUsers as $roleUser) {
+                $this->sendNotificationToUser($riskTreatmentPlan, $roleUser, $approvalLevel);
             }
         }
     }
 
     /**
      * Send notification email to a specific user
-     *
-     * @param RiskTreatmentPlan $plan
-     * @param \App\Entity\User $user
-     * @param string $approvalLevel
      */
     private function sendNotificationToUser(
-        RiskTreatmentPlan $plan,
-        \App\Entity\User $user,
+        RiskTreatmentPlan $riskTreatmentPlan,
+        User $user,
         string $approvalLevel
     ): void {
         try {
-            $this->emailService->sendEmail(
+            $this->emailNotificationService->sendEmail(
                 $user->getEmail(),
                 'Risk Treatment Plan Approval Required',
                 'emails/treatment_plan_approval_notification.html.twig',
                 [
-                    'plan' => $plan,
+                    'plan' => $riskTreatmentPlan,
                     'user' => $user,
                     'approval_level' => $approvalLevel,
-                    'budget' => $plan->getBudget(),
+                    'budget' => $riskTreatmentPlan->getBudget(),
                 ]
             );
 
             $this->logger->info('Approval notification sent', [
-                'plan_id' => $plan->getId(),
+                'plan_id' => $riskTreatmentPlan->getId(),
                 'user_email' => $user->getEmail(),
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to send approval notification', [
-                'plan_id' => $plan->getId(),
+                'plan_id' => $riskTreatmentPlan->getId(),
                 'user_email' => $user->getEmail(),
                 'error' => $e->getMessage(),
             ]);

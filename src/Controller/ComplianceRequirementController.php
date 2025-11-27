@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Tenant;
+use DateTimeImmutable;
 use App\Entity\ComplianceRequirement;
 use App\Form\ComplianceRequirementType;
 use App\Repository\ComplianceRequirementRepository;
@@ -15,33 +17,32 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/compliance/requirement')]
 #[IsGranted('ROLE_USER')]
 class ComplianceRequirementController extends AbstractController
 {
     public function __construct(
-        private ComplianceRequirementRepository $requirementRepository,
-        private ComplianceFrameworkRepository $frameworkRepository,
-        private EntityManagerInterface $entityManager,
-        private ComplianceRequirementFulfillmentService $fulfillmentService,
-        private TenantContext $tenantContext
+        private readonly ComplianceRequirementRepository $complianceRequirementRepository,
+        private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
+        private readonly TenantContext $tenantContext
     ) {}
 
-    #[Route('/', name: 'app_compliance_requirement_index', methods: ['GET'])]
+    #[Route('/compliance/requirement/', name: 'app_compliance_requirement_index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $frameworkId = $request->query->get('framework');
 
         if ($frameworkId) {
-            $framework = $this->frameworkRepository->find($frameworkId);
+            $framework = $this->complianceFrameworkRepository->find($frameworkId);
             $requirements = $framework
-                ? $this->requirementRepository->findByFramework($framework)
+                ? $this->complianceRequirementRepository->findByFramework($framework)
                 : [];
         } else {
-            $requirements = $this->requirementRepository->findAll();
+            $requirements = $this->complianceRequirementRepository->findAll();
         }
 
-        $frameworks = $this->frameworkRepository->findAll();
+        $frameworks = $this->complianceFrameworkRepository->findAll();
         $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant && !$this->isGranted('ROLE_ADMIN')) {
             throw $this->createAccessDeniedException('No tenant assigned to user. Please contact administrator.');
@@ -50,9 +51,9 @@ class ComplianceRequirementController extends AbstractController
         // Load tenant-specific fulfillments for all requirements (batch)
         // For SUPER_ADMIN without tenant, show empty fulfillments
         $fulfillments = [];
-        if ($tenant) {
+        if ($tenant instanceof Tenant) {
             foreach ($requirements as $requirement) {
-                $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+                $fulfillment = $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $requirement);
                 $fulfillments[$requirement->getId()] = $fulfillment;
             }
         }
@@ -65,43 +66,43 @@ class ComplianceRequirementController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_compliance_requirement_new', methods: ['GET', 'POST'])]
+    #[Route('/compliance/requirement/new', name: 'app_compliance_requirement_new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
     public function new(Request $request): Response
     {
-        $requirement = new ComplianceRequirement();
+        $complianceRequirement = new ComplianceRequirement();
 
         // Pre-select framework if provided in query
         $frameworkId = $request->query->get('framework');
         if ($frameworkId) {
-            $framework = $this->frameworkRepository->find($frameworkId);
+            $framework = $this->complianceFrameworkRepository->find($frameworkId);
             if ($framework) {
-                $requirement->setFramework($framework);
+                $complianceRequirement->setFramework($framework);
             }
         }
 
-        $form = $this->createForm(ComplianceRequirementType::class, $requirement);
+        $form = $this->createForm(ComplianceRequirementType::class, $complianceRequirement);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->entityManager->persist($requirement);
+            $this->entityManager->persist($complianceRequirement);
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Compliance requirement created successfully.');
 
             return $this->redirectToRoute('app_compliance_requirement_show', [
-                'id' => $requirement->getId()
+                'id' => $complianceRequirement->getId()
             ]);
         }
 
         return $this->render('compliance/requirement/new.html.twig', [
-            'requirement' => $requirement,
+            'requirement' => $complianceRequirement,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_compliance_requirement_show', requirements: ['id' => '\d+'], methods: ['GET'])]
-    public function show(ComplianceRequirement $requirement): Response
+    #[Route('/compliance/requirement/{id}', name: 'app_compliance_requirement_show', requirements: ['id' => '\d+'], methods: ['GET'])]
+    public function show(ComplianceRequirement $complianceRequirement): Response
     {
         $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant && !$this->isGranted('ROLE_ADMIN')) {
@@ -109,24 +110,24 @@ class ComplianceRequirementController extends AbstractController
         }
 
         // Get or create tenant-specific fulfillment (null for SUPER_ADMIN without tenant)
-        $fulfillment = $tenant ? $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement) : null;
+        $fulfillment = $tenant instanceof Tenant ? $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $complianceRequirement) : null;
 
         // Calculate fulfillment from controls (legacy method for comparison)
-        $calculatedFulfillment = $requirement->calculateFulfillmentFromControls();
+        $calculatedFulfillment = $complianceRequirement->calculateFulfillmentFromControls();
 
         // Check if this is inherited from parent
-        $isInherited = $this->fulfillmentService->isInheritedFulfillment($fulfillment, $tenant);
-        $canEdit = $this->fulfillmentService->canEditFulfillment($fulfillment, $tenant);
+        $isInherited = $this->complianceRequirementFulfillmentService->isInheritedFulfillment($fulfillment, $tenant);
+        $canEdit = $this->complianceRequirementFulfillmentService->canEditFulfillment($fulfillment, $tenant);
 
         // Get fulfillments for sub-requirements (for template access)
         $subRequirementFulfillments = [];
-        foreach ($requirement->getDetailedRequirements() as $subReq) {
-            $subFulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $subReq);
-            $subRequirementFulfillments[$subReq->getId()] = $subFulfillment;
+        foreach ($complianceRequirement->getDetailedRequirements() as $detailedRequirement) {
+            $subFulfillment = $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $detailedRequirement);
+            $subRequirementFulfillments[$detailedRequirement->getId()] = $subFulfillment;
         }
 
         return $this->render('compliance/requirement/show.html.twig', [
-            'requirement' => $requirement,
+            'requirement' => $complianceRequirement,
             'fulfillment' => $fulfillment,
             'calculated_fulfillment' => $calculatedFulfillment,
             'is_inherited' => $isInherited,
@@ -135,38 +136,38 @@ class ComplianceRequirementController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_compliance_requirement_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[Route('/compliance/requirement/{id}/edit', name: 'app_compliance_requirement_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
-    public function edit(Request $request, ComplianceRequirement $requirement): Response
+    public function edit(Request $request, ComplianceRequirement $complianceRequirement): Response
     {
-        $form = $this->createForm(ComplianceRequirementType::class, $requirement);
+        $form = $this->createForm(ComplianceRequirementType::class, $complianceRequirement);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $requirement->setUpdatedAt(new \DateTimeImmutable());
+            $complianceRequirement->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Compliance requirement updated successfully.');
 
             return $this->redirectToRoute('app_compliance_requirement_show', [
-                'id' => $requirement->getId()
+                'id' => $complianceRequirement->getId()
             ]);
         }
 
         return $this->render('compliance/requirement/edit.html.twig', [
-            'requirement' => $requirement,
+            'requirement' => $complianceRequirement,
             'form' => $form,
         ]);
     }
 
-    #[Route('/{id}', name: 'app_compliance_requirement_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route('/compliance/requirement/{id}', name: 'app_compliance_requirement_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
-    public function delete(Request $request, ComplianceRequirement $requirement): Response
+    public function delete(Request $request, ComplianceRequirement $complianceRequirement): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$requirement->getId(), $request->request->get('_token'))) {
-            $frameworkId = $requirement->getFramework()?->getId();
+        if ($this->isCsrfTokenValid('delete'.$complianceRequirement->getId(), $request->request->get('_token'))) {
+            $frameworkId = $complianceRequirement->getFramework()?->getId();
 
-            $this->entityManager->remove($requirement);
+            $this->entityManager->remove($complianceRequirement);
             $this->entityManager->flush();
 
             $this->addFlash('success', 'Compliance requirement deleted successfully.');
@@ -181,34 +182,34 @@ class ComplianceRequirementController extends AbstractController
         return $this->redirectToRoute('app_compliance_requirement_index');
     }
 
-    #[Route('/{id}/quick-update', name: 'app_compliance_requirement_quick_update', requirements: ['id' => '\d+'], methods: ['POST'])]
+    #[Route('/compliance/requirement/{id}/quick-update', name: 'app_compliance_requirement_quick_update', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_USER')]
-    public function quickUpdate(Request $request, ComplianceRequirement $requirement): Response
+    public function quickUpdate(Request $request, ComplianceRequirement $complianceRequirement): Response
     {
-        if (!$this->isCsrfTokenValid('quick-update'.$requirement->getId(), $request->request->get('_token'))) {
+        if (!$this->isCsrfTokenValid('quick-update'.$complianceRequirement->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', 'Invalid CSRF token.');
-            return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $requirement->getId()]);
+            return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
         }
 
         $tenant = $this->tenantContext->getCurrentTenant();
         if (!$tenant && !$this->isGranted('ROLE_ADMIN')) {
             $this->addFlash('error', 'No tenant assigned to user. Please contact administrator.');
-            return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $requirement->getId()]);
+            return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
         }
 
         // SUPER_ADMIN without tenant cannot update fulfillment
-        if (!$tenant) {
+        if (!$tenant instanceof Tenant) {
             $this->addFlash('error', 'Cannot update fulfillment without tenant assignment.');
-            return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $requirement->getId()]);
+            return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
         }
 
         // Get or create tenant-specific fulfillment
-        $fulfillment = $this->fulfillmentService->getOrCreateFulfillment($tenant, $requirement);
+        $fulfillment = $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $complianceRequirement);
 
         // Check if user can edit (not inherited)
-        if (!$this->fulfillmentService->canEditFulfillment($fulfillment, $tenant)) {
+        if (!$this->complianceRequirementFulfillmentService->canEditFulfillment($fulfillment, $tenant)) {
             $this->addFlash('error', 'Cannot edit inherited fulfillment from parent tenant.');
-            return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $requirement->getId()]);
+            return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
         }
 
         // Update fulfillment fields
@@ -229,7 +230,7 @@ class ComplianceRequirementController extends AbstractController
         }
 
         $fulfillment->setApplicable($applicable);
-        $fulfillment->setUpdatedAt(new \DateTimeImmutable());
+        $fulfillment->setUpdatedAt(new DateTimeImmutable());
         $fulfillment->setLastUpdatedBy($this->getUser());
 
         // Persist if new
@@ -241,6 +242,6 @@ class ComplianceRequirementController extends AbstractController
 
         $this->addFlash('success', 'Requirement fulfillment updated successfully for your tenant.');
 
-        return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $requirement->getId()]);
+        return $this->redirectToRoute('app_compliance_requirement_show', ['id' => $complianceRequirement->getId()]);
     }
 }

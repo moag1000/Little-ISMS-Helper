@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use DateTime;
 use App\Entity\Risk;
 use App\Entity\Incident;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,12 +34,12 @@ use Psr\Log\LoggerInterface;
  */
 class RiskProbabilityAdjustmentService
 {
-    private const MINIMUM_AGE_DAYS = 30; // Only consider incidents older than 30 days
-    private const MINIMUM_REALIZATION_COUNT = 2; // Need at least 2 incidents to suggest adjustment
+    private const int MINIMUM_AGE_DAYS = 30; // Only consider incidents older than 30 days
+    private const int MINIMUM_REALIZATION_COUNT = 2; // Need at least 2 incidents to suggest adjustment
 
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private LoggerInterface $logger
+        private readonly EntityManagerInterface $entityManager,
+        private readonly LoggerInterface $logger
     ) {}
 
     /**
@@ -46,7 +47,6 @@ class RiskProbabilityAdjustmentService
      *
      * Safe Guard: Only increases probability, never decreases
      *
-     * @param Risk $risk
      * @return int|null Suggested probability (1-5) or null if no adjustment needed
      */
     public function calculateSuggestedProbability(Risk $risk): ?int
@@ -84,12 +84,11 @@ class RiskProbabilityAdjustmentService
      *
      * Safe Guard: Only closed incidents older than 30 days
      *
-     * @param Risk $risk
      * @return Incident[]
      */
     private function getEligibleIncidents(Risk $risk): array
     {
-        $cutoffDate = new \DateTime(sprintf('-%d days', self::MINIMUM_AGE_DAYS));
+        $cutoffDate = new DateTime(sprintf('-%d days', self::MINIMUM_AGE_DAYS));
 
         $eligibleIncidents = [];
 
@@ -118,10 +117,10 @@ class RiskProbabilityAdjustmentService
      */
     private function analyzeIncidentFrequency(array $incidents): array
     {
-        $now = new \DateTime();
-        $oneYearAgo = new \DateTime('-1 year');
-        $sixMonthsAgo = new \DateTime('-6 months');
-        $threeMonthsAgo = new \DateTime('-3 months');
+        new DateTime();
+        $oneYearAgo = new DateTime('-1 year');
+        $sixMonthsAgo = new DateTime('-6 months');
+        $threeMonthsAgo = new DateTime('-3 months');
 
         $timeFrames = [
             'last_year' => 0,
@@ -159,7 +158,6 @@ class RiskProbabilityAdjustmentService
      * - 5 (Almost Certain): >12 incidents per year (or >6 per 6 months)
      *
      * @param array{last_year: int, last_6_months: int, last_3_months: int} $timeFrames
-     * @return int
      */
     private function mapFrequencyToProbability(array $timeFrames): int
     {
@@ -198,7 +196,6 @@ class RiskProbabilityAdjustmentService
     /**
      * Get detailed probability adjustment analysis
      *
-     * @param Risk $risk
      * @return array{current_probability: int, suggested_probability: int|null, eligible_incidents: int, total_incidents: int, frequency_analysis: array, should_adjust: bool, rationale: string}
      */
     public function analyzeProbabilityAdjustment(Risk $risk): array
@@ -215,7 +212,6 @@ class RiskProbabilityAdjustmentService
         $shouldAdjust = $suggestedProbability !== null;
 
         $rationale = $this->generateRationale(
-            $risk,
             $eligibleIncidents,
             $currentProbability,
             $suggestedProbability,
@@ -236,15 +232,9 @@ class RiskProbabilityAdjustmentService
     /**
      * Generate human-readable rationale for probability adjustment
      *
-     * @param Risk $risk
      * @param Incident[] $eligibleIncidents
-     * @param int $currentProbability
-     * @param int|null $suggestedProbability
-     * @param array $frequencyAnalysis
-     * @return string
      */
     private function generateRationale(
-        Risk $risk,
         array $eligibleIncidents,
         int $currentProbability,
         ?int $suggestedProbability,
@@ -284,24 +274,24 @@ class RiskProbabilityAdjustmentService
      */
     public function findRisksRequiringAdjustment(): array
     {
-        $riskRepository = $this->entityManager->getRepository(Risk::class);
-        $allRisks = $riskRepository->findAll();
+        $entityRepository = $this->entityManager->getRepository(Risk::class);
+        $allRisks = $entityRepository->findAll();
 
         $requiresAdjustment = [];
 
-        foreach ($allRisks as $risk) {
-            $analysis = $this->analyzeProbabilityAdjustment($risk);
+        foreach ($allRisks as $allRisk) {
+            $analysis = $this->analyzeProbabilityAdjustment($allRisk);
 
             if ($analysis['should_adjust']) {
                 $requiresAdjustment[] = [
-                    'risk' => $risk,
+                    'risk' => $allRisk,
                     'analysis' => $analysis
                 ];
             }
         }
 
         // Sort by suggested probability increase (highest first)
-        usort($requiresAdjustment, function($a, $b) {
+        usort($requiresAdjustment, function(array $a, array $b): int {
             $diffA = $a['analysis']['suggested_probability'] - $a['analysis']['current_probability'];
             $diffB = $b['analysis']['suggested_probability'] - $b['analysis']['current_probability'];
             return $diffB <=> $diffA;
@@ -321,9 +311,6 @@ class RiskProbabilityAdjustmentService
      * Safe Guard: Requires user confirmation, never auto-applies
      * Safe Guard: Only allows increase, users can manually decrease if needed
      *
-     * @param Risk $risk
-     * @param int $newProbability
-     * @param bool $userConfirmed
      * @return array{success: bool, message: string, old_probability: int, new_probability: int|null}
      */
     public function applyProbabilityAdjustment(Risk $risk, int $newProbability, bool $userConfirmed = false): array

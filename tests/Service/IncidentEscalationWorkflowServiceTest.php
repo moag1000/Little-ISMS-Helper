@@ -11,7 +11,6 @@ use App\Service\AuditLogger;
 use App\Service\EmailNotificationService;
 use App\Service\IncidentEscalationWorkflowService;
 use App\Service\WorkflowService;
-use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -25,7 +24,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class IncidentEscalationWorkflowServiceTest extends TestCase
 {
-    private MockObject $entityManager;
     private MockObject $workflowService;
     private MockObject $emailService;
     private MockObject $userRepository;
@@ -36,7 +34,6 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->entityManager = $this->createMock(EntityManagerInterface::class);
         $this->workflowService = $this->createMock(WorkflowService::class);
         $this->emailService = $this->createMock(EmailNotificationService::class);
         $this->userRepository = $this->createMock(UserRepository::class);
@@ -49,7 +46,6 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
             ->willReturn('https://example.com/incident/1');
 
         $this->service = new IncidentEscalationWorkflowService(
-            $this->entityManager,
             $this->workflowService,
             $this->emailService,
             $this->userRepository,

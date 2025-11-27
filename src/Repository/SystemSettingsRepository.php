@@ -23,7 +23,7 @@ class SystemSettingsRepository extends ServiceEntityRepository
     {
         $setting = $this->findOneBy(['category' => $category, 'key' => $key]);
 
-        if (!$setting) {
+        if (!$setting instanceof SystemSettings) {
             return $default;
         }
 
@@ -43,7 +43,7 @@ class SystemSettingsRepository extends ServiceEntityRepository
     {
         $setting = $this->findOneBy(['category' => $category, 'key' => $key]);
 
-        if (!$setting) {
+        if (!$setting instanceof SystemSettings) {
             $setting = new SystemSettings();
             $setting->setCategory($category);
             $setting->setKey($key);
@@ -114,7 +114,7 @@ class SystemSettingsRepository extends ServiceEntityRepository
     {
         $setting = $this->findOneBy(['category' => $category, 'key' => $key]);
 
-        if (!$setting) {
+        if (!$setting instanceof SystemSettings) {
             return false;
         }
 

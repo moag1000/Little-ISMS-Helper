@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use DateTime;
 use App\Entity\ChangeRequest;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -38,7 +39,7 @@ class ChangeRequestRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('c')
             ->where('c.plannedImplementationDate < :now')
             ->andWhere('c.status IN (:statuses)')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new DateTime())
             ->setParameter('statuses', ['approved', 'scheduled'])
             ->orderBy('c.plannedImplementationDate', 'ASC')
             ->getQuery()
@@ -80,7 +81,7 @@ class ChangeRequestRepository extends ServiceEntityRepository
             ->select('COUNT(c.id)')
             ->where('c.plannedImplementationDate < :now')
             ->andWhere('c.status IN (:statuses)')
-            ->setParameter('now', new \DateTime())
+            ->setParameter('now', new DateTime())
             ->setParameter('statuses', ['approved', 'scheduled'])
             ->getQuery()
             ->getSingleScalarResult();

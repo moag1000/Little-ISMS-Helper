@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use DateTime;
 use App\Entity\ProcessingActivity;
 use App\Entity\Tenant;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -101,9 +102,7 @@ class ProcessingActivityRepository extends ServiceEntityRepository
     {
         $all = $this->findByTenant($tenant);
 
-        return array_filter($all, function (ProcessingActivity $pa) {
-            return !$pa->isComplete();
-        });
+        return array_filter($all, fn(ProcessingActivity $processingActivity): bool => !$processingActivity->isComplete());
     }
 
     /**
@@ -111,7 +110,7 @@ class ProcessingActivityRepository extends ServiceEntityRepository
      */
     public function findDueForReview(Tenant $tenant): array
     {
-        $today = new \DateTime();
+        $today = new DateTime();
 
         return $this->createQueryBuilder('pa')
             ->where('pa.tenant = :tenant')
@@ -129,41 +128,41 @@ class ProcessingActivityRepository extends ServiceEntityRepository
      */
     public function getStatistics(Tenant $tenant): array
     {
-        $qb = $this->createQueryBuilder('pa')
+        $queryBuilder = $this->createQueryBuilder('pa')
             ->where('pa.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
-        $total = (clone $qb)->select('COUNT(pa.id)')->getQuery()->getSingleScalarResult();
+        $total = (clone $queryBuilder)->select('COUNT(pa.id)')->getQuery()->getSingleScalarResult();
 
-        $active = (clone $qb)
+        $active = (clone $queryBuilder)
             ->andWhere('pa.status = :status')
             ->setParameter('status', 'active')
             ->select('COUNT(pa.id)')
             ->getQuery()
             ->getSingleScalarResult();
 
-        $highRisk = (clone $qb)
+        $highRisk = (clone $queryBuilder)
             ->andWhere('pa.isHighRisk = :highRisk')
             ->setParameter('highRisk', true)
             ->select('COUNT(pa.id)')
             ->getQuery()
             ->getSingleScalarResult();
 
-        $specialCategories = (clone $qb)
+        $specialCategories = (clone $queryBuilder)
             ->andWhere('pa.processesSpecialCategories = :special')
             ->setParameter('special', true)
             ->select('COUNT(pa.id)')
             ->getQuery()
             ->getSingleScalarResult();
 
-        $thirdCountryTransfers = (clone $qb)
+        $thirdCountryTransfers = (clone $queryBuilder)
             ->andWhere('pa.hasThirdCountryTransfer = :hasTransfer')
             ->setParameter('hasTransfer', true)
             ->select('COUNT(pa.id)')
             ->getQuery()
             ->getSingleScalarResult();
 
-        $missingDPIA = (clone $qb)
+        $missingDPIA = (clone $queryBuilder)
             ->andWhere('(pa.isHighRisk = :highRisk OR pa.processesSpecialCategories = :special OR pa.hasAutomatedDecisionMaking = :automated)')
             ->andWhere('pa.dpiaCompleted = :dpiaCompleted')
             ->setParameter('highRisk', true)

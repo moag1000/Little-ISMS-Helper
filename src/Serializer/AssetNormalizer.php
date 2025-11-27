@@ -2,6 +2,7 @@
 
 namespace App\Serializer;
 
+use ArrayObject;
 use App\Entity\Asset;
 use App\Service\AssetRiskCalculator;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -29,18 +30,18 @@ class AssetNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;
 
-    private const ALREADY_CALLED = 'ASSET_NORMALIZER_ALREADY_CALLED';
+    private const string ALREADY_CALLED = 'ASSET_NORMALIZER_ALREADY_CALLED';
 
     public function __construct(
         #[Autowire(service: AssetRiskCalculator::class)]
-        private readonly AssetRiskCalculator $riskCalculator
+        private readonly AssetRiskCalculator $assetRiskCalculator
     ) {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function normalize(mixed $object, ?string $format = null, array $context = []): array|string|int|float|bool|\ArrayObject|null
+    public function normalize(mixed $object, ?string $format = null, array $context = []): array|string|int|float|bool|ArrayObject|null
     {
         // Prevent infinite recursion
         $context[self::ALREADY_CALLED] = true;
@@ -51,9 +52,9 @@ class AssetNormalizer implements NormalizerInterface, NormalizerAwareInterface
         // Add computed properties only for 'asset:read' group
         if ($this->shouldAddComputedProperties($context)) {
             /** @var Asset $object */
-            $data['riskScore'] = $this->riskCalculator->calculateRiskScore($object);
-            $data['isHighRisk'] = $this->riskCalculator->isHighRisk($object);
-            $data['protectionStatus'] = $this->riskCalculator->getProtectionStatus($object);
+            $data['riskScore'] = $this->assetRiskCalculator->calculateRiskScore($object);
+            $data['isHighRisk'] = $this->assetRiskCalculator->isHighRisk($object);
+            $data['protectionStatus'] = $this->assetRiskCalculator->getProtectionStatus($object);
         }
 
         return $data;
@@ -68,13 +69,8 @@ class AssetNormalizer implements NormalizerInterface, NormalizerAwareInterface
         if (!$data instanceof Asset) {
             return false;
         }
-
         // Avoid infinite recursion
-        if (isset($context[self::ALREADY_CALLED])) {
-            return false;
-        }
-
-        return true;
+        return !isset($context[self::ALREADY_CALLED]);
     }
 
     /**

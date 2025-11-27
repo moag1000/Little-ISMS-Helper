@@ -2,6 +2,7 @@
 
 namespace App\EventSubscriber;
 
+use Exception;
 use App\Security\SetupAccessChecker;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -19,7 +20,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class SetupRequiredSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly SetupAccessChecker $setupChecker,
+        private readonly SetupAccessChecker $setupAccessChecker,
         private readonly Connection $connection,
         private readonly UrlGeneratorInterface $urlGenerator
     ) {
@@ -33,14 +34,14 @@ class SetupRequiredSubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onKernelRequest(RequestEvent $event): void
+    public function onKernelRequest(RequestEvent $requestEvent): void
     {
         // Only handle main requests
-        if (!$event->isMainRequest()) {
+        if (!$requestEvent->isMainRequest()) {
             return;
         }
 
-        $request = $event->getRequest();
+        $request = $requestEvent->getRequest();
         $path = $request->getPathInfo();
 
         // Skip for setup routes (allow setup wizard to work)
@@ -60,7 +61,7 @@ class SetupRequiredSubscriber implements EventSubscriberInterface
         }
 
         // If setup is already complete, don't redirect
-        if ($this->setupChecker->isSetupComplete()) {
+        if ($this->setupAccessChecker->isSetupComplete()) {
             return;
         }
 
@@ -68,7 +69,7 @@ class SetupRequiredSubscriber implements EventSubscriberInterface
         if (!$this->databaseTablesExist()) {
             // Redirect to setup wizard with default locale
             $setupUrl = $this->urlGenerator->generate('setup_wizard_index', ['_locale' => 'de']);
-            $event->setResponse(new RedirectResponse($setupUrl));
+            $requestEvent->setResponse(new RedirectResponse($setupUrl));
         }
     }
 
@@ -81,7 +82,7 @@ class SetupRequiredSubscriber implements EventSubscriberInterface
             // Try to check if the user table exists (it's one of the core tables)
             $schemaManager = $this->connection->createSchemaManager();
             return $schemaManager->tablesExist(['user']);
-        } catch (\Exception $e) {
+        } catch (Exception) {
             // Any error means database is not properly set up
             return false;
         }

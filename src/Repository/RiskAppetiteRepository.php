@@ -62,7 +62,7 @@ class RiskAppetiteRepository extends ServiceEntityRepository
         // Try category-specific first
         if ($category !== null) {
             $appetite = $this->findActiveByCategoryAndTenant($category, $tenant);
-            if ($appetite !== null) {
+            if ($appetite instanceof RiskAppetite) {
                 return $appetite;
             }
         }

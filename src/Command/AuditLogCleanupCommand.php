@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use DateTimeImmutable;
 use App\Repository\AuditLogRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -93,13 +94,13 @@ HELP
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
         $dryRun = $input->getOption('dry-run');
         $retentionDays = (int) $input->getOption('retention-days');
 
         // NIS2 Compliance Check: minimum 12 months (365 days)
         if ($retentionDays < 365) {
-            $io->error([
+            $symfonyStyle->error([
                 'Retention period must be at least 365 days (12 months) for NIS2 Art. 21.2 compliance!',
                 sprintf('Requested: %d days', $retentionDays),
                 'Minimum required: 365 days'
@@ -107,11 +108,11 @@ HELP
             return Command::FAILURE;
         }
 
-        $cutoffDate = new \DateTimeImmutable(sprintf('-%d days', $retentionDays));
+        $cutoffDate = new DateTimeImmutable(sprintf('-%d days', $retentionDays));
 
-        $io->title('Audit Log Cleanup');
-        $io->section('Configuration');
-        $io->table(
+        $symfonyStyle->title('Audit Log Cleanup');
+        $symfonyStyle->section('Configuration');
+        $symfonyStyle->table(
             ['Parameter', 'Value'],
             [
                 ['Retention Period', sprintf('%d days (%d months)', $retentionDays, round($retentionDays / 30))],
@@ -126,12 +127,12 @@ HELP
         $count = $this->auditLogRepository->countOldLogs($cutoffDate);
 
         if ($count === 0) {
-            $io->success('No audit logs found older than ' . $cutoffDate->format('Y-m-d H:i:s'));
+            $symfonyStyle->success('No audit logs found older than ' . $cutoffDate->format('Y-m-d H:i:s'));
             return Command::SUCCESS;
         }
 
-        $io->section('Analysis');
-        $io->writeln(sprintf('Found <fg=yellow>%d</> audit log entries older than <fg=cyan>%s</>',
+        $symfonyStyle->section('Analysis');
+        $symfonyStyle->writeln(sprintf('Found <fg=yellow>%d</> audit log entries older than <fg=cyan>%s</>',
             $count,
             $cutoffDate->format('Y-m-d H:i:s')
         ));
@@ -139,23 +140,23 @@ HELP
         // Get sample of logs to be deleted
         $sampleLogs = $this->auditLogRepository->findOldLogs($cutoffDate, 5);
 
-        if (!empty($sampleLogs)) {
-            $io->section('Sample of Logs to be Deleted (first 5)');
+        if ($sampleLogs !== []) {
+            $symfonyStyle->section('Sample of Logs to be Deleted (first 5)');
             $sampleData = [];
-            foreach ($sampleLogs as $log) {
+            foreach ($sampleLogs as $sampleLog) {
                 $sampleData[] = [
-                    $log->getId(),
-                    $log->getEntityType(),
-                    $log->getAction(),
-                    $log->getUserName(),
-                    $log->getCreatedAt()->format('Y-m-d H:i:s'),
+                    $sampleLog->getId(),
+                    $sampleLog->getEntityType(),
+                    $sampleLog->getAction(),
+                    $sampleLog->getUserName(),
+                    $sampleLog->getCreatedAt()->format('Y-m-d H:i:s'),
                 ];
             }
-            $io->table(['ID', 'Entity Type', 'Action', 'User', 'Created At'], $sampleData);
+            $symfonyStyle->table(['ID', 'Entity Type', 'Action', 'User', 'Created At'], $sampleData);
         }
 
         if ($dryRun) {
-            $io->note([
+            $symfonyStyle->note([
                 'DRY RUN MODE: No changes have been made.',
                 sprintf('%d log entries would be deleted.', $count),
                 'Remove --dry-run to execute deletion.'
@@ -164,20 +165,20 @@ HELP
         }
 
         // Confirm deletion
-        if (!$io->confirm(sprintf('Delete %d audit log entries?', $count), false)) {
-            $io->warning('Operation cancelled by user.');
+        if (!$symfonyStyle->confirm(sprintf('Delete %d audit log entries?', $count), false)) {
+            $symfonyStyle->warning('Operation cancelled by user.');
             return Command::SUCCESS;
         }
 
-        $io->section('Deletion in Progress');
+        $symfonyStyle->section('Deletion in Progress');
 
         $startTime = microtime(true);
         $deletedCount = $this->auditLogRepository->deleteOldLogs($cutoffDate);
         $this->entityManager->flush();
         $duration = round(microtime(true) - $startTime, 2);
 
-        $io->section('Results');
-        $io->success([
+        $symfonyStyle->section('Results');
+        $symfonyStyle->success([
             sprintf('Successfully deleted %d audit log entries', $deletedCount),
             sprintf('Execution time: %s seconds', $duration),
             sprintf('Retention policy: %d days (%d months)', $retentionDays, round($retentionDays / 30)),

@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
+use Deprecated;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
@@ -29,24 +32,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     operations: [
         new Get(
-            security: "is_granted('ROLE_USER')",
-            description: 'Retrieve a specific risk assessment by ID'
+            description: 'Retrieve a specific risk assessment by ID',
+            security: "is_granted('ROLE_USER')"
         ),
         new GetCollection(
-            security: "is_granted('ROLE_USER')",
-            description: 'Retrieve the collection of risk assessments with filtering by status and date'
+            description: 'Retrieve the collection of risk assessments with filtering by status and date',
+            security: "is_granted('ROLE_USER')"
         ),
         new Post(
-            security: "is_granted('ROLE_USER')",
-            description: 'Create a new risk assessment with probability and impact analysis'
+            description: 'Create a new risk assessment with probability and impact analysis',
+            security: "is_granted('ROLE_USER')"
         ),
         new Put(
-            security: "is_granted('ROLE_USER')",
-            description: 'Update an existing risk assessment'
+            description: 'Update an existing risk assessment',
+            security: "is_granted('ROLE_USER')"
         ),
         new Delete(
-            security: "is_granted('ROLE_ADMIN')",
-            description: 'Delete a risk assessment (Admin only)'
+            description: 'Delete a risk assessment (Admin only)',
+            security: "is_granted('ROLE_ADMIN')"
         ),
     ],
     normalizationContext: ['groups' => ['risk:read']],
@@ -202,15 +205,16 @@ class Risk
     #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Impact must be between {{ min }} and {{ max }}')]
     private ?int $impact = null;
 
+    // Set default values for required fields
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
     #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Residual probability must be between {{ min }} and {{ max }}')]
-    private ?int $residualProbability = null;
+    private ?int $residualProbability = 1;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
     #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Residual impact must be between {{ min }} and {{ max }}')]
-    private ?int $residualImpact = null;
+    private ?int $residualImpact = 1;
 
     #[ORM\Column(length: 50)]
     #[Groups(['risk:read', 'risk:write'])]
@@ -219,7 +223,7 @@ class Risk
         choices: ['accept', 'mitigate', 'transfer', 'avoid'],
         message: 'Treatment strategy must be one of: {{ choices }}'
     )]
-    private ?string $treatmentStrategy = null;
+    private ?string $treatmentStrategy = 'mitigate';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['risk:read', 'risk:write'])]
@@ -235,7 +239,7 @@ class Risk
     #[Groups(['risk:read', 'risk:write'])]
     #[MaxDepth(1)]
     #[Assert\NotNull(message: 'risk.validation.risk_owner_required')]
-    private ?User $riskOwner = null;
+    private ?User $user = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['risk:read', 'risk:write'])]
@@ -248,15 +252,15 @@ class Risk
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['risk:read', 'risk:write'])]
-    private ?\DateTimeInterface $reviewDate = null;
+    private ?DateTimeInterface $reviewDate = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     #[Groups(['risk:read'])]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     #[Groups(['risk:read'])]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     /**
      * Risk Acceptance Approval (ISO 27005)
@@ -268,7 +272,7 @@ class Risk
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(['risk:read', 'risk:write'])]
-    private ?\DateTimeInterface $acceptanceApprovedAt = null;
+    private ?DateTimeInterface $acceptanceApprovedAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     #[Groups(['risk:read', 'risk:write'])]
@@ -301,11 +305,7 @@ class Risk
     {
         $this->controls = new ArrayCollection();
         $this->incidents = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
-        // Set default values for required fields
-        $this->residualProbability = 1;
-        $this->residualImpact = 1;
-        $this->treatmentStrategy = 'mitigate';
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -437,16 +437,16 @@ class Risk
      */
     public function getRiskSubjectName(): ?string
     {
-        if ($this->asset) {
+        if ($this->asset instanceof Asset) {
             return $this->asset->getName();
         }
-        if ($this->person) {
+        if ($this->person instanceof Person) {
             return $this->person->getFullName();
         }
-        if ($this->location) {
+        if ($this->location instanceof Location) {
             return $this->location->getName();
         }
-        if ($this->supplier) {
+        if ($this->supplier instanceof Supplier) {
             return $this->supplier->getName();
         }
         return null;
@@ -457,10 +457,18 @@ class Risk
      */
     public function getRiskSubjectType(): ?string
     {
-        if ($this->asset) return 'asset';
-        if ($this->person) return 'person';
-        if ($this->location) return 'location';
-        if ($this->supplier) return 'supplier';
+        if ($this->asset instanceof Asset) {
+            return 'asset';
+        }
+        if ($this->person instanceof Person) {
+            return 'person';
+        }
+        if ($this->location instanceof Location) {
+            return 'location';
+        }
+        if ($this->supplier instanceof Supplier) {
+            return 'supplier';
+        }
         return null;
     }
 
@@ -532,12 +540,12 @@ class Risk
 
     public function getRiskOwner(): ?User
     {
-        return $this->riskOwner;
+        return $this->user;
     }
 
-    public function setRiskOwner(?User $riskOwner): static
+    public function setRiskOwner(?User $user): static
     {
-        $this->riskOwner = $riskOwner;
+        $this->user = $user;
         return $this;
     }
 
@@ -548,7 +556,7 @@ class Risk
     #[Groups(['risk:read'])]
     public function getRiskOwnerName(): ?string
     {
-        return $this->riskOwner?->getFullName();
+        return $this->user?->getFullName();
     }
 
     public function getStatus(): ?string
@@ -562,34 +570,34 @@ class Risk
         return $this;
     }
 
-    public function getReviewDate(): ?\DateTimeInterface
+    public function getReviewDate(): ?DateTimeInterface
     {
         return $this->reviewDate;
     }
 
-    public function setReviewDate(?\DateTimeInterface $reviewDate): static
+    public function setReviewDate(?DateTimeInterface $reviewDate): static
     {
         $this->reviewDate = $reviewDate;
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -719,13 +727,19 @@ class Risk
                 $criticalIncidents++;
             }
         }
+        // High predicted risk should correlate with critical incidents
+        if ($predictedLevel >= 16) {
+            // High risk (4x4 or higher)
+            return $criticalIncidents > 0;
+        }
 
         // High predicted risk should correlate with critical incidents
-        if ($predictedLevel >= 16) { // High risk (4x4 or higher)
-            return $criticalIncidents > 0;
-        } elseif ($predictedLevel >= 9) { // Medium risk
-            return $criticalIncidents === 0; // Should NOT have critical incidents
-        } else { // Low risk
+        if ($predictedLevel >= 9) {
+            // Medium risk
+            return $criticalIncidents === 0;
+            // Should NOT have critical incidents
+        }
+        else { // Low risk
             return $criticalIncidents === 0; // Low risk should NOT have critical incidents
         }
     }
@@ -794,12 +808,12 @@ class Risk
         return $this;
     }
 
-    public function getAcceptanceApprovedAt(): ?\DateTimeInterface
+    public function getAcceptanceApprovedAt(): ?DateTimeInterface
     {
         return $this->acceptanceApprovedAt;
     }
 
-    public function setAcceptanceApprovedAt(?\DateTimeInterface $acceptanceApprovedAt): static
+    public function setAcceptanceApprovedAt(?DateTimeInterface $acceptanceApprovedAt): static
     {
         $this->acceptanceApprovedAt = $acceptanceApprovedAt;
         return $this;
@@ -839,8 +853,8 @@ class Risk
 
     /**
      * Alias for backward compatibility
-     * @deprecated Use isAcceptanceApprovalRequired() instead
      */
+    #[Deprecated(message: 'Use isAcceptanceApprovalRequired() instead')]
     public function requiresAcceptanceApproval(): bool
     {
         return $this->isAcceptanceApprovalRequired();
@@ -858,7 +872,7 @@ class Risk
 
         return $this->formallyAccepted
             && $this->acceptanceApprovedBy !== null
-            && $this->acceptanceApprovedAt !== null
+            && $this->acceptanceApprovedAt instanceof DateTimeInterface
             && $this->acceptanceJustification !== null;
     }
 

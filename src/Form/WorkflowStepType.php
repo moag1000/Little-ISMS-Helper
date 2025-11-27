@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use Exception;
 use App\Entity\WorkflowStep;
 use App\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
@@ -16,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class WorkflowStepType extends AbstractType
 {
-    public function __construct(private UserRepository $userRepository)
+    public function __construct(private readonly UserRepository $userRepository)
     {
     }
 
@@ -139,7 +140,7 @@ class WorkflowStepType extends AbstractType
     {
         try {
             $users = $this->userRepository->findBy(['isActive' => true], ['lastName' => 'ASC', 'firstName' => 'ASC']);
-        } catch (\Exception $e) {
+        } catch (Exception) {
             // Fallback if isActive field doesn't exist
             $users = $this->userRepository->findAll();
         }

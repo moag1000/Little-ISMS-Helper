@@ -136,12 +136,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function searchUsers(string $query): array
     {
-        $qb = $this->createQueryBuilder('u');
+        $queryBuilder = $this->createQueryBuilder('u');
 
-        return $qb->andWhere($qb->expr()->orX(
-                $qb->expr()->like('u.firstName', ':query'),
-                $qb->expr()->like('u.lastName', ':query'),
-                $qb->expr()->like('u.email', ':query')
+        return $queryBuilder->andWhere($queryBuilder->expr()->orX(
+                $queryBuilder->expr()->like('u.firstName', ':query'),
+                $queryBuilder->expr()->like('u.lastName', ':query'),
+                $queryBuilder->expr()->like('u.email', ':query')
             ))
             ->setParameter('query', '%' . $query . '%')
             ->orderBy('u.lastName', 'ASC')
@@ -155,7 +155,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      */
     public function getUserStatistics(): array
     {
-        $em = $this->getEntityManager();
+        $this->getEntityManager();
 
         $totalUsers = $this->createQueryBuilder('u')
             ->select('COUNT(u.id)')

@@ -2,12 +2,12 @@
 
 namespace App\Controller;
 
+use Exception;
 use App\Service\SecurityAuditService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SecurityReportController extends AbstractController
 {
@@ -77,14 +77,13 @@ class SecurityReportController extends AbstractController
                     'message' => 'Security reports generated successfully',
                     'reports' => $result['reports'],
                 ]);
-            } else {
-                return $this->json([
-                    'success' => false,
-                    'message' => 'Security report generation failed',
-                    'error' => $result['error_output'] ?: $result['output'],
-                ], 500);
             }
-        } catch (\Exception $e) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Security report generation failed',
+                'error' => $result['error_output'] ?: $result['output'],
+            ], 500);
+        } catch (Exception $e) {
             return $this->json([
                 'success' => false,
                 'message' => 'Error generating security reports: ' . $e->getMessage(),

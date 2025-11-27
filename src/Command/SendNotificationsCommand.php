@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use DateTime;
+use DateTimeImmutable;
 use App\Repository\InternalAuditRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\IncidentRepository;
@@ -23,13 +25,13 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class SendNotificationsCommand extends Command
 {
     public function __construct(
-        private InternalAuditRepository $auditRepository,
-        private TrainingRepository $trainingRepository,
-        private IncidentRepository $incidentRepository,
-        private ControlRepository $controlRepository,
-        private WorkflowInstanceRepository $workflowInstanceRepository,
-        private UserRepository $userRepository,
-        private EmailNotificationService $emailService
+        private readonly InternalAuditRepository $internalAuditRepository,
+        private readonly TrainingRepository $trainingRepository,
+        private readonly IncidentRepository $incidentRepository,
+        private readonly ControlRepository $controlRepository,
+        private readonly WorkflowInstanceRepository $workflowInstanceRepository,
+        private readonly UserRepository $userRepository,
+        private readonly EmailNotificationService $emailNotificationService
     ) {
         parent::__construct();
     }
@@ -58,75 +60,75 @@ Recommended cron setup (daily at 8 AM):
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
         $type = $input->getOption('type');
         $daysAhead = (int) $input->getOption('days-ahead');
         $dryRun = $input->getOption('dry-run');
 
-        $io->title('ISMS Notification Service');
+        $symfonyStyle->title('ISMS Notification Service');
 
         if ($dryRun) {
-            $io->warning('DRY RUN MODE - No emails will be sent');
+            $symfonyStyle->warning('DRY RUN MODE - No emails will be sent');
         }
 
         $totalSent = 0;
 
         // Upcoming Audits
         if ($type === 'audits' || $type === 'all') {
-            $io->section('Checking Upcoming Audits');
-            $sent = $this->sendAuditNotifications($daysAhead, $dryRun, $io);
+            $symfonyStyle->section('Checking Upcoming Audits');
+            $sent = $this->sendAuditNotifications($daysAhead, $dryRun, $symfonyStyle);
             $totalSent += $sent;
-            $io->success(sprintf('Sent %d audit notifications', $sent));
+            $symfonyStyle->success(sprintf('Sent %d audit notifications', $sent));
         }
 
         // Upcoming Trainings
         if ($type === 'trainings' || $type === 'all') {
-            $io->section('Checking Upcoming Trainings');
-            $sent = $this->sendTrainingNotifications($daysAhead, $dryRun, $io);
+            $symfonyStyle->section('Checking Upcoming Trainings');
+            $sent = $this->sendTrainingNotifications($daysAhead, $dryRun, $symfonyStyle);
             $totalSent += $sent;
-            $io->success(sprintf('Sent %d training notifications', $sent));
+            $symfonyStyle->success(sprintf('Sent %d training notifications', $sent));
         }
 
         // Open Incidents
         if ($type === 'incidents' || $type === 'all') {
-            $io->section('Checking Open Incidents');
-            $sent = $this->sendIncidentNotifications($daysAhead, $dryRun, $io);
+            $symfonyStyle->section('Checking Open Incidents');
+            $sent = $this->sendIncidentNotifications($daysAhead, $dryRun, $symfonyStyle);
             $totalSent += $sent;
-            $io->success(sprintf('Sent %d incident notifications', $sent));
+            $symfonyStyle->success(sprintf('Sent %d incident notifications', $sent));
         }
 
         // Controls Nearing Target Date
         if ($type === 'controls' || $type === 'all') {
-            $io->section('Checking Controls Nearing Target Date');
-            $sent = $this->sendControlNotifications($daysAhead, $dryRun, $io);
+            $symfonyStyle->section('Checking Controls Nearing Target Date');
+            $sent = $this->sendControlNotifications($daysAhead, $dryRun, $symfonyStyle);
             $totalSent += $sent;
-            $io->success(sprintf('Sent %d control notifications', $sent));
+            $symfonyStyle->success(sprintf('Sent %d control notifications', $sent));
         }
 
         // Overdue Workflow Approvals
         if ($type === 'workflows' || $type === 'all') {
-            $io->section('Checking Overdue Workflow Approvals');
-            $sent = $this->sendWorkflowNotifications($dryRun, $io);
+            $symfonyStyle->section('Checking Overdue Workflow Approvals');
+            $sent = $this->sendWorkflowNotifications($dryRun, $symfonyStyle);
             $totalSent += $sent;
-            $io->success(sprintf('Sent %d workflow notifications', $sent));
+            $symfonyStyle->success(sprintf('Sent %d workflow notifications', $sent));
 
-            $io->section('Checking Workflows Approaching Deadline');
-            $sent = $this->sendWorkflowDeadlineWarnings($daysAhead, $dryRun, $io);
+            $symfonyStyle->section('Checking Workflows Approaching Deadline');
+            $sent = $this->sendWorkflowDeadlineWarnings($daysAhead, $dryRun, $symfonyStyle);
             $totalSent += $sent;
-            $io->success(sprintf('Sent %d workflow deadline warnings', $sent));
+            $symfonyStyle->success(sprintf('Sent %d workflow deadline warnings', $sent));
         }
 
-        $io->success(sprintf('Total notifications sent: %d', $totalSent));
+        $symfonyStyle->success(sprintf('Total notifications sent: %d', $totalSent));
 
         return Command::SUCCESS;
     }
 
-    private function sendAuditNotifications(int $daysAhead, bool $dryRun, SymfonyStyle $io): int
+    private function sendAuditNotifications(int $daysAhead, bool $dryRun, SymfonyStyle $symfonyStyle): int
     {
-        $upcomingDate = new \DateTime("+{$daysAhead} days");
-        $today = new \DateTime();
+        $upcomingDate = new DateTime("+{$daysAhead} days");
+        $today = new DateTime();
 
-        $audits = $this->auditRepository->createQueryBuilder('a')
+        $audits = $this->internalAuditRepository->createQueryBuilder('a')
             ->where('a.plannedDate BETWEEN :today AND :upcomingDate')
             ->andWhere('a.status IN (:statuses)')
             ->setParameter('today', $today)
@@ -147,15 +149,15 @@ Recommended cron setup (daily at 8 AM):
                 $recipients[] = $member;
             }
 
-            if (!empty($recipients)) {
-                $io->text(sprintf('  - Audit "%s" planned for %s → %d recipients',
+            if ($recipients !== []) {
+                $symfonyStyle->text(sprintf('  - Audit "%s" planned for %s → %d recipients',
                     $audit->getTitle(),
                     $audit->getPlannedDate()->format('d.m.Y'),
                     count($recipients)
                 ));
 
                 if (!$dryRun) {
-                    $this->emailService->sendAuditDueNotification($audit, $recipients);
+                    $this->emailNotificationService->sendAuditDueNotification($audit, $recipients);
                 }
                 $sent++;
             }
@@ -164,10 +166,10 @@ Recommended cron setup (daily at 8 AM):
         return $sent;
     }
 
-    private function sendTrainingNotifications(int $daysAhead, bool $dryRun, SymfonyStyle $io): int
+    private function sendTrainingNotifications(int $daysAhead, bool $dryRun, SymfonyStyle $symfonyStyle): int
     {
-        $upcomingDate = new \DateTime("+{$daysAhead} days");
-        $today = new \DateTime();
+        $upcomingDate = new DateTime("+{$daysAhead} days");
+        $today = new DateTime();
 
         $trainings = $this->trainingRepository->createQueryBuilder('t')
             ->where('t.scheduledDate BETWEEN :today AND :upcomingDate')
@@ -195,7 +197,7 @@ Recommended cron setup (daily at 8 AM):
 
             if (!empty($recipients)) {
                 $mandatoryLabel = $training->isMandatory() ? ' [MANDATORY]' : '';
-                $io->text(sprintf('  - Training "%s"%s scheduled for %s → %d recipients',
+                $symfonyStyle->text(sprintf('  - Training "%s"%s scheduled for %s → %d recipients',
                     $training->getTitle(),
                     $mandatoryLabel,
                     $training->getScheduledDate()->format('d.m.Y H:i'),
@@ -203,7 +205,7 @@ Recommended cron setup (daily at 8 AM):
                 ));
 
                 if (!$dryRun) {
-                    $this->emailService->sendTrainingDueNotification($training, $recipients);
+                    $this->emailNotificationService->sendTrainingDueNotification($training, $recipients);
                 }
                 $sent++;
             }
@@ -212,9 +214,9 @@ Recommended cron setup (daily at 8 AM):
         return $sent;
     }
 
-    private function sendIncidentNotifications(int $daysAhead, bool $dryRun, SymfonyStyle $io): int
+    private function sendIncidentNotifications(int $daysAhead, bool $dryRun, SymfonyStyle $symfonyStyle): int
     {
-        $thresholdDate = new \DateTime("-{$daysAhead} days");
+        $thresholdDate = new DateTime("-{$daysAhead} days");
 
         $incidents = $this->incidentRepository->createQueryBuilder('i')
             ->where('i.detectedDate < :thresholdDate')
@@ -241,17 +243,17 @@ Recommended cron setup (daily at 8 AM):
                 }
             }
 
-            if (!empty($recipients)) {
-                $daysOpen = $incident->getDetectedDate()->diff(new \DateTime())->days;
-                $io->text(sprintf('  - Incident "%s" [%s] open for %d days → %d recipients',
+            if ($recipients !== []) {
+                $daysOpen = $incident->getDetectedDate()->diff(new DateTime())->days;
+                $symfonyStyle->text(sprintf('  - Incident "%s" [%s] open for %d days → %d recipients',
                     $incident->getTitle(),
-                    strtoupper($incident->getSeverity()),
+                    strtoupper((string) $incident->getSeverity()),
                     $daysOpen,
                     count($recipients)
                 ));
 
                 if (!$dryRun) {
-                    $this->emailService->sendIncidentNotification($incident, $recipients);
+                    $this->emailNotificationService->sendIncidentNotification($incident, $recipients);
                 }
                 $sent++;
             }
@@ -260,10 +262,10 @@ Recommended cron setup (daily at 8 AM):
         return $sent;
     }
 
-    private function sendControlNotifications(int $daysAhead, bool $dryRun, SymfonyStyle $io): int
+    private function sendControlNotifications(int $daysAhead, bool $dryRun, SymfonyStyle $symfonyStyle): int
     {
-        $upcomingDate = new \DateTime("+{$daysAhead} days");
-        $today = new \DateTime();
+        $upcomingDate = new DateTime("+{$daysAhead} days");
+        $today = new DateTime();
 
         $controls = $this->controlRepository->createQueryBuilder('c')
             ->where('c.targetDate BETWEEN :today AND :upcomingDate')
@@ -282,16 +284,16 @@ Recommended cron setup (daily at 8 AM):
                 $recipients[] = $control->getResponsiblePerson();
             }
 
-            if (!empty($recipients)) {
-                $io->text(sprintf('  - Control %s "%s" target date %s → %d recipients',
+            if ($recipients !== []) {
+                $symfonyStyle->text(sprintf('  - Control %s "%s" target date %s → %d recipients',
                     $control->getControlId(),
-                    substr($control->getName(), 0, 40),
+                    substr((string) $control->getName(), 0, 40),
                     $control->getTargetDate()->format('d.m.Y'),
                     count($recipients)
                 ));
 
                 if (!$dryRun) {
-                    $this->emailService->sendControlDueNotification($control, $recipients);
+                    $this->emailNotificationService->sendControlDueNotification($control, $recipients);
                 }
                 $sent++;
             }
@@ -300,13 +302,13 @@ Recommended cron setup (daily at 8 AM):
         return $sent;
     }
 
-    private function sendWorkflowNotifications(bool $dryRun, SymfonyStyle $io): int
+    private function sendWorkflowNotifications(bool $dryRun, SymfonyStyle $symfonyStyle): int
     {
         $overdueInstances = $this->workflowInstanceRepository->findOverdue();
 
         $sent = 0;
-        foreach ($overdueInstances as $instance) {
-            $currentStep = $instance->getCurrentStep();
+        foreach ($overdueInstances as $overdueInstance) {
+            $currentStep = $overdueInstance->getCurrentStep();
             if (!$currentStep) {
                 continue;
             }
@@ -330,23 +332,23 @@ Recommended cron setup (daily at 8 AM):
             // Remove duplicates
             $recipientIds = [];
             $uniqueRecipients = [];
-            foreach ($recipients as $user) {
-                if (!in_array($user->getId(), $recipientIds)) {
-                    $recipientIds[] = $user->getId();
-                    $uniqueRecipients[] = $user;
+            foreach ($recipients as $recipient) {
+                if (!in_array($recipient->getId(), $recipientIds)) {
+                    $recipientIds[] = $recipient->getId();
+                    $uniqueRecipients[] = $recipient;
                 }
             }
 
-            if (!empty($uniqueRecipients)) {
-                $io->text(sprintf('  - Workflow "%s" for %s (ID: %d) overdue → %d recipients',
-                    $instance->getWorkflow()->getName(),
-                    $instance->getEntityType(),
-                    $instance->getEntityId(),
+            if ($uniqueRecipients !== []) {
+                $symfonyStyle->text(sprintf('  - Workflow "%s" for %s (ID: %d) overdue → %d recipients',
+                    $overdueInstance->getWorkflow()->getName(),
+                    $overdueInstance->getEntityType(),
+                    $overdueInstance->getEntityId(),
                     count($uniqueRecipients)
                 ));
 
                 if (!$dryRun) {
-                    $this->emailService->sendWorkflowOverdueNotification($instance, $uniqueRecipients);
+                    $this->emailNotificationService->sendWorkflowOverdueNotification($overdueInstance, $uniqueRecipients);
                 }
                 $sent++;
             }
@@ -355,9 +357,9 @@ Recommended cron setup (daily at 8 AM):
         return $sent;
     }
 
-    private function sendWorkflowDeadlineWarnings(int $daysAhead, bool $dryRun, SymfonyStyle $io): int
+    private function sendWorkflowDeadlineWarnings(int $daysAhead, bool $dryRun, SymfonyStyle $symfonyStyle): int
     {
-        $today = new \DateTimeImmutable();
+        $today = new DateTimeImmutable();
         $warningDate = $today->modify("+{$daysAhead} days");
 
         // Get active workflows approaching deadline (but not yet overdue)
@@ -402,15 +404,15 @@ Recommended cron setup (daily at 8 AM):
             // Remove duplicates
             $recipientIds = [];
             $uniqueRecipients = [];
-            foreach ($recipients as $user) {
-                if (!in_array($user->getId(), $recipientIds)) {
-                    $recipientIds[] = $user->getId();
-                    $uniqueRecipients[] = $user;
+            foreach ($recipients as $recipient) {
+                if (!in_array($recipient->getId(), $recipientIds)) {
+                    $recipientIds[] = $recipient->getId();
+                    $uniqueRecipients[] = $recipient;
                 }
             }
 
-            if (!empty($uniqueRecipients)) {
-                $io->text(sprintf('  - Workflow "%s" for %s (ID: %d) due in %d days → %d recipients',
+            if ($uniqueRecipients !== []) {
+                $symfonyStyle->text(sprintf('  - Workflow "%s" for %s (ID: %d) due in %d days → %d recipients',
                     $instance->getWorkflow()->getName(),
                     $instance->getEntityType(),
                     $instance->getEntityId(),
@@ -419,7 +421,7 @@ Recommended cron setup (daily at 8 AM):
                 ));
 
                 if (!$dryRun) {
-                    $this->emailService->sendWorkflowDeadlineWarning($instance, $uniqueRecipients, $daysRemaining);
+                    $this->emailNotificationService->sendWorkflowDeadlineWarning($instance, $uniqueRecipients, $daysRemaining);
                 }
                 $sent++;
             }

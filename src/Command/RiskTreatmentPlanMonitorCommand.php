@@ -2,7 +2,8 @@
 
 namespace App\Command;
 
-use App\Entity\Tenant;
+use DateTime;
+use Exception;
 use App\Repository\TenantRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Service\EmailNotificationService;
@@ -45,9 +46,9 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class RiskTreatmentPlanMonitorCommand extends Command
 {
     public function __construct(
-        private RiskTreatmentPlanRepository $treatmentPlanRepository,
-        private TenantRepository $tenantRepository,
-        private EmailNotificationService $emailService
+        private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository,
+        private readonly TenantRepository $tenantRepository,
+        private readonly EmailNotificationService $emailNotificationService
     ) {
         parent::__construct();
     }
@@ -104,9 +105,9 @@ HELP
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $symfonyStyle = new SymfonyStyle($input, $output);
 
-        $io->title('Risk Treatment Plan Monitoring (ISO 27001:2022 Clause 6.1.3)');
+        $symfonyStyle->title('Risk Treatment Plan Monitoring (ISO 27001:2022 Clause 6.1.3)');
 
         // Get options
         $tenantId = $input->getOption('tenant');
@@ -114,7 +115,7 @@ HELP
         $sendNotifications = $input->getOption('send-notifications');
 
         if (!$sendNotifications) {
-            $io->note('Running in DRY-RUN mode. Use --send-notifications to actually send emails.');
+            $symfonyStyle->note('Running in DRY-RUN mode. Use --send-notifications to actually send emails.');
         }
 
         // Get tenants to process
@@ -122,14 +123,14 @@ HELP
         if ($tenantId) {
             $tenant = $this->tenantRepository->find($tenantId);
             if (!$tenant) {
-                $io->error("Tenant with ID {$tenantId} not found.");
+                $symfonyStyle->error("Tenant with ID {$tenantId} not found.");
                 return Command::FAILURE;
             }
             $tenants = [$tenant];
-            $io->info("Processing tenant: {$tenant->getName()}");
+            $symfonyStyle->info("Processing tenant: {$tenant->getName()}");
         } else {
             $tenants = $this->tenantRepository->findAll();
-            $io->info('Processing all ' . count($tenants) . ' tenants');
+            $symfonyStyle->info('Processing all ' . count($tenants) . ' tenants');
         }
 
         $totalOverdue = 0;
@@ -138,50 +139,50 @@ HELP
 
         // Process each tenant
         foreach ($tenants as $tenant) {
-            $io->section("Tenant: {$tenant->getName()} (ID: {$tenant->getId()})");
+            $symfonyStyle->section("Tenant: {$tenant->getName()} (ID: {$tenant->getId()})");
 
             // Find overdue plans
-            $overduePlans = $this->treatmentPlanRepository->findOverdueForTenant($tenant);
-            $approachingPlans = $this->treatmentPlanRepository->findDueWithinDays($days, $tenant);
+            $overduePlans = $this->riskTreatmentPlanRepository->findOverdueForTenant($tenant);
+            $approachingPlans = $this->riskTreatmentPlanRepository->findDueWithinDays($days, $tenant);
 
             $totalOverdue += count($overduePlans);
             $totalApproaching += count($approachingPlans);
 
             if (empty($overduePlans) && empty($approachingPlans)) {
-                $io->success('✓ No overdue or approaching deadline plans');
+                $symfonyStyle->success('✓ No overdue or approaching deadline plans');
                 continue;
             }
 
             // Display overdue plans
             if (!empty($overduePlans)) {
-                $io->warning(count($overduePlans) . ' OVERDUE plans');
+                $symfonyStyle->warning(count($overduePlans) . ' OVERDUE plans');
 
                 $overdueData = [];
-                foreach ($overduePlans as $plan) {
-                    $daysOverdue = (new \DateTime())->diff($plan->getTargetCompletionDate())->days;
+                foreach ($overduePlans as $overduePlan) {
+                    $daysOverdue = new DateTime()->diff($overduePlan->getTargetCompletionDate())->days;
 
                     $overdueData[] = [
-                        $plan->getId(),
-                        substr($plan->getTitle(), 0, 40),
-                        $plan->getPriority(),
-                        $plan->getTargetCompletionDate()->format('Y-m-d'),
+                        $overduePlan->getId(),
+                        substr((string) $overduePlan->getTitle(), 0, 40),
+                        $overduePlan->getPriority(),
+                        $overduePlan->getTargetCompletionDate()->format('Y-m-d'),
                         $daysOverdue . ' days',
-                        $plan->getCompletionPercentage() . '%',
-                        $plan->getResponsiblePerson()?->getFullName() ?? 'Unassigned'
+                        $overduePlan->getCompletionPercentage() . '%',
+                        $overduePlan->getResponsiblePerson()?->getFullName() ?? 'Unassigned'
                     ];
 
                     // Send notification
-                    if ($sendNotifications && $plan->getResponsiblePerson()) {
+                    if ($sendNotifications && $overduePlan->getResponsiblePerson()) {
                         try {
-                            $this->sendOverdueNotification($plan);
+                            $this->sendOverdueNotification($overduePlan);
                             $notificationsSent++;
-                        } catch (\Exception $e) {
-                            $io->error("Failed to send notification for plan {$plan->getId()}: " . $e->getMessage());
+                        } catch (Exception $e) {
+                            $symfonyStyle->error("Failed to send notification for plan {$overduePlan->getId()}: " . $e->getMessage());
                         }
                     }
                 }
 
-                $io->table(
+                $symfonyStyle->table(
                     ['ID', 'Title', 'Priority', 'Due Date', 'Overdue', 'Progress', 'Responsible'],
                     $overdueData
                 );
@@ -189,56 +190,56 @@ HELP
 
             // Display approaching deadline plans
             if (!empty($approachingPlans)) {
-                $io->note(count($approachingPlans) . " plans approaching deadline (within {$days} days)");
+                $symfonyStyle->note(count($approachingPlans) . " plans approaching deadline (within {$days} days)");
 
                 $approachingData = [];
-                foreach ($approachingPlans as $plan) {
-                    $daysRemaining = (new \DateTime())->diff($plan->getTargetCompletionDate())->days;
+                foreach ($approachingPlans as $approachingPlan) {
+                    $daysRemaining = new DateTime()->diff($approachingPlan->getTargetCompletionDate())->days;
 
                     $approachingData[] = [
-                        $plan->getId(),
-                        substr($plan->getTitle(), 0, 40),
-                        $plan->getPriority(),
-                        $plan->getTargetCompletionDate()->format('Y-m-d'),
+                        $approachingPlan->getId(),
+                        substr((string) $approachingPlan->getTitle(), 0, 40),
+                        $approachingPlan->getPriority(),
+                        $approachingPlan->getTargetCompletionDate()->format('Y-m-d'),
                         $daysRemaining . ' days',
-                        $plan->getCompletionPercentage() . '%',
-                        $plan->getResponsiblePerson()?->getFullName() ?? 'Unassigned'
+                        $approachingPlan->getCompletionPercentage() . '%',
+                        $approachingPlan->getResponsiblePerson()?->getFullName() ?? 'Unassigned'
                     ];
 
                     // Send notification for approaching deadlines
-                    if ($sendNotifications && $plan->getResponsiblePerson()) {
+                    if ($sendNotifications && $approachingPlan->getResponsiblePerson()) {
                         try {
-                            $this->sendApproachingDeadlineNotification($plan, $daysRemaining);
+                            $this->sendApproachingDeadlineNotification($approachingPlan, $daysRemaining);
                             $notificationsSent++;
-                        } catch (\Exception $e) {
-                            $io->error("Failed to send notification for plan {$plan->getId()}: " . $e->getMessage());
+                        } catch (Exception $e) {
+                            $symfonyStyle->error("Failed to send notification for plan {$approachingPlan->getId()}: " . $e->getMessage());
                         }
                     }
                 }
 
-                $io->table(
+                $symfonyStyle->table(
                     ['ID', 'Title', 'Priority', 'Due Date', 'Remaining', 'Progress', 'Responsible'],
                     $approachingData
                 );
             }
 
-            $io->newLine();
+            $symfonyStyle->newLine();
         }
 
         // Summary
-        $io->section('Summary');
-        $io->definitionList(
+        $symfonyStyle->section('Summary');
+        $symfonyStyle->definitionList(
             ['Total Overdue Plans' => $totalOverdue],
             ['Plans Approaching Deadline' => $totalApproaching],
             ['Notifications Sent' => $sendNotifications ? $notificationsSent : 'N/A (dry-run)']
         );
 
         if ($totalOverdue > 0 || $totalApproaching > 0) {
-            $io->warning('Action required: ' . ($totalOverdue + $totalApproaching) . ' plans need attention');
+            $symfonyStyle->warning('Action required: ' . ($totalOverdue + $totalApproaching) . ' plans need attention');
             return Command::SUCCESS; // Not a failure, but needs attention
         }
 
-        $io->success('All treatment plans are on track!');
+        $symfonyStyle->success('All treatment plans are on track!');
         return Command::SUCCESS;
     }
 
@@ -247,13 +248,13 @@ HELP
      */
     private function sendOverdueNotification($plan): void
     {
-        $this->emailService->sendGenericNotification(
+        $this->emailNotificationService->sendGenericNotification(
             subject: '[ISMS Alert] Overdue Treatment Plan: ' . $plan->getTitle(),
             template: 'emails/treatment_plan_overdue.html.twig',
             context: [
                 'plan' => $plan,
                 'risk' => $plan->getRisk(),
-                'days_overdue' => (new \DateTime())->diff($plan->getTargetCompletionDate())->days
+                'days_overdue' => new DateTime()->diff($plan->getTargetCompletionDate())->days
             ],
             recipients: [$plan->getResponsiblePerson()]
         );
@@ -264,7 +265,7 @@ HELP
      */
     private function sendApproachingDeadlineNotification($plan, int $daysRemaining): void
     {
-        $this->emailService->sendGenericNotification(
+        $this->emailNotificationService->sendGenericNotification(
             subject: '[ISMS Reminder] Treatment Plan Due in ' . $daysRemaining . ' days: ' . $plan->getTitle(),
             template: 'emails/treatment_plan_approaching.html.twig',
             context: [

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use DateTime;
 use App\Entity\DataProtectionImpactAssessment;
 use App\Entity\ProcessingActivity;
 use App\Entity\Tenant;
@@ -144,7 +145,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
      */
     public function findDueForReview(Tenant $tenant): array
     {
-        $today = new \DateTime();
+        $today = new DateTime();
 
         return $this->createQueryBuilder('dpia')
             ->where('dpia.tenant = :tenant')
@@ -164,9 +165,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
     {
         $all = $this->findByTenant($tenant);
 
-        return array_filter($all, function (DataProtectionImpactAssessment $dpia) {
-            return !$dpia->isComplete();
-        });
+        return array_filter($all, fn(DataProtectionImpactAssessment $dataProtectionImpactAssessment): bool => !$dataProtectionImpactAssessment->isComplete());
     }
 
     /**
@@ -232,41 +231,41 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
      */
     public function getStatistics(Tenant $tenant): array
     {
-        $qb = $this->createQueryBuilder('dpia')
+        $queryBuilder = $this->createQueryBuilder('dpia')
             ->where('dpia.tenant = :tenant')
             ->setParameter('tenant', $tenant);
 
-        $total = (clone $qb)->select('COUNT(dpia.id)')->getQuery()->getSingleScalarResult();
+        $total = (clone $queryBuilder)->select('COUNT(dpia.id)')->getQuery()->getSingleScalarResult();
 
-        $approved = (clone $qb)
+        $approved = (clone $queryBuilder)
             ->andWhere('dpia.status = :status')
             ->setParameter('status', 'approved')
             ->select('COUNT(dpia.id)')
             ->getQuery()
             ->getSingleScalarResult();
 
-        $inReview = (clone $qb)
+        $inReview = (clone $queryBuilder)
             ->andWhere('dpia.status = :status')
             ->setParameter('status', 'in_review')
             ->select('COUNT(dpia.id)')
             ->getQuery()
             ->getSingleScalarResult();
 
-        $draft = (clone $qb)
+        $draft = (clone $queryBuilder)
             ->andWhere('dpia.status = :status')
             ->setParameter('status', 'draft')
             ->select('COUNT(dpia.id)')
             ->getQuery()
             ->getSingleScalarResult();
 
-        $highRisk = (clone $qb)
+        $highRisk = (clone $queryBuilder)
             ->andWhere('dpia.riskLevel IN (:riskLevels)')
             ->setParameter('riskLevels', ['high', 'critical'])
             ->select('COUNT(dpia.id)')
             ->getQuery()
             ->getSingleScalarResult();
 
-        $requiresSupervisory = (clone $qb)
+        $requiresSupervisory = (clone $queryBuilder)
             ->andWhere('dpia.requiresSupervisoryConsultation = :required')
             ->andWhere('dpia.supervisoryConsultationDate IS NULL')
             ->setParameter('required', true)
@@ -274,7 +273,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
 
-        $awaitingDPO = (clone $qb)
+        $awaitingDPO = (clone $queryBuilder)
             ->andWhere('dpia.status IN (:statuses)')
             ->andWhere('dpia.dpoConsultationDate IS NULL')
             ->setParameter('statuses', ['draft', 'in_review'])
@@ -313,8 +312,8 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
             'critical' => 0,
         ];
 
-        foreach ($allDPIAs as $dpia) {
-            $level = $dpia->getResidualRiskLevel();
+        foreach ($allDPIAs as $allDPIA) {
+            $level = $allDPIA->getResidualRiskLevel();
             if ($level && isset($residualRiskDistribution[$level])) {
                 $residualRiskDistribution[$level]++;
             }
@@ -360,7 +359,7 @@ class DataProtectionImpactAssessmentRepository extends ServiceEntityRepository
 
         // Extract number from last reference (DPIA-2024-001 -> 001)
         $lastRef = $lastDpia->getReferenceNumber();
-        $lastNumber = (int) substr($lastRef, -3);
+        $lastNumber = (int) substr((string) $lastRef, -3);
         $nextNumber = $lastNumber + 1;
 
         return $prefix . str_pad((string) $nextNumber, 3, '0', STR_PAD_LEFT);

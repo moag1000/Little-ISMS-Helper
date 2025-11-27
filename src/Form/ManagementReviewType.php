@@ -40,9 +40,7 @@ class ManagementReviewType extends AbstractType
             ->add('reviewedBy', EntityType::class, [
                 'label' => 'management_review.field.reviewed_by',
                 'class' => User::class,
-                'choice_label' => function (User $user) {
-                    return $user->getFirstName() . ' ' . $user->getLastName();
-                },
+                'choice_label' => fn(User $user): string => $user->getFirstName() . ' ' . $user->getLastName(),
                 'placeholder' => 'common.please_select',
                 'required' => false,
                 'attr' => ['class' => 'form-select'],
@@ -51,9 +49,7 @@ class ManagementReviewType extends AbstractType
             ->add('participants', EntityType::class, [
                 'label' => 'management_review.field.participants',
                 'class' => User::class,
-                'choice_label' => function (User $user) {
-                    return $user->getFirstName() . ' ' . $user->getLastName();
-                },
+                'choice_label' => fn(User $user): string => $user->getFirstName() . ' ' . $user->getLastName(),
                 'multiple' => true,
                 // wichtig für ManyToMany-Collections, damit add/remove-Methoden genutzt werden
                 'by_reference' => false,

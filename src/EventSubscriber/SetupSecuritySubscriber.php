@@ -2,6 +2,8 @@
 
 namespace App\EventSubscriber;
 
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use App\Security\SetupAccessChecker;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -22,7 +24,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class SetupSecuritySubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private readonly SetupAccessChecker $setupChecker,
+        private readonly SetupAccessChecker $setupAccessChecker,
         private readonly Security $security,
         private readonly UrlGeneratorInterface $urlGenerator
     ) {
@@ -35,14 +37,14 @@ class SetupSecuritySubscriber implements EventSubscriberInterface
         ];
     }
 
-    public function onKernelRequest(RequestEvent $event): void
+    public function onKernelRequest(RequestEvent $requestEvent): void
     {
         // Only handle master requests
-        if (!$event->isMainRequest()) {
+        if (!$requestEvent->isMainRequest()) {
             return;
         }
 
-        $request = $event->getRequest();
+        $request = $requestEvent->getRequest();
         $path = $request->getPathInfo();
 
         // Only check setup routes
@@ -51,24 +53,24 @@ class SetupSecuritySubscriber implements EventSubscriberInterface
         }
 
         // Allow access if setup is not complete (public access)
-        if (!$this->setupChecker->isSetupComplete()) {
+        if (!$this->setupAccessChecker->isSetupComplete()) {
             return;
         }
 
         // Setup is complete - check authentication and authorization
         $user = $this->security->getUser();
-        $isAuthenticated = $user !== null;
+        $isAuthenticated = $user instanceof UserInterface;
         $roles = $isAuthenticated ? $user->getRoles() : [];
 
         // Check if user can access setup
-        if (!$this->setupChecker->canAccessSetup($isAuthenticated, $roles)) {
+        if (!$this->setupAccessChecker->canAccessSetup($isAuthenticated, $roles)) {
             // User not authenticated or not admin - redirect to login
             if (!$isAuthenticated) {
                 $loginUrl = $this->urlGenerator->generate('app_login');
-                $event->setResponse(new RedirectResponse($loginUrl));
+                $requestEvent->setResponse(new RedirectResponse($loginUrl));
             } else {
                 // User authenticated but not admin - show access denied
-                throw new \Symfony\Component\Security\Core\Exception\AccessDeniedException(
+                throw new AccessDeniedException(
                     'Setup wizard is only accessible to administrators after initial setup completion.'
                 );
             }

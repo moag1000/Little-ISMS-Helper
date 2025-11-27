@@ -140,10 +140,10 @@
                     {{ 'common.danger_zone'|trans({}, 'messages') }}
                 </h5>
                 <p class="text-muted">{{ 'processing_activity.permanently_delete'|trans }}</p>
-                <form method="post" action="{{ path('app_processing_activity_delete', {id: processing_activity.id}) }}" onsubmit="return confirm('{{ 'processing_activity.confirm_delete'|trans }}');">
+                <form method="post" action="{{ path('app_processing_activity_delete', {id: processing_activity.id}) }}" onsubmit="return confirm('{{ 'processing_activity.confirm_delete'|trans({}, 'privacy') }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ processing_activity.id) }}">
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'processing_activity.action.delete'|trans }}
+                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'processing_activity.action.delete'|trans({}, 'privacy') }}
                     </button>
                 </form>
             </div>

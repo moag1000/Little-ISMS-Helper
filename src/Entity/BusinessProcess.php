@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
+use DateTimeImmutable;
 use App\Entity\Tenant;
 use App\Repository\BusinessProcessRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -68,10 +70,10 @@ class BusinessProcess
     private ?string $recoveryStrategy = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
     #[ORM\JoinColumn(nullable: true)]
@@ -104,7 +106,7 @@ class BusinessProcess
         $this->supportingAssets = new ArrayCollection();
         $this->identifiedRisks = new ArrayCollection();
         $this->incidents = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -277,23 +279,23 @@ class BusinessProcess
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(?DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
         return $this;
@@ -384,10 +386,10 @@ class BusinessProcess
         $totalResidualRisk = 0;
         $count = 0;
 
-        foreach ($this->identifiedRisks as $risk) {
-            if ($risk->getStatus() === 'active') {
-                $totalInherentRisk += $risk->getInherentRiskLevel();
-                $totalResidualRisk += $risk->getResidualRiskLevel();
+        foreach ($this->identifiedRisks as $identifiedRisk) {
+            if ($identifiedRisk->getStatus() === 'active') {
+                $totalInherentRisk += $identifiedRisk->getInherentRiskLevel();
+                $totalResidualRisk += $identifiedRisk->getResidualRiskLevel();
                 $count++;
             }
         }
@@ -397,14 +399,17 @@ class BusinessProcess
         }
 
         $avgResidualRisk = $totalResidualRisk / $count;
-
         if ($avgResidualRisk >= 16) {
             return 'critical';
-        } elseif ($avgResidualRisk >= 9) {
+        }
+        if ($avgResidualRisk >= 9) {
             return 'high';
-        } elseif ($avgResidualRisk >= 4) {
+        }
+
+        if ($avgResidualRisk >= 4) {
             return 'medium';
-        } else {
+        }
+        else {
             return 'low';
         }
     }
@@ -441,18 +446,13 @@ class BusinessProcess
     {
         $riskLevel = $this->getProcessRiskLevel();
 
-        switch ($riskLevel) {
-            case 'critical':
-                return 1; // 1 hour
-            case 'high':
-                return 4; // 4 hours
-            case 'medium':
-                return 24; // 1 day
-            case 'low':
-                return 72; // 3 days
-            default:
-                return $this->rto; // Keep current if unknown
-        }
+        return match ($riskLevel) {
+            'critical' => 1,
+            'high' => 4,
+            'medium' => 24,
+            'low' => 72,
+            default => $this->rto,
+        };
     }
 
     /**
@@ -461,7 +461,7 @@ class BusinessProcess
      */
     public function getActiveRiskCount(): int
     {
-        return $this->identifiedRisks->filter(fn($r) => $r->getStatus() === 'active')->count();
+        return $this->identifiedRisks->filter(fn($r): bool => $r->getStatus() === 'active')->count();
     }
 
     /**
@@ -470,8 +470,8 @@ class BusinessProcess
      */
     public function hasUnmitigatedHighRisks(): bool
     {
-        foreach ($this->identifiedRisks as $risk) {
-            if ($risk->getStatus() === 'active' && $risk->getResidualRiskLevel() >= 16) {
+        foreach ($this->identifiedRisks as $identifiedRisk) {
+            if ($identifiedRisk->getStatus() === 'active' && $identifiedRisk->getResidualRiskLevel() >= 16) {
                 return true;
             }
         }
@@ -534,10 +534,10 @@ class BusinessProcess
      */
     public function getRecentIncidentCount(int $days = 365): int
     {
-        $cutoffDate = new \DateTimeImmutable("-{$days} days");
+        $cutoffDate = new DateTimeImmutable("-{$days} days");
 
         return $this->incidents->filter(
-            fn($incident) => $incident->getDetectedAt() >= $cutoffDate
+            fn($incident): bool => $incident->getDetectedAt() >= $cutoffDate
         )->count();
     }
 
@@ -598,7 +598,7 @@ class BusinessProcess
     public function getActualAverageRecoveryTime(): ?int
     {
         $resolvedIncidents = $this->incidents->filter(
-            fn($incident) => $incident->getResolvedAt() !== null
+            fn($incident): bool => $incident->getResolvedAt() !== null
         );
 
         if ($resolvedIncidents->isEmpty()) {
@@ -608,9 +608,9 @@ class BusinessProcess
         $totalHours = 0;
         $count = 0;
 
-        foreach ($resolvedIncidents as $incident) {
-            $detectedAt = $incident->getDetectedAt();
-            $resolvedAt = $incident->getResolvedAt();
+        foreach ($resolvedIncidents as $resolvedIncident) {
+            $detectedAt = $resolvedIncident->getDetectedAt();
+            $resolvedAt = $resolvedIncident->getResolvedAt();
 
             $interval = $detectedAt->diff($resolvedAt);
             $totalHours += ($interval->days * 24) + $interval->h;
@@ -623,8 +623,6 @@ class BusinessProcess
     /**
      * Get most recent incident affecting this process
      * Data Reuse: Quick access to latest incident for learning
-     *
-     * @return Incident|null
      */
     public function getMostRecentIncident(): ?Incident
     {
@@ -633,7 +631,7 @@ class BusinessProcess
         }
 
         $incidents = $this->incidents->toArray();
-        usort($incidents, fn($a, $b) => $b->getDetectedAt() <=> $a->getDetectedAt());
+        usort($incidents, fn($a, $b): int => $b->getDetectedAt() <=> $a->getDetectedAt());
 
         return $incidents[0];
     }

@@ -146,8 +146,8 @@ class PermissionVoter extends Voter
         // Get all custom roles for the user
         $customRoles = $user->getCustomRoles();
 
-        foreach ($customRoles as $role) {
-            $permissions = $role->getPermissions();
+        foreach ($customRoles as $customRole) {
+            $permissions = $customRole->getPermissions();
 
             foreach ($permissions as $permission) {
                 if ($permission->getName() === $permissionName) {
