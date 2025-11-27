@@ -209,7 +209,7 @@ class WorkflowAutoTriggerServiceTest extends TestCase
 
         $this->logger->expects($this->once())
             ->method('info')
-            ->with('Triggering incident workflows', $this->isType('array'));
+            ->with('Triggering incident workflows', $this->isArray());
 
         $this->logger->expects($this->once())
             ->method('error')

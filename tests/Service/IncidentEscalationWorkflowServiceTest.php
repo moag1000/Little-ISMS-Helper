@@ -77,7 +77,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
                 $incident,
                 'low',
                 $this->isInstanceOf(\DateTimeImmutable::class),
-                $this->isType('string')
+                $this->isString()
             );
 
         // Note: AuditLogger expectation removed due to method visibility issue in source code
@@ -227,7 +227,7 @@ class IncidentEscalationWorkflowServiceTest extends TestCase
             ->method('sendDataBreachNotification')
             ->with(
                 $this->isInstanceOf(User::class),
-                $this->isType('array')
+                $this->isArray()
             );
 
         $result = $this->service->autoEscalate($incident);
