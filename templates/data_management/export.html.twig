@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'admin' %}
 
-{% block title %}Data Export - Data Management{% endblock %}
+{% block title %}{{ 'admin.data_export.title'|trans }} - {{ 'admin.data_management.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
@@ -30,8 +31,8 @@
 
                 {# Export Format #}
                 <div class="mb-4">
-                    <div class="form-label"><strong>Export Format:</strong></div>
-                    <div class="btn-group" role="group" aria-label="Export Format Selection">
+                    <div class="form-label"><strong>{{ 'admin.data_export.format'|trans }}:</strong></div>
+                    <div class="btn-group" role="group" aria-label="{{ 'admin.data_export.format_selection'|trans }}">
                         <input type="radio" class="btn-check" name="format" id="format_json" value="json" checked>
                         <label class="btn btn-outline-primary" for="format_json">
                             <i class="bi bi-filetype-json" aria-hidden="true"></i> JSON

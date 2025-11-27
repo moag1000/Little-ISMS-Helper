@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'messages' %}
 
-{% block title %}{{ 'home.welcome'|trans({}, 'messages') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'home.welcome'|trans }} - {{ 'app.title'|trans }}{% endblock %}
 
 {% block body %}
 {# Hero Section #}

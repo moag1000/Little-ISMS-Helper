@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'suppliers' %}
 
-{% block title %}{{ 'supplier.page.edit_title'|trans({'%name%': supplier.name}) }}{% endblock %}
+{% block title %}{{ 'supplier.page.edit_title'|trans({'%name%': supplier.name}, 'suppliers') }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -14,7 +14,7 @@
     } %}
 
     <div class="page-header">
-        <h1>{{ 'supplier.page.edit_title'|trans({'%name%': supplier.name}) }}</h1>
+        <h1>{{ 'supplier.page.edit_title'|trans({'%name%': supplier.name}, 'suppliers') }}</h1>
         <div class="actions">
             <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-secondary">{{ 'supplier.action.view'|trans }}</a>
             <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
