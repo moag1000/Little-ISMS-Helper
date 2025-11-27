@@ -3,7 +3,7 @@
  # Modern, accessible navigation with primary categories and detailed subcategories
  # Note: data-controller="mega-menu" is on <body> in base.html.twig
  #}
-{% set current_route = app.request.get('_route') %}
+{% set current_route = app.request.attributes.get('_route') %}
 
 <div class="mega-menu" role="navigation" aria-label="{{ 'nav.main_navigation'|trans({}, 'nav') }}">
     {# Level 1: Primary Navigation Categories #}

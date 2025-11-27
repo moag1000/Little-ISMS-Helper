@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk' %}
 
-{% block title %}{{ 'risk.edit'|trans }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'risk.edit'|trans({}, 'risk') }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
@@ -9,13 +9,13 @@
     breadcrumbs: [
         { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index'), icon: 'bi-exclamation-triangle' },
         { label: risk.title, url: path('app_risk_show', {id: risk.id}) },
-        { label: 'risk.edit'|trans }
+        { label: 'risk.edit'|trans({}, 'risk') }
     ]
 } %}
 
 {# Page Header #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'risk.edit'|trans ~ ': ' ~ risk.title,
+    title: 'risk.edit'|trans({}, 'risk') ~ ': ' ~ risk.title,
     icon: 'bi-pencil',
     actions: [
         { label: 'common.back'|trans({}, 'messages'), url: path('app_risk_show', {id: risk.id}), variant: 'secondary', icon: 'bi-arrow-left' }
@@ -90,7 +90,7 @@
         <fieldset class="mb-4">
             <legend class="h5 mb-3">
                 <i class="bi bi-lightbulb" aria-hidden="true"></i>
-                {{ 'risk.guidance.title'|trans }}
+                {{ 'risk.guidance.title'|trans({}, 'risk') }}
             </legend>
 
             <div class="card border-primary mb-3">
@@ -103,7 +103,7 @@
                                 aria-expanded="false"
                                 aria-controls="riskAssessmentGuidance">
                             <i class="bi bi-question-circle-fill text-primary" aria-hidden="true"></i>
-                            {{ 'risk.guidance.title'|trans }}
+                            {{ 'risk.guidance.title'|trans({}, 'risk') }}
                             <i class="bi bi-chevron-down float-end" aria-hidden="true"></i>
                         </button>
                     </h5>
@@ -111,13 +111,13 @@
                 <div class="collapse" id="riskAssessmentGuidance">
                     <div class="card-body">
                         <p class="text-muted mb-3">
-                            {{ 'risk.guidance.intro'|trans }}
+                            {{ 'risk.guidance.intro'|trans({}, 'risk') }}
                         </p>
 
                         {# Probability Scale #}
                         <h6 class="fw-bold mb-2">
                             <i class="bi bi-graph-up" aria-hidden="true"></i>
-                            {{ 'risk.guidance.probability_title'|trans }}
+                            {{ 'risk.guidance.probability_title'|trans({}, 'risk') }}
                         </h6>
                         <div class="mb-4">
                             {% embed '_components/_table.html.twig' with {
@@ -127,30 +127,30 @@
                             } %}
                                 {% block table_head %}
                                     <tr>
-                                        <th style="width: 25%;">{{ 'risk.guidance.scale'|trans }}</th>
-                                        <th>{{ 'risk.guidance.description'|trans }}</th>
+                                        <th style="width: 25%;">{{ 'risk.guidance.scale'|trans({}, 'risk') }}</th>
+                                        <th>{{ 'risk.guidance.description'|trans({}, 'risk') }}</th>
                                     </tr>
                                 {% endblock %}
                                 {% block table_body %}
                                     <tr>
-                                        <td><strong>1 - {{ 'risk.guidance.probability.very_unlikely'|trans }}</strong></td>
-                                        <td>{{ 'risk.guidance.probability.very_unlikely_desc'|trans }}</td>
+                                        <td><strong>1 - {{ 'risk.guidance.probability.very_unlikely'|trans({}, 'risk') }}</strong></td>
+                                        <td>{{ 'risk.guidance.probability.very_unlikely_desc'|trans({}, 'risk') }}</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>2 - {{ 'risk.guidance.probability.unlikely'|trans }}</strong></td>
-                                        <td>{{ 'risk.guidance.probability.unlikely_desc'|trans }}</td>
+                                        <td><strong>2 - {{ 'risk.guidance.probability.unlikely'|trans({}, 'risk') }}</strong></td>
+                                        <td>{{ 'risk.guidance.probability.unlikely_desc'|trans({}, 'risk') }}</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>3 - {{ 'risk.guidance.probability.possible'|trans }}</strong></td>
-                                        <td>{{ 'risk.guidance.probability.possible_desc'|trans }}</td>
+                                        <td><strong>3 - {{ 'risk.guidance.probability.possible'|trans({}, 'risk') }}</strong></td>
+                                        <td>{{ 'risk.guidance.probability.possible_desc'|trans({}, 'risk') }}</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>4 - {{ 'risk.guidance.probability.likely'|trans }}</strong></td>
-                                        <td>{{ 'risk.guidance.probability.likely_desc'|trans }}</td>
+                                        <td><strong>4 - {{ 'risk.guidance.probability.likely'|trans({}, 'risk') }}</strong></td>
+                                        <td>{{ 'risk.guidance.probability.likely_desc'|trans({}, 'risk') }}</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>5 - {{ 'risk.guidance.probability.very_likely'|trans }}</strong></td>
-                                        <td>{{ 'risk.guidance.probability.very_likely_desc'|trans }}</td>
+                                        <td><strong>5 - {{ 'risk.guidance.probability.very_likely'|trans({}, 'risk') }}</strong></td>
+                                        <td>{{ 'risk.guidance.probability.very_likely_desc'|trans({}, 'risk') }}</td>
                                     </tr>
                                 {% endblock %}
                             {% endembed %}
@@ -159,7 +159,7 @@
                         {# Impact Scale #}
                         <h6 class="fw-bold mb-2">
                             <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                            {{ 'risk.guidance.impact_title'|trans }}
+                            {{ 'risk.guidance.impact_title'|trans({}, 'risk') }}
                         </h6>
                         {% embed '_components/_table.html.twig' with {
                             'class': 'table-sm table-bordered',
@@ -168,30 +168,30 @@
                         } %}
                             {% block table_head %}
                                 <tr>
-                                    <th style="width: 25%;">{{ 'risk.guidance.scale'|trans }}</th>
-                                    <th>{{ 'risk.guidance.description'|trans }}</th>
+                                    <th style="width: 25%;">{{ 'risk.guidance.scale'|trans({}, 'risk') }}</th>
+                                    <th>{{ 'risk.guidance.description'|trans({}, 'risk') }}</th>
                                 </tr>
                             {% endblock %}
                             {% block table_body %}
                                 <tr>
-                                    <td><strong>1 - {{ 'risk.guidance.impact.negligible'|trans }}</strong></td>
-                                    <td>{{ 'risk.guidance.impact.negligible_desc'|trans }}</td>
+                                    <td><strong>1 - {{ 'risk.guidance.impact.negligible'|trans({}, 'risk') }}</strong></td>
+                                    <td>{{ 'risk.guidance.impact.negligible_desc'|trans({}, 'risk') }}</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>2 - {{ 'risk.guidance.impact.minor'|trans }}</strong></td>
-                                    <td>{{ 'risk.guidance.impact.minor_desc'|trans }}</td>
+                                    <td><strong>2 - {{ 'risk.guidance.impact.minor'|trans({}, 'risk') }}</strong></td>
+                                    <td>{{ 'risk.guidance.impact.minor_desc'|trans({}, 'risk') }}</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>3 - {{ 'risk.guidance.impact.moderate'|trans }}</strong></td>
-                                    <td>{{ 'risk.guidance.impact.moderate_desc'|trans }}</td>
+                                    <td><strong>3 - {{ 'risk.guidance.impact.moderate'|trans({}, 'risk') }}</strong></td>
+                                    <td>{{ 'risk.guidance.impact.moderate_desc'|trans({}, 'risk') }}</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>4 - {{ 'risk.guidance.impact.major'|trans }}</strong></td>
-                                    <td>{{ 'risk.guidance.impact.major_desc'|trans }}</td>
+                                    <td><strong>4 - {{ 'risk.guidance.impact.major'|trans({}, 'risk') }}</strong></td>
+                                    <td>{{ 'risk.guidance.impact.major_desc'|trans({}, 'risk') }}</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>5 - {{ 'risk.guidance.impact.catastrophic'|trans }}</strong></td>
-                                    <td>{{ 'risk.guidance.impact.catastrophic_desc'|trans }}</td>
+                                    <td><strong>5 - {{ 'risk.guidance.impact.catastrophic'|trans({}, 'risk') }}</strong></td>
+                                    <td>{{ 'risk.guidance.impact.catastrophic_desc'|trans({}, 'risk') }}</td>
                                 </tr>
                             {% endblock %}
                         {% endembed %}
@@ -199,7 +199,7 @@
                         <div class="alert alert-warning mt-3 mb-0" role="status">
                             <small>
                                 <i class="bi bi-lightbulb" aria-hidden="true"></i>
-                                {{ 'risk.guidance.tip'|trans }}
+                                {{ 'risk.guidance.tip'|trans({}, 'risk') }}
                             </small>
                         </div>
                     </div>
@@ -215,7 +215,7 @@
             </a>
             <button type="submit" class="btn btn-primary btn-lg">
                 <i class="bi-check-circle" aria-hidden="true"></i>
-                {{ 'risk.update'|trans }}
+                {{ 'risk.update'|trans({}, 'risk') }}
             </button>
         </div>
 
@@ -233,7 +233,7 @@
     </div>
     <div class="card-body">
         <p class="text-muted">
-            {{ 'risk.delete_warning'|trans }}
+            {{ 'risk.delete_warning'|trans({}, 'risk') }}
         </p>
         {{ include('risk/_delete_form.html.twig') }}
     </div>
