@@ -169,7 +169,7 @@
                                         <td>
                                             {{ instance.currentStep ? instance.currentStep.name : '—' }}
                                         </td>
-                                        <td>{{ instance.createdAt|date('d.m.Y H:i') }}</td>
+                                        <td>{{ instance.startedAt|date('d.m.Y H:i') }}</td>
                                         <td>
                                             <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                                 <i class="bi bi-eye" aria-hidden="true"></i>
