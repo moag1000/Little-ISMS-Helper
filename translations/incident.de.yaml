@@ -130,9 +130,16 @@ incident:
         data_breach: Datenschutzverletzung
         data_breach_only: 'Nur Datenschutzverletzungen'
         nis2_only: 'Nur NIS2-relevante Vorfälle'
-    empty: 'Keine Vorfälle vorhanden'
+        all_status: 'Alle Status'
+        all_severity: 'Alle Schweregrade'
+    empty:
+        title: 'Keine Vorfälle erfasst'
+        description: 'Gut! Es wurden bisher keine Sicherheitsvorfälle gemeldet. Falls ein Vorfall auftritt, können Sie ihn hier schnell dokumentieren.'
+    severity_distribution:
+        title: Schweregrade
     list:
         title: Vorfallsliste
+        all_incidents: 'Alle Vorfälle (%count%)'
     controls_should_prevent: 'Maßnahmen, die diesen Vorfall hätten verhindern sollen'
     workflow:
         active: 'Aktiver Workflow'
