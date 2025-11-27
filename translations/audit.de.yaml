@@ -52,6 +52,8 @@ audit:
         audit_team: Audit‑Team
         audit_number: Audit‑Nummer
         audited_subsidiaries: 'Auditierte Tochtergesellschaften'
+        audited_departments: 'Auditierte Abteilungen'
+        scoped_assets: 'Assets im Geltungsbereich'
         objectives: Ziele
         audit_criteria: Auditkriterien
         methodology: Methodik
@@ -141,7 +143,25 @@ audit:
         summary: 'Kurze Zusammenfassung des Audits'
         notes: 'Zusätzliche Notizen und Anmerkungen'
     scope: Geltungsbereich
+    report_date: Berichtsdatum
     status_in_progress: 'In Bearbeitung'
+    status_overview: Status‑Übersicht
+    upcoming_audits: 'Bevorstehende Audits'
+    upcoming_audits_count: 'Sie haben %count% bevorstehende Audits geplant.'
+    kpi:
+        total: 'Gesamt Audits'
+        upcoming: Bevorstehend
+        in_progress: 'In Bearbeitung'
+        completed: Abgeschlossen
+    list:
+        all: 'Alle Audits'
+    filter:
+        all_status: 'Alle Status'
+        search_placeholder: 'Audits durchsuchen...'
+        no_results: 'Keine Audits gefunden, die den Filterkriterien entsprechen.'
+    empty:
+        title: 'Noch keine Audits vorhanden'
+        description: 'Legen Sie Ihr erstes internes Audit an, um mit der Planung zu beginnen.'
     validation:
         title_required: 'Bitte geben Sie einen Titel für das Audit an'
         date_required: 'Bitte wählen Sie ein geplantes Datum'
@@ -150,7 +170,8 @@ audit_log:
         page_counter: 'Seite %current% von %total%'
     showing_recent: 'Neueste %count% Einträge werden angezeigt'
 audit_management:
-    title: Audits
+    title: 'Internes Audit'
+    subtitle: 'Planung und Durchführung interner ISMS-Audits gemäß ISO 27001'
     description: 'Planung, Durchführung und Nachverfolgung interner und externer Audits'
     planned_audits: 'Geplante Audits'
     total_audits: Gesamt‑Audits

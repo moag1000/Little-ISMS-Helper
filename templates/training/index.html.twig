@@ -152,7 +152,7 @@
                 {% block table_head %}
                     <tr>
                         <th scope="col">{{ 'training.title'|trans({}, 'training') }}</th>
-                        <th scope="col">{{ 'training.type'|trans({}, 'training') }}</th>
+                        <th scope="col">{{ 'training.type_label'|trans({}, 'training') }}</th>
                         <th scope="col">{{ 'training.scheduled_date'|trans({}, 'training') }}</th>
                         <th scope="col">{{ 'training.delivery_method'|trans({}, 'training') }}</th>
                         <th scope="col">{{ 'training.mandatory'|trans({}, 'training') }}</th>
@@ -178,7 +178,7 @@
                         </td>
                         <td>
                             <i class="bi bi-clock" aria-hidden="true"></i>
-                            {{ training.scheduledDate|date('d.m.Y H:i') }}
+                            {{ training.scheduledDate|date('d.m.Y') }}
                         </td>
                         <td>{{ ('training.delivery.' ~ training.deliveryMethod)|trans({}, 'training') }}</td>
                         <td>
@@ -233,10 +233,10 @@
                                    aria-label="Alle auswählen">
                         </th>
                         <th scope="col">{{ 'training.title'|trans({}, 'training') }}</th>
-                        <th scope="col">{{ 'training.type'|trans({}, 'training') }}</th>
+                        <th scope="col">{{ 'training.type_label'|trans({}, 'training') }}</th>
                         <th scope="col">{{ 'training.scheduled_date'|trans({}, 'training') }}</th>
                         <th scope="col">{{ 'training.duration'|trans({}, 'training') }}</th>
-                        <th scope="col">{{ 'training.status'|trans({}, 'training') }}</th>
+                        <th scope="col">{{ 'training.status_label'|trans({}, 'training') }}</th>
                         <th scope="col">{{ 'training.participants_count'|trans({}, 'training') }}</th>
                         <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
@@ -265,8 +265,8 @@
                                 {{ ('training.type.' ~ training.trainingType)|trans({}, 'training') }}
                             </span>
                         </td>
-                        <td>{{ training.scheduledDate|date('d.m.Y H:i') }}</td>
-                        <td>{{ training.duration }} {{ 'training.minutes'|trans({}, 'training') }}</td>
+                        <td>{{ training.scheduledDate|date('d.m.Y') }}</td>
+                        <td>{{ training.durationMinutes ?? '-' }} {{ 'training.minutes'|trans({}, 'training') }}</td>
                         <td>
                             <span class="{{ badge_status(training.status) }}">
                                 {{ ('training.status.' ~ training.status)|trans({}, 'training') }}
@@ -274,7 +274,7 @@
                         </td>
                         <td>
                             <i class="bi bi-people" aria-hidden="true"></i>
-                            {{ training.participants|length }}
+                            {{ training.attendeeCount ?? 0 }}
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
