@@ -20,7 +20,8 @@
         <div class="col-lg-8">
             {# Main Audit Information #}
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center"><h5 class="mb-0">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
                         <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ audit.title }}
                     </h5>
                     <span class="{{ badge_status(audit.status) }} fs-6">
@@ -28,25 +29,27 @@
                     </span>
                 </div>
                 <div class="card-body">
+                    {# Audit Number #}
+                    <div class="mb-3">
+                        <span class="badge bg-dark fs-6">{{ audit.auditNumber }}</span>
+                    </div>
+
                     {# Scope #}
                     <div class="mb-4">
                         <h5><i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'audit.scope'|trans({}, 'audit') }}</h5>
-                        <p class="text-muted">{{ audit.scope|nl2br }}</p>
+                        <p class="text-muted">{{ audit.scope ? audit.scope|nl2br : '-' }}</p>
                         <div class="mt-2">
-                            <span class="badge bg-secondary me-2">
+                            <span class="badge bg-secondary">
                                 {{ ('audit.scope_type.' ~ audit.scopeType)|trans({}, 'audits') }}
-                            </span>
-                            <span class="badge bg-info">
-                                {{ ('audit.type.' ~ audit.auditType)|trans({}, 'audits') }}
                             </span>
                         </div>
 
                         {# Corporate Audit Subsidiaries #}
                         {% if audit.auditedSubsidiaries|length > 0 %}
                         <div class="mt-3 p-3 border border-primary rounded bg-light">
-                            <h4 class="text-primary mb-2">
+                            <h6 class="text-primary mb-2">
                                 <i class="bi bi-building" aria-hidden="true"></i> {{ 'audit.field.audited_subsidiaries'|trans({}, 'audit') }}
-                            </h5>
+                            </h6>
                             <div class="d-flex flex-wrap gap-2">
                                 {% for subsidiary in audit.auditedSubsidiaries %}
                                 <span class="badge bg-primary">
@@ -60,24 +63,44 @@
                             </small>
                         </div>
                         {% endif %}
+
+                        {# Scoped Assets #}
+                        {% if audit.scopedAssets|length > 0 %}
+                        <div class="mt-3 p-3 border border-info rounded bg-light">
+                            <h6 class="text-info mb-2">
+                                <i class="bi bi-hdd-stack" aria-hidden="true"></i> {{ 'audit.field.scoped_assets'|trans({}, 'audit') }}
+                            </h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for asset in audit.scopedAssets %}
+                                <span class="badge bg-info">
+                                    {{ asset.name }}
+                                </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                     <hr>
 
-                    {# Framework & Standard #}
+                    {# Framework & Objectives #}
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
-                                <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'audit.framework'|trans({}, 'audit') }}
-                            </h5>
+                                <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'audit.field.scoped_framework'|trans({}, 'audit') }}
+                            </h6>
                             <p>
-                                <span class="badge bg-primary fs-6">
-                                    {{ audit.framework|upper }}
-                                </span>
+                                {% if audit.scopedFramework %}
+                                    <span class="badge bg-primary fs-6">
+                                        {{ audit.scopedFramework.name }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
                             </p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-2">{{ 'audit.standard'|trans({}, 'audit') }}</h6>
-                            <p>{{ audit.standard ?? '-' }}</p>
+                            <h6 class="text-muted mb-2">{{ 'audit.field.audited_departments'|trans({}, 'audit') }}</h6>
+                            <p>{{ audit.auditedDepartments ?? '-' }}</p>
                         </div>
                     </div>
 
@@ -86,13 +109,13 @@
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
                                 <i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'audit.planned_date'|trans({}, 'audit') }}
-                            </h5>
+                            </h6>
                             <p class="fs-5">{{ audit.plannedDate|date('d.m.Y') }}</p>
                         </div>
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
                                 <i class="bi bi-calendar-check" aria-hidden="true"></i> {{ 'audit.actual_date'|trans({}, 'audit') }}
-                            </h5>
+                            </h6>
                             <p class="fs-5">{{ audit.actualDate ? audit.actualDate|date('d.m.Y') : '-' }}</p>
                         </div>
                     </div>
@@ -102,93 +125,31 @@
                         <div class="col-md-6">
                             <h6 class="text-muted mb-2">
                                 <i class="bi bi-person-badge" aria-hidden="true"></i> {{ 'audit.lead_auditor'|trans({}, 'audit') }}
-                            </h5>
-                            <p>
-                                {% if audit.leadAuditor %}
-                                {{ audit.leadAuditor.firstName }} {{ audit.leadAuditor.lastName }}
-                                {% else %}
-                                -
-                                {% endif %}
-                            </p>
+                            </h6>
+                            <p>{{ audit.leadAuditor ?? '-' }}</p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-2">{{ 'audit.department'|trans({}, 'audit') }}</h6>
-                            <p>{{ audit.department ?? '-' }}</p>
+                            <h6 class="text-muted mb-2">
+                                <i class="bi bi-people" aria-hidden="true"></i> {{ 'audit.audit_team'|trans({}, 'audit') }}
+                            </h6>
+                            <p>{{ audit.auditTeam ? audit.auditTeam|nl2br : '-' }}</p>
                         </div>
                     </div>
 
-                    {# Auditee & Team #}
-                    {% if audit.auditee %}
-                    <div class="mb-4">
-                        <h6 class="text-muted mb-2">{{ 'audit.auditee'|trans({}, 'audit') }}</h6>
-                        <p>{{ audit.auditee }}</p>
-                    </div>
-                    {% endif %}
-
-                    {% if audit.auditTeam|length > 0 %}
+                    {# Objectives #}
+                    {% if audit.objectives %}
                     <div class="mb-4">
                         <h6 class="text-muted mb-2">
-                            <i class="bi bi-people" aria-hidden="true"></i> {{ 'audit.audit_team'|trans({}, 'audit') }}
-                        </h5>
-                        <div class="d-flex flex-wrap gap-2">
-                            {% for member in audit.auditTeam %}
-                            <span class="badge bg-light text-dark border">
-                                {{ member.firstName }} {{ member.lastName }}
-                            </span>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    {# Overall Result #}
-                    {% if audit.overallResult %}
-                    <div class="mb-4">
-                        <h6 class="text-muted mb-2">{{ 'audit.overall_result'|trans({}, 'audit') }}</h6>
-                        <p>
-                            <span class="{{ badge_status(audit.overallResult) }} fs-6">
-                                {{ ('audit.result.' ~ audit.overallResult)|trans({}, 'audits') }}
-                            </span>
-                        </p>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-
-            {# Objectives & Criteria #}
-            {% if audit.objectives or audit.auditCriteria or audit.methodology %}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h3 class="mb-0">
-                        <i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'audit.section.objectives'|trans({}, 'audit') }}
-                    </h3>
-                </div>
-                <div class="card-body">
-                    {% if audit.objectives %}
-                    <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.objectives'|trans({}, 'audit') }}</h6>
+                            <i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'audit.field.objectives'|trans({}, 'audit') }}
+                        </h6>
                         <p>{{ audit.objectives|nl2br }}</p>
                     </div>
                     {% endif %}
-
-                    {% if audit.auditCriteria %}
-                    <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.audit_criteria'|trans({}, 'audit') }}</h6>
-                        <p>{{ audit.auditCriteria|nl2br }}</p>
-                    </div>
-                    {% endif %}
-
-                    {% if audit.methodology %}
-                    <div class="mb-0">
-                        <h6 class="text-muted">{{ 'audit.methodology'|trans({}, 'audit') }}</h6>
-                        <p>{{ audit.methodology|nl2br }}</p>
-                    </div>
-                    {% endif %}
                 </div>
             </div>
-            {% endif %}
 
-            {# Findings #}
-            {% if audit.findings or audit.nonconformities or audit.observations %}
+            {# Findings Section #}
+            {% if audit.findings or audit.nonConformities or audit.observations %}
             <div class="card mb-4 border-warning">
                 <div class="card-header bg-warning">
                     <h3 class="mb-0">
@@ -203,16 +164,16 @@
                     </div>
                     {% endif %}
 
-                    {% if audit.nonconformities %}
+                    {% if audit.nonConformities %}
                     <div class="mb-3 alert alert-danger">
-                        <h4 class="alert-heading">{{ 'audit.nonconformities'|trans({}, 'audit') }}</h4>
-                        <p class="mb-0">{{ audit.nonconformities|nl2br }}</p>
+                        <h6 class="alert-heading">{{ 'audit.nonconformities'|trans({}, 'audit') }}</h6>
+                        <p class="mb-0">{{ audit.nonConformities|nl2br }}</p>
                     </div>
                     {% endif %}
 
                     {% if audit.observations %}
                     <div class="mb-0 alert alert-info">
-                        <h4 class="alert-heading">{{ 'audit.observations'|trans({}, 'audit') }}</h4>
+                        <h6 class="alert-heading">{{ 'audit.observations'|trans({}, 'audit') }}</h6>
                         <p class="mb-0">{{ audit.observations|nl2br }}</p>
                     </div>
                     {% endif %}
@@ -220,8 +181,8 @@
             </div>
             {% endif %}
 
-            {# Recommendations & Actions #}
-            {% if audit.recommendations or audit.correctiveActions or audit.followUpActions %}
+            {# Recommendations & Conclusion #}
+            {% if audit.recommendations or audit.conclusion %}
             <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
@@ -236,50 +197,10 @@
                     </div>
                     {% endif %}
 
-                    {% if audit.correctiveActions %}
-                    <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.corrective_actions'|trans({}, 'audit') }}</h6>
-                        <p>{{ audit.correctiveActions|nl2br }}</p>
-                    </div>
-                    {% endif %}
-
-                    {% if audit.followUpActions %}
+                    {% if audit.conclusion %}
                     <div class="mb-0">
-                        <h6 class="text-muted">{{ 'audit.follow_up_actions'|trans({}, 'audit') }}</h6>
-                        <p>{{ audit.followUpActions|nl2br }}</p>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-            {% endif %}
-
-            {# Documentation #}
-            {% if audit.evidenceCollected or audit.summary or audit.notes %}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h3 class="mb-0">
-                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'audit.section.documentation'|trans({}, 'audit') }}
-                    </h3>
-                </div>
-                <div class="card-body">
-                    {% if audit.evidenceCollected %}
-                    <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.evidence_collected'|trans({}, 'audit') }}</h6>
-                        <p>{{ audit.evidenceCollected|nl2br }}</p>
-                    </div>
-                    {% endif %}
-
-                    {% if audit.summary %}
-                    <div class="mb-3">
-                        <h6 class="text-muted">{{ 'audit.summary'|trans({}, 'audit') }}</h6>
-                        <p>{{ audit.summary|nl2br }}</p>
-                    </div>
-                    {% endif %}
-
-                    {% if audit.notes %}
-                    <div class="mb-0">
-                        <h6 class="text-muted">{{ 'audit.notes'|trans({}, 'audit') }}</h6>
-                        <p>{{ audit.notes|nl2br }}</p>
+                        <h6 class="text-muted">{{ 'audit.conclusion'|trans({}, 'audit') }}</h6>
+                        <p>{{ audit.conclusion|nl2br }}</p>
                     </div>
                     {% endif %}
                 </div>
@@ -322,7 +243,7 @@
                                 data-bs-toggle="modal"
                                 data-bs-target="#deleteModal">
                             <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
-                </button>
+                        </button>
                         {% endif %}
                     </div>
                 </div>
@@ -335,26 +256,23 @@
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0 small">
-                        <dt class="col-sm-6 text-muted">{{ 'audit.framework'|trans({}, 'audit') }}</dt>
+                        <dt class="col-sm-6 text-muted">{{ 'audit.field.scoped_framework'|trans({}, 'audit') }}</dt>
                         <dd class="col-sm-6 text-end">
-                            <span class="badge bg-primary">{{ audit.framework|upper }}</span>
+                            {% if audit.scopedFramework %}
+                                <span class="badge bg-primary">{{ audit.scopedFramework.name }}</span>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
                         </dd>
 
-                        <dt class="col-sm-6 text-muted">{{ 'audit.type'|trans({}, 'audit') }}</dt>
+                        <dt class="col-sm-6 text-muted">{{ 'audit.scope_type'|trans({}, 'audit') }}</dt>
                         <dd class="col-sm-6 text-end">
-                            <span class="badge bg-info">{{ ('audit.type.' ~ audit.auditType)|trans({}, 'audits') }}</span>
+                            <span class="badge bg-secondary">{{ ('audit.scope_type.' ~ audit.scopeType)|trans({}, 'audits') }}</span>
                         </dd>
 
-                        <dt class="col-sm-6 text-muted">{{ 'audit.team_size'|trans({}, 'audit') }}</dt>
-                        <dd class="col-sm-6 text-end">{{ audit.auditTeam|length + 1 }}</dd>
-
-                        {% if audit.overallResult %}
-                        <dt class="col-sm-6 text-muted">{{ 'audit.result'|trans({}, 'audit') }}</dt>
-                        <dd class="col-sm-6 text-end">
-                            <span class="{{ badge_status(audit.overallResult) }}">
-                                {{ ('audit.result.' ~ audit.overallResult)|trans({}, 'audits') }}
-                            </span>
-                        </dd>
+                        {% if audit.reportDate %}
+                        <dt class="col-sm-6 text-muted">{{ 'audit.report_date'|trans({}, 'audit') }}</dt>
+                        <dd class="col-sm-6 text-end">{{ audit.reportDate|date('d.m.Y') }}</dd>
                         {% endif %}
                     </dl>
                 </div>
@@ -370,8 +288,10 @@
                         <dt class="col-sm-5 text-muted">{{ 'common.created_at'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-7">{{ audit.createdAt|date('d.m.Y H:i') }}</dd>
 
+                        {% if audit.updatedAt %}
                         <dt class="col-sm-5 text-muted">{{ 'common.updated_at'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-7">{{ audit.updatedAt|date('d.m.Y H:i') }}</dd>
+                        {% endif %}
 
                         <dt class="col-sm-5 text-muted">{{ 'common.id'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-7"><code>{{ audit.id }}</code></dd>

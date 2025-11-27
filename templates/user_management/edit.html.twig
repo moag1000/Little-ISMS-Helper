@@ -52,6 +52,14 @@
                                 'authentication': {
                                     'label': 'user.section.authentication'|trans({}, 'user'),
                                     'fields': ['plainPassword']
+                                },
+                                'roles': {
+                                    'label': 'user.section.roles'|trans({}, 'user'),
+                                    'fields': ['roles', 'customRoles']
+                                },
+                                'status': {
+                                    'label': 'user.section.status'|trans({}, 'user'),
+                                    'fields': ['isActive', 'isVerified']
                                 }
                             },
                             'col_widths': {
@@ -63,9 +71,13 @@
                                 'phoneNumber': 6,
                                 'avatarFile': 12,
                                 'tenant': 12,
-                                'plainPassword': 12
+                                'plainPassword': 12,
+                                'roles': 12,
+                                'customRoles': 12,
+                                'isActive': 12,
+                                'isVerified': 12
                             },
-                            'exclude': ['roles', 'customRoles', 'isActive', 'isVerified']
+                            'translation_domain': 'user'
                         } %}
 
                         {# Auth Provider Info (Edit Mode Only) #}
@@ -80,92 +92,6 @@
                                 {{ 'user.auth_provider.local'|trans({}, 'user') }}
                             {% endif %}
                         </div>
-
-                        {# Roles & Permissions - Manual handling required #}
-                        <fieldset class="mb-4">
-                            <legend class="h5 mb-3">
-                                <i class="bi bi-shield" aria-hidden="true"></i>
-                                {{ 'user.section.roles'|trans({}, 'user') }}
-                            </legend>
-
-                            {# System Roles #}
-                            <div class="mb-3">
-                                {{ form_label(form.roles, 'user.field.roles'|trans({}, 'user'), {
-                                    'label_attr': {'class': 'form-label'}
-                                }) }}
-                                <div role="group" aria-labelledby="{{ form.roles.vars.id }}_label">
-                                    {% for child in form.roles %}
-                                        <div class="form-check">
-                                            {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
-                                            {{ form_label(child, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                                {% if form.roles.vars.help is not empty %}
-                                    <small class="form-text text-muted">{{ form.roles.vars.help }}</small>
-                                {% endif %}
-                                {{ form_errors(form.roles) }}
-                            </div>
-
-                            {# Custom Roles #}
-                            <div class="mb-3">
-                                {{ form_label(form.customRoles, 'user.field.custom_roles'|trans({}, 'user'), {
-                                    'label_attr': {'class': 'form-label'}
-                                }) }}
-                                {% if form.customRoles|length > 0 %}
-                                    <div role="group" aria-labelledby="{{ form.customRoles.vars.id }}_label">
-                                        {% for child in form.customRoles %}
-                                            <div class="form-check">
-                                                {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
-                                                {{ form_label(child, null, {'label_attr': {'class': 'form-check-label'}}) }}
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                {% else %}
-                                    <p class="text-muted" role="status">
-                                        {{ 'user.message.no_custom_roles'|trans({}, 'user') }}
-                                    </p>
-                                {% endif %}
-                                {% if form.customRoles.vars.help is not empty %}
-                                    <small class="form-text text-muted">{{ form.customRoles.vars.help }}</small>
-                                {% endif %}
-                                {{ form_errors(form.customRoles) }}
-                            </div>
-                        </fieldset>
-
-                        {# Status #}
-                        <fieldset class="mb-4">
-                            <legend class="h5 mb-3">
-                                <i class="bi bi-toggle-on" aria-hidden="true"></i>
-                                {{ 'user.section.status'|trans({}, 'user') }}
-                            </legend>
-
-                            <div class="mb-3">
-                                <div class="form-check form-switch">
-                                    {{ form_widget(form.isActive, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
-                                    {{ form_label(form.isActive, 'user.field.is_active'|trans({}, 'user'), {
-                                        'label_attr': {'class': 'form-check-label'}
-                                    }) }}
-                                </div>
-                                {% if form.isActive.vars.help is not empty %}
-                                    <small class="form-text text-muted">{{ form.isActive.vars.help }}</small>
-                                {% endif %}
-                                {{ form_errors(form.isActive) }}
-                            </div>
-
-                            <div class="mb-3">
-                                <div class="form-check form-switch">
-                                    {{ form_widget(form.isVerified, {'attr': {'class': 'form-check-input', 'role': 'switch'}}) }}
-                                    {{ form_label(form.isVerified, 'user.field.is_verified'|trans({}, 'user'), {
-                                        'label_attr': {'class': 'form-check-label'}
-                                    }) }}
-                                </div>
-                                {% if form.isVerified.vars.help is not empty %}
-                                    <small class="form-text text-muted">{{ form.isVerified.vars.help }}</small>
-                                {% endif %}
-                                {{ form_errors(form.isVerified) }}
-                            </div>
-                        </fieldset>
 
                         {# Metadata (Edit Mode Only) #}
                         <div class="alert alert-secondary" role="status">

@@ -12,7 +12,9 @@
 {% set help_text = help_key is defined ? (help_key|trans({}, trans_domain)) : (help|default(null)) %}
 
 {# Floating labels work for: text, email, password, number, textarea, select #}
-{% set supports_floating = field_type in ['text', 'email', 'password', 'number', 'tel', 'url', 'search', 'textarea', 'choice'] %}
+{# BUT NOT for expanded choice fields (radio/checkbox) #}
+{% set is_expanded = field.vars.expanded|default(false) %}
+{% set supports_floating = field_type in ['text', 'email', 'password', 'number', 'tel', 'url', 'search', 'textarea', 'choice'] and not is_expanded %}
 
 <div class="mb-3">
     {% if supports_floating %}
