@@ -307,6 +307,7 @@ training:
     validation:
         title_required: 'Bitte geben Sie einen Titel ein.'
         date_required: 'Bitte wählen Sie ein Datum.'
+        trainer_required: 'Trainer muss ausgewählt werden'
 objective:
     validation:
         title_required: 'Titel ist erforderlich'

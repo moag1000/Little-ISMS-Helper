@@ -326,6 +326,7 @@ processing_activity:
     action:
         save: 'Save Processing Activity'
         cancel: 'Cancel'
+        delete: 'Delete Processing Activity'
     field:
         name: Name
         status: Status
@@ -406,6 +407,7 @@ processing_activity:
         next_review_date: 'When should this be reviewed next?'
     permanently_delete: 'Permanently Delete'
     view_all_activities: 'View All Processing Activities'
+    confirm_delete: 'Do you really want to delete this processing activity?'
     pdf:
         art_30_title: 'Record of Processing Activities according to Art. 30 GDPR'
         table_of_contents: 'Table of Contents'
@@ -819,5 +821,14 @@ dpia:
         severe: 'Severe'
     supervisory_consultation:
         yes_high_risk: 'Yes (high residual risk - Art. 36)'
+
+    chart:
+        by_status: 'By Status'
+        by_risk_level: 'By Risk Level'
+        by_legal_basis: 'By Legal Basis'
+    status_label:
+        draft: 'Draft'
+        in_review: 'In Review'
+        approved: 'Approved'
 
 # GDPR Breach Wizard
