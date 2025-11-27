@@ -18,110 +18,26 @@
                     </h3>
                 </div>
                 <div class="card-body">
-                    <form method="post">
-                        <p class="text-muted">{{ 'admin.settings.features.intro'|trans({}, 'admin') }}</p>
+                    {{ form_start(form) }}
+                        <p class="text-muted mb-4">{{ 'admin.settings.features.intro'|trans({}, 'admin') }}</p>
 
-                        <div class="list-group list-group-flush">
-                            {# Dark Mode #}
-                            <div class="list-group-item">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div class="flex-grow-1">
-                                        <label for="enable_dark_mode" class="h5 mb-1">
-                                            <i class="bi bi-moon-stars" aria-hidden="true"></i>
-                                            {{ 'admin.settings.features.dark_mode'|trans({}, 'admin') }}
-                                            <span class="badge bg-success ms-2">Recommended</span>
-                                        </label>
-                                        <p class="mb-0 small text-muted">
-                                            {{ 'admin.settings.features.dark_mode_help'|trans({}, 'admin') }}
-                                        </p>
-                                        <div class="alert alert-info alert-sm mt-2 mb-0">
-                                            <i class="bi bi-info-circle" aria-hidden="true"></i>
-                                            <strong>Best Practice:</strong> Dark mode reduces eye strain during extended work sessions and saves energy on OLED screens.
-                                        </div>
-                                    </div>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="enable_dark_mode" id="enable_dark_mode" value="1"
-                                               {% if settings.enable_dark_mode %}checked{% endif %}>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {# Global Search #}
-                            <div class="list-group-item">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div class="flex-grow-1">
-                                        <label for="enable_global_search" class="h5 mb-1">
-                                            <i class="bi bi-search" aria-hidden="true"></i>
-                                            {{ 'admin.settings.features.global_search'|trans({}, 'admin') }}
-                                        </label>
-                                        <p class="mb-0 small text-muted">{{ 'admin.settings.features.global_search_help'|trans({}, 'admin') }}</p>
-                                    </div>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="enable_global_search" id="enable_global_search" value="1"
-                                               {% if settings.enable_global_search %}checked{% endif %}>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {# Quick View #}
-                            <div class="list-group-item">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div class="flex-grow-1">
-                                        <label for="enable_quick_view" class="h5 mb-1">
-                                            <i class="bi bi-eye-fill" aria-hidden="true"></i>
-                                            {{ 'admin.settings.features.quick_view'|trans({}, 'admin') }}
-                                        </label>
-                                        <p class="mb-0 small text-muted">{{ 'admin.settings.features.quick_view_help'|trans({}, 'admin') }}</p>
-                                    </div>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="enable_quick_view" id="enable_quick_view" value="1"
-                                               {% if settings.enable_quick_view %}checked{% endif %}>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {# Notifications #}
-                            <div class="list-group-item">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div class="flex-grow-1">
-                                        <label for="enable_notifications" class="h5 mb-1">
-                                            <i class="bi bi-bell-fill" aria-hidden="true"></i>
-                                            {{ 'admin.settings.features.notifications'|trans({}, 'admin') }}
-                                        </label>
-                                        <p class="mb-0 small text-muted">{{ 'admin.settings.features.notifications_help'|trans({}, 'admin') }}</p>
-                                    </div>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="enable_notifications" id="enable_notifications" value="1"
-                                               {% if settings.enable_notifications %}checked{% endif %}>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {# Audit Log #}
-                            <div class="list-group-item">
-                                <div class="d-flex justify-content-between align-items-start">
-                                    <div class="flex-grow-1">
-                                        <label for="enable_audit_log" class="h5 mb-1">
-                                            <i class="bi bi-journal-text" aria-hidden="true"></i>
-                                            {{ 'admin.settings.features.audit_log'|trans({}, 'admin') }}
-                                            <span class="badge bg-danger ms-2">{{ 'admin.settings.required_for_iso27001'|trans({}, 'admin') }}</span>
-                                        </label>
-                                        <p class="mb-0 small text-muted">
-                                            {{ 'admin.settings.features.audit_log_help'|trans({}, 'admin') }}
-                                        </p>
-                                        <div class="alert alert-warning alert-sm mt-2 mb-0">
-                                            <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
-                                            <strong>Compliance:</strong> ISO 27001 A.12.4.1 requires event logging for security monitoring and incident investigation.
-                                            Disabling this feature may violate compliance requirements.
-                                        </div>
-                                    </div>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="enable_audit_log" id="enable_audit_log" value="1"
-                                               {% if settings.enable_audit_log %}checked{% endif %}>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        {% include '_components/_auto_form.html.twig' with {
+                            'form': form,
+                            'sections': {
+                                'feature_toggles': {
+                                    'label': 'admin.settings.features.feature_toggles'|trans({}, 'admin'),
+                                    'fields': ['enable_dark_mode', 'enable_global_search', 'enable_quick_view', 'enable_notifications', 'enable_audit_log']
+                                }
+                            },
+                            'col_widths': {
+                                'enable_dark_mode': 12,
+                                'enable_global_search': 12,
+                                'enable_quick_view': 12,
+                                'enable_notifications': 12,
+                                'enable_audit_log': 12
+                            },
+                            'translation_domain': 'admin'
+                        } %}
 
                         <div class="d-flex justify-content-between mt-4">
                             <a href="{{ path('admin_settings_index') }}" class="btn btn-secondary">
@@ -131,7 +47,7 @@
                                 <i class="bi bi-save" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
                             </button>
                         </div>
-                    </form>
+                    {{ form_end(form) }}
                 </div>
             </div>
         </div>
@@ -146,33 +62,4 @@
             </div>
         </div>
     </div>
-{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .alert-sm {
-            padding: 0.5rem 0.75rem;
-            font-size: 0.875rem;
-            border-radius: 0.375rem;
-        }
-        .alert-sm strong {
-            font-weight: 600;
-        }
-        .alert-sm .bi {
-            margin-right: 0.25rem;
-        }
-        .list-group-item {
-            border-left: none;
-            border-right: none;
-        }
-        .list-group-item:first-child {
-            border-top: none;
-        }
-        .badge {
-            font-size: 0.7rem;
-            font-weight: 500;
-            padding: 0.25rem 0.5rem;
-        }
-    </style>
 {% endblock %}
