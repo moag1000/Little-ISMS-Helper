@@ -12,13 +12,13 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_compliance_export_gaps_pdf', {id: framework.id}) }}" class="btn btn-danger" data-turbo="false">
-            📄 {{ 'compliance.action.export_pdf'|trans({}, 'compliance') }}
+            <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'compliance.action.export_pdf'|trans({}, 'compliance') }}
         </a>
         <a href="{{ path('app_compliance_export_gaps_excel', {id: framework.id}) }}" class="btn btn-success" data-turbo="false">
-            📊 {{ 'compliance.action.export_excel'|trans({}, 'compliance') }}
+            <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'compliance.action.export_excel'|trans({}, 'compliance') }}
         </a>
         <a href="{{ path('app_compliance_export_gaps', {id: framework.id}) }}" class="btn btn-secondary" data-turbo="false">
-            📄 {{ 'compliance.action.export_csv'|trans({}, 'compliance') }}
+            <i class="bi bi-file-text" aria-hidden="true"></i> {{ 'compliance.action.export_csv'|trans({}, 'compliance') }}
         </a>
     </div>
 </div>
@@ -163,8 +163,8 @@
                 {% endif %}
             </td>
             <td class="text-center">
-                <a href="{{ path('app_compliance_gap_show', {id: gap.id}) }}" class="btn btn-sm">
-                    👁 {{ 'common.view'|trans({}, 'messages') }}
+                <a href="{{ path('app_compliance_requirement_show', {id: gap.requirement.id}) }}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
                 </a>
             </td>
         </tr>
