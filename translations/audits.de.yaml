@@ -145,6 +145,7 @@ audit:
     validation:
         title_required: 'Bitte geben Sie einen Titel für das Audit an'
         date_required: 'Bitte wählen Sie ein geplantes Datum'
+    conclusion: 'Fazit'
 audit_log:
     pagination:
         page_counter: 'Seite %current% von %total%'

@@ -221,3 +221,12 @@ sla:
     hours_short: 'h'
     minutes_short: 'm'
     days_short: 'd'
+    action:
+        pending: 'Pending'
+    stats:
+        in_progress: 'In Progress'
+        approved: 'Approved'
+    section:
+        in_progress: 'In Progress'
+    description:
+        in_progress: 'Workflows currently being processed'
