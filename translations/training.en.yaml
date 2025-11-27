@@ -32,7 +32,8 @@ training:
     mandatory_label: 'Mandatory training'
     mandatory_training: 'Mandatory Training'
     mandatory_info: 'This training is mandatory and must be completed by all assigned participants.'
-    statistics:
+    statistics: Statistics
+    stats:
         total: 'Total Trainings'
         upcoming: Upcoming
         completed: Completed
@@ -123,3 +124,8 @@ training:
     mandatory_options:
         yes: 'Yes, mandatory'
         no: 'No, optional'
+    compliance_coverage: 'Compliance Coverage'
+    compliance_coverage_info: 'This training covers the following compliance requirements'
+    completion_rate: 'Completion Rate'
+    attendee_count: 'Attendee Count'
+    completed_on: 'Completed on'

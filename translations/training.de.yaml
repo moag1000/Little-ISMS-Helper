@@ -29,7 +29,8 @@ training:
     mandatory_label: Pflichtschulung
     mandatory_training: Pflichtschulung
     mandatory_info: 'Diese Schulung ist verpflichtend und muss von allen zugewiesenen Personen absolviert werden.'
-    statistics:
+    statistics: Statistiken
+    stats:
         total: Gesamt‑Schulungen
         upcoming: Bevorstehend
         completed: Abgeschlossen
@@ -126,3 +127,8 @@ training:
     mandatory_options:
         yes: 'Ja, verpflichtend'
         no: 'Nein, optional'
+    compliance_coverage: 'Compliance-Abdeckung'
+    compliance_coverage_info: 'Diese Schulung deckt folgende Compliance-Anforderungen ab'
+    completion_rate: 'Abschlussquote'
+    attendee_count: 'Anzahl Teilnehmer'
+    completed_on: 'Abgeschlossen am'

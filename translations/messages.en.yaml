@@ -243,8 +243,6 @@ activity:
 person:
     title: ''
     name: Person
-    section:
-        access: 'Access Permissions'
     full_name: 'Full Name'
     person_type: 'Person Type'
     badge_id: 'Badge ID'
@@ -288,6 +286,7 @@ person:
         department: Department
         job_title: 'Job Title'
     section:
+        access: 'Access Permissions'
         basic_info: 'Basic Information'
         details: Details
         contact: 'Contact Information'

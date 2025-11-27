@@ -226,6 +226,7 @@ audit:
     validation:
         title_required: 'Please provide a title for the audit'
         date_required: 'Please select a planned date'
+    conclusion: 'Conclusion'
 audit_management:
     title: Title
     no_audits: 'No Audits'

@@ -323,6 +323,7 @@ processing_activity:
     action:
         save: 'Verarbeitungstätigkeit speichern'
         cancel: 'Abbrechen'
+        delete: 'Verarbeitungstätigkeit löschen'
     form:
         name: 'Bezeichnung der Verarbeitungstätigkeit'
         status: Status
@@ -546,6 +547,7 @@ processing_activity:
         archived: 'Archiviert'
     permanently_delete: 'Dauerhaft löschen'
     view_all_activities: 'Alle Verarbeitungstätigkeiten anzeigen'
+    confirm_delete: 'Möchten Sie diese Verarbeitungstätigkeit wirklich löschen?'
     pdf:
         art_30_title: 'Verzeichnis von Verarbeitungstätigkeiten gemäß Art. 30 DSGVO'
         table_of_contents: Inhaltsverzeichnis

@@ -128,6 +128,7 @@ admin:
         features:
             title: 'Feature Settings'
             description: 'Activation and configuration of optional features'
+            feature_toggles: 'Feature Toggles'
             dark_mode: 'Dark Mode'
             global_search: 'Global Search'
             audit_log: 'Audit Log'
