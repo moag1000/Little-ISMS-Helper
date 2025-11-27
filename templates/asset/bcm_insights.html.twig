@@ -170,16 +170,17 @@
                 <div class="col-md-6">
                     <dl class="row">
                         <dt class="col-sm-4">{{ 'asset.field.location'|trans({}, 'assets') }}</dt>
-                        <dd class="col-sm-8">{{ asset.location ? asset.location.name : '-' }}</dd>
+                        <dd class="col-sm-8">{{ asset.physicalLocation ? asset.physicalLocation.name : (asset.location|default('-')) }}</dd>
 
-                        <dt class="col-sm-4">{{ 'asset.field.criticality'|trans({}, 'assets') }}</dt>
+                        <dt class="col-sm-4">{{ 'asset.field.availability'|trans({}, 'assets') }}</dt>
                         <dd class="col-sm-8">
-                            {% if asset.businessCriticality %}
-                            <span class="badge bg-{{ critColors[asset.businessCriticality]|default('secondary') }}">
-                                {{ asset.businessCriticality }}
-                            </span>
+                            {% if asset.availabilityValue %}
+                                {% set availColors = {1: 'secondary', 2: 'success', 3: 'info', 4: 'warning', 5: 'danger'} %}
+                                <span class="badge bg-{{ availColors[asset.availabilityValue]|default('secondary') }}">
+                                    {{ asset.availabilityValue }}/5
+                                </span>
                             {% else %}
-                            -
+                                -
                             {% endif %}
                         </dd>
                     </dl>
