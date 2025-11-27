@@ -1,9 +1,7 @@
 {# GDPR Data Breach Assessment Wizard Modal #}
 {% trans_default_domain 'privacy' %}
 
-<div data-controller="gdpr-breach-wizard"
-     data-gdpr-breach-wizard-assessment-url-value="{{ path('app_incident_gdpr_wizard_result') }}"
-     class="gdpr-wizard">
+<div class="gdpr-wizard">
     {# Modal Backdrop #}
     <div data-gdpr-breach-wizard-target="backdrop"
          class="modal-backdrop"
@@ -325,36 +323,61 @@
 </div>
 
 <style>
-/* Modal styling */
-.gdpr-wizard .modal {
-    display: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.gdpr-wizard .modal.modal-open {
-    display: block !important;
-    opacity: 1;
-    pointer-events: auto;
-}
-
+/* Modal backdrop */
 .gdpr-wizard .modal-backdrop {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1040;
-    display: none !important;
+    z-index: 1050;
+    display: none;
 }
 
 .gdpr-wizard .modal-backdrop.modal-backdrop-show {
     display: block !important;
 }
 
+/* Modal container */
+.gdpr-wizard .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1055;
+    display: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+    outline: 0;
+}
+
+.gdpr-wizard .modal.modal-open {
+    display: block !important;
+}
+
+/* Modal dialog positioning */
 .gdpr-wizard .modal-dialog {
-    z-index: 1050;
+    position: relative;
+    width: auto;
+    margin: 1.75rem auto;
+    max-width: 800px;
+    pointer-events: none;
+}
+
+.gdpr-wizard .modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    pointer-events: auto;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 0.5rem;
+    outline: 0;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
 }
 
 /* Wizard step animations */
@@ -373,13 +396,13 @@
     }
 }
 
-/* Form check enhancements */
-.form-check-input:checked {
+/* Form check enhancements for wizard */
+.gdpr-wizard .form-check-input:checked {
     background-color: #ffc107;
     border-color: #ffc107;
 }
 
-.form-check-label {
+.gdpr-wizard .form-check-label {
     cursor: pointer;
 }
 </style>

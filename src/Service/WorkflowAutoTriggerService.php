@@ -29,9 +29,9 @@ use Psr\Log\LoggerInterface;
 class WorkflowAutoTriggerService
 {
     public function __construct(
-        private IncidentEscalationWorkflowService $incidentEscalationService,
-        private RiskAcceptanceWorkflowService $riskAcceptanceService,
-        private LoggerInterface $logger
+        private readonly IncidentEscalationWorkflowService $incidentEscalationService,
+        private readonly RiskAcceptanceWorkflowService $riskAcceptanceService,
+        private readonly LoggerInterface $logger
     ) {}
 
     /**
