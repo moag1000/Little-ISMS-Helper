@@ -101,6 +101,7 @@ incident:
         nis2_reporting: 'Nis2 Reporting'
         nis2_info: 'Nis2 Info'
         history: History
+        closure: Closure
     status_help: 'Status Help'
     analysis_resolution: 'Analysis Resolution'
     update: Update
