@@ -1,4 +1,6 @@
 business_process:
+    edit: 'Edit Business Process'
+    new: 'New Business Process'
     section:
         basic_info: 'Basic Information'
         recovery_objectives: 'Recovery Objectives'
