@@ -48,7 +48,7 @@ class DataBreachType extends AbstractType
                 'label' => 'data_breach.form.incident',
                 'class' => Incident::class,
                 'choice_label' => function (Incident $incident) {
-                    return sprintf('%s - %s', $incident->getReferenceNumber(), $incident->getTitle());
+                    return sprintf('%s - %s', $incident->getIncidentNumber(), $incident->getTitle());
                 },
                 'placeholder' => 'data_breach.placeholder.incident',
                 'required' => false,
