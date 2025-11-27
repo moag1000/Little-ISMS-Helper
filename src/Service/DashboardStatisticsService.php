@@ -161,7 +161,7 @@ class DashboardStatisticsService
      * @param Tenant $tenant The tenant
      * @return array All accessible assets
      */
-    private function getAllAccessibleAssets($tenant): array
+    private function getAllAccessibleAssets(Tenant $tenant): array
     {
         $allAssets = [];
 
@@ -194,7 +194,7 @@ class DashboardStatisticsService
      * @param Tenant $tenant The tenant
      * @return array All accessible risks
      */
-    private function getAllAccessibleRisks($tenant): array
+    private function getAllAccessibleRisks(Tenant $tenant): array
     {
         $allRisks = [];
 
@@ -227,7 +227,7 @@ class DashboardStatisticsService
      * @param Tenant $tenant The tenant
      * @return array All accessible incidents
      */
-    private function getAllAccessibleIncidents($tenant): array
+    private function getAllAccessibleIncidents(Tenant $tenant): array
     {
         $allIncidents = [];
 
@@ -260,7 +260,7 @@ class DashboardStatisticsService
      * @param Tenant $tenant The tenant
      * @return int Number of critical assets
      */
-    private function countCriticalAssetsAccessible($tenant): int
+    private function countCriticalAssetsAccessible(Tenant $tenant): int
     {
         $allAssets = $this->getAllAccessibleAssets($tenant);
         $activeAssets = array_filter($allAssets, fn($asset): bool => $asset->getStatus() === 'active');
@@ -277,7 +277,7 @@ class DashboardStatisticsService
      * @param Tenant $tenant The tenant
      * @return int Number of high risks
      */
-    private function countHighRisksAccessible($tenant): int
+    private function countHighRisksAccessible(Tenant $tenant): int
     {
         $allRisks = $this->getAllAccessibleRisks($tenant);
 

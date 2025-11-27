@@ -33,10 +33,10 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
  */
 class RoleVoter extends Voter
 {
-    public const VIEW = 'role.view';
-    public const CREATE = 'role.create';
-    public const EDIT = 'role.edit';
-    public const DELETE = 'role.delete';
+    public const string VIEW = 'role.view';
+    public const string CREATE = 'role.create';
+    public const string EDIT = 'role.edit';
+    public const string DELETE = 'role.delete';
 
     protected function supports(string $attribute, mixed $subject): bool
     {

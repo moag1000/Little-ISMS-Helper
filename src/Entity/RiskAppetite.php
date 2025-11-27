@@ -81,7 +81,7 @@ class RiskAppetite
      * User who approved this risk appetite
      */
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    #[ORM\JoinColumn(name: 'approved_by_id', nullable: true, onDelete: 'SET NULL')]
     #[Groups(['risk_appetite:read', 'risk_appetite:write'])]
     private ?User $user = null;
 

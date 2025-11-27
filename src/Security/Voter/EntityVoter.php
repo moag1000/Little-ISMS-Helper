@@ -39,12 +39,12 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class EntityVoter extends Voter
 {
     // Entity actions
-    public const VIEW = 'view';
-    public const CREATE = 'create';
-    public const EDIT = 'edit';
-    public const DELETE = 'delete';
-    public const APPROVE = 'approve';
-    public const EXPORT = 'export';
+    public const string VIEW = 'view';
+    public const string CREATE = 'create';
+    public const string EDIT = 'edit';
+    public const string DELETE = 'delete';
+    public const string APPROVE = 'approve';
+    public const string EXPORT = 'export';
 
     protected function supports(string $attribute, mixed $subject): bool
     {

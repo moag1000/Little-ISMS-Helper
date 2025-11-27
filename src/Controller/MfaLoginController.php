@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use App\Service\AuditLogger;
 use App\Service\MfaService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -67,7 +68,7 @@ class MfaLoginController extends AbstractController
     }
 
     #[Route('/mfa-verify', name: 'app_mfa_verify', methods: ['POST'])]
-    public function verify(Request $request): Response
+    public function verify(Request $request): Response|RedirectResponse
     {
         $session = $request->getSession();
 

@@ -85,6 +85,7 @@ class RiskProbabilityAdjustmentService
      * Safe Guard: Only closed incidents older than 30 days
      *
      * @return Incident[]
+     * @throws \DateMalformedStringException
      */
     private function getEligibleIncidents(Risk $risk): array
     {

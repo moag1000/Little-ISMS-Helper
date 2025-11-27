@@ -77,7 +77,7 @@ class Incident
 
     // New relationship for threat tracking
     #[ORM\ManyToOne(targetEntity: ThreatIntelligence::class, inversedBy: 'resultingIncidents')]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(name: 'originating_threat_id', nullable: true)]
     #[Groups(['incident:read', 'incident:write'])]
     private ?ThreatIntelligence $threatIntelligence = null;
 

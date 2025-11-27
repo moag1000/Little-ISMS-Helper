@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use OneLogin\Saml2\Auth;
+use OneLogin\Saml2\Error;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -52,6 +53,7 @@ class SamlAuthFactory
      *
      * @param Request $request HTTP request for base URL and route generation
      * @return Auth Configured SAML Auth instance
+     * @throws Error
      */
     public function createAuth(Request $request): Auth
     {

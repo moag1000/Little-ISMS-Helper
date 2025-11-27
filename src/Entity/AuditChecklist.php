@@ -22,11 +22,11 @@ class AuditChecklist
     private ?int $id = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'audit_id', nullable: false)]
     private ?InternalAudit $internalAudit = null;
 
     #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'requirement_id', nullable: false)]
     private ?ComplianceRequirement $complianceRequirement = null;
 
     #[ORM\Column(length: 50)]

@@ -53,6 +53,7 @@ class WorkflowService
      * @param string|null $workflowName Optional specific workflow name
      * @param bool $autoFlush Whether to automatically flush after persisting (default: true)
      * @return WorkflowInstance|null The workflow instance or null if no workflow found
+     * @throws \DateMalformedStringException
      */
     public function startWorkflow(string $entityType, int $entityId, ?string $workflowName = null, bool $autoFlush = true): ?WorkflowInstance
     {

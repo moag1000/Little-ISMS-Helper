@@ -13,6 +13,7 @@ use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
 use App\Entity\User;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 
@@ -180,6 +181,8 @@ class EmailNotificationService
      * Send notification when a workflow step is assigned to approvers
      *
      * @param User[] $recipients
+     *
+     * @throws TransportExceptionInterface
      */
     public function sendWorkflowAssignmentNotification(WorkflowInstance $workflowInstance, WorkflowStep $workflowStep, array $recipients): void
     {
@@ -206,6 +209,8 @@ class EmailNotificationService
      * Send notification for notification-type workflow steps (informational, no approval required)
      *
      * @param User[] $recipients
+     * @throws TransportExceptionInterface
+     *
      */
     public function sendWorkflowNotificationStepEmail(WorkflowInstance $workflowInstance, WorkflowStep $workflowStep, array $recipients): void
     {
@@ -232,6 +237,7 @@ class EmailNotificationService
      * Send deadline warning notification for workflows nearing their due date
      *
      * @param User[] $recipients
+     * @throws TransportExceptionInterface
      */
     public function sendWorkflowDeadlineWarning(WorkflowInstance $workflowInstance, array $recipients, int $daysRemaining): void
     {
@@ -260,6 +266,7 @@ class EmailNotificationService
      * @param Risk $risk Risk entity
      * @param User $user User who needs to approve
      * @param string $approvalLevel 'manager' or 'executive'
+     * @throws TransportExceptionInterface
      */
     public function sendRiskAcceptanceRequest(Risk $risk, User $user, string $approvalLevel): void
     {
@@ -287,6 +294,7 @@ class EmailNotificationService
      * @param Risk $risk Risk entity
      * @param User $riskOwner Risk owner to notify
      * @param User $approver User who approved the acceptance
+     * @throws TransportExceptionInterface
      */
     public function sendRiskAcceptanceApproved(Risk $risk, User $riskOwner, User $approver): void
     {
@@ -315,6 +323,7 @@ class EmailNotificationService
      * @param User $riskOwner Risk owner to notify
      * @param string $reason Rejection reason
      * @param User $rejector User who rejected the acceptance
+     * @throws TransportExceptionInterface
      */
     public function sendRiskAcceptanceRejected(Risk $risk, User $riskOwner, string $reason, User $rejector): void
     {
@@ -342,6 +351,7 @@ class EmailNotificationService
      * @param string $severity Escalation level (low, medium, high, critical)
      * @param DateTimeImmutable $slaDeadline SLA deadline for incident response
      * @param string $incidentUrl Absolute URL to incident detail page
+     * @throws TransportExceptionInterface
      */
     public function sendIncidentEscalationNotification(
         User $user,
@@ -376,6 +386,7 @@ class EmailNotificationService
      * Critical: 72h notification deadline
      *
      * @param array $context Must include: incident, deadline, deadline_formatted, hours_remaining
+     * @throws TransportExceptionInterface
      */
     public function sendDataBreachNotification(User $user, array $context): void
     {
