@@ -1,7 +1,9 @@
 {# GDPR Data Breach Assessment Wizard Modal #}
 {% trans_default_domain 'privacy' %}
 
-<div data-controller="gdpr-breach-wizard" class="gdpr-wizard">
+<div data-controller="gdpr-breach-wizard"
+     data-gdpr-breach-wizard-assessment-url-value="{{ path('app_incident_gdpr_wizard_result') }}"
+     class="gdpr-wizard">
     {# Modal Backdrop #}
     <div data-gdpr-breach-wizard-target="backdrop"
          class="modal-backdrop"
