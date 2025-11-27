@@ -19,12 +19,14 @@ role_management:
         users: Benutzer
         permissions: Berechtigungen
         type: Typ
+        system_role: Systemrolle
     placeholder:
         name: 'z.B. Sicherheitsbeauftragter'
         description: 'Beschreibung der Rolle und ihrer Verantwortlichkeiten...'
     help:
         active: 'Aktive Rollen können Benutzern zugewiesen werden'
         permissions: 'Wählen Sie die Berechtigungen aus, die diese Rolle haben soll'
+        system_role: 'Systemrollen sind vordefinierte Rollen mit festen Berechtigungen'
     permission:
         name: Berechtigung
         resource: Ressource
