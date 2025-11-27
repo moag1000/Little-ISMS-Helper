@@ -103,8 +103,8 @@
                                 'medium': 'info',
                                 'low': 'success'
                             } %}
-                            <span class="badge badge-{{ criticality_colors[insight.process.criticality] ?? 'secondary' }}">
-                                {{ insight.process.criticality|upper }}
+                            <span class="badge bg-{{ criticality_colors[insight.process.criticality] ?? 'secondary' }}">
+                                {{ ('bcm.criticality.' ~ insight.process.criticality)|trans({}, 'bcm') }}
                             </span>
                         </td>
                         <td>
@@ -133,12 +133,12 @@
                                 4: 'warning',
                                 5: 'danger'
                             } %}
-                            <span class="badge badge-{{ availability_colors[insight.current_availability] ?? 'secondary' }}">
+                            <span class="badge bg-{{ availability_colors[insight.current_availability] ?? 'secondary' }}">
                                 {{ insight.current_availability }} - {{ availability_labels[insight.current_availability] ?? 'N/A' }}
                             </span>
                         </td>
                         <td class="text-center">
-                            <span class="badge badge-{{ availability_colors[availability.value] ?? 'secondary' }}">
+                            <span class="badge bg-{{ availability_colors[availability.value] ?? 'secondary' }}">
                                 {{ availability.value }} - {{ availability_labels[availability.value] ?? 'N/A' }}
                             </span>
                         </td>
@@ -161,7 +161,7 @@
                                 'medium': 'warning',
                                 'low': 'secondary'
                             } %}
-                            <span class="badge badge-{{ confidence_colors[availability.confidence] ?? 'secondary' }}">
+                            <span class="badge bg-{{ confidence_colors[availability.confidence] ?? 'secondary' }}">
                                 {{ availability.confidence|upper }}
                             </span>
                         </td>
