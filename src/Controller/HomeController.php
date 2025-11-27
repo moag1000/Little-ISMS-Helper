@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
+use App\Repository\WorkflowInstanceRepository;
 use App\Service\DashboardStatisticsService;
 use App\Service\ISOComplianceIntelligenceService;
 use App\Service\RiskReviewService;
 use App\Service\TenantContext;
+use App\Service\WorkflowService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,6 +27,8 @@ class HomeController extends AbstractController
         private readonly RiskRepository $riskRepository,
         private readonly RiskReviewService $riskReviewService,
         private readonly RiskTreatmentPlanRepository $treatmentPlanRepository,
+        private readonly WorkflowInstanceRepository $workflowInstanceRepository,
+        private readonly WorkflowService $workflowService,
         private readonly TenantContext $tenantContext,
         private readonly TranslatorInterface $translator
     ) {}
@@ -101,6 +105,14 @@ class HomeController extends AbstractController
         $overdueTreatmentPlans = $tenant ? $this->treatmentPlanRepository->findOverdueForTenant($tenant) : [];
         $approachingTreatmentPlans = $tenant ? $this->treatmentPlanRepository->findDueWithinDays(7, $tenant) : [];
 
+        // Workflow Approvals (UX High Priority #1 - Single-pane visibility)
+        $user = $this->getUser();
+        $pendingWorkflows = $user ? $this->workflowInstanceRepository->findPendingForUser($user) : [];
+        $overdueWorkflows = $this->workflowInstanceRepository->findOverdue();
+        $upcomingDeadlines = $this->workflowInstanceRepository->findUpcomingDeadlines(
+            new \DateTimeImmutable('+24 hours')
+        );
+
         return $this->render('home/dashboard.html.twig', [
             'kpis' => $kpis,
             'stats' => $stats,
@@ -110,6 +122,9 @@ class HomeController extends AbstractController
             'upcoming_reviews' => $upcomingReviews,
             'overdue_treatment_plans' => $overdueTreatmentPlans,
             'approaching_treatment_plans' => $approachingTreatmentPlans,
+            'pending_workflows' => $pendingWorkflows,
+            'overdue_workflows' => $overdueWorkflows,
+            'upcoming_workflow_deadlines' => $upcomingDeadlines,
         ]);
     }
 

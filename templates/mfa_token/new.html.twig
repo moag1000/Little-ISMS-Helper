@@ -19,7 +19,30 @@
         </div>
         <div class="card-body">
             {{ form_start(form) }}
-            {{ form_widget(form) }}
+
+            {% include '_components/_auto_form.html.twig' with {
+                'form': form,
+                'sections': {
+                    'basic_info': {
+                        'label': 'mfa_token.section.basic_info'|trans({}, 'mfa'),
+                        'fields': ['user', 'tokenType', 'deviceName', 'phoneNumber']
+                    },
+                    'settings': {
+                        'label': 'mfa_token.section.settings'|trans({}, 'mfa'),
+                        'fields': ['isActive', 'isPrimary', 'expiresAt']
+                    }
+                },
+                'col_widths': {
+                    'user': 12,
+                    'tokenType': 6,
+                    'deviceName': 6,
+                    'phoneNumber': 12,
+                    'isActive': 6,
+                    'isPrimary': 6,
+                    'expiresAt': 12
+                }
+            } %}
+
             <div class="d-flex justify-content-between pt-3 border-top">
                 <a href="{{ path('admin_mfa_index') }}" class="btn btn-outline-secondary">
                     {{ 'common.back'|trans({}, 'messages') }}

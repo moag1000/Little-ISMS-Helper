@@ -20,7 +20,7 @@
     </div>
     <div class="card"><div class="card-body">
         <dl class="row">
-            <dt class="col-sm-3">{{ 'crisis_team.field.team_type'|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9"><span class="badge bg-primary">{{ ('crisis_team.type.' ~ crisis_team.teamType)|trans }}</span></dd>
+            <dt class="col-sm-3">{{ ('crisis_team.type.' ~ crisis_team.teamType)|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9"><span class="badge bg-primary">{{ ('crisis_team.type.' ~ crisis_team.teamType)|trans({}, 'crisis_team') }}</span></dd>
             <dt class="col-sm-3">{{ 'crisis_team.field.is_active'|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9"><span class="badge bg-{{ crisis_team.isActive ? 'success' : 'danger' }}">{{ crisis_team.isActive ? 'yes'|trans({}, 'messages') : 'no'|trans({}, 'messages') }}</span></dd>
             {% if crisis_team.teamLeader %}<dt class="col-sm-3">{{ 'crisis_team.field.team_leader'|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9">{{ crisis_team.teamLeader.email }}</dd>{% endif %}
             {% if crisis_team.description %}<dt class="col-sm-3">{{ 'crisis_team.field.description'|trans({}, 'crisis_team') }}</dt><dd class="col-sm-9">{{ crisis_team.description|nl2br }}</dd>{% endif %}

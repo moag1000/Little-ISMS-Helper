@@ -35,7 +35,81 @@
         </div>
         <div class="card-body">
             {{ form_start(form) }}
-                {{ form_widget(form) }}
+                {% include '_components/_auto_form.html.twig' with {
+                    'form': form,
+                    'sections': {
+                        'basic_info': {
+                            'label': '<i class="bi bi-info-circle" aria-hidden="true"></i> Basic Information'|raw,
+                            'fields': ['title', 'referenceNumber', 'processingActivity']
+                        },
+                        'processing_operations': {
+                            'label': '<i class="bi bi-gear" aria-hidden="true"></i> Art. 35(7)(a) - Description of Processing Operations'|raw,
+                            'fields': ['processingDescription', 'processingPurposes', 'dataCategories', 'dataSubjectCategories', 'estimatedDataSubjects', 'dataRetentionPeriod', 'dataFlowDescription']
+                        },
+                        'necessity_proportionality': {
+                            'label': '<i class="bi bi-balance-scale" aria-hidden="true"></i> Art. 35(7)(b) - Assessment of Necessity and Proportionality'|raw,
+                            'fields': ['necessityAssessment', 'proportionalityAssessment', 'legalBasis', 'legislativeCompliance']
+                        },
+                        'risk_assessment': {
+                            'label': '<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Art. 35(7)(c) - Risk Assessment'|raw,
+                            'fields': ['riskLevel', 'likelihood', 'impact', 'dataSubjectRisks']
+                        },
+                        'measures': {
+                            'label': '<i class="bi bi-shield-check" aria-hidden="true"></i> Art. 35(7)(d) - Measures to Address Risks'|raw,
+                            'fields': ['technicalMeasures', 'organizationalMeasures', 'implementedControls', 'complianceMeasures', 'residualRiskAssessment', 'residualRiskLevel']
+                        },
+                        'consultation': {
+                            'label': '<i class="bi bi-people" aria-hidden="true"></i> Stakeholder Consultation (Art. 35(4), 35(9))'|raw,
+                            'fields': ['dataProtectionOfficer', 'dpoConsultationDate', 'dpoAdvice', 'dataSubjectsConsulted', 'dataSubjectConsultationDetails']
+                        },
+                        'supervisory': {
+                            'label': '<i class="bi bi-building" aria-hidden="true"></i> Supervisory Authority Consultation (Art. 36)'|raw,
+                            'fields': ['requiresSupervisoryConsultation', 'supervisoryConsultationDate', 'supervisoryAuthorityFeedback']
+                        },
+                        'workflow': {
+                            'label': '<i class="bi bi-arrow-repeat" aria-hidden="true"></i> Workflow & Review'|raw,
+                            'fields': ['conductor', 'reviewFrequencyMonths', 'nextReviewDate']
+                        }
+                    },
+                    'col_widths': {
+                        'title': 8,
+                        'referenceNumber': 4,
+                        'processingActivity': 12,
+                        'processingDescription': 12,
+                        'processingPurposes': 12,
+                        'dataCategories': 12,
+                        'dataSubjectCategories': 12,
+                        'estimatedDataSubjects': 6,
+                        'dataRetentionPeriod': 6,
+                        'dataFlowDescription': 12,
+                        'necessityAssessment': 12,
+                        'proportionalityAssessment': 12,
+                        'legalBasis': 6,
+                        'legislativeCompliance': 6,
+                        'riskLevel': 4,
+                        'likelihood': 4,
+                        'impact': 4,
+                        'dataSubjectRisks': 12,
+                        'technicalMeasures': 12,
+                        'organizationalMeasures': 12,
+                        'implementedControls': 12,
+                        'complianceMeasures': 12,
+                        'residualRiskAssessment': 6,
+                        'residualRiskLevel': 6,
+                        'dataProtectionOfficer': 6,
+                        'dpoConsultationDate': 6,
+                        'dpoAdvice': 12,
+                        'dataSubjectsConsulted': 12,
+                        'dataSubjectConsultationDetails': 12,
+                        'requiresSupervisoryConsultation': 12,
+                        'supervisoryConsultationDate': 6,
+                        'supervisoryAuthorityFeedback': 6,
+                        'conductor': 12,
+                        'reviewFrequencyMonths': 6,
+                        'nextReviewDate': 6
+                    },
+                    'translation_domain': 'privacy'
+                } %}
 
                 <div class="mt-4">
                     <button type="submit" class="btn btn-success">

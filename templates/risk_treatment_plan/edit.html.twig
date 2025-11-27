@@ -29,65 +29,46 @@
 <div class="card">
     <div class="card-body">
         {{ form_start(form) }}
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.risk) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.title) }}
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-12">
-                    {{ form_row(form.description) }}
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4">
-                    {{ form_row(form.status) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.priority) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.completionPercentage) }}
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-4">
-                    {{ form_row(form.startDate) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.targetCompletionDate) }}
-                </div>
-                <div class="col-md-4">
-                    {{ form_row(form.actualCompletionDate) }}
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-6">
-                    {{ form_row(form.responsiblePerson) }}
-                </div>
-                <div class="col-md-6">
-                    {{ form_row(form.budget) }}
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-12">
-                    {{ form_row(form.controls) }}
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-12">
-                    {{ form_row(form.implementationNotes) }}
-                </div>
-            </div>
+            {% include '_components/_auto_form.html.twig' with {
+                'form': form,
+                'sections': {
+                    'basic_info': {
+                        'label': 'risk_treatment_plan.section.basic_info'|trans({}, 'risk_treatment_plan'),
+                        'fields': ['risk', 'title', 'description']
+                    },
+                    'status_progress': {
+                        'label': 'risk_treatment_plan.section.status_progress'|trans({}, 'risk_treatment_plan'),
+                        'fields': ['status', 'priority', 'completionPercentage']
+                    },
+                    'timeline': {
+                        'label': 'risk_treatment_plan.section.timeline'|trans({}, 'risk_treatment_plan'),
+                        'fields': ['startDate', 'targetCompletionDate', 'actualCompletionDate']
+                    },
+                    'responsibility_resources': {
+                        'label': 'risk_treatment_plan.section.responsibility_resources'|trans({}, 'risk_treatment_plan'),
+                        'fields': ['responsiblePerson', 'budget']
+                    },
+                    'controls_implementation': {
+                        'label': 'risk_treatment_plan.section.controls_implementation'|trans({}, 'risk_treatment_plan'),
+                        'fields': ['controls', 'implementationNotes']
+                    }
+                },
+                'col_widths': {
+                    'risk': 6,
+                    'title': 6,
+                    'description': 12,
+                    'status': 4,
+                    'priority': 4,
+                    'completionPercentage': 4,
+                    'startDate': 4,
+                    'targetCompletionDate': 4,
+                    'actualCompletionDate': 4,
+                    'responsiblePerson': 6,
+                    'budget': 6,
+                    'controls': 12,
+                    'implementationNotes': 12
+                }
+            } %}
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">

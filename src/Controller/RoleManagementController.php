@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Role;
+use App\Form\RoleType;
 use App\Repository\RoleRepository;
 use App\Repository\PermissionRepository;
 use App\Security\Voter\RoleVoter;
@@ -39,22 +40,12 @@ class RoleManagementController extends AbstractController
         $this->denyAccessUnlessGranted(RoleVoter::CREATE);
 
         $role = new Role();
+        $form = $this->createForm(RoleType::class, $role);
         $permissions = $permissionRepository->findAllGroupedByCategory();
 
-        if ($request->isMethod('POST')) {
-            $role->setName($request->request->get('name'));
-            $role->setDescription($request->request->get('description'));
-            $role->setIsSystemRole($request->request->get('isSystemRole', false) === '1');
+        $form->handleRequest($request);
 
-            // Add permissions
-            $permissionIds = $request->request->all('permissions') ?? [];
-            foreach ($permissionIds as $permissionId) {
-                $permission = $permissionRepository->find($permissionId);
-                if ($permission) {
-                    $role->addPermission($permission);
-                }
-            }
-
+        if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($role);
             $entityManager->flush();
 
@@ -65,6 +56,7 @@ class RoleManagementController extends AbstractController
 
         return $this->render('role_management/new.html.twig', [
             'role' => $role,
+            'form' => $form,
             'permissions' => $permissions,
         ]);
     }
@@ -198,25 +190,15 @@ class RoleManagementController extends AbstractController
     ): Response {
         $this->denyAccessUnlessGranted(RoleVoter::EDIT, $role);
 
+        $form = $this->createForm(RoleType::class, $role);
         $permissions = $permissionRepository->findAllGroupedByCategory();
 
-        if ($request->isMethod('POST')) {
-            $role->setName($request->request->get('name'));
-            $role->setDescription($request->request->get('description'));
+        $form->handleRequest($request);
 
+        if ($form->isSubmitted() && $form->isValid()) {
             // Only allow changing system role flag for non-system roles
-            if (!$role->isSystemRole()) {
-                $role->setIsSystemRole($request->request->get('isSystemRole', false) === '1');
-            }
-
-            // Update permissions
-            $role->getPermissions()->clear();
-            $permissionIds = $request->request->all('permissions') ?? [];
-            foreach ($permissionIds as $permissionId) {
-                $permission = $permissionRepository->find($permissionId);
-                if ($permission) {
-                    $role->addPermission($permission);
-                }
+            if ($role->isSystemRole() && $form->get('isSystemRole')->getData() === false) {
+                $role->setIsSystemRole(true);
             }
 
             $role->setUpdatedAt(new \DateTimeImmutable());
@@ -229,6 +211,7 @@ class RoleManagementController extends AbstractController
 
         return $this->render('role_management/edit.html.twig', [
             'role' => $role,
+            'form' => $form,
             'permissions' => $permissions,
         ]);
     }

@@ -8,6 +8,7 @@ use App\Repository\AuditLogRepository;
 use App\Repository\InternalAuditRepository;
 use App\Service\PdfExportService;
 use App\Service\ExcelExportService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -25,7 +26,8 @@ class AuditController extends AbstractController
         private EntityManagerInterface $entityManager,
         private PdfExportService $pdfService,
         private ExcelExportService $excelService,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private TenantContext $tenantContext
     ) {}
 
     #[Route('/', name: 'app_audit_index')]
@@ -75,6 +77,8 @@ class AuditController extends AbstractController
     public function new(Request $request): Response
     {
         $audit = new InternalAudit();
+        $audit->setTenant($this->tenantContext->getCurrentTenant());
+
         $form = $this->createForm(InternalAuditType::class, $audit);
         $form->handleRequest($request);
 

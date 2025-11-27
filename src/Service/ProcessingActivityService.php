@@ -40,14 +40,14 @@ class ProcessingActivityService
         $this->entityManager->persist($processingActivity);
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
-            'processing_activity.created',
+        $this->auditLogger->logCreate(
             'ProcessingActivity',
             $processingActivity->getId(),
             [
                 'name' => $processingActivity->getName(),
                 'legal_basis' => $processingActivity->getLegalBasis(),
-            ]
+            ],
+            'processing_activity.created'
         );
 
         return $processingActivity;
@@ -63,14 +63,15 @@ class ProcessingActivityService
 
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
-            'processing_activity.updated',
+        $this->auditLogger->logUpdate(
             'ProcessingActivity',
             $processingActivity->getId(),
+            [], // oldValues not tracked here
             [
                 'name' => $processingActivity->getName(),
                 'completeness' => $processingActivity->getCompletenessPercentage(),
-            ]
+            ],
+            'processing_activity.updated'
         );
 
         return $processingActivity;
@@ -87,11 +88,11 @@ class ProcessingActivityService
         $this->entityManager->remove($processingActivity);
         $this->entityManager->flush();
 
-        $this->auditLogger->log(
-            'processing_activity.deleted',
+        $this->auditLogger->logDelete(
             'ProcessingActivity',
             $id,
-            ['name' => $name]
+            ['name' => $name],
+            'processing_activity.deleted'
         );
     }
 

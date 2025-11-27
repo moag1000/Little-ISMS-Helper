@@ -1,4 +1,10 @@
 control:
+    section:
+        applicability: Applicability
+        implementation: Implementation
+        responsibility: Responsibility
+        review: Review
+        assets: 'Protected Assets'
     field:
         control_id: 'Control ID'
         name: Name
@@ -48,3 +54,5 @@ control:
         in_progress: 'In Progress'
         implemented: Implemented
         verified: Verified
+    success:
+        updated: 'Control updated successfully'

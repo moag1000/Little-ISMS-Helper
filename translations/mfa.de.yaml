@@ -49,6 +49,9 @@ mfa_token:
     edit.subtitle: 'Authentifizierungsgerät bearbeiten'
     new: 'Neues MFA-Token'
     new.subtitle: 'Neues Authentifizierungsgerät einrichten'
+    section:
+        basic_info: 'Grundlegende Informationen'
+        settings: 'Token-Einstellungen'
     field:
         status: Status
         token_type: Token-Typ
@@ -57,8 +60,10 @@ mfa_token:
         last_used: 'Zuletzt verwendet'
         usage_count: Verwendungen
         user: Benutzer
+        is_active: 'Aktiv'
         is_primary: 'Primäres Gerät'
         expires_at: 'Läuft ab am'
+        phone_number: 'Telefonnummer'
         verification_code: Bestätigungscode
     status:
         active: Aktiv

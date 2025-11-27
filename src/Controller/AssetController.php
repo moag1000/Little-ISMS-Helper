@@ -10,6 +10,7 @@ use App\Repository\BusinessProcessRepository;
 use App\Repository\RiskRepository;
 use App\Service\AssetService;
 use App\Service\ProtectionRequirementService;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -31,7 +32,8 @@ class AssetController extends AbstractController
         private RiskRepository $riskRepository,
         private EntityManagerInterface $entityManager,
         private TranslatorInterface $translator,
-        private Security $security
+        private Security $security,
+        private TenantContext $tenantContext
     ) {}
 
     #[Route('/', name: 'app_asset_index')]
@@ -144,6 +146,8 @@ class AssetController extends AbstractController
     public function new(Request $request): Response
     {
         $asset = new Asset();
+        $asset->setTenant($this->tenantContext->getCurrentTenant());
+
         $form = $this->createForm(AssetType::class, $asset);
         $form->handleRequest($request);
 

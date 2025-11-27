@@ -16,6 +16,66 @@ patch:
         patch_type: Patch-Typ
         status: Patch-Status
         description: Beschreibung
+        vulnerability: 'Zugehörige Schwachstelle'
+        vendor: Hersteller
+        product: Produkt
+        version: Version
+        priority: Priorität
+        affected_assets: 'Betroffene Assets'
+        release_date: Veröffentlichungsdatum
+        deployment_deadline: 'Deployment-Frist'
+        deployed_date: 'Deployment-Datum'
+        responsible_person: 'Verantwortliche Person'
+        testing_notes: Testnotizen
+        deployment_notes: Deployment-Notizen
+        rollback_plan: Rollback-Plan
+        requires_downtime: 'Ausfallzeit erforderlich'
+        estimated_downtime_minutes: 'Geschätzte Ausfallzeit (Minuten)'
+        requires_reboot: 'Neustart erforderlich'
+        known_issues: 'Bekannte Probleme'
+        download_url: Download-URL
+        documentation_url: Dokumentations-URL
+    type:
+        security: Sicherheitspatch
+        critical: 'Kritischer Patch'
+        feature: Feature-Update
+        bugfix: Bugfix
+        hotfix: Hotfix
+    priority:
+        critical: Kritisch
+        high: Hoch
+        medium: Mittel
+        low: Niedrig
+    status:
+        pending: Ausstehend
+        testing: 'In Test'
+        approved: Genehmigt
+        deployed: Eingespielt
+        failed: Fehlgeschlagen
+        rolled_back: Zurückgerollt
+        not_applicable: 'Nicht anwendbar'
+    placeholder:
+        patch_id: 'z.B. KB5001234 oder CVE-2024-1234-fix'
+        title: 'z.B. Sicherheitsupdate für Windows Server'
+        description: 'Beschreibung des Patches und seiner Auswirkungen...'
+        vulnerability: 'Schwachstelle auswählen (optional)'
+        vendor: 'z.B. Microsoft, Oracle, Apache'
+        product: 'z.B. Windows Server 2022, Java Runtime'
+        responsible_person: 'Name der verantwortlichen Person'
+        testing_notes: 'Ergebnisse und Beobachtungen aus Tests...'
+        rollback_plan: 'Schritte zur Rücknahme des Patches...'
+        known_issues: 'Bekannte Probleme oder Einschränkungen...'
+    help:
+        patch_id: 'Eindeutige Kennung des Patches (KB-Nummer, CVE-Fix, etc.)'
+        patch_type: 'Art des Patches'
+        priority: 'Dringlichkeit der Patch-Installation'
+        vulnerability: 'Verknüpfte Schwachstelle, die durch den Patch behoben wird'
+        affected_assets: 'Assets, auf die der Patch angewendet werden muss'
+        deployment_deadline: 'Spätester Zeitpunkt für die Installation'
+        responsible_person: 'Person, die für die Patch-Installation verantwortlich ist'
+        testing_notes: 'Dokumentation von Tests vor dem Produktiveinsatz'
+        rollback_plan: 'Anweisungen für den Fall, dass der Patch zurückgenommen werden muss'
+        estimated_downtime_minutes: 'Erwartete Ausfallzeit in Minuten'
     kpi:
         pending: Ausstehend
         deployed: Eingespielt

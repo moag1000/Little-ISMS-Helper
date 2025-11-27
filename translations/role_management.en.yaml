@@ -19,12 +19,14 @@ role_management:
         users: Users
         permissions: Permissions
         type: Type
+        system_role: 'System Role'
     placeholder:
         name: 'e.g. Security Officer'
         description: 'Description of the role and its responsibilities...'
     help:
         active: 'Active roles can be assigned to users'
         permissions: 'Select the permissions this role should have'
+        system_role: 'System roles cannot be deleted and have restricted modification options'
     permission:
         name: Permission
         resource: Resource

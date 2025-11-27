@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\ISMSObjective;
 use App\Form\ISMSObjectiveType;
 use App\Repository\ISMSObjectiveRepository;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +20,8 @@ class ISMSObjectiveController extends AbstractController
     public function __construct(
         private ISMSObjectiveRepository $objectiveRepository,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private TenantContext $tenantContext
     ) {}
 
     #[Route('/', name: 'app_objective_index')]
@@ -50,6 +52,8 @@ class ISMSObjectiveController extends AbstractController
     public function new(Request $request): Response
     {
         $objective = new ISMSObjective();
+        $objective->setTenant($this->tenantContext->getCurrentTenant());
+
         $form = $this->createForm(ISMSObjectiveType::class, $objective);
 
         $form->handleRequest($request);

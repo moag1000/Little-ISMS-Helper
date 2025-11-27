@@ -136,6 +136,13 @@
 
         {# Activity Feed Column #}
         <div class="col-lg-4">
+            {# Workflow Approvals Widget (UX High Priority #1) #}
+            {% include 'home/_workflow_widget.html.twig' with {
+                pending_workflows: pending_workflows|default([]),
+                overdue_workflows: overdue_workflows|default([]),
+                upcoming_workflow_deadlines: upcoming_workflow_deadlines|default([])
+            } %}
+
             {# Overdue Risk Reviews Widget (ISO 27001:2022 Clause 6.1.3.d) #}
             {% if overdue_reviews|default([])|length > 0 %}
             <div class="widget-card mb-4 border-warning"

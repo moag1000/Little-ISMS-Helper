@@ -1,19 +1,20 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'risk' %}
 
-{% block title %}{{ 'risk.new'|trans({}, 'risk') }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'risk.new'|trans }} - {{ parent() }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
         { label: 'nav.risks'|trans({}, 'nav'), url: path('app_risk_index'), icon: 'bi-exclamation-triangle' },
-        { label: 'risk.new'|trans({}, 'risk') }
+        { label: 'risk.new'|trans }
     ]
 } %}
 
 {# Page Header #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'risk.new'|trans({}, 'risk'),
+    title: 'risk.new'|trans,
     icon: 'bi-plus-circle',
     actions: [
         { label: 'common.back'|trans({}, 'messages'), url: path('app_risk_index'), variant: 'secondary', icon: 'bi-arrow-left' }
@@ -23,10 +24,200 @@
 <div class="card">
     <div class="card-body">
         {{ form_start(form) }}
-            {% include 'risk/_form.html.twig' with {
-                'button_label': 'risk.create'|trans({}, 'risk'),
-                'button_icon': 'bi-save'
-            } %}
+
+        {% include '_components/_auto_form.html.twig' with {
+            'form': form,
+            'sections': {
+                'basic_info': {
+                    'label': 'risk.section.basic_info'|trans,
+                    'fields': ['title', 'asset', 'description', 'threat', 'vulnerability', 'category', 'person', 'location', 'supplier']
+                },
+                'gdpr_assessment': {
+                    'label': 'risk.section.gdpr_assessment'|trans,
+                    'fields': ['involvesPersonalData', 'involvesSpecialCategoryData', 'legalBasis', 'processingScale', 'requiresDPIA', 'dataSubjectImpact']
+                },
+                'inherent_risk': {
+                    'label': 'risk.section.inherent_risk'|trans,
+                    'fields': ['probability', 'impact']
+                },
+                'residual_risk': {
+                    'label': 'risk.section.residual_risk'|trans,
+                    'fields': ['residualProbability', 'residualImpact']
+                },
+                'treatment': {
+                    'label': 'risk.section.treatment'|trans,
+                    'fields': ['treatmentStrategy', 'riskOwner', 'treatmentDescription']
+                },
+                'acceptance': {
+                    'label': 'risk.section.acceptance'|trans,
+                    'fields': ['acceptanceApprovedBy', 'acceptanceApprovedAt', 'acceptanceJustification', 'status', 'reviewDate']
+                }
+            },
+            'col_widths': {
+                'title': 6,
+                'asset': 6,
+                'description': 12,
+                'threat': 6,
+                'vulnerability': 6,
+                'category': 6,
+                'person': 6,
+                'location': 6,
+                'supplier': 6,
+                'involvesPersonalData': 6,
+                'involvesSpecialCategoryData': 6,
+                'legalBasis': 6,
+                'processingScale': 6,
+                'requiresDPIA': 6,
+                'dataSubjectImpact': 12,
+                'probability': 6,
+                'impact': 6,
+                'residualProbability': 6,
+                'residualImpact': 6,
+                'treatmentStrategy': 6,
+                'riskOwner': 6,
+                'treatmentDescription': 12,
+                'acceptanceApprovedBy': 6,
+                'acceptanceApprovedAt': 6,
+                'acceptanceJustification': 12,
+                'status': 6,
+                'reviewDate': 6
+            },
+            'translation_domain': 'risk'
+        } %}
+
+        {# Risk Assessment Guidance Helper #}
+        <fieldset class="mb-4">
+            <legend class="h5 mb-3">
+                <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                {{ 'risk.guidance.title'|trans }}
+            </legend>
+
+            <div class="card border-primary mb-3">
+                <div class="card-header bg-primary-subtle">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link text-decoration-none p-0 w-100 text-start"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#riskAssessmentGuidance"
+                                aria-expanded="false"
+                                aria-controls="riskAssessmentGuidance">
+                            <i class="bi bi-question-circle-fill text-primary" aria-hidden="true"></i>
+                            {{ 'risk.guidance.title'|trans }}
+                            <i class="bi bi-chevron-down float-end" aria-hidden="true"></i>
+                        </button>
+                    </h5>
+                </div>
+                <div class="collapse" id="riskAssessmentGuidance">
+                    <div class="card-body">
+                        <p class="text-muted mb-3">
+                            {{ 'risk.guidance.intro'|trans }}
+                        </p>
+
+                        {# Probability Scale #}
+                        <h6 class="fw-bold mb-2">
+                            <i class="bi bi-graph-up" aria-hidden="true"></i>
+                            {{ 'risk.guidance.probability_title'|trans }}
+                        </h6>
+                        <div class="mb-4">
+                            {% embed '_components/_table.html.twig' with {
+                                'class': 'table-sm table-bordered',
+                                'noMargin': true,
+                                'responsive': true
+                            } %}
+                                {% block table_head %}
+                                    <tr>
+                                        <th style="width: 25%;">{{ 'risk.guidance.scale'|trans }}</th>
+                                        <th>{{ 'risk.guidance.description'|trans }}</th>
+                                    </tr>
+                                {% endblock %}
+                                {% block table_body %}
+                                    <tr>
+                                        <td><strong>1 - {{ 'risk.guidance.probability.very_unlikely'|trans }}</strong></td>
+                                        <td>{{ 'risk.guidance.probability.very_unlikely_desc'|trans }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>2 - {{ 'risk.guidance.probability.unlikely'|trans }}</strong></td>
+                                        <td>{{ 'risk.guidance.probability.unlikely_desc'|trans }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>3 - {{ 'risk.guidance.probability.possible'|trans }}</strong></td>
+                                        <td>{{ 'risk.guidance.probability.possible_desc'|trans }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>4 - {{ 'risk.guidance.probability.likely'|trans }}</strong></td>
+                                        <td>{{ 'risk.guidance.probability.likely_desc'|trans }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>5 - {{ 'risk.guidance.probability.very_likely'|trans }}</strong></td>
+                                        <td>{{ 'risk.guidance.probability.very_likely_desc'|trans }}</td>
+                                    </tr>
+                                {% endblock %}
+                            {% endembed %}
+                        </div>
+
+                        {# Impact Scale #}
+                        <h6 class="fw-bold mb-2">
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                            {{ 'risk.guidance.impact_title'|trans }}
+                        </h6>
+                        {% embed '_components/_table.html.twig' with {
+                            'class': 'table-sm table-bordered',
+                            'noMargin': true,
+                            'responsive': true
+                        } %}
+                            {% block table_head %}
+                                <tr>
+                                    <th style="width: 25%;">{{ 'risk.guidance.scale'|trans }}</th>
+                                    <th>{{ 'risk.guidance.description'|trans }}</th>
+                                </tr>
+                            {% endblock %}
+                            {% block table_body %}
+                                <tr>
+                                    <td><strong>1 - {{ 'risk.guidance.impact.negligible'|trans }}</strong></td>
+                                    <td>{{ 'risk.guidance.impact.negligible_desc'|trans }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>2 - {{ 'risk.guidance.impact.minor'|trans }}</strong></td>
+                                    <td>{{ 'risk.guidance.impact.minor_desc'|trans }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>3 - {{ 'risk.guidance.impact.moderate'|trans }}</strong></td>
+                                    <td>{{ 'risk.guidance.impact.moderate_desc'|trans }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>4 - {{ 'risk.guidance.impact.major'|trans }}</strong></td>
+                                    <td>{{ 'risk.guidance.impact.major_desc'|trans }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>5 - {{ 'risk.guidance.impact.catastrophic'|trans }}</strong></td>
+                                    <td>{{ 'risk.guidance.impact.catastrophic_desc'|trans }}</td>
+                                </tr>
+                            {% endblock %}
+                        {% endembed %}
+
+                        <div class="alert alert-warning mt-3 mb-0" role="status">
+                            <small>
+                                <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                                {{ 'risk.guidance.tip'|trans }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        {# Form Actions #}
+        <div class="d-flex gap-2 justify-content-between mt-4 pt-3 border-top">
+            <a href="{{ path('app_risk_index') }}" class="btn btn-secondary">
+                <i class="bi bi-x-circle" aria-hidden="true"></i>
+                {{ 'common.cancel'|trans({}, 'messages') }}
+            </a>
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi-save" aria-hidden="true"></i>
+                {{ 'risk.create'|trans }}
+            </button>
+        </div>
+
         {{ form_end(form) }}
     </div>
 </div>

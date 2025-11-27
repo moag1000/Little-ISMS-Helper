@@ -599,6 +599,287 @@
     display: none !important;
 }
 
+/* ============================================
+   SLA VISUAL TIMELINE COMPONENT
+   ============================================ */
+
+/* Full SLA Timeline (Detail Pages) */
+.sla-timeline {
+    background: var(--color-white);
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-md);
+    margin: var(--spacing-md) 0;
+    transition: all var(--transition-normal);
+}
+
+[data-theme="dark"] .sla-timeline {
+    background: var(--bg-elevated);
+    border-color: var(--border-color);
+}
+
+.sla-timeline .sla-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+[data-theme="dark"] .sla-timeline .sla-label {
+    color: var(--text-primary);
+}
+
+.sla-progress-container {
+    margin: var(--spacing-sm) 0;
+}
+
+.sla-progress-track {
+    height: 24px;
+    background: var(--color-bg-alt);
+    border-radius: 12px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--color-border);
+}
+
+[data-theme="dark"] .sla-progress-track {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+.sla-progress-bar {
+    height: 100%;
+    border-radius: 12px;
+    transition: width 0.6s ease, background-color 0.3s ease;
+    position: relative;
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+}
+
+/* Color states for progress bar */
+.sla-progress-bar.sla-on-track {
+    background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+.sla-progress-bar.sla-at-risk {
+    background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
+}
+
+.sla-progress-bar.sla-critical {
+    background: linear-gradient(90deg, #f97316 0%, #ea580c 100%);
+    box-shadow: 0 0 10px rgba(249, 115, 22, 0.3);
+}
+
+.sla-progress-bar.sla-overdue {
+    background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+    animation: sla-pulse 2s ease-in-out infinite;
+}
+
+@keyframes sla-pulse {
+    0%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+    }
+    50% {
+        opacity: 0.8;
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.6);
+    }
+}
+
+.sla-progress-label {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-top: var(--spacing-xs);
+    text-align: right;
+}
+
+[data-theme="dark"] .sla-progress-label {
+    color: var(--text-secondary);
+}
+
+.sla-percentage {
+    font-weight: 500;
+}
+
+.sla-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid var(--color-border-light);
+    font-size: 0.875rem;
+}
+
+[data-theme="dark"] .sla-footer {
+    border-top-color: var(--border-color);
+}
+
+.sla-time-remaining {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--color-text);
+}
+
+[data-theme="dark"] .sla-time-remaining {
+    color: var(--text-primary);
+}
+
+.sla-time-remaining i {
+    font-size: 1.1rem;
+}
+
+.sla-deadline {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--color-text-muted);
+}
+
+[data-theme="dark"] .sla-deadline {
+    color: var(--text-secondary);
+}
+
+/* Compact SLA Timeline (Widgets/Tables) */
+.sla-timeline-compact {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--border-radius-sm);
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    transition: all var(--transition-fast);
+}
+
+[data-theme="dark"] .sla-timeline-compact {
+    background: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+.sla-progress-mini {
+    flex: 1;
+    height: 6px;
+    background: var(--color-bg);
+    border-radius: 3px;
+    overflow: hidden;
+    min-width: 60px;
+}
+
+[data-theme="dark"] .sla-progress-mini {
+    background: var(--bg-tertiary);
+}
+
+.sla-progress-bar-mini {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.4s ease;
+}
+
+.sla-progress-bar-mini.sla-on-track {
+    background: #10b981;
+}
+
+.sla-progress-bar-mini.sla-at-risk {
+    background: #f59e0b;
+}
+
+.sla-progress-bar-mini.sla-critical {
+    background: #f97316;
+}
+
+.sla-progress-bar-mini.sla-overdue {
+    background: #ef4444;
+    animation: sla-pulse-mini 2s ease-in-out infinite;
+}
+
+@keyframes sla-pulse-mini {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.sla-info-mini {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.sla-info-mini i {
+    font-size: 0.875rem;
+}
+
+.sla-timeline-compact.sla-on-track .sla-info-mini {
+    color: #059669;
+}
+
+.sla-timeline-compact.sla-at-risk .sla-info-mini {
+    color: #d97706;
+}
+
+.sla-timeline-compact.sla-critical .sla-info-mini {
+    color: #ea580c;
+}
+
+.sla-timeline-compact.sla-overdue .sla-info-mini {
+    color: #dc2626;
+}
+
+/* Badge styling for SLA status */
+.badge.badge-sla-on-track {
+    background-color: #10b981;
+    color: white;
+}
+
+.badge.badge-sla-at-risk {
+    background-color: #f59e0b;
+    color: white;
+}
+
+.badge.badge-sla-critical {
+    background-color: #f97316;
+    color: white;
+}
+
+.badge.badge-sla-overdue {
+    background-color: #ef4444;
+    color: white;
+    animation: sla-pulse 2s ease-in-out infinite;
+}
+
+/* Print-friendly styles */
+@media print {
+    .sla-timeline,
+    .sla-timeline-compact {
+        border-color: #000;
+        background: white !important;
+    }
+
+    .sla-progress-bar,
+    .sla-progress-bar-mini {
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+    }
+
+    .sla-progress-bar.sla-overdue,
+    .sla-progress-bar-mini.sla-overdue {
+        animation: none;
+        opacity: 1;
+    }
+}
+
 /* Responsive adjustments */
 @media (max-width: 767.98px) {
     .notification-container {
@@ -614,5 +895,20 @@
 
     .filter-controls {
         grid-template-columns: 1fr;
+    }
+
+    /* SLA Timeline responsive adjustments */
+    .sla-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-xs);
+    }
+
+    .sla-timeline-compact {
+        flex-wrap: wrap;
+    }
+
+    .sla-progress-mini {
+        min-width: 40px;
     }
 }

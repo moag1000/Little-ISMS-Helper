@@ -26,7 +26,7 @@ role_management:
     help:
         active: 'Aktive Rollen können Benutzern zugewiesen werden'
         permissions: 'Wählen Sie die Berechtigungen aus, die diese Rolle haben soll'
-        system_role: 'Systemrollen sind vordefinierte Rollen mit festen Berechtigungen'
+        system_role: 'Systemrollen können nicht gelöscht werden und haben eingeschränkte Änderungsoptionen'
     permission:
         name: Berechtigung
         resource: Ressource

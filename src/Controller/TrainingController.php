@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Training;
 use App\Form\TrainingType;
 use App\Repository\TrainingRepository;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -21,7 +22,8 @@ class TrainingController extends AbstractController
         private TrainingRepository $trainingRepository,
         private EntityManagerInterface $entityManager,
         private TranslatorInterface $translator,
-        private Security $security
+        private Security $security,
+        private TenantContext $tenantContext
     ) {}
 
     #[Route('/', name: 'app_training_index')]
@@ -84,6 +86,8 @@ class TrainingController extends AbstractController
     public function new(Request $request): Response
     {
         $training = new Training();
+        $training->setTenant($this->tenantContext->getCurrentTenant());
+
         $form = $this->createForm(TrainingType::class, $training);
         $form->handleRequest($request);
 
