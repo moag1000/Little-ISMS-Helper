@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\ChangeRequest;
 use App\Form\ChangeRequestType;
 use App\Repository\ChangeRequestRepository;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +20,8 @@ class ChangeRequestController extends AbstractController
     public function __construct(
         private ChangeRequestRepository $changeRequestRepository,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private TenantContext $tenantContext
     ) {}
 
     #[Route('/', name: 'app_change_request_index')]
@@ -44,6 +46,8 @@ class ChangeRequestController extends AbstractController
     public function new(Request $request): Response
     {
         $changeRequest = new ChangeRequest();
+        $changeRequest->setTenant($this->tenantContext->getCurrentTenant());
+
         $form = $this->createForm(ChangeRequestType::class, $changeRequest);
         $form->handleRequest($request);
 

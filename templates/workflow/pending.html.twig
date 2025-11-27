@@ -5,6 +5,7 @@
 
 {% block body %}
 {% import '_macros/cards.html.twig' as cards %}
+{% import '_macros/workflow.html.twig' as workflow_macros %}
 
 <div class="page-header">
     <div>
@@ -80,13 +81,7 @@
             </td>
             <td>
                 {% if instance.dueDate %}
-                    {{ instance.dueDate|date('d.m.Y') }}
-                    {% set daysUntilDue = (instance.dueDate.timestamp - 'now'|date('U')) / 86400 %}
-                    {% if daysUntilDue < 3 and not instance.overdue %}
-                        <span class="badge bg-warning ml-xs">
-                            {{ 'workflow.badge.due_soon'|trans({}, 'workflows') }}
-                        </span>
-                    {% endif %}
+                    {{ workflow_macros.sla_timeline(instance.dueDate, null, null, instance.createdAt, true) }}
                 {% else %}
                     <span class="text-muted-color">-</span>
                 {% endif %}

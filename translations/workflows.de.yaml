@@ -189,6 +189,26 @@ workflow:
         document_review_desc: 'Strukturierter Review-Prozess für ISMS-Dokumente: Entwurf, Prüfung, Freigabe, Veröffentlichung'
         change_request: Change-Request-Workflow
         change_request_desc: 'Change-Management-Prozess: Antrag, Bewertung, Genehmigung, Umsetzung, Überprüfung'
+    widget:
+        title: 'Ausstehende Freigaben'
+        no_pending: 'Keine ausstehenden Freigaben'
+        no_pending_desc: 'Sie haben derzeit keine Workflows, die Ihre Genehmigung erfordern.'
+        overdue: Überfällig
+        due_soon: 'Bald fällig'
+        my_tasks: 'Meine Aufgaben'
+        time_remaining: 'Verbleibende Zeit'
+        action:
+            quick_view: Schnellansicht
+            approve: Genehmigen
+            reject: Ablehnen
+        view_all: '%count% weitere anzeigen'
+        view_all_workflows: 'Alle Workflows anzeigen'
+        confirm:
+            approve: 'Sind Sie sicher, dass Sie den Workflow "%workflow%" genehmigen möchten?'
+            reject: 'Sind Sie sicher, dass Sie den Workflow "%workflow%" ablehnen möchten?'
+        field:
+            comments: 'Kommentare (optional)'
+            reason: Ablehnungsgrund
     entity_type:
         risk: Risiko
         control: Maßnahme
@@ -209,3 +229,15 @@ workflow_step:
         approval: 'Freigabe / Genehmigung'
         notification: Benachrichtigung
         auto_action: 'Automatische Aktion'
+sla:
+    progress_label: 'SLA-Fortschritt'
+    time_remaining: 'Verbleibende Zeit'
+    elapsed: 'abgelaufen'
+    remaining: 'verbleibend'
+    overdue: 'Überfällig'
+    on_track: 'Im Plan'
+    at_risk: 'Gefährdet'
+    critical: 'Kritisch'
+    hours_short: 'h'
+    minutes_short: 'm'
+    days_short: 'd'

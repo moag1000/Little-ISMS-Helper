@@ -1,36 +1,149 @@
 {% extends 'base.html.twig' %}
-{% trans_default_domain 'privacy'%}
-{% block title %}Edit {{ processing_activity.name }}{% endblock %}
+{% trans_default_domain 'privacy' %}
+
+{% block title %}{{ 'processing_activity.page.edit_title'|trans }} - {{ processing_activity.name }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'GDPR', url: path('app_processing_activity_index'), icon: 'bi-shield-check' },
-            { label: 'VVT', url: path('app_processing_activity_index') },
+            { label: 'processing_activity.breadcrumb.privacy'|trans, url: path('app_processing_activity_index'), icon: 'bi-shield-check' },
+            { label: 'processing_activity.breadcrumb.vvt'|trans, url: path('app_processing_activity_index') },
             { label: processing_activity.name, url: path('app_processing_activity_show', {id: processing_activity.id}) },
-            { label: 'Edit' }
+            { label: 'common.edit'|trans({}, 'messages') }
         ]
     } %}
 
     {% include '_components/_page_header.html.twig' with {
-        title: 'Edit Processing Activity',
+        title: 'processing_activity.page.edit_title'|trans,
         subtitle: processing_activity.name,
-        icon: 'bi-pencil'
+        icon: 'bi-pencil',
+        actions: [
+            { label: 'common.back'|trans({}, 'messages'), url: path('app_processing_activity_show', {id: processing_activity.id}), variant: 'secondary', icon: 'bi-arrow-left' }
+        ]
     } %}
 
-    {% include 'processing_activity/_form.html.twig' %}
+    <div class="card">
+        <div class="card-body">
+            {{ form_start(form) }}
 
-    {# Delete Button #}
+            {% include '_components/_auto_form.html.twig' with {
+                'form': form,
+                'sections': {
+                    'basic_info': {
+                        'label': '<i class="bi bi-info-circle" aria-hidden="true"></i> ' ~ 'processing_activity.section.basic_info'|trans,
+                        'fields': ['name', 'status', 'description', 'purposes', 'legalBasis', 'legalBasisDetails']
+                    },
+                    'data_subjects': {
+                        'label': '<i class="bi bi-people" aria-hidden="true"></i> ' ~ 'processing_activity.section.data_subjects'|trans,
+                        'fields': ['dataSubjectCategories', 'estimatedDataSubjectsCount']
+                    },
+                    'personal_data': {
+                        'label': '<i class="bi bi-database" aria-hidden="true"></i> ' ~ 'processing_activity.section.personal_data'|trans,
+                        'fields': ['personalDataCategories', 'processesSpecialCategories', 'processesCriminalData', 'specialCategoriesDetails', 'legalBasisSpecialCategories']
+                    },
+                    'recipients_transfers': {
+                        'label': '<i class="bi bi-arrow-left-right" aria-hidden="true"></i> ' ~ 'processing_activity.section.recipients_transfers'|trans,
+                        'fields': ['recipientCategories', 'hasThirdCountryTransfer', 'recipientDetails', 'thirdCountries', 'transferSafeguards']
+                    },
+                    'retention': {
+                        'label': '<i class="bi bi-calendar-check" aria-hidden="true"></i> ' ~ 'processing_activity.section.retention'|trans,
+                        'fields': ['retentionPeriod', 'retentionPeriodDays', 'retentionLegalBasis']
+                    },
+                    'security': {
+                        'label': '<i class="bi bi-shield-lock" aria-hidden="true"></i> ' ~ 'processing_activity.section.security'|trans,
+                        'fields': ['technicalOrganizationalMeasures', 'implementedControls']
+                    },
+                    'organization': {
+                        'label': '<i class="bi bi-building" aria-hidden="true"></i> ' ~ 'processing_activity.section.organization'|trans,
+                        'fields': ['responsibleDepartment', 'contactPerson', 'dataProtectionOfficer']
+                    },
+                    'processors': {
+                        'label': '<i class="bi bi-diagram-3" aria-hidden="true"></i> ' ~ 'processing_activity.section.processors'|trans,
+                        'fields': ['involvesProcessors', 'isJointController']
+                    },
+                    'risk_assessment': {
+                        'label': '<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> ' ~ 'processing_activity.section.risk_assessment'|trans,
+                        'fields': ['isHighRisk', 'dpiaCompleted', 'dpiaDate', 'riskLevel']
+                    },
+                    'automated_decision': {
+                        'label': '<i class="bi bi-cpu" aria-hidden="true"></i> ' ~ 'processing_activity.section.automated_decision'|trans,
+                        'fields': ['hasAutomatedDecisionMaking', 'automatedDecisionMakingDetails']
+                    },
+                    'additional': {
+                        'label': '<i class="bi bi-three-dots" aria-hidden="true"></i> ' ~ 'processing_activity.section.additional'|trans,
+                        'fields': ['dataSources', 'startDate', 'endDate', 'nextReviewDate']
+                    }
+                },
+                'col_widths': {
+                    'name': 6,
+                    'status': 6,
+                    'description': 12,
+                    'purposes': 6,
+                    'legalBasis': 6,
+                    'legalBasisDetails': 12,
+                    'dataSubjectCategories': 8,
+                    'estimatedDataSubjectsCount': 4,
+                    'personalDataCategories': 12,
+                    'processesSpecialCategories': 6,
+                    'processesCriminalData': 6,
+                    'specialCategoriesDetails': 6,
+                    'legalBasisSpecialCategories': 6,
+                    'recipientCategories': 6,
+                    'hasThirdCountryTransfer': 6,
+                    'recipientDetails': 12,
+                    'thirdCountries': 6,
+                    'transferSafeguards': 6,
+                    'retentionPeriod': 8,
+                    'retentionPeriodDays': 4,
+                    'retentionLegalBasis': 12,
+                    'technicalOrganizationalMeasures': 12,
+                    'implementedControls': 12,
+                    'responsibleDepartment': 4,
+                    'contactPerson': 4,
+                    'dataProtectionOfficer': 4,
+                    'involvesProcessors': 6,
+                    'isJointController': 6,
+                    'isHighRisk': 4,
+                    'dpiaCompleted': 4,
+                    'dpiaDate': 4,
+                    'riskLevel': 12,
+                    'hasAutomatedDecisionMaking': 12,
+                    'automatedDecisionMakingDetails': 12,
+                    'dataSources': 12,
+                    'startDate': 4,
+                    'endDate': 4,
+                    'nextReviewDate': 4
+                },
+                'translation_domain': 'privacy'
+            } %}
+
+            <div class="d-flex gap-2 justify-content-between mt-4 pt-3 border-top">
+                <a href="{{ path('app_processing_activity_show', {id: processing_activity.id}) }}" class="btn btn-secondary">
+                    <i class="bi bi-x-lg" aria-hidden="true"></i> {{ 'processing_activity.action.cancel'|trans }}
+                </a>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'processing_activity.action.save'|trans }}
+                </button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    {# Delete Danger Zone #}
     {% if is_granted('ROLE_MANAGER') %}
-        <div class="card mt-4">
+        <div class="card mt-4 border-danger">
             <div class="card-body">
-                <h5 class="text-danger">Danger Zone</h5>
-                <p>{{ 'processing_activity.permanently_delete'|trans }}</p>
-                <form method="post" action="{{ path('app_processing_activity_delete', {id: processing_activity.id}) }}" onsubmit="return confirm('Are you sure you want to delete this processing activity?');">
+                <h5 class="text-danger">
+                    <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                    {{ 'common.danger_zone'|trans({}, 'messages') }}
+                </h5>
+                <p class="text-muted">{{ 'processing_activity.permanently_delete'|trans }}</p>
+                <form method="post" action="{{ path('app_processing_activity_delete', {id: processing_activity.id}) }}" onsubmit="return confirm('{{ 'processing_activity.confirm_delete'|trans }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ processing_activity.id) }}">
                     <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-trash" aria-hidden="true"></i> Delete Processing Activity
+                        <i class="bi bi-trash" aria-hidden="true"></i> {{ 'processing_activity.action.delete'|trans }}
                     </button>
                 </form>
             </div>

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\BCExercise;
 use App\Form\BCExerciseType;
 use App\Repository\BCExerciseRepository;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +20,8 @@ class BCExerciseController extends AbstractController
     public function __construct(
         private BCExerciseRepository $bcExerciseRepository,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private TenantContext $tenantContext
     ) {}
 
     #[Route('/', name: 'app_bc_exercise_index')]
@@ -44,6 +46,8 @@ class BCExerciseController extends AbstractController
     public function new(Request $request): Response
     {
         $bcExercise = new BCExercise();
+        $bcExercise->setTenant($this->tenantContext->getCurrentTenant());
+
         $form = $this->createForm(BCExerciseType::class, $bcExercise);
         $form->handleRequest($request);
 

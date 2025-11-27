@@ -61,6 +61,17 @@ class IncidentType extends AbstractType
                 'help' => 'incident.help.severity',
                     'choice_translation_domain' => 'incident',
             ])
+            ->add('dataBreachOccurred', ChoiceType::class, [
+                'label' => 'incident.field.data_breach_occurred',
+                'choices' => [
+                    'common.yes' => true,
+                    'common.no' => false,
+                ],
+                'expanded' => true,
+                'required' => true,
+                'help' => 'incident.help.data_breach_occurred',
+                    'choice_translation_domain' => 'messages',
+            ])
             ->add('detectedAt', DateTimeType::class, [
                 'label' => 'incident.field.detected_at',
                 'widget' => 'single_text',

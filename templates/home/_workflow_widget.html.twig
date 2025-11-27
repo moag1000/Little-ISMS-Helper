@@ -1,0 +1,264 @@
+{#
+ # Workflow Dashboard Widget
+ #
+ # Displays pending workflow approvals for the current user with:
+ # - Personalized list of workflows requiring user's approval
+ # - Color-coded time remaining indicators (red/yellow/green)
+ # - Quick action buttons (Quick View, Approve, Reject)
+ # - Empty state when no pending approvals
+ #
+ # Variables:
+ # - pending_workflows: Array of WorkflowInstance entities pending for current user
+ # - overdue_workflows: Array of all overdue WorkflowInstance entities
+ # - upcoming_workflow_deadlines: Array of WorkflowInstance entities with deadlines < 24h
+ #}
+
+{% import '_macros/workflow.html.twig' as workflow_macros %}
+
+{% set total_pending = pending_workflows|length %}
+
+<div class="widget-card mb-4 border-primary"
+     data-widget-id="workflow-approvals"
+     data-dashboard-customizer-target="widget">
+    <div class="widget-header bg-primary-subtle">
+        <h3 class="widget-title text-primary">
+            <i class="bi bi-check-circle" aria-hidden="true"></i>
+            {{ 'workflow.widget.title'|trans({}, 'workflows') }}
+        </h3>
+        {% if total_pending > 0 %}
+            <span class="badge bg-primary">{{ total_pending }}</span>
+        {% endif %}
+    </div>
+
+    <div class="widget-body p-3">
+        {% if total_pending > 0 %}
+            {# Summary Stats Row #}
+            <div class="row g-2 mb-3">
+                <div class="col-4">
+                    <div class="text-center p-2 bg-danger-subtle rounded">
+                        <div class="fs-4 fw-bold text-danger">{{ overdue_workflows|length }}</div>
+                        <div class="small text-muted">{{ 'workflow.widget.overdue'|trans({}, 'workflows') }}</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="text-center p-2 bg-warning-subtle rounded">
+                        <div class="fs-4 fw-bold text-warning">{{ upcoming_workflow_deadlines|length }}</div>
+                        <div class="small text-muted">{{ 'workflow.widget.due_soon'|trans({}, 'workflows') }}</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="text-center p-2 bg-primary-subtle rounded">
+                        <div class="fs-4 fw-bold text-primary">{{ total_pending }}</div>
+                        <div class="small text-muted">{{ 'workflow.widget.my_tasks'|trans({}, 'workflows') }}</div>
+                    </div>
+                </div>
+            </div>
+
+            {# Workflow List #}
+            <ul class="list-unstyled mb-0">
+                {% for instance in pending_workflows|slice(0, 5) %}
+                    {% set workflow = instance.workflow %}
+                    {% set currentStep = instance.currentStep %}
+                    {% set dueDate = instance.dueDate %}
+                    {% set isOverdue = instance.isOverdue %}
+
+                    <li class="mb-3 pb-3 {% if not loop.last %}border-bottom{% endif %}">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="flex-grow-1">
+                                {# Workflow Name #}
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    {# Entity Type Icon #}
+                                    {% set entityType = instance.entityType|split('\\')|last|lower %}
+                                    {% set entityIcon = {
+                                        'incident': 'bi-exclamation-circle',
+                                        'risk': 'bi-exclamation-triangle',
+                                        'asset': 'bi-server',
+                                        'control': 'bi-shield-check',
+                                        'document': 'bi-file-text'
+                                    }[entityType] ?? 'bi-file-earmark' %}
+
+                                    <i class="bi {{ entityIcon }} text-muted" aria-hidden="true"></i>
+                                    <strong>{{ workflow.name }}</strong>
+                                </div>
+
+                                {# Current Step Info #}
+                                <div class="small text-muted mb-1">
+                                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                                    {{ 'workflow.field.current_step'|trans({}, 'workflows') }}: {{ currentStep.name }}
+                                </div>
+
+                                {# Assignee Info #}
+                                {% if currentStep.approverRole %}
+                                    <div class="small mb-2">
+                                        <i class="bi bi-person-badge" aria-hidden="true"></i>
+                                        <span class="text-muted">{{ 'workflow.field.assignee'|trans({}, 'workflows') }}:</span>
+                                        <span class="badge bg-info-subtle text-info">{{ currentStep.approverRole }}</span>
+                                        <span class="badge bg-primary">{{ 'workflow.badge.my_task'|trans({}, 'workflows') }}</span>
+                                    </div>
+                                {% endif %}
+
+                                {# SLA Timeline - Compact Mode #}
+                                {% if dueDate %}
+                                    <div class="mb-2">
+                                        {{ workflow_macros.sla_timeline(dueDate, null, null, instance.createdAt, true) }}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {# Progress Bar #}
+                        <div class="progress mb-2" style="height: 4px;">
+                            {% if dueDate %}
+                                {% set now = date() %}
+                                {% set isOverdue = dueDate < now %}
+                                {% set totalHours = ((dueDate.timestamp - now.timestamp) / 3600)|round(1) %}
+                                {% if isOverdue %}
+                                    {% set urgencyClass = 'danger' %}
+                                {% elseif totalHours < 2 %}
+                                    {% set urgencyClass = 'danger' %}
+                                {% elseif totalHours < 24 %}
+                                    {% set urgencyClass = 'warning' %}
+                                {% else %}
+                                    {% set urgencyClass = 'success' %}
+                                {% endif %}
+                            {% else %}
+                                {% set urgencyClass = 'secondary' %}
+                            {% endif %}
+                            <div class="progress-bar bg-{{ urgencyClass }}"
+                                 role="progressbar"
+                                 style="width: {{ instance.progressPercentage }}%"
+                                 aria-valuenow="{{ instance.progressPercentage }}"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100"></div>
+                        </div>
+
+                        {# Quick Action Buttons #}
+                        <div class="d-flex gap-2">
+                            <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}"
+                               class="btn btn-sm btn-outline-primary flex-fill"
+                               title="{{ 'workflow.widget.action.quick_view'|trans({}, 'workflows') }}">
+                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                {{ 'workflow.widget.action.quick_view'|trans({}, 'workflows') }}
+                            </a>
+
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-success"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#approveModal{{ instance.id }}"
+                                    title="{{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}">
+                                <i class="bi bi-check-lg" aria-hidden="true"></i>
+                            </button>
+
+                            <button type="button"
+                                    class="btn btn-sm btn-outline-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#rejectModal{{ instance.id }}"
+                                    title="{{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}">
+                                <i class="bi bi-x-lg" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </li>
+
+                    {# Approve Modal #}
+                    <div class="modal fade" id="approveModal{{ instance.id }}" tabindex="-1" aria-labelledby="approveModalLabel{{ instance.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="approveModalLabel{{ instance.id }}">
+                                        {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form method="post" action="{{ path('app_workflow_instance_approve', {id: instance.id}) }}">
+                                    <div class="modal-body">
+                                        <p>{{ 'workflow.widget.confirm.approve'|trans({workflow: workflow.name}, 'workflows') }}</p>
+                                        <div class="mb-3">
+                                            <label for="comments{{ instance.id }}" class="form-label">
+                                                {{ 'workflow.widget.field.comments'|trans({}, 'workflows') }}
+                                            </label>
+                                            <textarea class="form-control" id="comments{{ instance.id }}" name="comments" rows="3"></textarea>
+                                        </div>
+                                        <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ instance.id) }}">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
+                                        </button>
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="bi bi-check-lg" aria-hidden="true"></i>
+                                            {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Reject Modal #}
+                    <div class="modal fade" id="rejectModal{{ instance.id }}" tabindex="-1" aria-labelledby="rejectModalLabel{{ instance.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="rejectModalLabel{{ instance.id }}">
+                                        {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form method="post" action="{{ path('app_workflow_instance_reject', {id: instance.id}) }}">
+                                    <div class="modal-body">
+                                        <p>{{ 'workflow.widget.confirm.reject'|trans({workflow: workflow.name}, 'workflows') }}</p>
+                                        <div class="mb-3">
+                                            <label for="reason{{ instance.id }}" class="form-label">
+                                                {{ 'workflow.widget.field.reason'|trans({}, 'workflows') }} <span class="text-danger">*</span>
+                                            </label>
+                                            <textarea class="form-control" id="reason{{ instance.id }}" name="reason" rows="3" required></textarea>
+                                        </div>
+                                        <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ instance.id) }}">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                            {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
+                                        </button>
+                                        <button type="submit" class="btn btn-danger">
+                                            <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                            {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </ul>
+
+            {# View All Link #}
+            {% if total_pending > 5 %}
+                <div class="text-center mt-3 pt-3 border-top">
+                    <a href="{{ path('app_workflow_pending') }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                        {{ 'workflow.widget.view_all'|trans({count: total_pending - 5}, 'workflows') }}
+                    </a>
+                </div>
+            {% endif %}
+        {% else %}
+            {# Empty State #}
+            <div class="text-center py-4">
+                <div class="mb-3">
+                    <i class="bi bi-check-circle text-success" style="font-size: 3rem;" aria-hidden="true"></i>
+                </div>
+                <h5 class="text-muted">{{ 'workflow.widget.no_pending'|trans({}, 'workflows') }}</h5>
+                <p class="text-muted small mb-0">
+                    {{ 'workflow.widget.no_pending_desc'|trans({}, 'workflows') }}
+                </p>
+            </div>
+        {% endif %}
+    </div>
+
+    {# Footer Link #}
+    <div class="widget-footer">
+        <a href="{{ path('app_workflow_index') }}" class="text-decoration-none d-flex align-items-center justify-content-center py-2">
+            <span>{{ 'workflow.widget.view_all_workflows'|trans({}, 'workflows') }}</span>
+            <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+        </a>
+    </div>
+</div>

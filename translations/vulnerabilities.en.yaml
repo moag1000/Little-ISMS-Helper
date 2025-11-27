@@ -5,6 +5,12 @@ vulnerability:
     empty: 'No vulnerabilities available.'
     section:
         details: Details
+        identification: Identification
+        severity: Severity
+        status: Status
+        dates: Dates
+        exploit: Exploit
+        remediation: Remediation
     kpi:
         total: 'Total Vulnerabilities'
         critical: 'Critical Vulnerabilities'

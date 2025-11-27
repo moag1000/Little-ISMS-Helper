@@ -6,6 +6,7 @@ use App\Entity\RiskTreatmentPlan;
 use App\Form\RiskTreatmentPlanType;
 use App\Repository\AuditLogRepository;
 use App\Repository\RiskTreatmentPlanRepository;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +22,8 @@ class RiskTreatmentPlanController extends AbstractController
         private RiskTreatmentPlanRepository $treatmentPlanRepository,
         private AuditLogRepository $auditLogRepository,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private TenantContext $tenantContext
     ) {}
 
     #[Route('/', name: 'app_risk_treatment_plan_index')]
@@ -78,6 +80,8 @@ class RiskTreatmentPlanController extends AbstractController
     public function new(Request $request): Response
     {
         $plan = new RiskTreatmentPlan();
+        $plan->setTenant($this->tenantContext->getCurrentTenant());
+
         $form = $this->createForm(RiskTreatmentPlanType::class, $plan);
         $form->handleRequest($request);
 

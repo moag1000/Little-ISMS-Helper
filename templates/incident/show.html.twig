@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'incident' %}
+{% import '_macros/workflow.html.twig' as workflow_macros %}
 
 {% block title %}{{ incident.title }}{% endblock %}
 
@@ -75,20 +76,9 @@
                     {% if workflowStatus.due_date %}
                         <div class="workflow-info-item">
                             <span class="label">{{ 'workflow.field.due_date'|trans({}, 'workflows') }}:</span>
-                            <span class="value">
-                                {{ workflowStatus.due_date|date('d.m.Y H:i') }}
-                                {% if workflowStatus.is_overdue %}
-                                    <span class="badge bg-danger ms-2">{{ 'workflow.badge.overdue'|trans({}, 'workflows') }}</span>
-                                {% else %}
-                                    {% set hoursRemaining = ((workflowStatus.due_date.timestamp - "now"|date('U')) / 3600)|round(1) %}
-                                    {% if hoursRemaining < 24 %}
-                                        <span class="badge bg-warning ms-2">{{ hoursRemaining }} {{ 'incident.timeline.hours_remaining'|trans({}, 'incident') }}</span>
-                                    {% else %}
-                                        {% set daysRemaining = (hoursRemaining / 24)|round(1) %}
-                                        <span class="badge bg-info ms-2">{{ daysRemaining }} {{ 'workflow.days'|trans({}, 'workflows') }}</span>
-                                    {% endif %}
-                                {% endif %}
-                            </span>
+                            <div class="mt-2">
+                                {{ workflow_macros.sla_timeline(workflowStatus.due_date, null, null, null, false) }}
+                            </div>
                         </div>
                     {% endif %}
                 </div>

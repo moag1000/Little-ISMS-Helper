@@ -1,0 +1,154 @@
+{#
+ # Workflow-related Twig macros for SLA timelines and workflow components
+ #}
+
+{#
+ # SLA Visual Timeline Macro
+ #
+ # Displays a visual progress bar showing time elapsed and urgency level
+ # for workflow SLA deadlines with color-coded indicators.
+ #
+ # @param deadline DateTime The deadline/due date for the SLA
+ # @param label string The label for the timeline (optional)
+ # @param slaHours int The total SLA hours allocated (optional, used for calculation)
+ # @param startTime DateTime The start time for SLA calculation (optional, defaults to 'now')
+ # @param compact bool Whether to use compact mode (for widgets/tables)
+ #}
+{% macro sla_timeline(deadline, label = null, slaHours = null, startTime = null, compact = false) %}
+    {% if deadline %}
+        {# Calculate time remaining #}
+        {% set now = date() %}
+        {% set totalSeconds = deadline.timestamp - now.timestamp %}
+        {% set totalMinutes = (totalSeconds / 60)|round %}
+        {% set totalHours = (totalSeconds / 3600)|round(1) %}
+        {% set isOverdue = totalSeconds < 0 %}
+
+        {# Calculate percentage elapsed #}
+        {% if slaHours and startTime %}
+            {% set slaSeconds = slaHours * 3600 %}
+            {% set elapsedSeconds = now.timestamp - startTime.timestamp %}
+            {% set percentElapsed = ((elapsedSeconds / slaSeconds) * 100)|round %}
+        {% else %}
+            {# Estimate based on deadline if no start time provided #}
+            {% if totalHours > 168 %}
+                {# More than 7 days - assume low urgency #}
+                {% set percentElapsed = 25 %}
+            {% elseif totalHours > 48 %}
+                {# 2-7 days - moderate progress #}
+                {% set percentElapsed = 50 %}
+            {% elseif totalHours > 24 %}
+                {# 1-2 days - high progress #}
+                {% set percentElapsed = 70 %}
+            {% elseif totalHours > 2 %}
+                {# 2-24 hours - very high progress #}
+                {% set percentElapsed = 85 %}
+            {% elseif not isOverdue %}
+                {# Less than 2 hours - critical #}
+                {% set percentElapsed = 95 %}
+            {% else %}
+                {# Overdue #}
+                {% set percentElapsed = 100 %}
+            {% endif %}
+        {% endif %}
+
+        {# Clamp percentage to 0-100 range #}
+        {% set percentElapsed = percentElapsed < 0 ? 0 : (percentElapsed > 100 ? 100 : percentElapsed) %}
+
+        {# Determine color class and status based on percentage elapsed #}
+        {% if isOverdue %}
+            {% set colorClass = 'sla-overdue' %}
+            {% set statusText = 'sla.overdue'|trans({}, 'workflows') %}
+            {% set statusIcon = 'bi-exclamation-triangle-fill' %}
+        {% elseif percentElapsed >= 80 %}
+            {% set colorClass = 'sla-critical' %}
+            {% set statusText = 'sla.critical'|trans({}, 'workflows') %}
+            {% set statusIcon = 'bi-clock-fill' %}
+        {% elseif percentElapsed >= 50 %}
+            {% set colorClass = 'sla-at-risk' %}
+            {% set statusText = 'sla.at_risk'|trans({}, 'workflows') %}
+            {% set statusIcon = 'bi-hourglass-split' %}
+        {% else %}
+            {% set colorClass = 'sla-on-track' %}
+            {% set statusText = 'sla.on_track'|trans({}, 'workflows') %}
+            {% set statusIcon = 'bi-check-circle' %}
+        {% endif %}
+
+        {# Format time remaining display #}
+        {% if isOverdue %}
+            {% set absHours = (totalHours * -1) %}
+            {% if absHours < 24 %}
+                {% set timeDisplay = absHours|round(1) ~ 'sla.hours_short'|trans({}, 'workflows') ~ ' ' ~ 'sla.overdue'|trans({}, 'workflows') %}
+            {% else %}
+                {% set days = (absHours / 24)|round(1) %}
+                {% set timeDisplay = days ~ 'sla.days_short'|trans({}, 'workflows') ~ ' ' ~ 'sla.overdue'|trans({}, 'workflows') %}
+            {% endif %}
+        {% else %}
+            {% if totalHours < 1 %}
+                {% set timeDisplay = totalMinutes ~ 'sla.minutes_short'|trans({}, 'workflows') %}
+            {% elseif totalHours < 24 %}
+                {% set hours = totalHours|round(1) %}
+                {% set timeDisplay = hours ~ 'sla.hours_short'|trans({}, 'workflows') %}
+            {% else %}
+                {% set days = (totalHours / 24)|round(1) %}
+                {% set timeDisplay = days ~ 'sla.days_short'|trans({}, 'workflows') %}
+            {% endif %}
+        {% endif %}
+
+        {% if compact %}
+            {# Compact mode for widgets and tables #}
+            <div class="sla-timeline-compact {{ colorClass }}"
+                 role="status"
+                 aria-label="{{ label ?? 'sla.progress_label'|trans({}, 'workflows') }}: {{ percentElapsed }}% {{ 'sla.elapsed'|trans({}, 'workflows') }}, {{ timeDisplay }} {{ 'sla.remaining'|trans({}, 'workflows') }}"
+                 title="{{ deadline|date('d.m.Y H:i') }}">
+                <div class="sla-progress-mini">
+                    <div class="sla-progress-bar-mini {{ colorClass }}" style="width: {{ percentElapsed }}%"></div>
+                </div>
+                <div class="sla-info-mini">
+                    <i class="bi {{ statusIcon }}" aria-hidden="true"></i>
+                    <span class="sla-time-mini">{{ timeDisplay }}</span>
+                </div>
+            </div>
+        {% else %}
+            {# Full mode for detail pages #}
+            <div class="sla-timeline {{ colorClass }}"
+                 role="region"
+                 aria-label="{{ label ?? 'sla.progress_label'|trans({}, 'workflows') }}">
+                {% if label %}
+                    <div class="sla-label">
+                        {{ label }}
+                        <span class="badge badge-{{ colorClass }} ms-2">
+                            <i class="bi {{ statusIcon }}" aria-hidden="true"></i>
+                            {{ statusText }}
+                        </span>
+                    </div>
+                {% endif %}
+
+                <div class="sla-progress-container">
+                    <div class="sla-progress-track">
+                        <div class="sla-progress-bar {{ colorClass }}"
+                             style="width: {{ percentElapsed }}%"
+                             role="progressbar"
+                             aria-valuenow="{{ percentElapsed }}"
+                             aria-valuemin="0"
+                             aria-valuemax="100">
+                        </div>
+                    </div>
+                    <div class="sla-progress-label">
+                        <span class="sla-percentage">{{ percentElapsed }}% {{ 'sla.elapsed'|trans({}, 'workflows') }}</span>
+                    </div>
+                </div>
+
+                <div class="sla-footer">
+                    <div class="sla-time-remaining">
+                        <i class="bi bi-clock" aria-hidden="true"></i>
+                        <strong>{{ timeDisplay }}</strong> {{ 'sla.time_remaining'|trans({}, 'workflows') }}
+                    </div>
+                    <div class="sla-deadline" title="{{ 'workflow.field.due_date'|trans({}, 'workflows') }}">
+                        <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                        <span>{{ deadline|date('d.m.Y H:i') }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endmacro %}

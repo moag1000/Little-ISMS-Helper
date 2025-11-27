@@ -125,7 +125,132 @@ privacy:
         lessons_learned: 'Lessons Learned'
         follow_up_actions: 'Follow Up Actions'
         reopen_reason: 'Reopen Reason'
+    # Choice fields for DPIA form (privacy.* keys)
+    personal_data:
+        identification: 'Identification data (name, ID number)'
+        contact: 'Contact data (address, email, phone)'
+        financial: 'Financial data (bank account, payment info)'
+        location: 'Location data'
+        online_identifiers: 'Online identifiers (IP, cookies)'
+        employment: 'Employment data'
+        educational: 'Educational data'
+        contract: 'Contract data'
+        communication: 'Communication data'
+        usage: 'Usage data'
+    data_subject:
+        customers: Customers
+        employees: Employees
+        applicants: Applicants
+        suppliers: 'Suppliers/Partners'
+        visitors: 'Website visitors'
+        subscribers: 'Newsletter subscribers'
+        patients: Patients
+        students: Students
+        children: Children
+        vulnerable: 'Vulnerable groups'
+        other: Other
+    data_category:
+        health_art9: 'Health data (Art. 9 GDPR)'
+        biometric_art9: 'Biometric data (Art. 9 GDPR)'
+        genetic_art9: 'Genetic data (Art. 9 GDPR)'
+        behavioral: 'Behavioral/profiling data'
+    legal_basis:
+        consent: 'Art. 6(1)(a) Consent'
+        contract: 'Art. 6(1)(b) Contract performance'
+        legal_obligation: 'Art. 6(1)(c) Legal obligation'
+        vital_interests: 'Art. 6(1)(d) Vital interests'
+        public_task: 'Art. 6(1)(e) Public task'
+        legitimate_interests: 'Art. 6(1)(f) Legitimate interests'
+    risk_level:
+        low: Low
+        medium: Medium
+        high: High
+        critical: Critical
+    likelihood:
+        rare: 'Rare (0-10%)'
+        unlikely: 'Unlikely (10-30%)'
+        possible: 'Possible (30-50%)'
+        likely: 'Likely (50-70%)'
+        certain: 'Certain (70-100%)'
+    impact:
+        negligible: Negligible
+        minor: Minor
+        moderate: Moderate
+        major: Major
+        severe: Severe
+    supervisory_consultation:
+        yes_high_risk: 'Yes (high residual risk - Art. 36)'
 processing_activity:
+    title: 'VVT - Record of Processing Activities'
+    subtitle: 'Art. 30 GDPR - Record of Processing Activities'
+    page:
+        new_title: 'New Processing Activity'
+        new_subtitle: 'Create new VVT entry (Art. 30 GDPR)'
+        edit_title: 'Edit Processing Activity'
+        edit_subtitle: 'Edit VVT entry (Art. 30 GDPR)'
+    breadcrumb:
+        privacy: 'Privacy'
+        vvt: 'VVT - Processing Activities'
+        new: 'New Processing Activity'
+        edit: 'Edit'
+    button:
+        dashboard: 'Dashboard'
+        export_pdf: 'Export PDF'
+        export_csv: 'Export CSV'
+        new: 'New Processing Activity'
+    stat:
+        total: 'Total'
+        active: 'active'
+        compliance_score: 'Compliance Score'
+        complete: 'complete'
+        high_risk: 'High Risk'
+        missing_dpia: 'missing DPIA'
+        special_categories: 'Special Categories'
+        art9_data: 'Art. 9 data'
+    filter:
+        title: 'Filters'
+        all: 'All'
+        active: 'Active'
+        incomplete: 'Incomplete'
+        requiring_dpia: 'Requiring DPIA'
+        special_categories: 'Special Categories'
+        third_country: 'Third Country Transfers'
+    table:
+        title: 'Processing Activities'
+        items: 'items'
+        name: 'Name'
+        legal_basis: 'Legal Basis'
+        data_subjects: 'Data Subjects'
+        risk: 'Risk'
+        status: 'Status'
+        completeness: 'Completeness'
+        actions: 'Actions'
+        categories: 'categories'
+        subjects: 'subjects'
+    badge:
+        special_categories: 'Special Categories'
+        third_country: 'Third Country'
+        dpia_required: 'DPIA Required'
+    empty:
+        title: 'No processing activities found.'
+        filter_hint: 'Try changing the filter or'
+        create_hint: 'Start by'
+        create_first: 'creating your first processing activity'
+    section:
+        basic_info: 'Basic Information (Art. 30(1)(a))'
+        data_subjects: 'Data Subjects (Art. 30(1)(b))'
+        personal_data: 'Personal Data (Art. 30(1)(c))'
+        recipients_transfers: 'Recipients & Transfers (Art. 30(1)(d-e))'
+        retention: 'Retention (Art. 30(1)(f))'
+        security: 'Security Measures (Art. 30(1)(g))'
+        organization: 'Organization'
+        processors: 'Processors & Joint Controllers'
+        risk_assessment: 'Risk Assessment (Art. 35)'
+        automated_decision: 'Automated Decision-Making (Art. 22)'
+        additional: 'Additional Information'
+    action:
+        save: 'Save Processing Activity'
+        cancel: 'Cancel'
     field:
         name: Name
         status: Status
@@ -472,3 +597,68 @@ dpia:
         severe: 'Severe'
     supervisory_consultation:
         yes_high_risk: 'Yes (high residual risk - Art. 36)'
+
+# GDPR Breach Wizard
+wizard:
+    trigger_button: 'Start GDPR Breach Wizard'
+    trigger_hint: 'Use the wizard to determine if GDPR reporting is required (Art. 33)'
+    title: 'GDPR Data Breach Assessment Wizard'
+    subtitle: 'Step-by-step assessment according to GDPR Art. 33'
+
+    # Step 1
+    step1_title: 'Is personal data involved?'
+    personal_data_question: 'Does this incident involve personal data (data relating to identified or identifiable natural persons)?'
+    personal_data_yes: 'Personal data is involved'
+    personal_data_no: 'No personal data involved (then NOT a GDPR breach)'
+    personal_data_hint: 'Personal data is any information relating to an identified or identifiable natural person (name, email, IP address, location data, etc.).'
+
+    # Step 2
+    step2_title: 'What type of personal data?'
+    data_type_question: 'Select all affected data categories (multiple selections possible):'
+    data_types:
+        names_contact: 'Names and contact information'
+        names_contact_desc: 'Name, address, email, phone number'
+        financial: 'Financial data'
+        financial_desc: 'Bank account, credit card numbers, payment information'
+        health_biometric: 'Health/Biometric data'
+        health_biometric_desc: 'Health information, fingerprints, facial recognition'
+        special_category_art9: 'Special categories (Art. 9 GDPR)'
+        special_category_art9_desc: 'Racial/ethnic origin, political opinions, religious beliefs, trade union membership, genetic data, sex life'
+        criminal_records_art10: 'Criminal records (Art. 10 GDPR)'
+        criminal_records_art10_desc: 'Criminal convictions and offences'
+    risk_score: 'Risk score'
+
+    # Step 3
+    step3_title: 'How many individuals are affected?'
+    affected_count_question: 'Select the number of affected individuals:'
+    scale_options:
+        under_100: 'Less than 100 individuals'
+        100_to_1000: '100 to 1,000 individuals'
+        1001_to_10000: '1,001 to 10,000 individuals'
+        over_10000: 'More than 10,000 individuals'
+    scale_score: 'Scale score'
+
+    # Step 4
+    step4_title: 'Result & Recommendation'
+    risk_level_label: 'Risk Level'
+    gdpr_article_33_requirement: 'GDPR Art. 33 Reporting Requirement'
+    deadline_warning: '72-hour deadline is running!'
+    deadline_date: 'Reporting deadline (72h from now)'
+    recommendation_label: 'Recommendation'
+    legal_references: 'Legal References'
+    complete_and_create: 'Complete & Create Incident'
+
+    # Risk levels
+    risk_level:
+        low: 'Low Risk'
+        medium: 'Medium Risk'
+        high: 'High Risk'
+        very_high: 'Very High Risk'
+
+    # Recommendations
+    recommendation:
+        not_reportable: 'This breach is unlikely to result in a risk to rights and freedoms. Documentation recommended, but no mandatory reporting to supervisory authority.'
+        reportable_low: 'Report to supervisory authority within 72 hours (Art. 33). Document the breach thoroughly.'
+        reportable_medium: 'Report to supervisory authority within 72 hours (Art. 33). Begin impact assessment and prepare for potential data subject notification.'
+        reportable_high: 'URGENT: Report to supervisory authority within 72 hours (Art. 33). Consider notifying affected data subjects (Art. 34). Immediate action required.'
+        reportable_very_high: 'CRITICAL: Report to supervisory authority within 72 hours (Art. 33). Notify affected data subjects without undue delay (Art. 34). Immediate escalation required.'

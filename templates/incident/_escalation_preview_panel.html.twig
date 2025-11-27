@@ -1,0 +1,23 @@
+{% trans_default_domain 'incident' %}
+
+{#
+    Incident Escalation Preview Panel
+
+    This partial is a placeholder container that will be populated
+    dynamically by the incident_escalation_preview_controller.js
+
+    The actual content is generated client-side based on:
+    - Severity selection
+    - Data breach checkbox status
+
+    Usage:
+    {% include 'incident/_escalation_preview_panel.html.twig' %}
+#}
+
+<div data-incident-escalation-preview-target="previewContent">
+    {# Initial state - hidden until data is loaded #}
+    <div class="text-center text-muted py-4">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        <p class="mb-0">{{ 'incident.escalation_preview.select_severity'|trans({}, 'incident') }}</p>
+    </div>
+</div>

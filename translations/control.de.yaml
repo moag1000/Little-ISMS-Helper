@@ -1,4 +1,10 @@
 control:
+    section:
+        applicability: Anwendbarkeit
+        implementation: Umsetzung
+        responsibility: Verantwortlichkeit
+        review: Überprüfung
+        assets: 'Geschützte Assets'
     field:
         control_id: Maßnahme‑ID
         name: Name
@@ -48,3 +54,5 @@ control:
         in_progress: 'In Umsetzung'
         implemented: Implementiert
         verified: Verifiziert
+    success:
+        updated: 'Maßnahme erfolgreich aktualisiert'

@@ -24,10 +24,64 @@
 <div class="card">
     <div class="card-body">
         {{ form_start(form) }}
-            {% include 'asset/_form.html.twig' with {
-                'button_label': 'asset.action.create'|trans({}, 'asset'),
-                'button_icon': 'bi-save'
+            {% include '_components/_auto_form.html.twig' with {
+                'form': form,
+                'sections': {
+                    'basic_info': {
+                        'label': 'asset.section.basic_info'|trans({}, 'asset'),
+                        'fields': ['name', 'assetType', 'description']
+                    },
+                    'assignment': {
+                        'label': 'asset.section.assignment'|trans({}, 'asset'),
+                        'fields': ['owner', 'location']
+                    },
+                    'financial': {
+                        'label': 'asset.section.financial'|trans({}, 'asset'),
+                        'fields': ['acquisitionValue', 'currentValue', 'monetaryValue']
+                    },
+                    'classification': {
+                        'label': 'asset.section.classification'|trans({}, 'asset'),
+                        'fields': ['dataClassification', 'status', 'returnDate']
+                    },
+                    'cia_values': {
+                        'label': 'asset.section.cia_values'|trans({}, 'asset'),
+                        'fields': ['confidentialityValue', 'integrityValue', 'availabilityValue']
+                    },
+                    'policies': {
+                        'label': 'asset.section.policies'|trans({}, 'asset'),
+                        'fields': ['acceptableUsePolicy', 'handlingInstructions']
+                    }
+                },
+                'col_widths': {
+                    'name': 6,
+                    'assetType': 6,
+                    'description': 12,
+                    'owner': 6,
+                    'location': 6,
+                    'acquisitionValue': 4,
+                    'currentValue': 4,
+                    'monetaryValue': 4,
+                    'dataClassification': 4,
+                    'status': 4,
+                    'returnDate': 4,
+                    'confidentialityValue': 4,
+                    'integrityValue': 4,
+                    'availabilityValue': 4,
+                    'acceptableUsePolicy': 12,
+                    'handlingInstructions': 12
+                }
             } %}
+
+            <div class="form-actions d-flex gap-2 justify-content-end">
+                <a href="{{ path('app_asset_index') }}" class="btn btn-secondary">
+                    <i class="bi bi-x-circle" aria-hidden="true"></i>
+                    {{ 'common.cancel'|trans({}, 'messages') }}
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi-save" aria-hidden="true"></i>
+                    {{ 'asset.action.create'|trans({}, 'asset') }}
+                </button>
+            </div>
         {{ form_end(form) }}
     </div>
 </div>

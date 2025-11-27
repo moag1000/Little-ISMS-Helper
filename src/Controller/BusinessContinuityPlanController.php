@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\BusinessContinuityPlan;
 use App\Form\BusinessContinuityPlanType;
 use App\Repository\BusinessContinuityPlanRepository;
+use App\Service\TenantContext;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,7 +20,8 @@ class BusinessContinuityPlanController extends AbstractController
     public function __construct(
         private BusinessContinuityPlanRepository $bcPlanRepository,
         private EntityManagerInterface $entityManager,
-        private TranslatorInterface $translator
+        private TranslatorInterface $translator,
+        private TenantContext $tenantContext
     ) {}
 
     #[Route('/', name: 'app_bc_plan_index')]
@@ -44,6 +46,8 @@ class BusinessContinuityPlanController extends AbstractController
     public function new(Request $request): Response
     {
         $bcPlan = new BusinessContinuityPlan();
+        $bcPlan->setTenant($this->tenantContext->getCurrentTenant());
+
         $form = $this->createForm(BusinessContinuityPlanType::class, $bcPlan);
         $form->handleRequest($request);
 
