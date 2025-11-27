@@ -1,32 +1,45 @@
 {# GDPR Data Breach Assessment Wizard Modal #}
 {% trans_default_domain 'privacy' %}
 
-<div class="gdpr-wizard">
+<div class="gdpr-wizard"
+     data-translations='{
+         "calculating": "{{ 'data_breach.wizard.calculating'|trans({}, 'privacy')|e('js') }}",
+         "yes_reportable": "{{ 'data_breach.wizard.yes_reportable'|trans({}, 'privacy')|e('js') }}",
+         "no_not_reportable": "{{ 'data_breach.wizard.no_not_reportable'|trans({}, 'privacy')|e('js') }}",
+         "risk_low": "{{ 'data_breach.wizard.risk_level.low'|trans({}, 'privacy')|e('js') }}",
+         "risk_medium": "{{ 'data_breach.wizard.risk_level.medium'|trans({}, 'privacy')|e('js') }}",
+         "risk_high": "{{ 'data_breach.wizard.risk_level.high'|trans({}, 'privacy')|e('js') }}",
+         "risk_very_high": "{{ 'data_breach.wizard.risk_level.very_high'|trans({}, 'privacy')|e('js') }}",
+         "recommendation_not_reportable": "{{ 'data_breach.wizard.recommendation.not_reportable'|trans({}, 'privacy')|e('js') }}",
+         "recommendation_reportable_low": "{{ 'data_breach.wizard.recommendation.reportable_low'|trans({}, 'privacy')|e('js') }}",
+         "recommendation_reportable_medium": "{{ 'data_breach.wizard.recommendation.reportable_medium'|trans({}, 'privacy')|e('js') }}",
+         "recommendation_reportable_high": "{{ 'data_breach.wizard.recommendation.reportable_high'|trans({}, 'privacy')|e('js') }}",
+         "recommendation_reportable_very_high": "{{ 'data_breach.wizard.recommendation.reportable_very_high'|trans({}, 'privacy')|e('js') }}",
+         "step_of": "{{ 'data_breach.wizard.step_of'|trans({}, 'privacy')|e('js') }}"
+     }'>
     {# Modal Backdrop #}
     <div data-gdpr-breach-wizard-target="backdrop"
-         class="modal-backdrop"
-         data-action="click->gdpr-breach-wizard#close"
-         style="display: none;">
+         class="gdpr-wizard-backdrop"
+         data-action="click->gdpr-breach-wizard#close">
     </div>
 
     {# Modal Container #}
     <div data-gdpr-breach-wizard-target="modal"
-         class="modal fade"
+         class="gdpr-wizard-modal"
          tabindex="-1"
          role="dialog"
          aria-labelledby="gdpr-wizard-title"
-         aria-modal="true"
-         style="display: none;">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-            <div class="modal-content">
+         aria-modal="true">
+        <div class="gdpr-wizard-dialog">
+            <div class="gdpr-wizard-content">
                 {# Modal Header #}
                 <div class="modal-header bg-warning text-dark">
                     <div class="w-100">
                         <h5 class="modal-title" id="gdpr-wizard-title">
                             <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
-                            {{ 'privacy.wizard.title'|trans({}, 'privacy') }}
+                            {{ 'data_breach.wizard.title'|trans({}, 'privacy') }}
                         </h5>
-                        <p class="mb-0 small">{{ 'privacy.wizard.subtitle'|trans({}, 'privacy') }}</p>
+                        <p class="mb-0 small">{{ 'data_breach.wizard.subtitle'|trans({}, 'privacy') }}</p>
 
                         {# Progress Bar #}
                         <div class="progress mt-3" style="height: 8px;" role="progressbar" aria-label="Wizard progress">
@@ -55,9 +68,9 @@
                     <div data-gdpr-breach-wizard-target="step1" class="wizard-step">
                         <h6 class="fw-bold mb-3">
                             <span class="badge bg-dark me-2">1</span>
-                            {{ 'privacy.wizard.step1_title'|trans({}, 'privacy') }}
+                            {{ 'data_breach.wizard.step1_title'|trans({}, 'privacy') }}
                         </h6>
-                        <p class="mb-4">{{ 'privacy.wizard.personal_data_question'|trans({}, 'privacy') }}</p>
+                        <p class="mb-4">{{ 'data_breach.wizard.personal_data_question'|trans({}, 'privacy') }}</p>
 
                         <div class="form-check mb-3">
                             <input class="form-check-input"
@@ -67,7 +80,7 @@
                                    data-gdpr-breach-wizard-target="personalDataYes"
                                    value="1">
                             <label class="form-check-label fw-bold text-danger" for="personalDataYes">
-                                {{ 'common.yes'|trans({}, 'messages') }} - {{ 'privacy.wizard.personal_data_yes'|trans({}, 'privacy') }}
+                                {{ 'common.yes'|trans({}, 'messages') }} - {{ 'data_breach.wizard.personal_data_yes'|trans({}, 'privacy') }}
                             </label>
                         </div>
 
@@ -79,14 +92,14 @@
                                    data-gdpr-breach-wizard-target="personalDataNo"
                                    value="0">
                             <label class="form-check-label" for="personalDataNo">
-                                {{ 'common.no'|trans({}, 'messages') }} - {{ 'privacy.wizard.personal_data_no'|trans({}, 'privacy') }}
+                                {{ 'common.no'|trans({}, 'messages') }} - {{ 'data_breach.wizard.personal_data_no'|trans({}, 'privacy') }}
                             </label>
                         </div>
 
                         <div class="alert alert-info mt-4" role="alert">
                             <small>
                                 <i class="bi bi-info-circle" aria-hidden="true"></i>
-                                {{ 'privacy.wizard.personal_data_hint'|trans({}, 'privacy') }}
+                                {{ 'data_breach.wizard.personal_data_hint'|trans({}, 'privacy') }}
                             </small>
                         </div>
                     </div>
@@ -95,9 +108,9 @@
                     <div data-gdpr-breach-wizard-target="step2" class="wizard-step d-none">
                         <h6 class="fw-bold mb-3">
                             <span class="badge bg-dark me-2">2</span>
-                            {{ 'privacy.wizard.step2_title'|trans({}, 'privacy') }}
+                            {{ 'data_breach.wizard.step2_title'|trans({}, 'privacy') }}
                         </h6>
-                        <p class="mb-4">{{ 'privacy.wizard.data_type_question'|trans({}, 'privacy') }}</p>
+                        <p class="mb-4">{{ 'data_breach.wizard.data_type_question'|trans({}, 'privacy') }}</p>
 
                         <div class="form-check mb-3">
                             <input class="form-check-input"
@@ -106,9 +119,9 @@
                                    value="names_contact"
                                    id="dataType1">
                             <label class="form-check-label" for="dataType1">
-                                <strong>{{ 'privacy.wizard.data_types.names_contact'|trans({}, 'privacy') }}</strong>
-                                <br><small class="text-muted">{{ 'privacy.wizard.data_types.names_contact_desc'|trans({}, 'privacy') }}</small>
-                                <span class="badge bg-success ms-2">{{ 'privacy.wizard.risk_score'|trans({}, 'privacy') }}: 1</span>
+                                <strong>{{ 'data_breach.wizard.data_types.names_contact'|trans({}, 'privacy') }}</strong>
+                                <br><small class="text-muted">{{ 'data_breach.wizard.data_types.names_contact_desc'|trans({}, 'privacy') }}</small>
+                                <span class="badge bg-success ms-2">{{ 'data_breach.wizard.risk_score'|trans({}, 'privacy') }}: 1</span>
                             </label>
                         </div>
 
@@ -119,9 +132,9 @@
                                    value="financial"
                                    id="dataType2">
                             <label class="form-check-label" for="dataType2">
-                                <strong>{{ 'privacy.wizard.data_types.financial'|trans({}, 'privacy') }}</strong>
-                                <br><small class="text-muted">{{ 'privacy.wizard.data_types.financial_desc'|trans({}, 'privacy') }}</small>
-                                <span class="badge bg-warning text-dark ms-2">{{ 'privacy.wizard.risk_score'|trans({}, 'privacy') }}: 2</span>
+                                <strong>{{ 'data_breach.wizard.data_types.financial'|trans({}, 'privacy') }}</strong>
+                                <br><small class="text-muted">{{ 'data_breach.wizard.data_types.financial_desc'|trans({}, 'privacy') }}</small>
+                                <span class="badge bg-warning text-dark ms-2">{{ 'data_breach.wizard.risk_score'|trans({}, 'privacy') }}: 2</span>
                             </label>
                         </div>
 
@@ -132,9 +145,9 @@
                                    value="health_biometric"
                                    id="dataType3">
                             <label class="form-check-label" for="dataType3">
-                                <strong>{{ 'privacy.wizard.data_types.health_biometric'|trans({}, 'privacy') }}</strong>
-                                <br><small class="text-muted">{{ 'privacy.wizard.data_types.health_biometric_desc'|trans({}, 'privacy') }}</small>
-                                <span class="badge bg-danger ms-2">{{ 'privacy.wizard.risk_score'|trans({}, 'privacy') }}: 3</span>
+                                <strong>{{ 'data_breach.wizard.data_types.health_biometric'|trans({}, 'privacy') }}</strong>
+                                <br><small class="text-muted">{{ 'data_breach.wizard.data_types.health_biometric_desc'|trans({}, 'privacy') }}</small>
+                                <span class="badge bg-danger ms-2">{{ 'data_breach.wizard.risk_score'|trans({}, 'privacy') }}: 3</span>
                             </label>
                         </div>
 
@@ -145,9 +158,9 @@
                                    value="special_category_art9"
                                    id="dataType4">
                             <label class="form-check-label" for="dataType4">
-                                <strong>{{ 'privacy.wizard.data_types.special_category_art9'|trans({}, 'privacy') }}</strong>
-                                <br><small class="text-muted">{{ 'privacy.wizard.data_types.special_category_art9_desc'|trans({}, 'privacy') }}</small>
-                                <span class="badge bg-dark ms-2">{{ 'privacy.wizard.risk_score'|trans({}, 'privacy') }}: 4</span>
+                                <strong>{{ 'data_breach.wizard.data_types.special_category_art9'|trans({}, 'privacy') }}</strong>
+                                <br><small class="text-muted">{{ 'data_breach.wizard.data_types.special_category_art9_desc'|trans({}, 'privacy') }}</small>
+                                <span class="badge bg-dark ms-2">{{ 'data_breach.wizard.risk_score'|trans({}, 'privacy') }}: 4</span>
                             </label>
                         </div>
 
@@ -158,9 +171,9 @@
                                    value="criminal_records_art10"
                                    id="dataType5">
                             <label class="form-check-label" for="dataType5">
-                                <strong>{{ 'privacy.wizard.data_types.criminal_records_art10'|trans({}, 'privacy') }}</strong>
-                                <br><small class="text-muted">{{ 'privacy.wizard.data_types.criminal_records_art10_desc'|trans({}, 'privacy') }}</small>
-                                <span class="badge bg-dark ms-2">{{ 'privacy.wizard.risk_score'|trans({}, 'privacy') }}: 4</span>
+                                <strong>{{ 'data_breach.wizard.data_types.criminal_records_art10'|trans({}, 'privacy') }}</strong>
+                                <br><small class="text-muted">{{ 'data_breach.wizard.data_types.criminal_records_art10_desc'|trans({}, 'privacy') }}</small>
+                                <span class="badge bg-dark ms-2">{{ 'data_breach.wizard.risk_score'|trans({}, 'privacy') }}: 4</span>
                             </label>
                         </div>
                     </div>
@@ -169,9 +182,9 @@
                     <div data-gdpr-breach-wizard-target="step3" class="wizard-step d-none">
                         <h6 class="fw-bold mb-3">
                             <span class="badge bg-dark me-2">3</span>
-                            {{ 'privacy.wizard.step3_title'|trans({}, 'privacy') }}
+                            {{ 'data_breach.wizard.step3_title'|trans({}, 'privacy') }}
                         </h6>
-                        <p class="mb-4">{{ 'privacy.wizard.affected_count_question'|trans({}, 'privacy') }}</p>
+                        <p class="mb-4">{{ 'data_breach.wizard.affected_count_question'|trans({}, 'privacy') }}</p>
 
                         <div class="form-check mb-3">
                             <input class="form-check-input"
@@ -181,8 +194,8 @@
                                    value="under_100"
                                    id="scale1">
                             <label class="form-check-label" for="scale1">
-                                <strong>{{ 'privacy.wizard.scale_options.under_100'|trans({}, 'privacy') }}</strong>
-                                <span class="badge bg-success ms-2">{{ 'privacy.wizard.scale_score'|trans({}, 'privacy') }}: 1</span>
+                                <strong>{{ 'data_breach.wizard.scale_options.under_100'|trans({}, 'privacy') }}</strong>
+                                <span class="badge bg-success ms-2">{{ 'data_breach.wizard.scale_score'|trans({}, 'privacy') }}: 1</span>
                             </label>
                         </div>
 
@@ -194,8 +207,8 @@
                                    value="100_to_1000"
                                    id="scale2">
                             <label class="form-check-label" for="scale2">
-                                <strong>{{ 'privacy.wizard.scale_options.100_to_1000'|trans({}, 'privacy') }}</strong>
-                                <span class="badge bg-warning text-dark ms-2">{{ 'privacy.wizard.scale_score'|trans({}, 'privacy') }}: 2</span>
+                                <strong>{{ 'data_breach.wizard.scale_options.100_to_1000'|trans({}, 'privacy') }}</strong>
+                                <span class="badge bg-warning text-dark ms-2">{{ 'data_breach.wizard.scale_score'|trans({}, 'privacy') }}: 2</span>
                             </label>
                         </div>
 
@@ -207,8 +220,8 @@
                                    value="1001_to_10000"
                                    id="scale3">
                             <label class="form-check-label" for="scale3">
-                                <strong>{{ 'privacy.wizard.scale_options.1001_to_10000'|trans({}, 'privacy') }}</strong>
-                                <span class="badge bg-danger ms-2">{{ 'privacy.wizard.scale_score'|trans({}, 'privacy') }}: 3</span>
+                                <strong>{{ 'data_breach.wizard.scale_options.1001_to_10000'|trans({}, 'privacy') }}</strong>
+                                <span class="badge bg-danger ms-2">{{ 'data_breach.wizard.scale_score'|trans({}, 'privacy') }}: 3</span>
                             </label>
                         </div>
 
@@ -220,8 +233,8 @@
                                    value="over_10000"
                                    id="scale4">
                             <label class="form-check-label" for="scale4">
-                                <strong>{{ 'privacy.wizard.scale_options.over_10000'|trans({}, 'privacy') }}</strong>
-                                <span class="badge bg-dark ms-2">{{ 'privacy.wizard.scale_score'|trans({}, 'privacy') }}: 4</span>
+                                <strong>{{ 'data_breach.wizard.scale_options.over_10000'|trans({}, 'privacy') }}</strong>
+                                <span class="badge bg-dark ms-2">{{ 'data_breach.wizard.scale_score'|trans({}, 'privacy') }}: 4</span>
                             </label>
                         </div>
                     </div>
@@ -230,13 +243,13 @@
                     <div data-gdpr-breach-wizard-target="step4" class="wizard-step d-none">
                         <h6 class="fw-bold mb-3">
                             <span class="badge bg-dark me-2">4</span>
-                            {{ 'privacy.wizard.step4_title'|trans({}, 'privacy') }}
+                            {{ 'data_breach.wizard.step4_title'|trans({}, 'privacy') }}
                         </h6>
 
                         {# Risk Level #}
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h6 class="card-subtitle mb-2 text-muted">{{ 'privacy.wizard.risk_level_label'|trans({}, 'privacy') }}</h6>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ 'data_breach.wizard.risk_level_label'|trans({}, 'privacy') }}</h6>
                                 <div data-gdpr-breach-wizard-target="resultRiskLevel" class="badge bg-secondary fs-5">
                                     Calculating...
                                 </div>
@@ -247,7 +260,7 @@
                         <div class="card mb-3">
                             <div class="card-body">
                                 <h6 class="card-subtitle mb-2 text-muted">
-                                    {{ 'privacy.wizard.gdpr_article_33_requirement'|trans({}, 'privacy') }}
+                                    {{ 'data_breach.wizard.gdpr_article_33_requirement'|trans({}, 'privacy') }}
                                 </h6>
                                 <div data-gdpr-breach-wizard-target="resultReportable" class="badge bg-secondary fs-6">
                                     Calculating...
@@ -259,10 +272,10 @@
                         <div class="alert alert-danger d-none" role="alert">
                             <strong>
                                 <i class="bi bi-clock-fill" aria-hidden="true"></i>
-                                {{ 'privacy.wizard.deadline_warning'|trans({}, 'privacy') }}
+                                {{ 'data_breach.wizard.deadline_warning'|trans({}, 'privacy') }}
                             </strong>
                             <p class="mb-0 mt-2">
-                                {{ 'privacy.wizard.deadline_date'|trans({}, 'privacy') }}:
+                                {{ 'data_breach.wizard.deadline_date'|trans({}, 'privacy') }}:
                                 <strong data-gdpr-breach-wizard-target="resultDeadline">--</strong>
                             </p>
                         </div>
@@ -270,7 +283,7 @@
                         {# Recommendation #}
                         <div class="card border-warning">
                             <div class="card-header bg-warning text-dark">
-                                <strong>{{ 'privacy.wizard.recommendation_label'|trans({}, 'privacy') }}</strong>
+                                <strong>{{ 'data_breach.wizard.recommendation_label'|trans({}, 'privacy') }}</strong>
                             </div>
                             <div class="card-body">
                                 <p data-gdpr-breach-wizard-target="resultRecommendation" class="mb-0">
@@ -282,7 +295,7 @@
                         {# Legal References #}
                         <div class="mt-4 p-3 bg-light border rounded">
                             <small class="text-muted">
-                                <strong>{{ 'privacy.wizard.legal_references'|trans({}, 'privacy') }}:</strong><br>
+                                <strong>{{ 'data_breach.wizard.legal_references'|trans({}, 'privacy') }}:</strong><br>
                                 GDPR Art. 33 (Notification to supervisory authority)<br>
                                 GDPR Art. 34 (Communication to data subjects)<br>
                                 ISO 27001 A.16.1.6 (Learning from information security incidents)
@@ -314,7 +327,7 @@
                             data-gdpr-breach-wizard-target="completeBtn"
                             data-action="click->gdpr-breach-wizard#completeWizard">
                         <i class="bi bi-check-circle" aria-hidden="true"></i>
-                        {{ 'privacy.wizard.complete_and_create'|trans({}, 'privacy') }}
+                        {{ 'data_breach.wizard.complete_and_create'|trans({}, 'privacy') }}
                     </button>
                 </div>
             </div>
@@ -323,69 +336,95 @@
 </div>
 
 <style>
-/* Modal backdrop */
-.gdpr-wizard .modal-backdrop {
+/* GDPR Wizard Modal - Custom class names to avoid Bootstrap conflicts */
+
+/* Backdrop - dark overlay (hidden by default) */
+.gdpr-wizard-backdrop {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
+    right: 0;
+    bottom: 0;
+    background-color: var(--overlay-bg, rgba(0, 0, 0, 0.6));
     z-index: 1050;
     display: none;
 }
 
-.gdpr-wizard .modal-backdrop.modal-backdrop-show {
+.gdpr-wizard-backdrop.modal-backdrop-show {
     display: block !important;
 }
 
-/* Modal container */
-.gdpr-wizard .modal {
+/* Modal container (hidden by default) */
+.gdpr-wizard-modal {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    right: 0;
+    bottom: 0;
     z-index: 1055;
     display: none;
-    overflow-x: hidden;
     overflow-y: auto;
-    outline: 0;
+    padding: 1rem;
 }
 
-.gdpr-wizard .modal.modal-open {
-    display: block !important;
+.gdpr-wizard-modal.modal-open {
+    display: flex !important;
+    align-items: flex-start;
+    justify-content: center;
 }
 
-/* Modal dialog positioning */
-.gdpr-wizard .modal-dialog {
+/* Dialog box container */
+.gdpr-wizard-dialog {
     position: relative;
-    width: auto;
-    margin: 1.75rem auto;
+    width: 100%;
     max-width: 800px;
-    pointer-events: none;
+    margin: 1.75rem auto;
 }
 
-.gdpr-wizard .modal-content {
+/* Content box - theme-aware background */
+.gdpr-wizard-content {
     position: relative;
     display: flex;
     flex-direction: column;
     width: 100%;
-    pointer-events: auto;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    background-color: var(--bg-elevated, #fff);
+    color: var(--text-primary, #1e293b);
+    border: 1px solid var(--border-color, rgba(0, 0, 0, 0.2));
     border-radius: 0.5rem;
-    outline: 0;
-    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+    box-shadow: var(--shadow-lg, 0 0.5rem 1rem rgba(0, 0, 0, 0.5));
+}
+
+/* Dark mode support for inner elements */
+.gdpr-wizard-content .modal-header {
+    border-bottom-color: var(--border-color, #dee2e6);
+}
+
+.gdpr-wizard-content .modal-footer {
+    border-top-color: var(--border-color, #dee2e6);
+}
+
+.gdpr-wizard-content .modal-body {
+    background-color: var(--bg-elevated, #fff);
+    color: var(--text-primary, #1e293b);
+}
+
+.gdpr-wizard-content .card {
+    background-color: var(--bg-secondary, #f8fafc);
+    border-color: var(--border-color, #dee2e6);
+}
+
+.gdpr-wizard-content .alert-info {
+    background-color: var(--bg-tertiary, #e0f2fe);
+    border-color: var(--border-color, #bae6fd);
+    color: var(--text-primary, #0c4a6e);
 }
 
 /* Wizard step animations */
-.wizard-step {
-    animation: fadeIn 0.3s ease;
+.gdpr-wizard .wizard-step {
+    animation: gdprWizardFadeIn 0.3s ease;
 }
 
-@keyframes fadeIn {
+@keyframes gdprWizardFadeIn {
     from {
         opacity: 0;
         transform: translateY(10px);
@@ -404,5 +443,30 @@
 
 .gdpr-wizard .form-check-label {
     cursor: pointer;
+    color: var(--text-primary, #1e293b);
+}
+
+/* Dark mode specific overrides */
+[data-bs-theme="dark"] .gdpr-wizard-content,
+[data-theme="dark"] .gdpr-wizard-content {
+    background-color: var(--bg-elevated, #1e293b);
+    color: var(--text-primary, #f1f5f9);
+    border-color: var(--border-color, #334155);
+}
+
+[data-bs-theme="dark"] .gdpr-wizard-content .modal-header.bg-warning,
+[data-theme="dark"] .gdpr-wizard-content .modal-header.bg-warning {
+    background-color: #ca8a04 !important;
+    color: #ffffff !important;
+}
+
+[data-bs-theme="dark"] .gdpr-wizard-content .bg-light,
+[data-theme="dark"] .gdpr-wizard-content .bg-light {
+    background-color: var(--bg-secondary, #0f172a) !important;
+}
+
+[data-bs-theme="dark"] .gdpr-wizard-content .text-muted,
+[data-theme="dark"] .gdpr-wizard-content .text-muted {
+    color: var(--text-secondary, #94a3b8) !important;
 }
 </style>
