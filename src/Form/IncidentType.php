@@ -182,7 +182,7 @@ class IncidentType extends AbstractType
                 'expanded' => true,
                 'required' => true,
                 'help' => 'incident.help.cross_border_impact',
-                    'choice_translation_domain' => 'incident',
+                    'choice_translation_domain' => 'messages',
             ])
             ->add('affectedUsersCount', IntegerType::class, [
                 'label' => 'incident.field.affected_users_count',

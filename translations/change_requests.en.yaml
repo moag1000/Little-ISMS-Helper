@@ -92,5 +92,30 @@ change_request:
         delete: Delete
     details:
         title: Title
+    change_type:
+        isms_policy: 'ISMS Policy'
+        isms_scope: 'ISMS Scope'
+        control: 'Control'
+        asset: 'Asset'
+        process: 'Process'
+        technology: 'Technology'
+        supplier: 'Supplier'
+        organizational: 'Organizational'
+        other: 'Other'
+    priority:
+        critical: 'Critical'
+        high: 'High'
+        medium: 'Medium'
+        low: 'Low'
     status:
+        draft: 'Draft'
+        submitted: 'Submitted'
+        under_review: 'Under Review'
+        approved: 'Approved'
+        rejected: 'Rejected'
+        scheduled: 'Scheduled'
+        implemented: 'Implemented'
+        verified: 'Verified'
+        closed: 'Closed'
+        cancelled: 'Cancelled'
         not_scheduled: 'Not Scheduled'

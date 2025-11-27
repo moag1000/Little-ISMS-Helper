@@ -270,8 +270,8 @@
         <tbody>
             {% for stat in categoryStats %}
                 <tr>
-                    <td><strong>{{ ('soa.category.' ~ stat.category)|trans }}</strong></td>
-                    <td>{{ ('soa.category.' ~ stat.category)|trans }}</td>
+                    <td><strong>{{ ('soa.category.' ~ stat.category)|trans({}, 'soa') }}</strong></td>
+                    <td>{{ ('soa.category.' ~ stat.category)|trans({}, 'soa') }}</td>
                     <td class="text-center">{{ stat.total }}</td>
                 </tr>
             {% endfor %}
@@ -284,7 +284,7 @@
 
     {% for category, controls in controlsByCategory %}
         <div class="category-header">
-            {{ ('soa.category.' ~ category)|trans }} ({{ controls|length }})
+            {{ ('soa.category.' ~ category)|trans({}, 'soa') }} ({{ controls|length }})
         </div>
 
         <table class="control-table">

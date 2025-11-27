@@ -71,10 +71,17 @@ privacy:
         section:
             status_workflow: 'Status & Workflow'
             linked_incident: 'Linked Security Incident'
+            detection_links: 'Detection & Links'
             authority: 'Art. 33 - Supervisory Authority'
             subjects: 'Art. 34 - Data Subjects'
             nature: 'Art. 33(3) - Nature of the Breach'
             consequences: 'Art. 33(3)(b-d) - Consequences & Measures'
+        standalone_breach: 'Standalone data breach (no security incident)'
+        severity:
+            low: 'Low'
+            medium: 'Medium'
+            high: 'High'
+            critical: 'Critical'
         field:
             status: Status
             completeness: Completeness
@@ -180,6 +187,70 @@ privacy:
         severe: Severe
     supervisory_consultation:
         yes_high_risk: 'Yes (high residual risk - Art. 36)'
+
+    wizard:
+        trigger_button: 'Start GDPR Breach Wizard'
+        trigger_hint: 'Use the wizard to determine if GDPR reporting is required (Art. 33)'
+        title: 'GDPR Data Breach Assessment Wizard'
+        subtitle: 'Step-by-step assessment according to GDPR Art. 33'
+
+        # Step 1
+        step1_title: 'Is personal data involved?'
+        personal_data_question: 'Does this incident involve personal data (data relating to identified or identifiable natural persons)?'
+        personal_data_yes: 'Personal data is involved'
+        personal_data_no: 'No personal data involved (then NOT a GDPR breach)'
+        personal_data_hint: 'Personal data is any information relating to an identified or identifiable natural person (name, email, IP address, location data, etc.).'
+
+        # Step 2
+        step2_title: 'What type of personal data?'
+        data_type_question: 'Select all affected data categories (multiple selections possible):'
+        data_types:
+            names_contact: 'Names and contact information'
+            names_contact_desc: 'Name, address, email, phone number'
+            financial: 'Financial data'
+            financial_desc: 'Bank account, credit card numbers, payment information'
+            health_biometric: 'Health/Biometric data'
+            health_biometric_desc: 'Health information, fingerprints, facial recognition'
+            special_category_art9: 'Special categories (Art. 9 GDPR)'
+            special_category_art9_desc: 'Racial/ethnic origin, political opinions, religious beliefs, trade union membership, genetic data, sex life'
+            criminal_records_art10: 'Criminal records (Art. 10 GDPR)'
+            criminal_records_art10_desc: 'Criminal convictions and offences'
+        risk_score: 'Risk score'
+
+        # Step 3
+        step3_title: 'How many individuals are affected?'
+        affected_count_question: 'Select the number of affected individuals:'
+        scale_options:
+            under_100: 'Less than 100 individuals'
+            100_to_1000: '100 to 1,000 individuals'
+            1001_to_10000: '1,001 to 10,000 individuals'
+            over_10000: 'More than 10,000 individuals'
+        scale_score: 'Scale score'
+
+        # Step 4
+        step4_title: 'Result & Recommendation'
+        risk_level_label: 'Risk Level'
+        gdpr_article_33_requirement: 'GDPR Art. 33 Reporting Requirement'
+        deadline_warning: '72-hour deadline is running!'
+        deadline_date: 'Reporting deadline (72h from now)'
+        recommendation_label: 'Recommendation'
+        legal_references: 'Legal References'
+        complete_and_create: 'Complete & Create Incident'
+
+        # Risk levels
+        risk_level:
+            low: 'Low Risk'
+            medium: 'Medium Risk'
+            high: 'High Risk'
+            very_high: 'Very High Risk'
+
+        # Recommendations
+        recommendation:
+            not_reportable: 'This breach is unlikely to result in a risk to rights and freedoms. Documentation recommended, but no mandatory reporting to supervisory authority.'
+            reportable_low: 'Report to supervisory authority within 72 hours (Art. 33). Document the breach thoroughly.'
+            reportable_medium: 'Report to supervisory authority within 72 hours (Art. 33). Begin impact assessment and prepare for potential data subject notification.'
+            reportable_high: 'URGENT: Report to supervisory authority within 72 hours (Art. 33). Consider notifying affected data subjects (Art. 34). Immediate action required.'
+            reportable_very_high: 'CRITICAL: Report to supervisory authority within 72 hours (Art. 33). Notify affected data subjects without undue delay (Art. 34). Immediate escalation required.'
 processing_activity:
     title: 'VVT - Record of Processing Activities'
     subtitle: 'Art. 30 GDPR - Record of Processing Activities'
@@ -345,6 +416,53 @@ processing_activity:
 data_breach:
     index:
         view_all_breaches: 'View All Breaches'
+    section:
+        basic_info: 'Basic Information'
+        notification_content: 'Art. 33(3) - Content of Notification'
+        risk_assessment: 'Risk Assessment'
+        notification_requirements: 'Notification Requirements'
+        investigation: 'Investigation & Follow-up'
+        responsible_persons: 'Responsible Persons'
+    form:
+        title: 'Title'
+        detected_at: 'Detection Date/Time'
+        incident: 'Related Security Incident (optional)'
+        processing_activity: 'Processing Activity (ROPA)'
+        severity: 'Severity'
+    severity:
+        low: 'Low'
+        medium: 'Medium'
+        high: 'High'
+        critical: 'Critical'
+    data_categories:
+        personal_identification: 'Personal Identification (Name, ID No.)'
+        contact_information: 'Contact Information (Address, Email, Phone)'
+        financial_data: 'Financial Data (Bank Details, Credit Card)'
+        health_data: 'Health Data'
+        location_data: 'Location Data'
+        online_identifiers: 'Online Identifiers (IP, Cookies)'
+        employment_data: 'Employment Data'
+        education_data: 'Education Data'
+        criminal_convictions: 'Criminal Convictions'
+        biometric_data: 'Biometric Data'
+        genetic_data: 'Genetic Data'
+        other: 'Other'
+    data_subject_categories:
+        customers: 'Customers'
+        employees: 'Employees'
+        applicants: 'Applicants'
+        visitors: 'Visitors'
+        patients: 'Patients'
+        students: 'Students'
+        suppliers: 'Suppliers'
+        minors: 'Minors'
+        vulnerable: 'Vulnerable Persons'
+        other: 'Other'
+    risk_level:
+        low: 'Low'
+        medium: 'Medium'
+        high: 'High'
+        critical: 'Critical'
     pdf:
         art_33_3a_nature: 'Art. 33(3)(a) GDPR - Nature of the Breach'
         categories_personal_data: 'Categories of Personal Data'
@@ -356,6 +474,7 @@ data_breach:
         measures_mitigate: 'Measures to Mitigate Adverse Effects'
         art_34_communication: 'Art. 34 GDPR - Communication to Data Subjects'
     placeholder:
+        severity: 'Select severity...'
         title: 'e.g., Unauthorized access to customer database'
         incident: 'Select incident...'
         processing_activity: 'Select processing activity (VVT)...'
@@ -371,7 +490,10 @@ data_breach:
         lessons_learned: 'Lessons learned from this breach...'
         data_protection_officer: 'Select DPO...'
     help:
-        processing_activity: 'Link to VVT (Art. 30 GDPR)'
+        detected_at: 'When was the data breach discovered? The 72-hour deadline starts from this point.'
+        incident: 'Optional: If the breach was caused by a security incident, you can link it here.'
+        severity: 'Severity of the data breach'
+        processing_activity: 'Link to ROPA (Art. 30 GDPR)'
         affected_data_subjects: 'Art. 33(3)(a) GDPR'
         data_categories: 'Art. 33(3)(a) GDPR - Select all applicable categories'
         data_subject_categories: 'Art. 33(3)(a) GDPR'
@@ -382,12 +504,66 @@ data_breach:
         risk_level: 'Assessment of risk to rights and freedoms'
         special_categories_affected: 'Art. 9 GDPR - Racial/ethnic origin, political opinions, religious beliefs, health data, etc.'
         criminal_data_affected: 'Art. 10 GDPR - Criminal convictions and offences'
-        requires_authority_notification: 'Art. 33(1) GDPR - Notification required unless unlikely to result in risk'
-        requires_subject_notification: 'Art. 34(1) GDPR - Required if breach likely to result in HIGH RISK'
+        requires_authority_notification: 'Art. 33(1) GDPR - Notification required UNLESS risk to rights/freedoms is unlikely. Factors: Risk level, number affected, data categories (Art. 9/10), nature of breach, safeguards in place.'
+        requires_subject_notification: 'Art. 34(1) GDPR - Only required for HIGH risk. Factors: Sensitive data (Art. 9), many affected, identity theft/fraud possible, no encryption, no quick containment.'
         no_subject_notification_reason: 'Art. 34(3) GDPR exemptions: (a) Protection measures, (b) Subsequent measures, (c) Disproportionate effort'
         data_protection_officer: 'Data Protection Officer (Art. 35(4) GDPR)'
 dpia:
+    new:
+        title: 'New DPIA'
+        page_title: 'New Data Protection Impact Assessment'
+        page_subtitle: 'Create new DPIA per Art. 35 GDPR'
+        breadcrumb_gdpr: 'GDPR'
+        breadcrumb_dpia: 'DPIA'
+        breadcrumb_new: 'New DPIA'
+        button_cancel: 'Cancel'
+        form_title: 'DPIA Form'
+        section_basic_info: 'Basic Information'
+        section_processing_operations: 'Art. 35(7)(a) - Description of Processing Operations'
+        section_necessity_proportionality: 'Art. 35(7)(b) - Assessment of Necessity and Proportionality'
+        section_risk_assessment: 'Art. 35(7)(c) - Risk Assessment'
+        section_measures: 'Art. 35(7)(d) - Measures to Address Risks'
+        section_consultation: 'Stakeholder Consultation (Art. 35(4), 35(9))'
+        section_supervisory: 'Supervisory Authority Consultation (Art. 36)'
+        section_workflow: 'Workflow & Review'
+        button_create: 'Create DPIA'
+        button_cancel_bottom: 'Cancel'
     index:
+        title: 'DPIA / DSFA'
+        page_title: 'Data Protection Impact Assessment'
+        page_subtitle: 'Data Protection Impact Assessment (Art. 35 GDPR)'
+        button_dashboard: 'Dashboard'
+        button_new_dpia: 'New DPIA'
+        compliance_score: 'DPIA Compliance Score'
+        of: 'of'
+        dpias_approved: 'DPIAs approved'
+        due_for_review: 'due for review'
+        total_dpias: 'Total DPIAs'
+        approved: 'approved'
+        in_review: 'In Review'
+        awaiting_approval: 'Awaiting approval'
+        high_risk: 'High Risk'
+        requires_attention: 'Requires attention'
+        completeness: 'Completeness'
+        filter_dpias: 'Filter DPIAs'
+        all: 'All'
+        draft: 'Draft'
+        approved_filter: 'Approved'
+        high_risk_filter: 'High Risk'
+        incomplete: 'Incomplete'
+        awaiting_dpo: 'Awaiting DPO'
+        requires_supervisory: 'Requires Supervisory'
+        dpias_list: 'DPIAs'
+        reference: 'Reference'
+        title_col: 'Title'
+        status: 'Status'
+        risk_level: 'Risk Level'
+        residual_risk: 'Residual Risk'
+        dpo: 'DPO'
+        actions: 'Actions'
+        dpo_consulted: 'DPO consulted'
+        dpo_not_yet_consulted: 'DPO not yet consulted'
+        no_dpias_found: 'No DPIAs found for the selected filter.'
         create_first_dpia: 'Create First Data Protection Impact Assessment'
     form:
         title: 'DPIA Title'
@@ -482,6 +658,48 @@ dpia:
         footer_text: 'Data Protection Impact Assessment (DPIA) according to Art. 35 GDPR'
     show:
         cancel_button: Cancel
+        page_title: 'DPIA - %ref%'
+        section:
+            status_workflow: 'Status & Workflow'
+            risk_assessment: 'Risk Assessment'
+            consultations: 'Consultations'
+        field:
+            conductor: 'Conducted by'
+            approver: 'Approved by'
+            approval_date: 'Approval Date'
+            initial_risk: 'Initial Risk'
+            dpo_consultation: 'DPO Consultation'
+            supervisory_consultation: 'Supervisory Authority Consultation'
+        risk:
+            acceptable: 'Residual risk acceptable'
+            requires_consultation: 'Requires supervisory authority consultation (Art. 36 GDPR)'
+        not_yet_consulted: 'Not yet consulted'
+        required_not_completed: 'Required but not yet completed'
+        not_required: 'Not required'
+    action:
+        export_pdf: 'Export PDF'
+        submit_for_review: 'Submit for Review'
+        edit: 'Edit'
+        approve: 'Approve'
+        reject: 'Reject'
+        request_revision: 'Request Revision'
+        reopen: 'Reopen'
+        clone: 'Clone'
+    modal:
+        approve_title: 'Approve DPIA'
+        approval_comments: 'Approval Comments'
+        reject_title: 'Reject DPIA'
+        rejection_reason: 'Rejection Reason'
+        revision_title: 'Request Revision'
+        revision_reason: 'Revision Reason'
+    confirm:
+        delete: 'Are you sure you want to delete this DPIA?'
+    status:
+        draft: 'Draft'
+        in_review: 'In Review'
+        approved: 'Approved'
+        rejected: 'Rejected'
+        requires_revision: 'Requires Revision'
     purpose:
         contract_fulfillment: 'Contract fulfillment'
         marketing: Marketing
@@ -599,66 +817,3 @@ dpia:
         yes_high_risk: 'Yes (high residual risk - Art. 36)'
 
 # GDPR Breach Wizard
-wizard:
-    trigger_button: 'Start GDPR Breach Wizard'
-    trigger_hint: 'Use the wizard to determine if GDPR reporting is required (Art. 33)'
-    title: 'GDPR Data Breach Assessment Wizard'
-    subtitle: 'Step-by-step assessment according to GDPR Art. 33'
-
-    # Step 1
-    step1_title: 'Is personal data involved?'
-    personal_data_question: 'Does this incident involve personal data (data relating to identified or identifiable natural persons)?'
-    personal_data_yes: 'Personal data is involved'
-    personal_data_no: 'No personal data involved (then NOT a GDPR breach)'
-    personal_data_hint: 'Personal data is any information relating to an identified or identifiable natural person (name, email, IP address, location data, etc.).'
-
-    # Step 2
-    step2_title: 'What type of personal data?'
-    data_type_question: 'Select all affected data categories (multiple selections possible):'
-    data_types:
-        names_contact: 'Names and contact information'
-        names_contact_desc: 'Name, address, email, phone number'
-        financial: 'Financial data'
-        financial_desc: 'Bank account, credit card numbers, payment information'
-        health_biometric: 'Health/Biometric data'
-        health_biometric_desc: 'Health information, fingerprints, facial recognition'
-        special_category_art9: 'Special categories (Art. 9 GDPR)'
-        special_category_art9_desc: 'Racial/ethnic origin, political opinions, religious beliefs, trade union membership, genetic data, sex life'
-        criminal_records_art10: 'Criminal records (Art. 10 GDPR)'
-        criminal_records_art10_desc: 'Criminal convictions and offences'
-    risk_score: 'Risk score'
-
-    # Step 3
-    step3_title: 'How many individuals are affected?'
-    affected_count_question: 'Select the number of affected individuals:'
-    scale_options:
-        under_100: 'Less than 100 individuals'
-        100_to_1000: '100 to 1,000 individuals'
-        1001_to_10000: '1,001 to 10,000 individuals'
-        over_10000: 'More than 10,000 individuals'
-    scale_score: 'Scale score'
-
-    # Step 4
-    step4_title: 'Result & Recommendation'
-    risk_level_label: 'Risk Level'
-    gdpr_article_33_requirement: 'GDPR Art. 33 Reporting Requirement'
-    deadline_warning: '72-hour deadline is running!'
-    deadline_date: 'Reporting deadline (72h from now)'
-    recommendation_label: 'Recommendation'
-    legal_references: 'Legal References'
-    complete_and_create: 'Complete & Create Incident'
-
-    # Risk levels
-    risk_level:
-        low: 'Low Risk'
-        medium: 'Medium Risk'
-        high: 'High Risk'
-        very_high: 'Very High Risk'
-
-    # Recommendations
-    recommendation:
-        not_reportable: 'This breach is unlikely to result in a risk to rights and freedoms. Documentation recommended, but no mandatory reporting to supervisory authority.'
-        reportable_low: 'Report to supervisory authority within 72 hours (Art. 33). Document the breach thoroughly.'
-        reportable_medium: 'Report to supervisory authority within 72 hours (Art. 33). Begin impact assessment and prepare for potential data subject notification.'
-        reportable_high: 'URGENT: Report to supervisory authority within 72 hours (Art. 33). Consider notifying affected data subjects (Art. 34). Immediate action required.'
-        reportable_very_high: 'CRITICAL: Report to supervisory authority within 72 hours (Art. 33). Notify affected data subjects without undue delay (Art. 34). Immediate escalation required.'

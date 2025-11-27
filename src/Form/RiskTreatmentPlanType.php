@@ -35,7 +35,8 @@ class RiskTreatmentPlanType extends AbstractType
                 'help' => 'risk_treatment_plan.help.risk',
                 'constraints' => [
                     new Assert\NotNull(['message' => 'risk_treatment_plan.validation.risk_required'])
-                ]
+                ],
+                'choice_translation_domain' => 'risk',
             ])
             ->add('title', TextType::class, [
                 'label' => 'risk_treatment_plan.field.title',
@@ -80,7 +81,7 @@ class RiskTreatmentPlanType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'help' => 'risk_treatment_plan.help.status',
-                    'choice_translation_domain' => 'risk',
+                'choice_translation_domain' => 'risk_treatment_plan',
             ])
             ->add('priority', ChoiceType::class, [
                 'label' => 'risk_treatment_plan.field.priority',
@@ -95,7 +96,7 @@ class RiskTreatmentPlanType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'help' => 'risk_treatment_plan.help.priority',
-                    'choice_translation_domain' => 'risk',
+                    'choice_translation_domain' => 'risk_treatment_plan',
             ])
             ->add('startDate', DateType::class, [
                 'label' => 'risk_treatment_plan.field.start_date',

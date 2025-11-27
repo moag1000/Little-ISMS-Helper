@@ -132,7 +132,7 @@
             </td>
             <td>
                 <span class="{{ badge_status(document.status) }}">
-                    {{ ('document.status.' ~ document.status)|trans }}
+                    {{ ('document.status.' ~ document.status)|trans({}, 'document') }}
                 </span>
             </td>
             <td>{{ document.owner.fullName|default('-') }}</td>

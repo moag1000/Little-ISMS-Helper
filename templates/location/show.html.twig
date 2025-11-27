@@ -17,7 +17,7 @@
     <div>
         <h1>{{ location.name }}</h1>
         <div class="mt-2">
-            <span class="badge bg-info">{{ ('location.type.' ~ location.locationType)|trans }}</span>
+            <span class="badge bg-info">{{ ('location.type.' ~ location.locationType)|trans({}, 'locations') }}</span>
             {% if location.code %}
                 <code class="ml-sm">{{ location.code }}</code>
             {% endif %}
@@ -46,7 +46,7 @@
 
     <div class="stats-grid mt-3 grid-responsive-250">
         <div class="stat-item">
-            <strong>{{ ('location.type.' ~ location.locationType)|trans }}</strong>
+            <strong>{{ ('location.type.' ~ location.locationType)|trans({}, 'locations') }}</strong>
             <span>{{ 'location.field.type'|trans({}, 'locations') }}</span>
         </div>
 
@@ -71,7 +71,7 @@
                     'high_security': 'danger'
                 } %}
                 <span class="badge badge-{{ securityColors[location.securityLevel] ?? 'secondary' }}">
-                    {{ ('location.security.' ~ location.securityLevel)|trans }}
+                    {{ ('location.security.' ~ location.securityLevel)|trans({}, 'locations') }}
                 </span>
             </strong>
             <span>{{ 'location.field.security_level'|trans({}, 'locations') }}</span>
@@ -132,7 +132,7 @@
             {% for child in location.childLocations %}
             <tr>
                 <td>{{ child.name }}</td>
-                <td><span class="badge bg-info">{{ ('location.type.' ~ child.locationType)|trans }}</span></td>
+                <td><span class="badge bg-info">{{ ('location.type.' ~ child.locationType)|trans({}, 'locations') }}</span></td>
                 <td>
                     {% set securityColors = {
                         'public': 'secondary',
@@ -142,7 +142,7 @@
                         'high_security': 'danger'
                     } %}
                     <span class="badge badge-{{ securityColors[child.securityLevel] ?? 'secondary' }}">
-                        {{ ('location.security.' ~ child.securityLevel)|trans }}
+                        {{ ('location.security.' ~ child.securityLevel)|trans({}, 'locations') }}
                     </span>
                 </td>
                 <td class="text-center">

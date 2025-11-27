@@ -29,7 +29,7 @@
             <div id="nis2-alert" class="alert alert-warning d-none mb-4" role="alert">
                 <h6 class="alert-heading">
                     <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ 'incident.nis2_alert.title'|trans({}, 'incident') }}
-                </h5>
+                </h6>
                 <p class="mb-2 small">{{ 'incident.nis2_alert.description'|trans({}, 'incident') }}</p>
                 <ul class="mb-0 small">
                     <li>{{ 'incident.nis2_alert.early_warning'|trans({}, 'incident') }}</li>
@@ -91,7 +91,7 @@
 
                         {# GDPR Breach Wizard Button #}
                         <div class="mt-3">
-                            <button type="button" class="btn btn-outline-warning" data-controller="gdpr-breach-wizard" data-action="click->gdpr-breach-wizard#open">
+                            <button type="button" class="btn btn-outline-warning" data-action="click->gdpr-breach-wizard#open">
                                 <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
                                 {{ 'privacy.wizard.trigger_button'|trans({}, 'privacy') }}
                             </button>

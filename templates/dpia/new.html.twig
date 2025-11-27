@@ -1,28 +1,28 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}New DPIA{% endblock %}
+{% trans_default_domain 'privacy' %}
+{% block title %}{{ 'dpia.new.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'GDPR', icon: 'bi-shield-check' },
-            { label: 'DPIA', url: path('app_dpia_index') },
-            { label: 'New DPIA' }
+            { label: 'dpia.new.breadcrumb_gdpr'|trans({}, 'privacy'), icon: 'bi-shield-check' },
+            { label: 'dpia.new.breadcrumb_dpia'|trans({}, 'privacy'), url: path('app_dpia_index') },
+            { label: 'dpia.new.breadcrumb_new'|trans({}, 'privacy') }
         ]
     } %}
 
     {% include '_components/_page_header.html.twig' with {
-        title: 'New Data Protection Impact Assessment',
-        subtitle: 'Create new DPIA per Art. 35 GDPR',
+        title: 'dpia.new.page_title'|trans({}, 'privacy'),
+        subtitle: 'dpia.new.page_subtitle'|trans({}, 'privacy'),
         icon: 'bi-plus-circle',
         actions: [
-            { label: 'Cancel', url: path('app_dpia_index'), variant: 'secondary', icon: 'bi-x-lg' }
+            { label: 'dpia.new.button_cancel'|trans({}, 'privacy'), url: path('app_dpia_index'), variant: 'secondary', icon: 'bi-x-lg' }
         ]
     } %}
 
     <div class="card">
-        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-clipboard-check"></i> DPIA Form</h2>
+        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-clipboard-check"></i> {{ 'dpia.new.form_title'|trans }}</h2>
         </div>
         <div class="card-body">
             {{ form_start(form) }}
@@ -30,35 +30,35 @@
                     'form': form,
                     'sections': {
                         'basic_info': {
-                            'label': '<i class="bi bi-info-circle" aria-hidden="true"></i> Basic Information'|raw,
+                            'label': ('<i class="bi bi-info-circle" aria-hidden="true"></i> ' ~ 'dpia.new.section_basic_info'|trans)|raw,
                             'fields': ['title', 'referenceNumber', 'processingActivity']
                         },
                         'processing_operations': {
-                            'label': '<i class="bi bi-gear" aria-hidden="true"></i> Art. 35(7)(a) - Description of Processing Operations'|raw,
+                            'label': ('<i class="bi bi-gear" aria-hidden="true"></i> ' ~ 'dpia.new.section_processing_operations'|trans)|raw,
                             'fields': ['processingDescription', 'processingPurposes', 'dataCategories', 'dataSubjectCategories', 'estimatedDataSubjects', 'dataRetentionPeriod', 'dataFlowDescription']
                         },
                         'necessity_proportionality': {
-                            'label': '<i class="bi bi-balance-scale" aria-hidden="true"></i> Art. 35(7)(b) - Assessment of Necessity and Proportionality'|raw,
+                            'label': ('<i class="bi bi-balance-scale" aria-hidden="true"></i> ' ~ 'dpia.new.section_necessity_proportionality'|trans)|raw,
                             'fields': ['necessityAssessment', 'proportionalityAssessment', 'legalBasis', 'legislativeCompliance']
                         },
                         'risk_assessment': {
-                            'label': '<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Art. 35(7)(c) - Risk Assessment'|raw,
+                            'label': ('<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> ' ~ 'dpia.new.section_risk_assessment'|trans)|raw,
                             'fields': ['riskLevel', 'likelihood', 'impact', 'dataSubjectRisks']
                         },
                         'measures': {
-                            'label': '<i class="bi bi-shield-check" aria-hidden="true"></i> Art. 35(7)(d) - Measures to Address Risks'|raw,
+                            'label': ('<i class="bi bi-shield-check" aria-hidden="true"></i> ' ~ 'dpia.new.section_measures'|trans)|raw,
                             'fields': ['technicalMeasures', 'organizationalMeasures', 'implementedControls', 'complianceMeasures', 'residualRiskAssessment', 'residualRiskLevel']
                         },
                         'consultation': {
-                            'label': '<i class="bi bi-people" aria-hidden="true"></i> Stakeholder Consultation (Art. 35(4), 35(9))'|raw,
+                            'label': ('<i class="bi bi-people" aria-hidden="true"></i> ' ~ 'dpia.new.section_consultation'|trans)|raw,
                             'fields': ['dataProtectionOfficer', 'dpoConsultationDate', 'dpoAdvice', 'dataSubjectsConsulted', 'dataSubjectConsultationDetails']
                         },
                         'supervisory': {
-                            'label': '<i class="bi bi-building" aria-hidden="true"></i> Supervisory Authority Consultation (Art. 36)'|raw,
+                            'label': ('<i class="bi bi-building" aria-hidden="true"></i> ' ~ 'dpia.new.section_supervisory'|trans)|raw,
                             'fields': ['requiresSupervisoryConsultation', 'supervisoryConsultationDate', 'supervisoryAuthorityFeedback']
                         },
                         'workflow': {
-                            'label': '<i class="bi bi-arrow-repeat" aria-hidden="true"></i> Workflow & Review'|raw,
+                            'label': ('<i class="bi bi-arrow-repeat" aria-hidden="true"></i> ' ~ 'dpia.new.section_workflow'|trans)|raw,
                             'fields': ['conductor', 'reviewFrequencyMonths', 'nextReviewDate']
                         }
                     },
@@ -104,10 +104,10 @@
 
                 <div class="mt-4">
                     <button type="submit" class="btn btn-success">
-                        <i class="bi bi-save"></i> Create DPIA
+                        <i class="bi bi-save"></i> {{ 'dpia.new.button_create'|trans }}
                     </button>
                     <a href="{{ path('app_dpia_index') }}" class="btn btn-secondary">
-                        <i class="bi bi-x-lg"></i> Cancel
+                        <i class="bi bi-x-lg"></i> {{ 'dpia.new.button_cancel_bottom'|trans }}
                     </a>
                 </div>
             {{ form_end(form) }}

@@ -31,16 +31,16 @@
                     'form': form,
                     'sections': {
                         'basic_info': {
-                            'label': '<i class="bi bi-info-circle" aria-hidden="true"></i> Basic Information'|raw,
-                            'fields': ['title', 'incident', 'processingActivity']
+                            'label': '<i class="bi bi-info-circle" aria-hidden="true"></i> '~ 'data_breach.section.basic_info'|trans({}, 'privacy'),
+                            'fields': ['title', 'detectedAt', 'incident', 'processingActivity']
                         },
                         'notification_content': {
                             'label': '<i class="bi bi-file-text" aria-hidden="true"></i> Art. 33(3) - Content of Notification'|raw,
                             'fields': ['affectedDataSubjects', 'dataCategories', 'dataSubjectCategories', 'breachNature', 'likelyConsequences', 'measuresTaken', 'mitigationMeasures']
                         },
                         'risk_assessment': {
-                            'label': '<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Risk Assessment'|raw,
-                            'fields': ['riskLevel', 'riskAssessment', 'specialCategoriesAffected', 'criminalDataAffected']
+                            'label': '<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> '~ 'data_breach.section.risk_assessment'|trans({}, 'privacy'),
+                            'fields': ['severity', 'riskLevel', 'riskAssessment', 'specialCategoriesAffected', 'criminalDataAffected']
                         },
                         'notification_requirements': {
                             'label': '<i class="bi bi-bell" aria-hidden="true"></i> Notification Requirements'|raw,
@@ -56,7 +56,8 @@
                         }
                     },
                     'col_widths': {
-                        'title': 8,
+                        'title': 6,
+                        'detectedAt': 6,
                         'incident': 6,
                         'processingActivity': 6,
                         'affectedDataSubjects': 12,
@@ -66,8 +67,9 @@
                         'likelyConsequences': 12,
                         'measuresTaken': 12,
                         'mitigationMeasures': 12,
+                        'severity': 6,
                         'riskLevel': 6,
-                        'riskAssessment': 6,
+                        'riskAssessment': 12,
                         'specialCategoriesAffected': 6,
                         'criminalDataAffected': 6,
                         'requiresAuthorityNotification': 6,

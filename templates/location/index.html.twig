@@ -67,7 +67,7 @@
                 {% endif %}
             </td>
             <td>
-                <span class="badge bg-info">{{ ('location.type.' ~ location.locationType)|trans }}</span>
+                <span class="badge bg-info">{{ ('location.type.' ~ location.locationType)|trans({}, 'locations') }}</span>
             </td>
             <td>
                 {% if location.code %}
@@ -91,7 +91,7 @@
                     'high_security': 'danger'
                 } %}
                 <span class="badge badge-{{ securityColors[location.securityLevel] ?? 'secondary' }}">
-                    {{ ('location.security.' ~ location.securityLevel)|trans }}
+                    {{ ('location.security.' ~ location.securityLevel)|trans({}, 'locations') }}
                 </span>
             </td>
             <td class="text-center">

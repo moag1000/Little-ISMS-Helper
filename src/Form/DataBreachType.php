@@ -9,6 +9,7 @@ use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -35,6 +36,14 @@ class DataBreachType extends AbstractType
                     'class' => 'form-control',
                 ],
             ])
+            ->add('detectedAt', DateTimeType::class, [
+                'label' => 'data_breach.form.detected_at',
+                'widget' => 'single_text',
+                'required' => true,
+                'input' => 'datetime_immutable',
+                'attr' => ['class' => 'form-control'],
+                'help' => 'data_breach.help.detected_at',
+            ])
             ->add('incident', EntityType::class, [
                 'label' => 'data_breach.form.incident',
                 'class' => Incident::class,
@@ -42,8 +51,9 @@ class DataBreachType extends AbstractType
                     return sprintf('%s - %s', $incident->getReferenceNumber(), $incident->getTitle());
                 },
                 'placeholder' => 'data_breach.placeholder.incident',
-                'required' => true,
+                'required' => false,
                 'attr' => ['class' => 'form-select select2'],
+                'help' => 'data_breach.help.incident',
             ])
             ->add('processingActivity', EntityType::class, [
                 'label' => 'data_breach.form.processing_activity',
@@ -156,6 +166,20 @@ class DataBreachType extends AbstractType
             // ================================================================
             // SECTION 3: Risk Assessment
             // ================================================================
+            ->add('severity', ChoiceType::class, [
+                'label' => 'data_breach.form.severity',
+                'choices' => [
+                    'data_breach.severity.low' => 'low',
+                    'data_breach.severity.medium' => 'medium',
+                    'data_breach.severity.high' => 'high',
+                    'data_breach.severity.critical' => 'critical',
+                ],
+                'choice_translation_domain' => 'privacy',
+                'placeholder' => 'data_breach.placeholder.severity',
+                'required' => true,
+                'attr' => ['class' => 'form-select'],
+                'help' => 'data_breach.help.severity',
+            ])
             ->add('riskLevel', ChoiceType::class, [
                 'label' => 'data_breach.form.risk_level',
                 'choices' => [

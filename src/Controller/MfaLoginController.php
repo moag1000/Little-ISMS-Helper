@@ -96,7 +96,7 @@ class MfaLoginController extends AbstractController
         $mfaToken = $this->mfaTokenRepository->find($tokenId);
 
         if (!$mfaToken || $mfaToken->getUser()->getId() !== $user->getId() || !$mfaToken->isActive()) {
-            $this->auditLogger->log('mfa_verification_failed', 'User', $userId, [
+            $this->auditLogger->logCustom('mfa_verification_failed', 'User', $userId, [
                 'reason' => 'Invalid or inactive token',
                 'ip' => $request->getClientIp(),
             ]);
@@ -123,7 +123,7 @@ class MfaLoginController extends AbstractController
             $session->remove('_security.mfa_required');
             $session->remove('_security.mfa_user_id');
 
-            $this->auditLogger->log('mfa_verification_success', 'User', $userId, [
+            $this->auditLogger->logCustom('mfa_verification_success', 'User', $userId, [
                 'token_type' => $mfaToken->getTokenType(),
                 'device' => $mfaToken->getDeviceName(),
                 'ip' => $request->getClientIp(),
@@ -143,7 +143,7 @@ class MfaLoginController extends AbstractController
         }
 
         // Verification failed
-        $this->auditLogger->log('mfa_verification_failed', 'User', $userId, [
+        $this->auditLogger->logCustom('mfa_verification_failed', 'User', $userId, [
             'token_type' => $mfaToken->getTokenType(),
             'device' => $mfaToken->getDeviceName(),
             'ip' => $request->getClientIp(),

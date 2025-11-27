@@ -73,7 +73,7 @@
                             'subjects_notified': 'success',
                             'closed': 'dark'
                         }[breach.status] %}
-                        <span class="badge bg-{{ status_class }}">{{ ('privacy.data_breach.status.' ~ breach.status)|trans }}</span>
+                        <span class="badge bg-{{ status_class }}">{{ ('privacy.data_breach.status.' ~ breach.status)|trans({}, 'privacy') }}</span>
                     </p>
                     <p><strong>{{ 'privacy.data_breach.field.completeness'|trans({}, 'privacy') }}:</strong> {{ breach.completenessPercentage }}%</p>
                     {% if breach.assessor %}
@@ -87,7 +87,7 @@
                     {% if breach.riskLevel %}
                         <p><strong>{{ 'privacy.data_breach.field.risk_level'|trans({}, 'privacy') }}:</strong>
                             {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.riskLevel] %}
-                            <span class="badge bg-{{ risk_class }}">{{ ('privacy.data_breach.risk.' ~ breach.riskLevel)|trans }}</span>
+                            <span class="badge bg-{{ risk_class }}">{{ ('privacy.data_breach.risk.' ~ breach.riskLevel)|trans({}, 'privacy') }}</span>
                         </p>
                     {% endif %}
                     <p><strong>{{ 'privacy.data_breach.field.created'|trans({}, 'privacy') }}:</strong> {{ breach.createdAt|date('Y-m-d H:i') }}</p>
@@ -157,21 +157,29 @@
         </div>
     </div>
 
-    {# Linked Incident #}
+    {# Detection & Links #}
     <div class="card mb-4">
-        <div class="card-header"><h5 class="mb-0"><i class="bi bi-link-45deg"></i> {{ 'privacy.data_breach.section.linked_incident'|trans({}, 'privacy') }}</h5>
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-link-45deg"></i> {{ 'privacy.data_breach.section.detection_links'|trans({}, 'privacy') }}</h5>
         </div>
         <div class="card-body">
-            <p><strong>{{ 'privacy.data_breach.field.incident'|trans({}, 'privacy') }}:</strong>
-                <a href="{{ path('app_incident_show', {id: breach.incident.id}) }}">
-                    {{ breach.incident.referenceNumber }} - {{ breach.incident.title }}
-                </a>
-            </p>
-            <p><strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.incident.detectedAt|date('Y-m-d H:i') }}</p>
+            <p><strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.detectedAt|date('Y-m-d H:i') }}</p>
             <p><strong>{{ 'privacy.data_breach.field.severity'|trans({}, 'privacy') }}:</strong>
-                {% set sev_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.incident.severity] %}
-                <span class="badge bg-{{ sev_class }}">{{ ('privacy.data_breach.risk.' ~ breach.incident.severity)|trans }}</span>
+                {% set sev_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.severity] %}
+                <span class="badge bg-{{ sev_class }}">{{ ('privacy.data_breach.severity.' ~ breach.severity)|trans({}, 'privacy') }}</span>
             </p>
+
+            {% if breach.incident %}
+                <p><strong>{{ 'privacy.data_breach.field.incident'|trans({}, 'privacy') }}:</strong>
+                    <a href="{{ path('app_incident_show', {id: breach.incident.id}) }}">
+                        {{ breach.incident.referenceNumber }} - {{ breach.incident.title }}
+                    </a>
+                </p>
+            {% else %}
+                <p><strong>{{ 'privacy.data_breach.field.incident'|trans({}, 'privacy') }}:</strong>
+                    <span class="text-muted">{{ 'privacy.data_breach.standalone_breach'|trans({}, 'privacy') }}</span>
+                </p>
+            {% endif %}
+
             {% if breach.processingActivity %}
                 <p><strong>{{ 'privacy.data_breach.field.processing_activity'|trans({}, 'privacy') }}:</strong>
                     <a href="{{ path('app_processing_activity_show', {id: breach.processingActivity.id}) }}">
@@ -271,11 +279,11 @@
             {% endif %}
             {% if breach.dataCategories|length > 0 %}
                 <h6>{{ 'privacy.data_breach.field.data_categories'|trans({}, 'privacy') }}:</h6>
-                <p>{{ breach.dataCategories|join(', ') }}</p>
+                <p>{% for category in breach.dataCategories %}{{ ('data_breach.data_categories.' ~ category)|trans({}, 'privacy') }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
             {% endif %}
             {% if breach.dataSubjectCategories|length > 0 %}
                 <h6>{{ 'privacy.data_breach.field.data_subject_categories'|trans({}, 'privacy') }}:</h6>
-                <p>{{ breach.dataSubjectCategories|join(', ') }}</p>
+                <p>{% for category in breach.dataSubjectCategories %}{{ ('data_breach.data_subject_categories.' ~ category)|trans({}, 'privacy') }}{% if not loop.last %}, {% endif %}{% endfor %}</p>
             {% endif %}
             {% if breach.specialCategoriesAffected %}
                 <div class="alert alert-warning">

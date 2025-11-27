@@ -26,7 +26,7 @@
                 'consultant': 'info'
             } %}
             <span class="badge badge-{{ typeColors[person.personType] ?? 'secondary' }}">
-                {{ ('person.type.' ~ person.personType)|trans }}
+                {{ ('person.type.' ~ person.personType)|trans({}, 'people') }}
             </span>
             {% if person.badgeId %}
                 <code class="ml-sm">{{ person.badgeId }}</code>
@@ -54,7 +54,7 @@
         </div>
 
         <div class="stat-item">
-            <strong>{{ ('person.type.' ~ person.personType)|trans }}</strong>
+            <strong>{{ ('person.type.' ~ person.personType)|trans({}, 'people') }}</strong>
             <span>{{ 'person.field.type'|trans({}, 'messages') }}</span>
         </div>
 

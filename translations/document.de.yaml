@@ -114,3 +114,5 @@ document:
     uploaded_at: 'Hochgeladen am'
     edit_button: Bearbeiten
     drag_files: 'Dateien hierher ziehen oder klicken zum Hochladen'
+    validation:
+        mime_types: 'Bitte wählen Sie eine gültige Datei (PDF, Word, Excel, Bild oder Text)'
