@@ -72,16 +72,10 @@
                                     'label': 'audit.field.scope'|trans({}, 'audit')
                                 } %}
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.scopeType,
                                     'label': 'audit.field.scope_type'|trans({}, 'audit')
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.auditType,
-                                    'label': 'audit.field.audit_type'|trans({}, 'audit')
                                 } %}
                             </div>
                             <div class="col-md-12" id="subsidiaries-container" style="display: none;">
