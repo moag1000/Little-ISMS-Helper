@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'admin' %}
 
-{% block title %}{{ 'admin.data_export.title'|trans }} - {{ 'admin.data_management.title'|trans }}{% endblock %}
+{% block title %}{{ 'admin.data_export.title'|trans({}, 'admin') }} - {{ 'admin.data_management.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">

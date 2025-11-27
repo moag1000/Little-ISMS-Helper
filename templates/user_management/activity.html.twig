@@ -115,12 +115,12 @@
     {# Filter Options #}
     <div class="card mt-4">
         <div class="card-body">
-            <form method="get" class="row g-3">
+            <form method="get" class="row g-3" id="activity-filter-form">
                 <div class="col-auto">
-                    <label for="limit" class="col-form-label">Anzahl anzeigen:</label>
+                    <label for="limit" class="col-form-label">{{ 'activity.filter.show_count'|trans({}, 'users') }}:</label>
                 </div>
                 <div class="col-auto">
-                    <select name="limit" id="limit" class="form-select" onchange="this.form.submit()">
+                    <select name="limit" id="limit" class="form-select" onchange="document.getElementById('activity-filter-form').submit()">
                         <option value="50" {{ app.request.query.get('limit') == 50 ? 'selected' : '' }}>50</option>
                         <option value="100" {{ app.request.query.get('limit') == 100 or not app.request.query.get('limit') ? 'selected' : '' }}>100</option>
                         <option value="200" {{ app.request.query.get('limit') == 200 ? 'selected' : '' }}>200</option>
