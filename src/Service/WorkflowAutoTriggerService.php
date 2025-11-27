@@ -31,6 +31,8 @@ class WorkflowAutoTriggerService
     public function __construct(
         private readonly IncidentEscalationWorkflowService $incidentEscalationService,
         private readonly RiskAcceptanceWorkflowService $riskAcceptanceService,
+        private readonly RiskTreatmentPlanApprovalService $treatmentPlanApprovalService,
+        private readonly DocumentApprovalService $documentApprovalService,
         private readonly LoggerInterface $logger
     ) {}
 
@@ -93,14 +95,22 @@ class WorkflowAutoTriggerService
 
         // Only trigger approval workflow for new plans in 'planned' status
         if ($plan->getStatus() === 'planned') {
-            // TODO: Implement RiskTreatmentPlanApprovalService
-            // $approvalResult = $this->treatmentPlanApprovalService->requestApproval($plan);
-            // $results['approval'] = $approvalResult;
+            try {
+                $approvalResult = $this->treatmentPlanApprovalService->requestApproval($plan);
+                $results['approval'] = $approvalResult;
 
-            $this->logger->info('Risk treatment plan approval workflow would be triggered', [
-                'plan_id' => $plan->getId(),
-                'status' => 'pending_implementation',
-            ]);
+                $this->logger->info('Risk treatment plan approval workflow triggered', [
+                    'plan_id' => $plan->getId(),
+                    'workflow_started' => $approvalResult['workflow_started'],
+                    'approval_level' => $approvalResult['approval_level'],
+                ]);
+            } catch (\Exception $e) {
+                $this->logger->error('Failed to trigger treatment plan approval workflow', [
+                    'plan_id' => $plan->getId(),
+                    'error' => $e->getMessage(),
+                ]);
+                $results['approval'] = ['error' => $e->getMessage()];
+            }
         }
 
         return $results;
@@ -127,14 +137,23 @@ class WorkflowAutoTriggerService
 
         // Trigger approval workflow for policies and procedures
         if (in_array($document->getCategory(), ['policy', 'procedure', 'guideline'])) {
-            // TODO: Implement DocumentApprovalService
-            // $approvalResult = $this->documentApprovalService->requestApproval($document);
-            // $results['approval'] = $approvalResult;
+            try {
+                $approvalResult = $this->documentApprovalService->requestApproval($document, $isNew);
+                $results['approval'] = $approvalResult;
 
-            $this->logger->info('Document approval workflow would be triggered', [
-                'document_id' => $document->getId(),
-                'category' => $document->getCategory(),
-            ]);
+                $this->logger->info('Document approval workflow triggered', [
+                    'document_id' => $document->getId(),
+                    'category' => $document->getCategory(),
+                    'workflow_started' => $approvalResult['workflow_started'],
+                    'approval_level' => $approvalResult['approval_level'],
+                ]);
+            } catch (\Exception $e) {
+                $this->logger->error('Failed to trigger document approval workflow', [
+                    'document_id' => $document->getId(),
+                    'error' => $e->getMessage(),
+                ]);
+                $results['approval'] = ['error' => $e->getMessage()];
+            }
         }
 
         return $results;
