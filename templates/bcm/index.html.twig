@@ -20,10 +20,10 @@
         </div>
         <div class="button-group">
             <a href="{{ path('app_bcm_data_reuse') }}" class="btn btn-secondary">
-                <span class="icon">🔗</span> Data Reuse Insights
+                <i class="bi bi-link-45deg" aria-hidden="true"></i> {{ 'bcm.action.data_reuse'|trans({}, 'bcm') }}
             </a>
-            <a href="#" class="btn btn-primary">
-                <span class="icon">➕</span> Add Business Process
+            <a href="{{ path('app_business_process_new') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg" aria-hidden="true"></i> {{ 'bcm.action.add_process'|trans({}, 'bcm') }}
             </a>
         </div>
     </div>
@@ -106,7 +106,7 @@
                                 'medium': 'info',
                                 'low': 'success'
                             } %}
-                            <span class="badge badge-{{ criticality_colors[process.criticality] ?? 'secondary' }}">
+                            <span class="badge bg-{{ criticality_colors[process.criticality] ?? 'secondary' }}">
                                 {{ process.criticality|upper }}
                             </span>
                         </td>
@@ -121,9 +121,9 @@
                         </td>
                         <td>
                             <div class="impact-scores">
-                                <span class="tooltip-trigger" title="Financial Impact">💰 {{ process.financialImpact }}/10</span>
-                                <span class="tooltip-trigger" title="Reputational Impact">⭐ {{ process.reputationalImpact }}/10</span>
-                                <span class="tooltip-trigger" title="Operational Impact">⚙️ {{ process.operationalImpact }}/10</span>
+                                <span class="tooltip-trigger" title="{{ 'bcm.field.reputational_impact'|trans({}, 'bcm') }}">{{ process.reputationalImpact|default(0) }}/5</span>
+                                <span class="tooltip-trigger" title="{{ 'bcm.field.regulatory_impact'|trans({}, 'bcm') }}">{{ process.regulatoryImpact|default(0) }}/5</span>
+                                <span class="tooltip-trigger" title="{{ 'bcm.field.operational_impact'|trans({}, 'bcm') }}">{{ process.operationalImpact|default(0) }}/5</span>
                             </div>
                         </td>
                         <td>
@@ -132,8 +132,12 @@
                             </span>
                         </td>
                         <td class="actions-column">
-                            <a href="#" class="btn-icon" title="{{ 'common.edit'|trans({}, 'messages') }}">✏️</a>
-                            <a href="#" class="btn-icon" title="{{ 'common.view_details'|trans({}, 'messages') }}">👁️</a>
+                            <a href="{{ path('app_business_process_show', {id: process.id}) }}" class="btn btn-sm btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}">
+                                <i class="bi bi-eye" aria-hidden="true"></i>
+                            </a>
+                            <a href="{{ path('app_business_process_edit', {id: process.id}) }}" class="btn btn-sm btn-outline-secondary" title="{{ 'common.edit'|trans({}, 'messages') }}">
+                                <i class="bi bi-pencil" aria-hidden="true"></i>
+                            </a>
                         </td>
                     </tr>
                 {% else %}
@@ -171,7 +175,7 @@
                     <p>{{ 'bcm.message.mtd_tooltip'|trans({}, 'bcm') }}</p>
                 </div>
                 <div class="info-item">
-                    <strong>{{ 'common.data_reuse'|trans }}</strong>
+                    <strong>{{ 'common.data_reuse'|trans({}, 'messages') }}</strong>
                     <p>{{ 'bcm.message.bcm_influences_asset_ratings'|trans({}, 'bcm') }}</p>
                 </div>
             </div>
