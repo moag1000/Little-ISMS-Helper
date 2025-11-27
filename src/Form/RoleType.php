@@ -50,6 +50,7 @@ class RoleType extends AbstractType
                 'expanded' => true,
                 'required' => false,
                 'choice_label' => 'name',
+                'group_by' => 'category',
             ])
         ;
     }

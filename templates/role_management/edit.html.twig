@@ -30,63 +30,28 @@
     <div class="card-body">
         {{ form_start(form, {'action': path('role_management_edit', {id: role.id})}) }}
 
-            {% include '_components/_auto_form.html.twig' with {
-                'form': form,
-                'sections': {
-                    'basic_info': {
-                        'label': 'role_management.section.basic_info'|trans,
-                        'fields': ['name', 'description'] ~ (not role.systemRole ? ['isSystemRole'] : [])
-                    }
-                }
-            } %}
-
             {% if role.systemRole %}
-            <div class="alert alert-warning">
+            <div class="alert alert-warning mb-4">
                 <i class="bi bi-exclamation-triangle"></i>
                 <strong>{{ 'role_management.warning.system_role'|trans }}</strong>
                 <p class="mb-0 mt-1">{{ 'role_management.warning.system_role_desc'|trans }}</p>
             </div>
             {% endif %}
 
-            <fieldset class="mb-4">
-                <legend class="h5 mb-3">{{ 'role_management.section.permissions'|trans }}</legend>
-
-                <div class="mb-3">
-                    <label class="form-label">{{ 'role_management.field.permissions'|trans }}</label>
-                    <small class="text-muted d-block mb-2">{{ 'role_management.help.permissions'|trans }}</small>
-
-                    {% set rolePermissionIds = [] %}
-                    {% for perm in role.permissions %}
-                        {% set rolePermissionIds = rolePermissionIds|merge([perm.id]) %}
-                    {% endfor %}
-
-                    {% for category, categoryPermissions in permissions %}
-                    <div class="card mb-2">
-                        <div class="card-header py-2">
-                            <strong>{{ category }}</strong>
-                        </div>
-                        <div class="card-body py-2">
-                            <div class="row">
-                                {% for permission in categoryPermissions %}
-                                <div class="col-md-4 col-lg-3">
-                                    <div class="form-check">
-                                        <input type="checkbox" class="form-check-input"
-                                               id="role_permissions_{{ permission.id }}"
-                                               name="role[permissions][]"
-                                               value="{{ permission.id }}"
-                                               {{ permission.id in rolePermissionIds ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="role_permissions_{{ permission.id }}">
-                                            {{ permission.name }}
-                                        </label>
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </fieldset>
+            {% include '_components/_auto_form.html.twig' with {
+                'form': form,
+                'sections': {
+                    'basic_info': {
+                        'label': 'role_management.section.basic_info'|trans,
+                        'fields': ['name', 'description'] ~ (not role.systemRole ? ['isSystemRole'] : [])
+                    },
+                    'permissions': {
+                        'label': 'role_management.section.permissions'|trans,
+                        'fields': ['permissions']
+                    }
+                },
+                'translation_domain': 'role_management'
+            } %}
 
             <div class="d-flex gap-2 mt-4">
                 <button type="submit" class="btn btn-success">

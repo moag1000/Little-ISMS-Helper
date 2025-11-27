@@ -61,7 +61,7 @@ class TrainingController extends AbstractController
             'total' => count($trainings),
             'upcoming' => count($upcoming),
             'completed' => count(array_filter($trainings, fn($t) => $t->getStatus() === 'completed')),
-            'mandatory' => count(array_filter($trainings, fn($t) => $t->getMandatory())),
+            'mandatory' => count(array_filter($trainings, fn($t) => $t->isMandatory())),
         ];
 
         // Calculate detailed statistics based on origin
