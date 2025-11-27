@@ -22,58 +22,58 @@ class PatchType extends AbstractType
     {
         $builder
             ->add('patchId', TextType::class, [
-                'label' => 'field.patch_id',
+                'label' => 'patch.field.patch_id',
                 'required' => true,
                 'attr' => [
                     'maxlength' => 100,
-                    'placeholder' => 'placeholder.patch_id',
+                    'placeholder' => 'patch.placeholder.patch_id',
                 ],
-                'help' => 'help.patch_id',
+                'help' => 'patch.help.patch_id',
             ])
             ->add('title', TextType::class, [
-                'label' => 'field.title',
+                'label' => 'patch.field.title',
                 'required' => true,
                 'attr' => [
                     'maxlength' => 255,
-                    'placeholder' => 'placeholder.title',
+                    'placeholder' => 'patch.placeholder.title',
                 ],
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'field.description',
+                'label' => 'patch.field.description',
                 'required' => true,
                 'attr' => [
                     'rows' => 5,
-                    'placeholder' => 'placeholder.description',
+                    'placeholder' => 'patch.placeholder.description',
                 ],
             ])
             ->add('vulnerability', EntityType::class, [
-                'label' => 'field.vulnerability',
+                'label' => 'patch.field.vulnerability',
                 'class' => Vulnerability::class,
                 'choice_label' => function(Vulnerability $vuln) {
                     return ($vuln->getCveId() ?? 'N/A') . ' - ' . $vuln->getTitle();
                 },
-                'placeholder' => 'placeholder.vulnerability',
+                'placeholder' => 'patch.placeholder.vulnerability',
                 'required' => false,
-                'help' => 'help.vulnerability',
+                'help' => 'patch.help.vulnerability',
             ])
             ->add('vendor', TextType::class, [
-                'label' => 'field.vendor',
+                'label' => 'patch.field.vendor',
                 'required' => true,
                 'attr' => [
                     'maxlength' => 100,
-                    'placeholder' => 'placeholder.vendor',
+                    'placeholder' => 'patch.placeholder.vendor',
                 ],
             ])
             ->add('product', TextType::class, [
-                'label' => 'field.product',
+                'label' => 'patch.field.product',
                 'required' => true,
                 'attr' => [
                     'maxlength' => 255,
-                    'placeholder' => 'placeholder.product',
+                    'placeholder' => 'patch.placeholder.product',
                 ],
             ])
             ->add('version', TextType::class, [
-                'label' => 'field.version',
+                'label' => 'patch.field.version',
                 'required' => false,
                 'attr' => [
                     'maxlength' => 50,
@@ -81,108 +81,108 @@ class PatchType extends AbstractType
                 ],
             ])
             ->add('patchType', ChoiceType::class, [
-                'label' => 'field.patch_type',
+                'label' => 'patch.field.patch_type',
                 'choices' => [
-                    'type.security' => 'security',
-                    'type.critical' => 'critical',
-                    'type.feature' => 'feature',
-                    'type.bugfix' => 'bugfix',
-                    'type.hotfix' => 'hotfix',
+                    'patch.type.security' => 'security',
+                    'patch.type.critical' => 'critical',
+                    'patch.type.feature' => 'feature',
+                    'patch.type.bugfix' => 'bugfix',
+                    'patch.type.hotfix' => 'hotfix',
                 ],
                 'required' => true,
-                'help' => 'help.patch_type',
+                'help' => 'patch.help.patch_type',
                     'choice_translation_domain' => 'patches',
             ])
             ->add('priority', ChoiceType::class, [
-                'label' => 'field.priority',
+                'label' => 'patch.field.priority',
                 'choices' => [
-                    'priority.critical' => 'critical',
-                    'priority.high' => 'high',
-                    'priority.medium' => 'medium',
-                    'priority.low' => 'low',
+                    'patch.priority.critical' => 'critical',
+                    'patch.priority.high' => 'high',
+                    'patch.priority.medium' => 'medium',
+                    'patch.priority.low' => 'low',
                 ],
                 'required' => true,
-                'help' => 'help.priority',
+                'help' => 'patch.help.priority',
                     'choice_translation_domain' => 'patches',
             ])
             ->add('affectedAssets', EntityType::class, [
-                'label' => 'field.affected_assets',
+                'label' => 'patch.field.affected_assets',
                 'class' => Asset::class,
                 'choice_label' => 'name',
                 'multiple' => true,
                 'required' => false,
-                'help' => 'help.affected_assets',
+                'help' => 'patch.help.affected_assets',
                 'attr' => [
                     'class' => 'form-select',
                     'size' => 5,
                 ],
             ])
             ->add('status', ChoiceType::class, [
-                'label' => 'field.status',
+                'label' => 'patch.field.status',
                 'choices' => [
-                    'status.pending' => 'pending',
-                    'status.testing' => 'testing',
-                    'status.approved' => 'approved',
-                    'status.deployed' => 'deployed',
-                    'status.failed' => 'failed',
-                    'status.rolled_back' => 'rolled_back',
-                    'status.not_applicable' => 'not_applicable',
+                    'patch.status.pending' => 'pending',
+                    'patch.status.testing' => 'testing',
+                    'patch.status.approved' => 'approved',
+                    'patch.status.deployed' => 'deployed',
+                    'patch.status.failed' => 'failed',
+                    'patch.status.rolled_back' => 'rolled_back',
+                    'patch.status.not_applicable' => 'not_applicable',
                 ],
                 'required' => true,
                     'choice_translation_domain' => 'patches',
             ])
             ->add('releaseDate', DateType::class, [
-                'label' => 'field.release_date',
+                'label' => 'patch.field.release_date',
                 'required' => true,
                 'widget' => 'single_text',
             ])
             ->add('deploymentDeadline', DateType::class, [
-                'label' => 'field.deployment_deadline',
+                'label' => 'patch.field.deployment_deadline',
                 'required' => false,
                 'widget' => 'single_text',
-                'help' => 'help.deployment_deadline',
+                'help' => 'patch.help.deployment_deadline',
             ])
             ->add('deployedDate', DateType::class, [
-                'label' => 'field.deployed_date',
+                'label' => 'patch.field.deployed_date',
                 'required' => false,
                 'widget' => 'single_text',
             ])
             ->add('responsiblePerson', TextType::class, [
-                'label' => 'field.responsible_person',
+                'label' => 'patch.field.responsible_person',
                 'required' => false,
                 'attr' => [
                     'maxlength' => 100,
-                    'placeholder' => 'placeholder.responsible_person',
+                    'placeholder' => 'patch.placeholder.responsible_person',
                 ],
-                'help' => 'help.responsible_person',
+                'help' => 'patch.help.responsible_person',
             ])
             ->add('testingNotes', TextareaType::class, [
-                'label' => 'field.testing_notes',
+                'label' => 'patch.field.testing_notes',
                 'required' => false,
                 'attr' => [
                     'rows' => 4,
-                    'placeholder' => 'placeholder.testing_notes',
+                    'placeholder' => 'patch.placeholder.testing_notes',
                 ],
-                'help' => 'help.testing_notes',
+                'help' => 'patch.help.testing_notes',
             ])
             ->add('deploymentNotes', TextareaType::class, [
-                'label' => 'field.deployment_notes',
+                'label' => 'patch.field.deployment_notes',
                 'required' => false,
                 'attr' => [
                     'rows' => 3,
                 ],
             ])
             ->add('rollbackPlan', TextareaType::class, [
-                'label' => 'field.rollback_plan',
+                'label' => 'patch.field.rollback_plan',
                 'required' => false,
                 'attr' => [
                     'rows' => 4,
-                    'placeholder' => 'placeholder.rollback_plan',
+                    'placeholder' => 'patch.placeholder.rollback_plan',
                 ],
-                'help' => 'help.rollback_plan',
+                'help' => 'patch.help.rollback_plan',
             ])
             ->add('requiresDowntime', ChoiceType::class, [
-                'label' => 'field.requires_downtime',
+                'label' => 'patch.field.requires_downtime',
                 'choices' => [
                     'common.yes' => true,
                     'common.no' => false,
@@ -192,16 +192,16 @@ class PatchType extends AbstractType
                     'choice_translation_domain' => 'messages',
             ])
             ->add('estimatedDowntimeMinutes', IntegerType::class, [
-                'label' => 'field.estimated_downtime_minutes',
+                'label' => 'patch.field.estimated_downtime_minutes',
                 'required' => false,
                 'attr' => [
                     'min' => 0,
                     'placeholder' => '60',
                 ],
-                'help' => 'help.estimated_downtime_minutes',
+                'help' => 'patch.help.estimated_downtime_minutes',
             ])
             ->add('requiresReboot', ChoiceType::class, [
-                'label' => 'field.requires_reboot',
+                'label' => 'patch.field.requires_reboot',
                 'choices' => [
                     'common.yes' => true,
                     'common.no' => false,
@@ -211,22 +211,22 @@ class PatchType extends AbstractType
                     'choice_translation_domain' => 'messages',
             ])
             ->add('knownIssues', TextareaType::class, [
-                'label' => 'field.known_issues',
+                'label' => 'patch.field.known_issues',
                 'required' => false,
                 'attr' => [
                     'rows' => 3,
-                    'placeholder' => 'placeholder.known_issues',
+                    'placeholder' => 'patch.placeholder.known_issues',
                 ],
             ])
             ->add('downloadUrl', UrlType::class, [
-                'label' => 'field.download_url',
+                'label' => 'patch.field.download_url',
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'https://vendor.com/patches/...',
                 ],
             ])
             ->add('documentationUrl', UrlType::class, [
-                'label' => 'field.documentation_url',
+                'label' => 'patch.field.documentation_url',
                 'required' => false,
                 'attr' => [
                     'placeholder' => 'https://vendor.com/docs/...',
