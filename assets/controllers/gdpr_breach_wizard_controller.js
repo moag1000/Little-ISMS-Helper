@@ -37,6 +37,10 @@ export default class extends Controller {
         'completeBtn'
     ];
 
+    static values = {
+        assessmentUrl: String
+    };
+
     connect() {
         this.currentStep = 1;
         this.totalSteps = 4;
@@ -234,7 +238,7 @@ export default class extends Controller {
      */
     async calculateResults() {
         try {
-            const response = await fetch('/incident/gdpr-wizard-result', {
+            const response = await fetch(this.assessmentUrlValue, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

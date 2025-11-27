@@ -74,6 +74,7 @@ incident:
         estimated_financial_impact: 'Estimated Financial Impact'
         national_authority_notified: 'National Authority Notified'
         authority_reference_number: 'Authority Reference Number'
+        data_breach_occurred: 'Data Breach Occurred'
     label:
         title: Title
         severity: Severity
@@ -153,6 +154,7 @@ incident:
         affected_users_count: 'Estimated number of affected users/customers'
         estimated_financial_impact: 'Estimated financial damage in EUR'
         national_authority: 'Competent national authority (e.g. BSI in Germany)'
+        data_breach_occurred: 'Mark this as a data breach if personal data is affected (GDPR Art. 33)'
     category:
         data_breach: 'Data Breach'
         security_incident: 'Security Incident'
@@ -202,7 +204,3 @@ incident:
             notifications_sent: 'Email notifications will be sent to stakeholders'
             approval_required: 'Approval steps will be initiated'
             sla_tracked: 'SLA tracking will begin'
-    field:
-        data_breach_occurred: 'Data Breach Occurred'
-    help:
-        data_breach_occurred: 'Mark this as a data breach if personal data is affected (GDPR Art. 33)'
