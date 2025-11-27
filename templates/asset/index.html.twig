@@ -140,7 +140,7 @@
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     {% if typeStats|length > 0 %}
                         {% for stat in typeStats %}
-                            <option value="{{ stat.assetType }}" {{ app.request.get('type') == stat.assetType ? 'selected' : '' }}>
+                            <option value="{{ stat.assetType }}" {{ app.request.query.get('type') == stat.assetType ? 'selected' : '' }}>
                                 {{ stat.assetType }} ({{ stat.count }})
                             </option>
                         {% endfor %}
@@ -151,25 +151,25 @@
                 <label for="filter-classification" class="form-label">{{ 'asset.label.data_classification'|trans({}, 'asset') }}</label>
                 <select class="form-select" id="filter-classification" name="classification" onchange="this.form.submit()">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    <option value="public" {{ app.request.get('classification') == 'public' ? 'selected' : '' }}>{{ 'asset.classification.public'|trans({}, 'asset') }}</option>
-                    <option value="internal" {{ app.request.get('classification') == 'internal' ? 'selected' : '' }}>{{ 'asset.classification.internal'|trans({}, 'asset') }}</option>
-                    <option value="confidential" {{ app.request.get('classification') == 'confidential' ? 'selected' : '' }}>{{ 'asset.classification.confidential'|trans({}, 'asset') }}</option>
-                    <option value="restricted" {{ app.request.get('classification') == 'restricted' ? 'selected' : '' }}>{{ 'asset.classification.restricted'|trans({}, 'asset') }}</option>
+                    <option value="public" {{ app.request.query.get('classification') == 'public' ? 'selected' : '' }}>{{ 'asset.classification.public'|trans({}, 'asset') }}</option>
+                    <option value="internal" {{ app.request.query.get('classification') == 'internal' ? 'selected' : '' }}>{{ 'asset.classification.internal'|trans({}, 'asset') }}</option>
+                    <option value="confidential" {{ app.request.query.get('classification') == 'confidential' ? 'selected' : '' }}>{{ 'asset.classification.confidential'|trans({}, 'asset') }}</option>
+                    <option value="restricted" {{ app.request.query.get('classification') == 'restricted' ? 'selected' : '' }}>{{ 'asset.classification.restricted'|trans({}, 'asset') }}</option>
                 </select>
             </div>
             <div class="col-md-3">
                 <label for="filter-owner" class="form-label">{{ 'asset.label.owner'|trans({}, 'asset') }}</label>
                 <input type="text" class="form-control" id="filter-owner" name="owner"
-                       value="{{ app.request.get('owner') }}"
+                       value="{{ app.request.query.get('owner') }}"
                        placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
             </div>
             <div class="col-md-3">
                 <label for="filter-status" class="form-label">{{ 'asset.label.status'|trans({}, 'asset') }}</label>
                 <select class="form-select" id="filter-status" name="status" onchange="this.form.submit()">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
-                    <option value="active" {{ app.request.get('status') == 'active' ? 'selected' : '' }}>{{ 'asset.status.active'|trans({}, 'asset') }}</option>
-                    <option value="inactive" {{ app.request.get('status') == 'inactive' ? 'selected' : '' }}>{{ 'asset.status.inactive'|trans({}, 'asset') }}</option>
-                    <option value="retired" {{ app.request.get('status') == 'retired' ? 'selected' : '' }}>{{ 'asset.status.retired'|trans({}, 'asset') }}</option>
+                    <option value="active" {{ app.request.query.get('status') == 'active' ? 'selected' : '' }}>{{ 'asset.status.active'|trans({}, 'asset') }}</option>
+                    <option value="inactive" {{ app.request.query.get('status') == 'inactive' ? 'selected' : '' }}>{{ 'asset.status.inactive'|trans({}, 'asset') }}</option>
+                    <option value="retired" {{ app.request.query.get('status') == 'retired' ? 'selected' : '' }}>{{ 'asset.status.retired'|trans({}, 'asset') }}</option>
                 </select>
             </div>
             <div class="col-12">
