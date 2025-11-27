@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ audit.title }} - Audit Report</title>
+    <style>
+        body {
+            font-family: 'DejaVu Sans', sans-serif;
+            font-size: 10pt;
+            line-height: 1.4;
+            color: #1e293b;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, #06b6d4 0%, #ec4899 50%, #8b5cf6 100%) 1;
+            padding-bottom: 15px;
+        }
+        .header h1 {
+            color: #0f172a;
+            margin: 0 0 5px 0;
+            font-size: 18pt;
+            text-transform: uppercase;
+            letter-spacing: 0.5pt;
+        }
+        .header .audit-number {
+            font-size: 12pt;
+            color: #06b6d4;
+            font-weight: bold;
+        }
+        .header .subtitle {
+            color: #64748b;
+            font-size: 9pt;
+            margin-top: 8px;
+        }
+        .section {
+            margin: 15px 0;
+            page-break-inside: avoid;
+        }
+        .section-title {
+            background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+            color: #06b6d4;
+            padding: 8px 12px;
+            font-size: 11pt;
+            text-transform: uppercase;
+            letter-spacing: 0.3pt;
+            margin-bottom: 10px;
+        }
+        .info-grid {
+            display: table;
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .info-row {
+            display: table-row;
+        }
+        .info-label {
+            display: table-cell;
+            width: 30%;
+            padding: 6px 10px;
+            background: #f1f5f9;
+            font-weight: bold;
+            border: 1px solid #e2e8f0;
+            font-size: 9pt;
+        }
+        .info-value {
+            display: table-cell;
+            padding: 6px 10px;
+            border: 1px solid #e2e8f0;
+            font-size: 9pt;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 8pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .status-planned { background: #fef3c7; color: #92400e; }
+        .status-in_progress { background: #dbeafe; color: #1e40af; }
+        .status-completed { background: #d1fae5; color: #065f46; }
+        .status-reported { background: #e0e7ff; color: #3730a3; }
+        .content-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 9pt;
+        }
+        .findings-section {
+            margin-top: 15px;
+        }
+        .finding-type {
+            font-weight: bold;
+            color: #0f172a;
+            margin-bottom: 5px;
+            font-size: 10pt;
+        }
+        .finding-type.non-conformities { color: #dc2626; }
+        .finding-type.observations { color: #f59e0b; }
+        .finding-type.recommendations { color: #2563eb; }
+        table.assets-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 9pt;
+        }
+        table.assets-table th {
+            background: #1e293b;
+            color: #06b6d4;
+            padding: 6px;
+            text-align: left;
+            border: 1px solid #334155;
+        }
+        table.assets-table td {
+            padding: 5px 6px;
+            border: 1px solid #e2e8f0;
+        }
+        table.assets-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 8pt;
+            color: #94a3b8;
+            padding: 10px;
+            border-top: 1px solid #e2e8f0;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Internal Audit Report</h1>
+        <div class="audit-number">{{ audit.auditNumber }}</div>
+        <div class="subtitle">{{ audit.title }}</div>
+    </div>
+
+    {# Basic Information #}
+    <div class="section">
+        <div class="section-title">Audit Information</div>
+        <div class="info-grid">
+            <div class="info-row">
+                <div class="info-label">Audit Number</div>
+                <div class="info-value">{{ audit.auditNumber }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Title</div>
+                <div class="info-value">{{ audit.title }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Status</div>
+                <div class="info-value">
+                    <span class="status-badge status-{{ audit.status }}">{{ audit.status|replace({'_': ' '})|title }}</span>
+                </div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Scope Type</div>
+                <div class="info-value">{{ audit.scopeType|default('Full ISMS')|replace({'_': ' '})|title }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Lead Auditor</div>
+                <div class="info-value">{{ audit.leadAuditor }}</div>
+            </div>
+            {% if audit.auditTeam %}
+            <div class="info-row">
+                <div class="info-label">Audit Team</div>
+                <div class="info-value">{{ audit.auditTeam }}</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Dates #}
+    <div class="section">
+        <div class="section-title">Schedule</div>
+        <div class="info-grid">
+            <div class="info-row">
+                <div class="info-label">Planned Date</div>
+                <div class="info-value">{{ audit.plannedDate|date('d.m.Y') }}</div>
+            </div>
+            {% if audit.actualDate %}
+            <div class="info-row">
+                <div class="info-label">Actual Date</div>
+                <div class="info-value">{{ audit.actualDate|date('d.m.Y') }}</div>
+            </div>
+            {% endif %}
+            {% if audit.reportDate %}
+            <div class="info-row">
+                <div class="info-label">Report Date</div>
+                <div class="info-value">{{ audit.reportDate|date('d.m.Y') }}</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Scope #}
+    {% if audit.scope or audit.objectives or audit.auditedDepartments %}
+    <div class="section">
+        <div class="section-title">Scope & Objectives</div>
+        {% if audit.scope %}
+        <div class="content-box">
+            <strong>Scope:</strong><br>
+            {{ audit.scope|nl2br }}
+        </div>
+        {% endif %}
+        {% if audit.objectives %}
+        <div class="content-box">
+            <strong>Objectives:</strong><br>
+            {{ audit.objectives|nl2br }}
+        </div>
+        {% endif %}
+        {% if audit.auditedDepartments %}
+        <div class="content-box">
+            <strong>Audited Departments:</strong><br>
+            {{ audit.auditedDepartments|nl2br }}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {# Scoped Framework #}
+    {% if audit.scopedFramework %}
+    <div class="section">
+        <div class="section-title">Compliance Framework</div>
+        <div class="info-grid">
+            <div class="info-row">
+                <div class="info-label">Framework</div>
+                <div class="info-value">{{ audit.scopedFramework.name }}</div>
+            </div>
+            {% if audit.scopedFramework.version %}
+            <div class="info-row">
+                <div class="info-label">Version</div>
+                <div class="info-value">{{ audit.scopedFramework.version }}</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# Scoped Assets #}
+    {% if audit.scopedAssets|length > 0 %}
+    <div class="section">
+        <div class="section-title">Audited Assets ({{ audit.scopedAssets|length }})</div>
+        <table class="assets-table">
+            <thead>
+                <tr>
+                    <th>Asset Name</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for asset in audit.scopedAssets %}
+                <tr>
+                    <td>{{ asset.name }}</td>
+                    <td>{{ asset.assetType|default('-')|replace({'_': ' '})|title }}</td>
+                    <td>{{ asset.status|default('-') }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {# Findings - Only if audit has results #}
+    {% if audit.findings or audit.nonConformities or audit.observations or audit.recommendations %}
+    <div class="section page-break">
+        <div class="section-title">Audit Findings</div>
+
+        {% if audit.findings %}
+        <div class="findings-section">
+            <div class="finding-type">General Findings</div>
+            <div class="content-box">{{ audit.findings|nl2br }}</div>
+        </div>
+        {% endif %}
+
+        {% if audit.nonConformities %}
+        <div class="findings-section">
+            <div class="finding-type non-conformities">Non-Conformities</div>
+            <div class="content-box">{{ audit.nonConformities|nl2br }}</div>
+        </div>
+        {% endif %}
+
+        {% if audit.observations %}
+        <div class="findings-section">
+            <div class="finding-type observations">Observations</div>
+            <div class="content-box">{{ audit.observations|nl2br }}</div>
+        </div>
+        {% endif %}
+
+        {% if audit.recommendations %}
+        <div class="findings-section">
+            <div class="finding-type recommendations">Recommendations</div>
+            <div class="content-box">{{ audit.recommendations|nl2br }}</div>
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {# Conclusion #}
+    {% if audit.conclusion %}
+    <div class="section">
+        <div class="section-title">Conclusion</div>
+        <div class="content-box">{{ audit.conclusion|nl2br }}</div>
+    </div>
+    {% endif %}
+
+    {# Metadata #}
+    <div class="section">
+        <div class="section-title">Document Information</div>
+        <div class="info-grid">
+            <div class="info-row">
+                <div class="info-label">Generated</div>
+                <div class="info-value">{{ "now"|date('d.m.Y H:i') }}</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">Created</div>
+                <div class="info-value">{{ audit.createdAt|date('d.m.Y H:i') }}</div>
+            </div>
+            {% if audit.updatedAt %}
+            <div class="info-row">
+                <div class="info-label">Last Updated</div>
+                <div class="info-value">{{ audit.updatedAt|date('d.m.Y H:i') }}</div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="footer">
+        Internal Audit Report - {{ audit.auditNumber }} - Generated {{ "now"|date('d.m.Y H:i') }} - Confidential
+    </div>
+</body>
+</html>

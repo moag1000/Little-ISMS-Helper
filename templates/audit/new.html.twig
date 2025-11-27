@@ -47,7 +47,7 @@
                     <fieldset class="mb-4">
                         <legend class="h5 mb-3">
                             <i class="bi bi-info-square" aria-hidden="true"></i>
-                            {{ 'audit.section.basic_info'|trans({}, 'audits') }}
+                            {{ 'audit.section.basic_info'|trans({}, 'audit') }}
                         </legend>
 
                         <div class="row">
@@ -55,7 +55,7 @@
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.title,
                                     'label_key': form.title.vars.label,
-                                    'translation_domain': 'audits',
+                                    'translation_domain': 'audit',
                                     'required': true
                                 } %}
                             </div>
@@ -63,33 +63,33 @@
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.scope,
                                     'label_key': form.scope.vars.label,
-                                    'translation_domain': 'audits'
+                                    'translation_domain': 'audit'
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.scopeType,
                                     'label_key': form.scopeType.vars.label,
-                                    'translation_domain': 'audits'
+                                    'translation_domain': 'audit'
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.scopedFramework,
                                     'label_key': form.scopedFramework.vars.label,
-                                    'translation_domain': 'audits'
+                                    'translation_domain': 'audit'
                                 } %}
                             </div>
                             <div class="col-md-12" id="subsidiaries-container" style="display: none;">
                                 <div class="alert alert-info" role="status">
                                     <i class="bi bi-info-circle" aria-hidden="true"></i>
-                                    <strong>{{ 'audit.corporate_audit_note_title'|trans({}, 'audits') }}:</strong>
-                                    {{ 'audit.corporate_audit_note'|trans({}, 'audits') }}
+                                    <strong>{{ 'audit.corporate_audit_note_title'|trans({}, 'audit') }}:</strong>
+                                    {{ 'audit.corporate_audit_note'|trans({}, 'audit') }}
                                 </div>
                                 {% include '_components/_form_field.html.twig' with {
                                     'field': form.auditedSubsidiaries,
                                     'label_key': form.auditedSubsidiaries.vars.label,
-                                    'translation_domain': 'audits'
+                                    'translation_domain': 'audit'
                                 } %}
                             </div>
                         </div>
@@ -99,19 +99,19 @@
                         'form': form,
                         'sections': {
                             'schedule': {
-                                'label': 'audit.section.schedule'|trans({}, 'audits'),
+                                'label': 'audit.section.schedule'|trans({}, 'audit'),
                                 'fields': ['plannedDate', 'actualDate']
                             },
                             'team': {
-                                'label': 'audit.section.team'|trans({}, 'audits'),
+                                'label': 'audit.section.team'|trans({}, 'audit'),
                                 'fields': ['leadAuditor', 'status', 'auditTeam']
                             },
                             'objectives': {
-                                'label': 'audit.section.objectives'|trans({}, 'audits'),
+                                'label': 'audit.section.objectives'|trans({}, 'audit'),
                                 'fields': ['objectives']
                             },
                             'findings': {
-                                'label': 'audit.section.findings'|trans({}, 'audits'),
+                                'label': 'audit.section.findings'|trans({}, 'audit'),
                                 'fields': ['findings', 'recommendations', 'conclusion']
                             }
                         },
@@ -131,7 +131,7 @@
                             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
                         </a>
                         <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'audit.create'|trans({}, 'audits') }}
+                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'audit.create'|trans({}, 'audit') }}
                         </button>
                     </div>
 
