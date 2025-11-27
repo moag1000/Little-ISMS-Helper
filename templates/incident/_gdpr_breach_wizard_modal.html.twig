@@ -52,7 +52,7 @@
                             </div>
                         </div>
                         <div class="text-end mt-1">
-                            <small data-gdpr-breach-wizard-target="progressText">1 of 4</small>
+                            <small data-gdpr-breach-wizard-target="progressText">1 {{ 'data_breach.wizard.step_of'|trans({}, 'privacy') }} 4</small>
                         </div>
                     </div>
                     <button type="button"
@@ -251,7 +251,7 @@
                             <div class="card-body">
                                 <h6 class="card-subtitle mb-2 text-muted">{{ 'data_breach.wizard.risk_level_label'|trans({}, 'privacy') }}</h6>
                                 <div data-gdpr-breach-wizard-target="resultRiskLevel" class="badge bg-secondary fs-5">
-                                    Calculating...
+                                    {{ 'data_breach.wizard.calculating'|trans({}, 'privacy') }}
                                 </div>
                             </div>
                         </div>
@@ -263,7 +263,7 @@
                                     {{ 'data_breach.wizard.gdpr_article_33_requirement'|trans({}, 'privacy') }}
                                 </h6>
                                 <div data-gdpr-breach-wizard-target="resultReportable" class="badge bg-secondary fs-6">
-                                    Calculating...
+                                    {{ 'data_breach.wizard.calculating'|trans({}, 'privacy') }}
                                 </div>
                             </div>
                         </div>
@@ -287,7 +287,7 @@
                             </div>
                             <div class="card-body">
                                 <p data-gdpr-breach-wizard-target="resultRecommendation" class="mb-0">
-                                    Calculating recommendation...
+                                    {{ 'data_breach.wizard.calculating'|trans({}, 'privacy') }}
                                 </p>
                             </div>
                         </div>
