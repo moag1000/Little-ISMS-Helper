@@ -526,6 +526,16 @@ class IncidentEscalationWorkflowService
      *
      * @param Incident $incident Incident object (can be unsaved)
      * @return array Preview information
+     *  - escalation_level: escalation level (data_breach, critical, high, medium, low)
+     *  - workflow_started: whether a workflow was started
+     *  - workflow_instance: workflow instance (if workflow was started)
+     *  - hours_remaining: hours remaining until SLA deadline
+     *  - notified_users: notified users (if workflow was started)
+     *  - requires_approval: whether approval is required
+     *  - approval_required_by: roles required for approval (if approval is required)
+     *  - auto_notification: whether notifications are sent automatically
+     *
+     * @throws \DateMalformedStringException
      */
     public function previewEscalation(Incident $incident): array
     {

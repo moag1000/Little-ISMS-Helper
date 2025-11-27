@@ -55,7 +55,7 @@ class ComplianceFramework
     /**
      * @var Collection<int, ComplianceRequirement>
      */
-    #[ORM\OneToMany(targetEntity: ComplianceRequirement::class, mappedBy: 'framework', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: ComplianceRequirement::class, mappedBy: 'complianceFramework', cascade: ['persist', 'remove'])]
     private Collection $requirements;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]

@@ -19,7 +19,7 @@ class ComplianceRequirement
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'requirements')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(name: 'framework_id', nullable: false)]
     private ?ComplianceFramework $complianceFramework = null;
 
     #[ORM\Column(length: 50)]
@@ -41,13 +41,13 @@ class ComplianceRequirement
     private string $requirementType = 'core'; // core, detailed, sub_requirement
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'detailedRequirements')]
-    #[ORM\JoinColumn(nullable: true, onDelete: 'CASCADE')]
+    #[ORM\JoinColumn(name: 'parent_requirement_id', nullable: true, onDelete: 'CASCADE')]
     private ?ComplianceRequirement $complianceRequirement = null;
 
     /**
      * @var Collection<int, ComplianceRequirement>
      */
-    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parentRequirement', cascade: ['persist', 'remove'])]
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'complianceRequirement', cascade: ['persist', 'remove'])]
     private Collection $detailedRequirements;
 
     /**

@@ -40,13 +40,13 @@ class UserVoter extends Voter
         private readonly InitialAdminService $initialAdminService
     ) {
     }
-    public const VIEW = 'user.view';
-    public const CREATE = 'user.create';
-    public const EDIT = 'user.edit';
-    public const DELETE = 'user.delete';
-    public const MANAGE_ROLES = 'user.manage_roles';
-    public const MANAGE_PERMISSIONS = 'user.manage_permissions';
-    public const VIEW_ALL = 'user.view_all';
+    public const string VIEW = 'user.view';
+    public const string CREATE = 'user.create';
+    public const string EDIT = 'user.edit';
+    public const string DELETE = 'user.delete';
+    public const string MANAGE_ROLES = 'user.manage_roles';
+    public const string MANAGE_PERMISSIONS = 'user.manage_permissions';
+    public const string VIEW_ALL = 'user.view_all';
 
     protected function supports(string $attribute, mixed $subject): bool
     {

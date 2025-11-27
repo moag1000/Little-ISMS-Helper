@@ -63,7 +63,7 @@ class CorporateGovernance
     private ?DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(name: 'created_by_id', nullable: true)]
     private ?User $user = null;
 
     public function __construct()

@@ -23,14 +23,14 @@ class RestoreService
     private const array SUPPORTED_VERSIONS = ['1.0'];
 
     // Strategies for handling missing fields
-    public const STRATEGY_SKIP_FIELD = 'skip_field';
-    public const STRATEGY_USE_DEFAULT = 'use_default';
-    public const STRATEGY_FAIL = 'fail';
+    public const string STRATEGY_SKIP_FIELD = 'skip_field';
+    public const string STRATEGY_USE_DEFAULT = 'use_default';
+    public const string STRATEGY_FAIL = 'fail';
 
     // Strategies for handling existing data
-    public const EXISTING_SKIP = 'skip';
-    public const EXISTING_UPDATE = 'update';
-    public const EXISTING_REPLACE = 'replace';
+    public const string EXISTING_SKIP = 'skip';
+    public const string EXISTING_UPDATE = 'update';
+    public const string EXISTING_REPLACE = 'replace';
 
     private array $validationErrors = [];
     private array $warnings = [];
@@ -143,6 +143,7 @@ class RestoreService
      * @param array $backup Backup data
      * @param array $options Restore options
      * @return array Restore result with statistics
+     * @throws \Doctrine\DBAL\Exception
      */
     public function restoreFromBackup(array $backup, array $options = []): array
     {

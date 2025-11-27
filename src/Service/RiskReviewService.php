@@ -78,6 +78,7 @@ class RiskReviewService
      *
      * @param int $daysAhead Number of days to look ahead (default: 30)
      * @return array<Risk>
+     * @throws \DateMalformedStringException
      */
     public function getUpcomingReviews(Tenant $tenant, int $daysAhead = 30): array
     {
@@ -104,6 +105,7 @@ class RiskReviewService
      * - Review interval configuration
      *
      * @param bool $flush Whether to persist changes immediately
+     * @throws \DateMalformedStringException
      */
     public function scheduleNextReview(Risk $risk, bool $flush = true): DateTimeInterface
     {

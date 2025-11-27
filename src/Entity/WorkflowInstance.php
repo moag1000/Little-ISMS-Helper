@@ -32,11 +32,11 @@ class WorkflowInstance
     private string $status = 'pending'; // pending, in_progress, approved, rejected, cancelled
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(name: 'initiated_by_id', nullable: true)]
     private ?User $user = null;
 
     #[ORM\ManyToOne(targetEntity: WorkflowStep::class)]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(name: 'current_step_id', nullable: true)]
     private ?WorkflowStep $workflowStep = null;
 
     #[ORM\Column(type: Types::JSON, nullable: true)]

@@ -109,7 +109,7 @@ class ThreatIntelligence
     private ?string $actionsTaken = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: true)]
+    #[ORM\JoinColumn(name: 'assigned_to_id', nullable: true)]
     #[Groups(['threat:read'])]
     private ?User $user = null;
 
@@ -140,7 +140,7 @@ class ThreatIntelligence
     /**
      * @var Collection<int, Incident>
      */
-    #[ORM\OneToMany(targetEntity: Incident::class, mappedBy: 'originatingThreat')]
+    #[ORM\OneToMany(targetEntity: Incident::class, mappedBy: 'threatIntelligence')]
     #[Groups(['threat:read'])]
     private Collection $resultingIncidents;
 

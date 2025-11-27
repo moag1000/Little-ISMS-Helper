@@ -8,6 +8,7 @@ use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\ModuleConfigurationService;
 use App\Service\TenantContext;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
 use Twig\Extension\AbstractExtension;
@@ -44,6 +45,8 @@ class ComplianceExtension extends AbstractExtension
      * Check if NIS2 framework is installed and active
      *
      * @return bool True if NIS2 framework exists and is active
+     * @throws Exception|InvalidArgumentException If cache fails
+     *
      */
     public function isNis2Active(): bool
     {
@@ -73,6 +76,8 @@ class ComplianceExtension extends AbstractExtension
      * Note: This is heavier than getComplianceFrameworksQuick() as it calculates compliance %
      *
      * @return array Array of frameworks with id, code, name, and mandatory status
+     * @throws Exception|InvalidArgumentException If cache fails
+     *
      */
     public function getComplianceFrameworks(): array
     {
@@ -113,6 +118,8 @@ class ComplianceExtension extends AbstractExtension
      * Lightweight version for sidebar menus - NO compliance calculation
      *
      * @return array Array with id, code, name (short version)
+     * @throws Exception|InvalidArgumentException If cache fails
+     *
      */
     public function getComplianceFrameworksQuick(): array
     {
