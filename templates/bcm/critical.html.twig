@@ -59,7 +59,7 @@
                     <th>{{ 'bcm.field.rto'|trans({}, 'bcm') }}</th>
                     <th>{{ 'bcm.field.rpo'|trans({}, 'bcm') }}</th>
                     <th>{{ 'bcm.field.mtpd'|trans({}, 'bcm') }}</th>
-                    <th class="text-center">{{ 'bcm.field.dependent_assets'|trans({}, 'bcm') }}</th>
+                    <th class="text-center">{{ 'bcm.field.supporting_assets'|trans({}, 'bcm') }}</th>
                     <th class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
                 </tr>
             </thead>
@@ -89,11 +89,7 @@
                     <td>{{ process.rpo|default('-') }}h</td>
                     <td>{{ process.mtpd|default('-') }}h</td>
                     <td class="text-center">
-                        {% if process.dependentAssets is defined %}
-                            <span class="badge bg-info">{{ process.dependentAssets|length }}</span>
-                        {% else %}
-                            <span class="text-muted">-</span>
-                        {% endif %}
+                        <span class="badge bg-info">{{ process.supportingAssets|length }}</span>
                     </td>
                     <td class="text-center">
                         <a href="{{ path('app_business_process_show', {id: process.id}) }}" class="btn btn-sm btn-outline-primary">
