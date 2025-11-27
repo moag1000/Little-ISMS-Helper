@@ -15,14 +15,14 @@ export default class extends Controller {
     static targets = ['modal'];
 
     shortcuts = [
-        // Global Navigation
-        { keys: ['g', 'd'], description: 'Go to Dashboard', action: () => this.navigate('/dashboard'), category: 'Navigation' },
-        { keys: ['g', 'a'], description: 'Go to Assets', action: () => this.navigate('/asset'), category: 'Navigation' },
-        { keys: ['g', 'r'], description: 'Go to Risks', action: () => this.navigate('/risk'), category: 'Navigation' },
-        { keys: ['g', 'i'], description: 'Go to Incidents', action: () => this.navigate('/incident'), category: 'Navigation' },
-        { keys: ['g', 's'], description: 'Go to SoA', action: () => this.navigate('/soa'), category: 'Navigation' },
-        { keys: ['g', 't'], description: 'Go to Trainings', action: () => this.navigate('/training'), category: 'Navigation' },
-        { keys: ['g', 'c'], description: 'Go to Compliance', action: () => this.navigate('/compliance'), category: 'Navigation' },
+        // Global Navigation (paths without locale - will be prefixed automatically)
+        { keys: ['g', 'd'], description: 'Go to Dashboard', action: () => this.navigateWithLocale('/dashboard'), category: 'Navigation' },
+        { keys: ['g', 'a'], description: 'Go to Assets', action: () => this.navigateWithLocale('/asset'), category: 'Navigation' },
+        { keys: ['g', 'r'], description: 'Go to Risks', action: () => this.navigateWithLocale('/risk'), category: 'Navigation' },
+        { keys: ['g', 'i'], description: 'Go to Incidents', action: () => this.navigateWithLocale('/incident'), category: 'Navigation' },
+        { keys: ['g', 's'], description: 'Go to SoA', action: () => this.navigateWithLocale('/soa'), category: 'Navigation' },
+        { keys: ['g', 't'], description: 'Go to Trainings', action: () => this.navigateWithLocale('/training'), category: 'Navigation' },
+        { keys: ['g', 'c'], description: 'Go to Compliance', action: () => this.navigateWithLocale('/compliance'), category: 'Navigation' },
 
         // Actions
         { keys: ['c'], description: 'Create new (context-aware)', action: () => this.contextCreate(), category: 'Actions' },
@@ -133,20 +133,46 @@ export default class extends Controller {
         window.Turbo.visit(url);
     }
 
+    /**
+     * Navigate to a URL with the current locale prefix
+     * @param {string} path - Path without locale (e.g., '/dashboard')
+     */
+    navigateWithLocale(path) {
+        const locale = this.getCurrentLocale();
+        const url = `/${locale}${path}`;
+        window.Turbo.visit(url);
+    }
+
+    /**
+     * Get current locale from URL path
+     * @returns {string} Current locale (default: 'de')
+     */
+    getCurrentLocale() {
+        const pathParts = window.location.pathname.split('/');
+        // URL format: /{locale}/... - locale is the first non-empty part
+        const possibleLocale = pathParts[1];
+        // Check if it's a valid locale (de, en, etc.)
+        if (possibleLocale && /^[a-z]{2}$/.test(possibleLocale)) {
+            return possibleLocale;
+        }
+        // Default to German
+        return 'de';
+    }
+
     contextCreate() {
         // Determine what to create based on current page
         const path = window.location.pathname;
 
         if (path.includes('/asset')) {
-            this.navigate('/asset/new');
+            this.navigateWithLocale('/asset/new');
         } else if (path.includes('/risk')) {
-            this.navigate('/risk/new');
+            this.navigateWithLocale('/risk/new');
         } else if (path.includes('/incident')) {
-            this.navigate('/incident/new');
+            this.navigateWithLocale('/incident/new');
         } else if (path.includes('/training')) {
-            this.navigate('/training/new');
+            this.navigateWithLocale('/training/new');
         } else if (path.includes('/audit')) {
-            this.navigate('/audit/new');
+            this.navigateWithLocale('/audit/new');
         } else {
             // Fallback: show command palette
             document.dispatchEvent(new KeyboardEvent('keydown', {
