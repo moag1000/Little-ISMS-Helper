@@ -100,7 +100,7 @@
                                 {# SLA Timeline - Compact Mode #}
                                 {% if dueDate %}
                                     <div class="mb-2">
-                                        {{ workflow_macros.sla_timeline(dueDate, null, null, instance.createdAt, true) }}
+                                        {{ workflow_macros.sla_timeline(dueDate, null, null, instance.startedAt, true) }}
                                     </div>
                                 {% endif %}
                             </div>

@@ -562,7 +562,6 @@ class IncidentController extends AbstractController
                     'id' => $user->getId(),
                     'name' => $user->getFirstName() . ' ' . $user->getLastName(),
                     'email' => $user->getEmail(),
-                    'avatar' => $user->getAvatar(),
                 ];
             }, $preview['notified_users']),
             'sla_hours' => $preview['sla_hours'],

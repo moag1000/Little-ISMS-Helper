@@ -171,6 +171,7 @@ incident:
         affected_users_count: 'Geschätzte Anzahl betroffener Nutzer/Kunden'
         estimated_financial_impact: 'Geschätzter finanzieller Schaden in EUR'
         national_authority: 'Zuständige nationale Behörde (z.B. BSI in Deutschland)'
+        data_breach_occurred: 'Kennzeichnen Sie dies als Datenschutzverletzung, wenn personenbezogene Daten betroffen sind (DSGVO Art. 33)'
     category:
         data_breach: Datenschutzverletzung
         security_incident: Sicherheitsvorfall
@@ -220,5 +221,3 @@ incident:
             notifications_sent: 'E-Mail-Benachrichtigungen werden an Stakeholder gesendet'
             approval_required: 'Genehmigungsschritte werden initiiert'
             sla_tracked: 'SLA-Tracking wird gestartet'
-    help:
-        data_breach_occurred: 'Kennzeichnen Sie dies als Datenschutzverletzung, wenn personenbezogene Daten betroffen sind (DSGVO Art. 33)'
