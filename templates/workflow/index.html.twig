@@ -99,11 +99,11 @@
 } %}
     {% block table_head %}
         <tr>
-            <th scope="col">{{ 'workflow.field.name'|trans({}, 'workflows') }}</th>
-            <th scope="col">{{ 'workflow.field.definition'|trans({}, 'workflows') }}</th>
+            <th scope="col">{{ 'workflow.field.entity'|trans({}, 'workflows') }}</th>
+            <th scope="col">{{ 'workflow.field.workflow'|trans({}, 'workflows') }}</th>
             <th scope="col">{{ 'workflow.field.current_step'|trans({}, 'workflows') }}</th>
             <th scope="col">{{ 'workflow.field.status'|trans({}, 'workflows') }}</th>
-            <th scope="col">{{ 'workflow.field.assignee'|trans({}, 'workflows') }}</th>
+            <th scope="col">{{ 'workflow.field.initiated_by'|trans({}, 'workflows') }}</th>
             <th scope="col">{{ 'workflow.field.due_date'|trans({}, 'workflows') }}</th>
             <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
@@ -111,28 +111,29 @@
     {% block table_body %}
         {% for instance in instances|slice(0, 20) %}
         <tr>
-            <td><strong>{{ instance.name }}</strong></td>
+            <td><strong>{{ instance.entityType|split('\\')|last }} #{{ instance.entityId }}</strong></td>
             <td>
-                <span class="badge bg-info">{{ instance.definition ? instance.definition.name : '-' }}</span>
+                <span class="badge bg-info">{{ instance.workflow ? instance.workflow.name : '-' }}</span>
             </td>
             <td>{{ instance.currentStep ? instance.currentStep.name : '-' }}</td>
             <td>
                 {% set statusColors = {
                     'pending': 'warning',
-                    'active': 'info',
-                    'completed': 'success',
+                    'in_progress': 'info',
+                    'approved': 'success',
+                    'rejected': 'danger',
                     'cancelled': 'secondary'
                 } %}
-                <span class="badge badge-{{ statusColors[instance.status] ?? 'secondary' }}">
+                <span class="badge bg-{{ statusColors[instance.status] ?? 'secondary' }}">
                     {{ ('workflow.status.' ~ instance.status)|trans({}, 'workflows') }}
                 </span>
             </td>
-            <td>{{ instance.assignee ? instance.assignee.fullName : '-' }}</td>
+            <td>{{ instance.initiatedBy ? (instance.initiatedBy.firstName ~ ' ' ~ instance.initiatedBy.lastName) : '-' }}</td>
             <td>
                 {% if instance.dueDate %}
                     {{ instance.dueDate|date('d.m.Y') }}
-                    {% if instance.overdue %}
-                        <span class="badge bg-danger ml-xs">
+                    {% if instance.dueDate < date() and instance.status not in ['approved', 'rejected', 'cancelled'] %}
+                        <span class="badge bg-danger ms-1">
                             {{ 'workflow.badge.overdue'|trans({}, 'workflows') }}
                         </span>
                     {% endif %}
@@ -141,14 +142,14 @@
                 {% endif %}
             </td>
             <td class="text-center">
-                <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm">
-                    👁 {{ 'common.view'|trans({}, 'messages') }}
+                <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}
                 </a>
             </td>
         </tr>
         {% else %}
         <tr>
-            <td colspan="7" class="text-center-p-xl-muted">
+            <td colspan="7" class="text-center text-muted p-4">
                 {{ 'workflow.message.no_instances'|trans({}, 'workflows') }}
             </td>
         </tr>
