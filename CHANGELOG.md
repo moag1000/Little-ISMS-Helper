@@ -15,6 +15,83 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.1.0] - 2025-11-27
+
+### 🚀 Major Features: Automated Workflows & Form System Overhaul
+
+This release introduces comprehensive automated workflow capabilities for GDPR compliance, incident management, and approval processes, along with a complete overhaul of the form system.
+
+### 🔄 Automated Workflows
+
+#### GDPR Breach Wizard
+- **72h Notification Timeline** - Visual countdown for mandatory GDPR breach notifications
+- **Automatic Risk Assessment** - Severity classification based on data types and affected subjects
+- **Notification Checklist** - Step-by-step guidance for DPA notification requirements
+- **Stimulus Controller** - Interactive wizard with real-time validation
+
+#### Incident Escalation Workflows
+- **Auto-Escalation Rules** - Configurable triggers based on severity and category
+- **Escalation Preview Panel** - Preview escalation path before triggering
+- **Email Notifications** - Automatic alerts to escalation contacts
+- **Workflow Integration** - Seamless connection with existing workflow engine
+
+#### Approval Workflows
+- **Risk Treatment Plan Approval** - Multi-step approval process for risk treatments
+- **Document Approval** - Review and approval workflows for documents
+- **Workflow Auto-Trigger** - Automatic workflow initiation on entity creation/update
+
+#### Dashboard Integration
+- **Workflow Widget** - Overview of pending workflow tasks on home dashboard
+- **Quick Actions** - Direct links to approve/reject pending items
+- **Status Indicators** - Visual representation of workflow progress
+
+### 🔧 Form System Overhaul
+
+#### Auto-Form Component
+- **Unified Form Rendering** - All forms now use `_auto_form.html.twig` component
+- **Consistent Styling** - Bootstrap 5.3 floating labels across all forms
+- **Translation Integration** - Automatic domain-aware translations
+
+#### Entity Property Fixes
+- **Training Module** - Fixed property mismatches (duration→durationMinutes, trainer type)
+- **Audit Module** - Corrected audit number generation timing
+- **Management Review** - Fixed participants collection display
+- **Admin Dashboard** - Corrected module statistics table names
+
+### 🐛 Bug Fixes
+
+#### Forms & Validation
+- Fixed audit number generation (now generated before form validation)
+- Fixed Training form fields to match entity properties
+- Fixed Management Review participants Collection-to-String error
+- Corrected TrainingController `getMandatory()` → `isMandatory()`
+
+#### Templates
+- Fixed audit/show.html.twig non-existent property errors
+- Fixed management_review/index.html.twig Collection display
+- Corrected training templates to use proper property names
+- Fixed user_management/show.html.twig invalid route
+
+#### Admin Dashboard
+- Fixed module statistics with correct database table names:
+  - `assets` → `asset`, `risks` → `risk`, `controls` → `control`
+  - `incidents` → `incident`, `audits` → `internal_audit`
+  - `compliance_requirements` → `compliance_requirement`
+  - `trainings` → `training`
+
+#### Translations
+- Added missing audit index table translations
+- Fixed training translation key conflicts (type/status)
+- Added missing status translations for various modules
+
+### 📊 Statistics
+- **Tests:** 1689 tests, 5066 assertions (100% passing)
+- **New Services:** 6 (GdprBreachAssessment, IncidentEscalationWorkflow, RiskTreatmentPlanApproval, DocumentApproval, WorkflowAutoTrigger, EmailNotification)
+- **New Stimulus Controllers:** 2 (gdpr_breach_wizard, incident_escalation_preview)
+- **New Templates:** 8 (workflow widget, breach wizard modal, escalation preview, email templates)
+
+---
+
 ## [2.0.0] - 2025-11-26
 
 ### 🎉 Major Release: Complete UI/UX Overhaul & Internationalization
