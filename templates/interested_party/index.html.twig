@@ -50,7 +50,8 @@
 
     <div class="card">
         <div class="card-header">
-            <h2>{{ 'interested_party.list.title'|trans({'count': interested_parties|length}, 'interested_parties') }}</h2>
+            {%- set partyCount = interested_parties|length -%}
+            <h2>{{ 'interested_party.list.title'|trans({'count': partyCount}, 'interested_parties') }}</h2>
         </div>
         <div class="card-content">
             {% if interested_parties|length > 0 %}

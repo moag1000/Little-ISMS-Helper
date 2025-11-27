@@ -99,22 +99,25 @@
 
     {# Overdue Review Warning #}
     {% if daysUntilReview and daysUntilReview < 0 %}
+    {%- set overdueDate = context.nextReviewDate|date('d.m.Y') -%}
+    {%- set overdueDays = (daysUntilReview * -1) -%}
     <div class="alert alert-danger mb-4">
         <div class="d-flex align-items-center">
             <i class="bi bi-exclamation-triangle-fill icon-15-mr-md" aria-hidden="true"></i>
             <div>
                 <h6 class="mb-1"><strong>{{ 'context.message.overdue_review_title'|trans({}, 'context') }}</strong></h5>
-                <p class="mb-0">{{ 'context.message.overdue_review_text'|trans({'%date%': context.nextReviewDate|date('d.m.Y'), '%days%': (daysUntilReview * -1)}, 'context') }}</p>
+                <p class="mb-0">{{ 'context.message.overdue_review_text'|trans({'%date%': overdueDate, '%days%': overdueDays}, 'context') }}</p>
             </div>
         </div>
     </div>
     {% elseif daysUntilReview and daysUntilReview < 30 %}
+    {%- set upcomingDate = context.nextReviewDate|date('d.m.Y') -%}
     <div class="alert alert-warning mb-4">
         <div class="d-flex align-items-center">
             <i class="bi bi-clock-fill icon-15-mr-md" aria-hidden="true"></i>
             <div>
                 <h6 class="mb-1"><strong>{{ 'context.message.upcoming_review_title'|trans({}, 'context') }}</strong></h5>
-                <p class="mb-0">{{ 'context.message.upcoming_review_text'|trans({'%date%': context.nextReviewDate|date('d.m.Y'), '%days%': daysUntilReview}, 'context') }}</p>
+                <p class="mb-0">{{ 'context.message.upcoming_review_text'|trans({'%date%': upcomingDate, '%days%': daysUntilReview}, 'context') }}</p>
             </div>
         </div>
     </div>

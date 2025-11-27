@@ -82,7 +82,8 @@
                     <p class="small text-muted mb-0">
                         {{ total_nis2_incidents }} {{ 'nis2.dashboard.incident_reporting.incidents'|trans({}, 'messages') }}
                     </p>
-                    <small class="text-muted">{{ 'nis2.article'|trans({'%article%': '23'}, 'compliance') }}</small>
+                    {%- set articleNumber = '23' -%}
+                    <small class="text-muted">{{ 'nis2.article'|trans({'%article%': articleNumber}, 'compliance') }}</small>
                 </div>
             </div>
         </div>
