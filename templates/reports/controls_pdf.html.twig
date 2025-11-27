@@ -53,9 +53,10 @@
     </style>
 </head>
 <body>
+    {%- set generatedDateTime = generated_at|date('d.m.Y H:i') -%}
     <div class="header">
         <h1>{{ 'soa.page.title'|trans({}, 'soa') }}</h1>
-        <div class="subtitle">ISO/IEC 27001:2022 Annex A Controls | {{ 'soa.report.generated_at'|trans({'%datetime%': generated_at|date('d.m.Y H:i')}, 'soa') }}</div>
+        <div class="subtitle">ISO/IEC 27001:2022 Annex A Controls | {{ 'soa.report.generated_at'|trans({'%datetime%': generatedDateTime}, 'soa') }}</div>
     </div>
 
     <table>

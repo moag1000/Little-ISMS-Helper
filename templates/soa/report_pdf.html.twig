@@ -228,10 +228,11 @@
     </style>
 </head>
 <body>
+    {%- set generatedDateTime = generatedAt|date('d.m.Y H:i') -%}
     <h1>{{ 'soa.page.title'|trans({}, 'soa') }}</h1>
     <div class="header-info">
         {{ 'soa.page.subtitle'|trans({}, 'soa') }}<br>
-        {{ 'soa.report.generated_at'|trans({'%datetime%': generatedAt|date('d.m.Y H:i')}, 'soa') }}
+        {{ 'soa.report.generated_at'|trans({'%datetime%': generatedDateTime}, 'soa') }}
     </div>
 
     <!-- Statistics Overview -->
@@ -350,7 +351,8 @@
     {% endfor %}
 
     <div class="footer">
-        {{ 'soa.page.title'|trans({}, 'soa') }} — {{ 'soa.report.generated_at'|trans({'%datetime%': generatedAt|date('d.m.Y H:i:s')}, 'soa') }} — {{ 'soa.footer.note'|trans({}, 'soa') }}
+        {%- set generatedDateTimeSeconds = generatedAt|date('d.m.Y H:i:s') -%}
+        {{ 'soa.page.title'|trans({}, 'soa') }} — {{ 'soa.report.generated_at'|trans({'%datetime%': generatedDateTimeSeconds}, 'soa') }} — {{ 'soa.footer.note'|trans({}, 'soa') }}
     </div>
 </body>
 </html>

@@ -24,8 +24,9 @@
         <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-primary">
             ✏️ {{ 'soa.action.edit'|trans({}, 'soa') }}
         </a>
+        {%- set categoryLabel = ('soa.category.' ~ control.category)|trans({}, 'soa') -%}
         <a href="{{ path('app_soa_by_category', {category: control.category}) }}" class="btn btn-secondary">
-            ← {{ 'soa.action.back_to_category'|trans({'%category%': ('soa.category.' ~ control.category)|trans }, 'soa') }}
+            ← {{ 'soa.action.back_to_category'|trans({'%category%': categoryLabel}, 'soa') }}
         </a>
     </div>
 </div>
