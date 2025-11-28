@@ -84,6 +84,7 @@ class SetupRequiredSubscriber implements EventSubscriberInterface
             return $schemaManager->tablesExist(['user']);
         } catch (Exception) {
             // Any error means database is not properly set up
+
             return false;
         }
     }
