@@ -2,6 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Asset;
+use App\Entity\Control;
+use App\Entity\Incident;
+use App\Entity\Risk;
+use App\Entity\Training;
 use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\IncidentRepository;
@@ -118,7 +123,7 @@ class SearchController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        return array_map(fn($asset): array => [
+        return array_map(fn(Asset $asset): array => [
             'id' => $asset->getId(),
             'title' => $asset->getName(),
             'description' => $this->truncate($asset->getDescription(), 100),
@@ -135,7 +140,7 @@ class SearchController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        return array_map(function($risk): array {
+        return array_map(function(Risk $risk): array {
             $level = $risk->getInherentRiskLevel();
             $badge = $level >= 15 ? 'Hoch' : ($level >= 9 ? 'Mittel' : 'Niedrig');
 
@@ -157,7 +162,7 @@ class SearchController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        return array_map(fn($control): array => [
+        return array_map(fn(Control $control): array => [
             'id' => $control->getId(),
             'title' => $control->getControlId() . ' - ' . $control->getName(),
             'description' => $this->truncate($control->getDescription(), 100),
@@ -174,7 +179,7 @@ class SearchController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        return array_map(fn($incident): array => [
+        return array_map(fn(Incident $incident): array => [
             'id' => $incident->getId(),
             'title' => $incident->getTitle(),
             'description' => $this->truncate($incident->getDescription(), 100),
@@ -191,7 +196,7 @@ class SearchController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        return array_map(fn($training): array => [
+        return array_map(fn(Training $training): array => [
             'id' => $training->getId(),
             'title' => $training->getTitle(),
             'description' => $this->truncate($training->getDescription(), 100),
