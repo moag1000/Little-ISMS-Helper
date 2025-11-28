@@ -530,7 +530,7 @@ Phase 7 führt umfassende Management-Reporting-Funktionen und erweiterte Analyti
 
 ---
 
-**Stand:** 2025-11-27
-**Version:** 1.2
-**Letzte Änderung:** Phase 6N (Automated Workflows) abgeschlossen, v2.1.0 Release
+**Stand:** 2025-11-28
+**Version:** 1.3
+**Letzte Änderung:** v2.1.1 Hotfix Release (Post-Rector Bug Fixes)
 **Nächste Aktualisierung:** Nach Abschluss Phase 6B (Test Coverage)
