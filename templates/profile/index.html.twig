@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'profile.title'|trans({}, 'user') }}{% endblock %}
+{% block title %}{{ 'user.profile.title'|trans({}, 'user') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
@@ -8,13 +8,13 @@
         <div class="col">
             <h1 class="mb-0">
                 <i class="bi bi-person-circle" aria-hidden="true"></i>
-                {{ 'profile.title'|trans({}, 'user') }}
+                {{ 'user.profile.title'|trans({}, 'user') }}
             </h1>
         </div>
         <div class="col-auto">
             <a href="{{ path('app_profile_edit') }}" class="btn btn-primary">
                 <i class="bi bi-pencil" aria-hidden="true"></i>
-                {{ 'profile.action.edit'|trans({}, 'user') }}
+                {{ 'user.profile.action.edit'|trans({}, 'user') }}
             </a>
         </div>
     </div>
@@ -24,7 +24,7 @@
             {# Profile Picture Card #}
             <div class="card">
                 <div class="card-body text-center">
-                    <h5 class="card-title">{{ 'profile.section.avatar'|trans({}, 'user') }}</h5>
+                    <h5 class="card-title">{{ 'user.profile.section.avatar'|trans({}, 'user') }}</h5>
 
                     {% if user.profilePicture %}
                         <img src="{{ asset(user.profilePicture) }}"
@@ -45,9 +45,9 @@
                         <form method="post" action="{{ path('app_profile_avatar_delete') }}" class="mt-3">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete_avatar' ~ user.id) }}">
                             <button type="submit" class="btn btn-sm btn-outline-danger"
-                                    onclick="return confirm('{{ 'profile.confirm.delete_avatar'|trans({}, 'user') }}')">
+                                    onclick="return confirm('{{ 'user.profile.confirm.delete_avatar'|trans({}, 'user') }}')">
                                 <i class="bi bi-trash" aria-hidden="true"></i>
-                                {{ 'profile.action.delete_avatar'|trans({}, 'user') }}
+                                {{ 'user.profile.action.delete_avatar'|trans({}, 'user') }}
                             </button>
                         </form>
                     {% endif %}
@@ -93,7 +93,7 @@
             {# Account Information Card #}
             <div class="card mb-4">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">{{ 'profile.section.account'|trans({}, 'user') }}</h5>
+                    <h5 class="mb-0">{{ 'user.profile.section.account'|trans({}, 'user') }}</h5>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
@@ -109,10 +109,10 @@
                             <dd class="col-sm-8">{{ user.tenant.name }}</dd>
                         {% endif %}
 
-                        <dt class="col-sm-4">{{ 'profile.field.language'|trans({}, 'user') }}</dt>
+                        <dt class="col-sm-4">{{ 'user.profile.field.language'|trans({}, 'user') }}</dt>
                         <dd class="col-sm-8">{{ user.language|default('de') }}</dd>
 
-                        <dt class="col-sm-4">{{ 'profile.field.timezone'|trans({}, 'user') }}</dt>
+                        <dt class="col-sm-4">{{ 'user.profile.field.timezone'|trans({}, 'user') }}</dt>
                         <dd class="col-sm-8">{{ user.timezone|default('Europe/Berlin') }}</dd>
 
                         <dt class="col-sm-4">{{ 'user.field.created_at'|trans({}, 'user') }}</dt>
@@ -131,32 +131,32 @@
                 <div class="card-header {% if user.hasMfaEnabled %}bg-success{% else %}bg-warning{% endif %} text-white">
                     <h5 class="mb-0">
                         <i class="bi bi-shield{% if user.hasMfaEnabled %}-check{% else %}-exclamation{% endif %}" aria-hidden="true"></i>
-                        {{ 'profile.section.mfa'|trans({}, 'user') }}
+                        {{ 'user.profile.section.mfa'|trans({}, 'user') }}
                     </h5>
                 </div>
                 <div class="card-body">
                     {% if user.hasMfaEnabled %}
                         <p class="mb-2">
-                            <span class="badge bg-success">{{ 'profile.mfa.enabled'|trans({}, 'user') }}</span>
+                            <span class="badge bg-success">{{ 'user.profile.mfa.enabled'|trans({}, 'user') }}</span>
                         </p>
                         <p class="text-muted mb-2">
-                            {{ 'profile.mfa.active_tokens'|trans({'%count%': user.activeMfaTokenCount}, 'user') }}
+                            {{ 'user.profile.mfa.active_tokens'|trans({'%count%': user.activeMfaTokenCount}, 'user') }}
                         </p>
                         <div class="mt-3">
                             <a href="{{ path('app_profile_mfa_index') }}" class="btn btn-sm btn-outline-primary">
                                 <i class="bi bi-gear" aria-hidden="true"></i>
-                                {{ 'profile.mfa.manage'|trans({}, 'user') }}
+                                {{ 'user.profile.mfa.manage'|trans({}, 'user') }}
                             </a>
                         </div>
                     {% else %}
                         <div class="alert alert-warning mb-0">
                             <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                            {{ 'profile.mfa.not_enabled'|trans({}, 'user') }}
+                            {{ 'user.profile.mfa.not_enabled'|trans({}, 'user') }}
                         </div>
                         <div class="mt-3">
                             <a href="{{ path('app_profile_mfa_setup_totp') }}" class="btn btn-sm btn-success">
                                 <i class="bi bi-shield-plus" aria-hidden="true"></i>
-                                {{ 'profile.mfa.setup'|trans({}, 'user') }}
+                                {{ 'user.profile.mfa.setup'|trans({}, 'user') }}
                             </a>
                         </div>
                     {% endif %}
