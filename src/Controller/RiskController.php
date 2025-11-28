@@ -974,7 +974,7 @@ class RiskController extends AbstractController
      * @param mixed $currentTenant Current tenant for comparison
      * @return array Statistics with keys: own, inherited, subsidiaries, total
      */
-    private function calculateDetailedStats(array $items, $currentTenant): array
+    private function calculateDetailedStats(array $items, mixed $currentTenant): array
     {
         $ownCount = 0;
         $inheritedCount = 0;
