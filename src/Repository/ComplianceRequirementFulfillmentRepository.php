@@ -88,7 +88,7 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
     public function findByFrameworkAndTenant(ComplianceFramework $complianceFramework, Tenant $tenant): array
     {
         return $this->createQueryBuilder('f')
-            ->join('f.requirement', 'r')
+            ->join('f.complianceRequirement', 'r')
             ->where('r.framework = :framework')
             ->andWhere('f.tenant = :tenant')
             ->setParameter('framework', $complianceFramework)
@@ -107,7 +107,7 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
     {
         $result = $this->createQueryBuilder('f')
             ->select('AVG(CASE WHEN f.applicable = true THEN f.fulfillmentPercentage ELSE 100 END) as avg_percentage')
-            ->join('f.requirement', 'r')
+            ->join('f.complianceRequirement', 'r')
             ->where('r.framework = :framework')
             ->andWhere('f.tenant = :tenant')
             ->setParameter('framework', $complianceFramework)
