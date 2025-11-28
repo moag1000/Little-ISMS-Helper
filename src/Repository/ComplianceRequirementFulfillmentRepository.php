@@ -34,7 +34,7 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
     ): ComplianceRequirementFulfillment {
         $fulfillment = $this->findOneBy([
             'tenant' => $tenant,
-            'requirement' => $complianceRequirement,
+            'complianceRequirement' => $complianceRequirement,
         ]);
 
         if (!$fulfillment) {
@@ -89,7 +89,7 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('f')
             ->join('f.complianceRequirement', 'r')
-            ->where('r.framework = :framework')
+            ->where('r.complianceFramework = :framework')
             ->andWhere('f.tenant = :tenant')
             ->setParameter('framework', $complianceFramework)
             ->setParameter('tenant', $tenant)
@@ -108,7 +108,7 @@ class ComplianceRequirementFulfillmentRepository extends ServiceEntityRepository
         $result = $this->createQueryBuilder('f')
             ->select('AVG(CASE WHEN f.applicable = true THEN f.fulfillmentPercentage ELSE 100 END) as avg_percentage')
             ->join('f.complianceRequirement', 'r')
-            ->where('r.framework = :framework')
+            ->where('r.complianceFramework = :framework')
             ->andWhere('f.tenant = :tenant')
             ->setParameter('framework', $complianceFramework)
             ->setParameter('tenant', $tenant)
