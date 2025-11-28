@@ -50,6 +50,7 @@ user:
         authentication: Authentication
         roles: 'Roles & Permissions'
         status: Status
+        avatar: Avatar
     field:
         first_name: 'First Name'
         last_name: 'Last Name'
@@ -92,5 +93,29 @@ user:
         avatar_format: 'Please upload a valid image (JPEG, PNG, GIF or WebP)'
     auth_provider:
         local: 'Local Authentication'
+    profile:
+        title: 'My Profile'
+        action:
+            edit: 'Edit Profile'
+            delete_avatar: 'Delete Avatar'
+        section:
+            avatar: Avatar
+            account: 'Account Information'
+            mfa: 'Two-Factor Authentication'
+            preferences: Preferences
+            security: Security
+            current_avatar: 'Current Avatar'
+        field:
+            language: Language
+            timezone: Timezone
+        mfa:
+            enabled: 'MFA Enabled'
+            active_tokens: '%count% active tokens'
+        confirm:
+            delete_avatar: 'Do you really want to delete your profile picture?'
+        success:
+            updated: 'Profile successfully updated'
+            password_changed: 'Password successfully changed'
+            avatar_deleted: 'Avatar successfully deleted'
 user_management:
     import_irreversible: 'Warning: User import cannot be undone. Please ensure your CSV file is correctly formatted.'
