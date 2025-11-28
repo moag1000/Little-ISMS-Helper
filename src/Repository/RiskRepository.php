@@ -63,7 +63,7 @@ class RiskRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant to find risks for
      * @return Risk[] Array of Risk entities
      */
-    public function findByTenant($tenant): array
+    public function findByTenant(Tenant $tenant): array
     {
         return $this->createQueryBuilder('r')
             ->where('r.tenant = :tenant')
@@ -81,7 +81,7 @@ class RiskRepository extends ServiceEntityRepository
      * @param Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
      * @return Risk[] Array of Risk entities (own + inherited from all ancestors)
      */
-    public function findByTenantIncludingParent($tenant, $parentTenant = null): array
+    public function findByTenantIncludingParent(Tenant $tenant, Tenant|null $parentTenant = null): array
     {
         // Get all ancestors (parent, grandparent, great-grandparent, etc.)
         $ancestors = $tenant->getAllAncestors();
@@ -108,7 +108,7 @@ class RiskRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant
      * @return array{total: int, high: int, medium: int, low: int} Risk statistics
      */
-    public function getRiskStatsByTenant($tenant): array
+    public function getRiskStatsByTenant(Tenant $tenant): array
     {
         $risks = $this->findByTenant($tenant);
 
@@ -141,7 +141,7 @@ class RiskRepository extends ServiceEntityRepository
      * @param int $threshold Minimum risk score threshold (default: 12)
      * @return Risk[] Array of high-risk entities
      */
-    public function findHighRisksByTenant($tenant, int $threshold = 12): array
+    public function findHighRisksByTenant(Tenant $tenant, int $threshold = 12): array
     {
         return $this->createQueryBuilder('r')
             ->where('r.tenant = :tenant')
@@ -161,7 +161,7 @@ class RiskRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant to find risks for
      * @return Risk[] Array of Risk entities (own + from all subsidiaries)
      */
-    public function findByTenantIncludingSubsidiaries($tenant): array
+    public function findByTenantIncludingSubsidiaries(Tenant $tenant): array
     {
         // Get all subsidiaries recursively
         $subsidiaries = $tenant->getAllSubsidiaries();

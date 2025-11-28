@@ -167,7 +167,7 @@ class WorkflowAutoTriggerService
      * @param string $justification Justification for acceptance
      * @return array Workflow trigger results
      */
-    public function triggerRiskAcceptanceWorkflow(Risk $risk, $requester, string $justification): array
+    public function triggerRiskAcceptanceWorkflow(Risk $risk, User $requester, string $justification): array
     {
         $this->logger->info('Triggering risk acceptance workflow', [
             'risk_id' => $risk->getId(),
