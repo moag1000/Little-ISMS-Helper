@@ -293,15 +293,15 @@
                 </a>
                 {% if user.id != app.user.id %}
                     {% if user.isActive %}
-                        <form method="post" action="{{ path('user_management_deactivate', {'id': user.id}) }}" style="display: inline;">
-                            <input type="hidden" name="_token" value="{{ csrf_token('deactivate' ~ user.id) }}">
+                        <form method="post" action="{{ path('user_management_toggle_active', {'id': user.id}) }}" style="display: inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('toggle_active' ~ user.id) }}">
                             <button type="submit" class="btn btn-warning">
                                 <i class="bi bi-pause-circle" aria-hidden="true"></i> Deaktivieren
                             </button>
                         </form>
                     {% else %}
-                        <form method="post" action="{{ path('user_management_activate', {'id': user.id}) }}" style="display: inline;">
-                            <input type="hidden" name="_token" value="{{ csrf_token('activate' ~ user.id) }}">
+                        <form method="post" action="{{ path('user_management_toggle_active', {'id': user.id}) }}" style="display: inline;">
+                            <input type="hidden" name="_token" value="{{ csrf_token('toggle_active' ~ user.id) }}">
                             <button type="submit" class="btn btn-success">
                                 <i class="bi bi-play-circle" aria-hidden="true"></i> Aktivieren
                             </button>

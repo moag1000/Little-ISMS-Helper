@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use DateTime;
+use App\Entity\AuditLog;
 use App\Repository\AuditLogRepository;
 use App\Repository\UserRepository;
 use App\Service\SessionManager;
@@ -63,7 +64,7 @@ class SessionController extends AbstractController
         }
 
         // Get unique users
-        $uniqueUsers = array_unique(array_map(fn($log) => $log->getUserName(), $logins));
+        $uniqueUsers = array_unique(array_map(fn(AuditLog $log) => $log->getUserName(), $logins));
 
         return $this->json([
             'total_logins' => count($logins),
@@ -86,7 +87,7 @@ class SessionController extends AbstractController
 
         // Filter activities from last 7 days
         $sevenDaysAgo = new DateTime('-7 days');
-        $recentActivities = array_filter($userActivities, fn($log): bool => $log->getCreatedAt() >= $sevenDaysAgo);
+        $recentActivities = array_filter($userActivities, fn(AuditLog $log): bool => $log->getCreatedAt() >= $sevenDaysAgo);
 
         // Group by date for timeline
         $activityTimeline = [];
@@ -99,10 +100,10 @@ class SessionController extends AbstractController
         }
 
         // Get unique IP addresses
-        $ipAddresses = array_unique(array_map(fn($log) => $log->getIpAddress(), $recentActivities));
+        $ipAddresses = array_unique(array_map(fn(AuditLog $log) => $log->getIpAddress(), $recentActivities));
 
         // Get unique user agents
-        $userAgents = array_unique(array_filter(array_map(fn($log) => $log->getUserAgent(), $recentActivities)));
+        $userAgents = array_unique(array_filter(array_map(fn(AuditLog $log) => $log->getUserAgent(), $recentActivities)));
 
         return $this->render('session/show.html.twig', [
             'user_name' => $userName,

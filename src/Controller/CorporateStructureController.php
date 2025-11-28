@@ -315,7 +315,7 @@ class CorporateStructureController extends AbstractController
 
         $rules = $this->corporateGovernanceRepository->findBy(['tenant' => $tenant], ['scope' => 'ASC', 'scopeId' => 'ASC']);
 
-        $result = array_map(fn($rule): array => [
+        $result = array_map(fn(CorporateGovernance $rule): array => [
             'id' => $rule->getId(),
             'scope' => $rule->getScope(),
             'scopeId' => $rule->getScopeId(),
