@@ -50,7 +50,7 @@ class InternalAuditRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant to find audits for
      * @return InternalAudit[] Array of InternalAudit entities
      */
-    public function findByTenantIncludingCorporate($tenant): array
+    public function findByTenantIncludingCorporate(Tenant $tenant): array
     {
         return $this->createQueryBuilder('a')
             ->leftJoin('a.auditedSubsidiaries', 's')
@@ -68,7 +68,7 @@ class InternalAuditRepository extends ServiceEntityRepository
      * @param Tenant $tenant The parent tenant
      * @return InternalAudit[] Array of corporate audit entities
      */
-    public function findCorporateAudits($tenant): array
+    public function findCorporateAudits(Tenant $tenant): array
     {
         return $this->createQueryBuilder('a')
             ->where('a.tenant = :tenant')
@@ -86,7 +86,7 @@ class InternalAuditRepository extends ServiceEntityRepository
      * @param Tenant $subsidiary The subsidiary tenant
      * @return InternalAudit[] Array of audits covering this subsidiary
      */
-    public function findAuditsCoveringSubsidiary($subsidiary): array
+    public function findAuditsCoveringSubsidiary(Tenant $subsidiary): array
     {
         return $this->createQueryBuilder('a')
             ->join('a.auditedSubsidiaries', 's')
