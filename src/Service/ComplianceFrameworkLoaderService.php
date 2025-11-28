@@ -274,7 +274,7 @@ class ComplianceFrameworkLoaderService
         // Check if already loaded with requirements
         $existingFramework = $this->complianceFrameworkRepository->findOneBy(['code' => $code]);
         if ($existingFramework) {
-            $requirementsCount = $existingFramework->getRequirements()->count();
+            $requirementsCount = $existingFramework->requirements->count();
             if ($requirementsCount > 0) {
                 return [
                     'success' => false,
@@ -294,7 +294,7 @@ class ComplianceFrameworkLoaderService
             if ($returnCode === 0) {
                 // Get framework ID for "Start Working" button
                 $framework = $this->complianceFrameworkRepository->findOneBy(['code' => $code]);
-                $frameworkId = $framework ? $framework->getId() : null;
+                $frameworkId = $framework ? $framework->id : null;
 
                 return [
                     'success' => true,

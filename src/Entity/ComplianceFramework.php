@@ -16,7 +16,11 @@ class ComplianceFramework
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    public ?int $id = null {
+        get {
+            return $this->id;
+        }
+    }
 
     #[ORM\Column(length: 100, unique: true)]
     private ?string $code = null;
@@ -56,7 +60,11 @@ class ComplianceFramework
      * @var Collection<int, ComplianceRequirement>
      */
     #[ORM\OneToMany(targetEntity: ComplianceRequirement::class, mappedBy: 'complianceFramework', cascade: ['persist', 'remove'])]
-    private Collection $requirements;
+    public Collection $requirements {
+        get {
+            return $this->requirements;
+        }
+    }
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]
     private ?DateTimeInterface $createdAt = null;
@@ -68,11 +76,6 @@ class ComplianceFramework
     {
         $this->requirements = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
     }
 
     public function getCode(): ?string
@@ -172,14 +175,6 @@ class ComplianceFramework
     {
         $this->active = $active;
         return $this;
-    }
-
-    /**
-     * @return Collection<int, ComplianceRequirement>
-     */
-    public function getRequirements(): Collection
-    {
-        return $this->requirements;
     }
 
     public function addRequirement(ComplianceRequirement $complianceRequirement): static

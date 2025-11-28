@@ -238,7 +238,7 @@ class ComplianceAssessmentService
 
         return [
             'framework' => [
-                'id' => $complianceFramework->getId(),
+                'id' => $complianceFramework->id,
                 'code' => $complianceFramework->getCode(),
                 'name' => $complianceFramework->getName(),
                 'version' => $complianceFramework->getVersion(),

@@ -168,7 +168,7 @@ class AdminComplianceController extends AbstractController
             if ($availableFramework['loaded']) {
                 $dbFramework = $this->complianceFrameworkRepository->findOneBy(['code' => $availableFramework['code']]);
                 if ($dbFramework) {
-                    $requirements = $dbFramework->getRequirements();
+                    $requirements = $dbFramework->requirements;
                     $total = count($requirements);
                     $assessed = 0;
                     $compliant = 0;

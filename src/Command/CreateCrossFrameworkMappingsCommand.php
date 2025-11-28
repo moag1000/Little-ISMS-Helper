@@ -249,7 +249,7 @@ class CreateCrossFrameworkMappingsCommand extends Command
                 if ($targetFramework->getCode() === 'ISO27001') {
                     continue;
                 }
-                if ($framework->getId() === $targetFramework->getId()) {
+                if ($framework->id === $targetFramework->id) {
                     continue;
                 }
                 $symfonyStyle->writeln(sprintf('  Processing %s <-> %s...', $framework->getCode(), $targetFramework->getCode()));

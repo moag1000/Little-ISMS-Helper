@@ -103,7 +103,7 @@ class ComplianceFrameworkRepository extends ServiceEntityRepository
                 : 0;
 
             $overview[] = [
-                'id' => $framework->getId(),
+                'id' => $framework->id,
                 'code' => $framework->getCode(),
                 'name' => $framework->getName(),
                 'mandatory' => $framework->isMandatory(),

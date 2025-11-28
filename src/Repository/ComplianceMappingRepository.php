@@ -124,7 +124,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         ComplianceFramework $targetFramework
     ): array {
         $mappings = $this->findCrossFrameworkMappings($sourceFramework, $targetFramework);
-        $targetRequirements = $targetFramework->getRequirements()->count();
+        $targetRequirements = $targetFramework->requirements->count();
 
         $coveredRequirements = [];
         $totalCoveragePercentage = 0;
@@ -211,7 +211,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
             $totalBenefit += $targetRequirementHelped;
         }
 
-        $targetReqCount = $targetFramework->getRequirements()->count();
+        $targetReqCount = $targetFramework->requirements->count();
         $averageBenefit = $targetReqCount > 0 ? round($totalBenefit / $targetReqCount, 2) : 0;
 
         return [
@@ -274,7 +274,7 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     ): array {
         $categoryStats = [];
 
-        foreach ($sourceFramework->getRequirements() as $requirement) {
+        foreach ($sourceFramework->requirements as $requirement) {
             $category = $requirement->getCategory() ?? 'Uncategorized';
 
             if (!isset($categoryStats[$category])) {
@@ -552,8 +552,8 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         float $coveragePercentage
     ): array {
         // Get requirement counts
-        $sourceReqCount = count($sourceFramework->getRequirements());
-        $targetReqCount = count($targetFramework->getRequirements());
+        $sourceReqCount = count($sourceFramework->requirements);
+        $targetReqCount = count($targetFramework->requirements);
         $avgReqCount = ($sourceReqCount + $targetReqCount) / 2;
 
         // Priority multiplier based on framework importance
@@ -605,8 +605,8 @@ class ComplianceMappingRepository extends ServiceEntityRepository
         ComplianceFramework $targetFramework,
         float $currentCoverage
     ): int {
-        $sourceReqCount = count($sourceFramework->getRequirements());
-        $targetReqCount = count($targetFramework->getRequirements());
+        $sourceReqCount = count($sourceFramework->requirements);
+        $targetReqCount = count($targetFramework->requirements);
 
         // Base effort: 0.5 hours per requirement for initial mapping
         $baseEffortPerReq = 0.5;

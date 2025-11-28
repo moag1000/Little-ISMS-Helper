@@ -101,7 +101,7 @@ class ComplianceExtension extends AbstractExtension
                     : 0;
 
                 $result[] = [
-                    'id' => $framework->getId() ?? 0,
+                    'id' => $framework->id ?? 0,
                     'code' => $framework->getCode() ?? 'N/A',
                     'name' => $framework->getName() ?? 'Unknown',
                     'mandatory' => $framework->isMandatory() ?? false,
@@ -142,7 +142,7 @@ class ComplianceExtension extends AbstractExtension
                 }
 
                 $result[] = [
-                    'id' => $framework->getId() ?? 0,
+                    'id' => $framework->id ?? 0,
                     'code' => $framework->getCode() ?? 'N/A',
                     'name' => $name,
                     'mandatory' => $framework->isMandatory() ?? false,
