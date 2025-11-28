@@ -101,9 +101,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private ?Tenant $tenant = null;
 
+    /**
+     * @var Collection<int, MfaToken>
+     */
+    #[ORM\OneToMany(targetEntity: MfaToken::class, mappedBy: 'user', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $mfaTokens;
+
     public function __construct()
     {
         $this->customRoles = new ArrayCollection();
+        $this->mfaTokens = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
     }
 
@@ -450,5 +457,62 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->tenant = $tenant;
         return $this;
+    }
+
+    /**
+     * @return Collection<int, MfaToken>
+     */
+    public function getMfaTokens(): Collection
+    {
+        return $this->mfaTokens;
+    }
+
+    public function addMfaToken(MfaToken $mfaToken): static
+    {
+        if (!$this->mfaTokens->contains($mfaToken)) {
+            $this->mfaTokens->add($mfaToken);
+            $mfaToken->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMfaToken(MfaToken $mfaToken): static
+    {
+        if ($this->mfaTokens->removeElement($mfaToken)) {
+            // set the owning side to null (unless already changed)
+            if ($mfaToken->getUser() === $this) {
+                $mfaToken->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Check if user has any active MFA tokens
+     */
+    public function hasMfaEnabled(): bool
+    {
+        foreach ($this->mfaTokens as $token) {
+            if ($token->isActive()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get count of active MFA tokens
+     */
+    public function getActiveMfaTokenCount(): int
+    {
+        $count = 0;
+        foreach ($this->mfaTokens as $token) {
+            if ($token->isActive()) {
+                $count++;
+            }
+        }
+        return $count;
     }
 }

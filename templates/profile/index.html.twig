@@ -125,6 +125,43 @@
                     </dl>
                 </div>
             </div>
+
+            {# MFA Status Card #}
+            <div class="card mt-4">
+                <div class="card-header {% if user.hasMfaEnabled %}bg-success{% else %}bg-warning{% endif %} text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-shield{% if user.hasMfaEnabled %}-check{% else %}-exclamation{% endif %}" aria-hidden="true"></i>
+                        {{ 'profile.section.mfa'|trans({}, 'user') }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if user.hasMfaEnabled %}
+                        <p class="mb-2">
+                            <span class="badge bg-success">{{ 'profile.mfa.enabled'|trans({}, 'user') }}</span>
+                        </p>
+                        <p class="text-muted mb-2">
+                            {{ 'profile.mfa.active_tokens'|trans({'%count%': user.activeMfaTokenCount}, 'user') }}
+                        </p>
+                        <div class="mt-3">
+                            <a href="{{ path('mfa_token_index') }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-gear" aria-hidden="true"></i>
+                                {{ 'profile.mfa.manage'|trans({}, 'user') }}
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning mb-0">
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                            {{ 'profile.mfa.not_enabled'|trans({}, 'user') }}
+                        </div>
+                        <div class="mt-3">
+                            <a href="{{ path('mfa_token_new') }}" class="btn btn-sm btn-success">
+                                <i class="bi bi-shield-plus" aria-hidden="true"></i>
+                                {{ 'profile.mfa.setup'|trans({}, 'user') }}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
     </div>
 </div>

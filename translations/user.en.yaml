@@ -110,7 +110,10 @@ user:
             timezone: Timezone
         mfa:
             enabled: 'MFA Enabled'
+            not_enabled: 'Two-factor authentication is not enabled. Increase your account security by enabling MFA.'
             active_tokens: '%count% active tokens'
+            manage: 'Manage MFA'
+            setup: 'Setup MFA'
         confirm:
             delete_avatar: 'Do you really want to delete your profile picture?'
         success:
