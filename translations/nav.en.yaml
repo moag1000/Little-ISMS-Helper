@@ -1,6 +1,7 @@
 nav:
     home: Home
     dashboard: Dashboard
+    my_profile: 'My Profile'
     context: 'ISMS Context'
     analytics: Analytics
     interested_parties: 'Interested Parties'
