@@ -116,7 +116,10 @@ user:
             timezone: Zeitzone
         mfa:
             enabled: 'MFA aktiviert'
+            not_enabled: 'Zwei-Faktor-Authentifizierung ist nicht aktiviert. Erhöhen Sie die Sicherheit Ihres Accounts durch Aktivierung von MFA.'
             active_tokens: '%count% aktive Token'
+            manage: 'MFA verwalten'
+            setup: 'MFA einrichten'
         confirm:
             delete_avatar: 'Möchten Sie Ihr Profilbild wirklich löschen?'
         success:
