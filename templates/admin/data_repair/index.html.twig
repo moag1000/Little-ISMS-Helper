@@ -34,6 +34,102 @@
         </div>
     {% endfor %}
 
+    {# Data Health Summary #}
+    <div class="card mb-4 border-{% if summary.health_score >= 90 %}success{% elseif summary.health_score >= 70 %}warning{% else %}danger{% endif %}">
+        <div class="card-header bg-{% if summary.health_score >= 90 %}success{% elseif summary.health_score >= 70 %}warning{% else %}danger{% endif %} text-white">
+            <h2 class="mb-0">
+                <i class="bi bi-heart-pulse" aria-hidden="true"></i> Data Health Score: {{ summary.health_score }}%
+            </h2>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="card text-center {% if summary.orphaned_count > 0 %}bg-warning{% else %}bg-success{% endif %} bg-opacity-10">
+                        <div class="card-body">
+                            <h3 class="text-{% if summary.orphaned_count > 0 %}warning{% else %}success{% endif %}">{{ summary.orphaned_count }}</h3>
+                            <p class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Orphaned Entities</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center {% if summary.broken_references_count > 0 %}bg-danger{% else %}bg-success{% endif %} bg-opacity-10">
+                        <div class="card-body">
+                            <h3 class="text-{% if summary.broken_references_count > 0 %}danger{% else %}success{% endif %}">{{ summary.broken_references_count }}</h3>
+                            <p class="mb-0"><i class="bi bi-link-45deg" aria-hidden="true"></i> Broken References</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card text-center {% if summary.duplicates_count > 0 %}bg-warning{% else %}bg-success{% endif %} bg-opacity-10">
+                        <div class="card-body">
+                            <h3 class="text-{% if summary.duplicates_count > 0 %}warning{% else %}success{% endif %}">{{ summary.duplicates_count }}</h3>
+                            <p class="mb-0"><i class="bi bi-files" aria-hidden="true"></i> Duplicates</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if summary.total_issues > 0 %}
+                <div class="alert alert-info mt-3 mb-0">
+                    <strong>{{ 'common.info'|trans({}, 'messages') }}:</strong>
+                    Found {{ summary.total_issues }} total issues. Use the repair tools below to fix them.
+                </div>
+            {% else %}
+                <div class="alert alert-success mt-3 mb-0">
+                    <i class="bi bi-check-circle" aria-hidden="true"></i> <strong>All systems healthy!</strong> No data integrity issues detected.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Quick Fix Tools #}
+    {% if summary.orphaned_count > 0 or summary.broken_references_count > 0 %}
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0">
+                <i class="bi bi-tools" aria-hidden="true"></i> Quick Fix Tools
+            </h2>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                {% if summary.orphaned_count > 0 %}
+                <div class="col-md-6">
+                    <h3>Fix All Orphaned Entities</h3>
+                    <p class="text-muted">Assign all {{ summary.orphaned_count }} orphaned entities to a tenant</p>
+                    <form method="post" action="{{ path('admin_data_repair_fix_all_orphans', {tenantId: 0}) }}" id="fix-all-orphans-form">
+                        <input type="hidden" name="_token" value="{{ csrf_token('fix_all_orphans') }}">
+                        <div class="input-group">
+                            <select name="tenant_id" id="quick-fix-tenant" class="form-select" required>
+                                <option value="">Select Tenant...</option>
+                                {% for tenant in tenants %}
+                                    <option value="{{ tenant.id }}">{{ tenant.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="button" class="btn btn-warning" onclick="fixAllOrphans()">
+                                <i class="bi bi-lightning" aria-hidden="true"></i> Fix All Orphans
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                {% endif %}
+
+                {% if summary.broken_references_count > 0 %}
+                <div class="col-md-6">
+                    <h3>Fix Tenant Mismatches</h3>
+                    <p class="text-muted">Automatically align {{ summary.broken_references_count }} tenant assignments</p>
+                    <form method="post" action="{{ path('admin_data_repair_fix_tenant_mismatches') }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('fix_tenant_mismatches') }}">
+                        <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Fix all tenant mismatches automatically?')">
+                            <i class="bi bi-lightning" aria-hidden="true"></i> Fix Tenant Mismatches
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     {# Orphaned Entities Section #}
     <div class="card mb-4">
         <div class="card-header bg-warning text-dark">
@@ -263,6 +359,9 @@
                         <th scope="col" class="text-center">{{ 'nav.assets'|trans({}, 'nav') }}</th>
                         <th scope="col" class="text-center">{{ 'nav.risks'|trans({}, 'nav') }}</th>
                         <th scope="col" class="text-center">{{ 'nav.incidents'|trans({}, 'nav') }}</th>
+                        <th scope="col" class="text-center">Audits</th>
+                        <th scope="col" class="text-center">Documents</th>
+                        <th scope="col" class="text-center">BC Plans</th>
                         <th scope="col" class="text-center">{{ 'common.all'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
@@ -278,13 +377,34 @@
                         <td class="text-center">{{ stat.assets }}</td>
                         <td class="text-center">{{ stat.risks }}</td>
                         <td class="text-center">{{ stat.incidents }}</td>
-                        <td class="text-center"><strong>{{ stat.assets + stat.risks + stat.incidents }}</strong></td>
+                        <td class="text-center">{{ stat.audits|default(0) }}</td>
+                        <td class="text-center">{{ stat.documents|default(0) }}</td>
+                        <td class="text-center">{{ stat.bc_plans|default(0) }}</td>
+                        <td class="text-center"><strong>{{ stat.assets + stat.risks + stat.incidents + (stat.audits|default(0)) + (stat.documents|default(0)) + (stat.bc_plans|default(0)) }}</strong></td>
                     </tr>
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
         </div>
     </div>
+
+    <script>
+    function fixAllOrphans() {
+        const tenantSelect = document.getElementById('quick-fix-tenant');
+        const tenantId = tenantSelect.value;
+
+        if (!tenantId) {
+            alert('Please select a tenant first');
+            return;
+        }
+
+        if (confirm('Assign ALL orphaned entities to tenant "' + tenantSelect.options[tenantSelect.selectedIndex].text + '"?')) {
+            const form = document.getElementById('fix-all-orphans-form');
+            form.action = form.action.replace('/0', '/' + tenantId);
+            form.submit();
+        }
+    }
+    </script>
 
     {# Asset Assignment Repair for Risks #}
     {% set risksWithoutAsset = allRisks|filter(r => r.asset is null) %}
@@ -550,6 +670,130 @@
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# Duplicate Entities #}
+    {% if duplicates.audits is defined and duplicates.audits|length > 0 %}
+    <div class="card mt-4">
+        <div class="card-header bg-warning text-dark">
+            <h3 class="mb-0">
+                <i class="bi bi-files" aria-hidden="true"></i> Duplicate Audit Numbers
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+                <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong>
+                Found {{ duplicates.audits|length }} audit number(s) used multiple times within the same tenant.
+            </div>
+            {% for dup in duplicates.audits %}
+                <div class="card mb-3 border-warning">
+                    <div class="card-header">
+                        <strong>Audit Number:</strong> {{ dup.value }}
+                        <span class="badge bg-warning">{{ dup.count }} duplicates</span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                        {% for audit in dup.entities %}
+                            <li class="mb-2">
+                                <span class="badge bg-secondary">ID: {{ audit.id }}</span>
+                                {{ audit.title }}
+                                <small class="text-muted">({{ audit.tenant.name }})</small>
+                                {% if audit.plannedDate %}
+                                    - <small>{{ audit.plannedDate|date('d.m.Y') }}</small>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if duplicates.assets is defined and duplicates.assets|length > 0 %}
+    <div class="card mt-4">
+        <div class="card-header bg-warning text-dark">
+            <h3 class="mb-0">
+                <i class="bi bi-files" aria-hidden="true"></i> Duplicate Asset Names
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+                <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong>
+                Found {{ duplicates.assets|length }} asset name(s) used multiple times within the same tenant.
+            </div>
+            {% for dup in duplicates.assets %}
+                <div class="card mb-3 border-warning">
+                    <div class="card-header">
+                        <strong>Asset Name:</strong> {{ dup.value }}
+                        <span class="badge bg-warning">{{ dup.count }} duplicates</span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                        {% for asset in dup.entities %}
+                            <li class="mb-2">
+                                <span class="badge bg-secondary">ID: {{ asset.id }}</span>
+                                {{ asset.name }}
+                                <small class="text-muted">({{ asset.tenant.name }}, Type: {{ asset.assetType }})</small>
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# Inconsistent Data #}
+    {% if inconsistentData.audits_completed_without_date is defined and inconsistentData.audits_completed_without_date|length > 0 %}
+    <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+            <h3 class="mb-0">
+                <i class="bi bi-calendar-x" aria-hidden="true"></i> Completed Audits Without Completion Date
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                Found {{ inconsistentData.audits_completed_without_date|length }} audit(s) marked as completed but missing actual completion date.
+            </div>
+            <ul>
+            {% for audit in inconsistentData.audits_completed_without_date %}
+                <li>
+                    <span class="badge bg-secondary">{{ audit.auditNumber }}</span>
+                    {{ audit.title }}
+                    <span class="badge bg-{{ audit.status == 'completed' ? 'success' : 'primary' }}">{{ audit.status }}</span>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if inconsistentData.risks_residual_higher_than_inherent is defined and inconsistentData.risks_residual_higher_than_inherent|length > 0 %}
+    <div class="card mt-4">
+        <div class="card-header bg-info text-white">
+            <h3 class="mb-0">
+                <i class="bi bi-exclamation-circle" aria-hidden="true"></i> Risks with Residual > Inherent
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-info">
+                Found {{ inconsistentData.risks_residual_higher_than_inherent|length }} risk(s) where residual risk is higher than inherent risk (should never happen).
+            </div>
+            <ul>
+            {% for risk in inconsistentData.risks_residual_higher_than_inherent %}
+                <li>
+                    {{ risk.title }}
+                    <span class="badge bg-danger">Inherent: {{ risk.inherentRiskLevel }}</span>
+                    →
+                    <span class="badge bg-warning">Residual: {{ risk.residualRiskLevel }}</span>
+                </li>
+            {% endfor %}
+            </ul>
         </div>
     </div>
     {% endif %}

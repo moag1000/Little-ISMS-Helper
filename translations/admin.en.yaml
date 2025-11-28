@@ -162,6 +162,8 @@ admin:
     panel:
         title: Title
     data_repair:
+        title: 'Data Repair & Integrity'
+        description: 'Detect and fix data integrity issues, tenant assignment problems, and broken references'
         current_asset: 'Current Asset'
         assign_to_asset: 'Assign To Asset'
         no_asset: 'No Asset'
@@ -171,11 +173,9 @@ admin:
         assign_asset: 'Assign Asset'
         entity_type: 'Entity Type'
         issue: Issue
-        title: Title
-        description: Description
         orphaned_entities: 'Orphaned Entities'
-        no_orphans: 'No Orphans'
-        orphans_found: 'Orphans Found'
+        no_orphans: 'No orphaned entities found - all data properly assigned!'
+        orphans_found: 'Found entities without tenant assignment that need to be fixed'
         orphaned_assets: 'Orphaned Assets'
         orphaned_risks: 'Orphaned Risks'
         orphaned_incidents: 'Orphaned Incidents'
@@ -186,21 +186,29 @@ admin:
         risks_only: 'Risks Only'
         incidents_only: 'Incidents Only'
         assign_orphans: 'Assign Orphans'
+        assigned_count: '%count% entities successfully assigned to %tenant%'
+        fixed_all_orphans: '%count% orphaned entities successfully assigned to %tenant%'
+        fixed_mismatches: '%count% tenant mismatches successfully fixed'
+        tenant_not_found: 'Selected tenant not found'
+        entity_not_found: 'Entity not found'
+        entity_reassigned: '%entity% successfully reassigned to %tenant%'
+        asset_not_found: 'Asset not found'
         orphaned_assets_list: 'Orphaned Assets List'
         orphaned_risks_list: 'Orphaned Risks List'
         orphaned_incidents_list: 'Orphaned Incidents List'
         tenant_statistics: 'Tenant Statistics'
         risk_asset_assignment: 'Risk Asset Assignment'
-        risk_asset_assignment_desc: 'Risk Asset Assignment Desc'
+        risk_asset_assignment_desc: 'These risks do not have an asset assigned. Risks must be associated with assets for proper tracking.'
         incident_asset_assignment: 'Incident Asset Assignment'
-        incident_asset_assignment_desc: 'Incident Asset Assignment Desc'
+        incident_asset_assignment_desc: 'These incidents do not have any affected assets assigned. Incidents should be linked to the assets they impact.'
         controls_without_risks: 'Controls Without Risks'
-        controls_without_risks_desc: 'Controls Without Risks Desc'
-        controls_count: 'Controls Count'
+        controls_without_risks_desc: 'These controls are applicable but not linked to any risks. Controls should address specific risks.'
+        controls_count: '%count% controls found'
         controls_without_assets: 'Controls Without Assets'
-        controls_without_assets_desc: 'Controls Without Assets Desc'
+        controls_without_assets_desc: 'These controls are applicable but not protecting any assets. Controls should specify which assets they protect.'
         broken_references: 'Broken References'
-        broken_references_desc: 'Broken References Desc'
+        broken_references_desc: 'These entities reference non-existent or invalid data. This can cause system errors and must be fixed.'
+        invalid_entity_type: 'Invalid entity type selected'
     modules:
         title: Title
         dependency_graph: 'Dependency Graph'
