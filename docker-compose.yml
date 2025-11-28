@@ -41,7 +41,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: development
+      target: production
     container_name: isms-app
     restart: unless-stopped
     depends_on:
@@ -53,17 +53,13 @@ services:
       - "${APP_PORT:-8000}:80"
       - "${APP_PORT_HTTPS:-8443}:443"
     volumes:
-      # ✅ Bind mount für Code - persistiert .env.local, config/setup_complete.lock nach Reboot!
-      - ./:/var/www/html:cached
-      # Named volumes für bessere Performance
-      - vendor_data:/var/www/html/vendor
+      # Named volumes for cache and logs
       - var_cache:/var/www/html/var/cache
       - var_log:/var/www/html/var/log
     environment:
       # Note: APP_SECRET und DATABASE_URL werden vom Deployment Wizard konfiguriert
-      # Diese Werte sind nur Defaults - der Wizard schreibt .env.local (persistiert durch Bind-Mount!)
-      APP_ENV: ${APP_ENV:-dev}
-      APP_DEBUG: ${APP_DEBUG:-1}
+      APP_ENV: ${APP_ENV:-prod}
+      APP_DEBUG: ${APP_DEBUG:-0}
       # MailHog für Email-Testing
       MAILER_DSN: smtp://mailhog:1025
     networks:
@@ -164,8 +160,6 @@ services:
 volumes:
   # ✅ Alle Volumes sind persistent - überleben docker-compose down und Reboot!
   db_data:
-    driver: local
-  vendor_data:
     driver: local
   var_cache:
     driver: local
