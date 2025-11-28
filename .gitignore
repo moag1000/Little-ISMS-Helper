@@ -28,6 +28,7 @@ PR_DESCRIPTION.md
 ###> docker ###
 .env.docker.local
 /docker-compose.override.yml
+/compose.override.yaml
 /docker/ssl/*.pem
 /docker/ssl/*.key
 /docker/ssl/*.crt
