@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'profile.action.edit'|trans({}, 'user') }}{% endblock %}
+{% block title %}{{ 'user.profile.action.edit'|trans({}, 'user') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>
             <i class="bi bi-person-gear" aria-hidden="true"></i>
-            {{ 'profile.action.edit'|trans({}, 'user') }}
+            {{ 'user.profile.action.edit'|trans({}, 'user') }}
         </h1>
         <a href="{{ path('app_profile') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left" aria-hidden="true"></i>
@@ -19,7 +19,7 @@
         <div class="col-md-8 offset-md-2">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0">{{ 'profile.title'|trans({}, 'user') }}</h2>
+                    <h2 class="mb-0">{{ 'user.profile.title'|trans({}, 'user') }}</h2>
                 </div>
                 <div class="card-body">
                     {{ form_start(form) }}
@@ -35,11 +35,11 @@
                                     'fields': ['avatarFile']
                                 },
                                 'preferences': {
-                                    'label': 'profile.section.preferences'|trans({}, 'user'),
+                                    'label': 'user.profile.section.preferences'|trans({}, 'user'),
                                     'fields': ['language', 'timezone']
                                 },
                                 'security': {
-                                    'label': 'profile.section.security'|trans({}, 'user'),
+                                    'label': 'user.profile.section.security'|trans({}, 'user'),
                                     'fields': ['plainPassword']
                                 }
                             },
@@ -76,7 +76,7 @@
             {% if user.profilePicture %}
                 <div class="card mt-4">
                     <div class="card-header">
-                        <h5 class="mb-0">{{ 'profile.section.current_avatar'|trans({}, 'user') }}</h5>
+                        <h5 class="mb-0">{{ 'user.profile.section.current_avatar'|trans({}, 'user') }}</h5>
                     </div>
                     <div class="card-body text-center">
                         <img src="{{ asset(user.profilePicture) }}"
@@ -87,9 +87,9 @@
                         <form method="post" action="{{ path('app_profile_avatar_delete') }}" class="d-inline">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete_avatar' ~ user.id) }}">
                             <button type="submit" class="btn btn-sm btn-outline-danger"
-                                    onclick="return confirm('{{ 'profile.confirm.delete_avatar'|trans({}, 'user') }}')">
+                                    onclick="return confirm('{{ 'user.profile.confirm.delete_avatar'|trans({}, 'user') }}')">
                                 <i class="bi bi-trash" aria-hidden="true"></i>
-                                {{ 'profile.action.delete_avatar'|trans({}, 'user') }}
+                                {{ 'user.profile.action.delete_avatar'|trans({}, 'user') }}
                             </button>
                         </form>
                     </div>
