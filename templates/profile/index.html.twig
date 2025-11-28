@@ -125,26 +125,6 @@
                     </dl>
                 </div>
             </div>
-
-            {# MFA Status Card #}
-            {% if user.mfaTokens|length > 0 %}
-                <div class="card">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="mb-0">
-                            <i class="bi bi-shield-check" aria-hidden="true"></i>
-                            {{ 'profile.section.mfa'|trans({}, 'user') }}
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="mb-2">
-                            <span class="badge bg-success">{{ 'profile.mfa.enabled'|trans({}, 'user') }}</span>
-                        </p>
-                        <p class="text-muted mb-0">
-                            {{ 'profile.mfa.active_tokens'|trans({'%count%': user.mfaTokens|length}, 'user') }}
-                        </p>
-                    </div>
-                </div>
-            {% endif %}
         </div>
     </div>
 </div>
