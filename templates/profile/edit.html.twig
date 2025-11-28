@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'profile.action.edit'|trans({}, 'user') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>
+            <i class="bi bi-person-gear" aria-hidden="true"></i>
+            {{ 'profile.action.edit'|trans({}, 'user') }}
+        </h1>
+        <a href="{{ path('app_profile') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i>
+            {{ 'common.back'|trans({}, 'messages') }}
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">{{ 'profile.title'|trans({}, 'user') }}</h2>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form) }}
+                        {% include '_components/_auto_form.html.twig' with {
+                            'form': form,
+                            'sections': {
+                                'basic_info': {
+                                    'label': 'user.section.basic_info'|trans({}, 'user'),
+                                    'fields': ['firstName', 'lastName', 'email', 'department', 'jobTitle', 'phoneNumber']
+                                },
+                                'avatar': {
+                                    'label': 'user.section.avatar'|trans({}, 'user'),
+                                    'fields': ['avatarFile']
+                                },
+                                'preferences': {
+                                    'label': 'profile.section.preferences'|trans({}, 'user'),
+                                    'fields': ['language', 'timezone']
+                                },
+                                'security': {
+                                    'label': 'profile.section.security'|trans({}, 'user'),
+                                    'fields': ['plainPassword']
+                                }
+                            },
+                            'col_widths': {
+                                'firstName': 6,
+                                'lastName': 6,
+                                'email': 12,
+                                'department': 6,
+                                'jobTitle': 6,
+                                'phoneNumber': 6,
+                                'avatarFile': 12,
+                                'language': 6,
+                                'timezone': 6,
+                                'plainPassword': 12
+                            },
+                            'translation_domain': 'user'
+                        } %}
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{{ path('app_profile') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-circle" aria-hidden="true"></i>
+                                {{ 'common.cancel'|trans({}, 'messages') }}
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                {{ 'user.save_changes'|trans({}, 'user') }}
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+
+            {# Current Avatar Display #}
+            {% if user.profilePicture %}
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ 'profile.section.current_avatar'|trans({}, 'user') }}</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <img src="{{ asset(user.profilePicture) }}"
+                             alt="{{ user.fullName }}"
+                             class="rounded-circle mb-3"
+                             style="width: 120px; height: 120px; object-fit: cover;">
+
+                        <form method="post" action="{{ path('app_profile_avatar_delete') }}" class="d-inline">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_avatar' ~ user.id) }}">
+                            <button type="submit" class="btn btn-sm btn-outline-danger"
+                                    onclick="return confirm('{{ 'profile.confirm.delete_avatar'|trans({}, 'user') }}')">
+                                <i class="bi bi-trash" aria-hidden="true"></i>
+                                {{ 'profile.action.delete_avatar'|trans({}, 'user') }}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
