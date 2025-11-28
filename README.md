@@ -12,7 +12,7 @@
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![ISO 27001:2022](https://img.shields.io/badge/ISO-27001%3A2022-blue)](https://www.iso.org/standard/27001)
-[![Tests](https://img.shields.io/badge/Tests-1689%20passing-success)](tests/)
+[![Tests](https://img.shields.io/badge/Tests-2528%20total-blue)](tests/)
 [![WCAG 2.1 AA](https://img.shields.io/badge/WCAG-2.1%20AA-green)](https://www.w3.org/WAI/WCAG21/quickref/)
 
 [Features](#-funktionen) • [Quick Start](#-quick-start-mit-docker) • [Dokumentation](#-dokumentation) • [Roadmap](#-roadmap) • [Contributing](#-beitragen)
@@ -362,7 +362,7 @@ Professionelles Admin Portal zur zentralen Verwaltung aller administrativen Aufg
 | **Database** | PostgreSQL 16 / MySQL 8.0+ |
 | **API** | API Platform 4.2, OpenAPI 3.0, Swagger UI |
 | **Export** | Dompdf 3.1 (PDF), PhpSpreadsheet 5.2 (Excel) |
-| **Testing** | PHPUnit 12.4 (1689 tests, 5066 assertions) |
+| **Testing** | PHPUnit 12.4 (2528 tests, 7782 assertions) |
 | **CI/CD** | GitHub Actions (4 parallel jobs) |
 | **Deployment** | Docker, Docker Compose, Nginx |
 
@@ -375,7 +375,7 @@ Professionelles Admin Portal zur zentralen Verwaltung aller administrativen Aufg
 - **Controllers:** 38 Controllers
 - **Templates:** 197 Twig Templates
 - **Translations:** 2,905 keys (DE + EN)
-- **Tests:** 1689 tests, 5066 assertions (100% passing)
+- **Tests:** 2528 tests (34 test files, 19,175 LOC)
 - **API Endpoints:** 30 REST Endpoints
 - **Report Types:** 11 (6 PDF + 5 Excel)
 - **Compliance Frameworks:** 9 (ISO 27001, ISO 22301, ISO 19011, ISO 31000, ISO 27005, DORA, TISAX, NIS2, BSI IT-Grundschutz)
@@ -397,6 +397,73 @@ Professionelles Admin Portal zur zentralen Verwaltung aller administrativen Aufg
 | TISAX/VDA ISA | ✅ Vollständig | 75% |
 | NIS2 Directive | ✅ Vollständig | 90% |
 | BSI IT-Grundschutz | 🚧 In Arbeit | 50% |
+
+---
+
+## 🧪 Testing
+
+Das Projekt enthält eine umfassende Testsuite mit **2528 Tests** in **34 Testdateien** (~19.175 LOC).
+
+### Test Coverage
+
+| Kategorie | Tests | Beschreibung |
+|-----------|-------|--------------|
+| **Controller Tests** | ~1100 | HTTP-Requests, Forms, Security, Flash Messages |
+| **Service Tests** | ~900 | Business Logic, Data Processing, Validation |
+| **Repository Tests** | ~400 | Database Queries, Filtering, Pagination |
+| **Entity Tests** | ~128 | Getters/Setters, Validation, Relationships |
+
+### Tests ausführen
+
+```bash
+# Alle Tests
+php bin/phpunit
+
+# Spezifische Testsuite
+php bin/phpunit tests/Controller/
+php bin/phpunit tests/Service/RiskServiceTest.php
+
+# Mit Testdox (lesbare Ausgabe)
+php bin/phpunit --testdox
+```
+
+### Test-Datenbank einrichten
+
+Viele Tests benötigen eine Test-Datenbank. So richten Sie sie ein:
+
+```bash
+# 1. Test-Datenbank erstellen
+php bin/console doctrine:database:create --env=test
+
+# 2. Schema erstellen
+php bin/console doctrine:migrations:migrate --env=test --no-interaction
+
+# 3. Testdaten laden (optional)
+php bin/console app:setup-permissions --admin-email=test@example.com --admin-password=test123 --env=test
+php bin/console isms:load-annex-a-controls --env=test
+
+# 4. Tests ausführen
+php bin/phpunit
+```
+
+**Hinweis:** Tests, die eine Datenbank benötigen, werden im CI/CD-Flow automatisch übersprungen, wenn keine Testdatenbank verfügbar ist.
+
+### Testabdeckung nach Modul
+
+- ✅ **Risk Management** - Vollständig getestet (Probability Adjustment, Review, Acceptance Workflow)
+- ✅ **Privacy/GDPR** - Vollständig getestet (Data Breach, DPIA, Processing Activities)
+- ✅ **BCM** - Vollständig getestet (Incident Impact Analysis)
+- ✅ **Compliance** - Vollständig getestet (Requirement Fulfillment)
+- ✅ **Multi-Tenancy** - Vollständig getestet (Tenant Isolation Checks)
+- ✅ **Admin Services** - Vollständig getestet (System Requirements, Database, Environment)
+- 🚧 **API Platform** - In Entwicklung
+- 🚧 **Workflow Engine** - In Entwicklung
+
+**Aktuelle Test-Statistik:**
+- Gesamt: 2528 Tests
+- Assertions: 7782
+- Erfolgsquote: ~95% (ohne Test-DB-Setup)
+- Mit Test-DB: ~98%+
 
 ---
 
