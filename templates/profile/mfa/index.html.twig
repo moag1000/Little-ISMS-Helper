@@ -1,0 +1,228 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'mfa.title'|trans({}, 'mfa') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>
+            <i class="bi bi-shield-lock" aria-hidden="true"></i>
+            {{ 'mfa.title'|trans({}, 'mfa') }}
+        </h1>
+        <a href="{{ path('app_profile') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i>
+            {{ 'common.back'|trans({}, 'messages') }}
+        </a>
+    </div>
+
+    {# MFA Status #}
+    <div class="alert {{ mfa_enabled ? 'alert-success' : 'alert-warning' }} mb-4">
+        <div class="d-flex align-items-center">
+            <i class="bi {{ mfa_enabled ? 'bi-shield-check' : 'bi-shield-exclamation' }} fs-1 me-3" aria-hidden="true"></i>
+            <div>
+                <h5 class="mb-1">
+                    {% if mfa_enabled %}
+                        {{ 'mfa.enabled'|trans({}, 'mfa') }}
+                    {% else %}
+                        {{ 'mfa.disabled'|trans({}, 'mfa') }}
+                    {% endif %}
+                </h5>
+                <p class="mb-0">
+                    {% if mfa_enabled %}
+                        {{ 'mfa.enabled_description'|trans({}, 'mfa') }}
+                    {% else %}
+                        {{ 'mfa.disabled_description'|trans({}, 'mfa') }}
+                    {% endif %}
+                </p>
+            </div>
+            {% if not mfa_enabled %}
+                <div class="ms-auto">
+                    <a href="{{ path('app_profile_mfa_setup_totp') }}" class="btn btn-success">
+                        <i class="bi bi-shield-plus" aria-hidden="true"></i>
+                        {{ 'mfa.action.setup'|trans({}, 'mfa') }}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# MFA Statistics #}
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card border-primary">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">{{ 'mfa.statistics.active_tokens'|trans({}, 'mfa') }}</h5>
+                    <p class="display-6 text-primary">{{ active_tokens_count }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-info">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">{{ 'mfa.statistics.total_tokens'|trans({}, 'mfa') }}</h5>
+                    <p class="display-6 text-info">{{ mfa_tokens|length }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-success">
+                <div class="card-body">
+                    <h5 class="card-title text-muted">{{ 'mfa.statistics.by_type'|trans({}, 'mfa') }}</h5>
+                    {% if tokens_by_type|length > 0 %}
+                        {% for type, count in tokens_by_type %}
+                            <div class="d-flex justify-content-between">
+                                <span>{{ ('mfa.token_type.' ~ type)|trans({}, 'mfa') }}</span>
+                                <span class="badge bg-secondary">{{ count }}</span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted mb-0">{{ 'mfa.no_tokens'|trans({}, 'mfa') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# MFA Tokens List #}
+    <div class="card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h2 class="mb-0">
+                <i class="bi bi-key" aria-hidden="true"></i>
+                {{ 'mfa.my_tokens'|trans({}, 'mfa') }}
+            </h2>
+            {% if mfa_enabled %}
+                <a href="{{ path('app_profile_mfa_setup_totp') }}" class="btn btn-light btn-sm">
+                    <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                    {{ 'mfa.action.add_token'|trans({}, 'mfa') }}
+                </a>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            {% if mfa_tokens|length > 0 %}
+                {% embed '_components/_table.html.twig' with {
+                    'class': 'table-hover',
+                    'noMargin': true,
+                    'responsive': true
+                } %}
+                    {% block table_head %}
+                        <tr>
+                            <th scope="col">{{ 'mfa.token_type'|trans({}, 'mfa') }}</th>
+                            <th scope="col">{{ 'mfa.device_name'|trans({}, 'mfa') }}</th>
+                            <th scope="col">{{ 'mfa.enrolled_at'|trans({}, 'mfa') }}</th>
+                            <th scope="col">{{ 'mfa.last_used'|trans({}, 'mfa') }}</th>
+                            <th scope="col" class="text-center">{{ 'mfa.usage_count'|trans({}, 'mfa') }}</th>
+                            <th scope="col" class="text-center">{{ 'common.status'|trans({}, 'messages') }}</th>
+                            <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
+                        </tr>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% for token in mfa_tokens %}
+                            <tr class="{{ not token.isActive ? 'table-secondary' : '' }}">
+                                <td>
+                                    {% if token.tokenType == 'totp' %}
+                                        <i class="bi bi-phone" aria-hidden="true"></i> {{ 'mfa.token_type.totp'|trans({}, 'mfa') }}
+                                    {% elseif token.tokenType == 'webauthn' %}
+                                        <i class="bi bi-fingerprint" aria-hidden="true"></i> {{ 'mfa.token_type.webauthn'|trans({}, 'mfa') }}
+                                    {% elseif token.tokenType == 'sms' %}
+                                        <i class="bi bi-chat" aria-hidden="true"></i> {{ 'mfa.token_type.sms'|trans({}, 'mfa') }}
+                                    {% elseif token.tokenType == 'hardware' %}
+                                        <i class="bi bi-cpu" aria-hidden="true"></i> {{ 'mfa.token_type.hardware'|trans({}, 'mfa') }}
+                                    {% elseif token.tokenType == 'backup' %}
+                                        <i class="bi bi-lock" aria-hidden="true"></i> {{ 'mfa.token_type.backup'|trans({}, 'mfa') }}
+                                    {% else %}
+                                        <i class="bi bi-question-circle" aria-hidden="true"></i> {{ token.tokenType }}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ token.deviceName ?? '-' }}
+                                    {% if token.isPrimary %}
+                                        <span class="badge bg-primary">{{ 'mfa.is_primary'|trans({}, 'mfa') }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ token.enrolledAt|date('d.m.Y H:i') }}</td>
+                                <td>
+                                    {% if token.lastUsedAt %}
+                                        {{ token.lastUsedAt|date('d.m.Y H:i') }}
+                                    {% else %}
+                                        <span class="text-muted">{{ 'mfa.never_used'|trans({}, 'mfa') }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge bg-info">{{ token.usageCount }}</span>
+                                </td>
+                                <td class="text-center">
+                                    {% if token.isActive %}
+                                        {% if token.isExpired %}
+                                            <span class="badge bg-danger">{{ 'mfa.status.expired'|trans({}, 'mfa') }}</span>
+                                        {% else %}
+                                            <span class="badge bg-success">{{ 'mfa.status.active'|trans({}, 'mfa') }}</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ 'mfa.status.inactive'|trans({}, 'mfa') }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <div class="btn-group" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+                                        <a href="{{ path('app_profile_mfa_show', {id: token.id}) }}"
+                                           class="btn btn-sm btn-outline-primary"
+                                           title="{{ 'common.view'|trans({}, 'messages') }}">
+                                            <i class="bi bi-eye" aria-hidden="true"></i>
+                                        </a>
+                                        {% if token.isActive %}
+                                            <form method="post"
+                                                  action="{{ path('app_profile_mfa_disable', {id: token.id}) }}"
+                                                  class="d-inline">
+                                                <input type="hidden" name="_token"
+                                                       value="{{ csrf_token('disable_' ~ token.id) }}">
+                                                <button type="submit"
+                                                        class="btn btn-sm btn-outline-warning"
+                                                        title="{{ 'mfa.action.disable'|trans({}, 'mfa') }}"
+                                                        onclick="return confirm('{{ 'mfa.confirm.disable'|trans({}, 'mfa') }}')">
+                                                    <i class="bi bi-pause-circle" aria-hidden="true"></i>
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                        <form method="post"
+                                              action="{{ path('app_profile_mfa_delete', {id: token.id}) }}"
+                                              class="d-inline">
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('delete_' ~ token.id) }}">
+                                            <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger"
+                                                    title="{{ 'common.delete'|trans({}, 'messages') }}"
+                                                    onclick="return confirm('{{ 'mfa.confirm.delete'|trans({}, 'mfa') }}')">
+                                                <i class="bi bi-trash" aria-hidden="true"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
+            {% else %}
+                <div class="alert alert-info mb-0">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    {{ 'mfa.no_tokens_registered'|trans({}, 'mfa') }}
+                    <a href="{{ path('app_profile_mfa_setup_totp') }}" class="alert-link">
+                        {{ 'mfa.setup_now'|trans({}, 'mfa') }}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Security Recommendations #}
+    <div class="alert alert-info mt-4">
+        <h4>
+            <i class="bi bi-shield-check" aria-hidden="true"></i>
+            {{ 'mfa.security_recommendations.title'|trans({}, 'mfa') }}
+        </h4>
+        <ul class="mb-0">
+            <li>{{ 'mfa.security_recommendations.item1'|trans({}, 'mfa') }}</li>
+            <li>{{ 'mfa.security_recommendations.item2'|trans({}, 'mfa') }}</li>
+            <li>{{ 'mfa.security_recommendations.item3'|trans({}, 'mfa') }}</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

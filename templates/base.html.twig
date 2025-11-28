@@ -133,9 +133,9 @@
                     {% if initials|length == 0 %}
                         {% set initials = app.user.fullName|slice(0, 2) %}
                     {% endif %}
-                    <span class="user-avatar" title="{{ app.user.fullName }}">
+                    <a href="{{ path('app_profile') }}" class="user-avatar" title="{{ app.user.fullName }}" aria-label="{{ 'nav.my_profile'|trans({}, 'nav') }}">
                         {{ initials|upper }}
-                    </span>
+                    </a>
                 </div>
                 {% endif %}
             </div>
