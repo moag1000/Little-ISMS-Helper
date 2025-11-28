@@ -118,9 +118,9 @@
                         <dt class="col-sm-4">{{ 'user.field.created_at'|trans({}, 'user') }}</dt>
                         <dd class="col-sm-8">{{ user.createdAt|date('d.m.Y H:i') }}</dd>
 
-                        {% if user.lastLogin %}
+                        {% if user.lastLoginAt %}
                             <dt class="col-sm-4">{{ 'user.field.last_login'|trans({}, 'user') }}</dt>
-                            <dd class="col-sm-8">{{ user.lastLogin|date('d.m.Y H:i') }}</dd>
+                            <dd class="col-sm-8">{{ user.lastLoginAt|date('d.m.Y H:i') }}</dd>
                         {% endif %}
                     </dl>
                 </div>
