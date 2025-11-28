@@ -88,7 +88,7 @@ class ComplianceFrameworkController extends AbstractController
 
             $this->addFlash('success', $this->translator->trans('compliance.framework.flash.created'));
 
-            return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->getId()]);
+            return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->id]);
         }
 
         return $this->render('compliance/framework/new.html.twig', [
@@ -122,14 +122,14 @@ class ComplianceFrameworkController extends AbstractController
 
         // Get fulfillments for all requirements (for template access)
         $requirementFulfillments = [];
-        foreach ($complianceFramework->getRequirements() as $requirement) {
+        foreach ($complianceFramework->requirements as $requirement) {
             $fulfillment = $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $requirement);
             $requirementFulfillments[$requirement->getId()] = $fulfillment;
         }
 
         // Group requirements by category
         $requirementsByCategory = [];
-        foreach ($complianceFramework->getRequirements() as $requirement) {
+        foreach ($complianceFramework->requirements as $requirement) {
             $category = $requirement->getCategory() ?: 'Uncategorized';
             if (!isset($requirementsByCategory[$category])) {
                 $requirementsByCategory[$category] = [];
@@ -145,7 +145,7 @@ class ComplianceFrameworkController extends AbstractController
             'medium' => 0,
             'low' => 0,
         ];
-        foreach ($complianceFramework->getRequirements() as $requirement) {
+        foreach ($complianceFramework->requirements as $requirement) {
             $priority = $requirement->getPriority();
             if (isset($priorityDistribution[$priority])) {
                 $priorityDistribution[$priority]++;
@@ -176,7 +176,7 @@ class ComplianceFrameworkController extends AbstractController
 
             $this->addFlash('success', $this->translator->trans('compliance.framework.flash.updated'));
 
-            return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->getId()]);
+            return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->id]);
         }
 
         return $this->render('compliance/framework/edit.html.twig', [
@@ -188,17 +188,17 @@ class ComplianceFrameworkController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, ComplianceFramework $complianceFramework): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $complianceFramework->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $complianceFramework->id, $request->request->get('_token'))) {
             $frameworkName = $complianceFramework->getName();
 
             // Check if framework has requirements
-            if ($complianceFramework->getRequirements()->count() > 0) {
+            if ($complianceFramework->requirements->count() > 0) {
                 $this->addFlash('warning', $this->translator->trans('compliance.framework.flash.has_requirements', [
                     '%name%' => $frameworkName,
-                    '%count%' => $complianceFramework->getRequirements()->count(),
+                    '%count%' => $complianceFramework->requirements->count(),
                 ]));
 
-                return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->getId()]);
+                return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->id]);
             }
 
             $this->entityManager->remove($complianceFramework);
@@ -215,7 +215,7 @@ class ComplianceFrameworkController extends AbstractController
     #[IsGranted('ROLE_ADMIN')]
     public function toggle(Request $request, ComplianceFramework $complianceFramework): Response
     {
-        if ($this->isCsrfTokenValid('toggle' . $complianceFramework->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('toggle' . $complianceFramework->id, $request->request->get('_token'))) {
             $complianceFramework->setActive(!$complianceFramework->isActive());
             $complianceFramework->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
@@ -226,13 +226,13 @@ class ComplianceFrameworkController extends AbstractController
             ]));
         }
 
-        return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->getId()]);
+        return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->id]);
     }
     #[Route('/compliance/framework/{id}/duplicate', name: 'app_compliance_framework_duplicate', methods: ['POST'], requirements: ['id' => '\d+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function duplicate(Request $request, ComplianceFramework $complianceFramework): Response
     {
-        if ($this->isCsrfTokenValid('duplicate' . $complianceFramework->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('duplicate' . $complianceFramework->id, $request->request->get('_token'))) {
             $newFramework = new ComplianceFramework();
             $newFramework->setCode($complianceFramework->getCode() . '_COPY');
             $newFramework->setName($complianceFramework->getName() . ' (Copy)');
@@ -252,9 +252,9 @@ class ComplianceFrameworkController extends AbstractController
                 '%name%' => $complianceFramework->getName(),
             ]));
 
-            return $this->redirectToRoute('app_compliance_framework_edit', ['id' => $newFramework->getId()]);
+            return $this->redirectToRoute('app_compliance_framework_edit', ['id' => $newFramework->id]);
         }
 
-        return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->getId()]);
+        return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->id]);
     }
 }
