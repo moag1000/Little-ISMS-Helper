@@ -111,7 +111,7 @@ class WorkflowInstanceRepository extends ServiceEntityRepository
 
         // Query for workflows where user is approver by user ID or role
         $queryBuilder = $this->createQueryBuilder('wi')
-            ->leftJoin('wi.currentStep', 'step')
+            ->leftJoin('wi.workflowStep', 'step')
             ->where('wi.status IN (:statuses)')
             ->setParameter('statuses', ['pending', 'in_progress'])
             ->orderBy('wi.dueDate', 'ASC');

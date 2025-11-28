@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Tenant;
+use App\Entity\User;
 use Exception;
 use DateTime;
 use App\Entity\Incident;
@@ -550,7 +551,7 @@ class IncidentController extends AbstractController
             'escalation_level' => $preview['escalation_level'],
             'workflow_name' => $preview['workflow_name'],
             'notified_roles' => $preview['notified_roles'],
-            'notified_users' => array_map(fn($user): array => [
+            'notified_users' => array_map(fn(User $user): array => [
                 'id' => $user->getId(),
                 'name' => $user->getFirstName() . ' ' . $user->getLastName(),
                 'email' => $user->getEmail(),
