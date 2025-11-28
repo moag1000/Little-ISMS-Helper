@@ -15,6 +15,86 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.1.1] - 2025-11-28
+
+### 🚀 Major Improvements: Code Quality, i18n & Stability
+
+This release includes 39 commits with comprehensive code quality improvements, internationalization completion, and numerous bug fixes.
+
+### ✨ New Features
+
+#### Admin Settings Overhaul
+- **Standardized Admin Forms** - All admin settings now use FormTypes with `_auto_form` component
+- **Consistent UI** - Bootstrap 5.3 floating labels across all admin forms
+
+#### Audit Module
+- **PDF Export** - New professional PDF export template for internal audits
+- **Improved Templates** - Removed non-existent auditType field references
+
+#### Workflow Improvements
+- **RiskTreatmentPlan Approval** - Complete approval workflow service
+- **Document Approval** - Full document approval workflow implementation
+
+### 🔧 Code Quality (Rector)
+
+#### PHP 8.4 & Symfony 7.4 Best Practices
+- Applied comprehensive Rector code quality improvements
+- Added type declarations to all repository methods
+- Type hints added to closures across controllers
+
+#### Doctrine Entity Mappings
+- Fixed `mappedBy` references after Rector property renames:
+  - ThreatIntelligence, ComplianceMapping, ComplianceFramework, Tenant
+- Added explicit `JoinColumn(name: ...)` to preserve database column names (14 entities)
+
+### 🌍 Internationalization (i18n)
+
+#### Translation Completion (~95%)
+- **Added all missing translation keys** across all 49 domains
+- **Consolidated duplicate translation files** and fixed structural issues
+- **Improved translation domain configuration** across templates
+- **Added `{% trans_default_domain %}** to templates needing it
+
+### 🐛 Bug Fixes
+
+#### Controller & Routing
+- Fixed DataBreachController route naming duplication
+- Fixed locale prefix duplication in routes
+- Added locale prefix to keyboard navigation URLs
+
+#### Templates
+- Fixed BCM templates: entity properties, badge classes, route names
+- Fixed workflow templates: WorkflowInstance property names
+- Fixed compliance and change_request route names
+- Fixed user_management/show.html.twig undefined routes
+- Replaced deprecated `app.request.get()` with proper methods
+- Aligned templates with controller variables
+
+#### Forms
+- Fixed IncidentType: `getIncidentNumber()` instead of `getReferenceNumber()`
+- Corrected entity property mismatches across forms
+
+#### Database
+- Made `cvss_score` nullable for vulnerabilities without formal scoring
+- Made `cve_id` nullable for internal vulnerability findings
+- Renamed 'references' column to avoid MySQL reserved keyword
+
+#### Miscellaneous
+- Added graceful fallback for missing ext-zlib extension in backup
+- Removed non-existent app_incident_assets route
+- Fixed WorkflowInstanceRepository `currentStep` → `workflowStep` association
+
+### 🧪 Testing
+- Updated deprecated PHPUnit `isType('string')` to `isString()`
+- Updated deprecated PHPUnit `isType('array')` to `isArray()`
+
+### 📊 Statistics
+- **39 Commits** since v2.1.0
+- **49 Translation Domains** × 2 Languages = 97 YAML files
+- **i18n Completion:** ~95%
+
+---
+
 ## [2.1.0] - 2025-11-27
 
 ### 🚀 Major Features: Automated Workflows & Form System Overhaul
