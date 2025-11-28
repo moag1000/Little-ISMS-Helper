@@ -226,6 +226,14 @@ class Control
         return $this;
     }
 
+    /**
+     * Alias for getControlId() for backward compatibility
+     */
+    public function getIsoReference(): ?string
+    {
+        return $this->getControlId();
+    }
+
     public function getName(): ?string
     {
         return $this->name;
