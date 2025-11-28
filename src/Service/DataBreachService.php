@@ -276,7 +276,7 @@ class DataBreachService
         ?string $authorityReference = null,
         array $documents = []
     ): DataBreach {
-        if (!$dataBreach->isRequiresAuthorityNotification()) {
+        if (!$dataBreach->getRequiresAuthorityNotification()) {
             throw new RuntimeException('This data breach does not require supervisory authority notification');
         }
 
@@ -369,7 +369,7 @@ class DataBreachService
         int $subjectsNotified,
         array $documents = []
     ): DataBreach {
-        if (!$dataBreach->isRequiresSubjectNotification()) {
+        if (!$dataBreach->getRequiresSubjectNotification()) {
             throw new RuntimeException('This data breach does not require data subject notification');
         }
 
@@ -444,11 +444,11 @@ class DataBreachService
         }
 
         // Validate required notifications are complete
-        if ($dataBreach->isRequiresAuthorityNotification() && !$dataBreach->getSupervisoryAuthorityNotifiedAt()) {
+        if ($dataBreach->getRequiresAuthorityNotification() && !$dataBreach->getSupervisoryAuthorityNotifiedAt()) {
             throw new RuntimeException('Supervisory authority notification required before closing');
         }
 
-        if ($dataBreach->isRequiresSubjectNotification() && !$dataBreach->getDataSubjectsNotifiedAt()) {
+        if ($dataBreach->getRequiresSubjectNotification() && !$dataBreach->getDataSubjectsNotifiedAt()) {
             throw new RuntimeException('Data subject notification required before closing');
         }
 
