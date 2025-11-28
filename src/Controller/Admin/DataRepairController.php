@@ -9,6 +9,7 @@ use App\Repository\IncidentRepository;
 use App\Repository\TenantRepository;
 use App\Repository\ControlRepository;
 use App\Repository\ComplianceRequirementRepository;
+use App\Service\DataIntegrityService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,6 +29,7 @@ class DataRepairController extends AbstractController
         private readonly TenantRepository $tenantRepository,
         private readonly ControlRepository $controlRepository,
         private readonly ComplianceRequirementRepository $complianceRequirementRepository,
+        private readonly DataIntegrityService $dataIntegrityService,
         private readonly TranslatorInterface $translator
     ) {
     }
@@ -35,43 +37,19 @@ class DataRepairController extends AbstractController
     #[Route('/admin/data-repair/', name: 'admin_data_repair_index')]
     public function index(): Response
     {
+        // Run comprehensive integrity check
+        $integrityCheck = $this->dataIntegrityService->runFullIntegrityCheck();
+        $summary = $this->dataIntegrityService->getSummaryStatistics();
+
         // Get all tenants
         $tenants = $this->tenantRepository->findAll();
 
-        // Find orphaned entities (no tenant assigned)
-        $orphanedAssets = $this->assetRepository->createQueryBuilder('a')
-            ->where('a.tenant IS NULL')
-            ->getQuery()
-            ->getResult();
-
-        $orphanedRisks = $this->riskRepository->createQueryBuilder('r')
-            ->where('r.tenant IS NULL')
-            ->getQuery()
-            ->getResult();
-
-        $orphanedIncidents = $this->incidentRepository->createQueryBuilder('i')
-            ->where('i.tenant IS NULL')
-            ->getQuery()
-            ->getResult();
-
-        // Get entity counts per tenant
-        $tenantStats = [];
-        foreach ($tenants as $tenant) {
-            $tenantStats[$tenant->getId()] = [
-                'tenant' => $tenant,
-                'assets' => count($this->assetRepository->findByTenant($tenant)),
-                'risks' => count($this->riskRepository->findByTenant($tenant)),
-                'incidents' => count($this->incidentRepository->findByTenant($tenant)),
-            ];
-        }
-
-        // Get all risks and incidents for asset assignment repair
+        // Get all risks, incidents and assets for dropdown assignment
         $allRisks = $this->riskRepository->findAll();
         $allIncidents = $this->incidentRepository->findAll();
         $allAssets = $this->assetRepository->findAll();
 
         // Find controls without risks AND without framework assignments
-        // (applicable controls that have neither risk nor framework assignments)
         $allControls = $this->controlRepository->findAll();
         $allComplianceRequirements = $this->complianceRequirementRepository->findAll();
 
@@ -89,24 +67,32 @@ class DataRepairController extends AbstractController
             && $control->getRisks()->isEmpty()
             && !isset($controlsWithFrameworks[$control->getId()]));
 
-        // Find controls without assets (applicable controls with no protected assets)
-        $controlsWithoutAssets = array_filter($allControls, fn(Control $control): bool => $control->isApplicable() && $control->getProtectedAssets()->isEmpty());
-
-        // Find broken references
-        $brokenReferences = $this->findBrokenReferences();
+        // Find controls without assets
+        $controlsWithoutAssets = array_filter($allControls, fn(Control $control): bool =>
+            $control->isApplicable() && $control->getProtectedAssets()->isEmpty());
 
         return $this->render('admin/data_repair/index.html.twig', [
+            // Tenants & Summary
             'tenants' => $tenants,
-            'orphanedAssets' => $orphanedAssets,
-            'orphanedRisks' => $orphanedRisks,
-            'orphanedIncidents' => $orphanedIncidents,
-            'tenantStats' => $tenantStats,
+            'summary' => $summary,
+
+            // Comprehensive integrity check results
+            'orphanedEntities' => $integrityCheck['orphaned_entities'],
+            'duplicates' => $integrityCheck['duplicates'],
+            'brokenReferences' => $integrityCheck['broken_references'],
+            'missingRelationships' => $integrityCheck['missing_relationships'],
+            'inconsistentData' => $integrityCheck['inconsistent_data'],
+            'tenantStats' => $integrityCheck['entity_counts'],
+
+            // Legacy data for existing template sections
+            'orphanedAssets' => $integrityCheck['orphaned_entities']['assets'] ?? [],
+            'orphanedRisks' => $integrityCheck['orphaned_entities']['risks'] ?? [],
+            'orphanedIncidents' => $integrityCheck['orphaned_entities']['incidents'] ?? [],
             'allRisks' => $allRisks,
             'allIncidents' => $allIncidents,
             'allAssets' => $allAssets,
             'controlsWithoutRisks' => $controlsWithoutRisks,
             'controlsWithoutAssets' => $controlsWithoutAssets,
-            'brokenReferences' => $brokenReferences,
         ]);
     }
 
@@ -401,63 +387,86 @@ class DataRepairController extends AbstractController
         return $this->redirectToRoute('admin_data_repair_index');
     }
 
-    /**
-     * Find broken references in the database
-     * Checks for foreign key references that point to non-existent entities
-     */
-    private function findBrokenReferences(): array
+    #[Route('/admin/data-repair/fix-all-orphans/{tenantId}', name: 'admin_data_repair_fix_all_orphans', methods: ['POST'])]
+    public function fixAllOrphans(Request $request, int $tenantId): Response
     {
-        $broken = [];
-
-        // Check risks with invalid asset references
-        $allRisks = $this->riskRepository->findAll();
-        foreach ($allRisks as $risk) {
-            $asset = $risk->getAsset();
-            if ($asset && !$this->entityManager->contains($asset)) {
-                $broken[] = [
-                    'type' => 'risk_invalid_asset',
-                    'entity_type' => 'Risk',
-                    'entity_id' => $risk->getId(),
-                    'entity_name' => $risk->getTitle(),
-                    'issue' => 'References non-existent asset',
-                ];
-            }
+        if (!$this->isCsrfTokenValid('fix_all_orphans', $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('admin_data_repair_index');
         }
 
-        // Check incidents with invalid asset references
-        $allIncidents = $this->incidentRepository->findAll();
-        foreach ($allIncidents as $allIncident) {
-            foreach ($allIncident->getAffectedAssets() as $asset) {
-                if (!$this->entityManager->contains($asset)) {
-                    $broken[] = [
-                        'type' => 'incident_invalid_asset',
-                        'entity_type' => 'Incident',
-                        'entity_id' => $allIncident->getId(),
-                        'entity_name' => $allIncident->getTitle(),
-                        'issue' => 'References non-existent asset',
-                    ];
-                    break;
+        $tenant = $this->tenantRepository->find($tenantId);
+        if (!$tenant) {
+            $this->addFlash('error', $this->translator->trans('admin.data_repair.tenant_not_found'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $orphaned = $this->dataIntegrityService->findAllOrphanedEntities();
+        $totalFixed = 0;
+
+        // Assign all orphaned entities to the selected tenant
+        foreach ($orphaned as $entityType => $entities) {
+            foreach ($entities as $entity) {
+                if (method_exists($entity, 'setTenant')) {
+                    $entity->setTenant($tenant);
+                    $totalFixed++;
                 }
             }
         }
 
-        // Check controls with invalid risk references
-        $allControls = $this->controlRepository->findAll();
-        foreach ($allControls as $allControl) {
-            foreach ($allControl->getRisks() as $risk) {
-                if (!$this->entityManager->contains($risk)) {
-                    $broken[] = [
-                        'type' => 'control_invalid_risk',
-                        'entity_type' => 'Control',
-                        'entity_id' => $allControl->getId(),
-                        'entity_name' => $allControl->getName(),
-                        'issue' => 'References non-existent risk',
-                    ];
-                    break;
+        $this->entityManager->flush();
+
+        $this->addFlash('success', $this->translator->trans('admin.data_repair.fixed_all_orphans', [
+            '%count%' => $totalFixed,
+            '%tenant%' => $tenant->getName(),
+        ]));
+
+        return $this->redirectToRoute('admin_data_repair_index');
+    }
+
+    #[Route('/admin/data-repair/fix-tenant-mismatches', name: 'admin_data_repair_fix_tenant_mismatches', methods: ['POST'])]
+    public function fixTenantMismatches(Request $request): Response
+    {
+        if (!$this->isCsrfTokenValid('fix_tenant_mismatches', $request->request->get('_token'))) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('admin_data_repair_index');
+        }
+
+        $brokenReferences = $this->dataIntegrityService->findBrokenReferences();
+        $fixedCount = 0;
+
+        foreach ($brokenReferences as $ref) {
+            // Fix risk-asset tenant mismatches by setting risk tenant to match asset
+            if ($ref['type'] === 'risk_asset_tenant_mismatch') {
+                $risk = $this->riskRepository->find($ref['entity_id']);
+                $asset = $risk?->getAsset();
+                if ($risk && $asset && $asset->getTenant()) {
+                    $risk->setTenant($asset->getTenant());
+                    $fixedCount++;
+                }
+            }
+
+            // Fix incident-asset tenant mismatches
+            if ($ref['type'] === 'incident_asset_tenant_mismatch') {
+                $incident = $this->incidentRepository->find($ref['entity_id']);
+                if ($incident && $incident->getAffectedAssets()->count() > 0) {
+                    // Set incident tenant to first asset's tenant
+                    $firstAsset = $incident->getAffectedAssets()->first();
+                    if ($firstAsset && $firstAsset->getTenant()) {
+                        $incident->setTenant($firstAsset->getTenant());
+                        $fixedCount++;
+                    }
                 }
             }
         }
 
-        return $broken;
+        $this->entityManager->flush();
+
+        $this->addFlash('success', $this->translator->trans('admin.data_repair.fixed_mismatches', [
+            '%count%' => $fixedCount,
+        ]));
+
+        return $this->redirectToRoute('admin_data_repair_index');
     }
 }
+

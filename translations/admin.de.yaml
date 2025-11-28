@@ -162,6 +162,8 @@ admin:
     panel:
         title: Admin-Panel
     data_repair:
+        title: 'Daten-Reparatur & Integrität'
+        description: 'Datenintegritätsprobleme, Mandantenzuweisungen und defekte Referenzen erkennen und beheben'
         current_asset: 'Aktuelles Asset'
         assign_to_asset: 'Asset zuweisen'
         no_asset: 'Kein Asset'
@@ -171,11 +173,9 @@ admin:
         assign_asset: 'Asset zuweisen'
         entity_type: Entity-Typ
         issue: Problem
-        title: Daten-Reparatur
-        description: 'Erkennung und Behebung von Dateninkonsistenzen'
         orphaned_entities: 'Verwaiste Entities'
-        no_orphans: 'Keine verwaisten Entities gefunden'
-        orphans_found: '%count% verwaiste Entities gefunden'
+        no_orphans: 'Keine verwaisten Entities gefunden - alle Daten korrekt zugewiesen!'
+        orphans_found: 'Entities ohne Mandantenzuordnung gefunden, die behoben werden müssen'
         orphaned_assets: 'Verwaiste Assets'
         orphaned_risks: 'Verwaiste Risiken'
         orphaned_incidents: 'Verwaiste Vorfälle'
@@ -186,21 +186,29 @@ admin:
         risks_only: 'Nur Risiken'
         incidents_only: 'Nur Vorfälle'
         assign_orphans: 'Verwaiste zuweisen'
+        assigned_count: '%count% Entities erfolgreich %tenant% zugewiesen'
+        fixed_all_orphans: '%count% verwaiste Entities erfolgreich %tenant% zugewiesen'
+        fixed_mismatches: '%count% Mandanten-Diskrepanzen erfolgreich behoben'
+        tenant_not_found: 'Gewählter Mandant nicht gefunden'
+        entity_not_found: 'Entity nicht gefunden'
+        entity_reassigned: '%entity% erfolgreich %tenant% zugewiesen'
+        asset_not_found: 'Asset nicht gefunden'
         orphaned_assets_list: 'Liste verwaister Assets'
         orphaned_risks_list: 'Liste verwaister Risiken'
         orphaned_incidents_list: 'Liste verwaister Vorfälle'
         tenant_statistics: Mandanten-Statistiken
         risk_asset_assignment: Risiko-Asset-Zuordnung
-        risk_asset_assignment_desc: 'Risiken ohne zugeordnete Assets'
+        risk_asset_assignment_desc: 'Diese Risiken haben kein Asset zugewiesen. Risiken müssen mit Assets verknüpft sein für korrektes Tracking.'
         incident_asset_assignment: Vorfall-Asset-Zuordnung
-        incident_asset_assignment_desc: 'Vorfälle ohne zugeordnete Assets'
-        controls_without_risks: 'Controls ohne Risiken'
-        controls_without_risks_desc: 'Controls, die keinen Risiken zugeordnet sind'
-        controls_count: '%count% Controls'
-        controls_without_assets: 'Controls ohne Assets'
-        controls_without_assets_desc: 'Controls, die keinen Assets zugeordnet sind'
+        incident_asset_assignment_desc: 'Diese Vorfälle haben keine betroffenen Assets zugewiesen. Vorfälle sollten mit den betroffenen Assets verknüpft sein.'
+        controls_without_risks: 'Maßnahmen ohne Risiken'
+        controls_without_risks_desc: 'Diese Maßnahmen sind anwendbar, aber keinen Risiken zugeordnet. Maßnahmen sollten spezifische Risiken adressieren.'
+        controls_count: '%count% Maßnahmen gefunden'
+        controls_without_assets: 'Maßnahmen ohne Assets'
+        controls_without_assets_desc: 'Diese Maßnahmen sind anwendbar, aber schützen keine Assets. Maßnahmen sollten angeben, welche Assets sie schützen.'
         broken_references: 'Defekte Referenzen'
-        broken_references_desc: 'Verweise auf nicht existierende Entities'
+        broken_references_desc: 'Diese Entities verweisen auf nicht existierende oder ungültige Daten. Dies kann Systemfehler verursachen und muss behoben werden.'
+        invalid_entity_type: 'Ungültiger Entity-Typ ausgewählt'
     modules:
         title: Modul-Verwaltung
         dependency_graph: Abhängigkeitsgraph

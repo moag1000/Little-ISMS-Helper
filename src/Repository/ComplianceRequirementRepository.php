@@ -137,15 +137,15 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
 
         return [
             'total' => $queryBuilder->select('COUNT(cr.id)')
-                ->where('cr.framework = :framework')
+                ->where('cr.complianceFramework = :framework')
                 ->setParameter('framework', $complianceFramework)
                 ->getQuery()
                 ->getSingleScalarResult(),
 
             'applicable' => $this->createQueryBuilder('cr')
                 ->select('COUNT(DISTINCT cr.id)')
-                ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.requirement = cr AND crf.tenant = :tenant')
-                ->where('cr.framework = :framework')
+                ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.complianceRequirement = cr AND crf.tenant = :tenant')
+                ->where('cr.complianceFramework = :framework')
                 ->andWhere('crf.applicable = :applicable')
                 ->setParameter('framework', $complianceFramework)
                 ->setParameter('tenant', $tenant)
@@ -155,7 +155,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
 
             'fulfilled' => $this->createQueryBuilder('cr')
                 ->select('COUNT(DISTINCT cr.id)')
-                ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.requirement = cr AND crf.tenant = :tenant')
+                ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.complianceRequirement = cr AND crf.tenant = :tenant')
                 ->where('cr.framework = :framework')
                 ->andWhere('crf.applicable = :applicable')
                 ->andWhere('crf.fulfillmentPercentage >= 100')
@@ -167,7 +167,7 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
 
             'critical_gaps' => $this->createQueryBuilder('cr')
                 ->select('COUNT(DISTINCT cr.id)')
-                ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.requirement = cr AND crf.tenant = :tenant')
+                ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.complianceRequirement = cr AND crf.tenant = :tenant')
                 ->where('cr.framework = :framework')
                 ->andWhere('crf.applicable = :applicable')
                 ->andWhere('cr.priority = :priority')
