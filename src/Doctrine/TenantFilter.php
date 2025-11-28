@@ -31,7 +31,7 @@ class TenantFilter extends SQLFilter
      * @param string $targetTableAlias
      * @throws MappingException
      */
-    public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias): string
+    public function addFilterConstraint(ClassMetadata $targetEntity, string $targetTableAlias): string
     {
         // Skip filtering for Tenant entity itself and User entity
         if ($targetEntity->getReflectionClass()->getName() === Tenant::class) {

@@ -130,7 +130,7 @@ class SupplierRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant to find suppliers for
      * @return Supplier[] Array of Supplier entities
      */
-    public function findByTenant($tenant): array
+    public function findByTenant(Tenant $tenant): array
     {
         return $this->createQueryBuilder('s')
             ->where('s.tenant = :tenant')
@@ -148,7 +148,7 @@ class SupplierRepository extends ServiceEntityRepository
      * @param Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
      * @return Supplier[] Array of Supplier entities (own + inherited from all ancestors)
      */
-    public function findByTenantIncludingParent($tenant, $parentTenant = null): array
+    public function findByTenantIncludingParent(Tenant $tenant, Tenant|null $parentTenant = null): array
     {
         // Get all ancestors (parent, grandparent, great-grandparent, etc.)
         $ancestors = $tenant->getAllAncestors();
@@ -175,7 +175,7 @@ class SupplierRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant
      * @return array Supplier statistics
      */
-    public function getStatisticsByTenant($tenant): array
+    public function getStatisticsByTenant(Tenant $tenant): array
     {
         $queryBuilder = $this->createQueryBuilder('s');
 
@@ -248,7 +248,7 @@ class SupplierRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant
      * @return Supplier[] Array of critical supplier entities
      */
-    public function findCriticalSuppliersByTenant($tenant): array
+    public function findCriticalSuppliersByTenant(Tenant $tenant): array
     {
         return $this->createQueryBuilder('s')
             ->where('s.tenant = :tenant')
@@ -268,7 +268,7 @@ class SupplierRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant
      * @return Supplier[] Array of suppliers with overdue assessments
      */
-    public function findOverdueAssessmentsByTenant($tenant): array
+    public function findOverdueAssessmentsByTenant(Tenant $tenant): array
     {
         return $this->createQueryBuilder('s')
             ->where('s.tenant = :tenant')
@@ -287,7 +287,7 @@ class SupplierRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant
      * @return Supplier[] Array of non-compliant supplier entities
      */
-    public function findNonCompliantByTenant($tenant): array
+    public function findNonCompliantByTenant(Tenant $tenant): array
     {
         return $this->createQueryBuilder('s')
             ->where('s.tenant = :tenant')
@@ -309,7 +309,7 @@ class SupplierRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant to find suppliers for
      * @return Supplier[] Array of Supplier entities (own + from all subsidiaries)
      */
-    public function findByTenantIncludingSubsidiaries($tenant): array
+    public function findByTenantIncludingSubsidiaries(Tenant $tenant): array
     {
         // Get all subsidiaries recursively
         $subsidiaries = $tenant->getAllSubsidiaries();

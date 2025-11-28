@@ -151,7 +151,7 @@ class IncidentRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant to find incidents for
      * @return Incident[] Array of Incident entities (own + from all subsidiaries)
      */
-    public function findByTenantIncludingSubsidiaries($tenant): array
+    public function findByTenantIncludingSubsidiaries(Tenant $tenant): array
     {
         // Get all subsidiaries recursively
         $subsidiaries = $tenant->getAllSubsidiaries();
