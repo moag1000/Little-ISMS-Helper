@@ -1,0 +1,26 @@
+# Development override for docker-compose.yml
+# Usage: docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+#
+# This override:
+# - Uses development target with Xdebug
+# - Adds bind mount for live code changes
+# - Sets APP_ENV=dev and APP_DEBUG=1
+
+services:
+  app:
+    build:
+      target: development
+    volumes:
+      # Bind mount for live code editing - overwrites /var/www/html
+      - ./:/var/www/html:cached
+      # Named volumes for vendor and cache (better performance, survives rebuilds)
+      - vendor_data:/var/www/html/vendor
+      - var_cache:/var/www/html/var/cache
+      - var_log:/var/www/html/var/log
+    environment:
+      APP_ENV: dev
+      APP_DEBUG: 1
+
+volumes:
+  vendor_data:
+    driver: local
