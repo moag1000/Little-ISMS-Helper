@@ -29,6 +29,7 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $isEdit = $options['is_edit'];
+        $isProfileEdit = $options['is_profile_edit'];
 
         $builder
             // Basic Information
@@ -119,9 +120,13 @@ class UserType extends AbstractType
                     ]),
                 ],
             ])
+        ;
 
-            // Roles & Permissions
-            ->add('roles', ChoiceType::class, [
+        // Only add admin fields if not in profile edit mode
+        if (!$isProfileEdit) {
+            $builder
+                // Roles & Permissions
+                ->add('roles', ChoiceType::class, [
                 'label' => 'user.field.system_roles',
                 'choices' => [
                     'user.role.user' => 'ROLE_USER',
@@ -174,8 +179,8 @@ class UserType extends AbstractType
                 'required' => false,
                 'help' => 'Gibt an, ob die E-Mail-Adresse bestätigt wurde',
                 'attr' => ['class' => 'form-check-input'],
-            ])
-        ;
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -183,6 +188,7 @@ class UserType extends AbstractType
         $resolver->setDefaults([
             'data_class' => User::class,
             'is_edit' => false,
+            'is_profile_edit' => false,
             'attr' => ['novalidate' => 'novalidate'], // Use HTML5 validation
             'translation_domain' => 'user',
         ]);
