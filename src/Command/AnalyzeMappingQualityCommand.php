@@ -218,7 +218,7 @@ class AnalyzeMappingQualityCommand extends Command
 
         // Filter by framework if specified
         if ($frameworkCode) {
-            $queryBuilder->join('sr.framework', 'sf')
+            $queryBuilder->join('sr.complianceFramework', 'sf')
                 ->andWhere('sf.code = :frameworkCode')
                 ->setParameter('frameworkCode', $frameworkCode);
         }
