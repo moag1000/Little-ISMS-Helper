@@ -166,6 +166,11 @@ common:
     roles: Roles
     close: Close
     copy: Copy
+    copied: 'Copied!'
+    verifying: Verifying
+    downloaded: Downloaded
+    generated: Generated
+    copy_failed: 'Copy failed'
     apply: Apply
     copied: Copied
     copy_failed: 'Copy failed'

@@ -1,8 +1,11 @@
 mfa:
     title: Zwei-Faktor-Authentifizierung
     tokens: MFA-Token
+    my_tokens: 'Meine MFA-Token'
     enabled: 'MFA aktiviert'
     disabled: 'MFA deaktiviert'
+    enabled_description: 'Ihr Konto ist durch Zwei-Faktor-Authentifizierung geschützt.'
+    disabled_description: 'Erhöhen Sie die Sicherheit Ihres Accounts durch Aktivierung von MFA.'
     token_type: Token-Typ
     device_name: Gerätename
     enrolled_at: 'Registriert am'
@@ -10,15 +13,43 @@ mfa:
     usage_count: Verwendungsanzahl
     is_active: Aktiv
     is_primary: Primär
+    never_used: 'Noch nie verwendet'
+    no_tokens: 'Keine Token vorhanden'
+    no_tokens_registered: 'Sie haben noch keine MFA-Token registriert.'
+    setup_now: 'Jetzt einrichten'
+    token_details: 'Token-Details'
+    qr_code_alt: 'QR-Code für Authenticator-App'
+    default_device_name: 'Authenticator App'
     action:
         reset: 'Token zurücksetzen'
+        setup: 'MFA einrichten'
+        add_token: 'Token hinzufügen'
+        disable: 'Deaktivieren'
+    confirm:
+        disable: 'Möchten Sie diesen MFA-Token wirklich deaktivieren?'
+        delete: 'Möchten Sie diesen MFA-Token wirklich löschen?'
     error:
         token_not_found: 'MFA-Token nicht gefunden'
+        access_denied: 'Zugriff verweigert'
+        code_required: 'Bitte geben Sie einen Bestätigungscode ein.'
+        invalid_code: 'Ungültiger Code. Bitte versuchen Sie es erneut.'
+        verification_failed: 'Verifizierung fehlgeschlagen'
     success:
         token_reset: 'MFA-Token erfolgreich zurückgesetzt'
+        verified: 'MFA-Token erfolgreich verifiziert und aktiviert'
+        disabled: 'MFA-Token erfolgreich deaktiviert'
+        deleted: 'MFA-Token erfolgreich gelöscht'
+        backup_codes_regenerated: 'Backup-Codes erfolgreich neu generiert'
     statistics:
         active_tokens: 'Aktive Token'
+        total_tokens: 'Gesamt Token'
         by_type: 'Nach Typ'
+    token_type:
+        totp: 'Authenticator App'
+        webauthn: 'Sicherheitsschlüssel'
+        sms: SMS
+        hardware: 'Hardware-Token'
+        backup: 'Backup-Codes'
     challenge:
         title: Zwei-Faktor-Authentifizierung
         description: 'Bitte geben Sie den Bestätigungscode von Ihrem Authenticator ein.'
@@ -40,10 +71,66 @@ mfa:
             code_required: 'Bitte geben Sie einen Bestätigungscode ein.'
             invalid_code: 'Ungültiger Code. Bitte versuchen Sie es erneut.'
             invalid_token: 'Ungültiges oder inaktives Authentifizierungsgerät.'
-    token:
-        primary: Primär
+    field:
+        device_name: Gerätename
+        token_type: Token-Typ
+        status: Status
+        is_primary: 'Primäres Gerät'
+        verification_code: Bestätigungscode
+        expires_at: 'Läuft ab am'
+    status:
+        active: Aktiv
+        inactive: Inaktiv
+        expired: Abgelaufen
+    details:
+        title: 'Token-Details'
+    usage:
+        title: 'Nutzungsstatistik'
+        times: Mal
+    security_recommendations:
+        title: 'Sicherheitsempfehlungen'
+        item1: 'Bewahren Sie Ihre Backup-Codes an einem sicheren Ort auf.'
+        item2: 'Verwenden Sie verschiedene Authenticator-Geräte für zusätzliche Sicherheit.'
+        item3: 'Generieren Sie neue Backup-Codes, bevor die alten aufgebraucht sind.'
+    security_notice:
+        title: 'Sicherheitshinweis'
+        description: 'Wenn Sie diesen Token deaktivieren oder löschen, können Sie ihn nicht mehr für die Anmeldung verwenden. Stellen Sie sicher, dass Sie mindestens einen aktiven Token behalten.'
+    setup_totp:
+        title: 'TOTP Authenticator einrichten'
+        subtitle: 'Richten Sie die Zwei-Faktor-Authentifizierung mit einer Authenticator-App ein'
+        step1: 'Schritt 1: QR-Code scannen'
+        scan_instructions: 'Scannen Sie den QR-Code mit Ihrer Authenticator-App (z.B. Google Authenticator, Microsoft Authenticator, Authy).'
+        manual_entry: 'Manuelle Eingabe'
+        manual_instructions: 'Falls Sie den QR-Code nicht scannen können, geben Sie diesen Schlüssel manuell in Ihre Authenticator-App ein:'
+        step2: 'Schritt 2: Code verifizieren'
+        verify_instructions: 'Geben Sie den 6-stelligen Code aus Ihrer Authenticator-App ein, um die Einrichtung abzuschließen:'
+        code_help: 'Der Code wird alle 30 Sekunden aktualisiert'
+        verify_button: 'Code verifizieren'
     setup:
-        secret_key: 'Geheimer Schlüssel (Secret Key)'
+        secret_key: 'Geheimer Schlüssel'
+    backup_codes:
+        title: 'Backup-Codes'
+        subtitle: 'Notfall-Wiederherstellungscodes'
+        warning: 'WICHTIG: Codes sicher aufbewahren!'
+        warning_text: 'Diese Codes können verwendet werden, um auf Ihr Konto zuzugreifen, wenn Sie den Zugriff auf Ihr Authenticator-Gerät verlieren. Jeder Code kann nur einmal verwendet werden.'
+        onetime_display: 'Diese Codes werden nur einmal angezeigt. Speichern oder drucken Sie sie jetzt.'
+        codes: 'Backup-Codes'
+        codes_count: Codes
+        copy_all: 'Alle kopieren'
+        print: Drucken
+        download: Herunterladen
+        usage_title: 'Verwendungshinweise'
+        usage_1: 'Verwenden Sie Backup-Codes, wenn Sie nicht auf Ihr Authenticator-Gerät zugreifen können'
+        usage_2: 'Jeder Code kann nur einmal verwendet werden'
+        usage_3: 'Generieren Sie neue Codes, bevor alle aufgebraucht sind'
+        usage_4: 'Bewahren Sie diese Codes an einem sicheren Ort auf (z.B. Passwort-Manager)'
+        regenerate_warning: 'Das Generieren neuer Backup-Codes macht alle alten Codes ungültig.'
+        remaining: 'Verbleibende Codes'
+        regenerate_confirm: 'Möchten Sie wirklich neue Backup-Codes generieren? Alle alten Codes werden ungültig.'
+        regenerate: 'Neue Codes generieren'
+        no_codes_left: 'Keine Backup-Codes mehr verfügbar! Generieren Sie sofort neue Codes.'
+        low_codes: 'Nur noch wenige Backup-Codes verfügbar. Erwägen Sie die Generierung neuer Codes.'
+        description: 'Backup-Codes sind Notfall-Wiederherstellungscodes für den Fall, dass Sie keinen Zugriff auf Ihr primäres Authenticator-Gerät haben.'
 mfa_token:
     edit: 'MFA-Token bearbeiten'
     edit.subtitle: 'Authentifizierungsgerät bearbeiten'
@@ -81,44 +168,47 @@ mfa_token:
         users: Benutzer
     empty: 'Keine MFA-Token vorhanden'
     setup_new: 'Neues Token einrichten'
+    type:
+        totp: 'TOTP (Authenticator App)'
+        webauthn: 'WebAuthn (Sicherheitsschlüssel)'
+    primary: 'Primär'
     backup_codes:
-        title: Titel
-        subtitle: Untertitel
-        warning: Warnung
-        warning_text: 'Warning Text'
-        onetime_display: 'Onetime Display'
-        codes: Codes
-        codes_count: 'Codes Count'
-        copy_all: 'Copy All'
-        print: Print
+        title: 'Backup-Codes'
+        subtitle: 'Notfall-Wiederherstellungscodes'
+        warning: 'WICHTIG: Codes sicher aufbewahren!'
+        warning_text: 'Diese Codes können verwendet werden, um auf Ihr Konto zuzugreifen, wenn Sie den Zugriff auf Ihr Authenticator-Gerät verlieren.'
+        onetime_display: 'Diese Codes werden nur einmal angezeigt.'
+        codes: 'Backup-Codes'
+        codes_count: Codes
+        copy_all: 'Alle kopieren'
+        print: Drucken
         download: Herunterladen
-        usage_title: 'Usage Title'
-        usage_1: 'Usage 1'
-        usage_2: 'Usage 2'
-        usage_3: 'Usage 3'
-        usage_4: 'Usage 4'
-        regenerate_warning: 'Regenerate Warning'
-        remaining: Remaining
-        regenerate_confirm: 'Regenerate Confirm'
-        regenerate: Regenerate
-        no_codes_left: 'No Codes Left'
-        low_codes: 'Low Codes'
-        description: Beschreibung
+        usage_title: 'Verwendungshinweise'
+        usage_1: 'Verwenden Sie Backup-Codes bei fehlendem Zugriff auf Ihr Gerät'
+        usage_2: 'Jeder Code ist nur einmal verwendbar'
+        usage_3: 'Generieren Sie neue Codes rechtzeitig'
+        usage_4: 'Sichere Aufbewahrung erforderlich'
+        regenerate_warning: 'Neue Codes machen alte ungültig'
+        remaining: 'Verbleibend'
+        regenerate_confirm: 'Wirklich neue Codes generieren?'
+        regenerate: 'Neu generieren'
+        no_codes_left: 'Keine Codes mehr!'
+        low_codes: 'Wenige Codes'
+        description: 'Notfall-Wiederherstellungscodes'
     details:
-        subtitle: Untertitel
-        title: Titel
-    primary: Primary
+        subtitle: 'Token-Informationen'
+        title: 'Token-Details'
     usage:
-        title: Titel
-        times: Times
+        title: 'Nutzungsstatistik'
+        times: 'Mal verwendet'
     setup_totp:
-        title: Titel
-        subtitle: Untertitel
-        step1: Step1
-        scan_instructions: 'Scan Instructions'
-        manual_entry: 'Manual Entry'
-        manual_instructions: 'Manual Instructions'
-        step2: Step2
-        verify_instructions: 'Verify Instructions'
-        code_help: 'Code Hilfe'
-        verify_button: 'Verify Button'
+        title: 'TOTP einrichten'
+        subtitle: 'Authenticator-App konfigurieren'
+        step1: 'Schritt 1: QR-Code scannen'
+        scan_instructions: 'Scannen Sie mit Ihrer Authenticator-App'
+        manual_entry: 'Manuelle Eingabe'
+        manual_instructions: 'Oder geben Sie den Schlüssel manuell ein'
+        step2: 'Schritt 2: Code verifizieren'
+        verify_instructions: 'Geben Sie den 6-stelligen Code ein'
+        code_help: 'Code wird alle 30 Sekunden aktualisiert'
+        verify_button: 'Verifizieren'

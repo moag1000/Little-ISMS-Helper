@@ -166,6 +166,11 @@ common:
     roles: Rollen
     close: Schließen
     copy: Kopieren
+    copied: 'Kopiert!'
+    verifying: 'Wird überprüft'
+    downloaded: 'Heruntergeladen'
+    generated: Generiert
+    copy_failed: 'Kopieren fehlgeschlagen'
     apply: Anwenden
     copied: Kopiert
     copy_failed: 'Kopieren fehlgeschlagen'
