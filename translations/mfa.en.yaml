@@ -6,7 +6,7 @@ mfa:
     disabled: 'MFA Disabled'
     enabled_description: 'Your account is protected by two-factor authentication.'
     disabled_description: 'Increase your account security by enabling MFA.'
-    token_type: 'Token Type'
+    token_type_label: 'Token Type'
     device_name: 'Device Name'
     enrolled_at: 'Enrolled At'
     last_used: 'Last Used'

@@ -166,22 +166,17 @@ common:
     roles: Rollen
     close: Schließen
     copy: Kopieren
-    copied: 'Kopiert!'
-    verifying: 'Wird überprüft'
-    downloaded: 'Heruntergeladen'
+    copied: Kopiert
+    verifying: Überprüfe...
+    downloaded: Heruntergeladen
     generated: Generiert
     copy_failed: 'Kopieren fehlgeschlagen'
     apply: Anwenden
-    copied: Kopiert
-    copy_failed: 'Kopieren fehlgeschlagen'
     items: Elemente
     reload: 'Neu laden'
     retry: 'Erneut versuchen'
     select_all: 'Alle auswählen'
-    downloaded: Heruntergeladen
     system_info: Systeminformationen
-    verifying: Überprüfe...
-    generated: Generiert
     activate: Aktivieren
     deactivate: Deaktivieren
     duplicate: Duplizieren
