@@ -830,7 +830,7 @@ class ComplianceController extends AbstractController
         // Generate cross-framework coverage matrix
         foreach ($frameworks as $framework) {
             foreach ($frameworks as $targetFramework) {
-                if ($framework->getId() === $targetFramework->getId()) {
+                if ($framework->id === $targetFramework->id) {
                     continue;
                 }
 
@@ -878,7 +878,7 @@ class ComplianceController extends AbstractController
         // Build mapping coverage matrix for template
         foreach ($frameworks as $framework) {
             foreach ($frameworks as $targetFramework) {
-                if ($framework->getId() === $targetFramework->getId()) {
+                if ($framework->id === $targetFramework->id) {
                     continue;
                 }
 
@@ -888,7 +888,7 @@ class ComplianceController extends AbstractController
                     $targetFramework
                 );
 
-                $mappingMatrix[$framework->getId()][$targetFramework->getId()] = [
+                $mappingMatrix[$framework->id][$targetFramework->id] = [
                     'coverage' => $coverage['coverage_percentage'] ?? 0,
                     'has_mapping' => ($coverage['coverage_percentage'] ?? 0) > 0
                 ];
@@ -922,7 +922,7 @@ class ComplianceController extends AbstractController
 
                     // Build framework relationships for KPI cards
                     $frameworkRelationships[] = (object)[
-                        'id' => $framework->getId() . '_' . $targetFramework->getId(),
+                        'id' => $framework->id . '_' . $targetFramework->id,
                         'sourceFramework' => $framework,
                         'targetFramework' => $targetFramework,
                         'mappedRequirements' => $coverage['covered_requirements'] ?? 0,
@@ -930,7 +930,7 @@ class ComplianceController extends AbstractController
                     ];
 
                     // Track frameworks being leveraged
-                    $frameworksLeveragedSet[$targetFramework->getId()] = true;
+                    $frameworksLeveragedSet[$targetFramework->id] = true;
                 }
             }
         }
@@ -971,18 +971,18 @@ class ComplianceController extends AbstractController
 
             if ($selectedFramework1 && $selectedFramework2) {
                 $comparison = $this->complianceAssessmentService->compareFrameworks([$selectedFramework1, $selectedFramework2]);
-                $framework1Requirements = count($selectedFramework1->getRequirements());
-                $framework2Requirements = count($selectedFramework2->getRequirements());
+                $framework1Requirements = count($selectedFramework1->requirements);
+                $framework2Requirements = count($selectedFramework2->requirements);
 
                 // Get unique categories from each framework
                 $framework1Categories = array_unique(
                     array_filter(
-                        array_map(fn($req) => $req->getCategory(), $selectedFramework1->getRequirements()->toArray())
+                        array_map(fn($req) => $req->getCategory(), $selectedFramework1->requirements->toArray())
                     )
                 );
                 $framework2Categories = array_unique(
                     array_filter(
-                        array_map(fn($req) => $req->getCategory(), $selectedFramework2->getRequirements()->toArray())
+                        array_map(fn($req) => $req->getCategory(), $selectedFramework2->requirements->toArray())
                     )
                 );
 
@@ -990,7 +990,7 @@ class ComplianceController extends AbstractController
                 $comparisonDetails = [];
                 $mappedCount = 0;
 
-                foreach ($selectedFramework1->getRequirements() as $requirement) {
+                foreach ($selectedFramework1->requirements as $requirement) {
                     $mappedRequirement = null;
                     $matchQuality = null;
                     $isMapped = false;
@@ -1001,7 +1001,7 @@ class ComplianceController extends AbstractController
                     ]);
 
                     foreach ($sourceMappings as $sourceMapping) {
-                        if ($sourceMapping->getTargetRequirement()->getFramework()->getId() === $selectedFramework2->getId()) {
+                        if ($sourceMapping->getTargetRequirement()->getFramework()->id === $selectedFramework2->id) {
                             $mappedRequirement = $sourceMapping->getTargetRequirement();
                             $matchQuality = $sourceMapping->getMappingPercentage();
                             $isMapped = true;
@@ -1017,7 +1017,7 @@ class ComplianceController extends AbstractController
                         ]);
 
                         foreach ($targetMappings as $targetMapping) {
-                            if ($targetMapping->getSourceRequirement()->getFramework()->getId() === $selectedFramework2->getId()) {
+                            if ($targetMapping->getSourceRequirement()->getFramework()->id === $selectedFramework2->id) {
                                 $mappedRequirement = $targetMapping->getSourceRequirement();
                                 $matchQuality = $targetMapping->getMappingPercentage();
                                 $isMapped = true;
@@ -1056,7 +1056,7 @@ class ComplianceController extends AbstractController
                     }
                 }
 
-                foreach ($selectedFramework2->getRequirements() as $req2) {
+                foreach ($selectedFramework2->requirements as $req2) {
                     if (!in_array($req2->getId(), $mappedFramework2Ids)) {
                         $framework2Unique[] = $req2;
                     }
@@ -1122,7 +1122,7 @@ class ComplianceController extends AbstractController
         // Build transitive analysis data (same as in transitiveCompliance method)
         foreach ($frameworks as $framework) {
             foreach ($frameworks as $targetFramework) {
-                if ($framework->getId() === $targetFramework->getId()) {
+                if ($framework->id === $targetFramework->id) {
                     continue;
                 }
 
@@ -1238,7 +1238,7 @@ class ComplianceController extends AbstractController
         // Build data
         foreach ($frameworks as $framework) {
             foreach ($frameworks as $targetFramework) {
-                if ($framework->getId() === $targetFramework->getId()) {
+                if ($framework->id === $targetFramework->id) {
                     continue;
                 }
 
@@ -1351,7 +1351,7 @@ class ComplianceController extends AbstractController
 
         foreach ($frameworks as $framework) {
             foreach ($frameworks as $targetFramework) {
-                if ($framework->getId() === $targetFramework->getId()) {
+                if ($framework->id === $targetFramework->id) {
                     continue;
                 }
 
@@ -1501,7 +1501,7 @@ class ComplianceController extends AbstractController
         // Build detailed comparison data
         $comparisonDetails = [];
 
-        foreach ($framework1->getRequirements() as $requirement) {
+        foreach ($framework1->requirements as $requirement) {
             $mappedRequirement = null;
             $matchQuality = null;
             $isMapped = false;
@@ -1512,7 +1512,7 @@ class ComplianceController extends AbstractController
             ]);
 
             foreach ($sourceMappings as $sourceMapping) {
-                if ($sourceMapping->getTargetRequirement()->getFramework()->getId() === $framework2->getId()) {
+                if ($sourceMapping->getTargetRequirement()->getFramework()->id === $framework2->id) {
                     $mappedRequirement = $sourceMapping->getTargetRequirement();
                     $matchQuality = $sourceMapping->getMappingPercentage();
                     $isMapped = true;
@@ -1527,7 +1527,7 @@ class ComplianceController extends AbstractController
                 ]);
 
                 foreach ($targetMappings as $targetMapping) {
-                    if ($targetMapping->getSourceRequirement()->getFramework()->getId() === $framework2->getId()) {
+                    if ($targetMapping->getSourceRequirement()->getFramework()->id === $framework2->id) {
                         $mappedRequirement = $targetMapping->getSourceRequirement();
                         $matchQuality = $targetMapping->getMappingPercentage();
                         $isMapped = true;
@@ -1627,7 +1627,7 @@ class ComplianceController extends AbstractController
         $comparisonDetails = [];
         $mappedCount = 0;
 
-        foreach ($framework1->getRequirements() as $requirement) {
+        foreach ($framework1->requirements as $requirement) {
             $mappedRequirement = null;
             $matchQuality = null;
             $isMapped = false;
@@ -1635,7 +1635,7 @@ class ComplianceController extends AbstractController
             // Find mappings
             $sourceMappings = $this->complianceMappingRepository->findBy(['sourceRequirement' => $requirement]);
             foreach ($sourceMappings as $sourceMapping) {
-                if ($sourceMapping->getTargetRequirement()->getFramework()->getId() === $framework2->getId()) {
+                if ($sourceMapping->getTargetRequirement()->getFramework()->id === $framework2->id) {
                     $mappedRequirement = $sourceMapping->getTargetRequirement();
                     $matchQuality = $sourceMapping->getMappingPercentage();
                     $isMapped = true;
@@ -1647,7 +1647,7 @@ class ComplianceController extends AbstractController
             if (!$isMapped) {
                 $targetMappings = $this->complianceMappingRepository->findBy(['targetRequirement' => $requirement]);
                 foreach ($targetMappings as $targetMapping) {
-                    if ($targetMapping->getSourceRequirement()->getFramework()->getId() === $framework2->getId()) {
+                    if ($targetMapping->getSourceRequirement()->getFramework()->id === $framework2->id) {
                         $mappedRequirement = $targetMapping->getSourceRequirement();
                         $matchQuality = $targetMapping->getMappingPercentage();
                         $isMapped = true;
@@ -1675,8 +1675,8 @@ class ComplianceController extends AbstractController
         $worksheet = $spreadsheet->getActiveSheet();
         $worksheet->setTitle('Zusammenfassung');
 
-        $framework1Count = count($framework1->getRequirements());
-        $framework2Count = count($framework2->getRequirements());
+        $framework1Count = count($framework1->requirements);
+        $framework2Count = count($framework2->requirements);
         $overlapPercentage = $framework1Count > 0 ? round(($mappedCount / $framework1Count) * 100, 1) : 0;
 
         $metrics = [
@@ -1802,7 +1802,7 @@ class ComplianceController extends AbstractController
         $mappedCount = 0;
         $highQualityMappings = 0;
 
-        foreach ($framework1->getRequirements() as $requirement) {
+        foreach ($framework1->requirements as $requirement) {
             $mappedRequirement = null;
             $matchQuality = null;
             $isMapped = false;
@@ -1810,7 +1810,7 @@ class ComplianceController extends AbstractController
             // Find mappings
             $sourceMappings = $this->complianceMappingRepository->findBy(['sourceRequirement' => $requirement]);
             foreach ($sourceMappings as $sourceMapping) {
-                if ($sourceMapping->getTargetRequirement()->getFramework()->getId() === $framework2->getId()) {
+                if ($sourceMapping->getTargetRequirement()->getFramework()->id === $framework2->id) {
                     $mappedRequirement = $sourceMapping->getTargetRequirement();
                     $matchQuality = $sourceMapping->getMappingPercentage();
                     $isMapped = true;
@@ -1825,7 +1825,7 @@ class ComplianceController extends AbstractController
             if (!$isMapped) {
                 $targetMappings = $this->complianceMappingRepository->findBy(['targetRequirement' => $requirement]);
                 foreach ($targetMappings as $targetMapping) {
-                    if ($targetMapping->getSourceRequirement()->getFramework()->getId() === $framework2->getId()) {
+                    if ($targetMapping->getSourceRequirement()->getFramework()->id === $framework2->id) {
                         $mappedRequirement = $targetMapping->getSourceRequirement();
                         $matchQuality = $targetMapping->getMappingPercentage();
                         $isMapped = true;
@@ -1847,8 +1847,8 @@ class ComplianceController extends AbstractController
         }
 
         // Calculate metrics
-        $framework1Count = count($framework1->getRequirements());
-        $framework2Count = count($framework2->getRequirements());
+        $framework1Count = count($framework1->requirements);
+        $framework2Count = count($framework2->requirements);
         $overlapPercentage = $framework1Count > 0 ? round(($mappedCount / $framework1Count) * 100, 1) : 0;
         $unmapped = $framework1Count - $mappedCount;
 

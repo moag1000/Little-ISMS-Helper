@@ -12,14 +12,14 @@ class ComplianceFrameworkTest extends TestCase
     {
         $framework = new ComplianceFramework();
 
-        $this->assertNull($framework->getId());
+        $this->assertNull($framework->id);
         $this->assertNull($framework->getName());
         $this->assertNull($framework->getCode());
         $this->assertNull($framework->getDescription());
         $this->assertNull($framework->getVersion());
         $this->assertInstanceOf(\DateTimeImmutable::class, $framework->getCreatedAt());
         $this->assertNull($framework->getUpdatedAt());
-        $this->assertCount(0, $framework->getRequirements());
+        $this->assertCount(0, $framework->requirements);
     }
 
     public function testSetAndGetName(): void
@@ -87,16 +87,16 @@ class ComplianceFrameworkTest extends TestCase
         $requirement = new ComplianceRequirement();
         $requirement->setTitle('A.5.1 Policies for information security');
 
-        $this->assertCount(0, $framework->getRequirements());
+        $this->assertCount(0, $framework->requirements);
 
         $framework->addRequirement($requirement);
-        $this->assertCount(1, $framework->getRequirements());
-        $this->assertTrue($framework->getRequirements()->contains($requirement));
+        $this->assertCount(1, $framework->requirements);
+        $this->assertTrue($framework->requirements->contains($requirement));
         $this->assertSame($framework, $requirement->getFramework());
 
         $framework->removeRequirement($requirement);
-        $this->assertCount(0, $framework->getRequirements());
-        $this->assertFalse($framework->getRequirements()->contains($requirement));
+        $this->assertCount(0, $framework->requirements);
+        $this->assertFalse($framework->requirements->contains($requirement));
     }
 
     public function testAddRequirementDoesNotDuplicate(): void
@@ -108,6 +108,6 @@ class ComplianceFrameworkTest extends TestCase
         $framework->addRequirement($requirement);
         $framework->addRequirement($requirement); // Add same requirement again
 
-        $this->assertCount(1, $framework->getRequirements());
+        $this->assertCount(1, $framework->requirements);
     }
 }

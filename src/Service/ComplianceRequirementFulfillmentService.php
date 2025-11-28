@@ -65,7 +65,7 @@ class ComplianceRequirementFulfillmentService
 
             // Filter by framework if specified
             if ($complianceFramework instanceof ComplianceFramework) {
-                return array_filter($fulfillments, fn($f): bool => $f->getRequirement()->getFramework()->getId() === $complianceFramework->getId());
+                return array_filter($fulfillments, fn($f): bool => $f->getRequirement()->getFramework()->id === $complianceFramework->id);
             }
 
             return $fulfillments;
