@@ -77,7 +77,7 @@ class ComplianceFrameworkController extends AbstractController
     public function new(Request $request): Response
     {
         $complianceFramework = new ComplianceFramework();
-        $complianceFramework->setTenant($this->tenantContext->getCurrentTenant());
+        // Note: ComplianceFramework is a global entity (ISO 27001, GDPR, etc.) and not tenant-specific
 
         $form = $this->createForm(ComplianceFrameworkType::class, $complianceFramework);
         $form->handleRequest($request);

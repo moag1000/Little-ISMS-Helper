@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route(name: 'app_data_breach_')]
+#[Route('/data-breach', name: 'app_data_breach_')]
 #[IsGranted('ROLE_USER')]
 class DataBreachController extends AbstractController
 {
@@ -27,7 +27,7 @@ class DataBreachController extends AbstractController
     /**
      * List all data breaches with filters
      */
-    #[Route('/data-breach', name: 'app_data_breach_index', methods: ['GET'])]
+    #[Route('', name: 'index', methods: ['GET'])]
     public function index(Request $request): Response
     {
         $filter = $request->query->get('filter', 'all');
@@ -59,7 +59,7 @@ class DataBreachController extends AbstractController
     /**
      * Dashboard with action items and compliance overview
      */
-    #[Route('/data-breach/dashboard', name: 'app_data_breach_dashboard', methods: ['GET'])]
+    #[Route('/dashboard', name: 'dashboard', methods: ['GET'])]
     public function dashboard(): Response
     {
         $statistics = $this->dataBreachService->getDashboardStatistics();
@@ -81,7 +81,7 @@ class DataBreachController extends AbstractController
      * Create new data breach
      * Supports both standalone breaches and incident-linked breaches
      */
-    #[Route('/data-breach/new', name: 'app_data_breach_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function new(Request $request): Response
     {
@@ -112,7 +112,7 @@ class DataBreachController extends AbstractController
     /**
      * Show data breach details
      */
-    #[Route('/data-breach/{id}', name: 'app_data_breach_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'show', methods: ['GET'])]
     public function show(DataBreach $dataBreach): Response
     {
         return $this->render('data_breach/show.html.twig', [
@@ -123,7 +123,7 @@ class DataBreachController extends AbstractController
     /**
      * Edit data breach
      */
-    #[Route('/data-breach/{id}/edit', name: 'app_data_breach_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function edit(Request $request, DataBreach $dataBreach): Response
     {
@@ -152,7 +152,7 @@ class DataBreachController extends AbstractController
     /**
      * Delete data breach
      */
-    #[Route('/data-breach/{id}/delete', name: 'app_data_breach_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'delete', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function delete(Request $request, DataBreach $dataBreach): Response
     {
@@ -176,7 +176,7 @@ class DataBreachController extends AbstractController
     /**
      * Submit data breach for assessment
      */
-    #[Route('/data-breach/{id}/submit-for-assessment', name: 'app_data_breach_submit_for_assessment', methods: ['POST'])]
+    #[Route('/{id}/submit-for-assessment', name: 'submit_for_assessment', methods: ['POST'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function submitForAssessment(Request $request, DataBreach $dataBreach): Response
     {
@@ -199,7 +199,7 @@ class DataBreachController extends AbstractController
     /**
      * Notify supervisory authority (Art. 33 GDPR)
      */
-    #[Route('/data-breach/{id}/notify-authority', name: 'app_data_breach_notify_authority', methods: ['POST'])]
+    #[Route('/{id}/notify-authority', name: 'notify_authority', methods: ['POST'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function notifyAuthority(Request $request, DataBreach $dataBreach): Response
     {
@@ -244,7 +244,7 @@ class DataBreachController extends AbstractController
     /**
      * Notify data subjects (Art. 34 GDPR)
      */
-    #[Route('/data-breach/{id}/notify-subjects', name: 'app_data_breach_notify_subjects', methods: ['POST'])]
+    #[Route('/{id}/notify-subjects', name: 'notify_subjects', methods: ['POST'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function notifySubjects(Request $request, DataBreach $dataBreach): Response
     {
@@ -275,7 +275,7 @@ class DataBreachController extends AbstractController
     /**
      * Record exemption from data subject notification (Art. 34(3) GDPR)
      */
-    #[Route('/data-breach/{id}/subject-notification-exemption', name: 'app_data_breach_subject_notification_exemption', methods: ['POST'])]
+    #[Route('/{id}/subject-notification-exemption', name: 'subject_notification_exemption', methods: ['POST'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function subjectNotificationExemption(Request $request, DataBreach $dataBreach): Response
     {
@@ -305,7 +305,7 @@ class DataBreachController extends AbstractController
     /**
      * Close data breach investigation
      */
-    #[Route('/data-breach/{id}/close', name: 'app_data_breach_close', methods: ['POST'])]
+    #[Route('/{id}/close', name: 'close', methods: ['POST'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function close(Request $request, DataBreach $dataBreach): Response
     {
@@ -328,7 +328,7 @@ class DataBreachController extends AbstractController
     /**
      * Reopen closed data breach
      */
-    #[Route('/data-breach/{id}/reopen', name: 'app_data_breach_reopen', methods: ['POST'])]
+    #[Route('/{id}/reopen', name: 'reopen', methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function reopen(Request $request, DataBreach $dataBreach): Response
     {
@@ -358,7 +358,7 @@ class DataBreachController extends AbstractController
     /**
      * Export data breach as PDF
      */
-    #[Route('/data-breach/{id}/export/pdf', name: 'app_data_breach_export_pdf', methods: ['GET'])]
+    #[Route('/{id}/export/pdf', name: 'export_pdf', methods: ['GET'])]
     public function exportPdf(DataBreach $dataBreach): Response
     {
         // Generate version from last update date (Format: Year.Month.Day)
