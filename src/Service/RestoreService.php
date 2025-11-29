@@ -432,11 +432,35 @@ class RestoreService
             }
 
             try {
+                // Get table name for this entity
+                $classMetadata = $this->entityManager->getClassMetadata($entityClass);
+                $tableName = $classMetadata->getTableName();
+
                 // Use DQL DELETE for efficiency
                 $query = $this->entityManager->createQuery(
                     sprintf('DELETE FROM %s e', $entityClass)
                 );
                 $deleted = $query->execute();
+
+                // Reset AUTO_INCREMENT to 1 after clearing table
+                // This ensures that restored entities can use their original IDs
+                try {
+                    $connection = $this->entityManager->getConnection();
+                    $connection->executeStatement(
+                        sprintf('ALTER TABLE %s AUTO_INCREMENT = 1', $tableName)
+                    );
+                    $this->logger->debug('Reset AUTO_INCREMENT for table', [
+                        'entity' => $entityName,
+                        'table' => $tableName,
+                    ]);
+                } catch (Exception $autoIncrementException) {
+                    // Non-critical - log but continue
+                    $this->logger->warning('Failed to reset AUTO_INCREMENT', [
+                        'entity' => $entityName,
+                        'table' => $tableName,
+                        'error' => $autoIncrementException->getMessage(),
+                    ]);
+                }
 
                 $this->logger->info('Cleared entity data', [
                     'entity' => $entityName,
