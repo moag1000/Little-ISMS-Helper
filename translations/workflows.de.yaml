@@ -125,6 +125,14 @@ workflow:
     warning:
         overdue_count: '%count% überfällige(r) Workflow(s) identifiziert'
         overdue_message: 'Bitte prüfen Sie Zuständigkeiten und Fristen. Priorisieren oder eskalieren Sie bei Bedarf.'
+        no_eligible_approvers: 'Kein berechtigter Bearbeiter'
+        no_eligible_approvers_title: 'Keine berechtigten Bearbeiter konfiguriert'
+        no_eligible_approvers_desc: 'Für diesen Workflow-Schritt ist keine Rolle oder kein Benutzer zugewiesen, der ihn bearbeiten kann.'
+        no_eligible_approvers_admin: 'Als Administrator können Sie diesen Workflow dennoch bearbeiten. Bitte konfigurieren Sie die Workflow-Definition, um Bearbeiter für diesen Schritt festzulegen.'
+        no_eligible_approvers_user: 'Dieser Workflow kann derzeit nur von einem Administrator bearbeitet werden. Bitte kontaktieren Sie Ihren Administrator, um diesen Workflow weiterzubearbeiten oder die Konfiguration anzupassen.'
+        contact_admin: 'Bitte kontaktieren Sie Ihren Administrator'
+        admin_action_required: 'Administrator-Aktion erforderlich'
+        configure_step: 'Schritt konfigurieren'
     days: Tage
     activity:
         timestamp: Zeitpunkt
@@ -253,3 +261,10 @@ sla:
     hours_short: 'h'
     minutes_short: 'm'
     days_short: 'd'
+    dashboard:
+        alert:
+            overdue_title: '%count% überfällige Workflow-Genehmigungen!'
+            overdue_message: '%overdue% von %total% Workflows sind überfällig und erfordern sofortige Aufmerksamkeit.'
+            pending_title: '%count% ausstehende Workflow-Genehmigungen'
+            pending_message: 'Sie haben %count% Workflows, die Ihre Genehmigung erfordern.'
+            view_all: 'Alle Workflows anzeigen'

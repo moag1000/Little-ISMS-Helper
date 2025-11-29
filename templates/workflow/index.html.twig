@@ -128,6 +128,11 @@
                 <span class="badge bg-{{ statusColors[instance.status] ?? 'secondary' }}">
                     {{ ('workflow.status.' ~ instance.status)|trans({}, 'workflows') }}
                 </span>
+                {% if instance.status == 'in_progress' and hasEligibleApprovers[instance.id] is defined and not hasEligibleApprovers[instance.id] %}
+                    <span class="badge bg-danger ms-1" title="{{ 'workflow.warning.no_eligible_approvers'|trans({}, 'workflows') }}" data-bs-toggle="tooltip">
+                        <i class="bi bi-person-exclamation" aria-hidden="true"></i>
+                    </span>
+                {% endif %}
             </td>
             <td>{{ instance.initiatedBy ? (instance.initiatedBy.firstName ~ ' ' ~ instance.initiatedBy.lastName) : '-' }}</td>
             <td>
