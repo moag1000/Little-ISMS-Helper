@@ -43,7 +43,7 @@
                     <small class="text-muted">Timeliness Score (72h Compliance)</small>
                     <h4 class="{% if compliance_score.timeliness_score < 80 %}text-danger{% else %}text-success{% endif %}">
                         {{ compliance_score.timeliness_score }}%
-                    </h5>
+                    </h4>
                     <small class="text-muted">{{ compliance_score.overdue_notifications }} overdue notification{{ compliance_score.overdue_notifications != 1 ? 's' : '' }}</small>
                 </div>
                 <div class="col-md-4">
@@ -85,7 +85,7 @@
                                         <i class="bi bi-circle text-secondary"></i>
                                     {% endif %}
                                     {{ item.title }}
-                                </h5>
+                                </h6>
                                 <small>{{ item.reference_number }}</small>
                             </div>
                             <p class="mb-1">

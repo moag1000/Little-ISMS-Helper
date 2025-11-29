@@ -70,20 +70,20 @@
                 <div class="card-body">
                     <div class="mb-3">
                         <small class="text-muted">Original (Heuristik)</small>
-                        <h4><span class="badge bg-secondary">{{ mapping.mappingPercentage }}%</span></h5>
+                        <h4><span class="badge bg-secondary">{{ mapping.mappingPercentage }}%</span></h4>
                     </div>
                     {% if mapping.calculatedPercentage is not null %}
                     <div class="mb-3">
                         <small class="text-muted">Berechnet (Automatisch)</small>
                         <h4><span class="badge {% if mapping.calculatedPercentage >= 70 %}bg-success{% elseif mapping.calculatedPercentage >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
                             {{ mapping.calculatedPercentage }}%
-                        </span></h5>
+                        </span></h4>
                     </div>
                     {% endif %}
                     {% if mapping.manualPercentage is not null %}
                     <div>
                         <small class="text-muted">Manuell überschrieben</small>
-                        <h4><span class="badge bg-info">{{ mapping.manualPercentage }}%</span></h5>
+                        <h4><span class="badge bg-info">{{ mapping.manualPercentage }}%</span></h4>
                     </div>
                     {% endif %}
                     <hr>

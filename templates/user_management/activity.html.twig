@@ -44,7 +44,7 @@
         <div class="card-header bg-primary text-white">
             <h2 class="mb-0">
                 <i class="bi bi-clock-history" aria-hidden="true"></i> Aktivitätsverlauf
-            </h5>
+            </h2>
         </div>
         <div class="card-body">
             {% if activities_by_date|length > 0 %}
@@ -54,7 +54,7 @@
                             <i class="bi bi-calendar" aria-hidden="true"></i>
                             {{ date|date('d.m.Y') }}
                             <span class="badge bg-secondary">{{ daily_activities|length }}</span>
-                        </h5>
+                        </h6>
 
                         <div class="timeline">
                             {% for activity in daily_activities %}

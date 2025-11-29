@@ -264,7 +264,6 @@
     <form id="cloneForm" method="post" action="{{ path('app_processing_activity_clone', {id: processing_activity.id}) }}" style="display:none;">
         <input type="hidden" name="_token" value="{{ csrf_token('clone' ~ processing_activity.id) }}">
     </form>
-</div>
 
 <script>
 document.querySelector('[data-action="clone"]')?.addEventListener('click', (e) => {

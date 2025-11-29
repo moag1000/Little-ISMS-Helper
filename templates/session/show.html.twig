@@ -50,7 +50,7 @@
         <div class="card-header bg-info text-white">
             <h3 class="mb-0">
                 <i class="bi bi-geo-alt" aria-hidden="true"></i> IP-Adressen
-            </h5>
+            </h3>
         </div>
         <div class="card-body">
             {% for ip in ip_addresses %}
@@ -64,7 +64,7 @@
         <div class="card-header bg-primary text-white">
             <h3 class="mb-0">
                 <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'session.activity_timeline'|trans({}, 'session') }}
-            </h5>
+            </h3>
         </div>
         <div class="card-body">
             {% if activity_timeline|length > 0 %}
@@ -74,7 +74,7 @@
                             <i class="bi bi-calendar" aria-hidden="true"></i>
                             {{ date|date('d.m.Y') }}
                             <span class="badge bg-secondary">{{ daily_activities|length }}</span>
-                        </h5>
+                        </h6>
                         <div class="list-group">
                             {% for activity in daily_activities %}
                                 <div class="list-group-item">

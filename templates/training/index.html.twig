@@ -70,7 +70,7 @@
                                 <h6 class="text-muted mb-1">{{ 'training.stats.total'|trans({}, 'training') }}</h6>
                                 <h2 class="mb-0">
                                     <span id="training-total-count">{{ detailedStats.total }}</span>
-                                </h3>
+                                </h2>
                                 {% if currentTenant %}
                                     <small class="text-muted d-block" style="font-size: 11px; opacity: 0.85;">
                                         {{ 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages') }}
