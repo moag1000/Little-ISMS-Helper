@@ -77,6 +77,16 @@ class Schedule implements ScheduleProviderInterface
     private function addDatabaseTasks(SymfonySchedule $schedule): void
     {
         try {
+            // Check if scheduled_task table exists before querying
+            $connection = $this->taskRepository->getEntityManager()->getConnection();
+            $schemaManager = $connection->createSchemaManager();
+            $tables = $schemaManager->listTableNames();
+
+            if (!in_array('scheduled_task', $tables)) {
+                $this->logger->info('scheduled_task table does not exist yet, skipping database tasks');
+                return;
+            }
+
             $tasks = $this->taskRepository->findEnabled();
 
             foreach ($tasks as $task) {
