@@ -32,6 +32,7 @@ workflow:
         delete: Löschen
         back: Zurück
         pending: Ausstehend
+        view_full_workflow: 'Vollständigen Workflow anzeigen'
     stats:
         total: Gesamt‑Workflows
         active: Aktiv
@@ -88,6 +89,7 @@ workflow:
         days_overdue: 'Tage überfällig'
         entity_type: Entitätstyp
         updated_at: 'Aktualisiert am'
+        related_entity: 'Verknüpfte Entität'
     priority:
         low: Niedrig
         medium: Mittel
@@ -214,6 +216,11 @@ workflow:
         field:
             comments: 'Kommentare (optional)'
             reason: Ablehnungsgrund
+        placeholder:
+            approval_comments: 'Geben Sie hier optionale Kommentare zur Genehmigung ein...'
+            rejection_reason: 'Bitte geben Sie den Grund für die Ablehnung an...'
+        help:
+            rejection_reason: 'Eine Begründung hilft dem Antragsteller, die Ablehnung zu verstehen und ggf. nachzubessern.'
     entity_type:
         risk: Risiko
         control: Maßnahme

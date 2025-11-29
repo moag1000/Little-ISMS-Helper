@@ -187,9 +187,10 @@ common:
     title: Title
     responsible: Responsible
     target_date: 'Target Date'
-    export_pdf: ''
-    select_all: ''
-    retry: ''
+    export_pdf: 'Export as PDF'
+    select_all: 'Select All'
+    retry: 'Retry'
+    optional: '(optional)'
     tooltip:
         go_to_module_management: ''
         framework_dashboard_description: ''

@@ -32,6 +32,7 @@ workflow:
         delete: Delete
         back: Back
         pending: Pending
+        view_full_workflow: 'View Full Workflow'
     stats:
         total: 'Total Workflows'
         active: Active
@@ -88,6 +89,7 @@ workflow:
         days_overdue: 'Days overdue'
         entity_type: 'Entity Type'
         updated_at: 'Updated At'
+        related_entity: 'Related Entity'
     priority:
         low: Low
         medium: Medium
@@ -214,6 +216,11 @@ workflow:
         field:
             comments: 'Comments (optional)'
             reason: 'Rejection Reason'
+        placeholder:
+            approval_comments: 'Enter optional comments for the approval here...'
+            rejection_reason: 'Please provide the reason for rejection...'
+        help:
+            rejection_reason: 'A reason helps the requester understand the rejection and make improvements if needed.'
 workflow_instance:
     status:
         pending: Pending
