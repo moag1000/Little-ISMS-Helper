@@ -6,7 +6,7 @@
 
 **Moderne, webbasierte ISMS-Lösung für KMUs – ISO 27001:2022 konform**
 
-[![Version 2.1](https://img.shields.io/badge/Version-2.1.0-success?logo=semver&logoColor=white)](CHANGELOG.md)
+[![Version 2.2](https://img.shields.io/badge/Version-2.2.0-success?logo=semver&logoColor=white)](CHANGELOG.md)
 [![PHP 8.4+](https://img.shields.io/badge/PHP-8.4%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
 [![Symfony 7.4](https://img.shields.io/badge/Symfony-7.4-000000?logo=symfony&logoColor=white)](https://symfony.com/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
@@ -266,6 +266,14 @@ Für Produktions-Deployments beachten Sie:
 - **Document Approval** - Dokumenten-Freigabe-Workflows
 - **Dashboard Widget** - Übersicht ausstehender Workflow-Aufgaben
 - **Auto-Trigger** - Workflows werden automatisch bei Entity-Änderungen gestartet
+
+### ⏰ Proactive Compliance Monitoring (🆕 2.2)
+- **Review Reminder System** - Automatische Erinnerungen für überfällige Reviews
+- **Multi-Entity Coverage** - Risks, BC Plans, VVT, DPIAs, Data Breaches
+- **72h Breach Alerts** - GDPR Art. 33 Deadline-Tracking mit stündlicher Prüfung
+- **Dashboard Widget** - Übersicht überfälliger Reviews mit Direktlinks
+- **Cron-Integration** - Vollautomatische Email-Benachrichtigungen
+- **Interactive Risk Slider** - Visuelle Risikobewertung mit 5x5 Matrix
 
 </td>
 </tr>
