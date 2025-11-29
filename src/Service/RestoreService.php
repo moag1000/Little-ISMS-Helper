@@ -776,17 +776,29 @@ class RestoreService
                 if ($entityName === 'User' && isset($options['admin_password']) && $options['admin_password'] !== '') {
                     $adminPassword = $options['admin_password'];
 
-                    // Hash the password using Symfony's UserPasswordHasher
-                    $hashedPassword = $this->userPasswordHasher->hashPassword($entity, $adminPassword);
+                    $this->logger->info('Processing User entity password', [
+                        'user_email' => $data['email'] ?? 'unknown',
+                        'user_id' => $data['id'] ?? 'unknown',
+                        'admin_password_length' => strlen($adminPassword),
+                        'entity_class' => $entity::class,
+                    ]);
 
-                    // Set the hashed password
+                    // Hash the password using Symfony's UserPasswordHasher
                     try {
+                        $hashedPassword = $this->userPasswordHasher->hashPassword($entity, $adminPassword);
+
+                        $this->logger->debug('Password hashed successfully', [
+                            'user_email' => $data['email'] ?? 'unknown',
+                            'hashed_length' => strlen($hashedPassword),
+                        ]);
+
+                        // Set the hashed password
                         $reflection = new ReflectionClass($entity);
                         if ($reflection->hasProperty('password')) {
                             $property = $reflection->getProperty('password');
                             $property->setValue($entity, $hashedPassword);
 
-                            $this->logger->info('Set password for restored user', [
+                            $this->logger->info('Password set for restored user', [
                                 'user_email' => $data['email'] ?? 'unknown',
                                 'user_id' => $data['id'] ?? 'unknown',
                             ]);
@@ -796,15 +808,21 @@ class RestoreService
                                 'User "%s" restored with setup password. User should change password after first login.',
                                 $data['email'] ?? 'ID: ' . ($data['id'] ?? 'unknown')
                             );
+                        } else {
+                            $this->logger->error('User entity has no password property', [
+                                'user_email' => $data['email'] ?? 'unknown',
+                            ]);
                         }
                     } catch (Exception $e) {
-                        $this->logger->error('Failed to set password for restored user', [
+                        $this->logger->error('Failed to hash/set password for restored user', [
                             'user_email' => $data['email'] ?? 'unknown',
                             'error' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString(),
                         ]);
                         $this->warnings[] = sprintf(
-                            'WARNING: Could not set password for user "%s". This user may not be able to log in.',
-                            $data['email'] ?? 'ID: ' . ($data['id'] ?? 'unknown')
+                            'WARNING: Could not set password for user "%s": %s',
+                            $data['email'] ?? 'ID: ' . ($data['id'] ?? 'unknown'),
+                            $e->getMessage()
                         );
                     }
                 }
@@ -873,7 +891,16 @@ class RestoreService
         // Flush all entities of this type at once
         if ($this->entityManager->isOpen()) {
             try {
+                $this->logger->debug('Flushing entities to database', [
+                    'entity' => $entityName,
+                    'count' => $stats['created'] + $stats['updated'],
+                ]);
                 $this->entityManager->flush();
+                $this->logger->info('Successfully flushed entities', [
+                    'entity' => $entityName,
+                    'created' => $stats['created'],
+                    'updated' => $stats['updated'],
+                ]);
             } catch (Exception $e) {
                 $stats['errors']++;
                 $this->warnings[] = sprintf(
@@ -884,6 +911,10 @@ class RestoreService
                 $this->logger->error('Error flushing entities', [
                     'entity' => $entityName,
                     'error' => $e->getMessage(),
+                    'error_class' => $e::class,
+                    'trace' => $e->getTraceAsString(),
+                    'created_count' => $stats['created'],
+                    'updated_count' => $stats['updated'],
                 ]);
 
                 // Check if EntityManager is closed
@@ -892,8 +923,16 @@ class RestoreService
                         'EntityManager closed after %s flush error. Remaining entities will be skipped.',
                         $entityName
                     );
+                    $this->logger->critical('EntityManager closed after flush error', [
+                        'entity' => $entityName,
+                        'error' => $e->getMessage(),
+                    ]);
                 }
             }
+        } else {
+            $this->logger->warning('EntityManager already closed, cannot flush', [
+                'entity' => $entityName,
+            ]);
         }
 
         // Restore original ID generator if it was changed
