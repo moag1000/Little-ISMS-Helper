@@ -38,6 +38,12 @@ php bin/console doctrine:migrations:diff  # after entity changes
 php bin/phpunit
 php bin/phpunit tests/Service/RiskServiceTest.php  # specific test
 
+# Workflows (Regulatory Compliance)
+php bin/console app:generate-regulatory-workflows  # Generate all workflows
+php bin/console app:generate-regulatory-workflows --workflow=data-breach  # Specific workflow
+php bin/console app:process-timed-workflows  # Process time-based auto-progression
+php bin/console app:process-timed-workflows --dry-run  # Test without changes
+
 # Quality
 php -l src/Service/MyService.php  # syntax check single file
 php bin/console cache:clear
@@ -62,8 +68,10 @@ php bin/console lint:twig templates/  # validate all templates
 - `AuditLogger` - Compliance audit trail
 - `BackupService`, `RestoreService` - Data backup/restore
 - `TenantContext` - Multi-tenant scoping
+- `WorkflowService` - Workflow instance management
+- `WorkflowAutoProgressionService` - Event-driven workflow progression
 
-**Core Entities:** Asset, Risk, Control (93 ISO 27001 controls), Incident, Document, ComplianceFramework, User, Tenant, Role, Permission
+**Core Entities:** Asset, Risk, Control (93 ISO 27001 controls), Incident, Document, ComplianceFramework, User, Tenant, Role, Permission, Workflow, WorkflowInstance, WorkflowStep, DataBreach
 
 ## Development Patterns
 
@@ -147,6 +155,60 @@ Translation Quality:
   - Invalid or missing translation domains
 - Run before commits to maintain translation quality
 - See `scripts/README.md` for details
+
+## Workflow System (Event-Driven Approvals)
+
+**Overview:**
+Event-driven workflow system where workflows automatically progress based on user actions. Instead of explicit approvals, workflows advance when relevant entity fields are completed.
+
+**Generate Regulatory Workflows:**
+```bash
+# Generate all pre-configured regulatory workflows
+php bin/console app:generate-regulatory-workflows
+
+# Generate specific workflow (data-breach, incident-high, incident-low, risk-treatment, dpia)
+php bin/console app:generate-regulatory-workflows --workflow=data-breach
+```
+
+**Available Workflows:**
+- **GDPR Data Breach** (Art. 33/34) - 72h notification deadline, 6 steps with auto-progression
+- **Incident Response** (High/Critical) - ISO 27001, 6 steps from CISO response to post-incident review
+- **Incident Response** (Low/Medium) - ISO 27001, 4 steps standard incident handling
+- **Risk Treatment** - ISO 27001 Clause 6.1.3, multi-tier approval based on risk value
+- **DPIA** - GDPR Art. 35/36, 6-step data protection impact assessment
+
+**Auto-Progression:**
+Workflows auto-progress when entity fields are completed:
+
+```php
+// Example: DPO fills DataBreach fields
+$dataBreach->setSeverity('high');
+$dataBreach->setAffectedDataSubjectsCount(150);
+$dataBreach->setDataCategories(['PII']);
+$dataBreach->setNotificationRequired(true);
+
+// On save → Step 1 "DPO Assessment" auto-approves
+// → Workflow moves to Step 2 "Technical Assessment (CISO)"
+```
+
+**Advanced Features** (✅ Implemented):
+- ✅ **AND/OR Logic**: Complex conditions like `(severity >= high AND count > 100) OR required = true`
+- ✅ **Time-Based**: Auto-progress after time delay (e.g., "24 hours", "7 days")
+- ✅ **Entity Coverage**: DataBreach, Incident, Risk, Asset, Control, DPIA, ProcessingActivity
+- ✅ **Cron Support**: `app:process-timed-workflows` for time-based automation
+
+**Adding Auto-Progression to Entities:**
+
+1. Inject `WorkflowAutoProgressionService` into service/controller
+2. Call after entity update:
+   ```php
+   $this->workflowAutoProgressionService->checkAndProgressWorkflow($entity, $user);
+   ```
+3. Define conditions in workflow step metadata (see command or docs)
+
+**Documentation:**
+- `docs/WORKFLOW_REQUIREMENTS.md` - Regulatory requirements and SLAs
+- `docs/WORKFLOW_AUTO_PROGRESSION.md` - Complete auto-progression guide
 
 ## Coding Standards
 

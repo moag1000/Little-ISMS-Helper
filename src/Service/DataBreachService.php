@@ -28,6 +28,7 @@ class DataBreachService
         private readonly TenantContext $tenantContext,
         private readonly AuditLogger $auditLogger,
         private readonly LoggerInterface $logger,
+        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
     ) {
     }
 
@@ -193,6 +194,9 @@ class DataBreachService
             ]);
         }
 
+        // Check and auto-progress workflow if conditions are met
+        $this->workflowAutoProgressionService->checkAndProgressWorkflow($dataBreach, $user);
+
         return $dataBreach;
     }
 
@@ -294,13 +298,20 @@ class DataBreachService
         // Check if notification is overdue (>72h)
         if ($dataBreach->isAuthorityNotificationOverdue()) {
             $hoursLate = abs($dataBreach->getHoursUntilAuthorityDeadline());
-            $this->logger->warning('Supervisory authority notification is OVERDUE', [
+            $logContext = [
                 'breach_id' => $dataBreach->getId(),
                 'reference_number' => $dataBreach->getReferenceNumber(),
                 'hours_late' => $hoursLate,
-                'detected_at' => $dataBreach->getIncident()->getDetectedAt()->format('Y-m-d H:i:s'),
                 'notified_at' => $notifiedAt->format('Y-m-d H:i:s'),
-            ]);
+            ];
+
+            // Add detected_at if incident is linked (standalone breaches may not have incidents)
+            $incident = $dataBreach->getIncident();
+            if ($incident !== null && $incident->getDetectedAt() !== null) {
+                $logContext['detected_at'] = $incident->getDetectedAt()->format('Y-m-d H:i:s');
+            }
+
+            $this->logger->warning('Supervisory authority notification is OVERDUE', $logContext);
         }
 
         $dataBreach->setStatus('authority_notified');

@@ -18,6 +18,7 @@ use App\Service\IncidentEscalationWorkflowService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
 use App\Service\WorkflowService;
+use App\Service\WorkflowAutoProgressionService;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -44,7 +45,8 @@ class IncidentController extends AbstractController
         private readonly Security $security,
         private readonly IncidentEscalationWorkflowService $incidentEscalationWorkflowService,
         private readonly TenantContext $tenantContext,
-        private readonly WorkflowService $workflowService
+        private readonly WorkflowService $workflowService,
+        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService
     ) {}
     #[Route('/incident/', name: 'app_incident_index')]
     #[IsGranted('ROLE_USER')]
@@ -169,6 +171,12 @@ class IncidentController extends AbstractController
             if (in_array($incident->getSeverity(), ['high', 'critical'])) {
                 $admins = $this->userRepository->findByRole('ROLE_ADMIN');
                 $this->emailNotificationService->sendIncidentNotification($incident, $admins);
+            }
+
+            // Check and auto-progress workflow if conditions are met
+            $currentUser = $this->security->getUser();
+            if ($currentUser instanceof User) {
+                $this->workflowAutoProgressionService->checkAndProgressWorkflow($incident, $currentUser);
             }
 
             $this->addFlash('success', $this->translator->trans('incident.success.reported'));
@@ -305,6 +313,12 @@ class IncidentController extends AbstractController
                 $admins = $this->userRepository->findByRole('ROLE_ADMIN');
                 $changeDescription = "Status changed from {$originalStatus} to {$incident->getStatus()}";
                 $this->emailNotificationService->sendIncidentUpdateNotification($incident, $admins, $changeDescription);
+            }
+
+            // Check and auto-progress workflow if conditions are met
+            $currentUser = $this->security->getUser();
+            if ($currentUser instanceof User) {
+                $this->workflowAutoProgressionService->checkAndProgressWorkflow($incident, $currentUser);
             }
 
             $this->addFlash('success', $this->translator->trans('incident.success.updated'));

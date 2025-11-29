@@ -17,6 +17,7 @@ use App\Service\RiskService;
 use App\Service\RiskAcceptanceWorkflowService;
 use App\Service\ExcelExportService;
 use App\Service\PdfExportService;
+use App\Service\WorkflowAutoProgressionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -38,7 +39,8 @@ class RiskController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly ExcelExportService $excelExportService,
         private readonly PdfExportService $pdfExportService,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService
     ) {}
     #[Route('/risk/', name: 'app_risk_index')]
     #[IsGranted('ROLE_USER')]
@@ -664,6 +666,12 @@ class RiskController extends AbstractController
             $this->entityManager->persist($risk);
             $this->entityManager->flush();
 
+            // Check and auto-progress workflow if conditions are met
+            $currentUser = $this->security->getUser();
+            if ($currentUser instanceof User) {
+                $this->workflowAutoProgressionService->checkAndProgressWorkflow($risk, $currentUser);
+            }
+
             $this->addFlash('success', $this->translator->trans('risk.success.created'));
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
         }
@@ -809,6 +817,12 @@ class RiskController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->entityManager->flush();
+
+            // Check and auto-progress workflow if conditions are met
+            $currentUser = $this->security->getUser();
+            if ($currentUser instanceof User) {
+                $this->workflowAutoProgressionService->checkAndProgressWorkflow($risk, $currentUser);
+            }
 
             $this->addFlash('success', $this->translator->trans('risk.success.updated'));
             return $this->redirectToRoute('app_risk_show', ['id' => $risk->getId()]);
