@@ -227,6 +227,13 @@ class RestoreService
                 $this->clearExistingData(array_reverse($orderedEntities), $options['skip_entities']);
                 // Clear the identity map after deleting to avoid stale references
                 $this->entityManager->clear();
+
+                // CRITICAL: ALTER TABLE (used in clearExistingData) causes implicit COMMIT in MySQL
+                // This closes the transaction started by beginTransaction() above
+                // We must start a new transaction for the restore operations
+                $this->entityManager->beginTransaction();
+                $this->logger->info('Restarted transaction after clearExistingData (ALTER TABLE causes implicit COMMIT)');
+
                 if ($options['dry_run']) {
                     $this->warnings[] = 'Dry-run: Bestehende Daten wurden gelöscht (wird am Ende zurückgesetzt)';
                 }
