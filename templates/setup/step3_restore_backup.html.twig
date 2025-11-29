@@ -35,7 +35,7 @@
                         <h4 class="alert-heading">
                             <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
                             Backup vs. Neu-Installation
-                        </h5>
+                        </h4>
                         <ul class="mb-0">
                             <li><strong>Backup wiederherstellen:</strong> Wenn Sie eine bestehende Installation migrieren möchten, laden Sie hier Ihr Backup hoch. Alle folgenden Schritte werden übersprungen!</li>
                             <li><strong>Neu-Installation:</strong> Klicken Sie auf "Überspringen", um eine frische Installation zu erstellen und alle weiteren Setup-Schritte durchzuführen.</li>
@@ -69,7 +69,7 @@
                                         <h4 class="alert-heading">
                                             <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
                                             Verwaiste Entitäten gefunden
-                                        </h5>
+                                        </h4>
                                         <p>
                                             Nach der Wiederherstellung wurden <strong>{{ backup_restore_result.orphaned_entities.total }}</strong> Entitäten ohne Mandanten-Zuordnung gefunden:
                                         </p>
@@ -90,7 +90,7 @@
                                                 <h4 class="card-title">
                                                     <i class="bi bi-tools me-2" aria-hidden="true"></i>
                                                     Verwaiste Entitäten reparieren
-                                                </h5>
+                                                </h4>
                                                 <p class="card-text text-muted">
                                                     Wählen Sie einen Mandanten, dem die verwaisten Entitäten zugewiesen werden sollen:
                                                 </p>
@@ -132,7 +132,7 @@
                                         <h4 class="alert-heading">
                                             <i class="bi bi-link me-2" aria-hidden="true"></i>
                                             Asset-Zuordnungen reparieren
-                                        </h5>
+                                        </h4>
                                         <p>
                                             <strong>{{ backup_restore_result.risks_without_assets }}</strong> Risiken haben keine Asset-Zuordnung. Sie können diese im
                                             <a href="{{ path('admin_data_repair_index') }}" class="alert-link">Admin Data Repair Tool</a>
@@ -167,7 +167,7 @@
                             <h3 class="mb-0">
                                 <i class="bi bi-database me-2" aria-hidden="true"></i>
                                 Schritt 1: Datenbank-Struktur erstellen
-                            </h5>
+                            </h3>
                         </div>
                         <div class="card-body">
                             <p class="text-muted mb-3">
@@ -197,7 +197,7 @@
                             <h3 class="mb-0">
                                 <i class="bi bi-cloud-upload-alt me-2" aria-hidden="true"></i>
                                 Option 1: Backup wiederherstellen
-                            </h5>
+                            </h3>
                         </div>
                         <div class="card-body">
                             <div class="alert alert-success mb-3" role="alert">
@@ -251,7 +251,7 @@
                             <h3 class="mb-0">
                                 <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
                                 Option 2: Neu-Installation
-                            </h5>
+                            </h3>
                         </div>
                         <div class="card-body">
                             <p class="text-muted">

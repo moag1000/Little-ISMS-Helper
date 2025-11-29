@@ -9,23 +9,25 @@
                     <span class="req-title">{{ item.requirement.title|length > 80 ? item.requirement.title|slice(0, 80) ~ '...' : item.requirement.title }}</span>
                 </div>
                 <div class="checklist-controls">
-                    <select class="status-select" data-item-id="{{ item.id }}" onclick="event.stopPropagation();">
-                        <option value="not_checked" {{ item.verificationStatus == 'not_checked' ? 'selected' : '' }}>
-                            Nicht geprüft
-                        </option>
-                        <option value="compliant" {{ item.verificationStatus == 'compliant' ? 'selected' : '' }}>
-                            ✓ Konform
-                        </option>
-                        <option value="partial" {{ item.verificationStatus == 'partial' ? 'selected' : '' }}>
-                            ⚠ Teilweise
-                        </option>
-                        <option value="non_compliant" {{ item.verificationStatus == 'non_compliant' ? 'selected' : '' }}>
-                            ✗ Nicht konform
-                        </option>
-                        <option value="not_applicable" {{ item.verificationStatus == 'not_applicable' ? 'selected' : '' }}>
-                            N/A
-                        </option>
-                    </select>
+                    <label>
+                        <select class="status-select" data-item-id="{{ item.id }}" onclick="event.stopPropagation();">
+                            <option value="not_checked" {{ item.verificationStatus == 'not_checked' ? 'selected' : '' }}>
+                                Nicht geprüft
+                            </option>
+                            <option value="compliant" {{ item.verificationStatus == 'compliant' ? 'selected' : '' }}>
+                                ✓ Konform
+                            </option>
+                            <option value="partial" {{ item.verificationStatus == 'partial' ? 'selected' : '' }}>
+                                ⚠ Teilweise
+                            </option>
+                            <option value="non_compliant" {{ item.verificationStatus == 'non_compliant' ? 'selected' : '' }}>
+                                ✗ Nicht konform
+                            </option>
+                            <option value="not_applicable" {{ item.verificationStatus == 'not_applicable' ? 'selected' : '' }}>
+                                N/A
+                            </option>
+                        </select>
+                    </label>
                     <span class="expand-icon" data-toggle-target="expandIcon">▼</span>
                 </div>
             </div>

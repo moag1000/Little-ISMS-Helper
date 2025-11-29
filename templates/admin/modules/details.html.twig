@@ -35,7 +35,7 @@
                     <h2 class="mb-0">
                         <i class="bi bi-info-circle me-2"></i>
                         Modul-Informationen
-                    </h5>
+                    </h2>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
@@ -80,14 +80,14 @@
                         <h3 class="mb-0">
                             <i class="bi bi-diagram-3 me-2"></i>
                             Abhängigkeiten
-                        </h5>
+                        </h3>
                     </div>
                     <div class="card-body">
                         {% if graph.dependencies|length > 0 %}
                             <h4 class="mb-2">
                                 <i class="bi bi-link text-warning me-2"></i>
                                 Benötigt folgende Module:
-                            </h5>
+                            </h4>
                             <div class="mb-4">
                                 {% for dep in graph.dependencies %}
                                     <span class="badge bg-warning text-dark fs-6 me-2 mb-2">{{ dep }}</span>
@@ -99,7 +99,7 @@
                             <h4 class="mb-2">
                                 <i class="bi bi-arrow-right text-info me-2"></i>
                                 Wird benötigt von:
-                            </h5>
+                            </h4>
                             <div>
                                 {% for dep in graph.dependents %}
                                     <span class="badge bg-info fs-6 me-2 mb-2">{{ dep }}</span>
@@ -124,7 +124,7 @@
                         <h3 class="mb-0">
                             <i class="bi bi-file-earmark-code me-2"></i>
                             Verfügbare Beispiel-Daten
-                        </h5>
+                        </h3>
                     </div>
                     <div class="card-body">
                         <form method="post" action="{{ path('admin_modules_import_data', {moduleKey: module_key}) }}">
@@ -155,7 +155,7 @@
                     <h3 class="mb-0">
                         <i class="bi bi-gears me-2"></i>
                         Aktionen
-                    </h5>
+                    </h3>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">

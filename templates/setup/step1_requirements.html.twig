@@ -101,7 +101,7 @@
                             <h4 class="mb-1">
                                 <i class="bi bi-database me-2 text-{{ results.database.status == 'success' ? 'success' : (results.database.status == 'warning' ? 'warning' : 'danger') }}" aria-hidden="true"></i>
                                 Datenbank
-                            </h5>
+                            </h4>
                             <p class="mb-0 text-muted">{{ results.database.message }}</p>
                         </div>
                     </div>
@@ -112,7 +112,7 @@
                             <h4 class="mb-2">
                                 <i class="bi bi-{{ results.permissions.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
                                 Verzeichnis-Berechtigungen
-                            </h5>
+                            </h4>
                             <p class="mb-2 text-muted">{{ results.permissions.message }}</p>
                             {% if results.permissions.not_writable|length > 0 %}
                                 <div class="alert alert-danger mb-0">
@@ -135,7 +135,7 @@
                                     <h4 class="mb-1">
                                         <i class="bi bi-memory me-2 text-{{ results.memory.status == 'success' ? 'success' : 'warning' }}" aria-hidden="true"></i>
                                         Memory Limit
-                                    </h5>
+                                    </h4>
                                     <p class="mb-0 text-muted">{{ results.memory.current }}</p>
                                     <small class="text-muted">Empfohlen: {{ results.memory.required }}</small>
                                 </div>
@@ -147,7 +147,7 @@
                                     <h4 class="mb-1">
                                         <i class="bi bi-clock me-2 text-{{ results.execution_time.status == 'success' ? 'success' : 'warning' }}" aria-hidden="true"></i>
                                         Max Execution Time
-                                    </h5>
+                                    </h4>
                                     <p class="mb-0 text-muted">{{ results.execution_time.current }}s</p>
                                     <small class="text-muted">Empfohlen: {{ results.execution_time.required }}s</small>
                                 </div>
@@ -161,7 +161,7 @@
                             <h4 class="mb-1">
                                 <i class="bi bi-{{ results.symfony.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
                                 Symfony Version
-                            </h5>
+                            </h4>
                             <p class="mb-0 text-muted">{{ results.symfony.message }}</p>
                         </div>
                     </div>

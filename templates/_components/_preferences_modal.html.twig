@@ -1,6 +1,6 @@
 {# User Preferences Modal Component
    Usage: {% include '_components/_preferences_modal.html.twig' %}
-   
+
    Features:
    - View density settings
    - Animation preferences
@@ -12,7 +12,7 @@
      data-controller="preferences"
      data-preferences-target="modal"
      data-action="click->preferences#handleBackdropClick">
-    
+
     <div class="preferences-container">
         {# Modal Header #}
         <div class="preferences-header">
@@ -33,13 +33,15 @@
                 <h6 class="preference-section-title">
                     <i class="bi bi-layout-three-columns"></i>
                     Ansichtsdichte
-                </h5>
-                <select class="form-select"
-                        data-preferences-target="viewDensity"
-                        data-action="change->preferences#setViewDensity">
-                    <option value="compact">Kompakt</option>
-                    <option value="comfortable" selected>Komfortabel</option>
-                </select>
+                </h6>
+                <label>
+                    <select class="form-select"
+                            data-preferences-target="viewDensity"
+                            data-action="change->preferences#setViewDensity">
+                        <option value="compact">Kompakt</option>
+                        <option value="comfortable" selected>Komfortabel</option>
+                    </select>
+                </label>
                 <small class="text-muted">Bestimmt, wie viel Abstand zwischen Elementen ist</small>
             </div>
 
@@ -48,7 +50,7 @@
                 <h6 class="preference-section-title">
                     <i class="bi bi-stars"></i>
                     Animationen
-                </h5>
+                </h6>
                 <div class="form-check form-switch">
                     <input class="form-check-input"
                            type="checkbox"
@@ -67,7 +69,7 @@
                 <h6 class="preference-section-title">
                     <i class="bi bi-keyboard"></i>
                     Tastaturkürzel
-                </h5>
+                </h6>
                 <div class="form-check form-switch">
                     <input class="form-check-input"
                            type="checkbox"
@@ -86,7 +88,7 @@
                 <h6 class="preference-section-title">
                     <i class="bi bi-translate"></i>
                     Sprache
-                </h5>
+                </h6>
                 <select class="form-select"
                         data-preferences-target="language"
                         data-action="change->preferences#setLanguage">
@@ -100,7 +102,7 @@
                 <h6 class="preference-section-title">
                     <i class="bi bi-download"></i>
                     Einstellungen sichern
-                </h5>
+                </h6>
                 <div class="d-flex gap-2">
                     <button type="button"
                             class="btn btn-sm btn-outline-primary"
