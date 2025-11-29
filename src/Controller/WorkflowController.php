@@ -58,10 +58,19 @@ class WorkflowController extends AbstractController
         $statistics = $this->workflowInstanceRepository->getStatistics();
         $instances = $this->workflowInstanceRepository->findBy([], ['startedAt' => 'DESC'], 10);
 
+        // Check approval permissions for each instance
+        $currentUser = $this->getUser();
+        $userCanApprove = [];
+        foreach ($instances as $instance) {
+            $currentStep = $instance->getCurrentStep();
+            $userCanApprove[$instance->getId()] = $currentStep && $this->workflowService->canUserApprove($currentUser, $currentStep);
+        }
+
         return $this->render('workflow/index.html.twig', [
             'workflows' => $workflows,
             'statistics' => $statistics,
             'instances' => $instances,
+            'userCanApprove' => $userCanApprove,
         ]);
     }
 
@@ -82,8 +91,16 @@ class WorkflowController extends AbstractController
         $user = $this->getUser();
         $pendingApprovals = $this->workflowService->getPendingApprovals($user);
 
+        // Check approval permissions for each instance
+        $userCanApprove = [];
+        foreach ($pendingApprovals as $instance) {
+            $currentStep = $instance->getCurrentStep();
+            $userCanApprove[$instance->getId()] = $currentStep && $this->workflowService->canUserApprove($user, $currentStep);
+        }
+
         return $this->render('workflow/pending.html.twig', [
             'pending_approvals' => $pendingApprovals,
+            'userCanApprove' => $userCanApprove,
         ]);
     }
 
@@ -168,8 +185,17 @@ class WorkflowController extends AbstractController
     {
         $activeWorkflows = $this->workflowService->getActiveWorkflows();
 
+        // Check approval permissions for each instance
+        $currentUser = $this->getUser();
+        $userCanApprove = [];
+        foreach ($activeWorkflows as $instance) {
+            $currentStep = $instance->getCurrentStep();
+            $userCanApprove[$instance->getId()] = $currentStep && $this->workflowService->canUserApprove($currentUser, $currentStep);
+        }
+
         return $this->render('workflow/active.html.twig', [
             'active_workflows' => $activeWorkflows,
+            'userCanApprove' => $userCanApprove,
         ]);
     }
 
@@ -179,8 +205,17 @@ class WorkflowController extends AbstractController
     {
         $overdueWorkflows = $this->workflowService->getOverdueWorkflows();
 
+        // Check approval permissions for each instance
+        $currentUser = $this->getUser();
+        $userCanApprove = [];
+        foreach ($overdueWorkflows as $instance) {
+            $currentStep = $instance->getCurrentStep();
+            $userCanApprove[$instance->getId()] = $currentStep && $this->workflowService->canUserApprove($currentUser, $currentStep);
+        }
+
         return $this->render('workflow/overdue.html.twig', [
             'overdue_workflows' => $overdueWorkflows,
+            'userCanApprove' => $userCanApprove,
         ]);
     }
 
