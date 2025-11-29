@@ -2,13 +2,12 @@
 
 namespace App\Command;
 
-use Symfony\Component\Console\Attribute\Option;
-use DateTimeImmutable;
 use App\Repository\AuditLogRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -65,9 +64,9 @@ class AuditLogCleanupCommand
     }
 
     public function __invoke(
-        #[Option(name: 'dry-run', mode: InputOption::VALUE_NONE, description: 'Show which logs would be deleted without actually deleting them')]
+        #[Option(description: 'Show which logs would be deleted without actually deleting them', name: 'dry-run')]
         bool $dryRun = false,
-        #[Option(name: 'retention-days', mode: InputOption::VALUE_REQUIRED, description: 'Number of days to retain audit logs (overrides config)')]
+        #[Option(description: 'Number of days to retain audit logs (overrides config)', name: 'retention-days')]
         ?int $retentionDays = null,
         ?SymfonyStyle $symfonyStyle = null
     ): int

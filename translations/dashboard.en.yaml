@@ -39,3 +39,22 @@ dashboard:
         new_risk: 'New risk'
         system: System
         security_team: 'Security Team'
+    widget:
+        overdue_reviews:
+            title: 'Overdue Reviews'
+            risks: 'Risks'
+            bc_plans: 'BC Plans'
+            vvt: 'VVT'
+            dpias: 'DPIAs'
+            due: 'Due'
+            test_overdue: 'Test overdue'
+            review_overdue: 'Review overdue'
+            breach_alert: '%count% data breach(es) with 72h deadline!'
+            breach_alert_desc: 'GDPR Art. 33 requires notification to supervisory authority within 72 hours.'
+            view_breaches: 'View data breaches'
+            breach_overdue: '%hours%h overdue - immediate notification required!'
+            breach_remaining: '%hours%h remaining until notification deadline'
+            more_items: '%count% more items...'
+            all_good: 'All up to date!'
+            all_good_desc: 'No overdue reviews. Your ISMS is current.'
+            manage: 'Manage'

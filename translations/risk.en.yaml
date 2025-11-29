@@ -34,6 +34,7 @@ risk:
     field:
         title: Title
         score: Score
+        level: 'Risk Level'
         treatment_strategy: 'Treatment Strategy'
         status: Status
         asset: Asset
@@ -242,6 +243,33 @@ risk:
         treatment_description: 'Describe the planned treatment measures...'
         acceptance_approved_by: 'Name of approving person'
         acceptance_justification: 'Justification for accepting the residual risk...'
+    # Risk Slider Component
+    probability:
+        rare: 'Rare'
+        unlikely: 'Unlikely'
+        possible: 'Possible'
+        likely: 'Likely'
+        almost_certain: 'Almost Certain'
+    impact:
+        negligible: 'Negligible'
+        minor: 'Minor'
+        moderate: 'Moderate'
+        major: 'Major'
+        severe: 'Severe'
+    level:
+        low: 'Low Risk'
+        medium: 'Medium Risk'
+        high: 'High Risk'
+        critical: 'Critical Risk'
+    presets: 'Quick Presets'
+    preset:
+        low: 'Set Low Risk'
+        medium: 'Set Medium Risk'
+        high: 'Set High Risk'
+        critical: 'Set Critical Risk'
+    show_matrix: 'Show Risk Matrix'
+    matrix_help: 'Click on a cell to set probability and impact directly'
+
 risk_management:
     title: Title
     description: Description
