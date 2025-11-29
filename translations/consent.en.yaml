@@ -160,11 +160,20 @@ consent:
     delete: 'Delete'
     back: 'Back'
 
+  # Verification
+  verify:
+    confirmation: 'Are you sure you want to verify and activate this consent as DPO?'
+    hint: 'After verification, the consent will be marked as legally valid and the status will be set to "Active".'
+
+  verified_by: 'Verified by'
+  verified_by_user: 'Verified by %user% on'
+
   # Revocation
   revoke:
     hint: 'Document the revocation of consent by the data subject'
 
   revocation_reason: 'Revocation Reason'
+  revoked_at: 'Revoked on %date%'
 
   # Delete Confirmation
   delete:
