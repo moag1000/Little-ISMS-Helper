@@ -170,9 +170,6 @@ class RestoreService
             'options' => $options,
         ]);
 
-        // Begin transaction
-        $this->entityManager->beginTransaction();
-
         try {
             // Disable foreign key checks for the duration of restore
             // This prevents FK constraint violations during entity restoration
@@ -222,28 +219,24 @@ class RestoreService
             $orderedEntities = $this->orderEntitiesByDependency(array_keys($backup['data']));
 
             // If clear_before_restore is set, delete all existing data first (in reverse order)
-            // This applies to BOTH dry-run and real restore - dry-run will rollback at the end anyway
+            // IMPORTANT: We do NOT start transaction before clearExistingData because:
+            // - clearExistingData() uses ALTER TABLE which causes implicit COMMIT in MySQL
+            // - Starting transaction first would just get committed anyway
+            // - We start the transaction AFTER clearExistingData instead
             if ($options['clear_before_restore']) {
                 $this->clearExistingData(array_reverse($orderedEntities), $options['skip_entities']);
                 // Clear the identity map after deleting to avoid stale references
                 $this->entityManager->clear();
 
-                // CRITICAL: ALTER TABLE (used in clearExistingData) causes implicit COMMIT in MySQL
-                // This closes the transaction started by beginTransaction() above
-                // We must start a new transaction for the restore operations
-                // Use Connection directly to avoid nested transaction/savepoint issues
-                $connection = $this->entityManager->getConnection();
-                if (!$connection->isTransactionActive()) {
-                    $connection->beginTransaction();
-                    $this->logger->info('Restarted transaction after clearExistingData (ALTER TABLE causes implicit COMMIT)');
-                } else {
-                    $this->logger->warning('Transaction already active after clearExistingData - unexpected state');
-                }
-
                 if ($options['dry_run']) {
                     $this->warnings[] = 'Dry-run: Bestehende Daten wurden gelöscht (wird am Ende zurückgesetzt)';
                 }
             }
+
+            // Start transaction for entity restoration
+            // Must be AFTER clearExistingData to avoid ALTER TABLE's implicit COMMIT
+            $this->entityManager->beginTransaction();
+            $this->logger->info('Started transaction for entity restoration');
 
             foreach ($orderedEntities as $orderedEntity) {
                 if (in_array($orderedEntity, $options['skip_entities'])) {
