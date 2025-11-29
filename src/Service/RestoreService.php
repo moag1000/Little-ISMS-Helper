@@ -772,6 +772,43 @@ class RestoreService
                     }
                 }
 
+                // Special handling for User entities: Set password if admin_password is provided
+                if ($entityName === 'User' && isset($options['admin_password']) && $options['admin_password'] !== '') {
+                    $adminPassword = $options['admin_password'];
+
+                    // Hash the password using Symfony's UserPasswordHasher
+                    $hashedPassword = $this->userPasswordHasher->hashPassword($entity, $adminPassword);
+
+                    // Set the hashed password
+                    try {
+                        $reflection = new ReflectionClass($entity);
+                        if ($reflection->hasProperty('password')) {
+                            $property = $reflection->getProperty('password');
+                            $property->setValue($entity, $hashedPassword);
+
+                            $this->logger->info('Set password for restored user', [
+                                'user_email' => $data['email'] ?? 'unknown',
+                                'user_id' => $data['id'] ?? 'unknown',
+                            ]);
+
+                            // Add warning to notify admin
+                            $this->warnings[] = sprintf(
+                                'User "%s" restored with setup password. User should change password after first login.',
+                                $data['email'] ?? 'ID: ' . ($data['id'] ?? 'unknown')
+                            );
+                        }
+                    } catch (Exception $e) {
+                        $this->logger->error('Failed to set password for restored user', [
+                            'user_email' => $data['email'] ?? 'unknown',
+                            'error' => $e->getMessage(),
+                        ]);
+                        $this->warnings[] = sprintf(
+                            'WARNING: Could not set password for user "%s". This user may not be able to log in.',
+                            $data['email'] ?? 'ID: ' . ($data['id'] ?? 'unknown')
+                        );
+                    }
+                }
+
                 // Restore associations (ManyToOne, OneToOne)
                 foreach ($classMetadata->getAssociationNames() as $assocName) {
                     if ($classMetadata->isSingleValuedAssociation($assocName)) {
