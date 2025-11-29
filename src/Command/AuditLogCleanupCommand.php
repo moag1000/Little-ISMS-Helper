@@ -2,14 +2,13 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\Option;
 use DateTimeImmutable;
 use App\Repository\AuditLogRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -36,37 +35,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  * Cron Setup (recommended: daily at 2 AM):
  *   0 2 * * * cd /path/to/project && php bin/console app:audit-log:cleanup >> /var/log/audit-cleanup.log 2>&1
  */
-#[AsCommand(
-    name: 'app:audit-log:cleanup',
-    description: 'Clean up old audit logs based on retention policy (DSGVO Art. 5.1(e) + NIS2 Art. 21.2)',
-)]
-class AuditLogCleanupCommand extends Command
-{
-    public function __construct(
-        private readonly AuditLogRepository $auditLogRepository,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly int $retentionDays = 365
-    ) {
-        parent::__construct();
-    }
-
-    protected function configure(): void
-    {
-        $this
-            ->addOption(
-                'dry-run',
-                null,
-                InputOption::VALUE_NONE,
-                'Show which logs would be deleted without actually deleting them'
-            )
-            ->addOption(
-                'retention-days',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Number of days to retain audit logs (overrides config)',
-                $this->retentionDays
-            )
-            ->setHelp(<<<'HELP'
+#[AsCommand(name: 'app:audit-log:cleanup', description: 'Clean up old audit logs based on retention policy (DSGVO Art. 5.1(e) + NIS2 Art. 21.2)', help: <<<'TXT'
 The <info>%command.name%</info> command cleans up old audit logs according to retention policy.
 
 <info>GDPR & NIS2 Compliance:</info>
@@ -88,15 +57,23 @@ The <info>%command.name%</info> command cleans up old audit logs according to re
 
 <info>Recommended Cron Setup (daily at 2 AM):</info>
   <comment>0 2 * * * cd /path/to/project && php bin/console %command.name% >> /var/log/audit-cleanup.log 2>&1</comment>
-HELP
-            );
+TXT)]
+class AuditLogCleanupCommand
+{
+    public function __construct(private readonly AuditLogRepository $auditLogRepository, private readonly EntityManagerInterface $entityManager, private readonly int $retentionDays = 365)
+    {
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(
+        #[Option(name: 'dry-run', mode: InputOption::VALUE_NONE, description: 'Show which logs would be deleted without actually deleting them')]
+        bool $dryRun = false,
+        #[Option(name: 'retention-days', mode: InputOption::VALUE_REQUIRED, description: 'Number of days to retain audit logs (overrides config)')]
+        ?int $retentionDays = null,
+        ?SymfonyStyle $symfonyStyle = null
+    ): int
     {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-        $dryRun = $input->getOption('dry-run');
-        $retentionDays = (int) $input->getOption('retention-days');
+        // Use configured retention days if not overridden
+        $retentionDays = $retentionDays ?? $this->retentionDays;
 
         // NIS2 Compliance Check: minimum 12 months (365 days)
         if ($retentionDays < 365) {
@@ -107,9 +84,7 @@ HELP
             ]);
             return Command::FAILURE;
         }
-
         $cutoffDate = new DateTimeImmutable(sprintf('-%d days', $retentionDays));
-
         $symfonyStyle->title('Audit Log Cleanup');
         $symfonyStyle->section('Configuration');
         $symfonyStyle->table(
@@ -122,24 +97,19 @@ HELP
                 ['NIS2 Art. 21.2', $retentionDays >= 365 ? '✅ 12-month retention compliant' : '❌ Non-compliant'],
             ]
         );
-
         // Count logs to be deleted
         $count = $this->auditLogRepository->countOldLogs($cutoffDate);
-
         if ($count === 0) {
             $symfonyStyle->success('No audit logs found older than ' . $cutoffDate->format('Y-m-d H:i:s'));
             return Command::SUCCESS;
         }
-
         $symfonyStyle->section('Analysis');
         $symfonyStyle->writeln(sprintf('Found <fg=yellow>%d</> audit log entries older than <fg=cyan>%s</>',
             $count,
             $cutoffDate->format('Y-m-d H:i:s')
         ));
-
         // Get sample of logs to be deleted
         $sampleLogs = $this->auditLogRepository->findOldLogs($cutoffDate, 5);
-
         if ($sampleLogs !== []) {
             $symfonyStyle->section('Sample of Logs to be Deleted (first 5)');
             $sampleData = [];
@@ -154,7 +124,6 @@ HELP
             }
             $symfonyStyle->table(['ID', 'Entity Type', 'Action', 'User', 'Created At'], $sampleData);
         }
-
         if ($dryRun) {
             $symfonyStyle->note([
                 'DRY RUN MODE: No changes have been made.',
@@ -163,20 +132,16 @@ HELP
             ]);
             return Command::SUCCESS;
         }
-
         // Confirm deletion
         if (!$symfonyStyle->confirm(sprintf('Delete %d audit log entries?', $count), false)) {
             $symfonyStyle->warning('Operation cancelled by user.');
             return Command::SUCCESS;
         }
-
         $symfonyStyle->section('Deletion in Progress');
-
         $startTime = microtime(true);
         $deletedCount = $this->auditLogRepository->deleteOldLogs($cutoffDate);
         $this->entityManager->flush();
         $duration = round(microtime(true) - $startTime, 2);
-
         $symfonyStyle->section('Results');
         $symfonyStyle->success([
             sprintf('Successfully deleted %d audit log entries', $deletedCount),
@@ -185,7 +150,6 @@ HELP
             'DSGVO Art. 5.1(e): ✅ Compliant',
             'NIS2 Art. 21.2: ✅ Compliant',
         ]);
-
         return Command::SUCCESS;
     }
 }
