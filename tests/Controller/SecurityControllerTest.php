@@ -49,7 +49,7 @@ class SecurityControllerTest extends WebTestCase
     public function testLoginPageRendersSuccessfully(): void
     {
         // Act
-        $this->client->request('GET', '/login');
+        $this->client->request('GET', '/de/login');
 
         // Assert
         $this->assertResponseIsSuccessful();
@@ -59,7 +59,7 @@ class SecurityControllerTest extends WebTestCase
     public function testLoginPageSetsCorrectCacheHeaders(): void
     {
         // Act
-        $this->client->request('GET', '/login');
+        $this->client->request('GET', '/de/login');
         $response = $this->client->getResponse();
 
         // Assert
@@ -81,12 +81,12 @@ class SecurityControllerTest extends WebTestCase
     public function testLoginPageUsesSessionLocaleWhenNoQueryParameter(): void
     {
         // Set session locale
-        $this->client->request('GET', '/login');
+        $this->client->request('GET', '/de/login');
         $session = $this->client->getRequest()->getSession();
         $session->set('_locale', 'en');
 
         // Act
-        $this->client->request('GET', '/login');
+        $this->client->request('GET', '/de/login');
 
         // Assert
         $this->assertSame('en', $session->get('_locale'));
@@ -95,7 +95,7 @@ class SecurityControllerTest extends WebTestCase
     public function testLoginPageDefaultsToSupportedLocale(): void
     {
         // Act
-        $this->client->request('GET', '/login');
+        $this->client->request('GET', '/de/login');
         $session = $this->client->getRequest()->getSession();
 
         // Assert - Should be either 'de' or 'en'
@@ -113,7 +113,7 @@ class SecurityControllerTest extends WebTestCase
         $this->client->loginUser($user);
 
         // Act
-        $this->client->request('GET', '/login');
+        $this->client->request('GET', '/de/login');
 
         // Assert
         $this->assertResponseRedirects();
@@ -202,7 +202,7 @@ class SecurityControllerTest extends WebTestCase
         $this->client->request('GET', '/saml/login');
 
         // Assert - Should redirect to login on error
-        $this->assertResponseRedirects('/login');
+        $this->assertResponseRedirects('/de/login');
     }
 
     public function testSamlAcsReturnsPlaceholderResponse(): void
@@ -295,7 +295,7 @@ class SecurityControllerTest extends WebTestCase
         $this->client->request('GET', '/saml/sls');
 
         // Assert
-        $this->assertResponseRedirects('/login');
+        $this->assertResponseRedirects('/de/login');
     }
 
     public function testSamlSlsHandlesSamlErrors(): void
@@ -314,7 +314,7 @@ class SecurityControllerTest extends WebTestCase
         $this->client->request('GET', '/saml/sls');
 
         // Assert - Should redirect to login with error flash
-        $this->assertResponseRedirects('/login');
+        $this->assertResponseRedirects('/de/login');
     }
 
     public function testSamlSlsHandlesException(): void
@@ -330,13 +330,13 @@ class SecurityControllerTest extends WebTestCase
         $this->client->request('GET', '/saml/sls');
 
         // Assert - Should redirect to login with error flash
-        $this->assertResponseRedirects('/login');
+        $this->assertResponseRedirects('/de/login');
     }
 
     public function testLoginPageDisplaysUsernameField(): void
     {
         // Act
-        $this->client->request('GET', '/login');
+        $this->client->request('GET', '/de/login');
 
         // Assert
         $this->assertResponseIsSuccessful();
@@ -346,7 +346,7 @@ class SecurityControllerTest extends WebTestCase
     public function testLoginPageDisplaysPasswordField(): void
     {
         // Act
-        $this->client->request('GET', '/login');
+        $this->client->request('GET', '/de/login');
 
         // Assert
         $this->assertResponseIsSuccessful();
