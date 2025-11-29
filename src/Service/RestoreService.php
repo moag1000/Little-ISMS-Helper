@@ -907,34 +907,79 @@ class RestoreService
         $priorityOrder = [
             // Base entities (no dependencies except tenant)
             'Tenant' => 1,
-            'User' => 2,
-            'Role' => 3,
-            'Permission' => 4,
-            'SystemSettings' => 5,
+            'Role' => 2,
+            'Permission' => 3,
+            'User' => 4,
+            'Person' => 5,
             'Location' => 6,
+            'Supplier' => 7,
+            'SystemSettings' => 8,
 
             // Framework/Control entities (depend on base)
             'ComplianceFramework' => 10,
             'Control' => 11,
 
             // Independent entities (depend only on Tenant)
-            'Asset' => 15,           // Asset has no other dependencies
-            'Supplier' => 16,        // Supplier has no other dependencies
-            'InterestedParty' => 17, // InterestedParty has no other dependencies
+            'Asset' => 15,
+            'InterestedParty' => 16,
 
             // Entities that depend on frameworks/controls
             'ComplianceRequirement' => 20,
+            'ComplianceRequirementFulfillment' => 21,
 
             // Risk depends on Asset, so must come after Asset
-            'Risk' => 21,
+            'Risk' => 25,
+            'RiskAppetite' => 26,
+            'RiskTreatmentPlan' => 27,
+            'Incident' => 28,
+            'Vulnerability' => 29,
+            'Patch' => 30,
+            'ThreatIntelligence' => 31,
 
-            // Context entities (may depend on other entities)
-            'ISMSContext' => 25,
-            'ISMSObjective' => 26,
+            // BCM entities
+            'BusinessProcess' => 35,
+            'BusinessContinuityPlan' => 36,
+            'BCExercise' => 37,
+            'CrisisTeam' => 38,
+
+            // GDPR/Privacy entities (CRITICAL - were missing!)
+            'ProcessingActivity' => 40,
+            'DataProtectionImpactAssessment' => 41,
+            'DataBreach' => 42,
+            'Consent' => 43,
+
+            // Documents & Training
+            'Document' => 45,
+            'Training' => 46,
+
+            // Audit & Reviews
+            'InternalAudit' => 50,
+            'AuditChecklist' => 51,
+            'ManagementReview' => 52,
+
+            // Context & Objectives
+            'ISMSContext' => 55,
+            'ISMSObjective' => 56,
+            'CorporateGovernance' => 57,
+
+            // Operations
+            'ChangeRequest' => 60,
+            'CryptographicOperation' => 61,
+            'PhysicalAccessLog' => 62,
 
             // Mapping entities (depend on requirements and controls)
-            'ComplianceMapping' => 30,
-            'MappingGapItem' => 31,
+            'ComplianceMapping' => 65,
+            'MappingGapItem' => 66,
+
+            // Workflows
+            'Workflow' => 70,
+            'WorkflowStep' => 71,
+            'WorkflowInstance' => 72,
+
+            // User Preferences
+            'DashboardLayout' => 80,
+            'MfaToken' => 81,
+            'ScheduledTask' => 82,
 
             // Logs and audit trails (last)
             'AuditLog' => 90,
