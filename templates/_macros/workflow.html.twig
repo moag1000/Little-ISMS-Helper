@@ -152,3 +152,206 @@
         {% endif %}
     {% endif %}
 {% endmacro %}
+
+{#
+ # Workflow Inline Actions Macro
+ #
+ # Displays workflow status with quick action buttons (Approve/Reject) directly
+ # in entity show pages, avoiding the need to navigate to the workflow page.
+ #
+ # @param workflowInstance WorkflowInstance The workflow instance
+ # @param entity object The parent entity (Incident, Document, etc.)
+ # @param canApprove bool Whether current user can approve this workflow
+ # @param compact bool Whether to use compact mode (default: false)
+ #}
+{% macro inline_actions(workflowInstance, entity, canApprove = false, compact = false) %}
+    {% if workflowInstance %}
+        {% set currentStep = workflowInstance.currentStep %}
+        {% set dueDate = workflowInstance.dueDate %}
+        {% set isOverdue = workflowInstance.isOverdue %}
+
+        <div class="workflow-inline-actions {% if not compact %}p-3 bg-light rounded border{% else %}p-2{% endif %}">
+            <div class="d-flex justify-content-between align-items-start {% if compact %}flex-column flex-md-row{% endif %} gap-2">
+                <div class="flex-grow-1">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                        <strong>{{ workflowInstance.workflow.name }}</strong>
+
+                        {% set statusColors = {
+                            'pending': 'warning',
+                            'in_progress': 'info',
+                            'approved': 'success',
+                            'rejected': 'danger',
+                            'cancelled': 'secondary'
+                        } %}
+                        <span class="badge bg-{{ statusColors[workflowInstance.status] ?? 'secondary' }}">
+                            {{ ('workflow.status.' ~ workflowInstance.status)|trans({}, 'workflows') }}
+                        </span>
+
+                        {% if isOverdue %}
+                            <span class="badge bg-danger">
+                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                {{ 'workflow.badge.overdue'|trans({}, 'workflows') }}
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    {% if currentStep %}
+                        <div class="small text-muted mb-1">
+                            <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                            {{ 'workflow.field.current_step'|trans({}, 'workflows') }}: {{ currentStep.name }}
+                        </div>
+                    {% endif %}
+
+                    {% if dueDate and not compact %}
+                        <div class="mt-2">
+                            {{ _self.sla_timeline(dueDate, null, null, workflowInstance.startedAt, true) }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="btn-group" role="group">
+                    {% if canApprove and workflowInstance.status in ['pending', 'in_progress'] %}
+                        <button type="button"
+                                class="btn btn-sm btn-success"
+                                data-bs-toggle="modal"
+                                data-bs-target="#approveWorkflow{{ workflowInstance.id }}"
+                                title="{{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}">
+                            <i class="bi bi-check-lg" aria-hidden="true"></i>
+                            {% if not compact %}{{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}{% endif %}
+                        </button>
+                        <button type="button"
+                                class="btn btn-sm btn-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#rejectWorkflow{{ workflowInstance.id }}"
+                                title="{{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}">
+                            <i class="bi bi-x-lg" aria-hidden="true"></i>
+                            {% if not compact %}{{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}{% endif %}
+                        </button>
+                    {% endif %}
+
+                    <a href="{{ path('app_workflow_instance_show', {id: workflowInstance.id}) }}"
+                       class="btn btn-sm btn-outline-primary"
+                       title="{{ 'workflow.action.view_full_workflow'|trans({}, 'workflows') }}">
+                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                        {% if not compact %}{{ 'workflow.action.view_full_workflow'|trans({}, 'workflows') }}{% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {# Approve Modal #}
+        {% if canApprove and workflowInstance.status in ['pending', 'in_progress'] %}
+            <div class="modal fade" id="approveWorkflow{{ workflowInstance.id }}" tabindex="-1" aria-labelledby="approveWorkflowLabel{{ workflowInstance.id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form method="post" action="{{ path('app_workflow_instance_approve', {id: workflowInstance.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ workflowInstance.id) }}">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="approveWorkflowLabel{{ workflowInstance.id }}">
+                                    <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                    {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <p class="mb-3">
+                                    {{ 'workflow.widget.confirm.approve'|trans({workflow: workflowInstance.workflow.name}, 'workflows') }}
+                                </p>
+
+                                {% if entity is defined %}
+                                    <div class="alert alert-info mb-3">
+                                        <strong>{{ 'workflow.field.related_entity'|trans({}, 'workflows') }}:</strong>
+                                        {{ entity.title ?? entity.name ?? entity.referenceNumber ?? 'N/A' }}
+                                    </div>
+                                {% endif %}
+
+                                <div class="mb-3">
+                                    <label for="approveComments{{ workflowInstance.id }}" class="form-label">
+                                        {{ 'workflow.widget.field.comments'|trans({}, 'workflows') }}
+                                        <span class="text-muted">({{ 'common.optional'|trans({}, 'messages') }})</span>
+                                    </label>
+                                    <textarea class="form-control"
+                                              id="approveComments{{ workflowInstance.id }}"
+                                              name="comments"
+                                              rows="3"
+                                              placeholder="{{ 'workflow.widget.placeholder.approval_comments'|trans({}, 'workflows') }}"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
+                                </button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-lg" aria-hidden="true"></i>
+                                    {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            {# Reject Modal #}
+            <div class="modal fade" id="rejectWorkflow{{ workflowInstance.id }}" tabindex="-1" aria-labelledby="rejectWorkflowLabel{{ workflowInstance.id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form method="post" action="{{ path('app_workflow_instance_reject', {id: workflowInstance.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ workflowInstance.id) }}">
+
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title" id="rejectWorkflowLabel{{ workflowInstance.id }}">
+                                    <i class="bi bi-x-circle" aria-hidden="true"></i>
+                                    {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
+                                </h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <p class="mb-3">
+                                    {{ 'workflow.widget.confirm.reject'|trans({workflow: workflowInstance.workflow.name}, 'workflows') }}
+                                </p>
+
+                                {% if entity is defined %}
+                                    <div class="alert alert-warning mb-3">
+                                        <strong>{{ 'workflow.field.related_entity'|trans({}, 'workflows') }}:</strong>
+                                        {{ entity.title ?? entity.name ?? entity.referenceNumber ?? 'N/A' }}
+                                    </div>
+                                {% endif %}
+
+                                <div class="mb-3">
+                                    <label for="rejectComments{{ workflowInstance.id }}" class="form-label">
+                                        {{ 'workflow.widget.field.reason'|trans({}, 'workflows') }}
+                                        <span class="text-danger">*</span>
+                                    </label>
+                                    <textarea class="form-control"
+                                              id="rejectComments{{ workflowInstance.id }}"
+                                              name="comments"
+                                              rows="4"
+                                              required
+                                              placeholder="{{ 'workflow.widget.placeholder.rejection_reason'|trans({}, 'workflows') }}"></textarea>
+                                    <div class="form-text">
+                                        {{ 'workflow.widget.help.rejection_reason'|trans({}, 'workflows') }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                    {{ 'workflow.action.cancel'|trans({}, 'workflows') }}
+                                </button>
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-x-lg" aria-hidden="true"></i>
+                                    {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+{% endmacro %}
