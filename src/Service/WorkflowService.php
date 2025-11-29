@@ -349,15 +349,28 @@ class WorkflowService
 
     /**
      * Check if user can approve a step
+     *
+     * Uses Symfony Security to respect role hierarchy. ROLE_ADMIN and ROLE_SUPER_ADMIN
+     * can approve any workflow step regardless of the required role.
      */
     public function canUserApprove(User $user, WorkflowStep $workflowStep): bool
     {
-        // Check by role
-        if ($workflowStep->getApproverRole() && in_array($workflowStep->getApproverRole(), $user->getRoles())) {
+        // ROLE_ADMIN and ROLE_SUPER_ADMIN can approve any step
+        if ($this->security->isGranted('ROLE_ADMIN')) {
             return true;
         }
-        // Check by user ID
-        return $workflowStep->getApproverUsers() && in_array($user->getId(), $workflowStep->getApproverUsers());
+
+        // Check by user ID (explicit assignment)
+        if ($workflowStep->getApproverUsers() && in_array($user->getId(), $workflowStep->getApproverUsers())) {
+            return true;
+        }
+
+        // Check by role (using Security to respect role hierarchy)
+        if ($workflowStep->getApproverRole()) {
+            return $this->security->isGranted($workflowStep->getApproverRole());
+        }
+
+        return false;
     }
 
     /**
