@@ -5,9 +5,11 @@ namespace App\Controller;
 use DateTime;
 use DateTimeImmutable;
 use App\Entity\Control;
+use App\Entity\User;
 use App\Form\ControlType;
 use App\Repository\ControlRepository;
 use App\Service\SoAReportService;
+use App\Service\WorkflowAutoProgressionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -23,7 +25,8 @@ class StatementOfApplicabilityController extends AbstractController
         private readonly EntityManagerInterface $entityManager,
         private readonly TranslatorInterface $translator,
         private readonly SoAReportService $soaReportService,
-        private readonly Security $security
+        private readonly Security $security,
+        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService
     ) {}
     #[Route('/soa/', name: 'app_soa_index')]
     public function index(Request $request): Response
@@ -137,6 +140,12 @@ class StatementOfApplicabilityController extends AbstractController
             $control->setUpdatedAt(new DateTimeImmutable());
 
             $this->entityManager->flush();
+
+            // Check and auto-progress workflow if conditions are met
+            $currentUser = $this->security->getUser();
+            if ($currentUser instanceof User) {
+                $this->workflowAutoProgressionService->checkAndProgressWorkflow($control, $currentUser);
+            }
 
             $this->addFlash('success', $this->translator->trans('control.success.updated', [], 'control'));
 
