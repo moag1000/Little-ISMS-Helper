@@ -192,13 +192,30 @@
                 {% for entry in instance.approvalHistory|reverse %}
                 <tr>
                     <td>{{ entry.timestamp|date('d.m.Y H:i:s') }}</td>
-                    <td>{{ entry.user ?? '-' }}</td>
+                    <td>
+                        {% if entry.approver_name is defined and entry.approver_name %}
+                            {{ entry.approver_name }}
+                        {% elseif entry.user is defined and entry.user %}
+                            {{ entry.user }}
+                        {% else %}
+                            <span class="text-muted">-</span>
+                        {% endif %}
+                    </td>
                     <td>
                         {% set actionColor = entry.action == 'approved' ? 'success' : (entry.action == 'rejected' ? 'danger' : 'info') %}
                         <span class="badge bg-{{ actionColor }}">{{ entry.action|capitalize }}</span>
+                        {% if entry.step_name is defined %}
+                            <small class="text-muted ms-1">({{ entry.step_name }})</small>
+                        {% endif %}
                     </td>
                     <td>
-                        <small class="text-muted">{{ entry.comments ?? '-' }}</small>
+                        {% if entry.comments is defined and entry.comments %}
+                            <small class="text-muted">{{ entry.comments }}</small>
+                        {% elseif entry.reason is defined and entry.reason %}
+                            <small class="text-muted">{{ entry.reason }}</small>
+                        {% else %}
+                            <small class="text-muted">-</small>
+                        {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
