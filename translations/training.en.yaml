@@ -7,6 +7,8 @@ training:
     description: Description
     minutes: minutes
     type: Type
+    type_label: Type
+    status_label: Status
     delivery_method: 'Delivery Method'
     delivery:
         online: Online

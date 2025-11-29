@@ -486,3 +486,9 @@ workflow_step:
 'requirement.validation.category_max_length': 'Die Kategorie darf maximal {{ limit }} Zeichen lang sein.'
 'requirement.validation.priority_required': 'Priorität ist erforderlich.'
 'requirement.validation.requirement_type_required': 'Anforderungstyp ist erforderlich.'
+
+# Setup Validation Messages
+setup.admin.first_name_max: 'Der Vorname darf maximal {{ limit }} Zeichen lang sein.'
+setup.admin.last_name_max: 'Der Nachname darf maximal {{ limit }} Zeichen lang sein.'
+setup.admin.password_max: 'Das Passwort darf maximal {{ limit }} Zeichen lang sein.'
+setup.organisation.name_max: 'Der Organisationsname darf maximal {{ limit }} Zeichen lang sein.'

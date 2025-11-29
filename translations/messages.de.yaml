@@ -136,7 +136,9 @@ common:
     details: Details
     download: Herunterladen
     error: Fehler
+    error.invalid_csrf: 'Ungültiges Sicherheitstoken. Bitte laden Sie die Seite neu und versuchen Sie es erneut.'
     export: Exportieren
+    export_excel: 'Als Excel exportieren'
     filter: Filtern
     filters: Filter
     from: Von

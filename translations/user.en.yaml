@@ -122,3 +122,10 @@ user:
             avatar_deleted: 'Avatar successfully deleted'
 user_management:
     import_irreversible: 'Warning: User import cannot be undone. Please ensure your CSV file is correctly formatted.'
+
+# Flat profile keys (for ProfileController compatibility)
+profile:
+    success:
+        updated: 'Profile successfully updated'
+        password_changed: 'Password successfully changed'
+        avatar_deleted: 'Avatar successfully deleted'
