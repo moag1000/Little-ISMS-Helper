@@ -1,0 +1,189 @@
+# Consent Translations (German)
+# GDPR Art. 7 - Einwilligungen
+
+# Breadcrumb & Navigation
+consent:
+  breadcrumb: 'Einwilligungen'
+
+  # Header
+  header:
+    title: 'Einwilligungen'
+    subtitle: 'DSGVO Art. 7 - Verwaltung von Einwilligungen betroffener Personen'
+    action:
+      new: 'Neue Einwilligung'
+
+  # Page Titles
+  new: 'Neue Einwilligung erstellen'
+  edit: 'Einwilligung bearbeiten'
+
+  # KPI Cards
+  kpi:
+    total: 'Gesamt'
+    active: 'Aktiv (verifiziert)'
+    pending: 'Ausstehende Prüfung'
+    revoked: 'Widerrufen'
+
+  # Status Overview
+  status:
+    overview: 'Status-Übersicht'
+    pending_verification: 'Ausstehende DPO-Prüfung'
+    active: 'Aktiv'
+    revoked: 'Widerrufen'
+    expired: 'Abgelaufen'
+    rejected: 'Abgelehnt'
+
+  # Empty State
+  empty:
+    title: 'Keine Einwilligungen vorhanden'
+    description: 'Es wurden noch keine Einwilligungen dokumentiert. Erstellen Sie die erste Einwilligung, um DSGVO-konforme Verarbeitungstätigkeiten zu dokumentieren.'
+
+  # List View
+  list:
+    all_consents: 'Alle Einwilligungen (%count%)'
+
+  # Filter
+  filter:
+    all_status: 'Alle Status'
+    all_verified: 'Alle'
+    verified: 'Nur verifizierte'
+    unverified: 'Nur nicht-verifizierte'
+
+  # Table Fields
+  field:
+    id: 'ID'
+    data_subject: 'Betroffene Person'
+    identifier_type: 'Identifikator-Typ'
+    processing_activity: 'Verarbeitungstätigkeit'
+    purposes: 'Zwecke'
+    status: 'Status'
+    granted_at: 'Erteilt am'
+    consent_method: 'Methode'
+    consent_channel: 'Kanal'
+    consent_text: 'Einwilligungstext'
+    proof_document: 'Nachweisdokument'
+    expires_at: 'Läuft ab am'
+    verified: 'DPO-Verifiziert'
+    created_at: 'Erstellt am'
+    updated_at: 'Aktualisiert am'
+    revoked_at: 'Widerrufen am'
+    revocation_reason: 'Widerrufsgrund'
+
+  # Form Sections
+  section:
+    data_subject: 'Betroffene Person'
+    processing_activity: 'Verarbeitungstätigkeit'
+    consent_grant: 'Einwilligungserteilung'
+    proof_documentation: 'Nachweisdokumentation'
+    expiry: 'Ablauf & Gültigkeit'
+    notes: 'Notizen'
+    dpo_verification: 'DPO-Verifizierung'
+    revocation: 'Widerruf'
+    metadata: 'Metadaten'
+
+  # Form Fields
+  form:
+    data_subject_identifier: 'Identifikator der betroffenen Person'
+    data_subject_identifier_placeholder: 'z.B. kunde@example.com, KD-12345, etc.'
+    data_subject_identifier_help: 'Eindeutiger Identifikator der externen betroffenen Person (KEIN interner User)'
+
+    identifier_type_label: 'Art des Identifikators'
+    identifier_type_options:
+      email: 'E-Mail-Adresse'
+      customer_id: 'Kundennummer'
+      pseudonym: 'Pseudonym'
+      phone: 'Telefonnummer'
+      other: 'Sonstiges'
+
+    processing_activity: 'Verarbeitungstätigkeit'
+    processing_activity_help: 'Nur Verarbeitungstätigkeiten mit Rechtsgrundlage Art. 6 Abs. 1 lit. a (Einwilligung)'
+
+    purposes: 'Granulare Zwecke'
+    purposes_help: 'Spezifische Zwecke innerhalb der Verarbeitungstätigkeit (optional)'
+    purposes_options:
+      marketing: 'Marketing'
+      profiling: 'Profiling'
+      analytics: 'Analytics'
+      newsletter: 'Newsletter'
+      personalization: 'Personalisierung'
+
+    granted_at: 'Erteilungsdatum'
+    granted_at_help: 'Datum und Uhrzeit, zu der die Einwilligung erteilt wurde'
+
+    consent_method: 'Einwilligungsmethode'
+    consent_method_options:
+      double_opt_in: 'Double Opt-In'
+      written_form: 'Schriftlich'
+      checkbox: 'Checkbox'
+      oral: 'Mündlich'
+      email: 'E-Mail'
+      other: 'Sonstiges'
+
+    consent_channel: 'Kanal'
+    consent_channel_options:
+      website: 'Website'
+      email: 'E-Mail'
+      paper_form: 'Papierformular'
+      phone: 'Telefon'
+      in_person: 'Persönlich'
+      other: 'Sonstiges'
+
+    consent_text: 'Einwilligungstext (Wortlaut)'
+    consent_text_placeholder: 'Exakter Wortlaut der Einwilligungserklärung zum Zeitpunkt der Erteilung...'
+    consent_text_help: 'WICHTIG: Art. 7 Abs. 1 DSGVO Nachweispflicht - genauer Wortlaut erforderlich'
+
+    proof_document: 'Nachweisdokument'
+    proof_document_help: 'Optional: Hochgeladenes Dokument (E-Mail, Scan, etc.) als Nachweis'
+
+    expires_at: 'Ablaufdatum'
+    expires_at_help: 'Optional: Datum, an dem die Einwilligung automatisch abläuft'
+
+    notes: 'Interne Notizen'
+    notes_placeholder: 'Interne Hinweise zur Einwilligung...'
+
+  # Hints
+  hint:
+    expiry_optional: 'Optional: Lassen Sie dieses Feld leer für unbefristete Einwilligungen'
+
+  # Status Labels
+  verified: 'Verifiziert von DPO'
+  not_verified: 'Nicht verifiziert'
+  revoked: 'Widerrufen'
+
+  # Proof Document
+  no_proof_document: 'Kein Nachweisdokument'
+
+  # Actions
+  action:
+    save: 'Einwilligung speichern'
+    verify: 'Verifizieren'
+    document_revocation: 'Widerruf dokumentieren'
+    delete: 'Löschen'
+    back: 'Zurück'
+
+  # Revocation
+  revoke:
+    hint: 'Dokumentieren Sie den Widerruf der Einwilligung durch die betroffene Person'
+
+  revocation_reason: 'Grund für Widerruf'
+
+  # Delete Confirmation
+  delete:
+    confirm: 'Sind Sie sicher, dass Sie diese Einwilligung löschen möchten? Dies kann nicht rückgängig gemacht werden.'
+
+  # Success Messages
+  success:
+    created: 'Einwilligung erfolgreich erstellt'
+    updated: 'Einwilligung erfolgreich aktualisiert'
+    verified: 'Einwilligung erfolgreich durch DPO verifiziert und aktiviert'
+    revoked: 'Widerruf erfolgreich dokumentiert'
+    deleted: 'Einwilligung erfolgreich gelöscht'
+
+  # Error Messages
+  error:
+    invalid_token: 'Ungültiges CSRF-Token'
+    cannot_edit_status: 'Einwilligung kann im aktuellen Status nicht bearbeitet werden'
+
+  # Warning Messages
+  warning:
+    already_verified: 'Diese Einwilligung wurde bereits verifiziert'
+    already_revoked: 'Diese Einwilligung wurde bereits widerrufen'
