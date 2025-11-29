@@ -73,7 +73,7 @@ class AuditLogCleanupCommand
     ): int
     {
         // Use configured retention days if not overridden
-        $retentionDays = $retentionDays ?? $this->retentionDays;
+        $retentionDays ??= $this->retentionDays;
 
         // NIS2 Compliance Check: minimum 12 months (365 days)
         if ($retentionDays < 365) {

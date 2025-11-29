@@ -166,7 +166,6 @@ class RiskReviewService
      * - upcoming_7: Reviews due in next 7 days
      * - never_reviewed: Risks without review date
      *
-     * @param Tenant $tenant
      * @return array<string, int>
      * @throws DateMalformedStringException
      */
@@ -199,7 +198,6 @@ class RiskReviewService
      *
      * Useful for initial setup or after importing risks
      *
-     * @param Tenant $tenant
      * @return int Number of risks scheduled
      * @throws DateMalformedStringException
      */

@@ -81,7 +81,7 @@ class AssetRepository extends ServiceEntityRepository
      * @param Tenant|null $parentTenant DEPRECATED: Use tenant's getAllAncestors() instead
      * @return Asset[] Array of Asset entities (own + inherited from all ancestors)
      */
-    public function findByTenantIncludingParent(Tenant $tenant, Tenant $parentTenant = null): array
+    public function findByTenantIncludingParent(Tenant $tenant, ?Tenant $parentTenant = null): array
     {
         // Get all ancestors (parent, grandparent, great-grandparent, etc.)
         $ancestors = $tenant->getAllAncestors();
