@@ -160,11 +160,20 @@ consent:
     delete: 'Löschen'
     back: 'Zurück'
 
+  # Verification
+  verify:
+    confirmation: 'Sind Sie sicher, dass Sie diese Einwilligung als DPO verifizieren und aktivieren möchten?'
+    hint: 'Nach der Verifizierung wird die Einwilligung als rechtsgültig markiert und der Status wird auf "Aktiv" gesetzt.'
+
+  verified_by: 'Verifiziert von'
+  verified_by_user: 'Verifiziert von %user% am'
+
   # Revocation
   revoke:
     hint: 'Dokumentieren Sie den Widerruf der Einwilligung durch die betroffene Person'
 
   revocation_reason: 'Grund für Widerruf'
+  revoked_at: 'Widerrufen am %date%'
 
   # Delete Confirmation
   delete:
