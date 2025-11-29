@@ -78,7 +78,7 @@ class TrainingRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant);
 
         // Include trainings from all ancestors in the hierarchy
-        if (!empty($ancestors)) {
+        if ($ancestors !== []) {
             $queryBuilder->orWhere('t.tenant IN (:ancestors)')
                ->setParameter('ancestors', $ancestors);
         }
@@ -106,7 +106,7 @@ class TrainingRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant);
 
         // Include trainings from all subsidiaries in the hierarchy
-        if (!empty($subsidiaries)) {
+        if ($subsidiaries !== []) {
             $queryBuilder->orWhere('t.tenant IN (:subsidiaries)')
                ->setParameter('subsidiaries', $subsidiaries);
         }

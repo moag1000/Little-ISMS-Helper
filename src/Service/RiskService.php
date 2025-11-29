@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\Entity\CorporateGovernance;
+use App\Enum\GovernanceModel;
 use App\Entity\Risk;
 use App\Entity\Tenant;
 use App\Repository\RiskRepository;
@@ -29,14 +31,14 @@ class RiskService
         $parent = $tenant->getParent();
 
         // No parent or no corporate structure service - return own risks only
-        if (!$parent instanceof Tenant || !$this->corporateStructureService instanceof CorporateStructureService || !$this->corporateGovernanceRepository) {
+        if (!$parent instanceof Tenant || !$this->corporateStructureService instanceof CorporateStructureService || !$this->corporateGovernanceRepository instanceof CorporateGovernanceRepository) {
             return $this->riskRepository->findByTenant($tenant);
         }
 
         // Check governance model for risks
         $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'risk');
 
-        if (!$governance) {
+        if (!$governance instanceof CorporateGovernance) {
             // No specific governance for risks - use default
             $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
@@ -44,7 +46,7 @@ class RiskService
         $governanceModel = $governance?->getGovernanceModel();
 
         // If hierarchical governance, include parent risks
-        if ($governanceModel && $governanceModel->value === 'hierarchical') {
+        if ($governanceModel instanceof GovernanceModel && $governanceModel->value === 'hierarchical') {
             return $this->riskRepository->findByTenantIncludingParent($tenant, $parent);
         }
 
@@ -62,7 +64,7 @@ class RiskService
     {
         $parent = $tenant->getParent();
 
-        if (!$parent instanceof Tenant || !$this->corporateGovernanceRepository) {
+        if (!$parent instanceof Tenant || !$this->corporateGovernanceRepository instanceof CorporateGovernanceRepository) {
             return [
                 'hasParent' => false,
                 'canInherit' => false,
@@ -72,12 +74,12 @@ class RiskService
 
         $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'risk');
 
-        if (!$governance) {
+        if (!$governance instanceof CorporateGovernance) {
             $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
 
         $governanceModel = $governance?->getGovernanceModel();
-        $canInherit = $governanceModel && $governanceModel->value === 'hierarchical';
+        $canInherit = $governanceModel instanceof GovernanceModel && $governanceModel->value === 'hierarchical';
 
         return [
             'hasParent' => true,

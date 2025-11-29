@@ -44,18 +44,14 @@ class AutomatedGapAnalysisService
         $textualSimilarity = $analysisResults['textual_similarity'] ?? 0;
         if ($textualSimilarity > 0.3 && $textualSimilarity < 0.7) {
             $gap = $this->createPartialCoverageGap($complianceMapping, $textualSimilarity);
-            if ($gap instanceof MappingGapItem) {
-                $gapItems[] = $gap;
-            }
+            $gapItems[] = $gap;
         }
 
         // 3. Identify scope differences
         $structuralSimilarity = $analysisResults['structural_similarity'] ?? 0;
         if ($structuralSimilarity < 0.5) {
             $gap = $this->createScopeDifferenceGap($complianceMapping, $source, $target);
-            if ($gap instanceof MappingGapItem) {
-                $gapItems[] = $gap;
-            }
+            $gapItems[] = $gap;
         }
 
         // 4. Identify additional requirements in target
@@ -67,9 +63,7 @@ class AutomatedGapAnalysisService
         // 5. Check for evidence gaps
         if ($this->hasEvidenceGap($complianceMapping)) {
             $gap = $this->createEvidenceGap($complianceMapping);
-            if ($gap instanceof MappingGapItem) {
-                $gapItems[] = $gap;
-            }
+            $gapItems[] = $gap;
         }
 
         return $gapItems;

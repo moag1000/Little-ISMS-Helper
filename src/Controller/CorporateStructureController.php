@@ -113,7 +113,7 @@ class CorporateStructureController extends AbstractController
 
             // Create or update default governance rule
             $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
-            if (!$governance) {
+            if (!$governance instanceof CorporateGovernance) {
                 $governance = new CorporateGovernance();
                 $governance->setTenant($tenant);
                 $governance->setParent($parent);
@@ -166,7 +166,7 @@ class CorporateStructureController extends AbstractController
 
         // Update default governance rule
         $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
-        if (!$governance) {
+        if (!$governance instanceof CorporateGovernance) {
             return $this->json(['error' => 'No default governance found for this tenant'], Response::HTTP_NOT_FOUND);
         }
 
@@ -366,7 +366,7 @@ class CorporateStructureController extends AbstractController
         // Find existing rule or create new one
         $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, $scope, $scopeId);
 
-        if (!$governance) {
+        if (!$governance instanceof CorporateGovernance) {
             $governance = new CorporateGovernance();
             $governance->setTenant($tenant);
             $governance->setParent($tenant->getParent());
@@ -409,7 +409,7 @@ class CorporateStructureController extends AbstractController
 
         $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, $scope, $scopeId);
 
-        if (!$governance) {
+        if (!$governance instanceof CorporateGovernance) {
             return $this->json(['error' => 'Governance rule not found'], Response::HTTP_NOT_FOUND);
         }
 

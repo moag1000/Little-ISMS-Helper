@@ -9,36 +9,28 @@ use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:supplement-tisax-requirements',
     description: 'Supplement TISAX with additional VDA ISA 6.0.2 requirements for completeness'
 )]
-class SupplementTisaxRequirementsCommand extends Command
+class SupplementTisaxRequirementsCommand
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
-        parent::__construct();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(SymfonyStyle $symfonyStyle): int
     {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-
         // Get existing TISAX framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'TISAX']);
-
         if (!$framework instanceof ComplianceFramework) {
             $symfonyStyle->error('TISAX framework not found. Please run app:load-tisax-requirements first.');
             return Command::FAILURE;
         }
-
         $symfonyStyle->info('Adding additional VDA ISA 6.0.2 requirements to TISAX framework...');
-
         try {
             $this->entityManager->beginTransaction();
 
@@ -50,7 +42,7 @@ class SupplementTisaxRequirementsCommand extends Command
                 $existing = $this->entityManager
                     ->getRepository(ComplianceRequirement::class)
                     ->findOneBy([
-                        'framework' => $framework,
+                        'complianceFramework' => $framework,
                         'requirementId' => $additionalRequirement['id']
                     ]);
 
@@ -83,7 +75,6 @@ class SupplementTisaxRequirementsCommand extends Command
             $symfonyStyle->error('Failed to supplement TISAX requirements: ' . $e->getMessage());
             return Command::FAILURE;
         }
-
         return Command::SUCCESS;
     }
 

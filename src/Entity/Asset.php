@@ -23,10 +23,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AssetRepository::class)]
-#[ORM\Index(columns: ['asset_type'], name: 'idx_asset_type')]
-#[ORM\Index(columns: ['status'], name: 'idx_asset_status')]
-#[ORM\Index(columns: ['created_at'], name: 'idx_asset_created_at')]
-#[ORM\Index(columns: ['tenant_id'], name: 'idx_asset_tenant')]
+#[ORM\Index(name: 'idx_asset_type', columns: ['asset_type'])]
+#[ORM\Index(name: 'idx_asset_status', columns: ['status'])]
+#[ORM\Index(name: 'idx_asset_created_at', columns: ['created_at'])]
+#[ORM\Index(name: 'idx_asset_tenant', columns: ['tenant_id'])]
 #[ApiResource(
     operations: [
         new Get(
@@ -114,19 +114,19 @@ class Asset
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\NotNull(message: 'Confidentiality value is required')]
-    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Confidentiality value must be between {{ min }} and {{ max }}')]
+    #[Assert\Range(notInRangeMessage: 'Confidentiality value must be between {{ min }} and {{ max }}', min: 1, max: 5)]
     private ?int $confidentialityValue = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\NotNull(message: 'Integrity value is required')]
-    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Integrity value must be between {{ min }} and {{ max }}')]
+    #[Assert\Range(notInRangeMessage: 'Integrity value must be between {{ min }} and {{ max }}', min: 1, max: 5)]
     private ?int $integrityValue = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['asset:read', 'asset:write'])]
     #[Assert\NotNull(message: 'Availability value is required')]
-    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Availability value must be between {{ min }} and {{ max }}')]
+    #[Assert\Range(notInRangeMessage: 'Availability value must be between {{ min }} and {{ max }}', min: 1, max: 5)]
     private ?int $availabilityValue = null;
 
     // Phase 6F: ISO 27001 Compliance Fields

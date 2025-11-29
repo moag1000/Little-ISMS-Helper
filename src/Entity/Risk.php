@@ -25,10 +25,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: RiskRepository::class)]
-#[ORM\Index(columns: ['status'], name: 'idx_risk_status')]
-#[ORM\Index(columns: ['created_at'], name: 'idx_risk_created_at')]
-#[ORM\Index(columns: ['review_date'], name: 'idx_risk_review_date')]
-#[ORM\Index(columns: ['tenant_id'], name: 'idx_risk_tenant')]
+#[ORM\Index(name: 'idx_risk_status', columns: ['status'])]
+#[ORM\Index(name: 'idx_risk_created_at', columns: ['created_at'])]
+#[ORM\Index(name: 'idx_risk_review_date', columns: ['review_date'])]
+#[ORM\Index(name: 'idx_risk_tenant', columns: ['tenant_id'])]
 #[ApiResource(
     operations: [
         new Get(
@@ -196,24 +196,24 @@ class Risk
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
     #[Assert\NotNull(message: 'Probability is required')]
-    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Probability must be between {{ min }} and {{ max }}')]
+    #[Assert\Range(notInRangeMessage: 'Probability must be between {{ min }} and {{ max }}', min: 1, max: 5)]
     private ?int $probability = null;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
     #[Assert\NotNull(message: 'Impact is required')]
-    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Impact must be between {{ min }} and {{ max }}')]
+    #[Assert\Range(notInRangeMessage: 'Impact must be between {{ min }} and {{ max }}', min: 1, max: 5)]
     private ?int $impact = null;
 
     // Set default values for required fields
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Residual probability must be between {{ min }} and {{ max }}')]
+    #[Assert\Range(notInRangeMessage: 'Residual probability must be between {{ min }} and {{ max }}', min: 1, max: 5)]
     private ?int $residualProbability = 1;
 
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['risk:read', 'risk:write'])]
-    #[Assert\Range(min: 1, max: 5, notInRangeMessage: 'Residual impact must be between {{ min }} and {{ max }}')]
+    #[Assert\Range(notInRangeMessage: 'Residual impact must be between {{ min }} and {{ max }}', min: 1, max: 5)]
     private ?int $residualImpact = 1;
 
     #[ORM\Column(length: 50)]

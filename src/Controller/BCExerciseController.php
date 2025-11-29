@@ -90,7 +90,7 @@ class BCExerciseController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/bc-exercise/{id}/delete', name: 'app_bc_exercise_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/bc-exercise/{id}/delete', name: 'app_bc_exercise_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, BCExercise $bcExercise): Response
     {

@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\Option;
 use DateTime;
 use Exception;
 use App\Repository\TenantRepository;
@@ -9,9 +10,7 @@ use App\Repository\RiskTreatmentPlanRepository;
 use App\Service\EmailNotificationService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -39,43 +38,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *   # Run daily at 9:00 AM
  *   0 9 * * * cd /path/to/project && php bin/console app:risk:monitor-treatment-plans --send-notifications
  */
-#[AsCommand(
-    name: 'app:risk:monitor-treatment-plans',
-    description: 'Monitor risk treatment plans and send deadline notifications (ISO 27001:2022 Clause 6.1.3)'
-)]
-class RiskTreatmentPlanMonitorCommand extends Command
-{
-    public function __construct(
-        private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository,
-        private readonly TenantRepository $tenantRepository,
-        private readonly EmailNotificationService $emailNotificationService
-    ) {
-        parent::__construct();
-    }
-
-    protected function configure(): void
-    {
-        $this
-            ->addOption(
-                'tenant',
-                't',
-                InputOption::VALUE_OPTIONAL,
-                'Process only specific tenant ID'
-            )
-            ->addOption(
-                'days',
-                'd',
-                InputOption::VALUE_OPTIONAL,
-                'Days ahead to check for approaching deadlines',
-                7
-            )
-            ->addOption(
-                'send-notifications',
-                null,
-                InputOption::VALUE_NONE,
-                'Actually send email notifications (default: dry-run)'
-            )
-            ->setHelp(<<<'HELP'
+#[AsCommand(name: 'app:risk:monitor-treatment-plans', description: 'Monitor risk treatment plans and send deadline notifications (ISO 27001:2022 Clause 6.1.3)', help: <<<'TXT'
 This command monitors risk treatment plans and identifies:
   1. Overdue plans (past target completion date)
   2. Plans approaching deadline (within specified days)
@@ -99,25 +62,30 @@ Examples:
 
   # Production use (scheduled daily)
   0 9 * * * php /var/www/isms/bin/console app:risk:monitor-treatment-plans --send-notifications
-HELP
-            );
+TXT)]
+class RiskTreatmentPlanMonitorCommand
+{
+    public function __construct(private readonly RiskTreatmentPlanRepository $riskTreatmentPlanRepository, private readonly TenantRepository $tenantRepository, private readonly EmailNotificationService $emailNotificationService)
+    {
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(
+        #[Option(name: 'tenant', shortcut: 't', mode: InputOption::VALUE_OPTIONAL, description: 'Process only specific tenant ID')]
+        $tenant,
+        #[Option(name: 'days', shortcut: 'd', mode: InputOption::VALUE_OPTIONAL, description: 'Days ahead to check for approaching deadlines')]
+        int $days = 7,
+        #[Option(name: 'send-notifications', mode: InputOption::VALUE_NONE, description: 'Actually send email notifications (default: dry-run)')]
+        bool $sendNotifications = false,
+        ?SymfonyStyle $symfonyStyle = null
+    ): int
     {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-
         $symfonyStyle->title('Risk Treatment Plan Monitoring (ISO 27001:2022 Clause 6.1.3)');
-
         // Get options
-        $tenantId = $input->getOption('tenant');
-        $days = (int) $input->getOption('days');
-        $sendNotifications = $input->getOption('send-notifications');
-
+        $tenantId = $tenant;
+        $sendNotifications = $send_notifications;
         if (!$sendNotifications) {
             $symfonyStyle->note('Running in DRY-RUN mode. Use --send-notifications to actually send emails.');
         }
-
         // Get tenants to process
         $tenants = [];
         if ($tenantId) {
@@ -132,11 +100,9 @@ HELP
             $tenants = $this->tenantRepository->findAll();
             $symfonyStyle->info('Processing all ' . count($tenants) . ' tenants');
         }
-
         $totalOverdue = 0;
         $totalApproaching = 0;
         $notificationsSent = 0;
-
         // Process each tenant
         foreach ($tenants as $tenant) {
             $symfonyStyle->section("Tenant: {$tenant->getName()} (ID: {$tenant->getId()})");
@@ -148,13 +114,13 @@ HELP
             $totalOverdue += count($overduePlans);
             $totalApproaching += count($approachingPlans);
 
-            if (empty($overduePlans) && empty($approachingPlans)) {
+            if ($overduePlans === [] && $approachingPlans === []) {
                 $symfonyStyle->success('✓ No overdue or approaching deadline plans');
                 continue;
             }
 
             // Display overdue plans
-            if (!empty($overduePlans)) {
+            if ($overduePlans !== []) {
                 $symfonyStyle->warning(count($overduePlans) . ' OVERDUE plans');
 
                 $overdueData = [];
@@ -189,7 +155,7 @@ HELP
             }
 
             // Display approaching deadline plans
-            if (!empty($approachingPlans)) {
+            if ($approachingPlans !== []) {
                 $symfonyStyle->note(count($approachingPlans) . " plans approaching deadline (within {$days} days)");
 
                 $approachingData = [];
@@ -225,7 +191,6 @@ HELP
 
             $symfonyStyle->newLine();
         }
-
         // Summary
         $symfonyStyle->section('Summary');
         $symfonyStyle->definitionList(
@@ -233,12 +198,10 @@ HELP
             ['Plans Approaching Deadline' => $totalApproaching],
             ['Notifications Sent' => $sendNotifications ? $notificationsSent : 'N/A (dry-run)']
         );
-
         if ($totalOverdue > 0 || $totalApproaching > 0) {
             $symfonyStyle->warning('Action required: ' . ($totalOverdue + $totalApproaching) . ' plans need attention');
             return Command::SUCCESS; // Not a failure, but needs attention
         }
-
         $symfonyStyle->success('All treatment plans are on track!');
         return Command::SUCCESS;
     }

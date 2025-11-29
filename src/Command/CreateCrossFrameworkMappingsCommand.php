@@ -2,39 +2,32 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\Option;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:create-cross-framework-mappings',
     description: 'Create comprehensive bidirectional cross-framework compliance mappings for data reuse'
 )]
-class CreateCrossFrameworkMappingsCommand extends Command
+class CreateCrossFrameworkMappingsCommand
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
-        parent::__construct();
     }
 
-    protected function configure(): void
+    public function __invoke(#[Option(name: 'clear', mode: InputOption::VALUE_NONE, description: 'Clear all existing mappings before creating new ones')]
+    bool $clear = false, ?SymfonyStyle $symfonyStyle = null): int
     {
-        $this->addOption('clear', null, InputOption::VALUE_NONE, 'Clear all existing mappings before creating new ones');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $symfonyStyle = new SymfonyStyle($input, $output);
         $symfonyStyle->title('Creating Comprehensive Cross-Framework Compliance Mappings');
 
-        if ($input->getOption('clear')) {
+        if ($clear) {
             $symfonyStyle->section('Clearing existing mappings');
             $this->clearExistingMappings();
             $symfonyStyle->success('Existing mappings cleared');
@@ -87,7 +80,7 @@ class CreateCrossFrameworkMappingsCommand extends Command
             $symfonyStyle->writeln(sprintf('  Processing %s...', $framework->getName()));
 
             $requirements = $this->entityManager->getRepository(ComplianceRequirement::class)
-                ->findBy(['framework' => $framework]);
+                ->findBy(['complianceFramework' => $framework]);
 
             foreach ($requirements as $requirement) {
                 $dataSourceMapping = $requirement->getDataSourceMapping();
@@ -110,7 +103,7 @@ class CreateCrossFrameworkMappingsCommand extends Command
                     // Find corresponding ISO 27001 requirement
                     $isoRequirement = $this->entityManager->getRepository(ComplianceRequirement::class)
                         ->findOneBy([
-                            'framework' => $complianceFramework,
+                            'complianceFramework' => $complianceFramework,
                             'requirementId' => $normalizedId
                         ]);
 
@@ -118,7 +111,7 @@ class CreateCrossFrameworkMappingsCommand extends Command
                         // Try without the 'A.' prefix
                         $isoRequirement = $this->entityManager->getRepository(ComplianceRequirement::class)
                             ->findOneBy([
-                                'framework' => $complianceFramework,
+                                'complianceFramework' => $complianceFramework,
                                 'requirementId' => $isoControl
                             ]);
                     }
@@ -158,7 +151,7 @@ class CreateCrossFrameworkMappingsCommand extends Command
         $mappingCount = 0;
 
         $isoRequirements = $this->entityManager->getRepository(ComplianceRequirement::class)
-            ->findBy(['framework' => $complianceFramework]);
+            ->findBy(['complianceFramework' => $complianceFramework]);
 
         foreach ($isoRequirements as $isoRequirement) {
             foreach ($frameworks as $framework) {
@@ -168,7 +161,7 @@ class CreateCrossFrameworkMappingsCommand extends Command
 
                 // Find all requirements in target framework that map to this ISO control
                 $targetRequirements = $this->entityManager->getRepository(ComplianceRequirement::class)
-                    ->findBy(['framework' => $framework]);
+                    ->findBy(['complianceFramework' => $framework]);
 
                 foreach ($targetRequirements as $targetRequirement) {
                     $dataSourceMapping = $targetRequirement->getDataSourceMapping();
@@ -255,7 +248,7 @@ class CreateCrossFrameworkMappingsCommand extends Command
                 $symfonyStyle->writeln(sprintf('  Processing %s <-> %s...', $framework->getCode(), $targetFramework->getCode()));
 
                 $sourceRequirements = $this->entityManager->getRepository(ComplianceRequirement::class)
-                    ->findBy(['framework' => $framework]);
+                    ->findBy(['complianceFramework' => $framework]);
 
                 foreach ($sourceRequirements as $sourceRequirement) {
                     $sourceMapping = $sourceRequirement->getDataSourceMapping();
@@ -272,7 +265,7 @@ class CreateCrossFrameworkMappingsCommand extends Command
                     }
 
                     $targetRequirements = $this->entityManager->getRepository(ComplianceRequirement::class)
-                        ->findBy(['framework' => $targetFramework]);
+                        ->findBy(['complianceFramework' => $targetFramework]);
 
                     foreach ($targetRequirements as $targetRequirement) {
                         $targetMapping = $targetRequirement->getDataSourceMapping();
@@ -385,9 +378,7 @@ class CreateCrossFrameworkMappingsCommand extends Command
         if ($percentage >= 75) {
             return 'partial';
         }
-        else {
-            return 'weak';
-        }
+        return 'weak';
     }
 
     private function determineConfidence(string $frameworkCode): string

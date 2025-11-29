@@ -110,9 +110,7 @@ class GdprBreachAssessmentService
         if ($score < 7) {
             return 'high';
         }
-        else {
-            return 'very_high';
-        }
+        return 'very_high';
     }
 
     /**
@@ -153,9 +151,7 @@ class GdprBreachAssessmentService
         if ($affectedCount <= 10000) {
             return '1001_to_10000';
         }
-        else {
-            return 'over_10000';
-        }
+        return 'over_10000';
     }
 
     /**

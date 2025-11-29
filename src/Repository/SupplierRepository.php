@@ -158,7 +158,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant);
 
         // Include suppliers from all ancestors in the hierarchy
-        if (!empty($ancestors)) {
+        if ($ancestors !== []) {
             $queryBuilder->orWhere('s.tenant IN (:ancestors)')
                ->setParameter('ancestors', $ancestors);
         }
@@ -319,7 +319,7 @@ class SupplierRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant);
 
         // Include suppliers from all subsidiaries in the hierarchy
-        if (!empty($subsidiaries)) {
+        if ($subsidiaries !== []) {
             $queryBuilder->orWhere('s.tenant IN (:subsidiaries)')
                ->setParameter('subsidiaries', $subsidiaries);
         }

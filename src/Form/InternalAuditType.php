@@ -27,8 +27,8 @@ class InternalAuditType extends AbstractType
                 'label' => 'audit.field.title',
                 'attr' => ['class' => 'form-control', 'placeholder' => 'audit.placeholder.title'],
                 'constraints' => [
-                    new NotBlank(['message' => 'audit.validation.title_required']),
-                    new Length(['min' => 5, 'max' => 255]),
+                    new NotBlank(message: 'audit.validation.title_required'),
+                    new Length(min: 5, max: 255),
                 ],
             ])
             ->add('scope', TextareaType::class, [
@@ -78,7 +78,7 @@ class InternalAuditType extends AbstractType
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [
-                    new NotBlank(['message' => 'audit.validation.date_required']),
+                    new NotBlank(message: 'audit.validation.date_required'),
                 ],
             ])
             ->add('actualDate', DateType::class, [

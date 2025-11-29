@@ -195,7 +195,7 @@ class HomeController extends AbstractController
         }
 
         // Nach Zeit sortieren (neueste zuerst)
-        usort($activities, fn(array $a, array $b): int => strcmp((string) $b['time'], (string) $a['time']));
+        usort($activities, fn(array $a, array $b): int => strcmp($b['time'], $a['time']));
 
         return array_slice($activities, 0, 10);
     }

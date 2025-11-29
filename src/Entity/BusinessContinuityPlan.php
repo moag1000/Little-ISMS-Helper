@@ -37,10 +37,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ORM\Entity(repositoryClass: BusinessContinuityPlanRepository::class)]
 #[ORM\Table(name: 'business_continuity_plan')]
-#[ORM\Index(columns: ['status'], name: 'idx_bc_plan_status')]
-#[ORM\Index(columns: ['last_tested'], name: 'idx_bc_plan_last_tested')]
-#[ORM\Index(columns: ['next_review_date'], name: 'idx_bc_plan_next_review')]
-#[ORM\Index(columns: ['tenant_id'], name: 'idx_bc_plan_tenant')]
+#[ORM\Index(name: 'idx_bc_plan_status', columns: ['status'])]
+#[ORM\Index(name: 'idx_bc_plan_last_tested', columns: ['last_tested'])]
+#[ORM\Index(name: 'idx_bc_plan_next_review', columns: ['next_review_date'])]
+#[ORM\Index(name: 'idx_bc_plan_tenant', columns: ['tenant_id'])]
 #[ORM\HasLifecycleCallbacks]
 class BusinessContinuityPlan
 {

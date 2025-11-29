@@ -23,10 +23,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Phase 6F-B3: Risk treatment plan management for ISO 27001 compliance
  */
 #[ORM\Entity(repositoryClass: RiskTreatmentPlanRepository::class)]
-#[ORM\Index(columns: ['status'], name: 'idx_treatment_plan_status')]
-#[ORM\Index(columns: ['priority'], name: 'idx_treatment_plan_priority')]
-#[ORM\Index(columns: ['target_completion_date'], name: 'idx_treatment_plan_target')]
-#[ORM\Index(columns: ['tenant_id'], name: 'idx_treatment_plan_tenant')]
+#[ORM\Index(name: 'idx_treatment_plan_status', columns: ['status'])]
+#[ORM\Index(name: 'idx_treatment_plan_priority', columns: ['priority'])]
+#[ORM\Index(name: 'idx_treatment_plan_target', columns: ['target_completion_date'])]
+#[ORM\Index(name: 'idx_treatment_plan_tenant', columns: ['tenant_id'])]
 class RiskTreatmentPlan
 {
     #[ORM\Id]
@@ -141,7 +141,7 @@ class RiskTreatmentPlan
      */
     #[ORM\Column(type: Types::INTEGER)]
     #[Groups(['treatment_plan:read', 'treatment_plan:write'])]
-    #[Assert\Range(min: 0, max: 100, notInRangeMessage: 'Completion percentage must be between {{ min }} and {{ max }}')]
+    #[Assert\Range(notInRangeMessage: 'Completion percentage must be between {{ min }} and {{ max }}', min: 0, max: 100)]
     private int $completionPercentage = 0;
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE)]

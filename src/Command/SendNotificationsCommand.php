@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\Option;
 use DateTime;
 use DateTimeImmutable;
 use App\Repository\InternalAuditRepository;
@@ -13,36 +14,11 @@ use App\Repository\UserRepository;
 use App\Service\EmailNotificationService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(
-    name: 'app:send-notifications',
-    description: 'Send scheduled email notifications for due dates and reminders'
-)]
-class SendNotificationsCommand extends Command
-{
-    public function __construct(
-        private readonly InternalAuditRepository $internalAuditRepository,
-        private readonly TrainingRepository $trainingRepository,
-        private readonly IncidentRepository $incidentRepository,
-        private readonly ControlRepository $controlRepository,
-        private readonly WorkflowInstanceRepository $workflowInstanceRepository,
-        private readonly UserRepository $userRepository,
-        private readonly EmailNotificationService $emailNotificationService
-    ) {
-        parent::__construct();
-    }
-
-    protected function configure(): void
-    {
-        $this
-            ->addOption('type', 't', InputOption::VALUE_OPTIONAL, 'Notification type (audits, trainings, incidents, controls, workflows, all)', 'all')
-            ->addOption('days-ahead', 'd', InputOption::VALUE_OPTIONAL, 'Days ahead to check for upcoming items', 7)
-            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Dry run - show what would be sent without actually sending')
-            ->setHelp('This command sends scheduled email notifications for:
+#[AsCommand(name: 'app:send-notifications', description: 'Send scheduled email notifications for due dates and reminders', help: <<<'TXT'
+This command sends scheduled email notifications for:
 - Upcoming audits (within X days)
 - Upcoming trainings (within X days)
 - Open incidents (older than X days)
@@ -55,24 +31,31 @@ Usage:
 
 Recommended cron setup (daily at 8 AM):
   0 8 * * * php /path/to/bin/console app:send-notifications --type=all
-');
+
+TXT)]
+class SendNotificationsCommand
+{
+    public function __construct(private readonly InternalAuditRepository $internalAuditRepository, private readonly TrainingRepository $trainingRepository, private readonly IncidentRepository $incidentRepository, private readonly ControlRepository $controlRepository, private readonly WorkflowInstanceRepository $workflowInstanceRepository, private readonly UserRepository $userRepository, private readonly EmailNotificationService $emailNotificationService)
+    {
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(
+        #[Option(name: 'type', shortcut: 't', mode: InputOption::VALUE_OPTIONAL, description: 'Notification type (audits, trainings, incidents, controls, workflows, all)')]
+        string $type = 'all',
+        #[Option(name: 'days-ahead', shortcut: 'd', mode: InputOption::VALUE_OPTIONAL, description: 'Days ahead to check for upcoming items')]
+        int $daysAhead = 7,
+        #[Option(name: 'dry-run', mode: InputOption::VALUE_NONE, description: 'Dry run - show what would be sent without actually sending')]
+        bool $dryRun = false,
+        ?SymfonyStyle $symfonyStyle = null
+    ): int
     {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-        $type = $input->getOption('type');
-        $daysAhead = (int) $input->getOption('days-ahead');
-        $dryRun = $input->getOption('dry-run');
-
+        $daysAhead = (int) $days_ahead;
+        $dryRun = $dry_run;
         $symfonyStyle->title('ISMS Notification Service');
-
         if ($dryRun) {
             $symfonyStyle->warning('DRY RUN MODE - No emails will be sent');
         }
-
         $totalSent = 0;
-
         // Upcoming Audits
         if ($type === 'audits' || $type === 'all') {
             $symfonyStyle->section('Checking Upcoming Audits');
@@ -80,7 +63,6 @@ Recommended cron setup (daily at 8 AM):
             $totalSent += $sent;
             $symfonyStyle->success(sprintf('Sent %d audit notifications', $sent));
         }
-
         // Upcoming Trainings
         if ($type === 'trainings' || $type === 'all') {
             $symfonyStyle->section('Checking Upcoming Trainings');
@@ -88,7 +70,6 @@ Recommended cron setup (daily at 8 AM):
             $totalSent += $sent;
             $symfonyStyle->success(sprintf('Sent %d training notifications', $sent));
         }
-
         // Open Incidents
         if ($type === 'incidents' || $type === 'all') {
             $symfonyStyle->section('Checking Open Incidents');
@@ -96,7 +77,6 @@ Recommended cron setup (daily at 8 AM):
             $totalSent += $sent;
             $symfonyStyle->success(sprintf('Sent %d incident notifications', $sent));
         }
-
         // Controls Nearing Target Date
         if ($type === 'controls' || $type === 'all') {
             $symfonyStyle->section('Checking Controls Nearing Target Date');
@@ -104,7 +84,6 @@ Recommended cron setup (daily at 8 AM):
             $totalSent += $sent;
             $symfonyStyle->success(sprintf('Sent %d control notifications', $sent));
         }
-
         // Overdue Workflow Approvals
         if ($type === 'workflows' || $type === 'all') {
             $symfonyStyle->section('Checking Overdue Workflow Approvals');
@@ -117,9 +96,7 @@ Recommended cron setup (daily at 8 AM):
             $totalSent += $sent;
             $symfonyStyle->success(sprintf('Sent %d workflow deadline warnings', $sent));
         }
-
         $symfonyStyle->success(sprintf('Total notifications sent: %d', $totalSent));
-
         return Command::SUCCESS;
     }
 

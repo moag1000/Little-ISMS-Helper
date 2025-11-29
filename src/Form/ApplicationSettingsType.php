@@ -42,7 +42,7 @@ class ApplicationSettingsType extends AbstractType
                 'help' => 'admin.settings.application.supported_locales_help',
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Count(['min' => 1]),
+                    new Assert\Count(min: 1),
                 ],
             ])
 
@@ -58,7 +58,7 @@ class ApplicationSettingsType extends AbstractType
                 'help' => 'admin.settings.application.items_per_page_help',
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Range(['min' => 10, 'max' => 100]),
+                    new Assert\Range(min: 10, max: 100),
                 ],
             ])
             ->add('timezone', ChoiceType::class, [

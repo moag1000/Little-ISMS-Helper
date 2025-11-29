@@ -187,12 +187,17 @@ class RiskTreatmentPlanApprovalService
             return;
         }
 
-        $assignedUser = $currentStep->getAssignedUser();
-        $assignedRole = $currentStep->getAssignedRole();
+        $assignedUsers = $currentStep->getApproverUsers();
+        $assignedRole = $currentStep->getApproverRole();
 
-        // Send to specific user if assigned
-        if ($assignedUser) {
-            $this->sendNotificationToUser($riskTreatmentPlan, $assignedUser, $approvalLevel);
+        // Send to specific users if assigned
+        if ($assignedUsers && is_array($assignedUsers)) {
+            foreach ($assignedUsers as $userId) {
+                $user = $this->userRepository->find($userId);
+                if ($user) {
+                    $this->sendNotificationToUser($riskTreatmentPlan, $user, $approvalLevel);
+                }
+            }
         }
 
         // Send to all users with assigned role

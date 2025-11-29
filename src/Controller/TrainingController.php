@@ -178,7 +178,7 @@ class TrainingController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/training/{id}/delete', name: 'app_training_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/training/{id}/delete', name: 'app_training_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Training $training): Response
     {

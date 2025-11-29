@@ -312,7 +312,7 @@ class DocumentController extends AbstractController
         $binaryFileResponse = new BinaryFileResponse($filePath);
 
         // Security: Sanitize filename for content disposition header
-        $safeOriginalName = preg_replace('/[^\w\s\.\-]/', '', $document->getOriginalName());
+        $safeOriginalName = preg_replace('/[^\w\s\.\-]/', '', $document->getOriginalFilename());
         $binaryFileResponse->setContentDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             $safeOriginalName
@@ -352,7 +352,7 @@ class DocumentController extends AbstractController
         ]);
     }
 
-    #[Route('/document/{id}/delete', name: 'app_document_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/document/{id}/delete', name: 'app_document_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Document $document): Response
     {
@@ -386,7 +386,7 @@ class DocumentController extends AbstractController
         $allDocuments = $tenant ? $this->documentService->getDocumentsForTenant($tenant) : $this->documentRepository->findAll();
 
         // Filter by type
-        $documents = array_filter($allDocuments, fn(Document $document): bool => $document->getType() === $type);
+        $documents = array_filter($allDocuments, fn(Document $document): bool => $document->getMimeType() === $type);
 
         return $this->render('document/by_type.html.twig', [
             'documents' => $documents,

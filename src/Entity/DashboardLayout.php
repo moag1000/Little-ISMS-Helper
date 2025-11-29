@@ -20,8 +20,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity(repositoryClass: DashboardLayoutRepository::class)]
 #[ORM\Table(name: 'dashboard_layouts')]
-#[ORM\Index(columns: ['user_id'], name: 'idx_dashboard_user')]
-#[ORM\Index(columns: ['tenant_id'], name: 'idx_dashboard_tenant')]
+#[ORM\Index(name: 'idx_dashboard_user', columns: ['user_id'])]
+#[ORM\Index(name: 'idx_dashboard_tenant', columns: ['tenant_id'])]
 class DashboardLayout
 {
     #[ORM\Id]

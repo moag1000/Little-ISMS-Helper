@@ -31,7 +31,7 @@ class SecuritySettingsType extends AbstractType
                 'help' => 'admin.settings.security.session_lifetime_help',
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Range(['min' => 300, 'max' => 86400]),
+                    new Assert\Range(min: 300, max: 86400),
                 ],
             ])
             ->add('remember_me_lifetime', IntegerType::class, [
@@ -44,7 +44,7 @@ class SecuritySettingsType extends AbstractType
                 'help' => 'admin.settings.security.remember_me_lifetime_help',
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Range(['min' => 86400, 'max' => 7776000]),
+                    new Assert\Range(min: 86400, max: 7776000),
                 ],
             ])
 
@@ -59,7 +59,7 @@ class SecuritySettingsType extends AbstractType
                 'help' => 'admin.settings.security.password_min_length_help',
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Range(['min' => 8, 'max' => 128]),
+                    new Assert\Range(min: 8, max: 128),
                 ],
             ])
 
@@ -81,7 +81,7 @@ class SecuritySettingsType extends AbstractType
                 'help' => 'admin.settings.security.max_login_attempts_help',
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Range(['min' => 3, 'max' => 10]),
+                    new Assert\Range(min: 3, max: 10),
                 ],
             ])
             ->add('lockout_duration', IntegerType::class, [
@@ -94,7 +94,7 @@ class SecuritySettingsType extends AbstractType
                 'help' => 'admin.settings.security.lockout_duration_help',
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Range(['min' => 300, 'max' => 3600]),
+                    new Assert\Range(min: 300, max: 3600),
                 ],
             ])
         ;

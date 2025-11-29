@@ -25,12 +25,12 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ControlRepository::class)]
-#[ORM\Index(columns: ['control_id'], name: 'idx_control_control_id')]
-#[ORM\Index(columns: ['category'], name: 'idx_control_category')]
-#[ORM\Index(columns: ['implementation_status'], name: 'idx_control_impl_status')]
-#[ORM\Index(columns: ['target_date'], name: 'idx_control_target_date')]
-#[ORM\Index(columns: ['applicable'], name: 'idx_control_applicable')]
-#[ORM\Index(columns: ['tenant_id'], name: 'idx_control_tenant')]
+#[ORM\Index(name: 'idx_control_control_id', columns: ['control_id'])]
+#[ORM\Index(name: 'idx_control_category', columns: ['category'])]
+#[ORM\Index(name: 'idx_control_impl_status', columns: ['implementation_status'])]
+#[ORM\Index(name: 'idx_control_target_date', columns: ['target_date'])]
+#[ORM\Index(name: 'idx_control_applicable', columns: ['applicable'])]
+#[ORM\Index(name: 'idx_control_tenant', columns: ['tenant_id'])]
 #[ApiResource(
     operations: [
         new Get(
@@ -126,9 +126,9 @@ class Control
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     #[Groups(['control:read', 'control:write'])]
     #[Assert\Range(
+        notInRangeMessage: 'Implementation percentage must be between {{ min }} and {{ max }}',
         min: 0,
-        max: 100,
-        notInRangeMessage: 'Implementation percentage must be between {{ min }} and {{ max }}'
+        max: 100
     )]
     private ?int $implementationPercentage = 0;
 

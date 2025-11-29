@@ -26,9 +26,9 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TrainingRepository::class)]
-#[ORM\Index(columns: ['training_type'], name: 'idx_training_type')]
-#[ORM\Index(columns: ['status'], name: 'idx_training_status')]
-#[ORM\Index(columns: ['scheduled_date'], name: 'idx_training_scheduled_date')]
+#[ORM\Index(name: 'idx_training_type', columns: ['training_type'])]
+#[ORM\Index(name: 'idx_training_status', columns: ['status'])]
+#[ORM\Index(name: 'idx_training_scheduled_date', columns: ['scheduled_date'])]
 #[ApiResource(
     operations: [
         new Get(
@@ -172,7 +172,7 @@ class Training
     #[MaxDepth(1)]
     private Collection $complianceRequirements;
 
-    
+
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;

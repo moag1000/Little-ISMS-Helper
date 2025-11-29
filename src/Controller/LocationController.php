@@ -97,7 +97,7 @@ class LocationController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/location/{id}/delete', name: 'app_location_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/location/{id}/delete', name: 'app_location_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Location $location): Response
     {

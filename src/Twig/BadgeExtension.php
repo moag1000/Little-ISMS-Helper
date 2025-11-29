@@ -2,10 +2,7 @@
 
 namespace App\Twig;
 
-use Override;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
-
+use Twig\Attribute\AsTwigFunction;
 /**
  * Badge Extension for consistent badge rendering across templates
  *
@@ -16,7 +13,7 @@ use Twig\TwigFunction;
  *
  * @author Claude Code
  */
-class BadgeExtension extends AbstractExtension
+class BadgeExtension
 {
     /**
      * Severity level to Bootstrap color mapping
@@ -133,28 +130,13 @@ class BadgeExtension extends AbstractExtension
         'restricted' => 'danger',
     ];
 
-    #[Override]
-    public function getFunctions(): array
-    {
-        return [
-            new TwigFunction('badge_severity', $this->getSeverityBadgeClass(...)),
-            new TwigFunction('badge_status', $this->getStatusBadgeClass(...)),
-            new TwigFunction('badge_risk', $this->getRiskBadgeClass(...)),
-            new TwigFunction('badge_nis2', $this->getNis2BadgeClass(...)),
-            new TwigFunction('badge_action', $this->getActionBadgeClass(...)),
-            new TwigFunction('badge_classification', $this->getClassificationBadgeClass(...)),
-            new TwigFunction('badge_score', $this->getScoreBadgeClass(...)),
-            new TwigFunction('badge_completion', $this->getCompletionBadgeClass(...)),
-            new TwigFunction('badge_priority', $this->getPriorityBadgeClass(...)),
-        ];
-    }
-
     /**
      * Get Bootstrap badge class for severity level
      *
      * @param string|int $severity Severity level (critical/high/medium/low or 1-5)
      * @return string Bootstrap badge class (e.g., "badge bg-danger")
      */
+    #[AsTwigFunction('badge_severity')]
     public function getSeverityBadgeClass(string|int $severity): string
     {
         $severity = is_string($severity) ? strtolower($severity) : $severity;
@@ -168,6 +150,7 @@ class BadgeExtension extends AbstractExtension
      * @param string $status Status value
      * @return string Bootstrap badge class
      */
+    #[AsTwigFunction('badge_status')]
     public function getStatusBadgeClass(string $status): string
     {
         $status = strtolower($status);
@@ -181,6 +164,7 @@ class BadgeExtension extends AbstractExtension
      * @param string $riskLevel Risk level (critical/high/medium/low)
      * @return string Bootstrap badge class
      */
+    #[AsTwigFunction('badge_risk')]
     public function getRiskBadgeClass(string $riskLevel): string
     {
         $riskLevel = strtolower($riskLevel);
@@ -194,6 +178,7 @@ class BadgeExtension extends AbstractExtension
      * @param string $nis2Status NIS2 compliance status
      * @return string Bootstrap badge class
      */
+    #[AsTwigFunction('badge_nis2')]
     public function getNis2BadgeClass(string $nis2Status): string
     {
         $nis2Status = strtolower($nis2Status);
@@ -207,6 +192,7 @@ class BadgeExtension extends AbstractExtension
      * @param string $action Action type (create/update/delete/etc.)
      * @return string Bootstrap badge class
      */
+    #[AsTwigFunction('badge_action')]
     public function getActionBadgeClass(string $action): string
     {
         $action = strtolower($action);
@@ -220,6 +206,7 @@ class BadgeExtension extends AbstractExtension
      * @param string $classification Data classification level
      * @return string Bootstrap badge class
      */
+    #[AsTwigFunction('badge_classification')]
     public function getClassificationBadgeClass(string $classification): string
     {
         $classification = strtolower($classification);
@@ -241,6 +228,7 @@ class BadgeExtension extends AbstractExtension
      * @param int $warningThreshold Threshold for warning (default: 3)
      * @return string Bootstrap badge class
      */
+    #[AsTwigFunction('badge_score')]
     public function getScoreBadgeClass(int|float $score, int $dangerThreshold = 4, int $warningThreshold = 3): string
     {
         if ($score >= $dangerThreshold) {
@@ -268,6 +256,7 @@ class BadgeExtension extends AbstractExtension
      * @param int|float $percentage Completion percentage (0-100)
      * @return string Bootstrap badge class
      */
+    #[AsTwigFunction('badge_completion')]
     public function getCompletionBadgeClass(int|float $percentage): string
     {
         if ($percentage >= 100) {
@@ -289,6 +278,7 @@ class BadgeExtension extends AbstractExtension
      * @param string $priority Priority level (critical/high/medium/low)
      * @return string Bootstrap badge class
      */
+    #[AsTwigFunction('badge_priority')]
     public function getPriorityBadgeClass(string $priority): string
     {
         $priority = strtolower($priority);

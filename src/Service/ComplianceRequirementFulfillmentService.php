@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\Entity\CorporateGovernance;
+use App\Enum\GovernanceModel;
 use App\Entity\ComplianceRequirementFulfillment;
 use App\Entity\Tenant;
 use App\Entity\ComplianceRequirement;
@@ -43,7 +45,7 @@ class ComplianceRequirementFulfillmentService
         $parent = $tenant->getParent();
 
         // No parent or no corporate structure service - return own fulfillments only
-        if (!$parent instanceof Tenant || !$this->corporateStructureService instanceof CorporateStructureService || !$this->corporateGovernanceRepository) {
+        if (!$parent instanceof Tenant || !$this->corporateStructureService instanceof CorporateStructureService || !$this->corporateGovernanceRepository instanceof CorporateGovernanceRepository) {
             return $complianceFramework instanceof ComplianceFramework
                 ? $this->complianceRequirementFulfillmentRepository->findByFrameworkAndTenant($complianceFramework, $tenant)
                 : $this->complianceRequirementFulfillmentRepository->findByTenant($tenant);
@@ -52,7 +54,7 @@ class ComplianceRequirementFulfillmentService
         // Check governance model for compliance
         $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'compliance');
 
-        if (!$governance) {
+        if (!$governance instanceof CorporateGovernance) {
             // No specific governance for compliance - use default
             $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
@@ -60,12 +62,12 @@ class ComplianceRequirementFulfillmentService
         $governanceModel = $governance?->getGovernanceModel();
 
         // If hierarchical governance, include parent fulfillments
-        if ($governanceModel && $governanceModel->value === 'hierarchical') {
+        if ($governanceModel instanceof GovernanceModel && $governanceModel->value === 'hierarchical') {
             $fulfillments = $this->complianceRequirementFulfillmentRepository->findByTenantIncludingParent($tenant, $parent);
 
             // Filter by framework if specified
             if ($complianceFramework instanceof ComplianceFramework) {
-                return array_filter($fulfillments, fn($f): bool => $f->getRequirement()->getFramework()->id === $complianceFramework->id);
+                return array_filter($fulfillments, fn(ComplianceRequirementFulfillment $f): bool => $f->getRequirement()->getFramework()->id === $complianceFramework->id);
             }
 
             return $fulfillments;
@@ -87,7 +89,7 @@ class ComplianceRequirementFulfillmentService
     {
         $parent = $tenant->getParent();
 
-        if (!$parent instanceof Tenant || !$this->corporateGovernanceRepository) {
+        if (!$parent instanceof Tenant || !$this->corporateGovernanceRepository instanceof CorporateGovernanceRepository) {
             return [
                 'hasParent' => false,
                 'canInherit' => false,
@@ -97,12 +99,12 @@ class ComplianceRequirementFulfillmentService
 
         $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'compliance');
 
-        if (!$governance) {
+        if (!$governance instanceof CorporateGovernance) {
             $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
 
         $governanceModel = $governance?->getGovernanceModel();
-        $canInherit = $governanceModel && $governanceModel->value === 'hierarchical';
+        $canInherit = $governanceModel instanceof GovernanceModel && $governanceModel->value === 'hierarchical';
 
         return [
             'hasParent' => true,

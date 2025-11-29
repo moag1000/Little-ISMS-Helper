@@ -25,13 +25,13 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: IncidentRepository::class)]
-#[ORM\Index(columns: ['incident_number'], name: 'idx_incident_number')]
-#[ORM\Index(columns: ['severity'], name: 'idx_incident_severity')]
-#[ORM\Index(columns: ['status'], name: 'idx_incident_status')]
-#[ORM\Index(columns: ['category'], name: 'idx_incident_category')]
-#[ORM\Index(columns: ['detected_at'], name: 'idx_incident_detected_at')]
-#[ORM\Index(columns: ['data_breach_occurred'], name: 'idx_incident_data_breach')]
-#[ORM\Index(columns: ['tenant_id'], name: 'idx_incident_tenant')]
+#[ORM\Index(name: 'idx_incident_number', columns: ['incident_number'])]
+#[ORM\Index(name: 'idx_incident_severity', columns: ['severity'])]
+#[ORM\Index(name: 'idx_incident_status', columns: ['status'])]
+#[ORM\Index(name: 'idx_incident_category', columns: ['category'])]
+#[ORM\Index(name: 'idx_incident_detected_at', columns: ['detected_at'])]
+#[ORM\Index(name: 'idx_incident_data_breach', columns: ['data_breach_occurred'])]
+#[ORM\Index(name: 'idx_incident_tenant', columns: ['tenant_id'])]
 #[ApiResource(
     operations: [
         new Get(
@@ -988,6 +988,24 @@ class Incident
         $now = new DateTimeImmutable();
         $diff = $now->diff($deadline);
         return $diff->invert ? 0 : $diff->days;
+    }
+
+    /**
+     * Get hours until final report deadline (for NIS2 one-month deadline)
+     */
+    #[Groups(['incident:read'])]
+    public function getHoursUntilFinalReportDeadline(): float
+    {
+        if ($this->finalReportSubmittedAt instanceof DateTimeImmutable) {
+            return 0;
+        }
+        $deadline = $this->getFinalReportDeadline();
+        if (!$deadline instanceof DateTimeImmutable) {
+            return 0; // No deadline if detectedAt is not set
+        }
+        $now = new DateTimeImmutable();
+        $diff = $deadline->getTimestamp() - $now->getTimestamp();
+        return $diff / 3600; // Convert seconds to hours
     }
 
     /**

@@ -26,7 +26,7 @@ class ComplianceRequirementType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_requirement.validation.framework_required'])
+                    new Assert\NotBlank(message: 'compliance_requirement.validation.framework_required')
                 ],
                 'help' => 'compliance_requirement.help.framework'
             ])
@@ -37,11 +37,8 @@ class ComplianceRequirementType extends AbstractType
                     'placeholder' => 'compliance_requirement.placeholder.requirement_id'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_requirement.validation.requirement_id_required']),
-                    new Assert\Length([
-                        'max' => 50,
-                        'maxMessage' => 'compliance_requirement.validation.requirement_id_max_length'
-                    ])
+                    new Assert\NotBlank(message: 'compliance_requirement.validation.requirement_id_required'),
+                    new Assert\Length(max: 50, maxMessage: 'compliance_requirement.validation.requirement_id_max_length')
                 ],
                 'help' => 'compliance_requirement.help.requirement_id'
             ])
@@ -52,11 +49,8 @@ class ComplianceRequirementType extends AbstractType
                     'placeholder' => 'compliance_requirement.placeholder.title'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_requirement.validation.title_required']),
-                    new Assert\Length([
-                        'max' => 255,
-                        'maxMessage' => 'compliance_requirement.validation.title_max_length'
-                    ])
+                    new Assert\NotBlank(message: 'compliance_requirement.validation.title_required'),
+                    new Assert\Length(max: 255, maxMessage: 'compliance_requirement.validation.title_max_length')
                 ]
             ])
             ->add('description', TextareaType::class, [
@@ -67,7 +61,7 @@ class ComplianceRequirementType extends AbstractType
                     'placeholder' => 'compliance_requirement.placeholder.description'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_requirement.validation.description_required'])
+                    new Assert\NotBlank(message: 'compliance_requirement.validation.description_required')
                 ]
             ])
             ->add('category', TextType::class, [
@@ -78,10 +72,7 @@ class ComplianceRequirementType extends AbstractType
                     'placeholder' => 'compliance_requirement.placeholder.category'
                 ],
                 'constraints' => [
-                    new Assert\Length([
-                        'max' => 100,
-                        'maxMessage' => 'compliance_requirement.validation.category_max_length'
-                    ])
+                    new Assert\Length(max: 100, maxMessage: 'compliance_requirement.validation.category_max_length')
                 ],
                 'help' => 'compliance_requirement.help.category'
             ])
@@ -98,7 +89,7 @@ class ComplianceRequirementType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_requirement.validation.priority_required'])
+                    new Assert\NotBlank(message: 'compliance_requirement.validation.priority_required')
                 ]
             ])
             ->add('requirementType', ChoiceType::class, [
@@ -113,7 +104,7 @@ class ComplianceRequirementType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_requirement.validation.requirement_type_required'])
+                    new Assert\NotBlank(message: 'compliance_requirement.validation.requirement_type_required')
                 ],
                 'help' => 'compliance_requirement.help.requirement_type'
             ])

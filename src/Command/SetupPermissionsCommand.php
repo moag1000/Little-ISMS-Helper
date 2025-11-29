@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\Option;
 use Exception;
 use App\Entity\Permission;
 use App\Entity\Role;
@@ -12,9 +13,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -22,33 +21,27 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
     name: 'app:setup-permissions',
     description: 'Initialize default permissions, roles and admin user',
 )]
-class SetupPermissionsCommand extends Command
+class SetupPermissionsCommand
 {
-    public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly PermissionRepository $permissionRepository,
-        private readonly RoleRepository $roleRepository,
-        private readonly UserRepository $userRepository,
-        private readonly UserPasswordHasherInterface $userPasswordHasher
-    ) {
-        parent::__construct();
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly PermissionRepository $permissionRepository, private readonly RoleRepository $roleRepository, private readonly UserRepository $userRepository, private readonly UserPasswordHasherInterface $userPasswordHasher)
+    {
     }
 
-    protected function configure(): void
+    public function __invoke(
+        #[Option(name: 'reset', mode: InputOption::VALUE_NONE, description: 'Reset all permissions and roles (WARNING: deletes existing data)')]
+        bool $reset = false,
+        #[Option(name: 'admin-email', mode: InputOption::VALUE_REQUIRED, description: 'Create admin user with this email')]
+        $adminEmail = null,
+        #[Option(name: 'admin-password', mode: InputOption::VALUE_REQUIRED, description: 'Password for admin user')]
+        $adminPassword = null,
+        #[Option(name: 'admin-firstname', mode: InputOption::VALUE_OPTIONAL, description: 'First name for admin user')]
+        string $adminFirstname = 'Admin',
+        #[Option(name: 'admin-lastname', mode: InputOption::VALUE_OPTIONAL, description: 'Last name for admin user')]
+        string $adminLastname = 'User',
+        ?SymfonyStyle $symfonyStyle = null
+    ): int
     {
-        $this
-            ->addOption('reset', null, InputOption::VALUE_NONE, 'Reset all permissions and roles (WARNING: deletes existing data)')
-            ->addOption('admin-email', null, InputOption::VALUE_REQUIRED, 'Create admin user with this email')
-            ->addOption('admin-password', null, InputOption::VALUE_REQUIRED, 'Password for admin user')
-            ->addOption('admin-firstname', null, InputOption::VALUE_OPTIONAL, 'First name for admin user', 'Admin')
-            ->addOption('admin-lastname', null, InputOption::VALUE_OPTIONAL, 'Last name for admin user', 'User');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-
-        if ($input->getOption('reset')) {
+        if ($reset) {
             if (!$symfonyStyle->confirm('This will delete all existing permissions and roles. Continue?', false)) {
                 $symfonyStyle->warning('Operation cancelled.');
                 return Command::SUCCESS;
@@ -57,13 +50,10 @@ class SetupPermissionsCommand extends Command
             $this->resetPermissions();
             $symfonyStyle->success('Reset completed.');
         }
-
         $symfonyStyle->title('Setting up Permissions and Roles');
-
         // Ensure EntityManager is in a clean state (important when called from web context)
         // Roll back ALL nested transactions/savepoints, not just one level
         $connection = $this->entityManager->getConnection();
-
         // Get transaction nesting level (Doctrine uses this internally)
         while ($connection->isTransactionActive()) {
             try {
@@ -79,32 +69,26 @@ class SetupPermissionsCommand extends Command
                 break; // Exit loop to avoid infinite attempts
             }
         }
-
         // Clear EntityManager to reset any cached state
         $this->entityManager->clear();
-
         // Create permissions
         $symfonyStyle->section('Creating Permissions');
         $this->createPermissions($symfonyStyle);
-
         // Create roles
         $symfonyStyle->section('Creating Roles');
         $this->createRoles($symfonyStyle);
-
         // Create admin user if requested
-        if ($input->getOption('admin-email') && $input->getOption('admin-password')) {
+        if ($admin_email && $admin_password) {
             $symfonyStyle->section('Creating Admin User');
             $this->createAdminUser(
-                $input->getOption('admin-email'),
-                $input->getOption('admin-password'),
-                $input->getOption('admin-firstname'),
-                $input->getOption('admin-lastname'),
+                $admin_email,
+                $admin_password,
+                $admin_firstname,
+                $admin_lastname,
                 $symfonyStyle
             );
         }
-
         $symfonyStyle->success('Permissions and roles setup completed successfully!');
-
         return Command::SUCCESS;
     }
 

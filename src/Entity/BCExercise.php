@@ -36,10 +36,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ORM\Entity(repositoryClass: BCExerciseRepository::class)]
 #[ORM\Table(name: 'bc_exercise')]
-#[ORM\Index(columns: ['exercise_type'], name: 'idx_bc_exercise_type')]
-#[ORM\Index(columns: ['exercise_date'], name: 'idx_bc_exercise_date')]
-#[ORM\Index(columns: ['status'], name: 'idx_bc_exercise_status')]
-#[ORM\Index(columns: ['tenant_id'], name: 'idx_bc_exercise_tenant')]
+#[ORM\Index(name: 'idx_bc_exercise_type', columns: ['exercise_type'])]
+#[ORM\Index(name: 'idx_bc_exercise_date', columns: ['exercise_date'])]
+#[ORM\Index(name: 'idx_bc_exercise_status', columns: ['status'])]
+#[ORM\Index(name: 'idx_bc_exercise_tenant', columns: ['tenant_id'])]
 #[ORM\HasLifecycleCallbacks]
 class BCExercise
 {

@@ -28,9 +28,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity(repositoryClass: DataProtectionImpactAssessmentRepository::class)]
 #[ORM\Table(name: 'data_protection_impact_assessment')]
-#[ORM\Index(columns: ['tenant_id'], name: 'idx_dpia_tenant')]
-#[ORM\Index(columns: ['status'], name: 'idx_dpia_status')]
-#[ORM\Index(columns: ['risk_level'], name: 'idx_dpia_risk_level')]
+#[ORM\Index(name: 'idx_dpia_tenant', columns: ['tenant_id'])]
+#[ORM\Index(name: 'idx_dpia_status', columns: ['status'])]
+#[ORM\Index(name: 'idx_dpia_risk_level', columns: ['risk_level'])]
 class DataProtectionImpactAssessment
 {
     #[ORM\Id]

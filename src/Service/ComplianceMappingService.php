@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\ComplianceMapping;
 use App\Entity\ComplianceRequirement;
 use App\Repository\AssetRepository;
 use App\Repository\BusinessProcessRepository;
@@ -25,7 +26,8 @@ class ComplianceMappingService
         private readonly IncidentRepository $incidentRepository,
         private readonly InternalAuditRepository $internalAuditRepository,
         private readonly ComplianceRequirementFulfillmentService $complianceRequirementFulfillmentService,
-        private readonly TenantContext $tenantContext
+        private readonly TenantContext $tenantContext,
+        private readonly MappingQualityAnalysisService $mappingQualityAnalysisService
     ) {}
 
     /**
@@ -239,9 +241,7 @@ class ComplianceMappingService
         if ($ratio >= 0.5) {
             return 'medium';
         }
-        else {
-            return 'low';
-        }
+        return 'low';
     }
 
     /**
@@ -286,5 +286,15 @@ class ComplianceMappingService
             'estimated_hours_saved' => $hoursSaved,
             'confidence' => $analysis['confidence'],
         ];
+    }
+
+    /**
+     * Analyze mapping quality (delegates to MappingQualityAnalysisService)
+     *
+     * @return array Analysis results
+     */
+    public function analyzeMappingQuality(ComplianceMapping $complianceMapping): array
+    {
+        return $this->mappingQualityAnalysisService->analyzeMappingQuality($complianceMapping);
     }
 }

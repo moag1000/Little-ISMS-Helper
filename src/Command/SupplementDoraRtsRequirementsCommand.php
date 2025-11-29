@@ -9,36 +9,28 @@ use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:supplement-dora-rts-requirements',
     description: 'Supplement DORA with additional RTS (Regulatory Technical Standards) requirements'
 )]
-class SupplementDoraRtsRequirementsCommand extends Command
+class SupplementDoraRtsRequirementsCommand
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
-        parent::__construct();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(SymfonyStyle $symfonyStyle): int
     {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-
         // Get existing DORA framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'DORA']);
-
         if (!$framework instanceof ComplianceFramework) {
             $symfonyStyle->error('DORA framework not found. Please run app:load-dora-requirements first.');
             return Command::FAILURE;
         }
-
         $symfonyStyle->info('Adding RTS (Regulatory Technical Standards) requirements to DORA framework...');
-
         try {
             $this->entityManager->beginTransaction();
 
@@ -50,7 +42,7 @@ class SupplementDoraRtsRequirementsCommand extends Command
                 $existing = $this->entityManager
                     ->getRepository(ComplianceRequirement::class)
                     ->findOneBy([
-                        'framework' => $framework,
+                        'complianceFramework' => $framework,
                         'requirementId' => $rtRequirement['id']
                     ]);
 
@@ -84,7 +76,6 @@ class SupplementDoraRtsRequirementsCommand extends Command
             $symfonyStyle->error('Failed to supplement DORA RTS requirements: ' . $e->getMessage());
             return Command::FAILURE;
         }
-
         return Command::SUCCESS;
     }
 

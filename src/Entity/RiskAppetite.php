@@ -19,9 +19,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Phase 6F-B2: Risk appetite management for ISO 27001 compliance
  */
 #[ORM\Entity(repositoryClass: RiskAppetiteRepository::class)]
-#[ORM\Index(columns: ['category'], name: 'idx_risk_appetite_category')]
-#[ORM\Index(columns: ['is_active'], name: 'idx_risk_appetite_active')]
-#[ORM\Index(columns: ['tenant_id'], name: 'idx_risk_appetite_tenant')]
+#[ORM\Index(name: 'idx_risk_appetite_category', columns: ['category'])]
+#[ORM\Index(name: 'idx_risk_appetite_active', columns: ['is_active'])]
+#[ORM\Index(name: 'idx_risk_appetite_tenant', columns: ['tenant_id'])]
 class RiskAppetite
 {
     #[ORM\Id]
@@ -56,9 +56,9 @@ class RiskAppetite
     #[Groups(['risk_appetite:read', 'risk_appetite:write'])]
     #[Assert\NotNull(message: 'Maximum acceptable risk level is required')]
     #[Assert\Range(
+        notInRangeMessage: 'Maximum acceptable risk must be between {{ min }} and {{ max }}',
         min: 1,
-        max: 25,
-        notInRangeMessage: 'Maximum acceptable risk must be between {{ min }} and {{ max }}'
+        max: 25
     )]
     private ?int $maxAcceptableRisk = null;
 
@@ -241,9 +241,7 @@ class RiskAppetite
         if ($riskScore <= $this->maxAcceptableRisk * 1.5) {
             return 'review_required';
         }
-        else {
-            return 'exceeds_appetite';
-        }
+        return 'exceeds_appetite';
     }
 
     /**
@@ -276,6 +274,6 @@ class RiskAppetite
     #[Groups(['risk_appetite:read'])]
     public function isApproved(): bool
     {
-        return $this->user !== null && $this->approvedAt instanceof DateTimeInterface;
+        return $this->user instanceof User && $this->approvedAt instanceof DateTimeInterface;
     }
 }

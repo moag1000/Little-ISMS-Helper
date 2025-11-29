@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use DateMalformedStringException;
 use DateTime;
 use App\Entity\Risk;
 use App\Entity\Incident;
@@ -47,7 +48,9 @@ class RiskProbabilityAdjustmentService
      *
      * Safe Guard: Only increases probability, never decreases
      *
+     * @param Risk $risk
      * @return int|null Suggested probability (1-5) or null if no adjustment needed
+     * @throws DateMalformedStringException
      */
     public function calculateSuggestedProbability(Risk $risk): ?int
     {
@@ -85,7 +88,7 @@ class RiskProbabilityAdjustmentService
      * Safe Guard: Only closed incidents older than 30 days
      *
      * @return Incident[]
-     * @throws \DateMalformedStringException
+     * @throws DateMalformedStringException
      */
     private function getEligibleIncidents(Risk $risk): array
     {
@@ -197,7 +200,9 @@ class RiskProbabilityAdjustmentService
     /**
      * Get detailed probability adjustment analysis
      *
+     * @param Risk $risk
      * @return array{current_probability: int, suggested_probability: int|null, eligible_incidents: int, total_incidents: int, frequency_analysis: array, should_adjust: bool, rationale: string}
+     * @throws DateMalformedStringException
      */
     public function analyzeProbabilityAdjustment(Risk $risk): array
     {
@@ -312,7 +317,11 @@ class RiskProbabilityAdjustmentService
      * Safe Guard: Requires user confirmation, never auto-applies
      * Safe Guard: Only allows increase, users can manually decrease if needed
      *
+     * @param Risk $risk
+     * @param int $newProbability
+     * @param bool $userConfirmed
      * @return array{success: bool, message: string, old_probability: int, new_probability: int|null}
+     * @throws DateMalformedStringException
      */
     public function applyProbabilityAdjustment(Risk $risk, int $newProbability, bool $userConfirmed = false): array
     {
