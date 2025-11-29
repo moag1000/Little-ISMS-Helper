@@ -32,13 +32,13 @@ class ConsentType extends AbstractType
                 'help' => 'consent.form.data_subject_identifier_help',
             ])
             ->add('identifierType', ChoiceType::class, [
-                'label' => 'consent.form.identifier_type',
+                'label' => 'consent.form.identifier_type_label',
                 'choices' => [
-                    'consent.form.identifier_type.email' => 'email',
-                    'consent.form.identifier_type.customer_id' => 'customer_id',
-                    'consent.form.identifier_type.pseudonym' => 'pseudonym',
-                    'consent.form.identifier_type.phone' => 'phone',
-                    'consent.form.identifier_type.other' => 'other',
+                    'consent.form.identifier_type_options.email' => 'email',
+                    'consent.form.identifier_type_options.customer_id' => 'customer_id',
+                    'consent.form.identifier_type_options.pseudonym' => 'pseudonym',
+                    'consent.form.identifier_type_options.phone' => 'phone',
+                    'consent.form.identifier_type_options.other' => 'other',
                 ],
                 'attr' => ['class' => 'form-select'],
             ])
@@ -62,11 +62,11 @@ class ConsentType extends AbstractType
             ->add('purposes', ChoiceType::class, [
                 'label' => 'consent.form.purposes',
                 'choices' => [
-                    'consent.form.purposes.marketing' => 'marketing',
-                    'consent.form.purposes.profiling' => 'profiling',
-                    'consent.form.purposes.analytics' => 'analytics',
-                    'consent.form.purposes.newsletter' => 'newsletter',
-                    'consent.form.purposes.personalization' => 'personalization',
+                    'consent.form.purposes_options.marketing' => 'marketing',
+                    'consent.form.purposes_options.profiling' => 'profiling',
+                    'consent.form.purposes_options.analytics' => 'analytics',
+                    'consent.form.purposes_options.newsletter' => 'newsletter',
+                    'consent.form.purposes_options.personalization' => 'personalization',
                 ],
                 'multiple' => true,
                 'required' => false,
@@ -86,24 +86,24 @@ class ConsentType extends AbstractType
             ->add('consentMethod', ChoiceType::class, [
                 'label' => 'consent.form.consent_method',
                 'choices' => [
-                    'consent.form.consent_method.double_opt_in' => 'double_opt_in',
-                    'consent.form.consent_method.written_form' => 'written_form',
-                    'consent.form.consent_method.checkbox' => 'checkbox',
-                    'consent.form.consent_method.oral' => 'oral',
-                    'consent.form.consent_method.email' => 'email',
-                    'consent.form.consent_method.other' => 'other',
+                    'consent.form.consent_method_options.double_opt_in' => 'double_opt_in',
+                    'consent.form.consent_method_options.written_form' => 'written_form',
+                    'consent.form.consent_method_options.checkbox' => 'checkbox',
+                    'consent.form.consent_method_options.oral' => 'oral',
+                    'consent.form.consent_method_options.email' => 'email',
+                    'consent.form.consent_method_options.other' => 'other',
                 ],
                 'attr' => ['class' => 'form-select'],
             ])
             ->add('consentChannel', ChoiceType::class, [
                 'label' => 'consent.form.consent_channel',
                 'choices' => [
-                    'consent.form.consent_channel.website' => 'website',
-                    'consent.form.consent_channel.email' => 'email',
-                    'consent.form.consent_channel.paper_form' => 'paper_form',
-                    'consent.form.consent_channel.phone' => 'phone',
-                    'consent.form.consent_channel.in_person' => 'in_person',
-                    'consent.form.consent_channel.other' => 'other',
+                    'consent.form.consent_channel_options.website' => 'website',
+                    'consent.form.consent_channel_options.email' => 'email',
+                    'consent.form.consent_channel_options.paper_form' => 'paper_form',
+                    'consent.form.consent_channel_options.phone' => 'phone',
+                    'consent.form.consent_channel_options.in_person' => 'in_person',
+                    'consent.form.consent_channel_options.other' => 'other',
                 ],
                 'required' => false,
                 'attr' => ['class' => 'form-select'],
