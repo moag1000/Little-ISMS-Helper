@@ -1030,4 +1030,64 @@ class ProcessingActivity
         $this->updatedBy = $user;
         return $this;
     }
+
+    /**
+     * @return Collection<int, Consent>
+     */
+    public function getConsents(): Collection
+    {
+        return $this->consents;
+    }
+
+    public function addConsent(Consent $consent): static
+    {
+        if (!$this->consents->contains($consent)) {
+            $this->consents->add($consent);
+            $consent->setProcessingActivity($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConsent(Consent $consent): static
+    {
+        if ($this->consents->removeElement($consent)) {
+            if ($consent->getProcessingActivity() === $this) {
+                $consent->setProcessingActivity(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Check if processing activity has valid consents
+     * Required when legalBasis = 'consent' (Art. 6(1)(a) GDPR)
+     */
+    public function hasValidConsents(): bool
+    {
+        if ($this->legalBasis !== 'consent') {
+            return true; // Not based on consent
+        }
+
+        $activeConsents = $this->consents->filter(
+            fn(Consent $c) => $c->getStatus() === 'active'
+                && $c->isVerifiedByDpo()
+                && !$c->isRevoked()
+        );
+
+        return $activeConsents->count() > 0;
+    }
+
+    /**
+     * Get count of active verified consents
+     */
+    public function getActiveConsentCount(): int
+    {
+        return $this->consents->filter(
+            fn(Consent $c) => $c->getStatus() === 'active'
+                && $c->isVerifiedByDpo()
+                && !$c->isRevoked()
+        )->count();
+    }
 }
