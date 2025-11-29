@@ -31,6 +31,7 @@ risk:
     field:
         title: Risikobezeichnung
         score: Risikobewertung
+        level: Risikostufe
         treatment_strategy: Behandlungsstrategie
         status: Status
         asset: 'Betroffenes Asset'
@@ -239,6 +240,33 @@ risk:
         treatment_description: 'Beschreiben Sie die geplanten Behandlungsmaßnahmen...'
         acceptance_approved_by: 'Name der genehmigenden Person'
         acceptance_justification: 'Begründung für die Akzeptanz des Restrisikos...'
+    # Risk Slider Component
+    probability:
+        rare: 'Selten'
+        unlikely: 'Unwahrscheinlich'
+        possible: 'Möglich'
+        likely: 'Wahrscheinlich'
+        almost_certain: 'Fast sicher'
+    impact:
+        negligible: 'Vernachlässigbar'
+        minor: 'Gering'
+        moderate: 'Moderat'
+        major: 'Erheblich'
+        severe: 'Schwerwiegend'
+    level:
+        low: 'Niedriges Risiko'
+        medium: 'Mittleres Risiko'
+        high: 'Hohes Risiko'
+        critical: 'Kritisches Risiko'
+    presets: 'Schnellauswahl'
+    preset:
+        low: 'Niedriges Risiko setzen'
+        medium: 'Mittleres Risiko setzen'
+        high: 'Hohes Risiko setzen'
+        critical: 'Kritisches Risiko setzen'
+    show_matrix: 'Risikomatrix anzeigen'
+    matrix_help: 'Klicken Sie auf eine Zelle, um Wahrscheinlichkeit und Auswirkung direkt zu setzen'
+
 risk_management:
     title: Titel
     description: Beschreibung

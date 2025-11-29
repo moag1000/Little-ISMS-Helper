@@ -1,0 +1,167 @@
+{# Data Breach 72h Deadline Reminder Email Template #}
+{% extends 'emails/base.html.twig' %}
+
+{% block subject %}[{{ urgency_level }}] Data Breach 72h Notification Deadline: {{ breach.title }}{% endblock %}
+
+{% block content %}
+    {% if urgency_level == 'OVERDUE' %}
+        <div style="background-color: #f8d7da; border: 2px solid #dc3545; padding: 20px; margin-bottom: 20px; text-align: center;">
+            <h2 style="color: #dc3545; margin: 0;">🔴 GDPR 72h DEADLINE EXCEEDED</h2>
+            <p style="color: #721c24; margin: 10px 0 0 0; font-size: 1.1em;">
+                The supervisory authority notification deadline has passed!
+            </p>
+        </div>
+    {% elseif urgency_level == 'CRITICAL' %}
+        <div style="background-color: #fff3cd; border: 2px solid #fd7e14; padding: 20px; margin-bottom: 20px; text-align: center;">
+            <h2 style="color: #fd7e14; margin: 0;">🟠 CRITICAL: Less than 12 hours remaining</h2>
+            <p style="color: #856404; margin: 10px 0 0 0; font-size: 1.1em;">
+                Immediate action required to meet GDPR Art. 33 deadline!
+            </p>
+        </div>
+    {% else %}
+        <div style="background-color: #fff3cd; border: 2px solid #ffc107; padding: 20px; margin-bottom: 20px; text-align: center;">
+            <h2 style="color: #856404; margin: 0;">🟡 WARNING: Notification deadline approaching</h2>
+            <p style="color: #856404; margin: 10px 0 0 0; font-size: 1.1em;">
+                Action required within {{ hours_remaining }} hours
+            </p>
+        </div>
+    {% endif %}
+
+    <h2>Data Breach Notification Required</h2>
+
+    <p>Dear Data Protection Officer,</p>
+
+    <p>
+        A data breach has been reported that requires notification to the supervisory authority under
+        <strong>GDPR Article 33</strong>. The 72-hour notification deadline is
+        {% if hours_remaining < 0 %}
+            <strong style="color: #dc3545;">{{ hours_remaining|abs }} hours overdue</strong>.
+        {% else %}
+            <strong style="color: {{ hours_remaining < 12 ? '#fd7e14' : '#ffc107' }};">{{ hours_remaining }} hours away</strong>.
+        {% endif %}
+    </p>
+
+    <div style="background-color: #f8f9fa; border-left: 4px solid {% if urgency_level == 'OVERDUE' %}#dc3545{% elseif urgency_level == 'CRITICAL' %}#fd7e14{% else %}#ffc107{% endif %}; padding: 15px; margin: 20px 0;">
+        <h3 style="margin-top: 0;">Breach Details</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold; width: 180px;">Reference Number:</td>
+                <td style="padding: 8px 0;"><strong>{{ breach.referenceNumber }}</strong></td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Title:</td>
+                <td style="padding: 8px 0;">{{ breach.title }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Severity:</td>
+                <td style="padding: 8px 0;">
+                    <span style="color: {% if breach.severity == 'critical' %}#dc3545{% elseif breach.severity == 'high' %}#fd7e14{% elseif breach.severity == 'medium' %}#ffc107{% else %}#28a745{% endif %}; font-weight: bold; text-transform: uppercase;">
+                        {{ breach.severity }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Detected At:</td>
+                <td style="padding: 8px 0;">{{ breach.effectiveDetectedAt|date('d.m.Y H:i') }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Notification Deadline:</td>
+                <td style="padding: 8px 0;">
+                    <strong style="color: {% if hours_remaining < 0 %}#dc3545{% elseif hours_remaining < 12 %}#fd7e14{% else %}#ffc107{% endif %};">
+                        {{ deadline|date('d.m.Y H:i') }}
+                    </strong>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Affected Data Subjects:</td>
+                <td style="padding: 8px 0;">{{ breach.affectedDataSubjects ?? 'Unknown' }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Status:</td>
+                <td style="padding: 8px 0;">{{ breach.status|replace({'_': ' '})|capitalize }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <h3>GDPR Art. 33 Requirements</h3>
+
+    <p>The notification to the supervisory authority must include (Art. 33(3)):</p>
+
+    <ol>
+        <li>
+            <strong>Nature of the breach</strong> - Categories of data and data subjects affected
+            {% if breach.dataCategories|length > 0 and breach.dataSubjectCategories|length > 0 %}
+                <span style="color: #28a745;">✓ Documented</span>
+            {% else %}
+                <span style="color: #dc3545;">✗ Incomplete</span>
+            {% endif %}
+        </li>
+        <li>
+            <strong>DPO contact details</strong> - Name and contact information
+            {% if breach.dataProtectionOfficer %}
+                <span style="color: #28a745;">✓ Assigned</span>
+            {% else %}
+                <span style="color: #dc3545;">✗ Not assigned</span>
+            {% endif %}
+        </li>
+        <li>
+            <strong>Likely consequences</strong> - Description of potential impacts
+            {% if breach.likelyConsequences %}
+                <span style="color: #28a745;">✓ Documented</span>
+            {% else %}
+                <span style="color: #dc3545;">✗ Missing</span>
+            {% endif %}
+        </li>
+        <li>
+            <strong>Measures taken</strong> - Actions to address and mitigate the breach
+            {% if breach.measuresTaken %}
+                <span style="color: #28a745;">✓ Documented</span>
+            {% else %}
+                <span style="color: #dc3545;">✗ Missing</span>
+            {% endif %}
+        </li>
+    </ol>
+
+    <div style="text-align: center; margin: 30px 0;">
+        <a href="{{ app.request.schemeAndHttpHost }}/{{ app.request.locale }}/data-breach/{{ breach.id }}"
+           style="display: inline-block; padding: 15px 40px; background-color: {% if urgency_level == 'OVERDUE' %}#dc3545{% else %}#fd7e14{% endif %}; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 1.1em;">
+            Complete Breach Documentation Now
+        </a>
+    </div>
+
+    {% if urgency_level == 'OVERDUE' %}
+    <div style="background-color: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; margin: 20px 0;">
+        <h4 style="margin-top: 0; color: #721c24;">⚠️ Deadline Exceeded - Required Actions</h4>
+        <ol style="margin-bottom: 0;">
+            <li><strong>Notify immediately</strong> - Contact the supervisory authority as soon as possible</li>
+            <li><strong>Document the delay</strong> - Record the reasons for the delay (Art. 33(1))</li>
+            <li><strong>Provide complete information</strong> - Even if notifying late, all required information must be provided</li>
+            <li><strong>Consult legal counsel</strong> - Consider seeking legal advice regarding potential penalties</li>
+        </ol>
+    </div>
+    {% endif %}
+
+    <div style="background-color: #e7f3ff; border-left: 4px solid #007bff; padding: 15px; margin: 20px 0;">
+        <h4 style="margin-top: 0;">Supervisory Authority Contact (Germany)</h4>
+        <p style="margin-bottom: 5px;"><strong>National:</strong> BfDI (Bundesbeauftragter für den Datenschutz)</p>
+        <p style="margin-bottom: 5px;">Website: <a href="https://www.bfdi.bund.de">www.bfdi.bund.de</a></p>
+        <p style="margin-bottom: 0; font-size: 0.9em; color: #6c757d;">
+            Note: You may need to contact your state data protection authority (LfD) depending on your organization type.
+        </p>
+    </div>
+
+    <div style="background-color: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 20px 0;">
+        <h4 style="margin-top: 0; color: #155724;">GDPR Art. 33 Reference</h4>
+        <p style="margin-bottom: 0; font-style: italic;">
+            "In the case of a personal data breach, the controller shall without undue delay and, where feasible,
+            not later than <strong>72 hours</strong> after having become aware of it, notify the personal data breach
+            to the supervisory authority competent [...] unless the personal data breach is unlikely to result in
+            a risk to the rights and freedoms of natural persons."
+        </p>
+    </div>
+
+    <p style="color: #6c757d; font-size: 0.9em; margin-top: 30px;">
+        <strong>Note:</strong> This is an automated notification from Little ISMS Helper.
+        Failure to notify within 72 hours may result in administrative fines under GDPR Art. 83(4)(a).
+    </p>
+{% endblock %}
