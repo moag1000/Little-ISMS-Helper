@@ -393,6 +393,13 @@ HELP
                     'daysToComplete' => 7, // Low risk: 7 days, Medium: 5 days, High: 3 days
                     'sortOrder' => 1,
                     'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'risk_appetite',
+                        'entity' => 'Risk',
+                        'riskScoreField' => 'residualRisk',
+                        // Auto-approve if residual risk is within risk appetite
+                        // This implements ISO 27005:2022 risk acceptance workflow
+                    ],
                 ],
                 [
                     'name' => 'CISO Technical Review',
@@ -507,6 +514,15 @@ HELP
                     'daysToComplete' => 2,
                     'sortOrder' => 6,
                     'isRequired' => true,
+                    'autoProgressConditions' => [
+                        'type' => 'field_completion',
+                        'entity' => 'DPIA',
+                        'fields' => ['residualRiskLevel'],
+                        'condition' => '(residualRiskLevel = low OR residualRiskLevel = medium) OR ((residualRiskLevel = high OR residualRiskLevel = critical) AND supervisoryConsultationDate != null)',
+                        // GDPR Art. 36 Conditional Logic:
+                        // - Low/Medium risk: auto-progress immediately (no consultation required)
+                        // - High/Critical risk: auto-progress ONLY when supervisoryConsultationDate is filled
+                    ],
                 ],
             ],
         ];

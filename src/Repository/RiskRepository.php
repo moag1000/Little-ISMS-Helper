@@ -181,4 +181,23 @@ class RiskRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find risks due for periodic review
+     *
+     * ISO 27001:2022 Clause 6.1.3.d - Risks should be reviewed periodically
+     *
+     * @param \DateTimeInterface $asOf Date to check against (default: today)
+     * @return Risk[] Array of risks with nextReviewDate <= asOf
+     */
+    public function findDueForReview(\DateTimeInterface $asOf = new \DateTime()): array
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.nextReviewDate IS NOT NULL')
+            ->andWhere('r.nextReviewDate <= :asOf')
+            ->setParameter('asOf', $asOf)
+            ->orderBy('r.nextReviewDate', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

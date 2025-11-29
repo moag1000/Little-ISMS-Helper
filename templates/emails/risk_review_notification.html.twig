@@ -1,0 +1,92 @@
+{# Risk Review Notification Email Template #}
+{% extends 'emails/base.html.twig' %}
+
+{% block subject %}Risk Review Required: {{ risk.title }}{% endblock %}
+
+{% block content %}
+    <h2>Risk Review Required</h2>
+
+    <p>Dear {{ owner.firstName }} {{ owner.lastName }},</p>
+
+    <p>
+        You are receiving this notification because a risk assigned to you requires periodic review in accordance with
+        <strong>ISO 27001:2022 Clause 6.1.3.d</strong>.
+    </p>
+
+    <div style="background-color: #f8f9fa; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0;">
+        <h3 style="margin-top: 0;">Risk Details</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold; width: 150px;">Risk Title:</td>
+                <td style="padding: 8px 0;">{{ risk.title }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Risk ID:</td>
+                <td style="padding: 8px 0;">{{ risk.id }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Category:</td>
+                <td style="padding: 8px 0;">{{ risk.category ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Current Risk Score:</td>
+                <td style="padding: 8px 0;">
+                    {% set riskScore = risk.probability * risk.impact %}
+                    <span style="color: {% if riskScore >= 15 %}#dc3545{% elseif riskScore >= 10 %}#fd7e14{% elseif riskScore >= 5 %}#ffc107{% else %}#28a745{% endif %}; font-weight: bold;">
+                        {{ riskScore }}
+                    </span>
+                    (Probability: {{ risk.probability }}, Impact: {{ risk.impact }})
+                </td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Treatment Strategy:</td>
+                <td style="padding: 8px 0;">{{ risk.treatmentStrategy|capitalize }}</td>
+            </tr>
+            {% if due_date %}
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Review Due Date:</td>
+                <td style="padding: 8px 0;">
+                    <strong style="color: #dc3545;">{{ due_date|date('Y-m-d') }}</strong>
+                </td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+
+    <h3>What You Need to Do</h3>
+
+    <ol>
+        <li><strong>Review the risk assessment</strong> - Is the risk description still accurate?</li>
+        <li><strong>Reassess probability and impact</strong> - Have circumstances changed?</li>
+        <li><strong>Verify treatment strategy</strong> - Is the current approach still appropriate?</li>
+        <li><strong>Check control effectiveness</strong> - Are implemented controls working as intended?</li>
+        <li><strong>Update documentation</strong> - Record your review findings in the system</li>
+    </ol>
+
+    <div style="text-align: center; margin: 30px 0;">
+        <a href="{{ app.request.schemeAndHttpHost }}/{{ app.request.locale }}/risk/{{ risk.id }}"
+           style="display: inline-block; padding: 12px 30px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+            Review Risk Now
+        </a>
+    </div>
+
+    <div style="background-color: #e7f3ff; border-left: 4px solid #007bff; padding: 15px; margin: 20px 0;">
+        <h4 style="margin-top: 0;">ISO 27001:2022 Compliance Note</h4>
+        <p style="margin-bottom: 0;">
+            Periodic risk reviews are required by <strong>ISO 27001:2022 Clause 6.1.3.d</strong>:
+            <em>"The organization shall retain documented information about the results of information security risk assessment and treatment."</em>
+        </p>
+        <p style="margin-bottom: 0;">
+            Regular reviews ensure that risk assessments remain current and that the organization's information security risk management remains effective.
+        </p>
+    </div>
+
+    <p>
+        If you have any questions about this risk review, please contact your Information Security Manager or CISO.
+    </p>
+
+    <p style="color: #6c757d; font-size: 0.9em; margin-top: 30px;">
+        <strong>Note:</strong> This is an automated notification from the Little ISMS Helper system.
+        If you believe you received this message in error, please contact your system administrator.
+    </p>
+{% endblock %}

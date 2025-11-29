@@ -1,0 +1,410 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'consent' %}
+
+{% block title %}{{ consent.dataSubjectIdentifier }} - {{ 'consent.header.title'|trans({}, 'consent') }}{% endblock %}
+
+{% block body %}
+<div class="container">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.consents'|trans({}, 'nav'), url: path('app_consent_index') },
+            { label: consent.dataSubjectIdentifier }
+        ]
+    } %}
+
+    <div class="page-header">
+        <h1>
+            <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i>
+            {{ consent.dataSubjectIdentifier }}
+        </h1>
+        <div class="actions">
+            {% if is_granted('ROLE_USER') and (consent.status == 'pending_verification' or consent.status == 'active') %}
+            <a href="{{ path('app_consent_edit', {id: consent.id}) }}" class="btn btn-primary">
+                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
+            </a>
+            {% endif %}
+            {% if is_granted('ROLE_DPO') and not consent.verifiedBy %}
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#verifyModal">
+                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'consent.action.verify'|trans({}, 'consent') }}
+            </button>
+            {% endif %}
+            {% if consent.status == 'active' %}
+            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#revokeModal">
+                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'consent.action.document_revocation'|trans({}, 'consent') }}
+            </button>
+            {% endif %}
+            {% if is_granted('ROLE_ADMIN') %}
+            <form method="post" action="{{ path('app_consent_delete', {id: consent.id}) }}" style="display:inline;" onsubmit="return confirm('{{ 'consent.delete.confirm'|trans({}, 'consent') }}');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ consent.id) }}">
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
+                </button>
+            </form>
+            {% endif %}
+            <a href="{{ path('app_consent_index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
+            </a>
+        </div>
+    </div>
+
+    {# Status Badges #}
+    <div class="mb-4">
+        {% set statusBadgeClass = {
+            'pending_verification': 'warning',
+            'active': 'success',
+            'revoked': 'danger'
+        }[consent.status] ?? 'secondary' %}
+
+        <span class="badge bg-{{ statusBadgeClass }} me-2" style="font-size: 1rem; padding: 0.5rem 0.75rem;">
+            {{ ('consent.status.' ~ consent.status)|trans({}, 'consent') }}
+        </span>
+
+        {% if consent.verifiedBy %}
+        <span class="badge bg-info me-2" style="font-size: 1rem; padding: 0.5rem 0.75rem;">
+            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'consent.verified'|trans({}, 'consent') }}
+        </span>
+        {% endif %}
+
+        {% if consent.revokedAt %}
+        <span class="badge bg-danger" style="font-size: 1rem; padding: 0.5rem 0.75rem;">
+            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'consent.revoked'|trans({}, 'consent') }}
+        </span>
+        {% endif %}
+    </div>
+
+    {# Data Subject Section #}
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h3 class="mb-0">
+                <i class="bi bi-person" aria-hidden="true"></i>
+                {{ 'consent.section.data_subject'|trans({}, 'consent') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="detail-item">
+                        <span class="label">{{ 'consent.field.data_subject'|trans({}, 'consent') }}:</span>
+                        <span class="value">{{ consent.dataSubjectIdentifier }}</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="detail-item">
+                        <span class="label">{{ 'consent.field.identifier_type'|trans({}, 'consent') }}:</span>
+                        <span class="value">{{ ('consent.identifier_type.' ~ consent.identifierType)|trans({}, 'consent') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Processing Activity Section #}
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h3 class="mb-0">
+                <i class="bi bi-gear" aria-hidden="true"></i>
+                {{ 'consent.section.processing_activity'|trans({}, 'consent') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="detail-item">
+                        <span class="label">{{ 'consent.field.processing_activity'|trans({}, 'consent') }}:</span>
+                        <span class="value">
+                            {% if consent.processingActivity %}
+                                {{ consent.processingActivity.name|default(consent.processingActivity) }}
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="detail-item">
+                        <span class="label">{{ 'consent.field.purposes'|trans({}, 'consent') }}:</span>
+                        <span class="value">{{ consent.purposes|default('-') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Consent Grant Section #}
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h3 class="mb-0">
+                <i class="bi bi-check-circle" aria-hidden="true"></i>
+                {{ 'consent.section.consent_grant'|trans({}, 'consent') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="detail-item">
+                        <span class="label">{{ 'consent.field.granted_at'|trans({}, 'consent') }}:</span>
+                        <span class="value">{{ consent.grantedAt|date('d.m.Y H:i') }}</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="detail-item">
+                        <span class="label">{{ 'consent.field.consent_method'|trans({}, 'consent') }}:</span>
+                        <span class="value">{{ ('consent.method.' ~ consent.consentMethod)|trans({}, 'consent') }}</span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="detail-item">
+                        <span class="label">{{ 'consent.field.consent_channel'|trans({}, 'consent') }}:</span>
+                        <span class="value">{{ ('consent.channel.' ~ consent.consentChannel)|trans({}, 'consent') }}</span>
+                    </div>
+                </div>
+            </div>
+            {% if consent.consentText %}
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <div class="detail-item">
+                        <span class="label">{{ 'consent.field.consent_text'|trans({}, 'consent') }}:</span>
+                        <div class="value bg-light p-3 rounded mt-2">
+                            {{ consent.consentText }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Proof Documentation Section #}
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h3 class="mb-0">
+                <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                {{ 'consent.section.proof_documentation'|trans({}, 'consent') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            {% if consent.proofDocument %}
+            <div class="detail-item">
+                <span class="label">{{ 'consent.field.proof_document'|trans({}, 'consent') }}:</span>
+                <span class="value">
+                    <a href="{{ consent.proofDocument }}" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener noreferrer">
+                        <i class="bi bi-download" aria-hidden="true"></i> {{ 'common.download'|trans({}, 'messages') }}
+                    </a>
+                </span>
+            </div>
+            {% else %}
+            <div class="alert alert-info mb-0">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                {{ 'consent.no_proof_document'|trans({}, 'consent') }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Expiry Section #}
+    {% if consent.expiresAt %}
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h3 class="mb-0">
+                <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                {{ 'consent.section.expiry'|trans({}, 'consent') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="detail-item">
+                <span class="label">{{ 'consent.field.expires_at'|trans({}, 'consent') }}:</span>
+                <span class="value">{{ consent.expiresAt|date('d.m.Y') }}</span>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# DPO Verification Section #}
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h3 class="mb-0">
+                <i class="bi bi-shield-check" aria-hidden="true"></i>
+                {{ 'consent.section.dpo_verification'|trans({}, 'consent') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            {% if consent.verifiedBy %}
+            <div class="alert alert-success mb-0">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-check-circle-fill me-2" aria-hidden="true"></i>
+                    <div>
+                        <strong>{{ 'consent.verified'|trans({}, 'consent') }}</strong>
+                        <br>
+                        <small>{{ 'consent.verified_by_user'|trans({'%user%': consent.verifiedBy}, 'consent') }}</small>
+                        {% if consent.verifiedAt %}
+                        <br>
+                        <small>{{ consent.verifiedAt|date('d.m.Y H:i') }}</small>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="alert alert-warning mb-0">
+                <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>
+                {{ 'consent.not_verified'|trans({}, 'consent') }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Revocation Section #}
+    {% if consent.revokedAt %}
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h3 class="mb-0">
+                <i class="bi bi-x-circle" aria-hidden="true"></i>
+                {{ 'consent.section.revocation'|trans({}, 'consent') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-danger mb-0">
+                <strong>{{ 'consent.revoked'|trans({}, 'consent') }}</strong>
+                <br>
+                <small>{{ 'consent.revoked_at'|trans({'%date%': consent.revokedAt|date('d.m.Y H:i')}, 'consent') }}</small>
+                {% if consent.revocationReason %}
+                <br>
+                <small>{{ 'consent.revocation_reason'|trans({}, 'consent') }}: {{ consent.revocationReason }}</small>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Notes Section #}
+    {% if consent.notes %}
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h3 class="mb-0">
+                <i class="bi bi-sticky" aria-hidden="true"></i>
+                {{ 'consent.section.notes'|trans({}, 'consent') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="bg-light p-3 rounded">
+                {{ consent.notes }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Metadata Section #}
+    <div class="card mb-4">
+        <div class="card-header bg-light">
+            <h3 class="mb-0">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                {{ 'consent.section.metadata'|trans({}, 'consent') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="detail-item">
+                        <span class="label">{{ 'consent.field.id'|trans({}, 'consent') }}:</span>
+                        <span class="value"><code>{{ consent.id }}</code></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="detail-item">
+                        <span class="label">{{ 'consent.field.created_at'|trans({}, 'consent') }}:</span>
+                        <span class="value">{{ consent.createdAt|date('d.m.Y H:i') }}</span>
+                    </div>
+                </div>
+                {% if consent.updatedAt %}
+                <div class="col-md-6">
+                    <div class="detail-item">
+                        <span class="label">{{ 'consent.field.updated_at'|trans({}, 'consent') }}:</span>
+                        <span class="value">{{ consent.updatedAt|date('d.m.Y H:i') }}</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Verify Modal #}
+<div class="modal fade" id="verifyModal" tabindex="-1" aria-labelledby="verifyModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="verifyModalLabel">{{ 'consent.action.verify'|trans({}, 'consent') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{{ path('app_consent_verify', {id: consent.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('verify' ~ consent.id) }}">
+                <div class="modal-body">
+                    <p>{{ 'consent.verify.confirmation'|trans({}, 'consent') }}</p>
+                    <p class="text-muted small">{{ 'consent.verify.hint'|trans({}, 'consent') }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'consent.action.verify'|trans({}, 'consent') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{# Revoke Modal #}
+<div class="modal fade" id="revokeModal" tabindex="-1" aria-labelledby="revokeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="revokeModalLabel">{{ 'consent.action.document_revocation'|trans({}, 'consent') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{{ path('app_consent_revoke', {id: consent.id}) }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('revoke' ~ consent.id) }}">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="revocationReason" class="form-label">{{ 'consent.field.revocation_reason'|trans({}, 'consent') }}</label>
+                        <textarea class="form-control" id="revocationReason" name="revocationReason" rows="3" required></textarea>
+                    </div>
+                    <p class="text-muted small">{{ 'consent.revoke.hint'|trans({}, 'consent') }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'consent.action.document_revocation'|trans({}, 'consent') }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.detail-item {
+    margin-bottom: 1rem;
+}
+
+.detail-item:last-child {
+    margin-bottom: 0;
+}
+
+.detail-item .label {
+    font-weight: 500;
+    color: #6c757d;
+    font-size: 0.875rem;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+.detail-item .value {
+    color: #212529;
+    font-size: 1rem;
+}
+
+.card-header.bg-light {
+    background-color: #f8f9fa !important;
+}
+</style>
+
+{% endblock %}

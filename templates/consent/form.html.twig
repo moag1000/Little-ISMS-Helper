@@ -1,0 +1,183 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'consent' %}
+
+{% block title %}{{ form.vars.data.id ? 'consent.edit'|trans({}, 'consent') : 'consent.new'|trans({}, 'consent') }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-lg-10 col-xl-9 mx-auto">
+            <nav aria-label="breadcrumb" class="mb-3">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_consent_index') }}" data-turbo-action="advance">
+                            <i class="bi bi-hand-thumbs-up" aria-hidden="true"></i> {{ 'nav.consents'|trans({}, 'nav') }}
+                        </a>
+                    </li>
+                    {% if form.vars.data.id %}
+                    <li class="breadcrumb-item">
+                        <a href="{{ path('app_consent_show', {id: form.vars.data.id}) }}" data-turbo-action="advance">
+                            {{ form.vars.data.dataSubjectIdentifier }}
+                        </a>
+                    </li>
+                    {% endif %}
+                    <li class="breadcrumb-item active" aria-current="page">{{ form.vars.data.id ? 'consent.edit'|trans({}, 'consent') : 'consent.new'|trans({}, 'consent') }}</li>
+                </ol>
+            </nav>
+
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h3 mb-0">
+                    <i class="bi {{ form.vars.data.id ? 'bi-pencil' : 'bi-plus-circle' }}" aria-hidden="true"></i>
+                    {{ form.vars.data.id ? 'consent.edit'|trans({}, 'consent') : 'consent.new'|trans({}, 'consent') }}
+                </h1>
+                <a href="{{ form.vars.data.id ? path('app_consent_show', {id: form.vars.data.id}) : path('app_consent_index') }}" class="btn btn-outline-secondary" data-turbo-action="advance">
+                    <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">{{ form.vars.data.id ? 'consent.edit'|trans({}, 'consent') : 'consent.new'|trans({}, 'consent') }}</h2>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'consent-form'}}) }}
+
+                    {# Section 1: Data Subject #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">
+                                <i class="bi bi-person" aria-hidden="true"></i>
+                                {{ 'consent.section.data_subject'|trans({}, 'consent') }}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    {{ form_row(form.dataSubjectIdentifier) }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form_row(form.identifierType) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Section 2: Processing Activity #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">
+                                <i class="bi bi-gear" aria-hidden="true"></i>
+                                {{ 'consent.section.processing_activity'|trans({}, 'consent') }}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form_row(form.processingActivity) }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form_row(form.purposes) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Section 3: Consent Grant #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">
+                                <i class="bi bi-check-circle" aria-hidden="true"></i>
+                                {{ 'consent.section.consent_grant'|trans({}, 'consent') }}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    {{ form_row(form.grantedAt) }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form_row(form.consentMethod) }}
+                                </div>
+                                <div class="col-md-4">
+                                    {{ form_row(form.consentChannel) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{ form_row(form.consentText) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Section 4: Proof Documentation #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">
+                                <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                                {{ 'consent.section.proof_documentation'|trans({}, 'consent') }}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{ form_row(form.proofDocument) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Section 5: Expiry #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">
+                                <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                                {{ 'consent.section.expiry'|trans({}, 'consent') }}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form_row(form.expiresAt) }}
+                                    <small class="text-muted d-block">{{ 'consent.hint.expiry_optional'|trans({}, 'consent') }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Section 6: Notes #}
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">
+                                <i class="bi bi-sticky" aria-hidden="true"></i>
+                                {{ 'consent.section.notes'|trans({}, 'consent') }}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {{ form_row(form.notes) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Form Actions #}
+                    <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+                        <a href="{{ form.vars.data.id ? path('app_consent_show', {id: form.vars.data.id}) : path('app_consent_index') }}"
+                           class="btn btn-outline-secondary"
+                           data-turbo-action="advance">
+                            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
+                        </a>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'consent.action.save'|trans({}, 'consent') }}
+                        </button>
+                    </div>
+
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

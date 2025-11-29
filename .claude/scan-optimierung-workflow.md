@@ -75,3 +75,57 @@ mv *_Rentenversicherung_* Rentenversicherung/
 - 600 DPI → 300 DPI: ~20% Ersparnis
 - Duplikate entfernen: variabel
 - **Gesamt: 60-70% Ersparnis möglich**
+
+---
+
+## WICHTIG: API- und Token-Fehlervermeidung
+
+### Problem: "could not process image" / "image dimensions exceed max"
+Die Claude API hat Limits für Bildgrößen bei Batch-Anfragen (max ~2000px pro Dimension).
+
+### Lösung: IMMER Previews erstellen vor Bildanalyse
+
+```bash
+# Preview-Ordner erstellen
+mkdir -p /tmp/previews
+
+# JPEG/PNG: Max 1500px (sicher unter dem Limit)
+sips --resampleHeightWidthMax 1500 "original.jpg" --out "/tmp/previews/preview.jpg"
+
+# HEIC (iPhone): Erst zu JPEG konvertieren, dann verkleinern
+sips -s format jpeg --resampleHeightWidthMax 800 "original.HEIC" --out "/tmp/previews/preview.jpg"
+
+# Batch für alle Bilder im Ordner
+for f in *.jpg; do
+    sips --resampleHeightWidthMax 1500 "$f" --out "/tmp/previews/$f" 2>/dev/null
+done
+```
+
+### Token-Effizienz: Bilder sparsam analysieren
+
+1. **Nicht alle Bilder auf einmal laden** - max 3-4 parallel
+2. **EXIF-Daten zuerst prüfen** - oft reicht das für Datumserkennung:
+   ```bash
+   exiftool -DateTimeOriginal -CreateDate *.HEIC
+   ```
+3. **Dateinamen nutzen** - oft enthalten sie bereits Infos (IMG_6134 → iPhone Foto)
+4. **Stichproben bei ähnlichen Dateien** - wenn Bild (2) bis Bild (10) gleich aussehen, reicht eine Analyse
+
+### Dateityp-spezifische Strategien
+
+| Dateityp | Strategie |
+|----------|-----------|
+| **Scans (PNG/JPG)** | Preview 1500px, dann Read |
+| **HEIC (iPhone)** | EXIF für Datum, Preview 800px für Inhalt |
+| **PDF** | Direkt mit Read (Claude kann PDFs nativ lesen) |
+| **Office (DOCX, XLSX)** | Dateiname + Änderungsdatum meist ausreichend |
+| **Video (MOV)** | Nur EXIF/Dateiname, kein Preview möglich |
+| **Pixel-Art** | PNG belassen (JPEG würde Qualität zerstören) |
+
+### Checkliste vor Bildanalyse
+
+- [ ] Bildgröße prüfen: `sips -g pixelWidth -g pixelHeight datei.jpg`
+- [ ] Falls >2000px: Preview erstellen
+- [ ] Falls HEIC: zu JPEG konvertieren + verkleinern
+- [ ] Nicht mehr als 3-4 Bilder parallel analysieren
+- [ ] EXIF-Daten zuerst auswerten wo möglich
