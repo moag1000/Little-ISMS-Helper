@@ -96,12 +96,8 @@
                     </div>
                 {% endif %}
 
-                <div class="workflow-actions">
-                    <a href="{{ path('app_workflow_instance_show', {id: workflowStatus.workflow_instance.id}) }}" class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-eye" aria-hidden="true"></i>
-                        {{ 'incident.workflow.view_details'|trans({}, 'incident') }}
-                    </a>
-                </div>
+                {# Replaced with inline workflow actions macro #}
+                {{ workflow_macros.inline_actions(workflowStatus.workflow_instance, incident, canApproveWorkflow ?? false, false) }}
             </div>
         </div>
     {% endif %}

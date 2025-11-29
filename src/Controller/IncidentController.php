@@ -17,6 +17,7 @@ use App\Service\IncidentBCMImpactService;
 use App\Service\IncidentEscalationWorkflowService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
+use App\Service\WorkflowService;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -42,7 +43,8 @@ class IncidentController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly Security $security,
         private readonly IncidentEscalationWorkflowService $incidentEscalationWorkflowService,
-        private readonly TenantContext $tenantContext
+        private readonly TenantContext $tenantContext,
+        private readonly WorkflowService $workflowService
     ) {}
     #[Route('/incident/', name: 'app_incident_index')]
     #[IsGranted('ROLE_USER')]
@@ -269,11 +271,22 @@ class IncidentController extends AbstractController
         // Get workflow status
         $workflowStatus = $this->incidentEscalationWorkflowService->getEscalationStatus($incident);
 
+        // Check if current user can approve workflow
+        $canApproveWorkflow = false;
+        if (isset($workflowStatus['workflow_instance'])) {
+            $workflowInstance = $workflowStatus['workflow_instance'];
+            $currentStep = $workflowInstance->getCurrentStep();
+            if ($currentStep) {
+                $canApproveWorkflow = $this->workflowService->canUserApprove($this->getUser(), $currentStep);
+            }
+        }
+
         return $this->render('incident/show.html.twig', [
             'incident' => $incident,
             'auditLogs' => $recentAuditLogs,
             'totalAuditLogs' => count($auditLogs),
             'workflowStatus' => $workflowStatus,
+            'canApproveWorkflow' => $canApproveWorkflow,
         ]);
     }
     #[Route('/incident/{id}/edit', name: 'app_incident_edit', requirements: ['id' => '\d+'])]
