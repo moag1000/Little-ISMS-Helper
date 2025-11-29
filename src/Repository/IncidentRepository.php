@@ -133,7 +133,7 @@ class IncidentRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant);
 
         // Include incidents from all ancestors in the hierarchy
-        if (!empty($ancestors)) {
+        if ($ancestors !== []) {
             $queryBuilder->orWhere('i.tenant IN (:ancestors)')
                ->setParameter('ancestors', $ancestors);
         }
@@ -161,7 +161,7 @@ class IncidentRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant);
 
         // Include incidents from all subsidiaries in the hierarchy
-        if (!empty($subsidiaries)) {
+        if ($subsidiaries !== []) {
             $queryBuilder->orWhere('i.tenant IN (:subsidiaries)')
                ->setParameter('subsidiaries', $subsidiaries);
         }

@@ -19,10 +19,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ThreatIntelligenceRepository::class)]
-#[ORM\Index(columns: ['threat_type'], name: 'idx_threat_type')]
-#[ORM\Index(columns: ['severity'], name: 'idx_threat_severity')]
-#[ORM\Index(columns: ['status'], name: 'idx_threat_status')]
-#[ORM\Index(columns: ['detection_date'], name: 'idx_threat_detection_date')]
+#[ORM\Index(name: 'idx_threat_type', columns: ['threat_type'])]
+#[ORM\Index(name: 'idx_threat_severity', columns: ['severity'])]
+#[ORM\Index(name: 'idx_threat_status', columns: ['status'])]
+#[ORM\Index(name: 'idx_threat_detection_date', columns: ['detection_date'])]
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),

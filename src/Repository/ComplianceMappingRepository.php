@@ -29,6 +29,22 @@ class ComplianceMappingRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find all mappings for a specific source requirement.
+     *
+     * @param ComplianceRequirement $requirement Source requirement
+     * @return ComplianceMapping[] Array of mappings
+     */
+    public function findBySourceRequirement(ComplianceRequirement $requirement): array
+    {
+        return $this->createQueryBuilder('cm')
+            ->where('cm.sourceRequirement = :requirement')
+            ->setParameter('requirement', $requirement)
+            ->orderBy('cm.mappingPercentage', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find all mappings where the given requirement is the source (outbound mappings).
      *
      * @param ComplianceRequirement $complianceRequirement Source requirement entity

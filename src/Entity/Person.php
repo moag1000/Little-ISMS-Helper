@@ -26,9 +26,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Enables data reuse across PhysicalAccessLog and other entities
  */
 #[ORM\Entity(repositoryClass: PersonRepository::class)]
-#[ORM\Index(columns: ['person_type'], name: 'idx_person_type')]
-#[ORM\Index(columns: ['badge_id'], name: 'idx_person_badge')]
-#[ORM\Index(columns: ['company'], name: 'idx_person_company')]
+#[ORM\Index(name: 'idx_person_type', columns: ['person_type'])]
+#[ORM\Index(name: 'idx_person_badge', columns: ['badge_id'])]
+#[ORM\Index(name: 'idx_person_company', columns: ['company'])]
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),
@@ -58,7 +58,7 @@ class Person
     #[Assert\Choice(choices: ['employee', 'contractor', 'visitor', 'vendor', 'auditor', 'consultant', 'other'])]
     private ?string $personType = 'visitor';
 
-    #[ORM\Column(length: 100, nullable: true, unique: true)]
+    #[ORM\Column(length: 100, unique: true, nullable: true)]
     #[Groups(['person:read', 'person:write', 'physical_access:read'])]
     private ?string $badgeId = null;
 

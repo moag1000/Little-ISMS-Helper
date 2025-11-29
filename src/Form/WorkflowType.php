@@ -24,11 +24,8 @@ class WorkflowType extends AbstractType
                     'placeholder' => 'workflow.placeholder.name'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'workflow.validation.name_required']),
-                    new Assert\Length([
-                        'max' => 255,
-                        'maxMessage' => 'workflow.validation.name_max_length'
-                    ])
+                    new Assert\NotBlank(message: 'workflow.validation.name_required'),
+                    new Assert\Length(max: 255, maxMessage: 'workflow.validation.name_max_length')
                 ]
             ])
             ->add('description', TextareaType::class, [
@@ -55,7 +52,7 @@ class WorkflowType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'workflow.validation.entity_type_required'])
+                    new Assert\NotBlank(message: 'workflow.validation.entity_type_required')
                 ],
                 'help' => 'workflow.help.entity_type',
                 'choice_translation_domain' => 'workflows',

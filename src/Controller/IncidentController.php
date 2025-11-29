@@ -303,7 +303,7 @@ class IncidentController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/incident/{id}/delete', name: 'app_incident_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/incident/{id}/delete', name: 'app_incident_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Incident $incident): Response
     {
@@ -378,7 +378,7 @@ class IncidentController extends AbstractController
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
-            'Content-Length' => strlen((string) $pdf),
+            'Content-Length' => strlen($pdf),
         ]);
     }
     /**
@@ -508,7 +508,7 @@ class IncidentController extends AbstractController
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
-            'Content-Length' => strlen((string) $pdf),
+            'Content-Length' => strlen($pdf),
         ]);
     }
     /**

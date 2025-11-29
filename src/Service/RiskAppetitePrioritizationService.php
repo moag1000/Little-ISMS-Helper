@@ -327,9 +327,7 @@ class RiskAppetitePrioritizationService
         if ($riskLevel >= 6) {
             return 'medium';
         }
-        else {
-            return 'low';
-        }
+        return 'low';
     }
 
     /**
@@ -353,12 +351,10 @@ class RiskAppetitePrioritizationService
                 $exceedance
             );
         }
-        else {
-            return sprintf(
-                'Risk far exceeds appetite by %d points. Immediate action and executive escalation required.',
-                $exceedance
-            );
-        }
+        return sprintf(
+            'Risk far exceeds appetite by %d points. Immediate action and executive escalation required.',
+            $exceedance
+        );
     }
 
     /**

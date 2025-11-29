@@ -80,7 +80,7 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/workflow/instance/{id}/approve', name: 'app_workflow_instance_approve', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/workflow/instance/{id}/approve', name: 'app_workflow_instance_approve', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function approveInstance(Request $request, WorkflowInstance $workflowInstance): Response
     {
         if (!$this->isCsrfTokenValid('approve'.$workflowInstance->getId(), $request->request->get('_token'))) {
@@ -100,7 +100,7 @@ class WorkflowController extends AbstractController
         return $this->redirectToRoute('app_workflow_instance_show', ['id' => $workflowInstance->getId()]);
     }
 
-    #[Route('/workflow/instance/{id}/reject', name: 'app_workflow_instance_reject', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/workflow/instance/{id}/reject', name: 'app_workflow_instance_reject', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function rejectInstance(Request $request, WorkflowInstance $workflowInstance): Response
     {
         if (!$this->isCsrfTokenValid('reject'.$workflowInstance->getId(), $request->request->get('_token'))) {
@@ -126,7 +126,7 @@ class WorkflowController extends AbstractController
         return $this->redirectToRoute('app_workflow_instance_show', ['id' => $workflowInstance->getId()]);
     }
 
-    #[Route('/workflow/instance/{id}/cancel', name: 'app_workflow_instance_cancel', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/workflow/instance/{id}/cancel', name: 'app_workflow_instance_cancel', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function cancelInstance(Request $request, WorkflowInstance $workflowInstance): Response
     {
@@ -249,7 +249,7 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/workflow/definition/{id}/edit', name: 'app_workflow_definition_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[Route('/workflow/definition/{id}/edit', name: 'app_workflow_definition_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function editDefinition(Request $request, Workflow $workflow): Response
     {
@@ -272,7 +272,7 @@ class WorkflowController extends AbstractController
         ]);
     }
 
-    #[Route('/workflow/definition/{id}/delete', name: 'app_workflow_definition_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/workflow/definition/{id}/delete', name: 'app_workflow_definition_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function deleteDefinition(Request $request, Workflow $workflow): Response
     {
@@ -300,7 +300,7 @@ class WorkflowController extends AbstractController
         return $this->redirectToRoute('app_workflow_definitions');
     }
 
-    #[Route('/workflow/definition/{id}/toggle', name: 'app_workflow_definition_toggle', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/workflow/definition/{id}/toggle', name: 'app_workflow_definition_toggle', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function toggleDefinition(Request $request, Workflow $workflow): Response
     {

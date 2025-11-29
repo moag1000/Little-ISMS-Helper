@@ -226,7 +226,7 @@ class SupplierController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/supplier/{id}/delete', name: 'app_supplier_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/supplier/{id}/delete', name: 'app_supplier_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Supplier $supplier): Response
     {

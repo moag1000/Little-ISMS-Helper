@@ -21,10 +21,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity(repositoryClass: UserSessionRepository::class)]
 #[ORM\Table(name: 'user_sessions')]
-#[ORM\Index(columns: ['user_id'], name: 'idx_session_user')]
-#[ORM\Index(columns: ['session_id'], name: 'idx_session_id')]
-#[ORM\Index(columns: ['is_active'], name: 'idx_session_active')]
-#[ORM\Index(columns: ['last_activity_at'], name: 'idx_session_activity')]
+#[ORM\Index(name: 'idx_session_user', columns: ['user_id'])]
+#[ORM\Index(name: 'idx_session_id', columns: ['session_id'])]
+#[ORM\Index(name: 'idx_session_active', columns: ['is_active'])]
+#[ORM\Index(name: 'idx_session_activity', columns: ['last_activity_at'])]
 class UserSession
 {
     #[ORM\Id]

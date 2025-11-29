@@ -24,11 +24,8 @@ class ComplianceFrameworkType extends AbstractType
                     'placeholder' => 'compliance_framework.placeholder.code'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_framework.validation.code_required']),
-                    new Assert\Length([
-                        'max' => 100,
-                        'maxMessage' => 'compliance_framework.validation.code_max_length'
-                    ])
+                    new Assert\NotBlank(message: 'compliance_framework.validation.code_required'),
+                    new Assert\Length(max: 100, maxMessage: 'compliance_framework.validation.code_max_length')
                 ],
                 'help' => 'compliance_framework.help.code'
             ])
@@ -39,11 +36,8 @@ class ComplianceFrameworkType extends AbstractType
                     'placeholder' => 'compliance_framework.placeholder.name'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_framework.validation.name_required']),
-                    new Assert\Length([
-                        'max' => 255,
-                        'maxMessage' => 'compliance_framework.validation.name_max_length'
-                    ])
+                    new Assert\NotBlank(message: 'compliance_framework.validation.name_required'),
+                    new Assert\Length(max: 255, maxMessage: 'compliance_framework.validation.name_max_length')
                 ]
             ])
             ->add('description', TextareaType::class, [
@@ -62,11 +56,8 @@ class ComplianceFrameworkType extends AbstractType
                     'placeholder' => 'compliance_framework.placeholder.version'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_framework.validation.version_required']),
-                    new Assert\Length([
-                        'max' => 50,
-                        'maxMessage' => 'compliance_framework.validation.version_max_length'
-                    ])
+                    new Assert\NotBlank(message: 'compliance_framework.validation.version_required'),
+                    new Assert\Length(max: 50, maxMessage: 'compliance_framework.validation.version_max_length')
                 ],
                 'help' => 'compliance_framework.help.version'
             ])
@@ -95,7 +86,7 @@ class ComplianceFrameworkType extends AbstractType
                 ],
                 'placeholder' => 'compliance_framework.placeholder.select_industry',
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_framework.validation.applicable_industry_required']),
+                    new Assert\NotBlank(message: 'compliance_framework.validation.applicable_industry_required'),
                 ],
                 'help' => 'compliance_framework.help.applicable_industry'
             ])
@@ -106,11 +97,8 @@ class ComplianceFrameworkType extends AbstractType
                     'placeholder' => 'compliance_framework.placeholder.regulatory_body'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_framework.validation.regulatory_body_required']),
-                    new Assert\Length([
-                        'max' => 100,
-                        'maxMessage' => 'compliance_framework.validation.regulatory_body_max_length'
-                    ])
+                    new Assert\NotBlank(message: 'compliance_framework.validation.regulatory_body_required'),
+                    new Assert\Length(max: 100, maxMessage: 'compliance_framework.validation.regulatory_body_max_length')
                 ],
                 'help' => 'compliance_framework.help.regulatory_body'
             ])

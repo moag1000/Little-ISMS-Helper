@@ -91,7 +91,7 @@ class RiskRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant);
 
         // Include risks from all ancestors in the hierarchy
-        if (!empty($ancestors)) {
+        if ($ancestors !== []) {
             $queryBuilder->orWhere('r.tenant IN (:ancestors)')
                ->setParameter('ancestors', $ancestors);
         }
@@ -171,7 +171,7 @@ class RiskRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant);
 
         // Include risks from all subsidiaries in the hierarchy
-        if (!empty($subsidiaries)) {
+        if ($subsidiaries !== []) {
             $queryBuilder->orWhere('r.tenant IN (:subsidiaries)')
                ->setParameter('subsidiaries', $subsidiaries);
         }

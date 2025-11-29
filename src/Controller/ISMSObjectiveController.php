@@ -34,7 +34,7 @@ class ISMSObjectiveController extends AbstractController
             'total' => count($objectives),
             'active' => count($active),
             'achieved' => count($this->ismsObjectiveRepository->findBy(['status' => 'achieved'])),
-            'delayed' => count(array_filter($objectives, fn($obj): bool => $obj->getStatus() === 'in_progress' &&
+            'delayed' => count(array_filter($objectives, fn(ISMSObjective $obj): bool => $obj->getStatus() === 'in_progress' &&
                    $obj->getTargetDate() < new DateTime() &&
                    !$obj->getAchievedDate())),
         ];
@@ -77,7 +77,7 @@ class ISMSObjectiveController extends AbstractController
             'objective' => $ismsObjective,
         ]);
     }
-    #[Route('/objective/{id}/edit', name: 'app_objective_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[Route('/objective/{id}/edit', name: 'app_objective_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, ISMSObjective $ismsObjective): Response
     {
@@ -104,7 +104,7 @@ class ISMSObjectiveController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/objective/{id}/delete', name: 'app_objective_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/objective/{id}/delete', name: 'app_objective_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, ISMSObjective $ismsObjective): Response
     {

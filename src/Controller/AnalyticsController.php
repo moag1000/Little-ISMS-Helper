@@ -115,7 +115,7 @@ class AnalyticsController extends AbstractController
         }
 
         // Sort by annex number
-        usort($radarData, fn(array $a, array $b): int => strcmp((string) $a['label'], (string) $b['label']));
+        usort($radarData, fn(array $a, array $b): int => strcmp($a['label'], $b['label']));
 
         return new JsonResponse([
             'data' => $radarData,

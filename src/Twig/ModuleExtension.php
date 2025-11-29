@@ -2,10 +2,8 @@
 
 namespace App\Twig;
 
-use Override;
+use Twig\Attribute\AsTwigFunction;
 use App\Service\ModuleConfigurationService;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
 
 /**
  * Twig Extension for Module Management
@@ -18,26 +16,17 @@ use Twig\TwigFunction;
  * - get_active_modules(): Get list of all active module keys
  * - get_module_info(moduleKey): Get detailed module information
  */
-class ModuleExtension extends AbstractExtension
+class ModuleExtension
 {
     public function __construct(
         private readonly ModuleConfigurationService $moduleConfigurationService
     ) {
     }
 
-    #[Override]
-    public function getFunctions(): array
-    {
-        return [
-            new TwigFunction('is_module_active', $this->isModuleActive(...)),
-            new TwigFunction('get_active_modules', $this->getActiveModules(...)),
-            new TwigFunction('get_module_info', $this->getModuleInfo(...)),
-        ];
-    }
-
     /**
      * Check if a module is active
      */
+    #[AsTwigFunction('is_module_active')]
     public function isModuleActive(string $moduleKey): bool
     {
         return $this->moduleConfigurationService->isModuleActive($moduleKey);
@@ -46,6 +35,7 @@ class ModuleExtension extends AbstractExtension
     /**
      * Get all active modules
      */
+    #[AsTwigFunction('get_active_modules')]
     public function getActiveModules(): array
     {
         return $this->moduleConfigurationService->getActiveModules();
@@ -54,6 +44,7 @@ class ModuleExtension extends AbstractExtension
     /**
      * Get module information
      */
+    #[AsTwigFunction('get_module_info')]
     public function getModuleInfo(string $moduleKey): ?array
     {
         return $this->moduleConfigurationService->getModule($moduleKey);

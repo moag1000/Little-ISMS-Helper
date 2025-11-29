@@ -76,7 +76,7 @@ class ComplianceAssessmentService
             : 0;
 
         return [
-            'framework' => $complianceFramework->getName(),
+            'compli' => $complianceFramework->getName(),
             'assessment_date' => new DateTimeImmutable(),
             'total_requirements' => count($requirements),
             'requirements_assessed' => count($assessmentResults),

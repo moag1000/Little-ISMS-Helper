@@ -30,7 +30,7 @@ class TrainingType extends AbstractType
                     'placeholder' => 'training.placeholder.title',
                 ],
                 'constraints' => [
-                    new NotBlank(['message' => 'training.validation.title_required']),
+                    new NotBlank(message: 'training.validation.title_required'),
                 ],
             ])
             ->add('description', TextareaType::class, [
@@ -77,7 +77,7 @@ class TrainingType extends AbstractType
                 'widget' => 'single_text',
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [
-                    new NotBlank(['message' => 'training.validation.date_required']),
+                    new NotBlank(message: 'training.validation.date_required'),
                 ],
             ])
             ->add('durationMinutes', IntegerType::class, [
@@ -89,7 +89,7 @@ class TrainingType extends AbstractType
                     'placeholder' => 'training.placeholder.duration',
                 ],
                 'constraints' => [
-                    new Range(['min' => 15, 'max' => 480]),
+                    new Range(min: 15, max: 480),
                 ],
                 'help' => 'training.help.duration',
             ])
@@ -100,7 +100,7 @@ class TrainingType extends AbstractType
                     'placeholder' => 'training.placeholder.trainer',
                 ],
                 'constraints' => [
-                    new NotBlank(['message' => 'training.validation.trainer_required']),
+                    new NotBlank(message: 'training.validation.trainer_required'),
                 ],
             ])
             ->add('targetAudience', TextType::class, [

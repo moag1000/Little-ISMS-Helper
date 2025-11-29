@@ -96,7 +96,7 @@ class ComplianceFrameworkController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/compliance/framework/{id}', name: 'app_compliance_framework_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}', name: 'app_compliance_framework_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function show(ComplianceFramework $complianceFramework): Response
     {
@@ -163,7 +163,7 @@ class ComplianceFrameworkController extends AbstractController
             'priority_distribution' => $priorityDistribution,
         ]);
     }
-    #[Route('/compliance/framework/{id}/edit', name: 'app_compliance_framework_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/edit', name: 'app_compliance_framework_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function edit(Request $request, ComplianceFramework $complianceFramework): Response
     {
@@ -184,7 +184,7 @@ class ComplianceFrameworkController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/compliance/framework/{id}/delete', name: 'app_compliance_framework_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/delete', name: 'app_compliance_framework_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, ComplianceFramework $complianceFramework): Response
     {
@@ -211,7 +211,7 @@ class ComplianceFrameworkController extends AbstractController
 
         return $this->redirectToRoute('app_compliance_framework_index');
     }
-    #[Route('/compliance/framework/{id}/toggle', name: 'app_compliance_framework_toggle', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/toggle', name: 'app_compliance_framework_toggle', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function toggle(Request $request, ComplianceFramework $complianceFramework): Response
     {
@@ -228,7 +228,7 @@ class ComplianceFrameworkController extends AbstractController
 
         return $this->redirectToRoute('app_compliance_framework_show', ['id' => $complianceFramework->id]);
     }
-    #[Route('/compliance/framework/{id}/duplicate', name: 'app_compliance_framework_duplicate', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/compliance/framework/{id}/duplicate', name: 'app_compliance_framework_duplicate', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function duplicate(Request $request, ComplianceFramework $complianceFramework): Response
     {

@@ -26,11 +26,8 @@ class ISMSContextType extends AbstractType
                 ],
                 'help' => 'context.help.organization_name',
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'context.validation.organization_name_required']),
-                    new Assert\Length([
-                        'max' => 255,
-                        'maxMessage' => 'context.validation.name_max_length'
-                    ])
+                    new Assert\NotBlank(message: 'context.validation.organization_name_required'),
+                    new Assert\Length(max: 255, maxMessage: 'context.validation.name_max_length')
                 ]
             ])
             ->add('ismsScope', TextareaType::class, [
@@ -179,11 +176,8 @@ class ISMSContextType extends AbstractType
                     ],
                     'help' => 'context.help.organization_name',
                     'constraints' => [
-                        new Assert\NotBlank(['message' => 'context.validation.organization_name_required']),
-                        new Assert\Length([
-                            'max' => 255,
-                            'maxMessage' => 'context.validation.name_max_length'
-                        ])
+                        new Assert\NotBlank(message: 'context.validation.organization_name_required'),
+                        new Assert\Length(max: 255, maxMessage: 'context.validation.name_max_length')
                     ]
                 ]);
             }

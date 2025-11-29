@@ -31,11 +31,8 @@ class WorkflowStepType extends AbstractType
                     'placeholder' => 'workflow_step.placeholder.name'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'workflow_step.validation.name_required']),
-                    new Assert\Length([
-                        'max' => 255,
-                        'maxMessage' => 'workflow_step.validation.name_max_length'
-                    ])
+                    new Assert\NotBlank(message: 'workflow_step.validation.name_required'),
+                    new Assert\Length(max: 255, maxMessage: 'workflow_step.validation.name_max_length')
                 ]
             ])
             ->add('description', TextareaType::class, [
@@ -58,7 +55,7 @@ class WorkflowStepType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'workflow_step.validation.step_type_required'])
+                    new Assert\NotBlank(message: 'workflow_step.validation.step_type_required')
                 ],
                 'help' => 'workflow_step.help.step_type',
                     'choice_translation_domain' => 'workflows',
@@ -114,14 +111,8 @@ class WorkflowStepType extends AbstractType
                     'placeholder' => 'workflow_step.placeholder.days_to_complete'
                 ],
                 'constraints' => [
-                    new Assert\GreaterThan([
-                        'value' => 0,
-                        'message' => 'workflow_step.validation.days_positive'
-                    ]),
-                    new Assert\LessThanOrEqual([
-                        'value' => 365,
-                        'message' => 'workflow_step.validation.days_max'
-                    ])
+                    new Assert\GreaterThan(value: 0, message: 'workflow_step.validation.days_positive'),
+                    new Assert\LessThanOrEqual(value: 365, message: 'workflow_step.validation.days_max')
                 ],
                 'help' => 'workflow_step.help.days_to_complete'
             ])

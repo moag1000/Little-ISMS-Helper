@@ -819,7 +819,7 @@ class RiskController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/risk/{id}/delete', name: 'app_risk_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/risk/{id}/delete', name: 'app_risk_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Risk $risk): Response
     {
@@ -846,7 +846,7 @@ class RiskController extends AbstractController
      * Request formal risk acceptance (Priority 2.1 - Risk Acceptance Workflow)
      * ISO 27005:2022 Section 8.4.4
      */
-    #[Route('/risk/{id}/request-acceptance', name: 'app_risk_request_acceptance', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[Route('/risk/{id}/request-acceptance', name: 'app_risk_request_acceptance', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function requestAcceptance(Request $request, Risk $risk): Response
     {
@@ -915,7 +915,7 @@ class RiskController extends AbstractController
     /**
      * Approve risk acceptance (Priority 2.1 - Risk Acceptance Workflow)
      */
-    #[Route('/risk/{id}/approve-acceptance', name: 'app_risk_approve_acceptance', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/risk/{id}/approve-acceptance', name: 'app_risk_approve_acceptance', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function approveAcceptance(Request $request, Risk $risk): Response
     {
@@ -940,7 +940,7 @@ class RiskController extends AbstractController
     /**
      * Reject risk acceptance (Priority 2.1 - Risk Acceptance Workflow)
      */
-    #[Route('/risk/{id}/reject-acceptance', name: 'app_risk_reject_acceptance', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/risk/{id}/reject-acceptance', name: 'app_risk_reject_acceptance', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function rejectAcceptance(Request $request, Risk $risk): Response
     {

@@ -284,7 +284,7 @@ class AssetController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/asset/{id}/delete', name: 'app_asset_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/asset/{id}/delete', name: 'app_asset_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Asset $asset): Response
     {

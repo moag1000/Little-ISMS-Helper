@@ -489,7 +489,7 @@ class MappingQualityAnalysisService
         // Remove stopwords and short words
         $stopwords = ['the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'as', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'shall'];
 
-        $words = array_filter($words, fn($word): bool => strlen((string) $word) > 2 && !in_array($word, $stopwords, true));
+        $words = array_filter($words, fn($word): bool => strlen($word) > 2 && !in_array($word, $stopwords, true));
 
         return array_values($words);
     }

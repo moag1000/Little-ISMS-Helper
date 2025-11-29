@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\RiskAppetite;
 use DomainException;
 use DateTime;
 use App\Entity\WorkflowInstance;
@@ -12,6 +13,7 @@ use App\Entity\Tenant;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 /**
  * Risk Acceptance Workflow Service
@@ -127,7 +129,7 @@ class RiskAcceptanceWorkflowService
     {
         $appetite = $this->riskAppetitePrioritizationService->getApplicableAppetite($risk);
 
-        if (!$appetite) {
+        if (!$appetite instanceof RiskAppetite) {
             // No appetite defined - log warning but allow
             $this->logger->warning('No risk appetite defined for tenant', [
                 'tenant_id' => $risk->getTenant()->getId(),
@@ -187,9 +189,7 @@ class RiskAcceptanceWorkflowService
         if ($residualScore <= self::APPROVAL_MANAGER) {
             return 'manager';
         }
-        else {
-            return 'executive';
-        }
+        return 'executive';
     }
 
     /**
@@ -232,7 +232,11 @@ class RiskAcceptanceWorkflowService
     /**
      * Create approval workflow for manager or executive approval
      *
+     * @param Risk $risk
+     * @param User $user
+     * @param string $approvalLevel
      * @return array Status information
+     * @throws \DateMalformedStringException
      */
     private function createApprovalWorkflow(Risk $risk, User $user, string $approvalLevel): array
     {
@@ -339,8 +343,8 @@ class RiskAcceptanceWorkflowService
         try {
             $this->emailNotificationService->sendRiskAcceptanceRequest(
                 risk: $risk,
-                approver: $user,
-                approvalLevel: $approvalLevel
+                approvalLevel: $approvalLevel,
+                approver: $user
             );
         } catch (Exception $e) {
             $this->logger->error('Failed to send approval notification', [
@@ -354,8 +358,11 @@ class RiskAcceptanceWorkflowService
     /**
      * Approve risk acceptance
      *
+     * @param Risk $risk
+     * @param User $user
      * @param string $comments Optional approval comments
      * @return array Status information
+     * @throws TransportExceptionInterface
      */
     public function approveAcceptance(Risk $risk, User $user, string $comments = ''): array
     {
@@ -408,8 +415,11 @@ class RiskAcceptanceWorkflowService
     /**
      * Reject risk acceptance
      *
+     * @param Risk $risk
+     * @param User $user
      * @param string $reason Reason for rejection
      * @return array Status information
+     * @throws TransportExceptionInterface
      */
     public function rejectAcceptance(Risk $risk, User $user, string $reason): array
     {

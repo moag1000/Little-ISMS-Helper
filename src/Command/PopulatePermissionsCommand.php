@@ -2,42 +2,28 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\Option;
 use App\Entity\Permission;
 use App\Repository\PermissionRepository;
 use App\Security\Voter\PermissionVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(
-    name: 'app:permissions:populate',
-    description: 'Populate system permissions from PermissionVoter',
-)]
-class PopulatePermissionsCommand extends Command
+#[AsCommand(name: 'app:permissions:populate', description: 'Populate system permissions from PermissionVoter', help: <<<'TXT'
+This command creates or updates all system permissions defined in PermissionVoter
+TXT)]
+class PopulatePermissionsCommand
 {
-    public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly PermissionRepository $permissionRepository,
-    ) {
-        parent::__construct();
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly PermissionRepository $permissionRepository)
+    {
     }
 
-    protected function configure(): void
+    public function __invoke(#[Option(name: 'force', shortcut: 'f', mode: InputOption::VALUE_NONE, description: 'Force update existing permissions')]
+    bool $force = false, ?SymfonyStyle $symfonyStyle = null): int
     {
-        $this
-            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force update existing permissions')
-            ->setHelp('This command creates or updates all system permissions defined in PermissionVoter');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-        $force = $input->getOption('force');
-
         $symfonyStyle->title('Populating System Permissions');
 
         $allPermissions = PermissionVoter::getAllPermissions();

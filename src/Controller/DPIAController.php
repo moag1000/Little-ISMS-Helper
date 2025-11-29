@@ -90,7 +90,7 @@ class DPIAController extends AbstractController
     /**
      * Edit DPIA
      */
-    #[Route('/dpia/{id}/edit', name: 'app_dpia_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[Route('/dpia/{id}/edit', name: 'app_dpia_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         // Only draft and requires_revision can be edited
@@ -118,7 +118,7 @@ class DPIAController extends AbstractController
     /**
      * Delete DPIA
      */
-    #[Route('/dpia/{id}/delete', name: 'app_dpia_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/dpia/{id}/delete', name: 'app_dpia_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function delete(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
@@ -138,7 +138,7 @@ class DPIAController extends AbstractController
     /**
      * Submit DPIA for review (draft → in_review)
      */
-    #[Route('/dpia/{id}/submit-for-review', name: 'app_dpia_submit_for_review', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/dpia/{id}/submit-for-review', name: 'app_dpia_submit_for_review', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function submitForReview(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if (!$this->isCsrfTokenValid('submit' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
@@ -159,7 +159,7 @@ class DPIAController extends AbstractController
     /**
      * Approve DPIA (in_review → approved)
      */
-    #[Route('/dpia/{id}/approve', name: 'app_dpia_approve', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/dpia/{id}/approve', name: 'app_dpia_approve', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function approve(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
@@ -183,7 +183,7 @@ class DPIAController extends AbstractController
     /**
      * Reject DPIA (in_review → rejected)
      */
-    #[Route('/dpia/{id}/reject', name: 'app_dpia_reject', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/dpia/{id}/reject', name: 'app_dpia_reject', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function reject(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
@@ -212,7 +212,7 @@ class DPIAController extends AbstractController
     /**
      * Request revision (in_review/approved → requires_revision)
      */
-    #[Route('/dpia/{id}/request-revision', name: 'app_dpia_request_revision', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/dpia/{id}/request-revision', name: 'app_dpia_request_revision', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function requestRevision(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
@@ -241,7 +241,7 @@ class DPIAController extends AbstractController
     /**
      * Reopen DPIA (requires_revision → draft)
      */
-    #[Route('/dpia/{id}/reopen', name: 'app_dpia_reopen', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/dpia/{id}/reopen', name: 'app_dpia_reopen', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function reopen(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if (!$this->isCsrfTokenValid('reopen' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
@@ -266,7 +266,7 @@ class DPIAController extends AbstractController
     /**
      * Record DPO consultation (Art. 35(4))
      */
-    #[Route('/dpia/{id}/dpo-consultation', name: 'app_dpia_dpo_consultation', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/dpia/{id}/dpo-consultation', name: 'app_dpia_dpo_consultation', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function dpConsultation(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
@@ -291,7 +291,7 @@ class DPIAController extends AbstractController
     /**
      * Record supervisory authority consultation (Art. 36)
      */
-    #[Route('/dpia/{id}/supervisory-consultation', name: 'app_dpia_supervisory_consultation', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/dpia/{id}/supervisory-consultation', name: 'app_dpia_supervisory_consultation', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function supervisoryConsultation(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
@@ -320,7 +320,7 @@ class DPIAController extends AbstractController
     /**
      * Mark DPIA for review
      */
-    #[Route('/dpia/{id}/mark-for-review', name: 'app_dpia_mark_for_review', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/dpia/{id}/mark-for-review', name: 'app_dpia_mark_for_review', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function markForReview(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if (!$this->isCsrfTokenValid('review' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
@@ -347,7 +347,7 @@ class DPIAController extends AbstractController
     /**
      * Complete review (Art. 35(11))
      */
-    #[Route('/dpia/{id}/complete-review', name: 'app_dpia_complete_review', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/dpia/{id}/complete-review', name: 'app_dpia_complete_review', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_AUDITOR')]
     public function completeReview(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
@@ -369,7 +369,7 @@ class DPIAController extends AbstractController
     /**
      * Clone a DPIA
      */
-    #[Route('/dpia/{id}/clone', name: 'app_dpia_clone', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/dpia/{id}/clone', name: 'app_dpia_clone', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function clone(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         if (!$this->isCsrfTokenValid('clone' . $dataProtectionImpactAssessment->getId(), $request->request->get('_token'))) {
@@ -443,7 +443,7 @@ class DPIAController extends AbstractController
     /**
      * Show DPIA details
      */
-    #[Route('/dpia/{id}', name: 'app_dpia_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/dpia/{id}', name: 'app_dpia_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         $complianceReport = $this->dataProtectionImpactAssessmentService->generateComplianceReport($dataProtectionImpactAssessment);
@@ -457,7 +457,7 @@ class DPIAController extends AbstractController
     /**
      * Export DPIA as PDF (Art. 35 documentation)
      */
-    #[Route('/dpia/{id}/export/pdf', name: 'app_dpia_export_pdf', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/dpia/{id}/export/pdf', name: 'app_dpia_export_pdf', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function exportPdf(Request $request, DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         $complianceReport = $this->dataProtectionImpactAssessmentService->generateComplianceReport($dataProtectionImpactAssessment);
@@ -484,14 +484,14 @@ class DPIAController extends AbstractController
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
-            'Content-Length' => strlen((string) $pdf),
+            'Content-Length' => strlen($pdf),
         ]);
     }
 
     /**
      * Compliance report for a single DPIA (JSON API)
      */
-    #[Route('/dpia/{id}/compliance-report', name: 'app_dpia_compliance_report', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/dpia/{id}/compliance-report', name: 'app_dpia_compliance_report', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function complianceReport(DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         $report = $this->dataProtectionImpactAssessmentService->generateComplianceReport($dataProtectionImpactAssessment);
@@ -502,11 +502,11 @@ class DPIAController extends AbstractController
     /**
      * Validate DPIA (AJAX endpoint)
      */
-    #[Route('/dpia/{id}/validate', name: 'app_dpia_validate', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/dpia/{id}/validate', name: 'app_dpia_validate', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function validate(DataProtectionImpactAssessment $dataProtectionImpactAssessment): Response
     {
         $errors = $this->dataProtectionImpactAssessmentService->validate($dataProtectionImpactAssessment);
-        $isCompliant = empty($errors);
+        $isCompliant = $errors === [];
 
         return $this->json([
             'is_compliant' => $isCompliant,

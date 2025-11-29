@@ -143,7 +143,7 @@ class BusinessProcessRepository extends ServiceEntityRepository
      * @param Tenant $tenant The tenant to find processes for
      * @return BusinessProcess[] Array of BusinessProcess entities
      */
-    public function findByTenant($tenant): array
+    public function findByTenant(Tenant $tenant): array
     {
         return $this->createQueryBuilder('bp')
             ->where('bp.tenant = :tenant')
@@ -171,7 +171,7 @@ class BusinessProcessRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant);
 
         // Include processes from all ancestors in the hierarchy
-        if (!empty($ancestors)) {
+        if ($ancestors !== []) {
             $queryBuilder->orWhere('bp.tenant IN (:ancestors)')
                ->setParameter('ancestors', $ancestors);
         }
@@ -199,7 +199,7 @@ class BusinessProcessRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant);
 
         // Include processes from all subsidiaries in the hierarchy
-        if (!empty($subsidiaries)) {
+        if ($subsidiaries !== []) {
             $queryBuilder->orWhere('bp.tenant IN (:subsidiaries)')
                ->setParameter('subsidiaries', $subsidiaries);
         }

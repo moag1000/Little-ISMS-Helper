@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use DateMalformedStringException;
 use DateTimeImmutable;
 use App\Entity\Tenant;
 use App\Entity\Patch;
@@ -88,7 +89,7 @@ class PatchRepository extends ServiceEntityRepository
      * Find critical patches due soon (within X days)
      *
      * @return Patch[]
-     * @throws \DateMalformedStringException
+     * @throws DateMalformedStringException
      */
     public function findCriticalDueSoon(int $days = 7): array
     {
@@ -147,7 +148,7 @@ class PatchRepository extends ServiceEntityRepository
      * Find recently deployed patches
      *
      * @return Patch[]
-     * @throws \DateMalformedStringException
+     * @throws DateMalformedStringException
      */
     public function findRecentlyDeployed(int $days = 30): array
     {
@@ -197,7 +198,7 @@ class PatchRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant);
 
         // Include patches from all ancestors in the hierarchy
-        if (!empty($ancestors)) {
+        if ($ancestors !== []) {
             $queryBuilder->orWhere('p.tenant IN (:ancestors)')
                ->setParameter('ancestors', $ancestors);
         }
@@ -225,7 +226,7 @@ class PatchRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant);
 
         // Include patches from all subsidiaries in the hierarchy
-        if (!empty($subsidiaries)) {
+        if ($subsidiaries !== []) {
             $queryBuilder->orWhere('p.tenant IN (:subsidiaries)')
                ->setParameter('subsidiaries', $subsidiaries);
         }

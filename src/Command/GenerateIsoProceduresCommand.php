@@ -2,54 +2,43 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
-#[AsCommand(
-    name: 'app:generate-iso-procedures',
-    description: 'Generate ISO 27001 procedure templates for ISMS management system',
-)]
-class GenerateIsoProceduresCommand extends Command
+#[AsCommand(name: 'app:generate-iso-procedures', description: 'Generate ISO 27001 procedure templates for ISMS management system', help: <<<'TXT'
+This command generates ISO 27001 procedure templates to help establish a complete ISMS management system.
+TXT)]
+class GenerateIsoProceduresCommand
 {
     private readonly Filesystem $filesystem;
 
     public function __construct()
     {
-        parent::__construct();
         $this->filesystem = new Filesystem();
     }
 
-    protected function configure(): void
+    public function __invoke(
+        #[Option(name: 'output-dir', shortcut: 'o', mode: InputOption::VALUE_OPTIONAL, description: 'Output directory for templates')]
+        string $outputDir = 'var/iso_procedures',
+        #[Option(name: 'format', shortcut: 'f', mode: InputOption::VALUE_OPTIONAL, description: 'Output format (markdown, html)')]
+        string $format = 'markdown',
+        ?SymfonyStyle $symfonyStyle = null
+    ): int
     {
-        $this
-            ->addOption('output-dir', 'o', InputOption::VALUE_OPTIONAL, 'Output directory for templates', 'var/iso_procedures')
-            ->addOption('format', 'f', InputOption::VALUE_OPTIONAL, 'Output format (markdown, html)', 'markdown')
-            ->setHelp('This command generates ISO 27001 procedure templates to help establish a complete ISMS management system.');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-        $outputDir = $input->getOption('output-dir');
-        $format = $input->getOption('format');
-
+        $outputDir = $output_dir;
         $symfonyStyle->title('ISO 27001 Procedure Templates Generator');
         $symfonyStyle->text('Generating comprehensive ISMS procedure templates...');
-
         // Create output directory
         if (!$this->filesystem->exists($outputDir)) {
             $this->filesystem->mkdir($outputDir);
             $symfonyStyle->success("Created output directory: $outputDir");
         }
-
         $procedures = $this->getProcedureTemplates();
         $generatedCount = 0;
-
         foreach ($procedures as $category => $categoryProcedures) {
             $categoryDir = "$outputDir/$category";
             $this->filesystem->mkdir($categoryDir);
@@ -69,13 +58,11 @@ class GenerateIsoProceduresCommand extends Command
                 $generatedCount++;
             }
         }
-
         $symfonyStyle->success("Successfully generated $generatedCount procedure templates in: $outputDir");
         $symfonyStyle->table(
             ['Category', 'Procedures'],
             array_map(fn($cat, $procs): array => [$cat, count($procs)], array_keys($procedures), $procedures)
         );
-
         return Command::SUCCESS;
     }
 

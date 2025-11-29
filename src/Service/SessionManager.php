@@ -139,7 +139,7 @@ class SessionManager
         try {
             $session = $this->userSessionRepository->findBySessionId($sessionId);
 
-            if ($session && $session->isActive()) {
+            if ($session instanceof UserSession && $session->isActive()) {
                 $session->updateActivity();
                 $this->entityManager->flush();
             }
@@ -163,7 +163,7 @@ class SessionManager
         try {
             $session = $this->userSessionRepository->findBySessionId($sessionId);
 
-            if ($session && $session->isActive()) {
+            if ($session instanceof UserSession && $session->isActive()) {
                 $session->terminate($reason);
                 $this->entityManager->flush();
 
@@ -202,7 +202,7 @@ class SessionManager
         try {
             $session = $this->userSessionRepository->findBySessionId($sessionId);
 
-            if (!$session || !$session->isActive()) {
+            if (!$session instanceof UserSession || !$session->isActive()) {
                 return false;
             }
 
@@ -286,7 +286,7 @@ class SessionManager
         try {
             $session = $this->userSessionRepository->findBySessionId($sessionId);
 
-            if (!$session) {
+            if (!$session instanceof UserSession) {
                 return false;
             }
 

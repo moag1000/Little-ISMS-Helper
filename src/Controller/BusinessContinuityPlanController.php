@@ -90,7 +90,7 @@ class BusinessContinuityPlanController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/business-continuity-plan/{id}/delete', name: 'app_bc_plan_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/business-continuity-plan/{id}/delete', name: 'app_bc_plan_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, BusinessContinuityPlan $businessContinuityPlan): Response
     {

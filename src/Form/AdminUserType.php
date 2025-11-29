@@ -23,12 +23,8 @@ class AdminUserType extends AbstractType
                 'label' => 'setup.admin.email',
                 'required' => true,
                 'constraints' => [
-                    new Assert\NotBlank([
-                        'message' => 'setup.admin.email_required',
-                    ]),
-                    new Assert\Email([
-                        'message' => 'setup.admin.email_invalid',
-                    ]),
+                    new Assert\NotBlank(message: 'setup.admin.email_required'),
+                    new Assert\Email(message: 'setup.admin.email_invalid'),
                 ],
                 'attr' => [
                     'class' => 'form-control',
@@ -41,15 +37,8 @@ class AdminUserType extends AbstractType
                 'label' => 'setup.admin.first_name',
                 'required' => true,
                 'constraints' => [
-                    new Assert\NotBlank([
-                        'message' => 'setup.admin.first_name_required',
-                    ]),
-                    new Assert\Length([
-                        'min' => 2,
-                        'max' => 50,
-                        'minMessage' => 'setup.admin.first_name_min',
-                        'maxMessage' => 'setup.admin.first_name_max',
-                    ]),
+                    new Assert\NotBlank(message: 'setup.admin.first_name_required'),
+                    new Assert\Length(min: 2, max: 50, minMessage: 'setup.admin.first_name_min', maxMessage: 'setup.admin.first_name_max'),
                 ],
                 'attr' => [
                     'class' => 'form-control',
@@ -61,15 +50,8 @@ class AdminUserType extends AbstractType
                 'label' => 'setup.admin.last_name',
                 'required' => true,
                 'constraints' => [
-                    new Assert\NotBlank([
-                        'message' => 'setup.admin.last_name_required',
-                    ]),
-                    new Assert\Length([
-                        'min' => 2,
-                        'max' => 50,
-                        'minMessage' => 'setup.admin.last_name_min',
-                        'maxMessage' => 'setup.admin.last_name_max',
-                    ]),
+                    new Assert\NotBlank(message: 'setup.admin.last_name_required'),
+                    new Assert\Length(min: 2, max: 50, minMessage: 'setup.admin.last_name_min', maxMessage: 'setup.admin.last_name_max'),
                 ],
                 'attr' => [
                     'class' => 'form-control',
@@ -99,15 +81,8 @@ class AdminUserType extends AbstractType
                     ],
                 ],
                 'constraints' => [
-                    new Assert\NotBlank([
-                        'message' => 'setup.admin.password_required',
-                    ]),
-                    new Assert\Length([
-                        'min' => 8,
-                        'max' => 255,
-                        'minMessage' => 'setup.admin.password_min',
-                        'maxMessage' => 'setup.admin.password_max',
-                    ]),
+                    new Assert\NotBlank(message: 'setup.admin.password_required'),
+                    new Assert\Length(min: 8, max: 255, minMessage: 'setup.admin.password_min', maxMessage: 'setup.admin.password_max'),
                     new Assert\Regex(
                         pattern: '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/',
                         message: 'setup.admin.password_strength'

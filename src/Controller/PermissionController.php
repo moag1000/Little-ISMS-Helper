@@ -48,7 +48,7 @@ class PermissionController extends AbstractController
             ],
         ]);
     }
-    #[Route('/admin/permissions/{id}', name: 'permission_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/admin/permissions/{id}', name: 'permission_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     #[IsGranted('ROLE_VIEW')]
     public function show(Permission $permission): Response
     {

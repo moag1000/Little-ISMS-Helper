@@ -90,7 +90,7 @@ class ChangeRequestController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/change-request/{id}/delete', name: 'app_change_request_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/change-request/{id}/delete', name: 'app_change_request_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, ChangeRequest $changeRequest): Response
     {

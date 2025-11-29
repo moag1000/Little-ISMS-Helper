@@ -16,10 +16,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity(repositoryClass: PatchRepository::class)]
 #[ORM\Table(name: 'patches')]
-#[ORM\Index(columns: ['patch_id'], name: 'idx_patch_id')]
-#[ORM\Index(columns: ['status'], name: 'idx_patch_status')]
-#[ORM\Index(columns: ['release_date'], name: 'idx_patch_release')]
-#[ORM\Index(columns: ['deployment_deadline'], name: 'idx_patch_deadline')]
+#[ORM\Index(name: 'idx_patch_id', columns: ['patch_id'])]
+#[ORM\Index(name: 'idx_patch_status', columns: ['status'])]
+#[ORM\Index(name: 'idx_patch_release', columns: ['release_date'])]
+#[ORM\Index(name: 'idx_patch_deadline', columns: ['deployment_deadline'])]
 class Patch
 {
     #[ORM\Id]
@@ -203,7 +203,7 @@ class Patch
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $updatedAt = null;
 
-    
+
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;

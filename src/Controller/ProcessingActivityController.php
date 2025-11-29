@@ -88,7 +88,7 @@ class ProcessingActivityController extends AbstractController
     /**
      * Edit processing activity
      */
-    #[Route('/processing-activity/{id}/edit', name: 'app_processing_activity_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+    #[Route('/processing-activity/{id}/edit', name: 'app_processing_activity_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
     public function edit(Request $request, ProcessingActivity $processingActivity): Response
     {
         $form = $this->createForm(ProcessingActivityType::class, $processingActivity);
@@ -110,7 +110,7 @@ class ProcessingActivityController extends AbstractController
     /**
      * Delete processing activity
      */
-    #[Route('/processing-activity/{id}/delete', name: 'app_processing_activity_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/processing-activity/{id}/delete', name: 'app_processing_activity_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_MANAGER')]
     public function delete(Request $request, ProcessingActivity $processingActivity): Response
     {
@@ -126,7 +126,7 @@ class ProcessingActivityController extends AbstractController
     /**
      * Activate a draft processing activity
      */
-    #[Route('/processing-activity/{id}/activate', name: 'app_processing_activity_activate', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/processing-activity/{id}/activate', name: 'app_processing_activity_activate', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function activate(Request $request, ProcessingActivity $processingActivity): Response
     {
         if (!$this->isCsrfTokenValid('activate' . $processingActivity->getId(), $request->request->get('_token'))) {
@@ -147,7 +147,7 @@ class ProcessingActivityController extends AbstractController
     /**
      * Archive a processing activity
      */
-    #[Route('/processing-activity/{id}/archive', name: 'app_processing_activity_archive', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/processing-activity/{id}/archive', name: 'app_processing_activity_archive', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function archive(Request $request, ProcessingActivity $processingActivity): Response
     {
         if ($this->isCsrfTokenValid('archive' . $processingActivity->getId(), $request->request->get('_token'))) {
@@ -162,7 +162,7 @@ class ProcessingActivityController extends AbstractController
     /**
      * Mark for review
      */
-    #[Route('/processing-activity/{id}/mark-for-review', name: 'app_processing_activity_mark_for_review', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/processing-activity/{id}/mark-for-review', name: 'app_processing_activity_mark_for_review', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function markForReview(Request $request, ProcessingActivity $processingActivity): Response
     {
         if ($this->isCsrfTokenValid('review' . $processingActivity->getId(), $request->request->get('_token'))) {
@@ -180,7 +180,7 @@ class ProcessingActivityController extends AbstractController
     /**
      * Complete review
      */
-    #[Route('/processing-activity/{id}/complete-review', name: 'app_processing_activity_complete_review', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/processing-activity/{id}/complete-review', name: 'app_processing_activity_complete_review', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function completeReview(Request $request, ProcessingActivity $processingActivity): Response
     {
         if ($this->isCsrfTokenValid('complete-review' . $processingActivity->getId(), $request->request->get('_token'))) {
@@ -195,7 +195,7 @@ class ProcessingActivityController extends AbstractController
     /**
      * Clone a processing activity
      */
-    #[Route('/processing-activity/{id}/clone', name: 'app_processing_activity_clone', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/processing-activity/{id}/clone', name: 'app_processing_activity_clone', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function clone(Request $request, ProcessingActivity $processingActivity): Response
     {
         if (!$this->isCsrfTokenValid('clone' . $processingActivity->getId(), $request->request->get('_token'))) {
@@ -259,7 +259,7 @@ class ProcessingActivityController extends AbstractController
         return new Response($pdf, Response::HTTP_OK, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => sprintf('attachment; filename="%s"', $filename),
-            'Content-Length' => strlen((string) $pdf),
+            'Content-Length' => strlen($pdf),
         ]);
     }
 
@@ -408,7 +408,7 @@ class ProcessingActivityController extends AbstractController
     /**
      * Show processing activity details
      */
-    #[Route('/processing-activity/{id}', name: 'app_processing_activity_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/processing-activity/{id}', name: 'app_processing_activity_show', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(ProcessingActivity $processingActivity): Response
     {
         $complianceReport = $this->processingActivityService->generateComplianceReport($processingActivity);
@@ -422,7 +422,7 @@ class ProcessingActivityController extends AbstractController
     /**
      * Compliance report for a single processing activity (JSON API)
      */
-    #[Route('/processing-activity/{id}/compliance-report', name: 'app_processing_activity_compliance_report', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/processing-activity/{id}/compliance-report', name: 'app_processing_activity_compliance_report', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function complianceReport(ProcessingActivity $processingActivity): Response
     {
         $report = $this->processingActivityService->generateComplianceReport($processingActivity);
@@ -433,11 +433,11 @@ class ProcessingActivityController extends AbstractController
     /**
      * Validate processing activity (AJAX endpoint)
      */
-    #[Route('/processing-activity/{id}/validate', name: 'app_processing_activity_validate', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/processing-activity/{id}/validate', name: 'app_processing_activity_validate', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function validate(ProcessingActivity $processingActivity): Response
     {
         $errors = $this->processingActivityService->validate($processingActivity);
-        $isCompliant = empty($errors);
+        $isCompliant = $errors === [];
 
         return $this->json([
             'is_compliant' => $isCompliant,

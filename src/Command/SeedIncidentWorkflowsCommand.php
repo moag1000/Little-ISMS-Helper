@@ -8,32 +8,23 @@ use App\Entity\WorkflowStep;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:seed:incident-workflows',
     description: 'Seeds incident escalation workflow definitions into the database',
 )]
-class SeedIncidentWorkflowsCommand extends Command
+class SeedIncidentWorkflowsCommand
 {
-    public function __construct(
-        private readonly EntityManagerInterface $entityManager
-    ) {
-        parent::__construct();
+    public function __construct(private readonly EntityManagerInterface $entityManager)
+    {
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(SymfonyStyle $symfonyStyle): int
     {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-
         $symfonyStyle->title('Seeding Incident Escalation Workflows');
-
         $workflows = $this->getWorkflowDefinitions();
-
         $this->entityManager->beginTransaction();
-
         try {
             $createdCount = 0;
             $skippedCount = 0;

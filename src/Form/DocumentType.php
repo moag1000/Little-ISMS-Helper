@@ -55,21 +55,17 @@ class DocumentType extends AbstractType
                 'mapped' => false, // File upload is handled separately
                 'required' => $options['is_new'] ?? true,
                 'constraints' => [
-                    new File([
-                        'maxSize' => '10M',
-                        'mimeTypes' => [
-                            'application/pdf',
-                            'application/msword',
-                            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-                            'application/vnd.ms-excel',
-                            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                            'image/jpeg',
-                            'image/png',
-                            'image/gif',
-                            'text/plain',
-                        ],
-                        'mimeTypesMessage' => 'document.validation.mime_types',
-                    ]),
+                    new File(maxSize: '10M', mimeTypes: [
+                        'application/pdf',
+                        'application/msword',
+                        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                        'application/vnd.ms-excel',
+                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                        'image/jpeg',
+                        'image/png',
+                        'image/gif',
+                        'text/plain',
+                    ], mimeTypesMessage: 'document.validation.mime_types'),
                 ],
                 'attr' => [
                     'accept' => '.pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.gif,.txt',

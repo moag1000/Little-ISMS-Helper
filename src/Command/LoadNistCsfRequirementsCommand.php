@@ -2,36 +2,29 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\Option;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:load-nist-csf-requirements',
     description: 'Load NIST Cybersecurity Framework 2.0 with ISO 27001 control mappings'
 )]
-class LoadNistCsfRequirementsCommand extends Command
+class LoadNistCsfRequirementsCommand
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
-        parent::__construct();
     }
 
-    protected function configure(): void
+    public function __invoke(#[Option(name: 'update', shortcut: 'u', mode: InputOption::VALUE_NONE, description: 'Update existing requirements instead of skipping them')]
+    bool $update = false, ?SymfonyStyle $symfonyStyle = null): int
     {
-        $this->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing requirements instead of skipping them');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-        $updateMode = $input->getOption('update');
+        $updateMode = $update;
 
         $symfonyStyle->title('Loading NIST CSF 2.0 Requirements');
         $symfonyStyle->text(sprintf('Mode: %s', $updateMode ? 'UPDATE existing' : 'CREATE new (skip existing)'));
@@ -64,7 +57,7 @@ class LoadNistCsfRequirementsCommand extends Command
         foreach ($requirements as $reqData) {
             $existing = $this->entityManager->getRepository(ComplianceRequirement::class)
                 ->findOneBy([
-                    'framework' => $framework,
+                    'complianceFramework' => $framework,
                     'requirementId' => $reqData['id']
                 ]);
 

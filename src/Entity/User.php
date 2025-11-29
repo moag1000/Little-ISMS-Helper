@@ -54,7 +54,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 20, nullable: true)]
     private ?string $authProvider = null; // 'local', 'azure_oauth', 'azure_saml'
 
-    #[ORM\Column(length: 255, nullable: true, unique: true)]
+    #[ORM\Column(length: 255, unique: true, nullable: true)]
     private ?string $azureObjectId = null; // Azure AD Object ID
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -479,11 +479,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeMfaToken(MfaToken $mfaToken): static
     {
-        if ($this->mfaTokens->removeElement($mfaToken)) {
-            // set the owning side to null (unless already changed)
-            if ($mfaToken->getUser() === $this) {
-                $mfaToken->setUser(null);
-            }
+        // set the owning side to null (unless already changed)
+        if ($this->mfaTokens->removeElement($mfaToken) && $mfaToken->getUser() === $this) {
+            $mfaToken->setUser(null);
         }
 
         return $this;

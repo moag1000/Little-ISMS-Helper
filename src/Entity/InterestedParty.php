@@ -35,9 +35,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ORM\Entity(repositoryClass: InterestedPartyRepository::class)]
 #[ORM\Table(name: 'interested_party')]
-#[ORM\Index(columns: ['party_type'], name: 'idx_party_type')]
-#[ORM\Index(columns: ['importance'], name: 'idx_party_importance')]
-#[ORM\Index(columns: ['tenant_id'], name: 'idx_interested_party_tenant')]
+#[ORM\Index(name: 'idx_party_type', columns: ['party_type'])]
+#[ORM\Index(name: 'idx_party_importance', columns: ['importance'])]
+#[ORM\Index(name: 'idx_interested_party_tenant', columns: ['tenant_id'])]
 #[ORM\HasLifecycleCallbacks]
 class InterestedParty
 {

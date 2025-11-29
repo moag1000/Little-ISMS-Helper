@@ -10,7 +10,6 @@ use App\Repository\TenantRepository;
 use App\Repository\ControlRepository;
 use App\Repository\InternalAuditRepository;
 use App\Repository\DocumentRepository;
-use App\Repository\UserRepository;
 use App\Repository\TrainingRepository;
 use App\Repository\BusinessProcessRepository;
 use App\Repository\BusinessContinuityPlanRepository;
@@ -41,7 +40,6 @@ class DataIntegrityService
         private readonly ControlRepository $controlRepository,
         private readonly InternalAuditRepository $auditRepository,
         private readonly DocumentRepository $documentRepository,
-        private readonly UserRepository $userRepository,
         private readonly TrainingRepository $trainingRepository,
         private readonly BusinessProcessRepository $businessProcessRepository,
         private readonly BusinessContinuityPlanRepository $bcPlanRepository,
@@ -58,7 +56,7 @@ class DataIntegrityService
      */
     public function runFullIntegrityCheck(): array
     {
-        $issues = [
+        return [
             'orphaned_entities' => $this->findAllOrphanedEntities(),
             'duplicates' => $this->findDuplicateEntities(),
             'broken_references' => $this->findBrokenReferences(),
@@ -66,8 +64,6 @@ class DataIntegrityService
             'inconsistent_data' => $this->findInconsistentData(),
             'entity_counts' => $this->getEntityCountsByTenant(),
         ];
-
-        return $issues;
     }
 
     /**
@@ -155,7 +151,7 @@ class DataIntegrityService
         $assetsByTenant = [];
         foreach ($assets as $asset) {
             if ($asset->getTenant()) {
-                $key = $asset->getTenant()->getId() . '_' . strtolower($asset->getName());
+                $key = $asset->getTenant()->getId() . '_' . strtolower((string) $asset->getName());
                 if (!isset($assetsByTenant[$key])) {
                     $assetsByTenant[$key] = [];
                 }
@@ -179,7 +175,7 @@ class DataIntegrityService
         $risksByTenant = [];
         foreach ($risks as $risk) {
             if ($risk->getTenant()) {
-                $key = $risk->getTenant()->getId() . '_' . strtolower($risk->getTitle());
+                $key = $risk->getTenant()->getId() . '_' . strtolower((string) $risk->getTitle());
                 if (!isset($risksByTenant[$key])) {
                     $risksByTenant[$key] = [];
                 }
@@ -506,7 +502,7 @@ class DataIntegrityService
             return 100;
         }
 
-        $totalIssues = ($orphaned * 3) + ($broken * 5) + ($missing * 1) + ($duplicates * 2) + ($inconsistent * 1);
+        $totalIssues = ($orphaned * 3) + ($broken * 5) + ($missing) + ($duplicates * 2) + ($inconsistent);
         $maxPossibleIssues = $totalEntities * 5; // Max severity weight
 
         $healthScore = max(0, 100 - (($totalIssues / $maxPossibleIssues) * 100));

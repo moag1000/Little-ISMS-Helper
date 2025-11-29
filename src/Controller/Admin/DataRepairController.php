@@ -405,7 +405,7 @@ class DataRepairController extends AbstractController
         $totalFixed = 0;
 
         // Assign all orphaned entities to the selected tenant
-        foreach ($orphaned as $entityType => $entities) {
+        foreach ($orphaned as $entities) {
             foreach ($entities as $entity) {
                 if (method_exists($entity, 'setTenant')) {
                     $entity->setTenant($tenant);
@@ -419,7 +419,7 @@ class DataRepairController extends AbstractController
         $this->addFlash('success', $this->translator->trans('admin.data_repair.fixed_all_orphans', [
             '%count%' => $totalFixed,
             '%tenant%' => $tenant->getName(),
-        ]));
+        ],'admin'));;
 
         return $this->redirectToRoute('admin_data_repair_index');
     }
@@ -464,7 +464,7 @@ class DataRepairController extends AbstractController
 
         $this->addFlash('success', $this->translator->trans('admin.data_repair.fixed_mismatches', [
             '%count%' => $fixedCount,
-        ]));
+        ], 'admin'));
 
         return $this->redirectToRoute('admin_data_repair_index');
     }

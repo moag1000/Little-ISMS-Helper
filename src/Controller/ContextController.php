@@ -34,7 +34,7 @@ class ContextController extends AbstractController
         // Get audit log history for the EFFECTIVE context (last 10 entries) if context exists
         $auditLogs = [];
         $totalAuditLogs = 0;
-        if ($effectiveContext && $effectiveContext->getId()) {
+        if ($effectiveContext->getId()) {
             $auditLogs = $this->auditLogRepository->findByEntity('ISMSContext', $effectiveContext->getId());
             $totalAuditLogs = count($auditLogs);
             $auditLogs = array_slice($auditLogs, 0, 10);
@@ -85,10 +85,8 @@ class ContextController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $validationErrors = $this->ismsContextService->validateContext($context);
 
-            if (!empty($validationErrors)) {
-                foreach ($validationErrors as $validationError) {
-                    $this->addFlash('warning', $validationError);
-                }
+            foreach ($validationErrors as $validationError) {
+                $this->addFlash('warning', $validationError);
             }
 
             $this->ismsContextService->saveContext($context);

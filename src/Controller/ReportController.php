@@ -160,12 +160,12 @@ class ReportController extends AbstractController
                 $risk->getId(),
                 $risk->getTitle(),
                 $risk->getCategory(),
-                $risk->getLikelihood(),
+                $risk->getProbability(),
                 $risk->getImpact(),
                 $risk->getRiskScore(),
-                $risk->getTreatmentPlan() ? substr((string) $risk->getTreatmentPlan(), 0, 50) : '-',
+                $risk->getTreatmentStrategy() ? substr((string) $risk->getTreatmentStrategy(), 0, 50) : '-',
                 $risk->getStatus(),
-                $risk->getOwner() ? $risk->getOwner()->getEmail() : '-',
+                $risk->getRiskOwner() ? $risk->getRiskOwner()->getEmail() : '-',
             ];
         }
 
@@ -227,9 +227,9 @@ class ReportController extends AbstractController
                 $control->getControlId(),
                 $control->getName(),
                 $control->getCategory(),
-                $control->getApplicability(),
+                $control->isApplicable(),
                 $control->getImplementationStatus(),
-                $control->getImplementationProgress() . '%',
+                $control->getImplementationPercentage() . '%',
                 $control->getResponsiblePerson() ? $control->getResponsiblePerson()->getEmail() : '-',
                 $control->getTargetDate() ? $control->getTargetDate()->format('Y-m-d') : '-',
             ];
@@ -295,8 +295,8 @@ class ReportController extends AbstractController
                 $incident->getSeverity(),
                 $incident->getCategory(),
                 $incident->getStatus(),
-                $incident->getDetectedDate()->format('Y-m-d'),
-                $incident->getResolvedDate() ? $incident->getResolvedDate()->format('Y-m-d') : 'Open',
+                $incident->getDetectedAt()->format('Y-m-d'),
+                $incident->getResolvedAt() ? $incident->getResolvedAt()->format('Y-m-d') : 'Open',
                 $incident->getReportedBy() ? $incident->getReportedBy()->getEmail() : '-',
             ];
         }
@@ -360,7 +360,7 @@ class ReportController extends AbstractController
                 $training->getTitle(),
                 $training->getTrainingType(),
                 $training->getScheduledDate()->format('Y-m-d H:i'),
-                $training->getDuration(),
+                $training->getDurationMinutes(),
                 count($training->getParticipants()),
                 $training->isMandatory() ? 'Yes' : 'No',
                 $training->getStatus(),

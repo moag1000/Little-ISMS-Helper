@@ -25,10 +25,10 @@ use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: InternalAuditRepository::class)]
-#[ORM\Index(columns: ['audit_number'], name: 'idx_audit_number')]
-#[ORM\Index(columns: ['status'], name: 'idx_audit_status')]
-#[ORM\Index(columns: ['scope_type'], name: 'idx_audit_scope_type')]
-#[ORM\Index(columns: ['planned_date'], name: 'idx_audit_planned_date')]
+#[ORM\Index(name: 'idx_audit_number', columns: ['audit_number'])]
+#[ORM\Index(name: 'idx_audit_status', columns: ['status'])]
+#[ORM\Index(name: 'idx_audit_scope_type', columns: ['scope_type'])]
+#[ORM\Index(name: 'idx_audit_planned_date', columns: ['planned_date'])]
 #[ApiResource(
     operations: [
         new Get(
@@ -205,7 +205,7 @@ class InternalAudit
     #[Groups(['audit:read'])]
     private ?DateTimeInterface $updatedAt = null;
 
-    
+
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;
@@ -506,7 +506,7 @@ public function __construct()
     {
         return match($this->scopeType) {
             'full_isms' => 'Vollständiges ISMS Audit',
-            'compliance_framework' => $this->complianceFramework
+            'compliance_framework' => $this->complianceFramework instanceof ComplianceFramework
                 ? 'Compliance Audit: ' . $this->complianceFramework->getName()
                 : 'Compliance Framework Audit',
             'asset' => sprintf('Asset Audit (%d Assets)', $this->scopedAssets->count()),
@@ -533,7 +533,7 @@ public function __construct()
      */
     public function isComplianceAudit(): bool
     {
-        return $this->scopeType === 'compliance_framework' && $this->complianceFramework !== null;
+        return $this->scopeType === 'compliance_framework' && $this->complianceFramework instanceof ComplianceFramework;
     }
 
     /**

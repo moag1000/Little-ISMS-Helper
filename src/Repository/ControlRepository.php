@@ -174,7 +174,7 @@ class ControlRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant);
 
         // Include controls from all ancestors in the hierarchy
-        if (!empty($ancestors)) {
+        if ($ancestors !== []) {
             $queryBuilder->orWhere('c.tenant IN (:ancestors)')
                ->setParameter('ancestors', $ancestors);
         }
@@ -271,7 +271,7 @@ class ControlRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant);
 
         // Include controls from all subsidiaries in the hierarchy
-        if (!empty($subsidiaries)) {
+        if ($subsidiaries !== []) {
             $queryBuilder->orWhere('c.tenant IN (:subsidiaries)')
                ->setParameter('subsidiaries', $subsidiaries);
         }

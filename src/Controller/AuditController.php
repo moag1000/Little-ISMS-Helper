@@ -44,21 +44,21 @@ class AuditController extends AbstractController
 
         // Apply filters
         if ($status) {
-            $allAudits = array_filter($allAudits, fn($audit): bool => $audit->getStatus() === $status);
+            $allAudits = array_filter($allAudits, fn(InternalAudit $audit): bool => $audit->getStatus() === $status);
         }
 
         if ($scopeType) {
-            $allAudits = array_filter($allAudits, fn($audit): bool => $audit->getScopeType() === $scopeType);
+            $allAudits = array_filter($allAudits, fn(InternalAudit $audit): bool => $audit->getScopeType() === $scopeType);
         }
 
         if ($dateFrom) {
             $dateFromObj = new DateTime($dateFrom);
-            $allAudits = array_filter($allAudits, fn($audit): bool => $audit->getPlannedDate() >= $dateFromObj);
+            $allAudits = array_filter($allAudits, fn(InternalAudit $audit): bool => $audit->getPlannedDate() >= $dateFromObj);
         }
 
         if ($dateTo) {
             $dateToObj = new DateTime($dateTo);
-            $allAudits = array_filter($allAudits, fn($audit): bool => $audit->getPlannedDate() <= $dateToObj);
+            $allAudits = array_filter($allAudits, fn(InternalAudit $audit): bool => $audit->getPlannedDate() <= $dateToObj);
         }
 
         // Re-index array after filtering to avoid gaps in keys
@@ -207,7 +207,7 @@ class AuditController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/audit/{id}/delete', name: 'app_audit_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/audit/{id}/delete', name: 'app_audit_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, InternalAudit $internalAudit): Response
     {

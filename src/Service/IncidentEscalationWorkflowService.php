@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use DateMalformedStringException;
 use DateTimeImmutable;
 use App\Entity\WorkflowInstance;
 use App\Entity\Incident;
@@ -535,7 +536,7 @@ class IncidentEscalationWorkflowService
      *  - approval_required_by: roles required for approval (if approval is required)
      *  - auto_notification: whether notifications are sent automatically
      *
-     * @throws \DateMalformedStringException
+     * @throws DateMalformedStringException
      */
     public function previewEscalation(Incident $incident): array
     {

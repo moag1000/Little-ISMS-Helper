@@ -87,7 +87,7 @@ class AdminComplianceController extends AbstractController
         $statistics = $this->complianceFrameworkLoaderService->getFrameworkStatistics();
 
         return new JsonResponse([
-            'frameworks' => $frameworks,
+            'complianceFrameworks' => $frameworks,
             'statistics' => $statistics,
         ]);
     }

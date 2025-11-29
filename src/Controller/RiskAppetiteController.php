@@ -145,7 +145,7 @@ class RiskAppetiteController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/risk-appetite/{id}/delete', name: 'app_risk_appetite_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/risk-appetite/{id}/delete', name: 'app_risk_appetite_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, RiskAppetite $riskAppetite): Response
     {
