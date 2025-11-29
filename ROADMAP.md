@@ -46,6 +46,7 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 - ✅ Phase 6H: NIS2 Compliance Completion (90%+ compliant)
 - ✅ Phase 6L: Multi-Tenancy & Subsidiary Management
 - ✅ Phase 6N: Automated Workflows (GDPR Breach, Incident Escalation, Approvals)
+- ✅ Phase 6O: Proactive Compliance Monitoring (Review Reminders, 72h Breach Alerts, Risk Slider)
 
 ### 🚧 In Arbeit
 - 🧪 Phase 6B: Test Coverage (Aktuell: ~65%, Ziel: 80%+)
@@ -530,7 +531,7 @@ Phase 7 führt umfassende Management-Reporting-Funktionen und erweiterte Analyti
 
 ---
 
-**Stand:** 2025-11-28
-**Version:** 1.3
-**Letzte Änderung:** v2.1.1 Hotfix Release (Post-Rector Bug Fixes)
+**Stand:** 2025-11-29
+**Version:** 1.4
+**Letzte Änderung:** v2.2.0 Release (Proactive Compliance Monitoring)
 **Nächste Aktualisierung:** Nach Abschluss Phase 6B (Test Coverage)

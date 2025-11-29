@@ -15,6 +15,82 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.2.0] - 2025-11-29
+
+### 🚀 Major Features: Automated Review Reminders & Visual Risk Slider
+
+This release introduces proactive compliance monitoring with automated review reminders for GDPR, ISO 27001, and ISO 22301 requirements, plus an interactive risk slider component for enhanced UX.
+
+### ✨ New Features
+
+#### Automated Review Reminder System
+- **ReviewReminderService** - Central service tracking overdue reviews across all ISMS entities
+  - Risk reviews (ISO 27001 Clause 6.1.3.d)
+  - BC Plan reviews and tests (ISO 22301)
+  - Processing Activity reviews (VVT/ROPA - GDPR Art. 30)
+  - DPIA reviews (GDPR Art. 35.11)
+  - Data Breach 72h notification deadlines (GDPR Art. 33)
+- **SendReviewRemindersCommand** - Cron-compatible console command
+  - `--dry-run` - Preview without sending
+  - `--include-upcoming` - Include items due in next 14 days
+  - `--breaches-only` - Hourly check for 72h breach deadlines
+  - `--stats-only` - Show statistics without notifications
+- **Email Templates** - Professional notification emails
+  - `review_reminder.html.twig` - Generic review reminders
+  - `data_breach_deadline_reminder.html.twig` - Urgent 72h GDPR breach alerts with color-coded urgency
+- **Dashboard Widget** - `_overdue_reviews_widget.html.twig`
+  - Shows overdue items by category
+  - Highlights urgent data breaches
+  - Direct links to affected entities
+
+#### Interactive Risk Slider Component
+- **risk_slider_controller.js** - Stimulus controller for visual risk scoring
+  - Interactive sliders for probability and impact (1-5 scale)
+  - Real-time risk score calculation
+  - Color-coded risk levels (ISO 27005 aligned)
+  - Clickable 5x5 risk matrix for direct value selection
+  - Quick preset buttons (Low, Medium, High, Critical)
+  - Bilingual labels (German/English)
+- **_risk_slider.html.twig** - Reusable Twig component
+  - Customizable via parameters (show_matrix, show_presets, compact mode)
+  - Hidden form fields for form submission
+  - Accessible with ARIA labels
+
+### 🐛 Bug Fixes
+
+#### Symfony 7.4 Compatibility
+- **Fixed Option attribute syntax** - Removed invalid `mode` parameter in console commands
+  - `SendReviewRemindersCommand.php` - Fixed 4 Option attributes
+  - `AuditLogCleanupCommand.php` - Fixed 2 Option attributes
+- Symfony 7.4's `#[Option]` attribute only supports: `description`, `name`, `shortcut`, `suggestedValues`
+
+### 🌍 Internationalization
+
+#### New Translations (DE/EN)
+- **dashboard.*.yaml** - Widget translations for overdue reviews
+- **risk.*.yaml** - Risk slider labels (probability, impact, level, presets, matrix_help)
+
+### 📊 Statistics
+- **7 New Files** created
+- **5 Files** modified
+- **~1,700 Lines** of new code
+- **Compliance Coverage:**
+  - GDPR Art. 33 (72h breach notification)
+  - GDPR Art. 35.11 (DPIA review)
+  - ISO 27001 Clause 6.1.3.d (risk review)
+  - ISO 22301 (BC plan testing)
+
+### 🕐 Recommended Cron Setup
+```bash
+# Daily at 8 AM for general review reminders
+0 8 * * * php bin/console app:review:send-reminders
+
+# Hourly for urgent 72h breach deadline checks
+0 * * * * php bin/console app:review:send-reminders --breaches-only
+```
+
+---
+
 ## [2.1.1] - 2025-11-28
 
 ### 🚀 Major Improvements: Code Quality, i18n & Stability
