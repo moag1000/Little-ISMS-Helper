@@ -5,6 +5,14 @@ crisis_team:
     empty: 'No crisis teams defined yet.'
     kpi:
         active: 'Active Teams'
+    section:
+        basic_info: 'Basic Information'
+        leadership: Leadership
+        contact: 'Contact Details'
+        meeting_locations: 'Meeting Locations'
+        procedures: Procedures
+        training: Training
+        plans: 'Plans & Notes'
     field:
         team_name: 'Team Name'
         description: Description
@@ -57,6 +65,7 @@ crisis_team:
         training_schedule: 'Regular trainings and exercises'
         next_training_at: 'When is the next training?'
         business_continuity_plans: 'Assigned BCPs'
+        meeting_location: 'Physical meeting point during crises'
     success:
         created: 'Crisis team created successfully.'
         updated: 'Crisis team updated successfully.'

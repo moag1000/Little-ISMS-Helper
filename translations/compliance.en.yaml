@@ -120,12 +120,55 @@ compliance:
     successfully_deleted: __compliance.successfully_deleted
     delete_failed: __compliance.delete_failed
     mapping:
-        create_link: __compliance.mapping.create_link
-        create_instruction: __compliance.mapping.create_instruction
+        title: 'Compliance Mapping'
+        create_link: 'Create mapping'
+        create_instruction: 'to show how requirements relate to your controls'
+        edit:
+            title: 'Edit Mapping'
+        list:
+            title: 'Manage Mappings'
+        new:
+            title: 'New Mapping'
+        section:
+            requirements: Requirements
+            strength: 'Mapping Strength'
+            rationale: Rationale
+        info:
+            current: 'Current Mapping'
+        field:
+            source: 'Source Requirement'
+            target: 'Target Requirement'
+            type: 'Mapping Type'
+            calculated: Calculated
+            analysis_confidence: 'Analysis Confidence'
+        action:
+            create: 'Create Mapping'
+        help:
+            types:
+                title: 'Mapping Types'
+                weak: Weak
+                weak_desc: 'Only minor overlap or thematic relation (0-49%)'
+                partial: Partial
+                partial_desc: 'Requirements partially overlap (50-99%)'
+                full: Full
+                full_desc: 'Both requirements are identical or equivalent (100%)'
+                exceeds: Exceeds
+                exceeds_desc: 'Source requirement exceeds target requirement (>100%)'
+            confidence:
+                title: 'Confidence Level'
+                low: Low
+                low_desc: 'Estimated or automatically determined'
+                medium: Medium
+                medium_desc: 'Based on comparable requirements'
+                high: High
+                high_desc: 'Manually reviewed and confirmed'
+            bidirectional:
+                title: 'Bidirectional Mappings'
+                desc: 'When both directions apply (A→B and B→A), the mapping is marked as bidirectional'
         type:
-            full: __compliance.mapping.type.full
-            partial: __compliance.mapping.type.partial
-            weak: __compliance.mapping.type.weak
+            full: 'Full (100%)'
+            partial: 'Partial (50-99%)'
+            weak: 'Weak (0-49%)'
     message:
         no_data_elements: __compliance.message.no_data_elements
         no_frameworks: __compliance.message.no_frameworks
@@ -190,15 +233,54 @@ compliance:
             fulfilled: __compliance.framework.stats.fulfilled
             compliance: __compliance.framework.stats.compliance
     requirement:
+        title: 'Compliance Requirement'
+        edit:
+            title: 'Edit Requirement'
+            note: 'Changes to requirements may affect the compliance assessment'
+        list:
+            title: 'Manage Requirements'
+        new:
+            title: 'New Requirement'
+        section:
+            identification: Identification
+            basic: 'Basic Data'
+            structure: Structure
+        info:
+            title: 'Requirement Details'
+            mapped_controls: 'Mapped Controls'
+            sub_requirements: 'Sub-requirements'
         action:
-            new: __compliance.requirement.action.new
+            new: 'New Requirement'
+            create: 'Create Requirement'
+        help:
+            types:
+                title: 'Requirement Types'
+                core: Core
+                core_desc: 'Main requirement of the framework'
+                detailed: Detailed
+                detailed_desc: 'Specification of a core requirement'
+                sub: Sub-requirement
+                sub_desc: 'Part of a parent requirement'
+            priority:
+                title: 'Priority Levels'
+                critical: Critical
+                critical_desc: 'Immediate implementation required'
+                high: High
+                high_desc: 'High priority, implement soon'
+                medium: Medium
+                medium_desc: 'Medium priority, implement as planned'
+                low: Low
+                low_desc: 'Low priority, implement when convenient'
+            fulfillment:
+                title: 'Fulfillment Level'
+                desc: 'Percentage of requirement fulfillment (0-100%)'
         priority:
-            critical: __compliance.requirement.priority.critical
-            high: __compliance.requirement.priority.high
-            medium: __compliance.requirement.priority.medium
-            low: __compliance.requirement.priority.low
-        view_page_note: __compliance.requirement.view_page_note
-        filter_by_framework: __compliance.requirement.filter_by_framework
+            critical: Critical
+            high: High
+            medium: Medium
+            low: Low
+        view_page_note: 'Click on a requirement to view details and implementation status'
+        filter_by_framework: 'Filter by Framework'
     cross_framework:
         source_target_label: __compliance.cross_framework.source_target_label
         table:
@@ -394,5 +476,26 @@ compliance_requirement:
     requirement:
         view_page_note: 'view page'
         filter_by_framework: 'Filter by Framework'
+compliance_framework:
+    industry:
+        all_sectors: 'All Sectors'
+        automotive: Automotive
+        financial_services: 'Financial Services'
+        healthcare: Healthcare
+        telecommunications: Telecommunications
+        pharmaceutical: Pharmaceutical
+        cloud_services: 'Cloud Services'
+        critical_infrastructure: 'Critical Infrastructure'
+        energy: Energy
+        manufacturing: Manufacturing
+        retail: Retail
+        transportation: Transportation
+        public_sector: 'Public Sector'
+        education: Education
+        insurance: Insurance
+    mapping:
+        title: 'Compliance Mapping'
+    requirement:
+        title: 'Compliance Requirement'
 nis2:
-    article: __nis2.article
+    article: Article

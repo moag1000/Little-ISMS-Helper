@@ -128,3 +128,10 @@ user:
             avatar_deleted: 'Profilbild erfolgreich gelöscht'
 user_management:
     import_irreversible: 'Warnung: Der Benutzerimport kann nicht rückgängig gemacht werden. Bitte stellen Sie sicher, dass die CSV-Datei korrekt formatiert ist.'
+
+# Flat profile keys (for ProfileController compatibility)
+profile:
+    success:
+        updated: 'Profil erfolgreich aktualisiert'
+        password_changed: 'Passwort erfolgreich geändert'
+        avatar_deleted: 'Profilbild erfolgreich gelöscht'

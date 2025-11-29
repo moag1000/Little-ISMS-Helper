@@ -136,7 +136,9 @@ common:
     details: Details
     download: Download
     error: Error
+    error.invalid_csrf: 'Invalid security token. Please reload the page and try again.'
     export: Export
+    export_excel: 'Export as Excel'
     filter: Filter
     filters: Filters
     from: From

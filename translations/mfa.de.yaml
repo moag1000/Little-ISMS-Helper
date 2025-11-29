@@ -7,6 +7,8 @@ mfa:
     enabled_description: 'Ihr Konto ist durch Zwei-Faktor-Authentifizierung geschützt.'
     disabled_description: 'Erhöhen Sie die Sicherheit Ihres Accounts durch Aktivierung von MFA.'
     token_type_label: Token-Typ
+    token:
+        primary: 'Primärer Token'
     device_name: Gerätename
     enrolled_at: 'Registriert am'
     last_used: 'Zuletzt verwendet'

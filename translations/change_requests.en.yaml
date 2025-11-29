@@ -52,6 +52,7 @@ change_request:
         affected_assets: 'Affected Assets'
         affected_controls: 'Affected Controls'
         affected_risks: 'Affected Risks'
+        associated_risks: 'Associated Risks'
     field:
         change_number: 'Request No.'
         title: Title

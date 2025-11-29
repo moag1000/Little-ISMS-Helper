@@ -1,15 +1,83 @@
 patch:
-    edit: Edit
-    new: New
-    title: Title
+    edit: 'Edit Patch'
+    new: 'New Patch'
+    title: 'Patch Management'
+    section:
+        basic_info: 'Basic Information'
+        product_info: 'Product Information'
+        priority_status: 'Priority & Status'
+        deployment: Deployment
+        testing_deployment: 'Testing & Deployment'
+        requirements: Requirements
+        resources: Resources
     field:
-        patch_id: 'Patch Id'
-        title: Title
+        patch_id: 'Patch ID'
+        title: 'Patch Title'
         patch_type: 'Patch Type'
-        status: Status
+        status: 'Patch Status'
         description: Description
+        vulnerability: 'Related Vulnerability'
+        vendor: Vendor
+        product: Product
+        version: Version
+        priority: Priority
+        affected_assets: 'Affected Assets'
+        release_date: 'Release Date'
+        deployment_deadline: 'Deployment Deadline'
+        deployed_date: 'Deployment Date'
+        responsible_person: 'Responsible Person'
+        testing_notes: 'Testing Notes'
+        deployment_notes: 'Deployment Notes'
+        rollback_plan: 'Rollback Plan'
+        requires_downtime: 'Requires Downtime'
+        estimated_downtime_minutes: 'Estimated Downtime (Minutes)'
+        requires_reboot: 'Requires Reboot'
+        known_issues: 'Known Issues'
+        download_url: 'Download URL'
+        documentation_url: 'Documentation URL'
+    type:
+        security: 'Security Patch'
+        critical: 'Critical Patch'
+        feature: 'Feature Update'
+        bugfix: Bugfix
+        hotfix: Hotfix
+    priority:
+        critical: Critical
+        high: High
+        medium: Medium
+        low: Low
+    status:
+        pending: Pending
+        testing: Testing
+        approved: Approved
+        deployed: Deployed
+        failed: Failed
+        rolled_back: 'Rolled Back'
+        not_applicable: 'Not Applicable'
+    placeholder:
+        patch_id: 'e.g. KB5001234 or CVE-2024-1234-fix'
+        title: 'e.g. Security update for Windows Server'
+        description: 'Description of the patch and its effects...'
+        vulnerability: 'Select vulnerability (optional)'
+        vendor: 'e.g. Microsoft, Oracle, Apache'
+        product: 'e.g. Windows Server 2022, Java Runtime'
+        responsible_person: 'Name of responsible person'
+        testing_notes: 'Test results and observations...'
+        rollback_plan: 'Steps to roll back the patch...'
+        known_issues: 'Known issues or limitations...'
+    help:
+        patch_id: 'Unique identifier of the patch (KB number, CVE fix, etc.)'
+        patch_type: 'Type of patch'
+        priority: 'Urgency of patch installation'
+        vulnerability: 'Linked vulnerability that the patch addresses'
+        affected_assets: 'Assets to which the patch must be applied'
+        deployment_deadline: 'Latest time for installation'
+        responsible_person: 'Person responsible for patch installation'
+        testing_notes: 'Documentation of tests before production deployment'
+        rollback_plan: 'Instructions in case the patch needs to be rolled back'
+        estimated_downtime_minutes: 'Expected downtime in minutes'
     kpi:
         pending: Pending
         deployed: Deployed
         total: Total
-    empty: Empty
+    empty: 'No patches available'
