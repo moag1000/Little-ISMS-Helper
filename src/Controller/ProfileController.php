@@ -80,7 +80,7 @@ class ProfileController extends AbstractController
                 $hashedPassword = $userPasswordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($hashedPassword);
 
-                $this->addFlash('success', $translator->trans('profile.success.password_changed', [], 'users'));
+                $this->addFlash('success', $translator->trans('profile.success.password_changed', [], 'user'));
             }
 
             // Handle avatar upload
@@ -122,7 +122,7 @@ class ProfileController extends AbstractController
                 sprintf('User "%s %s" updated their profile', $user->getFirstName(), $user->getLastName())
             );
 
-            $this->addFlash('success', $translator->trans('profile.success.updated', [], 'users'));
+            $this->addFlash('success', $translator->trans('profile.success.updated', [], 'user'));
 
             return $this->redirectToRoute('app_profile', ['_locale' => $request->getLocale()]);
         }
@@ -161,7 +161,7 @@ class ProfileController extends AbstractController
                     sprintf('User "%s %s" deleted their profile avatar', $user->getFirstName(), $user->getLastName())
                 );
 
-                $this->addFlash('success', $translator->trans('profile.success.avatar_deleted', [], 'users'));
+                $this->addFlash('success', $translator->trans('profile.success.avatar_deleted', [], 'user'));
             }
         }
 
