@@ -64,7 +64,6 @@ class AssetControllerTest extends WebTestCase
         // Create test tenant
         $this->testTenant = new Tenant();
         $this->testTenant->setName('Test Tenant');
-        $this->testTenant->setSlug('test-tenant');
         $this->entityManager->persist($this->testTenant);
 
         // Create test user with ROLE_USER
@@ -96,9 +95,9 @@ class AssetControllerTest extends WebTestCase
         $this->testAsset->setOwner('Test Owner');
         $this->testAsset->setDescription('Test server for integration tests');
         $this->testAsset->setTenant($this->testTenant);
-        $this->testAsset->setConfidentiality(3);
-        $this->testAsset->setIntegrity(3);
-        $this->testAsset->setAvailability(3);
+        $this->testAsset->setConfidentialityValue(3);
+        $this->testAsset->setIntegrityValue(3);
+        $this->testAsset->setAvailabilityValue(3);
         $this->testAsset->setStatus('active');
         $this->testAsset->setDataClassification('internal');
         $this->entityManager->persist($this->testAsset);
@@ -420,9 +419,9 @@ class AssetControllerTest extends WebTestCase
         $inheritedAsset->setAssetType('hardware');
         $inheritedAsset->setOwner('Parent Owner');
         $inheritedAsset->setTenant($parentTenant);
-        $inheritedAsset->setConfidentiality(3);
-        $inheritedAsset->setIntegrity(3);
-        $inheritedAsset->setAvailability(3);
+        $inheritedAsset->setConfidentialityValue(3);
+        $inheritedAsset->setIntegrityValue(3);
+        $inheritedAsset->setAvailabilityValue(3);
         $inheritedAsset->setStatus('active');
         $this->entityManager->persist($inheritedAsset);
 
@@ -507,9 +506,9 @@ class AssetControllerTest extends WebTestCase
         $inheritedAsset->setAssetType('hardware');
         $inheritedAsset->setOwner('Parent Owner');
         $inheritedAsset->setTenant($parentTenant);
-        $inheritedAsset->setConfidentiality(3);
-        $inheritedAsset->setIntegrity(3);
-        $inheritedAsset->setAvailability(3);
+        $inheritedAsset->setConfidentialityValue(3);
+        $inheritedAsset->setIntegrityValue(3);
+        $inheritedAsset->setAvailabilityValue(3);
         $inheritedAsset->setStatus('active');
         $this->entityManager->persist($inheritedAsset);
 
@@ -555,9 +554,9 @@ class AssetControllerTest extends WebTestCase
         $asset2->setAssetType('hardware');
         $asset2->setOwner('Test Owner 2');
         $asset2->setTenant($this->testTenant);
-        $asset2->setConfidentiality(2);
-        $asset2->setIntegrity(2);
-        $asset2->setAvailability(2);
+        $asset2->setConfidentialityValue(2);
+        $asset2->setIntegrityValue(2);
+        $asset2->setAvailabilityValue(2);
         $asset2->setStatus('active');
         $this->entityManager->persist($asset2);
 
@@ -604,9 +603,9 @@ class AssetControllerTest extends WebTestCase
         $otherAsset->setAssetType('hardware');
         $otherAsset->setOwner('Other Owner');
         $otherAsset->setTenant($otherTenant);
-        $otherAsset->setConfidentiality(3);
-        $otherAsset->setIntegrity(3);
-        $otherAsset->setAvailability(3);
+        $otherAsset->setConfidentialityValue(3);
+        $otherAsset->setIntegrityValue(3);
+        $otherAsset->setAvailabilityValue(3);
         $otherAsset->setStatus('active');
         $this->entityManager->persist($otherAsset);
 
@@ -695,9 +694,9 @@ class AssetControllerTest extends WebTestCase
         $otherAsset->setAssetType('hardware');
         $otherAsset->setOwner('Other Owner');
         $otherAsset->setTenant($otherTenant);
-        $otherAsset->setConfidentiality(3);
-        $otherAsset->setIntegrity(3);
-        $otherAsset->setAvailability(3);
+        $otherAsset->setConfidentialityValue(3);
+        $otherAsset->setIntegrityValue(3);
+        $otherAsset->setAvailabilityValue(3);
         $otherAsset->setStatus('active');
         $this->entityManager->persist($otherAsset);
 
