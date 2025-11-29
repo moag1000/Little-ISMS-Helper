@@ -17,44 +17,77 @@ use Symfony\Component\HttpFoundation\File\Exception\FileException;
 class BackupService
 {
     // Entities that contain productive user data
+    // Order matters: entities with foreign keys must come after their dependencies
     private const array PRODUCTIVE_ENTITIES = [
-        'User',
+        // Core entities (no dependencies)
         'Tenant',
         'Role',
         'Permission',
-        'Risk',
-        'Incident',
+        'User',
+        'Person',
+        'Location',
+        'Supplier',
+        'SystemSettings',
+
+        // ISMS Core
         'Asset',
         'Control',
+        'Risk',
+        'RiskAppetite',
+        'RiskTreatmentPlan',
+        'Incident',
         'Vulnerability',
         'Patch',
-        'Training',
-        'Document',
+        'ThreatIntelligence',
+
+        // BCM
+        'BusinessProcess',
         'BusinessContinuityPlan',
         'BCExercise',
-        'BusinessProcess',
         'CrisisTeam',
-        'RiskTreatmentPlan',
+
+        // Compliance
         'ComplianceFramework',
-        'ComplianceMapping',
         'ComplianceRequirement',
-        'InternalAudit',
+        'ComplianceMapping',
+        'ComplianceRequirementFulfillment',
         'MappingGapItem',
+
+        // GDPR/Privacy (CRITICAL - was missing!)
+        'ProcessingActivity',
+        'DataProtectionImpactAssessment',
+        'DataBreach',
+        'Consent',
+
+        // Documents & Training
+        'Document',
+        'Training',
+
+        // Audit & Reviews
+        'InternalAudit',
+        'AuditChecklist',
+        'ManagementReview',
+
+        // Context & Objectives
         'ISMSContext',
         'ISMSObjective',
-        'CorporateGovernance',
         'InterestedParty',
-        'Supplier',
-        'ThreatIntelligence',
+        'CorporateGovernance',
+
+        // Operations
+        'ChangeRequest',
         'CryptographicOperation',
         'PhysicalAccessLog',
-        'Location',
-        'SystemSettings',
+
+        // Workflows
         'Workflow',
-        'WorkflowInstance',
         'WorkflowStep',
-        'ManagementReview',
-        'RiskAppetite',
+        'WorkflowInstance',
+
+        // User Preferences (optional but useful)
+        'DashboardLayout',
+        'MfaToken',
+        'ScheduledTask',
     ];
 
     // Fields to exclude from backup (sensitive or regeneratable)
