@@ -58,12 +58,19 @@ class WorkflowController extends AbstractController
         $statistics = $this->workflowInstanceRepository->getStatistics();
         $instances = $this->workflowInstanceRepository->findBy([], ['startedAt' => 'DESC'], 10);
 
-        // Check approval permissions for each instance
+        // Check approval permissions and eligibility for each instance
         $currentUser = $this->getUser();
         $userCanApprove = [];
+        $hasEligibleApprovers = [];
         foreach ($instances as $instance) {
             $currentStep = $instance->getCurrentStep();
             $userCanApprove[$instance->getId()] = $currentStep && $this->workflowService->canUserApprove($currentUser, $currentStep);
+            // Check if step has eligible approvers (for warning display)
+            if ($currentStep && $instance->getStatus() === 'in_progress') {
+                $hasEligibleApprovers[$instance->getId()] = $this->workflowService->hasEligibleApprovers($currentStep);
+            } else {
+                $hasEligibleApprovers[$instance->getId()] = true;
+            }
         }
 
         return $this->render('workflow/index.html.twig', [
@@ -71,6 +78,7 @@ class WorkflowController extends AbstractController
             'statistics' => $statistics,
             'instances' => $instances,
             'userCanApprove' => $userCanApprove,
+            'hasEligibleApprovers' => $hasEligibleApprovers,
         ]);
     }
 
@@ -111,9 +119,21 @@ class WorkflowController extends AbstractController
         $currentStep = $workflowInstance->getCurrentStep();
         $canApprove = $currentStep instanceof WorkflowStep && $this->workflowService->canUserApprove($currentUser, $currentStep);
 
+        // Check if the current step has eligible approvers (for warning display)
+        $hasEligibleApprovers = true;
+        $eligibleApprovers = [];
+        if ($currentStep instanceof WorkflowStep && $workflowInstance->getStatus() === 'in_progress') {
+            $hasEligibleApprovers = $this->workflowService->hasEligibleApprovers($currentStep);
+            if (!$hasEligibleApprovers) {
+                $eligibleApprovers = $this->workflowService->getEligibleApprovers($currentStep);
+            }
+        }
+
         return $this->render('workflow/instance_show.html.twig', [
             'instance' => $workflowInstance,
             'can_approve' => $canApprove,
+            'has_eligible_approvers' => $hasEligibleApprovers,
+            'eligible_approvers' => $eligibleApprovers,
         ]);
     }
 

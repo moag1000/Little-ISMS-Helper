@@ -31,6 +31,40 @@
 
     {% import '_macros/cards.html.twig' as cards %}
 
+    {# Prominent Workflow Approval Alert Banner #}
+    {% set total_pending = pending_workflows|default([])|length %}
+    {% set total_overdue = overdue_workflows|default([])|length %}
+    {% if total_pending > 0 or total_overdue > 0 %}
+        <div class="alert {% if total_overdue > 0 %}alert-danger{% else %}alert-warning{% endif %} alert-dismissible fade show mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <div class="flex-shrink-0 me-3">
+                    <i class="bi {% if total_overdue > 0 %}bi-exclamation-triangle-fill{% else %}bi-clock-fill{% endif %}" style="font-size: 2rem;" aria-hidden="true"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <h5 class="alert-heading mb-1">
+                        {% if total_overdue > 0 %}
+                            {{ 'workflow.dashboard.alert.overdue_title'|trans({'%count%': total_overdue}, 'workflows') }}
+                        {% else %}
+                            {{ 'workflow.dashboard.alert.pending_title'|trans({'%count%': total_pending}, 'workflows') }}
+                        {% endif %}
+                    </h5>
+                    <p class="mb-2">
+                        {% if total_overdue > 0 %}
+                            {{ 'workflow.dashboard.alert.overdue_message'|trans({'%overdue%': total_overdue, '%total%': total_pending}, 'workflows') }}
+                        {% else %}
+                            {{ 'workflow.dashboard.alert.pending_message'|trans({'%count%': total_pending}, 'workflows') }}
+                        {% endif %}
+                    </p>
+                    <a href="{{ path('app_workflow_pending') }}" class="btn btn-sm {% if total_overdue > 0 %}btn-danger{% else %}btn-warning{% endif %}">
+                        <i class="bi bi-list-check" aria-hidden="true"></i>
+                        {{ 'workflow.dashboard.alert.view_all'|trans({}, 'workflows') }}
+                    </a>
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endif %}
+
     {# Stats Cards Row #}
     <div class="row mb-4"
          data-widget-id="stats-cards"

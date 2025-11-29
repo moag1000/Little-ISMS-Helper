@@ -124,6 +124,14 @@ workflow:
     warning:
         overdue_count: '%count% overdue workflow(s) identified'
         overdue_message: 'Please review assignees and deadlines. Consider re‑prioritizing or escalating.'
+        no_eligible_approvers: 'No eligible approver'
+        no_eligible_approvers_title: 'No eligible approvers configured'
+        no_eligible_approvers_desc: 'No role or user is assigned to process this workflow step.'
+        no_eligible_approvers_admin: 'As an administrator, you can still process this workflow. Please configure the workflow definition to assign approvers for this step.'
+        no_eligible_approvers_user: 'This workflow can currently only be processed by an administrator. Please contact your administrator to continue this workflow or adjust the configuration.'
+        contact_admin: 'Please contact your administrator'
+        admin_action_required: 'Administrator action required'
+        configure_step: 'Configure step'
     days: days
     step: Step
     definition:
@@ -245,6 +253,13 @@ sla:
     hours_short: 'h'
     minutes_short: 'm'
     days_short: 'd'
+    dashboard:
+        alert:
+            overdue_title: '%count% overdue workflow approvals!'
+            overdue_message: '%overdue% of %total% workflows are overdue and require immediate attention.'
+            pending_title: '%count% pending workflow approvals'
+            pending_message: 'You have %count% workflows awaiting your approval.'
+            view_all: 'View all workflows'
     action:
         pending: 'Pending'
     stats:

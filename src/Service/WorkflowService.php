@@ -348,6 +348,51 @@ class WorkflowService
     }
 
     /**
+     * Check if a workflow step has any eligible approvers (non-admin users who can act on it)
+     *
+     * Returns true if there are users with the required role or explicit user assignments.
+     * Returns false if only admins can approve (which indicates a configuration issue).
+     */
+    public function hasEligibleApprovers(WorkflowStep $workflowStep): bool
+    {
+        // Check if specific users are assigned
+        $approverUsers = $workflowStep->getApproverUsers() ?? [];
+        if ($approverUsers !== []) {
+            // Verify at least one of the assigned users exists and is active
+            $existingUsers = $this->userRepository->findBy([
+                'id' => $approverUsers,
+                'isActive' => true,
+            ]);
+            if (count($existingUsers) > 0) {
+                return true;
+            }
+        }
+
+        // Check if a role is assigned and users with that role exist
+        $approverRole = $workflowStep->getApproverRole();
+        if ($approverRole) {
+            $usersWithRole = $this->userRepository->findByRole($approverRole);
+            // Filter to only active users
+            $activeUsersWithRole = array_filter($usersWithRole, fn($user) => $user->isActive());
+            if (count($activeUsersWithRole) > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get all eligible approvers for a workflow step (public version of getStepApprovers)
+     *
+     * @return User[]
+     */
+    public function getEligibleApprovers(WorkflowStep $workflowStep): array
+    {
+        return $this->getStepApprovers($workflowStep);
+    }
+
+    /**
      * Check if user can approve a step
      *
      * Uses Symfony Security to respect role hierarchy. ROLE_ADMIN and ROLE_SUPER_ADMIN
