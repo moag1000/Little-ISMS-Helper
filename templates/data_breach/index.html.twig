@@ -57,7 +57,7 @@
                     <small class="text-muted">{{ 'privacy.data_breach.score.timeliness'|trans({}, 'privacy') }}</small>
                     <h4 class="{% if compliance_score.timeliness_score < 80 %}text-danger{% else %}text-success{% endif %}">
                         {{ compliance_score.timeliness_score }}%
-                    </h5>
+                    </h4>
                 </div>
                 <div class="col-md-4">
                     <small class="text-muted">{{ 'privacy.data_breach.score.completeness'|trans({}, 'privacy') }}</small>

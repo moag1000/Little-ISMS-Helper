@@ -6,15 +6,17 @@
             {# Search Input #}
             <div class="command-palette-search">
                 <i class="bi bi-search command-palette-search-icon" aria-hidden="true"></i>
-                <input
-                    type="text"
-                    class="command-palette-input"
-                    placeholder="Suche nach Befehlen oder Navigation..."
-                    data-command-palette-target="input"
-                    data-action="input->command-palette#search"
-                    autocomplete="off"
-                    spellcheck="false"
-                >
+                <label>
+                    <input
+                        type="text"
+                        class="command-palette-input"
+                        placeholder="Suche nach Befehlen oder Navigation..."
+                        data-command-palette-target="input"
+                        data-action="input->command-palette#search"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+                </label>
                 <kbd class="command-palette-hint">ESC</kbd>
             </div>
 

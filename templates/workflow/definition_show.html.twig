@@ -46,7 +46,7 @@
                 <div class="card-header">
                     <h2 class="mb-0">
                         <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.section.information'|trans({}, 'workflows') }}
-                    </h5>
+                    </h2>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
@@ -86,7 +86,7 @@
                 <div class="card-header">
                     <h3 class="mb-0">
                         <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'workflow.section.steps'|trans({}, 'workflows') }} ({{ workflow.steps|length }})
-                    </h5>
+                    </h3>
                 </div>
                 <div class="card-body">
                     {% if workflow.steps|length > 0 %}
@@ -98,7 +98,7 @@
                                             <h4 class="mb-1">
                                                 <span class="badge bg-primary me-2">{{ step.stepOrder }}</span>
                                                 {{ step.name }}
-                                            </h5>
+                                            </h4>
                                             {% if step.description %}
                                                 <p class="mb-1 text-muted small">{{ step.description }}</p>
                                             {% endif %}
@@ -131,7 +131,7 @@
                 <div class="card-header">
                     <h3 class="mb-0">
                         <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'workflow.section.recent_instances'|trans({}, 'workflows') }}
-                    </h5>
+                    </h3>
                 </div>
                 <div class="card-body">
                     {% if recent_instances|length > 0 %}

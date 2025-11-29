@@ -34,13 +34,15 @@
             {# Search Header #}
             <div class="global-search-header">
                 <i class="bi-search text-muted"></i>
-                <input type="text"
-                       class="global-search-input"
-                       placeholder="Suche nach Assets, Risiken, Controls..."
-                       data-search-target="input"
-                       data-action="input->search#search keydown->search#handleKeydown"
-                       autocomplete="off"
-                       spellcheck="false">
+                <label>
+                    <input type="text"
+                           class="global-search-input"
+                           placeholder="Suche nach Assets, Risiken, Controls..."
+                           data-search-target="input"
+                           data-action="input->search#search keydown->search#handleKeydown"
+                           autocomplete="off"
+                           spellcheck="false">
+                </label>
                 <div class="global-search-shortcuts">
                     <kbd>↑↓</kbd> Navigation
                     <kbd>↵</kbd> Auswählen
