@@ -28,7 +28,6 @@ class TenantFilter extends SQLFilter
     /**
      * Add tenant filter condition to SQL query
      *
-     * @param string $targetTableAlias
      * @throws MappingException
      */
     public function addFilterConstraint(ClassMetadata $targetEntity, string $targetTableAlias): string

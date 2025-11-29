@@ -16,8 +16,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity(repositoryClass: CrisisTeamRepository::class)]
 #[ORM\Table(name: 'crisis_teams')]
-#[ORM\Index(columns: ['team_name'], name: 'idx_crisis_team_name')]
-#[ORM\Index(columns: ['is_active'], name: 'idx_crisis_team_active')]
+#[ORM\Index(name: 'idx_crisis_team_name', columns: ['team_name'])]
+#[ORM\Index(name: 'idx_crisis_team_active', columns: ['is_active'])]
 class CrisisTeam
 {
     #[ORM\Id]
@@ -185,7 +185,7 @@ class CrisisTeam
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $updatedAt = null;
 
-    
+
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;

@@ -26,9 +26,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity(repositoryClass: ProcessingActivityRepository::class)]
 #[ORM\Table(name: 'processing_activity')]
-#[ORM\Index(columns: ['tenant_id'], name: 'idx_processing_activity_tenant')]
-#[ORM\Index(columns: ['legal_basis'], name: 'idx_processing_activity_legal_basis')]
-#[ORM\Index(columns: ['is_high_risk'], name: 'idx_processing_activity_high_risk')]
+#[ORM\Index(name: 'idx_processing_activity_tenant', columns: ['tenant_id'])]
+#[ORM\Index(name: 'idx_processing_activity_legal_basis', columns: ['legal_basis'])]
+#[ORM\Index(name: 'idx_processing_activity_high_risk', columns: ['is_high_risk'])]
 class ProcessingActivity
 {
     #[ORM\Id]

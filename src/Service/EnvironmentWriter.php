@@ -249,7 +249,7 @@ class EnvironmentWriter
 
         // Parse DATABASE_URL: mysql://user:pass@host:port/dbname?serverVersion=X&charset=Y
         // Example: mysql://banda:MeinSicheresPw987%21@127.0.0.1:3306/LittleHelper?serverVersion=11.4.1-MariaDB
-        if (preg_match('#^([^:]+)://([^:]+):([^@]+)@([^:/]+)(?::(\d+))?/([^?]+)(?:\?(.+))?$#', $databaseUrl, $matches)) {
+        if (preg_match('#^([^:]+)://([^:]+):([^@]+)@([^:/]+)(?::(\d+))?/([^?]+)(?:\?(.+))?$#', (string) $databaseUrl, $matches)) {
             $scheme = $matches[1];  // mysql, postgresql, etc.
             $user = urldecode($matches[2]);
             $password = urldecode($matches[3]);

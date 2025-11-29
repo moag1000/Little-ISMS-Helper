@@ -30,10 +30,7 @@ class RiskAppetiteType extends AbstractType
                 ],
                 'help' => 'risk_appetite.help.category',
                 'constraints' => [
-                    new Assert\Length([
-                        'max' => 100,
-                        'maxMessage' => 'risk_appetite.validation.category_max_length'
-                    ])
+                    new Assert\Length(max: 100, maxMessage: 'risk_appetite.validation.category_max_length')
                 ]
             ])
             ->add('maxAcceptableRisk', IntegerType::class, [
@@ -47,12 +44,8 @@ class RiskAppetiteType extends AbstractType
                 ],
                 'help' => 'risk_appetite.help.max_acceptable_risk',
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'risk_appetite.validation.max_acceptable_risk_required']),
-                    new Assert\Range([
-                        'min' => 1,
-                        'max' => 25,
-                        'notInRangeMessage' => 'risk_appetite.validation.max_acceptable_risk_range'
-                    ])
+                    new Assert\NotBlank(message: 'risk_appetite.validation.max_acceptable_risk_required'),
+                    new Assert\Range(notInRangeMessage: 'risk_appetite.validation.max_acceptable_risk_range', min: 1, max: 25)
                 ]
             ])
             ->add('description', TextareaType::class, [
@@ -65,7 +58,7 @@ class RiskAppetiteType extends AbstractType
                 ],
                 'help' => 'risk_appetite.help.description',
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'risk_appetite.validation.description_required'])
+                    new Assert\NotBlank(message: 'risk_appetite.validation.description_required')
                 ]
             ])
             ->add('isActive', CheckboxType::class, [

@@ -7,29 +7,23 @@ use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:load-gxp-requirements',
     description: 'Load GxP (Good Practice) requirements for pharmaceutical and life sciences with ISMS data mappings'
 )]
-class LoadGxpRequirementsCommand extends Command
+class LoadGxpRequirementsCommand
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
-        parent::__construct();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(SymfonyStyle $symfonyStyle): int
     {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-
         // Create or get GxP framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'GXP']);
-
         if (!$framework instanceof ComplianceFramework) {
             $framework = new ComplianceFramework();
             $framework->setCode('GXP')
@@ -44,9 +38,7 @@ class LoadGxpRequirementsCommand extends Command
 
             $this->entityManager->persist($framework);
         }
-
         $requirements = $this->getGxpRequirements();
-
         foreach ($requirements as $reqData) {
             $requirement = new ComplianceRequirement();
             $requirement->setFramework($framework)
@@ -59,11 +51,8 @@ class LoadGxpRequirementsCommand extends Command
 
             $this->entityManager->persist($requirement);
         }
-
         $this->entityManager->flush();
-
         $symfonyStyle->success(sprintf('Successfully loaded %d GxP requirements', count($requirements)));
-
         return Command::SUCCESS;
     }
 

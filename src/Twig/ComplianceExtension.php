@@ -2,7 +2,7 @@
 
 namespace App\Twig;
 
-use Override;
+use Twig\Attribute\AsTwigFunction;
 use Exception;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
@@ -11,8 +11,6 @@ use App\Service\TenantContext;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFunction;
 
 /**
  * Twig Extension for Compliance Navigation
@@ -20,7 +18,7 @@ use Twig\TwigFunction;
  * Provides quick access to compliance frameworks for navigation menus.
  * This enables direct links to frameworks from the sidebar without extra clicks.
  */
-class ComplianceExtension extends AbstractExtension
+class ComplianceExtension
 {
     public function __construct(
         private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
@@ -31,16 +29,6 @@ class ComplianceExtension extends AbstractExtension
     ) {
     }
 
-    #[Override]
-    public function getFunctions(): array
-    {
-        return [
-            new TwigFunction('get_compliance_frameworks', $this->getComplianceFrameworks(...)),
-            new TwigFunction('get_compliance_frameworks_quick', $this->getComplianceFrameworksQuick(...)),
-            new TwigFunction('is_nis2_active', $this->isNis2Active(...)),
-        ];
-    }
-
     /**
      * Check if NIS2 framework is installed and active
      *
@@ -48,6 +36,7 @@ class ComplianceExtension extends AbstractExtension
      * @throws Exception|InvalidArgumentException If cache fails
      *
      */
+    #[AsTwigFunction('is_nis2_active')]
     public function isNis2Active(): bool
     {
         // Return false if compliance module is not active
@@ -79,6 +68,7 @@ class ComplianceExtension extends AbstractExtension
      * @throws Exception|InvalidArgumentException If cache fails
      *
      */
+    #[AsTwigFunction('get_compliance_frameworks')]
     public function getComplianceFrameworks(): array
     {
         // Return empty if compliance module is not active
@@ -121,6 +111,7 @@ class ComplianceExtension extends AbstractExtension
      * @throws Exception|InvalidArgumentException If cache fails
      *
      */
+    #[AsTwigFunction('get_compliance_frameworks_quick')]
     public function getComplianceFrameworksQuick(): array
     {
         // Return empty if compliance module is not active

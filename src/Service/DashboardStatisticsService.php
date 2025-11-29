@@ -238,7 +238,7 @@ class DashboardStatisticsService
         }
 
         // Inherited from parent
-        if ($tenant->getParent()) {
+        if ($tenant->getParent() instanceof Tenant) {
             $parentIncidents = $this->incidentRepository->findByTenantIncludingParent($tenant, $tenant->getParent());
             foreach ($parentIncidents as $parentIncident) {
                 $allIncidents[$parentIncident->getId()] = $parentIncident;

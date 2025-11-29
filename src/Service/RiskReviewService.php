@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use DateMalformedStringException;
 use DateTime;
 use DateTimeInterface;
 use App\Entity\Risk;
@@ -78,7 +79,7 @@ class RiskReviewService
      *
      * @param int $daysAhead Number of days to look ahead (default: 30)
      * @return array<Risk>
-     * @throws \DateMalformedStringException
+     * @throws DateMalformedStringException
      */
     public function getUpcomingReviews(Tenant $tenant, int $daysAhead = 30): array
     {
@@ -105,7 +106,7 @@ class RiskReviewService
      * - Review interval configuration
      *
      * @param bool $flush Whether to persist changes immediately
-     * @throws \DateMalformedStringException
+     * @throws DateMalformedStringException
      */
     public function scheduleNextReview(Risk $risk, bool $flush = true): DateTimeInterface
     {
@@ -152,9 +153,7 @@ class RiskReviewService
         if ($riskScore >= 6) {
             return 'medium';
         }
-        else {
-            return 'low';
-        }
+        return 'low';
     }
 
     /**
@@ -167,7 +166,9 @@ class RiskReviewService
      * - upcoming_7: Reviews due in next 7 days
      * - never_reviewed: Risks without review date
      *
+     * @param Tenant $tenant
      * @return array<string, int>
+     * @throws DateMalformedStringException
      */
     public function getReviewStatistics(Tenant $tenant): array
     {
@@ -198,7 +199,9 @@ class RiskReviewService
      *
      * Useful for initial setup or after importing risks
      *
+     * @param Tenant $tenant
      * @return int Number of risks scheduled
+     * @throws DateMalformedStringException
      */
     public function bulkScheduleReviews(Tenant $tenant): int
     {

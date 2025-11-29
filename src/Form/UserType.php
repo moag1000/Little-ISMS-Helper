@@ -38,11 +38,8 @@ class UserType extends AbstractType
                 'required' => true,
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Bitte geben Sie einen Vornamen ein.']),
-                    new Assert\Length([
-                        'max' => 100,
-                        'maxMessage' => 'Der Vorname darf maximal {{ limit }} Zeichen lang sein.',
-                    ]),
+                    new Assert\NotBlank(message: 'Bitte geben Sie einen Vornamen ein.'),
+                    new Assert\Length(max: 100, maxMessage: 'Der Vorname darf maximal {{ limit }} Zeichen lang sein.'),
                 ],
             ])
             ->add('lastName', TextType::class, [
@@ -50,11 +47,8 @@ class UserType extends AbstractType
                 'required' => true,
                 'attr' => ['class' => 'form-control'],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Bitte geben Sie einen Nachnamen ein.']),
-                    new Assert\Length([
-                        'max' => 100,
-                        'maxMessage' => 'Der Nachname darf maximal {{ limit }} Zeichen lang sein.',
-                    ]),
+                    new Assert\NotBlank(message: 'Bitte geben Sie einen Nachnamen ein.'),
+                    new Assert\Length(max: 100, maxMessage: 'Der Nachname darf maximal {{ limit }} Zeichen lang sein.'),
                 ],
             ])
             ->add('email', EmailType::class, [
@@ -63,8 +57,8 @@ class UserType extends AbstractType
                 'attr' => ['class' => 'form-control'],
                 'help' => 'Wird als Benutzername verwendet',
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'Bitte geben Sie eine E-Mail-Adresse ein.']),
-                    new Assert\Email(['message' => 'Bitte geben Sie eine gültige E-Mail-Adresse ein.']),
+                    new Assert\NotBlank(message: 'Bitte geben Sie eine E-Mail-Adresse ein.'),
+                    new Assert\Email(message: 'Bitte geben Sie eine gültige E-Mail-Adresse ein.'),
                 ],
             ])
             ->add('department', TextType::class, [
@@ -91,16 +85,12 @@ class UserType extends AbstractType
                     'accept' => 'image/jpeg,image/png,image/gif,image/webp',
                 ],
                 'constraints' => [
-                    new Assert\File([
-                        'maxSize' => '2M',
-                        'mimeTypes' => [
-                            'image/jpeg',
-                            'image/png',
-                            'image/gif',
-                            'image/webp',
-                        ],
-                        'mimeTypesMessage' => 'user.validation.avatar_format',
-                    ]),
+                    new Assert\File(maxSize: '2M', mimeTypes: [
+                        'image/jpeg',
+                        'image/png',
+                        'image/gif',
+                        'image/webp',
+                    ], mimeTypesMessage: 'user.validation.avatar_format'),
                 ],
             ])
 
@@ -114,10 +104,7 @@ class UserType extends AbstractType
                     ? 'Leer lassen, um Passwort unverändert zu lassen'
                     : 'Optional für lokale Authentifizierung. Leer lassen für Azure-Authentifizierung.',
                 'constraints' => $isEdit ? [] : [
-                    new Assert\Length([
-                        'min' => 8,
-                        'minMessage' => 'Das Passwort muss mindestens {{ limit }} Zeichen lang sein.',
-                    ]),
+                    new Assert\Length(min: 8, minMessage: 'Das Passwort muss mindestens {{ limit }} Zeichen lang sein.'),
                 ],
             ])
         ;

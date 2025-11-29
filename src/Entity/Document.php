@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DocumentRepository::class)]
-#[ORM\Index(columns: ['tenant_id'], name: 'idx_document_tenant')]
+#[ORM\Index(name: 'idx_document_tenant', columns: ['tenant_id'])]
 #[ORM\HasLifecycleCallbacks]
 class Document
 {
@@ -105,7 +105,7 @@ class Document
     public function setMimeType(string $mimeType): static { $this->mimeType = $mimeType; return $this; }
     public function getFileSize(): ?int { return $this->fileSize; }
     public function setFileSize(int $fileSize): static { $this->fileSize = $fileSize; return $this; }
-    
+
     public function getFileSizeFormatted(): string
     {
         $units = ['B', 'KB', 'MB', 'GB'];

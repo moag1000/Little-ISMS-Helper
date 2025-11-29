@@ -409,9 +409,7 @@ class BusinessProcess
         if ($avgResidualRisk >= 4) {
             return 'medium';
         }
-        else {
-            return 'low';
-        }
+        return 'low';
     }
 
     /**
@@ -598,7 +596,7 @@ class BusinessProcess
     public function getActualAverageRecoveryTime(): ?int
     {
         $resolvedIncidents = $this->incidents->filter(
-            fn($incident): bool => $incident->getResolvedAt() !== null
+            fn($incident): bool => $incident->getResolvedAt() instanceof DateTimeInterface
         );
 
         if ($resolvedIncidents->isEmpty()) {

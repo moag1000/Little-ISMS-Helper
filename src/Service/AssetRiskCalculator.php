@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use DateTimeInterface;
 use App\Entity\Asset;
 use DateTimeImmutable;
 
@@ -112,7 +113,7 @@ class AssetRiskCalculator
 
         return $asset->getIncidents()->filter(function($incident) use ($sixMonthsAgo): bool {
             $detectedAt = $incident->getDetectedAt();
-            return $detectedAt && $detectedAt >= $sixMonthsAgo;
+            return $detectedAt instanceof DateTimeInterface && $detectedAt >= $sixMonthsAgo;
         })->count();
     }
 }

@@ -36,11 +36,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 #[ORM\Entity(repositoryClass: ChangeRequestRepository::class)]
 #[ORM\Table(name: 'change_request')]
-#[ORM\Index(columns: ['change_type'], name: 'idx_change_type')]
-#[ORM\Index(columns: ['priority'], name: 'idx_change_priority')]
-#[ORM\Index(columns: ['status'], name: 'idx_change_status')]
-#[ORM\Index(columns: ['planned_implementation_date'], name: 'idx_change_planned_date')]
-#[ORM\Index(columns: ['tenant_id'], name: 'idx_change_request_tenant')]
+#[ORM\Index(name: 'idx_change_type', columns: ['change_type'])]
+#[ORM\Index(name: 'idx_change_priority', columns: ['priority'])]
+#[ORM\Index(name: 'idx_change_status', columns: ['status'])]
+#[ORM\Index(name: 'idx_change_planned_date', columns: ['planned_implementation_date'])]
+#[ORM\Index(name: 'idx_change_request_tenant', columns: ['tenant_id'])]
 #[ORM\HasLifecycleCallbacks]
 class ChangeRequest
 {

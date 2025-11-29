@@ -496,7 +496,7 @@ class TenantManagementController extends AbstractController
 
                 // Create default governance rule
                 $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
-                if (!$governance) {
+                if (!$governance instanceof CorporateGovernance) {
                     $governance = new CorporateGovernance();
                     $governance->setTenant($tenant);
                     $governance->setParent($parent);
@@ -568,7 +568,7 @@ class TenantManagementController extends AbstractController
         try {
             // Update default governance rule
             $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
-            if ($governance) {
+            if ($governance instanceof CorporateGovernance) {
                 $governance->setGovernanceModel(GovernanceModel::from($governanceModel));
                 $this->entityManager->flush();
 
@@ -623,7 +623,7 @@ class TenantManagementController extends AbstractController
             }
 
             // Check if user already assigned to this tenant
-            if ($user->getTenant() && $user->getTenant()->getId() === $tenant->getId()) {
+            if ($user->getTenant() instanceof Tenant && $user->getTenant()->getId() === $tenant->getId()) {
                 $this->addFlash('info', 'tenant.users.flash.already_assigned');
                 return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
             }
@@ -684,7 +684,7 @@ class TenantManagementController extends AbstractController
             }
 
             // Check if user belongs to this tenant
-            if (!$user->getTenant() || $user->getTenant()->getId() !== $tenant->getId()) {
+            if (!$user->getTenant() instanceof Tenant || $user->getTenant()->getId() !== $tenant->getId()) {
                 $this->addFlash('warning', 'tenant.users.flash.not_assigned');
                 return $this->redirectToRoute('tenant_management_show', ['id' => $tenant->getId()]);
             }

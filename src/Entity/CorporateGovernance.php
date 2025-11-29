@@ -19,7 +19,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity(repositoryClass: CorporateGovernanceRepository::class)]
 #[ORM\Table(name: 'corporate_governance')]
-#[ORM\Index(columns: ['tenant_id', 'scope', 'scope_id'], name: 'idx_tenant_scope')]
+#[ORM\Index(name: 'idx_tenant_scope', columns: ['tenant_id', 'scope', 'scope_id'])]
 #[ORM\UniqueConstraint(name: 'uniq_tenant_scope', columns: ['tenant_id', 'scope', 'scope_id'])]
 #[ORM\HasLifecycleCallbacks]
 class CorporateGovernance

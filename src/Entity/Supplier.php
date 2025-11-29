@@ -30,10 +30,10 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Manages third-party suppliers and their security assessments
  */
 #[ORM\Entity(repositoryClass: SupplierRepository::class)]
-#[ORM\Index(columns: ['criticality'], name: 'idx_supplier_criticality')]
-#[ORM\Index(columns: ['next_assessment_date'], name: 'idx_supplier_next_assessment')]
-#[ORM\Index(columns: ['status'], name: 'idx_supplier_status')]
-#[ORM\Index(columns: ['tenant_id'], name: 'idx_supplier_tenant')]
+#[ORM\Index(name: 'idx_supplier_criticality', columns: ['criticality'])]
+#[ORM\Index(name: 'idx_supplier_next_assessment', columns: ['next_assessment_date'])]
+#[ORM\Index(name: 'idx_supplier_status', columns: ['status'])]
+#[ORM\Index(name: 'idx_supplier_tenant', columns: ['tenant_id'])]
 #[ApiResource(
     operations: [
         new Get(

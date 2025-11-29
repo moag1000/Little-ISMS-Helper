@@ -2,36 +2,29 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\Option;
 use App\Entity\ComplianceFramework;
 use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:load-iso27001-requirements',
     description: 'Load ISO 27001:2022 Annex A as ComplianceRequirements for cross-framework mapping (separate from Control entities)'
 )]
-class LoadIso27001RequirementsCommand extends Command
+class LoadIso27001RequirementsCommand
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
-        parent::__construct();
     }
 
-    protected function configure(): void
+    public function __invoke(#[Option(name: 'update', shortcut: 'u', mode: InputOption::VALUE_NONE, description: 'Update existing requirements instead of skipping them')]
+    bool $update = false, ?SymfonyStyle $symfonyStyle = null): int
     {
-        $this->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing requirements instead of skipping them');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-        $updateMode = $input->getOption('update');
+        $updateMode = $update;
 
         $symfonyStyle->title('Loading ISO 27001:2022 Annex A Requirements');
         $symfonyStyle->text(sprintf('Mode: %s', $updateMode ? 'UPDATE existing' : 'CREATE new (skip existing)'));
@@ -64,7 +57,7 @@ class LoadIso27001RequirementsCommand extends Command
         foreach ($requirements as $reqData) {
             $existing = $this->entityManager->getRepository(ComplianceRequirement::class)
                 ->findOneBy([
-                    'framework' => $framework,
+                    'complianceFramework' => $framework,
                     'requirementId' => $reqData['id']
                 ]);
 

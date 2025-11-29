@@ -28,7 +28,7 @@ class TenantType extends AbstractType
                 ],
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(['max' => 255]),
+                    new Assert\Length(max: 255),
                 ],
             ])
             ->add('code', TextType::class, [
@@ -43,7 +43,7 @@ class TenantType extends AbstractType
                 ],
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(['max' => 100]),
+                    new Assert\Length(max: 100),
                     new Assert\Regex(
                         pattern: '/^[a-zA-Z0-9_-]+$/',
                         message: 'tenant.validation.code_format'
@@ -68,16 +68,12 @@ class TenantType extends AbstractType
                     'accept' => 'image/jpeg,image/png,image/gif,image/webp',
                 ],
                 'constraints' => [
-                    new Assert\File([
-                        'maxSize' => '2M',
-                        'mimeTypes' => [
-                            'image/jpeg',
-                            'image/png',
-                            'image/gif',
-                            'image/webp',
-                        ],
-                        'mimeTypesMessage' => 'tenant.validation.logo_format',
-                    ]),
+                    new Assert\File(maxSize: '2M', mimeTypes: [
+                        'image/jpeg',
+                        'image/png',
+                        'image/gif',
+                        'image/webp',
+                    ], mimeTypesMessage: 'tenant.validation.logo_format'),
                 ],
             ])
             ->add('azureTenantId', TextType::class, [
@@ -89,7 +85,7 @@ class TenantType extends AbstractType
                     'maxlength' => 255,
                 ],
                 'constraints' => [
-                    new Assert\Length(['max' => 255]),
+                    new Assert\Length(max: 255),
                     new Assert\Uuid(message: 'tenant.validation.azure_tenant_id_format'),
                 ],
             ])

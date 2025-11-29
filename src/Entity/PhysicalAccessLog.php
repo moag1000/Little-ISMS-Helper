@@ -15,10 +15,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PhysicalAccessLogRepository::class)]
-#[ORM\Index(columns: ['access_time'], name: 'idx_physical_access_time')]
-#[ORM\Index(columns: ['access_type'], name: 'idx_physical_access_type')]
-#[ORM\Index(columns: ['location'], name: 'idx_physical_location')]
-#[ORM\Index(columns: ['person_name'], name: 'idx_physical_person')]
+#[ORM\Index(name: 'idx_physical_access_time', columns: ['access_time'])]
+#[ORM\Index(name: 'idx_physical_access_type', columns: ['access_type'])]
+#[ORM\Index(name: 'idx_physical_location', columns: ['location'])]
+#[ORM\Index(name: 'idx_physical_person', columns: ['person_name'])]
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),

@@ -2,13 +2,12 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\Option;
 use App\Repository\TenantRepository;
 use App\Service\RiskReviewService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -24,29 +23,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *   php bin/console app:risk:schedule-reviews
  *   php bin/console app:risk:schedule-reviews --tenant=1
  */
-#[AsCommand(
-    name: 'app:risk:schedule-reviews',
-    description: 'Schedule review dates for risks without review date (ISO 27001:2022 Clause 6.1.3.d)'
-)]
-class RiskScheduleReviewsCommand extends Command
-{
-    public function __construct(
-        private readonly RiskReviewService $riskReviewService,
-        private readonly TenantRepository $tenantRepository
-    ) {
-        parent::__construct();
-    }
-
-    protected function configure(): void
-    {
-        $this
-            ->addOption(
-                'tenant',
-                't',
-                InputOption::VALUE_OPTIONAL,
-                'Process only specific tenant ID'
-            )
-            ->setHelp(<<<'HELP'
+#[AsCommand(name: 'app:risk:schedule-reviews', description: 'Schedule review dates for risks without review date (ISO 27001:2022 Clause 6.1.3.d)', help: <<<'TXT'
 This command schedules review dates for all risks that don't have a review date set.
 
 Review intervals are based on risk level (ISO 27001:2022):
@@ -61,18 +38,20 @@ Examples:
 
   # Schedule reviews for specific tenant
   php bin/console app:risk:schedule-reviews --tenant=1
-HELP
-            );
+TXT)]
+class RiskScheduleReviewsCommand
+{
+    public function __construct(private readonly RiskReviewService $riskReviewService, private readonly TenantRepository $tenantRepository)
+    {
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(#[Option(name: 'tenant', shortcut: 't', mode: InputOption::VALUE_OPTIONAL, description: 'Process only specific tenant ID')]
+    $tenant, SymfonyStyle $symfonyStyle): int
     {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-
         $symfonyStyle->title('Risk Review Scheduling (ISO 27001:2022 Clause 6.1.3.d)');
 
         // Get tenants to process
-        $tenantId = $input->getOption('tenant');
+        $tenantId = $tenant;
         if ($tenantId) {
             $tenant = $this->tenantRepository->find($tenantId);
             if (!$tenant) {

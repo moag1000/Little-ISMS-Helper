@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\CorporateGovernance;
 use App\Entity\ISMSContext;
 use App\Entity\Tenant;
 use App\Enum\GovernanceModel;
@@ -39,7 +40,7 @@ class CorporateStructureService
 
         // Get governance for ISMS context scope
         $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'isms_context');
-        if (!$governance) {
+        if (!$governance instanceof CorporateGovernance) {
             // Fall back to default governance
             $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
@@ -166,7 +167,7 @@ class CorporateStructureService
         // Validate governance model requirements
         if ($tenant->getParent() instanceof Tenant) {
             $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
-            if (!$governance) {
+            if (!$governance instanceof CorporateGovernance) {
                 $errors[] = 'Subsidiaries must have a default governance model defined';
             }
         }
@@ -239,7 +240,7 @@ class CorporateStructureService
 
         foreach ($tenant->getSubsidiaries() as $subsidiary) {
             $governance = $this->corporateGovernanceRepository->findDefaultGovernance($subsidiary);
-            if ($governance && $governance->getGovernanceModel() === GovernanceModel::HIERARCHICAL) {
+            if ($governance instanceof CorporateGovernance && $governance->getGovernanceModel() === GovernanceModel::HIERARCHICAL) {
                 // Update or create context for hierarchical subsidiaries
                 $subsidiaryContext = $this->ismsContextRepository->findOneBy(['tenant' => $subsidiary]);
 

@@ -25,15 +25,8 @@ class OrganisationInfoType extends AbstractType
                 'label' => 'setup.organisation.name',
                 'required' => true,
                 'constraints' => [
-                    new Assert\NotBlank([
-                        'message' => 'setup.organisation.name_required',
-                    ]),
-                    new Assert\Length([
-                        'min' => 2,
-                        'max' => 255,
-                        'minMessage' => 'setup.organisation.name_min',
-                        'maxMessage' => 'setup.organisation.name_max',
-                    ]),
+                    new Assert\NotBlank(message: 'setup.organisation.name_required'),
+                    new Assert\Length(min: 2, max: 255, minMessage: 'setup.organisation.name_min', maxMessage: 'setup.organisation.name_max'),
                 ],
                 'attr' => [
                     'class' => 'form-control',
@@ -67,13 +60,8 @@ class OrganisationInfoType extends AbstractType
                 'multiple' => true,
                 'expanded' => false,
                 'constraints' => [
-                    new Assert\NotBlank([
-                        'message' => 'setup.organisation.industries_required',
-                    ]),
-                    new Assert\Count([
-                        'min' => 1,
-                        'minMessage' => 'setup.organisation.industries_min',
-                    ]),
+                    new Assert\NotBlank(message: 'setup.organisation.industries_required'),
+                    new Assert\Count(min: 1, minMessage: 'setup.organisation.industries_min'),
                 ],
                 'attr' => [
                     'class' => 'form-select',
@@ -94,9 +82,7 @@ class OrganisationInfoType extends AbstractType
                 'required' => true,
                 'placeholder' => 'setup.organisation.employee_count.select',
                 'constraints' => [
-                    new Assert\NotBlank([
-                        'message' => 'setup.organisation.employee_count_required',
-                    ]),
+                    new Assert\NotBlank(message: 'setup.organisation.employee_count_required'),
                 ],
                 'attr' => [
                     'class' => 'form-select',

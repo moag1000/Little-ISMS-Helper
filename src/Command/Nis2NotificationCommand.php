@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\Option;
 use DateTimeImmutable;
 use Exception;
 use App\Entity\Incident;
@@ -11,9 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -32,32 +31,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *   php bin/console app:nis2-notification-check
  *   php bin/console app:nis2-notification-check --dry-run
  */
-#[AsCommand(
-    name: 'app:nis2-notification-check',
-    description: 'Check NIS2 incident reporting deadlines and send notifications'
-)]
-class Nis2NotificationCommand extends Command
-{
-    // Notification thresholds (hours before deadline)
-    private const array EARLY_WARNING_THRESHOLDS = [4, 2, 1]; // 20h, 22h, 23h
-    private const array DETAILED_NOTIFICATION_THRESHOLDS = [4, 2, 1]; // 68h, 70h, 71h
-    private const array FINAL_REPORT_THRESHOLDS = [168, 72, 24]; // 7 days, 3 days, 1 day (in hours)
-
-    public function __construct(
-        private readonly IncidentRepository $incidentRepository,
-        private readonly EmailNotificationService $emailNotificationService,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly TranslatorInterface $translator,
-        private readonly LoggerInterface $logger
-    ) {
-        parent::__construct();
-    }
-
-    protected function configure(): void
-    {
-        $this
-            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Simulate notifications without sending')
-            ->setHelp(<<<'HELP'
+#[AsCommand(name: 'app:nis2-notification-check', description: 'Check NIS2 incident reporting deadlines and send notifications', help: <<<'TXT'
 This command checks all active incidents for approaching NIS2 reporting deadlines
 and sends automated notifications to ensure compliance.
 
@@ -66,14 +40,22 @@ Run this command via cron every hour:
 
 For testing:
   php bin/console app:nis2-notification-check --dry-run
-HELP
-            );
+TXT)]
+class Nis2NotificationCommand
+{
+    // Notification thresholds (hours before deadline)
+    private const array EARLY_WARNING_THRESHOLDS = [4, 2, 1]; // 20h, 22h, 23h
+    private const array DETAILED_NOTIFICATION_THRESHOLDS = [4, 2, 1]; // 68h, 70h, 71h
+    private const array FINAL_REPORT_THRESHOLDS = [168, 72, 24]; // 7 days, 3 days, 1 day (in hours)
+
+    public function __construct(private readonly IncidentRepository $incidentRepository, private readonly EmailNotificationService $emailNotificationService, private readonly EntityManagerInterface $entityManager, private readonly TranslatorInterface $translator, private readonly LoggerInterface $logger)
+    {
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(#[Option(name: 'dry-run', mode: InputOption::VALUE_NONE, description: 'Simulate notifications without sending')]
+    bool $dryRun = false, ?SymfonyStyle $symfonyStyle = null): int
     {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-        $dryRun = $input->getOption('dry-run');
+        $dryRun = $dry_run;
 
         if ($dryRun) {
             $symfonyStyle->warning('DRY RUN MODE - No notifications will be sent');
@@ -288,23 +270,21 @@ HELP
             $recipients = [];
 
             if ($incident->getReportedBy()) {
-                $recipients[] = $incident->getReportedBy()->getEmail();
+                $recipients[] = $incident->getReportedBy();
             }
 
             // TODO: Add logic to fetch CISO/admin emails from User repository
 
-            foreach ($recipients as $recipient) {
-                $this->emailNotificationService->sendEmail(
-                    to: $recipient,
-                    subject: sprintf('[NIS2 Alert] %s', $subject),
-                    template: 'email/nis2_deadline_alert.html.twig',
-                    context: [
-                        'incident' => $incident,
-                        'message' => $message,
-                        'priority' => $priority,
-                    ]
-                );
-            }
+            $this->emailNotificationService->sendGenericNotification(
+                subject: sprintf('[NIS2 Alert] %s', $subject),
+                template: 'emails/nis2_deadline_alert.html.twig',
+                context: [
+                    'incident' => $incident,
+                    'message' => $message,
+                    'priority' => $priority,
+                ],
+                recipients: $recipients
+            );
 
             $this->logger->info('NIS2 notification sent', [
                 'incident_id' => $incident->getId(),

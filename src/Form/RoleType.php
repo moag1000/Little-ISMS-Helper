@@ -26,7 +26,7 @@ class RoleType extends AbstractType
                 ],
                 'constraints' => [
                     new Assert\NotBlank(),
-                    new Assert\Length(['max' => 100]),
+                    new Assert\Length(max: 100),
                 ],
             ])
             ->add('description', TextareaType::class, [

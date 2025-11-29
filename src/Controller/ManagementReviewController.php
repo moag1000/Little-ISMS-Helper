@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use DateTimeInterface;
 use DateTimeImmutable;
 use App\Entity\ManagementReview;
 use App\Form\ManagementReviewType;
@@ -33,7 +34,7 @@ class ManagementReviewController extends AbstractController
             'total' => count($reviews),
             'planned' => count($this->managementReviewRepository->findBy(['status' => 'planned'])),
             'completed' => count($this->managementReviewRepository->findBy(['status' => 'completed'])),
-            'this_year' => count(array_filter($reviews, fn($review): bool => $review->getReviewDate() &&
+            'this_year' => count(array_filter($reviews, fn(ManagementReview $review): bool => $review->getReviewDate() instanceof DateTimeInterface &&
                    $review->getReviewDate()->format('Y') === date('Y'))),
         ];
 
@@ -93,7 +94,7 @@ class ManagementReviewController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/management-review/{id}/delete', name: 'app_management_review_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/management-review/{id}/delete', name: 'app_management_review_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, ManagementReview $managementReview): Response
     {

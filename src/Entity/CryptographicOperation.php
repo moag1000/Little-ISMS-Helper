@@ -15,9 +15,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: CryptographicOperationRepository::class)]
-#[ORM\Index(columns: ['operation_type'], name: 'idx_crypto_operation_type')]
-#[ORM\Index(columns: ['timestamp'], name: 'idx_crypto_timestamp')]
-#[ORM\Index(columns: ['user_id'], name: 'idx_crypto_user')]
+#[ORM\Index(name: 'idx_crypto_operation_type', columns: ['operation_type'])]
+#[ORM\Index(name: 'idx_crypto_timestamp', columns: ['timestamp'])]
+#[ORM\Index(name: 'idx_crypto_user', columns: ['user_id'])]
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),

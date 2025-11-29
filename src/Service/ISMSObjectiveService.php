@@ -63,7 +63,7 @@ class ISMSObjectiveService
             'total' => count($objectives),
             'active' => count($active),
             'achieved' => count($this->ismsObjectiveRepository->findBy(['status' => 'achieved'])),
-            'delayed' => count(array_filter($objectives, fn($obj): bool => $obj->getStatus() === 'in_progress' &&
+            'delayed' => count(array_filter($objectives, fn(ISMSObjective $obj): bool => $obj->getStatus() === 'in_progress' &&
                    $obj->getTargetDate() < new DateTime() &&
                    !$obj->getAchievedDate())),
             'at_risk' => $this->countAtRiskObjectives($objectives),
@@ -97,7 +97,7 @@ class ISMSObjectiveService
     {
         $objectives = $this->ismsObjectiveRepository->findActive();
 
-        return array_filter($objectives, fn($obj): bool => $obj->getTargetDate() < new DateTime());
+        return array_filter($objectives, fn(ISMSObjective $obj): bool => $obj->getTargetDate() < new DateTime());
     }
 
     /**
@@ -108,7 +108,7 @@ class ISMSObjectiveService
         $objectives = $this->ismsObjectiveRepository->findActive();
         $thirtyDaysFromNow = new DateTime()->modify('+30 days');
 
-        return array_filter($objectives, fn($obj): bool => $obj->getTargetDate() <= $thirtyDaysFromNow &&
+        return array_filter($objectives, fn(ISMSObjective $obj): bool => $obj->getTargetDate() <= $thirtyDaysFromNow &&
                $obj->getTargetDate() >= new DateTime());
     }
 

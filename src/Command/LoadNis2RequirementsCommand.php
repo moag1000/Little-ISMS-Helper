@@ -7,29 +7,23 @@ use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:load-nis2-requirements',
     description: 'Load NIS2 Directive (EU 2022/2555) requirements with ISO 27001 control mappings'
 )]
-class LoadNis2RequirementsCommand extends Command
+class LoadNis2RequirementsCommand
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
-        parent::__construct();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(SymfonyStyle $symfonyStyle): int
     {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-
         // Create or get NIS2 framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'NIS2']);
-
         if (!$framework instanceof ComplianceFramework) {
             $framework = new ComplianceFramework();
             $framework->setCode('NIS2')
@@ -44,9 +38,7 @@ class LoadNis2RequirementsCommand extends Command
 
             $this->entityManager->persist($framework);
         }
-
         $requirements = $this->getNis2Requirements();
-
         foreach ($requirements as $reqData) {
             $requirement = new ComplianceRequirement();
             $requirement->setFramework($framework)
@@ -59,11 +51,8 @@ class LoadNis2RequirementsCommand extends Command
 
             $this->entityManager->persist($requirement);
         }
-
         $this->entityManager->flush();
-
         $symfonyStyle->success(sprintf('Successfully loaded %d NIS2 requirements', count($requirements)));
-
         return Command::SUCCESS;
     }
 

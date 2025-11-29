@@ -32,7 +32,7 @@ class AuditLogger
     /**
      * Log a create action
      */
-    public function logCreate(string $entityType, int $entityId, array $newValues, ?string $description = null): void
+    public function logCreate(string $entityType, ?int $entityId, array $newValues, ?string $description = null): void
     {
         $this->log(self::ACTION_CREATE, $entityType, $entityId, null, $newValues, $description);
     }
@@ -40,7 +40,7 @@ class AuditLogger
     /**
      * Log an update action
      */
-    public function logUpdate(string $entityType, int $entityId, array $oldValues, array $newValues, ?string $description = null): void
+    public function logUpdate(string $entityType, ?int $entityId, array $oldValues, array $newValues, ?string $description = null): void
     {
         // Only log if there are actual changes
         $changes = $this->getChanges($oldValues, $newValues);
@@ -60,7 +60,7 @@ class AuditLogger
     /**
      * Log a view action (for sensitive data)
      */
-    public function logView(string $entityType, int $entityId, ?string $description = null): void
+    public function logView(string $entityType, ?int $entityId, ?string $description = null): void
     {
         $this->log(self::ACTION_VIEW, $entityType, $entityId, null, null, $description);
     }

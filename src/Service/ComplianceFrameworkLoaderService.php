@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\ComplianceFramework;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\Exception\ORMException;
 use Exception;
@@ -54,7 +55,7 @@ class ComplianceFrameworkLoaderService
     public function getAvailableFrameworks(): array
     {
         $loadedFrameworks = $this->complianceFrameworkRepository->findAll();
-        $loadedCodes = array_map(fn($f) => $f->getCode(), $loadedFrameworks);
+        $loadedCodes = array_map(fn(ComplianceFramework $f): ?string => $f->getCode(), $loadedFrameworks);
 
         return [
             [

@@ -363,7 +363,7 @@ class ComplianceRequirement
      */
     public function isCoreRequirement(): bool
     {
-        return $this->complianceRequirement === null && $this->requirementType === 'core';
+        return !$this->complianceRequirement instanceof \App\Entity\ComplianceRequirement && $this->requirementType === 'core';
     }
 
     /**

@@ -360,7 +360,7 @@ class AdminBackupController extends AbstractController
         }
 
         // Sort by name
-        usort($entities, fn(array $a, array $b): int => strcmp((string) $a['name'], (string) $b['name']));
+        usort($entities, fn(array $a, array $b): int => strcmp($a['name'], $b['name']));
 
         return $this->render('data_management/export.html.twig', [
             'entities' => $entities,

@@ -6,30 +6,22 @@ use App\Entity\Control;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'isms:load-annex-a-controls',
     description: 'Loads ISO 27001:2022 Annex A controls into the database',
 )]
-class LoadAnnexAControlsCommand extends Command
+class LoadAnnexAControlsCommand
 {
-    public function __construct(
-        private readonly EntityManagerInterface $entityManager
-    ) {
-        parent::__construct();
+    public function __construct(private readonly EntityManagerInterface $entityManager)
+    {
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(SymfonyStyle $symfonyStyle): int
     {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-
         $symfonyStyle->title('Loading ISO 27001:2022 Annex A Controls');
-
         $controls = $this->getAnnexAControls();
-
         $loaded = 0;
         foreach ($controls as $controlData) {
             $control = $this->entityManager->getRepository(Control::class)
@@ -49,11 +41,8 @@ class LoadAnnexAControlsCommand extends Command
             $this->entityManager->persist($control);
             $loaded++;
         }
-
         $this->entityManager->flush();
-
         $symfonyStyle->success(sprintf('Successfully loaded %d Annex A controls.', $loaded));
-
         return Command::SUCCESS;
     }
 

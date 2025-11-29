@@ -7,29 +7,23 @@ use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:load-tkg-requirements',
     description: 'Load TKG 2024 (Telekommunikationsgesetz) and TK-Sicherheitsverordnung requirements with ISMS data mappings'
 )]
-class LoadTkgRequirementsCommand extends Command
+class LoadTkgRequirementsCommand
 {
     public function __construct(private readonly EntityManagerInterface $entityManager)
     {
-        parent::__construct();
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(SymfonyStyle $symfonyStyle): int
     {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-
         // Create or get TKG framework
         $framework = $this->entityManager->getRepository(ComplianceFramework::class)
             ->findOneBy(['code' => 'TKG-2024']);
-
         if (!$framework instanceof ComplianceFramework) {
             $framework = new ComplianceFramework();
             $framework->setCode('TKG-2024')
@@ -44,9 +38,7 @@ class LoadTkgRequirementsCommand extends Command
 
             $this->entityManager->persist($framework);
         }
-
         $requirements = $this->getTkgRequirements();
-
         foreach ($requirements as $reqData) {
             $requirement = new ComplianceRequirement();
             $requirement->setFramework($framework)
@@ -59,11 +51,8 @@ class LoadTkgRequirementsCommand extends Command
 
             $this->entityManager->persist($requirement);
         }
-
         $this->entityManager->flush();
-
         $symfonyStyle->success(sprintf('Successfully loaded %d TKG 2024 requirements', count($requirements)));
-
         return Command::SUCCESS;
     }
 

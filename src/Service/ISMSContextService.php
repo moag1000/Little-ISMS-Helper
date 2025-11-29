@@ -39,7 +39,7 @@ class ISMSContextService
             $context = $this->ismsContextRepository->getCurrentContext();
         }
 
-        if (!$context) {
+        if (!$context instanceof ISMSContext) {
             $context = new ISMSContext();
             // Assign to current user's tenant if available
             if ($currentTenant) {

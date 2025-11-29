@@ -88,7 +88,7 @@ class InterestedPartyController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/interested-party/{id}/delete', name: 'app_interested_party_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/interested-party/{id}/delete', name: 'app_interested_party_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, InterestedParty $interestedParty): Response
     {

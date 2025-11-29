@@ -64,6 +64,21 @@ class FileUploadSecurityService
     ];
 
     /**
+     * Security: Validate uploaded file and return result array
+     *
+     * @return array{valid: bool, error: string|null}
+     */
+    public function validateUpload(UploadedFile $uploadedFile): array
+    {
+        try {
+            $this->validateUploadedFile($uploadedFile);
+            return ['valid' => true, 'error' => null];
+        } catch (FileException $e) {
+            return ['valid' => false, 'error' => $e->getMessage()];
+        }
+    }
+
+    /**
      * Security: Validate uploaded file against all security checks
      *
      * @throws FileException if validation fails

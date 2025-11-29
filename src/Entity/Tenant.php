@@ -52,7 +52,7 @@ class Tenant
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?DateTimeImmutable $updatedAt = null;
 
-    #[ORM\OneToMany(mappedBy: 'tenant', targetEntity: User::class)]
+    #[ORM\OneToMany(targetEntity: User::class, mappedBy: 'tenant')]
     private Collection $users;
 
     // Corporate Structure fields
@@ -60,7 +60,7 @@ class Tenant
     #[ORM\JoinColumn(name: 'parent_id', nullable: true, onDelete: 'SET NULL')]
     private ?Tenant $parent = null;
 
-    #[ORM\OneToMany(mappedBy: 'parent', targetEntity: self::class)]
+    #[ORM\OneToMany(targetEntity: self::class, mappedBy: 'parent')]
     private Collection $subsidiaries;
 
     #[ORM\Column(type: Types::BOOLEAN, options: ['default' => false])]
@@ -279,7 +279,7 @@ class Tenant
      */
     public function isPartOfCorporateStructure(): bool
     {
-        return $this->parent !== null || $this->subsidiaries->count() > 0;
+        return $this->parent instanceof \App\Entity\Tenant || $this->subsidiaries->count() > 0;
     }
 
     /**
@@ -332,7 +332,7 @@ class Tenant
         $ancestors = [];
         $current = $this->parent;
 
-        while ($current !== null) {
+        while ($current instanceof \App\Entity\Tenant) {
             $ancestors[] = $current;
             $current = $current->getParent();
         }

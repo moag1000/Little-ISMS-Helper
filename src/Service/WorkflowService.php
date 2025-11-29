@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use DateMalformedStringException;
 use DateTimeImmutable;
 use App\Entity\WorkflowInstance;
 use App\Entity\WorkflowStep;
@@ -53,7 +54,7 @@ class WorkflowService
      * @param string|null $workflowName Optional specific workflow name
      * @param bool $autoFlush Whether to automatically flush after persisting (default: true)
      * @return WorkflowInstance|null The workflow instance or null if no workflow found
-     * @throws \DateMalformedStringException
+     * @throws DateMalformedStringException
      */
     public function startWorkflow(string $entityType, int $entityId, ?string $workflowName = null, bool $autoFlush = true): ?WorkflowInstance
     {
@@ -220,7 +221,9 @@ class WorkflowService
     /**
      * Move workflow to next step or complete
      *
+     * @param WorkflowInstance $workflowInstance
      * @return WorkflowStep|null The next step, or null if workflow is complete
+     * @throws DateMalformedStringException
      */
     private function moveToNextStep(WorkflowInstance $workflowInstance): ?WorkflowStep
     {

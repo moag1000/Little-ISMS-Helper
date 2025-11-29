@@ -108,7 +108,7 @@ class ControlType extends AbstractType
                     'max' => 100,
                 ],
                 'constraints' => [
-                    new Range(['min' => 0, 'max' => 100]),
+                    new Range(min: 0, max: 100),
                 ],
                 'help' => 'control.help.implementation_percentage',
             ])

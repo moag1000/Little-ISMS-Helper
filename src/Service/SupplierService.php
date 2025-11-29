@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\Entity\CorporateGovernance;
+use App\Enum\GovernanceModel;
 use App\Entity\Supplier;
 use App\Entity\Tenant;
 use App\Repository\SupplierRepository;
@@ -29,14 +31,14 @@ class SupplierService
         $parent = $tenant->getParent();
 
         // No parent or no corporate structure service - return own suppliers only
-        if (!$parent instanceof Tenant || !$this->corporateStructureService instanceof CorporateStructureService || !$this->corporateGovernanceRepository) {
+        if (!$parent instanceof Tenant || !$this->corporateStructureService instanceof CorporateStructureService || !$this->corporateGovernanceRepository instanceof CorporateGovernanceRepository) {
             return $this->supplierRepository->findByTenant($tenant);
         }
 
         // Check governance model for suppliers
         $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'supplier');
 
-        if (!$governance) {
+        if (!$governance instanceof CorporateGovernance) {
             // No specific governance for suppliers - use default
             $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
@@ -44,7 +46,7 @@ class SupplierService
         $governanceModel = $governance?->getGovernanceModel();
 
         // If hierarchical governance, include parent suppliers
-        if ($governanceModel && $governanceModel->value === 'hierarchical') {
+        if ($governanceModel instanceof GovernanceModel && $governanceModel->value === 'hierarchical') {
             return $this->supplierRepository->findByTenantIncludingParent($tenant, $parent);
         }
 
@@ -62,7 +64,7 @@ class SupplierService
     {
         $parent = $tenant->getParent();
 
-        if (!$parent instanceof Tenant || !$this->corporateGovernanceRepository) {
+        if (!$parent instanceof Tenant || !$this->corporateGovernanceRepository instanceof CorporateGovernanceRepository) {
             return [
                 'hasParent' => false,
                 'canInherit' => false,
@@ -72,12 +74,12 @@ class SupplierService
 
         $governance = $this->corporateGovernanceRepository->findGovernanceForScope($tenant, 'supplier');
 
-        if (!$governance) {
+        if (!$governance instanceof CorporateGovernance) {
             $governance = $this->corporateGovernanceRepository->findDefaultGovernance($tenant);
         }
 
         $governanceModel = $governance?->getGovernanceModel();
-        $canInherit = $governanceModel && $governanceModel->value === 'hierarchical';
+        $canInherit = $governanceModel instanceof GovernanceModel && $governanceModel->value === 'hierarchical';
 
         return [
             'hasParent' => true,

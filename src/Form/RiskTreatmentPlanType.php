@@ -34,7 +34,7 @@ class RiskTreatmentPlanType extends AbstractType
                 ],
                 'help' => 'risk_treatment_plan.help.risk',
                 'constraints' => [
-                    new Assert\NotNull(['message' => 'risk_treatment_plan.validation.risk_required'])
+                    new Assert\NotNull(message: 'risk_treatment_plan.validation.risk_required')
                 ],
                 'choice_translation_domain' => 'risk',
             ])
@@ -47,11 +47,8 @@ class RiskTreatmentPlanType extends AbstractType
                     'placeholder' => 'risk_treatment_plan.placeholder.title'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'risk_treatment_plan.validation.title_required']),
-                    new Assert\Length([
-                        'max' => 255,
-                        'maxMessage' => 'risk_treatment_plan.validation.title_max_length'
-                    ])
+                    new Assert\NotBlank(message: 'risk_treatment_plan.validation.title_required'),
+                    new Assert\Length(max: 255, maxMessage: 'risk_treatment_plan.validation.title_max_length')
                 ]
             ])
             ->add('description', TextareaType::class, [
@@ -64,7 +61,7 @@ class RiskTreatmentPlanType extends AbstractType
                 ],
                 'help' => 'risk_treatment_plan.help.description',
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'risk_treatment_plan.validation.description_required'])
+                    new Assert\NotBlank(message: 'risk_treatment_plan.validation.description_required')
                 ]
             ])
             ->add('status', ChoiceType::class, [
@@ -116,7 +113,7 @@ class RiskTreatmentPlanType extends AbstractType
                 ],
                 'help' => 'risk_treatment_plan.help.target_completion_date',
                 'constraints' => [
-                    new Assert\NotNull(['message' => 'risk_treatment_plan.validation.target_completion_date_required'])
+                    new Assert\NotNull(message: 'risk_treatment_plan.validation.target_completion_date_required')
                 ]
             ])
             ->add('actualCompletionDate', DateType::class, [
@@ -139,7 +136,7 @@ class RiskTreatmentPlanType extends AbstractType
                 ],
                 'help' => 'risk_treatment_plan.help.budget',
                 'constraints' => [
-                    new Assert\PositiveOrZero(['message' => 'risk_treatment_plan.validation.budget_positive'])
+                    new Assert\PositiveOrZero(message: 'risk_treatment_plan.validation.budget_positive')
                 ]
             ])
             ->add('responsiblePerson', EntityType::class, [
@@ -176,11 +173,7 @@ class RiskTreatmentPlanType extends AbstractType
                 ],
                 'help' => 'risk_treatment_plan.help.completion_percentage',
                 'constraints' => [
-                    new Assert\Range([
-                        'min' => 0,
-                        'max' => 100,
-                        'notInRangeMessage' => 'risk_treatment_plan.validation.completion_percentage_range'
-                    ])
+                    new Assert\Range(notInRangeMessage: 'risk_treatment_plan.validation.completion_percentage_range', min: 0, max: 100)
                 ]
             ])
             ->add('implementationNotes', TextareaType::class, [

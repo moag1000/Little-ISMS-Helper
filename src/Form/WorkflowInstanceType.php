@@ -30,7 +30,7 @@ class WorkflowInstanceType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'workflow_instance.validation.workflow_required'])
+                    new Assert\NotBlank(message: 'workflow_instance.validation.workflow_required')
                 ],
                 'help' => 'workflow_instance.help.workflow'
             ])
@@ -41,11 +41,8 @@ class WorkflowInstanceType extends AbstractType
                     'placeholder' => 'workflow_instance.placeholder.entity_type'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'workflow_instance.validation.entity_type_required']),
-                    new Assert\Length([
-                        'max' => 100,
-                        'maxMessage' => 'workflow_instance.validation.entity_type_max_length'
-                    ])
+                    new Assert\NotBlank(message: 'workflow_instance.validation.entity_type_required'),
+                    new Assert\Length(max: 100, maxMessage: 'workflow_instance.validation.entity_type_max_length')
                 ],
                 'help' => 'workflow_instance.help.entity_type'
             ])
@@ -56,8 +53,8 @@ class WorkflowInstanceType extends AbstractType
                     'placeholder' => 'workflow_instance.placeholder.entity_id'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'workflow_instance.validation.entity_id_required']),
-                    new Assert\Positive(['message' => 'workflow_instance.validation.entity_id_positive'])
+                    new Assert\NotBlank(message: 'workflow_instance.validation.entity_id_required'),
+                    new Assert\Positive(message: 'workflow_instance.validation.entity_id_positive')
                 ],
                 'help' => 'workflow_instance.help.entity_id'
             ])
@@ -74,7 +71,7 @@ class WorkflowInstanceType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'workflow_instance.validation.status_required'])
+                    new Assert\NotBlank(message: 'workflow_instance.validation.status_required')
                 ],
                 'choice_translation_domain' => 'workflows',
             ])

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use DateTimeImmutable;
 use App\Entity\RiskTreatmentPlan;
 use App\Form\RiskTreatmentPlanType;
@@ -40,22 +41,22 @@ class RiskTreatmentPlanController extends AbstractController
 
         // Apply filters
         if ($status) {
-            $plans = array_filter($plans, fn($plan): bool => $plan->getStatus() === $status);
+            $plans = array_filter($plans, fn(RiskTreatmentPlan $plan): bool => $plan->getStatus() === $status);
         }
 
         if ($priority) {
-            $plans = array_filter($plans, fn($plan): bool => $plan->getPriority() === $priority);
+            $plans = array_filter($plans, fn(RiskTreatmentPlan $plan): bool => $plan->getPriority() === $priority);
         }
 
         if ($responsiblePerson) {
-            $plans = array_filter($plans, fn($plan): bool =>
-                $plan->getResponsiblePerson() &&
-                stripos((string) $plan->getResponsiblePerson()->getFullName(), $responsiblePerson) !== false
+            $plans = array_filter($plans, fn(RiskTreatmentPlan $plan): bool =>
+                $plan->getResponsiblePerson() instanceof User &&
+                stripos($plan->getResponsiblePerson()->getFullName(), $responsiblePerson) !== false
             );
         }
 
         if ($overdueOnly === '1') {
-            $plans = array_filter($plans, fn($plan) => $plan->isOverdue());
+            $plans = array_filter($plans, fn(RiskTreatmentPlan $plan): bool => $plan->isOverdue());
         }
 
         // Re-index array after filtering to avoid gaps in keys
@@ -130,7 +131,7 @@ class RiskTreatmentPlanController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/risk-treatment-plan/{id}/delete', name: 'app_risk_treatment_plan_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/risk-treatment-plan/{id}/delete', name: 'app_risk_treatment_plan_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, RiskTreatmentPlan $riskTreatmentPlan): Response
     {

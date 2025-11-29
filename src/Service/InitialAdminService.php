@@ -80,6 +80,7 @@ class InitialAdminService
      *
      * @param User $user The user to check
      * @return bool True if the user is the initial admin
+     * @throws InvalidArgumentException
      */
     public function isInitialAdmin(User $user): bool
     {

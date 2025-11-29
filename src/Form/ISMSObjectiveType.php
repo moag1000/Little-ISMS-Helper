@@ -25,11 +25,8 @@ class ISMSObjectiveType extends AbstractType
                     'placeholder' => 'objective.placeholder.title'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'objective.validation.title_required']),
-                    new Assert\Length([
-                        'max' => 255,
-                        'maxMessage' => 'objective.validation.title_max_length'
-                    ])
+                    new Assert\NotBlank(message: 'objective.validation.title_required'),
+                    new Assert\Length(max: 255, maxMessage: 'objective.validation.title_max_length')
                 ]
             ])
             ->add('description', TextareaType::class, [
@@ -40,7 +37,7 @@ class ISMSObjectiveType extends AbstractType
                     'placeholder' => 'objective.placeholder.description'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'objective.validation.description_required'])
+                    new Assert\NotBlank(message: 'objective.validation.description_required')
                 ]
             ])
             ->add('category', ChoiceType::class, [
@@ -59,7 +56,7 @@ class ISMSObjectiveType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'objective.validation.category_required'])
+                    new Assert\NotBlank(message: 'objective.validation.category_required')
                 ],
                 'choice_translation_domain' => 'objective',
             ])
@@ -120,11 +117,8 @@ class ISMSObjectiveType extends AbstractType
                     'placeholder' => 'objective.placeholder.responsible_person'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'objective.validation.responsible_person_required']),
-                    new Assert\Length([
-                        'max' => 100,
-                        'maxMessage' => 'objective.validation.name_max_length'
-                    ])
+                    new Assert\NotBlank(message: 'objective.validation.responsible_person_required'),
+                    new Assert\Length(max: 100, maxMessage: 'objective.validation.name_max_length')
                 ]
             ])
             ->add('targetDate', DateType::class, [
@@ -134,7 +128,7 @@ class ISMSObjectiveType extends AbstractType
                     'class' => 'form-control',
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'objective.validation.target_date_required'])
+                    new Assert\NotBlank(message: 'objective.validation.target_date_required')
                 ],
                 'help' => 'objective.help.target_date'
             ])
@@ -151,7 +145,7 @@ class ISMSObjectiveType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'objective.validation.status_required'])
+                    new Assert\NotBlank(message: 'objective.validation.status_required')
                 ],
                     'choice_translation_domain' => 'objective',
             ])

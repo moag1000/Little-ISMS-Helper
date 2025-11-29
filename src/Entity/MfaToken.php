@@ -13,9 +13,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 #[ORM\Entity(repositoryClass: MfaTokenRepository::class)]
 #[ORM\Table(name: 'mfa_tokens')]
-#[ORM\Index(columns: ['user_id'], name: 'idx_mfa_user')]
-#[ORM\Index(columns: ['token_type'], name: 'idx_mfa_type')]
-#[ORM\Index(columns: ['is_active'], name: 'idx_mfa_active')]
+#[ORM\Index(name: 'idx_mfa_user', columns: ['user_id'])]
+#[ORM\Index(name: 'idx_mfa_type', columns: ['token_type'])]
+#[ORM\Index(name: 'idx_mfa_active', columns: ['is_active'])]
 class MfaToken
 {
     #[ORM\Id]

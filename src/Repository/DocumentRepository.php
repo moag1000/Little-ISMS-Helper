@@ -93,7 +93,7 @@ class DocumentRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant);
 
         // Include documents from all ancestors in the hierarchy
-        if (!empty($ancestors)) {
+        if ($ancestors !== []) {
             $queryBuilder->orWhere('d.tenant IN (:ancestors) AND d.isArchived = false')
                ->setParameter('ancestors', $ancestors);
         }
@@ -142,7 +142,7 @@ class DocumentRepository extends ServiceEntityRepository
             ->setParameter('tenant', $tenant);
 
         // Include documents from all subsidiaries in the hierarchy
-        if (!empty($subsidiaries)) {
+        if ($subsidiaries !== []) {
             $queryBuilder->orWhere('d.tenant IN (:subsidiaries) AND d.isArchived = false')
                ->setParameter('subsidiaries', $subsidiaries);
         }

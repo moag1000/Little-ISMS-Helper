@@ -93,7 +93,7 @@ class PersonController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/person/{id}/delete', name: 'app_person_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    #[Route('/person/{id}/delete', name: 'app_person_delete', requirements: ['id' => '\d+'], methods: ['POST'])]
     #[IsGranted('ROLE_ADMIN')]
     public function delete(Request $request, Person $person): Response
     {

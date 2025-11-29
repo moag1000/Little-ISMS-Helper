@@ -25,11 +25,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ORM\Entity(repositoryClass: DataBreachRepository::class)]
 #[ORM\Table(name: 'data_breach')]
-#[ORM\Index(columns: ['tenant_id'], name: 'idx_data_breach_tenant')]
-#[ORM\Index(columns: ['status'], name: 'idx_data_breach_status')]
-#[ORM\Index(columns: ['severity'], name: 'idx_data_breach_severity')]
-#[ORM\Index(columns: ['supervisory_authority_notified_at'], name: 'idx_data_breach_authority_notified')]
-#[ORM\Index(columns: ['created_at'], name: 'idx_data_breach_created')]
+#[ORM\Index(name: 'idx_data_breach_tenant', columns: ['tenant_id'])]
+#[ORM\Index(name: 'idx_data_breach_status', columns: ['status'])]
+#[ORM\Index(name: 'idx_data_breach_severity', columns: ['severity'])]
+#[ORM\Index(name: 'idx_data_breach_authority_notified', columns: ['supervisory_authority_notified_at'])]
+#[ORM\Index(name: 'idx_data_breach_created', columns: ['created_at'])]
 class DataBreach
 {
     #[ORM\Id]

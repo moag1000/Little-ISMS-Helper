@@ -28,7 +28,7 @@ class ComplianceMappingType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_mapping.validation.source_requirement_required'])
+                    new Assert\NotBlank(message: 'compliance_mapping.validation.source_requirement_required')
                 ],
                 'help' => 'compliance_mapping.help.source_requirement'
             ])
@@ -40,7 +40,7 @@ class ComplianceMappingType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_mapping.validation.target_requirement_required'])
+                    new Assert\NotBlank(message: 'compliance_mapping.validation.target_requirement_required')
                 ],
                 'help' => 'compliance_mapping.help.target_requirement'
             ])
@@ -53,12 +53,8 @@ class ComplianceMappingType extends AbstractType
                     'placeholder' => '0-150'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_mapping.validation.mapping_percentage_required']),
-                    new Assert\Range([
-                        'min' => 0,
-                        'max' => 150,
-                        'notInRangeMessage' => 'compliance_mapping.validation.mapping_percentage_range'
-                    ])
+                    new Assert\NotBlank(message: 'compliance_mapping.validation.mapping_percentage_required'),
+                    new Assert\Range(notInRangeMessage: 'compliance_mapping.validation.mapping_percentage_range', min: 0, max: 150)
                 ],
                 'help' => 'compliance_mapping.help.mapping_percentage'
             ])
@@ -75,7 +71,7 @@ class ComplianceMappingType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_mapping.validation.mapping_type_required'])
+                    new Assert\NotBlank(message: 'compliance_mapping.validation.mapping_type_required')
                 ],
                 'help' => 'compliance_mapping.help.mapping_type'
             ])
@@ -112,7 +108,7 @@ class ComplianceMappingType extends AbstractType
                     'class' => 'form-select'
                 ],
                 'constraints' => [
-                    new Assert\NotBlank(['message' => 'compliance_mapping.validation.confidence_required'])
+                    new Assert\NotBlank(message: 'compliance_mapping.validation.confidence_required')
                 ],
                 'help' => 'compliance_mapping.help.confidence'
             ])
@@ -124,10 +120,7 @@ class ComplianceMappingType extends AbstractType
                     'placeholder' => 'compliance_mapping.placeholder.verified_by'
                 ],
                 'constraints' => [
-                    new Assert\Length([
-                        'max' => 100,
-                        'maxMessage' => 'compliance_mapping.validation.verified_by_max_length'
-                    ])
+                    new Assert\Length(max: 100, maxMessage: 'compliance_mapping.validation.verified_by_max_length')
                 ],
                 'help' => 'compliance_mapping.help.verified_by'
             ])

@@ -59,7 +59,7 @@ class BusinessProcessType extends AbstractType
                 'help' => 'business_process.help.rto',
                 'constraints' => [
                     new NotBlank(),
-                    new Range(['min' => 0, 'max' => 8760]),
+                    new Range(min: 0, max: 8760),
                 ],
             ])
             ->add('rpo', IntegerType::class, [
@@ -72,7 +72,7 @@ class BusinessProcessType extends AbstractType
                 'help' => 'business_process.help.rpo',
                 'constraints' => [
                     new NotBlank(),
-                    new Range(['min' => 0, 'max' => 8760]),
+                    new Range(min: 0, max: 8760),
                 ],
             ])
             ->add('mtpd', IntegerType::class, [
@@ -85,7 +85,7 @@ class BusinessProcessType extends AbstractType
                 'help' => 'business_process.help.mtpd',
                 'constraints' => [
                     new NotBlank(),
-                    new Range(['min' => 0, 'max' => 8760]),
+                    new Range(min: 0, max: 8760),
                 ],
             ])
             ->add('financialImpactPerHour', MoneyType::class, [

@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Entity\ComplianceFramework;
 use Exception;
 use App\Repository\ComplianceFrameworkRepository;
 use App\Repository\ComplianceRequirementRepository;
@@ -10,61 +11,44 @@ use App\Repository\MappingGapItemRepository;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'app:mapping-quality:sanity-check',
     description: 'Verify system prerequisites for mapping quality analysis'
 )]
-class MappingQualitySanityCheckCommand extends Command
+class MappingQualitySanityCheckCommand
 {
-    public function __construct(
-        private readonly ComplianceFrameworkRepository $complianceFrameworkRepository,
-        private readonly ComplianceRequirementRepository $complianceRequirementRepository,
-        private readonly ComplianceMappingRepository $complianceMappingRepository,
-        private readonly MappingGapItemRepository $mappingGapItemRepository,
-        private readonly Connection $connection
-    ) {
-        parent::__construct();
+    public function __construct(private readonly ComplianceFrameworkRepository $complianceFrameworkRepository, private readonly ComplianceRequirementRepository $complianceRequirementRepository, private readonly ComplianceMappingRepository $complianceMappingRepository, private readonly MappingGapItemRepository $mappingGapItemRepository, private readonly Connection $connection)
+    {
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output): int
+    public function __invoke(SymfonyStyle $symfonyStyle): int
     {
-        $symfonyStyle = new SymfonyStyle($input, $output);
-
         $symfonyStyle->title('Mapping Quality Analysis - Sanity Check');
         $symfonyStyle->text('Verifying system prerequisites...');
         $symfonyStyle->newLine();
-
         $allChecks = true;
-
         // Check 1: Database tables exist
         $symfonyStyle->section('1. Database Schema');
         $allChecks = $this->checkDatabaseSchema($symfonyStyle) && $allChecks;
         $symfonyStyle->newLine();
-
         // Check 2: Frameworks
         $symfonyStyle->section('2. Compliance Frameworks');
         $allChecks = $this->checkFrameworks($symfonyStyle) && $allChecks;
         $symfonyStyle->newLine();
-
         // Check 3: Requirements
         $symfonyStyle->section('3. Compliance Requirements');
         $allChecks = $this->checkRequirements($symfonyStyle) && $allChecks;
         $symfonyStyle->newLine();
-
         // Check 4: Mappings
         $symfonyStyle->section('4. Compliance Mappings');
         $allChecks = $this->checkMappings($symfonyStyle) && $allChecks;
         $symfonyStyle->newLine();
-
         // Check 5: Migration status
         $symfonyStyle->section('5. Quality Analysis Fields');
         $allChecks = $this->checkQualityFields($symfonyStyle) && $allChecks;
         $symfonyStyle->newLine();
-
         // Summary
         $symfonyStyle->section('Summary');
         if ($allChecks) {
@@ -129,7 +113,7 @@ class MappingQualitySanityCheckCommand extends Command
 
         // Show available frameworks
         $frameworks = $this->complianceFrameworkRepository->findAll();
-        $frameworkCodes = array_map(fn($f) => $f->getCode(), $frameworks);
+        $frameworkCodes = array_map(fn(ComplianceFramework $f): ?string => $f->getCode(), $frameworks);
         $symfonyStyle->text('  Available: ' . implode(', ', array_slice($frameworkCodes, 0, 10)));
 
         if (count($frameworkCodes) > 10) {

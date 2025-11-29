@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use Symfony\Component\Console\Attribute\Option;
 use Exception;
 use App\Entity\ComplianceMapping;
 use App\Repository\ComplianceMappingRepository;
@@ -10,7 +11,6 @@ use App\Service\AutomatedGapAnalysisService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -20,39 +20,25 @@ use Symfony\Component\Console\Helper\ProgressBar;
     name: 'app:analyze-mapping-quality',
     description: 'Analyze compliance mapping quality using automated text analysis and similarity algorithms'
 )]
-class AnalyzeMappingQualityCommand extends Command
+class AnalyzeMappingQualityCommand
 {
     private const int BATCH_SIZE = 50;
 
-    public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly ComplianceMappingRepository $complianceMappingRepository,
-        private readonly MappingQualityAnalysisService $mappingQualityAnalysisService,
-        private readonly AutomatedGapAnalysisService $automatedGapAnalysisService
-    ) {
-        parent::__construct();
+    public function __construct(private readonly EntityManagerInterface $entityManager, private readonly ComplianceMappingRepository $complianceMappingRepository, private readonly MappingQualityAnalysisService $mappingQualityAnalysisService, private readonly AutomatedGapAnalysisService $automatedGapAnalysisService)
+    {
     }
 
-    protected function configure(): void
+    public function __invoke(#[Option(name: 'limit', shortcut: 'l', mode: InputOption::VALUE_OPTIONAL, description: 'Limit number of mappings to analyze')]
+    ?int $limit, #[Option(name: 'reanalyze', shortcut: 'r', mode: InputOption::VALUE_NONE, description: 'Re-analyze all mappings (including already analyzed)')]
+    bool $reanalyze = false, #[Option(name: 'framework', shortcut: 'f', mode: InputOption::VALUE_OPTIONAL, description: 'Analyze only mappings for specific framework code')]
+    $framework = null, #[Option(name: 'low-quality', mode: InputOption::VALUE_NONE, description: 'Only analyze mappings with current low quality scores')]
+    bool $lowQuality = false, #[Option(name: 'dry-run', mode: InputOption::VALUE_NONE, description: 'Run analysis without saving results')]
+    bool $dryRun = false, ?OutputInterface $output = null, ?SymfonyStyle $symfonyStyle = null): int
     {
-        $this
-            ->addOption('limit', 'l', InputOption::VALUE_OPTIONAL, 'Limit number of mappings to analyze')
-            ->addOption('reanalyze', 'r', InputOption::VALUE_NONE, 'Re-analyze all mappings (including already analyzed)')
-            ->addOption('framework', 'f', InputOption::VALUE_OPTIONAL, 'Analyze only mappings for specific framework code')
-            ->addOption('low-quality', null, InputOption::VALUE_NONE, 'Only analyze mappings with current low quality scores')
-            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Run analysis without saving results');
-    }
-
-    protected function execute(InputInterface $input, OutputInterface $output): int
-    {
-        $symfonyStyle = new SymfonyStyle($input, $output);
         $symfonyStyle->title('Compliance Mapping Quality Analysis');
-
-        $limit = $input->getOption('limit');
-        $reanalyze = $input->getOption('reanalyze');
-        $frameworkCode = $input->getOption('framework');
-        $lowQualityOnly = $input->getOption('low-quality');
-        $dryRun = $input->getOption('dry-run');
+        $frameworkCode = $framework;
+        $lowQualityOnly = $low_quality;
+        $dryRun = $dry_run;
 
         if ($dryRun) {
             $symfonyStyle->note('Running in DRY-RUN mode - no changes will be saved');
@@ -235,7 +221,7 @@ class AnalyzeMappingQualityCommand extends Command
 
         // Apply limit
         if ($limit) {
-            $queryBuilder->setMaxResults((int) $limit);
+            $queryBuilder->setMaxResults($limit);
         }
 
         // Order by priority (unanalyzed first, then low quality)

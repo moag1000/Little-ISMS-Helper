@@ -25,8 +25,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Enables data reuse across PhysicalAccessLog, Asset, and other entities
  */
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
-#[ORM\Index(columns: ['location_type'], name: 'idx_location_type')]
-#[ORM\Index(columns: ['active'], name: 'idx_location_active')]
+#[ORM\Index(name: 'idx_location_type', columns: ['location_type'])]
+#[ORM\Index(name: 'idx_location_active', columns: ['active'])]
 #[ApiResource(
     operations: [
         new GetCollection(security: "is_granted('ROLE_USER')"),
