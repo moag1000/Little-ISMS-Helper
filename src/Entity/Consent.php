@@ -75,7 +75,7 @@ class Consent
 
     /**
      * Link to Processing Activity (VVT)
-     * Data Reuse: ProcessingActivity with legalBasis = 'Art_6_1_a'
+     * Data Reuse: ProcessingActivity with legalBasis = 'consent' (Art. 6(1)(a) GDPR)
      */
     #[ORM\ManyToOne(targetEntity: ProcessingActivity::class, inversedBy: 'consents')]
     #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]

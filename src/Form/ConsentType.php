@@ -53,7 +53,7 @@ class ConsentType extends AbstractType
                 'query_builder' => function (ProcessingActivityRepository $repo) {
                     return $repo->createQueryBuilder('p')
                         ->where('p.legalBasis = :legal_basis')
-                        ->setParameter('legal_basis', 'Art_6_1_a')
+                        ->setParameter('legal_basis', 'consent')
                         ->orderBy('p.name', 'ASC');
                 },
                 'attr' => ['class' => 'form-select'],
