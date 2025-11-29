@@ -1,0 +1,140 @@
+{# Generic Review Reminder Email Template #}
+{% extends 'emails/base.html.twig' %}
+
+{% block subject %}[ISMS Reminder] {{ entity_type }} Review Overdue: {{ entity_name }}{% endblock %}
+
+{% block content %}
+    <h2>{{ entity_type }} Review Required</h2>
+
+    <p>Dear Colleague,</p>
+
+    <p>
+        This is an automated reminder that a scheduled review is now <strong style="color: #dc3545;">overdue</strong>.
+        Please complete this review as soon as possible to maintain compliance.
+    </p>
+
+    <div style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0;">
+        <h3 style="margin-top: 0; color: #856404;">Review Details</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold; width: 180px;">Entity Type:</td>
+                <td style="padding: 8px 0;">{{ entity_type }}</td>
+            </tr>
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Name/Title:</td>
+                <td style="padding: 8px 0;"><strong>{{ entity_name }}</strong></td>
+            </tr>
+            {% if review_date %}
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Review Due Date:</td>
+                <td style="padding: 8px 0;">
+                    <strong style="color: #dc3545;">{{ review_date|date('d.m.Y') }}</strong>
+                    {% set days_overdue = "now"|date('U') - review_date|date('U') %}
+                    {% set days_overdue = (days_overdue / 86400)|round %}
+                    {% if days_overdue > 0 %}
+                        <span style="color: #dc3545; font-size: 0.9em;">({{ days_overdue }} days overdue)</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            {% if test_date is defined and test_date %}
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Test Due Date:</td>
+                <td style="padding: 8px 0;">
+                    <strong style="color: #dc3545;">{{ test_date|date('d.m.Y') }}</strong>
+                </td>
+            </tr>
+            {% endif %}
+            {% if is_test_overdue is defined and is_test_overdue %}
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Status:</td>
+                <td style="padding: 8px 0;">
+                    <span style="color: #dc3545;">Test overdue</span>
+                </td>
+            </tr>
+            {% endif %}
+            {% if is_review_overdue is defined and is_review_overdue %}
+            <tr>
+                <td style="padding: 8px 0; font-weight: bold;">Status:</td>
+                <td style="padding: 8px 0;">
+                    <span style="color: #dc3545;">Review overdue</span>
+                </td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+
+    <h3>Required Actions</h3>
+
+    {% if entity_type == 'Risk' %}
+    <ol>
+        <li><strong>Review the risk assessment</strong> - Is the risk description still accurate?</li>
+        <li><strong>Reassess probability and impact</strong> - Have circumstances changed?</li>
+        <li><strong>Verify treatment strategy</strong> - Is the current approach still appropriate?</li>
+        <li><strong>Check control effectiveness</strong> - Are implemented controls working as intended?</li>
+        <li><strong>Update the review date</strong> - Set the next scheduled review</li>
+    </ol>
+    {% elseif entity_type == 'Business Continuity Plan' %}
+    <ol>
+        <li><strong>Verify contact information</strong> - Are all team contacts current?</li>
+        <li><strong>Review activation criteria</strong> - Are triggers still appropriate?</li>
+        <li><strong>Check recovery procedures</strong> - Are procedures still accurate?</li>
+        <li><strong>Verify resources</strong> - Are required resources still available?</li>
+        <li><strong>Schedule a test</strong> - Plan the next BC exercise if overdue</li>
+    </ol>
+    {% elseif entity_type == 'Processing Activity' %}
+    <ol>
+        <li><strong>Verify data categories</strong> - Are all processed data types documented?</li>
+        <li><strong>Check legal basis</strong> - Is the legal basis still valid?</li>
+        <li><strong>Review retention periods</strong> - Are retention policies current?</li>
+        <li><strong>Verify recipients</strong> - Are all data recipients documented?</li>
+        <li><strong>Update TOMs</strong> - Are technical/organizational measures adequate?</li>
+    </ol>
+    {% elseif entity_type == 'DPIA' %}
+    <ol>
+        <li><strong>Review risk assessment</strong> - Have risks changed?</li>
+        <li><strong>Verify measures</strong> - Are mitigation measures still effective?</li>
+        <li><strong>Check circumstances</strong> - Has the processing context changed?</li>
+        <li><strong>Consult DPO</strong> - Seek DPO input on significant changes</li>
+        <li><strong>Update documentation</strong> - Record your review findings</li>
+    </ol>
+    {% else %}
+    <ol>
+        <li><strong>Review current documentation</strong> - Is it still accurate?</li>
+        <li><strong>Check for changes</strong> - Have circumstances changed?</li>
+        <li><strong>Update as needed</strong> - Make necessary corrections</li>
+        <li><strong>Set next review date</strong> - Schedule the next review</li>
+    </ol>
+    {% endif %}
+
+    {% if route_name is defined and entity_id is defined %}
+    <div style="text-align: center; margin: 30px 0;">
+        <a href="{{ app.request.schemeAndHttpHost }}/{{ app.request.locale }}/{{ route_name|replace({'app_': '', '_show': ''})|replace({'_': '-'}) }}/{{ entity_id }}"
+           style="display: inline-block; padding: 12px 30px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; font-weight: bold;">
+            Open {{ entity_type }}
+        </a>
+    </div>
+    {% endif %}
+
+    <div style="background-color: #e7f3ff; border-left: 4px solid #007bff; padding: 15px; margin: 20px 0;">
+        <h4 style="margin-top: 0;">Compliance Note</h4>
+        <p style="margin-bottom: 0;">
+            Regular reviews are required to maintain compliance with:
+        </p>
+        <ul style="margin-bottom: 0;">
+            <li><strong>ISO 27001:2022</strong> - Information security management</li>
+            <li><strong>ISO 22301</strong> - Business continuity management</li>
+            <li><strong>GDPR Art. 35(11)</strong> - DPIA review requirements</li>
+            <li><strong>GDPR Art. 30</strong> - Records of processing activities</li>
+        </ul>
+    </div>
+
+    <p>
+        If you have any questions about this review, please contact your Information Security Manager.
+    </p>
+
+    <p style="color: #6c757d; font-size: 0.9em; margin-top: 30px;">
+        <strong>Note:</strong> This is an automated notification from Little ISMS Helper.
+        If you believe you received this message in error, please contact your system administrator.
+    </p>
+{% endblock %}

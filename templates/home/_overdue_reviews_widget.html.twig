@@ -1,0 +1,200 @@
+{#
+ # Overdue Reviews Dashboard Widget
+ #
+ # Displays overdue reviews across all ISMS entities with:
+ # - Summary statistics by entity type
+ # - Urgent data breach notifications (72h GDPR deadline)
+ # - Color-coded urgency indicators
+ # - Quick action links to overdue items
+ #
+ # Variables:
+ # - overdue_reviews: Array from ReviewReminderService->getAllOverdueReviews()
+ #   Contains: risks, bc_plans, processing_activities, dpias, data_breaches, summary
+ #}
+
+{% set summary = overdue_reviews.summary %}
+{% set total_overdue = summary.total_overdue %}
+{% set urgent_breaches = summary.urgent_breaches %}
+
+<div class="widget-card mb-4 {% if urgent_breaches > 0 %}border-danger{% elseif total_overdue > 0 %}border-warning{% else %}border-success{% endif %}"
+     data-widget-id="overdue-reviews"
+     data-dashboard-customizer-target="widget">
+    <div class="widget-header {% if urgent_breaches > 0 %}bg-danger-subtle{% elseif total_overdue > 0 %}bg-warning-subtle{% else %}bg-success-subtle{% endif %}">
+        <h3 class="widget-title {% if urgent_breaches > 0 %}text-danger{% elseif total_overdue > 0 %}text-warning{% else %}text-success{% endif %}">
+            <i class="bi bi-calendar-check" aria-hidden="true"></i>
+            {{ 'dashboard.widget.overdue_reviews.title'|trans({}, 'dashboard') }}
+        </h3>
+        {% if total_overdue > 0 or urgent_breaches > 0 %}
+            <span class="badge {% if urgent_breaches > 0 %}bg-danger{% else %}bg-warning{% endif %}">
+                {{ total_overdue + urgent_breaches }}
+            </span>
+        {% endif %}
+    </div>
+
+    <div class="widget-body p-3">
+        {# Urgent Data Breach Alert #}
+        {% if urgent_breaches > 0 %}
+            <div class="alert alert-danger mb-3 py-2">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-exclamation-triangle-fill fs-4 me-2" aria-hidden="true"></i>
+                    <div>
+                        <strong>{{ 'dashboard.widget.overdue_reviews.breach_alert'|trans({count: urgent_breaches}, 'dashboard') }}</strong>
+                        <div class="small">{{ 'dashboard.widget.overdue_reviews.breach_alert_desc'|trans({}, 'dashboard') }}</div>
+                    </div>
+                </div>
+                <a href="{{ path('app_data_breach_index') }}" class="btn btn-sm btn-danger mt-2">
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                    {{ 'dashboard.widget.overdue_reviews.view_breaches'|trans({}, 'dashboard') }}
+                </a>
+            </div>
+        {% endif %}
+
+        {% if total_overdue > 0 or urgent_breaches > 0 %}
+            {# Summary Stats Row #}
+            <div class="row g-2 mb-3">
+                <div class="col-6 col-md-3">
+                    <div class="text-center p-2 {% if summary.risks_count > 0 %}bg-warning-subtle{% else %}bg-light{% endif %} rounded">
+                        <div class="fs-5 fw-bold {% if summary.risks_count > 0 %}text-warning{% else %}text-muted{% endif %}">
+                            {{ summary.risks_count }}
+                        </div>
+                        <div class="small text-muted">{{ 'dashboard.widget.overdue_reviews.risks'|trans({}, 'dashboard') }}</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="text-center p-2 {% if summary.bc_plans_count > 0 %}bg-warning-subtle{% else %}bg-light{% endif %} rounded">
+                        <div class="fs-5 fw-bold {% if summary.bc_plans_count > 0 %}text-warning{% else %}text-muted{% endif %}">
+                            {{ summary.bc_plans_count }}
+                        </div>
+                        <div class="small text-muted">{{ 'dashboard.widget.overdue_reviews.bc_plans'|trans({}, 'dashboard') }}</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="text-center p-2 {% if summary.processing_activities_count > 0 %}bg-warning-subtle{% else %}bg-light{% endif %} rounded">
+                        <div class="fs-5 fw-bold {% if summary.processing_activities_count > 0 %}text-warning{% else %}text-muted{% endif %}">
+                            {{ summary.processing_activities_count }}
+                        </div>
+                        <div class="small text-muted">{{ 'dashboard.widget.overdue_reviews.vvt'|trans({}, 'dashboard') }}</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="text-center p-2 {% if summary.dpias_count > 0 %}bg-warning-subtle{% else %}bg-light{% endif %} rounded">
+                        <div class="fs-5 fw-bold {% if summary.dpias_count > 0 %}text-warning{% else %}text-muted{% endif %}">
+                            {{ summary.dpias_count }}
+                        </div>
+                        <div class="small text-muted">{{ 'dashboard.widget.overdue_reviews.dpias'|trans({}, 'dashboard') }}</div>
+                    </div>
+                </div>
+            </div>
+
+            {# Overdue Items List #}
+            <ul class="list-unstyled mb-0">
+                {# Overdue Risks (max 3) #}
+                {% for risk in overdue_reviews.risks|slice(0, 3) %}
+                    <li class="mb-2 pb-2 border-bottom">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-exclamation-triangle text-warning me-2" aria-hidden="true"></i>
+                                <div>
+                                    <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="text-decoration-none">
+                                        {{ risk.title|u.truncate(40, '...') }}
+                                    </a>
+                                    <div class="small text-muted">
+                                        {{ 'dashboard.widget.overdue_reviews.due'|trans({}, 'dashboard') }}: {{ risk.reviewDate|date('d.m.Y') }}
+                                    </div>
+                                </div>
+                            </div>
+                            {% set days_overdue = "now"|date('U') - risk.reviewDate|date('U') %}
+                            {% set days_overdue = (days_overdue / 86400)|round %}
+                            <span class="badge {% if days_overdue > 30 %}bg-danger{% elseif days_overdue > 7 %}bg-warning{% else %}bg-secondary{% endif %}">
+                                {{ days_overdue }}d
+                            </span>
+                        </div>
+                    </li>
+                {% endfor %}
+
+                {# Overdue BC Plans (max 2) #}
+                {% for plan in overdue_reviews.bc_plans|slice(0, 2) %}
+                    <li class="mb-2 pb-2 border-bottom">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-shield-exclamation text-warning me-2" aria-hidden="true"></i>
+                                <div>
+                                    <a href="{{ path('app_business_continuity_plan_show', {id: plan.id}) }}" class="text-decoration-none">
+                                        {{ plan.name|u.truncate(40, '...') }}
+                                    </a>
+                                    <div class="small text-muted">
+                                        {% if plan.isTestOverdue %}
+                                            {{ 'dashboard.widget.overdue_reviews.test_overdue'|trans({}, 'dashboard') }}
+                                        {% else %}
+                                            {{ 'dashboard.widget.overdue_reviews.review_overdue'|trans({}, 'dashboard') }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="badge bg-warning">BC</span>
+                        </div>
+                    </li>
+                {% endfor %}
+
+                {# Urgent Data Breaches (all) #}
+                {% for breach in overdue_reviews.data_breaches %}
+                    {% set hours = breach.hoursUntilAuthorityDeadline %}
+                    <li class="mb-2 pb-2 border-bottom">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-shield-x {% if hours < 0 %}text-danger{% else %}text-warning{% endif %} me-2" aria-hidden="true"></i>
+                                <div>
+                                    <a href="{{ path('app_data_breach_show', {id: breach.id}) }}" class="text-decoration-none fw-bold">
+                                        {{ breach.referenceNumber }}
+                                    </a>
+                                    <div class="small {% if hours < 0 %}text-danger{% else %}text-warning{% endif %}">
+                                        {% if hours < 0 %}
+                                            {{ 'dashboard.widget.overdue_reviews.breach_overdue'|trans({hours: hours|abs}, 'dashboard') }}
+                                        {% else %}
+                                            {{ 'dashboard.widget.overdue_reviews.breach_remaining'|trans({hours: hours}, 'dashboard') }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="badge {% if hours < 0 %}bg-danger{% else %}bg-warning{% endif %}">72h</span>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            {# View All Link #}
+            {% if total_overdue > 5 %}
+                <div class="text-center mt-3 pt-3 border-top">
+                    <span class="text-muted small">
+                        {{ 'dashboard.widget.overdue_reviews.more_items'|trans({count: total_overdue - 5}, 'dashboard') }}
+                    </span>
+                </div>
+            {% endif %}
+        {% else %}
+            {# All Good - Empty State #}
+            <div class="text-center py-4">
+                <div class="mb-3">
+                    <i class="bi bi-check-circle text-success" style="font-size: 3rem;" aria-hidden="true"></i>
+                </div>
+                <h5 class="text-success">{{ 'dashboard.widget.overdue_reviews.all_good'|trans({}, 'dashboard') }}</h5>
+                <p class="text-muted small mb-0">
+                    {{ 'dashboard.widget.overdue_reviews.all_good_desc'|trans({}, 'dashboard') }}
+                </p>
+            </div>
+        {% endif %}
+    </div>
+
+    {# Footer with Compliance Info #}
+    <div class="widget-footer small">
+        <div class="d-flex justify-content-between align-items-center px-3 py-2">
+            <span class="text-muted">
+                <i class="bi bi-info-circle" aria-hidden="true"></i>
+                ISO 27001 | ISO 22301 | GDPR Art. 35
+            </span>
+            <a href="{{ path('app_risk_index') }}" class="text-decoration-none small">
+                {{ 'dashboard.widget.overdue_reviews.manage'|trans({}, 'dashboard') }}
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+            </a>
+        </div>
+    </div>
+</div>
