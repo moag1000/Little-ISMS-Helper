@@ -359,16 +359,15 @@ class ModuleConfigurationService
      */
     public function getDependencyGraph(): array
     {
-        $graph = [];
 
-        foreach ($this->modules as $key => $module) {
-            $graph[$key] = [
+        $graph = array_map(function ($module) {
+            return [
                 'name' => $module['name'],
                 'dependencies' => $module['dependencies'] ?? [],
                 'dependents' => [],
                 'required' => $module['required'] ?? false,
             ];
-        }
+        }, $this->modules);
 
         // Berechne Dependents (umgekehrte Abhängigkeiten)
         foreach ($this->modules as $key => $module) {

@@ -720,7 +720,7 @@ class RestoreService
                     if (in_array($type, ['datetime', 'datetime_immutable', 'date', 'date_immutable', 'time', 'time_immutable'])) {
                         try {
                             // Check if type expects immutable or mutable
-                            $expectsImmutable = str_contains($type, 'immutable');
+                            $expectsImmutable = str_contains((string) $type, 'immutable');
 
                             if (is_string($value)) {
                                 // Convert string to appropriate DateTime type
