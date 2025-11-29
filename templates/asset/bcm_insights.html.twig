@@ -157,22 +157,22 @@
             <div class="row">
                 <div class="col-md-6">
                     <dl class="row">
-                        <dt class="col-sm-4">{{ 'asset.field.type'|trans({}, 'assets') }}</dt>
+                        <dt class="col-sm-4">{{ 'asset.field.type'|trans({}, 'asset') }}</dt>
                         <dd class="col-sm-8">{{ asset.assetType|default('-') }}</dd>
 
-                        <dt class="col-sm-4">{{ 'asset.field.status'|trans({}, 'assets') }}</dt>
+                        <dt class="col-sm-4">{{ 'asset.field.status'|trans({}, 'asset') }}</dt>
                         <dd class="col-sm-8">{{ asset.status|default('-') }}</dd>
 
-                        <dt class="col-sm-4">{{ 'asset.field.owner'|trans({}, 'assets') }}</dt>
+                        <dt class="col-sm-4">{{ 'asset.field.owner'|trans({}, 'asset') }}</dt>
                         <dd class="col-sm-8">{{ asset.owner|default('-') }}</dd>
                     </dl>
                 </div>
                 <div class="col-md-6">
                     <dl class="row">
-                        <dt class="col-sm-4">{{ 'asset.field.location'|trans({}, 'assets') }}</dt>
+                        <dt class="col-sm-4">{{ 'asset.field.location'|trans({}, 'asset') }}</dt>
                         <dd class="col-sm-8">{{ asset.physicalLocation ? asset.physicalLocation.name : (asset.location|default('-')) }}</dd>
 
-                        <dt class="col-sm-4">{{ 'asset.field.availability'|trans({}, 'assets') }}</dt>
+                        <dt class="col-sm-4">{{ 'asset.field.availability'|trans({}, 'asset') }}</dt>
                         <dd class="col-sm-8">
                             {% if asset.availabilityValue %}
                                 {% set availColors = {1: 'secondary', 2: 'success', 3: 'info', 4: 'warning', 5: 'danger'} %}
@@ -190,7 +190,7 @@
             {% if isInherited %}
             <div class="alert alert-info mt-3">
                 <i class="bi bi-info-circle" aria-hidden="true"></i>
-                {{ 'asset.message.inherited_asset'|trans({}, 'assets') }}
+                {{ 'asset.message.inherited_asset'|trans({}, 'asset') }}
             </div>
             {% endif %}
         </div>

@@ -12,18 +12,38 @@ framework:
                 retry_strategy:
                     max_retries: 3
                     multiplier: 2
+
+            # Scheduler transport for scheduled tasks
+            scheduler:
+                dsn: 'doctrine://default?queue_name=scheduler'
+                options:
+                    auto_setup: true
+                retry_strategy:
+                    max_retries: 3
+                    delay: 1000
+                    multiplier: 2
+
             failed: 'doctrine://default?queue_name=failed'
             # sync: 'sync://'
 
         default_bus: messenger.bus.default
 
         buses:
-            messenger.bus.default: []
+            messenger.bus.default:
+                middleware:
+                    - validation
+                    - doctrine_transaction
 
         routing:
             Symfony\Component\Mailer\Messenger\SendEmailMessage: async
             Symfony\Component\Notifier\Message\ChatMessage: async
             Symfony\Component\Notifier\Message\SmsMessage: async
+
+            # Scheduler messages
+            App\Message\Schedule\CleanupExpiredSessionsMessage: scheduler
+            App\Message\Schedule\CheckRiskReviewsMessage: scheduler
+            App\Message\Schedule\GenerateComplianceReportMessage: scheduler
+            App\Message\Schedule\ExecuteScheduledTaskMessage: scheduler
 
             # Route your messages to the transports
             # 'App\Message\YourMessage': async

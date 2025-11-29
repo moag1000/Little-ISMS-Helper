@@ -6,6 +6,7 @@ use DateTime;
 use DateTimeInterface;
 use RuntimeException;
 use App\Entity\ProcessingActivity;
+use App\Entity\User;
 use App\Repository\ProcessingActivityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -23,7 +24,8 @@ class ProcessingActivityService
         private readonly EntityManagerInterface $entityManager,
         private readonly TenantContext $tenantContext,
         private readonly Security $security,
-        private readonly AuditLogger $auditLogger
+        private readonly AuditLogger $auditLogger,
+        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService
     ) {}
 
     /**
@@ -74,6 +76,12 @@ class ProcessingActivityService
             ],
             'processing_activity.updated'
         );
+
+        // Check and auto-progress workflow if conditions are met
+        $currentUser = $this->security->getUser();
+        if ($currentUser instanceof User) {
+            $this->workflowAutoProgressionService->checkAndProgressWorkflow($processingActivity, $currentUser);
+        }
 
         return $processingActivity;
     }

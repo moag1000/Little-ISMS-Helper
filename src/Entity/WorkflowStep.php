@@ -44,6 +44,9 @@ class WorkflowStep
     #[ORM\Column(type: Types::INTEGER, nullable: true)]
     private ?int $daysToComplete = null; // SLA in days
 
+    #[ORM\Column(type: Types::JSON, nullable: true)]
+    private ?array $metadata = null; // Additional step metadata (auto-progression conditions, etc.)
+
     #[ORM\ManyToOne(targetEntity: Tenant::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?Tenant $tenant = null;
@@ -175,13 +178,24 @@ class WorkflowStep
 
     public function setDaysToComplete(?int $daysToComplete): static
     {
-        if ($daysToComplete !== null && $daysToComplete < 1) {
-            throw new InvalidArgumentException('Days to complete must be at least 1');
+        if ($daysToComplete !== null && $daysToComplete < 0) {
+            throw new InvalidArgumentException('Days to complete must be non-negative');
         }
         if ($daysToComplete !== null && $daysToComplete > 365) {
             throw new InvalidArgumentException('Days to complete cannot exceed 365');
         }
         $this->daysToComplete = $daysToComplete;
+        return $this;
+    }
+
+    public function getMetadata(): ?array
+    {
+        return $this->metadata;
+    }
+
+    public function setMetadata(?array $metadata): static
+    {
+        $this->metadata = $metadata;
         return $this;
     }
 
