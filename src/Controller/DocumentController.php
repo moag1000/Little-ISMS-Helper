@@ -312,7 +312,7 @@ class DocumentController extends AbstractController
         $binaryFileResponse = new BinaryFileResponse($filePath);
 
         // Security: Sanitize filename for content disposition header
-        $safeOriginalName = preg_replace('/[^\w\s\.\-]/', '', $document->getOriginalFilename());
+        $safeOriginalName = preg_replace('/[^\w\s\.\-]/', '', (string) $document->getOriginalFilename());
         $binaryFileResponse->setContentDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             $safeOriginalName

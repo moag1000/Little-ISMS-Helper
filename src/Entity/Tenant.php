@@ -279,7 +279,7 @@ class Tenant
      */
     public function isPartOfCorporateStructure(): bool
     {
-        return $this->parent instanceof \App\Entity\Tenant || $this->subsidiaries->count() > 0;
+        return $this->parent instanceof Tenant || $this->subsidiaries->count() > 0;
     }
 
     /**
@@ -288,7 +288,7 @@ class Tenant
     public function getRootParent(): Tenant
     {
         $current = $this;
-        while ($current->getParent() instanceof \App\Entity\Tenant) {
+        while ($current->getParent() instanceof Tenant) {
             $current = $current->getParent();
         }
         return $current;
@@ -314,7 +314,7 @@ class Tenant
     {
         $depth = 0;
         $current = $this;
-        while ($current->getParent() instanceof \App\Entity\Tenant) {
+        while ($current->getParent() instanceof Tenant) {
             $depth++;
             $current = $current->getParent();
         }
@@ -332,7 +332,7 @@ class Tenant
         $ancestors = [];
         $current = $this->parent;
 
-        while ($current instanceof \App\Entity\Tenant) {
+        while ($current instanceof Tenant) {
             $ancestors[] = $current;
             $current = $current->getParent();
         }

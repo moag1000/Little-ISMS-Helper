@@ -120,12 +120,9 @@ class AdminModuleController extends AbstractController
         $moduleGraph = $dependencyGraph[$moduleKey] ?? null;
 
         // Get available sample data for this module
-        $availableSampleData = [];
-        foreach ($this->moduleConfigurationService->getSampleData() as $key => $sampleData) {
-            if (in_array($moduleKey, $sampleData['required_modules'] ?? [])) {
-                $availableSampleData[$key] = $sampleData;
-            }
-        }
+        $availableSampleData = array_filter($this->moduleConfigurationService->getSampleData(), function ($sampleData) use ($moduleKey) {
+            return in_array($moduleKey, $sampleData['required_modules'] ?? []);
+        });
 
         return $this->render('admin/modules/details.html.twig', [
             'module_key' => $moduleKey,

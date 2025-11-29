@@ -221,7 +221,6 @@ class WorkflowService
     /**
      * Move workflow to next step or complete
      *
-     * @param WorkflowInstance $workflowInstance
      * @return WorkflowStep|null The next step, or null if workflow is complete
      * @throws DateMalformedStringException
      */

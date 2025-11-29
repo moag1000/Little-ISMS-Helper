@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use DateMalformedStringException;
 use App\Entity\RiskAppetite;
 use DomainException;
 use DateTime;
@@ -232,11 +233,8 @@ class RiskAcceptanceWorkflowService
     /**
      * Create approval workflow for manager or executive approval
      *
-     * @param Risk $risk
-     * @param User $user
-     * @param string $approvalLevel
      * @return array Status information
-     * @throws \DateMalformedStringException
+     * @throws DateMalformedStringException
      */
     private function createApprovalWorkflow(Risk $risk, User $user, string $approvalLevel): array
     {
@@ -358,8 +356,6 @@ class RiskAcceptanceWorkflowService
     /**
      * Approve risk acceptance
      *
-     * @param Risk $risk
-     * @param User $user
      * @param string $comments Optional approval comments
      * @return array Status information
      * @throws TransportExceptionInterface
@@ -415,8 +411,6 @@ class RiskAcceptanceWorkflowService
     /**
      * Reject risk acceptance
      *
-     * @param Risk $risk
-     * @param User $user
      * @param string $reason Reason for rejection
      * @return array Status information
      * @throws TransportExceptionInterface
