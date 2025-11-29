@@ -171,7 +171,7 @@
             {% if breach.incident %}
                 <p><strong>{{ 'privacy.data_breach.field.incident'|trans({}, 'privacy') }}:</strong>
                     <a href="{{ path('app_incident_show', {id: breach.incident.id}) }}">
-                        {{ breach.incident.referenceNumber }} - {{ breach.incident.title }}
+                        {{ breach.incident.incidentNumber }} - {{ breach.incident.title }}
                     </a>
                 </p>
             {% else %}

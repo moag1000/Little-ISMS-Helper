@@ -409,7 +409,8 @@ details[open] summary span:first-child {
 function switchTab(tabName) {
     // Hide all tabs
     document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.style.display = 'none';
+        tab.classList.add('d-none');
+        tab.classList.remove('active');
     });
 
     // Remove active class from all buttons
@@ -418,7 +419,9 @@ function switchTab(tabName) {
     });
 
     // Show selected tab
-    document.getElementById('tab-' + tabName).style.display = 'block';
+    const selectedTab = document.getElementById('tab-' + tabName);
+    selectedTab.classList.remove('d-none');
+    selectedTab.classList.add('active');
 
     // Add active class to clicked button
     event.target.classList.add('active');

@@ -102,7 +102,7 @@
 {% embed '_components/_card.html.twig' with {
     'title': 'risk.modern.matrix_overview'|trans({}, 'risk'),
     'headerIcon': 'bi-grid-3x3',
-    'actions': '<a href="' ~ path('app_risk_matrix') ~ '" class="btn btn-sm btn-outline-primary">' ~ ('risk.modern.view_full_matrix'|trans) ~ ' <i class="bi bi-arrow-right" aria-hidden="true"></i></a>',
+    'actions': '<a href="' ~ path('app_risk_matrix') ~ '" class="btn btn-sm btn-outline-primary">' ~ ('risk.modern.view_full_matrix'|trans({}, 'risk')) ~ ' <i class="bi bi-arrow-right" aria-hidden="true"></i></a>',
     'class': 'mb-4'
 } %}
     {% block card_body %}
