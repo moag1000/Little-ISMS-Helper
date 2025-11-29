@@ -323,6 +323,15 @@ class WorkflowAutoProgressionService
             try {
                 $actualValue = $this->propertyAccessor->getValue($entity, $fieldName);
 
+                // Handle null comparisons
+                if ($expectedValue === 'null') {
+                    if ($operator === '!=') {
+                        return $actualValue !== null;
+                    } elseif ($operator === '=') {
+                        return $actualValue === null;
+                    }
+                }
+
                 // Handle boolean values
                 if ($expectedValue === 'true') {
                     $expectedValue = true;
@@ -447,9 +456,71 @@ class WorkflowAutoProgressionService
                 $handleMethod->setAccessible(true);
                 $handleMethod->invoke($this->workflowService, $workflowInstance, $nextStep);
             }
+        } else {
+            // Workflow completed - check for feedback loops
+            $this->handleWorkflowCompletion($workflowInstance, $entity, $user);
         }
 
         $this->entityManager->flush();
+    }
+
+    /**
+     * Handle workflow completion - trigger feedback loops
+     *
+     * Called when workflow has no next step (completed)
+     * Triggers entity-specific feedback loops (e.g., Incident→Risk)
+     */
+    private function handleWorkflowCompletion(WorkflowInstance $workflowInstance, object $entity, User $user): void
+    {
+        $entityType = $this->getEntityShortName($entity);
+
+        $this->logger->info('Workflow completed - checking for feedback loops', [
+            'workflow_id' => $workflowInstance->getId(),
+            'entity_type' => $entityType,
+            'entity_id' => $this->propertyAccessor->getValue($entity, 'id'),
+        ]);
+
+        // Incident→Risk Feedback Loop (ISO 27001:2022 Clause 6.1.2c)
+        if ($entityType === 'Incident') {
+            $this->triggerIncidentRiskFeedback($entity, $user);
+        }
+
+        // Future feedback loops can be added here:
+        // - DataBreach→ProcessingActivity updates
+        // - Control failure→Risk reassessment
+        // - Audit finding→Control effectiveness review
+    }
+
+    /**
+     * Trigger Incident→Risk feedback loop
+     *
+     * ISO 27001:2022 Clause 6.1.2 (c): "take into account past experience of security incidents"
+     */
+    private function triggerIncidentRiskFeedback(object $incident, User $user): void
+    {
+        try {
+            // Get IncidentRiskFeedbackService from container
+            // We use late binding to avoid circular dependency
+            $feedbackService = $this->entityManager->getRepository('App\Entity\Incident')
+                ->getEntityManager()
+                ->getConnection()
+                ->getConfiguration();
+
+            // For now, log that feedback should be triggered
+            // The actual triggering will be done via event listener or manual call
+            $this->logger->info('Incident workflow completed - risk feedback should be triggered', [
+                'incident_id' => $this->propertyAccessor->getValue($incident, 'id'),
+                'incident_number' => $this->propertyAccessor->getValue($incident, 'incidentNumber'),
+                'status' => $this->propertyAccessor->getValue($incident, 'status'),
+            ]);
+
+            // TODO: Trigger via event system to avoid circular dependency
+            // For now, this will be handled in IncidentController when status changes to 'closed'
+        } catch (\Exception $e) {
+            $this->logger->error('Error triggering incident→risk feedback', [
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     /**

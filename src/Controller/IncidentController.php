@@ -19,6 +19,7 @@ use App\Service\PdfExportService;
 use App\Service\TenantContext;
 use App\Service\WorkflowService;
 use App\Service\WorkflowAutoProgressionService;
+use App\Service\IncidentRiskFeedbackService;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -46,7 +47,8 @@ class IncidentController extends AbstractController
         private readonly IncidentEscalationWorkflowService $incidentEscalationWorkflowService,
         private readonly TenantContext $tenantContext,
         private readonly WorkflowService $workflowService,
-        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService
+        private readonly WorkflowAutoProgressionService $workflowAutoProgressionService,
+        private readonly IncidentRiskFeedbackService $incidentRiskFeedbackService
     ) {}
     #[Route('/incident/', name: 'app_incident_index')]
     #[IsGranted('ROLE_USER')]
@@ -319,6 +321,18 @@ class IncidentController extends AbstractController
             $currentUser = $this->security->getUser();
             if ($currentUser instanceof User) {
                 $this->workflowAutoProgressionService->checkAndProgressWorkflow($incident, $currentUser);
+
+                // Trigger Incident→Risk feedback loop if incident was closed
+                if ($incident->getStatus() === 'closed' && $originalStatus !== 'closed') {
+                    $triggeredCount = $this->incidentRiskFeedbackService->processIncidentFeedback($incident, $currentUser);
+                    if ($triggeredCount > 0) {
+                        $this->addFlash('info', $this->translator->trans(
+                            'incident.feedback.risk_re_evaluation_triggered',
+                            ['count' => $triggeredCount],
+                            'incidents'
+                        ) ?: sprintf('%d related risk(s) triggered for re-evaluation', $triggeredCount));
+                    }
+                }
             }
 
             $this->addFlash('success', $this->translator->trans('incident.success.updated'));

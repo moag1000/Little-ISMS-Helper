@@ -219,6 +219,13 @@ class ProcessingActivity
     #[ORM\JoinTable(name: 'processing_activity_control')]
     private Collection $implementedControls;
 
+    /**
+     * Consents for this processing activity (Art. 6(1)(a) GDPR)
+     * Data Reuse: Track all consents when legalBasis = 'consent'
+     */
+    #[ORM\OneToMany(targetEntity: Consent::class, mappedBy: 'processingActivity', cascade: ['persist'])]
+    private Collection $consents;
+
     // ============================================================================
     // Legal Basis (GDPR Art. 6)
     // ============================================================================
@@ -422,6 +429,7 @@ class ProcessingActivity
     public function __construct()
     {
         $this->implementedControls = new ArrayCollection();
+        $this->consents = new ArrayCollection();
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = new DateTimeImmutable();
     }

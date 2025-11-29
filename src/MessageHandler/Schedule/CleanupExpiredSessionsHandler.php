@@ -27,10 +27,10 @@ class CleanupExpiredSessionsHandler
         ]);
 
         try {
-            $deletedCount = $this->sessionRepository->deleteExpiredSessions();
+            $deletedCount = $this->sessionRepository->cleanupExpiredSessions();
 
             $this->logger->info('Expired session cleanup completed', [
-                'deleted_count' => $deletedCount,
+                'cleaned_up_count' => $deletedCount,
             ]);
         } catch (\Exception $e) {
             $this->logger->error('Failed to cleanup expired sessions', [
