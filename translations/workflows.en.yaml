@@ -15,6 +15,7 @@ workflow:
         pending_detail: 'Overview of pending workflow instances with deadlines and priorities'
         overdue_detail: 'Overview of overdue workflow instances with outliers and priorities'
         definitions: 'Manage and configure reusable workflow definitions.'
+        in_progress: 'Workflows currently being processed'
     action:
         definitions: Definitions
         create: 'Create workflow'
@@ -30,6 +31,7 @@ workflow:
         activate: Activate
         delete: Delete
         back: Back
+        pending: Pending
     stats:
         total: 'Total Workflows'
         active: Active
@@ -48,6 +50,8 @@ workflow:
         entity_types: 'Covered entity types'
         steps: 'Total Steps'
         total_instances: 'Total Instances'
+        in_progress: 'In Progress'
+        approved: Approved
     section:
         overview: Overview
         steps: Steps
@@ -61,6 +65,7 @@ workflow:
         information: Information
         actions: Actions
         statistics: Statistics
+        in_progress: 'In Progress'
     field:
         name: Name
         entity: Entity
@@ -209,6 +214,18 @@ workflow:
         field:
             comments: 'Comments (optional)'
             reason: 'Rejection Reason'
+workflow_instance:
+    status:
+        pending: Pending
+        in_progress: 'In Progress'
+        approved: Approved
+        rejected: Rejected
+        cancelled: Cancelled
+workflow_step:
+    type:
+        approval: 'Approval / Authorization'
+        notification: Notification
+        auto_action: 'Automated Action'
 sla:
     progress_label: 'SLA Progress'
     time_remaining: 'Time remaining'

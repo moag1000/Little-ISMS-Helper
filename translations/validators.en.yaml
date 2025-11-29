@@ -458,3 +458,9 @@ workflow_step:
 'Availability value is required': 'Availability value is required'
 'Availability value must be between {{ min }} and {{ max }}': 'Availability value must be between {{ min }} and {{ max }}'
 'Data classification must be one of: {{ choices }}': 'Data classification must be one of: {{ choices }}'
+
+# Setup Validation Messages
+setup.admin.first_name_max: 'First name must be at most {{ limit }} characters long.'
+setup.admin.last_name_max: 'Last name must be at most {{ limit }} characters long.'
+setup.admin.password_max: 'Password must be at most {{ limit }} characters long.'
+setup.organisation.name_max: 'Organisation name must be at most {{ limit }} characters long.'
