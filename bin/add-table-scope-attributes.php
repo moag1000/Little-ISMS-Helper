@@ -74,7 +74,7 @@ function processFile(string $file, bool $dryRun, array &$stats, string $template
     $iconPattern = '/<i class="([^"]*bi-[^"]*)"/';
     if (preg_match_all($iconPattern, $content, $iconMatches)) {
         foreach ($iconMatches[0] as $iconTag) {
-            if (strpos($iconTag, 'aria-hidden') === false) {
+            if (!str_contains($iconTag, 'aria-hidden')) {
                 $newIcon = str_replace('">', '" aria-hidden="true">', $iconTag);
                 $content = str_replace($iconTag, $newIcon, $content);
                 $stats['aria_hidden_added']++;
@@ -122,7 +122,7 @@ foreach ($iterator as $file) {
         $content = file_get_contents($file->getPathname());
 
         // Only process files with tables
-        if (strpos($content, '<table') !== false) {
+        if (str_contains($content, '<table')) {
             $stats['files_processed']++;
             processFile($file->getPathname(), $dryRun, $stats, $templatesDir, $verbose);
         }

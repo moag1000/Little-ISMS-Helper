@@ -113,12 +113,12 @@ foreach ($iterator as $file) {
         $content = file_get_contents($filePath);
 
         // Skip if already using _form_field component
-        if (strpos($content, '_form_field.html.twig') !== false) {
+        if (str_contains($content, '_form_field.html.twig')) {
             continue;
         }
 
         // Skip if no form_label found
-        if (strpos($content, 'form_label') === false) {
+        if (!str_contains($content, 'form_label')) {
             continue;
         }
 
