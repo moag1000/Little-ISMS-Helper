@@ -31,6 +31,26 @@ class WorkflowController extends AbstractController
         private readonly TenantContext $tenantContext
     ) {}
 
+    /**
+     * Smart redirect logic: Return to referrer page (entity show page) if available,
+     * otherwise redirect to workflow instance page.
+     *
+     * This allows inline workflow actions to return users to the entity page
+     * they came from, instead of forcing them to the workflow page.
+     */
+    private function getSmartRedirect(Request $request, WorkflowInstance $workflowInstance): Response
+    {
+        $referer = $request->headers->get('referer');
+
+        // If referer exists and is NOT the workflow instance page itself, redirect back
+        if ($referer && !str_contains($referer, '/workflow/instance/' . $workflowInstance->getId())) {
+            return $this->redirect($referer);
+        }
+
+        // Default: redirect to workflow instance page
+        return $this->redirectToRoute('app_workflow_instance_show', ['id' => $workflowInstance->getId()]);
+    }
+
     #[Route('/workflow/', name: 'app_workflow_index')]
     public function index(): Response
     {
@@ -85,7 +105,7 @@ class WorkflowController extends AbstractController
     {
         if (!$this->isCsrfTokenValid('approve'.$workflowInstance->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('error.csrf_invalid'));
-            return $this->redirectToRoute('app_workflow_instance_show', ['id' => $workflowInstance->getId()]);
+            return $this->getSmartRedirect($request, $workflowInstance);
         }
 
         $comments = $request->request->get('comments');
@@ -97,7 +117,7 @@ class WorkflowController extends AbstractController
             $this->addFlash('error', $this->translator->trans('workflow.error.not_authorized_approve'));
         }
 
-        return $this->redirectToRoute('app_workflow_instance_show', ['id' => $workflowInstance->getId()]);
+        return $this->getSmartRedirect($request, $workflowInstance);
     }
 
     #[Route('/workflow/instance/{id}/reject', name: 'app_workflow_instance_reject', requirements: ['id' => '\d+'], methods: ['POST'])]
@@ -105,14 +125,14 @@ class WorkflowController extends AbstractController
     {
         if (!$this->isCsrfTokenValid('reject'.$workflowInstance->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', $this->translator->trans('error.csrf_invalid'));
-            return $this->redirectToRoute('app_workflow_instance_show', ['id' => $workflowInstance->getId()]);
+            return $this->getSmartRedirect($request, $workflowInstance);
         }
 
         $comments = $request->request->get('comments');
 
         if (empty($comments)) {
             $this->addFlash('error', $this->translator->trans('workflow.error.comments_required'));
-            return $this->redirectToRoute('app_workflow_instance_show', ['id' => $workflowInstance->getId()]);
+            return $this->getSmartRedirect($request, $workflowInstance);
         }
 
         $success = $this->workflowService->rejectStep($workflowInstance, $this->getUser(), $comments);
@@ -123,7 +143,7 @@ class WorkflowController extends AbstractController
             $this->addFlash('error', $this->translator->trans('workflow.error.not_authorized_reject'));
         }
 
-        return $this->redirectToRoute('app_workflow_instance_show', ['id' => $workflowInstance->getId()]);
+        return $this->getSmartRedirect($request, $workflowInstance);
     }
 
     #[Route('/workflow/instance/{id}/cancel', name: 'app_workflow_instance_cancel', requirements: ['id' => '\d+'], methods: ['POST'])]
