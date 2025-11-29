@@ -1,0 +1,330 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'consent' %}
+
+{% block title %}{{ 'consent.header.title'|trans({}, 'consent') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+{# Breadcrumb Navigation #}
+{% include '_components/_breadcrumb.html.twig' with {
+    breadcrumbs: [
+        { label: 'consent.breadcrumb'|trans({}, 'consent') }
+    ]
+} %}
+
+{# Page Header with Actions #}
+{% include '_components/_page_header.html.twig' with {
+    title: 'consent.header.title'|trans({}, 'consent'),
+    subtitle: 'consent.header.subtitle'|trans({}, 'consent'),
+    icon: 'bi-hand-thumbs-up',
+    actions: [
+        { label: 'consent.header.action.new'|trans({}, 'consent'), url: path('app_consent_new'), variant: 'primary', icon: 'bi-plus-circle' }
+    ]
+} %}
+
+{# KPI Cards Grid #}
+<div class="kpi-grid kpi-grid-responsive">
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-hand-thumbs-up',
+        label: 'consent.kpi.total'|trans({}, 'consent'),
+        value: allConsents|length,
+        variant: 'primary'
+    } %}
+
+    {% set activeConsents = allConsents|filter(c => c.status == 'active')|length %}
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-check-circle',
+        label: 'consent.kpi.active'|trans({}, 'consent'),
+        value: activeConsents,
+        variant: activeConsents > 0 ? 'success' : 'secondary',
+        link: '#filter-active'
+    } %}
+
+    {% set pendingConsents = allConsents|filter(c => c.status == 'pending_verification')|length %}
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-hourglass',
+        label: 'consent.kpi.pending'|trans({}, 'consent'),
+        value: pendingConsents,
+        variant: pendingConsents > 0 ? 'warning' : 'secondary',
+        link: '#filter-pending'
+    } %}
+
+    {% set revokedConsents = allConsents|filter(c => c.status == 'revoked')|length %}
+    {% include '_components/_kpi_card.html.twig' with {
+        icon: 'bi-x-circle',
+        label: 'consent.kpi.revoked'|trans({}, 'consent'),
+        value: revokedConsents,
+        variant: revokedConsents > 0 ? 'danger' : 'secondary'
+    } %}
+</div>
+
+{# Status Overview #}
+<div class="card mb-4">
+    <div class="card-header">
+        <h3 class="mb-0"><i class="bi bi-kanban" aria-hidden="true"></i> {{ 'consent.status.overview'|trans({}, 'consent') }}</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {% set statuses = {
+                'pending_verification': { label: 'consent.status.pending_verification'|trans({}, 'consent'), icon: 'bi-hourglass', color: 'warning' },
+                'active': { label: 'consent.status.active'|trans({}, 'consent'), icon: 'bi-check-circle', color: 'success' },
+                'revoked': { label: 'consent.status.revoked'|trans({}, 'consent'), icon: 'bi-x-circle', color: 'danger' }
+            } %}
+            {% for status, data in statuses %}
+                {% set count = allConsents|filter(c => c.status == status)|length %}
+                <div class="col-md-4 mb-3">
+                    <div class="status-card status-{{ status }}">
+                        <div class="status-icon text-{{ data.color }}" aria-hidden="true">
+                            <i class="bi {{ data.icon }}" aria-hidden="true"></i>
+                        </div>
+                        <div class="status-info">
+                            <div class="status-label">{{ data.label }}</div>
+                            <div class="status-count">{{ count }}</div>
+                            {% if allConsents|length > 0 %}
+                                <div class="progress mt-2 progress-h-6">
+                                    <div class="progress-bar bg-{{ data.color }}"
+                                         style="width: {{ (count / allConsents|length * 100)|round }}%"></div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{# Consents Table or Empty State #}
+{% if allConsents|length == 0 %}
+    {% include '_components/_empty_state.html.twig' with {
+        icon: 'bi-hand-thumbs-up',
+        title: 'consent.empty.title'|trans({}, 'consent'),
+        description: 'consent.empty.description'|trans({}, 'consent'),
+        action: { label: 'consent.header.action.new'|trans({}, 'consent'), url: path('app_consent_new'), icon: 'bi-plus-circle' }
+    } %}
+{% else %}
+<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/consent">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'consent.list.all_consents'|trans({'%count%': allConsents|length}, 'consent') }}</h3>
+        <div class="d-flex gap-2">
+            <select class="form-select form-select-sm w-150px" id="consent-status-filter">
+                <option value="">{{ 'consent.filter.all_status'|trans({}, 'consent') }}</option>
+                <option value="pending_verification">{{ 'consent.status.pending_verification'|trans({}, 'consent') }}</option>
+                <option value="active">{{ 'consent.status.active'|trans({}, 'consent') }}</option>
+                <option value="revoked">{{ 'consent.status.revoked'|trans({}, 'consent') }}</option>
+            </select>
+            <select class="form-select form-select-sm w-150px" id="consent-verified-filter">
+                <option value="">{{ 'consent.filter.all_verified'|trans({}, 'consent') }}</option>
+                <option value="verified">{{ 'consent.filter.verified'|trans({}, 'consent') }}</option>
+                <option value="unverified">{{ 'consent.filter.unverified'|trans({}, 'consent') }}</option>
+            </select>
+            <label for="consent-search" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
+            <input type="search"
+                   class="form-control form-control-sm w-200px"
+                   id="consent-search"
+                   placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
+        </div>
+    </div>
+    {% embed '_components/_table.html.twig' with {
+        'class': 'table-hover mb-0',
+        'noMargin': true,
+        'responsive': true
+    } %}
+        {% block table_head %}
+            <tr>
+                <th scope="col" class="w-40px">
+                    <input type="checkbox"
+                           class="form-check-input"
+                           data-action="bulk-actions#selectAll"
+                           data-bulk-actions-target="selectAllCheckbox"
+                           aria-label="{{ 'common.select_all'|trans({}, 'messages') }}">
+                </th>
+                <th scope="col">{{ 'consent.field.id'|trans({}, 'consent') }}</th>
+                <th scope="col">{{ 'consent.field.data_subject'|trans({}, 'consent') }}</th>
+                <th scope="col">{{ 'consent.field.processing_activity'|trans({}, 'consent') }}</th>
+                <th scope="col">{{ 'consent.field.status'|trans({}, 'consent') }}</th>
+                <th scope="col">{{ 'consent.field.granted_at'|trans({}, 'consent') }}</th>
+                <th scope="col" class="text-center">{{ 'consent.field.verified'|trans({}, 'consent') }}</th>
+                <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
+            </tr>
+        {% endblock %}
+        {% block table_body %}
+            {% for consent in allConsents %}
+            <tr data-consent-id="{{ consent.id }}"
+                data-consent-status="{{ consent.status }}"
+                data-consent-verified="{{ consent.verifiedBy ? 'verified' : 'unverified' }}">
+                <td>
+                    <input type="checkbox"
+                           class="form-check-input"
+                           data-bulk-actions-target="item"
+                           data-action="bulk-actions#selectItem"
+                           value="{{ consent.id }}">
+                </td>
+                <td>
+                    <code>{{ consent.id }}</code>
+                </td>
+                <td>
+                    <strong>{{ consent.dataSubjectIdentifier }}</strong>
+                    <br><small class="text-muted">{{ ('consent.identifier_type.' ~ consent.identifierType)|trans({}, 'consent') }}</small>
+                </td>
+                <td>
+                    {% if consent.processingActivity %}
+                        {{ consent.processingActivity.name|default(consent.processingActivity) }}
+                    {% else %}
+                        <span class="text-muted">-</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% set statusColors = {
+                        'pending_verification': 'warning',
+                        'active': 'success',
+                        'revoked': 'danger'
+                    } %}
+                    <span class="badge bg-{{ statusColors[consent.status] ?? 'secondary' }}">
+                        {{ ('consent.status.' ~ consent.status)|trans({}, 'consent') }}
+                    </span>
+                </td>
+                <td>
+                    {{ consent.grantedAt|date('d.m.Y H:i') }}
+                    {% if consent.grantedAt %}
+                        {% set daysSince = (date().diff(consent.grantedAt).days) %}
+                        {% if daysSince == 0 %}
+                            <br><small class="text-muted">{{ 'common.today'|trans({}, 'messages') }}</small>
+                        {% elseif daysSince == 1 %}
+                            <br><small class="text-muted">{{ 'common.yesterday'|trans({}, 'messages') }}</small>
+                        {% else %}
+                            <br><small class="text-muted">{{ 'common.days_ago'|trans({'%days%': daysSince}, 'messages') }}</small>
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if consent.verifiedBy %}
+                        <span class="badge bg-success" title="{{ 'consent.verified_by'|trans({}, 'consent') }}">
+                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'common.yes'|trans({}, 'messages') }}
+                        </span>
+                    {% else %}
+                        <span class="text-muted">{{ 'common.no'|trans({}, 'messages') }}</span>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
+                        <a href="{{ path('app_consent_show', {id: consent.id}) }}"
+                           class="btn btn-outline-primary"
+                           data-turbo-action="advance"
+                           title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                            <i class="bi bi-eye" aria-hidden="true"></i>
+                        </a>
+                        {% if is_granted('ROLE_USER') and (consent.status == 'pending_verification' or consent.status == 'active') %}
+                        <a href="{{ path('app_consent_edit', {id: consent.id}) }}"
+                           class="btn btn-outline-secondary"
+                           data-turbo-action="advance"
+                           title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                        </a>
+                        {% endif %}
+                        {% if is_granted('ROLE_DPO') %}
+                        <form method="post" action="{{ path('app_consent_delete', {id: consent.id}) }}" class="d-inline" onsubmit="return confirm('{{ 'consent.delete.confirm'|trans({}, 'consent') }}');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ consent.id) }}">
+                            <button type="submit" class="btn btn-outline-danger btn-sm" title="{{ 'common.delete'|trans({}, 'messages') }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
+                                <i class="bi bi-trash" aria-hidden="true"></i>
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        {% endblock %}
+    {% endembed %}
+
+    {# Bulk Action Bar #}
+    {% include '_components/_bulk_action_bar.html.twig' with {
+        actions: ['export', 'delete']
+    } %}
+</div>
+{% endif %}
+
+<style>
+/* Status Cards */
+.status-card {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background: white;
+    border-radius: var(--border-radius);
+    border: 2px solid var(--color-border);
+    transition: all 0.2s;
+}
+
+.status-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.status-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    background: var(--color-bg);
+    border-radius: 50%;
+}
+
+.status-info {
+    flex: 1;
+}
+
+.status-label {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin-bottom: 4px;
+}
+
+.status-count {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+</style>
+
+{# Search & Filter functionality #}
+<script>
+// Search
+document.getElementById('consent-search')?.addEventListener('input', function(e) {
+    const query = e.target.value.toLowerCase();
+    filterConsents();
+});
+
+// Status filter
+document.getElementById('consent-status-filter')?.addEventListener('change', function(e) {
+    filterConsents();
+});
+
+// Verified filter
+document.getElementById('consent-verified-filter')?.addEventListener('change', function(e) {
+    filterConsents();
+});
+
+function filterConsents() {
+    const query = document.getElementById('consent-search')?.value.toLowerCase() || '';
+    const status = document.getElementById('consent-status-filter')?.value || '';
+    const verified = document.getElementById('consent-verified-filter')?.value || '';
+    const rows = document.querySelectorAll('tbody tr[data-consent-id]');
+
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const rowStatus = row.dataset.consentStatus;
+        const rowVerified = row.dataset.consentVerified;
+
+        const matchesSearch = !query || text.includes(query);
+        const matchesStatus = !status || rowStatus === status;
+        const matchesVerified = !verified || rowVerified === verified;
+
+        row.style.display = (matchesSearch && matchesStatus && matchesVerified) ? '' : 'none';
+    });
+}
+</script>
+
+{% endblock %}

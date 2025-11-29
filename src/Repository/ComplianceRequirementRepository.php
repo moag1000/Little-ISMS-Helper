@@ -227,4 +227,23 @@ class ComplianceRequirementRepository extends ServiceEntityRepository
                 ->getSingleScalarResult(),
         ];
     }
+
+    /**
+     * Count compliant requirements across all frameworks
+     *
+     * Used by scheduled compliance reporting
+     *
+     * @return int Number of requirements with 100% fulfillment
+     */
+    public function countCompliant(): int
+    {
+        return (int) $this->createQueryBuilder('cr')
+            ->select('COUNT(DISTINCT cr.id)')
+            ->leftJoin(ComplianceRequirementFulfillment::class, 'crf', 'WITH', 'crf.complianceRequirement = cr')
+            ->where('crf.applicable = :applicable')
+            ->andWhere('crf.fulfillmentPercentage >= 100')
+            ->setParameter('applicable', true)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
