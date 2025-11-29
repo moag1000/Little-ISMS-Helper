@@ -3,9 +3,8 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use Rector\PHPUnit\PHPUnit90\Rector\Class_\TestListenerToHooksRector;
 use Rector\Set\ValueObject\SetList;
-use Rector\Symfony\Set\SymfonySetList;
-use Rector\Doctrine\Set\DoctrineSetList;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -16,6 +15,13 @@ return RectorConfig::configure()
     ])
     // PHP 8.4 features
     ->withPhpSets(php84: true)
+    // Composer-based sets (replaces deprecated SymfonySetList and DoctrineSetList)
+    ->withComposerBased(
+        twig: true,
+        doctrine: true,
+        phpunit: true,
+        symfony: true
+    )
     ->withSets([
         // Code Quality
         SetList::CODE_QUALITY,
@@ -23,17 +29,10 @@ return RectorConfig::configure()
         SetList::EARLY_RETURN,
         SetList::TYPE_DECLARATION,
         SetList::PRIVATIZATION,
-        SetList::NAMING,
+        //SetList::NAMING,
         SetList::INSTANCEOF,
-
-        // Symfony 7.4 specific
-        SymfonySetList::SYMFONY_74,
-        SymfonySetList::SYMFONY_CODE_QUALITY,
-        SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION,
-        SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES,
-
-        // Doctrine specific
-        DoctrineSetList::DOCTRINE_CODE_QUALITY,
-        DoctrineSetList::ANNOTATIONS_TO_ATTRIBUTES,
     ])
-    ->withImportNames(removeUnusedImports: true);
+    ->withImportNames(removeUnusedImports: true)
+    ->withRules([
+        TestListenerToHooksRector::class,
+    ]);
