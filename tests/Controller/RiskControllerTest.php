@@ -27,18 +27,88 @@ class RiskControllerTest extends WebTestCase
         $container = static::getContainer();
         $this->entityManager = $container->get(EntityManagerInterface::class);
 
-        // Start a transaction to rollback after each test
-        $this->entityManager->beginTransaction();
-
-        // Create test data
+        // Create test data and commit it so HTTP requests can see it
         $this->createTestData();
     }
 
     protected function tearDown(): void
     {
-        // Rollback transaction to clean up test data
-        if ($this->entityManager->getConnection()->isTransactionActive()) {
-            $this->entityManager->rollback();
+        // Manually delete test data since we're not using transactions
+        if ($this->testRisk) {
+            try {
+                $risk = $this->entityManager->find(Risk::class, $this->testRisk->getId());
+                if ($risk) {
+                    $this->entityManager->remove($risk);
+                }
+            } catch (\Exception $e) {
+                // Ignore if already deleted
+            }
+        }
+
+        // Clean up any risks created during tests
+        $riskRepo = $this->entityManager->getRepository(Risk::class);
+        foreach (['New Risk Title', 'Tenant Test Risk', 'Updated Risk Title', 'Test Risk 2'] as $title) {
+            $risks = $riskRepo->findBy(['title' => $title]);
+            foreach ($risks as $risk) {
+                try {
+                    $this->entityManager->remove($risk);
+                } catch (\Exception $e) {
+                    // Ignore
+                }
+            }
+        }
+
+        // Clean up assets
+        $assetRepo = $this->entityManager->getRepository(Asset::class);
+        $assets = $assetRepo->findBy(['name' => 'Test Server']);
+        foreach ($assets as $asset) {
+            try {
+                $this->entityManager->remove($asset);
+            } catch (\Exception $e) {
+                // Ignore
+            }
+        }
+
+        // Delete test users (including admin/manager users created in individual tests)
+        $userRepo = $this->entityManager->getRepository(User::class);
+        foreach (['testuser@example.com', 'admin@example.com', 'admin2@example.com', 'admin3@example.com', 'admin4@example.com', 'manager@example.com', 'manager2@example.com'] as $email) {
+            $users = $userRepo->findBy(['email' => $email]);
+            foreach ($users as $user) {
+                try {
+                    $this->entityManager->remove($user);
+                } catch (\Exception $e) {
+                    // Ignore
+                }
+            }
+        }
+
+        if ($this->testUser) {
+            try {
+                $user = $this->entityManager->find(User::class, $this->testUser->getId());
+                if ($user) {
+                    $this->entityManager->remove($user);
+                }
+            } catch (\Exception $e) {
+                // Ignore
+            }
+        }
+
+        // Delete test tenant
+        if ($this->testTenant) {
+            try {
+                $tenant = $this->entityManager->find(Tenant::class, $this->testTenant->getId());
+                if ($tenant) {
+                    $this->entityManager->remove($tenant);
+                }
+            } catch (\Exception $e) {
+                // Ignore
+            }
+        }
+
+        try {
+            $this->entityManager->flush();
+        } catch (\Exception $e) {
+            // Ignore flush errors during cleanup
         }
 
         parent::tearDown();
@@ -46,15 +116,17 @@ class RiskControllerTest extends WebTestCase
 
     private function createTestData(): void
     {
+        $uniqueId = uniqid('test_', true);
+
         // Create test tenant
         $this->testTenant = new Tenant();
-        $this->testTenant->setName('Test Tenant');
-        $this->testTenant->setCode('test_tenant');
+        $this->testTenant->setName('Test Tenant ' . $uniqueId);
+        $this->testTenant->setCode('test_tenant_' . $uniqueId);
         $this->entityManager->persist($this->testTenant);
 
         // Create test user with ROLE_USER
         $this->testUser = new User();
-        $this->testUser->setEmail('testuser@example.com');
+        $this->testUser->setEmail('testuser_' . $uniqueId . '@example.com');
         $this->testUser->setFirstName('Test');
         $this->testUser->setLastName('User');
         $this->testUser->setRoles(['ROLE_USER']);
@@ -65,7 +137,7 @@ class RiskControllerTest extends WebTestCase
 
         // Create test asset
         $testAsset = new Asset();
-        $testAsset->setName('Test Server');
+        $testAsset->setName('Test Server ' . $uniqueId);
         $testAsset->setAssetType('hardware');
         $testAsset->setOwner('IT Department');
         $testAsset->setStatus('active');
@@ -77,7 +149,7 @@ class RiskControllerTest extends WebTestCase
 
         // Create test risk
         $this->testRisk = new Risk();
-        $this->testRisk->setTitle('Test Risk');
+        $this->testRisk->setTitle('Test Risk ' . $uniqueId);
         $this->testRisk->setCategory('security');
         $this->testRisk->setDescription('Test risk description');
         $this->testRisk->setThreat('Test threat');
@@ -99,6 +171,12 @@ class RiskControllerTest extends WebTestCase
     private function loginAsUser(User $user): void
     {
         $this->client->loginUser($user);
+
+        // Ensure the user entity is managed and up-to-date
+        if (!$this->entityManager->contains($user)) {
+            $user = $this->entityManager->merge($user);
+        }
+        $this->entityManager->refresh($user);
     }
 
     // ========== INDEX ACTION TESTS ==========
@@ -372,9 +450,11 @@ class RiskControllerTest extends WebTestCase
 
     public function testDeleteRemovesRiskWithAdminRole(): void
     {
+        $uniqueId = uniqid('admin_', true);
+
         // Create admin user
         $adminUser = new User();
-        $adminUser->setEmail('admin@example.com');
+        $adminUser->setEmail('admin_' . $uniqueId . '@example.com');
         $adminUser->setFirstName('Admin');
         $adminUser->setLastName('User');
         $adminUser->setRoles(['ROLE_ADMIN']);
@@ -403,9 +483,11 @@ class RiskControllerTest extends WebTestCase
 
     public function testDeleteRequiresValidCsrfToken(): void
     {
+        $uniqueId = uniqid('admin_', true);
+
         // Create admin user
         $adminUser = new User();
-        $adminUser->setEmail('admin2@example.com');
+        $adminUser->setEmail('admin_' . $uniqueId . '@example.com');
         $adminUser->setFirstName('Admin');
         $adminUser->setLastName('User');
         $adminUser->setRoles(['ROLE_ADMIN']);
@@ -535,9 +617,11 @@ class RiskControllerTest extends WebTestCase
 
     public function testBulkDeleteRemovesMultipleRisks(): void
     {
+        $uniqueId = uniqid('admin_', true);
+
         // Create admin user
         $adminUser = new User();
-        $adminUser->setEmail('admin3@example.com');
+        $adminUser->setEmail('admin_' . $uniqueId . '@example.com');
         $adminUser->setFirstName('Admin');
         $adminUser->setLastName('User');
         $adminUser->setRoles(['ROLE_ADMIN']);
@@ -578,9 +662,11 @@ class RiskControllerTest extends WebTestCase
 
     public function testBulkDeleteReturnsErrorForEmptyIds(): void
     {
+        $uniqueId = uniqid('admin_', true);
+
         // Create admin user
         $adminUser = new User();
-        $adminUser->setEmail('admin4@example.com');
+        $adminUser->setEmail('admin_' . $uniqueId . '@example.com');
         $adminUser->setFirstName('Admin');
         $adminUser->setLastName('User');
         $adminUser->setRoles(['ROLE_ADMIN']);
@@ -622,9 +708,11 @@ class RiskControllerTest extends WebTestCase
 
     public function testRequestAcceptanceDisplaysFormForAcceptStrategy(): void
     {
+        $uniqueId = uniqid('manager_', true);
+
         // Create manager user
         $managerUser = new User();
-        $managerUser->setEmail('manager@example.com');
+        $managerUser->setEmail('manager_' . $uniqueId . '@example.com');
         $managerUser->setFirstName('Manager');
         $managerUser->setLastName('User');
         $managerUser->setRoles(['ROLE_MANAGER']);
@@ -646,9 +734,11 @@ class RiskControllerTest extends WebTestCase
 
     public function testRequestAcceptanceRedirectsForWrongStrategy(): void
     {
+        $uniqueId = uniqid('manager_', true);
+
         // Create manager user
         $managerUser = new User();
-        $managerUser->setEmail('manager2@example.com');
+        $managerUser->setEmail('manager_' . $uniqueId . '@example.com');
         $managerUser->setFirstName('Manager');
         $managerUser->setLastName('User');
         $managerUser->setRoles(['ROLE_MANAGER']);
