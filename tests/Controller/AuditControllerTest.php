@@ -103,7 +103,7 @@ class AuditControllerTest extends WebTestCase
 
     public function testIndexWithoutAuthentication(): void
     {
-        $this->client->request('GET', '/audit/');
+        $this->client->request('GET', '/en/audit/');
 
         $this->assertResponseRedirects();
     }
@@ -112,7 +112,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/audit/');
+        $crawler = $this->client->request('GET', '/en/audit/');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('html');
@@ -122,7 +122,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/audit/', [
+        $crawler = $this->client->request('GET', '/en/audit/', [
             'status' => 'planned'
         ]);
 
@@ -133,7 +133,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/audit/', [
+        $crawler = $this->client->request('GET', '/en/audit/', [
             'scope_type' => 'full_isms'
         ]);
 
@@ -144,7 +144,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/audit/', [
+        $crawler = $this->client->request('GET', '/en/audit/', [
             'date_from' => '2025-01-01',
             'date_to' => '2025-12-31'
         ]);
@@ -156,7 +156,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/audit/', [
+        $crawler = $this->client->request('GET', '/en/audit/', [
             'date_from' => '2025-01-01'
         ]);
 
@@ -167,7 +167,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/audit/', [
+        $crawler = $this->client->request('GET', '/en/audit/', [
             'date_to' => '2025-12-31'
         ]);
 
@@ -178,7 +178,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/audit/', [
+        $crawler = $this->client->request('GET', '/en/audit/', [
             'status' => 'planned',
             'scope_type' => 'full_isms',
             'date_from' => '2025-01-01',
@@ -192,7 +192,7 @@ class AuditControllerTest extends WebTestCase
 
     public function testNewRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/audit/new');
+        $this->client->request('GET', '/en/audit/new');
 
         $this->assertResponseRedirects();
     }
@@ -213,7 +213,7 @@ class AuditControllerTest extends WebTestCase
 
         $this->loginAsUser($guestUser);
 
-        $this->client->request('GET', '/audit/new');
+        $this->client->request('GET', '/en/audit/new');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
@@ -222,7 +222,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/audit/new');
+        $crawler = $this->client->request('GET', '/en/audit/new');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form[name="internal_audit"]');
@@ -232,7 +232,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/audit/new');
+        $crawler = $this->client->request('GET', '/en/audit/new');
 
         // The form might have different button text, let's find the submit button
         $submitButton = $crawler->filter('button[type="submit"]');
@@ -268,7 +268,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/audit/new');
+        $crawler = $this->client->request('GET', '/en/audit/new');
 
         // Check that the form has a pre-filled audit number
         $form = $crawler->filter('form[name="internal_audit"]')->form();
@@ -283,7 +283,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/audit/new');
+        $crawler = $this->client->request('GET', '/en/audit/new');
         $form = $crawler->filter('form[name="internal_audit"]')->form();
 
         $form['internal_audit[title]'] = 'Tenant Test Audit';
@@ -305,7 +305,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/audit/new');
+        $crawler = $this->client->request('GET', '/en/audit/new');
         $form = $crawler->filter('form[name="internal_audit"]')->form();
 
         // Submit form with empty required fields
@@ -323,7 +323,7 @@ class AuditControllerTest extends WebTestCase
 
     public function testShowRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/audit/' . $this->testAudit->getId());
+        $this->client->request('GET', '/en/audit/' . $this->testAudit->getId());
 
         $this->assertResponseRedirects();
     }
@@ -332,7 +332,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/audit/' . $this->testAudit->getId());
+        $crawler = $this->client->request('GET', '/en/audit/' . $this->testAudit->getId());
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('html', 'Test Internal Audit');
@@ -342,7 +342,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/audit/999999');
+        $this->client->request('GET', '/en/audit/999999');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
@@ -351,7 +351,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/audit/' . $this->testAudit->getId());
+        $crawler = $this->client->request('GET', '/en/audit/' . $this->testAudit->getId());
 
         $this->assertResponseIsSuccessful();
         // The template should include audit logs section
@@ -362,7 +362,7 @@ class AuditControllerTest extends WebTestCase
 
     public function testEditRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/audit/' . $this->testAudit->getId() . '/edit');
+        $this->client->request('GET', '/en/audit/' . $this->testAudit->getId() . '/edit');
 
         $this->assertResponseRedirects();
     }
@@ -383,7 +383,7 @@ class AuditControllerTest extends WebTestCase
 
         $this->loginAsUser($guestUser);
 
-        $this->client->request('GET', '/audit/' . $this->testAudit->getId() . '/edit');
+        $this->client->request('GET', '/en/audit/' . $this->testAudit->getId() . '/edit');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
@@ -392,7 +392,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/audit/' . $this->testAudit->getId() . '/edit');
+        $crawler = $this->client->request('GET', '/en/audit/' . $this->testAudit->getId() . '/edit');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form[name="internal_audit"]');
@@ -403,7 +403,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/audit/' . $this->testAudit->getId() . '/edit');
+        $crawler = $this->client->request('GET', '/en/audit/' . $this->testAudit->getId() . '/edit');
         $form = $crawler->filter('form[name="internal_audit"]')->form();
 
         $form['internal_audit[title]'] = 'Updated Audit Title';
@@ -423,7 +423,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/audit/999999/edit');
+        $this->client->request('GET', '/en/audit/999999/edit');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
@@ -432,7 +432,7 @@ class AuditControllerTest extends WebTestCase
 
     public function testDeleteRequiresAuthentication(): void
     {
-        $this->client->request('POST', '/audit/' . $this->testAudit->getId() . '/delete');
+        $this->client->request('POST', '/en/audit/' . $this->testAudit->getId() . '/delete');
 
         $this->assertResponseRedirects();
     }
@@ -441,7 +441,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('POST', '/audit/' . $this->testAudit->getId() . '/delete', [
+        $this->client->request('POST', '/en/audit/' . $this->testAudit->getId() . '/delete', [
             '_token' => $this->generateCsrfToken('delete' . $this->testAudit->getId()),
         ]);
 
@@ -454,11 +454,11 @@ class AuditControllerTest extends WebTestCase
 
         $auditId = $this->testAudit->getId();
 
-        $this->client->request('POST', '/audit/' . $auditId . '/delete', [
+        $this->client->request('POST', '/en/audit/' . $auditId . '/delete', [
             '_token' => $this->generateCsrfToken('delete' . $auditId),
         ]);
 
-        $this->assertResponseRedirects('/audit/');
+        $this->assertResponseRedirects('/en/audit/');
 
         // Verify audit was deleted
         $auditRepository = $this->entityManager->getRepository(InternalAudit::class);
@@ -470,12 +470,12 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->adminUser);
 
-        $this->client->request('POST', '/audit/' . $this->testAudit->getId() . '/delete', [
+        $this->client->request('POST', '/en/audit/' . $this->testAudit->getId() . '/delete', [
             '_token' => 'invalid_token',
         ]);
 
         // Should redirect but not delete
-        $this->assertResponseRedirects('/audit/');
+        $this->assertResponseRedirects('/en/audit/');
 
         // Verify audit was NOT deleted
         $this->entityManager->refresh($this->testAudit);
@@ -486,7 +486,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->adminUser);
 
-        $this->client->request('GET', '/audit/' . $this->testAudit->getId() . '/delete');
+        $this->client->request('GET', '/en/audit/' . $this->testAudit->getId() . '/delete');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
@@ -495,7 +495,7 @@ class AuditControllerTest extends WebTestCase
 
     public function testExportExcelRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/audit/export/excel');
+        $this->client->request('GET', '/en/audit/export/excel');
 
         $this->assertResponseRedirects();
     }
@@ -504,7 +504,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/audit/export/excel');
+        $this->client->request('GET', '/en/audit/export/excel');
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -517,7 +517,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/audit/export/excel');
+        $this->client->request('GET', '/en/audit/export/excel');
 
         $this->assertResponseIsSuccessful();
 
@@ -530,7 +530,7 @@ class AuditControllerTest extends WebTestCase
 
     public function testExportPdfRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/audit/' . $this->testAudit->getId() . '/export/pdf');
+        $this->client->request('GET', '/en/audit/' . $this->testAudit->getId() . '/export/pdf');
 
         $this->assertResponseRedirects();
     }
@@ -539,7 +539,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/audit/' . $this->testAudit->getId() . '/export/pdf');
+        $this->client->request('GET', '/en/audit/' . $this->testAudit->getId() . '/export/pdf');
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('Content-Type', 'application/pdf');
@@ -552,7 +552,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/audit/999999/export/pdf');
+        $this->client->request('GET', '/en/audit/999999/export/pdf');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
@@ -561,7 +561,7 @@ class AuditControllerTest extends WebTestCase
 
     public function testBulkDeleteRequiresAuthentication(): void
     {
-        $this->client->request('POST', '/audit/bulk-delete');
+        $this->client->request('POST', '/en/audit/bulk-delete');
 
         $this->assertResponseRedirects();
     }
@@ -570,7 +570,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('POST', '/audit/bulk-delete', [], [], [
+        $this->client->request('POST', '/en/audit/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
         ], json_encode(['ids' => [$this->testAudit->getId()]]));
 
@@ -595,7 +595,7 @@ class AuditControllerTest extends WebTestCase
 
         $ids = [$this->testAudit->getId(), $audit2->getId()];
 
-        $this->client->request('POST', '/audit/bulk-delete', [], [], [
+        $this->client->request('POST', '/en/audit/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
         ], json_encode(['ids' => $ids]));
 
@@ -615,7 +615,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->adminUser);
 
-        $this->client->request('POST', '/audit/bulk-delete', [], [], [
+        $this->client->request('POST', '/en/audit/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
         ], json_encode(['ids' => []]));
 
@@ -629,7 +629,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->adminUser);
 
-        $this->client->request('POST', '/audit/bulk-delete', [], [], [
+        $this->client->request('POST', '/en/audit/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
         ], json_encode(['ids' => [999999, 999998]]));
 
@@ -647,7 +647,7 @@ class AuditControllerTest extends WebTestCase
         $validId = $this->testAudit->getId();
         $invalidId = 999999;
 
-        $this->client->request('POST', '/audit/bulk-delete', [], [], [
+        $this->client->request('POST', '/en/audit/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
         ], json_encode(['ids' => [$validId, $invalidId]]));
 
@@ -668,7 +668,7 @@ class AuditControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->adminUser);
 
-        $this->client->request('GET', '/audit/bulk-delete');
+        $this->client->request('GET', '/en/audit/bulk-delete');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }

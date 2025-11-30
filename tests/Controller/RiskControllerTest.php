@@ -104,7 +104,7 @@ class RiskControllerTest extends WebTestCase
 
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/risk/');
+        $this->client->request('GET', '/en/risk/');
 
         $this->assertResponseRedirects();
     }
@@ -113,7 +113,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/risk/');
+        $crawler = $this->client->request('GET', '/en/risk/');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('html');
@@ -123,7 +123,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/risk/', [
+        $crawler = $this->client->request('GET', '/en/risk/', [
             'level' => 'high'
         ]);
 
@@ -134,7 +134,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/risk/', [
+        $crawler = $this->client->request('GET', '/en/risk/', [
             'status' => 'identified'
         ]);
 
@@ -145,7 +145,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/risk/', [
+        $crawler = $this->client->request('GET', '/en/risk/', [
             'treatment' => 'mitigate'
         ]);
 
@@ -156,7 +156,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/risk/', [
+        $crawler = $this->client->request('GET', '/en/risk/', [
             'owner' => 'Test'
         ]);
 
@@ -167,7 +167,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/risk/', [
+        $crawler = $this->client->request('GET', '/en/risk/', [
             'view' => 'own'
         ]);
 
@@ -178,7 +178,7 @@ class RiskControllerTest extends WebTestCase
 
     public function testShowRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/risk/' . $this->testRisk->getId());
+        $this->client->request('GET', '/en/risk/' . $this->testRisk->getId());
 
         $this->assertResponseRedirects();
     }
@@ -187,7 +187,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/risk/' . $this->testRisk->getId());
+        $crawler = $this->client->request('GET', '/en/risk/' . $this->testRisk->getId());
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('html', 'Test Risk');
@@ -197,7 +197,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/risk/999999');
+        $this->client->request('GET', '/en/risk/999999');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
@@ -206,7 +206,7 @@ class RiskControllerTest extends WebTestCase
 
     public function testNewRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/risk/new');
+        $this->client->request('GET', '/en/risk/new');
 
         $this->assertResponseRedirects();
     }
@@ -215,7 +215,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/risk/new');
+        $crawler = $this->client->request('GET', '/en/risk/new');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form[name="risk"]');
@@ -225,7 +225,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/risk/new');
+        $crawler = $this->client->request('GET', '/en/risk/new');
         $form = $crawler->selectButton('risk.action.save')->form([
             'risk[title]' => 'New Risk Title',
             'risk[category]' => 'financial',
@@ -256,7 +256,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/risk/new');
+        $crawler = $this->client->request('GET', '/en/risk/new');
         $form = $crawler->selectButton('risk.action.save')->form([
             'risk[title]' => 'Tenant Test Risk',
             'risk[category]' => 'security',
@@ -281,7 +281,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/risk/new');
+        $crawler = $this->client->request('GET', '/en/risk/new');
         $form = $crawler->selectButton('risk.action.save')->form([
             'risk[title]' => '', // Empty title - should fail validation
             'risk[category]' => 'security',
@@ -301,7 +301,7 @@ class RiskControllerTest extends WebTestCase
 
     public function testEditRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/risk/' . $this->testRisk->getId() . '/edit');
+        $this->client->request('GET', '/en/risk/' . $this->testRisk->getId() . '/edit');
 
         $this->assertResponseRedirects();
     }
@@ -310,7 +310,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/risk/' . $this->testRisk->getId() . '/edit');
+        $crawler = $this->client->request('GET', '/en/risk/' . $this->testRisk->getId() . '/edit');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form[name="risk"]');
@@ -321,7 +321,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/risk/' . $this->testRisk->getId() . '/edit');
+        $crawler = $this->client->request('GET', '/en/risk/' . $this->testRisk->getId() . '/edit');
         $form = $crawler->selectButton('risk.action.save')->form([
             'risk[title]' => 'Updated Risk Title',
             'risk[status]' => 'assessed',
@@ -341,7 +341,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/risk/999999/edit');
+        $this->client->request('GET', '/en/risk/999999/edit');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
@@ -350,7 +350,7 @@ class RiskControllerTest extends WebTestCase
 
     public function testDeleteRequiresAuthentication(): void
     {
-        $this->client->request('POST', '/risk/' . $this->testRisk->getId() . '/delete');
+        $this->client->request('POST', '/en/risk/' . $this->testRisk->getId() . '/delete');
 
         $this->assertResponseRedirects();
     }
@@ -359,7 +359,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('POST', '/risk/' . $this->testRisk->getId() . '/delete', [
+        $this->client->request('POST', '/en/risk/' . $this->testRisk->getId() . '/delete', [
             '_token' => $this->generateCsrfToken('delete' . $this->testRisk->getId()),
         ]);
 
@@ -384,11 +384,11 @@ class RiskControllerTest extends WebTestCase
 
         $riskId = $this->testRisk->getId();
 
-        $this->client->request('POST', '/risk/' . $riskId . '/delete', [
+        $this->client->request('POST', '/en/risk/' . $riskId . '/delete', [
             '_token' => $this->generateCsrfToken('delete' . $riskId),
         ]);
 
-        $this->assertResponseRedirects('/risk/');
+        $this->assertResponseRedirects('/en/risk/');
 
         // Verify risk was deleted
         $riskRepository = $this->entityManager->getRepository(Risk::class);
@@ -412,12 +412,12 @@ class RiskControllerTest extends WebTestCase
 
         $this->loginAsUser($adminUser);
 
-        $this->client->request('POST', '/risk/' . $this->testRisk->getId() . '/delete', [
+        $this->client->request('POST', '/en/risk/' . $this->testRisk->getId() . '/delete', [
             '_token' => 'invalid_token',
         ]);
 
         // Should redirect but not delete
-        $this->assertResponseRedirects('/risk/');
+        $this->assertResponseRedirects('/en/risk/');
 
         // Verify risk was NOT deleted
         $this->entityManager->refresh($this->testRisk);
@@ -428,7 +428,7 @@ class RiskControllerTest extends WebTestCase
 
     public function testExportRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/risk/export');
+        $this->client->request('GET', '/en/risk/export');
 
         $this->assertResponseRedirects();
     }
@@ -437,7 +437,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/risk/export');
+        $this->client->request('GET', '/en/risk/export');
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('Content-Type', 'text/csv; charset=utf-8');
@@ -448,7 +448,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/risk/export', [
+        $this->client->request('GET', '/en/risk/export', [
             'status' => 'identified'
         ]);
 
@@ -460,7 +460,7 @@ class RiskControllerTest extends WebTestCase
 
     public function testExportExcelRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/risk/export/excel');
+        $this->client->request('GET', '/en/risk/export/excel');
 
         $this->assertResponseRedirects();
     }
@@ -469,7 +469,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/risk/export/excel');
+        $this->client->request('GET', '/en/risk/export/excel');
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -480,7 +480,7 @@ class RiskControllerTest extends WebTestCase
 
     public function testExportPdfRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/risk/export/pdf');
+        $this->client->request('GET', '/en/risk/export/pdf');
 
         $this->assertResponseRedirects();
     }
@@ -489,7 +489,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/risk/export/pdf');
+        $this->client->request('GET', '/en/risk/export/pdf');
 
         $this->assertResponseIsSuccessful();
         $this->assertResponseHeaderSame('Content-Type', 'application/pdf');
@@ -502,7 +502,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/risk/matrix');
+        $crawler = $this->client->request('GET', '/en/risk/matrix');
 
         $this->assertResponseIsSuccessful();
     }
@@ -511,7 +511,7 @@ class RiskControllerTest extends WebTestCase
 
     public function testBulkDeleteRequiresAuthentication(): void
     {
-        $this->client->request('POST', '/risk/bulk-delete');
+        $this->client->request('POST', '/en/risk/bulk-delete');
 
         $this->assertResponseRedirects();
     }
@@ -520,7 +520,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('POST', '/risk/bulk-delete', [], [], [
+        $this->client->request('POST', '/en/risk/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
         ], json_encode(['ids' => [$this->testRisk->getId()]]));
 
@@ -559,7 +559,7 @@ class RiskControllerTest extends WebTestCase
 
         $ids = [$this->testRisk->getId(), $risk2->getId()];
 
-        $this->client->request('POST', '/risk/bulk-delete', [], [], [
+        $this->client->request('POST', '/en/risk/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
         ], json_encode(['ids' => $ids]));
 
@@ -586,7 +586,7 @@ class RiskControllerTest extends WebTestCase
 
         $this->loginAsUser($adminUser);
 
-        $this->client->request('POST', '/risk/bulk-delete', [], [], [
+        $this->client->request('POST', '/en/risk/bulk-delete', [], [], [
             'CONTENT_TYPE' => 'application/json',
         ], json_encode(['ids' => []]));
 
@@ -600,7 +600,7 @@ class RiskControllerTest extends WebTestCase
 
     public function testRequestAcceptanceRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/risk/' . $this->testRisk->getId() . '/request-acceptance');
+        $this->client->request('GET', '/en/risk/' . $this->testRisk->getId() . '/request-acceptance');
 
         $this->assertResponseRedirects();
     }
@@ -609,7 +609,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/risk/' . $this->testRisk->getId() . '/request-acceptance');
+        $this->client->request('GET', '/en/risk/' . $this->testRisk->getId() . '/request-acceptance');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
@@ -633,7 +633,7 @@ class RiskControllerTest extends WebTestCase
 
         $this->loginAsUser($managerUser);
 
-        $crawler = $this->client->request('GET', '/risk/' . $this->testRisk->getId() . '/request-acceptance');
+        $crawler = $this->client->request('GET', '/en/risk/' . $this->testRisk->getId() . '/request-acceptance');
 
         $this->assertResponseIsSuccessful();
     }
@@ -657,14 +657,14 @@ class RiskControllerTest extends WebTestCase
 
         $this->loginAsUser($managerUser);
 
-        $this->client->request('GET', '/risk/' . $this->testRisk->getId() . '/request-acceptance');
+        $this->client->request('GET', '/en/risk/' . $this->testRisk->getId() . '/request-acceptance');
 
         $this->assertResponseRedirects();
     }
 
     public function testApproveAcceptanceRequiresAuthentication(): void
     {
-        $this->client->request('POST', '/risk/' . $this->testRisk->getId() . '/approve-acceptance');
+        $this->client->request('POST', '/en/risk/' . $this->testRisk->getId() . '/approve-acceptance');
 
         $this->assertResponseRedirects();
     }
@@ -673,7 +673,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('POST', '/risk/' . $this->testRisk->getId() . '/approve-acceptance', [
+        $this->client->request('POST', '/en/risk/' . $this->testRisk->getId() . '/approve-acceptance', [
             '_token' => $this->generateCsrfToken('approve-acceptance' . $this->testRisk->getId()),
         ]);
 
@@ -682,7 +682,7 @@ class RiskControllerTest extends WebTestCase
 
     public function testRejectAcceptanceRequiresAuthentication(): void
     {
-        $this->client->request('POST', '/risk/' . $this->testRisk->getId() . '/reject-acceptance');
+        $this->client->request('POST', '/en/risk/' . $this->testRisk->getId() . '/reject-acceptance');
 
         $this->assertResponseRedirects();
     }
@@ -691,7 +691,7 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('POST', '/risk/' . $this->testRisk->getId() . '/reject-acceptance', [
+        $this->client->request('POST', '/en/risk/' . $this->testRisk->getId() . '/reject-acceptance', [
             '_token' => $this->generateCsrfToken('reject-acceptance' . $this->testRisk->getId()),
         ]);
 
