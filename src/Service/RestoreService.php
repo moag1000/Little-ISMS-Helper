@@ -913,7 +913,44 @@ class RestoreService
                             if ($assocId !== null) {
                                 try {
                                     $relatedEntity = $this->entityManager->getReference($targetClass, $assocId);
-                                    $propertyAccessor->setValue($entity, $assocName, $relatedEntity);
+
+                                    // Try PropertyAccessor first (works for most entities)
+                                    if ($propertyAccessor->isWritable($entity, $assocName)) {
+                                        $propertyAccessor->setValue($entity, $assocName, $relatedEntity);
+                                    } else {
+                                        // Fallback: Try to find the setter method by convention
+                                        // Some entities use shortened setter names (e.g., setFramework instead of setComplianceFramework)
+                                        $reflection = new ReflectionClass($entity);
+
+                                        // Build possible setter names
+                                        $setterCandidates = [
+                                            'set' . ucfirst($assocName), // Standard: setComplianceFramework
+                                            'set' . ucfirst(preg_replace('/^.*([A-Z][a-z]+)$/', '$1', $assocName)), // Shortened: setFramework
+                                        ];
+
+                                        $setterFound = false;
+                                        foreach ($setterCandidates as $setterName) {
+                                            if ($reflection->hasMethod($setterName)) {
+                                                $method = $reflection->getMethod($setterName);
+                                                $method->invoke($entity, $relatedEntity);
+                                                $setterFound = true;
+                                                $this->logger->debug('Used fallback setter', [
+                                                    'entity' => $entityName,
+                                                    'association' => $assocName,
+                                                    'setter' => $setterName,
+                                                ]);
+                                                break;
+                                            }
+                                        }
+
+                                        if (!$setterFound) {
+                                            throw new RuntimeException(sprintf(
+                                                'No setter found for association "%s". Tried: %s',
+                                                $assocName,
+                                                implode(', ', $setterCandidates)
+                                            ));
+                                        }
+                                    }
 
                                     $this->logger->debug('Restored association', [
                                         'entity' => $entityName,
