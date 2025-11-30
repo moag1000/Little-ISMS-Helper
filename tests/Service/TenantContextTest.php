@@ -34,6 +34,8 @@ class TenantContextTest extends TestCase
         $tenant = new Tenant();
         $tenant->setName('Test Tenant');
         $tenant->setCode('test_tenant');
+        $tenant->setCode('test_tenant');
+        $tenant->setCode('test_tenant');
 
         $user = $this->createMock(User::class);
         $user->method('getTenant')->willReturn($tenant);
@@ -50,6 +52,8 @@ class TenantContextTest extends TestCase
     {
         $tenant = new Tenant();
         $tenant->setName('Manual Tenant');
+        $tenant->setCode('manual_tenant');
+        $tenant->setCode('manual_tenant');
         $tenant->setCode('manual_tenant');
 
         $this->tenantContext->setCurrentTenant($tenant);
@@ -88,6 +92,8 @@ class TenantContextTest extends TestCase
     {
         $tenant = new Tenant();
         $tenant->setName('Test Tenant');
+        $tenant->setCode('test_tenant');
+        $tenant->setCode('test_tenant');
         $tenant->setCode('test_tenant');
 
         $user = $this->createMock(User::class);
@@ -144,11 +150,15 @@ class TenantContextTest extends TestCase
     {
         $tenant1 = new Tenant();
         $tenant1->setName('Active Tenant 1');
+        $tenant1->setCode('active_tenant_1');
+        $tenant1->setCode('active_tenant_1');
         $tenant1->setCode('active_1');
         $tenant1->setIsActive(true);
 
         $tenant2 = new Tenant();
         $tenant2->setName('Active Tenant 2');
+        $tenant2->setCode('active_tenant_2');
+        $tenant2->setCode('active_tenant_2');
         $tenant2->setCode('active_2');
         $tenant2->setIsActive(true);
 
@@ -170,6 +180,8 @@ class TenantContextTest extends TestCase
         $tenant = new Tenant();
         $tenant->setName('Test Tenant');
         $tenant->setCode('test_tenant');
+        $tenant->setCode('test_tenant');
+        $tenant->setCode('test_tenant');
 
         $this->tenantContext->setCurrentTenant($tenant);
         $this->assertTrue($this->tenantContext->hasTenant());
@@ -185,6 +197,8 @@ class TenantContextTest extends TestCase
     {
         $tenant = new Tenant();
         $tenant->setName('Cached Tenant');
+        $tenant->setCode('cached_tenant');
+        $tenant->setCode('cached_tenant');
         $tenant->setCode('cached');
 
         $user = $this->createMock(User::class);

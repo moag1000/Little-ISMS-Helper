@@ -49,6 +49,7 @@ class RiskControllerTest extends WebTestCase
         // Create test tenant
         $this->testTenant = new Tenant();
         $this->testTenant->setName('Test Tenant');
+        $this->setCode('test_tenant');
         $this->entityManager->persist($this->testTenant);
 
         // Create test user with ROLE_USER
@@ -65,6 +66,7 @@ class RiskControllerTest extends WebTestCase
         // Create test asset
         $testAsset = new Asset();
         $testAsset->setName('Test Server');
+        $testAsset->setCode('test_server');
         $testAsset->setAssetType('hardware');
         $testAsset->setTenant($this->testTenant);
         $testAsset->setConfidentialityValue(3);
