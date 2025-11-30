@@ -919,7 +919,7 @@ class RestoreService
                                         'entity' => $entityName,
                                         'entity_id' => $data['id'] ?? 'unknown',
                                         'association' => $assocName,
-                                        'target_class' => class_basename($targetClass),
+                                        'target_class' => substr($targetClass, strrpos($targetClass, '\\') + 1),
                                         'target_id' => $assocId,
                                     ]);
                                 } catch (Exception $e) {
