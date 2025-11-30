@@ -88,6 +88,7 @@ class AuditControllerTest extends WebTestCase
         $this->testAudit->setScopeType('full_isms');
         $this->testAudit->setStatus('planned');
         $this->testAudit->setPlannedDate(new DateTime('2025-12-01'));
+        $this->testAudit->setLeadAuditor('Lead Auditor Name');
         $this->testAudit->setTenant($this->testTenant);
         $this->entityManager->persist($this->testAudit);
 
