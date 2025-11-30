@@ -75,15 +75,17 @@ class ProfileControllerTest extends WebTestCase
 
     private function createTestData(): void
     {
+        $uniqueId = uniqid('test_', true);
+
         // Create test tenant
         $this->testTenant = new Tenant();
-        $this->testTenant->setName('Test Tenant');
-        $this->testTenant->setCode('test_tenant');
+        $this->testTenant->setName('Test Tenant ' . $uniqueId);
+        $this->testTenant->setCode('test_tenant_' . $uniqueId);
         $this->entityManager->persist($this->testTenant);
 
         // Create a test user
         $this->testUser = new User();
-        $this->testUser->setEmail('test.profile@example.com');
+        $this->testUser->setEmail('test.profile_' . $uniqueId . '@example.com');
         $this->testUser->setFirstName('Test');
         $this->testUser->setLastName('User');
         $this->testUser->setRoles(['ROLE_USER']);

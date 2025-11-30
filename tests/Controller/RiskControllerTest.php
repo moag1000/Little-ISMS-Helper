@@ -349,6 +349,8 @@ class RiskControllerTest extends WebTestCase
 
         $this->client->submit($form);
 
+        $this->assertResponseRedirects();
+
         // Verify risk has correct tenant
         $riskRepository = $this->entityManager->getRepository(Risk::class);
         $newRisk = $riskRepository->findOneBy(['title' => 'Tenant Test Risk']);
@@ -371,8 +373,8 @@ class RiskControllerTest extends WebTestCase
 
         $this->client->submit($form);
 
-        // Should re-display form with validation errors
-        $this->assertResponseIsSuccessful();
+        // Should re-display form with validation errors - modern Symfony returns 422
+        $this->assertResponseStatusCodeSame(422);
         $this->assertSelectorExists('form[name="risk"]');
     }
 
@@ -802,8 +804,10 @@ class RiskControllerTest extends WebTestCase
 
     private function generateCsrfToken(string $tokenId): string
     {
-        // Make a dummy request to initialize session
-        $this->client->request('GET', '/en/');
+        // Start session by making a request first
+        $this->client->request('GET', '/en/risk/');
+
+        // Now generate token with session available
         $csrfTokenManager = static::getContainer()->get('security.csrf.token_manager');
         return $csrfTokenManager->getToken($tokenId)->getValue();
     }
