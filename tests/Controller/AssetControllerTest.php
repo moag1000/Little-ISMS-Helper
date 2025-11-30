@@ -121,7 +121,7 @@ class AssetControllerTest extends WebTestCase
 
     public function testIndexRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/asset/');
+        $this->client->request('GET', '/en/asset/');
 
         $this->assertResponseRedirects();
     }
@@ -130,7 +130,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/asset/');
+        $this->client->request('GET', '/en/asset/');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('html');
@@ -140,7 +140,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/asset/', [
+        $this->client->request('GET', '/en/asset/', [
             'type' => 'hardware'
         ]);
 
@@ -151,7 +151,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/asset/', [
+        $this->client->request('GET', '/en/asset/', [
             'classification' => 'internal'
         ]);
 
@@ -162,7 +162,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/asset/', [
+        $this->client->request('GET', '/en/asset/', [
             'owner' => 'Test'
         ]);
 
@@ -173,7 +173,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/asset/', [
+        $this->client->request('GET', '/en/asset/', [
             'status' => 'active'
         ]);
 
@@ -184,7 +184,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/asset/', [
+        $this->client->request('GET', '/en/asset/', [
             'view' => 'own'
         ]);
 
@@ -195,7 +195,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/asset/', [
+        $this->client->request('GET', '/en/asset/', [
             'view' => 'subsidiaries'
         ]);
 
@@ -206,7 +206,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/asset/', [
+        $this->client->request('GET', '/en/asset/', [
             'view' => 'inherited'
         ]);
 
@@ -217,7 +217,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/asset/');
+        $this->client->request('GET', '/en/asset/');
 
         $this->assertResponseIsSuccessful();
         // The default view parameter is 'inherited'
@@ -227,7 +227,7 @@ class AssetControllerTest extends WebTestCase
 
     public function testNewRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/asset/new');
+        $this->client->request('GET', '/en/asset/new');
 
         $this->assertResponseRedirects();
     }
@@ -236,7 +236,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/asset/new');
+        $crawler = $this->client->request('GET', '/en/asset/new');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form[name="asset"]');
@@ -246,7 +246,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/asset/new');
+        $crawler = $this->client->request('GET', '/en/asset/new');
         $form = $crawler->selectButton('asset.action.save')->form([
             'asset[name]' => 'New Test Asset',
             'asset[assetType]' => 'software',
@@ -277,7 +277,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/asset/new');
+        $crawler = $this->client->request('GET', '/en/asset/new');
         $form = $crawler->selectButton('asset.action.save')->form([
             'asset[name]' => 'Tenant Test Asset',
             'asset[assetType]' => 'data',
@@ -302,7 +302,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/asset/new');
+        $crawler = $this->client->request('GET', '/en/asset/new');
         $form = $crawler->selectButton('asset.action.save')->form([
             'asset[name]' => '', // Empty name - should fail validation
             'asset[assetType]' => 'hardware',
@@ -320,7 +320,7 @@ class AssetControllerTest extends WebTestCase
 
     public function testShowRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/asset/' . $this->testAsset->getId());
+        $this->client->request('GET', '/en/asset/' . $this->testAsset->getId());
 
         $this->assertResponseRedirects();
     }
@@ -329,7 +329,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/asset/' . $this->testAsset->getId());
+        $crawler = $this->client->request('GET', '/en/asset/' . $this->testAsset->getId());
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('html', 'Test Server');
@@ -348,7 +348,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/asset/' . $this->testAsset->getId());
+        $this->client->request('GET', '/en/asset/' . $this->testAsset->getId());
 
         $this->assertResponseIsSuccessful();
         // Protection requirement analysis is rendered in the template
@@ -358,7 +358,7 @@ class AssetControllerTest extends WebTestCase
 
     public function testEditRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/asset/' . $this->testAsset->getId() . '/edit');
+        $this->client->request('GET', '/en/asset/' . $this->testAsset->getId() . '/edit');
 
         $this->assertResponseRedirects();
     }
@@ -367,7 +367,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/asset/' . $this->testAsset->getId() . '/edit');
+        $crawler = $this->client->request('GET', '/en/asset/' . $this->testAsset->getId() . '/edit');
 
         $this->assertResponseIsSuccessful();
         $this->assertSelectorExists('form[name="asset"]');
@@ -378,7 +378,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/asset/' . $this->testAsset->getId() . '/edit');
+        $crawler = $this->client->request('GET', '/en/asset/' . $this->testAsset->getId() . '/edit');
         $form = $crawler->selectButton('asset.action.save')->form([
             'asset[name]' => 'Updated Test Server',
             'asset[description]' => 'Updated description',
@@ -409,7 +409,6 @@ class AssetControllerTest extends WebTestCase
         $parentTenant = new Tenant();
         $parentTenant->setName('Parent Tenant');
         $parentTenant->setCode('parent_tenant');
-        $parentTenant->setSlug('parent-tenant');
         $this->entityManager->persist($parentTenant);
 
         // Set test tenant as child
@@ -431,7 +430,7 @@ class AssetControllerTest extends WebTestCase
 
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/asset/' . $inheritedAsset->getId() . '/edit');
+        $this->client->request('GET', '/en/asset/' . $inheritedAsset->getId() . '/edit');
 
         // Should redirect with error message
         $this->assertResponseRedirects();
@@ -441,7 +440,7 @@ class AssetControllerTest extends WebTestCase
 
     public function testDeleteRequiresAuthentication(): void
     {
-        $this->client->request('POST', '/asset/' . $this->testAsset->getId() . '/delete');
+        $this->client->request('POST', '/en/asset/' . $this->testAsset->getId() . '/delete');
 
         $this->assertResponseRedirects();
     }
@@ -450,7 +449,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('POST', '/asset/' . $this->testAsset->getId() . '/delete', [
+        $this->client->request('POST', '/en/asset/' . $this->testAsset->getId() . '/delete', [
             '_token' => $this->generateCsrfToken('delete' . $this->testAsset->getId()),
         ]);
 
@@ -463,11 +462,11 @@ class AssetControllerTest extends WebTestCase
 
         $assetId = $this->testAsset->getId();
 
-        $this->client->request('POST', '/asset/' . $assetId . '/delete', [
+        $this->client->request('POST', '/en/asset/' . $assetId . '/delete', [
             '_token' => $this->generateCsrfToken('delete' . $assetId),
         ]);
 
-        $this->assertResponseRedirects('/asset/');
+        $this->assertResponseRedirects('/en/asset/');
 
         // Verify asset was deleted
         $assetRepository = $this->entityManager->getRepository(Asset::class);
@@ -479,12 +478,12 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->adminUser);
 
-        $this->client->request('POST', '/asset/' . $this->testAsset->getId() . '/delete', [
+        $this->client->request('POST', '/en/asset/' . $this->testAsset->getId() . '/delete', [
             '_token' => 'invalid_token',
         ]);
 
         // Should redirect but not delete
-        $this->assertResponseRedirects('/asset/');
+        $this->assertResponseRedirects('/en/asset/');
 
         // Verify asset was NOT deleted
         $this->entityManager->refresh($this->testAsset);
@@ -497,7 +496,6 @@ class AssetControllerTest extends WebTestCase
         $parentTenant = new Tenant();
         $parentTenant->setName('Parent Tenant 2');
         $parentTenant->setCode('parent_tenant_2');
-        $parentTenant->setSlug('parent-tenant-2');
         $this->entityManager->persist($parentTenant);
 
         // Set test tenant as child
@@ -519,12 +517,12 @@ class AssetControllerTest extends WebTestCase
 
         $this->loginAsUser($this->adminUser);
 
-        $this->client->request('POST', '/asset/' . $inheritedAsset->getId() . '/delete', [
+        $this->client->request('POST', '/en/asset/' . $inheritedAsset->getId() . '/delete', [
             '_token' => $this->generateCsrfToken('delete' . $inheritedAsset->getId()),
         ]);
 
         // Should redirect with error message
-        $this->assertResponseRedirects('/asset/');
+        $this->assertResponseRedirects('/en/asset/');
     }
 
     // ========== BULK DELETE TESTS ==========
@@ -598,7 +596,6 @@ class AssetControllerTest extends WebTestCase
         $otherTenant = new Tenant();
         $otherTenant->setName('Other Tenant');
         $otherTenant->setCode('other_tenant');
-        $otherTenant->setSlug('other-tenant');
         $this->entityManager->persist($otherTenant);
 
         // Create asset in other tenant
@@ -650,7 +647,7 @@ class AssetControllerTest extends WebTestCase
 
     public function testBcmInsightsRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/asset/' . $this->testAsset->getId() . '/bcm-insights');
+        $this->client->request('GET', '/en/asset/' . $this->testAsset->getId() . '/bcm-insights');
 
         $this->assertResponseRedirects();
     }
@@ -659,7 +656,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/asset/' . $this->testAsset->getId() . '/bcm-insights');
+        $this->client->request('GET', '/en/asset/' . $this->testAsset->getId() . '/bcm-insights');
 
         $this->assertResponseIsSuccessful();
     }
@@ -677,7 +674,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/asset/' . $this->testAsset->getId() . '/bcm-insights');
+        $this->client->request('GET', '/en/asset/' . $this->testAsset->getId() . '/bcm-insights');
 
         $this->assertResponseIsSuccessful();
         // BCM insights include protection requirement analysis
@@ -691,7 +688,6 @@ class AssetControllerTest extends WebTestCase
         $otherTenant = new Tenant();
         $otherTenant->setName('Other Tenant 2');
         $otherTenant->setCode('other_tenant_2');
-        $otherTenant->setSlug('other-tenant-2');
         $this->entityManager->persist($otherTenant);
 
         $otherAsset = new Asset();
@@ -709,7 +705,7 @@ class AssetControllerTest extends WebTestCase
 
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/asset/', ['view' => 'own']);
+        $this->client->request('GET', '/en/asset/', ['view' => 'own']);
 
         $this->assertResponseIsSuccessful();
         // User should only see assets from their own tenant
@@ -719,7 +715,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/asset/');
+        $this->client->request('GET', '/en/asset/');
 
         $this->assertResponseIsSuccessful();
         // Detailed stats should be calculated and passed to template
@@ -729,7 +725,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $this->client->request('GET', '/asset/' . $this->testAsset->getId());
+        $this->client->request('GET', '/en/asset/' . $this->testAsset->getId());
 
         $this->assertResponseIsSuccessful();
         // Inheritance info (isInherited, canEdit) should be in template
@@ -741,7 +737,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/asset/new');
+        $crawler = $this->client->request('GET', '/en/asset/new');
         $form = $crawler->selectButton('asset.action.save')->form([
             'asset[name]' => '',
             'asset[assetType]' => 'hardware',
@@ -758,7 +754,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/asset/new');
+        $crawler = $this->client->request('GET', '/en/asset/new');
         $form = $crawler->selectButton('asset.action.save')->form([
             'asset[name]' => 'Test Name',
             'asset[assetType]' => '',
@@ -775,7 +771,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/asset/new');
+        $crawler = $this->client->request('GET', '/en/asset/new');
         $form = $crawler->selectButton('asset.action.save')->form([
             'asset[name]' => 'Test Name',
             'asset[assetType]' => 'hardware',
@@ -794,7 +790,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/asset/new');
+        $crawler = $this->client->request('GET', '/en/asset/new');
         $form = $crawler->selectButton('asset.action.save')->form([
             'asset[name]' => 'Flash Test Asset',
             'asset[assetType]' => 'software',
@@ -816,7 +812,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
-        $crawler = $this->client->request('GET', '/asset/' . $this->testAsset->getId() . '/edit');
+        $crawler = $this->client->request('GET', '/en/asset/' . $this->testAsset->getId() . '/edit');
         $form = $crawler->selectButton('asset.action.save')->form([
             'asset[name]' => 'Flash Updated Asset',
         ]);
@@ -832,7 +828,7 @@ class AssetControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->adminUser);
 
-        $this->client->request('POST', '/asset/' . $this->testAsset->getId() . '/delete', [
+        $this->client->request('POST', '/en/asset/' . $this->testAsset->getId() . '/delete', [
             '_token' => $this->generateCsrfToken('delete' . $this->testAsset->getId()),
         ]);
 

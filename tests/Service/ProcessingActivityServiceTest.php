@@ -9,6 +9,7 @@ use App\Repository\ProcessingActivityRepository;
 use App\Service\AuditLogger;
 use App\Service\ProcessingActivityService;
 use App\Service\TenantContext;
+use App\Service\WorkflowAutoProgressionService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -23,6 +24,7 @@ class ProcessingActivityServiceTest extends TestCase
     private MockObject $tenantContext;
     private MockObject $security;
     private MockObject $auditLogger;
+    private MockObject $workflowAutoProgressionService;
     private ProcessingActivityService $service;
     private MockObject $tenant;
     private MockObject $user;
@@ -34,6 +36,7 @@ class ProcessingActivityServiceTest extends TestCase
         $this->tenantContext = $this->createMock(TenantContext::class);
         $this->security = $this->createMock(Security::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
+        $this->workflowAutoProgressionService = $this->createMock(WorkflowAutoProgressionService::class);
 
         $this->tenant = $this->createMock(Tenant::class);
         $this->tenant->method('getId')->willReturn(1);
@@ -51,7 +54,8 @@ class ProcessingActivityServiceTest extends TestCase
             $this->entityManager,
             $this->tenantContext,
             $this->security,
-            $this->auditLogger
+            $this->auditLogger,
+            $this->workflowAutoProgressionService
         );
     }
 

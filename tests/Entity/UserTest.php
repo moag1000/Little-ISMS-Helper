@@ -90,7 +90,6 @@ class UserTest extends TestCase
         $user = new User();
         $role = new Role();
         $role->setName('ROLE_CUSTOM');
-        $role->setCode('role_custom');
 
         $this->assertEquals(0, $user->getCustomRoles()->count());
 

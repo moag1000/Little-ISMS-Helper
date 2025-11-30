@@ -12,6 +12,7 @@ use App\Service\AuditLogger;
 use App\Service\DataProtectionImpactAssessmentService;
 use App\Service\TenantContext;
 use DateTime;
+use App\Service\WorkflowAutoProgressionService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -26,6 +27,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
     private MockObject $tenantContext;
     private MockObject $security;
     private MockObject $auditLogger;
+    private MockObject $workflowAutoProgressionService;
     private DataProtectionImpactAssessmentService $service;
     private MockObject $tenant;
     private MockObject $user;
@@ -37,6 +39,7 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
         $this->tenantContext = $this->createMock(TenantContext::class);
         $this->security = $this->createMock(Security::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
+        $this->workflowAutoProgressionService = $this->createMock(WorkflowAutoProgressionService::class);
 
         $this->tenant = $this->createMock(Tenant::class);
         $this->tenant->method('getId')->willReturn(1);
@@ -50,7 +53,8 @@ class DataProtectionImpactAssessmentServiceTest extends TestCase
             $this->entityManager,
             $this->tenantContext,
             $this->security,
-            $this->auditLogger
+            $this->auditLogger,
+            $this->workflowAutoProgressionService
         );
     }
 

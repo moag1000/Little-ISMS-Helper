@@ -17,8 +17,11 @@ use App\Service\EmailNotificationService;
 use App\Service\GdprBreachAssessmentService;
 use App\Service\IncidentBCMImpactService;
 use App\Service\IncidentEscalationWorkflowService;
+use App\Service\IncidentRiskFeedbackService;
 use App\Service\PdfExportService;
 use App\Service\TenantContext;
+use App\Service\WorkflowAutoProgressionService;
+use App\Service\WorkflowService;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
@@ -64,6 +67,9 @@ class IncidentControllerTest extends TestCase
     private MockObject $security;
     private MockObject $incidentEscalationWorkflowService;
     private MockObject $tenantContext;
+    private MockObject $workflowService;
+    private MockObject $workflowAutoProgressionService;
+    private MockObject $incidentRiskFeedbackService;
     private MockObject $container;
     private MockObject $twig;
     private MockObject $formFactory;
@@ -88,6 +94,9 @@ class IncidentControllerTest extends TestCase
         $this->security = $this->createMock(Security::class);
         $this->incidentEscalationWorkflowService = $this->createMock(IncidentEscalationWorkflowService::class);
         $this->tenantContext = $this->createMock(TenantContext::class);
+        $this->workflowService = $this->createMock(WorkflowService::class);
+        $this->workflowAutoProgressionService = $this->createMock(WorkflowAutoProgressionService::class);
+        $this->incidentRiskFeedbackService = $this->createMock(IncidentRiskFeedbackService::class);
         $this->container = $this->createMock(ContainerInterface::class);
         $this->twig = $this->createMock(Environment::class);
         $this->formFactory = $this->createMock(FormFactoryInterface::class);
@@ -144,7 +153,10 @@ class IncidentControllerTest extends TestCase
             $this->translator,
             $this->security,
             $this->incidentEscalationWorkflowService,
-            $this->tenantContext
+            $this->tenantContext,
+            $this->workflowService,
+            $this->workflowAutoProgressionService,
+            $this->incidentRiskFeedbackService
         );
         $this->controller->setContainer($this->container);
     }
