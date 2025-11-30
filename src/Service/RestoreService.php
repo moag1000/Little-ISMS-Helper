@@ -914,6 +914,14 @@ class RestoreService
                                 try {
                                     $relatedEntity = $this->entityManager->getReference($targetClass, $assocId);
                                     $propertyAccessor->setValue($entity, $assocName, $relatedEntity);
+
+                                    $this->logger->debug('Restored association', [
+                                        'entity' => $entityName,
+                                        'entity_id' => $data['id'] ?? 'unknown',
+                                        'association' => $assocName,
+                                        'target_class' => class_basename($targetClass),
+                                        'target_id' => $assocId,
+                                    ]);
                                 } catch (Exception $e) {
                                     $this->logger->warning('Failed to restore association', [
                                         'entity' => $entityName,
@@ -930,6 +938,18 @@ class RestoreService
 
                 // Persist entity
                 $this->entityManager->persist($entity);
+
+                // Log the actual ID that will be used (especially important for debugging FK issues)
+                $idValue = null;
+                if (method_exists($entity, 'getId')) {
+                    $idValue = $entity->getId();
+                }
+                $this->logger->debug('Persisted entity', [
+                    'entity' => $entityName,
+                    'expected_id' => $data['id'] ?? 'auto',
+                    'actual_id' => $idValue,
+                    'id_matches' => ($idValue === ($data['id'] ?? null)),
+                ]);
 
                 if ($existingEntity !== null) {
                     $stats['updated']++;
