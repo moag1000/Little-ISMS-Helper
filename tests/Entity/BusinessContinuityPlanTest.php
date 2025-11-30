@@ -414,7 +414,6 @@ class BusinessContinuityPlanTest extends TestCase
         // Test partial completion
         $plan2 = new BusinessContinuityPlan();
         $plan2->setName('Test');
-        $plan2->setCode('test');
         $plan2->setPlanOwner('Owner');
         $plan2->setActivationCriteria('Criteria');
         $plan2->setRecoveryProcedures('Procedures');
