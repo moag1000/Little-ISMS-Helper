@@ -66,8 +66,9 @@ class RiskControllerTest extends WebTestCase
         // Create test asset
         $testAsset = new Asset();
         $testAsset->setName('Test Server');
-        $testAsset->setCode('test_server');
         $testAsset->setAssetType('hardware');
+        $testAsset->setOwner('IT Department');
+        $testAsset->setStatus('active');
         $testAsset->setTenant($this->testTenant);
         $testAsset->setConfidentialityValue(3);
         $testAsset->setIntegrityValue(3);
