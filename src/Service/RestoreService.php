@@ -238,28 +238,9 @@ class RestoreService
             $this->entityManager->beginTransaction();
             $this->logger->info('Started transaction for entity restoration');
 
-            // Temporarily remove User entities from the restore loop
-            // We'll create the admin user AFTER all other entities are committed
-            $userEntities = null;
-            if (isset($backup['data']['User']) && isset($options['admin_password']) && $options['admin_password'] !== '') {
-                $userEntities = $backup['data']['User'];
-                $this->logger->info('Deferring User creation until after all other entities are restored', [
-                    'user_count' => count($userEntities),
-                ]);
-            }
-
             foreach ($orderedEntities as $orderedEntity) {
                 if (in_array($orderedEntity, $options['skip_entities'])) {
                     $this->logger->info('Skipping entity as per options', ['entity' => $orderedEntity]);
-                    continue;
-                }
-
-                // Skip User entities for now if we have admin_password
-                // We'll restore them after everything else succeeds
-                if ($orderedEntity === 'User' && $userEntities !== null) {
-                    $this->logger->info('Skipping User entities in main restore loop (will be created after commit)', [
-                        'user_count' => count($userEntities),
-                    ]);
                     continue;
                 }
 
@@ -353,27 +334,6 @@ class RestoreService
                     }
                 }
                 $this->logger->info('Re-enabled Doctrine lifecycle event listeners');
-
-                // NOW create the admin user AFTER all other data is safely committed
-                // This ensures the user can log in even if earlier restore operations failed
-                if ($userEntities !== null) {
-                    $this->logger->info('Creating admin user after successful restore', [
-                        'user_count' => count($userEntities),
-                    ]);
-
-                    try {
-                        $this->restoreEntity('App\\Entity\\User', 'User', $userEntities, $options);
-                        $this->logger->info('Admin user creation completed', [
-                            'statistics' => $this->statistics['User'] ?? [],
-                        ]);
-                    } catch (Exception $userException) {
-                        $this->logger->error('Failed to create admin user after restore', [
-                            'error' => $userException->getMessage(),
-                            'trace' => $userException->getTraceAsString(),
-                        ]);
-                        $this->warnings[] = 'Fehler beim Erstellen des Admin-Users: ' . $userException->getMessage();
-                    }
-                }
 
                 // Log the restore operation
                 $totalRestored = 0;
