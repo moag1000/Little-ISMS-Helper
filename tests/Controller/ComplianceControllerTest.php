@@ -664,10 +664,14 @@ class ComplianceControllerTest extends TestCase
 
     private function createFramework(int $id, string $name, string $code): ComplianceFramework
     {
-        $framework = $this->createMock(ComplianceFramework::class);
-        $framework->method('getId')->willReturn($id);
+        $framework = $this->createPartialMock(ComplianceFramework::class, ['getName', 'getCode']);
         $framework->method('getName')->willReturn($name);
         $framework->method('getCode')->willReturn($code);
+        // Set id directly on the object (bypasses property hooks)
+        $reflection = new \ReflectionClass($framework);
+        $property = $reflection->getProperty('id');
+        $property->setAccessible(true);
+        $property->setValue($framework, $id);
 
         return $framework;
     }
