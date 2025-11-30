@@ -168,17 +168,24 @@ class ComplianceRequirementFulfillmentServiceTest extends TestCase
             ->with($this->tenant, 'compliance')
             ->willReturn($governance);
 
-        $framework = $this->createMock(ComplianceFramework::class);
-        $framework->method('getId')->willReturn(1);
+        // Use real ComplianceFramework objects to properly set id property
+        $framework = new ComplianceFramework();
+        $reflectionId = new \ReflectionProperty(ComplianceFramework::class, 'id');
+        $reflectionId->setAccessible(true);
+        $reflectionId->setValue($framework, 1);
 
         $matchingRequirement = $this->createMock(ComplianceRequirement::class);
-        $matchingFramework = $this->createMock(ComplianceFramework::class);
-        $matchingFramework->method('getId')->willReturn(1);
+        $matchingFramework = new ComplianceFramework();
+        $reflectionId2 = new \ReflectionProperty(ComplianceFramework::class, 'id');
+        $reflectionId2->setAccessible(true);
+        $reflectionId2->setValue($matchingFramework, 1);
         $matchingRequirement->method('getFramework')->willReturn($matchingFramework);
 
         $nonMatchingRequirement = $this->createMock(ComplianceRequirement::class);
-        $nonMatchingFramework = $this->createMock(ComplianceFramework::class);
-        $nonMatchingFramework->method('getId')->willReturn(2);
+        $nonMatchingFramework = new ComplianceFramework();
+        $reflectionId3 = new \ReflectionProperty(ComplianceFramework::class, 'id');
+        $reflectionId3->setAccessible(true);
+        $reflectionId3->setValue($nonMatchingFramework, 2);
         $nonMatchingRequirement->method('getFramework')->willReturn($nonMatchingFramework);
 
         $matchingFulfillment = $this->createMock(ComplianceRequirementFulfillment::class);

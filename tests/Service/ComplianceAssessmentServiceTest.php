@@ -479,7 +479,7 @@ class ComplianceAssessmentServiceTest extends TestCase
     private function createFramework(string $name, float $compliance): MockObject
     {
         $framework = $this->createMock(ComplianceFramework::class);
-        $framework->method('getId')->willReturn(1);
+        // Note: id is a property hook in PHP 8.4, getId() method doesn't exist
         $framework->method('getName')->willReturn($name);
         $framework->method('getCode')->willReturn(strtoupper(str_replace(' ', '_', $name)));
         $framework->method('getVersion')->willReturn('1.0');
