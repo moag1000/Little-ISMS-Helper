@@ -227,7 +227,7 @@ class RiskControllerTest extends WebTestCase
         $this->loginAsUser($this->testUser);
 
         $crawler = $this->client->request('GET', '/en/risk/new');
-        $form = $crawler->selectButton('risk.action.save')->form([
+        $form = $crawler->filter('form[name="risk"]')->form([
             'risk[title]' => 'New Risk Title',
             'risk[category]' => 'financial',
             'risk[description]' => 'New risk description',
@@ -258,7 +258,7 @@ class RiskControllerTest extends WebTestCase
         $this->loginAsUser($this->testUser);
 
         $crawler = $this->client->request('GET', '/en/risk/new');
-        $form = $crawler->selectButton('risk.action.save')->form([
+        $form = $crawler->filter('form[name="risk"]')->form([
             'risk[title]' => 'Tenant Test Risk',
             'risk[category]' => 'security',
             'risk[description]' => 'Testing tenant assignment',
@@ -283,7 +283,7 @@ class RiskControllerTest extends WebTestCase
         $this->loginAsUser($this->testUser);
 
         $crawler = $this->client->request('GET', '/en/risk/new');
-        $form = $crawler->selectButton('risk.action.save')->form([
+        $form = $crawler->filter('form[name="risk"]')->form([
             'risk[title]' => '', // Empty title - should fail validation
             'risk[category]' => 'security',
             'risk[description]' => 'Test description',
@@ -323,7 +323,7 @@ class RiskControllerTest extends WebTestCase
         $this->loginAsUser($this->testUser);
 
         $crawler = $this->client->request('GET', '/en/risk/' . $this->testRisk->getId() . '/edit');
-        $form = $crawler->selectButton('risk.action.save')->form([
+        $form = $crawler->filter('form[name="risk"]')->form([
             'risk[title]' => 'Updated Risk Title',
             'risk[status]' => 'assessed',
         ]);
@@ -332,10 +332,11 @@ class RiskControllerTest extends WebTestCase
 
         $this->assertResponseRedirects();
 
-        // Verify risk was updated
-        $this->entityManager->refresh($this->testRisk);
-        $this->assertEquals('Updated Risk Title', $this->testRisk->getTitle());
-        $this->assertEquals('assessed', $this->testRisk->getStatus());
+        // Verify risk was updated - use repository find instead of refresh
+        $riskRepository = $this->entityManager->getRepository(Risk::class);
+        $updatedRisk = $riskRepository->find($this->testRisk->getId());
+        $this->assertEquals('Updated Risk Title', $updatedRisk->getTitle());
+        $this->assertEquals('assessed', $updatedRisk->getStatus());
     }
 
     public function testEditReturns404ForNonexistentRisk(): void
@@ -360,8 +361,10 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
+        $token = $this->generateCsrfToken('delete' . $this->testRisk->getId());
+
         $this->client->request('POST', '/en/risk/' . $this->testRisk->getId() . '/delete', [
-            '_token' => $this->generateCsrfToken('delete' . $this->testRisk->getId()),
+            '_token' => $token,
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -384,9 +387,10 @@ class RiskControllerTest extends WebTestCase
         $this->loginAsUser($adminUser);
 
         $riskId = $this->testRisk->getId();
+        $token = $this->generateCsrfToken('delete' . $riskId);
 
         $this->client->request('POST', '/en/risk/' . $riskId . '/delete', [
-            '_token' => $this->generateCsrfToken('delete' . $riskId),
+            '_token' => $token,
         ]);
 
         $this->assertResponseRedirects('/en/risk/');
@@ -421,8 +425,9 @@ class RiskControllerTest extends WebTestCase
         $this->assertResponseRedirects('/en/risk/');
 
         // Verify risk was NOT deleted
-        $this->entityManager->refresh($this->testRisk);
-        $this->assertNotNull($this->testRisk);
+        $riskRepository = $this->entityManager->getRepository(Risk::class);
+        $stillExists = $riskRepository->find($this->testRisk->getId());
+        $this->assertNotNull($stillExists);
     }
 
     // ========== EXPORT ACTION TESTS ==========
@@ -674,8 +679,10 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
+        $token = $this->generateCsrfToken('approve-acceptance' . $this->testRisk->getId());
+
         $this->client->request('POST', '/en/risk/' . $this->testRisk->getId() . '/approve-acceptance', [
-            '_token' => $this->generateCsrfToken('approve-acceptance' . $this->testRisk->getId()),
+            '_token' => $token,
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -692,8 +699,10 @@ class RiskControllerTest extends WebTestCase
     {
         $this->loginAsUser($this->testUser);
 
+        $token = $this->generateCsrfToken('reject-acceptance' . $this->testRisk->getId());
+
         $this->client->request('POST', '/en/risk/' . $this->testRisk->getId() . '/reject-acceptance', [
-            '_token' => $this->generateCsrfToken('reject-acceptance' . $this->testRisk->getId()),
+            '_token' => $token,
         ]);
 
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
@@ -703,6 +712,8 @@ class RiskControllerTest extends WebTestCase
 
     private function generateCsrfToken(string $tokenId): string
     {
+        // Make a dummy request to initialize session
+        $this->client->request('GET', '/en/');
         $csrfTokenManager = static::getContainer()->get('security.csrf.token_manager');
         return $csrfTokenManager->getToken($tokenId)->getValue();
     }

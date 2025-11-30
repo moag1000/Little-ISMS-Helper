@@ -211,7 +211,7 @@ class RiskController extends AbstractController
         // CSV Data
         foreach ($risks as $risk) {
             $riskScore = $risk->getRiskScore();
-            $residualScore = $risk->getResidualRiskScore();
+            $residualScore = $risk->getResidualRiskLevel();
 
             // Determine risk levels
             $riskLevel = match(true) {
@@ -398,7 +398,7 @@ class RiskController extends AbstractController
         $data = [];
         foreach ($risks as $risk) {
             $riskScore = $risk->getRiskScore();
-            $residualScore = $risk->getResidualRiskScore();
+            $residualScore = $risk->getResidualRiskLevel();
 
             $riskLevel = match(true) {
                 $riskScore >= 15 => 'Kritisch',
@@ -477,7 +477,7 @@ class RiskController extends AbstractController
             $criticalData = [];
             foreach ($criticalHighRisks as $criticalHighRisk) {
                 $riskScore = $criticalHighRisk->getRiskScore();
-                $residualScore = $criticalHighRisk->getResidualRiskScore();
+                $residualScore = $criticalHighRisk->getResidualRiskLevel();
 
                 $riskLevel = $riskScore >= 15 ? 'Kritisch' : 'Hoch';
                 $residualLevel = match(true) {
