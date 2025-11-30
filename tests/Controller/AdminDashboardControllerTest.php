@@ -127,7 +127,7 @@ class AdminDashboardControllerTest extends TestCase
         // Mock URL generator
         $this->urlGenerator
             ->method('generate')
-            ->willReturn('/admin/users');
+            ->willReturn('/en/admin/users');
 
         // Mock Twig rendering
         $this->twig
@@ -190,7 +190,7 @@ class AdminDashboardControllerTest extends TestCase
         $queryBuilder->method('getQuery')->willReturn($query);
 
         $this->auditLogRepository->method('createQueryBuilder')->willReturn($queryBuilder);
-        $this->urlGenerator->method('generate')->willReturn('/admin/users');
+        $this->urlGenerator->method('generate')->willReturn('/en/admin/users');
 
         $this->twig
             ->method('render')
@@ -231,7 +231,7 @@ class AdminDashboardControllerTest extends TestCase
         $queryBuilder->method('getQuery')->willReturn($query);
 
         $this->auditLogRepository->method('createQueryBuilder')->willReturn($queryBuilder);
-        $this->urlGenerator->method('generate')->willReturn('/admin/users');
+        $this->urlGenerator->method('generate')->willReturn('/en/admin/users');
 
         $this->twig
             ->method('render')
@@ -277,7 +277,7 @@ class AdminDashboardControllerTest extends TestCase
         $queryBuilder->method('getQuery')->willReturn($query);
 
         $this->auditLogRepository->method('createQueryBuilder')->willReturn($queryBuilder);
-        $this->urlGenerator->method('generate')->willReturn('/admin/users');
+        $this->urlGenerator->method('generate')->willReturn('/en/admin/users');
 
         $this->twig
             ->method('render')
