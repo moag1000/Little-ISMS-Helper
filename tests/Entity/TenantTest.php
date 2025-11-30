@@ -26,6 +26,7 @@ class TenantTest extends TestCase
         $this->assertEquals('TENANT01', $tenant->getCode());
 
         $tenant->setName('Test Tenant');
+        $tenant->setCode('test_tenant');
         $this->assertEquals('Test Tenant', $tenant->getName());
 
         $tenant->setDescription('A test tenant description');
@@ -123,9 +124,13 @@ class TenantTest extends TestCase
     {
         $parent = new Tenant();
         $parent->setName('Parent Corp');
+        $parent->setCode('parent_corp');
+        $parent->setCode('parent_corp');
 
         $subsidiary = new Tenant();
         $subsidiary->setName('Subsidiary Inc');
+        $subsidiary->setCode('subsidiary_inc');
+        $subsidiary->setCode('subsidiary_inc');
 
         $this->assertNull($subsidiary->getParent());
         $this->assertEquals(0, $parent->getSubsidiaries()->count());
@@ -160,12 +165,18 @@ class TenantTest extends TestCase
     {
         $root = new Tenant();
         $root->setName('Root');
+        $root->setCode('root');
+        $root->setCode('root');
 
         $child = new Tenant();
         $child->setName('Child');
+        $child->setCode('child');
+        $child->setCode('child');
 
         $grandchild = new Tenant();
         $grandchild->setName('Grandchild');
+        $grandchild->setCode('grandchild');
+        $grandchild->setCode('grandchild');
 
         $root->addSubsidiary($child);
         $child->addSubsidiary($grandchild);
@@ -212,12 +223,18 @@ class TenantTest extends TestCase
     {
         $root = new Tenant();
         $root->setName('Root');
+        $root->setCode('root');
+        $root->setCode('root');
 
         $middle = new Tenant();
         $middle->setName('Middle');
+        $middle->setCode('middle');
+        $middle->setCode('middle');
 
         $leaf = new Tenant();
         $leaf->setName('Leaf');
+        $leaf->setCode('leaf');
+        $leaf->setCode('leaf');
 
         $root->addSubsidiary($middle);
         $middle->addSubsidiary($leaf);

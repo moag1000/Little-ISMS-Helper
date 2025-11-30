@@ -64,6 +64,7 @@ class AssetControllerTest extends WebTestCase
         // Create test tenant
         $this->testTenant = new Tenant();
         $this->testTenant->setName('Test Tenant');
+        $this->testTenant->setCode('test_tenant');
         $this->entityManager->persist($this->testTenant);
 
         // Create test user with ROLE_USER
@@ -407,6 +408,7 @@ class AssetControllerTest extends WebTestCase
         // Create parent tenant
         $parentTenant = new Tenant();
         $parentTenant->setName('Parent Tenant');
+        $parentTenant->setCode('parent_tenant');
         $parentTenant->setSlug('parent-tenant');
         $this->entityManager->persist($parentTenant);
 
@@ -494,6 +496,7 @@ class AssetControllerTest extends WebTestCase
         // Create parent tenant
         $parentTenant = new Tenant();
         $parentTenant->setName('Parent Tenant 2');
+        $parentTenant->setCode('parent_tenant_2');
         $parentTenant->setSlug('parent-tenant-2');
         $this->entityManager->persist($parentTenant);
 
@@ -594,6 +597,7 @@ class AssetControllerTest extends WebTestCase
         // Create another tenant
         $otherTenant = new Tenant();
         $otherTenant->setName('Other Tenant');
+        $otherTenant->setCode('other_tenant');
         $otherTenant->setSlug('other-tenant');
         $this->entityManager->persist($otherTenant);
 
@@ -686,6 +690,7 @@ class AssetControllerTest extends WebTestCase
         // Create another tenant with asset
         $otherTenant = new Tenant();
         $otherTenant->setName('Other Tenant 2');
+        $otherTenant->setCode('other_tenant_2');
         $otherTenant->setSlug('other-tenant-2');
         $this->entityManager->persist($otherTenant);
 

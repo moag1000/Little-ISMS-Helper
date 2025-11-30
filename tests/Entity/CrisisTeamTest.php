@@ -130,6 +130,8 @@ class CrisisTeamTest extends TestCase
         $team = new CrisisTeam();
         $tenant = new Tenant();
         $tenant->setName('Test Tenant');
+        $tenant->setCode('test_tenant');
+        $tenant->setCode('test_tenant');
 
         $this->assertNull($team->getTenant());
 
