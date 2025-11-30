@@ -270,11 +270,22 @@ class AuditControllerTest extends WebTestCase
         $this->loginAsUser($this->testUser);
 
         $crawler = $this->client->request('GET', '/en/audit/new');
-
-        // Check that the form has a pre-filled audit number
         $form = $crawler->filter('form[name="internal_audit"]')->form();
-        $auditNumber = $form['internal_audit[auditNumber]']->getValue();
 
+        // Submit the form with minimal required fields
+        $this->client->submit($form, [
+            'internal_audit[title]' => 'Test Audit for Number Generation',
+            'internal_audit[scopeType]' => 'full_isms',
+            'internal_audit[plannedDate]' => '2025-12-01',
+            'internal_audit[status]' => 'planned',
+        ]);
+
+        // Verify the audit was created with auto-generated audit number
+        $auditRepository = $this->entityManager->getRepository(InternalAudit::class);
+        $newAudit = $auditRepository->findOneBy(['title' => 'Test Audit for Number Generation']);
+
+        $this->assertNotNull($newAudit);
+        $auditNumber = $newAudit->getAuditNumber();
         $this->assertNotEmpty($auditNumber);
         $this->assertStringStartsWith('AUDIT-', $auditNumber);
         $this->assertMatchesRegularExpression('/^AUDIT-\d{4}-\d{3}$/', $auditNumber);
@@ -414,10 +425,12 @@ class AuditControllerTest extends WebTestCase
 
         $this->assertResponseRedirects();
 
-        // Verify audit was updated
-        $this->entityManager->refresh($this->testAudit);
-        $this->assertEquals('Updated Audit Title', $this->testAudit->getTitle());
-        $this->assertEquals('in_progress', $this->testAudit->getStatus());
+        // Verify audit was updated - fetch fresh from database
+        $auditRepository = $this->entityManager->getRepository(InternalAudit::class);
+        $updatedAudit = $auditRepository->find($this->testAudit->getId());
+        $this->assertNotNull($updatedAudit);
+        $this->assertEquals('Updated Audit Title', $updatedAudit->getTitle());
+        $this->assertEquals('in_progress', $updatedAudit->getStatus());
     }
 
     public function testEditReturns404ForNonexistentAudit(): void
@@ -478,9 +491,10 @@ class AuditControllerTest extends WebTestCase
         // Should redirect but not delete
         $this->assertResponseRedirects('/en/audit/');
 
-        // Verify audit was NOT deleted
-        $this->entityManager->refresh($this->testAudit);
-        $this->assertNotNull($this->testAudit);
+        // Verify audit was NOT deleted - fetch from database
+        $auditRepository = $this->entityManager->getRepository(InternalAudit::class);
+        $audit = $auditRepository->find($this->testAudit->getId());
+        $this->assertNotNull($audit);
     }
 
     public function testDeleteOnlyAcceptsPostMethod(): void
@@ -590,6 +604,7 @@ class AuditControllerTest extends WebTestCase
         $audit2->setScopeType('full_isms');
         $audit2->setStatus('planned');
         $audit2->setPlannedDate(new DateTime('2025-12-15'));
+        $audit2->setLeadAuditor('Test Lead Auditor');
         $audit2->setTenant($this->testTenant);
         $this->entityManager->persist($audit2);
         $this->entityManager->flush();
@@ -678,6 +693,8 @@ class AuditControllerTest extends WebTestCase
 
     private function generateCsrfToken(string $tokenId): string
     {
+        // Make a dummy request to ensure session is started
+        $this->client->request('GET', '/en/audit/');
         $csrfTokenManager = static::getContainer()->get('security.csrf.token_manager');
         return $csrfTokenManager->getToken($tokenId)->getValue();
     }
