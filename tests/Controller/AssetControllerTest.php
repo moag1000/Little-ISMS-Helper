@@ -42,18 +42,77 @@ class AssetControllerTest extends WebTestCase
         $container = static::getContainer();
         $this->entityManager = $container->get(EntityManagerInterface::class);
 
-        // Start a transaction to rollback after each test
-        $this->entityManager->beginTransaction();
-
-        // Create test data
+        // Create test data and commit it so HTTP requests can see it
         $this->createTestData();
     }
 
     protected function tearDown(): void
     {
-        // Rollback transaction to clean up test data
-        if ($this->entityManager->getConnection()->isTransactionActive()) {
-            $this->entityManager->rollback();
+        // Manually delete test data since we're not using transactions
+        if ($this->testAsset) {
+            try {
+                $asset = $this->entityManager->find(Asset::class, $this->testAsset->getId());
+                if ($asset) {
+                    $this->entityManager->remove($asset);
+                }
+            } catch (\Exception $e) {
+                // Ignore if already deleted
+            }
+        }
+
+        // Clean up any assets created during tests
+        $assetRepo = $this->entityManager->getRepository(Asset::class);
+        foreach (['New Test Asset', 'Tenant Test Asset', 'Flash Test Asset', 'Flash Updated Asset', 'Test Server 2', 'Updated Test Server', 'Inherited Server', 'Inherited Server 2', 'Other Tenant Asset', 'Other Tenant Server'] as $name) {
+            $assets = $assetRepo->findBy(['name' => $name]);
+            foreach ($assets as $asset) {
+                try {
+                    $this->entityManager->remove($asset);
+                } catch (\Exception $e) {
+                    // Ignore
+                }
+            }
+        }
+
+        // Delete test users
+        if ($this->testUser) {
+            try {
+                $user = $this->entityManager->find(User::class, $this->testUser->getId());
+                if ($user) {
+                    $this->entityManager->remove($user);
+                }
+            } catch (\Exception $e) {
+                // Ignore
+            }
+        }
+
+        if ($this->adminUser) {
+            try {
+                $user = $this->entityManager->find(User::class, $this->adminUser->getId());
+                if ($user) {
+                    $this->entityManager->remove($user);
+                }
+            } catch (\Exception $e) {
+                // Ignore
+            }
+        }
+
+        // Delete test tenant (and any parent/other tenants created in tests)
+        $tenantRepo = $this->entityManager->getRepository(Tenant::class);
+        foreach (['Test Tenant', 'Parent Tenant', 'Parent Tenant 2', 'Other Tenant', 'Other Tenant 2'] as $name) {
+            $tenants = $tenantRepo->findBy(['name' => $name]);
+            foreach ($tenants as $tenant) {
+                try {
+                    $this->entityManager->remove($tenant);
+                } catch (\Exception $e) {
+                    // Ignore
+                }
+            }
+        }
+
+        try {
+            $this->entityManager->flush();
+        } catch (\Exception $e) {
+            // Ignore flush errors during cleanup
         }
 
         parent::tearDown();
@@ -61,15 +120,17 @@ class AssetControllerTest extends WebTestCase
 
     private function createTestData(): void
     {
+        $uniqueId = uniqid('test_', true);
+
         // Create test tenant
         $this->testTenant = new Tenant();
-        $this->testTenant->setName('Test Tenant');
-        $this->testTenant->setCode('test_tenant');
+        $this->testTenant->setName('Test Tenant ' . $uniqueId);
+        $this->testTenant->setCode('test_tenant_' . $uniqueId);
         $this->entityManager->persist($this->testTenant);
 
         // Create test user with ROLE_USER
         $this->testUser = new User();
-        $this->testUser->setEmail('testuser@example.com');
+        $this->testUser->setEmail('testuser_' . $uniqueId . '@example.com');
         $this->testUser->setFirstName('Test');
         $this->testUser->setLastName('User');
         $this->testUser->setRoles(['ROLE_USER']);
@@ -80,7 +141,7 @@ class AssetControllerTest extends WebTestCase
 
         // Create admin user
         $this->adminUser = new User();
-        $this->adminUser->setEmail('admin@example.com');
+        $this->adminUser->setEmail('admin_' . $uniqueId . '@example.com');
         $this->adminUser->setFirstName('Admin');
         $this->adminUser->setLastName('User');
         $this->adminUser->setRoles(['ROLE_ADMIN']);
@@ -91,7 +152,7 @@ class AssetControllerTest extends WebTestCase
 
         // Create test asset
         $this->testAsset = new Asset();
-        $this->testAsset->setName('Test Server');
+        $this->testAsset->setName('Test Server ' . $uniqueId);
         $this->testAsset->setAssetType('hardware');
         $this->testAsset->setOwner('Test Owner');
         $this->testAsset->setDescription('Test server for integration tests');
@@ -109,6 +170,12 @@ class AssetControllerTest extends WebTestCase
     private function loginAsUser(User $user): void
     {
         $this->client->loginUser($user);
+
+        // Ensure the user entity is managed and up-to-date
+        if (!$this->entityManager->contains($user)) {
+            $user = $this->entityManager->merge($user);
+        }
+        $this->entityManager->refresh($user);
     }
 
     private function generateCsrfToken(string $tokenId): string
