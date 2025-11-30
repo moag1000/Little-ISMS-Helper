@@ -267,9 +267,11 @@ class AuditControllerTest extends WebTestCase
 
     public function testNewRequiresUserRole(): void
     {
+        $uniqueId = uniqid('guest_', true);
+
         // Create a user without ROLE_USER
         $guestUser = new User();
-        $guestUser->setEmail('guest@example.com');
+        $guestUser->setEmail('guest_' . $uniqueId . '@example.com');
         $guestUser->setFirstName('Guest');
         $guestUser->setLastName('User');
         $guestUser->setRoles([]);
@@ -461,9 +463,11 @@ class AuditControllerTest extends WebTestCase
 
     public function testEditRequiresUserRole(): void
     {
+        $uniqueId = uniqid('guest_', true);
+
         // Create a user without ROLE_USER
         $guestUser = new User();
-        $guestUser->setEmail('guest2@example.com');
+        $guestUser->setEmail('guest_' . $uniqueId . '@example.com');
         $guestUser->setFirstName('Guest');
         $guestUser->setLastName('User');
         $guestUser->setRoles([]);
