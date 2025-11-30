@@ -15,6 +15,7 @@ use App\Repository\IncidentRepository;
 use App\Repository\InternalAuditRepository;
 use App\Service\ComplianceMappingService;
 use App\Service\ComplianceRequirementFulfillmentService;
+use App\Service\MappingQualityAnalysisService;
 use App\Service\TenantContext;
 use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
@@ -29,6 +30,7 @@ class ComplianceMappingServiceTest extends TestCase
     private InternalAuditRepository $auditRepo;
     private ComplianceRequirementFulfillmentService $fulfillmentService;
     private TenantContext $tenantContext;
+    private MappingQualityAnalysisService $mappingQualityAnalysisService;
 
     protected function setUp(): void
     {
@@ -39,6 +41,7 @@ class ComplianceMappingServiceTest extends TestCase
         $this->auditRepo = $this->createMock(InternalAuditRepository::class);
         $this->fulfillmentService = $this->createMock(ComplianceRequirementFulfillmentService::class);
         $this->tenantContext = $this->createMock(TenantContext::class);
+        $this->mappingQualityAnalysisService = $this->createMock(MappingQualityAnalysisService::class);
 
         // Mock getCurrentTenant to return a Tenant entity
         $mockTenant = $this->createMock(\App\Entity\Tenant::class);
@@ -57,7 +60,8 @@ class ComplianceMappingServiceTest extends TestCase
             $this->incidentRepo,
             $this->auditRepo,
             $this->fulfillmentService,
-            $this->tenantContext
+            $this->tenantContext,
+            $this->mappingQualityAnalysisService
         );
     }
 

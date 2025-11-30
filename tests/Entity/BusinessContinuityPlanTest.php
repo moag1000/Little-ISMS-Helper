@@ -28,7 +28,6 @@ class BusinessContinuityPlanTest extends TestCase
         $plan = new BusinessContinuityPlan();
 
         $plan->setName('IT Systems BC Plan');
-        $plan->setCode('it_systems_bc_plan');
         $this->assertEquals('IT Systems BC Plan', $plan->getName());
 
         $plan->setDescription('Recovery plan for critical IT systems');
@@ -394,7 +393,6 @@ class BusinessContinuityPlanTest extends TestCase
 
         // Add all key fields
         $plan->setName('Test Plan');
-        $plan->setCode('test_plan');
         $plan->setPlanOwner('Owner');
         $plan->setActivationCriteria('Criteria');
         $plan->setRecoveryProcedures('Procedures');

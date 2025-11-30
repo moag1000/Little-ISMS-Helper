@@ -55,7 +55,7 @@ class AuditControllerTest extends WebTestCase
         // Create test tenant
         $this->testTenant = new Tenant();
         $this->testTenant->setName('Test Tenant');
-        $this->setCode('test_tenant');
+        $this->testTenant->setCode('test_tenant');
         $this->entityManager->persist($this->testTenant);
 
         // Create test user with ROLE_USER
