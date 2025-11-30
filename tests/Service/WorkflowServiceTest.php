@@ -169,6 +169,12 @@ class WorkflowServiceTest extends TestCase
             ->method('setCurrentStep')
             ->with($nextStep);
 
+        // Mock security to allow approval (check both ROLE_ADMIN and ROLE_MANAGER)
+        $this->security->method('isGranted')
+            ->willReturnCallback(function ($role) {
+                return $role === 'ROLE_ADMIN' || $role === 'ROLE_MANAGER';
+            });
+
         $result = $this->service->approveStep($instance, $user, 'Looks good');
 
         $this->assertTrue($result);
@@ -239,6 +245,12 @@ class WorkflowServiceTest extends TestCase
         $instance->expects($this->once())
             ->method('setComments')
             ->with('Does not meet requirements');
+
+        // Mock security to allow rejection (check both ROLE_ADMIN and ROLE_MANAGER)
+        $this->security->method('isGranted')
+            ->willReturnCallback(function ($role) {
+                return $role === 'ROLE_ADMIN' || $role === 'ROLE_MANAGER';
+            });
 
         $result = $this->service->rejectStep($instance, $user, 'Does not meet requirements');
 
