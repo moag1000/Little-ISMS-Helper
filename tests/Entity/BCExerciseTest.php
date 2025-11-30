@@ -25,7 +25,6 @@ class BCExerciseTest extends TestCase
         $exercise = new BCExercise();
 
         $exercise->setName('Q1 BC Exercise');
-        $exercise->setCode('q1_bc_exercise');
         $this->assertEquals('Q1 BC Exercise', $exercise->getName());
 
         $exercise->setDescription('Annual business continuity exercise');

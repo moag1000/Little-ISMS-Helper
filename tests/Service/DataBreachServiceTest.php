@@ -11,6 +11,7 @@ use App\Repository\DataBreachRepository;
 use App\Service\AuditLogger;
 use App\Service\DataBreachService;
 use App\Service\TenantContext;
+use App\Service\WorkflowAutoProgressionService;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -25,6 +26,7 @@ class DataBreachServiceTest extends TestCase
     private MockObject $tenantContext;
     private MockObject $auditLogger;
     private MockObject $logger;
+    private MockObject $workflowAutoProgressionService;
     private DataBreachService $service;
     private MockObject $tenant;
 
@@ -35,6 +37,7 @@ class DataBreachServiceTest extends TestCase
         $this->tenantContext = $this->createMock(TenantContext::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->logger = $this->createMock(LoggerInterface::class);
+        $this->workflowAutoProgressionService = $this->createMock(WorkflowAutoProgressionService::class);
 
         $this->tenant = $this->createMock(Tenant::class);
         $this->tenant->method('getId')->willReturn(1);
@@ -44,7 +47,8 @@ class DataBreachServiceTest extends TestCase
             $this->dataBreachRepository,
             $this->tenantContext,
             $this->auditLogger,
-            $this->logger
+            $this->logger,
+            $this->workflowAutoProgressionService
         );
     }
 
