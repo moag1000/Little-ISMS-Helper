@@ -68,6 +68,15 @@ jobs:
       - name: Check PHP syntax
         run: find src tests -name "*.php" -print0 | xargs -0 -n1 php -l
 
+      - name: Setup test database
+        env:
+          # Note: Doctrine adds '_test' suffix, so 'isms' becomes 'isms_test'
+          DATABASE_URL: postgresql://isms_user:isms_password@127.0.0.1:5432/isms?serverVersion=16&charset=utf8
+          APP_ENV: test
+        run: |
+          php bin/console doctrine:database:create --if-not-exists --env=test
+          php bin/console doctrine:migrations:migrate --no-interaction --env=test
+
       - name: Run PHPUnit tests
         env:
           # Note: Doctrine adds '_test' suffix, so 'isms' becomes 'isms_test'
