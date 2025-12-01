@@ -27,7 +27,8 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_DB: isms_test
+          # Note: Doctrine adds '_test' suffix in test environment, so DB name becomes 'isms_test'
+          POSTGRES_DB: isms
           POSTGRES_USER: isms_user
           POSTGRES_PASSWORD: isms_password
         ports:
@@ -69,7 +70,8 @@ jobs:
 
       - name: Run PHPUnit tests
         env:
-          DATABASE_URL: postgresql://isms_user:isms_password@127.0.0.1:5432/isms_test?serverVersion=16&charset=utf8
+          # Note: Doctrine adds '_test' suffix, so 'isms' becomes 'isms_test'
+          DATABASE_URL: postgresql://isms_user:isms_password@127.0.0.1:5432/isms?serverVersion=16&charset=utf8
           APP_ENV: test
         run: php bin/phpunit --coverage-text --coverage-clover=coverage.xml
 
