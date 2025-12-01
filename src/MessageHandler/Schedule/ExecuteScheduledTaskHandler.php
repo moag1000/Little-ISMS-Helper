@@ -4,7 +4,9 @@ namespace App\MessageHandler\Schedule;
 
 use App\Message\Schedule\ExecuteScheduledTaskMessage;
 use App\Repository\ScheduledTaskRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
@@ -50,7 +52,7 @@ class ExecuteScheduledTaskHandler
             'command' => $task->getCommand(),
         ]);
 
-        $task->setLastRunAt(new \DateTime());
+        $task->setLastRunAt(new DateTime());
         $task->setLastStatus('running');
 
         // Build command with arguments
@@ -95,7 +97,7 @@ class ExecuteScheduledTaskHandler
                 'task_name' => $task->getName(),
                 'error' => $e->getMessage(),
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $task->setLastStatus('failed');
             $task->setLastOutput($e->getMessage());
 

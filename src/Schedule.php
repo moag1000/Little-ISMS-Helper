@@ -7,6 +7,7 @@ use App\Message\Schedule\CleanupExpiredSessionsMessage;
 use App\Message\Schedule\ExecuteScheduledTaskMessage;
 use App\Message\Schedule\GenerateComplianceReportMessage;
 use App\Repository\ScheduledTaskRepository;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Scheduler\Attribute\AsSchedule;
 use Symfony\Component\Scheduler\RecurringMessage;
@@ -107,7 +108,7 @@ class Schedule implements ScheduleProviderInterface
             $this->logger->info('Database scheduled tasks loaded', [
                 'count' => count($tasks),
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Don't fail if database is not available (e.g., during installation)
             $this->logger->warning('Failed to load database scheduled tasks', [
                 'error' => $e->getMessage(),

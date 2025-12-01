@@ -5,6 +5,8 @@ namespace App\MessageHandler\Schedule;
 use App\Message\Schedule\CheckRiskReviewsMessage;
 use App\Repository\RiskRepository;
 use App\Service\EmailNotificationService;
+use DateTime;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
@@ -31,7 +33,7 @@ class CheckRiskReviewsHandler
 
         try {
             // Find risks due for review (e.g., nextReviewDate <= today)
-            $risksDueForReview = $this->riskRepository->findDueForReview(new \DateTime());
+            $risksDueForReview = $this->riskRepository->findDueForReview(new DateTime());
 
             if (empty($risksDueForReview)) {
                 $this->logger->info('No risks due for review');
@@ -70,7 +72,7 @@ class CheckRiskReviewsHandler
                         'risk_id' => $risk->getId(),
                         'owner_email' => $owner->getEmail(),
                     ]);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->logger->error('Failed to send risk review notification', [
                         'risk_id' => $risk->getId(),
                         'owner_email' => $owner->getEmail(),
@@ -82,7 +84,7 @@ class CheckRiskReviewsHandler
             $this->logger->info('Risk review check completed', [
                 'risks_processed' => count($risksDueForReview),
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to check risk reviews', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),

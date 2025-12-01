@@ -5,6 +5,8 @@ namespace App\MessageHandler\Schedule;
 use App\Message\Schedule\GenerateComplianceReportMessage;
 use App\Repository\ComplianceRequirementRepository;
 use App\Service\EmailNotificationService;
+use DateTime;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
@@ -37,7 +39,7 @@ class GenerateComplianceReportHandler
                 : 0;
 
             $reportData = [
-                'generated_at' => new \DateTime(),
+                'generated_at' => new DateTime(),
                 'total_requirements' => $totalRequirements,
                 'compliant_requirements' => $compliantRequirements,
                 'compliance_percentage' => $compliancePercentage,
@@ -50,7 +52,7 @@ class GenerateComplianceReportHandler
             // For now, just log the report
             // In production, you would send this via email to CISO/Compliance Manager
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to generate compliance report', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),

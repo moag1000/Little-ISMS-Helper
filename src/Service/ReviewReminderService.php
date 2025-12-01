@@ -17,6 +17,7 @@ use App\Repository\UserRepository;
 use DateTime;
 use DateTimeInterface;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 /**
  * Review Reminder Service
@@ -172,6 +173,7 @@ class ReviewReminderService
      *
      * @param int $days Number of days to look ahead
      * @return array{risks: array, bc_plans: array, processing_activities: array, dpias: array}
+     * @throws \DateMalformedStringException
      */
     public function getUpcomingReviews(int $days = 14): array
     {
@@ -217,7 +219,7 @@ class ReviewReminderService
                     );
                     $sent++;
                     $details[] = ['type' => 'risk', 'id' => $risk->getId(), 'status' => 'sent'];
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     $failed++;
                     $details[] = ['type' => 'risk', 'id' => $risk->getId(), 'status' => 'failed', 'error' => $e->getMessage()];
                     $this->logger?->error('Failed to send risk review reminder', [
@@ -257,7 +259,7 @@ class ReviewReminderService
                     );
                     $sent++;
                     $details[] = ['type' => 'data_breach', 'id' => $breach->getId(), 'status' => 'sent'];
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     $failed++;
                     $details[] = ['type' => 'data_breach', 'id' => $breach->getId(), 'status' => 'failed', 'error' => $e->getMessage()];
                     $this->logger?->error('Failed to send data breach deadline reminder', [
@@ -293,7 +295,7 @@ class ReviewReminderService
                     $sent++;
                     $details[] = ['type' => 'bc_plan', 'id' => $plan->getId(), 'status' => 'sent'];
                     break; // Only send once per plan (to first admin)
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     $failed++;
                     $details[] = ['type' => 'bc_plan', 'id' => $plan->getId(), 'status' => 'failed', 'error' => $e->getMessage()];
                 }

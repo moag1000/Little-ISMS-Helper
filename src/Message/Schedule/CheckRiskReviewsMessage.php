@@ -2,6 +2,8 @@
 
 namespace App\Message\Schedule;
 
+use DateTimeImmutable;
+
 /**
  * Scheduled message to check for risks requiring periodic review
  *
@@ -11,10 +13,10 @@ namespace App\Message\Schedule;
 class CheckRiskReviewsMessage
 {
     public function __construct(
-        private readonly \DateTimeImmutable $scheduledAt = new \DateTimeImmutable()
+        private readonly DateTimeImmutable $scheduledAt = new DateTimeImmutable()
     ) {}
 
-    public function getScheduledAt(): \DateTimeImmutable
+    public function getScheduledAt(): DateTimeImmutable
     {
         return $this->scheduledAt;
     }

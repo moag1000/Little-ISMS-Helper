@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\ConsentType;
 use App\Repository\ConsentRepository;
 use App\Service\TenantContext;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -99,13 +100,13 @@ class ConsentController extends AbstractController
             if ($currentUser instanceof User) {
                 // Set documented by current user
                 $consent->setDocumentedBy($currentUser);
-                $consent->setDocumentedAt(new \DateTimeImmutable());
+                $consent->setDocumentedAt(new DateTimeImmutable());
 
                 // Auto-verify if user has DPO role
                 if ($this->isGranted('ROLE_DPO')) {
                     $consent->setIsVerifiedByDpo(true);
                     $consent->setVerifiedBy($currentUser);
-                    $consent->setVerifiedAt(new \DateTimeImmutable());
+                    $consent->setVerifiedAt(new DateTimeImmutable());
                     $consent->setStatus('active');
                 } else {
                     $consent->setStatus('pending_verification');
@@ -149,7 +150,7 @@ class ConsentController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $consent->setUpdatedAt(new \DateTimeImmutable());
+            $consent->setUpdatedAt(new DateTimeImmutable());
             $this->entityManager->flush();
 
             $this->addFlash('success', $this->translator->trans('consent.success.updated', [], 'consent'));
@@ -182,9 +183,9 @@ class ConsentController extends AbstractController
         if ($currentUser instanceof User) {
             $consent->setIsVerifiedByDpo(true);
             $consent->setVerifiedBy($currentUser);
-            $consent->setVerifiedAt(new \DateTimeImmutable());
+            $consent->setVerifiedAt(new DateTimeImmutable());
             $consent->setStatus('active');
-            $consent->setUpdatedAt(new \DateTimeImmutable());
+            $consent->setUpdatedAt(new DateTimeImmutable());
 
             $this->entityManager->flush();
 
@@ -215,11 +216,11 @@ class ConsentController extends AbstractController
             $revocationNotes = $request->request->get('revocation_notes', '');
 
             $consent->setIsRevoked(true);
-            $consent->setRevokedAt(new \DateTimeImmutable());
+            $consent->setRevokedAt(new DateTimeImmutable());
             $consent->setRevocationMethod($revocationMethod);
             $consent->setRevocationDocumentedBy($currentUser);
             $consent->setStatus('revoked');
-            $consent->setUpdatedAt(new \DateTimeImmutable());
+            $consent->setUpdatedAt(new DateTimeImmutable());
 
             // Append revocation notes
             if ($revocationNotes) {
@@ -227,7 +228,7 @@ class ConsentController extends AbstractController
                 $newNotes = sprintf(
                     "%s\n\n[%s] Widerruf dokumentiert von %s %s\nMethode: %s\n%s",
                     $existingNotes,
-                    (new \DateTimeImmutable())->format('Y-m-d H:i'),
+                    (new DateTimeImmutable())->format('Y-m-d H:i'),
                     $currentUser->getFirstName(),
                     $currentUser->getLastName(),
                     $revocationMethod,

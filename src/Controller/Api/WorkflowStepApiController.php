@@ -7,6 +7,7 @@ use App\Entity\WorkflowStep;
 use App\Repository\WorkflowRepository;
 use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -108,7 +109,7 @@ class WorkflowStepApiController extends AbstractController
                 $this->entityManager->rollback();
             }
             return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if ($this->entityManager->getConnection()->isTransactionActive()) {
                 $this->entityManager->rollback();
             }
@@ -156,7 +157,7 @@ class WorkflowStepApiController extends AbstractController
                 $this->entityManager->rollback();
             }
             return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if ($this->entityManager->getConnection()->isTransactionActive()) {
                 $this->entityManager->rollback();
             }
@@ -204,7 +205,7 @@ class WorkflowStepApiController extends AbstractController
                 $this->entityManager->rollback();
             }
             return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if ($this->entityManager->getConnection()->isTransactionActive()) {
                 $this->entityManager->rollback();
             }
@@ -265,7 +266,7 @@ class WorkflowStepApiController extends AbstractController
                 $this->entityManager->rollback();
             }
             return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if ($this->entityManager->getConnection()->isTransactionActive()) {
                 $this->entityManager->rollback();
             }
@@ -326,7 +327,7 @@ class WorkflowStepApiController extends AbstractController
                 $this->entityManager->rollback();
             }
             return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if ($this->entityManager->getConnection()->isTransactionActive()) {
                 $this->entityManager->rollback();
             }
@@ -487,7 +488,7 @@ class WorkflowStepApiController extends AbstractController
                 $this->entityManager->rollback();
             }
             return $this->json(['success' => false, 'error' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if ($this->entityManager->getConnection()->isTransactionActive()) {
                 $this->entityManager->rollback();
             }

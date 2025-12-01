@@ -120,7 +120,7 @@ class InitialAdminService
      *
      * @param User $user The user being operated on
      * @param string $operation The operation being performed (delete, deactivate, remove_admin_role)
-     * @throws RuntimeException If operation is not allowed
+     * @throws InvalidArgumentException
      */
     public function validateOperation(User $user, string $operation): void
     {
