@@ -8,7 +8,9 @@ use App\Entity\User;
 use App\Entity\RiskAppetite;
 use App\Repository\RiskAppetiteRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Psr\Log\LoggerInterface;
+use ReflectionClass;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use DateTimeImmutable;
 
@@ -151,7 +153,7 @@ class WorkflowAutoProgressionService
                 if ($value === null || $value === '' || (is_array($value) && $value === [])) {
                     return false; // Field not filled
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logger->warning('Could not access field for auto-progression', [
                     'entity' => $this->getEntityShortName($entity),
                     'field' => $fieldName,
@@ -249,7 +251,7 @@ class WorkflowAutoProgressionService
             ]);
 
             return $isAcceptable;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Error checking risk appetite for workflow auto-progression', [
                 'entity' => $entityType,
                 'error' => $e->getMessage(),
@@ -271,7 +273,7 @@ class WorkflowAutoProgressionService
         $tenant = null;
         try {
             $tenant = $this->propertyAccessor->getValue($entity, 'tenant');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Entity may not have tenant field
         }
 
@@ -346,7 +348,7 @@ class WorkflowAutoProgressionService
 
                 // Handle string comparisons
                 return $this->compareValues($actualValue, $operator, $expectedValue);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logger->warning('Could not evaluate condition for auto-progression', [
                     'condition' => $condition,
                     'error' => $e->getMessage(),
@@ -440,7 +442,7 @@ class WorkflowAutoProgressionService
 
         // Move to next step using WorkflowService
         // We'll use reflection to access the private method temporarily
-        $reflection = new \ReflectionClass($this->workflowService);
+        $reflection = new ReflectionClass($this->workflowService);
         $method = $reflection->getMethod('moveToNextStep');
         $method->setAccessible(true);
         $nextStep = $method->invoke($this->workflowService, $workflowInstance);
@@ -516,7 +518,7 @@ class WorkflowAutoProgressionService
 
             // TODO: Trigger via event system to avoid circular dependency
             // For now, this will be handled in IncidentController when status changes to 'closed'
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Error triggering incident→risk feedback', [
                 'error' => $e->getMessage(),
             ]);

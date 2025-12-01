@@ -4,6 +4,7 @@ namespace App\MessageHandler\Schedule;
 
 use App\Message\Schedule\CleanupExpiredSessionsMessage;
 use App\Repository\UserSessionRepository;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
@@ -32,7 +33,7 @@ class CleanupExpiredSessionsHandler
             $this->logger->info('Expired session cleanup completed', [
                 'cleaned_up_count' => $deletedCount,
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to cleanup expired sessions', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),

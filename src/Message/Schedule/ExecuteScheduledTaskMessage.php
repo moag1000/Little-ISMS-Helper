@@ -2,6 +2,8 @@
 
 namespace App\Message\Schedule;
 
+use DateTimeImmutable;
+
 /**
  * Message to execute a database-defined scheduled task
  */
@@ -9,7 +11,7 @@ class ExecuteScheduledTaskMessage
 {
     public function __construct(
         private readonly int $taskId,
-        private readonly \DateTimeImmutable $scheduledAt = new \DateTimeImmutable()
+        private readonly DateTimeImmutable $scheduledAt = new DateTimeImmutable()
     ) {}
 
     public function getTaskId(): int
@@ -17,7 +19,7 @@ class ExecuteScheduledTaskMessage
         return $this->taskId;
     }
 
-    public function getScheduledAt(): \DateTimeImmutable
+    public function getScheduledAt(): DateTimeImmutable
     {
         return $this->scheduledAt;
     }

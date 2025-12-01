@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Tenant;
 use App\Entity\Risk;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -187,10 +189,10 @@ class RiskRepository extends ServiceEntityRepository
      *
      * ISO 27001:2022 Clause 6.1.3.d - Risks should be reviewed periodically
      *
-     * @param \DateTimeInterface $asOf Date to check against (default: today)
+     * @param DateTimeInterface $asOf Date to check against (default: today)
      * @return Risk[] Array of risks with nextReviewDate <= asOf
      */
-    public function findDueForReview(\DateTimeInterface $asOf = new \DateTime()): array
+    public function findDueForReview(DateTimeInterface $asOf = new DateTime()): array
     {
         return $this->createQueryBuilder('r')
             ->where('r.nextReviewDate IS NOT NULL')
