@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ScheduledTaskRepository;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -49,10 +51,10 @@ class ScheduledTask
     private bool $enabled = true;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $lastRunAt = null;
+    private ?DateTimeInterface $lastRunAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $nextRunAt = null;
+    private ?DateTimeInterface $nextRunAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $lastOutput = null;
@@ -64,22 +66,22 @@ class ScheduledTask
     private ?int $tenantId = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    private ?DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $updatedAt = null;
+    private ?DateTimeInterface $updatedAt = null;
 
     #[ORM\PrePersist]
     public function onPrePersist(): void
     {
-        $this->createdAt = new \DateTime();
-        $this->updatedAt = new \DateTime();
+        $this->createdAt = new DateTime();
+        $this->updatedAt = new DateTime();
     }
 
     #[ORM\PreUpdate]
     public function onPreUpdate(): void
     {
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new DateTime();
     }
 
     public function getId(): ?int
@@ -159,24 +161,24 @@ class ScheduledTask
         return $this;
     }
 
-    public function getLastRunAt(): ?\DateTimeInterface
+    public function getLastRunAt(): ?DateTimeInterface
     {
         return $this->lastRunAt;
     }
 
-    public function setLastRunAt(?\DateTimeInterface $lastRunAt): static
+    public function setLastRunAt(?DateTimeInterface $lastRunAt): static
     {
         $this->lastRunAt = $lastRunAt;
 
         return $this;
     }
 
-    public function getNextRunAt(): ?\DateTimeInterface
+    public function getNextRunAt(): ?DateTimeInterface
     {
         return $this->nextRunAt;
     }
 
-    public function setNextRunAt(?\DateTimeInterface $nextRunAt): static
+    public function setNextRunAt(?DateTimeInterface $nextRunAt): static
     {
         $this->nextRunAt = $nextRunAt;
 
@@ -219,24 +221,24 @@ class ScheduledTask
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    public function setCreatedAt(DateTimeInterface $createdAt): static
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): static
+    public function setUpdatedAt(DateTimeInterface $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
 

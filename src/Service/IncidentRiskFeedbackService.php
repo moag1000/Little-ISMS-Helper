@@ -6,7 +6,9 @@ use App\Entity\Incident;
 use App\Entity\Risk;
 use App\Entity\User;
 use App\Repository\RiskRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -171,7 +173,7 @@ class IncidentRiskFeedbackService
                     'trigger_incident' => $incident->getIncidentNumber(),
                 ]);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->logger->error('Failed to start risk re-evaluation workflow', [
                 'risk_id' => $risk->getId(),
                 'incident_id' => $incident->getId(),
@@ -190,7 +192,7 @@ class IncidentRiskFeedbackService
             "\n\n[%s] Incident-triggered re-evaluation: %s (ID: %d, Severity: %s)\n" .
             "Incident occurred: %s\n" .
             "Description: %s",
-            (new \DateTimeImmutable())->format('Y-m-d H:i'),
+            (new DateTimeImmutable())->format('Y-m-d H:i'),
             $incident->getIncidentNumber(),
             $incident->getId(),
             $incident->getSeverity(),

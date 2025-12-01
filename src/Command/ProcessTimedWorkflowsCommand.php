@@ -8,6 +8,7 @@ use App\Repository\WorkflowInstanceRepository;
 use App\Service\WorkflowAutoProgressionService;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -131,7 +132,7 @@ HELP
                     try {
                         $this->escalateWorkflow($workflowInstance, $currentStep);
                         $escalated++;
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $errors[] = sprintf(
                             'Error escalating workflow #%d: %s',
                             $workflowInstance->getId(),
@@ -184,7 +185,7 @@ HELP
                     $this->workflowAutoProgressionService->checkAndProgressWorkflow($entity, $user);
 
                     $processed++;
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $errors[] = sprintf(
                         'Error processing workflow #%d: %s',
                         $workflowInstance->getId(),

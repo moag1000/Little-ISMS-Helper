@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Consent;
 use App\Entity\Tenant;
 use App\Entity\ProcessingActivity;
+use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -62,11 +63,14 @@ class ConsentRepository extends ServiceEntityRepository
     /**
      * Find consents expiring within specified days
      *
+     * @param int $daysAhead
+     * @param Tenant|null $tenant
      * @return Consent[]
+     * @throws \DateMalformedStringException
      */
     public function findExpiringSoon(int $daysAhead = 30, ?Tenant $tenant = null): array
     {
-        $now = new \DateTimeImmutable();
+        $now = new DateTimeImmutable();
         $futureDate = $now->modify(sprintf('+%d days', $daysAhead));
 
         $qb = $this->createQueryBuilder('c')
@@ -135,7 +139,7 @@ class ConsentRepository extends ServiceEntityRepository
         $result = $qb->getQuery()->getSingleResult();
 
         // Calculate revocation rate for last 30 days
-        $thirtyDaysAgo = new \DateTimeImmutable('-30 days');
+        $thirtyDaysAgo = new DateTimeImmutable('-30 days');
         $recentRevokedQb = $this->createQueryBuilder('c')
             ->select('COUNT(c.id)')
             ->where('c.isRevoked = :revoked')

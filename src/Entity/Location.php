@@ -454,7 +454,7 @@ class Location
         $path = [$this->name];
         $parent = $this->parentLocation;
 
-        while ($parent instanceof \App\Entity\Location) {
+        while ($parent instanceof Location) {
             array_unshift($path, $parent->getName());
             $parent = $parent->getParentLocation();
         }
