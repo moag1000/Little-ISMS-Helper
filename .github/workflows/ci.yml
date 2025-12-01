@@ -81,6 +81,7 @@ jobs:
         env:
           DATABASE_URL: mysql://isms_user:isms_password@127.0.0.1:3306/isms?serverVersion=mariadb-11.0.0&charset=utf8mb4
           APP_ENV: test
+          APP_SECRET: test_secret_for_ci
         run: |
           php bin/console doctrine:migrations:migrate --no-interaction --env=test
 
@@ -88,6 +89,10 @@ jobs:
         env:
           DATABASE_URL: mysql://isms_user:isms_password@127.0.0.1:3306/isms?serverVersion=mariadb-11.0.0&charset=utf8mb4
           APP_ENV: test
+          APP_SECRET: test_secret_for_ci
+          DEFAULT_URI: http://localhost
+          MAILER_DSN: null://null
+          MESSENGER_TRANSPORT_DSN: sync://
         run: php bin/phpunit --coverage-text --coverage-clover=coverage.xml
 
       - name: Check Code Coverage Threshold
