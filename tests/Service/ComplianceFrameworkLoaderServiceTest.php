@@ -23,6 +23,8 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
 
     protected function setUp(): void
     {
+        // Ensure kernel is not already booted from a previous test
+        self::ensureKernelShutdown();
         self::bootKernel();
         $container = static::getContainer();
 
@@ -31,6 +33,13 @@ class ComplianceFrameworkLoaderServiceTest extends KernelTestCase
 
         // Create a mock repository for statistics tests
         $this->frameworkRepository = $this->createMock(ComplianceFrameworkRepository::class);
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        // Ensure kernel is properly shut down after each test
+        self::ensureKernelShutdown();
     }
 
     public function testGetAvailableFrameworksReturnsAllFrameworks(): void
