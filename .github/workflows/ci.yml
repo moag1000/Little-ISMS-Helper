@@ -27,7 +27,8 @@ jobs:
       mariadb:
         image: mariadb:11
         env:
-          # Note: Doctrine adds '_test' suffix in test environment, so DB name becomes 'isms_test'
+          # Create both isms and isms_test databases
+          # Doctrine adds '_test' suffix in test env, so 'isms' becomes 'isms_test'
           MARIADB_DATABASE: isms
           MARIADB_USER: isms_user
           MARIADB_PASSWORD: isms_password
@@ -69,18 +70,22 @@ jobs:
       - name: Check PHP syntax
         run: find src tests -name "*.php" -print0 | xargs -0 -n1 php -l
 
-      - name: Setup test database
+      - name: Create test database
+        run: |
+          # Create isms_test database and grant permissions using root
+          mysql -h 127.0.0.1 -u root -proot_password -e "CREATE DATABASE IF NOT EXISTS isms_test;"
+          mysql -h 127.0.0.1 -u root -proot_password -e "GRANT ALL PRIVILEGES ON isms_test.* TO 'isms_user'@'%';"
+          mysql -h 127.0.0.1 -u root -proot_password -e "FLUSH PRIVILEGES;"
+
+      - name: Run database migrations
         env:
-          # Note: Doctrine adds '_test' suffix, so 'isms' becomes 'isms_test'
           DATABASE_URL: mysql://isms_user:isms_password@127.0.0.1:3306/isms?serverVersion=mariadb-11.0.0&charset=utf8mb4
           APP_ENV: test
         run: |
-          php bin/console doctrine:database:create --if-not-exists --env=test
           php bin/console doctrine:migrations:migrate --no-interaction --env=test
 
       - name: Run PHPUnit tests
         env:
-          # Note: Doctrine adds '_test' suffix, so 'isms' becomes 'isms_test'
           DATABASE_URL: mysql://isms_user:isms_password@127.0.0.1:3306/isms?serverVersion=mariadb-11.0.0&charset=utf8mb4
           APP_ENV: test
         run: php bin/phpunit --coverage-text --coverage-clover=coverage.xml
