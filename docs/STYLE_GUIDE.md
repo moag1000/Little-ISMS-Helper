@@ -1,6 +1,6 @@
 # Little ISMS Helper - UI/UX Style Guide
 
-**Last Updated:** 2025-11-19
+**Last Updated:** 2025-12-02
 **Status:** Production Ready
 **WCAG Compliance:** 2.1 AA
 
@@ -13,11 +13,14 @@
 3. [Color System](#color-system)
 4. [Typography](#typography)
 5. [Components](#components)
-6. [Forms](#forms)
-7. [Icons](#icons)
-8. [Accessibility](#accessibility)
-9. [Dark Mode](#dark-mode)
-10. [Best Practices](#best-practices)
+6. [Buttons](#buttons)
+7. [Badges](#badges)
+8. [Icons](#icons)
+9. [Forms](#forms)
+10. [Modals](#modals)
+11. [Accessibility](#accessibility)
+12. [Dark Mode](#dark-mode)
+13. [Best Practices](#best-practices)
 
 ---
 
@@ -228,30 +231,48 @@ Use Bootstrap's font size utilities:
 - `noPadding` - Remove card-body padding (for tables/lists)
 - `class` - Additional CSS classes
 
-### Buttons
+---
 
-**Standard button patterns:**
+## Buttons
+
+### Button Hierarchy
+
+| Priority | Class | Use Case | Icon |
+|----------|-------|----------|------|
+| Primary | `btn-primary` | Main action (Create, Save, Submit) | Optional |
+| Secondary | `btn-secondary` | Alternative action (Cancel, Back) | Rarely |
+| Success | `btn-success` | Positive action (Approve, Confirm) | ✓ Recommended |
+| Danger | `btn-danger` | Destructive action (Delete, Remove) | ✓ Required |
+| Outline | `btn-outline-*` | Table actions, Less emphasis | ✓ Often |
+
+### Standard Patterns
 
 ```twig
-{# Primary action #}
+{# Primary action - with icon #}
 <button class="btn btn-primary">
     <i class="bi bi-plus-circle" aria-hidden="true"></i>
     {{ 'common.create'|trans }}
 </button>
 
-{# Secondary action #}
+{# Secondary action - no icon #}
 <button class="btn btn-secondary">
     {{ 'common.cancel'|trans }}
 </button>
 
-{# Danger/destructive action #}
+{# Danger action - ALWAYS with icon #}
 <button class="btn btn-danger">
     <i class="bi bi-trash" aria-hidden="true"></i>
     {{ 'common.delete'|trans }}
 </button>
+
+{# Back to list #}
+<a href="..." class="btn btn-secondary">
+    <i class="bi bi-list" aria-hidden="true"></i>
+    {{ 'common.back_to_list'|trans }}
+</a>
 ```
 
-**Button groups in tables:**
+### Button Groups in Tables
 
 ```twig
 <td>
@@ -266,6 +287,29 @@ Use Bootstrap's font size utilities:
         </a>
     </div>
 </td>
+```
+
+### Icon-Only Buttons
+
+```twig
+{# Use btn-icon class for consistent sizing #}
+<button class="btn btn-icon btn-outline-primary"
+        aria-label="{{ 'common.view'|trans }}">
+    <i class="bi bi-eye" aria-hidden="true"></i>
+</button>
+```
+
+### ❌ DON'T Use Emojis in Buttons
+
+```twig
+{# WRONG #}
+<button class="btn btn-danger">🗑️ Delete</button>
+<button class="btn btn-primary">✏️ Edit</button>
+
+{# CORRECT #}
+<button class="btn btn-danger">
+    <i class="bi bi-trash" aria-hidden="true"></i> Delete
+</button>
 ```
 
 ### Tables
@@ -330,22 +374,69 @@ Use Bootstrap's font size utilities:
 - Colored left border for visual distinction
 - `var(--text-primary)` for consistent text color
 
-### Badges
+---
 
-**Standard badge usage:**
+## Badges
+
+### Semantic Color Mapping
+
+| Color | Class | Semantic Meaning | Examples |
+|-------|-------|------------------|----------|
+| Green | `bg-success` | Active, Completed, Approved | Status: Active, Implemented |
+| Red | `bg-danger` | Inactive, Failed, Critical | Status: Inactive, Expired |
+| Yellow | `bg-warning` | Pending, In Progress, Attention | Status: Pending, Review Needed |
+| Blue | `bg-info` | Information, Count, New | Count: 5, Type: Information |
+| Gray | `bg-secondary` | Unknown, N/A, Default | Status: Unknown |
+| Primary | `bg-primary` | Role, Category, Label | Role: Admin, Type: Document |
+
+### Standard Usage
 
 ```twig
-{# Status badges #}
+{# Status badges - semantic colors #}
 <span class="badge bg-success">{{ 'status.active'|trans }}</span>
-<span class="badge bg-warning">{{ 'status.pending'|trans }}</span>
+<span class="badge bg-warning">{{ 'status.pending'|trans }}</span>  {# Auto dark text! #}
 <span class="badge bg-danger">{{ 'status.inactive'|trans }}</span>
 <span class="badge bg-info">{{ 'status.draft'|trans }}</span>
 
-{# Audit action badges (have dark mode support) #}
-<span class="badge badge-create">Create</span>
-<span class="badge badge-update">Update</span>
-<span class="badge badge-delete">Delete</span>
+{# Count/info badges #}
+<span class="badge bg-secondary">{{ count }}</span>
+
+{# Role/category badges #}
+<span class="badge bg-primary">{{ 'role.admin'|trans }}</span>
 ```
+
+### Priority Badges (Custom Styles)
+
+```twig
+{# Severity/Priority badges with gradients #}
+<span class="badge badge-critical">Critical</span>
+<span class="badge badge-high">High</span>
+<span class="badge badge-medium">Medium</span>
+<span class="badge badge-low">Low</span>
+```
+
+### Badge with Icons
+
+```twig
+<span class="badge bg-success">
+    <i class="bi bi-check-circle" aria-hidden="true"></i>
+    {{ 'status.implemented'|trans }}
+</span>
+
+<span class="badge bg-warning">
+    <i class="bi bi-clock" aria-hidden="true"></i>
+    {{ 'status.in_progress'|trans }}
+</span>
+```
+
+### ⚠️ Warning Badge Contrast
+
+`bg-warning` badges automatically get dark text via CSS:
+```css
+.badge.bg-warning { color: #212529 !important; }
+```
+
+**No need to add `text-dark` manually!**
 
 ---
 
@@ -396,6 +487,76 @@ Use Bootstrap's font size utilities:
 
 ---
 
+## Modals
+
+### Auto-Centering
+
+All modals are **automatically centered** via CSS. No need to add `modal-dialog-centered`:
+
+```twig
+{# Modals are centered by default #}
+<div class="modal" id="myModal">
+    <div class="modal-dialog">  {# No modal-dialog-centered needed #}
+        <div class="modal-content">
+            ...
+        </div>
+    </div>
+</div>
+```
+
+### Modal Header Patterns
+
+```twig
+{# Standard modal #}
+<div class="modal-header">
+    <h5 class="modal-title" id="modalLabel">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'modal.title'|trans }}
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"
+            aria-label="{{ 'common.close'|trans }}"></button>
+</div>
+
+{# Danger modal (for delete/destructive actions) #}
+<div class="modal-header bg-danger text-white">
+    <h5 class="modal-title" id="deleteModalLabel">
+        <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+        {{ 'modal.delete.title'|trans }}
+    </h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+            aria-label="{{ 'common.close'|trans }}"></button>
+</div>
+
+{# Warning modal #}
+<div class="modal-header bg-warning">
+    <h5 class="modal-title" id="warningModalLabel">
+        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+        {{ 'modal.warning.title'|trans }}
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal"
+            aria-label="{{ 'common.close'|trans }}"></button>
+</div>
+```
+
+### Modal Accessibility
+
+```twig
+<div class="modal" id="myModal" tabindex="-1"
+     role="dialog" aria-labelledby="myModalLabel" aria-modal="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel">Title</h5>
+                ...
+            </div>
+            ...
+        </div>
+    </div>
+</div>
+```
+
+---
+
 ## Icons
 
 ### Bootstrap Icons Standard
@@ -410,6 +571,46 @@ Use Bootstrap's font size utilities:
 ❌ **DON'T:**
 ```twig
 <i class="bi-shield-check"></i>  {# Missing 'bi' prefix! #}
+```
+
+### Icon Sizes
+
+Use the standardized icon size classes:
+
+```twig
+{# Default - inline with text (1em) #}
+<i class="bi bi-shield-check" aria-hidden="true"></i>
+
+{# Small - compact contexts #}
+<i class="bi bi-shield-check icon-sm" aria-hidden="true"></i>
+
+{# Medium - emphasis #}
+<i class="bi bi-shield-check icon-md" aria-hidden="true"></i>
+
+{# Large - prominent #}
+<i class="bi bi-shield-check icon-lg" aria-hidden="true"></i>
+
+{# Extra large - hero/feature #}
+<i class="bi bi-shield-check icon-xl" aria-hidden="true"></i>
+```
+
+### Semantic Icon Colors
+
+```twig
+{# Success indicator #}
+<i class="bi bi-check-circle icon-success" aria-hidden="true"></i>
+
+{# Danger/error indicator #}
+<i class="bi bi-x-circle icon-danger" aria-hidden="true"></i>
+
+{# Warning indicator #}
+<i class="bi bi-exclamation-triangle icon-warning" aria-hidden="true"></i>
+
+{# Info indicator #}
+<i class="bi bi-info-circle icon-info" aria-hidden="true"></i>
+
+{# Muted/secondary #}
+<i class="bi bi-question-circle icon-muted" aria-hidden="true"></i>
 ```
 
 ### Icon with Text
@@ -433,6 +634,29 @@ Use Bootstrap's font size utilities:
     <i class="bi bi-eye" aria-hidden="true"></i>
 </button>
 ```
+
+### Common Icon Mappings
+
+| Action | Icon | Class |
+|--------|------|-------|
+| Create/Add | `bi-plus-circle` | - |
+| Edit | `bi-pencil` | - |
+| Delete | `bi-trash` | icon-danger |
+| View | `bi-eye` | - |
+| Save | `bi-save` | - |
+| Back | `bi-arrow-left` | - |
+| List | `bi-list` | - |
+| Download | `bi-download` | - |
+| Upload | `bi-upload` | - |
+| Search | `bi-search` | - |
+| Filter | `bi-funnel` | - |
+| Settings | `bi-gear` | - |
+| User | `bi-person` | - |
+| Security | `bi-shield-check` | icon-success |
+| Warning | `bi-exclamation-triangle` | icon-warning |
+| Info | `bi-info-circle` | icon-info |
+| Success | `bi-check-circle` | icon-success |
+| Error | `bi-x-circle` | icon-danger |
 
 ---
 
@@ -642,6 +866,7 @@ Use this checklist when creating new components:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.2.0 | 2025-12-02 | Added Button hierarchy, Badge semantics, Icon sizes/colors, Modal standards, replaced emojis with Bootstrap Icons |
 | 1.1.0 | 2025-11-26 | Added Bootstrap 5.3+ dark mode compatibility (data-bs-theme), updated CSS variable examples |
 | 1.0.0 | 2025-11-19 | Initial style guide creation |
 

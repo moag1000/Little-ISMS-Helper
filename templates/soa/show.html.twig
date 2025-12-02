@@ -22,7 +22,7 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-primary">
-            ✏️ {{ 'soa.action.edit'|trans({}, 'soa') }}
+            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'soa.action.edit'|trans({}, 'soa') }}
         </a>
         {%- set categoryLabel = ('soa.category.' ~ control.category)|trans({}, 'soa') -%}
         <a href="{{ path('app_soa_by_category', {category: control.category}) }}" class="btn btn-secondary">
@@ -286,10 +286,10 @@
 {# Action Buttons #}
 <div class="d-flex gap-2 mt-4">
     <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-success">
-        ✏️ {{ 'soa.action.edit'|trans({}, 'soa') }}
+        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'soa.action.edit'|trans({}, 'soa') }}
     </a>
     <a href="{{ path('app_soa_index') }}" class="btn btn-secondary">
-        📋 {{ 'common.back_to_list'|trans({}, 'messages') }}
+        <i class="bi bi-list" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
     </a>
 </div>
 

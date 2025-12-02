@@ -35,7 +35,7 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_person_edit', {id: person.id}) }}" class="btn btn-primary">
-            ✏️ {{ 'common.edit'|trans({}, 'messages') }}
+            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_person_index') }}" class="btn btn-secondary">
             ← {{ 'common.back_to_list'|trans({}, 'messages') }}
@@ -129,14 +129,14 @@
 {# Action Buttons #}
 <div class="button-group mt-xl">
     <a href="{{ path('app_person_edit', {id: person.id}) }}" class="btn btn-primary">
-        ✏️ {{ 'common.edit'|trans({}, 'messages') }}
+        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
     </a>
     <a href="{{ path('app_person_index') }}" class="btn btn-secondary">
-        📋 {{ 'common.back_to_list'|trans({}, 'messages') }}
+        <i class="bi bi-list" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
     </a>
     <form method="post" action="{{ path('app_person_delete', {id: person.id}) }}" onsubmit="return confirm('{{ 'person.confirm.delete'|trans({}, 'messages') }}');" class="d-inline">
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ person.id) }}">
-        <button type="submit" class="btn btn-danger">🗑️ {{ 'common.delete'|trans({}, 'messages') }}</button>
+        <button type="submit" class="btn btn-danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
     </form>
 </div>
 {% endblock %}
