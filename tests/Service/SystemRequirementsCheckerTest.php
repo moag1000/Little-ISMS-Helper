@@ -271,6 +271,13 @@ class SystemRequirementsCheckerTest extends TestCase
 
     public function testMemoryLimitCheckWithLowMemory(): void
     {
+        // Skip if memory_limit is unlimited (-1), as we can't simulate low memory
+        $originalLimit = ini_get('memory_limit');
+        if ($originalLimit === '-1') {
+            // Set a finite memory limit for the test
+            ini_set('memory_limit', '128M');
+        }
+
         // Create config requiring very high memory
         file_put_contents(
             $this->testConfigDir . '/modules.yaml',
@@ -279,6 +286,9 @@ class SystemRequirementsCheckerTest extends TestCase
 
         $checker = new SystemRequirementsChecker($this->projectDir);
         $results = $checker->checkAll();
+
+        // Restore original limit
+        ini_set('memory_limit', $originalLimit);
 
         $this->assertSame('warning', $results['memory']['status']);
         $this->assertStringContainsString('niedriger als empfohlen', $results['memory']['message']);
