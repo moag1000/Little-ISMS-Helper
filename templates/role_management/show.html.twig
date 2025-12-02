@@ -141,7 +141,7 @@
     {% if not role.systemRole %}
     <form method="post" action="{{ path('role_management_delete', {id: role.id}) }}" onsubmit="return confirm('{{ 'role_management.confirm.delete'|trans({}, 'role_management') }}');" class="d-inline">
         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ role.id) }}">
-        <button type="submit" class="btn btn-danger">🗑️ {{ 'common.delete'|trans({}, 'messages') }}</button>
+        <button type="submit" class="btn btn-danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
     </form>
     {% endif %}
 </div>
