@@ -259,13 +259,67 @@ Wie bei den bereits gelösten Issues sollten wir auch hier **CSS-basierte** und 
 
 ---
 
-## ❓ Nächste Schritte?
+## ✅ NEUE CSS-Standards (Dezember 2025)
 
-Du kannst wählen:
+### Badge Kontrast
+```css
+/* Automatisch angewendet via app.css */
+.badge.bg-warning { color: #212529 !important; }
+```
+**Ergebnis:** Alle `bg-warning` Badges haben automatisch dunklen Text (WCAG AA).
 
-1. **Dark Mode Fix** (9-10h) - Höchste Impact für Benutzer
-2. **Accessibility & Forms** (6-7h) - Wichtig für WCAG
-3. **Einzelne Quick Wins** - z.B. Skip Links (13.1, 1h)
-4. **Pause** - Die wichtigsten Issues sind gelöst ✅
+### Modal-Centering
+```css
+/* Alle Modals werden automatisch zentriert */
+.modal-dialog { display: flex; align-items: center; min-height: calc(100% - 1rem); }
+```
+**Ergebnis:** Keine manuellen `modal-dialog-centered` Klassen mehr nötig.
 
-**Was möchtest du angehen?**
+### Icon-Standards
+```css
+/* Größen */
+.icon-sm { font-size: 0.875rem; }  /* Kompakt */
+.icon-md { font-size: 1.25rem; }   /* Mittel */
+.icon-lg { font-size: 1.5rem; }    /* Groß */
+.icon-xl { font-size: 2rem; }      /* Hero */
+
+/* Semantische Farben */
+.icon-success { color: var(--color-success); }
+.icon-danger { color: var(--color-danger); }
+.icon-warning { color: var(--color-warning); }
+.icon-info { color: var(--color-info); }
+```
+
+### Card-Macros (Empfohlen)
+Verwende `_macros/cards.html.twig` statt Inline-HTML:
+```twig
+{% import '_macros/cards.html.twig' as cards %}
+{{ cards.simple_card('Titel', 'icon-name', content) }}
+```
+**Status:** 71 Templates mit Inline-Cards (Migration optional).
+
+---
+
+## 📊 Session-Zusammenfassung (Dezember 2025)
+
+### Erledigt in dieser Session
+| Issue | Lösung | Aufwand |
+|-------|--------|---------|
+| Emoji statt Icon | `role_management/show.html.twig` → Bootstrap Icon | 1 min |
+| Badge bg-warning Kontrast | Globale CSS-Regel hinzugefügt | 5 min |
+| Modal-Centering | Globale CSS-Regel hinzugefügt | 5 min |
+| Icon-Standards | Neue CSS-Klassen erstellt | 5 min |
+
+**Total:** ~15 Minuten für 4 kritische Fixes via CSS-basierte Lösungen.
+
+---
+
+## ❓ Verbleibende Aufgaben
+
+| Kategorie | Issues | Aufwand | Priorität |
+|-----------|--------|---------|-----------|
+| **Cards** | 71 Templates mit Inline-HTML | 10-15h | Niedrig |
+| **Buttons** | Konventionen dokumentieren | 1-2h | Niedrig |
+| **Badge-Semantik** | Farbzuordnung dokumentieren | 1h | Niedrig |
+
+**Empfehlung:** Die wichtigsten Konsistenz-Fixes sind via CSS erledigt. Card-Migration ist optional und kann bei Bedarf templateweise erfolgen.

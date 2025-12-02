@@ -19,7 +19,7 @@
     </div>
     <div class="button-group">
         <a href="{{ path('role_management_new') }}" class="btn btn-primary">
-            ➕ {{ 'role_management.action.create'|trans({}, 'role_management') }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'role_management.action.create'|trans({}, 'role_management') }}
         </a>
     </div>
 </div>
@@ -93,7 +93,7 @@
                         👁 {{ 'common.view'|trans({}, 'messages') }}
                     </a>
                     <a href="{{ path('role_management_edit', {id: role.id}) }}" class="btn btn-outline-secondary">
-                        ✏️ {{ 'common.edit'|trans({}, 'messages') }}
+                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                     </a>
                 </div>
             </td>

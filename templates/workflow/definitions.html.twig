@@ -16,7 +16,7 @@
             ← {{ 'common.back'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_workflow_definition_new') }}" class="btn btn-primary">
-            ➕ {{ 'workflow.action.create_definition'|trans({}, 'workflows') }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'workflow.action.create_definition'|trans({}, 'workflows') }}
         </a>
     </div>
 </div>
@@ -92,7 +92,7 @@
                     👁 {{ 'common.view'|trans({}, 'messages') }}
                 </a>
                 <a href="{{ path('app_workflow_definition_edit', {id: workflow.id}) }}" class="btn btn-sm btn-secondary">
-                    ✏️ {{ 'common.edit'|trans({}, 'messages') }}
+                    <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                 </a>
             </td>
         </tr>
