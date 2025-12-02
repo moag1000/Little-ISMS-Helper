@@ -1470,6 +1470,11 @@ tbody td {
     margin-left: 0.25rem;
 }
 
+/* WCAG AA Contrast Fix: bg-warning badges need dark text for readability */
+.badge.bg-warning {
+    color: #212529 !important; /* Bootstrap text-dark value */
+}
+
 /* Icon in badge spacing */
 .badge .bi {
     margin-right: 0.25rem;

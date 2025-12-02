@@ -274,8 +274,12 @@ class SystemRequirementsCheckerTest extends TestCase
         // Skip if memory_limit is unlimited (-1), as we can't simulate low memory
         $originalLimit = ini_get('memory_limit');
         if ($originalLimit === '-1') {
-            // Set a finite memory limit for the test
-            ini_set('memory_limit', '128M');
+            // Try to set a finite memory limit for the test
+            $result = @ini_set('memory_limit', '128M');
+            // If ini_set failed or limit is still unlimited, skip the test
+            if ($result === false || ini_get('memory_limit') === '-1') {
+                $this->markTestSkipped('Cannot set memory_limit in this environment');
+            }
         }
 
         // Create config requiring very high memory
@@ -288,7 +292,7 @@ class SystemRequirementsCheckerTest extends TestCase
         $results = $checker->checkAll();
 
         // Restore original limit
-        ini_set('memory_limit', $originalLimit);
+        @ini_set('memory_limit', $originalLimit);
 
         $this->assertSame('warning', $results['memory']['status']);
         $this->assertStringContainsString('niedriger als empfohlen', $results['memory']['message']);
