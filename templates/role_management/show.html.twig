@@ -27,7 +27,7 @@
     </div>
     <div class="button-group">
         <a href="{{ path('role_management_edit', {id: role.id}) }}" class="btn btn-primary">
-            ✏️ {{ 'common.edit'|trans({}, 'messages') }}
+            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('role_management_index') }}" class="btn btn-secondary">
             ← {{ 'common.back_to_list'|trans({}, 'messages') }}
@@ -133,10 +133,10 @@
 {# Action Buttons #}
 <div class="button-group mt-xl">
     <a href="{{ path('role_management_edit', {id: role.id}) }}" class="btn btn-primary">
-        ✏️ {{ 'common.edit'|trans({}, 'messages') }}
+        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
     </a>
     <a href="{{ path('role_management_index') }}" class="btn btn-secondary">
-        📋 {{ 'common.back_to_list'|trans({}, 'messages') }}
+        <i class="bi bi-list" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
     </a>
     {% if not role.systemRole %}
     <form method="post" action="{{ path('role_management_delete', {id: role.id}) }}" onsubmit="return confirm('{{ 'role_management.confirm.delete'|trans({}, 'role_management') }}');" class="d-inline">
