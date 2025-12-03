@@ -231,6 +231,10 @@ admin:
         inactive_modules: 'Inaktive Module'
         activate: Aktivieren
 data_management:
+    backup:
+        empty:
+            title: 'Noch keine Backups vorhanden'
+            description: 'Erstellen Sie Ihr erstes Backup, um Ihre Daten zu sichern.'
     export:
         includes_all_records: 'Enthält alle Datensätze Ihres Tenants'
         sensitive_data_warning: 'Warnung: Dieser Export kann sensible Daten enthalten. Bitte sicher aufbewahren.'

@@ -206,11 +206,12 @@
                         {% endblock %}
                     {% endembed %}
                 {% else %}
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle" aria-hidden="true"></i>
-                        Noch keine Benutzer vorhanden.
-                        <a href="{{ path('user_management_new') }}" class="alert-link">Erstellen Sie den ersten Benutzer</a>.
-                    </div>
+                    {% include '_components/_empty_state.html.twig' with {
+                        icon: 'bi-people',
+                        title: 'user.empty.title'|trans({}, 'user'),
+                        description: 'user.empty.description'|trans({}, 'user'),
+                        action: { label: 'user.action.new_user'|trans({}, 'user'), url: path('user_management_new'), icon: 'bi-person-plus' }
+                    } %}
                 {% endif %}
             </div>
         </div>

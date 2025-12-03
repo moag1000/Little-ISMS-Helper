@@ -41,8 +41,8 @@
         {% endfor %}
     {% else %}
         <div class="text-center text-muted py-4">
-            <i class="bi bi-inbox" style="font-size: 3rem;"></i>
-            <p class="mt-2">Keine Aktivitäten vorhanden</p>
+            <i class="bi bi-inbox" style="font-size: 3rem;" aria-hidden="true"></i>
+            <p class="mt-2">{{ 'common.no_activities'|trans({}, 'messages') }}</p>
         </div>
     {% endif %}
 </div>

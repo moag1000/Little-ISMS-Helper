@@ -154,11 +154,12 @@
                         {% endblock %}
                     {% endembed %}
                 {% else %}
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle" aria-hidden="true"></i>
-                        Noch keine Geschäftsprozesse vorhanden. 
-                        <a href="{{ path('app_business_process_new') }}" class="alert-link">Erstellen Sie den ersten Prozess</a>.
-                    </div>
+                    {% include '_components/_empty_state.html.twig' with {
+                        icon: 'bi-diagram-3',
+                        title: 'business_process.empty.title'|trans({}, 'business_process'),
+                        description: 'business_process.empty.description'|trans({}, 'business_process'),
+                        action: { label: 'business_process.action.create'|trans({}, 'business_process'), url: path('app_business_process_new'), icon: 'bi-plus-circle' }
+                    } %}
                 {% endif %}
             </div>
         </div>

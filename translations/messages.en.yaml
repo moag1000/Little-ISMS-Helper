@@ -184,6 +184,8 @@ common:
     last_90_days: 'Last 90 Days'
     last_year: 'Last Year'
     not_available: 'Not Available'
+    no_activities: 'No activities available'
+    no_log_entries: 'No log entries available'
     title: Title
     responsible: Responsible
     target_date: 'Target Date'
