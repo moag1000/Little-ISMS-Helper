@@ -57,8 +57,10 @@ export default class extends Controller {
 
     createChart() {
         const colors = this.themeColors;
+        const chartType = this.typeValue || 'bar';
+        const isRadialChart = ['doughnut', 'pie', 'polarArea', 'radar'].includes(chartType);
 
-        // Deep merge options to ensure legend colors are always applied
+        // Base options for all charts
         const baseOptions = {
             responsive: true,
             maintainAspectRatio: false,
@@ -66,15 +68,23 @@ export default class extends Controller {
                 legend: {
                     position: 'bottom',
                     labels: {
-                        color: colors.text
+                        color: colors.text,
+                        font: {
+                            size: 12
+                        }
                     }
                 },
                 tooltip: {
-                    titleColor: colors.text,
-                    bodyColor: colors.text
+                    titleColor: '#ffffff',
+                    bodyColor: '#ffffff',
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)'
                 }
-            },
-            scales: {
+            }
+        };
+
+        // Only add scales for non-radial charts (bar, line, etc.)
+        if (!isRadialChart) {
+            baseOptions.scales = {
                 x: {
                     ticks: { color: colors.textMuted },
                     grid: { color: colors.gridColor }
@@ -83,20 +93,21 @@ export default class extends Controller {
                     ticks: { color: colors.textMuted },
                     grid: { color: colors.gridColor }
                 }
-            }
-        };
+            };
+        }
 
-        // Merge user options but preserve our theme colors for legend
+        // Merge user options
         const userOptions = this.optionsValue || {};
         const mergedOptions = this.deepMerge(baseOptions, userOptions);
 
-        // Always override legend label color with theme color
-        if (mergedOptions.plugins?.legend?.labels) {
-            mergedOptions.plugins.legend.labels.color = colors.text;
-        }
+        // Always force legend label color for dark mode compatibility
+        if (!mergedOptions.plugins) mergedOptions.plugins = {};
+        if (!mergedOptions.plugins.legend) mergedOptions.plugins.legend = {};
+        if (!mergedOptions.plugins.legend.labels) mergedOptions.plugins.legend.labels = {};
+        mergedOptions.plugins.legend.labels.color = colors.text;
 
         this.chart = new Chart(this.element, {
-            type: this.typeValue || 'bar',
+            type: chartType,
             data: this.dataValue,
             options: mergedOptions
         });
