@@ -156,7 +156,7 @@
                     <td>Initial Risk Level</td>
                     <td>
                         {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[dpia.riskLevel] %}
-                        <span class="badge badge-{{ risk_class }}">{{ dpia.riskLevel|upper }}</span>
+                        <span class="badge bg-{{ risk_class }}">{{ dpia.riskLevel|upper }}</span>
                     </td>
                 </tr>
             {% endif %}
@@ -165,7 +165,7 @@
                     <td>Residual Risk Level</td>
                     <td>
                         {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[dpia.residualRiskLevel] %}
-                        <span class="badge badge-{{ risk_class }}">{{ dpia.residualRiskLevel|upper }}</span>
+                        <span class="badge bg-{{ risk_class }}">{{ dpia.residualRiskLevel|upper }}</span>
                         {% if dpia.isResidualRiskAcceptable %}
                             <span class="badge bg-success">ACCEPTABLE</span>
                         {% else %}

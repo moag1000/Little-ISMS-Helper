@@ -35,7 +35,7 @@
                         <span class="badge bg-info">{{ mapping.sourceRequirement.category }}</span>
                     {% endif %}
                     {% if mapping.sourceRequirement.priority %}
-                        <span class="badge badge-{{ mapping.sourceRequirement.priority == 'critical' ? 'danger' : (mapping.sourceRequirement.priority == 'high' ? 'warning' : 'secondary') }}">
+                        <span class="badge bg-{{ mapping.sourceRequirement.priority == 'critical' ? 'danger' : (mapping.sourceRequirement.priority == 'high' ? 'warning' : 'secondary') }}">
                             {{ mapping.sourceRequirement.priority|upper }}
                         </span>
                     {% endif %}
@@ -52,7 +52,7 @@
                         <span class="badge bg-info">{{ mapping.targetRequirement.category }}</span>
                     {% endif %}
                     {% if mapping.targetRequirement.priority %}
-                        <span class="badge badge-{{ mapping.targetRequirement.priority == 'critical' ? 'danger' : (mapping.targetRequirement.priority == 'high' ? 'warning' : 'secondary') }}">
+                        <span class="badge bg-{{ mapping.targetRequirement.priority == 'critical' ? 'danger' : (mapping.targetRequirement.priority == 'high' ? 'warning' : 'secondary') }}">
                             {{ mapping.targetRequirement.priority|upper }}
                         </span>
                     {% endif %}
@@ -125,7 +125,7 @@
                     <hr>
                     <div>
                         <strong>Review Status:</strong>
-                        <span class="badge badge-{{ mapping.reviewStatusBadgeClass }}">{{ mapping.reviewStatus }}</span>
+                        <span class="badge bg-{{ mapping.reviewStatusBadgeClass }}">{{ mapping.reviewStatus }}</span>
                     </div>
                     {% if mapping.requiresReview %}
                         <div class="mt-2">
@@ -200,11 +200,11 @@
                 <div class="card-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <span>
-                            <span class="badge badge-{{ gap.priorityBadgeClass }}">{{ gap.priority|upper }}</span>
+                            <span class="badge bg-{{ gap.priorityBadgeClass }}">{{ gap.priority|upper }}</span>
                             <strong>{{ gap.gapTypeLabel }}</strong>
                         </span>
                         <span>
-                            <span class="badge badge-{{ gap.statusBadgeClass }}">{{ gap.status }}</span>
+                            <span class="badge bg-{{ gap.statusBadgeClass }}">{{ gap.status }}</span>
                             {% if gap.percentageImpact > 0 %}
                                 <span class="badge bg-danger">-{{ gap.percentageImpact }}%</span>
                             {% endif %}

@@ -307,7 +307,7 @@
                         {% for recommendation in dashboard.recommendations %}
                             <div class="recommendation-item priority-{{ recommendation.priority }}">
                                 <div class="recommendation-header">
-                                    <span class="badge badge-{{ recommendation.priority == 'high' ? 'danger' : (recommendation.priority == 'medium' ? 'warning' : 'info') }}">
+                                    <span class="badge bg-{{ recommendation.priority == 'high' ? 'danger' : (recommendation.priority == 'medium' ? 'warning' : 'info') }}">
                                         {{ recommendation.priority|upper }}
                                     </span>
                                     <strong>{{ recommendation.title }}</strong>
@@ -369,7 +369,7 @@
                                     {% endif %}
                                 </div>
                                 <div class="requirement-status">
-                                    <span class="badge badge-{{ requirement.priority == 'critical' ? 'danger' : (requirement.priority == 'high' ? 'warning' : 'secondary') }}">
+                                    <span class="badge bg-{{ requirement.priority == 'critical' ? 'danger' : (requirement.priority == 'high' ? 'warning' : 'secondary') }}">
                                         {{ requirement.priority|upper }}
                                     </span>
                                     {% set fulfillment = fulfillments[requirement.id] %}
@@ -426,7 +426,7 @@
                                         <span class="requirement-id">{{ gap.requirementId }}</span>
                                         <strong>{{ gap.title }}</strong>
                                     </div>
-                                    <span class="badge badge-{{ gap.priority == 'critical' ? 'danger' : 'warning' }}">
+                                    <span class="badge bg-{{ gap.priority == 'critical' ? 'danger' : 'warning' }}">
                                         {{ gap.priority|upper }}
                                     </span>
                                 </div>

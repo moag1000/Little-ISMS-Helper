@@ -532,7 +532,7 @@
                         {% for control in incident.relatedControls %}
                             <div class="data-reuse-item">
                                 <strong>{{ control.controlId }}</strong>: {{ control.name }}
-                                <span class="badge badge-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'danger') }}">
+                                <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'danger') }}">
                                     {{ control.implementationStatus|upper }}
                                 </span>
                                 {% if control.implementationStatus != 'implemented' %}
