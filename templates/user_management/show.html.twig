@@ -181,9 +181,9 @@
                 </div>
                 <div class="card-body">
                     {% if user.roles|length > 0 %}
-                        <div class="list-group">
+                        <ul class="list-group">
                             {% for role in user.roles %}
-                                <div class="list-group-item">
+                                <li class="list-group-item">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span>
                                             <i class="bi bi-shield-fill text-warning" aria-hidden="true"></i>
@@ -201,9 +201,9 @@
                                             <span class="badge bg-secondary">User</span>
                                         {% endif %}
                                     </div>
-                                </div>
+                                </li>
                             {% endfor %}
-                        </div>
+                        </ul>
                     {% else %}
                         <div class="alert alert-info mb-0">
                             Keine Systemrollen zugewiesen.
@@ -220,9 +220,9 @@
                 </div>
                 <div class="card-body">
                     {% if user.customRoles|length > 0 %}
-                        <div class="list-group">
+                        <ul class="list-group">
                             {% for customRole in user.customRoles %}
-                                <div class="list-group-item">
+                                <li class="list-group-item">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <strong>{{ customRole.name }}</strong>
@@ -233,9 +233,9 @@
                                         </div>
                                         <span class="badge bg-info">{{ customRole.permissions|length }} Berechtigungen</span>
                                     </div>
-                                </div>
+                                </li>
                             {% endfor %}
-                        </div>
+                        </ul>
                     {% else %}
                         <div class="alert alert-info mb-0">
                             Keine benutzerdefinierten Rollen zugewiesen.
