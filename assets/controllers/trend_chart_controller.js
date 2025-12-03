@@ -23,6 +23,31 @@ export default class extends Controller {
         url: String
     };
 
+    // Bootstrap 5 colors - consistent across all charts
+    // Light mode uses standard Bootstrap colors
+    // Dark mode uses lighter variants for visibility
+    get colors() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+                       document.documentElement.getAttribute('data-bs-theme') === 'dark';
+        return {
+            danger: isDark ? '#f87171' : '#dc3545',      // Critical/High risk
+            dangerDark: isDark ? '#b91c1c' : '#721c24',  // Critical severity
+            warning: isDark ? '#fbbf24' : '#ffc107',     // Medium risk
+            success: isDark ? '#34d399' : '#28a745',     // Low risk
+            info: isDark ? '#22d3ee' : '#17a2b8',        // Assets/Info
+            secondary: isDark ? '#94a3b8' : '#6c757d',   // Neutral
+            // RGBA versions for backgrounds
+            dangerBg: isDark ? 'rgba(248, 113, 113, 0.2)' : 'rgba(220, 53, 69, 0.1)',
+            warningBg: isDark ? 'rgba(251, 191, 36, 0.2)' : 'rgba(255, 193, 7, 0.1)',
+            successBg: isDark ? 'rgba(52, 211, 153, 0.2)' : 'rgba(40, 167, 69, 0.1)',
+            infoBg: isDark ? 'rgba(34, 211, 238, 0.2)' : 'rgba(23, 162, 184, 0.1)',
+            // Text colors for chart labels
+            text: isDark ? '#f1f5f9' : '#2c3e50',
+            textMuted: isDark ? '#94a3b8' : '#6c757d',
+            gridColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+        };
+    }
+
     connect() {
         this.charts = {
             risk: null,
@@ -37,6 +62,10 @@ export default class extends Controller {
         // Listen for period changes from parent analytics controller
         this.boundHandlePeriodChange = this.handlePeriodChange.bind(this);
         document.addEventListener('analytics:period-changed', this.boundHandlePeriodChange);
+
+        // Re-render charts when theme changes
+        this.boundHandleThemeChange = this.handleThemeChange.bind(this);
+        document.addEventListener('theme:changed', this.boundHandleThemeChange);
     }
 
     disconnect() {
@@ -44,6 +73,12 @@ export default class extends Controller {
             if (chart) chart.destroy();
         });
         document.removeEventListener('analytics:period-changed', this.boundHandlePeriodChange);
+        document.removeEventListener('theme:changed', this.boundHandleThemeChange);
+    }
+
+    handleThemeChange() {
+        // Re-render all charts with new theme colors
+        this.loadData();
     }
 
     handlePeriodChange(event) {
@@ -82,6 +117,7 @@ export default class extends Controller {
         const low = data.map(d => d.low);
         const medium = data.map(d => d.medium);
         const high = data.map(d => d.high);
+        const colors = this.colors;
 
         const ctx = this.riskCanvasTarget.getContext('2d');
 
@@ -93,22 +129,22 @@ export default class extends Controller {
                     {
                         label: 'High',
                         data: high,
-                        borderColor: '#e74c3c',
-                        backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                        borderColor: colors.danger,
+                        backgroundColor: colors.dangerBg,
                         tension: 0.4
                     },
                     {
                         label: 'Medium',
                         data: medium,
-                        borderColor: '#f39c12',
-                        backgroundColor: 'rgba(243, 156, 18, 0.1)',
+                        borderColor: colors.warning,
+                        backgroundColor: colors.warningBg,
                         tension: 0.4
                     },
                     {
                         label: 'Low',
                         data: low,
-                        borderColor: '#2ecc71',
-                        backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                        borderColor: colors.success,
+                        backgroundColor: colors.successBg,
                         tension: 0.4
                     }
                 ]
@@ -118,15 +154,19 @@ export default class extends Controller {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        position: 'top'
+                        position: 'top',
+                        labels: { color: colors.text }
                     }
                 },
                 scales: {
                     y: {
                         beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
-                        }
+                        ticks: { stepSize: 1, color: colors.textMuted },
+                        grid: { color: colors.gridColor }
+                    },
+                    x: {
+                        ticks: { color: colors.textMuted },
+                        grid: { color: colors.gridColor }
                     }
                 }
             }
@@ -142,6 +182,7 @@ export default class extends Controller {
 
         const labels = data.map(d => d.month);
         const counts = data.map(d => d.count);
+        const colors = this.colors;
 
         const ctx = this.assetCanvasTarget.getContext('2d');
 
@@ -152,8 +193,8 @@ export default class extends Controller {
                 datasets: [{
                     label: 'Total Assets',
                     data: counts,
-                    borderColor: '#3498db',
-                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    borderColor: colors.info,
+                    backgroundColor: colors.infoBg,
                     fill: true,
                     tension: 0.4
                 }]
@@ -169,9 +210,12 @@ export default class extends Controller {
                 scales: {
                     y: {
                         beginAtZero: true,
-                        ticks: {
-                            stepSize: 1
-                        }
+                        ticks: { stepSize: 1, color: colors.textMuted },
+                        grid: { color: colors.gridColor }
+                    },
+                    x: {
+                        ticks: { color: colors.textMuted },
+                        grid: { color: colors.gridColor }
                     }
                 }
             }
@@ -190,6 +234,7 @@ export default class extends Controller {
         const high = data.map(d => d.high);
         const medium = data.map(d => d.medium);
         const low = data.map(d => d.low);
+        const colors = this.colors;
 
         const ctx = this.incidentCanvasTarget.getContext('2d');
 
@@ -201,25 +246,25 @@ export default class extends Controller {
                     {
                         label: 'Critical',
                         data: critical,
-                        backgroundColor: '#c0392b',
+                        backgroundColor: colors.dangerDark,
                         stack: 'Stack 0'
                     },
                     {
                         label: 'High',
                         data: high,
-                        backgroundColor: '#e74c3c',
+                        backgroundColor: colors.danger,
                         stack: 'Stack 0'
                     },
                     {
                         label: 'Medium',
                         data: medium,
-                        backgroundColor: '#f39c12',
+                        backgroundColor: colors.warning,
                         stack: 'Stack 0'
                     },
                     {
                         label: 'Low',
                         data: low,
-                        backgroundColor: '#2ecc71',
+                        backgroundColor: colors.success,
                         stack: 'Stack 0'
                     }
                 ]
@@ -229,16 +274,21 @@ export default class extends Controller {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        position: 'top'
+                        position: 'top',
+                        labels: { color: colors.text }
                     }
                 },
                 scales: {
                     x: {
-                        stacked: true
+                        stacked: true,
+                        ticks: { color: colors.textMuted },
+                        grid: { color: colors.gridColor }
                     },
                     y: {
                         stacked: true,
-                        beginAtZero: true
+                        beginAtZero: true,
+                        ticks: { color: colors.textMuted },
+                        grid: { color: colors.gridColor }
                     }
                 }
             }

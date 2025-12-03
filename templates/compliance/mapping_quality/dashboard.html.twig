@@ -388,14 +388,14 @@
                             {{ quality_stats.low_confidence }}
                         ],
                         backgroundColor: [
-                            'rgba(40, 167, 69, 0.8)',
-                            'rgba(255, 193, 7, 0.8)',
-                            'rgba(220, 53, 69, 0.8)'
+                            '#28a745',
+                            '#ffc107',
+                            '#dc3545'
                         ],
                         borderColor: [
-                            'rgba(40, 167, 69, 1)',
-                            'rgba(255, 193, 7, 1)',
-                            'rgba(220, 53, 69, 1)'
+                            '#28a745',
+                            '#ffc107',
+                            '#dc3545'
                         ],
                         borderWidth: 2
                     }]
@@ -449,10 +449,10 @@
             ];
 
             const backgroundColors = gapLabels.map(label => {
-                if (label === 'CRITICAL') return 'rgba(220, 53, 69, 0.8)';
-                if (label === 'HIGH') return 'rgba(255, 152, 0, 0.8)';
-                if (label === 'MEDIUM') return 'rgba(255, 193, 7, 0.8)';
-                return 'rgba(108, 117, 125, 0.8)';
+                if (label === 'CRITICAL') return '#721c24';
+                if (label === 'HIGH') return '#dc3545';
+                if (label === 'MEDIUM') return '#ffc107';
+                return '#6c757d';
             });
 
             new Chart(gapStatsCtx, {
