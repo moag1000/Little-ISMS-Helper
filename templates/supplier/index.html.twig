@@ -101,7 +101,7 @@
     <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/supplier">
         <div class="card-header">
             {%- set supplierCount = suppliers|length -%}
-            <h2>{{ 'supplier.list.title'|trans({'count': supplierCount}, 'suppliers') }}</h2>
+            <h3>{{ 'supplier.list.title'|trans({'count': supplierCount}, 'suppliers') }}</h3>
         </div>
         <div class="card-body">
             {% if suppliers|length > 0 %}

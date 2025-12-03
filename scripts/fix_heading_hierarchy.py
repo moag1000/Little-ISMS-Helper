@@ -1,102 +1,106 @@
 #!/usr/bin/env python3
 """
-Fix heading hierarchy issues automatically
-Issue 8.1 from UI/UX Audit
+Safe heading hierarchy fixer for Twig templates.
+Changes start and end tags together to avoid mismatches.
 """
+
 import re
+import os
+import sys
 from pathlib import Path
 
-def fix_headings(file_path):
-    """Fix heading hierarchy in a template"""
-    with open(file_path, 'r', encoding='utf-8') as f:
-        content = f.read()
+def fix_heading_in_content(content: str, old_tag: str, new_tag: str, context_pattern: str = None) -> tuple:
+    """
+    Safely replace heading tags, ensuring start and end tags are changed together.
+    """
+    count = 0
+    pattern = rf'<{old_tag}(\s[^>]*)?>(.+?)</{old_tag}>'
 
-    original_content = content
-    fixes = 0
+    def replacer(match):
+        nonlocal count
+        attrs = match.group(1) or ''
+        inner = match.group(2)
 
-    # Strategy 1: Pages starting with h2 → add h1
-    # If first heading is h2 and it's the page title, make it h1
-    if re.search(r'<h2[^>]*>.*?</h2>', content, re.DOTALL):
-        first_h2_match = re.search(r'(<h2)([^>]*>.*?</h2>)', content, re.DOTALL)
-        if first_h2_match:
-            pos = first_h2_match.start()
-            # Check if this is near the start of the content (likely main title)
-            content_before = content[:pos]
-            if content_before.count('<h') == 0:  # No headings before this
-                # This is the first heading, make it h1
-                content = content.replace(first_h2_match.group(0), f'<h1{first_h2_match.group(2).replace("</h2>", "</h1>")}', 1)
-                fixes += 1
+        if context_pattern:
+            start = max(0, match.start() - 150)
+            context = content[start:match.start()]
+            if not re.search(context_pattern, context):
+                return match.group(0)
 
-    # Strategy 2: Pages starting with h3 in card-header → keep as h5
-    # h3 at start → check if it's in a dashboard context
-    if re.search(r'<h3[^>]*>.*?</h3>', content, re.DOTALL):
-        first_h3_match = re.search(r'(<h3)([^>]*>)(.*?)(</h3>)', content, re.DOTALL)
-        if first_h3_match:
-            pos = first_h3_match.start()
-            content_before = content[:pos]
+        count += 1
+        return f'<{new_tag}{attrs}>{inner}</{new_tag}>'
 
-            # If this is the very first heading and it's a dashboard/card title
-            if content_before.count('<h') == 0:
-                # Check context - if it's in a card or has class indicators
-                h3_content = first_h3_match.group(0)
-                if 'card' in content_before[-200:].lower() or 'dashboard' in content[:pos+200].lower():
-                    # Keep as h3 but add comment for manual review
-                    pass  # Dashboard cards can have h3
-                else:
-                    # Regular page, should be h1
-                    content = content.replace(h3_content, h3_content.replace('<h3', '<h1').replace('</h3>', '</h1>'), 1)
-                    fixes += 1
+    new_content = re.sub(pattern, replacer, content, flags=re.DOTALL)
+    return new_content, count
 
-    # Strategy 3: h1 → h3 skip (missing h2)
-    # Add h2 wrapper or downgrade h3 to h2
-    h1_to_h3_pattern = r'(<h1[^>]*>.*?</h1>.*?)(<h3[^>]*>)'
-    if re.search(h1_to_h3_pattern, content, re.DOTALL):
-        # Replace h3 with h2 after h1
-        def replace_h3_to_h2(match):
-            nonlocal fixes
-            h1_part = match.group(1)
-            h3_tag = match.group(2)
-            fixes += 1
-            return h1_part + h3_tag.replace('<h3', '<h2')
 
-        content = re.sub(h1_to_h3_pattern, replace_h3_to_h2, content, count=1, flags=re.DOTALL)
+def validate_heading_balance(content: str) -> list:
+    """Check that all heading tags are properly balanced."""
+    issues = []
+    for tag in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
+        opens = len(re.findall(rf'<{tag}[\s>]', content))
+        closes = len(re.findall(rf'</{tag}>', content))
+        if opens != closes:
+            issues.append(f"{tag}: {opens} opens, {closes} closes")
+    return issues
 
-    # Strategy 4: Card headers that are h5 at page start
-    # These are OK if it's a card-based layout, but check for modal/form context
-    if re.search(r'^\s*{%\s*extends\s+', content):
-        # This extends a base template, likely has structure from parent
-        # h5 as first heading is OK for cards
-        pass
-
-    if content != original_content:
-        with open(file_path, 'w', encoding='utf-8') as f:
-            f.write(content)
-        return fixes
-
-    return 0
 
 def main():
-    templates_dir = Path('templates')
-    total_fixes = 0
-    files_fixed = 0
+    rules = [
+        {'old_tag': 'h2', 'new_tag': 'h3', 'context_pattern': r'card-header'}
+    ]
 
-    # Process all Twig templates
-    for twig_file in templates_dir.rglob('*.twig'):
-        # Skip PDF, components, and turbo_stream templates
-        if any(x in str(twig_file) for x in ['pdf', '_components', 'turbo_stream']):
+    templates_dir = Path('templates')
+    twig_files = list(templates_dir.rglob('*.twig'))
+    print(f"Found {len(twig_files)} Twig files")
+
+    dry_run = '--dry-run' in sys.argv
+    results = []
+
+    for filepath in sorted(twig_files):
+        if '.bak' in str(filepath):
             continue
 
-        fixes = fix_headings(twig_file)
-        if fixes > 0:
-            print(f"Fixed {twig_file.relative_to(templates_dir)}: {fixes} heading(s)")
-            total_fixes += fixes
-            files_fixed += 1
+        try:
+            content = filepath.read_text(encoding='utf-8')
+            original = content
+            total_changes = 0
+            details = []
 
-    print(f"\nTotal: {total_fixes} heading fixes in {files_fixed} files")
-    print("\nNote: Some issues require manual review:")
-    print("- Dashboard pages with h3 cards")
-    print("- Complex nested structures")
-    print("- Pages with dynamic content blocks")
+            for rule in rules:
+                content, count = fix_heading_in_content(
+                    content, rule['old_tag'], rule['new_tag'], rule.get('context_pattern')
+                )
+                if count > 0:
+                    total_changes += count
+                    details.append(f"{rule['old_tag']}>{rule['new_tag']}: {count}")
+
+            if total_changes > 0:
+                if not dry_run:
+                    filepath.write_text(content, encoding='utf-8')
+                results.append({'file': str(filepath), 'changes': total_changes, 'details': details})
+
+        except Exception as e:
+            print(f"ERROR: {filepath}: {e}")
+
+    print(f"\n{'DRY RUN - ' if dry_run else ''}Results:")
+    print("-" * 60)
+
+    for r in results:
+        print(f"{r['file']}: {', '.join(r['details'])}")
+
+    print("-" * 60)
+    print(f"Total: {sum(r['changes'] for r in results)} changes in {len(results)} files")
+
+    if not dry_run and results:
+        print("\nValidating...")
+        for r in results:
+            content = Path(r['file']).read_text(encoding='utf-8')
+            issues = validate_heading_balance(content)
+            if issues:
+                print(f"  WARNING {r['file']}: {issues}")
+        print("Done!")
+
 
 if __name__ == '__main__':
     main()

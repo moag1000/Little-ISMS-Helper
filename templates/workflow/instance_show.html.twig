@@ -35,7 +35,7 @@
 {# Instance Overview #}
 <div class="card mb-4">
     <div class="card-header">
-        <h2 class="mb-0">{{ 'workflow.section.overview'|trans({}, 'workflows') }}</h2>
+        <h3 class="mb-0">{{ 'workflow.section.overview'|trans({}, 'workflows') }}</h3>
     </div>
     <div class="card-body">
         <div class="row">
@@ -131,7 +131,7 @@
 {% if instance.workflow and instance.workflow.steps|length > 0 %}
 <div class="card mb-4">
     <div class="card-header">
-        <h2 class="mb-0">{{ 'workflow.section.steps'|trans({}, 'workflows') }}</h2>
+        <h3 class="mb-0">{{ 'workflow.section.steps'|trans({}, 'workflows') }}</h3>
     </div>
     <div class="card-body">
         {% for step in instance.workflow.steps %}
@@ -176,7 +176,7 @@
 {% if instance.approvalHistory|length > 0 %}
 <div class="card mb-4">
     <div class="card-header">
-        <h2 class="mb-0">{{ 'workflow.section.activity_log'|trans({}, 'workflows') }}</h2>
+        <h3 class="mb-0">{{ 'workflow.section.activity_log'|trans({}, 'workflows') }}</h3>
     </div>
     <div class="card-body">
         <div class="table-responsive">

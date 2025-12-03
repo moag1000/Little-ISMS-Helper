@@ -128,10 +128,10 @@
         <div class="col-md-6">
             <div class="card h-100">
                 <div class="card-header">
-                    <h2 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-building" aria-hidden="true"></i>
                         {{ 'context.section.organization'|trans({}, 'context') }}
-                    </h2>
+                    </h3>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
@@ -182,10 +182,10 @@
         <div class="col-md-6">
             <div class="card h-100">
                 <div class="card-header">
-                    <h2 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-diagram-3" aria-hidden="true"></i>
                         {{ 'context.section.context_analysis'|trans({}, 'context') }}
-                    </h2>
+                    </h3>
                 </div>
                 <div class="card-body">
                     {% if context.externalIssues %}
@@ -222,10 +222,10 @@
     {# Interested Parties Section #}
     <div class="card mb-4">
         <div class="card-header">
-            <h2 class="mb-0">
+            <h3 class="mb-0">
                 <i class="bi bi-people" aria-hidden="true"></i>
                 {{ 'context.section.interested_parties_and_requirements'|trans({}, 'context') }}
-            </h2>
+            </h3>
         </div>
         <div class="card-body">
             <div class="row">
@@ -264,10 +264,10 @@
     {# Requirements Section #}
     <div class="card mb-4">
         <div class="card-header">
-            <h2 class="mb-0">
+            <h3 class="mb-0">
                 <i class="bi bi-shield-check" aria-hidden="true"></i>
                 {{ 'context.section.compliance'|trans({}, 'context') }}
-            </h2>
+            </h3>
         </div>
         <div class="card-body">
             <div class="row">
@@ -319,10 +319,10 @@
         <div class="col-md-6">
             <div class="card h-100">
                 <div class="card-header">
-                    <h2 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
                         {{ 'context.field.isms_policy'|trans({}, 'context') }}
-                    </h2>
+                    </h3>
                 </div>
                 <div class="card-body">
                     {% if context.ismsPolicy %}
@@ -340,10 +340,10 @@
         <div class="col-md-6">
             <div class="card h-100">
                 <div class="card-header">
-                    <h2 class="mb-0">
+                    <h3 class="mb-0">
                         <i class="bi bi-person-badge" aria-hidden="true"></i>
                         {{ 'context.field.roles_and_responsibilities'|trans({}, 'context') }}
-                    </h2>
+                    </h3>
                 </div>
                 <div class="card-body">
                     {% if context.rolesAndResponsibilities %}
@@ -363,10 +363,10 @@
     {% if objectives|length > 0 %}
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h2 class="mb-0">
+            <h3 class="mb-0">
                 <i class="bi bi-target" aria-hidden="true"></i>
                 {{ 'context.section.objectives'|trans({}, 'context') }}
-            </h2>
+            </h3>
             <a href="{{ path('app_objective_index') }}" class="btn btn-sm btn-outline-primary">
                 {{ 'context.action.manage_objectives'|trans({}, 'context') }}
                 <i class="bi bi-arrow-right" aria-hidden="true"></i>
@@ -435,10 +435,10 @@
     {% else %}
     <div class="card">
         <div class="card-header">
-            <h2 class="mb-0">
+            <h3 class="mb-0">
                 <i class="bi bi-target" aria-hidden="true"></i>
                 {{ 'context.section.objectives'|trans({}, 'context') }}
-            </h2>
+            </h3>
         </div>
         <div class="card-body">
             <div class="alert alert-info mb-0">
