@@ -15,15 +15,38 @@ export default class extends Controller {
         url: String
     };
 
+    // Bootstrap 5 colors - consistent across all charts
+    // Dark mode uses lighter variants for visibility
+    get colors() {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+                       document.documentElement.getAttribute('data-bs-theme') === 'dark';
+        return {
+            success: isDark ? '#34d399' : '#28a745',
+            successBg: isDark ? 'rgba(52, 211, 153, 0.3)' : 'rgba(40, 167, 69, 0.2)',
+            text: isDark ? '#f1f5f9' : '#2c3e50',
+            textMuted: isDark ? '#94a3b8' : '#6c757d',
+            gridColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)'
+        };
+    }
+
     connect() {
         this.chart = null;
         this.loadData();
+
+        // Re-render chart when theme changes
+        this.boundHandleThemeChange = this.handleThemeChange.bind(this);
+        document.addEventListener('theme:changed', this.boundHandleThemeChange);
     }
 
     disconnect() {
         if (this.chart) {
             this.chart.destroy();
         }
+        document.removeEventListener('theme:changed', this.boundHandleThemeChange);
+    }
+
+    handleThemeChange() {
+        this.loadData();
     }
 
     async loadData() {
@@ -53,6 +76,7 @@ export default class extends Controller {
 
         const labels = data.map(item => item.label);
         const values = data.map(item => item.value);
+        const colors = this.colors;
 
         const ctx = this.canvasTarget.getContext('2d');
 
@@ -63,13 +87,13 @@ export default class extends Controller {
                 datasets: [{
                     label: 'Compliance %',
                     data: values,
-                    backgroundColor: 'rgba(46, 204, 113, 0.2)',
-                    borderColor: 'rgba(46, 204, 113, 1)',
+                    backgroundColor: colors.successBg,
+                    borderColor: colors.success,
                     borderWidth: 2,
-                    pointBackgroundColor: 'rgba(46, 204, 113, 1)',
+                    pointBackgroundColor: colors.success,
                     pointBorderColor: '#fff',
                     pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: 'rgba(46, 204, 113, 1)'
+                    pointHoverBorderColor: colors.success
                 }]
             },
             options: {
@@ -81,6 +105,7 @@ export default class extends Controller {
                         max: 100,
                         ticks: {
                             stepSize: 20,
+                            color: colors.textMuted,
                             callback: function(value) {
                                 return value + '%';
                             }
@@ -89,7 +114,14 @@ export default class extends Controller {
                             font: {
                                 size: 12,
                                 weight: 'bold'
-                            }
+                            },
+                            color: colors.text
+                        },
+                        grid: {
+                            color: colors.gridColor
+                        },
+                        angleLines: {
+                            color: colors.gridColor
                         }
                     }
                 },
