@@ -20,8 +20,21 @@ export default class extends Controller {
         'incidentTotal', 'incidentCritical', 'incidentAvg'
     ];
     static values = {
-        url: String
+        url: String,
+        locale: { type: String, default: 'de' }
     };
+
+    // Translated labels for chart datasets
+    get labels() {
+        const isGerman = this.localeValue === 'de';
+        return {
+            high: isGerman ? 'Hoch' : 'High',
+            medium: isGerman ? 'Mittel' : 'Medium',
+            low: isGerman ? 'Niedrig' : 'Low',
+            critical: isGerman ? 'Kritisch' : 'Critical',
+            totalAssets: isGerman ? 'Gesamt Assets' : 'Total Assets'
+        };
+    }
 
     // Bootstrap 5 colors - consistent across all charts
     // Light mode uses standard Bootstrap colors
@@ -113,35 +126,36 @@ export default class extends Controller {
             this.charts.risk.destroy();
         }
 
-        const labels = data.map(d => d.month);
+        const monthLabels = data.map(d => d.month);
         const low = data.map(d => d.low);
         const medium = data.map(d => d.medium);
         const high = data.map(d => d.high);
         const colors = this.colors;
+        const labels = this.labels;
 
         const ctx = this.riskCanvasTarget.getContext('2d');
 
         this.charts.risk = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: labels,
+                labels: monthLabels,
                 datasets: [
                     {
-                        label: 'High',
+                        label: labels.high,
                         data: high,
                         borderColor: colors.danger,
                         backgroundColor: colors.dangerBg,
                         tension: 0.4
                     },
                     {
-                        label: 'Medium',
+                        label: labels.medium,
                         data: medium,
                         borderColor: colors.warning,
                         backgroundColor: colors.warningBg,
                         tension: 0.4
                     },
                     {
-                        label: 'Low',
+                        label: labels.low,
                         data: low,
                         borderColor: colors.success,
                         backgroundColor: colors.successBg,
@@ -180,18 +194,19 @@ export default class extends Controller {
             this.charts.asset.destroy();
         }
 
-        const labels = data.map(d => d.month);
+        const monthLabels = data.map(d => d.month);
         const counts = data.map(d => d.count);
         const colors = this.colors;
+        const labels = this.labels;
 
         const ctx = this.assetCanvasTarget.getContext('2d');
 
         this.charts.asset = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: labels,
+                labels: monthLabels,
                 datasets: [{
-                    label: 'Total Assets',
+                    label: labels.totalAssets,
                     data: counts,
                     borderColor: colors.info,
                     backgroundColor: colors.infoBg,
@@ -229,40 +244,41 @@ export default class extends Controller {
             this.charts.incident.destroy();
         }
 
-        const labels = data.map(d => d.month);
+        const monthLabels = data.map(d => d.month);
         const critical = data.map(d => d.critical);
         const high = data.map(d => d.high);
         const medium = data.map(d => d.medium);
         const low = data.map(d => d.low);
         const colors = this.colors;
+        const labels = this.labels;
 
         const ctx = this.incidentCanvasTarget.getContext('2d');
 
         this.charts.incident = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: labels,
+                labels: monthLabels,
                 datasets: [
                     {
-                        label: 'Critical',
+                        label: labels.critical,
                         data: critical,
                         backgroundColor: colors.dangerDark,
                         stack: 'Stack 0'
                     },
                     {
-                        label: 'High',
+                        label: labels.high,
                         data: high,
                         backgroundColor: colors.danger,
                         stack: 'Stack 0'
                     },
                     {
-                        label: 'Medium',
+                        label: labels.medium,
                         data: medium,
                         backgroundColor: colors.warning,
                         stack: 'Stack 0'
                     },
                     {
-                        label: 'Low',
+                        label: labels.low,
                         data: low,
                         backgroundColor: colors.success,
                         stack: 'Stack 0'

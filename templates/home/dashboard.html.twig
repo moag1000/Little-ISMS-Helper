@@ -144,7 +144,7 @@
                 <div class="chart-container">
                     <canvas data-controller="chart"
                             data-chart-type-value="doughnut"
-                            data-chart-data-value='{"labels":["Hoch","Mittel","Niedrig","Sehr Niedrig"],"datasets":[{"data":[{{ stats.risks_high|default(0) }},{{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 2 }},{{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 3 }},{{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 6 }}],"backgroundColor":["#dc3545","#ffc107","#17a2b8","#28a745"]}]}'
+                            data-chart-data-value='{"labels":["{{ 'risk.level.high'|trans({}, 'messages') }}","{{ 'risk.level.medium'|trans({}, 'messages') }}","{{ 'risk.level.low'|trans({}, 'messages') }}","{{ 'risk.level.very_low'|trans({}, 'messages') }}"],"datasets":[{"data":[{{ stats.risks_high|default(0) }},{{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 2 }},{{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 3 }},{{ (stats.risks_total|default(0) - stats.risks_high|default(0)) / 6 }}],"backgroundColor":["#dc3545","#ffc107","#17a2b8","#28a745"]}]}'
                             data-chart-options-value='{"plugins":{"legend":{"position":"bottom"}}}'></canvas>
                 </div>
             </div>
