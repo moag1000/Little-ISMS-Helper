@@ -278,7 +278,7 @@ class WorkflowController extends AbstractController
     {
         $instances = $this->workflowInstanceRepository->findBy(
             ['workflow' => $workflow],
-            ['createdAt' => 'DESC'],
+            ['startedAt' => 'DESC'],
             10
         );
 
