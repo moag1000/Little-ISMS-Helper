@@ -58,23 +58,61 @@ export default class extends Controller {
     createChart() {
         const colors = this.themeColors;
 
+        // Deep merge options to ensure legend colors are always applied
+        const baseOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: colors.text
+                    }
+                },
+                tooltip: {
+                    titleColor: colors.text,
+                    bodyColor: colors.text
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: colors.textMuted },
+                    grid: { color: colors.gridColor }
+                },
+                y: {
+                    ticks: { color: colors.textMuted },
+                    grid: { color: colors.gridColor }
+                }
+            }
+        };
+
+        // Merge user options but preserve our theme colors for legend
+        const userOptions = this.optionsValue || {};
+        const mergedOptions = this.deepMerge(baseOptions, userOptions);
+
+        // Always override legend label color with theme color
+        if (mergedOptions.plugins?.legend?.labels) {
+            mergedOptions.plugins.legend.labels.color = colors.text;
+        }
+
         this.chart = new Chart(this.element, {
             type: this.typeValue || 'bar',
             data: this.dataValue,
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            color: colors.text
-                        }
-                    },
-                },
-                ...this.optionsValue
-            }
+            options: mergedOptions
         });
+    }
+
+    // Deep merge helper for options
+    deepMerge(target, source) {
+        const result = { ...target };
+        for (const key in source) {
+            if (source[key] instanceof Object && key in target && target[key] instanceof Object) {
+                result[key] = this.deepMerge(target[key], source[key]);
+            } else {
+                result[key] = source[key];
+            }
+        }
+        return result;
     }
 
     handleThemeChange() {
