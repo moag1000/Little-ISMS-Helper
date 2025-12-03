@@ -160,18 +160,18 @@
                                     <td>
                                         <div class="btn-group btn-group-sm" role="group">
                                             <a href="{{ path('user_management_show', {'id': user.id}) }}"
-                                               class="btn btn-outline-primary" title="Ansehen"
+                                               class="btn btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}"
                                                data-turbo-frame="_top" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                                 <i class="bi bi-eye" aria-hidden="true"></i>
                                             </a>
                                             <a href="{{ path('user_management_edit', {'id': user.id}) }}"
-                                               class="btn btn-outline-secondary" title="Bearbeiten"
+                                               class="btn btn-outline-secondary" title="{{ 'common.edit'|trans({}, 'messages') }}"
                                                data-turbo-frame="_top" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                                 <i class="bi bi-pencil" aria-hidden="true"></i>
                                             </a>
                                             {% if user.id != app.user.id %}
                                                 <button type="button" class="btn btn-outline-danger"
-                                                        title="Löschen"
+                                                        title="{{ 'common.delete'|trans({}, 'messages') }}"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#deleteModal{{ user.id }}" aria-label="{{ 'common.delete'|trans({}, 'messages') }}">
                                                     <i class="bi bi-trash" aria-hidden="true"></i>

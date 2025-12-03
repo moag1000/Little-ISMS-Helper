@@ -13,6 +13,7 @@ bcm:
         add_process: 'Add Process'
         data_reuse: 'Data Reuse'
         view_insights: 'View insights'
+        view_bia: 'View BIA'
         export: Export
         plan: 'Recovery plan'
     warning:
