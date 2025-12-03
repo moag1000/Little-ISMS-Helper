@@ -35,7 +35,7 @@
                 <span class="badge badge-{{ bc_exercise.status }}">{{ bc_exercise.status }}</span>
             </div>
         </div>
-        <div class="card-content">
+        <div class="card-body">
             {% if bc_exercise.status == 'completed' %}
                 {% set effectiveness = bc_exercise.getEffectivenessScore() %}
                 <div class="alert alert-{{ effectiveness >= 80 ? 'success' : (effectiveness >= 60 ? 'info' : 'warning') }}">

@@ -63,10 +63,10 @@
         <div class="card-header">
             <h2>{{ 'bc_exercises.page.header'|trans({}, 'bc_exercises') }} ({{ bc_exercises|length }})</h2>
         </div>
-        <div class="card-content">
+        <div class="card-body">
             {% if bc_exercises|length > 0 %}
             {% embed '_components/_table.html.twig' with {
-                'wrapperClass': 'card-content',
+                'wrapperClass': 'card-body',
                 'noMargin': true
             } %}
                 {% block table_head %}

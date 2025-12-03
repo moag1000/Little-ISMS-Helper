@@ -32,7 +32,7 @@
             <h2>{{ 'bc_plans.section.details'|trans({}, 'bc_plans') }}</h2>
             <span class="badge badge-{{ bc_plan.status }}">{{ bc_plan.status }}</span>
         </div>
-        <div class="card-content">
+        <div class="card-body">
             {% set readiness = bc_plan.getReadinessScore() %}
             <div class="alert alert-{{ readiness >= 80 ? 'success' : (readiness >= 60 ? 'info' : 'warning') }}">
                 <strong>{{ 'bc_plans.message.readiness_score'|trans({'%score%': readiness}, 'bc_plans') }}</strong>
