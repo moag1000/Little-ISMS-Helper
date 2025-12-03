@@ -38,12 +38,12 @@ export default class extends Controller {
                document.documentElement.getAttribute('data-bs-theme') === 'dark';
     }
 
-    // Theme-aware colors
+    // Theme-aware colors - ensure high contrast in dark mode
     get themeColors() {
         return {
-            text: this.isDarkMode ? '#f1f5f9' : '#2c3e50',
-            textMuted: this.isDarkMode ? '#94a3b8' : '#6c757d',
-            gridColor: this.isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+            text: this.isDarkMode ? '#e2e8f0' : '#2c3e50',           // Bright white for dark mode
+            textMuted: this.isDarkMode ? '#cbd5e1' : '#6c757d',       // Lighter gray for axes
+            gridColor: this.isDarkMode ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)'
         };
     }
 
