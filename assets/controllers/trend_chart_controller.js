@@ -54,10 +54,10 @@ export default class extends Controller {
             warningBg: isDark ? 'rgba(251, 191, 36, 0.2)' : 'rgba(255, 193, 7, 0.1)',
             successBg: isDark ? 'rgba(52, 211, 153, 0.2)' : 'rgba(40, 167, 69, 0.1)',
             infoBg: isDark ? 'rgba(34, 211, 238, 0.2)' : 'rgba(23, 162, 184, 0.1)',
-            // Text colors for chart labels
-            text: isDark ? '#f1f5f9' : '#2c3e50',
-            textMuted: isDark ? '#94a3b8' : '#6c757d',
-            gridColor: isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+            // Text colors for chart labels - high contrast in dark mode
+            text: isDark ? '#e2e8f0' : '#2c3e50',
+            textMuted: isDark ? '#cbd5e1' : '#6c757d',
+            gridColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)'
         };
     }
 
