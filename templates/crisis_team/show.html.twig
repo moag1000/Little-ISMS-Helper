@@ -2,7 +2,7 @@
 {% trans_default_domain 'crisis_team' %}
 {% block title %}{{ crisis_team.teamName }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 {% block body %}
-<div class="container py-4">
+<div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.bcm'|trans({}, 'nav'), url: path('app_bcm_index') },
