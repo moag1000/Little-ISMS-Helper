@@ -23,9 +23,9 @@ export default class extends Controller {
         return {
             success: isDark ? '#34d399' : '#28a745',
             successBg: isDark ? 'rgba(52, 211, 153, 0.3)' : 'rgba(40, 167, 69, 0.2)',
-            text: isDark ? '#f1f5f9' : '#2c3e50',
-            textMuted: isDark ? '#94a3b8' : '#6c757d',
-            gridColor: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)'
+            text: isDark ? '#e2e8f0' : '#2c3e50',
+            textMuted: isDark ? '#cbd5e1' : '#6c757d',
+            gridColor: isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)'
         };
     }
 
