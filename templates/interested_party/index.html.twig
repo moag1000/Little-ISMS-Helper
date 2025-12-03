@@ -53,10 +53,10 @@
             {%- set partyCount = interested_parties|length -%}
             <h2>{{ 'interested_party.list.title'|trans({'count': partyCount}, 'interested_parties') }}</h2>
         </div>
-        <div class="card-content">
+        <div class="card-body">
             {% if interested_parties|length > 0 %}
             {% embed '_components/_table.html.twig' with {
-                'wrapperClass': 'card-content',
+                'wrapperClass': 'card-body',
                 'noMargin': true
             } %}
                 {% block table_head %}

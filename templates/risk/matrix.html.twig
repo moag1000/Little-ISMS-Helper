@@ -15,7 +15,7 @@
             <p>{{ 'risk.matrix.description'|trans({}, 'risk') }}</p>
         </div>
 
-        <div class="card-content"
+        <div class="card-body"
              data-controller="riskmatrix"
              data-riskmatrix-risks-value="{{ risks|json_encode|e('html_attr') }}">
 
