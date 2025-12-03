@@ -307,12 +307,141 @@ class RiskServiceTest extends TestCase
         $this->assertSame('shared', $info['governanceModel']);
     }
 
+    // ========== HIGH RISK TESTS ==========
+
+    public function testGetHighRisksForTenantFiltersCorrectly(): void
+    {
+        $tenant = $this->createTenant(1, null);
+
+        // Create risks with different scores
+        $highRisk1 = $this->createRiskWithScore(4, 4); // Score: 16 - HIGH
+        $highRisk2 = $this->createRiskWithScore(3, 5); // Score: 15 - HIGH
+        $mediumRisk = $this->createRiskWithScore(3, 3); // Score: 9 - NOT high
+        $lowRisk = $this->createRiskWithScore(2, 2); // Score: 4 - NOT high
+
+        $allRisks = [$highRisk1, $highRisk2, $mediumRisk, $lowRisk];
+
+        $this->riskRepository->method('findByTenant')
+            ->with($tenant)
+            ->willReturn($allRisks);
+
+        $result = $this->service->getHighRisksForTenant($tenant);
+
+        $this->assertCount(2, $result);
+        $this->assertContains($highRisk1, $result);
+        $this->assertContains($highRisk2, $result);
+        $this->assertNotContains($mediumRisk, $result);
+        $this->assertNotContains($lowRisk, $result);
+    }
+
+    public function testGetHighRisksForTenantWithCustomThreshold(): void
+    {
+        $tenant = $this->createTenant(1, null);
+
+        $risk1 = $this->createRiskWithScore(3, 3); // Score: 9
+        $risk2 = $this->createRiskWithScore(2, 4); // Score: 8
+        $risk3 = $this->createRiskWithScore(2, 2); // Score: 4
+
+        $this->riskRepository->method('findByTenant')
+            ->willReturn([$risk1, $risk2, $risk3]);
+
+        // Custom threshold of 8
+        $result = $this->service->getHighRisksForTenant($tenant, 8);
+
+        $this->assertCount(2, $result);
+        $this->assertContains($risk1, $result);
+        $this->assertContains($risk2, $result);
+    }
+
+    public function testGetHighRisksForTenantWithNullProbabilityOrImpact(): void
+    {
+        $tenant = $this->createTenant(1, null);
+
+        $riskWithNullProbability = $this->createRiskWithScore(null, 5); // Score: 0
+        $riskWithNullImpact = $this->createRiskWithScore(5, null); // Score: 0
+        $riskWithBothNull = $this->createRiskWithScore(null, null); // Score: 0
+        $normalHighRisk = $this->createRiskWithScore(4, 4); // Score: 16
+
+        $this->riskRepository->method('findByTenant')
+            ->willReturn([$riskWithNullProbability, $riskWithNullImpact, $riskWithBothNull, $normalHighRisk]);
+
+        $result = $this->service->getHighRisksForTenant($tenant);
+
+        $this->assertCount(1, $result);
+        $this->assertContains($normalHighRisk, $result);
+    }
+
+    public function testGetHighRisksForTenantReturnsEmptyWhenNoHighRisks(): void
+    {
+        $tenant = $this->createTenant(1, null);
+
+        $lowRisk1 = $this->createRiskWithScore(2, 2); // Score: 4
+        $lowRisk2 = $this->createRiskWithScore(1, 3); // Score: 3
+
+        $this->riskRepository->method('findByTenant')
+            ->willReturn([$lowRisk1, $lowRisk2]);
+
+        $result = $this->service->getHighRisksForTenant($tenant);
+
+        $this->assertCount(0, $result);
+    }
+
+    public function testGetHighRisksForTenantIncludesInheritedRisks(): void
+    {
+        $parent = $this->createTenant(1, null);
+        $child = $this->createTenant(2, $parent);
+
+        // Parent has high risk, child has low risk
+        $parentHighRisk = $this->createRiskWithScore(5, 5); // Score: 25
+        $childLowRisk = $this->createRiskWithScore(2, 2); // Score: 4
+
+        $governance = $this->createGovernance('hierarchical');
+        $this->governanceRepository->method('findGovernanceForScope')
+            ->willReturn($governance);
+
+        // With hierarchical governance, both risks are returned
+        $this->riskRepository->method('findByTenantIncludingParent')
+            ->willReturn([$parentHighRisk, $childLowRisk]);
+
+        $result = $this->service->getHighRisksForTenant($child);
+
+        $this->assertCount(1, $result);
+        $this->assertContains($parentHighRisk, $result);
+    }
+
+    public function testGetHighRisksForTenantEdgeCaseExactThreshold(): void
+    {
+        $tenant = $this->createTenant(1, null);
+
+        $exactThresholdRisk = $this->createRiskWithScore(3, 4); // Score: 12 - exactly at default threshold
+        $belowThresholdRisk = $this->createRiskWithScore(3, 3); // Score: 9 - below threshold
+
+        $this->riskRepository->method('findByTenant')
+            ->willReturn([$exactThresholdRisk, $belowThresholdRisk]);
+
+        $result = $this->service->getHighRisksForTenant($tenant);
+
+        // Threshold is >= 12, so exactly 12 should be included
+        $this->assertCount(1, $result);
+        $this->assertContains($exactThresholdRisk, $result);
+    }
+
+    // ========== HELPER METHODS ==========
+
     private function createTenant(?int $id, ?Tenant $parent): MockObject
     {
         $tenant = $this->createMock(Tenant::class);
         $tenant->method('getId')->willReturn($id);
         $tenant->method('getParent')->willReturn($parent);
         return $tenant;
+    }
+
+    private function createRiskWithScore(?int $probability, ?int $impact): MockObject
+    {
+        $risk = $this->createMock(Risk::class);
+        $risk->method('getProbability')->willReturn($probability);
+        $risk->method('getImpact')->willReturn($impact);
+        return $risk;
     }
 
     private function createGovernance(string $modelValue): MockObject
