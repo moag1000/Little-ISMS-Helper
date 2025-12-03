@@ -136,15 +136,15 @@
                                     <td>
                                         <div class="btn-group btn-group-sm" role="group">
                                             <a href="{{ path('app_business_process_show', {'id': process.id}) }}"
-                                               class="btn btn-outline-primary" title="Ansehen" data-turbo-frame="_top" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                               class="btn btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}" data-turbo-frame="_top" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                                 <i class="bi bi-eye" aria-hidden="true"></i>
                                             </a>
                                             <a href="{{ path('app_business_process_edit', {'id': process.id}) }}"
-                                               class="btn btn-outline-secondary" title="Bearbeiten" data-turbo-frame="_top" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                                               class="btn btn-outline-secondary" title="{{ 'common.edit'|trans({}, 'messages') }}" data-turbo-frame="_top" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                                 <i class="bi bi-pencil" aria-hidden="true"></i>
                                             </a>
                                             <a href="{{ path('app_business_process_bia', {'id': process.id}) }}"
-                                               class="btn btn-outline-info" title="BIA" data-turbo-frame="_top" aria-label="{{ 'common.view_details'|trans({}, 'messages') }}">
+                                               class="btn btn-outline-info" title="{{ 'bcm.action.view_bia'|trans({}, 'bcm') }}" data-turbo-frame="_top" aria-label="{{ 'bcm.action.view_bia'|trans({}, 'bcm') }}">
                                                 <i class="bi bi-graph-up" aria-hidden="true"></i>
                                             </a>
                                         </div>

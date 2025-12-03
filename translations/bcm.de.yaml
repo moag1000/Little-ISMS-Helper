@@ -13,6 +13,7 @@ bcm:
         add_process: 'Prozess hinzufügen'
         data_reuse: 'Daten wiederverwenden'
         view_insights: 'Insights anzeigen'
+        view_bia: 'BIA anzeigen'
         export: Exportieren
         plan: Wiederherstellungsplan
     warning:
