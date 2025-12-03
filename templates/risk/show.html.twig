@@ -158,7 +158,7 @@
                 <div class="detail-section">
                     <h3>{{ 'risk.section.realization_history'|trans({}, 'risk') }} ({{ risk.incidents|length }} {{ 'risk.incidents'|trans({}, 'risk') }})</h3>
                     <div class="alert alert-warning">
-                        <strong>⚠ {{ 'risk.realization.warning'|trans({'%count%': risk.incidents|length}, 'risk') }}</strong>
+                        <strong><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'risk.realization.warning'|trans({'%count%': risk.incidents|length}, 'risk') }}</strong>
                         {{ 'risk.realization.review_suggestion'|trans({}, 'risk') }}
                     </div>
                     <div class="incidents-list">

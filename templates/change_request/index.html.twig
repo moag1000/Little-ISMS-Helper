@@ -36,7 +36,7 @@
 
     {% if pending_approval|length > 0 %}
     <div class="alert alert-info">
-        <h2>📋 {{ 'change_request.alert.pending_approval'|trans({}, 'change_requests') }}</h2>
+        <h2><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'change_request.alert.pending_approval'|trans({}, 'change_requests') }}</h2>
         <ul>
             {% for change in pending_approval %}
             <li>

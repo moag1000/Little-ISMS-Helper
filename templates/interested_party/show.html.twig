@@ -92,7 +92,7 @@
                         <span class="label">{{ 'interested_party.field.next_communication'|trans({}, 'interested_parties') }}:</span>
                         <span class="value {{ interested_party.isCommunicationOverdue() ? 'text-danger' : '' }}">
                             {{ interested_party.nextCommunication ? interested_party.nextCommunication|date('Y-m-d') : 'interested_party.not_scheduled'|trans({}, 'interested_parties') }}
-                            {{ interested_party.isCommunicationOverdue() ? '⚠️ ' ~ ('interested_party.badge.overdue'|trans({}, 'interested_parties')) : '' }}
+                            {{ interested_party.isCommunicationOverdue() ? '<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> ' ~ ('interested_party.badge.overdue'|trans({}, 'interested_parties')) : '' }}
                         </span>
                     </div>
                 </div>

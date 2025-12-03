@@ -18,7 +18,7 @@
                                 ✓ Konform
                             </option>
                             <option value="partial" {{ item.verificationStatus == 'partial' ? 'selected' : '' }}>
-                                ⚠ Teilweise
+                                <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Teilweise
                             </option>
                             <option value="non_compliant" {{ item.verificationStatus == 'non_compliant' ? 'selected' : '' }}>
                                 ✗ Nicht konform

@@ -62,7 +62,7 @@
 {# Gap Analysis by Severity #}
 <div class="module-grid mb-4">
     <div class="card card-border-left-danger">
-        <div class="fs-2-mb-sm">🔴</div>
+        <div class="fs-2-mb-sm"><i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i></div>
         <h2>{{ 'compliance.severity.critical'|trans({}, 'compliance') }}</h2>
         <div class="mt-2">
             <strong class="fs-15-danger">{{ gaps|filter(g => g.severity == 'critical')|length }}</strong>
@@ -171,7 +171,7 @@
         {% else %}
         <tr>
             <td colspan="7" class="text-center p-4 text-muted">
-                <div class="fs-2 mb-2">✅</div>
+                <div class="fs-2 mb-2"><i class="bi bi-check-circle text-success" aria-hidden="true"></i></div>
                 <p><strong>{{ 'compliance.message.no_gaps'|trans({}, 'compliance') }}</strong></p>
                 <p class="mt-1">{{ 'compliance.message.no_gaps_desc'|trans({}, 'compliance') }}</p>
             </td>

@@ -53,13 +53,13 @@
             📊 Übersicht
         </button>
         <button class="tab-button" onclick="switchTab('matrix')">
-            🔢 Mapping-Matrix
+            <i class="bi bi-grid-3x3" aria-hidden="true"></i> Mapping-Matrix
         </button>
         <button class="tab-button" onclick="switchTab('details')">
-            📋 Detaillierte Mappings
+            <i class="bi bi-list-check" aria-hidden="true"></i> Detaillierte Mappings
         </button>
         <button class="tab-button" onclick="switchTab('info')">
-            💡 Erklärung
+            <i class="bi bi-lightbulb" aria-hidden="true"></i> Erklärung
         </button>
     </div>
 
@@ -76,7 +76,7 @@
                     <br>Diese Mappings zeigen, wie Anforderungen verschiedener Frameworks zusammenhängen.
                 </p>
                 <div class="info-box-white">
-                    <h4 class="h-white-no-mt-mb-sm">💡 So erstellen Sie Mappings:</h4>
+                    <h4 class="h-white-no-mt-mb-sm"><i class="bi bi-lightbulb" aria-hidden="true"></i> So erstellen Sie Mappings:</h4>
                     <p class="fs-095-opacity-09">
                         Mappings müssen manuell erstellt oder über ein Datenimport-Script geladen werden.
                         <br>Kontaktieren Sie Ihren Administrator für weitere Informationen.
@@ -216,14 +216,14 @@
 
         {% if cross_mappings is empty %}
             <div class="card gradient-pink">
-                <div class="icon-xlarge mb-md">📋</div>
+                <div class="icon-xlarge mb-md"><i class="bi bi-list-check" aria-hidden="true"></i></div>
                 <h2 class="fs-15-white-mb">Keine detaillierten Mappings verfügbar</h2>
                 <p class="fs-11-lh-mb-sm">
                     Es wurden noch keine Cross-Framework Mappings zwischen den Requirements erstellt.
                 </p>
                 <div class="info-box-white-no-mb">
                     <p class="fs-095-opacity-09">
-                        💡 Mappings werden benötigt, um zu zeigen, wie sich Anforderungen verschiedener
+                        <i class="bi bi-lightbulb" aria-hidden="true"></i> Mappings werden benötigt, um zu zeigen, wie sich Anforderungen verschiedener
                         Compliance-Frameworks gegenseitig abdecken.
                     </p>
                 </div>
@@ -322,7 +322,7 @@
 
     {# Tab 4: Explanation #}
     <div id="tab-info" class="tab-content d-none">
-        <h2 class="section-title">💡 {{ 'compliance.section.mapping_explanation'|trans({}, 'compliance') }}</h2>
+        <h2 class="section-title"><i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'compliance.section.mapping_explanation'|trans({}, 'compliance') }}</h2>
 
         <div class="grid-gap-15">
             <div class="card card-card-border-left-info-lg">

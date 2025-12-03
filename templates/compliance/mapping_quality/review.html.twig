@@ -129,7 +129,7 @@
                     </div>
                     {% if mapping.requiresReview %}
                         <div class="mt-2">
-                            <span class="badge bg-warning">⚠️ Requires Review</span>
+                            <span class="badge bg-warning"<><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Requires Review</span>
                         </div>
                     {% endif %}
                 </div>
@@ -228,7 +228,7 @@
 
                     {% if gap.recommendedAction %}
                         <div class="alert alert-info mb-0">
-                            <strong>💡 Empfehlung:</strong><br>
+                            <strong><i class="bi bi-lightbulb text-warning" aria-hidden="true"></i> Empfehlung:</strong><br>
                             {{ gap.recommendedAction|nl2br }}
                         </div>
                     {% endif %}
@@ -247,7 +247,7 @@
     </div>
     {% else %}
         <div class="alert alert-success">
-            <h5>✅ Keine Gaps identifiziert</h5>
+            <h5><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Keine Gaps identifiziert</h5>
             <p class="mb-0">Dieses Mapping hat keine automatisch erkannten Lücken.</p>
         </div>
     {% endif %}
@@ -255,7 +255,7 @@
     {# Review Form #}
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">📝 Review durchführen</h3>
+            <h3 class="mb-0"><i class="bi bi-pencil-square" aria-hidden="true"></i> Review durchführen</h3>
         </div>
         <div class="card-body">
             <form id="reviewForm">
@@ -301,7 +301,7 @@
     {# Metadata #}
     {% if mapping.reviewedBy or mapping.verifiedBy %}
     <div class="card">
-        <div class="card-header"><h5 class="mb-0">ℹ️ Metadata</h5>
+        <div class="card-header"><h5 class="mb-0"><i class="bi bi-info-circle text-info" aria-hidden="true"></i> Metadata</h5>
         </div>
         <div class="card-body">
             {% if mapping.reviewedBy %}

@@ -22,7 +22,7 @@
 
     {% if overdue_communications|length > 0 %}
     <div class="alert alert-warning">
-        <h2>⚠️ {{ 'interested_party.alert.overdue_communications'|trans({}, 'interested_parties') }}</h2>
+        <h2><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'interested_party.alert.overdue_communications'|trans({}, 'interested_parties') }}</h2>
         <ul>
             {% for party in overdue_communications %}
             <li>

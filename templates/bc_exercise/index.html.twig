@@ -48,7 +48,7 @@
 
     {% if incomplete_reports|length > 0 %}
     <div class="alert alert-warning">
-        <h4>⚠️ {{ 'bc_exercises.section.incomplete_reports'|trans({}, 'bc_exercises') }}</h4>
+        <h4><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'bc_exercises.section.incomplete_reports'|trans({}, 'bc_exercises') }}</h4>
         <ul>
             {% for exercise in incomplete_reports %}
             <li>

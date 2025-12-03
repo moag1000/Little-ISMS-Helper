@@ -68,14 +68,14 @@
     {# Workflow Steps Checklist - NEW! #}
     <div class="workflow-steps-card">
         <div class="workflow-header">
-            <h2>🎯 Your Compliance Workflow</h2>
+            <h2><i class="bi bi-bullseye" aria-hidden="true"></i> Your Compliance Workflow</h2>
             <p class="text-muted">{{ 'compliance.framework_dashboard.compliance_steps'|trans({}, 'compliance') }}</p>
         </div>
         <div class="workflow-steps">
             <div class="workflow-step {% if dashboard.statistics.total > 0 %}completed{% endif %}"
                  data-bs-toggle="tooltip" data-bs-placement="top"
                  title="{{ 'common.tooltip.framework_loaded_success'|trans({}, 'messages') }}">
-                <div class="step-icon">{% if dashboard.statistics.total > 0 %}✅{% else %}1️⃣{% endif %}</div>
+                <div class="step-icon">{% if dashboard.statistics.total > 0 %}<i class="bi bi-check-circle text-success" aria-hidden="true"></i>{% else %}<span class="step-number">1</span>{% endif %}</div>
                 <div class="step-content">
                     <h2>Framework Loaded</h2>
                     <p>{{ dashboard.statistics.total }} requirements loaded</p>
@@ -85,7 +85,7 @@
             <div class="workflow-step {% if dashboard.statistics.applicable > 0 %}active{% endif %} {% if dashboard.statistics.applicable == dashboard.statistics.total %}completed{% endif %}"
                  data-bs-toggle="tooltip" data-bs-placement="top"
                  title="Review each requirement and mark whether it applies to your organization. Non-applicable requirements won't count towards your compliance score.">
-                <div class="step-icon">{% if dashboard.statistics.applicable == dashboard.statistics.total %}✅{% else %}{% if dashboard.statistics.applicable > 0 %}🔄{% else %}2️⃣{% endif %}{% endif %}</div>
+                <div class="step-icon">{% if dashboard.statistics.applicable == dashboard.statistics.total %}<i class="bi bi-check-circle text-success" aria-hidden="true"></i>{% else %}{% if dashboard.statistics.applicable > 0 %}<i class="bi bi-arrow-clockwise text-info" aria-hidden="true"></i>{% else %}<span class="step-number">2</span>{% endif %}{% endif %}</div>
                 <div class="step-content">
                     <h2>Review & Mark Applicable</h2>
                     <p>{{ dashboard.statistics.applicable }} of {{ dashboard.statistics.total }} reviewed</p>
@@ -102,7 +102,7 @@
             <div class="workflow-step {% if dashboard.statistics.fulfilled > 0 %}active{% endif %} {% if dashboard.statistics.fulfilled == dashboard.statistics.applicable %}completed{% endif %}"
                  data-bs-toggle="tooltip" data-bs-placement="top"
                  title="Link requirements to existing controls or create new controls to implement them. This shows how you're fulfilling each requirement.">
-                <div class="step-icon">{% if dashboard.statistics.fulfilled == dashboard.statistics.applicable %}✅{% else %}{% if dashboard.statistics.fulfilled > 0 %}🔄{% else %}3️⃣{% endif %}{% endif %}</div>
+                <div class="step-icon">{% if dashboard.statistics.fulfilled == dashboard.statistics.applicable %}<i class="bi bi-check-circle text-success" aria-hidden="true"></i>{% else %}{% if dashboard.statistics.fulfilled > 0 %}<i class="bi bi-arrow-clockwise text-info" aria-hidden="true"></i>{% else %}<span class="step-number">3</span>{% endif %}{% endif %}</div>
                 <div class="step-content">
                     <h3>Implement Requirements</h3>
                     <p>{{ dashboard.statistics.fulfilled }} of {{ dashboard.statistics.applicable }} requirements fully implemented</p>
@@ -119,7 +119,7 @@
             <div class="workflow-step {% if dashboard.compliance_percentage >= 75 %}active{% endif %} {% if dashboard.compliance_percentage == 100 %}completed{% endif %}"
                  data-bs-toggle="tooltip" data-bs-placement="top"
                  title="{{ 'common.tooltip.reach_100_percent'|trans({}, 'messages') }}">
-                <div class="step-icon">{% if dashboard.compliance_percentage == 100 %}✅{% else %}{% if dashboard.compliance_percentage >= 75 %}🔄{% else %}4️⃣{% endif %}{% endif %}</div>
+                <div class="step-icon">{% if dashboard.compliance_percentage == 100 %}<i class="bi bi-check-circle text-success" aria-hidden="true"></i>{% else %}{% if dashboard.compliance_percentage >= 75 %}<i class="bi bi-arrow-clockwise text-info" aria-hidden="true"></i>{% else %}<span class="step-number">4</span>{% endif %}{% endif %}</div>
                 <div class="step-content">
                     <h3>Achieve 100% Compliance</h3>
                     <p>Currently at {{ dashboard.compliance_percentage }}%</p>
@@ -154,10 +154,10 @@
                         <div class="module-card {% if isActive %}active{% else %}inactive{% endif %}">
                             <div class="module-status">
                                 {% if isActive %}
-                                    <span class="status-icon active">✅</span>
+                                    <span class="status-icon active"><i class="bi bi-check-circle" aria-hidden="true"></i></span>
                                     <span class="status-text active">Active</span>
                                 {% else %}
-                                    <span class="status-icon inactive">⚠️</span>
+                                    <span class="status-icon inactive"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></span>
                                     <span class="status-text inactive">Not Active</span>
                                 {% endif %}
                             </div>
@@ -186,7 +186,7 @@
             'description': 'You have ' ~ dashboard.gaps.critical ~ ' critical requirement(s) with low fulfillment',
             'action_url': path('app_compliance_requirement_index') ~ '?framework=' ~ framework.id ~ '&priority=critical&sort=fulfillment',
             'action_text': 'View Critical Requirements',
-            'icon': '🔴',
+            'icon': '<i class="bi bi-exclamation-circle-fill text-danger" aria-hidden="true"></i>',
             'priority': 'high'
         } %}
     {% elseif dashboard.statistics.applicable < dashboard.statistics.total %}
@@ -195,7 +195,7 @@
             'description': (dashboard.statistics.total - dashboard.statistics.applicable) ~ ' requirements need applicability review',
             'action_url': path('app_compliance_requirement_index') ~ '?framework=' ~ framework.id,
             'action_text': 'Review Requirements',
-            'icon': '📝',
+            'icon': '<i class="bi bi-pencil-square text-primary" aria-hidden="true"></i>',
             'priority': 'medium'
         } %}
     {% elseif dashboard.gaps.total > 0 %}
@@ -204,7 +204,7 @@
             'description': dashboard.gaps.total ~ ' requirements need controls or improved implementation',
             'action_url': path('app_compliance_gaps', {id: framework.id}),
             'action_text': 'View Gap Analysis',
-            'icon': '⚠️',
+            'icon': '<i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>',
             'priority': 'medium'
         } %}
     {% elseif dashboard.compliance_percentage < 100 %}
@@ -213,14 +213,14 @@
             'description': 'You\'re at ' ~ dashboard.compliance_percentage ~ '% - almost there!',
             'action_url': path('app_compliance_requirement_index') ~ '?framework=' ~ framework.id ~ '&sort=fulfillment',
             'action_text': 'View All Requirements',
-            'icon': '🎯',
+            'icon': '<i class="bi bi-bullseye text-success" aria-hidden="true"></i>',
             'priority': 'low'
         } %}
     {% endif %}
 
     {% if next_action %}
     <div class="next-action-card priority-{{ next_action.priority }}">
-        <div class="next-action-icon">{{ next_action.icon }}</div>
+        <div class="next-action-icon">{{ next_action.icon|raw }}</div>
         <div class="next-action-content">
             <h3>{{ next_action.title }}</h3>
             <p>{{ next_action.description }}</p>
@@ -442,7 +442,7 @@
                         {% endfor %}
                     {% else %}
                         <div class="text-center p-xl">
-                            <div class="icon-3rem-mb-md">✅</div>
+                            <div class="icon-3rem-mb-md"><i class="bi bi-check-circle text-success" aria-hidden="true"></i></div>
                             <h3>{{ 'compliance.gaps.none'|trans({}, 'compliance') }}</h3>
                             <p class="text-muted">{{ 'compliance.gaps.none_description'|trans({}, 'compliance') }}</p>
                         </div>

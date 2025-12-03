@@ -60,11 +60,11 @@
         <div class="stat-item">
             <strong class="fs-4">
                 {% if control.implementationStatus == 'implemented' %}
-                    <span class="badge bg-success fs-12">✅ {{ 'soa.status.implemented'|trans({}, 'soa') }}</span>
+                    <span class="badge bg-success fs-12"<><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'soa.status.implemented'|trans({}, 'soa') }}</span>
                 {% elseif control.implementationStatus == 'in_progress' %}
-                    <span class="badge bg-warning fs-12">🔄 {{ 'soa.status.in_progress'|trans({}, 'soa') }}</span>
+                    <span class="badge bg-warning fs-12"<><i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'soa.status.in_progress'|trans({}, 'soa') }}</span>
                 {% elseif control.implementationStatus == 'not_started' %}
-                    <span class="badge bg-danger fs-12">⏸ {{ 'soa.status.not_started'|trans({}, 'soa') }}</span>
+                    <span class="badge bg-danger fs-12"><i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'soa.status.not_started'|trans({}, 'soa') }}</span>
                 {% else %}
                     <span class="badge badge-neutral-lg">{{ 'soa.value.na'|trans({}, 'soa') }}</span>
                 {% endif %}
@@ -149,11 +149,11 @@
 {# Data Reuse: Protected Assets #}
 {% if control.protectedAssets is defined and control.protectedAssets|length > 0 %}
 <div class="card mb-4">
-    <h2>🛡️ {{ 'soa.section.data_reuse_protected_assets'|trans({'%count%': control.protectedAssets|length}, 'soa') }}</h2>
+    <h2><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'soa.section.data_reuse_protected_assets'|trans({'%count%': control.protectedAssets|length}, 'soa') }}</h2>
     <div class="alert alert-info mt-2">
         <strong>{{ 'soa.label.control_coverage'|trans({}, 'soa') }}</strong> {{ 'soa.message.control_coverage'|trans({'%count%': control.protectedAssets|length, '%value%': control.protectedAssetValue}, 'soa') }}
         {% if control.highRiskAssetCount > 0 %}
-            <br><strong>⚠️ {{ control.highRiskAssetCount }}</strong> {{ 'soa.message.high_risk_assets'|trans({}, 'soa') }}
+            <br><strong><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ control.highRiskAssetCount }}</strong> {{ 'soa.message.high_risk_assets'|trans({}, 'soa') }}
         {% endif %}
     </div>
     <div class="data-reuse-list">
@@ -171,7 +171,7 @@
 {# Data Reuse: Related Risks #}
 {% if control.risks is defined and control.risks|length > 0 %}
 <div class="card mb-4">
-    <h2>⚠️ {{ 'soa.section.data_reuse_related_risks'|trans({'%count%': control.risks|length}, 'soa') }}</h2>
+    <h2><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'soa.section.data_reuse_related_risks'|trans({'%count%': control.risks|length}, 'soa') }}</h2>
     <p class="text-light">{{ 'soa.message.related_risks_info'|trans({}, 'soa') }}</p>
     <div class="data-reuse-list">
         {% for risk in control.risks %}
@@ -190,9 +190,9 @@
 {# Data Reuse: Related Incidents #}
 {% if control.incidents is defined and control.incidents|length > 0 %}
 <div class="card mb-4">
-    <h2>📋 {{ 'soa.section.data_reuse_related_incidents'|trans({'%count%': control.incidents|length}, 'soa') }}</h2>
+    <h2><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'soa.section.data_reuse_related_incidents'|trans({'%count%': control.incidents|length}, 'soa') }}</h2>
     <div class="alert alert-warning">
-        <strong>⚠️ {{ control.incidents|length }} {{ 'soa.label.incidents'|trans({}, 'soa') }}</strong> {{ 'soa.message.related_incidents_count'|trans({}, 'soa') }}
+        <strong><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ control.incidents|length }} {{ 'soa.label.incidents'|trans({}, 'soa') }}</strong> {{ 'soa.message.related_incidents_count'|trans({}, 'soa') }}
         {% if control.isReviewNeeded %}
             <br><strong>👉 {{ 'soa.label.review_required'|trans({}, 'soa') }}</strong> {{ 'soa.message.review_required'|trans({}, 'soa') }}
         {% endif %}
@@ -218,7 +218,7 @@
     <div class="alert {{ control.hasTrainingCoverage ? 'alert-success' : 'alert-warning' }}">
         <strong>Status: {{ control.trainingStatus|upper }}</strong>
         {% if not control.hasTrainingCoverage %}
-            <br>⚠️ Keine abgeschlossenen Trainings für dieses Control.
+            <br><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Keine abgeschlossenen Trainings für dieses Control.
         {% endif %}
     </div>
     <div class="data-reuse-list">

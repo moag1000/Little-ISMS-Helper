@@ -102,14 +102,14 @@
 
                 {% if bc_exercise.whatWentWell %}
                 <div class="detail-section alert-success">
-                    <h3>✅ {{ 'bc_exercises.section.what_went_well'|trans({}, 'bc_exercises') }}</h3>
+                    <h3><i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'bc_exercises.section.what_went_well'|trans({}, 'bc_exercises') }}</h3>
                     <p>{{ bc_exercise.whatWentWell|nl2br }}</p>
                 </div>
                 {% endif %}
 
                 {% if bc_exercise.areasForImprovement %}
                 <div class="detail-section alert-warning">
-                    <h3>📋 {{ 'bc_exercises.section.improvements'|trans({}, 'bc_exercises') }}</h3>
+                    <h3><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'bc_exercises.section.improvements'|trans({}, 'bc_exercises') }}</h3>
                     <p>{{ bc_exercise.areasForImprovement|nl2br }}</p>
                 </div>
                 {% endif %}
