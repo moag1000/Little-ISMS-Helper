@@ -67,8 +67,8 @@ export default class extends Controller {
         this.setTheme(newTheme);
         this.savePreference(newTheme);
 
-        // Dispatch custom event
-        this.dispatch('changed', { detail: { theme: newTheme } });
+        // Dispatch custom event on document for global listeners (charts, etc.)
+        document.dispatchEvent(new CustomEvent('theme:changed', { detail: { theme: newTheme } }));
     }
 
     setTheme(theme) {
