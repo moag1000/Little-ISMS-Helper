@@ -86,10 +86,10 @@
     {# MFA Tokens List #}
     <div class="card">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h2 class="mb-0">
+            <h3 class="mb-0">
                 <i class="bi bi-key" aria-hidden="true"></i>
                 {{ 'mfa.my_tokens'|trans({}, 'mfa') }}
-            </h2>
+            </h3>
             {% if mfa_enabled %}
                 <a href="{{ path('app_profile_mfa_setup_totp') }}" class="btn btn-light btn-sm">
                     <i class="bi bi-plus-circle" aria-hidden="true"></i>

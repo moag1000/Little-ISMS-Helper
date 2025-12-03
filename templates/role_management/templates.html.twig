@@ -27,7 +27,7 @@
             <div class="col-md-6 col-lg-4 mb-4">
                 <div class="card h-100 border-primary">
                     <div class="card-header bg-primary text-white">
-                        <h2 class="mb-0">
+                        <h3 class="mb-0">
                             {% if key == 'auditor' %}
                                 <i class="bi bi-search" aria-hidden="true"></i>
                             {% elseif key == 'risk_manager' %}
@@ -42,7 +42,7 @@
                                 <i class="bi bi-eye" aria-hidden="true"></i>
                             {% endif %}
                             {{ template.name }}
-                        </h5>
+                        </h3>
                     </div>
                     <div class="card-body">
                         <p class="card-text">{{ template.description }}</p>
@@ -77,7 +77,7 @@
                     <div class="modal-content">
                         <form method="post">
                             <div class="modal-header">
-                                <h2 class="modal-title">{{ template.name }} erstellen</h2>
+                                <h5 class="modal-title">{{ template.name }} erstellen</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                             </div>
                             <div class="modal-body">
