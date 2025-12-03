@@ -1272,6 +1272,12 @@ incident:
         auto_detect_success: ''
         no_processes_detected: ''
 risk:
+    level:
+        critical: 'Critical'
+        high: 'High'
+        medium: 'Medium'
+        low: 'Low'
+        very_low: 'Very Low'
     success:
         created: ''
         updated: ''

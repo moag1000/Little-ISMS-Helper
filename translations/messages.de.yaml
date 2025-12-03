@@ -1385,6 +1385,12 @@ incident:
         auto_detect_success: 'Geschäftsprozesse erfolgreich automatisch erkannt'
         no_processes_detected: 'Keine Geschäftsprozesse erkannt'
 risk:
+    level:
+        critical: 'Kritisch'
+        high: 'Hoch'
+        medium: 'Mittel'
+        low: 'Niedrig'
+        very_low: 'Sehr Niedrig'
     success:
         created: 'Risiko erfolgreich erstellt'
         updated: 'Risiko erfolgreich aktualisiert'

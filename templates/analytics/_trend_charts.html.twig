@@ -11,7 +11,8 @@
 
 <div class="card analytics-card trend-card {{ expanded is defined and expanded ? 'expanded' : '' }}"
      data-controller="trend-chart"
-     data-trend-chart-url-value="{{ path('app_analytics_trends_data') }}">
+     data-trend-chart-url-value="{{ path('app_analytics_trends_data') }}"
+     data-trend-chart-locale-value="{{ app.request.locale }}">
     <div class="card-header">
         <h3 class="card-title">
             <i class="bi bi-graph-up-arrow text-info"></i>
