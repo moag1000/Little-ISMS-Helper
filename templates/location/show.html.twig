@@ -70,7 +70,7 @@
                     'secure': 'warning',
                     'high_security': 'danger'
                 } %}
-                <span class="badge badge-{{ securityColors[location.securityLevel] ?? 'secondary' }}">
+                <span class="badge bg-{{ securityColors[location.securityLevel] ?? 'secondary' }}">
                     {{ ('location.security.' ~ location.securityLevel)|trans({}, 'locations') }}
                 </span>
             </strong>
@@ -141,7 +141,7 @@
                         'secure': 'warning',
                         'high_security': 'danger'
                     } %}
-                    <span class="badge badge-{{ securityColors[child.securityLevel] ?? 'secondary' }}">
+                    <span class="badge bg-{{ securityColors[child.securityLevel] ?? 'secondary' }}">
                         {{ ('location.security.' ~ child.securityLevel)|trans({}, 'locations') }}
                     </span>
                 </td>

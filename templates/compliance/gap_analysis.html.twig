@@ -140,7 +140,7 @@
                     'medium': 'info',
                     'low': 'secondary'
                 } %}
-                <span class="badge badge-{{ severityColors[gap.severity] ?? 'secondary' }}">
+                <span class="badge bg-{{ severityColors[gap.severity] ?? 'secondary' }}">
                     {{ ('compliance.severity.' ~ gap.severity)|trans({}, 'compliance') }}
                 </span>
             </td>

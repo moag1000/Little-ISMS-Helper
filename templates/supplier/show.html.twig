@@ -56,7 +56,7 @@
             <h2>{{ 'supplier.section.details'|trans({}, 'suppliers') }}</h2>
             <div>
                 <span class="badge badge-{{ supplier.criticality }}">{{ supplier.criticality|upper }}</span>
-                <span class="badge badge-{{ supplier.status }}">{{ supplier.status }}</span>
+                <span class="{{ badge_status(supplier.status) }}">{{ supplier.status }}</span>
             </div>
         </div>
         <div class="card-body">

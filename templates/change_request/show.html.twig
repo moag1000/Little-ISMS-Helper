@@ -32,7 +32,7 @@
             <div>
                 <span class="badge badge-{{ change_request.changeType }}">{{ change_request.changeType }}</span>
                 <span class="badge badge-{{ change_request.priority }}">{{ change_request.priority }}</span>
-                <span class="badge badge-{{ change_request.status }}">{{ change_request.status }}</span>
+                <span class="{{ badge_status(change_request.status) }}">{{ change_request.status }}</span>
             </div>
         </div>
         <div class="card-body">
