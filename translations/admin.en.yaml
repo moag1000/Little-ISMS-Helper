@@ -235,6 +235,20 @@ data_management:
         empty:
             title: 'No backups yet'
             description: 'Create your first backup to secure your data.'
+        action:
+            creating: 'Creating backup...'
+            create_now: 'Create backup now'
+            uploading: 'Uploading...'
+            upload: 'Upload'
+            validate: 'Validate'
+            restore: 'restore'
+            restoring: 'Restoration in progress...'
+            start_restore: 'Start restoration'
+        message:
+            select_file: 'Please select a file.'
+            file: 'File'
+            saved_entries: 'Saved entries'
+            error: 'Error'
     export:
         includes_all_records: 'Includes all records from your tenant'
         sensitive_data_warning: 'Warning: This export may contain sensitive data. Please store securely.'

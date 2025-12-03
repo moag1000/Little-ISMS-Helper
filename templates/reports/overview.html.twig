@@ -24,7 +24,7 @@
             <div class="card h-100">
                 <div class="card-header bg-primary text-white">
                     <h3 class="card-title mb-0">
-                        <i class="bi-file-text me-2"></i>Lizenzreport
+                        <i class="bi bi-file-text me-2"></i>Lizenzreport
                     </h3>
                 </div>
                 <div class="card-body">
@@ -35,38 +35,38 @@
                         <h6 class="text-muted small mb-2">Verfügbare Reports:</h6>
                         <ul class="list-unstyled mb-0">
                             <li class="mb-2">
-                                <i class="bi-file-earmark-text text-primary me-2"></i>
+                                <i class="bi bi-file-earmark-text text-primary me-2"></i>
                                 <strong>NOTICE.md</strong> - Third-Party Attributions
                             </li>
                             <li class="mb-2">
-                                <i class="bi-file-earmark-bar-graph text-primary me-2"></i>
+                                <i class="bi bi-file-earmark-bar-graph text-primary me-2"></i>
                                 <strong>Detaillierter Bericht</strong> - Compliance-Analyse
                                 {% if license_stats.exists %}
                                     <span class="badge bg-success ms-2">
-                                        <i class="bi-check-circle me-1"></i>Verfügbar
+                                        <i class="bi bi-check-circle me-1"></i>Verfügbar
                                     </span>
                                 {% else %}
                                     <span class="badge bg-warning ms-2">
-                                        <i class="bi-exclamation-triangle me-1"></i>Nicht generiert
+                                        <i class="bi bi-exclamation-triangle me-1"></i>Nicht generiert
                                     </span>
                                 {% endif %}
                             </li>
                             <li>
-                                <i class="bi-bar-chart text-primary me-2"></i>
+                                <i class="bi bi-bar-chart text-primary me-2"></i>
                                 <strong>Zusammenfassung</strong> - Dashboard & Statistiken
                             </li>
                         </ul>
                     </div>
                     {% if license_stats.exists %}
                         <small class="text-muted">
-                            <i class="bi-calendar me-1"></i>Letzte Aktualisierung: {{ license_stats.updated_at }}
+                            <i class="bi bi-calendar me-1"></i>Letzte Aktualisierung: {{ license_stats.updated_at }}
                         </small>
                     {% endif %}
                 </div>
                 <div class="card-footer bg-light">
                     <div class="d-grid gap-2">
                         <a href="{{ path('app_licenses') }}" class="btn btn-primary">
-                            <i class="bi-arrow-right-circle me-1"></i>Lizenzreport öffnen
+                            <i class="bi bi-arrow-right-circle me-1"></i>Lizenzreport öffnen
                         </a>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
             <div class="card h-100">
                 <div class="card-header bg-danger text-white">
                     <h3 class="card-title mb-0">
-                        <i class="bi-shield-lock me-2"></i>Security Audit Report
+                        <i class="bi bi-shield-lock me-2"></i>Security Audit Report
                     </h3>
                 </div>
                 <div class="card-body">
@@ -89,15 +89,15 @@
                         <h6 class="text-muted small mb-2">Verfügbare Reports:</h6>
                         <ul class="list-unstyled mb-0">
                             <li class="mb-2">
-                                <i class="bi-shield-lock text-danger me-2"></i>
+                                <i class="bi bi-shield-lock text-danger me-2"></i>
                                 <strong>OWASP Top 10:2025 RC1</strong> (Primary)
                                 {% if security_stats.owasp_2025.exists %}
                                     <span class="badge bg-success ms-2">
-                                        <i class="bi-check-circle me-1"></i>Verfügbar
+                                        <i class="bi bi-check-circle me-1"></i>Verfügbar
                                     </span>
                                 {% else %}
                                     <span class="badge bg-warning ms-2">
-                                        <i class="bi-exclamation-triangle me-1"></i>Nicht generiert
+                                        <i class="bi bi-exclamation-triangle me-1"></i>Nicht generiert
                                     </span>
                                 {% endif %}
                                 {% if security_stats.owasp_2025.updated_at %}
@@ -106,15 +106,15 @@
                                 {% endif %}
                             </li>
                             <li>
-                                <i class="bi-shield-check text-danger me-2"></i>
+                                <i class="bi bi-shield-check text-danger me-2"></i>
                                 <strong>OWASP Top 10:2021</strong> (Legacy)
                                 {% if security_stats.owasp_2021.exists %}
                                     <span class="badge bg-success ms-2">
-                                        <i class="bi-check-circle me-1"></i>Verfügbar
+                                        <i class="bi bi-check-circle me-1"></i>Verfügbar
                                     </span>
                                 {% else %}
                                     <span class="badge bg-warning ms-2">
-                                        <i class="bi-exclamation-triangle me-1"></i>Nicht generiert
+                                        <i class="bi bi-exclamation-triangle me-1"></i>Nicht generiert
                                     </span>
                                 {% endif %}
                                 {% if security_stats.owasp_2021.updated_at %}
@@ -128,7 +128,7 @@
                 <div class="card-footer bg-light">
                     <div class="d-grid gap-2">
                         <a href="{{ path('app_security_report') }}" class="btn btn-danger">
-                            <i class="bi-arrow-right-circle me-1"></i>Security Reports öffnen
+                            <i class="bi bi-arrow-right-circle me-1"></i>Security Reports öffnen
                         </a>
                     </div>
                 </div>
@@ -142,13 +142,13 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title mb-0">
-                        <i class="bi-info-circle me-2"></i>Report-Generierung
+                        <i class="bi bi-info-circle me-2"></i>Report-Generierung
                     </h3>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-6 mb-3 mb-md-0">
-                            <h4><i class="bi-file-text me-2"></i>Lizenzreport aktualisieren</h4>
+                            <h4><i class="bi bi-file-text me-2"></i>Lizenzreport aktualisieren</h4>
                             <p class="text-muted small mb-2">
                                 Führen Sie das folgende Skript aus, um den Lizenzreport neu zu generieren:
                             </p>
@@ -157,7 +157,7 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <h4><i class="bi-shield-lock me-2"></i>Security Report aktualisieren</h4>
+                            <h4><i class="bi bi-shield-lock me-2"></i>Security Report aktualisieren</h4>
                             <p class="text-muted small mb-2">
                                 Führen Sie das folgende Skript aus, um die Security Reports neu zu generieren:
                             </p>
@@ -176,7 +176,7 @@
         <div class="col-12">
             <div class="alert alert-info">
                 <div class="d-flex align-items-start">
-                    <i class="bi-lightbulb fs-4 me-3"></i>
+                    <i class="bi bi-lightbulb fs-4 me-3"></i>
                     <div>
                         <h4 class="alert-heading mb-2">Best Practices</h4>
                         <ul class="mb-0">

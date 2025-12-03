@@ -235,6 +235,20 @@ data_management:
         empty:
             title: 'Noch keine Backups vorhanden'
             description: 'Erstellen Sie Ihr erstes Backup, um Ihre Daten zu sichern.'
+        action:
+            creating: 'Backup wird erstellt...'
+            create_now: 'Backup jetzt erstellen'
+            uploading: 'Hochladen...'
+            upload: 'Hochladen'
+            validate: 'Validieren'
+            restore: 'wiederherstellen'
+            restoring: 'Wiederherstellung läuft...'
+            start_restore: 'Wiederherstellung starten'
+        message:
+            select_file: 'Bitte wählen Sie eine Datei aus.'
+            file: 'Datei'
+            saved_entries: 'Gesicherte Einträge'
+            error: 'Fehler'
     export:
         includes_all_records: 'Enthält alle Datensätze Ihres Tenants'
         sensitive_data_warning: 'Warnung: Dieser Export kann sensible Daten enthalten. Bitte sicher aufbewahren.'

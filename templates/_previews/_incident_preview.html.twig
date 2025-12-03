@@ -2,7 +2,7 @@
 <div class="preview-content">
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi-exclamation-circle text-danger"></i>
+            <i class="bi bi-exclamation-circle text-danger"></i>
             Vorfalls-Informationen
         </h6>
         <dl class="row mb-0">
@@ -50,7 +50,7 @@
             {% for asset in incident.affectedAssets|slice(0, 3) %}
             <li class="mb-1">
                 <a href="{{ path('app_asset_show', {id: asset.id}) }}">
-                    <i class="bi-server text-primary"></i> {{ asset.name }}
+                    <i class="bi bi-server text-primary"></i> {{ asset.name }}
                 </a>
             </li>
             {% endfor %}
