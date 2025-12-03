@@ -47,7 +47,8 @@
     color: var(--text-primary);
 }
 
-[data-theme="dark"] .card-content {
+[data-theme="dark"] .card-content,
+[data-theme="dark"] .card-body {
     background-color: var(--bg-elevated);
     color: var(--text-primary);
 }

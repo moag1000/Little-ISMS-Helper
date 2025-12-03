@@ -34,7 +34,7 @@
                 <span class="badge badge-{{ interested_party.importance }}">{{ interested_party.importance|upper }}</span>
             </div>
         </div>
-        <div class="card-content">
+        <div class="card-body">
             <div class="alert alert-info">
                 <strong>{{ 'interested_party.engagement_score'|trans({}, 'interested_parties') }}: {{ interested_party.getEngagementScore() }}</strong>
             </div>

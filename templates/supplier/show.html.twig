@@ -59,7 +59,7 @@
                 <span class="badge badge-{{ supplier.status }}">{{ supplier.status }}</span>
             </div>
         </div>
-        <div class="card-content">
+        <div class="card-body">
             {% set riskScore = supplier.calculateRiskScore() %}
             <div class="alert {{ riskScore > 70 ? 'alert-danger' : (riskScore > 50 ? 'alert-warning' : 'alert-info') }}">
                 <strong>{{ 'supplier.risk_score'|trans({}, 'suppliers') }}: {{ riskScore }}</strong>
