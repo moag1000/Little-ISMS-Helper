@@ -607,21 +607,38 @@
     color: var(--text-primary);
 }
 
-/* Risk Level Colors */
+/* Risk Level Colors - Bootstrap consistent */
 .heat-map-legend .legend-color-critical {
-    background: #fecaca;
+    background: #721c24;
 }
 
 .heat-map-legend .legend-color-high {
-    background: #fed7aa;
+    background: #dc3545;
 }
 
 .heat-map-legend .legend-color-medium {
-    background: #fef3c7;
+    background: #ffc107;
 }
 
 .heat-map-legend .legend-color-low {
-    background: #d1fae5;
+    background: #28a745;
+}
+
+/* Dark Mode - Brighter colors for visibility */
+[data-theme="dark"] .heat-map-legend .legend-color-critical {
+    background: #b91c1c;
+}
+
+[data-theme="dark"] .heat-map-legend .legend-color-high {
+    background: #f87171;
+}
+
+[data-theme="dark"] .heat-map-legend .legend-color-medium {
+    background: #fbbf24;
+}
+
+[data-theme="dark"] .heat-map-legend .legend-color-low {
+    background: #34d399;
 }
 
 /* ===============================
