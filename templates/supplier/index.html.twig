@@ -145,7 +145,7 @@
                         </td>
                         <td>{{ supplier.serviceProvided|slice(0, 50) }}...</td>
                         <td><span class="badge badge-{{ supplier.criticality }}">{{ supplier.criticality|upper }}</span></td>
-                        <td><span class="badge badge-{{ supplier.status }}">{{ supplier.status }}</span></td>
+                        <td><span class="{{ badge_status(supplier.status) }}">{{ supplier.status }}</span></td>
                         <td>
                             {% set riskScore = supplier.calculateRiskScore() %}
                             <span class="badge badge-{{ riskScore > 70 ? 'critical' : (riskScore > 50 ? 'high' : (riskScore > 30 ? 'medium' : 'low')) }}">

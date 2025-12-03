@@ -91,7 +91,7 @@
                         <td>{{ change.title|slice(0, 40) }}...</td>
                         <td><span class="badge badge-{{ change.changeType }}">{{ ('change_request.change_type.' ~ change.changeType)|trans({}, 'change_requests') }}</span></td>
                         <td><span class="badge badge-{{ change.priority }}">{{ ('change_request.priority.' ~ change.priority)|trans({}, 'change_requests') }}</span></td>
-                        <td><span class="badge badge-{{ change.status }}">{{ ('change_request.status.' ~ change.status)|trans({}, 'change_requests') }}</span></td>
+                        <td><span class="{{ badge_status(change.status) }}">{{ ('change_request.status.' ~ change.status)|trans({}, 'change_requests') }}</span></td>
                         <td>{{ change.getComplexityScore() }}</td>
                         <td>{{ change.requestedDate|date('Y-m-d') }}</td>
                         <td>

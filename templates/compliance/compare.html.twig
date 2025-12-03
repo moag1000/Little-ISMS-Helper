@@ -181,7 +181,7 @@
             <td class="text-center">
                 {% if comparison.matchQuality %}
                     {% set qualityColor = comparison.matchQuality >= 80 ? 'success' : (comparison.matchQuality >= 60 ? 'warning' : 'danger') %}
-                    <span class="badge badge-{{ qualityColor }}">{{ comparison.matchQuality }}%</span>
+                    <span class="badge bg-{{ qualityColor }}">{{ comparison.matchQuality }}%</span>
                 {% else %}
                     <span class="text-muted">-</span>
                 {% endif %}

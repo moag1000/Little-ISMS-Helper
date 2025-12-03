@@ -85,7 +85,7 @@
                         <td><a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}">{{ exercise.name }}</a></td>
                         <td><span class="badge bg-info">{{ exercise.exerciseType }}</span></td>
                         <td>{{ exercise.exerciseDate|date('Y-m-d') }}</td>
-                        <td><span class="badge badge-{{ exercise.status }}">{{ exercise.status }}</span></td>
+                        <td><span class="{{ badge_status(exercise.status) }}">{{ exercise.status }}</span></td>
                         <td>
                             {% if exercise.status == 'completed' %}
                                 {{ exercise.getEffectivenessScore() }}%

@@ -78,10 +78,10 @@
                         <td><a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">{{ plan.name }}</a></td>
                         <td>{{ plan.businessProcess ? plan.businessProcess.name : '-' }}</td>
                         <td>{{ plan.planOwner }}</td>
-                        <td><span class="badge badge-{{ plan.status }}">{{ plan.status|upper }}</span></td>
+                        <td><span class="{{ badge_status(plan.status) }}">{{ plan.status|upper }}</span></td>
                         <td>
                             {% set readiness = plan.getReadinessScore() %}
-                            <span class="badge badge-{{ readiness >= 80 ? 'success' : (readiness >= 60 ? 'warning' : 'danger') }}">
+                            <span class="badge bg-{{ readiness >= 80 ? 'success' : (readiness >= 60 ? 'warning' : 'danger') }}">
                                 {{ readiness }}%
                             </span>
                         </td>

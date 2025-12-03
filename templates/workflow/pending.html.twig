@@ -14,7 +14,7 @@
     </div>
     <div class="button-group">
         <a href="{{ path('app_workflow_index') }}" class="btn btn-secondary">
-            ← {{ 'common.back'|trans({}, 'messages') }}
+            {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
@@ -28,7 +28,7 @@
         {{ cards.kpi_card('workflow.stats.overdue'|trans({}, 'workflows'), pending_approvals|filter(i => i.overdue)|length, null, null, 'danger', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('workflow.stats.my_tasks'|trans({}, 'workflows'), pending_approvals|filter(i => i.assignee and i.assignee.id == app.user.id)|length, null, null, 'success', null) }}
+        {{ cards.kpi_card('workflow.stats.my_tasks'|trans({}, 'workflows'), pending_approvals|filter(i => i.initiatedBy and i.initiatedBy.id == app.user.id)|length, null, null, 'success', null) }}
     </div>
     <div class="col-auto">
         {% set weekEnd = 'now'|date_modify('+7 days') %}
@@ -46,9 +46,9 @@
             <th scope="col">{{ 'workflow.field.name'|trans({}, 'workflows') }}</th>
             <th scope="col">{{ 'workflow.field.definition'|trans({}, 'workflows') }}</th>
             <th scope="col">{{ 'workflow.field.current_step'|trans({}, 'workflows') }}</th>
-            <th scope="col">{{ 'workflow.field.assignee'|trans({}, 'workflows') }}</th>
+            <th scope="col">{{ 'workflow.field.initiated_by'|trans({}, 'workflows') }}</th>
             <th scope="col">{{ 'workflow.field.due_date'|trans({}, 'workflows') }}</th>
-            <th scope="col">{{ 'workflow.field.priority'|trans({}, 'workflows') }}</th>
+            <th scope="col">{{ 'workflow.field.status'|trans({}, 'workflows') }}</th>
             <th scope="col" class="text-center">{{ 'common.actions'|trans({}, 'messages') }}</th>
         </tr>
     {% endblock %}
@@ -56,7 +56,7 @@
         {% for instance in pending_approvals %}
         <tr{% if instance.overdue %} class="bg-danger-light"{% endif %}>
             <td>
-                <strong>{{ instance.name }}</strong>
+                <strong>{{ instance.workflow ? instance.workflow.name : '-' }}</strong>
                 {% if instance.overdue %}
                     <span class="badge bg-danger ml-xs">
                         {{ 'workflow.badge.overdue'|trans({}, 'workflows') }}
@@ -64,13 +64,13 @@
                 {% endif %}
             </td>
             <td>
-                <span class="badge bg-info">{{ instance.definition ? instance.definition.name : '-' }}</span>
+                <span class="badge bg-info">{{ instance.workflow ? instance.workflow.name : '-' }}</span>
             </td>
             <td>{{ instance.currentStep ? instance.currentStep.name : '-' }}</td>
             <td>
-                {% if instance.assignee %}
-                    {{ instance.assignee.fullName }}
-                    {% if instance.assignee.id == app.user.id %}
+                {% if instance.initiatedBy %}
+                    {{ instance.initiatedBy.fullName }}
+                    {% if instance.initiatedBy.id == app.user.id %}
                         <span class="badge bg-success ml-xs">
                             {{ 'workflow.badge.my_task'|trans({}, 'workflows') }}
                         </span>
@@ -81,25 +81,26 @@
             </td>
             <td>
                 {% if instance.dueDate %}
-                    {{ workflow_macros.sla_timeline(instance.dueDate, null, null, instance.createdAt, true) }}
+                    {{ workflow_macros.sla_timeline(instance.dueDate, null, null, instance.startedAt, true) }}
                 {% else %}
                     <span class="text-muted-color">-</span>
                 {% endif %}
             </td>
             <td>
-                {% set priorityColors = {
-                    'low': 'secondary',
-                    'medium': 'info',
-                    'high': 'warning',
-                    'critical': 'danger'
+                {% set statusColors = {
+                    'pending': 'warning',
+                    'in_progress': 'info',
+                    'approved': 'success',
+                    'rejected': 'danger',
+                    'cancelled': 'secondary'
                 } %}
-                <span class="badge badge-{{ priorityColors[instance.priority] ?? 'secondary' }}">
-                    {{ ('workflow.priority.' ~ instance.priority)|trans({}, 'workflows') }}
+                <span class="badge bg-{{ statusColors[instance.status] ?? 'secondary' }}">
+                    {{ ('workflow.status.' ~ instance.status)|trans({}, 'workflows') }}
                 </span>
             </td>
             <td class="text-center">
                 <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm">
-                    👁 {{ 'common.view'|trans({}, 'messages') }}
+                    {{ 'common.view'|trans({}, 'messages') }}
                 </a>
             </td>
         </tr>

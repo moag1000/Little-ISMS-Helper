@@ -30,7 +30,7 @@
     <div class="card">
         <div class="card-header">
             <h2>{{ 'bc_plans.section.details'|trans({}, 'bc_plans') }}</h2>
-            <span class="badge badge-{{ bc_plan.status }}">{{ bc_plan.status }}</span>
+            <span class="{{ badge_status(bc_plan.status) }}">{{ bc_plan.status }}</span>
         </div>
         <div class="card-body">
             {% set readiness = bc_plan.getReadinessScore() %}
