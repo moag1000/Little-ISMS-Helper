@@ -588,7 +588,7 @@
             const originalHtml = button ? button.innerHTML : null;
             if (button) {
                 button.disabled = true;
-                button.innerHTML = '<i class="bi bi-hourglass-split" aria-hidden="true"></i> Processing...';
+                button.innerHTML = '<i class="bi bi-hourglass-split" aria-hidden="true"></i> {{ 'common.processing'|trans({}, 'messages') }}';
             }
 
             // Get result container

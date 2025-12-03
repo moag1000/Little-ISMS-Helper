@@ -172,6 +172,11 @@ common:
     verifying: 'Verifying...'
     downloaded: Downloaded
     generated: Generated
+    generating: 'Generating...'
+    generating_report: 'Generating report...'
+    generating_reports: 'Generating reports...'
+    saving: 'Saving...'
+    processing: 'Processing...'
     copy_failed: 'Copy failed'
     apply: Apply
     system_info: 'System Information'

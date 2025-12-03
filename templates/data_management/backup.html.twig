@@ -418,7 +418,7 @@
                 e.preventDefault();
 
                 createBackupBtn.disabled = true;
-                createBackupBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Backup wird erstellt...';
+                createBackupBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>{{ 'data_management.backup.action.creating'|trans({}, 'admin') }}';
 
                 const formData = new FormData(this);
 
@@ -435,8 +435,8 @@
                             <div class="alert alert-success alert-dismissible fade show">
                                 <i class="bi bi-check-circle" aria-hidden="true"></i>
                                 <strong>${result.message}</strong><br>
-                                Datei: ${result.filename}<br>
-                                <small>Gesicherte Einträge: ${Object.values(result.statistics).reduce((a, b) => a + b, 0)}</small>
+                                {{ 'data_management.backup.message.file'|trans({}, 'admin') }}: ${result.filename}<br>
+                                <small>{{ 'data_management.backup.message.saved_entries'|trans({}, 'admin') }}: ${Object.values(result.statistics).reduce((a, b) => a + b, 0)}</small>
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                             </div>
                         `;
@@ -459,13 +459,13 @@
                 } catch (error) {
                     createBackupStatus.innerHTML = `
                         <div class="alert alert-danger alert-dismissible fade show">
-                            <i class="bi bi-x-circle" aria-hidden="true"></i> Fehler: ${error.message}
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                         </div>
                     `;
                 } finally {
                     createBackupBtn.disabled = false;
-                    createBackupBtn.innerHTML = '<i class="bi bi-cloud-download me-2" aria-hidden="true"></i>Backup jetzt erstellen';
+                    createBackupBtn.innerHTML = '<i class="bi bi-cloud-download me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.create_now'|trans({}, 'admin') }}';
                 }
             });
 
@@ -481,14 +481,14 @@
                 if (!fileInput.files.length) {
                     uploadBackupStatus.innerHTML = `
                         <div class="alert alert-warning">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Bitte wählen Sie eine Datei aus.
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'data_management.backup.message.select_file'|trans({}, 'admin') }}
                         </div>
                     `;
                     return;
                 }
 
                 uploadBackupBtn.disabled = true;
-                uploadBackupBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Hochladen...';
+                uploadBackupBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>{{ 'data_management.backup.action.uploading'|trans({}, 'admin') }}';
 
                 const formData = new FormData(this);
 
@@ -527,13 +527,13 @@
                 } catch (error) {
                     uploadBackupStatus.innerHTML = `
                         <div class="alert alert-danger alert-dismissible fade show">
-                            <i class="bi bi-x-circle" aria-hidden="true"></i> Fehler: ${error.message}
+                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                         </div>
                     `;
                 } finally {
                     uploadBackupBtn.disabled = false;
-                    uploadBackupBtn.innerHTML = '<i class="bi bi-cloud-upload me-2" aria-hidden="true"></i>Hochladen';
+                    uploadBackupBtn.innerHTML = '<i class="bi bi-cloud-upload me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.upload'|trans({}, 'admin') }}';
                 }
             });
 
@@ -599,7 +599,7 @@
                         alert('Fehler bei der Validierung: ' + error.message);
                     } finally {
                         this.disabled = false;
-                        this.innerHTML = '<i class="bi bi-check-circle" aria-hidden="true"></i> Validieren';
+                        this.innerHTML = '<i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'data_management.backup.action.validate'|trans({}, 'admin') }}';
                     }
                 });
             });
@@ -714,7 +714,7 @@
                             previewContent.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
                         }
                     } catch (error) {
-                        previewContent.innerHTML = `<div class="alert alert-danger">Fehler: ${error.message}</div>`;
+                        previewContent.innerHTML = `<div class="alert alert-danger">{{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}</div>`;
                     }
                 });
             });
@@ -728,7 +728,7 @@
 
                     const filename = this.getAttribute('data-filename');
                     document.getElementById('restoreFilename').value = filename;
-                    document.getElementById('restoreModalLabel').innerHTML = `<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> ${filename} wiederherstellen`;
+                    document.getElementById('restoreModalLabel').innerHTML = `<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> ${filename} {{ 'data_management.backup.action.restore'|trans({}, 'admin') }}`;
                     document.getElementById('restoreStatus').innerHTML = '';
 
                     showModal('restoreModal');
@@ -741,7 +741,7 @@
                 const confirmBtn = this;
 
                 confirmBtn.disabled = true;
-                confirmBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Wiederherstellung läuft...';
+                confirmBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>{{ 'data_management.backup.action.restoring'|trans({}, 'admin') }}';
 
                 const formData = new FormData(document.getElementById('restoreForm'));
 
@@ -787,10 +787,10 @@
                         restoreStatus.innerHTML = `<div class="alert alert-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> ${result.message}</div>`;
                     }
                 } catch (error) {
-                    restoreStatus.innerHTML = `<div class="alert alert-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> Fehler: ${error.message}</div>`;
+                    restoreStatus.innerHTML = `<div class="alert alert-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ${error.message}</div>`;
                 } finally {
                     confirmBtn.disabled = false;
-                    confirmBtn.innerHTML = '<i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>Wiederherstellung starten';
+                    confirmBtn.innerHTML = '<i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.start_restore'|trans({}, 'admin') }}';
                 }
             });
 

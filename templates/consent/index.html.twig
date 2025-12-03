@@ -26,11 +26,11 @@
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-hand-thumbs-up',
         label: 'consent.kpi.total'|trans({}, 'consent'),
-        value: allConsents|length,
+        value: consents|length,
         variant: 'primary'
     } %}
 
-    {% set activeConsents = allConsents|filter(c => c.status == 'active')|length %}
+    {% set activeConsents = consents|filter(c => c.status == 'active')|length %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-check-circle',
         label: 'consent.kpi.active'|trans({}, 'consent'),
@@ -39,7 +39,7 @@
         link: '#filter-active'
     } %}
 
-    {% set pendingConsents = allConsents|filter(c => c.status == 'pending_verification')|length %}
+    {% set pendingConsents = consents|filter(c => c.status == 'pending_verification')|length %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-hourglass',
         label: 'consent.kpi.pending'|trans({}, 'consent'),
@@ -48,7 +48,7 @@
         link: '#filter-pending'
     } %}
 
-    {% set revokedConsents = allConsents|filter(c => c.status == 'revoked')|length %}
+    {% set revokedConsents = consents|filter(c => c.status == 'revoked')|length %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-x-circle',
         label: 'consent.kpi.revoked'|trans({}, 'consent'),
@@ -70,7 +70,7 @@
                 'revoked': { label: 'consent.status.revoked'|trans({}, 'consent'), icon: 'bi-x-circle', color: 'danger' }
             } %}
             {% for status, data in statuses %}
-                {% set count = allConsents|filter(c => c.status == status)|length %}
+                {% set count = consents|filter(c => c.status == status)|length %}
                 <div class="col-md-4 mb-3">
                     <div class="status-card status-{{ status }}">
                         <div class="status-icon text-{{ data.color }}" aria-hidden="true">
@@ -79,10 +79,10 @@
                         <div class="status-info">
                             <div class="status-label">{{ data.label }}</div>
                             <div class="status-count">{{ count }}</div>
-                            {% if allConsents|length > 0 %}
+                            {% if consents|length > 0 %}
                                 <div class="progress mt-2 progress-h-6">
                                     <div class="progress-bar bg-{{ data.color }}"
-                                         style="width: {{ (count / allConsents|length * 100)|round }}%"></div>
+                                         style="width: {{ (count / consents|length * 100)|round }}%"></div>
                                 </div>
                             {% endif %}
                         </div>
@@ -94,7 +94,7 @@
 </div>
 
 {# Consents Table or Empty State #}
-{% if allConsents|length == 0 %}
+{% if consents|length == 0 %}
     {% include '_components/_empty_state.html.twig' with {
         icon: 'bi-hand-thumbs-up',
         title: 'consent.empty.title'|trans({}, 'consent'),
@@ -104,7 +104,7 @@
 {% else %}
 <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/consent">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'consent.list.all_consents'|trans({'%count%': allConsents|length}, 'consent') }}</h3>
+        <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'consent.list.all_consents'|trans({'%count%': consents|length}, 'consent') }}</h3>
         <div class="d-flex gap-2">
             <select class="form-select form-select-sm w-150px" id="consent-status-filter">
                 <option value="">{{ 'consent.filter.all_status'|trans({}, 'consent') }}</option>
@@ -148,7 +148,7 @@
             </tr>
         {% endblock %}
         {% block table_body %}
-            {% for consent in allConsents %}
+            {% for consent in consents %}
             <tr data-consent-id="{{ consent.id }}"
                 data-consent-status="{{ consent.status }}"
                 data-consent-verified="{{ consent.verifiedBy ? 'verified' : 'unverified' }}">

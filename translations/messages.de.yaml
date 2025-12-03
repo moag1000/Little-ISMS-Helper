@@ -172,6 +172,11 @@ common:
     verifying: Überprüfe...
     downloaded: Heruntergeladen
     generated: Generiert
+    generating: 'Generiere...'
+    generating_report: 'Generiere Report...'
+    generating_reports: 'Generiere Reports...'
+    saving: 'Speichern...'
+    processing: 'Verarbeite...'
     copy_failed: 'Kopieren fehlgeschlagen'
     apply: Anwenden
     items: Elemente
