@@ -86,9 +86,9 @@
     {% if summary.orphaned_count > 0 or summary.broken_references_count > 0 %}
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
-            <h2 class="mb-0">
+            <h3 class="mb-0">
                 <i class="bi bi-tools" aria-hidden="true"></i> Quick Fix Tools
-            </h2>
+            </h3>
         </div>
         <div class="card-body">
             <div class="row g-3">
@@ -133,9 +133,9 @@
     {# Orphaned Entities Section #}
     <div class="card mb-4">
         <div class="card-header bg-warning text-dark">
-            <h2 class="mb-0">
+            <h3 class="mb-0">
                 <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.orphaned_entities'|trans({}, 'admin') }}
-            </h2>
+            </h3>
         </div>
         <div class="card-body">
             {% if orphanedAssets|length == 0 and orphanedRisks|length == 0 and orphanedIncidents|length == 0 %}

@@ -40,7 +40,7 @@
     {% if mappings_requiring_review is not empty %}
     <div class="card mb-4">
         <div class="card-header bg-warning">
-            <h2 class="mb-0"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Benötigt dringend Review ({{ mappings_requiring_review|length }})</h2>
+            <h3 class="mb-0"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Benötigt dringend Review ({{ mappings_requiring_review|length }})</h3>
         </div>
         <div class="card-body">
             {% embed '_components/_table.html.twig' with {

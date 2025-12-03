@@ -139,7 +139,7 @@
     {% if framework.requiredModules|length > 0 %}
     <div class="card mb-4">
         <div class="card-header">
-            <h2>🔧 {{ 'compliance.required_modules'|trans({}, 'compliance') }}</h2>
+            <h3>🔧 {{ 'compliance.required_modules'|trans({}, 'compliance') }}</h3>
         </div>
         <div class="card-body">
             <p class="text-muted mb-3">
@@ -263,7 +263,7 @@
         <div class="tab-content active" data-tab-content="overview">
             <div class="card">
                 <div class="card-header">
-                    <h2>{{ 'compliance.framework_info'|trans({}, 'compliance') }}</h2>
+                    <h3>{{ 'compliance.framework_info'|trans({}, 'compliance') }}</h3>
                 </div>
                 <div class="card-body">
                     <div class="info-grid">
@@ -301,7 +301,7 @@
             {% if dashboard.recommendations is not empty %}
                 <div class="card">
                     <div class="card-header">
-                        <h2>{{ 'compliance.recommendations'|trans({}, 'compliance') }}</h2>
+                        <h3>{{ 'compliance.recommendations'|trans({}, 'compliance') }}</h3>
                     </div>
                     <div class="card-body">
                         {% for recommendation in dashboard.recommendations %}
@@ -327,7 +327,7 @@
         <div class="tab-content" data-tab-content="requirements">
             <div class="card">
                 <div class="card-header">
-                    <h2>{{ 'compliance.tab.requirements'|trans({}, 'compliance') }}</h2>
+                    <h3>{{ 'compliance.tab.requirements'|trans({}, 'compliance') }}</h3>
                     <div class="filter-toggle">
                         <button class="btn btn-sm btn-secondary" data-action="click->toggle#toggleFilter">
                             {{ 'compliance.filter'|trans({}, 'compliance') }}
@@ -415,7 +415,7 @@
         <div class="tab-content" data-tab-content="gaps">
             <div class="card">
                 <div class="card-header">
-                    <h2>{{ 'compliance.gaps.title'|trans({}, 'compliance') }}</h2>
+                    <h3>{{ 'compliance.gaps.title'|trans({}, 'compliance') }}</h3>
                 </div>
                 <div class="card-body">
                     {% if dashboard.gaps.total > 0 %}
@@ -455,7 +455,7 @@
         <div class="tab-content" data-tab-content="data-reuse">
             <div class="card">
                 <div class="card-header">
-                    <h2>{{ 'compliance.tab.data_reuse'|trans({}, 'compliance') }}</h2>
+                    <h3>{{ 'compliance.tab.data_reuse'|trans({}, 'compliance') }}</h3>
                 </div>
                 <div class="card-body">
                     <div class="value-highlight">
