@@ -26,6 +26,9 @@ user:
         all_users: 'Alle Benutzer'
         no_users: 'Keine Benutzer vorhanden.'
         no_custom_roles: 'Keine benutzerdefinierten Rollen verfügbar.'
+    empty:
+        title: 'Noch keine Benutzer vorhanden'
+        description: 'Erstellen Sie Ihren ersten Benutzer, um mit der Benutzerverwaltung zu beginnen.'
     name: Benutzername
     email: E-Mail-Adresse
     department: Abteilung

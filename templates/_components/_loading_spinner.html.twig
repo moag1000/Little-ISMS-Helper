@@ -1,0 +1,51 @@
+{#
+  Reusable Loading Spinner Component
+
+  Usage:
+  {% include '_components/_loading_spinner.html.twig' %}
+
+  With options:
+  {% include '_components/_loading_spinner.html.twig' with {
+      size: 'sm',           # 'sm', 'md' (default), 'lg'
+      variant: 'primary',   # Bootstrap color: 'primary', 'secondary', 'light', etc.
+      text: 'Loading...',   # Optional loading text
+      centered: true,       # Center in container (default: true)
+      inline: false         # Inline display for buttons (default: false)
+  } %}
+
+  For buttons (inline spinner):
+  {% include '_components/_loading_spinner.html.twig' with {
+      size: 'sm',
+      inline: true,
+      text: 'Saving...'
+  } %}
+#}
+
+{% set size = size|default('md') %}
+{% set variant = variant|default('primary') %}
+{% set centered = centered|default(true) %}
+{% set inline = inline|default(false) %}
+
+{% set sizeClass = {
+    'sm': 'spinner-border-sm',
+    'md': '',
+    'lg': 'spinner-border-lg'
+}[size]|default('') %}
+
+{% if inline %}
+    {# Inline spinner for buttons #}
+    <span class="spinner-border {{ sizeClass }} {% if variant %}text-{{ variant }}{% endif %}" role="status" aria-hidden="true"></span>
+    {% if text is defined and text %}
+        <span class="ms-2">{{ text }}</span>
+    {% endif %}
+{% else %}
+    {# Block spinner for containers #}
+    <div class="{% if centered %}text-center py-4{% endif %}">
+        <div class="spinner-border {{ sizeClass }} {% if variant %}text-{{ variant }}{% endif %}" role="status">
+            <span class="visually-hidden">{{ 'common.loading'|trans({}, 'messages') }}</span>
+        </div>
+        {% if text is defined and text %}
+            <p class="mt-2 text-muted mb-0">{{ text }}</p>
+        {% endif %}
+    </div>
+{% endif %}

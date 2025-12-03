@@ -82,8 +82,8 @@
         {% endfor %}
     {% else %}
         <div class="text-center text-muted py-5">
-            <i class="bi bi-inbox" style="font-size: 4rem; opacity: 0.3;"></i>
-            <p class="mt-3">Keine Protokolleinträge vorhanden</p>
+            <i class="bi bi-inbox" style="font-size: 4rem; opacity: 0.3;" aria-hidden="true"></i>
+            <p class="mt-3">{{ 'common.no_log_entries'|trans({}, 'messages') }}</p>
         </div>
     {% endif %}
 </div>

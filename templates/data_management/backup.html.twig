@@ -89,10 +89,11 @@
                 </div>
                 <div class="card-body">
                     {% if backups is empty %}
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i>
-                            Noch keine Backups vorhanden. Erstellen Sie Ihr erstes Backup oben.
-                        </div>
+                        {% include '_components/_empty_state.html.twig' with {
+                            icon: 'bi-archive',
+                            title: 'data_management.backup.empty.title'|trans({}, 'admin'),
+                            description: 'data_management.backup.empty.description'|trans({}, 'admin')
+                        } %}
                     {% else %}
                         {% embed '_components/_table.html.twig' with {
                             'class': 'table-hover',
