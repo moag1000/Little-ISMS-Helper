@@ -369,14 +369,14 @@
                         <a href="{{ path('app_risk_show', {id: risk.id}) }}"
                            class="btn btn-outline-primary"
                            data-turbo-action="advance"
-                           title="Anzeigen" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                           title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                             <i class="bi bi-eye" aria-hidden="true"></i>
                         </a>
                         {% if is_granted('ROLE_USER') %}
                         <a href="{{ path('app_risk_edit', {id: risk.id}) }}"
                            class="btn btn-outline-secondary"
                            data-turbo-action="advance"
-                           title="Bearbeiten" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                           title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                             <i class="bi bi-pencil" aria-hidden="true"></i>
                         </a>
                         {% endif %}
