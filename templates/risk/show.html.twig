@@ -23,7 +23,7 @@
         </h1>
         <div class="actions">
             {% if canEdit is defined and canEdit %}
-                <a href="{{ path('app_risk_edit', {id: risk.id}) }}" class="btn btn-primary">{{ 'action.edit'|trans({}, 'messages') }}</a>
+                <a href="{{ path('app_risk_edit', {id: risk.id}) }}" class="btn btn-primary"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'action.edit'|trans({}, 'messages') }}</a>
             {% else %}
                 <button class="btn btn-primary" disabled title="{{ 'corporate.inheritance.cannot_edit_inherited'|trans({}, 'tenant') }}">
                     <i class="bi bi-lock" aria-hidden="true"></i> {{ 'action.edit'|trans({}, 'messages') }}
@@ -33,7 +33,7 @@
             {% if is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit) %}
                 <form method="post" action="{{ path('app_risk_delete', {id: risk.id}) }}" class="d-inline" onsubmit="return confirm('{{ 'risk.delete.confirm_message'|trans({}, 'risk') }}');">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ risk.id) }}">
-                    <button type="submit" class="btn btn-danger">{{ 'action.delete'|trans({}, 'messages') }}</button>
+                    <button type="submit" class="btn btn-danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'action.delete'|trans({}, 'messages') }}</button>
                 </form>
             {% endif %}
         </div>

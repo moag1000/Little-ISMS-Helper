@@ -59,7 +59,7 @@
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         {% if is_granted('ROLE_ADMIN') %}
-                        <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="btn btn-primary">{{ 'common.edit'|trans({}, 'messages') }}</a>
+                        <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="btn btn-primary"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
                         {% endif %}
                         <a href="{{ path('app_objective_index') }}" class="btn btn-outline-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
                     </div>
