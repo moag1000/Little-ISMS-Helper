@@ -23,7 +23,7 @@
         </div>
         <div class="button-group">
             <a href="{{ path('app_mapping_quality_review_queue') }}" class="btn btn-primary">
-                <span class="icon">📋</span> Review Queue
+                <span class="icon"><i class="bi bi-list-check" aria-hidden="true"></i></span> Review Queue
             </a>
             <a href="{{ path('app_mapping_quality_gaps') }}" class="btn btn-secondary">
                 <span class="icon">🔍</span> Gap-Übersicht
@@ -37,7 +37,7 @@
     {# Empty State for No Mappings #}
     {% if quality_stats.total_mappings == 0 %}
     <div class="alert alert-warning">
-        <h2>⚠️ Keine Mappings gefunden</h2>
+        <h2><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Keine Mappings gefunden</h2>
         <p>{{ 'compliance.mapping_quality.no_mappings_found'|trans({}, 'compliance') }}</p>
         <hr>
         <h6>Nächste Schritte:</h6>
@@ -50,7 +50,7 @@
     </div>
     {% elseif quality_stats.analyzed_mappings == 0 %}
     <div class="alert alert-info">
-        <h4>ℹ️ Noch keine Analyse durchgeführt</h4>
+        <h4><i class="bi bi-info-circle text-info" aria-hidden="true"></i> Noch keine Analyse durchgeführt</h4>
         <p>{{ quality_stats.total_mappings }} Mappings gefunden, aber noch nicht analysiert.</p>
         <hr>
         <h6>Analyse starten:</h6>
@@ -103,7 +103,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="mb-0">🎯 Durchschnittliches Confidence</h3>
+                    <h3 class="mb-0"><i class="bi bi-bullseye" aria-hidden="true"></i> Durchschnittliches Confidence</h3>
                 </div>
                 <div class="card-body">
                     <div class="progress mb-2" style="height: 30px;">
@@ -201,7 +201,7 @@
                 </div>
 
                 <button type="button" class="btn btn-danger btn-sm" id="cancelBtn" onclick="cancelAnalysis()">
-                    ⏸️ Abbrechen
+                    <i class="bi bi-pause-circle" aria-hidden="true"></i> Abbrechen
                 </button>
 
                 <div id="analysisLog" class="mt-3" style="max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px; background: #f5f5f5; padding: 10px; border-radius: 4px; display: none;">
@@ -212,10 +212,10 @@
             <div id="analysisResults" style="display: none;">
                 <hr>
                 <div class="alert alert-success">
-                    <h5>✅ Analyse abgeschlossen!</h5>
+                    <h5><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Analyse abgeschlossen!</h5>
                     <p id="resultsMessage"></p>
                     <button type="button" class="btn btn-primary mt-2" onclick="location.reload()">
-                        🔄 Seite neu laden
+                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Seite neu laden
                     </button>
                 </div>
             </div>
@@ -317,12 +317,12 @@
     {# Help Box #}
     <div class="card mb-4">
         <div class="card-header bg-light">
-            <h3 class="mb-0">ℹ️ Wie funktioniert die Qualitätsanalyse?</h3>
+            <h3 class="mb-0"><i class="bi bi-info-circle text-info" aria-hidden="true"></i> Wie funktioniert die Qualitätsanalyse?</h3>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
-                    <h4>🎯 Confidence Score</h4>
+                    <h4><i class="bi bi-bullseye" aria-hidden="true"></i> Confidence Score</h4>
                     <p class="small">Misst die Zuverlässigkeit der automatischen Analyse:</p>
                     <ul class="small">
                         <li><strong>High (≥80):</strong> Sehr zuverlässig, kann auto-approved werden</li>

@@ -103,7 +103,7 @@
     <div class="card-body">
         <div class="row">
             {% set severities = {
-                'critical': { label: 'incident.severity.critical'|trans({}, 'incident'), icon: '🔴', color: 'danger' },
+                'critical': { label: 'incident.severity.critical'|trans({}, 'incident'), icon: '<i class="bi bi-exclamation-circle" aria-hidden="true"></i>', color: 'danger' },
                 'high': { label: 'incident.severity.high'|trans({}, 'incident'), icon: '🟠', color: 'warning' },
                 'medium': { label: 'incident.severity.medium'|trans({}, 'incident'), icon: '🟡', color: 'info' },
                 'low': { label: 'incident.severity.low'|trans({}, 'incident'), icon: '🟢', color: 'success' }

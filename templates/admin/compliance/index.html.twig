@@ -36,17 +36,17 @@
                     <div class="stat-text">{{ 'compliance.total_available'|trans({}, 'compliance') }}</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-icon">✅</div>
+                    <div class="stat-icon"><i class="bi bi-check-circle" aria-hidden="true"></i></div>
                     <div class="stat-number">{{ statistics.total_loaded }}</div>
                     <div class="stat-text">{{ 'compliance.loaded'|trans({}, 'compliance') }}</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-icon">⏳</div>
+                    <div class="stat-icon"><i class="bi bi-hourglass-split" aria-hidden="true"></i></div>
                     <div class="stat-number">{{ statistics.total_not_loaded }}</div>
                     <div class="stat-text">{{ 'compliance.not_loaded'|trans({}, 'compliance') }}</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-icon">⚠️</div>
+                    <div class="stat-icon"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></div>
                     <div class="stat-number">{{ statistics.mandatory_not_loaded }}</div>
                     <div class="stat-text">{{ 'compliance.mandatory_missing'|trans({}, 'compliance') }}</div>
                 </div>
@@ -114,7 +114,7 @@
                                             <div class="module-badge {% if isActive %}active{% else %}inactive{% endif %}"
                                                  data-bs-toggle="tooltip" data-bs-placement="top"
                                                  title="{{ module.description }}">
-                                                <span class="module-icon">{% if isActive %}✅{% else %}⚠️{% endif %}</span>
+                                                <span class="module-icon">{% if isActive %}<i class="bi bi-check-circle text-success" aria-hidden="true"></i>{% else %}<i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>{% endif %}</span>
                                                 <span class="module-name">{{ module.name }}</span>
                                                 {% if not isActive %}
                                                     <a href="{{ path('admin_modules_index') }}" class="module-activate-link"
@@ -133,7 +133,7 @@
                         <div class="framework-actions">
                             {% if framework.loaded %}
                                 <button class="btn btn-success btn-block" disabled>
-                                    <span class="icon">✅</span> {{ 'compliance.already_loaded'|trans({}, 'compliance') }}
+                                    <span class="icon"><i class="bi bi-check-circle text-success" aria-hidden="true"></i></span> {{ 'compliance.already_loaded'|trans({}, 'compliance') }}
                                 </button>
                                 <button class="btn btn-danger btn-block mt-1 delete-framework-btn"
                                         data-framework-code="{{ framework.code }}"
@@ -144,7 +144,7 @@
                                 <button class="btn btn-primary btn-block load-framework-btn"
                                         data-framework-code="{{ framework.code }}"
                                         data-framework-name="{{ framework.name }}">
-                                    <span class="icon">⬇️</span> {{ 'compliance.load_framework'|trans({}, 'compliance') }}
+                                    <span class="icon"><i class="bi bi-download" aria-hidden="true"></i></span> {{ 'compliance.load_framework'|trans({}, 'compliance') }}
                                 </button>
                             {% endif %}
                         </div>
@@ -378,7 +378,7 @@ function initializeFrameworkButtons() {
                 const result = await response.json();
 
                 if (result.success) {
-                    this.innerHTML = '<span class="icon">✅</span> {{ 'compliance.successfully_loaded'|trans({}, 'compliance') }}';
+                    this.innerHTML = '<span class="icon"><i class="bi bi-check-circle text-success" aria-hidden="true"></i></span> {{ 'compliance.successfully_loaded'|trans({}, 'compliance') }}';
                     this.classList.remove('btn-primary');
                     this.classList.add('btn-success');
 
@@ -390,7 +390,7 @@ function initializeFrameworkButtons() {
                         const actionContainer = this.closest('.framework-actions');
                         actionContainer.innerHTML = `
                             <button class="btn btn-success btn-block" disabled>
-                                <span class="icon">✅</span> {{ 'compliance.successfully_loaded'|trans({}, 'compliance') }}
+                                <span class="icon"><i class="bi bi-check-circle text-success" aria-hidden="true"></i></span> {{ 'compliance.successfully_loaded'|trans({}, 'compliance') }}
                             </button>
                             <a href="/{{ app.request.locale }}/compliance/framework/${result.framework_id}" class="btn btn-primary btn-block mt-1"
                                data-bs-toggle="tooltip" data-bs-placement="right"
@@ -402,7 +402,7 @@ function initializeFrameworkButtons() {
                                     data-bs-toggle="tooltip" data-bs-placement="right"
                                     data-bs-title="{{ 'common.tooltip.reload_to_see_framework'|trans({}, 'messages') }}"
                                     title="{{ 'common.tooltip.reload_to_see_framework'|trans({}, 'messages') }}">
-                                <span class="icon">🔄</span> {{ 'common.reload'|trans({}, 'messages') }}
+                                <span class="icon"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></span> {{ 'common.reload'|trans({}, 'messages') }}
                             </button>
                         `;
 
@@ -418,7 +418,7 @@ function initializeFrameworkButtons() {
                         }, 2000);
                     }
                 } else {
-                    this.innerHTML = '<span class="icon">❌</span> {{ 'compliance.load_failed'|trans({}, 'compliance') }}';
+                    this.innerHTML = '<span class="icon"><i class="bi bi-x-circle text-danger" aria-hidden="true"></i></span> {{ 'compliance.load_failed'|trans({}, 'compliance') }}';
                     this.classList.add('btn-danger');
 
                     alert('{{ 'compliance.error'|trans({}, 'compliance') }}: ' + result.message);
@@ -426,21 +426,21 @@ function initializeFrameworkButtons() {
                     // Re-enable after 3 seconds
                     setTimeout(() => {
                         this.disabled = false;
-                        this.innerHTML = '<span class="icon">⬇️</span> {{ 'compliance.load_framework'|trans({}, 'compliance') }}';
+                        this.innerHTML = '<span class="icon"><i class="bi bi-download" aria-hidden="true"></i></span> {{ 'compliance.load_framework'|trans({}, 'compliance') }}';
                         this.classList.remove('btn-danger');
                         this.classList.add('btn-primary');
                     }, 3000);
                 }
             } catch (error) {
                 console.error('Error loading framework:', error);
-                this.innerHTML = '<span class="icon">❌</span> {{ 'compliance.load_failed'|trans({}, 'compliance') }}';
+                this.innerHTML = '<span class="icon"><i class="bi bi-x-circle text-danger" aria-hidden="true"></i></span> {{ 'compliance.load_failed'|trans({}, 'compliance') }}';
                 this.classList.add('btn-danger');
 
                 alert('{{ 'compliance.error'|trans({}, 'compliance') }}: ' + error.message);
 
                 setTimeout(() => {
                     this.disabled = false;
-                    this.innerHTML = '<span class="icon">⬇️</span> {{ 'compliance.load_framework'|trans({}, 'compliance') }}';
+                    this.innerHTML = '<span class="icon"><i class="bi bi-download" aria-hidden="true"></i></span> {{ 'compliance.load_framework'|trans({}, 'compliance') }}';
                     this.classList.remove('btn-danger');
                     this.classList.add('btn-primary');
                 }, 3000);
@@ -504,7 +504,7 @@ function initializeDeleteButtons() {
                 const result = await response.json();
 
                 if (result.success) {
-                    this.innerHTML = '<span class="icon">✅</span> {{ 'compliance.successfully_deleted'|trans({}, 'compliance') }}';
+                    this.innerHTML = '<span class="icon"><i class="bi bi-check-circle text-success" aria-hidden="true"></i></span> {{ 'compliance.successfully_deleted'|trans({}, 'compliance') }}';
 
                     // Remove the card from view with animation
                     const card = this.closest('.framework-card');
@@ -517,7 +517,7 @@ function initializeDeleteButtons() {
                         window.location.reload();
                     }, 1000);
                 } else {
-                    this.innerHTML = '<span class="icon">❌</span> {{ 'compliance.delete_failed'|trans({}, 'compliance') }}';
+                    this.innerHTML = '<span class="icon"><i class="bi bi-x-circle text-danger" aria-hidden="true"></i></span> {{ 'compliance.delete_failed'|trans({}, 'compliance') }}';
 
                     alert('{{ 'compliance.error'|trans({}, 'compliance') }}: ' + result.message);
 
@@ -529,7 +529,7 @@ function initializeDeleteButtons() {
                 }
             } catch (error) {
                 console.error('Error deleting framework:', error);
-                this.innerHTML = '<span class="icon">❌</span> {{ 'compliance.delete_failed'|trans({}, 'compliance') }}';
+                this.innerHTML = '<span class="icon"><i class="bi bi-x-circle text-danger" aria-hidden="true"></i></span> {{ 'compliance.delete_failed'|trans({}, 'compliance') }}';
 
                 alert('{{ 'compliance.error'|trans({}, 'compliance') }}: ' + error.message);
 

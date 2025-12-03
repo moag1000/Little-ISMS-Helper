@@ -56,7 +56,7 @@
                                         <i class="bi-check-circle-fill fs-3 me-3"></i>
                                     </div>
                                     <div>
-                                        <h5 class="alert-heading mb-1">✅ Hervorragend Lizenzkonform</h5>
+                                        <h5 class="alert-heading mb-1"<><i class="bi bi-check-circle" aria-hidden="true"></i> Hervorragend Lizenzkonform</h5>
                                         <p class="mb-0">
                                             {{ compliance_percentage }}% der Pakete haben permissive Lizenzen.
                                             Das Projekt ist für kommerzielle Nutzung freigegeben.
@@ -86,7 +86,7 @@
                                         <i class="bi-exclamation-triangle-fill fs-3 me-3"></i>
                                     </div>
                                     <div>
-                                        <h5 class="alert-heading mb-1">⚠️ Prüfung erforderlich</h5>
+                                        <h5 class="alert-heading mb-1"<><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Prüfung erforderlich</h5>
                                         <p class="mb-0">
                                             {{ compliance_percentage }}% der Pakete haben permissive Lizenzen.
                                             Bitte prüfen Sie problematische Lizenzen im Detail.
@@ -163,7 +163,7 @@
                             {% endblock %}
                             {% block table_body %}
                                 <tr>
-                                    <td><span class="badge bg-success">✅ Erlaubt</span></td>
+                                    <td><span class="badge bg-success"<><i class="bi bi-check-circle" aria-hidden="true"></i> Erlaubt</span></td>
                                     <td><small>Permissive Lizenzen (MIT, BSD, Apache)</small></td>
                                     <td class="text-end"><strong>{{ stats.allowed }}</strong></td>
                                     <td class="text-end">{{ (stats.allowed / stats.total * 100)|round(1) }}%</td>
@@ -177,7 +177,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><span class="badge bg-warning">⚠️ Eingeschränkt</span></td>
+                                    <td><span class="badge bg-warning"<><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Eingeschränkt</span></td>
                                     <td><small>Weak copyleft (MPL, EPL, CC-BY)</small></td>
                                     <td class="text-end"><strong>{{ stats.restricted }}</strong></td>
                                     <td class="text-end">{{ (stats.restricted / stats.total * 100)|round(1) }}%</td>
@@ -191,7 +191,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><span class="badge bg-info">🔄 Copyleft</span></td>
+                                    <td><span class="badge bg-info"<><i class="bi bi-arrow-repeat" aria-hidden="true"></i> Copyleft</span></td>
                                     <td><small>Strong copyleft (GPL, LGPL, AGPL)</small></td>
                                     <td class="text-end"><strong>{{ stats.copyleft }}</strong></td>
                                     <td class="text-end">{{ (stats.copyleft / stats.total * 100)|round(1) }}%</td>
@@ -205,7 +205,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><span class="badge bg-danger">❌ Nicht erlaubt</span></td>
+                                    <td><span class="badge bg-danger"<><i class="bi bi-x-circle" aria-hidden="true"></i> Nicht erlaubt</span></td>
                                     <td><small>Non-commercial Lizenzen</small></td>
                                     <td class="text-end"><strong>{{ stats.not_allowed }}</strong></td>
                                     <td class="text-end">{{ (stats.not_allowed / stats.total * 100)|round(1) }}%</td>
