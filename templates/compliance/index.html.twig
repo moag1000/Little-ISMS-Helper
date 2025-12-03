@@ -12,13 +12,13 @@
 
     <div class="page-header">
         <div>
-            <h1>🎯 {{ 'compliance.page_title'|trans({}, 'compliance') }}</h1>
+            <h1><i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'compliance.page_title'|trans({}, 'compliance') }}</h1>
             <p class="text-muted">{{ 'compliance.page_subtitle'|trans({}, 'compliance') }}</p>
         </div>
         <div class="button-group">
             {% if is_granted('ROLE_ADMIN') %}
             <a href="{{ path('admin_compliance_index') }}" class="btn btn-primary">
-                <span class="icon">⚙️</span> {{ 'compliance.manage_frameworks'|trans({}, 'compliance') }}
+                <span class="icon"><i class="bi bi-gear" aria-hidden="true"></i></span> {{ 'compliance.manage_frameworks'|trans({}, 'compliance') }}
             </a>
             {% endif %}
             <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-success">
@@ -31,7 +31,7 @@
                 <span class="icon">📊</span> {{ 'compliance.button.transitive'|trans({}, 'compliance') }}
             </a>
             <a href="{{ path('app_compliance_compare') }}" class="btn btn-secondary">
-                <span class="icon">⚖️</span> {{ 'compliance.button.compare_frameworks'|trans({}, 'compliance') }}
+                <span class="icon"><i class="bi bi-sliders" aria-hidden="true"></i></span> {{ 'compliance.button.compare_frameworks'|trans({}, 'compliance') }}
             </a>
         </div>
     </div>
@@ -128,7 +128,7 @@
                 <p class="text-muted">{{ 'compliance.no_frameworks_loaded'|trans({}, 'compliance') }}</p>
                 {% if is_granted('ROLE_ADMIN') %}
                 <a href="{{ path('admin_compliance_index') }}" class="btn btn-primary btn-lg">
-                    <span class="icon">⚙️</span> {{ 'compliance.add_frameworks'|trans({}, 'compliance') }}
+                    <span class="icon"><i class="bi bi-gear" aria-hidden="true"></i></span> {{ 'compliance.add_frameworks'|trans({}, 'compliance') }}
                 </a>
                 {% else %}
                 <p class="text-muted"><small>{{ 'compliance.contact_admin_to_add_frameworks'|trans({}, 'compliance') }}</small></p>
@@ -151,17 +151,17 @@
                         <div class="stat-text">{{ 'compliance.stats.total_mappings'|trans({}, 'compliance') }}</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-icon">✅</div>
+                        <div class="stat-icon"><i class="bi bi-check-circle" aria-hidden="true"></i></div>
                         <div class="stat-number">{{ mapping_stats.full_mappings + mapping_stats.exceeds_mappings }}</div>
                         <div class="stat-text">{{ 'compliance.stats.full_exceeds'|trans({}, 'compliance') }}</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-icon">⚠️</div>
+                        <div class="stat-icon"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></div>
                         <div class="stat-number">{{ mapping_stats.partial_mappings }}</div>
                         <div class="stat-text">{{ 'compliance.stats.partial_mappings'|trans({}, 'compliance') }}</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-icon">🔄</div>
+                        <div class="stat-icon"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></div>
                         <div class="stat-number">{{ mapping_stats.bidirectional_mappings }}</div>
                         <div class="stat-text">{{ 'compliance.stats.bidirectional_mappings'|trans({}, 'compliance') }}</div>
                     </div>
@@ -183,12 +183,12 @@
         <div class="card-body">
             <div class="benefits-grid">
                 <div class="benefit-item">
-                    <div class="benefit-icon">🔄</div>
+                    <div class="benefit-icon"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></div>
                     <strong>{{ 'compliance.benefits.data_reuse.title'|trans({}, 'compliance') }}</strong>
                     <p>{{ 'compliance.benefits.data_reuse.description'|trans({}, 'compliance') }}</p>
                 </div>
                 <div class="benefit-item">
-                    <div class="benefit-icon">⏱️</div>
+                    <div class="benefit-icon"><i class="bi bi-clock" aria-hidden="true"></i></div>
                     <strong>{{ 'compliance.benefits.time_efficiency.title'|trans({}, 'compliance') }}</strong>
                     <p>{{ 'compliance.benefits.time_efficiency.description'|trans({}, 'compliance') }}</p>
                 </div>
@@ -198,7 +198,7 @@
                     <p>{{ 'compliance.benefits.transparency.description'|trans({}, 'compliance') }}</p>
                 </div>
                 <div class="benefit-item">
-                    <div class="benefit-icon">🎯</div>
+                    <div class="benefit-icon"><i class="bi bi-bullseye" aria-hidden="true"></i></div>
                     <strong>{{ 'compliance.benefits.strategic.title'|trans({}, 'compliance') }}</strong>
                     <p>{{ 'compliance.benefits.strategic.description'|trans({}, 'compliance') }}</p>
                 </div>

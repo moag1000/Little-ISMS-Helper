@@ -245,7 +245,7 @@
 
     {# Linked Incident & VVT #}
     <div class="section">
-        <h2>📋 Linked Security Incident & Processing Activity</h2>
+        <h2><i class="bi bi-link-45deg" aria-hidden="true"></i> Linked Security Incident & Processing Activity</h2>
         <p><strong>Security Incident:</strong> {{ breach.incident.referenceNumber }} - {{ breach.incident.title }}</p>
         <p><strong>Incident Severity:</strong>
             {% set sev_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.incident.severity] %}

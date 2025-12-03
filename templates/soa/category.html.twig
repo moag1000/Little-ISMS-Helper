@@ -70,11 +70,11 @@
             <td>
                 {% if control.applicable %}
                     {% if control.implementationStatus == 'implemented' %}
-                        <span class="badge bg-success">✅ Implementiert</span>
+                        <span class="badge bg-success"<><i class="bi bi-check-circle" aria-hidden="true"></i> Implementiert</span>
                     {% elseif control.implementationStatus == 'in_progress' %}
                         <span class="badge bg-warning">{{ 'soa.in_progress_badge_emoji'|trans({}, 'soa') }}</span>
                     {% elseif control.implementationStatus == 'not_started' %}
-                        <span class="badge bg-danger">⏸ Nicht begonnen</span>
+                        <span class="badge bg-danger"><i class="bi bi-pause-circle" aria-hidden="true"></i> Nicht begonnen</span>
                     {% else %}
                         <span class="badge badge-neutral">N/A</span>
                     {% endif %}

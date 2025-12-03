@@ -26,7 +26,7 @@
 <div class="container">
     <div class="page-header">
         <div>
-            <h1>📋 Mapping Review Queue</h1>
+            <h1><i class="bi bi-list-check" aria-hidden="true"></i> Mapping Review Queue</h1>
             <p class="text-muted">Mappings mit niedrigem Confidence für manuelle Überprüfung</p>
         </div>
         <div class="button-group">
@@ -40,7 +40,7 @@
     {% if mappings_requiring_review is not empty %}
     <div class="card mb-4">
         <div class="card-header bg-warning">
-            <h2 class="mb-0">⚠️ Benötigt dringend Review ({{ mappings_requiring_review|length }})</h2>
+            <h2 class="mb-0"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Benötigt dringend Review ({{ mappings_requiring_review|length }})</h2>
         </div>
         <div class="card-body">
             {% embed '_components/_table.html.twig' with {
@@ -125,7 +125,7 @@
     {% if low_confidence_mappings is not empty %}
     <div class="card mb-4">
         <div class="card-header">
-            <h3 class="mb-0">🔴 Niedriges Confidence (<70) ({{ low_confidence_mappings|length }})</h3>
+            <h3 class="mb-0"><i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i> Niedriges Confidence (<70) ({{ low_confidence_mappings|length }})</h3>
         </div>
         <div class="card-body">
             {% embed '_components/_table.html.twig' with {
@@ -258,14 +258,14 @@
     {# Empty State #}
     {% if mappings_requiring_review is empty and low_confidence_mappings is empty and discrepancies is empty %}
     <div class="alert alert-success">
-        <h2>✅ Keine Mappings benötigen Review!</h2>
+        <h2><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Keine Mappings benötigen Review!</h2>
         <p>Alle Mappings haben akzeptable Confidence-Scores oder wurden bereits reviewed.</p>
         <hr>
         <h4>Status:</h4>
         <ul>
-            <li>✅ Alle Mappings mit niedrigem Confidence (<70) wurden geprüft</li>
-            <li>✅ Keine großen Diskrepanzen gefunden</li>
-            <li>✅ Review Queue ist leer</li>
+            <li><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Alle Mappings mit niedrigem Confidence (<70) wurden geprüft</li>
+            <li><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Keine großen Diskrepanzen gefunden</li>
+            <li><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Review Queue ist leer</li>
         </ul>
         <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-primary mt-2">← Zurück zum Dashboard</a>
     </div>

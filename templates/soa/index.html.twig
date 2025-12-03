@@ -186,7 +186,7 @@
 
         <div class="filter-control justify-end">
             <button type="button" class="btn btn-secondary" data-action="click->filter#reset">
-                🔄 {{ 'soa.filter.reset'|trans({}, 'soa') }}
+                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'soa.filter.reset'|trans({}, 'soa') }}
             </button>
         </div>
     </div>
@@ -231,11 +231,11 @@
             <td>
                 {% if control.applicable %}
                     {% if control.implementationStatus == 'implemented' %}
-                        <span class="badge bg-success">✅ {{ 'soa.status.implemented'|trans({}, 'soa') }}</span>
+                        <span class="badge bg-success"<><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'soa.status.implemented'|trans({}, 'soa') }}</span>
                     {% elseif control.implementationStatus == 'in_progress' %}
-                        <span class="badge bg-warning">🔄 {{ 'soa.status.in_progress'|trans({}, 'soa') }}</span>
+                        <span class="badge bg-warning"<><i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'soa.status.in_progress'|trans({}, 'soa') }}</span>
                     {% elseif control.implementationStatus == 'not_started' %}
-                        <span class="badge bg-danger">⏸ {{ 'soa.status.not_started'|trans({}, 'soa') }}</span>
+                        <span class="badge bg-danger"><i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'soa.status.not_started'|trans({}, 'soa') }}</span>
                     {% else %}
                         <span class="badge badge-neutral">{{ 'soa.value.na'|trans({}, 'soa') }}</span>
                     {% endif %}

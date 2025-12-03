@@ -25,7 +25,7 @@
                 <h2>{{ remediation_effort.total_gaps }}</h2>
             </div>
             <div class="col-md-4">
-                <h5>⏱️ Geschätzter Aufwand</h5>
+                <h5><i class="bi bi-clock" aria-hidden="true"></i> Geschätzter Aufwand</h5>
                 <h3>{{ remediation_effort.total_effort }} Stunden</h3>
                 <small class="text-muted">≈ {{ (remediation_effort.total_effort / 8)|round(1) }} Arbeitstage</small>
             </div>
@@ -59,7 +59,7 @@
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
                                 <span>
-                                    {% if stat.gapType == 'missing_control' %}🔴
+                                    {% if stat.gapType == 'missing_control' %}<i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i>
                                     {% elseif stat.gapType == 'partial_coverage' %}🟡
                                     {% elseif stat.gapType == 'scope_difference' %}🔵
                                     {% elseif stat.gapType == 'additional_requirement' %}🟠
@@ -97,7 +97,7 @@
                         <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
                                 <span>
-                                    {% if stat.priority == 'critical' %}🔴
+                                    {% if stat.priority == 'critical' %}<i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i>
                                     {% elseif stat.priority == 'high' %}🟠
                                     {% elseif stat.priority == 'medium' %}🟡
                                     {% else %}⚪
@@ -197,7 +197,7 @@
     {% if low_confidence_gaps is not empty %}
     <div class="card mb-4">
         <div class="card-header">
-            <h3 class="mb-0">⚠️ Low Confidence Gaps ({{ low_confidence_gaps|length }})</h3>
+            <h3 class="mb-0"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Low Confidence Gaps ({{ low_confidence_gaps|length }})</h3>
         </div>
         <div class="card-body">
             <p class="text-muted">Diese Gaps haben niedrige Confidence-Scores und sollten manuell überprüft werden.</p>
@@ -261,7 +261,7 @@
     {% if high_priority_gaps is empty and low_confidence_gaps is empty %}
         {% if remediation_effort.total_gaps == 0 %}
         <div class="alert alert-info">
-            <h4>ℹ️ Keine Gaps gefunden</h4>
+            <h4><i class="bi bi-info-circle text-info" aria-hidden="true"></i> Keine Gaps gefunden</h4>
             <p>Es wurden noch keine Gap-Analysen durchgeführt.</p>
             <hr>
             <h4>Nächste Schritte:</h4>
@@ -274,7 +274,7 @@
         </div>
         {% else %}
         <div class="alert alert-success">
-            <h5>✅ Keine kritischen Gaps!</h5>
+            <h5><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Keine kritischen Gaps!</h5>
             <p class="mb-0">Alle Gaps haben niedrige Priorität oder wurden bereits behoben.</p>
         </div>
         {% endif %}
@@ -283,12 +283,12 @@
     {# Action Buttons #}
     <div class="card">
         <div class="card-header">
-            <h3 class="mb-0">🛠️ Aktionen</h3>
+            <h3 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> Aktionen</h3>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
-                    <h4>📋 Priorisierung</h4>
+                    <h4><i class="bi bi-list-check" aria-hidden="true"></i> Priorisierung</h4>
                     <ol>
                         <li>Critical Gaps zuerst ({{ gap_stats_by_priority[0].count ?? 0 }})</li>
                         <li>High Priority Gaps ({{ gap_stats_by_priority[1].count ?? 0 }})</li>
@@ -296,7 +296,7 @@
                     </ol>
                 </div>
                 <div class="col-md-4">
-                    <h4>⏱️ Zeitplanung</h4>
+                    <h4><i class="bi bi-clock" aria-hidden="true"></i> Zeitplanung</h4>
                     <p>
                         <strong>Total:</strong> {{ remediation_effort.total_effort }} Stunden<br>
                         <strong>≈ {{ (remediation_effort.total_effort / 8)|round(1) }} Tage</strong> bei einem 8h-Arbeitstag

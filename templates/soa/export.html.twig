@@ -243,7 +243,7 @@
 </head>
 <body>
     <div class="no-print text-center-mb-20">
-        <button onclick="window.print()" class="btn btn-primary">🖨️ Drucken / PDF speichern</button>
+        <button onclick="window.print()" class="btn btn-primary"<><i class="bi bi-printer" aria-hidden="true"></i> Drucken / PDF speichern</button>
         <a href="{{ path('app_soa_index') }}" class="btn btn-secondary">← Zurück zur Übersicht</a>
     </div>
 
@@ -400,11 +400,11 @@
                 <div class="detail-label">Implementierungsstatus:</div>
                 <div class="detail-value">
                     {% if control.implementationStatus == 'implemented' %}
-                        <span class="badge bg-success">✅ Implementiert</span> - {{ control.implementationPercentage }}%
+                        <span class="badge bg-success"<><i class="bi bi-check-circle" aria-hidden="true"></i> Implementiert</span> - {{ control.implementationPercentage }}%
                     {% elseif control.implementationStatus == 'in_progress' %}
                         <span class="badge bg-warning">{{ 'soa.in_progress_badge_emoji'|trans }}</span> - {{ control.implementationPercentage }}%
                     {% elseif control.implementationStatus == 'not_started' %}
-                        <span class="badge bg-danger">⏸ Nicht begonnen</span> - {{ control.implementationPercentage }}%
+                        <span class="badge bg-danger"><i class="bi bi-pause-circle" aria-hidden="true"></i> Nicht begonnen</span> - {{ control.implementationPercentage }}%
                     {% endif %}
                 </div>
             </div>

@@ -111,7 +111,7 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="risk-level-card risk-critical">
-                        <div class="risk-level-icon">🔴</div>
+                        <div class="risk-level-icon"><i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i></div>
                         <div class="risk-level-label">Kritisch (20-25)</div>
                         <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() >= 20)|length }}</div>
                     </div>
