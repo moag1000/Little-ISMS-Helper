@@ -188,6 +188,8 @@ common:
     last_90_days: 'Letzte 90 Tage'
     last_year: 'Letztes Jahr'
     not_available: 'nicht verfügbar'
+    no_activities: 'Keine Aktivitäten vorhanden'
+    no_log_entries: 'Keine Protokolleinträge vorhanden'
     title: Titel
     responsible: Verantwortlich
     target_date: Zieldatum

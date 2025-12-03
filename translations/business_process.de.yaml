@@ -53,6 +53,11 @@ business_process:
         rto: 'z.B. 4'
         rpo: 'z.B. 2'
         mtpd: 'z.B. 24'
+    empty:
+        title: 'Noch keine Geschäftsprozesse vorhanden'
+        description: 'Erstellen Sie Ihren ersten Geschäftsprozess, um mit der Business-Impact-Analyse zu beginnen.'
+    action:
+        create: 'Prozess erstellen'
     impact_level:
         very_low: 'Sehr niedrig'
         low: Niedrig

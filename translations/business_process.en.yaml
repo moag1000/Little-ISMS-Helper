@@ -49,6 +49,11 @@ business_process:
         rto: 'e.g. 4'
         rpo: 'e.g. 2'
         mtpd: 'e.g. 24'
+    empty:
+        title: 'No business processes yet'
+        description: 'Create your first business process to start with the business impact analysis.'
+    action:
+        create: 'Create process'
     impact_level:
         very_low: 'Very low'
         low: Low
