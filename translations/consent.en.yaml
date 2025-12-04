@@ -1,198 +1,145 @@
-# Consent Translations (English)
-# GDPR Art. 7 - Consent Management
-
-# Breadcrumb & Navigation
 consent:
-  breadcrumb: 'Consents'
+    # Page titles and breadcrumbs
+    breadcrumb: Consents
+    header:
+        title: 'Consent Management'
+        subtitle: 'Management of consents according to GDPR Art. 7'
+        action:
+            new: 'New Consent'
 
-  # Header
-  header:
-    title: 'Consents'
-    subtitle: 'GDPR Art. 7 - Data Subject Consent Management'
+    # Form titles
+    new: 'Record New Consent'
+    edit: 'Edit Consent'
+
+    # Actions
     action:
-      new: 'New Consent'
+        save: Save
+        verify: 'Verify Consent'
+        document_revocation: 'Document Revocation'
 
-  # Page Titles
-  new: 'Create New Consent'
-  edit: 'Edit Consent'
+    # KPIs
+    kpi:
+        total: 'Total'
+        active: 'Active'
+        pending: 'Pending'
+        revoked: 'Revoked'
 
-  # KPI Cards
-  kpi:
-    total: 'Total'
-    active: 'Active (Verified)'
-    pending: 'Pending Verification'
+    # Sections
+    section:
+        data_subject: 'Data Subject'
+        processing_activity: 'Processing Activity'
+        consent_grant: 'Consent Grant'
+        proof_documentation: 'Proof Documentation'
+        expiry: 'Expiry'
+        notes: 'Notes'
+        revocation: 'Revocation'
+        dpo_verification: 'DPO Verification'
+        metadata: 'Metadata'
+
+    # Fields
+    field:
+        id: ID
+        data_subject: 'Data Subject'
+        identifier_type: 'Identifier Type'
+        processing_activity: 'Processing Activity'
+        purposes: 'Purposes'
+        granted_at: 'Granted At'
+        consent_method: 'Consent Method'
+        consent_channel: 'Consent Channel'
+        consent_text: 'Consent Text'
+        proof_document: 'Proof Document'
+        expires_at: 'Expires At'
+        status: 'Status'
+        verified: 'Verified'
+        revocation_reason: 'Revocation Reason'
+        created_at: 'Created At'
+        updated_at: 'Updated At'
+
+    # Hints
+    hint:
+        expiry_optional: 'Optional: Leave empty for indefinite consent'
+
+    # Status values
+    status:
+        active: Active
+        pending_verification: 'Pending Verification'
+        revoked: Revoked
+        overview: 'Status Overview'
+
+    # Identifier types
+    identifier_type:
+        email: 'Email Address'
+        customer_id: 'Customer ID'
+        employee_id: 'Employee ID'
+        user_id: 'User ID'
+        other: 'Other'
+
+    # Consent methods
+    method:
+        written: 'Written'
+        electronic: 'Electronic'
+        verbal: 'Verbal'
+        double_opt_in: 'Double Opt-In'
+        checkbox: 'Checkbox'
+
+    # Consent channels
+    channel:
+        website: 'Website'
+        app: 'App'
+        email: 'Email'
+        paper: 'Paper Form'
+        phone: 'Phone'
+        in_person: 'In Person'
+
+    # Filters
+    filter:
+        all_status: 'All Status'
+        verified: 'Verified'
+        unverified: 'Unverified'
+        all_verified: 'All'
+
+    # List
+    list:
+        all_consents: 'All Consents'
+
+    # Empty state
+    empty:
+        title: 'No Consents Found'
+        description: 'Record your first consent to start GDPR-compliant documentation.'
+
+    # Verification
+    verified: 'Verified'
+    not_verified: 'Not Verified'
+    verified_by: 'Verified by'
+    verified_by_user: 'Verified by %user%'
+    verify:
+        confirmation: 'Mark consent as verified?'
+        hint: 'Verification confirms that the consent meets GDPR requirements.'
+
+    # Revocation
     revoked: 'Revoked'
-
-  # Status Overview
-  status:
-    overview: 'Status Overview'
-    pending_verification: 'Pending DPO Verification'
-    active: 'Active'
-    revoked: 'Revoked'
-    expired: 'Expired'
-    rejected: 'Rejected'
-
-  # Empty State
-  empty:
-    title: 'No Consents Available'
-    description: 'No consents have been documented yet. Create the first consent to document GDPR-compliant processing activities.'
-
-  # List View
-  list:
-    all_consents: 'All Consents (%count%)'
-
-  # Filter
-  filter:
-    all_status: 'All Status'
-    all_verified: 'All'
-    verified: 'Verified Only'
-    unverified: 'Unverified Only'
-
-  # Table Fields
-  field:
-    id: 'ID'
-    data_subject: 'Data Subject'
-    identifier_type: 'Identifier Type'
-    processing_activity: 'Processing Activity'
-    purposes: 'Purposes'
-    status: 'Status'
-    granted_at: 'Granted At'
-    consent_method: 'Method'
-    consent_channel: 'Channel'
-    consent_text: 'Consent Text'
-    proof_document: 'Proof Document'
-    expires_at: 'Expires At'
-    verified: 'DPO Verified'
-    created_at: 'Created At'
-    updated_at: 'Updated At'
     revoked_at: 'Revoked At'
     revocation_reason: 'Revocation Reason'
+    revoke:
+        hint: 'Document the withdrawal of consent according to GDPR Art. 7(3).'
 
-  # Form Sections
-  section:
-    data_subject: 'Data Subject'
-    processing_activity: 'Processing Activity'
-    consent_grant: 'Consent Grant'
-    proof_documentation: 'Proof Documentation'
-    expiry: 'Expiry & Validity'
-    notes: 'Notes'
-    dpo_verification: 'DPO Verification'
-    revocation: 'Revocation'
-    metadata: 'Metadata'
+    # Proof document
+    no_proof_document: 'No Proof Document'
 
-  # Form Fields
-  form:
-    data_subject_identifier: 'Data Subject Identifier'
-    data_subject_identifier_placeholder: 'e.g. customer@example.com, CID-12345, etc.'
-    data_subject_identifier_help: 'Unique identifier of the external data subject (NOT an internal user)'
+    # Confirm dialogs
+    delete:
+        confirm: 'Are you sure you want to delete this consent?'
 
-    identifier_type_label: 'Identifier Type'
-    identifier_type_options:
-      email: 'Email Address'
-      customer_id: 'Customer ID'
-      pseudonym: 'Pseudonym'
-      phone: 'Phone Number'
-      other: 'Other'
-
-    processing_activity: 'Processing Activity'
-    processing_activity_help: 'Only processing activities with legal basis Art. 6(1)(a) GDPR (Consent)'
-
-    purposes: 'Granular Purposes'
-    purposes_help: 'Specific purposes within the processing activity (optional)'
-    purposes_options:
-      marketing: 'Marketing'
-      profiling: 'Profiling'
-      analytics: 'Analytics'
-      newsletter: 'Newsletter'
-      personalization: 'Personalization'
-
-    granted_at: 'Grant Date'
-    granted_at_help: 'Date and time when consent was granted'
-
-    consent_method: 'Consent Method'
-    consent_method_options:
-      double_opt_in: 'Double Opt-In'
-      written_form: 'Written Form'
-      checkbox: 'Checkbox'
-      oral: 'Oral'
-      email: 'Email'
-      other: 'Other'
-
-    consent_channel: 'Channel'
-    consent_channel_options:
-      website: 'Website'
-      email: 'Email'
-      paper_form: 'Paper Form'
-      phone: 'Phone'
-      in_person: 'In Person'
-      other: 'Other'
-
-    consent_text: 'Consent Text (Exact Wording)'
-    consent_text_placeholder: 'Exact wording of the consent statement at time of grant...'
-    consent_text_help: 'IMPORTANT: GDPR Art. 7(1) proof requirement - exact wording required'
-
-    proof_document: 'Proof Document'
-    proof_document_help: 'Optional: Uploaded document (email, scan, etc.) as proof'
-
-    expires_at: 'Expiry Date'
-    expires_at_help: 'Optional: Date when consent automatically expires'
-
-    notes: 'Internal Notes'
-    notes_placeholder: 'Internal notes about this consent...'
-
-  # Hints
-  hint:
-    expiry_optional: 'Optional: Leave empty for indefinite consents'
-
-  # Status Labels
-  verified: 'Verified by DPO'
-  not_verified: 'Not Verified'
-  revoked: 'Revoked'
-
-  # Proof Document
-  no_proof_document: 'No Proof Document'
-
-  # Actions
-  action:
-    save: 'Save Consent'
-    verify: 'Verify'
-    document_revocation: 'Document Revocation'
-    delete: 'Delete'
-    back: 'Back'
-
-  # Verification
-  verify:
-    confirmation: 'Are you sure you want to verify and activate this consent as DPO?'
-    hint: 'After verification, the consent will be marked as legally valid and the status will be set to "Active".'
-
-  verified_by: 'Verified by'
-  verified_by_user: 'Verified by %user% on'
-
-  # Revocation
-  revoke:
-    hint: 'Document the revocation of consent by the data subject'
-
-  revocation_reason: 'Revocation Reason'
-  revoked_at: 'Revoked on %date%'
-
-  # Delete Confirmation
-  delete:
-    confirm: 'Are you sure you want to delete this consent? This action cannot be undone.'
-
-  # Success Messages
-  success:
-    created: 'Consent successfully created'
-    updated: 'Consent successfully updated'
-    verified: 'Consent successfully verified and activated by DPO'
-    revoked: 'Revocation successfully documented'
-    deleted: 'Consent successfully deleted'
-
-  # Error Messages
-  error:
-    invalid_token: 'Invalid CSRF token'
-    cannot_edit_status: 'Consent cannot be edited in current status'
-
-  # Warning Messages
-  warning:
-    already_verified: 'This consent has already been verified'
-    already_revoked: 'This consent has already been revoked'
+    # Flash messages
+    success:
+        created: 'Consent successfully created.'
+        updated: 'Consent successfully updated.'
+        verified: 'Consent successfully verified.'
+        revoked: 'Consent successfully revoked.'
+        deleted: 'Consent successfully deleted.'
+    error:
+        cannot_edit_status: 'Consents with this status cannot be edited.'
+        invalid_token: 'Invalid security token.'
+    warning:
+        already_verified: 'This consent is already verified.'
+        already_revoked: 'This consent is already revoked.'

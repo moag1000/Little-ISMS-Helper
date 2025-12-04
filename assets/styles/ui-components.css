@@ -1564,7 +1564,81 @@
 .chart-container {
     margin-top: 1rem;
     position: relative;
-    height: 300px;
+    min-height: 300px;
+}
+
+/* ===========================================
+   HTML Legend for Charts - Theme Adaptive
+   =========================================== */
+.chart-html-legend {
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    position: relative;
+    z-index: 10;
+}
+
+.chart-legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.chart-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease;
+}
+
+.chart-legend-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.chart-legend-item.legend-hidden {
+    opacity: 0.4;
+}
+
+.chart-legend-item.legend-hidden .chart-legend-label {
+    text-decoration: line-through;
+}
+
+.chart-legend-color {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    flex-shrink: 0;
+}
+
+.chart-legend-label {
+    color: #1e293b;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+/* Dark mode - dark background with light text and glow */
+[data-theme="dark"] .chart-html-legend,
+[data-bs-theme="dark"] .chart-html-legend {
+    background: rgba(30, 41, 59, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+}
+
+[data-theme="dark"] .chart-legend-item:hover,
+[data-bs-theme="dark"] .chart-legend-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .chart-legend-label,
+[data-bs-theme="dark"] .chart-legend-label {
+    color: #f1f5f9;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 .w-h-100 {

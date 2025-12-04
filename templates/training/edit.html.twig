@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'training' %}
 
-{% block title %}{{ 'training.edit'|trans }} - {{ training.title }}{% endblock %}
+{% block title %}{{ 'training.edit'|trans({}, 'training')}} - {{ training.title }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -14,7 +14,7 @@
     } %}
 
     <div class="page-header">
-        <h1>{{ 'training.edit'|trans }}: {{ training.title }}</h1>
+        <h1>{{ 'training.edit'|trans({}, 'training')}}: {{ training.title }}</h1>
         <a href="{{ path('app_training_show', {id: training.id}) }}" class="btn btn-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
     </div>
 
@@ -25,27 +25,27 @@
                     'form': form,
                     'sections': {
                         'basic_info': {
-                            'label': 'training.section.basic_info'|trans,
+                            'label': 'training.section.basic_info'|trans({}, 'training'),
                             'fields': ['title', 'description', 'trainingType', 'deliveryMethod']
                         },
                         'schedule': {
-                            'label': 'training.section.schedule'|trans,
+                            'label': 'training.section.schedule'|trans({}, 'training'),
                             'fields': ['scheduledDate', 'duration', 'location']
                         },
                         'people': {
-                            'label': 'training.section.people'|trans,
+                            'label': 'training.section.people'|trans({}, 'training'),
                             'fields': ['trainer', 'targetAudience', 'participants']
                         },
                         'status': {
-                            'label': 'training.section.status'|trans,
+                            'label': 'training.section.status'|trans({}, 'training'),
                             'fields': ['status', 'mandatory']
                         },
                         'controls': {
-                            'label': 'training.section.controls'|trans,
+                            'label': 'training.section.controls'|trans({}, 'training'),
                             'fields': ['coveredControls', 'complianceRequirements']
                         },
                         'materials': {
-                            'label': 'training.section.materials'|trans,
+                            'label': 'training.section.materials'|trans({}, 'training'),
                             'fields': ['materials', 'feedback']
                         }
                     },
@@ -68,13 +68,12 @@
                         'feedback': 12
                     },
                     'help_texts': {
-                        'duration': 'training.help.duration'|trans,
-                        'participants': 'training.help.participants'|trans,
-                        'coveredControls': 'training.help.covered_controls'|trans,
-                        'complianceRequirements': 'training.help.compliance_requirements'|trans,
-                        'materials': 'training.help.materials'|trans,
-                        'feedback': 'training.help.feedback'|trans
-                    }
+                        'duration': 'training.help.duration'|trans({}, 'training'),
+                        'participants': 'training.help.participants'|trans({}, 'training'),
+                        'coveredControls': 'training.help.covered_controls'|trans({}, 'training'),
+                        'complianceRequirements': 'training.help.compliance_requirements'|trans({}, 'training'),
+                        'materials': 'training.help.materials'|trans({}, 'training'),
+                        'feedback': 'training.help.feedback'|trans({}, 'training')}
                 } %}
 
                 <div class="d-flex justify-content-between mt-4">

@@ -284,7 +284,7 @@
                 <td class="text-center">70-89%</td>
                 <td class="text-center"><strong>{{ quality_distribution.good }}</strong></td>
                 <td class="text-center">{{ total_mappings > 0 ? ((quality_distribution.good / total_mappings * 100)|round(1)) : 0 }}%</td>
-                <td>{{ 'pdf.framework_comparison.solid_mappings_minor'|trans }}</td>
+                <td>{{ 'pdf.framework_comparison.solid_mappings_minor'|trans({}, 'messages')}}</td>
             </tr>
             <tr>
                 <td><span class="badge bg-warning">Medium</span></td>
@@ -329,8 +329,8 @@
     <table>
         <thead>
             <tr>
-                <th scope="col" class="w-18">{{ 'pdf.transitive_compliance.from_framework'|trans }}</th>
-                <th scope="col" class="w-18">{{ 'pdf.transitive_compliance.to_framework'|trans }}</th>
+                <th scope="col" class="w-18">{{ 'pdf.transitive_compliance.from_framework'|trans({}, 'messages')}}</th>
+                <th scope="col" class="w-18">{{ 'pdf.transitive_compliance.to_framework'|trans({}, 'messages')}}</th>
                 <th scope="col" class="text-center w-12">Coverage</th>
                 <th scope="col" class="text-center w-12">Impact Score</th>
                 <th scope="col" class="text-center w-12">ROI</th>
@@ -371,8 +371,8 @@
     <table>
         <thead>
             <tr>
-                <th scope="col" class="w-15">{{ 'pdf.transitive_compliance.from_framework'|trans }}</th>
-                <th scope="col" class="w-15">{{ 'pdf.transitive_compliance.to_framework'|trans }}</th>
+                <th scope="col" class="w-15">{{ 'pdf.transitive_compliance.from_framework'|trans({}, 'messages')}}</th>
+                <th scope="col" class="w-15">{{ 'pdf.transitive_compliance.to_framework'|trans({}, 'messages')}}</th>
                 <th scope="col" class="text-center w-12">Coverage</th>
                 <th scope="col" class="text-center w-12">Impact Score</th>
                 <th scope="col" class="text-center w-12">ROI</th>
@@ -511,7 +511,7 @@
             </tr>
             <tr>
                 <td><strong>Phase 3 (Week 13-24)</strong></td>
-                <td>{{ 'pdf.transitive_compliance.establish_hub'|trans }}</td>
+                <td>{{ 'pdf.transitive_compliance.establish_hub'|trans({}, 'messages')}}</td>
                 <td class="text-center">12 weeks</td>
                 <td class="text-center">80-120h</td>
                 <td class="text-center"><span class="badge bg-warning">Very High (long-term)</span></td>

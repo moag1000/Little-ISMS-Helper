@@ -269,3 +269,10 @@ sla:
         in_progress: 'In Progress'
     description:
         in_progress: 'Workflows currently being processed'
+
+# Dashboard Alert Keys (alternative path)
+workflow.dashboard.alert.overdue_title: '%count% overdue workflow approvals!'
+workflow.dashboard.alert.overdue_message: '%overdue% of %total% workflows are overdue and require immediate attention.'
+workflow.dashboard.alert.pending_title: '%count% pending workflow approvals'
+workflow.dashboard.alert.pending_message: 'You have %count% workflows awaiting your approval.'
+workflow.dashboard.alert.view_all: 'View all workflows'

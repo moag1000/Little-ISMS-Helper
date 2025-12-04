@@ -210,7 +210,7 @@
 {% block document_content %}
 
 {# Executive Summary #}
-<h1>{{ 'soa.title'|trans }}</h1>
+<h1>{{ 'soa.title'|trans({}, 'soa')}}</h1>
 <p class="text-center text-muted mb-medium">
     ISO 27001:2022 Annex A - Anwendbarkeitserklärung der Controls
 </p>
@@ -385,7 +385,7 @@
         <tr>
             <td>ISO/IEC 27001:2022</td>
             <td>Standard</td>
-            <td>{{ 'soa.iso27001_full_title'|trans }}</td>
+            <td>{{ 'soa.iso27001_full_title'|trans({}, 'soa')}}</td>
         </tr>
         <tr>
             <td>ISO/IEC 27002:2022</td>

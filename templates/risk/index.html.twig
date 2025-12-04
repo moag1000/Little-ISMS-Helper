@@ -2,27 +2,27 @@
 {% trans_default_domain 'risk' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 
-{% block title %}{{ 'risk.modern.header.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'risk.modern.header.title'|trans({}, 'risk')}} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'risk.modern.breadcrumb'|trans }
+        { label: 'risk.modern.breadcrumb'|trans({}, 'risk')}
     ]
 } %}
 
 {# Page Header with Actions #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'risk.modern.header.title'|trans,
-    subtitle: 'risk.modern.header.subtitle'|trans,
+    title: 'risk.modern.header.title'|trans({}, 'risk'),
+    subtitle: 'risk.modern.header.subtitle'|trans({}, 'risk'),
     icon: 'bi-exclamation-triangle',
     actions: [
-        { label: 'risk.modern.header.action.new'|trans, url: path('app_risk_new'), variant: 'primary', icon: 'bi-plus-circle' },
-        { label: 'risk.modern.header.action.matrix'|trans, url: path('app_risk_matrix'), variant: 'info', icon: 'bi-grid-3x3' },
-        { label: 'risk.modern.header.action.export_pdf'|trans, url: path('app_risk_export_pdf'), variant: 'danger', icon: 'bi-file-pdf', turbo: false },
-        { label: 'risk.modern.header.action.export_excel'|trans, url: path('app_risk_export_excel'), variant: 'success', icon: 'bi-file-earmark-excel', turbo: false },
-        { label: 'risk.modern.header.action.export_csv'|trans, url: path('app_risk_export'), variant: 'secondary', icon: 'bi-download', turbo: false }
+        { label: 'risk.modern.header.action.new'|trans({}, 'risk'), url: path('app_risk_new'), variant: 'primary', icon: 'bi-plus-circle' },
+        { label: 'risk.modern.header.action.matrix'|trans({}, 'risk'), url: path('app_risk_matrix'), variant: 'info', icon: 'bi-grid-3x3' },
+        { label: 'risk.modern.header.action.export_pdf'|trans({}, 'risk'), url: path('app_risk_export_pdf'), variant: 'danger', icon: 'bi-file-pdf', turbo: false },
+        { label: 'risk.modern.header.action.export_excel'|trans({}, 'risk'), url: path('app_risk_export_excel'), variant: 'success', icon: 'bi-file-earmark-excel', turbo: false },
+        { label: 'risk.modern.header.action.export_csv'|trans({}, 'risk'), url: path('app_risk_export'), variant: 'secondary', icon: 'bi-download', turbo: false }
     ]
 } %}
 
@@ -34,7 +34,7 @@
             <label for="view-filter" class="mb-0 fw-bold">
                 <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
             </label>
-            <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
+            <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                 <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
                     {{ 'corporate.view.own_only'|trans({}, 'messages') }}
                 </option>
@@ -61,7 +61,7 @@
 <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-exclamation-triangle',
-        label: 'risk.modern.kpi.total'|trans,
+        label: 'risk.modern.kpi.total'|trans({}, 'risk'),
         value: detailedStats.total,
         detail: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'messages')) : null,
         variant: 'primary',
@@ -72,7 +72,7 @@
     {% set criticalRisks = risks|filter(r => r.getRiskScore() >= 20)|length %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-shield-fill-exclamation',
-        label: 'risk.modern.kpi.critical'|trans,
+        label: 'risk.modern.kpi.critical'|trans({}, 'risk'),
         value: criticalRisks,
         variant: 'danger',
         trend: criticalRisks > 0 ? '-' : '+0',
@@ -82,7 +82,7 @@
     {% set highRisks = risks|filter(r => r.getRiskScore() >= 12 and r.getRiskScore() < 20)|length %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-exclamation-circle',
-        label: 'risk.modern.kpi.high'|trans,
+        label: 'risk.modern.kpi.high'|trans({}, 'risk'),
         value: highRisks,
         variant: 'warning',
         link: '#filter-high'
@@ -91,9 +91,9 @@
     {% set avgResidualRisk = risks|length > 0 ? (risks|reduce((carry, risk) => carry + risk.getResidualRiskLevel(), 0) / risks|length)|round(1) : 0 %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-graph-down',
-        label: 'risk.modern.kpi.avg_residual'|trans,
+        label: 'risk.modern.kpi.avg_residual'|trans({}, 'risk'),
         value: avgResidualRisk,
-        unit: 'risk.modern.kpi.unit.max'|trans,
+        unit: 'risk.modern.kpi.unit.max'|trans({}, 'risk'),
         variant: avgResidualRisk < 8 ? 'success' : 'warning'
     } %}
 </div>
@@ -187,7 +187,7 @@
         <form method="get" action="{{ path('app_risk_index') }}" class="row g-3">
             <div class="col-md-3">
                 <label for="filter-level" class="form-label">Risikolevel</label>
-                <select class="form-select" id="filter-level" name="level" onchange="this.form.submit()">
+                <select class="form-select" id="filter-level" name="level" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                     <option value="">Alle Risiken</option>
                     <option value="critical" {{ app.request.query.get('level') == 'critical' ? 'selected' : '' }}>Kritisch (15-25)</option>
                     <option value="high" {{ app.request.query.get('level') == 'high' ? 'selected' : '' }}>Hoch (8-14)</option>
@@ -197,7 +197,7 @@
             </div>
             <div class="col-md-3">
                 <label for="filter-status" class="form-label">Status</label>
-                <select class="form-select" id="filter-status" name="status" onchange="this.form.submit()">
+                <select class="form-select" id="filter-status" name="status" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                     <option value="">Alle Status</option>
                     <option value="identified" {{ app.request.query.get('status') == 'identified' ? 'selected' : '' }}>Identifiziert</option>
                     <option value="assessed" {{ app.request.query.get('status') == 'assessed' ? 'selected' : '' }}>Bewertet</option>
@@ -208,7 +208,7 @@
             </div>
             <div class="col-md-3">
                 <label for="filter-treatment" class="form-label">Behandlungsstrategie</label>
-                <select class="form-select" id="filter-treatment" name="treatment" onchange="this.form.submit()">
+                <select class="form-select" id="filter-treatment" name="treatment" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                     <option value="">Alle Strategien</option>
                     <option value="mitigate" {{ app.request.query.get('treatment') == 'mitigate' ? 'selected' : '' }}>Mindern</option>
                     <option value="accept" {{ app.request.query.get('treatment') == 'accept' ? 'selected' : '' }}>Akzeptieren</option>

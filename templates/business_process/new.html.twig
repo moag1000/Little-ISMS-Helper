@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'business_process' %}
 
-{% block title %}{{ 'business_process.new'|trans }}{% endblock %}
+{% block title %}{{ 'business_process.new'|trans({}, 'business_process')}}{% endblock %}
 
 {% block body %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.bcm'|trans({}, 'nav'), url: path('app_business_process_index') },
-            { label: 'business_process.new'|trans }
+            { label: 'business_process.new'|trans({}, 'business_process')}
         ]
     } %}
 
     <div class="page-header">
-        <h1>{{ 'business_process.new'|trans }}</h1>
+        <h1>{{ 'business_process.new'|trans({}, 'business_process')}}</h1>
         <a href="{{ path('app_business_process_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
     </div>
 
@@ -24,31 +24,31 @@
                     'form': form,
                     'sections': {
                         'basic_info': {
-                            'label': 'business_process.section.basic_info'|trans,
+                            'label': 'business_process.section.basic_info'|trans({}, 'business_process'),
                             'fields': ['name', 'processOwner', 'description', 'criticality']
                         },
                         'recovery_objectives': {
-                            'label': 'business_process.section.recovery_objectives'|trans,
+                            'label': 'business_process.section.recovery_objectives'|trans({}, 'business_process'),
                             'fields': ['rto', 'rpo', 'mtpd']
                         },
                         'financial_impact': {
-                            'label': 'business_process.section.financial_impact'|trans,
+                            'label': 'business_process.section.financial_impact'|trans({}, 'business_process'),
                             'fields': ['financialImpactPerHour', 'financialImpactPerDay']
                         },
                         'impact_assessment': {
-                            'label': 'business_process.section.impact_assessment'|trans,
+                            'label': 'business_process.section.impact_assessment'|trans({}, 'business_process'),
                             'fields': ['reputationalImpact', 'regulatoryImpact', 'operationalImpact']
                         },
                         'dependencies': {
-                            'label': 'business_process.section.dependencies'|trans,
+                            'label': 'business_process.section.dependencies'|trans({}, 'business_process'),
                             'fields': ['dependenciesUpstream', 'dependenciesDownstream']
                         },
                         'recovery': {
-                            'label': 'business_process.section.recovery'|trans,
+                            'label': 'business_process.section.recovery'|trans({}, 'business_process'),
                             'fields': ['recoveryStrategy']
                         },
                         'supporting_resources': {
-                            'label': 'business_process.section.supporting_resources'|trans,
+                            'label': 'business_process.section.supporting_resources'|trans({}, 'business_process'),
                             'fields': ['supportingAssets', 'identifiedRisks']
                         }
                     },
@@ -72,24 +72,23 @@
                         'identifiedRisks': 6
                     },
                     'help_texts': {
-                        'name': 'business_process.help.name'|trans,
-                        'processOwner': 'business_process.help.process_owner'|trans,
-                        'description': 'business_process.help.description'|trans,
-                        'criticality': 'business_process.help.criticality'|trans,
-                        'rto': 'business_process.help.rto'|trans,
-                        'rpo': 'business_process.help.rpo'|trans,
-                        'mtpd': 'business_process.help.mtpd'|trans,
-                        'financialImpactPerHour': 'business_process.help.financial_impact_per_hour'|trans,
-                        'financialImpactPerDay': 'business_process.help.financial_impact_per_day'|trans,
-                        'reputationalImpact': 'business_process.help.reputational_impact'|trans,
-                        'regulatoryImpact': 'business_process.help.regulatory_impact'|trans,
-                        'operationalImpact': 'business_process.help.operational_impact'|trans,
-                        'dependenciesUpstream': 'business_process.help.dependencies_upstream'|trans,
-                        'dependenciesDownstream': 'business_process.help.dependencies_downstream'|trans,
-                        'recoveryStrategy': 'business_process.help.recovery_strategy'|trans,
-                        'supportingAssets': 'business_process.help.supporting_assets'|trans,
-                        'identifiedRisks': 'business_process.help.identified_risks'|trans
-                    }
+                        'name': 'business_process.help.name'|trans({}, 'business_process'),
+                        'processOwner': 'business_process.help.process_owner'|trans({}, 'business_process'),
+                        'description': 'business_process.help.description'|trans({}, 'business_process'),
+                        'criticality': 'business_process.help.criticality'|trans({}, 'business_process'),
+                        'rto': 'business_process.help.rto'|trans({}, 'business_process'),
+                        'rpo': 'business_process.help.rpo'|trans({}, 'business_process'),
+                        'mtpd': 'business_process.help.mtpd'|trans({}, 'business_process'),
+                        'financialImpactPerHour': 'business_process.help.financial_impact_per_hour'|trans({}, 'business_process'),
+                        'financialImpactPerDay': 'business_process.help.financial_impact_per_day'|trans({}, 'business_process'),
+                        'reputationalImpact': 'business_process.help.reputational_impact'|trans({}, 'business_process'),
+                        'regulatoryImpact': 'business_process.help.regulatory_impact'|trans({}, 'business_process'),
+                        'operationalImpact': 'business_process.help.operational_impact'|trans({}, 'business_process'),
+                        'dependenciesUpstream': 'business_process.help.dependencies_upstream'|trans({}, 'business_process'),
+                        'dependenciesDownstream': 'business_process.help.dependencies_downstream'|trans({}, 'business_process'),
+                        'recoveryStrategy': 'business_process.help.recovery_strategy'|trans({}, 'business_process'),
+                        'supportingAssets': 'business_process.help.supporting_assets'|trans({}, 'business_process'),
+                        'identifiedRisks': 'business_process.help.identified_risks'|trans({}, 'business_process')}
                 } %}
 
                 <div class="d-flex justify-content-between mt-4">

@@ -179,11 +179,14 @@
                                            title="{{ 'common.edit'|trans({}, 'messages') }}" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
                                             <i class="bi bi-pencil" aria-hidden="true"></i>
                                         </a>
-                                        <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline">
+                                        <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline"
+                                              data-controller="ui-actions"
+                                              data-action="submit->ui-actions#confirm"
+                                              data-ui-actions-message-param="{{ 'tenant.confirm.toggle'|trans({}, 'tenant') }}">
                                             <button type="submit"
                                                     class="btn btn-outline-{% if tenant.isActive %}warning{% else %}success{% endif %}"
                                                     title="{{ (tenant.isActive ? 'tenant.action.deactivate' : 'tenant.action.activate')|trans({}, 'tenant') }}"
-                                                    onclick="return confirm('{{ 'tenant.confirm.toggle'|trans({}, 'tenant') }}');" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                                    aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                                 <i class="bi bi-{% if tenant.isActive %}pause{% else %}play{% endif %}-circle" aria-hidden="true"></i>
                                             </button>
                                         </form>

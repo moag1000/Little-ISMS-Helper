@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'messages' %}
 
-{% block title %}{{ 'home.welcome'|trans }} - {{ 'app.title'|trans }}{% endblock %}
+{% block title %}{{ 'home.welcome'|trans({}, 'messages')}} - {{ 'app.title'|trans({}, 'messages')}}{% endblock %}
 
 {% block body %}
 {# Hero Section #}
@@ -130,7 +130,7 @@
 <div class="bg-light py-5">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold">{{ 'home.quick_start'|trans }}</h2>
+            <h2 class="display-5 fw-bold">{{ 'home.quick_start'|trans({}, 'messages')}}</h2>
             <p class="lead text-muted">So starten Sie mit Ihrem ISMS</p>
         </div>
 

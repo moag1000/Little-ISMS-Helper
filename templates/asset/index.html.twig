@@ -1,22 +1,23 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'asset' %}
 
-{% block title %}{{ 'asset.modern.header.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+{% block title %}{{ 'asset.modern.header.title'|trans({}, 'asset')}} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'asset.modern.breadcrumb'|trans }
+        { label: 'asset.modern.breadcrumb'|trans({}, 'asset')}
     ]
 } %}
 
 {# Page Header with Actions #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'asset.modern.header.title'|trans,
-    subtitle: 'asset.modern.header.subtitle'|trans,
+    title: 'asset.modern.header.title'|trans({}, 'asset'),
+    subtitle: 'asset.modern.header.subtitle'|trans({}, 'asset'),
     icon: 'bi-server',
     actions: [
+        { label: 'asset.action.print_all_labels'|trans({}, 'asset'), url: path('app_asset_qr_labels_bulk'), variant: 'outline-secondary', icon: 'bi-qr-code', turbo: false },
         { label: 'asset.action.create'|trans({}, 'asset'), url: path('app_asset_new'), variant: 'primary', icon: 'bi-plus-circle' }
     ]
 } %}
@@ -31,7 +32,7 @@
             <label for="view-filter" class="mb-0 fw-bold">
                 <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
             </label>
-            <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
+            <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                 <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
                     {{ 'corporate.view.own_only'|trans({}, 'tenant') }}
                 </option>
@@ -58,7 +59,7 @@
 <div class="kpi-grid d-grid grid-responsive-250 gap-4 my-2rem">
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-server',
-        label: 'asset.modern.kpi.total'|trans,
+        label: 'asset.modern.kpi.total'|trans({}, 'asset'),
         value: detailedStats.total,
         detail: currentTenant ? ('corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant')) : null,
         variant: 'primary',
@@ -68,7 +69,7 @@
     {% set criticalAssets = assets|filter(a => a.confidentialityValue >= 4 or a.integrityValue >= 4 or a.availabilityValue >= 4)|length %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-shield-exclamation',
-        label: 'asset.modern.kpi.critical'|trans,
+        label: 'asset.modern.kpi.critical'|trans({}, 'asset'),
         value: criticalAssets,
         variant: 'danger',
         link: '#filter-critical'
@@ -77,9 +78,9 @@
     {% set avgCIA = (assets|reduce((carry, asset) => carry + asset.confidentialityValue + asset.integrityValue + asset.availabilityValue, 0) / (assets|length > 0 ? assets|length * 3 : 1))|round(1) %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-bar-chart',
-        label: 'asset.modern.kpi.avg_cia'|trans,
+        label: 'asset.modern.kpi.avg_cia'|trans({}, 'asset'),
         value: avgCIA,
-        unit: 'asset.modern.kpi.unit.out_of_5'|trans,
+        unit: 'asset.modern.kpi.unit.out_of_5'|trans({}, 'asset'),
         variant: 'info'
     } %}
 
@@ -91,7 +92,7 @@
     {% endfor %}
     {% include '_components/_kpi_card.html.twig' with {
         icon: 'bi-exclamation-triangle',
-        label: 'asset.modern.kpi.with_risks'|trans,
+        label: 'asset.modern.kpi.with_risks'|trans({}, 'asset'),
         value: assetsWithRisks,
         unit: '/ ' ~ assets|length,
         variant: 'warning'
@@ -102,7 +103,7 @@
 {% if typeStats|length > 0 %}
 <div class="card mb-4">
     <div class="card-header">
-        <h3><i class="bi bi-pie-chart" aria-hidden="true"></i> {{ 'asset.modern.chart.type_distribution'|trans }}</h3>
+        <h3><i class="bi bi-pie-chart" aria-hidden="true"></i> {{ 'asset.modern.chart.type_distribution'|trans({}, 'asset')}}</h3>
     </div>
     <div class="card-body">
         <div class="row">
@@ -136,7 +137,7 @@
             <div id="filter-section" tabindex="-1"></div>
             <div class="col-md-3">
                 <label for="filter-type" class="form-label">{{ 'asset.label.type'|trans({}, 'asset') }}</label>
-                <select class="form-select" id="filter-type" name="type" onchange="this.form.submit()">
+                <select class="form-select" id="filter-type" name="type" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     {% if typeStats|length > 0 %}
                         {% for stat in typeStats %}
@@ -149,7 +150,7 @@
             </div>
             <div class="col-md-3">
                 <label for="filter-classification" class="form-label">{{ 'asset.label.data_classification'|trans({}, 'asset') }}</label>
-                <select class="form-select" id="filter-classification" name="classification" onchange="this.form.submit()">
+                <select class="form-select" id="filter-classification" name="classification" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     <option value="public" {{ app.request.query.get('classification') == 'public' ? 'selected' : '' }}>{{ 'asset.classification.public'|trans({}, 'asset') }}</option>
                     <option value="internal" {{ app.request.query.get('classification') == 'internal' ? 'selected' : '' }}>{{ 'asset.classification.internal'|trans({}, 'asset') }}</option>
@@ -165,7 +166,7 @@
             </div>
             <div class="col-md-3">
                 <label for="filter-status" class="form-label">{{ 'asset.label.status'|trans({}, 'asset') }}</label>
-                <select class="form-select" id="filter-status" name="status" onchange="this.form.submit()">
+                <select class="form-select" id="filter-status" name="status" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     <option value="active" {{ app.request.query.get('status') == 'active' ? 'selected' : '' }}>{{ 'asset.status.active'|trans({}, 'asset') }}</option>
                     <option value="inactive" {{ app.request.query.get('status') == 'inactive' ? 'selected' : '' }}>{{ 'asset.status.inactive'|trans({}, 'asset') }}</option>
@@ -188,26 +189,26 @@
 {% if assets|length == 0 %}
     {% include '_components/_empty_state.html.twig' with {
         icon: 'bi-server',
-        title: 'asset.modern.empty.title'|trans,
-        description: 'asset.modern.empty.description'|trans,
+        title: 'asset.modern.empty.title'|trans({}, 'asset'),
+        description: 'asset.modern.empty.description'|trans({}, 'asset'),
         action: { label: 'asset.action.create'|trans({}, 'asset'), url: path('app_asset_new'), icon: 'bi-plus-circle' }
     } %}
 {% else %}
-<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset" data-bulk-actions-entity-label="{{ 'asset.modern.header.title'|trans }}">
+<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset" data-bulk-actions-entity-label="{{ 'asset.modern.header.title'|trans({}, 'asset')}}">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'asset.modern.table.title_all'|trans }} ({{ assets|length }})</h3>
+        <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'asset.modern.table.title_all'|trans({}, 'asset')}} ({{ assets|length }})</h3>
         <div>
-            <label for="asset-search" class="visually-hidden">{{ 'asset.modern.header.title'|trans }} durchsuchen</label>
+            <label for="asset-search" class="visually-hidden">{{ 'asset.modern.header.title'|trans({}, 'asset')}} durchsuchen</label>
             <input type="search"
                    class="form-control form-control-sm w-200px"
-                   placeholder="{{ 'asset.modern.table.search_placeholder'|trans }}"
+                   placeholder="{{ 'asset.modern.table.search_placeholder'|trans({}, 'asset')}}"
                    id="asset-search"
-                   aria-label="{{ 'asset.modern.header.title'|trans }} durchsuchen">
+                   aria-label="{{ 'asset.modern.header.title'|trans({}, 'asset')}} durchsuchen">
         </div>
     </div>
     {% embed '_components/_table.html.twig' with {
         'class': 'table-hover mb-0',
-        'caption': 'asset.modern.table.caption'|trans,
+        'caption': 'asset.modern.table.caption'|trans({}, 'asset'),
         'noMargin': true,
         'responsive': true
     } %}

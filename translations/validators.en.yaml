@@ -464,3 +464,17 @@ setup.admin.first_name_max: 'First name must be at most {{ limit }} characters l
 setup.admin.last_name_max: 'Last name must be at most {{ limit }} characters long.'
 setup.admin.password_max: 'Password must be at most {{ limit }} characters long.'
 setup.organisation.name_max: 'Organisation name must be at most {{ limit }} characters long.'
+
+# Consent/Data Subject Validation (GDPR)
+'Data subject identifier is required': 'Data subject identifier is required'
+'Identifier cannot exceed {{ limit }} characters': 'Identifier cannot exceed {{ limit }} characters'
+'Identifier type is required': 'Identifier type is required'
+'Invalid identifier type': 'Invalid identifier type'
+'Processing activity is required': 'Processing activity is required'
+'Grant date is required': 'Grant date is required'
+'Consent method is required': 'Consent method is required'
+'Invalid consent method': 'Invalid consent method'
+'Consent text is required for proof': 'Consent text is required for proof'
+'Invalid consent channel': 'Invalid consent channel'
+'Invalid consent status': 'Invalid consent status'
+'Invalid revocation method': 'Invalid revocation method'

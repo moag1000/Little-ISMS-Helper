@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'interested_parties' %}
 
-{% block title %}{{ 'interested_party.page.edit_title'|trans }}: {{ interested_party.name }}{% endblock %}
+{% block title %}{{ 'interested_party.page.edit_title'|trans({}, 'interested_parties')}}: {{ interested_party.name }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -14,7 +14,7 @@
     } %}
 
     <div class="page-header">
-        <h1>{{ 'interested_party.page.edit_title'|trans }}: {{ interested_party.name }}</h1>
+        <h1>{{ 'interested_party.page.edit_title'|trans({}, 'interested_parties')}}: {{ interested_party.name }}</h1>
         <div class="actions">
             <a href="{{ path('app_interested_party_show', {id: interested_party.id}) }}" class="btn btn-secondary">{{ 'common.view'|trans({}, 'messages') }}</a>
             <a href="{{ path('app_interested_party_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
@@ -28,23 +28,23 @@
                     'form': form,
                     'sections': {
                         'basic_info': {
-                            'label': 'interested_party.section.basic_info'|trans,
+                            'label': 'interested_party.section.basic_info'|trans({}, 'interested_parties'),
                             'fields': ['name', 'partyType', 'importance', 'description']
                         },
                         'contact_info': {
-                            'label': 'interested_party.section.contact_info'|trans,
+                            'label': 'interested_party.section.contact_info'|trans({}, 'interested_parties'),
                             'fields': ['contactPerson', 'email', 'phone']
                         },
                         'requirements': {
-                            'label': 'interested_party.section.requirements'|trans,
+                            'label': 'interested_party.section.requirements'|trans({}, 'interested_parties'),
                             'fields': ['requirements', 'howAddressed']
                         },
                         'communication': {
-                            'label': 'interested_party.section.communication'|trans,
+                            'label': 'interested_party.section.communication'|trans({}, 'interested_parties'),
                             'fields': ['communicationFrequency', 'communicationMethod', 'lastCommunication', 'nextCommunication']
                         },
                         'feedback': {
-                            'label': 'interested_party.section.feedback'|trans,
+                            'label': 'interested_party.section.feedback'|trans({}, 'interested_parties'),
                             'fields': ['feedback', 'satisfactionLevel', 'issues']
                         }
                     },
@@ -73,7 +73,7 @@
                         {{ 'common.cancel'|trans({}, 'messages') }}
                     </a>
                     <button type="submit" class="btn btn-primary">
-                        {{ 'interested_party.action.update'|trans }}
+                        {{ 'interested_party.action.update'|trans({}, 'interested_parties')}}
                     </button>
                 </div>
             {{ form_end(form) }}

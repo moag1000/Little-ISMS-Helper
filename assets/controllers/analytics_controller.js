@@ -12,7 +12,7 @@ export default class extends Controller {
     static targets = ['periodFilter'];
 
     connect() {
-        console.log('Analytics dashboard loaded');
+        // Controller connected
     }
 
     changePeriod(event) {

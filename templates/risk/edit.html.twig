@@ -30,27 +30,27 @@
             'form': form,
             'sections': {
                 'basic_info': {
-                    'label': 'risk.section.basic_info'|trans,
+                    'label': 'risk.section.basic_info'|trans({}, 'risk'),
                     'fields': ['title', 'asset', 'description', 'threat', 'vulnerability', 'category', 'person', 'location', 'supplier']
                 },
                 'gdpr_assessment': {
-                    'label': 'risk.section.gdpr_assessment'|trans,
+                    'label': 'risk.section.gdpr_assessment'|trans({}, 'risk'),
                     'fields': ['involvesPersonalData', 'involvesSpecialCategoryData', 'legalBasis', 'processingScale', 'requiresDPIA', 'dataSubjectImpact']
                 },
                 'inherent_risk': {
-                    'label': 'risk.section.inherent_risk'|trans,
+                    'label': 'risk.section.inherent_risk'|trans({}, 'risk'),
                     'fields': ['probability', 'impact']
                 },
                 'residual_risk': {
-                    'label': 'risk.section.residual_risk'|trans,
+                    'label': 'risk.section.residual_risk'|trans({}, 'risk'),
                     'fields': ['residualProbability', 'residualImpact']
                 },
                 'treatment': {
-                    'label': 'risk.section.treatment'|trans,
+                    'label': 'risk.section.treatment'|trans({}, 'risk'),
                     'fields': ['treatmentStrategy', 'riskOwner', 'treatmentDescription']
                 },
                 'acceptance': {
-                    'label': 'risk.section.acceptance'|trans,
+                    'label': 'risk.section.acceptance'|trans({}, 'risk'),
                     'fields': ['acceptanceApprovedBy', 'acceptanceApprovedAt', 'acceptanceJustification', 'status', 'reviewDate']
                 }
             },

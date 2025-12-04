@@ -24,7 +24,7 @@
             <form method="get" class="row g-3">
                 <div class="col-md-6">
                     <label for="framework" class="form-label">{{ 'compliance.requirement.filter_by_framework'|trans({}, 'compliance') }}</label>
-                    <select name="framework" id="framework" class="form-select" onchange="this.form.submit()">
+                    <select name="framework" id="framework" class="form-select" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                         <option value="">All Frameworks</option>
                         {% for framework in frameworks %}
                             <option value="{{ framework.id }}" {% if selected_framework == framework.id %}selected{% endif %}>

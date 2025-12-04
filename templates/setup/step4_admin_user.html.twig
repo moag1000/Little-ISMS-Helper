@@ -22,31 +22,6 @@
                 {% endfor %}
             {% endfor %}
 
-            {# Debug info - will be removed after debugging #}
-            <div class="alert alert-info">
-                <strong>DEBUG INFO:</strong><br>
-                Request method: {{ app.request.method }}<br>
-                Is POST: {{ app.request.method == 'POST' ? 'YES' : 'NO' }}<br>
-                Form has errors: {{ form.vars.errors|length > 0 ? 'YES' : 'NO' }}<br>
-                {% if form.vars.errors|length > 0 %}
-                    <strong>Form errors:</strong>
-                    <ul>
-                        {% for error in form.vars.errors %}
-                            <li>{{ error.message }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-                <strong>Session debug data:</strong><br>
-                Form submitted (from session): {{ app.session.get('debug_form_submitted') ? 'YES' : 'NO' }}<br>
-                Form valid (from session): {{ app.session.get('debug_form_valid') ? 'YES' : 'NO' }}<br>
-                {% if app.session.get('debug_processing') %}
-                    <span class="text-success">✓ Processing: {{ app.session.get('debug_processing') }}</span><br>
-                {% endif %}
-                {% if app.session.get('debug_error') %}
-                    <span class="text-danger">✗ Error: {{ app.session.get('debug_error') }}</span><br>
-                {% endif %}
-            </div>
-
             {# Progress Bar #}
             <div class="card mb-4">
                 <div class="card-body">

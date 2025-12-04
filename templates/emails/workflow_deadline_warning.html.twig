@@ -18,7 +18,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>⏰ {{ 'email.workflow.deadline_warning'|trans }}</h1>
+            <h1>⏰ {{ 'email.workflow.deadline_warning'|trans({}, 'messages')}}</h1>
         </div>
 
         <div class="content">
@@ -84,8 +84,8 @@
         </div>
 
         <div class="footer">
-            <p>{{ 'email.workflow.automated_alert'|trans }}</p>
-            <p>{{ 'email.workflow.login_to_review'|trans }}</p>
+            <p>{{ 'email.workflow.automated_alert'|trans({}, 'messages')}}</p>
+            <p>{{ 'email.workflow.login_to_review'|trans({}, 'messages')}}</p>
         </div>
     </div>
 </body>

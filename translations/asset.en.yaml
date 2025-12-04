@@ -6,6 +6,9 @@ asset:
         update: 'Save changes'
         view_critical: 'View Critical'
         view_details: 'View Details'
+        qr_label: 'QR Label'
+        print_qr_label: 'Print QR code label'
+        print_all_labels: 'All QR Labels'
     details:
         title: 'Asset details'
     section:
@@ -158,6 +161,7 @@ asset:
         business_critical: 'Business Critical'
     message:
         no_critical_assets: 'No Critical Assets'
+        inherited_asset: 'This asset inherits values from a parent asset'
     description:
         bcm_insights: 'Bcm Insights'
         critical_impact: 'Critical Impact'
@@ -182,6 +186,23 @@ asset:
     title.new: 'New Asset'
     title.edit: 'Edit Asset'
     title.bcm_insights: 'Bcm Insights'
+
+# QR Code Labels
+qr:
+    label:
+        title: 'Asset Label'
+    labels_sheet:
+        title: 'Asset QR Labels'
+        count: 'Labels'
+    button:
+        print: 'Print'
+        back: 'Back'
+        back_to_list: 'Back to List'
+    scan_for_details: 'Scan QR code for asset details'
+    printed_on: 'Printed on'
+    page: 'Page'
+    no_assets: 'No assets selected for printing'
+
 asset_management:
     title: Title
     description: Description

@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'crisis_team' %}
 
-{% block title %}{{ 'crisis_team.edit'|trans }}: {{ crisis_team.teamName }}{% endblock %}
+{% block title %}{{ 'crisis_team.edit'|trans({}, 'crisis_team')}}: {{ crisis_team.teamName }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -14,7 +14,7 @@
     } %}
 
     <div class="page-header">
-        <h1>{{ 'crisis_team.edit'|trans }}: {{ crisis_team.teamName }}</h1>
+        <h1>{{ 'crisis_team.edit'|trans({}, 'crisis_team')}}: {{ crisis_team.teamName }}</h1>
         <a href="{{ path('app_crisis_team_show', {id: crisis_team.id}) }}" class="btn btn-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
     </div>
 
@@ -25,31 +25,31 @@
                     'form': form,
                     'sections': {
                         'basic_info': {
-                            'label': 'crisis_team.section.basic_info'|trans,
+                            'label': 'crisis_team.section.basic_info'|trans({}, 'crisis_team'),
                             'fields': ['teamName', 'description', 'teamType', 'isActive']
                         },
                         'leadership': {
-                            'label': 'crisis_team.section.leadership'|trans,
+                            'label': 'crisis_team.section.leadership'|trans({}, 'crisis_team'),
                             'fields': ['teamLeader', 'deputyLeader']
                         },
                         'contact': {
-                            'label': 'crisis_team.section.contact'|trans,
+                            'label': 'crisis_team.section.contact'|trans({}, 'crisis_team'),
                             'fields': ['primaryPhone', 'primaryEmail']
                         },
                         'meeting_locations': {
-                            'label': 'crisis_team.section.meeting_locations'|trans,
+                            'label': 'crisis_team.section.meeting_locations'|trans({}, 'crisis_team'),
                             'fields': ['meetingLocation', 'backupMeetingLocation', 'virtualMeetingUrl']
                         },
                         'procedures': {
-                            'label': 'crisis_team.section.procedures'|trans,
+                            'label': 'crisis_team.section.procedures'|trans({}, 'crisis_team'),
                             'fields': ['alertProcedures', 'decisionAuthority', 'communicationProtocols']
                         },
                         'training': {
-                            'label': 'crisis_team.section.training'|trans,
+                            'label': 'crisis_team.section.training'|trans({}, 'crisis_team'),
                             'fields': ['trainingSchedule', 'lastTrainingAt', 'nextTrainingAt']
                         },
                         'plans': {
-                            'label': 'crisis_team.section.plans'|trans,
+                            'label': 'crisis_team.section.plans'|trans({}, 'crisis_team'),
                             'fields': ['businessContinuityPlans', 'notes']
                         }
                     },
@@ -75,20 +75,19 @@
                         'notes': 12
                     },
                     'help_texts': {
-                        'teamName': 'crisis_team.help.team_name'|trans,
-                        'teamType': 'crisis_team.help.team_type'|trans,
-                        'teamLeader': 'crisis_team.help.team_leader'|trans,
-                        'deputyLeader': 'crisis_team.help.deputy_leader'|trans,
-                        'primaryPhone': 'crisis_team.help.primary_phone'|trans,
-                        'meetingLocation': 'crisis_team.help.meeting_location'|trans,
-                        'virtualMeetingUrl': 'crisis_team.help.virtual_meeting_url'|trans,
-                        'alertProcedures': 'crisis_team.help.alert_procedures'|trans,
-                        'decisionAuthority': 'crisis_team.help.decision_authority'|trans,
-                        'communicationProtocols': 'crisis_team.help.communication_protocols'|trans,
-                        'trainingSchedule': 'crisis_team.help.training_schedule'|trans,
-                        'nextTrainingAt': 'crisis_team.help.next_training_at'|trans,
-                        'businessContinuityPlans': 'crisis_team.help.business_continuity_plans'|trans
-                    }
+                        'teamName': 'crisis_team.help.team_name'|trans({}, 'crisis_team'),
+                        'teamType': 'crisis_team.help.team_type'|trans({}, 'crisis_team'),
+                        'teamLeader': 'crisis_team.help.team_leader'|trans({}, 'crisis_team'),
+                        'deputyLeader': 'crisis_team.help.deputy_leader'|trans({}, 'crisis_team'),
+                        'primaryPhone': 'crisis_team.help.primary_phone'|trans({}, 'crisis_team'),
+                        'meetingLocation': 'crisis_team.help.meeting_location'|trans({}, 'crisis_team'),
+                        'virtualMeetingUrl': 'crisis_team.help.virtual_meeting_url'|trans({}, 'crisis_team'),
+                        'alertProcedures': 'crisis_team.help.alert_procedures'|trans({}, 'crisis_team'),
+                        'decisionAuthority': 'crisis_team.help.decision_authority'|trans({}, 'crisis_team'),
+                        'communicationProtocols': 'crisis_team.help.communication_protocols'|trans({}, 'crisis_team'),
+                        'trainingSchedule': 'crisis_team.help.training_schedule'|trans({}, 'crisis_team'),
+                        'nextTrainingAt': 'crisis_team.help.next_training_at'|trans({}, 'crisis_team'),
+                        'businessContinuityPlans': 'crisis_team.help.business_continuity_plans'|trans({}, 'crisis_team')}
                 } %}
 
                 <div class="d-flex justify-content-between mt-4">

@@ -1210,6 +1210,95 @@ h3 {
     font-size: 0.875rem;
 }
 
+/* ==============================================
+   Outline Buttons - Light Mode Readability Fix
+   ============================================== */
+/* Outline buttons need darker text colors in light mode for WCAG AA compliance */
+
+.btn-outline-primary {
+    color: #0d4f6e;
+    border-color: #0d6efd;
+    background: transparent;
+    font-weight: 600;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary.active {
+    color: #fff;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-outline-secondary {
+    color: #3d4852;
+    border-color: #6c757d;
+    background: transparent;
+    font-weight: 600;
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-secondary.active {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-outline-success {
+    color: #0d5c36;
+    border-color: #198754;
+    background: transparent;
+    font-weight: 600;
+}
+
+.btn-outline-success:hover,
+.btn-outline-success.active {
+    color: #fff;
+    background-color: #198754;
+    border-color: #198754;
+}
+
+.btn-outline-warning {
+    color: #664d03;
+    border-color: #cc9a06;
+    background: transparent;
+    font-weight: 600;
+}
+
+.btn-outline-warning:hover,
+.btn-outline-warning.active {
+    color: #000;
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-outline-danger {
+    color: #842029;
+    border-color: #dc3545;
+    background: transparent;
+    font-weight: 600;
+}
+
+.btn-outline-danger:hover,
+.btn-outline-danger.active {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-outline-info {
+    color: #055160;
+    border-color: #0dcaf0;
+    background: transparent;
+    font-weight: 600;
+}
+
+.btn-outline-info:hover,
+.btn-outline-info.active {
+    color: #000;
+    background-color: #0dcaf0;
+    border-color: #0dcaf0;
+}
+
 /* Button Loading State */
 .btn-loading {
     position: relative;
