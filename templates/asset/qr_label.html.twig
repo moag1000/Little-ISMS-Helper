@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans from 'asset' %}qr.label.title{% endtrans %} - {{ label.asset.name }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        @page {
+            size: A4;
+            margin: 15mm;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .label-container {
+            max-width: 400px;
+            margin: 0 auto;
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 24px;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .label-header {
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 16px;
+            margin-bottom: 20px;
+        }
+
+        .label-header h1 {
+            font-size: 1.5rem;
+            margin: 0 0 8px 0;
+            color: #1a1a1a;
+        }
+
+        .label-header .asset-type {
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .qr-section {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .qr-code {
+            display: inline-block;
+            padding: 12px;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+
+        .qr-code img {
+            display: block;
+            width: 150px;
+            height: 150px;
+        }
+
+        .asset-details {
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dotted #ddd;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .detail-value {
+            color: #1a1a1a;
+            text-align: right;
+            max-width: 60%;
+            word-break: break-word;
+        }
+
+        .label-footer {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .asset-id {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            background: #f5f5f5;
+            padding: 4px 12px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        .print-actions {
+            max-width: 400px;
+            margin: 0 auto 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0b5ed7;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5c636a;
+        }
+
+        @media print {
+            .print-actions {
+                display: none;
+            }
+
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .label-container {
+                border-width: 1px;
+                box-shadow: none;
+                margin: 0;
+                max-width: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-actions">
+        <button class="btn btn-primary" data-controller="ui-actions" data-action="click->ui-actions#print">
+            <i class="bi bi-printer"></i>
+            {% trans from 'asset' %}qr.button.print{% endtrans %}
+        </button>
+        <a href="{{ path('app_asset_show', {id: label.asset.id}) }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i>
+            {% trans from 'asset' %}qr.button.back{% endtrans %}
+        </a>
+    </div>
+
+    <div class="label-container">
+        <div class="label-header">
+            <h1>{{ label.asset.name }}</h1>
+            <div class="asset-type">
+                {% if label.asset.assetType == 'hardware' %}
+                    <i class="bi bi-pc-display"></i>
+                {% elseif label.asset.assetType == 'software' %}
+                    <i class="bi bi-code-square"></i>
+                {% elseif label.asset.assetType == 'data' %}
+                    <i class="bi bi-database"></i>
+                {% elseif label.asset.assetType == 'service' %}
+                    <i class="bi bi-cloud"></i>
+                {% elseif label.asset.assetType == 'personnel' %}
+                    <i class="bi bi-person"></i>
+                {% else %}
+                    <i class="bi bi-hdd-network"></i>
+                {% endif %}
+                {{ ('asset.type.' ~ label.asset.assetType)|trans({}, 'asset') }}
+            </div>
+            <div class="asset-id">ID: {{ label.asset.id }}</div>
+        </div>
+
+        <div class="qr-section">
+            <div class="qr-code">
+                <img src="{{ label.qrCode }}" alt="QR Code for {{ label.asset.name }}">
+            </div>
+        </div>
+
+        <div class="asset-details">
+            <div class="detail-row">
+                <span class="detail-label">{% trans from 'asset' %}asset.field.owner{% endtrans %}</span>
+                <span class="detail-value">{{ label.asset.owner }}</span>
+            </div>
+
+            {% if label.asset.physicalLocation %}
+            <div class="detail-row">
+                <span class="detail-label">{% trans from 'asset' %}asset.field.location{% endtrans %}</span>
+                <span class="detail-value">{{ label.asset.physicalLocation.name }}</span>
+            </div>
+            {% endif %}
+
+            {% if label.asset.dataClassification %}
+            <div class="detail-row">
+                <span class="detail-label">{% trans from 'asset' %}asset.field.classification{% endtrans %}</span>
+                <span class="detail-value">{{ ('asset.classification.' ~ label.asset.dataClassification)|trans({}, 'asset') }}</span>
+            </div>
+            {% endif %}
+
+            <div class="detail-row">
+                <span class="detail-label">{% trans from 'asset' %}asset.field.status{% endtrans %}</span>
+                <span class="detail-value">{{ ('asset.status.' ~ label.asset.status)|trans({}, 'asset') }}</span>
+            </div>
+        </div>
+
+        <div class="label-footer">
+            {% trans from 'asset' %}qr.scan_for_details{% endtrans %}<br>
+            {% trans from 'asset' %}qr.printed_on{% endtrans %}: {{ printDate|date('d.m.Y H:i') }}
+        </div>
+    </div>
+</body>
+</html>

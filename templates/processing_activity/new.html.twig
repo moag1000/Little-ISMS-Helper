@@ -1,21 +1,21 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
 
-{% block title %}{{ 'processing_activity.page.new_title'|trans }}{% endblock %}
+{% block title %}{{ 'processing_activity.page.new_title'|trans({}, 'privacy')}}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'processing_activity.breadcrumb.privacy'|trans, url: path('app_processing_activity_index'), icon: 'bi-shield-check' },
-            { label: 'processing_activity.breadcrumb.vvt'|trans, url: path('app_processing_activity_index') },
-            { label: 'processing_activity.breadcrumb.new'|trans }
+            { label: 'processing_activity.breadcrumb.privacy'|trans({}, 'privacy'), url: path('app_processing_activity_index'), icon: 'bi-shield-check' },
+            { label: 'processing_activity.breadcrumb.vvt'|trans({}, 'privacy'), url: path('app_processing_activity_index') },
+            { label: 'processing_activity.breadcrumb.new'|trans({}, 'privacy')}
         ]
     } %}
 
     {% include '_components/_page_header.html.twig' with {
-        title: 'processing_activity.page.new_title'|trans,
-        subtitle: 'processing_activity.page.new_subtitle'|trans,
+        title: 'processing_activity.page.new_title'|trans({}, 'privacy'),
+        subtitle: 'processing_activity.page.new_subtitle'|trans({}, 'privacy'),
         icon: 'bi-plus-lg'
     } %}
 
@@ -27,47 +27,47 @@
                 'form': form,
                 'sections': {
                     'basic_info': {
-                        'label': '<i class="bi bi-info-circle" aria-hidden="true"></i> ' ~ 'processing_activity.section.basic_info'|trans,
+                        'label': '<i class="bi bi-info-circle" aria-hidden="true"></i> ' ~ 'processing_activity.section.basic_info'|trans({}, 'privacy'),
                         'fields': ['name', 'status', 'description', 'purposes', 'legalBasis', 'legalBasisDetails']
                     },
                     'data_subjects': {
-                        'label': '<i class="bi bi-people" aria-hidden="true"></i> ' ~ 'processing_activity.section.data_subjects'|trans,
+                        'label': '<i class="bi bi-people" aria-hidden="true"></i> ' ~ 'processing_activity.section.data_subjects'|trans({}, 'privacy'),
                         'fields': ['dataSubjectCategories', 'estimatedDataSubjectsCount']
                     },
                     'personal_data': {
-                        'label': '<i class="bi bi-database" aria-hidden="true"></i> ' ~ 'processing_activity.section.personal_data'|trans,
+                        'label': '<i class="bi bi-database" aria-hidden="true"></i> ' ~ 'processing_activity.section.personal_data'|trans({}, 'privacy'),
                         'fields': ['personalDataCategories', 'processesSpecialCategories', 'processesCriminalData', 'specialCategoriesDetails', 'legalBasisSpecialCategories']
                     },
                     'recipients_transfers': {
-                        'label': '<i class="bi bi-arrow-left-right" aria-hidden="true"></i> ' ~ 'processing_activity.section.recipients_transfers'|trans,
+                        'label': '<i class="bi bi-arrow-left-right" aria-hidden="true"></i> ' ~ 'processing_activity.section.recipients_transfers'|trans({}, 'privacy'),
                         'fields': ['recipientCategories', 'hasThirdCountryTransfer', 'recipientDetails', 'thirdCountries', 'transferSafeguards']
                     },
                     'retention': {
-                        'label': '<i class="bi bi-calendar-check" aria-hidden="true"></i> ' ~ 'processing_activity.section.retention'|trans,
+                        'label': '<i class="bi bi-calendar-check" aria-hidden="true"></i> ' ~ 'processing_activity.section.retention'|trans({}, 'privacy'),
                         'fields': ['retentionPeriod', 'retentionPeriodDays', 'retentionLegalBasis']
                     },
                     'security': {
-                        'label': '<i class="bi bi-shield-lock" aria-hidden="true"></i> ' ~ 'processing_activity.section.security'|trans,
+                        'label': '<i class="bi bi-shield-lock" aria-hidden="true"></i> ' ~ 'processing_activity.section.security'|trans({}, 'privacy'),
                         'fields': ['technicalOrganizationalMeasures', 'implementedControls']
                     },
                     'organization': {
-                        'label': '<i class="bi bi-building" aria-hidden="true"></i> ' ~ 'processing_activity.section.organization'|trans,
+                        'label': '<i class="bi bi-building" aria-hidden="true"></i> ' ~ 'processing_activity.section.organization'|trans({}, 'privacy'),
                         'fields': ['responsibleDepartment', 'contactPerson', 'dataProtectionOfficer']
                     },
                     'processors': {
-                        'label': '<i class="bi bi-diagram-3" aria-hidden="true"></i> ' ~ 'processing_activity.section.processors'|trans,
+                        'label': '<i class="bi bi-diagram-3" aria-hidden="true"></i> ' ~ 'processing_activity.section.processors'|trans({}, 'privacy'),
                         'fields': ['involvesProcessors', 'isJointController']
                     },
                     'risk_assessment': {
-                        'label': '<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> ' ~ 'processing_activity.section.risk_assessment'|trans,
+                        'label': '<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> ' ~ 'processing_activity.section.risk_assessment'|trans({}, 'privacy'),
                         'fields': ['isHighRisk', 'dpiaCompleted', 'dpiaDate', 'riskLevel']
                     },
                     'automated_decision': {
-                        'label': '<i class="bi bi-cpu" aria-hidden="true"></i> ' ~ 'processing_activity.section.automated_decision'|trans,
+                        'label': '<i class="bi bi-cpu" aria-hidden="true"></i> ' ~ 'processing_activity.section.automated_decision'|trans({}, 'privacy'),
                         'fields': ['hasAutomatedDecisionMaking', 'automatedDecisionMakingDetails']
                     },
                     'additional': {
-                        'label': '<i class="bi bi-three-dots" aria-hidden="true"></i> ' ~ 'processing_activity.section.additional'|trans,
+                        'label': '<i class="bi bi-three-dots" aria-hidden="true"></i> ' ~ 'processing_activity.section.additional'|trans({}, 'privacy'),
                         'fields': ['dataSources', 'startDate', 'endDate', 'nextReviewDate']
                     }
                 },
@@ -116,10 +116,10 @@
 
             <div class="d-flex gap-2 justify-content-between mt-4 pt-3 border-top">
                 <a href="{{ path('app_processing_activity_index') }}" class="btn btn-secondary">
-                    <i class="bi bi-x-lg" aria-hidden="true"></i> {{ 'processing_activity.action.cancel'|trans }}
+                    <i class="bi bi-x-lg" aria-hidden="true"></i> {{ 'processing_activity.action.cancel'|trans({}, 'privacy')}}
                 </a>
                 <button type="submit" class="btn btn-primary btn-lg">
-                    <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'processing_activity.action.save'|trans }}
+                    <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'processing_activity.action.save'|trans({}, 'privacy')}}
                 </button>
             </div>
 

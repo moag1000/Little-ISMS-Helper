@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'suppliers' %}
 
-{% block title %}{{ 'supplier.page.new_title'|trans }}{% endblock %}
+{% block title %}{{ 'supplier.page.new_title'|trans({}, 'suppliers')}}{% endblock %}
 
 {% block body %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.suppliers'|trans({}, 'nav'), url: path('app_supplier_index') },
-            { label: 'supplier.page.new_title'|trans }
+            { label: 'supplier.page.new_title'|trans({}, 'suppliers')}
         ]
     } %}
 
     <div class="page-header">
-        <h1>{{ 'supplier.page.new_title'|trans }}</h1>
+        <h1>{{ 'supplier.page.new_title'|trans({}, 'suppliers')}}</h1>
         <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
     </div>
 
@@ -24,23 +24,23 @@
                     'form': form,
                     'sections': {
                         'details': {
-                            'label': 'supplier.section.details'|trans,
+                            'label': 'supplier.section.details'|trans({}, 'suppliers'),
                             'fields': ['name', 'criticality', 'status', 'description', 'serviceProvided']
                         },
                         'contact_info': {
-                            'label': 'supplier.section.contact_info'|trans,
+                            'label': 'supplier.section.contact_info'|trans({}, 'suppliers'),
                             'fields': ['contactPerson', 'email', 'phone', 'address']
                         },
                         'security_assessment': {
-                            'label': 'supplier.section.security_assessment'|trans,
+                            'label': 'supplier.section.security_assessment'|trans({}, 'suppliers'),
                             'fields': ['securityScore', 'lastSecurityAssessment', 'nextAssessmentDate', 'assessmentFindings', 'nonConformities', 'securityRequirements']
                         },
                         'certifications': {
-                            'label': 'supplier.section.certifications_compliance'|trans,
+                            'label': 'supplier.section.certifications_compliance'|trans({}, 'suppliers'),
                             'fields': ['hasISO27001', 'hasISO22301', 'hasDPA', 'dpaSignedDate', 'certifications']
                         },
                         'contract': {
-                            'label': 'supplier.section.contract_info'|trans,
+                            'label': 'supplier.section.contract_info'|trans({}, 'suppliers'),
                             'fields': ['contractStartDate', 'contractEndDate']
                         }
                     },
@@ -72,7 +72,7 @@
                         {{ 'common.cancel'|trans({}, 'messages') }}
                     </a>
                     <button type="submit" class="btn btn-primary">
-                        {{ 'supplier.action.create'|trans }}
+                        {{ 'supplier.action.create'|trans({}, 'suppliers')}}
                     </button>
                 </div>
             {{ form_end(form) }}

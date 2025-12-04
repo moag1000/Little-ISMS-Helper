@@ -756,9 +756,7 @@ button {
 }
 
 /* Charts adjustments for Dark Mode */
-[data-theme="dark"] canvas {
-    filter: brightness(0.9);
-}
+/* Note: Chart.js handles dark mode colors via JavaScript - no CSS filter needed */
 
 /* Image adjustments for Dark Mode */
 [data-theme="dark"] img:not([src*=".svg"]) {

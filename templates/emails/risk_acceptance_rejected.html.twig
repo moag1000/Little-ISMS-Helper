@@ -58,11 +58,11 @@
                 <strong>🔧 Required Actions:</strong><br>
                 The risk has been returned to "Assessed" status. You must implement additional mitigation measures before requesting acceptance again. Please:
                 <ul style="margin-top: 10px; margin-bottom: 0;">
-                    <li>{{ 'email.risk_acceptance.review_reason'|trans }}</li>
-                    <li>{{ 'email.risk_acceptance.identify_controls'|trans }}</li>
-                    <li>{{ 'email.risk_acceptance.update_assessment'|trans }}</li>
-                    <li>{{ 'email.risk_acceptance.reassess_risk'|trans }}</li>
-                    <li>{{ 'email.risk_acceptance.request_again'|trans }}</li>
+                    <li>{{ 'email.risk_acceptance.review_reason'|trans({}, 'messages')}}</li>
+                    <li>{{ 'email.risk_acceptance.identify_controls'|trans({}, 'messages')}}</li>
+                    <li>{{ 'email.risk_acceptance.update_assessment'|trans({}, 'messages')}}</li>
+                    <li>{{ 'email.risk_acceptance.reassess_risk'|trans({}, 'messages')}}</li>
+                    <li>{{ 'email.risk_acceptance.request_again'|trans({}, 'messages')}}</li>
                 </ul>
             </div>
 
@@ -78,7 +78,7 @@
         </div>
 
         <div class="footer">
-            <p>{{ 'email.automated_notification'|trans }}</p>
+            <p>{{ 'email.automated_notification'|trans({}, 'messages')}}</p>
             <p>ISO 27001:2022 & ISO 27005:2022 Compliant Risk Management System</p>
         </div>
     </div>

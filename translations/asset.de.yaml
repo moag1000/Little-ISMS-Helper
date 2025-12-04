@@ -6,6 +6,9 @@ asset:
         update: 'Änderungen speichern'
         view_critical: 'Kritische Assets anzeigen'
         view_details: 'Details anzeigen'
+        qr_label: 'QR-Etikett'
+        print_qr_label: 'QR-Code-Etikett drucken'
+        print_all_labels: 'Alle QR-Etiketten'
     details:
         title: Asset‑Details
     section:
@@ -160,6 +163,7 @@ asset:
         business_critical: 'Business Critical'
     message:
         no_critical_assets: 'No Critical Assets'
+        inherited_asset: 'Dieses Asset erbt Werte von einem übergeordneten Asset'
     description:
         bcm_insights: 'Bcm Insights'
         critical_impact: 'Critical Impact'
@@ -184,6 +188,23 @@ asset:
     title.new: 'Neues Asset'
     title.edit: 'Asset bearbeiten'
     title.bcm_insights: BCM-Erkenntnisse
+
+# QR Code Labels
+qr:
+    label:
+        title: 'Asset-Etikett'
+    labels_sheet:
+        title: 'Asset QR-Etiketten'
+        count: 'Etiketten'
+    button:
+        print: 'Drucken'
+        back: 'Zurück'
+        back_to_list: 'Zur Übersicht'
+    scan_for_details: 'QR-Code scannen für Asset-Details'
+    printed_on: 'Gedruckt am'
+    page: 'Seite'
+    no_assets: 'Keine Assets zum Drucken ausgewählt'
+
 asset_management:
     title: Titel
     description: Beschreibung

@@ -260,12 +260,12 @@
 
     {# Art. 33(3)(a) - Nature of Breach #}
     <div class="section">
-        <h2>{{ 'data_breach.pdf.art_33_3a_nature'|trans }}</h2>
+        <h2>{{ 'data_breach.pdf.art_33_3a_nature'|trans({}, 'privacy')}}</h2>
 
         <h3>Breach Description:</h3>
         <p>{{ breach.breachNature|nl2br }}</p>
 
-        <h3>{{ 'data_breach.pdf.categories_personal_data'|trans }}</h3>
+        <h3>{{ 'data_breach.pdf.categories_personal_data'|trans({}, 'privacy')}}</h3>
         {% if breach.dataCategories|length > 0 %}
             <ul>
                 {% for category in breach.dataCategories %}
@@ -276,7 +276,7 @@
             <p><em>Not specified</em></p>
         {% endif %}
 
-        <h3>{{ 'data_breach.pdf.categories_data_subjects'|trans }}</h3>
+        <h3>{{ 'data_breach.pdf.categories_data_subjects'|trans({}, 'privacy')}}</h3>
         {% if breach.dataSubjectCategories|length > 0 %}
             <ul>
                 {% for category in breach.dataSubjectCategories %}
@@ -287,7 +287,7 @@
             <p><em>Not specified</em></p>
         {% endif %}
 
-        <h3>{{ 'data_breach.pdf.approx_number_subjects'|trans }}</h3>
+        <h3>{{ 'data_breach.pdf.approx_number_subjects'|trans({}, 'privacy')}}</h3>
         <p>{{ breach.affectedDataSubjects|default('Unknown') }}</p>
 
         {% if breach.specialCategoriesAffected %}
@@ -309,19 +309,19 @@
 
     {# Art. 33(3)(b) - Likely Consequences #}
     <div class="section">
-        <h2>{{ 'data_breach.pdf.art_33_3b_consequences'|trans }}</h2>
+        <h2>{{ 'data_breach.pdf.art_33_3b_consequences'|trans({}, 'privacy')}}</h2>
         <p>{{ breach.likelyConsequences|nl2br }}</p>
     </div>
 
     {# Art. 33(3)(c) & (d) - Measures #}
     <div class="section">
-        <h2>{{ 'data_breach.pdf.art_33_3c_d_measures'|trans }}</h2>
+        <h2>{{ 'data_breach.pdf.art_33_3c_d_measures'|trans({}, 'privacy')}}</h2>
 
-        <h3>{{ 'data_breach.pdf.measures_taken'|trans }}</h3>
+        <h3>{{ 'data_breach.pdf.measures_taken'|trans({}, 'privacy')}}</h3>
         <p>{{ breach.measuresTaken|nl2br }}</p>
 
         {% if breach.mitigationMeasures %}
-            <h3>{{ 'data_breach.pdf.measures_mitigate'|trans }}</h3>
+            <h3>{{ 'data_breach.pdf.measures_mitigate'|trans({}, 'privacy')}}</h3>
             <p>{{ breach.mitigationMeasures|nl2br }}</p>
         {% endif %}
     </div>
@@ -346,7 +346,7 @@
 
     {# Art. 34 - Data Subject Notification #}
     <div class="section">
-        <h2>{{ 'data_breach.pdf.art_34_communication'|trans }}</h2>
+        <h2>{{ 'data_breach.pdf.art_34_communication'|trans({}, 'privacy')}}</h2>
         {% if breach.requiresSubjectNotification %}
             <p><strong>Subject Notification Required:</strong> Yes (High risk to rights and freedoms)</p>
             {% if breach.dataSubjectsNotifiedAt %}

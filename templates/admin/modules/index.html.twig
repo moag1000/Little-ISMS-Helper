@@ -111,9 +111,11 @@
                                             <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'admin.modules.details'|trans({}, 'admin') }}
                                         </a>
                                         {% if not module.required %}
-                                            <form method="post" action="{{ path('admin_modules_deactivate', {moduleKey: key}) }}">
-                                                <button type="submit" class="btn btn-sm btn-outline-danger w-100"
-                                                    onclick="return confirm('{{ 'admin.modules.confirm_deactivate'|trans({'%name%': module.name}, 'admin') }}')">
+                                            <form method="post" action="{{ path('admin_modules_deactivate', {moduleKey: key}) }}"
+                                                  data-controller="ui-actions"
+                                                  data-action="submit->ui-actions#confirm"
+                                                  data-ui-actions-message-param="{{ 'admin.modules.confirm_deactivate'|trans({'%name%': module.name}, 'admin') }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger w-100">
                                                     <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'admin.modules.deactivate'|trans({}, 'admin') }}
                                                 </button>
                                             </form>

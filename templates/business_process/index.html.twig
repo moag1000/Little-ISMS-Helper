@@ -33,7 +33,7 @@
                 <label for="view-filter" class="mb-0 fw-bold">
                     <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
                 </label>
-                <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" onchange="this.form.submit()">
+                <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                     <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
                         {{ 'corporate.view.own_only'|trans({}, 'tenant') }}
                     </option>

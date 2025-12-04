@@ -162,13 +162,16 @@
                                     </a>
                                     <form method="post"
                                           action="{{ path('session_terminate_single', {sessionId: session.sessionId}) }}"
-                                          style="display: inline;">
+                                          style="display: inline;"
+                                          data-controller="ui-actions"
+                                          data-action="submit->ui-actions#confirm"
+                                          data-ui-actions-message-param="Möchten Sie diese Sitzung wirklich beenden?">
                                         <input type="hidden" name="_token"
                                                value="{{ csrf_token('terminate_single_' ~ session.sessionId) }}">
                                         <button type="submit"
                                                 class="btn btn-outline-danger"
                                                 title="Session beenden"
-                                                onclick="return confirm('Möchten Sie diese Sitzung wirklich beenden?')" aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+                                                aria-label="{{ 'common.close'|trans({}, 'messages') }}">
                                             <i class="bi bi-x-circle" aria-hidden="true"></i>
                                         </button>
                                     </form>

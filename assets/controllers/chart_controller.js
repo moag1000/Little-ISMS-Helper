@@ -25,27 +25,26 @@ Chart.register(
     Legend
 );
 
+/**
+ * Get current theme colors based on dark/light mode
+ */
+function getThemeColors() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark' ||
+                   document.documentElement.getAttribute('data-bs-theme') === 'dark';
+
+    return {
+        textMuted: isDark ? '#cbd5e1' : '#6b7280',
+        grid: isDark ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)',
+        isDark
+    };
+}
+
 export default class extends Controller {
     static values = {
         type: String,
         data: Object,
         options: Object
     };
-
-    // Dark mode detection
-    get isDarkMode() {
-        return document.documentElement.getAttribute('data-theme') === 'dark' ||
-               document.documentElement.getAttribute('data-bs-theme') === 'dark';
-    }
-
-    // Theme-aware colors - ensure high contrast in dark mode
-    get themeColors() {
-        return {
-            text: this.isDarkMode ? '#e2e8f0' : '#2c3e50',           // Bright white for dark mode
-            textMuted: this.isDarkMode ? '#cbd5e1' : '#6c757d',       // Lighter gray for axes
-            gridColor: this.isDarkMode ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.1)'
-        };
-    }
 
     connect() {
         this.createChart();
@@ -56,69 +55,154 @@ export default class extends Controller {
     }
 
     createChart() {
-        const colors = this.themeColors;
+        const colors = getThemeColors();
         const chartType = this.typeValue || 'bar';
-        const isRadialChart = ['doughnut', 'pie', 'polarArea', 'radar'].includes(chartType);
+        const isRadialChart = ['pie', 'doughnut', 'radar', 'polarArea'].includes(chartType);
 
-        // Base options for all charts
+        // Create HTML legend container
+        this.createLegendContainer();
+
+        // Build options - use HTML legend for better styling
         const baseOptions = {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: 'bottom',
-                    labels: {
-                        color: colors.text,
-                        font: {
-                            size: 12
-                        }
-                    }
+                    display: false  // Hide default canvas legend
                 },
                 tooltip: {
                     titleColor: '#ffffff',
                     bodyColor: '#ffffff',
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)'
+                    backgroundColor: colors.isDark ? 'rgba(30, 41, 59, 0.95)' : 'rgba(0, 0, 0, 0.8)'
                 }
             }
         };
 
-        // Only add scales for non-radial charts (bar, line, etc.)
+        // Add scales only for non-radial charts
         if (!isRadialChart) {
             baseOptions.scales = {
                 x: {
                     ticks: { color: colors.textMuted },
-                    grid: { color: colors.gridColor }
+                    grid: { color: colors.grid }
                 },
                 y: {
                     ticks: { color: colors.textMuted },
-                    grid: { color: colors.gridColor }
+                    grid: { color: colors.grid }
                 }
             };
         }
 
-        // Merge user options
+        // Deep merge user options with base options
         const userOptions = this.optionsValue || {};
-        const mergedOptions = this.deepMerge(baseOptions, userOptions);
+        const options = this.deepMerge(baseOptions, userOptions);
 
-        // Always force legend label color for dark mode compatibility
-        if (!mergedOptions.plugins) mergedOptions.plugins = {};
-        if (!mergedOptions.plugins.legend) mergedOptions.plugins.legend = {};
-        if (!mergedOptions.plugins.legend.labels) mergedOptions.plugins.legend.labels = {};
-        mergedOptions.plugins.legend.labels.color = colors.text;
+        // Force HTML legend (override any user option)
+        if (options.plugins && options.plugins.legend) {
+            options.plugins.legend.display = false;
+        }
 
         this.chart = new Chart(this.element, {
             type: chartType,
             data: this.dataValue,
-            options: mergedOptions
+            options: options
+        });
+
+        // Render HTML legend after chart is created
+        this.renderHtmlLegend();
+    }
+
+    /**
+     * Create container for HTML legend
+     */
+    createLegendContainer() {
+        // Remove existing legend if any
+        if (this.legendContainer) {
+            this.legendContainer.remove();
+        }
+
+        this.legendContainer = document.createElement('div');
+        this.legendContainer.className = 'chart-html-legend';
+        this.element.parentNode.appendChild(this.legendContainer);
+    }
+
+    /**
+     * Render HTML legend with glow effect styling
+     */
+    renderHtmlLegend() {
+        if (!this.chart || !this.legendContainer) return;
+
+        const datasets = this.chart.data.datasets;
+        const labels = this.chart.data.labels || [];
+
+        let html = '<div class="chart-legend-items">';
+
+        // For pie/doughnut charts, use labels array
+        const chartType = this.typeValue || 'bar';
+        if (['pie', 'doughnut', 'polarArea'].includes(chartType) && labels.length > 0) {
+            const colors = datasets[0]?.backgroundColor || [];
+            labels.forEach((label, i) => {
+                const color = Array.isArray(colors) ? colors[i] : colors;
+                html += this.createLegendItem(label, color, i);
+            });
+        } else {
+            // For other charts, use dataset labels
+            datasets.forEach((dataset, i) => {
+                const color = dataset.borderColor || dataset.backgroundColor;
+                html += this.createLegendItem(dataset.label, color, i);
+            });
+        }
+
+        html += '</div>';
+        this.legendContainer.innerHTML = html;
+
+        // Add click handlers for legend items
+        this.legendContainer.querySelectorAll('.chart-legend-item').forEach((item, i) => {
+            item.addEventListener('click', () => this.toggleDataVisibility(i));
         });
     }
 
-    // Deep merge helper for options
+    /**
+     * Create a single legend item HTML
+     */
+    createLegendItem(label, color, index) {
+        const isHidden = this.chart.getDatasetMeta(0)?.data[index]?.hidden || false;
+        return `
+            <span class="chart-legend-item ${isHidden ? 'legend-hidden' : ''}" data-index="${index}">
+                <span class="chart-legend-color" style="background: ${color}; box-shadow: 0 0 6px ${color};"></span>
+                <span class="chart-legend-label">${label}</span>
+            </span>
+        `;
+    }
+
+    /**
+     * Toggle visibility of data on click
+     */
+    toggleDataVisibility(index) {
+        const chartType = this.typeValue || 'bar';
+
+        if (['pie', 'doughnut', 'polarArea'].includes(chartType)) {
+            // For radial charts, toggle the specific data point
+            const meta = this.chart.getDatasetMeta(0);
+            if (meta.data[index]) {
+                meta.data[index].hidden = !meta.data[index].hidden;
+            }
+        } else {
+            // For other charts, toggle the dataset
+            this.chart.setDatasetVisibility(index, !this.chart.isDatasetVisible(index));
+        }
+
+        this.chart.update();
+        this.renderHtmlLegend();
+    }
+
+    /**
+     * Deep merge two objects
+     */
     deepMerge(target, source) {
         const result = { ...target };
         for (const key in source) {
-            if (source[key] instanceof Object && key in target && target[key] instanceof Object) {
-                result[key] = this.deepMerge(target[key], source[key]);
+            if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+                result[key] = this.deepMerge(result[key] || {}, source[key]);
             } else {
                 result[key] = source[key];
             }
@@ -137,6 +221,9 @@ export default class extends Controller {
     disconnect() {
         if (this.chart) {
             this.chart.destroy();
+        }
+        if (this.legendContainer) {
+            this.legendContainer.remove();
         }
         document.removeEventListener('theme:changed', this.boundHandleThemeChange);
     }

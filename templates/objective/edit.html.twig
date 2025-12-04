@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'objective' %}
 
-{% block title %}{{ 'objective.title.edit'|trans }}: {{ objective.title }}{% endblock %}
+{% block title %}{{ 'objective.title.edit'|trans({}, 'objective')}}: {{ objective.title }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -14,7 +14,7 @@
     } %}
 
     <div class="page-header">
-        <h1>{{ 'objective.title.edit'|trans }}: {{ objective.title }}</h1>
+        <h1>{{ 'objective.title.edit'|trans({}, 'objective')}}: {{ objective.title }}</h1>
         <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
     </div>
 
@@ -25,19 +25,19 @@
                     'form': form,
                     'sections': {
                         'basic_info': {
-                            'label': 'objective.section.basic_info'|trans,
+                            'label': 'objective.section.basic_info'|trans({}, 'objective'),
                             'fields': ['title', 'category', 'description']
                         },
                         'measurement': {
-                            'label': 'objective.section.measurement'|trans,
+                            'label': 'objective.section.measurement'|trans({}, 'objective'),
                             'fields': ['measurableIndicators', 'targetValue', 'currentValue', 'unit']
                         },
                         'responsibility': {
-                            'label': 'objective.section.responsibility'|trans,
+                            'label': 'objective.section.responsibility'|trans({}, 'objective'),
                             'fields': ['responsiblePerson', 'targetDate']
                         },
                         'status_progress': {
-                            'label': 'objective.section.status_progress'|trans,
+                            'label': 'objective.section.status_progress'|trans({}, 'objective'),
                             'fields': ['status', 'progressNotes']
                         }
                     },
@@ -55,8 +55,7 @@
                         'progressNotes': 12
                     },
                     'help_texts': {
-                        'targetDate': 'objective.help.target_date'|trans
-                    }
+                        'targetDate': 'objective.help.target_date'|trans({}, 'objective')}
                 } %}
 
                 <div class="d-flex justify-content-between mt-4">

@@ -52,11 +52,11 @@
                 <div class="mb-4">
                     <label class="form-label" id="entity-selection-label"><strong>Select Entities to Export:</strong></label>
 
-                    <div class="mb-2" role="group" aria-labelledby="entity-selection-label">
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="selectAllEntities()">
+                    <div class="mb-2" role="group" aria-labelledby="entity-selection-label" data-controller="ui-actions">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-action="ui-actions#selectAll" data-ui-actions-container-param=".row">
                             <i class="bi bi-check-all" aria-hidden="true"></i> Select All
                         </button>
-                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="deselectAllEntities()">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" data-action="ui-actions#deselectAll" data-ui-actions-container-param=".row">
                             <i class="bi bi-x" aria-hidden="true"></i> Deselect All
                         </button>
                     </div>
@@ -94,10 +94,10 @@
     <div class="alert alert-warning mt-4">
         <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Important Notes</h5>
         <ul class="mb-0">
-            <li>{{ 'data_management.export.includes_all_records'|trans }}</li>
-            <li>{{ 'data_management.export.sensitive_data_warning'|trans }}</li>
-            <li>{{ 'data_management.export.large_exports_warning'|trans }}</li>
-            <li>{{ 'data_management.export.relationships_warning'|trans }}</li>
+            <li>{{ 'data_management.export.includes_all_records'|trans({}, 'messages')}}</li>
+            <li>{{ 'data_management.export.sensitive_data_warning'|trans({}, 'messages')}}</li>
+            <li>{{ 'data_management.export.large_exports_warning'|trans({}, 'messages')}}</li>
+            <li>{{ 'data_management.export.relationships_warning'|trans({}, 'messages')}}</li>
             <li>For complete system backup, use the <a href="{{ path('data_backup_index') }}" class="alert-link">Database Backup</a> function</li>
         </ul>
     </div>

@@ -388,6 +388,17 @@ compliance:
         requirements: Anforderungen
         gaps: 'Lücken'
         data_reuse: Datenwiederverwendung
+        matrix: 'Mapping-Matrix'
+        details: 'Detaillierte Mappings'
+        explanation: Erklärung
+    confirm:
+        create_mappings: 'Möchten Sie jetzt Cross-Framework Mappings erstellen?\n\nDies kann einige Sekunden dauern und überschreibt bestehende Mappings.'
+        add_missing_mappings: 'Möchten Sie fehlende Cross-Framework Mappings ergänzen?\n\nDies erstellt nur neue Mappings und überschreibt keine bestehenden.'
+    mapping_status:
+        creating: 'Erstelle Mappings...'
+        new_created: 'neue Mappings erstellt!'
+    mapping_error:
+        creating: 'Fehler beim Erstellen der Mappings'
     framework_info: Framework-Informationen
     recommendations: Empfehlungen
     filter: Filtern
@@ -403,6 +414,12 @@ compliance:
         fulfilled: Erfüllt
         partial: 'Teilweise erfüllt'
         gap: 'Lücke'
+    tooltip:
+        not_started: 'Nicht begonnen - Keine Umsetzung bisher'
+        planning_phase: 'Planungsphase - Anforderungen analysiert, Plan erstellt'
+        nearly_complete: 'Fast abgeschlossen - Die meisten Anforderungen erfüllt, kleinere Lücken verbleiben'
+    action:
+        create_mappings_now: 'Mappings jetzt erstellen'
 compliance_mapping:
     mapping_type:
         weak: 'Schwach (0-49%)'

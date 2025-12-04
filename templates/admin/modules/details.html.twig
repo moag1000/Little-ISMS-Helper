@@ -161,9 +161,11 @@
                     <div class="d-grid gap-2">
                         {% if is_active %}
                             {% if not module.required %}
-                                <form method="post" action="{{ path('admin_modules_deactivate', {moduleKey: module_key}) }}">
-                                    <button type="submit" class="btn btn-danger w-100"
-                                        onclick="return confirm('Modul {{ module.name }} wirklich deaktivieren?')">
+                                <form method="post" action="{{ path('admin_modules_deactivate', {moduleKey: module_key}) }}"
+                                      data-controller="ui-actions"
+                                      data-action="submit->ui-actions#confirm"
+                                      data-ui-actions-message-param="Modul {{ module.name }} wirklich deaktivieren?">
+                                    <button type="submit" class="btn btn-danger w-100">
                                         <i class="bi bi-x me-2"></i>
                                         Modul deaktivieren
                                     </button>

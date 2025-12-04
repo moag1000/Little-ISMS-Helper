@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans from 'asset' %}qr.labels_sheet.title{% endtrans %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        @page {
+            size: A4;
+            margin: 10mm;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f5f5f5;
+            color: #1a1a1a;
+            margin: 0;
+            padding: 20px;
+            font-size: 11px;
+        }
+
+        .print-header {
+            max-width: 210mm;
+            margin: 0 auto 20px;
+            padding: 16px 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .print-header h1 {
+            margin: 0 0 8px 0;
+            font-size: 1.25rem;
+            color: #333;
+        }
+
+        .print-header p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .print-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0b5ed7;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5c636a;
+        }
+
+        .labels-sheet {
+            max-width: 210mm;
+            margin: 0 auto;
+            background: white;
+            padding: 5mm;
+        }
+
+        .labels-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 5mm;
+        }
+
+        .label-card {
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 8px;
+            background: white;
+            page-break-inside: avoid;
+            display: flex;
+            gap: 10px;
+            min-height: 45mm;
+        }
+
+        .label-qr {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .label-qr img {
+            width: 30mm;
+            height: 30mm;
+        }
+
+        .label-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-width: 0;
+        }
+
+        .label-name {
+            font-weight: bold;
+            font-size: 11px;
+            margin-bottom: 4px;
+            word-break: break-word;
+            line-height: 1.2;
+        }
+
+        .label-id {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 10px;
+            color: #333;
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+
+        .label-meta {
+            font-size: 9px;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        .label-meta div {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .label-type {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 9px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 4px;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+        .page-info {
+            text-align: center;
+            font-size: 9px;
+            color: #888;
+            margin-top: 5mm;
+            padding-top: 3mm;
+            border-top: 1px dotted #ccc;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            opacity: 0.3;
+            margin-bottom: 16px;
+        }
+
+        @media print {
+            .print-header {
+                display: none;
+            }
+
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .labels-sheet {
+                box-shadow: none;
+                max-width: none;
+                padding: 0;
+            }
+
+            .label-card {
+                border-width: 0.5pt;
+            }
+
+            .page-info {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-header">
+        <h1><i class="bi bi-qr-code"></i> {% trans from 'asset' %}qr.labels_sheet.title{% endtrans %}</h1>
+        <p>{{ labels|length }} {% trans from 'asset' %}qr.labels_sheet.count{% endtrans %} | {% trans from 'asset' %}qr.printed_on{% endtrans %}: {{ printDate|date('d.m.Y H:i') }}</p>
+        <div class="print-actions">
+            <button class="btn btn-primary" data-controller="ui-actions" data-action="click->ui-actions#print">
+                <i class="bi bi-printer"></i>
+                {% trans from 'asset' %}qr.button.print{% endtrans %}
+            </button>
+            <a href="{{ path('app_asset_index') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i>
+                {% trans from 'asset' %}qr.button.back_to_list{% endtrans %}
+            </a>
+        </div>
+    </div>
+
+    {% if labels|length > 0 %}
+        {% set pages = (labels|length / assetsPerPage)|round(0, 'ceil') %}
+
+        {% for page in 1..pages %}
+            <div class="labels-sheet{% if not loop.last %} page-break{% endif %}">
+                <div class="labels-grid">
+                    {% set start = (page - 1) * assetsPerPage %}
+                    {% set potentialEnd = start + assetsPerPage %}
+                    {% set end = potentialEnd < labels|length ? potentialEnd : labels|length %}
+
+                    {% for i in start..(end - 1) %}
+                        {% set label = labels[i] %}
+                        <div class="label-card">
+                            <div class="label-qr">
+                                <img src="{{ label.qrCode }}" alt="QR">
+                            </div>
+                            <div class="label-info">
+                                <div class="label-type">
+                                    {% if label.asset.assetType == 'hardware' %}
+                                        <i class="bi bi-pc-display"></i>
+                                    {% elseif label.asset.assetType == 'software' %}
+                                        <i class="bi bi-code-square"></i>
+                                    {% elseif label.asset.assetType == 'data' %}
+                                        <i class="bi bi-database"></i>
+                                    {% elseif label.asset.assetType == 'service' %}
+                                        <i class="bi bi-cloud"></i>
+                                    {% elseif label.asset.assetType == 'personnel' %}
+                                        <i class="bi bi-person"></i>
+                                    {% else %}
+                                        <i class="bi bi-hdd-network"></i>
+                                    {% endif %}
+                                    {{ ('asset.type.' ~ label.asset.assetType)|trans({}, 'asset') }}
+                                </div>
+                                <div class="label-name">{{ label.asset.name }}</div>
+                                <div class="label-id">ID: {{ label.asset.id }}</div>
+                                <div class="label-meta">
+                                    <div><strong>{% trans from 'asset' %}asset.field.owner{% endtrans %}:</strong> {{ label.asset.owner }}</div>
+                                    {% if label.asset.physicalLocation %}
+                                        <div><strong>{% trans from 'asset' %}asset.field.location{% endtrans %}:</strong> {{ label.asset.physicalLocation.name }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="page-info">
+                    {% trans from 'asset' %}qr.page{% endtrans %} {{ page }} / {{ pages }}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="labels-sheet">
+            <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <p>{% trans from 'asset' %}qr.no_assets{% endtrans %}</p>
+            </div>
+        </div>
+    {% endif %}
+</body>
+</html>

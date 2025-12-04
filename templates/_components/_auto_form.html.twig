@@ -9,11 +9,11 @@
             'form': form,
             'sections': {
                 'details': {
-                    'label': 'supplier.section.details'|trans,
+                    'label': 'supplier.section.details'|trans({}, 'suppliers'),
                     'fields': ['name', 'criticality', 'status', 'description', 'serviceProvided']
                 },
                 'contact': {
-                    'label': 'supplier.section.contact_info'|trans,
+                    'label': 'supplier.section.contact_info'|trans({}, 'suppliers'),
                     'fields': ['contactPerson', 'email', 'phone', 'address']
                 }
             },

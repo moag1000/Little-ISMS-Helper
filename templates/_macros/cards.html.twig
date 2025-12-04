@@ -289,7 +289,7 @@
    {% import '_macros/cards.html.twig' as cards %}
 
    {% set isms_content %}
-       <p>{{ 'components.example_isms_content'|trans }}</p>
+       <p>{{ 'components.example_isms_content'|trans({}, 'ui')}}</p>
    {% endset %}
 
    {{ cards.simple_card(

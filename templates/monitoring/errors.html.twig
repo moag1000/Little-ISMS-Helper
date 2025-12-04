@@ -36,7 +36,7 @@
             <div class="col-md-6">
                 <div class="card border-info">
                     <div class="card-body">
-                        <h5 class="card-title text-muted">{{ 'monitoring.by_level'|trans }}</h5>
+                        <h5 class="card-title text-muted">{{ 'monitoring.by_level'|trans({}, 'monitoring')}}</h5>
                         {% for level, count in error_stats.by_level %}
                             <div class="d-flex justify-content-between mb-2">
                                 <span class="badge bg-{{ level == 'ERROR' ? 'danger' : (level == 'WARNING' ? 'warning' : 'info') }}">
@@ -61,10 +61,10 @@
             <div class="card-body">
                 <form method="get" class="row g-3">
                     <div class="col-auto">
-                        <label for="limit" class="col-form-label">{{ 'monitoring.show_entries'|trans }}</label>
+                        <label for="limit" class="col-form-label">{{ 'monitoring.show_entries'|trans({}, 'monitoring')}}</label>
                     </div>
                     <div class="col-auto">
-                        <select name="limit" id="limit" class="form-select" onchange="this.form.submit()">
+                        <select name="limit" id="limit" class="form-select" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                             <option value="50" {{ app.request.query.get('limit') == 50 ? 'selected' : '' }}>50</option>
                             <option value="100" {{ app.request.query.get('limit') == 100 or not app.request.query.get('limit') ? 'selected' : '' }}>100</option>
                             <option value="200" {{ app.request.query.get('limit') == 200 ? 'selected' : '' }}>200</option>
@@ -113,7 +113,7 @@
                 {% else %}
                     <div class="p-4 text-center">
                         <i class="bi bi-check-circle text-success fs-1" aria-hidden="true"></i>
-                        <p class="mt-2">{{ 'monitoring.no_errors_found'|trans }}</p>
+                        <p class="mt-2">{{ 'monitoring.no_errors_found'|trans({}, 'monitoring')}}</p>
                     </div>
                 {% endif %}
             </div>
@@ -123,10 +123,10 @@
         <div class="alert alert-warning mt-4">
             <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Important Notes</h5>
             <ul class="mb-0">
-                <li>{{ 'monitoring.reverse_order'|trans }}</li>
-                <li>{{ 'monitoring.recent_entries_only'|trans }}</li>
-                <li>{{ 'monitoring.full_log_analysis'|trans }}</li>
-                <li>{{ 'monitoring.large_files_warning'|trans }}</li>
+                <li>{{ 'monitoring.reverse_order'|trans({}, 'monitoring')}}</li>
+                <li>{{ 'monitoring.recent_entries_only'|trans({}, 'monitoring')}}</li>
+                <li>{{ 'monitoring.full_log_analysis'|trans({}, 'monitoring')}}</li>
+                <li>{{ 'monitoring.large_files_warning'|trans({}, 'monitoring')}}</li>
             </ul>
         </div>
     {% else %}

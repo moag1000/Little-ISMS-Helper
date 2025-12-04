@@ -328,7 +328,7 @@
                 <td class="text-center">70-89%</td>
                 <td class="text-center"><strong>{{ quality_distribution.good }}</strong></td>
                 <td class="text-center">{{ mapped_count > 0 ? ((quality_distribution.good / mapped_count * 100)|round(1)) : 0 }}%</td>
-                <td>{{ 'pdf.framework_comparison.solid_mappings_minor'|trans }}</td>
+                <td>{{ 'pdf.framework_comparison.solid_mappings_minor'|trans({}, 'messages')}}</td>
             </tr>
             <tr>
                 <td><span class="badge bg-warning">Medium</span></td>

@@ -1,198 +1,145 @@
-# Consent Translations (German)
-# GDPR Art. 7 - Einwilligungen
-
-# Breadcrumb & Navigation
 consent:
-  breadcrumb: 'Einwilligungen'
+    # Page titles and breadcrumbs
+    breadcrumb: Einwilligungen
+    header:
+        title: Einwilligungsverwaltung
+        subtitle: 'Verwaltung von Einwilligungen gemäß DSGVO Art. 7'
+        action:
+            new: 'Neue Einwilligung'
 
-  # Header
-  header:
-    title: 'Einwilligungen'
-    subtitle: 'DSGVO Art. 7 - Verwaltung von Einwilligungen betroffener Personen'
+    # Form titles
+    new: 'Neue Einwilligung erfassen'
+    edit: 'Einwilligung bearbeiten'
+
+    # Actions
     action:
-      new: 'Neue Einwilligung'
+        save: Speichern
+        verify: 'Einwilligung verifizieren'
+        document_revocation: 'Widerruf dokumentieren'
 
-  # Page Titles
-  new: 'Neue Einwilligung erstellen'
-  edit: 'Einwilligung bearbeiten'
+    # KPIs
+    kpi:
+        total: 'Gesamt'
+        active: 'Aktiv'
+        pending: 'Ausstehend'
+        revoked: 'Widerrufen'
 
-  # KPI Cards
-  kpi:
-    total: 'Gesamt'
-    active: 'Aktiv (verifiziert)'
-    pending: 'Ausstehende Prüfung'
+    # Sections
+    section:
+        data_subject: 'Betroffene Person'
+        processing_activity: 'Verarbeitungstätigkeit'
+        consent_grant: 'Einwilligungserteilung'
+        proof_documentation: 'Nachweisdokumentation'
+        expiry: 'Ablauf'
+        notes: 'Anmerkungen'
+        revocation: 'Widerruf'
+        dpo_verification: 'DSB-Verifizierung'
+        metadata: 'Metadaten'
+
+    # Fields
+    field:
+        id: ID
+        data_subject: 'Betroffene Person'
+        identifier_type: 'Kennungstyp'
+        processing_activity: 'Verarbeitungstätigkeit'
+        purposes: 'Zwecke'
+        granted_at: 'Erteilt am'
+        consent_method: 'Einwilligungsmethode'
+        consent_channel: 'Einwilligungskanal'
+        consent_text: 'Einwilligungstext'
+        proof_document: 'Nachweisdokument'
+        expires_at: 'Läuft ab am'
+        status: 'Status'
+        verified: 'Verifiziert'
+        revocation_reason: 'Widerrufsgrund'
+        created_at: 'Erstellt am'
+        updated_at: 'Aktualisiert am'
+
+    # Hints
+    hint:
+        expiry_optional: 'Optional: Leer lassen für unbefristete Einwilligung'
+
+    # Status values
+    status:
+        active: Aktiv
+        pending_verification: 'Verifizierung ausstehend'
+        revoked: Widerrufen
+        overview: 'Statusübersicht'
+
+    # Identifier types
+    identifier_type:
+        email: 'E-Mail-Adresse'
+        customer_id: 'Kundennummer'
+        employee_id: 'Mitarbeiternummer'
+        user_id: 'Benutzer-ID'
+        other: 'Sonstige'
+
+    # Consent methods
+    method:
+        written: 'Schriftlich'
+        electronic: 'Elektronisch'
+        verbal: 'Mündlich'
+        double_opt_in: 'Double Opt-In'
+        checkbox: 'Checkbox'
+
+    # Consent channels
+    channel:
+        website: 'Website'
+        app: 'App'
+        email: 'E-Mail'
+        paper: 'Papierformular'
+        phone: 'Telefon'
+        in_person: 'Persönlich'
+
+    # Filters
+    filter:
+        all_status: 'Alle Status'
+        verified: 'Verifiziert'
+        unverified: 'Nicht verifiziert'
+        all_verified: 'Alle'
+
+    # List
+    list:
+        all_consents: 'Alle Einwilligungen'
+
+    # Empty state
+    empty:
+        title: 'Keine Einwilligungen vorhanden'
+        description: 'Erfassen Sie die erste Einwilligung, um mit der DSGVO-konformen Dokumentation zu beginnen.'
+
+    # Verification
+    verified: 'Verifiziert'
+    not_verified: 'Nicht verifiziert'
+    verified_by: 'Verifiziert von'
+    verified_by_user: 'Verifiziert von %user%'
+    verify:
+        confirmation: 'Einwilligung als verifiziert markieren?'
+        hint: 'Die Verifizierung bestätigt, dass die Einwilligung den DSGVO-Anforderungen entspricht.'
+
+    # Revocation
     revoked: 'Widerrufen'
-
-  # Status Overview
-  status:
-    overview: 'Status-Übersicht'
-    pending_verification: 'Ausstehende DPO-Prüfung'
-    active: 'Aktiv'
-    revoked: 'Widerrufen'
-    expired: 'Abgelaufen'
-    rejected: 'Abgelehnt'
-
-  # Empty State
-  empty:
-    title: 'Keine Einwilligungen vorhanden'
-    description: 'Es wurden noch keine Einwilligungen dokumentiert. Erstellen Sie die erste Einwilligung, um DSGVO-konforme Verarbeitungstätigkeiten zu dokumentieren.'
-
-  # List View
-  list:
-    all_consents: 'Alle Einwilligungen (%count%)'
-
-  # Filter
-  filter:
-    all_status: 'Alle Status'
-    all_verified: 'Alle'
-    verified: 'Nur verifizierte'
-    unverified: 'Nur nicht-verifizierte'
-
-  # Table Fields
-  field:
-    id: 'ID'
-    data_subject: 'Betroffene Person'
-    identifier_type: 'Identifikator-Typ'
-    processing_activity: 'Verarbeitungstätigkeit'
-    purposes: 'Zwecke'
-    status: 'Status'
-    granted_at: 'Erteilt am'
-    consent_method: 'Methode'
-    consent_channel: 'Kanal'
-    consent_text: 'Einwilligungstext'
-    proof_document: 'Nachweisdokument'
-    expires_at: 'Läuft ab am'
-    verified: 'DPO-Verifiziert'
-    created_at: 'Erstellt am'
-    updated_at: 'Aktualisiert am'
     revoked_at: 'Widerrufen am'
     revocation_reason: 'Widerrufsgrund'
+    revoke:
+        hint: 'Dokumentieren Sie den Widerruf der Einwilligung gemäß DSGVO Art. 7(3).'
 
-  # Form Sections
-  section:
-    data_subject: 'Betroffene Person'
-    processing_activity: 'Verarbeitungstätigkeit'
-    consent_grant: 'Einwilligungserteilung'
-    proof_documentation: 'Nachweisdokumentation'
-    expiry: 'Ablauf & Gültigkeit'
-    notes: 'Notizen'
-    dpo_verification: 'DPO-Verifizierung'
-    revocation: 'Widerruf'
-    metadata: 'Metadaten'
+    # Proof document
+    no_proof_document: 'Kein Nachweisdokument'
 
-  # Form Fields
-  form:
-    data_subject_identifier: 'Identifikator der betroffenen Person'
-    data_subject_identifier_placeholder: 'z.B. kunde@example.com, KD-12345, etc.'
-    data_subject_identifier_help: 'Eindeutiger Identifikator der externen betroffenen Person (KEIN interner User)'
+    # Confirm dialogs
+    delete:
+        confirm: 'Sind Sie sicher, dass Sie diese Einwilligung löschen möchten?'
 
-    identifier_type_label: 'Art des Identifikators'
-    identifier_type_options:
-      email: 'E-Mail-Adresse'
-      customer_id: 'Kundennummer'
-      pseudonym: 'Pseudonym'
-      phone: 'Telefonnummer'
-      other: 'Sonstiges'
-
-    processing_activity: 'Verarbeitungstätigkeit'
-    processing_activity_help: 'Nur Verarbeitungstätigkeiten mit Rechtsgrundlage Art. 6 Abs. 1 lit. a (Einwilligung)'
-
-    purposes: 'Granulare Zwecke'
-    purposes_help: 'Spezifische Zwecke innerhalb der Verarbeitungstätigkeit (optional)'
-    purposes_options:
-      marketing: 'Marketing'
-      profiling: 'Profiling'
-      analytics: 'Analytics'
-      newsletter: 'Newsletter'
-      personalization: 'Personalisierung'
-
-    granted_at: 'Erteilungsdatum'
-    granted_at_help: 'Datum und Uhrzeit, zu der die Einwilligung erteilt wurde'
-
-    consent_method: 'Einwilligungsmethode'
-    consent_method_options:
-      double_opt_in: 'Double Opt-In'
-      written_form: 'Schriftlich'
-      checkbox: 'Checkbox'
-      oral: 'Mündlich'
-      email: 'E-Mail'
-      other: 'Sonstiges'
-
-    consent_channel: 'Kanal'
-    consent_channel_options:
-      website: 'Website'
-      email: 'E-Mail'
-      paper_form: 'Papierformular'
-      phone: 'Telefon'
-      in_person: 'Persönlich'
-      other: 'Sonstiges'
-
-    consent_text: 'Einwilligungstext (Wortlaut)'
-    consent_text_placeholder: 'Exakter Wortlaut der Einwilligungserklärung zum Zeitpunkt der Erteilung...'
-    consent_text_help: 'WICHTIG: Art. 7 Abs. 1 DSGVO Nachweispflicht - genauer Wortlaut erforderlich'
-
-    proof_document: 'Nachweisdokument'
-    proof_document_help: 'Optional: Hochgeladenes Dokument (E-Mail, Scan, etc.) als Nachweis'
-
-    expires_at: 'Ablaufdatum'
-    expires_at_help: 'Optional: Datum, an dem die Einwilligung automatisch abläuft'
-
-    notes: 'Interne Notizen'
-    notes_placeholder: 'Interne Hinweise zur Einwilligung...'
-
-  # Hints
-  hint:
-    expiry_optional: 'Optional: Lassen Sie dieses Feld leer für unbefristete Einwilligungen'
-
-  # Status Labels
-  verified: 'Verifiziert von DPO'
-  not_verified: 'Nicht verifiziert'
-  revoked: 'Widerrufen'
-
-  # Proof Document
-  no_proof_document: 'Kein Nachweisdokument'
-
-  # Actions
-  action:
-    save: 'Einwilligung speichern'
-    verify: 'Verifizieren'
-    document_revocation: 'Widerruf dokumentieren'
-    delete: 'Löschen'
-    back: 'Zurück'
-
-  # Verification
-  verify:
-    confirmation: 'Sind Sie sicher, dass Sie diese Einwilligung als DPO verifizieren und aktivieren möchten?'
-    hint: 'Nach der Verifizierung wird die Einwilligung als rechtsgültig markiert und der Status wird auf "Aktiv" gesetzt.'
-
-  verified_by: 'Verifiziert von'
-  verified_by_user: 'Verifiziert von %user% am'
-
-  # Revocation
-  revoke:
-    hint: 'Dokumentieren Sie den Widerruf der Einwilligung durch die betroffene Person'
-
-  revocation_reason: 'Grund für Widerruf'
-  revoked_at: 'Widerrufen am %date%'
-
-  # Delete Confirmation
-  delete:
-    confirm: 'Sind Sie sicher, dass Sie diese Einwilligung löschen möchten? Dies kann nicht rückgängig gemacht werden.'
-
-  # Success Messages
-  success:
-    created: 'Einwilligung erfolgreich erstellt'
-    updated: 'Einwilligung erfolgreich aktualisiert'
-    verified: 'Einwilligung erfolgreich durch DPO verifiziert und aktiviert'
-    revoked: 'Widerruf erfolgreich dokumentiert'
-    deleted: 'Einwilligung erfolgreich gelöscht'
-
-  # Error Messages
-  error:
-    invalid_token: 'Ungültiges CSRF-Token'
-    cannot_edit_status: 'Einwilligung kann im aktuellen Status nicht bearbeitet werden'
-
-  # Warning Messages
-  warning:
-    already_verified: 'Diese Einwilligung wurde bereits verifiziert'
-    already_revoked: 'Diese Einwilligung wurde bereits widerrufen'
+    # Flash messages
+    success:
+        created: 'Einwilligung erfolgreich erstellt.'
+        updated: 'Einwilligung erfolgreich aktualisiert.'
+        verified: 'Einwilligung erfolgreich verifiziert.'
+        revoked: 'Einwilligung erfolgreich widerrufen.'
+        deleted: 'Einwilligung erfolgreich gelöscht.'
+    error:
+        cannot_edit_status: 'Einwilligungen mit diesem Status können nicht bearbeitet werden.'
+        invalid_token: 'Ungültiger Sicherheitstoken.'
+    warning:
+        already_verified: 'Diese Einwilligung ist bereits verifiziert.'
+        already_revoked: 'Diese Einwilligung ist bereits widerrufen.'

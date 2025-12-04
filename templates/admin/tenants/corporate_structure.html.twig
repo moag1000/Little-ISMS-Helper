@@ -347,12 +347,15 @@
                    title="{{ 'common.view'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                     <i class="bi bi-eye" aria-hidden="true"></i>
                 </a>
-                <form method="post" action="{{ path('tenant_management_set_parent', {id: subsidiary.id}) }}" class="d-inline">
+                <form method="post" action="{{ path('tenant_management_set_parent', {id: subsidiary.id}) }}" class="d-inline"
+                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'corporate.confirm.remove_parent'|trans({}, 'tenant') }}">
                     <input type="hidden" name="parent_id" value="">
                     <button type="submit"
                             class="btn btn-outline-danger"
                             title="{{ 'corporate.action.remove_parent'|trans({}, 'tenant') }}"
-                            onclick="return confirm('{{ 'corporate.confirm.remove_parent'|trans({}, 'tenant') }}');" aria-label="{{ 'common.close'|trans({}, 'messages') }}">
+                            aria-label="{{ 'common.close'|trans({}, 'messages') }}">
                         <i class="bi bi-x-circle" aria-hidden="true"></i>
                     </button>
                 </form>

@@ -38,7 +38,7 @@
                         </h4>
                         <ul class="mb-0">
                             <li>Beispiel-Daten sind optional und dienen nur zu Demonstrationszwecken</li>
-                            <li>{{ 'setup.can_delete_later'|trans }}</li>
+                            <li>{{ 'setup.can_delete_later'|trans({}, 'messages')}}</li>
                             <li>Wählen Sie nur die Beispiel-Daten, die Sie testen möchten</li>
                         </ul>
                     </div>
@@ -102,7 +102,10 @@
                                     Zurück
                                 </a>
                                 <div>
-                                    <button type="button" class="btn btn-outline-secondary me-2" onclick="document.getElementById('skip-form').submit()">
+                                    <button type="button" class="btn btn-outline-secondary me-2"
+                                            data-controller="ui-actions"
+                                            data-action="click->ui-actions#submitForm"
+                                            data-ui-actions-form-id-param="skip-form">
                                         <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
                                         Überspringen
                                     </button>

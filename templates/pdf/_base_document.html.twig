@@ -518,7 +518,7 @@
     <div class="page-break"></div>
     {% block document_content %}
     <h1>Dokumenteninhalt</h1>
-    <p class="text-muted">{{ 'pdf.base.define_content_block'|trans }}</p>
+    <p class="text-muted">{{ 'pdf.base.define_content_block'|trans({}, 'messages')}}</p>
     {% endblock %}
 
     {# Optional References #}

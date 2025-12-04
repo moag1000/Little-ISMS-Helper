@@ -243,12 +243,12 @@
 </head>
 <body>
     <div class="no-print text-center-mb-20">
-        <button onclick="window.print()" class="btn btn-primary"<><i class="bi bi-printer" aria-hidden="true"></i> Drucken / PDF speichern</button>
+        <button data-controller="ui-actions" data-action="ui-actions#print" class="btn btn-primary"<><i class="bi bi-printer" aria-hidden="true"></i> Drucken / PDF speichern</button>
         <a href="{{ path('app_soa_index') }}" class="btn btn-secondary">← Zurück zur Übersicht</a>
     </div>
 
     <div class="header">
-        <h1>{{ 'soa.title'|trans }}</h1>
+        <h1>{{ 'soa.title'|trans({}, 'soa')}}</h1>
         <div class="meta-info">
             <strong>Standard:</strong> ISO/IEC 27001:2022 Annex A Controls<br>
             <strong>Generiert am:</strong> {{ generatedAt|date('d.m.Y H:i') }} Uhr
@@ -344,7 +344,7 @@
                         {% if control.implementationStatus == 'implemented' %}
                             <span class="badge bg-success">Implementiert</span>
                         {% elseif control.implementationStatus == 'in_progress' %}
-                            <span class="badge bg-warning">{{ 'soa.in_progress_badge'|trans }}</span>
+                            <span class="badge bg-warning">{{ 'soa.in_progress_badge'|trans({}, 'soa')}}</span>
                         {% elseif control.implementationStatus == 'not_started' %}
                             <span class="badge bg-danger">Nicht begonnen</span>
                         {% endif %}
@@ -402,7 +402,7 @@
                     {% if control.implementationStatus == 'implemented' %}
                         <span class="badge bg-success"<><i class="bi bi-check-circle" aria-hidden="true"></i> Implementiert</span> - {{ control.implementationPercentage }}%
                     {% elseif control.implementationStatus == 'in_progress' %}
-                        <span class="badge bg-warning">{{ 'soa.in_progress_badge_emoji'|trans }}</span> - {{ control.implementationPercentage }}%
+                        <span class="badge bg-warning">{{ 'soa.in_progress_badge_emoji'|trans({}, 'soa')}}</span> - {{ control.implementationPercentage }}%
                     {% elseif control.implementationStatus == 'not_started' %}
                         <span class="badge bg-danger"><i class="bi bi-pause-circle" aria-hidden="true"></i> Nicht begonnen</span> - {{ control.implementationPercentage }}%
                     {% endif %}

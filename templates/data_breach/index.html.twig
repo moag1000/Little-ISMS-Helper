@@ -294,7 +294,7 @@
                 <div class="alert alert-info mb-0">
                     <i class="bi bi-info-circle"></i> No data breaches found for the selected filter.
                     {% if current_filter != 'all' %}
-                        <a href="{{ path('app_data_breach_index') }}" class="alert-link">{{ 'data_breach.index.view_all_breaches'|trans }}</a>.
+                        <a href="{{ path('app_data_breach_index') }}" class="alert-link">{{ 'data_breach.index.view_all_breaches'|trans({}, 'privacy')}}</a>.
                     {% endif %}
                 </div>
             {% endif %}

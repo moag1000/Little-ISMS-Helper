@@ -60,7 +60,7 @@
         <form method="get" action="{{ path('app_risk_treatment_plan_index') }}" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}">
             <div class="col-md-3">
                 <label for="filter-status" class="form-label">{{ 'risk_treatment_plan.field.status'|trans({}, 'risk_treatment_plan') }}</label>
-                <select class="form-select" id="filter-status" name="status" onchange="this.form.submit()">
+                <select class="form-select" id="filter-status" name="status" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     <option value="planned" {{ app.request.query.get('status') == 'planned' ? 'selected' : '' }}>{{ 'risk_treatment_plan.status.planned'|trans({}, 'risk_treatment_plan') }}</option>
                     <option value="in_progress" {{ app.request.query.get('status') == 'in_progress' ? 'selected' : '' }}>{{ 'risk_treatment_plan.status.in_progress'|trans({}, 'risk_treatment_plan') }}</option>
@@ -71,7 +71,7 @@
             </div>
             <div class="col-md-3">
                 <label for="filter-priority" class="form-label">{{ 'risk_treatment_plan.field.priority'|trans({}, 'risk_treatment_plan') }}</label>
-                <select class="form-select" id="filter-priority" name="priority" onchange="this.form.submit()">
+                <select class="form-select" id="filter-priority" name="priority" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     <option value="critical" {{ app.request.query.get('priority') == 'critical' ? 'selected' : '' }}>{{ 'risk_treatment_plan.priority.critical'|trans({}, 'risk_treatment_plan') }}</option>
                     <option value="high" {{ app.request.query.get('priority') == 'high' ? 'selected' : '' }}>{{ 'risk_treatment_plan.priority.high'|trans({}, 'risk_treatment_plan') }}</option>
@@ -87,7 +87,7 @@
             </div>
             <div class="col-md-3">
                 <label for="filter-overdue" class="form-label">{{ 'risk_treatment_plan.filter.overdue'|trans({}, 'risk_treatment_plan') }}</label>
-                <select class="form-select" id="filter-overdue" name="overdue_only" onchange="this.form.submit()">
+                <select class="form-select" id="filter-overdue" name="overdue_only" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     <option value="1" {{ app.request.query.get('overdue_only') == '1' ? 'selected' : '' }}>{{ 'risk_treatment_plan.filter.overdue_only'|trans({}, 'risk_treatment_plan') }}</option>
                 </select>

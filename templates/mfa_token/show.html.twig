@@ -140,11 +140,12 @@
                                     {{ remaining_backup_codes }} / 10
                                 </span>
                             </div>
-                            <form method="post" action="{{ path('admin_mfa_regenerate_backup', {id: mfa_token.id}) }}">
+                            <form method="post" action="{{ path('admin_mfa_regenerate_backup', {id: mfa_token.id}) }}"
+                                  data-controller="ui-actions"
+                                  data-action="submit->ui-actions#confirm"
+                                  data-ui-actions-message-param="{{ 'mfa_token.backup_codes.regenerate_confirm'|trans({}, 'mfa') }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token('regenerate_backup_' ~ mfa_token.id) }}">
-                                <button type="submit"
-                                        class="btn btn-warning btn-sm"
-                                        onclick="return confirm('{{ 'mfa_token.backup_codes.regenerate_confirm'|trans({}, 'mfa') }}');">
+                                <button type="submit" class="btn btn-warning btn-sm">
                                     <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.regenerate'|trans({}, 'mfa') }}
                                 </button>
                             </form>
@@ -178,21 +179,23 @@
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         {% if mfa_token.isActive %}
-                            <form method="post" action="{{ path('admin_mfa_disable', {id: mfa_token.id}) }}">
+                            <form method="post" action="{{ path('admin_mfa_disable', {id: mfa_token.id}) }}"
+                                  data-controller="ui-actions"
+                                  data-action="submit->ui-actions#confirm"
+                                  data-ui-actions-message-param="{{ 'mfa_token.confirm_disable'|trans({}, 'mfa') }}">
                                 <input type="hidden" name="_token" value="{{ csrf_token('disable_' ~ mfa_token.id) }}">
-                                <button type="submit"
-                                        class="btn btn-warning w-100"
-                                        onclick="return confirm('{{ 'mfa_token.confirm_disable'|trans({}, 'mfa') }}');">
+                                <button type="submit" class="btn btn-warning w-100">
                                     <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'mfa_token.action.disable'|trans({}, 'mfa') }}
                                 </button>
                             </form>
                         {% endif %}
 
-                        <form method="post" action="{{ path('admin_mfa_delete', {id: mfa_token.id}) }}">
+                        <form method="post" action="{{ path('admin_mfa_delete', {id: mfa_token.id}) }}"
+                              data-controller="ui-actions"
+                              data-action="submit->ui-actions#confirm"
+                              data-ui-actions-message-param="{{ 'mfa_token.confirm_delete'|trans({}, 'mfa') }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ mfa_token.id) }}">
-                            <button type="submit"
-                                    class="btn btn-danger w-100"
-                                    onclick="return confirm('{{ 'mfa_token.confirm_delete'|trans({}, 'mfa') }}');">
+                            <button type="submit" class="btn btn-danger w-100">
                                 <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                             </button>
                         </form>

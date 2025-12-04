@@ -1,7 +1,7 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'role_management' %}
 
-{% block title %}{{ 'role_management.title.create'|trans }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'role_management.title.create'|trans({}, 'role_management')}} - Little ISMS Helper{% endblock %}
 
 {% block admin_content %}
 <div class="container">
@@ -9,14 +9,14 @@
         breadcrumbs: [
             { label: 'nav.admin'|trans({}, 'nav'), url: path('admin_dashboard') },
             { label: 'nav.roles'|trans({}, 'nav'), url: path('role_management_index') },
-            { label: 'role_management.title.create'|trans }
+            { label: 'role_management.title.create'|trans({}, 'role_management')}
         ]
     } %}
 </div>
 
 <div class="page-header">
     <div>
-        <h1>{{ 'role_management.title.create'|trans }}</h1>
+        <h1>{{ 'role_management.title.create'|trans({}, 'role_management')}}</h1>
     </div>
     <div class="button-group">
         <a href="{{ path('role_management_index') }}" class="btn btn-secondary">
@@ -33,11 +33,11 @@
                 'form': form,
                 'sections': {
                     'basic_info': {
-                        'label': 'role_management.section.basic_info'|trans,
+                        'label': 'role_management.section.basic_info'|trans({}, 'role_management'),
                         'fields': ['name', 'description', 'isSystemRole']
                     },
                     'permissions': {
-                        'label': 'role_management.section.permissions'|trans,
+                        'label': 'role_management.section.permissions'|trans({}, 'role_management'),
                         'fields': ['permissions']
                     }
                 },

@@ -43,7 +43,7 @@ class TranslationChecker:
             'physical_access', 'privacy', 'reports', 'risk_appetite',
             'risk_treatment_plan', 'risk', 'security', 'security_reports',
             'soa', 'suppliers', 'training', 'ui', 'user', 'validators',
-            'vulnerabilities', 'workflows', 'threat'
+            'vulnerabilities', 'workflows', 'threat', 'consent', 'emails', 'assets'
         }
 
         # Patterns for HTML attributes that should be translated
@@ -200,17 +200,37 @@ class TranslationChecker:
     def check_missing_domain(self, file: str, line_num: int, line: str) -> None:
         """Check for translations without explicit domain or with invalid domain."""
         # Pattern: |trans({}, 'domain') or |trans({params}, 'domain')
-        pattern = r"'([^']+)'\|trans\(([^)]*)\)"
+        # Use a more robust pattern that handles nested braces and quotes
+        pattern = r"'([^']+)'\|trans\((\{[^}]*\}(?:\s*,\s*'[^']*')?|\s*'[^']*'|)\)"
         matches = re.finditer(pattern, line)
 
         for match in matches:
             trans_key = match.group(1)
             params = match.group(2)
 
-            # Check if domain is specified
-            domain_match = re.search(r"['\"](\w+)['\"]", params)
+            # Domain is the LAST quoted string after a comma in the trans() call
+            # e.g., trans({}, 'domain') or trans({'param': value}, 'domain')
+            # Split by comma and look for the last argument that's a quoted string
+            domain = None
 
-            if not domain_match:
+            # Look for pattern: , 'domain') at the end
+            domain_at_end = re.search(r",\s*['\"](\w+)['\"]\s*$", params)
+            if domain_at_end:
+                domain = domain_at_end.group(1)
+            elif params.strip() == '{}':
+                # Empty params without domain
+                domain = None
+            else:
+                # Check if params is just a domain string like "'messages'"
+                simple_domain = re.match(r"^\s*['\"](\w+)['\"]\s*$", params)
+                if simple_domain:
+                    domain = simple_domain.group(1)
+                # Also check for: {}, 'domain' pattern
+                domain_after_empty = re.search(r"\{\s*\}\s*,\s*['\"](\w+)['\"]", params)
+                if domain_after_empty:
+                    domain = domain_after_empty.group(1)
+
+            if not domain:
                 # No domain specified
                 self.issues.append(TranslationIssue(
                     file=file,
@@ -220,14 +240,14 @@ class TranslationChecker:
                     description=f"Translation without domain: '{trans_key}'",
                     suggestion="Add explicit domain parameter"
                 ))
-            elif domain_match.group(1) not in self.valid_domains:
+            elif domain not in self.valid_domains:
                 # Invalid domain
                 self.issues.append(TranslationIssue(
                     file=file,
                     line_num=line_num,
                     line_content=line.strip(),
                     issue_type="INVALID_DOMAIN",
-                    description=f"Invalid domain '{domain_match.group(1)}' for key '{trans_key}'",
+                    description=f"Invalid domain '{domain}' for key '{trans_key}'",
                     suggestion=f"Use one of: {', '.join(sorted(self.valid_domains))}"
                 ))
 

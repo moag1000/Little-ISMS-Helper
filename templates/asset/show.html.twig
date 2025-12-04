@@ -30,6 +30,9 @@
                 </button>
             {% endif %}
             <a href="{{ path('app_asset_bcm_insights', {id: asset.id}) }}" class="btn btn-secondary">{{ 'asset.action.bcm_insights'|trans({}, 'asset') }}</a>
+            <a href="{{ path('app_asset_qr_label', {id: asset.id}) }}" class="btn btn-outline-secondary" title="{{ 'asset.action.print_qr_label'|trans({}, 'asset') }}" data-turbo="false">
+                <i class="bi bi-qr-code" aria-hidden="true"></i> {{ 'asset.action.qr_label'|trans({}, 'asset') }}
+            </a>
             <a href="{{ path('app_asset_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit) %}
                 <form method="post" action="{{ path('app_asset_delete', {id: asset.id}) }}" style="display:inline;" onsubmit="return confirm('{{ 'asset.confirm.delete'|trans({}, 'asset') }}');">

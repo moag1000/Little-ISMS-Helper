@@ -384,10 +384,21 @@ compliance:
     framework_dashboard:
         compliance_steps: __compliance.framework_dashboard.compliance_steps
     tab:
-        overview: __compliance.tab.overview
-        requirements: __compliance.tab.requirements
-        gaps: __compliance.tab.gaps
-        data_reuse: __compliance.tab.data_reuse
+        overview: Overview
+        requirements: Requirements
+        gaps: Gaps
+        data_reuse: 'Data Reuse'
+        matrix: 'Mapping Matrix'
+        details: 'Detailed Mappings'
+        explanation: Explanation
+    confirm:
+        create_mappings: 'Do you want to create Cross-Framework Mappings now?\n\nThis may take a few seconds and will overwrite existing mappings.'
+        add_missing_mappings: 'Do you want to add missing Cross-Framework Mappings?\n\nThis only creates new mappings and does not overwrite existing ones.'
+    mapping_status:
+        creating: 'Creating mappings...'
+        new_created: 'new mappings created!'
+    mapping_error:
+        creating: 'Error creating mappings'
     framework_info: __compliance.framework_info
     recommendations: __compliance.recommendations
     filter: __compliance.filter
@@ -402,7 +413,13 @@ compliance:
         all: __compliance.status.all
         fulfilled: __compliance.status.fulfilled
         partial: __compliance.status.partial
-        gap: __compliance.status.gap
+        gap: Gap
+    tooltip:
+        not_started: 'Not started - No implementation yet'
+        planning_phase: 'Planning phase - Requirements analyzed, plan drafted'
+        nearly_complete: 'Nearly complete - Most requirements met, minor gaps remain'
+    action:
+        create_mappings_now: 'Create mappings now'
 compliance_mapping:
     mapping_type:
         weak: 'Weak (0-49%)'

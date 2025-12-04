@@ -10,6 +10,7 @@ use App\Repository\AuditLogRepository;
 use App\Repository\BusinessProcessRepository;
 use App\Repository\RiskRepository;
 use App\Service\AssetService;
+use App\Service\AssetQrCodeService;
 use App\Service\ProtectionRequirementService;
 use App\Service\TenantContext;
 use App\Service\WorkflowAutoProgressionService;
@@ -28,6 +29,7 @@ class AssetController extends AbstractController
     public function __construct(
         private readonly AssetRepository $assetRepository,
         private readonly AssetService $assetService,
+        private readonly AssetQrCodeService $assetQrCodeService,
         private readonly AuditLogRepository $auditLogRepository,
         private readonly ProtectionRequirementService $protectionRequirementService,
         private readonly BusinessProcessRepository $businessProcessRepository,
@@ -395,5 +397,57 @@ class AssetController extends AbstractController
             'subsidiaries' => $subsidiariesCount,
             'total' => $ownCount + $inheritedCount + $subsidiariesCount
         ];
+    }
+
+    /**
+     * Print a single asset label with QR code
+     */
+    #[Route('/asset/{id}/qr-label', name: 'app_asset_qr_label', requirements: ['id' => '\d+'])]
+    #[IsGranted('ROLE_USER')]
+    public function printQrLabel(Asset $asset, Request $request): Response
+    {
+        $locale = $request->getLocale();
+        $labelData = $this->assetQrCodeService->generateLabelData($asset, $locale);
+
+        return $this->render('asset/qr_label.html.twig', [
+            'label' => $labelData,
+            'printDate' => new \DateTimeImmutable(),
+        ]);
+    }
+
+    /**
+     * Print multiple asset labels on a sheet (A4 format)
+     */
+    #[Route('/asset/qr-labels', name: 'app_asset_qr_labels_bulk')]
+    #[IsGranted('ROLE_USER')]
+    public function printQrLabelsBulk(Request $request): Response
+    {
+        $ids = $request->query->all('ids');
+        $locale = $request->getLocale();
+
+        // If no IDs provided, get all active assets
+        if (empty($ids)) {
+            $user = $this->security->getUser();
+            $tenant = $user?->getTenant();
+
+            if ($tenant) {
+                $assets = $this->assetRepository->findBy([
+                    'tenant' => $tenant,
+                    'status' => 'active'
+                ]);
+            } else {
+                $assets = $this->assetRepository->findBy(['status' => 'active']);
+            }
+        } else {
+            $assets = $this->assetRepository->findBy(['id' => $ids]);
+        }
+
+        $labels = $this->assetQrCodeService->generateBulkLabelData($assets, $locale);
+
+        return $this->render('asset/qr_labels_sheet.html.twig', [
+            'labels' => $labels,
+            'printDate' => new \DateTimeImmutable(),
+            'assetsPerPage' => 10, // 2 columns x 5 rows
+        ]);
     }
 }
