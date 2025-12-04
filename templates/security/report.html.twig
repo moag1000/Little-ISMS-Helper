@@ -55,7 +55,7 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <button onclick="window.print()" class="btn btn-outline-primary btn-sm">
+                        <button data-controller="ui-actions" data-action="ui-actions#print" class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-printer me-1"></i>{{ 'security_reports.action.print'|trans({}, 'security_reports') }}
                         </button>
                         <a href="{{ asset('docs/reports/security-audit-owasp-' ~ (report_version == '2025 RC1' ? '2025-rc1' : '2021') ~ '.md') }}" download class="btn btn-outline-secondary btn-sm">
@@ -83,11 +83,11 @@
                         <h3 class="card-title mb-0">
                             <i class="bi bi-file-earmark-bar-graph me-2"></i>{{ 'security_reports.card.full_report'|trans({}, 'security_reports') }}
                         </h3>
-                        <div class="btn-group btn-group-sm" role="group">
-                            <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('report-content').style.fontSize='13px'">
+                        <div class="btn-group btn-group-sm" role="group" data-controller="ui-actions">
+                            <button type="button" class="btn btn-outline-secondary" data-action="ui-actions#setFontSize" data-ui-actions-size-param="13px" data-ui-actions-target-param="#report-content">
                                 <i class="bi bi-zoom-out"></i>
                             </button>
-                            <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('report-content').style.fontSize='14px'">
+                            <button type="button" class="btn btn-outline-secondary" data-action="ui-actions#setFontSize" data-ui-actions-size-param="14px" data-ui-actions-target-param="#report-content">
                                 <i class="bi bi-zoom-in"></i>
                             </button>
                         </div>

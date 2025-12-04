@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'objective' %}
 
-{% block title %}{{ 'objective.title.new'|trans }}{% endblock %}
+{% block title %}{{ 'objective.title.new'|trans({}, 'objective')}}{% endblock %}
 
 {% block body %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.objectives'|trans({}, 'nav'), url: path('app_objective_index') },
-            { label: 'objective.title.new'|trans }
+            { label: 'objective.title.new'|trans({}, 'objective')}
         ]
     } %}
 
     <div class="page-header">
-        <h1>{{ 'objective.title.new'|trans }}</h1>
+        <h1>{{ 'objective.title.new'|trans({}, 'objective')}}</h1>
         <a href="{{ path('app_objective_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
     </div>
 
@@ -24,19 +24,19 @@
                     'form': form,
                     'sections': {
                         'basic_info': {
-                            'label': 'objective.section.basic_info'|trans,
+                            'label': 'objective.section.basic_info'|trans({}, 'objective'),
                             'fields': ['title', 'category', 'description']
                         },
                         'measurement': {
-                            'label': 'objective.section.measurement'|trans,
+                            'label': 'objective.section.measurement'|trans({}, 'objective'),
                             'fields': ['measurableIndicators', 'targetValue', 'currentValue', 'unit']
                         },
                         'responsibility': {
-                            'label': 'objective.section.responsibility'|trans,
+                            'label': 'objective.section.responsibility'|trans({}, 'objective'),
                             'fields': ['responsiblePerson', 'targetDate']
                         },
                         'status_progress': {
-                            'label': 'objective.section.status_progress'|trans,
+                            'label': 'objective.section.status_progress'|trans({}, 'objective'),
                             'fields': ['status', 'progressNotes']
                         }
                     },
@@ -54,8 +54,7 @@
                         'progressNotes': 12
                     },
                     'help_texts': {
-                        'targetDate': 'objective.help.target_date'|trans
-                    }
+                        'targetDate': 'objective.help.target_date'|trans({}, 'objective')}
                 } %}
 
                 <div class="d-flex justify-content-between mt-4">
@@ -63,7 +62,7 @@
                         {{ 'common.cancel'|trans({}, 'messages') }}
                     </a>
                     <button type="submit" class="btn btn-primary">
-                        {{ 'objective.action.create'|trans }}
+                        {{ 'objective.action.create'|trans({}, 'objective')}}
                     </button>
                 </div>
             {{ form_end(form) }}

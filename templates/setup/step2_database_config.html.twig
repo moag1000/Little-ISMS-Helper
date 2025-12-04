@@ -58,7 +58,10 @@
                             <p class="mb-2">{{ 'setup.database.docker_password_info'|trans({}, 'messages') }}</p>
                             <div class="p-3 bg-light border rounded">
                                 <code class="text-primary fw-bold" style="font-size: 1.1rem;">{{ docker_password }}</code>
-                                <button type="button" class="btn btn-sm btn-outline-primary ms-3" onclick="navigator.clipboard.writeText('{{ docker_password }}')">
+                                <button type="button" class="btn btn-sm btn-outline-primary ms-3"
+                                        data-controller="ui-actions"
+                                        data-action="click->ui-actions#copyToClipboard"
+                                        data-ui-actions-text-param="{{ docker_password }}">
                                     <i class="bi bi-clipboard me-1" aria-hidden="true"></i>
                                     {{ 'common.copy'|trans({}, 'messages') }}
                                 </button>

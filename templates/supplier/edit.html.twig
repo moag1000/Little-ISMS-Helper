@@ -16,7 +16,7 @@
     <div class="page-header">
         <h1>{{ 'supplier.page.edit_title'|trans({'%name%': supplier.name}, 'suppliers') }}</h1>
         <div class="actions">
-            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-secondary">{{ 'supplier.action.view'|trans }}</a>
+            <a href="{{ path('app_supplier_show', {id: supplier.id}) }}" class="btn btn-secondary">{{ 'supplier.action.view'|trans({}, 'suppliers')}}</a>
             <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
         </div>
     </div>
@@ -28,23 +28,23 @@
                     'form': form,
                     'sections': {
                         'details': {
-                            'label': 'supplier.section.details'|trans,
+                            'label': 'supplier.section.details'|trans({}, 'suppliers'),
                             'fields': ['name', 'criticality', 'status', 'description', 'serviceProvided']
                         },
                         'contact_info': {
-                            'label': 'supplier.section.contact_info'|trans,
+                            'label': 'supplier.section.contact_info'|trans({}, 'suppliers'),
                             'fields': ['contactPerson', 'email', 'phone', 'address']
                         },
                         'security_assessment': {
-                            'label': 'supplier.section.security_assessment'|trans,
+                            'label': 'supplier.section.security_assessment'|trans({}, 'suppliers'),
                             'fields': ['securityScore', 'lastSecurityAssessment', 'nextAssessmentDate', 'assessmentFindings', 'nonConformities', 'securityRequirements']
                         },
                         'certifications_compliance': {
-                            'label': 'supplier.section.certifications_compliance'|trans,
+                            'label': 'supplier.section.certifications_compliance'|trans({}, 'suppliers'),
                             'fields': ['hasISO27001', 'hasISO22301', 'hasDPA', 'dpaSignedDate', 'certifications']
                         },
                         'contract_info': {
-                            'label': 'supplier.section.contract_info'|trans,
+                            'label': 'supplier.section.contract_info'|trans({}, 'suppliers'),
                             'fields': ['contractStartDate', 'contractEndDate']
                         }
                     },
@@ -79,7 +79,7 @@
                         {{ 'common.cancel'|trans({}, 'messages') }}
                     </a>
                     <button type="submit" class="btn btn-primary">
-                        {{ 'supplier.action.update'|trans }}
+                        {{ 'supplier.action.update'|trans({}, 'suppliers')}}
                     </button>
                 </div>
             {{ form_end(form) }}

@@ -42,7 +42,6 @@ export default class extends Controller {
     };
 
     connect() {
-        console.log('GDPR Breach Wizard Controller connected!', this.element);
         this.currentStep = 1;
         this.totalSteps = 4;
         this.wizardData = this.loadFromLocalStorage() || {
@@ -63,7 +62,6 @@ export default class extends Controller {
         const triggerBtn = document.getElementById('gdpr-wizard-trigger-btn');
         if (triggerBtn) {
             triggerBtn.addEventListener('click', this.boundOpen);
-            console.log('GDPR Wizard: External trigger button connected');
         }
     }
 
@@ -98,7 +96,6 @@ export default class extends Controller {
      * Open wizard modal
      */
     open(event) {
-        console.log('GDPR Breach Wizard open() called!');
         if (event) event.preventDefault();
 
         // Reset wizard to step 1
@@ -483,7 +480,6 @@ export default class extends Controller {
             if (data._timestamp && data._ttl) {
                 const isExpired = Date.now() - data._timestamp > data._ttl;
                 if (isExpired) {
-                    console.log('GDPR wizard data expired, clearing...');
                     this.clearLocalStorage();
                     return null;
                 }

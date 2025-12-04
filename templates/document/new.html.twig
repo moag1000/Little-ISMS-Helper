@@ -1,20 +1,20 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'document' %}
 
-{% block title %}{{ 'document.new'|trans }} - {{ parent() }}{% endblock %}
+{% block title %}{{ 'document.new'|trans({}, 'document')}} - {{ parent() }}{% endblock %}
 
 {% block body %}
 {# Breadcrumb Navigation #}
 {% include '_components/_breadcrumb.html.twig' with {
     breadcrumbs: [
-        { label: 'document.title'|trans, url: path('app_document_index'), icon: 'bi-file-earmark-text' },
-        { label: 'document.new'|trans }
+        { label: 'document.title'|trans({}, 'document'), url: path('app_document_index'), icon: 'bi-file-earmark-text' },
+        { label: 'document.new'|trans({}, 'document')}
     ]
 } %}
 
 {# Page Header #}
 {% include '_components/_page_header.html.twig' with {
-    title: 'document.new'|trans,
+    title: 'document.new'|trans({}, 'document'),
     icon: 'bi-plus-circle',
     actions: [
         { label: 'common.back'|trans({}, 'messages'), url: path('app_document_index'), variant: 'secondary', icon: 'bi-arrow-left' }
@@ -51,7 +51,7 @@
                 </a>
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-upload" aria-hidden="true"></i>
-                    {{ 'document.action.upload'|trans }}
+                    {{ 'document.action.upload'|trans({}, 'document')}}
                 </button>
             </div>
         {{ form_end(form) }}

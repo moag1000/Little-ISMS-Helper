@@ -48,10 +48,12 @@
             <a href="{{ path('tenant_management_organisation_context', {id: tenant.id}) }}" class="btn btn-info">
                 <i class="bi bi-building-gear" aria-hidden="true"></i> {{ 'tenant.organisation_context.title'|trans({}, 'tenant') }}
             </a>
-            <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline">
+            <form method="post" action="{{ path('tenant_management_toggle', {id: tenant.id}) }}" class="d-inline"
+                  data-controller="ui-actions"
+                  data-action="submit->ui-actions#confirm"
+                  data-ui-actions-message-param="{{ 'tenant.confirm.toggle'|trans({}, 'tenant') }}">
                 <button type="submit"
-                        class="btn btn-{% if tenant.isActive %}warning{% else %}success{% endif %}"
-                        onclick="return confirm('{{ 'tenant.confirm.toggle'|trans({}, 'tenant') }}');">
+                        class="btn btn-{% if tenant.isActive %}warning{% else %}success{% endif %}">
                     <i class="bi bi-{% if tenant.isActive %}pause{% else %}play{% endif %}-circle" aria-hidden="true"></i>
                     {{ (tenant.isActive ? 'tenant.action.deactivate' : 'tenant.action.activate')|trans({}, 'tenant') }}
                 </button>
@@ -413,11 +415,12 @@
                         <h4 class="mb-1">{{ 'tenant.action.delete'|trans({}, 'tenant') }}</h4>
                         <p class="text-muted small mb-0">{{ 'tenant.delete.warning'|trans({}, 'tenant') }}</p>
                     </div>
-                    <form method="post" action="{{ path('tenant_management_delete', {id: tenant.id}) }}" class="d-inline">
+                    <form method="post" action="{{ path('tenant_management_delete', {id: tenant.id}) }}" class="d-inline"
+                          data-controller="ui-actions"
+                          data-action="submit->ui-actions#confirm"
+                          data-ui-actions-message-param="{{ 'tenant.confirm.delete'|trans({}, 'tenant') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete_tenant_' ~ tenant.id) }}">
-                        <button type="submit"
-                                class="btn btn-danger"
-                                onclick="return confirm('{{ 'tenant.confirm.delete'|trans({}, 'tenant') }}');">
+                        <button type="submit" class="btn btn-danger">
                             <i class="bi bi-trash" aria-hidden="true"></i> {{ 'tenant.action.delete'|trans({}, 'tenant') }}
                         </button>
                     </form>
@@ -498,11 +501,14 @@
                                                 {% else %}
                                                     <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
                                                 {% endif %}
-                                                <form method="post" action="{{ path('tenant_management_remove_user', {id: tenant.id, userId: user.id}) }}" class="d-inline">
+                                                <form method="post" action="{{ path('tenant_management_remove_user', {id: tenant.id, userId: user.id}) }}" class="d-inline"
+                                                      data-controller="ui-actions"
+                                                      data-action="submit->ui-actions#confirm"
+                                                      data-ui-actions-message-param="{{ 'tenant.users.confirm_remove'|trans({'%email%': user.email}, 'tenant') }}">
                                                     <input type="hidden" name="_token" value="{{ csrf_token('remove_user_' ~ tenant.id ~ '_' ~ user.id) }}">
                                                     <button type="submit"
                                                             class="btn btn-sm btn-outline-danger"
-                                                            onclick="return confirm('{{ 'tenant.users.confirm_remove'|trans({'%email%': user.email}, 'tenant') }}');" aria-label="{{ 'common.deactivate'|trans({}, 'messages') }}">
+                                                            aria-label="{{ 'common.deactivate'|trans({}, 'messages') }}">
                                                         <i class="bi bi-person-dash" aria-hidden="true"></i>
                                                     </button>
                                                 </form>

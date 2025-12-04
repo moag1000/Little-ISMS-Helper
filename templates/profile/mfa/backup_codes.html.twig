@@ -52,36 +52,39 @@
                         </strong> {{ 'now'|date('d.m.Y H:i:s') }}
                     </div>
 
-                    <div class="row">
-                        {% for code in backup_codes %}
-                            <div class="col-md-6 mb-2">
-                                <div class="bg-light p-3 rounded border">
-                                    <span class="badge bg-secondary me-2">{{ loop.index }}</span>
-                                    <span class="font-monospace fw-bold">{{ code }}</span>
+                    <div data-controller="backup-codes"
+                         data-backup-codes-codes-value="{{ backup_codes|json_encode }}">
+                        <div class="row" data-backup-codes-target="codesContainer">
+                            {% for code in backup_codes %}
+                                <div class="col-md-6 mb-2">
+                                    <div class="bg-light p-3 rounded border">
+                                        <span class="badge bg-secondary me-2">{{ loop.index }}</span>
+                                        <span class="font-monospace fw-bold">{{ code }}</span>
+                                    </div>
                                 </div>
-                            </div>
-                        {% endfor %}
-                    </div>
+                            {% endfor %}
+                        </div>
 
-                    <div class="d-grid gap-2 mt-4">
-                        <button type="button"
-                                class="btn btn-primary"
-                                onclick="copyBackupCodes()">
-                            <i class="bi bi-clipboard" aria-hidden="true"></i>
-                            {{ 'mfa.backup_codes.copy_all'|trans({}, 'mfa') }}
-                        </button>
-                        <button type="button"
-                                class="btn btn-outline-secondary"
-                                onclick="printBackupCodes()">
-                            <i class="bi bi-printer" aria-hidden="true"></i>
-                            {{ 'mfa.backup_codes.print'|trans({}, 'mfa') }}
-                        </button>
-                        <button type="button"
-                                class="btn btn-outline-secondary"
-                                onclick="downloadBackupCodes()">
-                            <i class="bi bi-download" aria-hidden="true"></i>
-                            {{ 'mfa.backup_codes.download'|trans({}, 'mfa') }}
-                        </button>
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="button"
+                                    class="btn btn-primary"
+                                    data-action="backup-codes#copy">
+                                <i class="bi bi-clipboard" aria-hidden="true"></i>
+                                {{ 'mfa.backup_codes.copy_all'|trans({}, 'mfa') }}
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    data-action="backup-codes#print">
+                                <i class="bi bi-printer" aria-hidden="true"></i>
+                                {{ 'mfa.backup_codes.print'|trans({}, 'mfa') }}
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-secondary"
+                                    data-action="backup-codes#download">
+                                <i class="bi bi-download" aria-hidden="true"></i>
+                                {{ 'mfa.backup_codes.download'|trans({}, 'mfa') }}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

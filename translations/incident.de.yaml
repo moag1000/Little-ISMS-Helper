@@ -229,3 +229,5 @@ incident:
             notifications_sent: 'E-Mail-Benachrichtigungen werden an Stakeholder gesendet'
             approval_required: 'Genehmigungsschritte werden initiiert'
             sla_tracked: 'SLA-Tracking wird gestartet'
+    feedback:
+        risk_re_evaluation_triggered: 'Risiko-Neubewertung wurde für verknüpfte Risiken ausgelöst'

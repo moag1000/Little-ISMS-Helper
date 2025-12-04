@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'risk_appetite' %}
 
-{% block title %}{{ 'risk_appetite.edit'|trans }}: {{ appetite.displayName }}{% endblock %}
+{% block title %}{{ 'risk_appetite.edit'|trans({}, 'risk_appetite')}}: {{ appetite.displayName }}{% endblock %}
 
 {% block body %}
 <div class="container">
@@ -14,7 +14,7 @@
     } %}
 
     <div class="page-header">
-        <h1>{{ 'risk_appetite.edit'|trans }}: {{ appetite.displayName }}</h1>
+        <h1>{{ 'risk_appetite.edit'|trans({}, 'risk_appetite')}}: {{ appetite.displayName }}</h1>
         <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}" class="btn btn-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
     </div>
 
@@ -25,11 +25,11 @@
                     'form': form,
                     'sections': {
                         'definition': {
-                            'label': 'risk_appetite.section.definition'|trans,
+                            'label': 'risk_appetite.section.definition'|trans({}, 'risk_appetite'),
                             'fields': ['category', 'maxAcceptableRisk', 'description']
                         },
                         'approval': {
-                            'label': 'risk_appetite.section.approval'|trans,
+                            'label': 'risk_appetite.section.approval'|trans({}, 'risk_appetite'),
                             'fields': ['isActive', 'approvedBy', 'approvedAt']
                         }
                     },
@@ -42,17 +42,16 @@
                         'approvedAt': 4
                     },
                     'help_texts': {
-                        'category': 'risk_appetite.help.category'|trans,
-                        'maxAcceptableRisk': 'risk_appetite.help.max_acceptable_risk'|trans,
-                        'description': 'risk_appetite.help.description'|trans,
-                        'isActive': 'risk_appetite.help.is_active'|trans,
-                        'approvedBy': 'risk_appetite.help.approved_by'|trans,
-                        'approvedAt': 'risk_appetite.help.approved_at'|trans
-                    }
+                        'category': 'risk_appetite.help.category'|trans({}, 'risk_appetite'),
+                        'maxAcceptableRisk': 'risk_appetite.help.max_acceptable_risk'|trans({}, 'risk_appetite'),
+                        'description': 'risk_appetite.help.description'|trans({}, 'risk_appetite'),
+                        'isActive': 'risk_appetite.help.is_active'|trans({}, 'risk_appetite'),
+                        'approvedBy': 'risk_appetite.help.approved_by'|trans({}, 'risk_appetite'),
+                        'approvedAt': 'risk_appetite.help.approved_at'|trans({}, 'risk_appetite')}
                 } %}
 
                 <div class="alert alert-info mt-4">
-                    {{ 'risk_appetite.info.iso27005'|trans }}
+                    {{ 'risk_appetite.info.iso27005'|trans({}, 'risk_appetite')}}
                 </div>
 
                 <div class="d-flex justify-content-between mt-4">

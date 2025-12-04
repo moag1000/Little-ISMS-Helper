@@ -61,7 +61,7 @@
         <form method="get" action="{{ path('app_risk_appetite_index') }}" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}">
             <div class="col-md-6">
                 <label for="filter-category" class="form-label">{{ 'risk_appetite.field.category'|trans({}, 'risk_appetite') }}</label>
-                <select class="form-select" id="filter-category" name="category" onchange="this.form.submit()">
+                <select class="form-select" id="filter-category" name="category" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     <option value="global" {{ app.request.query.get('category') == 'global' ? 'selected' : '' }}>{{ 'risk_appetite.category.global'|trans({}, 'risk_appetite') }}</option>
                     {% for cat in categories %}
@@ -71,7 +71,7 @@
             </div>
             <div class="col-md-6">
                 <label for="filter-active" class="form-label">{{ 'risk_appetite.field.status'|trans({}, 'risk_appetite') }}</label>
-                <select class="form-select" id="filter-active" name="active_only" onchange="this.form.submit()">
+                <select class="form-select" id="filter-active" name="active_only" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
                     <option value="">{{ 'common.all'|trans({}, 'messages') }}</option>
                     <option value="1" {{ app.request.query.get('active_only') == '1' ? 'selected' : '' }}>{{ 'risk_appetite.filter.active_only'|trans({}, 'risk_appetite') }}</option>
                 </select>

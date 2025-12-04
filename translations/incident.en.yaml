@@ -225,3 +225,5 @@ incident:
             notifications_sent: 'Email notifications will be sent to stakeholders'
             approval_required: 'Approval steps will be initiated'
             sla_tracked: 'SLA tracking will begin'
+    feedback:
+        risk_re_evaluation_triggered: 'Risk re-evaluation has been triggered for linked risks'

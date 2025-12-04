@@ -1,21 +1,21 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'locations' %}
 
-{% block title %}{{ 'location.title.create'|trans }} - Little ISMS Helper{% endblock %}
+{% block title %}{{ 'location.title.create'|trans({}, 'locations')}} - Little ISMS Helper{% endblock %}
 
 {% block body %}
 <div class="container-fluid py-4">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.locations'|trans({}, 'nav'), url: path('app_location_index') },
-            { label: 'location.title.create'|trans }
+            { label: 'location.title.create'|trans({}, 'locations')}
         ]
     } %}
 </div>
 
 <div class="page-header">
     <div>
-        <h1>{{ 'location.title.create'|trans }}</h1>
+        <h1>{{ 'location.title.create'|trans({}, 'locations')}}</h1>
     </div>
     <div class="button-group">
         <a href="{{ path('app_location_index') }}" class="btn btn-secondary">
@@ -31,23 +31,23 @@
                 'form': form,
                 'sections': {
                     'basic_info': {
-                        'label': 'location.section.basic_info'|trans,
+                        'label': 'location.section.basic_info'|trans({}, 'locations'),
                         'fields': ['name', 'locationType', 'code', 'description']
                     },
                     'address': {
-                        'label': 'location.section.address'|trans,
+                        'label': 'location.section.address'|trans({}, 'locations'),
                         'fields': ['address', 'city', 'postalCode', 'country']
                     },
                     'hierarchy': {
-                        'label': 'location.section.hierarchy'|trans,
+                        'label': 'location.section.hierarchy'|trans({}, 'locations'),
                         'fields': ['parentLocation']
                     },
                     'security': {
-                        'label': 'location.section.security'|trans,
+                        'label': 'location.section.security'|trans({}, 'locations'),
                         'fields': ['securityLevel', 'requiresBadgeAccess', 'requiresEscort', 'cameraMonitored', 'accessControlSystem']
                     },
                     'details': {
-                        'label': 'location.section.details'|trans,
+                        'label': 'location.section.details'|trans({}, 'locations'),
                         'fields': ['responsiblePerson', 'capacity', 'squareMeters', 'notes']
                     }
                 },

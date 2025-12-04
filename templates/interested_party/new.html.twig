@@ -1,19 +1,19 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'interested_parties' %}
 
-{% block title %}{{ 'interested_party.page.new_title'|trans }}{% endblock %}
+{% block title %}{{ 'interested_party.page.new_title'|trans({}, 'interested_parties')}}{% endblock %}
 
 {% block body %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
             { label: 'nav.interested_parties'|trans({}, 'nav'), url: path('app_interested_party_index') },
-            { label: 'interested_party.page.new_title'|trans }
+            { label: 'interested_party.page.new_title'|trans({}, 'interested_parties')}
         ]
     } %}
 
     <div class="page-header">
-        <h1>{{ 'interested_party.page.new_title'|trans }}</h1>
+        <h1>{{ 'interested_party.page.new_title'|trans({}, 'interested_parties')}}</h1>
         <a href="{{ path('app_interested_party_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
     </div>
 
@@ -24,23 +24,23 @@
                     'form': form,
                     'sections': {
                         'basic_info': {
-                            'label': 'interested_party.section.basic_info'|trans,
+                            'label': 'interested_party.section.basic_info'|trans({}, 'interested_parties'),
                             'fields': ['name', 'partyType', 'importance', 'description']
                         },
                         'contact_info': {
-                            'label': 'interested_party.section.contact_info'|trans,
+                            'label': 'interested_party.section.contact_info'|trans({}, 'interested_parties'),
                             'fields': ['contactPerson', 'email', 'phone']
                         },
                         'requirements': {
-                            'label': 'interested_party.section.requirements'|trans,
+                            'label': 'interested_party.section.requirements'|trans({}, 'interested_parties'),
                             'fields': ['requirements', 'howAddressed']
                         },
                         'communication': {
-                            'label': 'interested_party.section.communication'|trans,
+                            'label': 'interested_party.section.communication'|trans({}, 'interested_parties'),
                             'fields': ['communicationFrequency', 'communicationMethod', 'lastCommunication', 'nextCommunication']
                         },
                         'feedback': {
-                            'label': 'interested_party.section.feedback'|trans,
+                            'label': 'interested_party.section.feedback'|trans({}, 'interested_parties'),
                             'fields': ['feedback', 'satisfactionLevel', 'issues']
                         }
                     },
@@ -69,7 +69,7 @@
                         {{ 'common.cancel'|trans({}, 'messages') }}
                     </a>
                     <button type="submit" class="btn btn-primary">
-                        {{ 'interested_party.action.create'|trans }}
+                        {{ 'interested_party.action.create'|trans({}, 'interested_parties')}}
                     </button>
                 </div>
             {{ form_end(form) }}

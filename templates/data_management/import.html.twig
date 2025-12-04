@@ -47,10 +47,10 @@
                 <div class="alert alert-info">
                     <h4><i class="bi bi-info-circle" aria-hidden="true"></i> Import Process</h4>
                     <ol class="mb-0">
-                        <li>{{ 'data_management.import.step_upload'|trans }}</li>
-                        <li>{{ 'data_management.import.step_preview'|trans }}</li>
-                        <li>{{ 'data_management.import.step_confirm'|trans }}</li>
-                        <li>{{ 'data_management.import.step_validate'|trans }}</li>
+                        <li>{{ 'data_management.import.step_upload'|trans({}, 'messages')}}</li>
+                        <li>{{ 'data_management.import.step_preview'|trans({}, 'messages')}}</li>
+                        <li>{{ 'data_management.import.step_confirm'|trans({}, 'messages')}}</li>
+                        <li>{{ 'data_management.import.step_validate'|trans({}, 'messages')}}</li>
                     </ol>
                 </div>
 
@@ -73,25 +73,25 @@
         <div class="card-body">
             <h4>File Format:</h4>
             <ul>
-                <li>{{ 'data_management.import.format_json'|trans }}</li>
-                <li>{{ 'data_management.import.format_export'|trans }}</li>
+                <li>{{ 'data_management.import.format_json'|trans({}, 'messages')}}</li>
+                <li>{{ 'data_management.import.format_export'|trans({}, 'messages')}}</li>
                 <li>Maximum file size: 50 MB (configurable)</li>
             </ul>
 
             <h4>Before Importing:</h4>
             <ul>
                 <li><strong>Create a database backup</strong> using the <a href="{{ path('data_backup_index') }}">Backup</a> function</li>
-                <li>{{ 'data_management.import.ensure_disk_space'|trans }}</li>
-                <li>{{ 'data_management.import.plan_downtime'|trans }}</li>
-                <li>{{ 'data_management.import.test_small'|trans }}</li>
+                <li>{{ 'data_management.import.ensure_disk_space'|trans({}, 'messages')}}</li>
+                <li>{{ 'data_management.import.plan_downtime'|trans({}, 'messages')}}</li>
+                <li>{{ 'data_management.import.test_small'|trans({}, 'messages')}}</li>
             </ul>
 
             <h4>Limitations:</h4>
             <ul class="mb-0">
                 <li>This feature is currently in <strong>preview mode</strong></li>
-                <li>{{ 'data_management.import.validation_required'|trans }}</li>
+                <li>{{ 'data_management.import.validation_required'|trans({}, 'messages')}}</li>
                 <li>Entity relationships need manual verification</li>
-                <li>{{ 'data_management.import.no_duplicate_detection'|trans }}</li>
+                <li>{{ 'data_management.import.no_duplicate_detection'|trans({}, 'messages')}}</li>
             </ul>
         </div>
     </div>

@@ -329,7 +329,7 @@ class IncidentController extends AbstractController
                         $this->addFlash('info', $this->translator->trans(
                             'incident.feedback.risk_re_evaluation_triggered',
                             ['count' => $triggeredCount],
-                            'incidents'
+                            'incident'
                         ) ?: sprintf('%d related risk(s) triggered for re-evaluation', $triggeredCount));
                     }
                 }

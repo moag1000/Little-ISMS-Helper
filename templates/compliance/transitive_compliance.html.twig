@@ -47,24 +47,24 @@
 </div>
 
 {# Tabbed Interface for better organization #}
-<div class="card mb-2">
+<div class="card mb-2" data-controller="tabs" data-tabs-active-class="active">
     <div class="tabs">
-        <button class="tab-button active" onclick="switchTab('overview')">
-            📊 Übersicht
+        <button class="tab-button active" data-tabs-target="button" data-action="click->tabs#switch" data-tab="overview">
+            📊 {{ 'compliance.tab.overview'|trans({}, 'compliance') }}
         </button>
-        <button class="tab-button" onclick="switchTab('matrix')">
-            <i class="bi bi-grid-3x3" aria-hidden="true"></i> Mapping-Matrix
+        <button class="tab-button" data-tabs-target="button" data-action="click->tabs#switch" data-tab="matrix">
+            <i class="bi bi-grid-3x3" aria-hidden="true"></i> {{ 'compliance.tab.matrix'|trans({}, 'compliance') }}
         </button>
-        <button class="tab-button" onclick="switchTab('details')">
-            <i class="bi bi-list-check" aria-hidden="true"></i> Detaillierte Mappings
+        <button class="tab-button" data-tabs-target="button" data-action="click->tabs#switch" data-tab="details">
+            <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'compliance.tab.details'|trans({}, 'compliance') }}
         </button>
-        <button class="tab-button" onclick="switchTab('info')">
-            <i class="bi bi-lightbulb" aria-hidden="true"></i> Erklärung
+        <button class="tab-button" data-tabs-target="button" data-action="click->tabs#switch" data-tab="info">
+            <i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'compliance.tab.explanation'|trans({}, 'compliance') }}
         </button>
     </div>
 
     {# Tab 1: Overview #}
-    <div id="tab-overview" class="tab-content active">
+    <div id="tab-overview" class="tab-content active" data-tabs-target="panel" data-tab="overview">
         <h2 class="section-title">{{ 'compliance.section.framework_relationships'|trans({}, 'compliance') }}</h2>
 
         {% if framework_relationships is empty %}
@@ -140,7 +140,7 @@
     </div>
 
     {# Tab 2: Matrix #}
-    <div id="tab-matrix" class="tab-content d-none">
+    <div id="tab-matrix" class="tab-content" data-tabs-target="panel" data-tab="matrix" style="display: none;">
         <h2 class="section-title">{{ 'compliance.section.compliance_matrix'|trans({}, 'compliance') }}</h2>
         <p class="text-secondary-mb-15">
             {{ 'compliance.description.matrix'|trans({}, 'compliance') }}
@@ -211,7 +211,7 @@
     </div>
 
     {# Tab 3: Detailed Mappings #}
-    <div id="tab-details" class="tab-content d-none">
+    <div id="tab-details" class="tab-content" data-tabs-target="panel" data-tab="details" style="display: none;">
         <h2 class="section-title">{{ 'compliance.section.cross_framework_mappings'|trans({}, 'compliance') }}</h2>
 
         {% if cross_mappings is empty %}
@@ -321,7 +321,7 @@
     </div>
 
     {# Tab 4: Explanation #}
-    <div id="tab-info" class="tab-content d-none">
+    <div id="tab-info" class="tab-content" data-tabs-target="panel" data-tab="info" style="display: none;">
         <h2 class="section-title"><i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'compliance.section.mapping_explanation'|trans({}, 'compliance') }}</h2>
 
         <div class="grid-gap-15">
@@ -406,44 +406,19 @@ details[open] summary span:first-child {
 </style>
 
 <script>
-function switchTab(tabName) {
-    // Hide all tabs
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.add('d-none');
-        tab.classList.remove('active');
-    });
-
-    // Remove active class from all buttons
-    document.querySelectorAll('.tab-button').forEach(btn => {
-        btn.classList.remove('active');
-    });
-
-    // Show selected tab
-    const selectedTab = document.getElementById('tab-' + tabName);
-    selectedTab.classList.remove('d-none');
-    selectedTab.classList.add('active');
-
-    // Add active class to clicked button
-    event.target.classList.add('active');
-}
-
 // Create Cross-Framework Mappings
 function initializeMappingButton() {
-    console.log('Initializing mapping button...');
     const createBtn = document.getElementById('createMappingsBtn');
 
     if (!createBtn) {
-        console.log('createMappingsBtn not found - mappings already exist or element missing');
         return;
     }
 
     // Check if already initialized to prevent duplicate listeners
     if (createBtn.dataset.initialized === 'true') {
-        console.log('Button already initialized, skipping');
         return;
     }
 
-    console.log('createMappingsBtn found, attaching event listener');
     createBtn.dataset.initialized = 'true';
 
     const btnIcon = document.getElementById('btnIcon');
@@ -452,26 +427,21 @@ function initializeMappingButton() {
 
     createBtn.addEventListener('click', async function(e) {
         e.preventDefault();
-        console.log('Button clicked!');
 
         // Confirm action
-        if (!confirm('Möchten Sie jetzt Cross-Framework Mappings erstellen?\n\nDies kann einige Sekunden dauern und überschreibt bestehende Mappings.')) {
-            console.log('User cancelled');
+        if (!confirm('{{ 'compliance.confirm.create_mappings'|trans({}, 'compliance') }}')) {
             return;
         }
-
-        console.log('Starting mapping creation...');
 
         // Disable button and show loading
         createBtn.disabled = true;
         btnIcon.textContent = '⏳';
-        btnText.textContent = 'Erstelle Mappings...';
+        btnText.textContent = '{{ 'compliance.mapping_status.creating'|trans({}, 'compliance') }}';
         createBtn.style.opacity = '0.7';
         createBtn.style.cursor = 'not-allowed';
 
         try {
             const url = '{{ path('app_compliance_create_mappings') }}';
-            console.log('Fetching:', url);
 
             const response = await fetch(url, {
                 method: 'POST',
@@ -482,37 +452,26 @@ function initializeMappingButton() {
                 }
             });
 
-            console.log('Response status:', response.status);
-
-            // Try to parse JSON even on error responses to get server error message
             const data = await response.json();
-            console.log('Response data:', data);
 
             if (data.success) {
-                console.log('Success! Created', data.mappings_created, 'mappings');
-                // Show success message
                 btnIcon.textContent = '✅';
                 btnText.textContent = data.message;
                 createBtn.style.background = '#10b981';
                 createBtn.style.color = 'white';
 
-                // Reload page after 2 seconds
                 setTimeout(() => {
-                    console.log('Reloading page...');
                     window.location.reload();
                 }, 2000);
             } else {
-                console.error('Server returned error:', data.message);
-                // Show error message
                 btnIcon.textContent = '❌';
-                btnText.textContent = data.message || 'Fehler beim Erstellen der Mappings';
+                btnText.textContent = data.message || '{{ 'compliance.mapping_error.creating'|trans({}, 'compliance') }}';
                 createBtn.style.background = '#ef4444';
                 createBtn.style.color = 'white';
 
-                // Re-enable button after 5 seconds
                 setTimeout(() => {
                     btnIcon.textContent = '🔗';
-                    btnText.textContent = 'Mappings jetzt erstellen';
+                    btnText.textContent = '{{ 'compliance.action.create_mappings_now'|trans({}, 'compliance') }}';
                     createBtn.style.background = 'white';
                     createBtn.style.color = '#667eea';
                     createBtn.style.opacity = '1';
@@ -521,16 +480,14 @@ function initializeMappingButton() {
                 }, 5000);
             }
         } catch (error) {
-            console.error('JavaScript error creating mappings:', error);
             btnIcon.textContent = '❌';
-            btnText.textContent = 'Fehler: ' + error.message;
+            btnText.textContent = '{{ 'common.error'|trans({}, 'messages') }}: ' + error.message;
             createBtn.style.background = '#ef4444';
             createBtn.style.color = 'white';
 
-            // Re-enable button after 5 seconds
             setTimeout(() => {
                 btnIcon.textContent = '🔗';
-                btnText.textContent = 'Mappings jetzt erstellen';
+                btnText.textContent = '{{ 'compliance.action.create_mappings_now'|trans({}, 'compliance') }}';
                 createBtn.style.background = 'white';
                 createBtn.style.color = '#667eea';
                 createBtn.style.opacity = '1';
@@ -555,34 +512,26 @@ document.addEventListener('turbo:load', initializeMappingButton);
 
 // Handler for the "Fehlende Mappings ergänzen" button in the header
 function initializeHeaderMappingButton() {
-    console.log('[Header Button] Initializing...');
     const createAllMappingsBtn = document.getElementById('createAllMappingsBtn');
 
     if (!createAllMappingsBtn) {
-        console.log('[Header Button] Button not found in DOM');
         return;
     }
 
     // Prevent multiple initializations
     if (createAllMappingsBtn.dataset.headerInitialized === 'true') {
-        console.log('[Header Button] Already initialized, skipping');
         return;
     }
 
-    console.log('[Header Button] Found button, attaching event listener');
     createAllMappingsBtn.dataset.headerInitialized = 'true';
 
     createAllMappingsBtn.addEventListener('click', async function() {
-        console.log('[Header Button] Button clicked!');
         const originalText = this.textContent;
 
         // Confirm action
-        if (!confirm('Möchten Sie fehlende Cross-Framework Mappings ergänzen?\n\nDies erstellt nur neue Mappings und überschreibt keine bestehenden.')) {
-            console.log('[Header Button] User cancelled');
+        if (!confirm('{{ 'compliance.confirm.add_missing_mappings'|trans({}, 'compliance') }}')) {
             return;
         }
-
-        console.log('[Header Button] Starting chunked mapping creation...');
 
         // Disable button and show loading
         createAllMappingsBtn.disabled = true;
@@ -599,7 +548,6 @@ function initializeHeaderMappingButton() {
         async function processBatch() {
             try {
                 createAllMappingsBtn.textContent = `⏳ Batch ${currentBatch + 1}...`;
-                console.log('[Header Button] Processing batch:', currentBatch);
 
                 const response = await fetch(url, {
                     method: 'POST',
@@ -614,13 +562,10 @@ function initializeHeaderMappingButton() {
                     })
                 });
 
-                console.log('[Header Button] Batch', currentBatch, 'response status:', response.status);
-
                 const data = await response.json();
-                console.log('[Header Button] Batch', currentBatch, 'response data:', data);
 
                 if (!data.success) {
-                    throw new Error(data.message || 'Unbekannter Fehler');
+                    throw new Error(data.message || '{{ 'common.error.unknown'|trans({}, 'messages') }}');
                 }
 
                 totalCreated += data.mappings_created || 0;
@@ -639,22 +584,18 @@ function initializeHeaderMappingButton() {
                     return processBatch();
                 } else {
                     // All done!
-                    const message = `✅ ${totalCreated} neue Mappings erstellt!`;
+                    const message = `✅ ${totalCreated} {{ 'compliance.mapping_status.new_created'|trans({}, 'compliance') }}`;
                     createAllMappingsBtn.textContent = message;
                     createAllMappingsBtn.style.background = '#10b981';
                     createAllMappingsBtn.style.color = 'white';
 
-                    console.log('[Header Button] All batches completed. Created:', totalCreated, 'Skipped:', totalSkipped);
-
                     // Reload page after 2 seconds
                     setTimeout(() => {
-                        console.log('[Header Button] Reloading page...');
                         window.location.reload();
                     }, 2000);
                 }
             } catch (error) {
-                console.error('[Header Button] Error in batch', currentBatch, ':', error);
-                alert('Fehler beim Erstellen der Mappings: ' + error.message);
+                alert('{{ 'compliance.mapping_error.creating'|trans({}, 'compliance') }}: ' + error.message);
                 createAllMappingsBtn.disabled = false;
                 createAllMappingsBtn.textContent = originalText;
                 createAllMappingsBtn.style.opacity = '1';

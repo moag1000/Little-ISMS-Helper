@@ -51,7 +51,7 @@
 
             {% if step.daysToComplete %}
             <div class="field">
-                <span class="label">{{ 'email.workflow.time_to_complete'|trans }}</span>
+                <span class="label">{{ 'email.workflow.time_to_complete'|trans({}, 'messages')}}</span>
                 <span class="value">{{ step.daysToComplete }} days</span>
             </div>
             {% endif %}
@@ -81,8 +81,8 @@
         </div>
 
         <div class="footer">
-            <p>{{ 'email.automated_notification'|trans }}</p>
-            <p>{{ 'email.workflow.login_to_process'|trans }}</p>
+            <p>{{ 'email.automated_notification'|trans({}, 'messages')}}</p>
+            <p>{{ 'email.workflow.login_to_process'|trans({}, 'messages')}}</p>
         </div>
     </div>
 </body>

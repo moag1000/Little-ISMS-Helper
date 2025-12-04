@@ -398,7 +398,7 @@ function initializeFrameworkButtons() {
                                title="{{ 'common.tooltip.framework_dashboard_description'|trans({}, 'messages') }}">
                                 <span class="icon">🚀</span> Start Working →
                             </a>
-                            <button class="btn btn-secondary btn-block mt-1" onclick="window.location.reload()"
+                            <button class="btn btn-secondary btn-block mt-1" data-controller="ui-actions" data-action="ui-actions#reload"
                                     data-bs-toggle="tooltip" data-bs-placement="right"
                                     data-bs-title="{{ 'common.tooltip.reload_to_see_framework'|trans({}, 'messages') }}"
                                     title="{{ 'common.tooltip.reload_to_see_framework'|trans({}, 'messages') }}">

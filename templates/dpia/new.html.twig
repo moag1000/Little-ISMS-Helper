@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'privacy' %}
-{% block title %}{{ 'dpia.new.title'|trans }}{% endblock %}
+{% block title %}{{ 'dpia.new.title'|trans({}, 'privacy')}}{% endblock %}
 
 {% block body %}
 <div class="container-fluid mt-4">
@@ -22,7 +22,7 @@
     } %}
 
     <div class="card">
-        <div class="card-header"><h3 class="h5 mb-0"><i class="bi bi-clipboard-check"></i> {{ 'dpia.new.form_title'|trans }}</h3>
+        <div class="card-header"><h3 class="h5 mb-0"><i class="bi bi-clipboard-check"></i> {{ 'dpia.new.form_title'|trans({}, 'privacy')}}</h3>
         </div>
         <div class="card-body">
             {{ form_start(form) }}
@@ -30,35 +30,35 @@
                     'form': form,
                     'sections': {
                         'basic_info': {
-                            'label': ('<i class="bi bi-info-circle" aria-hidden="true"></i> ' ~ 'dpia.new.section_basic_info'|trans)|raw,
+                            'label': ('<i class="bi bi-info-circle" aria-hidden="true"></i> ' ~ 'dpia.new.section_basic_info'|trans({}, 'privacy'))|raw,
                             'fields': ['title', 'referenceNumber', 'processingActivity']
                         },
                         'processing_operations': {
-                            'label': ('<i class="bi bi-gear" aria-hidden="true"></i> ' ~ 'dpia.new.section_processing_operations'|trans)|raw,
+                            'label': ('<i class="bi bi-gear" aria-hidden="true"></i> ' ~ 'dpia.new.section_processing_operations'|trans({}, 'privacy'))|raw,
                             'fields': ['processingDescription', 'processingPurposes', 'dataCategories', 'dataSubjectCategories', 'estimatedDataSubjects', 'dataRetentionPeriod', 'dataFlowDescription']
                         },
                         'necessity_proportionality': {
-                            'label': ('<i class="bi bi-balance-scale" aria-hidden="true"></i> ' ~ 'dpia.new.section_necessity_proportionality'|trans)|raw,
+                            'label': ('<i class="bi bi-balance-scale" aria-hidden="true"></i> ' ~ 'dpia.new.section_necessity_proportionality'|trans({}, 'privacy'))|raw,
                             'fields': ['necessityAssessment', 'proportionalityAssessment', 'legalBasis', 'legislativeCompliance']
                         },
                         'risk_assessment': {
-                            'label': ('<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> ' ~ 'dpia.new.section_risk_assessment'|trans)|raw,
+                            'label': ('<i class="bi bi-exclamation-triangle" aria-hidden="true"></i> ' ~ 'dpia.new.section_risk_assessment'|trans({}, 'privacy'))|raw,
                             'fields': ['riskLevel', 'likelihood', 'impact', 'dataSubjectRisks']
                         },
                         'measures': {
-                            'label': ('<i class="bi bi-shield-check" aria-hidden="true"></i> ' ~ 'dpia.new.section_measures'|trans)|raw,
+                            'label': ('<i class="bi bi-shield-check" aria-hidden="true"></i> ' ~ 'dpia.new.section_measures'|trans({}, 'privacy'))|raw,
                             'fields': ['technicalMeasures', 'organizationalMeasures', 'implementedControls', 'complianceMeasures', 'residualRiskAssessment', 'residualRiskLevel']
                         },
                         'consultation': {
-                            'label': ('<i class="bi bi-people" aria-hidden="true"></i> ' ~ 'dpia.new.section_consultation'|trans)|raw,
+                            'label': ('<i class="bi bi-people" aria-hidden="true"></i> ' ~ 'dpia.new.section_consultation'|trans({}, 'privacy'))|raw,
                             'fields': ['dataProtectionOfficer', 'dpoConsultationDate', 'dpoAdvice', 'dataSubjectsConsulted', 'dataSubjectConsultationDetails']
                         },
                         'supervisory': {
-                            'label': ('<i class="bi bi-building" aria-hidden="true"></i> ' ~ 'dpia.new.section_supervisory'|trans)|raw,
+                            'label': ('<i class="bi bi-building" aria-hidden="true"></i> ' ~ 'dpia.new.section_supervisory'|trans({}, 'privacy'))|raw,
                             'fields': ['requiresSupervisoryConsultation', 'supervisoryConsultationDate', 'supervisoryAuthorityFeedback']
                         },
                         'workflow': {
-                            'label': ('<i class="bi bi-arrow-repeat" aria-hidden="true"></i> ' ~ 'dpia.new.section_workflow'|trans)|raw,
+                            'label': ('<i class="bi bi-arrow-repeat" aria-hidden="true"></i> ' ~ 'dpia.new.section_workflow'|trans({}, 'privacy'))|raw,
                             'fields': ['conductor', 'reviewFrequencyMonths', 'nextReviewDate']
                         }
                     },
@@ -104,10 +104,10 @@
 
                 <div class="mt-4">
                     <button type="submit" class="btn btn-success">
-                        <i class="bi bi-save"></i> {{ 'dpia.new.button_create'|trans }}
+                        <i class="bi bi-save"></i> {{ 'dpia.new.button_create'|trans({}, 'privacy')}}
                     </button>
                     <a href="{{ path('app_dpia_index') }}" class="btn btn-secondary">
-                        <i class="bi bi-x-lg"></i> {{ 'dpia.new.button_cancel_bottom'|trans }}
+                        <i class="bi bi-x-lg"></i> {{ 'dpia.new.button_cancel_bottom'|trans({}, 'privacy')}}
                     </a>
                 </div>
             {{ form_end(form) }}

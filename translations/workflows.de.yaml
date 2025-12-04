@@ -268,3 +268,10 @@ sla:
             pending_title: '%count% ausstehende Workflow-Genehmigungen'
             pending_message: 'Sie haben %count% Workflows, die Ihre Genehmigung erfordern.'
             view_all: 'Alle Workflows anzeigen'
+
+# Dashboard Alert Keys (alternative path)
+workflow.dashboard.alert.overdue_title: '%count% überfällige Workflow-Genehmigungen!'
+workflow.dashboard.alert.overdue_message: '%overdue% von %total% Workflows sind überfällig und erfordern sofortige Aufmerksamkeit.'
+workflow.dashboard.alert.pending_title: '%count% ausstehende Workflow-Genehmigungen'
+workflow.dashboard.alert.pending_message: 'Sie haben %count% Workflows, die Ihre Genehmigung erfordern.'
+workflow.dashboard.alert.view_all: 'Alle Workflows anzeigen'

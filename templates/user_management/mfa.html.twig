@@ -145,12 +145,13 @@
                                     {% if is_granted('ROLE_SUPER_ADMIN') %}
                                         <form method="post"
                                               action="{{ path('user_management_mfa_reset', {id: user.id, tokenId: token.id}) }}"
-                                              style="display: inline;">
+                                              style="display: inline;"
+                                              data-controller="ui-actions"
+                                              data-action="submit->ui-actions#confirm"
+                                              data-ui-actions-message-param="Möchten Sie diesen MFA-Token wirklich zurücksetzen?">
                                             <input type="hidden" name="_token"
                                                    value="{{ csrf_token('mfa_reset_' ~ token.id) }}">
-                                            <button type="submit"
-                                                    class="btn btn-sm btn-outline-danger"
-                                                    onclick="return confirm('Möchten Sie diesen MFA-Token wirklich zurücksetzen?')">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger">
                                                 <i class="bi bi-trash" aria-hidden="true"></i> {{ 'mfa.action.reset'|trans({}, 'mfa') }}
                                             </button>
                                         </form>

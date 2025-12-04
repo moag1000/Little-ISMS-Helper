@@ -492,3 +492,17 @@ setup.admin.first_name_max: 'Der Vorname darf maximal {{ limit }} Zeichen lang s
 setup.admin.last_name_max: 'Der Nachname darf maximal {{ limit }} Zeichen lang sein.'
 setup.admin.password_max: 'Das Passwort darf maximal {{ limit }} Zeichen lang sein.'
 setup.organisation.name_max: 'Der Organisationsname darf maximal {{ limit }} Zeichen lang sein.'
+
+# Consent/Data Subject Validation (GDPR)
+'Data subject identifier is required': 'Betroffenen-Kennung ist erforderlich'
+'Identifier cannot exceed {{ limit }} characters': 'Kennung darf maximal {{ limit }} Zeichen lang sein'
+'Identifier type is required': 'Kennungstyp ist erforderlich'
+'Invalid identifier type': 'Ungültiger Kennungstyp'
+'Processing activity is required': 'Verarbeitungstätigkeit ist erforderlich'
+'Grant date is required': 'Erteilungsdatum ist erforderlich'
+'Consent method is required': 'Einwilligungsmethode ist erforderlich'
+'Invalid consent method': 'Ungültige Einwilligungsmethode'
+'Consent text is required for proof': 'Einwilligungstext ist für den Nachweis erforderlich'
+'Invalid consent channel': 'Ungültiger Einwilligungskanal'
+'Invalid consent status': 'Ungültiger Einwilligungsstatus'
+'Invalid revocation method': 'Ungültige Widerrufsmethode'

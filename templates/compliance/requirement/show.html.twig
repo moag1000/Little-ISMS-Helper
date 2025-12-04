@@ -188,17 +188,20 @@
 
                     {# Quick Update Form - Enhanced with Visual Slider #}
                     {% if can_edit %}
-                        <form method="post" action="{{ path('app_compliance_requirement_quick_update', {id: requirement.id}) }}" class="mt-3" id="quickUpdateForm">
+                        <form method="post" action="{{ path('app_compliance_requirement_quick_update', {id: requirement.id}) }}" class="mt-3" id="quickUpdateForm"
+                              data-controller="fulfillment">
                             <input type="hidden" name="_token" value="{{ csrf_token('quick-update' ~ requirement.id) }}">
 
                             <div class="mb-3">
                                 <label for="fulfillmentPercentage" class="form-label d-flex justify-content-between">
                                     <span>Fulfillment</span>
-                                    <span id="sliderValue" class="badge bg-primary">{{ fulfillment.fulfillmentPercentage }}%</span>
+                                    <span data-fulfillment-target="display" class="badge bg-primary">{{ fulfillment.fulfillmentPercentage }}%</span>
                                 </label>
 
                                 {# Visual Slider #}
                                 <input type="range" class="form-range" id="fulfillmentSlider"
+                                       data-fulfillment-target="slider"
+                                       data-action="input->fulfillment#update"
                                        min="0" max="100" step="5" value="{{ fulfillment.fulfillmentPercentage }}"
                                        style="cursor: pointer;"
                                        data-bs-toggle="tooltip" data-bs-placement="top"
@@ -209,26 +212,31 @@
 
                                 {# Visual Progress Bar #}
                                 <div class="progress mt-2" style="height: 8px;">
-                                    <div id="progressBar" class="progress-bar" role="progressbar"
+                                    <div data-fulfillment-target="progressBar" class="progress-bar" role="progressbar"
                                          style="width: {{ fulfillment.fulfillmentPercentage }}%; background-color: {{ fulfillment.fulfillmentPercentage >= 75 ? '#28a745' : (fulfillment.fulfillmentPercentage >= 50 ? '#ffc107' : '#dc3545') }};"
                                          aria-valuenow="{{ fulfillment.fulfillmentPercentage }}" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
 
                             {# Quick Preset Buttons #}
                             <div class="d-flex gap-1 mt-2">
-                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(0)"
+                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill"
+                                        data-action="click->fulfillment#set" data-fulfillment-value-param="0"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        title="Not started - No implementation yet">0%</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(25)"
+                                        title="{{ 'compliance.tooltip.not_started'|trans({}, 'compliance') }}">0%</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill"
+                                        data-action="click->fulfillment#set" data-fulfillment-value-param="25"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        title="Planning phase - Requirements analyzed, plan drafted">25%</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(50)"
+                                        title="{{ 'compliance.tooltip.planning_phase'|trans({}, 'compliance') }}">25%</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill"
+                                        data-action="click->fulfillment#set" data-fulfillment-value-param="50"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom"
                                         title="{{ 'common.tooltip.status_in_progress'|trans({}, 'messages') }}">50%</button>
-                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill" onclick="setFulfillment(75)"
+                                <button type="button" class="btn btn-sm btn-outline-secondary flex-fill"
+                                        data-action="click->fulfillment#set" data-fulfillment-value-param="75"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                        title="Nearly complete - Most requirements met, minor gaps remain">75%</button>
-                                <button type="button" class="btn btn-sm btn-outline-success flex-fill" onclick="setFulfillment(100)"
+                                        title="{{ 'compliance.tooltip.nearly_complete'|trans({}, 'compliance') }}">75%</button>
+                                <button type="button" class="btn btn-sm btn-outline-success flex-fill"
+                                        data-action="click->fulfillment#set" data-fulfillment-value-param="100"
                                         data-bs-toggle="tooltip" data-bs-placement="bottom"
                                         title="{{ 'common.tooltip.status_fully_implemented'|trans({}, 'messages') }}">100%</button>
                             </div>
@@ -277,10 +285,6 @@
                     slider.addEventListener('input', function() {
                         updateSlider(this.value);
                     });
-
-                    function setFulfillment(value) {
-                        updateSlider(value);
-                    }
 
                     // Show success message after update
                     const form = document.getElementById('quickUpdateForm');

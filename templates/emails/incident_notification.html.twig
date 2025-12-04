@@ -20,7 +20,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚨 {{ 'email.new_incident_reported'|trans }}</h1>
+            <h1>🚨 {{ 'email.new_incident_reported'|trans({}, 'messages')}}</h1>
         </div>
 
         <div class="content">
@@ -58,8 +58,8 @@
         </div>
 
         <div class="footer">
-            <p>{{ 'email.automated_notification'|trans }}</p>
-            <p>{{ 'email.take_appropriate_action'|trans }}</p>
+            <p>{{ 'email.automated_notification'|trans({}, 'messages')}}</p>
+            <p>{{ 'email.take_appropriate_action'|trans({}, 'messages')}}</p>
         </div>
     </div>
 </body>

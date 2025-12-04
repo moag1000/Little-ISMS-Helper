@@ -55,7 +55,9 @@
                                    aria-label="{{ 'mfa.setup.secret_key'|trans({}, 'mfa') }}">
                             <button class="btn btn-outline-secondary"
                                     type="button"
-                                    onclick="copyToClipboard('secret-key')">
+                                    data-controller="ui-actions"
+                                    data-action="ui-actions#copyToClipboard"
+                                    data-ui-actions-text-param="{{ secret }}">
                                 <i class="bi bi-clipboard" aria-hidden="true"></i>
                                 {{ 'common.copy'|trans({}, 'messages') }}
                             </button>
@@ -134,27 +136,30 @@
 
                     <p class="small">{{ 'mfa.backup_codes.description'|trans({}, 'mfa') }}</p>
 
-                    <div class="bg-light p-3 rounded border font-monospace small" style="max-height: 300px; overflow-y: auto;">
-                        {% for code in backup_codes %}
-                            <div class="py-1">
-                                <i class="bi bi-key-fill text-warning" aria-hidden="true"></i> {{ code }}
-                            </div>
-                        {% endfor %}
-                    </div>
+                    <div data-controller="backup-codes"
+                         data-backup-codes-codes-value="{{ backup_codes|json_encode }}">
+                        <div class="bg-light p-3 rounded border font-monospace small" style="max-height: 300px; overflow-y: auto;" data-backup-codes-target="codesContainer">
+                            {% for code in backup_codes %}
+                                <div class="py-1">
+                                    <i class="bi bi-key-fill text-warning" aria-hidden="true"></i> <span class="font-monospace">{{ code }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
 
-                    <div class="d-grid gap-2 mt-3">
-                        <button type="button"
-                                class="btn btn-outline-primary btn-sm"
-                                onclick="copyBackupCodes()">
-                            <i class="bi bi-clipboard" aria-hidden="true"></i>
-                            {{ 'mfa.backup_codes.copy_all'|trans({}, 'mfa') }}
-                        </button>
-                        <button type="button"
-                                class="btn btn-outline-secondary btn-sm"
-                                onclick="printBackupCodes()">
-                            <i class="bi bi-printer" aria-hidden="true"></i>
-                            {{ 'mfa.backup_codes.print'|trans({}, 'mfa') }}
-                        </button>
+                        <div class="d-grid gap-2 mt-3">
+                            <button type="button"
+                                    class="btn btn-outline-primary btn-sm"
+                                    data-action="backup-codes#copy">
+                                <i class="bi bi-clipboard" aria-hidden="true"></i>
+                                {{ 'mfa.backup_codes.copy_all'|trans({}, 'mfa') }}
+                            </button>
+                            <button type="button"
+                                    class="btn btn-outline-secondary btn-sm"
+                                    data-action="backup-codes#print">
+                                <i class="bi bi-printer" aria-hidden="true"></i>
+                                {{ 'mfa.backup_codes.print'|trans({}, 'mfa') }}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
