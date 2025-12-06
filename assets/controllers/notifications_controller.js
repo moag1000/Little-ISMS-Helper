@@ -187,7 +187,7 @@ export default class extends Controller {
     }
 
     clearAll() {
-        if (confirm('Möchten Sie wirklich alle Benachrichtigungen löschen?')) {
+        if (confirm(window.translations?.notifications?.confirm_clear_all || 'Do you really want to delete all notifications?')) {
             this.notifications = [];
             this.saveNotifications();
             this.render();

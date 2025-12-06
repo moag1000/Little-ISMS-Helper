@@ -199,7 +199,7 @@
                 <h5 class="modal-title" id="deleteModalLabel{{ review.id }}">
                     <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'management_review.confirm_delete'|trans({}, 'management_review') }}
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
             </div>
             <div class="modal-body">
                 <p>{{ 'management_review.delete_warning'|trans({'%title%': review.title}, 'management_review') }}</p>

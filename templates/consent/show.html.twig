@@ -336,7 +336,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="verifyModalLabel">{{ 'consent.action.verify'|trans({}, 'consent') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
             </div>
             <form method="post" action="{{ path('app_consent_verify', {id: consent.id}) }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('verify' ~ consent.id) }}">
@@ -361,7 +361,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="revokeModalLabel">{{ 'consent.action.document_revocation'|trans({}, 'consent') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
             </div>
             <form method="post" action="{{ path('app_consent_revoke', {id: consent.id}) }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('revoke' ~ consent.id) }}">

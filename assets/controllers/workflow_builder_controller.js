@@ -371,7 +371,7 @@ export default class extends Controller {
         const stepId = event.currentTarget.dataset.stepId;
         const button = event.currentTarget;
 
-        if (!confirm('Are you sure you want to delete this step?')) {
+        if (!confirm(window.translations?.workflow?.confirm_delete_step || 'Are you sure you want to delete this step?')) {
             return;
         }
 
@@ -409,7 +409,7 @@ export default class extends Controller {
 
     async applyTemplate(event) {
         const templateKey = event.currentTarget.dataset.templateKey;
-        const clearExisting = confirm('Do you want to replace existing steps? Click OK to replace, Cancel to append.');
+        const clearExisting = confirm(window.translations?.workflow?.confirm_replace_steps || 'Do you want to replace existing steps? Click OK to replace, Cancel to append.');
 
         try {
             const response = await fetch(`${this.apiUrlValue}/${this.workflowIdValue}/apply-template`, {

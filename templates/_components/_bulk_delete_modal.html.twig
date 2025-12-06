@@ -226,7 +226,7 @@
         alertDiv.setAttribute('role', 'alert');
         alertDiv.innerHTML = `
             ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
         `;
 
         const container = document.querySelector('.container-fluid') || document.body;

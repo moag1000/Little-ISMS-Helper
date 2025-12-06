@@ -17,7 +17,7 @@
                 <div class="card-body text-center">
                     <h5 class="card-title text-muted">{{ 'session.statistics.total'|trans({}, 'session') }}</h5>
                     <p class="display-6 text-primary">{{ statistics.total_active }}</p>
-                    <small>Aktive Sitzungen</small>
+                    <small>{{ 'session.statistics.active_sessions'|trans({}, 'session') }}</small>
                 </div>
             </div>
         </div>
@@ -26,25 +26,25 @@
                 <div class="card-body text-center">
                     <h5 class="card-title text-muted">{{ 'session.statistics.today'|trans({}, 'session') }}</h5>
                     <p class="display-6 text-success">{{ statistics.total_last_24h }}</p>
-                    <small>Letzte 24h</small>
+                    <small>{{ 'session.statistics.last_24h'|trans({}, 'session') }}</small>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card border-info">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">Eindeutige Benutzer</h5>
+                    <h5 class="card-title text-muted">{{ 'session.statistics.unique_users'|trans({}, 'session') }}</h5>
                     <p class="display-6 text-info">{{ statistics.unique_users }}</p>
-                    <small>Aktive Benutzer</small>
+                    <small>{{ 'session.statistics.active_users'|trans({}, 'session') }}</small>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="card border-warning">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">Limit pro Benutzer</h5>
+                    <h5 class="card-title text-muted">{{ 'session.statistics.limit_per_user'|trans({}, 'session') }}</h5>
                     <p class="display-6 text-warning">{{ statistics.max_concurrent }}</p>
-                    <small>Max. gleichzeitig</small>
+                    <small>{{ 'session.statistics.max_concurrent'|trans({}, 'session') }}</small>
                 </div>
             </div>
         </div>
@@ -55,19 +55,19 @@
         <div class="card-body">
             <form method="get" class="row g-3">
                 <div class="col-auto">
-                    <label for="email" class="col-form-label">Benutzer filtern:</label>
+                    <label for="email" class="col-form-label">{{ 'session.filter.by_user'|trans({}, 'session') }}</label>
                 </div>
                 <div class="col-md-4">
                     <input type="text"
                            name="email"
                            id="email"
                            class="form-control"
-                           placeholder="E-Mail-Adresse..."
+                           placeholder="{{ 'session.filter.email_placeholder'|trans({}, 'session') }}"
                            value="{{ search_email ?? '' }}">
                 </div>
                 <div class="col-auto">
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-search" aria-hidden="true"></i> Filtern
+                        <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
                     </button>
                     {% if search_email %}
                         <a href="{{ path('session_index') }}" class="btn btn-outline-secondary">
@@ -83,7 +83,7 @@
     <div class="card">
         <div class="card-header bg-primary text-white">
             <h3 class="mb-0">
-                <i class="bi bi-list-ul" aria-hidden="true"></i> Aktive Sitzungen
+                <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'session.active_sessions'|trans({}, 'session') }}
             </h3>
         </div>
         <div class="card-body">
@@ -96,11 +96,11 @@
                     <tr>
                         <th scope="col">{{ 'session.user_name'|trans({}, 'session') }}</th>
                         <th scope="col">{{ 'session.ip_address'|trans({}, 'session') }}</th>
-                        <th scope="col">User Agent</th>
+                        <th scope="col">{{ 'session.user_agent'|trans({}, 'session') }}</th>
                         <th scope="col">{{ 'session.last_activity'|trans({}, 'session') }}</th>
                         <th scope="col">{{ 'session.session_start'|trans({}, 'session') }}</th>
-                        <th scope="col">Dauer</th>
-                        <th scope="col" class="text-end">Aktionen</th>
+                        <th scope="col">{{ 'session.duration'|trans({}, 'session') }}</th>
+                        <th scope="col" class="text-end">{{ 'common.actions'|trans({}, 'messages') }}</th>
                     </tr>
                 {% endblock %}
                 {% block table_body %}
@@ -138,11 +138,11 @@
                                 {% set minutes_ago = 'now'|date('U') - session.lastActivityAt.timestamp %}
                                 {% set minutes = (minutes_ago / 60)|round %}
                                 {% if minutes < 1 %}
-                                    <span class="badge bg-success">Jetzt aktiv</span>
+                                    <span class="badge bg-success">{{ 'session.status.active_now'|trans({}, 'session') }}</span>
                                 {% elseif minutes < 5 %}
-                                    <span class="badge bg-info">vor {{ minutes }} Min.</span>
+                                    <span class="badge bg-info">{{ 'session.status.minutes_ago'|trans({'%minutes%': minutes}, 'session') }}</span>
                                 {% elseif minutes < 60 %}
-                                    <span class="text-muted">vor {{ minutes }} Min.</span>
+                                    <span class="text-muted">{{ 'session.status.minutes_ago'|trans({'%minutes%': minutes}, 'session') }}</span>
                                 {% else %}
                                     <span class="text-muted">{{ session.lastActivityAt|date('d.m.Y H:i') }}</span>
                                 {% endif %}
@@ -157,7 +157,7 @@
                                 <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
                                     <a href="{{ path('session_show', {userName: session.user.email}) }}"
                                        class="btn btn-outline-primary"
-                                       title="Details anzeigen" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                       title="{{ 'common.view_details'|trans({}, 'messages') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                         <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
                                     <form method="post"
@@ -165,12 +165,12 @@
                                           style="display: inline;"
                                           data-controller="ui-actions"
                                           data-action="submit->ui-actions#confirm"
-                                          data-ui-actions-message-param="Möchten Sie diese Sitzung wirklich beenden?">
+                                          data-ui-actions-message-param="{{ 'session.confirm.terminate'|trans({}, 'session') }}">
                                         <input type="hidden" name="_token"
                                                value="{{ csrf_token('terminate_single_' ~ session.sessionId) }}">
                                         <button type="submit"
                                                 class="btn btn-outline-danger"
-                                                title="Session beenden"
+                                                title="{{ 'session.action.terminate'|trans({}, 'session') }}"
                                                 aria-label="{{ 'common.close'|trans({}, 'messages') }}">
                                             <i class="bi bi-x-circle" aria-hidden="true"></i>
                                         </button>
@@ -184,7 +184,7 @@
             {% else %}
                 <div class="alert alert-info">
                     <i class="bi bi-info-circle" aria-hidden="true"></i>
-                    Keine aktiven Sitzungen im gewählten Zeitraum gefunden.
+                    {{ 'session.no_sessions_found'|trans({}, 'session') }}
                 </div>
             {% endif %}
         </div>
@@ -193,8 +193,6 @@
     {# Info Box #}
     <div class="alert alert-success mt-4">
         <i class="bi bi-check-circle" aria-hidden="true"></i>
-        <strong>Session Management:</strong> Aktive Sitzungen werden in der Datenbank getrackt.
-        Administratoren können Sitzungen einzeln oder für alle Benutzer beenden.
-        Maximale gleichzeitige Sitzungen pro Benutzer: {{ statistics.max_concurrent }}
+        {{ 'session.info_box'|trans({'%max_concurrent%': statistics.max_concurrent}, 'session') }}
     </div>
 {% endblock %}

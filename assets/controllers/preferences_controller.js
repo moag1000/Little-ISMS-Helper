@@ -158,7 +158,7 @@ export default class extends Controller {
     }
 
     resetToDefaults() {
-        if (confirm('Möchten Sie alle Einstellungen zurücksetzen?')) {
+        if (confirm(window.translations?.preferences?.confirm_reset || 'Do you want to reset all settings?')) {
             this.preferences = this.getDefaultPreferences();
             this.savePreferences();
             this.applyPreferences();
@@ -167,7 +167,7 @@ export default class extends Controller {
             this.updateFormFields();
 
             // Show success message
-            this.showSuccessMessage('Einstellungen wurden zurückgesetzt');
+            this.showSuccessMessage(window.translations?.preferences?.reset_success || 'Settings have been reset');
         }
     }
 
