@@ -108,7 +108,6 @@ export default class extends Controller {
             const preview = await response.json();
             this.displayPreview(preview);
         } catch (error) {
-            console.error('Escalation Preview Error:', error);
             this.showError();
         }
     }

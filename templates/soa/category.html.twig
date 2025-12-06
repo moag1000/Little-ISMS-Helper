@@ -11,28 +11,30 @@
         <p class="text-muted">ISO/IEC 27001:2022 Annex A - {{ category }} Kontrollen</p>
     </div>
     <div class="button-group">
-        <a href="{{ path('app_soa_index') }}" class="btn btn-secondary">← Zurück zur Übersicht</a>
+        <a href="{{ path('app_soa_index') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'soa.action.back_to_overview'|trans({}, 'soa') }}
+        </a>
     </div>
 </div>
 
 {# Statistics Cards #}
 <div class="kpi-grid kpi-grid-responsive">
     <div class="col-auto">
-        {{ cards.kpi_card('Gesamt Controls', controls|length, null, null, 'primary', null) }}
+        {{ cards.kpi_card('soa.kpi.total_controls'|trans({}, 'soa'), controls|length, null, null, 'primary', null) }}
     </div>
     <div class="col-auto">
-        {{ cards.kpi_card('Anwendbar', controls|filter(c => c.applicable)|length, null, null, 'success', null) }}
+        {{ cards.kpi_card('soa.kpi.applicable_controls'|trans({}, 'soa'), controls|filter(c => c.applicable)|length, null, null, 'success', null) }}
     </div>
     <div class="col-auto">
         {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
         {% set applicable = controls|filter(c => c.applicable)|length %}
-        {{ cards.kpi_card('Implementiert', implemented, 'von ' ~ applicable, null, 'info', null) }}
+        {{ cards.kpi_card('soa.kpi.implemented_controls'|trans({}, 'soa'), implemented, 'soa.kpi.of'|trans({}, 'soa') ~ ' ' ~ applicable, null, 'info', null) }}
     </div>
     <div class="col-auto">
         {% set applicable = controls|filter(c => c.applicable)|length %}
         {% set implemented = controls|filter(c => c.applicable and c.implementationStatus == 'implemented')|length %}
         {% set percentage = applicable > 0 ? (implemented / applicable * 100)|round : 0 %}
-        {{ cards.kpi_card('Compliance-Rate', percentage ~ '%', null, percentage, 'warning', null) }}
+        {{ cards.kpi_card('soa.kpi.compliance_rate'|trans({}, 'soa'), percentage ~ '%', null, percentage, 'warning', null) }}
     </div>
 </div>
 
@@ -42,13 +44,13 @@
 {% embed '_components/_table.html.twig' with {'class': 'table-container', 'noMargin': true} %}
     {% block table_head %}
         <tr>
-            <th scope="col">Control ID</th>
-            <th scope="col">Name</th>
-            <th scope="col" class="text-center">Anwendbar</th>
-            <th scope="col">Implementierungsstatus</th>
-            <th scope="col" class="text-center">Fortschritt</th>
-            <th scope="col">Verantwortlich</th>
-            <th scope="col" class="text-center">Aktionen</th>
+            <th scope="col">{{ 'soa.table.control_id'|trans({}, 'soa') }}</th>
+            <th scope="col">{{ 'soa.table.name'|trans({}, 'soa') }}</th>
+            <th scope="col" class="text-center">{{ 'soa.table.applicable'|trans({}, 'soa') }}</th>
+            <th scope="col">{{ 'soa.table.implementation_status'|trans({}, 'soa') }}</th>
+            <th scope="col" class="text-center">{{ 'soa.table.progress'|trans({}, 'soa') }}</th>
+            <th scope="col">{{ 'soa.field.responsible_person'|trans({}, 'soa') }}</th>
+            <th scope="col" class="text-center">{{ 'soa.table.actions'|trans({}, 'soa') }}</th>
         </tr>
     {% endblock %}
     {% block table_body %}
@@ -62,24 +64,24 @@
             </td>
             <td class="text-center">
                 {% if control.applicable %}
-                    <span class="badge bg-success">✓ Ja</span>
+                    <span class="badge bg-success"><i class="bi bi-check" aria-hidden="true"></i> {{ 'soa.value.yes'|trans({}, 'soa') }}</span>
                 {% else %}
-                    <span class="badge badge-neutral">✗ Nein</span>
+                    <span class="badge badge-neutral"><i class="bi bi-x" aria-hidden="true"></i> {{ 'soa.value.no'|trans({}, 'soa') }}</span>
                 {% endif %}
             </td>
             <td>
                 {% if control.applicable %}
                     {% if control.implementationStatus == 'implemented' %}
-                        <span class="badge bg-success"<><i class="bi bi-check-circle" aria-hidden="true"></i> Implementiert</span>
+                        <span class="badge bg-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'soa.status.implemented'|trans({}, 'soa') }}</span>
                     {% elseif control.implementationStatus == 'in_progress' %}
                         <span class="badge bg-warning">{{ 'soa.in_progress_badge_emoji'|trans({}, 'soa') }}</span>
                     {% elseif control.implementationStatus == 'not_started' %}
-                        <span class="badge bg-danger"><i class="bi bi-pause-circle" aria-hidden="true"></i> Nicht begonnen</span>
+                        <span class="badge bg-danger"><i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'soa.status.not_started'|trans({}, 'soa') }}</span>
                     {% else %}
-                        <span class="badge badge-neutral">N/A</span>
+                        <span class="badge badge-neutral">{{ 'soa.value.na'|trans({}, 'soa') }}</span>
                     {% endif %}
                 {% else %}
-                    <span class="badge badge-neutral">Nicht anwendbar</span>
+                    <span class="badge badge-neutral">{{ 'soa.status.not_applicable'|trans({}, 'soa') }}</span>
                 {% endif %}
             </td>
             <td>
@@ -97,18 +99,22 @@
                 {% if control.responsiblePerson %}
                     {{ control.responsiblePerson }}
                 {% else %}
-                    <span class="text-muted">Nicht zugewiesen</span>
+                    <span class="text-muted">{{ 'soa.field.unassigned'|trans({}, 'soa') }}</span>
                 {% endif %}
             </td>
             <td class="text-center">
-                <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-sm mr-025">👁 Details</a>
-                <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-sm btn-secondary"<i class="bi bi-pencil" aria-hidden="true"></i> Bearbeiten</a>
+                <a href="{{ path('app_soa_show', {id: control.id}) }}" class="btn btn-sm btn-outline-primary me-1" title="{{ 'soa.action.view_details'|trans({}, 'soa') }}">
+                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'soa.action.view_details'|trans({}, 'soa') }}
+                </a>
+                <a href="{{ path('app_soa_edit', {id: control.id}) }}" class="btn btn-sm btn-secondary" title="{{ 'soa.action.edit'|trans({}, 'soa') }}">
+                    <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'soa.action.edit'|trans({}, 'soa') }}
+                </a>
             </td>
         </tr>
         {% else %}
         <tr>
             <td colspan="7" class="text-center-p-xl-muted">
-                Keine Controls in dieser Kategorie gefunden.
+                {{ 'soa.message.no_controls_filtered'|trans({}, 'soa') }}
             </td>
         </tr>
         {% endfor %}

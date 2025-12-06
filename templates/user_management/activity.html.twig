@@ -10,7 +10,7 @@
             {{ 'user.activity.title'|trans({}, 'user') }}: {{ user.fullName }}
         </h1>
         <a href="{{ path('user_management_show', {id: user.id}) }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> Zurück
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 
@@ -43,7 +43,7 @@
     <div class="card">
         <div class="card-header bg-primary text-white">
             <h3 class="mb-0">
-                <i class="bi bi-clock-history" aria-hidden="true"></i> Aktivitätsverlauf
+                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'user.activity.timeline'|trans({}, 'user') }}
             </h3>
         </div>
         <div class="card-body">
@@ -91,7 +91,7 @@
                                             {% if activity.newValues %}
                                                 <details class="mt-2">
                                                     <summary class="text-muted small" style="cursor: pointer;">
-                                                        Details anzeigen
+                                                        {{ 'user.activity.show_details'|trans({}, 'user') }}
                                                     </summary>
                                                     <pre class="mt-2 mb-0 small bg-light p-2 rounded">{{ activity.newValues }}</pre>
                                                 </details>
@@ -106,7 +106,7 @@
             {% else %}
                 <div class="alert alert-info">
                     <i class="bi bi-info-circle" aria-hidden="true"></i>
-                    Keine Aktivitäten für diesen Benutzer gefunden.
+                    {{ 'user.activity.no_activities'|trans({}, 'user') }}
                 </div>
             {% endif %}
         </div>
@@ -115,12 +115,14 @@
     {# Filter Options #}
     <div class="card mt-4">
         <div class="card-body">
-            <form method="get" class="row g-3" id="activity-filter-form">
+            <form method="get" class="row g-3" id="activity-filter-form" data-controller="ui-actions">
                 <div class="col-auto">
                     <label for="limit" class="col-form-label">{{ 'user.activity.filter.show_count'|trans({}, 'user') }}:</label>
                 </div>
                 <div class="col-auto">
-                    <select name="limit" id="limit" class="form-select" onchange="document.getElementById('activity-filter-form').submit()">
+                    <select name="limit" id="limit" class="form-select"
+                            data-action="change->ui-actions#autoSubmit"
+                            aria-label="{{ 'user.activity.filter.show_count'|trans({}, 'user') }}">
                         <option value="50" {{ app.request.query.get('limit') == 50 ? 'selected' : '' }}>50</option>
                         <option value="100" {{ app.request.query.get('limit') == 100 or not app.request.query.get('limit') ? 'selected' : '' }}>100</option>
                         <option value="200" {{ app.request.query.get('limit') == 200 ? 'selected' : '' }}>200</option>

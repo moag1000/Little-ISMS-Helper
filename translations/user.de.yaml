@@ -5,6 +5,7 @@ user:
         new_user: 'Neuer Benutzer'
         view: Anzeigen
         edit: Bearbeiten
+        delete_user: 'Benutzer löschen'
     stats:
         total: Gesamt
         users: Benutzer
@@ -39,6 +40,9 @@ user:
         title: Benutzeraktivität
         total: Gesamtaktionen
         by_action: 'Nach Aktionstyp'
+        timeline: Aktivitätsverlauf
+        show_details: 'Details anzeigen'
+        no_activities: 'Keine Aktivitäten für diesen Benutzer gefunden.'
         filter:
             show_count: 'Anzahl anzeigen'
     import:
@@ -96,6 +100,17 @@ user:
         avatar_format: 'Bitte laden Sie ein gültiges Bild hoch (JPEG, PNG, GIF oder WebP)'
     auth_provider:
         local: 'Lokale Authentifizierung'
+    auth:
+        azure_oauth: 'Azure OAuth'
+        azure_saml: 'Azure SAML'
+        local: 'Lokal'
+    status:
+        active: 'Aktiv'
+        inactive: 'Inaktiv'
+        not_verified: 'Nicht verifiziert'
+        never: 'Nie'
+    confirm:
+        delete: 'Möchten Sie den Benutzer %name% wirklich löschen?'
     role:
         user: 'ROLE_USER - Standard Benutzer'
         auditor: 'ROLE_AUDITOR - Auditor (Leserechte)'

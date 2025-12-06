@@ -431,7 +431,6 @@ export default class extends Controller {
         try {
             localStorage.setItem(this.storageKeyValue, isOpen ? 'open' : 'closed');
         } catch (error) {
-            console.warn('Failed to save sidebar state:', error);
         }
     }
 
@@ -445,7 +444,6 @@ export default class extends Controller {
                 this.open();
             }
         } catch (error) {
-            console.warn('Failed to restore sidebar state:', error);
         }
     }
 

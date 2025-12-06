@@ -10,7 +10,7 @@
             {{ 'mfa.title'|trans({}, 'mfa') }}: {{ user.fullName }}
         </h1>
         <a href="{{ path('user_management_show', {id: user.id}) }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> Zurück
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 

@@ -100,7 +100,9 @@
                     <div class="card-body">
                         <p class="text-muted">{{ 'workflow.help.delete_warning'|trans({}, 'workflows') }}</p>
                         <form method="post" action="{{ path('app_workflow_definition_delete', {id: workflow.id}) }}"
-                              onsubmit="return confirm('{{ 'workflow.confirm.delete'|trans({}, 'workflows') }}')">
+                              data-controller="ui-actions"
+                              data-action="submit->ui-actions#confirm"
+                              data-ui-actions-message-param="{{ 'workflow.confirm.delete'|trans({}, 'workflows') }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ workflow.id) }}">
                             <button type="submit" class="btn btn-danger">
                                 <i class="bi bi-trash" aria-hidden="true"></i> {{ 'workflow.action.delete_definition'|trans({}, 'workflows') }}

@@ -17,15 +17,15 @@
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
             {% include '_components/_page_header.html.twig' with {
-                title: 'ISMS Dashboard',
-                subtitle: 'Überblick über Ihr Informationssicherheits-Managementsystem',
+                title: 'dashboard.title'|trans({}, 'dashboard'),
+                subtitle: 'dashboard.subtitle'|trans({}, 'dashboard'),
                 icon: 'bi-speedometer2'
             } %}
         </div>
         <button class="btn btn-outline-secondary"
                 data-action="click->dashboard-customizer#openSettings"
-                title="Dashboard anpassen">
-            <i class="bi bi-sliders" aria-hidden="true"></i> Anpassen
+                title="{{ 'dashboard.action.customize'|trans({}, 'dashboard') }}">
+            <i class="bi bi-sliders" aria-hidden="true"></i> {{ 'dashboard.action.customize'|trans({}, 'dashboard') }}
         </button>
     </div>
 
@@ -74,10 +74,10 @@
             {{ cards.stat_card(
                 'bi bi-server',
                 'bg-primary',
-                'Registrierte Assets',
+                'dashboard.stats.registered_assets'|trans({}, 'dashboard'),
                 stats.assets_total|default(0),
                 'bi bi-arrow-up',
-                stats.assets_critical|default(0) ~ ' kritisch',
+                stats.assets_critical|default(0) ~ ' ' ~ 'dashboard.stats.critical'|trans({}, 'dashboard'),
                 'positive'
             ) }}
         </div>
@@ -87,10 +87,10 @@
             {{ cards.stat_card(
                 'bi bi-exclamation-triangle',
                 'bg-warning',
-                'Identifizierte Risiken',
+                'dashboard.stats.identified_risks'|trans({}, 'dashboard'),
                 stats.risks_total|default(0),
                 'bi bi-arrow-up',
-                stats.risks_high|default(0) ~ ' hoch',
+                stats.risks_high|default(0) ~ ' ' ~ 'dashboard.stats.high'|trans({}, 'dashboard'),
                 'negative'
             ) }}
         </div>
@@ -100,10 +100,10 @@
             {{ cards.stat_card(
                 'bi bi-shield-check',
                 'bg-success',
-                'Sicherheitsmaßnahmen',
+                'dashboard.stats.security_controls'|trans({}, 'dashboard'),
                 stats.controls_implemented|default(0) ~ '/' ~ stats.controls_total|default(0),
                 'bi bi-check-circle',
-                stats.compliance_percentage|default(0) ~ '% implementiert',
+                stats.compliance_percentage|default(0) ~ '% ' ~ 'dashboard.stats.implemented'|trans({}, 'dashboard'),
                 'positive'
             ) }}
         </div>
@@ -113,10 +113,10 @@
             {{ cards.stat_card(
                 'bi bi-exclamation-circle',
                 'bg-danger',
-                'Offene Vorfälle',
+                'dashboard.stats.open_incidents'|trans({}, 'dashboard'),
                 stats.incidents_open|default(0),
                 'bi bi-clock-history',
-                'In Bearbeitung',
+                'dashboard.stats.in_progress'|trans({}, 'dashboard'),
                 ''
             ) }}
         </div>
@@ -133,7 +133,7 @@
                 <div class="widget-header">
                     <h3 class="widget-title">
                         <i class="bi bi-pie-chart" aria-hidden="true"></i>
-                        Risikoverteilung
+                        {{ 'dashboard.chart.risk_distribution'|trans({}, 'dashboard') }}
                     </h3>
                     <div class="widget-actions">
                         <button class="widget-action" title="{{ 'common.refresh'|trans({}, 'messages') }}" aria-label="{{ 'common.refresh'|trans({}, 'messages') }}">
@@ -156,7 +156,7 @@
                 <div class="widget-header">
                     <h3 class="widget-title">
                         <i class="bi bi-bar-chart" aria-hidden="true"></i>
-                        Assets nach Kategorie
+                        {{ 'dashboard.chart.assets_by_category'|trans({}, 'dashboard') }}
                     </h3>
                 </div>
                 <div class="chart-container">

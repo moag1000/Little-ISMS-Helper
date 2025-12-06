@@ -54,6 +54,9 @@ compliance:
         export_pdf: 'PDF Report'
         export_excel: 'Excel Export'
         export_csv: 'CSV Export'
+        delete_requirement: 'Delete Requirement'
+        delete_mapping: 'Delete Mapping'
+        create_mappings_now: 'Create mappings now'
     unit:
         requirements: requirements
     field:
@@ -111,15 +114,27 @@ compliance:
     already_loaded: __compliance.already_loaded
     delete_framework: __compliance.delete_framework
     load_framework: __compliance.load_framework
-    confirm_load: __compliance.confirm_load
-    loading: __compliance.loading
-    successfully_loaded: __compliance.successfully_loaded
-    load_failed: __compliance.load_failed
-    error: __compliance.error
-    deleting: __compliance.deleting
-    successfully_deleted: __compliance.successfully_deleted
-    delete_failed: __compliance.delete_failed
+    confirm_load: 'Do you really want to load this framework?'
+    loading: 'Loading...'
+    successfully_loaded: 'Framework loaded successfully'
+    load_failed: 'Failed to load framework'
+    error: 'Error'
+    deleting: 'Deleting...'
+    successfully_deleted: 'Framework deleted successfully'
+    delete_failed: 'Failed to delete framework'
+    confirm_delete:
+        title: 'WARNING: Delete Framework'
+        framework_label: 'Framework'
+        action_will: 'This action will'
+        delete_framework: 'Delete the framework'
+        delete_requirements: 'Delete all requirements of the framework'
+        delete_mappings: 'Delete all mappings to other frameworks'
+        cannot_undo: 'This action cannot be undone!'
+        confirm_question: 'Do you really want to continue?'
+        second_confirm: 'Are you sure? Framework will be permanently deleted!'
     mapping:
+        confirm:
+            delete: 'Are you sure you want to delete this mapping?'
         title: 'Compliance Mapping'
         create_link: 'Create mapping'
         create_instruction: 'to show how requirements relate to your controls'
@@ -233,6 +248,8 @@ compliance:
             fulfilled: __compliance.framework.stats.fulfilled
             compliance: __compliance.framework.stats.compliance
     requirement:
+        confirm:
+            delete: 'Are you sure you want to delete this requirement?'
         title: 'Compliance Requirement'
         edit:
             title: 'Edit Requirement'
@@ -396,9 +413,12 @@ compliance:
         add_missing_mappings: 'Do you want to add missing Cross-Framework Mappings?\n\nThis only creates new mappings and does not overwrite existing ones.'
     mapping_status:
         creating: 'Creating mappings...'
+        creating_with_icon: '⏳ Creating mappings...'
         new_created: 'new mappings created!'
+        button_text: '🔗 Create Mappings'
     mapping_error:
         creating: 'Error creating mappings'
+        prefix: 'Error'
     framework_info: __compliance.framework_info
     recommendations: __compliance.recommendations
     filter: __compliance.filter
@@ -418,8 +438,6 @@ compliance:
         not_started: 'Not started - No implementation yet'
         planning_phase: 'Planning phase - Requirements analyzed, plan drafted'
         nearly_complete: 'Nearly complete - Most requirements met, minor gaps remain'
-    action:
-        create_mappings_now: 'Create mappings now'
 compliance_mapping:
     mapping_type:
         weak: 'Weak (0-49%)'
@@ -481,9 +499,6 @@ compliance_requirement:
         reusable: reusable
     framework_dashboard:
         compliance_steps: 'Follow these steps to achieve 100% compliance'
-    mapping:
-        create_link: 'Create a mapping'
-        create_instruction: 'to show how requirements relate to your controls'
     mapping_quality:
         no_mappings_found: 'Es wurden keine Compliance-Mappings in der Datenbank gefunden.'
     gaps:
@@ -493,6 +508,72 @@ compliance_requirement:
     requirement:
         view_page_note: 'view page'
         filter_by_framework: 'Filter by Framework'
+mapping_review:
+    title: 'Mapping Review'
+    subtitle: 'Detailed analysis and review'
+    action:
+        back_to_queue: 'Back to Queue'
+        reanalyze: 'Re-analyze'
+        reanalyze_confirm: 'Re-analyze mapping? This will overwrite the current analysis.'
+        save_review: 'Save Review'
+    section:
+        overview: 'Mapping Overview'
+        percentages: 'Percentages'
+        quality_confidence: 'Quality & Confidence'
+        similarity_scores: 'Similarity Scores'
+        gaps: 'Identified Gaps'
+        perform_review: 'Perform Review'
+        metadata: 'Metadata'
+    field:
+        source_requirement: 'Source Requirement'
+        target_requirement: 'Target Requirement'
+        original_heuristic: 'Original (Heuristic)'
+        calculated_auto: 'Calculated (Automatic)'
+        manual_override: 'Manual Override'
+        final: 'Final'
+        quality_score: 'Quality Score'
+        analysis_confidence: 'Analysis Confidence'
+        review_status: 'Review Status'
+        requires_review: 'Requires Review'
+        textual_similarity: 'Textual Similarity'
+        keyword_overlap: 'Keyword Overlap'
+        structural_similarity: 'Structural Similarity'
+        algorithm_version: 'Algorithm v%version%'
+        manual_percentage: 'Manual Percentage (Override)'
+        manual_percentage_help: 'Leave empty = use automatic value'
+        review_notes: 'Review Notes'
+        review_notes_placeholder: 'Optional notes...'
+    gap:
+        count: 'Identified Gaps (%count%)'
+        total_impact: 'Total Impact'
+        total_effort: 'Total Effort'
+        high_confidence: 'High Confidence'
+        missing_keywords: 'Missing Keywords'
+        more_keywords: '... +%count% more'
+        recommendation: 'Recommendation'
+        effort: 'Effort'
+        confidence: 'Confidence'
+        source: 'Source'
+        no_gaps: 'No Gaps Identified'
+        no_gaps_desc: 'This mapping has no automatically detected gaps.'
+    status:
+        unreviewed: 'Unreviewed'
+        in_review: 'In Review'
+        approved: 'Approved'
+        rejected: 'Rejected'
+    message:
+        review_saved: 'Review saved successfully!'
+        new_percentage: 'New Percentage'
+        error: 'Error'
+        unknown_error: 'Unknown error'
+        network_error: 'Network error'
+    metadata:
+        reviewed_by: 'Reviewed by'
+        at: 'on'
+        verified_by: 'Verified by'
+        created: 'Created'
+        updated: 'Updated'
+
 compliance_framework:
     industry:
         all_sectors: 'All Sectors'
@@ -510,8 +591,6 @@ compliance_framework:
         public_sector: 'Public Sector'
         education: Education
         insurance: Insurance
-    mapping:
-        title: 'Compliance Mapping'
     requirement:
         title: 'Compliance Requirement'
 nis2:

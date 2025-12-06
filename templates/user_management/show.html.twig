@@ -30,10 +30,10 @@
         </div>
         <div>
             <a href="{{ path('user_management_edit', {'id': user.id}) }}" class="btn btn-secondary">
-                <i class="bi bi-pencil" aria-hidden="true"></i> Bearbeiten
+                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
             </a>
             <a href="{{ path('user_management_index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left" aria-hidden="true"></i> Zurück
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
             </a>
         </div>
     </div>
@@ -289,7 +289,7 @@
         <div class="card-body">
             <div class="btn-group" role="group">
                 <a href="{{ path('user_management_edit', {'id': user.id}) }}" class="btn btn-primary">
-                    <i class="bi bi-pencil" aria-hidden="true"></i> Bearbeiten
+                    <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
                 </a>
                 {% if user.id != app.user.id %}
                     {% if user.isActive %}

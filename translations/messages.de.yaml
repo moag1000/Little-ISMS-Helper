@@ -20,6 +20,7 @@ login:
     no_account_message: 'Haben Sie noch kein Konto? Kontaktieren Sie Ihren Administrator.'
     placeholder:
         email: ihre.email@unternehmen.de
+        password: 'Ihr Passwort'
 logout: Abmelden
 email: E-Mail
 password: Passwort
@@ -62,6 +63,23 @@ home:
     go_to_dashboard: 'Zum Dashboard'
     tagline: 'Informationssicherheit nach ISO 27001 einfach gemacht'
     quick_start: Schnellstart
+    quick_start_subtitle: 'So starten Sie mit Ihrem ISMS'
+    step1:
+        title: 'Assets erfassen'
+        description: 'Beginnen Sie mit der Erfassung Ihrer IT-Assets. Kategorisieren Sie Hardware, Software, Daten und Services für einen vollständigen Überblick.'
+        action: 'Asset hinzufügen'
+    step2:
+        title: 'Risiken bewerten'
+        description: 'Identifizieren Sie potenzielle Risiken für Ihre Assets. Bewerten Sie Eintrittswahrscheinlichkeit und Auswirkungen systematisch.'
+        action: 'Risiko erfassen'
+    step3:
+        title: 'Controls implementieren'
+        description: 'Wählen Sie passende Controls aus dem ISO 27001 Annex A und implementieren Sie Sicherheitsmaßnahmen zur Risikobehandlung.'
+        action: 'Controls ansehen'
+    step4:
+        title: 'Team schulen'
+        description: 'Sensibilisieren Sie Ihre Mitarbeiter durch regelmäßige Trainings. Dokumentieren Sie alle Schulungsaktivitäten für Compliance-Nachweise.'
+        action: 'Training planen'
 assets: Assets
 risks: Risiken
 controls: Maßnahmen
@@ -1014,6 +1032,12 @@ accessibility:
     skip_to_filters: 'Zu den Filtern springen'
 bulk_actions:
     select_all: 'Alle auswählen'
+    selected: 'ausgewählt'
+    export: 'Export'
+    add_tag: 'Tag hinzufügen'
+    assign: 'Zuweisen'
+    delete: 'Löschen'
+    deselect: 'Auswahl aufheben'
 nis2:
     notification:
         early_warning: 'NIS2 Frühwarnung für Incident "%incident%" fällig in %hours% Stunden. Deadline: %deadline%'

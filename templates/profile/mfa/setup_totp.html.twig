@@ -39,7 +39,7 @@
                              style="max-width: 300px;">
                     </div>
 
-                    <div class="alert alert-info">
+                    <div class="alert alert-info" data-controller="mfa-setup">
                         <h4>
                             <i class="bi bi-info-circle" aria-hidden="true"></i>
                             {{ 'mfa.setup_totp.manual_entry'|trans({}, 'mfa') }}
@@ -55,9 +55,9 @@
                                    aria-label="{{ 'mfa.setup.secret_key'|trans({}, 'mfa') }}">
                             <button class="btn btn-outline-secondary"
                                     type="button"
-                                    data-controller="ui-actions"
-                                    data-action="ui-actions#copyToClipboard"
-                                    data-ui-actions-text-param="{{ secret }}">
+                                    data-action="mfa-setup#copySecret"
+                                    data-mfa-setup-copy-target-param="secret-key"
+                                    data-mfa-setup-copied-text-value="{{ 'common.copied'|trans({}, 'messages') }}">
                                 <i class="bi bi-clipboard" aria-hidden="true"></i>
                                 {{ 'common.copy'|trans({}, 'messages') }}
                             </button>
@@ -77,7 +77,13 @@
                 </div>
             </div>
 
-            <div class="card mb-4">
+            <div class="card mb-4"
+                 data-controller="mfa-setup"
+                 data-mfa-setup-verify-url-value="{{ path('app_profile_mfa_verify', {id: mfa_token.id}) }}"
+                 data-mfa-setup-success-redirect-value="{{ path('app_profile_mfa_show', {id: mfa_token.id}) }}"
+                 data-mfa-setup-verifying-text-value="{{ 'common.verifying'|trans({}, 'messages') }}"
+                 data-mfa-setup-verify-button-text-value="{{ 'mfa.setup_totp.verify_button'|trans({}, 'mfa') }}"
+                 data-mfa-setup-error-text-value="{{ 'common.error'|trans({}, 'messages') }}">
                 <div class="card-header bg-success text-white">
                     <h3 class="mb-0">
                         <i class="bi bi-check-circle" aria-hidden="true"></i>
@@ -87,7 +93,7 @@
                 <div class="card-body">
                     <p class="lead">{{ 'mfa.setup_totp.verify_instructions'|trans({}, 'mfa') }}</p>
 
-                    <form id="verify-form" onsubmit="return verifyCode(event)">
+                    <form data-action="submit->mfa-setup#verify">
                         <div class="mb-3">
                             <label for="verification-code" class="form-label">
                                 {{ 'mfa.field.verification_code'|trans({}, 'mfa') }}
@@ -102,13 +108,14 @@
                                    required
                                    autocomplete="off"
                                    autofocus
+                                   data-mfa-setup-target="codeInput"
                                    aria-label="{{ 'mfa.field.verification_code'|trans({}, 'mfa') }}">
                             <div class="form-text">{{ 'mfa.setup_totp.code_help'|trans({}, 'mfa') }}</div>
                         </div>
 
-                        <div id="verify-feedback"></div>
+                        <div data-mfa-setup-target="feedback"></div>
 
-                        <button type="submit" class="btn btn-success btn-lg w-100" id="verify-btn">
+                        <button type="submit" class="btn btn-success btn-lg w-100" data-mfa-setup-target="submitButton">
                             <i class="bi bi-check-circle" aria-hidden="true"></i>
                             {{ 'mfa.setup_totp.verify_button'|trans({}, 'mfa') }}
                         </button>
@@ -118,7 +125,19 @@
         </div>
 
         <div class="col-lg-4">
-            <div class="card border-warning">
+            <div class="card border-warning"
+                 data-controller="backup-codes"
+                 data-backup-codes-codes-value="{{ backup_codes|json_encode }}"
+                 data-backup-codes-user-email-value="{{ user.email }}"
+                 data-backup-codes-device-name-value="{{ mfa_token.deviceName }}"
+                 data-backup-codes-title-text-value="{{ 'mfa.backup_codes.title'|trans({}, 'mfa') }}"
+                 data-backup-codes-user-label-value="{{ 'user.field.email'|trans({}, 'user') }}"
+                 data-backup-codes-device-label-value="{{ 'mfa.field.device_name'|trans({}, 'mfa') }}"
+                 data-backup-codes-generated-label-value="{{ 'common.date'|trans({}, 'messages') }}"
+                 data-backup-codes-warning-title-value="{{ 'mfa.backup_codes.warning'|trans({}, 'mfa') }}"
+                 data-backup-codes-warning-text-value="{{ 'mfa.backup_codes.warning_text'|trans({}, 'mfa') }}"
+                 data-backup-codes-codes-label-value="{{ 'mfa.backup_codes.codes'|trans({}, 'mfa') }}"
+                 data-backup-codes-copied-text-value="{{ 'common.copied'|trans({}, 'messages') }}">
                 <div class="card-header bg-warning">
                     <h3 class="mb-0">
                         <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
@@ -136,180 +155,31 @@
 
                     <p class="small">{{ 'mfa.backup_codes.description'|trans({}, 'mfa') }}</p>
 
-                    <div data-controller="backup-codes"
-                         data-backup-codes-codes-value="{{ backup_codes|json_encode }}">
-                        <div class="bg-light p-3 rounded border font-monospace small" style="max-height: 300px; overflow-y: auto;" data-backup-codes-target="codesContainer">
-                            {% for code in backup_codes %}
-                                <div class="py-1">
-                                    <i class="bi bi-key-fill text-warning" aria-hidden="true"></i> <span class="font-monospace">{{ code }}</span>
-                                </div>
-                            {% endfor %}
-                        </div>
+                    <div class="bg-light p-3 rounded border font-monospace small" style="max-height: 300px; overflow-y: auto;" data-backup-codes-target="codesContainer">
+                        {% for code in backup_codes %}
+                            <div class="py-1">
+                                <i class="bi bi-key-fill text-warning" aria-hidden="true"></i> <span class="font-monospace">{{ code }}</span>
+                            </div>
+                        {% endfor %}
+                    </div>
 
-                        <div class="d-grid gap-2 mt-3">
-                            <button type="button"
-                                    class="btn btn-outline-primary btn-sm"
-                                    data-action="backup-codes#copy">
-                                <i class="bi bi-clipboard" aria-hidden="true"></i>
-                                {{ 'mfa.backup_codes.copy_all'|trans({}, 'mfa') }}
-                            </button>
-                            <button type="button"
-                                    class="btn btn-outline-secondary btn-sm"
-                                    data-action="backup-codes#print">
-                                <i class="bi bi-printer" aria-hidden="true"></i>
-                                {{ 'mfa.backup_codes.print'|trans({}, 'mfa') }}
-                            </button>
-                        </div>
+                    <div class="d-grid gap-2 mt-3">
+                        <button type="button"
+                                class="btn btn-outline-primary btn-sm"
+                                data-action="backup-codes#copy">
+                            <i class="bi bi-clipboard" aria-hidden="true"></i>
+                            {{ 'mfa.backup_codes.copy_all'|trans({}, 'mfa') }}
+                        </button>
+                        <button type="button"
+                                class="btn btn-outline-secondary btn-sm"
+                                data-action="backup-codes#print">
+                            <i class="bi bi-printer" aria-hidden="true"></i>
+                            {{ 'mfa.backup_codes.print'|trans({}, 'mfa') }}
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    <script>
-    function copyToClipboard(elementId) {
-        const element = document.getElementById(elementId);
-        element.select();
-        document.execCommand('copy');
-
-        // Show feedback
-        const btn = event.target.closest('button');
-        const originalHTML = btn.innerHTML;
-        btn.innerHTML = '<i class="bi bi-check" aria-hidden="true"></i> {{ 'common.copied'|trans({}, 'messages') }}';
-        btn.classList.add('btn-success');
-        btn.classList.remove('btn-outline-secondary');
-
-        setTimeout(() => {
-            btn.innerHTML = originalHTML;
-            btn.classList.remove('btn-success');
-            btn.classList.add('btn-outline-secondary');
-        }, 2000);
-    }
-
-    function copyBackupCodes() {
-        const codes = {{ backup_codes|json_encode|raw }};
-        const text = codes.join('\n');
-
-        navigator.clipboard.writeText(text).then(() => {
-            const btn = event.target.closest('button');
-            const originalHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="bi bi-check" aria-hidden="true"></i> {{ 'common.copied'|trans({}, 'messages') }}';
-            btn.classList.add('btn-success');
-
-            setTimeout(() => {
-                btn.innerHTML = originalHTML;
-                btn.classList.remove('btn-success');
-            }, 2000);
-        });
-    }
-
-    function printBackupCodes() {
-        const codes = {{ backup_codes|json_encode|raw }};
-        const printWindow = window.open('', '', 'width=600,height=800');
-
-        printWindow.document.write(`
-            <html>
-            <head>
-                <title>{{ 'mfa.backup_codes.title'|trans({}, 'mfa') }} - {{ user.email }}</title>
-                <style>
-                    body { font-family: monospace; padding: 20px; }
-                    h1 { font-size: 18px; }
-                    .code { padding: 5px; margin: 5px 0; }
-                    .warning { background: #fff3cd; padding: 10px; border: 2px solid #ffc107; margin: 10px 0; }
-                </style>
-            </head>
-            <body>
-                <h1>{{ 'mfa.backup_codes.title'|trans({}, 'mfa') }}</h1>
-                <p><strong>{{ 'user.field.email'|trans({}, 'user') }}:</strong> {{ user.email }}</p>
-                <p><strong>{{ 'common.date'|trans({}, 'messages') }}:</strong> ${new Date().toLocaleString()}</p>
-                <div class="warning">
-                    <strong>{{ 'mfa.backup_codes.warning'|trans({}, 'mfa') }}</strong><br>
-                    {{ 'mfa.backup_codes.warning_text'|trans({}, 'mfa') }}
-                </div>
-                <h2>{{ 'mfa.backup_codes.codes'|trans({}, 'mfa') }}</h2>
-                ${codes.map((code, i) => '<div class="code">' + (i+1) + '. ' + code + '</div>').join('')}
-            </body>
-            </html>
-        `);
-
-        printWindow.document.close();
-        printWindow.focus();
-        setTimeout(() => printWindow.print(), 250);
-    }
-
-    function verifyCode(event) {
-        event.preventDefault();
-
-        const form = document.getElementById('verify-form');
-        const code = document.getElementById('verification-code').value;
-        const btn = document.getElementById('verify-btn');
-        const feedback = document.getElementById('verify-feedback');
-
-        // Disable button during verification
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>{{ 'common.verifying'|trans({}, 'messages') }}...';
-
-        // Send verification request
-        fetch('{{ path('app_profile_mfa_verify', {id: mfa_token.id}) }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'code=' + encodeURIComponent(code)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                feedback.innerHTML = `
-                    <div class="alert alert-success">
-                        <i class="bi bi-check-circle" aria-hidden="true"></i> ${data.message}
-                    </div>
-                `;
-
-                // Redirect after 2 seconds
-                setTimeout(() => {
-                    window.location.href = '{{ path('app_profile_mfa_show', {id: mfa_token.id}) }}';
-                }, 2000);
-            } else {
-                feedback.innerHTML = `
-                    <div class="alert alert-danger">
-                        <i class="bi bi-x-circle" aria-hidden="true"></i> ${data.message}
-                    </div>
-                `;
-
-                btn.disabled = false;
-                btn.innerHTML = '<i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa.setup_totp.verify_button'|trans({}, 'mfa') }}';
-
-                // Clear code field for retry
-                document.getElementById('verification-code').value = '';
-                document.getElementById('verification-code').focus();
-            }
-        })
-        .catch(error => {
-            feedback.innerHTML = `
-                <div class="alert alert-danger">
-                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.error'|trans({}, 'messages') }}: ${error.message}
-                </div>
-            `;
-
-            btn.disabled = false;
-            btn.innerHTML = '<i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa.setup_totp.verify_button'|trans({}, 'mfa') }}';
-        });
-
-        return false;
-    }
-
-    // Auto-submit when 6 digits entered
-    document.getElementById('verification-code').addEventListener('input', function(e) {
-        if (this.value.length === 6 && /^\d{6}$/.test(this.value)) {
-            setTimeout(() => {
-                document.getElementById('verify-form').dispatchEvent(new Event('submit', {cancelable: true}));
-            }, 500);
-        }
-    });
-    </script>
 {% endblock %}

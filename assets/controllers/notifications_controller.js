@@ -57,7 +57,6 @@ export default class extends Controller {
             try {
                 this.notifications = JSON.parse(saved);
             } catch (e) {
-                console.error('Failed to parse notifications:', e);
                 this.notifications = [];
             }
         } else {

@@ -148,7 +148,6 @@ export default class extends Controller {
             const data = await response.json();
             this.displayResults(data, query);
         } catch (error) {
-            console.error('Search error:', error);
             this.displayError();
         }
     }

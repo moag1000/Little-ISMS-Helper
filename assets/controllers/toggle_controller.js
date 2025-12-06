@@ -62,4 +62,9 @@ export default class extends Controller {
             this.filterPanelTarget.style.display = isHidden ? 'block' : 'none';
         }
     }
+
+    // Stop event propagation (for nested interactive elements)
+    stopPropagation(event) {
+        event.stopPropagation();
+    }
 }

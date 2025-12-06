@@ -129,32 +129,32 @@
                                     </td>
                                     <td>
                                         {% if user.authProvider == 'azure_oauth' %}
-                                            <i class="bi bi-microsoft" aria-hidden="true"></i> Azure OAuth
+                                            <i class="bi bi-microsoft" aria-hidden="true"></i> {{ 'user.auth.azure_oauth'|trans({}, 'user') }}
                                         {% elseif user.authProvider == 'azure_saml' %}
-                                            <i class="bi bi-microsoft" aria-hidden="true"></i> Azure SAML
+                                            <i class="bi bi-microsoft" aria-hidden="true"></i> {{ 'user.auth.azure_saml'|trans({}, 'user') }}
                                         {% else %}
-                                            <i class="bi bi-person-circle" aria-hidden="true"></i> Lokal
+                                            <i class="bi bi-person-circle" aria-hidden="true"></i> {{ 'user.auth.local'|trans({}, 'user') }}
                                         {% endif %}
                                     </td>
                                     <td>
                                         {% if user.isActive %}
                                             <span class="badge bg-success">
-                                                <i class="bi bi-check-circle" aria-hidden="true"></i> Aktiv
+                                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'user.status.active'|trans({}, 'user') }}
                                             </span>
                                         {% else %}
                                             <span class="badge bg-danger">
-                                                <i class="bi bi-x-circle" aria-hidden="true"></i> Inaktiv
+                                                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'user.status.inactive'|trans({}, 'user') }}
                                             </span>
                                         {% endif %}
                                         {% if not user.isVerified %}
-                                            <span class="badge bg-warning">Nicht verifiziert</span>
+                                            <span class="badge bg-warning">{{ 'user.status.not_verified'|trans({}, 'user') }}</span>
                                         {% endif %}
                                     </td>
                                     <td>
                                         {% if user.lastLoginAt %}
                                             {{ user.lastLoginAt|date('d.m.Y H:i') }}
                                         {% else %}
-                                            <span class="text-muted">Nie</span>
+                                            <span class="text-muted">{{ 'user.status.never'|trans({}, 'user') }}</span>
                                         {% endif %}
                                     </td>
                                     <td>
@@ -186,11 +186,11 @@
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h2 class="modal-title">Benutzer löschen</h2>
+                                                <h2 class="modal-title">{{ 'user.action.delete_user'|trans({}, 'user') }}</h2>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                                             </div>
                                             <div class="modal-body">
-                                                Möchten Sie den Benutzer <strong>{{ user.firstName }} {{ user.lastName }}</strong> wirklich löschen?
+                                                {{ 'user.confirm.delete'|trans({'%name%': user.firstName ~ ' ' ~ user.lastName}, 'user') }}
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>

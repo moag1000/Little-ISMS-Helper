@@ -1,0 +1,8 @@
+notifications:
+    title: 'Notifications'
+    action:
+        mark_all_read: 'Mark all as read'
+        clear_all: 'Clear all'
+    empty:
+        title: 'No notifications'
+        description: 'You have read all notifications'

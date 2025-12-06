@@ -26,6 +26,8 @@ incident:
         back_to_list: 'Zurück zur Liste'
         delete: Löschen
         download_nis2_report: 'NIS2-Report herunterladen'
+    confirm:
+        delete: 'Möchten Sie diesen Vorfall wirklich löschen?'
     section:
         basic_info: Basisinformationen
         severity_status: 'Schweregrad & Status'

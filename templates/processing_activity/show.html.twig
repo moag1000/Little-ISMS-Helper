@@ -268,7 +268,7 @@
 <script>
 document.querySelector('[data-action="clone"]')?.addEventListener('click', (e) => {
     e.preventDefault();
-    if (confirm('Clone this processing activity?')) {
+    if (confirm('{{ 'processing_activity.confirm.clone'|trans({}, 'privacy') }}')) {
         document.getElementById('cloneForm').submit();
     }
 });

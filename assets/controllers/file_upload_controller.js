@@ -304,7 +304,6 @@ export default class extends Controller {
                 throw new Error('Upload failed');
             }
         } catch (error) {
-            console.error('Upload error:', error);
             this.showError('Fehler beim Hochladen der Dateien.');
         }
     }

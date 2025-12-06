@@ -1,8 +1,8 @@
 {% extends 'admin/layout.html.twig' %}
 
-{% block admin_title %}Backup & Wiederherstellung{% endblock %}
+{% block admin_title %}{{ 'data_management.backup.title'|trans({}, 'admin') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">Sichern und Wiederherstellen von Systemdaten</p>
+    <p class="text-muted">{{ 'data_management.backup.subtitle'|trans({}, 'admin') }}</p>
 {% endblock %}
 
 {% block admin_content %}
@@ -12,21 +12,20 @@
             <div class="card border-primary">
                 <div class="card-header bg-primary text-white">
                     <h3 class="mb-0">
-                        <i class="bi bi-cloud-download" aria-hidden="true"></i> Neues Backup erstellen
+                        <i class="bi bi-cloud-download" aria-hidden="true"></i> {{ 'data_management.backup.section.create'|trans({}, 'admin') }}
                     </h3>
                 </div>
                 <div class="card-body">
                     <p class="text-muted">
-                        Erstellen Sie ein vollständiges Backup aller produktiven Daten. Das Backup enthält alle Benutzerdaten,
-                        Risiken, Incidents, Assets, Controls und weitere Daten.
+                        {{ 'data_management.backup.create.description'|trans({}, 'admin') }}
                     </p>
                     <form id="createBackupForm">
                         <div class="mb-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="includeAuditLog" name="include_audit_log" checked>
                                 <label class="form-check-label" for="includeAuditLog">
-                                    Audit-Logs einschließen
-                                    <small class="text-muted d-block">Empfohlen für vollständige Nachvollziehbarkeit</small>
+                                    {{ 'data_management.backup.create.include_audit_log'|trans({}, 'admin') }}
+                                    <small class="text-muted d-block">{{ 'data_management.backup.create.include_audit_log_help'|trans({}, 'admin') }}</small>
                                 </label>
                             </div>
                         </div>
@@ -34,13 +33,13 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="includeUserSessions" name="include_user_sessions">
                                 <label class="form-check-label" for="includeUserSessions">
-                                    Aktive Benutzersitzungen einschließen
-                                    <small class="text-muted d-block">Optional, normalerweise nicht erforderlich</small>
+                                    {{ 'data_management.backup.create.include_sessions'|trans({}, 'admin') }}
+                                    <small class="text-muted d-block">{{ 'data_management.backup.create.include_sessions_help'|trans({}, 'admin') }}</small>
                                 </label>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary" id="createBackupBtn">
-                            <i class="bi bi-cloud-download me-2" aria-hidden="true"></i>Backup jetzt erstellen
+                            <i class="bi bi-cloud-download me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.create_now'|trans({}, 'admin') }}
                         </button>
                     </form>
                     <div id="createBackupStatus" class="mt-3"></div>
@@ -55,21 +54,21 @@
             <div class="card border-info">
                 <div class="card-header bg-info text-white">
                     <h3 class="mb-0">
-                        <i class="bi bi-cloud-upload" aria-hidden="true"></i> Backup hochladen
+                        <i class="bi bi-cloud-upload" aria-hidden="true"></i> {{ 'data_management.backup.section.upload'|trans({}, 'admin') }}
                     </h3>
                 </div>
                 <div class="card-body">
                     <p class="text-muted">
-                        Laden Sie eine Backup-Datei hoch, um sie wiederherzustellen oder zu validieren.
+                        {{ 'data_management.backup.upload.description'|trans({}, 'admin') }}
                     </p>
                     <form id="uploadBackupForm">
                         <div class="mb-3">
-                            <label for="backupFile" class="form-label">Backup-Datei auswählen</label>
+                            <label for="backupFile" class="form-label">{{ 'data_management.backup.upload.select_file'|trans({}, 'admin') }}</label>
                             <input type="file" class="form-control" id="backupFile" name="backup_file" accept=".json,.gz">
-                            <div class="form-text">Erlaubte Formate: .json, .gz</div>
+                            <div class="form-text">{{ 'data_management.backup.upload.allowed_formats'|trans({}, 'admin') }}</div>
                         </div>
                         <button type="submit" class="btn btn-info" id="uploadBackupBtn">
-                            <i class="bi bi-cloud-upload me-2" aria-hidden="true"></i>Hochladen
+                            <i class="bi bi-cloud-upload me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.upload'|trans({}, 'admin') }}
                         </button>
                     </form>
                     <div id="uploadBackupStatus" class="mt-3"></div>
@@ -84,7 +83,7 @@
             <div class="card">
                 <div class="card-header bg-light">
                     <h3 class="mb-0">
-                        <i class="bi bi-archive" aria-hidden="true"></i> Verfügbare Backups
+                        <i class="bi bi-archive" aria-hidden="true"></i> {{ 'data_management.backup.section.available'|trans({}, 'admin') }}
                     </h3>
                 </div>
                 <div class="card-body">
@@ -102,10 +101,10 @@
                         } %}
                             {% block table_head %}
                                 <tr>
-                                    <th scope="col">Dateiname</th>
-                                    <th scope="col">Erstellt am</th>
-                                    <th scope="col">Größe</th>
-                                    <th scope="col">Aktionen</th>
+                                    <th scope="col">{{ 'data_management.backup.table.filename'|trans({}, 'admin') }}</th>
+                                    <th scope="col">{{ 'data_management.backup.table.created_at'|trans({}, 'admin') }}</th>
+                                    <th scope="col">{{ 'data_management.backup.table.size'|trans({}, 'admin') }}</th>
+                                    <th scope="col">{{ 'data_management.backup.table.actions'|trans({}, 'admin') }}</th>
                                 </tr>
                             {% endblock %}
                             {% block table_body %}
@@ -120,19 +119,19 @@
                                         <td>
                                             <div class="btn-group btn-group-sm" role="group">
                                                 <button type="button" class="btn btn-outline-primary validate-backup" data-filename="{{ backup.filename }}">
-                                                    <i class="bi bi-check-circle" aria-hidden="true"></i> Validieren
+                                                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'data_management.backup.action.validate'|trans({}, 'admin') }}
                                                 </button>
                                                 <button type="button" class="btn btn-outline-info preview-backup" data-filename="{{ backup.filename }}">
-                                                    <i class="bi bi-eye" aria-hidden="true"></i> Vorschau
+                                                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'data_management.backup.action.preview'|trans({}, 'admin') }}
                                                 </button>
                                                 <a href="{{ path('data_backup_download', {filename: backup.filename}) }}" class="btn btn-outline-success">
-                                                    <i class="bi bi-download" aria-hidden="true"></i> Download
+                                                    <i class="bi bi-download" aria-hidden="true"></i> {{ 'data_management.backup.action.download'|trans({}, 'admin') }}
                                                 </a>
                                                 <button type="button" class="btn btn-outline-warning restore-backup" data-filename="{{ backup.filename }}">
-                                                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Wiederherstellen
+                                                    <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'data_management.backup.action.restore_action'|trans({}, 'admin') }}
                                                 </button>
                                                 <button type="button" class="btn btn-outline-danger delete-backup" data-filename="{{ backup.filename }}">
-                                                    <i class="bi bi-trash" aria-hidden="true"></i> Löschen
+                                                    <i class="bi bi-trash" aria-hidden="true"></i> {{ 'data_management.backup.action.delete'|trans({}, 'admin') }}
                                                 </button>
                                             </div>
                                         </td>
@@ -154,66 +153,65 @@
             <div class="backup-modal-content">
                 <div class="backup-modal-header bg-warning text-dark">
                     <h5 class="backup-modal-title" id="restoreModalLabel">
-                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Backup wiederherstellen
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'data_management.backup.restore.title'|trans({}, 'admin') }}
                     </h5>
-                    <button type="button" class="btn-close backup-modal-close" aria-label="Close"></button>
+                    <button type="button" class="btn-close backup-modal-close" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="backup-modal-body">
                     <div class="alert alert-warning">
                         <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-                        <strong>Achtung:</strong> Die Wiederherstellung eines Backups kann bestehende Daten überschreiben.
-                        Es wird empfohlen, zuerst einen Testlauf durchzuführen.
+                        <strong>{{ 'data_management.backup.restore.warning'|trans({}, 'admin') }}:</strong> {{ 'data_management.backup.restore.warning_text'|trans({}, 'admin') }}
                     </div>
 
                     <form id="restoreForm">
                         <input type="hidden" id="restoreFilename" name="filename">
 
                         <div class="mb-3">
-                            <label class="form-label fw-bold" for="strategyDefault">Strategie für fehlende Felder:</label>
+                            <label class="form-label fw-bold" for="strategyDefault">{{ 'data_management.backup.restore.missing_field_strategy'|trans({}, 'admin') }}:</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="missing_field_strategy" id="strategyDefault" value="use_default" checked>
                                 <label class="form-check-label" for="strategyDefault">
-                                    Standardwerte verwenden (empfohlen)
-                                    <small class="text-muted d-block">Fehlende Felder werden mit Standardwerten gefüllt</small>
+                                    {{ 'data_management.backup.restore.strategy_default'|trans({}, 'admin') }}
+                                    <small class="text-muted d-block">{{ 'data_management.backup.restore.strategy_default_help'|trans({}, 'admin') }}</small>
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="missing_field_strategy" id="strategySkip" value="skip_field">
                                 <label class="form-check-label" for="strategySkip">
-                                    Felder überspringen
-                                    <small class="text-muted d-block">Fehlende Felder werden ignoriert</small>
+                                    {{ 'data_management.backup.restore.strategy_skip'|trans({}, 'admin') }}
+                                    <small class="text-muted d-block">{{ 'data_management.backup.restore.strategy_skip_help'|trans({}, 'admin') }}</small>
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="missing_field_strategy" id="strategyFail" value="fail">
                                 <label class="form-check-label" for="strategyFail">
-                                    Abbrechen bei Fehler
-                                    <small class="text-muted d-block">Wiederherstellung wird bei fehlenden Feldern abgebrochen</small>
+                                    {{ 'data_management.backup.restore.strategy_fail'|trans({}, 'admin') }}
+                                    <small class="text-muted d-block">{{ 'data_management.backup.restore.strategy_fail_help'|trans({}, 'admin') }}</small>
                                 </label>
                             </div>
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label fw-bold" for="existingUpdate">Strategie für bestehende Daten:</label>
+                            <label class="form-label fw-bold" for="existingUpdate">{{ 'data_management.backup.restore.existing_data_strategy'|trans({}, 'admin') }}:</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="existing_data_strategy" id="existingUpdate" value="update" checked>
                                 <label class="form-check-label" for="existingUpdate">
-                                    Aktualisieren (empfohlen)
-                                    <small class="text-muted d-block">Bestehende Einträge werden aktualisiert</small>
+                                    {{ 'data_management.backup.restore.existing_update'|trans({}, 'admin') }}
+                                    <small class="text-muted d-block">{{ 'data_management.backup.restore.existing_update_help'|trans({}, 'admin') }}</small>
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="existing_data_strategy" id="existingSkip" value="skip">
                                 <label class="form-check-label" for="existingSkip">
-                                    Überspringen
-                                    <small class="text-muted d-block">Bestehende Einträge werden nicht verändert</small>
+                                    {{ 'data_management.backup.restore.existing_skip'|trans({}, 'admin') }}
+                                    <small class="text-muted d-block">{{ 'data_management.backup.restore.existing_skip_help'|trans({}, 'admin') }}</small>
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="existing_data_strategy" id="existingReplace" value="replace">
                                 <label class="form-check-label" for="existingReplace">
-                                    Ersetzen
-                                    <small class="text-muted d-block">Bestehende Einträge werden gelöscht und neu erstellt</small>
+                                    {{ 'data_management.backup.restore.existing_replace'|trans({}, 'admin') }}
+                                    <small class="text-muted d-block">{{ 'data_management.backup.restore.existing_replace_help'|trans({}, 'admin') }}</small>
                                 </label>
                             </div>
                         </div>
@@ -222,21 +220,20 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="clearBeforeRestore" name="clear_before_restore">
                                 <label class="form-check-label" for="clearBeforeRestore">
-                                    <strong class="text-danger">Alle bestehenden Daten löschen vor Wiederherstellung</strong>
-                                    <small class="text-muted d-block">Löscht ALLE Daten und stellt das Backup vollständig wieder her (konsistenter Zustand)</small>
+                                    <strong class="text-danger">{{ 'data_management.backup.restore.clear_before'|trans({}, 'admin') }}</strong>
+                                    <small class="text-muted d-block">{{ 'data_management.backup.restore.clear_before_help'|trans({}, 'admin') }}</small>
                                 </label>
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="adminPassword" class="form-label">
-                                <strong>Admin-Passwort setzen (optional)</strong>
+                                <strong>{{ 'data_management.backup.restore.admin_password'|trans({}, 'admin') }}</strong>
                             </label>
-                            <input type="password" class="form-control" id="adminPassword" name="admin_password" placeholder="Neues Passwort für Admin-Benutzer">
+                            <input type="password" class="form-control" id="adminPassword" name="admin_password" placeholder="{{ 'data_management.backup.restore.admin_password_placeholder'|trans({}, 'admin') }}">
                             <div class="form-text">
                                 <i class="bi bi-info-circle" aria-hidden="true"></i>
-                                Passwörter werden aus Sicherheitsgründen nicht im Backup gespeichert.
-                                Geben Sie hier ein neues Passwort für den ersten Admin-Benutzer an, damit Sie sich nach der Wiederherstellung einloggen können.
+                                {{ 'data_management.backup.restore.admin_password_help'|trans({}, 'admin') }}
                             </div>
                         </div>
 
@@ -244,8 +241,8 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="dryRun" name="dry_run" checked>
                                 <label class="form-check-label" for="dryRun">
-                                    <strong>Testlauf durchführen (empfohlen)</strong>
-                                    <small class="text-muted d-block">Keine Daten werden tatsächlich geändert</small>
+                                    <strong>{{ 'data_management.backup.restore.dry_run'|trans({}, 'admin') }}</strong>
+                                    <small class="text-muted d-block">{{ 'data_management.backup.restore.dry_run_help'|trans({}, 'admin') }}</small>
                                 </label>
                             </div>
                         </div>
@@ -256,7 +253,7 @@
                 <div class="backup-modal-footer">
                     <button type="button" class="btn btn-secondary backup-modal-close">{{ 'common.cancel'|trans({}, 'messages') }}</button>
                     <button type="button" class="btn btn-warning" id="confirmRestoreBtn">
-                        <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>Wiederherstellung starten
+                        <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>{{ 'data_management.backup.action.start_restore'|trans({}, 'admin') }}
                     </button>
                 </div>
             </div>
@@ -271,15 +268,15 @@
             <div class="backup-modal-content">
                 <div class="backup-modal-header">
                     <h5 class="backup-modal-title" id="previewModalLabel">
-                        <i class="bi bi-eye" aria-hidden="true"></i> Backup-Vorschau
+                        <i class="bi bi-eye" aria-hidden="true"></i> {{ 'data_management.backup.preview.title'|trans({}, 'admin') }}
                     </h5>
-                    <button type="button" class="btn-close backup-modal-close" aria-label="Close"></button>
+                    <button type="button" class="btn-close backup-modal-close" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="backup-modal-body">
                     <div id="previewContent">
                         <div class="text-center">
                             <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Laden...</span>
+                                <span class="visually-hidden">{{ 'data_management.backup.message.loading'|trans({}, 'admin') }}</span>
                             </div>
                         </div>
                     </div>
@@ -558,14 +555,14 @@
 
                         let message = `<div class="alert ${alertClass} mt-2">`;
                         message += `<i class="bi bi-${icon}" aria-hidden="true"></i> `;
-                        message += result.valid ? '<strong>Backup ist gültig</strong>' : '<strong>Backup ist ungültig</strong>';
+                        message += result.valid ? '<strong>{{ 'data_management.backup.validation.valid'|trans({}, 'admin') }}</strong>' : '<strong>{{ 'data_management.backup.validation.invalid'|trans({}, 'admin') }}</strong>';
 
                         if (result.metadata) {
-                            message += `<br><small>Version: ${result.metadata.version} | Erstellt: ${result.metadata.created_at}</small>`;
+                            message += `<br><small>{{ 'data_management.backup.validation.version'|trans({}, 'admin') }}: ${result.metadata.version} | {{ 'data_management.backup.validation.created'|trans({}, 'admin') }}: ${result.metadata.created_at}</small>`;
                         }
 
                         if (result.errors && result.errors.length > 0) {
-                            message += '<br><strong>Fehler:</strong><ul class="mb-0">';
+                            message += '<br><strong>{{ 'data_management.backup.validation.errors'|trans({}, 'admin') }}:</strong><ul class="mb-0">';
                             result.errors.forEach(error => {
                                 message += `<li>${error}</li>`;
                             });
@@ -573,7 +570,7 @@
                         }
 
                         if (result.warnings && result.warnings.length > 0) {
-                            message += '<br><strong>Warnungen:</strong><ul class="mb-0">';
+                            message += '<br><strong>{{ 'data_management.backup.validation.warnings'|trans({}, 'admin') }}:</strong><ul class="mb-0">';
                             result.warnings.forEach(warning => {
                                 message += `<li>${warning}</li>`;
                             });
@@ -596,7 +593,7 @@
                         cell.innerHTML = message;
 
                     } catch (error) {
-                        alert('Fehler bei der Validierung: ' + error.message);
+                        alert('{{ 'data_management.backup.message.validation_error'|trans({}, 'admin') }}: ' + error.message);
                     } finally {
                         this.disabled = false;
                         this.innerHTML = '<i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'data_management.backup.action.validate'|trans({}, 'admin') }}';
@@ -612,7 +609,7 @@
             function showModal(modalId) {
                 const modalEl = document.getElementById(modalId);
                 if (!modalEl) {
-                    alert('Modal nicht gefunden: ' + modalId);
+                    alert('{{ 'data_management.backup.message.modal_not_found'|trans({}, 'admin') }}: ' + modalId);
                     return false;
                 }
 
@@ -669,14 +666,8 @@
             const previewButtons = document.querySelectorAll('.preview-backup');
             const restoreButtons = document.querySelectorAll('.restore-backup');
 
-            console.log('Event Listeners registriert:', {
-                previewButtons: previewButtons.length,
-                restoreButtons: restoreButtons.length
-            });
-
             previewButtons.forEach(btn => {
                 btn.addEventListener('click', async function(event) {
-                    console.log('Preview button clicked:', this.getAttribute('data-filename'));
                     event.preventDefault();
                     event.stopPropagation();
 
@@ -695,7 +686,7 @@
 
                         if (result.success) {
                             let html = '<div class="table-responsive"><table class="table table-sm">';
-                            html += '<thead><tr><th scope="col">Entity</th><th scope="col">Wiederherzustellen</th><th scope="col">Bereits vorhanden</th><th scope="col">Beispieldaten</th></tr></thead><tbody>';
+                            html += '<thead><tr><th scope="col">{{ 'data_management.backup.preview.entity'|trans({}, 'admin') }}</th><th scope="col">{{ 'data_management.backup.preview.to_restore'|trans({}, 'admin') }}</th><th scope="col">{{ 'data_management.backup.preview.existing'|trans({}, 'admin') }}</th><th scope="col">{{ 'data_management.backup.preview.sample_data'|trans({}, 'admin') }}</th></tr></thead><tbody>';
 
                             for (const [entity, data] of Object.entries(result.preview.entities)) {
                                 html += `<tr><td><strong>${entity}</strong></td><td>${data.to_restore}</td><td>${data.existing}</td>`;
@@ -703,10 +694,10 @@
                             }
 
                             html += '</tbody></table></div>';
-                            html += `<div class="alert alert-info"><strong>Gesamtanzahl Datensätze:</strong> ${result.preview.total_records}</div>`;
+                            html += `<div class="alert alert-info"><strong>{{ 'data_management.backup.preview.total_records'|trans({}, 'admin') }}:</strong> ${result.preview.total_records}</div>`;
 
                             if (result.preview.metadata) {
-                                html += `<div class="card"><div class="card-body"><h4>Metadata:</h4><pre>${JSON.stringify(result.preview.metadata, null, 2)}</pre></div></div>`;
+                                html += `<div class="card"><div class="card-body"><h4>{{ 'data_management.backup.preview.metadata'|trans({}, 'admin') }}:</h4><pre>${JSON.stringify(result.preview.metadata, null, 2)}</pre></div></div>`;
                             }
 
                             previewContent.innerHTML = html;
@@ -722,7 +713,6 @@
             // Restore Backup
             restoreButtons.forEach(btn => {
                 btn.addEventListener('click', function(event) {
-                    console.log('Restore button clicked:', this.getAttribute('data-filename'));
                     event.preventDefault();
                     event.stopPropagation();
 
@@ -757,8 +747,8 @@
                         let html = `<div class="alert alert-success"><i class="bi bi-check-circle" aria-hidden="true"></i> <strong>${result.message}</strong>`;
 
                         if (result.statistics) {
-                            html += '<br><br><strong>Statistiken:</strong><table class="table table-sm mt-2">';
-                            html += '<thead><tr><th scope="col">Entity</th><th scope="col">Erstellt</th><th scope="col">Aktualisiert</th><th scope="col">Übersprungen</th><th scope="col">Fehler</th></tr></thead><tbody>';
+                            html += '<br><br><strong>{{ 'data_management.backup.restore.statistics'|trans({}, 'admin') }}:</strong><table class="table table-sm mt-2">';
+                            html += '<thead><tr><th scope="col">{{ 'data_management.backup.restore.stat_entity'|trans({}, 'admin') }}</th><th scope="col">{{ 'data_management.backup.restore.stat_created'|trans({}, 'admin') }}</th><th scope="col">{{ 'data_management.backup.restore.stat_updated'|trans({}, 'admin') }}</th><th scope="col">{{ 'data_management.backup.restore.stat_skipped'|trans({}, 'admin') }}</th><th scope="col">{{ 'data_management.backup.restore.stat_errors'|trans({}, 'admin') }}</th></tr></thead><tbody>';
                             for (const [entity, stats] of Object.entries(result.statistics)) {
                                 html += `<tr><td>${entity}</td><td>${stats.created}</td><td>${stats.updated}</td><td>${stats.skipped}</td><td>${stats.errors}</td></tr>`;
                             }
@@ -766,7 +756,7 @@
                         }
 
                         if (result.warnings && result.warnings.length > 0) {
-                            html += '<br><strong>Warnungen:</strong><ul>';
+                            html += '<br><strong>{{ 'data_management.backup.validation.warnings'|trans({}, 'admin') }}:</strong><ul>';
                             result.warnings.forEach(warning => {
                                 html += `<li>${warning}</li>`;
                             });
@@ -774,7 +764,7 @@
                         }
 
                         if (!result.dry_run) {
-                            html += '<br><small class="text-muted">Die Seite wird in 3 Sekunden neu geladen...</small>';
+                            html += '<br><small class="text-muted">{{ 'data_management.backup.restore.page_reload'|trans({}, 'admin') }}</small>';
                         }
 
                         html += '</div>';
@@ -799,7 +789,7 @@
                 btn.addEventListener('click', async function() {
                     const filename = this.getAttribute('data-filename');
 
-                    if (!confirm(`Möchten Sie das Backup "${filename}" wirklich löschen?`)) {
+                    if (!confirm('{{ 'data_management.backup.confirm_delete'|trans({'%filename%': ''}, 'admin') }}' + filename + '?')) {
                         return;
                     }
 
@@ -813,10 +803,10 @@
                         if (result.success) {
                             this.closest('tr').remove();
                         } else {
-                            alert('Fehler beim Löschen: ' + result.message);
+                            alert('{{ 'data_management.backup.message.delete_error'|trans({}, 'admin') }}: ' + result.message);
                         }
                     } catch (error) {
-                        alert('Fehler: ' + error.message);
+                        alert('{{ 'data_management.backup.message.error'|trans({}, 'admin') }}: ' + error.message);
                     }
                 });
             });
@@ -839,7 +829,7 @@
                 } else if (attempts < maxAttempts) {
                     setTimeout(checkBootstrap, 100);
                 } else {
-                    console.error('Bootstrap konnte nicht geladen werden nach', maxAttempts, 'Versuchen');
+                    console.error('Bootstrap could not be loaded after', maxAttempts, 'attempts');
                     callback(); // Initialize anyway, will show errors when trying to use modals
                 }
             };

@@ -174,7 +174,6 @@ export default class extends Controller {
             }
 
         } catch (error) {
-            console.error('Bulk delete error:', error);
             this.showToast('Fehler beim Löschen: ' + error.message, 'error');
         }
     }
@@ -215,7 +214,6 @@ export default class extends Controller {
             this.showToast('Export erfolgreich', 'success');
 
         } catch (error) {
-            console.error('Bulk export error:', error);
             this.showToast('Fehler beim Export', 'error');
         }
     }
@@ -254,7 +252,6 @@ export default class extends Controller {
             setTimeout(() => window.location.reload(), 1000);
 
         } catch (error) {
-            console.error('Bulk tag error:', error);
             this.showToast('Fehler beim Taggen', 'error');
         }
     }
