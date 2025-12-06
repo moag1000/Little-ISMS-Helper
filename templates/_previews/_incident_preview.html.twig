@@ -63,7 +63,7 @@
 
     <div class="preview-actions">
         <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-primary btn-sm">
-            <i class="bi bi-arrow-right"></i> Details anzeigen
+            <i class="bi bi-arrow-right"></i> {{ 'common.view_details'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-outline-secondary btn-sm">
             <i class="bi bi-pencil"></i> {{ 'common.edit'|trans({}, 'messages') }}

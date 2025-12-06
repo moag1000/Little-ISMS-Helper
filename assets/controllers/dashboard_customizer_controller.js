@@ -372,7 +372,7 @@ export default class extends Controller {
 
     // Reset to defaults
     resetToDefaults() {
-        if (confirm('Möchten Sie das Dashboard auf die Standardeinstellungen zurücksetzen?')) {
+        if (confirm(window.translations?.dashboard?.confirm_reset || 'Do you want to reset the dashboard to default settings?')) {
             this.preferences = this.getDefaultPreferences();
             this.savePreferences();
             this.applyPreferences();
