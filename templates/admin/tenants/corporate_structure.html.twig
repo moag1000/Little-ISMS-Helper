@@ -147,7 +147,11 @@
                                 <td>
                                     <button type="button"
                                             class="btn btn-sm btn-outline-primary"
-                                            onclick="showSetParentModal({{ tenant.id }}, '{{ tenant.name|e('js') }}')">
+                                            data-controller="corporate-modals"
+                                            data-corporate-modals-tenant-id-value="{{ tenant.id }}"
+                                            data-corporate-modals-tenant-name-value="{{ tenant.name }}"
+                                            data-action="corporate-modals#showSetParent"
+                                            aria-label="{{ 'corporate.action.set_parent'|trans({}, 'tenant') }}">
                                         <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'corporate.action.set_parent'|trans({}, 'tenant') }}
                                     </button>
                                     <a href="{{ path('tenant_management_show', {id: tenant.id}) }}"
@@ -264,58 +268,38 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        const governanceDescriptions = {
+        // Global governance descriptions for Stimulus controller access
+        window.governanceDescriptions = {
             {% for model in governanceModels %}
             '{{ model.value }}': '{{ model.description|e('js') }}'{{ not loop.last ? ',' : '' }}
             {% endfor %}
         };
 
-        function showSetParentModal(tenantId, tenantName) {
-            document.getElementById('subsidiaryId').value = tenantId;
-            document.getElementById('subsidiaryName').value = tenantName;
-            document.getElementById('setParentForm').action = `/admin/tenants/${tenantId}/set-parent`;
+        function initCorporateStructure() {
+            // Update governance help text when model changes (for setParent modal)
+            const governanceModel = document.getElementById('governanceModel');
+            if (governanceModel) {
+                governanceModel.addEventListener('change', function() {
+                    const helpText = document.getElementById('governanceHelp');
+                    const description = window.governanceDescriptions[this.value] || '';
+                    helpText.textContent = description;
+                });
+            }
 
-            // Remove the subsidiary from parent options
-            const parentSelect = document.getElementById('parentId');
-            Array.from(parentSelect.options).forEach(option => {
-                option.disabled = option.value == tenantId;
-            });
-
-            const modal = new bootstrap.Modal(document.getElementById('setParentModal'));
-            modal.show();
+            // Update governance help text when model changes (for update modal)
+            const updateGovernanceModel = document.getElementById('updateGovernanceModel');
+            if (updateGovernanceModel) {
+                updateGovernanceModel.addEventListener('change', function() {
+                    const helpText = document.getElementById('updateGovernanceHelp');
+                    const description = window.governanceDescriptions[this.value] || '';
+                    helpText.textContent = description;
+                });
+            }
         }
 
-        // Update governance help text when model changes (for setParent modal)
-        document.getElementById('governanceModel').addEventListener('change', function() {
-            const helpText = document.getElementById('governanceHelp');
-            const description = governanceDescriptions[this.value] || '';
-            helpText.textContent = description;
-        });
-
-        // Show update governance modal
-        function showUpdateGovernanceModal(tenantId, tenantName, currentGovernance) {
-            document.getElementById('governanceTenantId').value = tenantId;
-            document.getElementById('governanceTenantName').value = tenantName;
-            document.getElementById('updateGovernanceForm').action = `/admin/tenants/${tenantId}/update-governance`;
-
-            // Set current governance as selected
-            const select = document.getElementById('updateGovernanceModel');
-            select.value = currentGovernance || '';
-
-            // Update help text
-            const helpText = document.getElementById('updateGovernanceHelp');
-            helpText.textContent = governanceDescriptions[currentGovernance] || '';
-
-            const modal = new bootstrap.Modal(document.getElementById('updateGovernanceModal'));
-            modal.show();
-        }
-
-        // Update governance help text when model changes (for update modal)
-        document.getElementById('updateGovernanceModel').addEventListener('change', function() {
-            const helpText = document.getElementById('updateGovernanceHelp');
-            const description = governanceDescriptions[this.value] || '';
-            helpText.textContent = description;
-        });
+        // Initialize on page load and Turbo navigation
+        document.addEventListener('DOMContentLoaded', initCorporateStructure);
+        document.addEventListener('turbo:load', initCorporateStructure);
     </script>
 {% endblock %}
 
@@ -338,8 +322,13 @@
             <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
                 <button type="button"
                         class="btn btn-outline-warning"
-                        onclick="showUpdateGovernanceModal({{ subsidiary.id }}, '{{ subsidiary.name|e('js') }}', '{{ subsidiary.governanceModel }}')"
-                        title="{{ 'corporate.action.update_governance'|trans({}, 'tenant') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                        data-controller="corporate-modals"
+                        data-corporate-modals-tenant-id-value="{{ subsidiary.id }}"
+                        data-corporate-modals-tenant-name-value="{{ subsidiary.name }}"
+                        data-corporate-modals-governance-model-value="{{ subsidiary.governanceModel }}"
+                        data-action="corporate-modals#showUpdateGovernance"
+                        title="{{ 'corporate.action.update_governance'|trans({}, 'tenant') }}"
+                        aria-label="{{ 'corporate.action.update_governance'|trans({}, 'tenant') }}">
                     <i class="bi bi-gear" aria-hidden="true"></i>
                 </button>
                 <a href="{{ path('tenant_management_show', {id: subsidiary.id}) }}"

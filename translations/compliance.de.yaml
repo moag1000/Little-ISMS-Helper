@@ -54,6 +54,9 @@ compliance:
         export_pdf: 'PDF Report'
         export_excel: 'Excel Export'
         export_csv: 'CSV Export'
+        delete_requirement: 'Anforderung löschen'
+        delete_mapping: 'Zuordnung löschen'
+        create_mappings_now: 'Mappings jetzt erstellen'
     unit:
         requirements: Anforderungen
     field:
@@ -119,7 +122,19 @@ compliance:
     deleting: 'Wird gelöscht...'
     successfully_deleted: 'Framework erfolgreich gelöscht'
     delete_failed: 'Fehler beim Löschen des Frameworks'
+    confirm_delete:
+        title: 'ACHTUNG: Framework löschen'
+        framework_label: 'Framework'
+        action_will: 'Diese Aktion wird'
+        delete_framework: 'Das Framework löschen'
+        delete_requirements: 'Alle Anforderungen des Frameworks löschen'
+        delete_mappings: 'Alle Mappings zu anderen Frameworks löschen'
+        cannot_undo: 'Diese Aktion kann nicht rückgängig gemacht werden!'
+        confirm_question: 'Möchten Sie wirklich fortfahren?'
+        second_confirm: 'Sind Sie sicher? Framework wird unwiderruflich gelöscht!'
     mapping:
+        confirm:
+            delete: 'Möchten Sie diese Zuordnung wirklich löschen?'
         title: Compliance-Mapping
         create_link: 'Zuordnung erstellen'
         create_instruction: 'um zu zeigen, wie Anforderungen mit Ihren Controls zusammenhängen'
@@ -233,6 +248,8 @@ compliance:
             fulfilled: Erfüllt
             compliance: Compliance-Rate
     requirement:
+        confirm:
+            delete: 'Möchten Sie diese Anforderung wirklich löschen?'
         title: Compliance-Anforderung
         edit:
             title: 'Anforderung bearbeiten'
@@ -396,9 +413,12 @@ compliance:
         add_missing_mappings: 'Möchten Sie fehlende Cross-Framework Mappings ergänzen?\n\nDies erstellt nur neue Mappings und überschreibt keine bestehenden.'
     mapping_status:
         creating: 'Erstelle Mappings...'
+        creating_with_icon: '⏳ Erstelle Mappings...'
         new_created: 'neue Mappings erstellt!'
+        button_text: '🔗 Mappings erstellen'
     mapping_error:
         creating: 'Fehler beim Erstellen der Mappings'
+        prefix: 'Fehler'
     framework_info: Framework-Informationen
     recommendations: Empfehlungen
     filter: Filtern
@@ -418,8 +438,6 @@ compliance:
         not_started: 'Nicht begonnen - Keine Umsetzung bisher'
         planning_phase: 'Planungsphase - Anforderungen analysiert, Plan erstellt'
         nearly_complete: 'Fast abgeschlossen - Die meisten Anforderungen erfüllt, kleinere Lücken verbleiben'
-    action:
-        create_mappings_now: 'Mappings jetzt erstellen'
 compliance_mapping:
     mapping_type:
         weak: 'Schwach (0-49%)'
@@ -481,9 +499,6 @@ compliance_requirement:
         reusable: wiederverwendbar
     framework_dashboard:
         compliance_steps: 'Folgen Sie diesen Schritten, um 100% Compliance zu erreichen'
-    mapping:
-        create_link: 'Mapping erstellen'
-        create_instruction: 'um zu zeigen, wie Anforderungen mit Ihren Kontrollen zusammenhängen'
     mapping_quality:
         no_mappings_found: 'Es wurden keine Compliance-Mappings in der Datenbank gefunden.'
     gaps:
@@ -495,6 +510,72 @@ compliance_requirement:
         filter_by_framework: 'Nach Framework filtern'
 nis2:
     article: Artikel
+
+mapping_review:
+    title: 'Mapping Review'
+    subtitle: 'Detaillierte Analyse und Review'
+    action:
+        back_to_queue: 'Zurück zur Queue'
+        reanalyze: 'Neu analysieren'
+        reanalyze_confirm: 'Mapping neu analysieren? Dies überschreibt die bisherige Analyse.'
+        save_review: 'Review speichern'
+    section:
+        overview: 'Mapping-Übersicht'
+        percentages: 'Prozentsätze'
+        quality_confidence: 'Quality & Confidence'
+        similarity_scores: 'Similarity Scores'
+        gaps: 'Identifizierte Gaps'
+        perform_review: 'Review durchführen'
+        metadata: 'Metadaten'
+    field:
+        source_requirement: 'Quellanforderung'
+        target_requirement: 'Zielanforderung'
+        original_heuristic: 'Original (Heuristik)'
+        calculated_auto: 'Berechnet (Automatisch)'
+        manual_override: 'Manuell überschrieben'
+        final: 'Final'
+        quality_score: 'Quality Score'
+        analysis_confidence: 'Analysis Confidence'
+        review_status: 'Review Status'
+        requires_review: 'Benötigt Review'
+        textual_similarity: 'Textual Similarity'
+        keyword_overlap: 'Keyword Overlap'
+        structural_similarity: 'Structural Similarity'
+        algorithm_version: 'Algorithm v%version%'
+        manual_percentage: 'Manueller Prozentsatz (Override)'
+        manual_percentage_help: 'Leer lassen = automatischer Wert verwenden'
+        review_notes: 'Review Notes'
+        review_notes_placeholder: 'Optionale Notizen...'
+    gap:
+        count: 'Identifizierte Gaps (%count%)'
+        total_impact: 'Total Impact'
+        total_effort: 'Total Effort'
+        high_confidence: 'High Confidence'
+        missing_keywords: 'Fehlende Keywords'
+        more_keywords: '... +%count% mehr'
+        recommendation: 'Empfehlung'
+        effort: 'Effort'
+        confidence: 'Confidence'
+        source: 'Source'
+        no_gaps: 'Keine Gaps identifiziert'
+        no_gaps_desc: 'Dieses Mapping hat keine automatisch erkannten Lücken.'
+    status:
+        unreviewed: 'Unreviewed'
+        in_review: 'In Review'
+        approved: 'Approved'
+        rejected: 'Rejected'
+    message:
+        review_saved: 'Review erfolgreich gespeichert!'
+        new_percentage: 'Neuer Prozentsatz'
+        error: 'Fehler'
+        unknown_error: 'Unbekannter Fehler'
+        network_error: 'Netzwerkfehler'
+    metadata:
+        reviewed_by: 'Reviewed by'
+        at: 'am'
+        verified_by: 'Verified by'
+        created: 'Created'
+        updated: 'Updated'
 
 compliance_framework:
     industry:
@@ -513,7 +594,5 @@ compliance_framework:
         public_sector: 'Öffentlicher Sektor'
         education: Bildung
         insurance: Versicherung
-    mapping:
-        title: Compliance-Mapping
     requirement:
         title: Compliance-Anforderung

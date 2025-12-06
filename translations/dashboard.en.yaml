@@ -1,6 +1,21 @@
 dashboard:
     title: 'ISMS Dashboard'
-    subtitle: 'Overview of your information security status'
+    subtitle: 'Overview of your Information Security Management System'
+    action:
+        customize: 'Customize'
+    stats:
+        registered_assets: 'Registered Assets'
+        critical: 'critical'
+        identified_risks: 'Identified Risks'
+        high: 'high'
+        security_controls: 'Security Controls'
+        implemented: 'implemented'
+        open_incidents: 'Open Incidents'
+        in_progress: 'In Progress'
+    chart:
+        risk_distribution: 'Risk Distribution'
+        assets_by_category: 'Assets by Category'
+        asset_count: 'Asset Count'
     kpis: 'Key Performance Indicators'
     compliance_status: 'Compliance Status'
     implementation_status: 'Implementation Status'

@@ -267,7 +267,7 @@
             <li><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Keine großen Diskrepanzen gefunden</li>
             <li><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Review Queue ist leer</li>
         </ul>
-        <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-primary mt-2">← Zurück zum Dashboard</a>
+        <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-primary mt-2">← {{ 'common.back'|trans({}, 'messages') }}</a>
     </div>
     {% endif %}
 </div>

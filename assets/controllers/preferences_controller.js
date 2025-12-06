@@ -75,7 +75,6 @@ export default class extends Controller {
             try {
                 this.preferences = JSON.parse(savedPrefs);
             } catch (e) {
-                console.error('Failed to parse preferences:', e);
                 this.preferences = this.getDefaultPreferences();
             }
         } else {
@@ -223,7 +222,6 @@ export default class extends Controller {
                 this.showSuccessMessage(window.translations?.preferences?.imported || 'Settings successfully imported');
             } catch (err) {
                 alert(window.translations?.preferences?.import_failed || 'Error importing settings');
-                console.error(err);
             }
         };
         reader.readAsText(file);

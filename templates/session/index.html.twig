@@ -71,7 +71,7 @@
                     </button>
                     {% if search_email %}
                         <a href="{{ path('session_index') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-x" aria-hidden="true"></i> Zurücksetzen
+                            <i class="bi bi-x" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}
                         </a>
                     {% endif %}
                 </div>

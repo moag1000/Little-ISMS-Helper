@@ -131,7 +131,7 @@
     <div class="container">
         <div class="text-center mb-5">
             <h2 class="display-5 fw-bold">{{ 'home.quick_start'|trans({}, 'messages')}}</h2>
-            <p class="lead text-muted">So starten Sie mit Ihrem ISMS</p>
+            <p class="lead text-muted">{{ 'home.quick_start_subtitle'|trans({}, 'messages') }}</p>
         </div>
 
         <div class="row">
@@ -141,12 +141,11 @@
                     <div class="step-item">
                         <div class="step-number">1</div>
                         <div class="step-content">
-                            <h4 class="step-title">Assets erfassen</h4>
+                            <h4 class="step-title">{{ 'home.step1.title'|trans({}, 'messages') }}</h4>
                             <p class="step-description">
-                                Beginnen Sie mit der Erfassung Ihrer IT-Assets. Kategorisieren Sie Hardware, Software,
-                                Daten und Services für einen vollständigen Überblick.
+                                {{ 'home.step1.description'|trans({}, 'messages') }}
                             </p>
-                            <a href="{{ path('app_asset_new') }}" class="btn btn-sm btn-primary">Asset hinzufügen</a>
+                            <a href="{{ path('app_asset_new') }}" class="btn btn-sm btn-primary">{{ 'home.step1.action'|trans({}, 'messages') }}</a>
                         </div>
                     </div>
 
@@ -154,12 +153,11 @@
                     <div class="step-item">
                         <div class="step-number">2</div>
                         <div class="step-content">
-                            <h4 class="step-title">Risiken bewerten</h4>
+                            <h4 class="step-title">{{ 'home.step2.title'|trans({}, 'messages') }}</h4>
                             <p class="step-description">
-                                Identifizieren Sie potenzielle Risiken für Ihre Assets. Bewerten Sie Eintrittswahrscheinlichkeit
-                                und Auswirkungen systematisch.
+                                {{ 'home.step2.description'|trans({}, 'messages') }}
                             </p>
-                            <a href="{{ path('app_risk_new') }}" class="btn btn-sm btn-primary">Risiko erfassen</a>
+                            <a href="{{ path('app_risk_new') }}" class="btn btn-sm btn-primary">{{ 'home.step2.action'|trans({}, 'messages') }}</a>
                         </div>
                     </div>
 
@@ -167,12 +165,11 @@
                     <div class="step-item">
                         <div class="step-number">3</div>
                         <div class="step-content">
-                            <h4 class="step-title">Controls implementieren</h4>
+                            <h4 class="step-title">{{ 'home.step3.title'|trans({}, 'messages') }}</h4>
                             <p class="step-description">
-                                Wählen Sie passende Controls aus dem ISO 27001 Annex A und implementieren Sie
-                                Sicherheitsmaßnahmen zur Risikobehandlung.
+                                {{ 'home.step3.description'|trans({}, 'messages') }}
                             </p>
-                            <a href="{{ path('app_compliance_index') }}" class="btn btn-sm btn-primary">Controls ansehen</a>
+                            <a href="{{ path('app_compliance_index') }}" class="btn btn-sm btn-primary">{{ 'home.step3.action'|trans({}, 'messages') }}</a>
                         </div>
                     </div>
 
@@ -180,12 +177,11 @@
                     <div class="step-item">
                         <div class="step-number">4</div>
                         <div class="step-content">
-                            <h4 class="step-title">Team schulen</h4>
+                            <h4 class="step-title">{{ 'home.step4.title'|trans({}, 'messages') }}</h4>
                             <p class="step-description">
-                                Sensibilisieren Sie Ihre Mitarbeiter durch regelmäßige Trainings. Dokumentieren Sie
-                                alle Schulungsaktivitäten für Compliance-Nachweise.
+                                {{ 'home.step4.description'|trans({}, 'messages') }}
                             </p>
-                            <a href="{{ path('app_training_new') }}" class="btn btn-sm btn-primary">Training planen</a>
+                            <a href="{{ path('app_training_new') }}" class="btn btn-sm btn-primary">{{ 'home.step4.action'|trans({}, 'messages') }}</a>
                         </div>
                     </div>
                 </div>

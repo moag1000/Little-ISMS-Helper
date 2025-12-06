@@ -9,6 +9,8 @@ soa:
         view_details: 'Details anzeigen'
         edit: 'Control bearbeiten'
         back_to_category: 'Zurück zu %category%'
+        print: 'Drucken / PDF speichern'
+        back_to_overview: 'Zurück zur Übersicht'
     filter:
         view: Ansicht
         search: Suche

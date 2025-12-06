@@ -16,15 +16,18 @@
         <h1>{{ business_process.name }}</h1>
         <div>
             <a href="{{ path('app_business_process_bia', {'id': business_process.id}) }}" class="btn btn-info">
-                <i class="bi bi-graph-up" aria-hidden="true"></i> BIA Ansicht
+                <i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'business_process.action.bia_view'|trans({}, 'bcm') }}
             </a>
             <a href="{{ path('app_business_process_edit', {'id': business_process.id}) }}" class="btn btn-primary">
-                <i class="bi bi-pencil" aria-hidden="true"></i> Bearbeiten
+                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
             </a>
-            <form method="post" action="{{ path('app_business_process_delete', {'id': business_process.id}) }}" class="d-inline-block" onsubmit="return confirm('Möchten Sie diesen Geschäftsprozess wirklich löschen?');">
+            <form method="post" action="{{ path('app_business_process_delete', {'id': business_process.id}) }}" class="d-inline-block"
+                  data-controller="ui-actions"
+                  data-action="submit->ui-actions#confirm"
+                  data-ui-actions-message-param="{{ 'business_process.confirm.delete'|trans({}, 'bcm') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ business_process.id) }}">
                 <button class="btn btn-danger">
-                    <i class="bi bi-trash" aria-hidden="true"></i> Löschen
+                    <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                 </button>
             </form>
         </div>

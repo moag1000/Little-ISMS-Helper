@@ -16,6 +16,11 @@ bcm:
         view_bia: 'BIA anzeigen'
         export: Exportieren
         plan: Wiederherstellungsplan
+business_process:
+    confirm:
+        delete: 'Möchten Sie diesen Geschäftsprozess wirklich löschen?'
+    action:
+        bia_view: 'BIA Ansicht'
     warning:
         critical_assets_count: '%count% kritische Assets identifiziert'
         critical_message: 'Bitte prüfen Sie RTO/RPO, Wiederherstellungspläne und Teststände dieser Assets.'

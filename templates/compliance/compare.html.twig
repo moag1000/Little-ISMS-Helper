@@ -272,7 +272,7 @@ function initializeComparisonMappingButton() {
 
         // Disable button and show loading state
         createMappingsBtn.disabled = true;
-        createMappingsBtn.textContent = '⏳ Erstelle Mappings...';
+        createMappingsBtn.textContent = '{{ 'compliance.mapping_status.creating_with_icon'|trans({}, 'compliance') }}';
 
         try {
             const response = await fetch('{{ path('app_compliance_create_comparison_mappings') }}', {
@@ -295,15 +295,15 @@ function initializeComparisonMappingButton() {
                 // Reload page to show updated mappings
                 window.location.reload();
             } else {
-                alert('Fehler: ' + result.message);
+                alert('{{ 'compliance.mapping_error.prefix'|trans({}, 'compliance') }}: ' + result.message);
                 createMappingsBtn.disabled = false;
-                createMappingsBtn.textContent = '🔗 Mappings erstellen';
+                createMappingsBtn.textContent = '{{ 'compliance.mapping_status.button_text'|trans({}, 'compliance') }}';
             }
         } catch (error) {
             console.error('Error creating mappings:', error);
-            alert('Fehler beim Erstellen der Mappings: ' + error.message);
+            alert('{{ 'compliance.mapping_error.creating'|trans({}, 'compliance') }}: ' + error.message);
             createMappingsBtn.disabled = false;
-            createMappingsBtn.textContent = '🔗 Mappings erstellen';
+            createMappingsBtn.textContent = '{{ 'compliance.mapping_status.button_text'|trans({}, 'compliance') }}';
         }
     });
 }

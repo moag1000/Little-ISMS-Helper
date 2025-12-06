@@ -60,7 +60,6 @@ export default class extends Controller {
             try {
                 data = await response.json();
             } catch (jsonError) {
-                console.error('Invalid JSON response:', jsonError);
                 this.showNotification('Invalid server response format', 'error');
                 return;
             }
@@ -71,7 +70,6 @@ export default class extends Controller {
                 this.showNotification(data?.error || 'Error loading steps', 'error');
             }
         } catch (error) {
-            console.error('Error loading steps:', error);
             this.showNotification('Failed to load workflow steps', 'error');
         } finally {
             this.hideLoading();
@@ -106,7 +104,6 @@ export default class extends Controller {
 
         // Skip rendering if critical values are invalid
         if (isNaN(stepId) || isNaN(stepOrder)) {
-            console.error('Invalid step data:', step);
             return '';
         }
 
@@ -217,7 +214,6 @@ export default class extends Controller {
 
     async onReorder(evt) {
         if (this.reorderInProgress) {
-            console.warn('Reorder already in progress');
             return;
         }
 
@@ -226,7 +222,6 @@ export default class extends Controller {
             .map(card => {
                 const id = parseInt(card.dataset.stepId, 10);
                 if (isNaN(id)) {
-                    console.warn('Invalid step ID in DOM:', card.dataset.stepId);
                     return null;
                 }
                 return id;
@@ -255,7 +250,6 @@ export default class extends Controller {
             try {
                 data = await response.json();
             } catch (jsonError) {
-                console.error('Invalid JSON response:', jsonError);
                 this.showNotification('Invalid server response', 'error');
                 this.loadSteps();
                 return;
@@ -270,7 +264,6 @@ export default class extends Controller {
                 this.loadSteps(); // Reload to revert
             }
         } catch (error) {
-            console.error('Reorder error:', error);
             this.showNotification('Error reordering steps', 'error');
             this.loadSteps(); // Reload to revert
         } finally {
@@ -323,7 +316,6 @@ export default class extends Controller {
             try {
                 data = await response.json();
             } catch (jsonError) {
-                console.error('Invalid JSON response:', jsonError);
                 this.showNotification('Invalid server response', 'error');
                 return;
             }
@@ -337,7 +329,6 @@ export default class extends Controller {
                 this.showNotification(errorMsg, 'error');
             }
         } catch (error) {
-            console.error('Add step error:', error);
             this.showNotification('Error adding step', 'error');
         } finally {
             if (submitBtn) submitBtn.disabled = false;
@@ -372,7 +363,6 @@ export default class extends Controller {
                 this.showNotification(data.error || 'Failed to duplicate step', 'error');
             }
         } catch (error) {
-            console.error('Duplicate error:', error);
             this.showNotification('Error duplicating step', 'error');
         }
     }
@@ -400,7 +390,6 @@ export default class extends Controller {
             try {
                 data = await response.json();
             } catch (jsonError) {
-                console.error('Invalid JSON response:', jsonError);
                 this.showNotification('Invalid server response', 'error');
                 return;
             }
@@ -412,7 +401,6 @@ export default class extends Controller {
                 this.showNotification(data?.error || 'Failed to delete step', 'error');
             }
         } catch (error) {
-            console.error('Delete error:', error);
             this.showNotification('Error deleting step', 'error');
         } finally {
             button.disabled = false;
@@ -443,7 +431,6 @@ export default class extends Controller {
                 this.showNotification(data.error || 'Failed to apply template', 'error');
             }
         } catch (error) {
-            console.error('Apply template error:', error);
             this.showNotification('Error applying template', 'error');
         }
     }

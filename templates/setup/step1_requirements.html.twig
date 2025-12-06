@@ -170,7 +170,7 @@
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ path('setup_step0_welcome') }}" class="btn btn-outline-secondary">
                             <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
-                            Zurück
+                            {{ 'common.back'|trans({}, 'messages') }}
                         </a>
 
                         {% if can_proceed %}

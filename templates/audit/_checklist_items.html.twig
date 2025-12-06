@@ -10,7 +10,7 @@
                 </div>
                 <div class="checklist-controls">
                     <label>
-                        <select class="status-select" data-item-id="{{ item.id }}" onclick="event.stopPropagation();">
+                        <select class="status-select" data-item-id="{{ item.id }}" data-action="click->toggle#stopPropagation">
                             <option value="not_checked" {{ item.verificationStatus == 'not_checked' ? 'selected' : '' }}>
                                 Nicht geprüft
                             </option>
@@ -61,11 +61,12 @@
                     </div>
                 {% endif %}
 
-                <div class="detail-section">
+                <div class="detail-section" data-controller="ui-actions">
                     <label for="compliance-score-{{ item.id }}">Compliance Score (0-100):</label>
                     <input type="range" min="0" max="100" value="{{ item.complianceScore }}"
                            id="compliance-score-{{ item.id }}" class="score-slider" data-item-id="{{ item.id }}"
-                           oninput="this.nextElementSibling.textContent = this.value + '%'">
+                           data-action="input->ui-actions#updateRangeDisplay"
+                           aria-label="Compliance Score">
                     <span class="score-value">{{ item.complianceScore }}%</span>
                 </div>
 

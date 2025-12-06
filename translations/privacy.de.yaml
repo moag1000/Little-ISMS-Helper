@@ -270,6 +270,8 @@ processing_activity:
         export_pdf: 'PDF exportieren'
         export_csv: 'CSV exportieren'
         new: 'Neue Verarbeitungstätigkeit'
+    confirm:
+        clone: 'Möchten Sie diese Verarbeitungstätigkeit duplizieren?'
     stat:
         total: 'Gesamt'
         active: 'aktiv'
@@ -568,6 +570,8 @@ common:
 data_breach:
     index:
         view_all_breaches: 'Alle Datenschutzverletzungen anzeigen'
+    confirm:
+        delete: 'Möchten Sie diese Datenschutzverletzung wirklich löschen?'
     section:
         basic_info: 'Grundinformationen'
         notification_content: 'Art. 33(3) - Inhalt der Meldung'

@@ -114,7 +114,6 @@ export default class extends Controller {
             this.updateStats(data);
             this.hideLoading();
         } catch (error) {
-            console.error('Failed to load trend data:', error);
             this.showError();
         }
     }
@@ -430,6 +429,5 @@ export default class extends Controller {
 
     showError() {
         this.hideLoading();
-        console.error('Failed to load trend data');
     }
 }

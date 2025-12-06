@@ -37,7 +37,7 @@
 <div class="bulk-action-bar" data-bulk-actions-target="actionBar" hidden>
     <div class="bulk-selection-info">
         <span class="bulk-selection-count" data-bulk-actions-target="count">0</span>
-        <span class="bulk-selection-label">ausgewählt</span>
+        <span class="bulk-selection-label">{{ 'bulk_actions.selected'|trans({}, 'messages') }}</span>
     </div>
 
     <div class="bulk-action-divider"></div>
@@ -48,7 +48,7 @@
                     class="bulk-action-btn bulk-action-btn-success"
                     data-action="click->bulk-actions#bulkExport">
                 <i class="bi bi-download" aria-hidden="true"></i>
-                Export
+                {{ 'bulk_actions.export'|trans({}, 'messages') }}
             </button>
         {% endif %}
 
@@ -57,7 +57,7 @@
                     class="bulk-action-btn"
                     data-action="click->bulk-actions#bulkTag">
                 <i class="bi bi-tag" aria-hidden="true"></i>
-                Tag hinzufügen
+                {{ 'bulk_actions.add_tag'|trans({}, 'messages') }}
             </button>
         {% endif %}
 
@@ -66,7 +66,7 @@
                     class="bulk-action-btn"
                     data-action="click->bulk-actions#bulkAssign">
                 <i class="bi bi-person" aria-hidden="true"></i>
-                Zuweisen
+                {{ 'bulk_actions.assign'|trans({}, 'messages') }}
             </button>
         {% endif %}
 
@@ -75,7 +75,7 @@
                     class="bulk-action-btn bulk-action-btn-danger"
                     data-action="click->bulk-actions#bulkDelete">
                 <i class="bi bi-trash" aria-hidden="true"></i>
-                Löschen
+                {{ 'bulk_actions.delete'|trans({}, 'messages') }}
             </button>
         {% endif %}
     </div>
@@ -83,7 +83,7 @@
     <button type="button"
             class="bulk-action-close"
             data-action="click->bulk-actions#deselectAll"
-            title="Auswahl aufheben">
+            title="{{ 'bulk_actions.deselect'|trans({}, 'messages') }}">
         <i class="bi bi-x-lg" aria-hidden="true"></i>
     </button>
 </div>

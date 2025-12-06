@@ -44,10 +44,12 @@
 <div class="card mb-4">
     <h2>{{ 'compliance.section.framework_selection'|trans({}, 'compliance') }}</h2>
 
-    <form method="get" class="mt-md">
+    <form method="get" class="mt-md" data-controller="ui-actions">
         <div class="form-group">
             <label for="framework">{{ 'compliance.field.select_framework'|trans({}, 'compliance') }}</label>
-            <select name="framework" id="framework" class="form-select" onchange="this.form.submit();">
+            <select name="framework" id="framework" class="form-select"
+                    data-action="change->ui-actions#autoSubmit"
+                    aria-label="{{ 'compliance.field.select_framework'|trans({}, 'compliance') }}">
                 <option value="">{{ 'compliance.option.all_frameworks'|trans({}, 'compliance') }}</option>
                 {% for framework in frameworks %}
                     <option value="{{ framework.id }}" {% if selectedFramework and selectedFramework.id == framework.id %}selected{% endif %}>

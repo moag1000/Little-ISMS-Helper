@@ -465,21 +465,21 @@ function initializeDeleteButtons() {
             const name = this.dataset.frameworkName;
 
             // Show detailed confirmation dialog
-            const confirmMessage = `⚠️ ACHTUNG: Framework löschen\n\n` +
-                `Framework: ${name}\n\n` +
-                `Diese Aktion wird:\n` +
-                `• Das Framework "${name}" löschen\n` +
-                `• Alle Anforderungen des Frameworks löschen\n` +
-                `• Alle Mappings zu anderen Frameworks löschen\n\n` +
-                `Diese Aktion kann nicht rückgängig gemacht werden!\n\n` +
-                `Möchten Sie wirklich fortfahren?`;
+            const confirmMessage = `⚠️ {{ 'compliance.confirm_delete.title'|trans({}, 'compliance') }}\n\n` +
+                `{{ 'compliance.confirm_delete.framework_label'|trans({}, 'compliance') }}: ${name}\n\n` +
+                `{{ 'compliance.confirm_delete.action_will'|trans({}, 'compliance') }}:\n` +
+                `• {{ 'compliance.confirm_delete.delete_framework'|trans({}, 'compliance') }}\n` +
+                `• {{ 'compliance.confirm_delete.delete_requirements'|trans({}, 'compliance') }}\n` +
+                `• {{ 'compliance.confirm_delete.delete_mappings'|trans({}, 'compliance') }}\n\n` +
+                `{{ 'compliance.confirm_delete.cannot_undo'|trans({}, 'compliance') }}\n\n` +
+                `{{ 'compliance.confirm_delete.confirm_question'|trans({}, 'compliance') }}`;
 
             if (!confirm(confirmMessage)) {
                 return;
             }
 
             // Second confirmation for safety
-            if (!confirm(`Sind Sie sicher? Framework "${name}" wird unwiderruflich gelöscht!`)) {
+            if (!confirm(`{{ 'compliance.confirm_delete.second_confirm'|trans({}, 'compliance') }}`)) {
                 return;
             }
 

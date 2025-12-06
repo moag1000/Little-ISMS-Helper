@@ -317,7 +317,10 @@
     </div>
     <div class="card-body">
         <p>{{ 'risk_appetite.delete.warning'|trans({}, 'risk_appetite') }}</p>
-        <form method="post" action="{{ path('app_risk_appetite_delete', {id: appetite.id}) }}" onsubmit="return confirm('{{ 'risk_appetite.delete.confirm'|trans({}, 'risk_appetite') }}');">
+        <form method="post" action="{{ path('app_risk_appetite_delete', {id: appetite.id}) }}"
+              data-controller="ui-actions"
+              data-action="submit->ui-actions#confirm"
+              data-ui-actions-message-param="{{ 'risk_appetite.delete.confirm'|trans({}, 'risk_appetite') }}">
             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ appetite.id) }}">
             <button type="submit" class="btn btn-danger">
                 <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}

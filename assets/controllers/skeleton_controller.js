@@ -56,7 +56,6 @@ export default class extends Controller {
             this.showContent();
 
         } catch (error) {
-            console.error('Failed to load content:', error);
             this.showError();
         }
     }

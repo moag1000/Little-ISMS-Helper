@@ -39,10 +39,12 @@
 <div class="card mb-4">
     <h2>{{ 'document.section.select_type'|trans({}, 'document') }}</h2>
 
-    <form method="get" class="mt-md">
+    <form method="get" class="mt-md" data-controller="ui-actions">
         <div class="form-group">
             <label for="type">{{ 'document.field.document_type'|trans({}, 'document') }}</label>
-            <select name="type" id="type" class="form-select" onchange="this.form.submit();">
+            <select name="type" id="type" class="form-select"
+                    data-action="change->ui-actions#autoSubmit"
+                    aria-label="{{ 'document.field.document_type'|trans({}, 'document') }}">
                 <option value="">{{ 'document.option.all_types'|trans({}, 'document') }}</option>
                 {% for type in documentTypes %}
                     <option value="{{ type.id }}" {% if selectedType and selectedType.id == type.id %}selected{% endif %}>

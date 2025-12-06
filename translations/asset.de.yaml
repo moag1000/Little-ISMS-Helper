@@ -151,6 +151,21 @@ asset:
         service: Service
         personnel: Personal
         physical: Physisch
+        data: Daten
+        network: Netzwerk
+        facility: Gebäude
+        other: Sonstige
+        # Capitalized versions (as stored in database)
+        Information: Information
+        Software: Software
+        Hardware: Hardware
+        Service: Dienst
+        Personnel: Personal
+        Physical: Physisch
+        Data: Daten
+        Network: Netzwerk
+        Facility: Gebäude
+        Other: Sonstige
     new: Neu
     list:
         title: Titel

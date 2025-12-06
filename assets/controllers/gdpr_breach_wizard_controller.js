@@ -74,7 +74,6 @@ export default class extends Controller {
             try {
                 this.translations = JSON.parse(wizardElement.dataset.translations);
             } catch (e) {
-                console.error('Failed to parse wizard translations:', e);
                 this.translations = {};
             }
         } else {
@@ -295,7 +294,6 @@ export default class extends Controller {
 
             this.displayResults(assessment);
         } catch (error) {
-            console.error('GDPR Wizard Error:', error);
             alert('Error calculating risk assessment. Please try again.');
         }
     }
@@ -462,7 +460,6 @@ export default class extends Controller {
             };
             localStorage.setItem('gdpr_wizard_data', JSON.stringify(data));
         } catch (error) {
-            console.error('Failed to save wizard data:', error);
         }
     }
 
@@ -491,7 +488,6 @@ export default class extends Controller {
 
             return data;
         } catch (error) {
-            console.error('Failed to load wizard data:', error);
             return null;
         }
     }
@@ -503,7 +499,6 @@ export default class extends Controller {
         try {
             localStorage.removeItem('gdpr_wizard_data');
         } catch (error) {
-            console.error('Failed to clear wizard data:', error);
         }
     }
 }
