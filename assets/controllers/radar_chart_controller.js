@@ -61,7 +61,6 @@ export default class extends Controller {
             this.updateOverallCompliance(data.overall_compliance);
             this.hideLoading();
         } catch (error) {
-            console.error('Failed to load compliance radar data:', error);
             this.showError();
         }
     }

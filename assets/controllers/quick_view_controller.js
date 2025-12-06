@@ -78,7 +78,6 @@ export default class extends Controller {
             const html = await response.text();
             this.displayContent(html);
         } catch (error) {
-            console.error('Quick view error:', error);
             this.displayError();
         }
     }

@@ -24,7 +24,10 @@
             {% endif %}
             <a href="{{ path('app_incident_index') }}" class="btn btn-secondary">{{ 'incident.action.back_to_list'|trans({}, 'incident') }}</a>
             {% if is_granted('ROLE_ADMIN') %}
-                <form method="post" action="{{ path('app_incident_delete', {id: incident.id}) }}" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this incident?');">
+                <form method="post" action="{{ path('app_incident_delete', {id: incident.id}) }}" style="display:inline;"
+                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'incident.confirm.delete'|trans({}, 'incident') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ incident.id) }}">
                     <button type="submit" class="btn btn-danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'incident.action.delete'|trans({}, 'incident') }}</button>
                 </form>

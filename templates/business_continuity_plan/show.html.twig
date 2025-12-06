@@ -19,7 +19,10 @@
             <a href="{{ path('app_bc_plan_edit', {id: bc_plan.id}) }}" class="btn btn-primary"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
             <a href="{{ path('app_bc_plan_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') %}
-                <form method="post" action="{{ path('app_bc_plan_delete', {id: bc_plan.id}) }}" style="display:inline;" onsubmit="return confirm('{{ 'common.confirm_delete'|trans({}, 'messages') }}');">
+                <form method="post" action="{{ path('app_bc_plan_delete', {id: bc_plan.id}) }}" style="display:inline;"
+                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'common.confirm_delete'|trans({}, 'messages') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ bc_plan.id) }}">
                     <button type="submit" class="btn btn-danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
                 </form>

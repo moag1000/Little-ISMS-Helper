@@ -270,7 +270,7 @@
                 <li>Gaps werden automatisch während der Analyse identifiziert</li>
                 <li>Kehren Sie dann zu dieser Seite zurück</li>
             </ol>
-            <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-primary mt-2">← Zurück zum Dashboard</a>
+            <a href="{{ path('app_mapping_quality_dashboard') }}" class="btn btn-primary mt-2">← {{ 'common.back'|trans({}, 'messages') }}</a>
         </div>
         {% else %}
         <div class="alert alert-success">

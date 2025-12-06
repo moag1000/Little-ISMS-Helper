@@ -22,7 +22,10 @@
             {% set all_frameworks = get_compliance_frameworks_quick() %}
             {% if all_frameworks|length > 1 %}
             <div class="framework-switcher">
-                <select id="framework-switcher" class="form-select form-select-sm" onchange="window.location.href=this.value">
+                <select id="framework-switcher" class="form-select form-select-sm"
+                        data-controller="ui-actions"
+                        data-action="change->ui-actions#navigateTo"
+                        aria-label="{{ 'compliance.switch_framework'|trans({}, 'compliance') }}">
                     <option value="" disabled>{{ 'compliance.switch_framework'|trans({}, 'compliance') }}</option>
                     {% for fw in all_frameworks %}
                     <option value="{{ path('app_compliance_framework', {id: fw.id}) }}" {% if fw.id == framework.id %}selected{% endif %}>

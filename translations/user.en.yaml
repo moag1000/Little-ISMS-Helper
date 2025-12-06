@@ -5,6 +5,7 @@ user:
         new_user: 'New User'
         view: View
         edit: Edit
+        delete_user: 'Delete User'
     stats:
         total: Total
         users: Users
@@ -36,9 +37,12 @@ user:
     edit_suffix: 'Edit Suffix'
     save_changes: 'Save Changes'
     activity:
-        title: Title
-        total: Total
-        by_action: 'By Action'
+        title: 'User Activity'
+        total: 'Total Actions'
+        by_action: 'By Action Type'
+        timeline: 'Activity Timeline'
+        show_details: 'Show Details'
+        no_activities: 'No activities found for this user.'
         filter:
             show_count: 'Show count'
     import:
@@ -96,6 +100,17 @@ user:
         avatar_format: 'Please upload a valid image (JPEG, PNG, GIF or WebP)'
     auth_provider:
         local: 'Local Authentication'
+    auth:
+        azure_oauth: 'Azure OAuth'
+        azure_saml: 'Azure SAML'
+        local: 'Local'
+    status:
+        active: 'Active'
+        inactive: 'Inactive'
+        not_verified: 'Not verified'
+        never: 'Never'
+    confirm:
+        delete: 'Do you really want to delete user %name%?'
     profile:
         title: 'My Profile'
         action:

@@ -127,7 +127,6 @@ export default class extends Controller {
             this.updateStatus(result);
 
         } catch (error) {
-            console.error('Uniqueness check failed:', error);
             this.hideLoading();
             this.showError('Validierung fehlgeschlagen. Bitte versuchen Sie es später erneut.');
         }

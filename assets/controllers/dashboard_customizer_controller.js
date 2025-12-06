@@ -168,7 +168,6 @@ export default class extends Controller {
                     return;
                 }
             } catch (error) {
-                console.warn('Failed to load from API, falling back to localStorage:', error);
             }
         }
 
@@ -177,7 +176,6 @@ export default class extends Controller {
             const stored = localStorage.getItem(this.storageKeyValue);
             this.preferences = stored ? JSON.parse(stored) : this.getDefaultPreferences();
         } catch (error) {
-            console.error('Failed to load dashboard preferences:', error);
             this.preferences = this.getDefaultPreferences();
         }
     }
@@ -247,7 +245,6 @@ export default class extends Controller {
         try {
             localStorage.setItem(this.storageKeyValue, JSON.stringify(this.preferences));
         } catch (error) {
-            console.error('Failed to save to localStorage:', error);
         }
     }
 
@@ -280,10 +277,8 @@ export default class extends Controller {
                     const data = await response.json();
                     this.lastSyncedAt = data.updated_at;
                 } else {
-                    console.error('Failed to sync to server:', response.statusText);
                 }
             } catch (error) {
-                console.error('Failed to sync dashboard preferences to server:', error);
             }
         }, 1000); // Debounce 1 second
     }
@@ -370,7 +365,6 @@ export default class extends Controller {
             } else if (attempts < maxAttempts) {
                 setTimeout(checkBootstrap, 100);
             } else {
-                console.error('Bootstrap could not be loaded after', maxAttempts, 'attempts');
             }
         };
         checkBootstrap();
@@ -422,7 +416,6 @@ export default class extends Controller {
 
                 alert(window.translations?.dashboard?.settings_imported || 'Dashboard settings successfully imported!');
             } catch (error) {
-                console.error('Failed to import preferences:', error);
                 alert(window.translations?.dashboard?.import_failed || 'Error importing settings. Please check the file.');
             }
         };

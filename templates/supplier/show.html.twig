@@ -31,7 +31,10 @@
             {% endif %}
             <a href="{{ path('app_supplier_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit) %}
-                <form method="post" action="{{ path('app_supplier_delete', {id: supplier.id}) }}" style="display:inline;" onsubmit="return confirm('{{ 'supplier.confirm.delete'|trans({}, 'suppliers') }}');">
+                <form method="post" action="{{ path('app_supplier_delete', {id: supplier.id}) }}" style="display:inline;"
+                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'supplier.confirm.delete'|trans({}, 'suppliers') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ supplier.id) }}">
                     <button type="submit" class="btn btn-danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
                 </form>

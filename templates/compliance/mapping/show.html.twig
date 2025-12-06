@@ -224,10 +224,12 @@
                 </div>
                 <div class="card-body">
                     <form method="post" action="{{ path('app_compliance_mapping_delete', {id: mapping.id}) }}"
-                          onsubmit="return confirm('Are you sure you want to delete this mapping?');">
+                          data-controller="ui-actions"
+                          data-action="submit->ui-actions#confirm"
+                          data-ui-actions-message-param="{{ 'compliance.mapping.confirm.delete'|trans({}, 'compliance') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ mapping.id) }}">
                         <button type="submit" class="btn btn-danger btn-sm w-100">
-                            <i class="bi bi-trash" aria-hidden="true"></i> Delete Mapping
+                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'compliance.action.delete_mapping'|trans({}, 'compliance') }}
                         </button>
                     </form>
                 </div>

@@ -103,10 +103,12 @@
 
                 {% if is_granted('ROLE_MANAGER') %}
                     <form action="{{ path('app_dpia_delete', {id: dpia.id}) }}" method="post" class="d-inline"
-                          onsubmit="return confirm('{{ 'dpia.confirm.delete'|trans({}, 'privacy') }}');">
+                          data-controller="ui-actions"
+                          data-action="submit->ui-actions#confirm"
+                          data-ui-actions-message-param="{{ 'dpia.confirm.delete'|trans({}, 'privacy') }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ dpia.id) }}">
                         <button type="submit" class="btn btn-outline-danger">
-                            <i class="bi bi-trash"></i> {{ 'common.delete'|trans({}, 'messages') }}
+                            <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
                         </button>
                     </form>
                 {% endif %}

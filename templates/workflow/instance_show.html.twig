@@ -230,7 +230,10 @@
 {# Action Buttons #}
 <div class="d-flex gap-2 mt-4">
     {% if instance.status in ['pending', 'in_progress'] %}
-    <form method="post" action="{{ path('app_workflow_instance_cancel', {id: instance.id}) }}" onsubmit="return confirm('{{ 'workflow.confirm.cancel'|trans({}, 'workflows') }}');" class="d-inline">
+    <form method="post" action="{{ path('app_workflow_instance_cancel', {id: instance.id}) }}" class="d-inline"
+          data-controller="ui-actions"
+          data-action="submit->ui-actions#confirm"
+          data-ui-actions-message-param="{{ 'workflow.confirm.cancel'|trans({}, 'workflows') }}">
         <input type="hidden" name="_token" value="{{ csrf_token('cancel' ~ instance.id) }}">
         <button type="submit" class="btn btn-danger">
             <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'workflow.action.cancel'|trans({}, 'workflows') }}

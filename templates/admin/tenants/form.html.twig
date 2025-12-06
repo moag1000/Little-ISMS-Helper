@@ -224,18 +224,12 @@
             const nameField = document.querySelector('input[name="tenant[name]"]');
             const codeField = document.querySelector('input[name="tenant[code]"]');
 
-            console.log('Auto-generation script loaded');
-            console.log('Name field:', nameField);
-            console.log('Code field:', codeField);
-
             if (!nameField || !codeField) {
-                console.error('Could not find name or code fields');
                 return;
             }
 
             // Only auto-generate for new tenants (when code is empty)
             const isNewTenant = !codeField.value || codeField.value.trim() === '';
-            console.log('Is new tenant:', isNewTenant);
 
             if (isNewTenant) {
                 // Don't use readonly - just update the value on input
@@ -256,7 +250,6 @@
                         .replace(/[^a-z0-9_-]/g, '');  // Remove invalid characters
 
                     codeField.value = code;
-                    console.log('Generated code:', code);
                 });
             }
         }

@@ -73,7 +73,7 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            <div class="mb-3">
+            <div class="mb-3" data-controller="progress-slider">
                 {{ form_label(form.implementationPercentage) }}
                 <div class="flex-center-gap-md">
                     {{ form_widget(form.implementationPercentage, {
@@ -82,15 +82,17 @@
                             'class': 'flex-1',
                             'min': '0',
                             'max': '100',
-                            'oninput': 'document.getElementById(\'percentageValue\').textContent = this.value + \'%\'; document.getElementById(\'progressBar\').style.width = this.value + \'%\'; document.getElementById(\'progressBar\').textContent = this.value + \'%\';'
+                            'data-progress-slider-target': 'slider',
+                            'data-action': 'input->progress-slider#update',
+                            'aria-label': form.implementationPercentage.vars.label|trans({}, 'control')
                         }
                     }) }}
-                    <span id="percentageValue" class="badge bg-info badge-fs-1-p-sm-md">
+                    <span data-progress-slider-target="display" class="badge bg-info badge-fs-1-p-sm-md">
                         {{ form.vars.data.implementationPercentage }}%
                     </span>
                 </div>
                 <div class="progress mt-2">
-                    <div id="progressBar" class="progress-bar" style="width: {{ form.vars.data.implementationPercentage }}%">
+                    <div data-progress-slider-target="bar" class="progress-bar" style="width: {{ form.vars.data.implementationPercentage }}%">
                         {{ form.vars.data.implementationPercentage }}%
                     </div>
                 </div>

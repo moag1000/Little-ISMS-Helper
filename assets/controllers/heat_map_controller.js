@@ -47,7 +47,6 @@ export default class extends Controller {
             this.renderHeatMap(data.matrix);
             this.hideLoading();
         } catch (error) {
-            console.error('Failed to load heat map data:', error);
             this.showError();
         }
     }
@@ -348,7 +347,7 @@ export default class extends Controller {
                 this.rawMatrixData = data.matrix;
                 this.renderHeatMap(data.matrix);
             })
-            .catch(error => console.error('Filter error:', error));
+            .catch(() => {});
     }
 
     clearFilters() {

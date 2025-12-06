@@ -147,11 +147,13 @@
                                                 <form method="post"
                                                       action="{{ path('admin_mfa_disable', {id: token.id}) }}"
                                                       style="display: inline;"
-                                                      onsubmit="return confirm('{{ 'mfa_token.confirm_disable'|trans({}, 'mfa') }}');">
+                                                      data-controller="ui-actions"
+                                                      data-action="submit->ui-actions#confirm"
+                                                      data-ui-actions-message-param="{{ 'mfa_token.confirm_disable'|trans({}, 'mfa') }}">
                                                     <input type="hidden" name="_token" value="{{ csrf_token('disable_' ~ token.id) }}">
                                                     <button type="submit"
                                                             class="btn btn-outline-warning"
-                                                            title="{{ 'mfa_token.action.disable'|trans({}, 'mfa') }}" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                                            title="{{ 'mfa_token.action.disable'|trans({}, 'mfa') }}" aria-label="{{ 'mfa_token.action.disable'|trans({}, 'mfa') }}">
                                                         <i class="bi bi-pause-circle" aria-hidden="true"></i>
                                                     </button>
                                                 </form>
@@ -159,7 +161,9 @@
                                             <form method="post"
                                                   action="{{ path('admin_mfa_delete', {id: token.id}) }}"
                                                   style="display: inline;"
-                                                  onsubmit="return confirm('{{ 'mfa_token.confirm_delete'|trans({}, 'mfa') }}');">
+                                                  data-controller="ui-actions"
+                                                  data-action="submit->ui-actions#confirm"
+                                                  data-ui-actions-message-param="{{ 'mfa_token.confirm_delete'|trans({}, 'mfa') }}">
                                                 <input type="hidden" name="_token" value="{{ csrf_token('delete_' ~ token.id) }}">
                                                 <button type="submit"
                                                         class="btn btn-outline-danger"

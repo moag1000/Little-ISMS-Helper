@@ -206,6 +206,88 @@ export default class extends Controller {
     }
 
     /**
+     * Confirm and then make a fetch request
+     * Use with: data-action="ui-actions#confirmAndFetch"
+     *           data-ui-actions-confirm-param="Are you sure?"
+     *           data-ui-actions-url-param="/api/action"
+     *           data-ui-actions-method-param="POST"
+     *           data-ui-actions-reload-param="true"
+     */
+    async confirmAndFetch(event) {
+        event.preventDefault();
+
+        const message = event.params?.confirm || this.confirmMessageValue;
+        if (!window.confirm(message)) {
+            return;
+        }
+
+        const url = event.params.url;
+        const method = event.params.method || 'POST';
+        const shouldReload = event.params.reload === 'true' || event.params.reload === true;
+
+        if (!url) {
+            return;
+        }
+
+        const button = event.currentTarget;
+        const originalHtml = button.innerHTML;
+        button.disabled = true;
+        button.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> ...';
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                this.showToast(result.message || 'Success', 'success');
+                if (shouldReload) {
+                    setTimeout(() => window.location.reload(), 1000);
+                }
+            } else {
+                alert('Error: ' + (result.error || result.message || 'Unknown error'));
+                button.disabled = false;
+                button.innerHTML = originalHtml;
+            }
+        } catch (error) {
+            alert('Network error: ' + error.message);
+            button.disabled = false;
+            button.innerHTML = originalHtml;
+        }
+    }
+
+    /**
+     * Navigate to URL from select element value
+     * Use with: data-action="change->ui-actions#navigateTo"
+     * The select option values should be URLs
+     */
+    navigateTo(event) {
+        const url = event.target.value;
+        if (url) {
+            window.location.href = url;
+        }
+    }
+
+    /**
+     * Update sibling display with range slider value
+     * Use with: data-action="input->ui-actions#updateRangeDisplay"
+     * Optionally set data-ui-actions-suffix-param="%" for suffix
+     */
+    updateRangeDisplay(event) {
+        const suffix = event.params?.suffix || '%';
+        const target = event.target.nextElementSibling;
+        if (target) {
+            target.textContent = event.target.value + suffix;
+        }
+    }
+
+    /**
      * Show a toast notification (if toast system available)
      */
     showToast(message, type = 'info') {

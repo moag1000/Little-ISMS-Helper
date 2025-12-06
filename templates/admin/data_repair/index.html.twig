@@ -93,19 +93,22 @@
         <div class="card-body">
             <div class="row g-3">
                 {% if summary.orphaned_count > 0 %}
-                <div class="col-md-6">
+                <div class="col-md-6"
+                     data-controller="data-repair"
+                     data-data-repair-base-url-value="{{ path('admin_data_repair_fix_all_orphans', {tenantId: 0}) }}"
+                     data-data-repair-confirm-text-value="Assign ALL orphaned entities to this tenant?">
                     <h3>Fix All Orphaned Entities</h3>
                     <p class="text-muted">Assign all {{ summary.orphaned_count }} orphaned entities to a tenant</p>
-                    <form method="post" action="{{ path('admin_data_repair_fix_all_orphans', {tenantId: 0}) }}" id="fix-all-orphans-form">
+                    <form method="post" data-data-repair-target="form">
                         <input type="hidden" name="_token" value="{{ csrf_token('fix_all_orphans') }}">
                         <div class="input-group">
-                            <select name="tenant_id" id="quick-fix-tenant" class="form-select" required>
+                            <select name="tenant_id" class="form-select" required data-data-repair-target="tenantSelect">
                                 <option value="">Select Tenant...</option>
                                 {% for tenant in tenants %}
                                     <option value="{{ tenant.id }}">{{ tenant.name }}</option>
                                 {% endfor %}
                             </select>
-                            <button type="button" class="btn btn-warning" onclick="fixAllOrphans()">
+                            <button type="button" class="btn btn-warning" data-action="data-repair#fixAllOrphans">
                                 <i class="bi bi-lightning" aria-hidden="true"></i> Fix All Orphans
                             </button>
                         </div>
@@ -391,23 +394,7 @@
         </div>
     </div>
 
-    <script>
-    function fixAllOrphans() {
-        const tenantSelect = document.getElementById('quick-fix-tenant');
-        const tenantId = tenantSelect.value;
-
-        if (!tenantId) {
-            alert('Please select a tenant first');
-            return;
-        }
-
-        if (confirm('Assign ALL orphaned entities to tenant "' + tenantSelect.options[tenantSelect.selectedIndex].text + '"?')) {
-            const form = document.getElementById('fix-all-orphans-form');
-            form.action = form.action.replace('/0', '/' + tenantId);
-            form.submit();
-        }
-    }
-    </script>
+    {# fixAllOrphans is now handled by data-repair Stimulus controller #}
 
     {# Asset Assignment Repair for Risks #}
     {% set risksWithoutAsset = allRisks|filter(r => r.asset is null) %}

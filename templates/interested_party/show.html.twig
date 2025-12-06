@@ -18,7 +18,10 @@
             <a href="{{ path('app_interested_party_edit', {id: interested_party.id}) }}" class="btn btn-primary"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
             <a href="{{ path('app_interested_party_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') %}
-                <form method="post" action="{{ path('app_interested_party_delete', {id: interested_party.id}) }}" style="display:inline;" onsubmit="return confirm('{{ 'interested_party.confirm.delete'|trans({}, 'interested_parties') }}');">
+                <form method="post" action="{{ path('app_interested_party_delete', {id: interested_party.id}) }}" style="display:inline;"
+                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'interested_party.confirm.delete'|trans({}, 'interested_parties') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ interested_party.id) }}">
                     <button type="submit" class="btn btn-danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
                 </form>

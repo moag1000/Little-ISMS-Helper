@@ -35,7 +35,10 @@
             </a>
             <a href="{{ path('app_asset_index') }}" class="btn btn-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit) %}
-                <form method="post" action="{{ path('app_asset_delete', {id: asset.id}) }}" style="display:inline;" onsubmit="return confirm('{{ 'asset.confirm.delete'|trans({}, 'asset') }}');">
+                <form method="post" action="{{ path('app_asset_delete', {id: asset.id}) }}" style="display:inline;"
+                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'asset.confirm.delete'|trans({}, 'asset') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ asset.id) }}">
                     <button type="submit" class="btn btn-danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}</button>
                 </form>

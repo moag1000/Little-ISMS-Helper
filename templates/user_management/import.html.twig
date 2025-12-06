@@ -7,7 +7,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1><i class="bi bi-upload" aria-hidden="true"></i> {{ 'user.import.title'|trans({}, 'user') }}</h1>
         <a href="{{ path('user_management_index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> Zurück
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 
@@ -49,7 +49,7 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
 
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                     <a href="{{ path('user_management_index') }}" class="btn btn-secondary">
-                        <i class="bi bi-x-circle" aria-hidden="true"></i> Abbrechen
+                        <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                     </a>
                     <button type="submit" class="btn btn-primary">
                         <i class="bi bi-upload" aria-hidden="true"></i> Importieren

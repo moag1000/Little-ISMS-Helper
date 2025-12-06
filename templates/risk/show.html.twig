@@ -31,7 +31,10 @@
             {% endif %}
             <a href="{{ path('app_risk_index') }}" class="btn btn-secondary">{{ 'action.back_to_list'|trans({}, 'messages') }}</a>
             {% if is_granted('ROLE_ADMIN') and (canEdit is not defined or canEdit) %}
-                <form method="post" action="{{ path('app_risk_delete', {id: risk.id}) }}" class="d-inline" onsubmit="return confirm('{{ 'risk.delete.confirm_message'|trans({}, 'risk') }}');">
+                <form method="post" action="{{ path('app_risk_delete', {id: risk.id}) }}" class="d-inline"
+                      data-controller="ui-actions"
+                      data-action="submit->ui-actions#confirm"
+                      data-ui-actions-message-param="{{ 'risk.delete.confirm_message'|trans({}, 'risk') }}">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ risk.id) }}">
                     <button type="submit" class="btn btn-danger"><i class="bi bi-trash" aria-hidden="true"></i> {{ 'action.delete'|trans({}, 'messages') }}</button>
                 </form>

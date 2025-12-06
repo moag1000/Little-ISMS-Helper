@@ -34,7 +34,10 @@
             </button>
             {% endif %}
             {% if is_granted('ROLE_ADMIN') %}
-            <form method="post" action="{{ path('app_consent_delete', {id: consent.id}) }}" style="display:inline;" onsubmit="return confirm('{{ 'consent.delete.confirm'|trans({}, 'consent') }}');">
+            <form method="post" action="{{ path('app_consent_delete', {id: consent.id}) }}" style="display:inline;"
+                  data-controller="ui-actions"
+                  data-action="submit->ui-actions#confirm"
+                  data-ui-actions-message-param="{{ 'consent.delete.confirm'|trans({}, 'consent') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ consent.id) }}">
                 <button type="submit" class="btn btn-danger">
                     <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
