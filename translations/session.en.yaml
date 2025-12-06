@@ -12,6 +12,26 @@ session:
         total: 'Total Active Sessions'
         today: Today
         hours_filter: 'Time Filter (Hours)'
+        active_sessions: 'Active Sessions'
+        last_24h: 'Last 24h'
+        unique_users: 'Unique Users'
+        active_users: 'Active Users'
+        limit_per_user: 'Limit per User'
+        max_concurrent: 'Max. concurrent'
+    status:
+        active_now: 'Active now'
+        minutes_ago: '%minutes% min. ago'
+    filter:
+        by_user: 'Filter by user:'
+        email_placeholder: 'Email address...'
+    action:
+        terminate: 'Terminate session'
+    confirm:
+        terminate: 'Do you really want to terminate this session?'
+    active_sessions: 'Active Sessions'
+    duration: Duration
+    no_sessions_found: 'No active sessions found in the selected time period.'
+    info_box: '<strong>Session Management:</strong> Active sessions are tracked in the database. Administrators can terminate sessions individually or for all users. Maximum concurrent sessions per user: %max_concurrent%'
     activity_timeline: 'Activity Timeline'
     unique_ips: 'Unique IP Addresses'
     unique_devices: 'Unique Devices'

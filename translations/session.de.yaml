@@ -12,6 +12,26 @@ session:
         total: 'Gesamt aktive Sitzungen'
         today: Heute
         hours_filter: 'Zeitfilter (Stunden)'
+        active_sessions: 'Aktive Sitzungen'
+        last_24h: 'Letzte 24h'
+        unique_users: 'Eindeutige Benutzer'
+        active_users: 'Aktive Benutzer'
+        limit_per_user: 'Limit pro Benutzer'
+        max_concurrent: 'Max. gleichzeitig'
+    status:
+        active_now: 'Jetzt aktiv'
+        minutes_ago: 'vor %minutes% Min.'
+    filter:
+        by_user: 'Benutzer filtern:'
+        email_placeholder: 'E-Mail-Adresse...'
+    action:
+        terminate: 'Sitzung beenden'
+    confirm:
+        terminate: 'Möchten Sie diese Sitzung wirklich beenden?'
+    active_sessions: 'Aktive Sitzungen'
+    duration: Dauer
+    no_sessions_found: 'Keine aktiven Sitzungen im gewählten Zeitraum gefunden.'
+    info_box: '<strong>Session Management:</strong> Aktive Sitzungen werden in der Datenbank getrackt. Administratoren können Sitzungen einzeln oder für alle Benutzer beenden. Maximale gleichzeitige Sitzungen pro Benutzer: %max_concurrent%'
     activity_timeline: Aktivitätsverlauf
     unique_ips: 'Eindeutige IP-Adressen'
     unique_devices: 'Eindeutige Geräte'

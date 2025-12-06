@@ -70,7 +70,7 @@ export default class extends Controller {
 
         const printWindow = window.open('', '', 'width=600,height=800');
         if (!printWindow) {
-            alert('Please allow popups to print backup codes');
+            alert(window.translations?.mfa?.allow_popups || 'Please allow popups to print backup codes');
             return;
         }
 

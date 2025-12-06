@@ -328,7 +328,7 @@
                 <h5 class="modal-title" id="deleteModalLabel{{ training.id }}">
                     <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'training.confirm_delete'|trans({}, 'training') }}
                 </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
             </div>
             <div class="modal-body">
                 <p>{{ 'training.delete_warning'|trans({'%title%': training.title}, 'training') }}</p>
