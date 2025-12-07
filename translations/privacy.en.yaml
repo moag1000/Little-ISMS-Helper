@@ -424,6 +424,12 @@ processing_activity:
 data_breach:
     index:
         view_all_breaches: 'View All Breaches'
+    notified_at: 'Notified %date%'
+    not_required: 'Not required'
+    stats:
+        authority_notified: 'Authority Notified'
+        subjects_notified: 'Subjects Notified'
+        closed: 'Closed'
     confirm:
         delete: 'Are you sure you want to delete this data breach?'
     section:

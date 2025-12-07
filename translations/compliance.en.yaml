@@ -298,6 +298,12 @@ compliance:
             low: Low
         view_page_note: 'Click on a requirement to view details and implementation status'
         filter_by_framework: 'Filter by Framework'
+        tooltip:
+            applicable: 'Check if this requirement applies to your organization. Unchecked requirements won''t count towards compliance percentage.'
+            save: 'Save your changes and return to this page. You''ll see a success message and can continue editing.'
+        applicable: Applicable
+        applicable_description: 'This requirement applies to our organization'
+        save_quick_update: 'Save Quick Update'
     cross_framework:
         source_target_label: __compliance.cross_framework.source_target_label
         table:
@@ -499,15 +505,27 @@ compliance_requirement:
         reusable: reusable
     framework_dashboard:
         compliance_steps: 'Follow these steps to achieve 100% compliance'
+    dashboard:
+        tooltip:
+            review_requirements: 'Review each requirement and mark whether it applies to your organization. Non-applicable requirements won''t count towards your compliance score.'
+            implement_requirements: 'Link requirements to existing controls or create new controls to implement them. This shows how you''re fulfilling each requirement.'
+        review_applicable: 'Review & Mark Applicable'
+        reviewed_count: '%reviewed% of %total% reviewed'
+        action:
+            review_requirements: 'Review Requirements'
+            implement_requirements: 'Implement Requirements'
+            view_gaps: 'View %count% Gaps'
+        implement_requirements: 'Implement Requirements'
+        implemented_count: '%implemented% of %total% requirements fully implemented'
+        achieve_100: 'Achieve 100% Compliance'
+        currently_at: 'Currently at %percentage%%'
+        modules_required_hint: 'This framework requires the following ISMS modules to be activated for full compliance.'
     mapping_quality:
-        no_mappings_found: 'Es wurden keine Compliance-Mappings in der Datenbank gefunden.'
+        no_mappings_found: 'No compliance mappings found in the database.'
     gaps:
-        title_description: 'Identifizierte Lücken in Compliance-Mappings'
+        title_description: 'Identified gaps in compliance mappings'
         by_priority: 'By Priority'
-        change_status_instruction: 'Ändern Sie den Gap-Status in den jeweiligen Mapping-Reviews:'
-    requirement:
-        view_page_note: 'view page'
-        filter_by_framework: 'Filter by Framework'
+        change_status_instruction: 'Change the gap status in the respective mapping reviews:'
 mapping_review:
     title: 'Mapping Review'
     subtitle: 'Detailed analysis and review'
@@ -591,7 +609,5 @@ compliance_framework:
         public_sector: 'Public Sector'
         education: Education
         insurance: Insurance
-    requirement:
-        title: 'Compliance Requirement'
 nis2:
     article: Article

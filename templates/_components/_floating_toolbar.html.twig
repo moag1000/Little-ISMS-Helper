@@ -38,7 +38,7 @@
                             data-bs-toggle="dropdown"
                             aria-expanded="false">
                         <i class="bi bi-three-dots-vertical" aria-hidden="true"></i>
-                        Mehr
+                        {{ 'common.more'|trans({}, 'messages') }}
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end">
                         {% for action in actions|slice(1) %}
@@ -47,7 +47,7 @@
                                    href="{{ action.url }}"
                                    {% if action.action == 'delete' %}
                                        data-turbo-method="delete"
-                                       data-turbo-confirm="Möchten Sie dieses {{ entityType }} wirklich löschen?"
+                                       data-turbo-confirm="{{ 'common.confirm_delete_entity'|trans({'%entity%': entityType}, 'messages') }}"
                                    {% elseif action.turbo is defined and action.turbo == false %}
                                        data-turbo="false"
                                    {% else %}

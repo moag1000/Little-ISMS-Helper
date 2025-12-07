@@ -570,6 +570,12 @@ common:
 data_breach:
     index:
         view_all_breaches: 'Alle Datenschutzverletzungen anzeigen'
+    notified_at: 'Gemeldet am %date%'
+    not_required: 'Nicht erforderlich'
+    stats:
+        authority_notified: 'Behörde gemeldet'
+        subjects_notified: 'Betroffene gemeldet'
+        closed: 'Geschlossen'
     confirm:
         delete: 'Möchten Sie diese Datenschutzverletzung wirklich löschen?'
     section:

@@ -226,19 +226,18 @@
 
                                 <div class="mb-3">
                                     <label for="adminPassword" class="form-label">
-                                        <strong>Admin-Passwort setzen</strong>
+                                        <strong>{{ 'setup.restore.set_admin_password'|trans({}, 'messages') }}</strong>
                                     </label>
-                                    <input type="password" class="form-control" id="adminPassword" name="admin_password" placeholder="Neues Passwort für Admin-Benutzer" required>
+                                    <input type="password" class="form-control" id="adminPassword" name="admin_password" placeholder="{{ 'setup.restore.password_placeholder'|trans({}, 'messages') }}" required>
                                     <div class="form-text">
                                         <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
-                                        Passwörter werden aus Sicherheitsgründen nicht im Backup gespeichert.
-                                        Geben Sie hier das Passwort für den Admin-Benutzer an.
+                                        {{ 'setup.restore.password_hint'|trans({}, 'messages') }}
                                     </div>
                                 </div>
 
                                 <button type="submit" class="btn btn-info btn-lg">
                                     <i class="bi bi-upload me-2" aria-hidden="true"></i>
-                                    Backup hochladen und wiederherstellen
+                                    {{ 'setup.restore.upload_and_restore'|trans({}, 'messages') }}
                                 </button>
                             </form>
                         </div>
@@ -250,17 +249,17 @@
                         <div class="card-header bg-secondary text-white">
                             <h3 class="mb-0">
                                 <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
-                                Option 2: Neu-Installation
+                                {{ 'setup.restore.option_new_install'|trans({}, 'messages') }}
                             </h3>
                         </div>
                         <div class="card-body">
                             <p class="text-muted">
-                                Möchten Sie eine frische Installation erstellen? Klicken Sie auf "Überspringen" um mit den Setup-Schritten fortzufahren.
+                                {{ 'setup.restore.new_install_description'|trans({}, 'messages') }}
                             </p>
                             <form method="post" action="{{ path('setup_step3_restore_backup_skip') }}">
                                 <button type="submit" class="btn btn-secondary btn-lg">
                                     <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
-                                    Überspringen - Neu-Installation erstellen
+                                    {{ 'setup.restore.skip_new_install'|trans({}, 'messages') }}
                                 </button>
                             </form>
                         </div>
