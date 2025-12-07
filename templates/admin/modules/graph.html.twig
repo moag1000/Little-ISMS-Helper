@@ -123,10 +123,10 @@
                 </div>
                 <div class="card-body">
                     <ul class="mb-0 small">
-                        <li>Abhängigkeiten werden automatisch aufgelöst</li>
-                        <li>Beim Aktivieren werden alle benötigten Module mit aktiviert</li>
-                        <li>Module können nur deaktiviert werden, wenn keine anderen Module davon abhängen</li>
-                        <li>Erforderliche Module können nie deaktiviert werden</li>
+                        <li>{{ 'admin.modules.hint.auto_dependencies'|trans({}, 'admin') }}</li>
+                        <li>{{ 'admin.modules.hint.activate_required'|trans({}, 'admin') }}</li>
+                        <li>{{ 'admin.modules.hint.deactivate_dependency'|trans({}, 'admin') }}</li>
+                        <li>{{ 'admin.modules.hint.required_always_active'|trans({}, 'admin') }}</li>
                     </ul>
                 </div>
             </div>

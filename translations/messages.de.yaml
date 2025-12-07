@@ -143,6 +143,10 @@ common:
     edit: Bearbeiten
     show_all: 'Alle anzeigen'
     active: Aktiv
+    not_active: 'Nicht aktiv'
+    skip: Überspringen
+    more: Mehr
+    confirm_delete_entity: 'Möchten Sie dieses %entity% wirklich löschen?'
     all: Alle
     selected: Ausgewählt
     category: Kategorie
@@ -680,6 +684,8 @@ setup:
             base_data: Basisdaten
             modules: 'Module aktivieren'
             sample_data: Beispieldaten
+            compliance_frameworks: 'Compliance-Frameworks'
+            complete: Abschluss
         requirements:
             title: Systemvoraussetzungen
             php: 'PHP Version 8.4 oder höher'
@@ -694,6 +700,19 @@ setup:
         back: Zurück
     state:
         recovery_detected: 'Eine vorherige Setup-Sitzung wurde erkannt. Sie können von dort fortfahren.'
+    next_step: 'Weiter zu Schritt %step%: %name%'
+    fix_errors_first: 'Bitte Fehler beheben'
+    sample_data:
+        import_selected: 'Ausgewählte Daten importieren'
+        no_data_available: 'Keine Beispiel-Daten für die ausgewählten Module verfügbar.'
+    restore:
+        set_admin_password: 'Admin-Passwort setzen'
+        password_placeholder: 'Neues Passwort für Admin-Benutzer'
+        password_hint: 'Passwörter werden aus Sicherheitsgründen nicht im Backup gespeichert. Geben Sie hier das Passwort für den Admin-Benutzer an.'
+        upload_and_restore: 'Backup hochladen und wiederherstellen'
+        option_new_install: 'Option 2: Neu-Installation'
+        new_install_description: 'Möchten Sie eine frische Installation erstellen? Klicken Sie auf "Überspringen" um mit den Setup-Schritten fortzufahren.'
+        skip_new_install: 'Überspringen - Neu-Installation erstellen'
     database:
         title: Datenbankverbindung
         header: Datenbankkonfiguration

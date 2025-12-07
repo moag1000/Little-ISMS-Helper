@@ -143,6 +143,10 @@ common:
     edit: Edit
     show_all: 'Show All'
     active: Active
+    not_active: 'Not Active'
+    skip: Skip
+    more: More
+    confirm_delete_entity: 'Do you really want to delete this %entity%?'
     all: All
     selected: Selected
     category: Category
@@ -675,6 +679,8 @@ setup:
             base_data: 'Base Data'
             modules: 'Activate Modules'
             sample_data: 'Sample Data'
+            compliance_frameworks: 'Compliance Frameworks'
+            complete: Complete
         requirements:
             title: 'System Requirements'
             php: 'PHP version 8.4 or higher'
@@ -689,6 +695,19 @@ setup:
         back: Back
     state:
         recovery_detected: 'A previous setup session was detected. You can continue from there.'
+    next_step: 'Continue to Step %step%: %name%'
+    fix_errors_first: 'Please fix errors first'
+    sample_data:
+        import_selected: 'Import Selected Data'
+        no_data_available: 'No sample data available for the selected modules.'
+    restore:
+        set_admin_password: 'Set Admin Password'
+        password_placeholder: 'New password for admin user'
+        password_hint: 'Passwords are not stored in backups for security reasons. Please enter the password for the admin user here.'
+        upload_and_restore: 'Upload and Restore Backup'
+        option_new_install: 'Option 2: Fresh Installation'
+        new_install_description: 'Do you want to create a fresh installation? Click "Skip" to continue with the setup steps.'
+        skip_new_install: 'Skip - Create Fresh Installation'
     database:
         title: 'Database Connection'
         header: 'Database Configuration'

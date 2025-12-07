@@ -15,3 +15,11 @@ ui:
     optional: Optional
     required: Required
     n_a: N/A
+    command_palette:
+        placeholder: 'Search for commands or navigation...'
+    global_search:
+        placeholder: 'Search for assets, risks, controls...'
+    keyboard:
+        navigation: Navigation
+        select: Select
+        close: Close

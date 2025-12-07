@@ -246,17 +246,17 @@
                                 <input class="form-check-input" type="checkbox" id="applicable" name="applicable" value="1"
                                        {% if fulfillment.applicable %}checked{% endif %}
                                        data-bs-toggle="tooltip" data-bs-placement="right"
-                                       title="Check if this requirement applies to your organization. Unchecked requirements won't count towards compliance percentage.">
+                                       title="{{ 'compliance.requirement.tooltip.applicable'|trans({}, 'compliance') }}">
                                 <label class="form-check-label" for="applicable">
-                                    <strong>Applicable</strong>
-                                    <small class="d-block text-muted">This requirement applies to our organization</small>
+                                    <strong>{{ 'compliance.requirement.applicable'|trans({}, 'compliance') }}</strong>
+                                    <small class="d-block text-muted">{{ 'compliance.requirement.applicable_description'|trans({}, 'compliance') }}</small>
                                 </label>
                             </div>
 
                             <button type="submit" class="btn btn-primary w-100"
                                     data-bs-toggle="tooltip" data-bs-placement="top"
-                                    title="Save your changes and return to this page. You'll see a success message and can continue editing.">
-                                <i class="bi bi-check-circle" aria-hidden="true"></i> Save Quick Update
+                                    title="{{ 'compliance.requirement.tooltip.save'|trans({}, 'compliance') }}">
+                                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'compliance.requirement.save_quick_update'|trans({}, 'compliance') }}
                             </button>
                         </form>
                     {% else %}

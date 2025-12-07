@@ -131,15 +131,15 @@
                             <h3>{{ statistics.under_assessment }}</h3>
                         </div>
                         <div class="col-md-3">
-                            <h6 class="text-muted">Authority Notified</h6>
+                            <h6 class="text-muted">{{ 'data_breach.stats.authority_notified'|trans({}, 'privacy') }}</h6>
                             <h3 class="text-success">{{ statistics.authority_notified }}</h3>
                         </div>
                         <div class="col-md-2">
-                            <h6 class="text-muted">Subjects Notified</h6>
+                            <h6 class="text-muted">{{ 'data_breach.stats.subjects_notified'|trans({}, 'privacy') }}</h6>
                             <h3 class="text-success">{{ statistics.subjects_notified }}</h3>
                         </div>
                         <div class="col-md-2">
-                            <h6 class="text-muted">Closed</h6>
+                            <h6 class="text-muted">{{ 'data_breach.stats.closed'|trans({}, 'privacy') }}</h6>
                             <h3>{{ statistics.closed }}</h3>
                         </div>
                     </div>
