@@ -175,12 +175,12 @@
 
                         {% if can_proceed %}
                             <a href="{{ path('setup_step2_database_config') }}" class="btn btn-primary">
-                                Weiter zu Schritt 2: Datenbank konfigurieren
+                                {{ 'setup.next_step'|trans({'%step%': 2, '%name%': 'setup.steps.database'|trans({}, 'messages')}, 'messages') }}
                                 <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
                             </a>
                         {% else %}
                             <button type="button" class="btn btn-secondary" disabled>
-                                Bitte Fehler beheben
+                                {{ 'setup.fix_errors_first'|trans({}, 'messages') }}
                             </button>
                         {% endif %}
                     </div>

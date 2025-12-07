@@ -37,16 +37,16 @@
                 <label>
                     <input type="text"
                            class="global-search-input"
-                           placeholder="Suche nach Assets, Risiken, Controls..."
+                           placeholder="{{ 'ui.global_search.placeholder'|trans({}, 'ui') }}"
                            data-search-target="input"
                            data-action="input->search#search keydown->search#handleKeydown"
                            autocomplete="off"
                            spellcheck="false">
                 </label>
                 <div class="global-search-shortcuts">
-                    <kbd>↑↓</kbd> Navigation
-                    <kbd>↵</kbd> Auswählen
-                    <kbd>ESC</kbd> Schließen
+                    <kbd>↑↓</kbd> {{ 'ui.keyboard.navigation'|trans({}, 'ui') }}
+                    <kbd>↵</kbd> {{ 'ui.keyboard.select'|trans({}, 'ui') }}
+                    <kbd>ESC</kbd> {{ 'ui.keyboard.close'|trans({}, 'ui') }}
                 </div>
             </div>
 

@@ -87,16 +87,16 @@
 
             <div class="workflow-step {% if dashboard.statistics.applicable > 0 %}active{% endif %} {% if dashboard.statistics.applicable == dashboard.statistics.total %}completed{% endif %}"
                  data-bs-toggle="tooltip" data-bs-placement="top"
-                 title="Review each requirement and mark whether it applies to your organization. Non-applicable requirements won't count towards your compliance score.">
+                 title="{{ 'compliance.dashboard.tooltip.review_requirements'|trans({}, 'compliance') }}">
                 <div class="step-icon">{% if dashboard.statistics.applicable == dashboard.statistics.total %}<i class="bi bi-check-circle text-success" aria-hidden="true"></i>{% else %}{% if dashboard.statistics.applicable > 0 %}<i class="bi bi-arrow-clockwise text-info" aria-hidden="true"></i>{% else %}<span class="step-number">2</span>{% endif %}{% endif %}</div>
                 <div class="step-content">
-                    <h2>Review & Mark Applicable</h2>
-                    <p>{{ dashboard.statistics.applicable }} of {{ dashboard.statistics.total }} reviewed</p>
+                    <h2>{{ 'compliance.dashboard.review_applicable'|trans({}, 'compliance') }}</h2>
+                    <p>{{ 'compliance.dashboard.reviewed_count'|trans({'%reviewed%': dashboard.statistics.applicable, '%total%': dashboard.statistics.total}, 'compliance') }}</p>
                     {% if dashboard.statistics.applicable < dashboard.statistics.total %}
                         <a href="{{ path('app_compliance_requirement_index') }}?framework={{ framework.id }}" class="step-action"
                            data-bs-toggle="tooltip" data-bs-placement="right"
                            title="{{ 'common.tooltip.opens_requirements_list'|trans({}, 'messages') }}">
-                            → Review Requirements
+                            → {{ 'compliance.dashboard.action.review_requirements'|trans({}, 'compliance') }}
                         </a>
                     {% endif %}
                 </div>
@@ -104,16 +104,16 @@
 
             <div class="workflow-step {% if dashboard.statistics.fulfilled > 0 %}active{% endif %} {% if dashboard.statistics.fulfilled == dashboard.statistics.applicable %}completed{% endif %}"
                  data-bs-toggle="tooltip" data-bs-placement="top"
-                 title="Link requirements to existing controls or create new controls to implement them. This shows how you're fulfilling each requirement.">
+                 title="{{ 'compliance.dashboard.tooltip.implement_requirements'|trans({}, 'compliance') }}">
                 <div class="step-icon">{% if dashboard.statistics.fulfilled == dashboard.statistics.applicable %}<i class="bi bi-check-circle text-success" aria-hidden="true"></i>{% else %}{% if dashboard.statistics.fulfilled > 0 %}<i class="bi bi-arrow-clockwise text-info" aria-hidden="true"></i>{% else %}<span class="step-number">3</span>{% endif %}{% endif %}</div>
                 <div class="step-content">
-                    <h3>Implement Requirements</h3>
-                    <p>{{ dashboard.statistics.fulfilled }} of {{ dashboard.statistics.applicable }} requirements fully implemented</p>
+                    <h3>{{ 'compliance.dashboard.implement_requirements'|trans({}, 'compliance') }}</h3>
+                    <p>{{ 'compliance.dashboard.implemented_count'|trans({'%implemented%': dashboard.statistics.fulfilled, '%total%': dashboard.statistics.applicable}, 'compliance') }}</p>
                     {% if dashboard.gaps.total > 0 %}
                         <a href="{{ path('app_compliance_requirement_index') }}?framework={{ framework.id }}&sort=fulfillment" class="step-action"
                            data-bs-toggle="tooltip" data-bs-placement="right"
                            title="{{ 'common.tooltip.requirements_sorted_by_fulfillment'|trans({}, 'messages') }}">
-                            → Implement Requirements
+                            → {{ 'compliance.dashboard.action.implement_requirements'|trans({}, 'compliance') }}
                         </a>
                     {% endif %}
                 </div>
@@ -124,13 +124,13 @@
                  title="{{ 'common.tooltip.reach_100_percent'|trans({}, 'messages') }}">
                 <div class="step-icon">{% if dashboard.compliance_percentage == 100 %}<i class="bi bi-check-circle text-success" aria-hidden="true"></i>{% else %}{% if dashboard.compliance_percentage >= 75 %}<i class="bi bi-arrow-clockwise text-info" aria-hidden="true"></i>{% else %}<span class="step-number">4</span>{% endif %}{% endif %}</div>
                 <div class="step-content">
-                    <h3>Achieve 100% Compliance</h3>
-                    <p>Currently at {{ dashboard.compliance_percentage }}%</p>
+                    <h3>{{ 'compliance.dashboard.achieve_100'|trans({}, 'compliance') }}</h3>
+                    <p>{{ 'compliance.dashboard.currently_at'|trans({'%percentage%': dashboard.compliance_percentage}, 'compliance') }}</p>
                     {% if dashboard.compliance_percentage < 100 %}
                         <a href="{{ path('app_compliance_gaps', {id: framework.id}) }}" class="step-action"
                            data-bs-toggle="tooltip" data-bs-placement="right"
                            title="{{ 'common.tooltip.view_gap_analysis'|trans({}, 'messages') }}">
-                            → View {{ dashboard.gaps.total }} Gaps
+                            → {{ 'compliance.dashboard.action.view_gaps'|trans({'%count%': dashboard.gaps.total}, 'compliance') }}
                         </a>
                     {% endif %}
                 </div>
@@ -146,7 +146,7 @@
         </div>
         <div class="card-body">
             <p class="text-muted mb-3">
-                This framework requires the following ISMS modules to be activated for full compliance.
+                {{ 'compliance.dashboard.modules_required_hint'|trans({}, 'compliance') }}
             </p>
             <div class="modules-grid">
                 {% for moduleKey in framework.requiredModules %}
@@ -158,10 +158,10 @@
                             <div class="module-status">
                                 {% if isActive %}
                                     <span class="status-icon active"><i class="bi bi-check-circle" aria-hidden="true"></i></span>
-                                    <span class="status-text active">Active</span>
+                                    <span class="status-text active">{{ 'common.active'|trans({}, 'messages') }}</span>
                                 {% else %}
                                     <span class="status-icon inactive"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i></span>
-                                    <span class="status-text inactive">Not Active</span>
+                                    <span class="status-text inactive">{{ 'common.not_active'|trans({}, 'messages') }}</span>
                                 {% endif %}
                             </div>
                             <h3 class="module-title">{{ module.name }}</h3>

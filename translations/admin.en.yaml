@@ -230,6 +230,11 @@ admin:
         no_active: 'No Active'
         inactive_modules: 'Inactive Modules'
         activate: Activate
+        hint:
+            auto_dependencies: 'Dependencies are automatically resolved'
+            activate_required: 'When activating, all required modules will be activated as well'
+            deactivate_dependency: 'Modules can only be deactivated if no other modules depend on them'
+            required_always_active: 'Required modules can never be deactivated'
 data_management:
     backup:
         title: 'Backup & Restore'

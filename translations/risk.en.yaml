@@ -1,4 +1,6 @@
 risk:
+    filter:
+        owner_placeholder: 'Search for owner...'
     modern:
         breadcrumb: 'Risk Management'
         header:

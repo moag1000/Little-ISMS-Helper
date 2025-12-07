@@ -242,9 +242,9 @@
                                             </span>
                                         {% endif %}
                                     {% elseif breach.supervisoryAuthorityNotifiedAt %}
-                                        <i class="bi bi-check-circle text-success" aria-hidden="true" title="Notified {{ breach.supervisoryAuthorityNotifiedAt|date('Y-m-d H:i') }}"></i>
+                                        <i class="bi bi-check-circle text-success" aria-hidden="true" title="{{ 'data_breach.notified_at'|trans({'%date%': breach.supervisoryAuthorityNotifiedAt|date('Y-m-d H:i')}, 'privacy') }}"></i>
                                     {% else %}
-                                        <span class="text-muted">Not required</span>
+                                        <span class="text-muted">{{ 'data_breach.not_required'|trans({}, 'privacy') }}</span>
                                     {% endif %}
                                 </td>
                                 <td>

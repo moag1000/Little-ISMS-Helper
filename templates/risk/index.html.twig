@@ -220,11 +220,11 @@
                 <label for="filter-owner" class="form-label">Risk Owner</label>
                 <input type="text" class="form-control" id="filter-owner" name="owner"
                        value="{{ app.request.query.get('owner') }}"
-                       placeholder="Suche nach Owner...">
+                       placeholder="{{ 'risk.filter.owner_placeholder'|trans({}, 'risk') }}">
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-search" aria-hidden="true"></i> Filtern
+                    <i class="bi bi-search" aria-hidden="true"></i> {{ 'common.filter'|trans({}, 'messages') }}
                 </button>
                 <a href="{{ path('app_risk_index') }}" class="btn btn-secondary">
                     <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.reset'|trans({}, 'messages') }}

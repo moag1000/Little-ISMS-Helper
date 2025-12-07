@@ -298,6 +298,12 @@ compliance:
             low: Niedrig
         view_page_note: 'Klicken Sie auf eine Anforderung, um Details und Umsetzungsstatus anzuzeigen'
         filter_by_framework: 'Nach Framework filtern'
+        tooltip:
+            applicable: 'Aktivieren Sie dies, wenn diese Anforderung für Ihre Organisation gilt. Nicht aktivierte Anforderungen werden nicht zur Compliance-Quote gezählt.'
+            save: 'Speichern Sie Ihre Änderungen und kehren Sie zu dieser Seite zurück. Sie sehen eine Erfolgsmeldung und können weiter bearbeiten.'
+        applicable: Anwendbar
+        applicable_description: 'Diese Anforderung gilt für unsere Organisation'
+        save_quick_update: 'Schnell-Update speichern'
     cross_framework:
         source_target_label: 'Quell- und Ziel-Framework'
         table:
@@ -499,15 +505,27 @@ compliance_requirement:
         reusable: wiederverwendbar
     framework_dashboard:
         compliance_steps: 'Folgen Sie diesen Schritten, um 100% Compliance zu erreichen'
+    dashboard:
+        tooltip:
+            review_requirements: 'Prüfen Sie jede Anforderung und markieren Sie, ob sie für Ihre Organisation gilt. Nicht anwendbare Anforderungen werden nicht zur Compliance-Quote gezählt.'
+            implement_requirements: 'Verknüpfen Sie Anforderungen mit bestehenden Controls oder erstellen Sie neue Controls zur Umsetzung. Dies zeigt, wie Sie jede Anforderung erfüllen.'
+        review_applicable: 'Prüfen & Anwendbarkeit markieren'
+        reviewed_count: '%reviewed% von %total% geprüft'
+        action:
+            review_requirements: 'Anforderungen prüfen'
+            implement_requirements: 'Anforderungen umsetzen'
+            view_gaps: '%count% Lücken anzeigen'
+        implement_requirements: 'Anforderungen umsetzen'
+        implemented_count: '%implemented% von %total% Anforderungen vollständig umgesetzt'
+        achieve_100: '100% Compliance erreichen'
+        currently_at: 'Derzeit bei %percentage%%'
+        modules_required_hint: 'Dieses Framework erfordert die Aktivierung der folgenden ISMS-Module für vollständige Compliance.'
     mapping_quality:
         no_mappings_found: 'Es wurden keine Compliance-Mappings in der Datenbank gefunden.'
     gaps:
         title_description: 'Identifizierte Lücken in Compliance-Mappings'
         by_priority: 'Nach Priorität'
         change_status_instruction: 'Ändern Sie den Gap-Status in den jeweiligen Mapping-Reviews:'
-    requirement:
-        view_page_note: 'Seite anzeigen'
-        filter_by_framework: 'Nach Framework filtern'
 nis2:
     article: Artikel
 
@@ -594,5 +612,3 @@ compliance_framework:
         public_sector: 'Öffentlicher Sektor'
         education: Bildung
         insurance: Versicherung
-    requirement:
-        title: Compliance-Anforderung

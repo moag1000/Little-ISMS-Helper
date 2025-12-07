@@ -15,3 +15,11 @@ ui:
     optional: Optional
     required: Erforderlich
     n_a: N/A
+    command_palette:
+        placeholder: 'Suche nach Befehlen oder Navigation...'
+    global_search:
+        placeholder: 'Suche nach Assets, Risiken, Controls...'
+    keyboard:
+        navigation: Navigation
+        select: Auswählen
+        close: Schließen
