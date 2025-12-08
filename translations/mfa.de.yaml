@@ -46,6 +46,13 @@ mfa:
         active_tokens: 'Aktive Token'
         total_tokens: 'Gesamt Token'
         by_type: 'Nach Typ'
+    admin:
+        notice_title: 'Administratorhinweis'
+        notice_text: 'Als Super-Administrator können Sie MFA-Tokens zurücksetzen, falls ein Benutzer den Zugriff auf sein MFA-Gerät verloren hat. Dies sollte nur in Notfällen durchgeführt werden.'
+        confirm_reset: 'Möchten Sie diesen MFA-Token wirklich zurücksetzen?'
+    table:
+        status: 'Status'
+        action: 'Aktion'
     token_type:
         totp: 'Authenticator App'
         webauthn: 'Sicherheitsschlüssel'

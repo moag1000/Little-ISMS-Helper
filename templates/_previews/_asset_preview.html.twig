@@ -3,29 +3,29 @@
     <div class="preview-section">
         <h6 class="preview-section-title">
             <i class="bi bi-server text-primary"></i>
-            Asset-Informationen
+            {{ 'asset.preview.title'|trans({}, 'asset') }}
         </h6>
         <dl class="row mb-0">
-            <dt class="col-sm-4">Name:</dt>
+            <dt class="col-sm-4">{{ 'asset.field.name'|trans({}, 'asset') }}:</dt>
             <dd class="col-sm-8">{{ asset.name }}</dd>
 
-            <dt class="col-sm-4">Typ:</dt>
+            <dt class="col-sm-4">{{ 'asset.field.type'|trans({}, 'asset') }}:</dt>
             <dd class="col-sm-8">
                 <span class="badge bg-secondary">{{ asset.assetType }}</span>
             </dd>
 
-            <dt class="col-sm-4">Eigentümer:</dt>
+            <dt class="col-sm-4">{{ 'asset.field.owner'|trans({}, 'asset') }}:</dt>
             <dd class="col-sm-8">{{ asset.owner }}</dd>
 
             {% if asset.location %}
-            <dt class="col-sm-4">Standort:</dt>
+            <dt class="col-sm-4">{{ 'asset.field.location'|trans({}, 'asset') }}:</dt>
             <dd class="col-sm-8">{{ asset.location }}</dd>
             {% endif %}
 
-            <dt class="col-sm-4">Status:</dt>
+            <dt class="col-sm-4">{{ 'asset.field.status'|trans({}, 'asset') }}:</dt>
             <dd class="col-sm-8">
                 <span class="badge bg-{{ asset.status == 'active' ? 'success' : 'secondary' }}">
-                    {{ asset.status|trans }}
+                    {{ ('asset.status.' ~ asset.status)|trans({}, 'asset') }}
                 </span>
             </dd>
         </dl>
@@ -35,7 +35,7 @@
     <div class="preview-section">
         <h6 class="preview-section-title">
             <i class="bi bi-file-text"></i>
-            Beschreibung
+            {{ 'asset.field.description'|trans({}, 'asset') }}
         </h6>
         <p class="mb-0">{{ asset.description }}</p>
     </div>
@@ -44,25 +44,25 @@
     <div class="preview-section">
         <h6 class="preview-section-title">
             <i class="bi bi-shield-check"></i>
-            Schutzbedarf (CIA)
+            {{ 'asset.section.cia_values'|trans({}, 'asset') }}
         </h6>
         <div class="row">
             <div class="col-4">
                 <div class="cia-badge">
                     <div class="cia-value">{{ asset.confidentialityValue }}</div>
-                    <div class="cia-label">Vertraulichkeit</div>
+                    <div class="cia-label">{{ 'asset.field.confidentiality'|trans({}, 'asset') }}</div>
                 </div>
             </div>
             <div class="col-4">
                 <div class="cia-badge">
                     <div class="cia-value">{{ asset.integrityValue }}</div>
-                    <div class="cia-label">Integrität</div>
+                    <div class="cia-label">{{ 'asset.field.integrity'|trans({}, 'asset') }}</div>
                 </div>
             </div>
             <div class="col-4">
                 <div class="cia-badge">
                     <div class="cia-value">{{ asset.availabilityValue }}</div>
-                    <div class="cia-label">Verfügbarkeit</div>
+                    <div class="cia-label">{{ 'asset.field.availability'|trans({}, 'asset') }}</div>
                 </div>
             </div>
         </div>
@@ -71,19 +71,19 @@
     <div class="preview-section">
         <h6 class="preview-section-title">
             <i class="bi bi-graph-up"></i>
-            Statistiken
+            {{ 'common.statistics'|trans({}, 'messages') }}
         </h6>
         <div class="row g-2">
             <div class="col-6">
                 <div class="stat-mini">
                     <div class="stat-mini-value">{{ asset.risks|length }}</div>
-                    <div class="stat-mini-label">Risiken</div>
+                    <div class="stat-mini-label">{{ 'asset.label.risks'|trans({}, 'asset') }}</div>
                 </div>
             </div>
             <div class="col-6">
                 <div class="stat-mini">
                     <div class="stat-mini-value">{{ asset.protectingControls|length }}</div>
-                    <div class="stat-mini-label">Maßnahmen</div>
+                    <div class="stat-mini-label">{{ 'control.title.plural'|trans({}, 'controls') }}</div>
                 </div>
             </div>
         </div>

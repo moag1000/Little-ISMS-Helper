@@ -1,4 +1,9 @@
 risk:
+    preview:
+        title: 'Risiko-Informationen'
+    section:
+        assessment: 'Risikobewertung'
+        treatment: 'Behandlungsstrategie'
     filter:
         owner_placeholder: 'Suche nach Owner...'
     modern:
@@ -61,6 +66,9 @@ risk:
         review_date: 'Überprüfungsdatum'
         inherent_risk: 'Inhärentes Risiko (vor Maßnahmen)'
         category: Risikokategorie
+        residual_risk: 'Restrisiko'
+        risk_reduction: 'Risikoreduktion'
+        linked_controls: 'Verknüpfte Maßnahmen'
         person: 'Betroffene Person'
         location: 'Betroffener Standort'
         supplier: 'Betroffener Lieferant'

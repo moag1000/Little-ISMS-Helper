@@ -1,12 +1,43 @@
 monitoring:
     title: 'System Monitoring'
+    subtitle: 'System monitoring and diagnostics'
     health:
         title: 'System Health'
         overall_status: 'Overall Status'
+        system_status: 'System Status'
         healthy: Healthy
         warning: Warning
         error: Error
         last_checked: 'Last Checked'
+        json_api: 'JSON API'
+        yes: 'Yes'
+        no: 'No'
+        not_used: 'Not used'
+        exists: 'Exists'
+        on: 'ON'
+        off: 'OFF'
+        present: 'Present'
+    action:
+        optimize_disk: 'Optimize Disk Space'
+        fix_permissions: 'Fix Permissions'
+        clear_cache: 'Clear Cache'
+        clean_logs: 'Clean Old Logs'
+        rotate_logs: 'Rotate Logs'
+        composer_install: 'Run Composer Install'
+        clean_uploads: 'Clean Old Uploads'
+    card:
+        database: 'Database'
+        disk_space: 'Disk Space'
+        php: 'PHP'
+        symfony: 'Symfony'
+        cache: 'Cache'
+        logs: 'Logs'
+        file_permissions: 'File Permissions'
+        composer: 'Composer'
+        environment: 'Environment'
+        php_config: 'PHP Configuration'
+        sessions: 'Sessions'
+        uploads: 'Uploads'
     database:
         title: Database
         status: Status
@@ -42,28 +73,41 @@ monitoring:
         writable: Writable
     performance:
         title: 'Performance Metrics'
+        subtitle: 'Performance monitoring and system metrics'
         total_requests: 'Total Requests'
         unique_users: 'Unique Users'
         memory_usage: 'Memory Usage'
         memory_peak: 'Memory Peak'
         memory_limit: 'Memory Limit'
+        current_usage: 'Current Usage'
+        peak_usage: 'Peak Usage'
         top_actions: 'Top Actions'
         top_entities: 'Most Active Entities'
         last_24h: 'Last 24 Hours'
         system_resources: 'System Resources'
+        active_today: 'Active today'
+        current: 'Current'
         note: Note
+        note_title: 'Performance Monitoring Note'
+        note_text: 'These metrics are based on audit log data and current PHP process information. For production environments, consider integrating professional monitoring tools like: <strong>New Relic</strong>, <strong>Datadog</strong>, or <strong>Blackfire</strong> for detailed performance insights.'
+        no_data: 'No data available'
     errors:
         title: 'Error Logs'
+        subtitle: 'System errors and exceptions'
         total: 'Total Errors'
+        shown: 'Shown (last %count%)'
         by_level: 'By Level'
         file_size: 'File Size'
+        log_file_size: 'Log file size'
         last_modified: 'Last Modified'
         log_file: 'Log File'
         show_entries: 'Show Entries'
         recent: 'Recent Errors'
         no_errors: 'No errors found!'
         no_log_file: 'No log file found'
+        no_log_file_text: 'The log file <code>%file%</code> does not exist yet. Errors will be logged here once they occur.'
         show_full: 'Show full log entry'
+        important_notes: 'Important Notes'
     audit_log:
         title: 'Audit Log'
         total_entries: 'Total Entries'

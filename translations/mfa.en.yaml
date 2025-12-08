@@ -46,6 +46,13 @@ mfa:
         active_tokens: 'Active Tokens'
         total_tokens: 'Total Tokens'
         by_type: 'By Type'
+    admin:
+        notice_title: 'Administrator Notice'
+        notice_text: 'As Super Administrator, you can reset MFA tokens if a user has lost access to their MFA device. This should only be done in emergencies.'
+        confirm_reset: 'Do you really want to reset this MFA token?'
+    table:
+        status: 'Status'
+        action: 'Action'
     token_type:
         totp: 'Authenticator App'
         webauthn: 'Security Key'
