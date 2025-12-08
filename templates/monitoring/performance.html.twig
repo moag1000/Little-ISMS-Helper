@@ -1,8 +1,9 @@
 {% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'monitoring' %}
 
-{% block admin_title %}Performance Metrics{% endblock %}
+{% block admin_title %}{{ 'monitoring.performance.title'|trans({}, 'monitoring') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">Leistungsüberwachung und Systemmetriken</p>
+    <p class="text-muted">{{ 'monitoring.performance.subtitle'|trans({}, 'monitoring') }}</p>
 {% endblock %}
 
 {% block admin_content %}
@@ -10,23 +11,23 @@
 
     <div class="mb-3">
         <a href="{{ path('monitoring_health') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to Health
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'monitoring.back_to_health'|trans({}, 'monitoring') }}
         </a>
     </div>
 
     {# Overview Statistics #}
     <div class="row mb-4">
         <div class="col-md-3">
-            {{ cards.kpi_card('Total Requests', total_requests, 'Last 24 hours', null, 'primary', 'border-primary') }}
+            {{ cards.kpi_card('monitoring.performance.total_requests'|trans({}, 'monitoring'), total_requests, 'monitoring.performance.last_24h'|trans({}, 'monitoring'), null, 'primary', 'border-primary') }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('Unique Users', unique_users, 'Active today', null, 'success', 'border-success') }}
+            {{ cards.kpi_card('monitoring.performance.unique_users'|trans({}, 'monitoring'), unique_users, 'monitoring.performance.active_today'|trans({}, 'monitoring'), null, 'success', 'border-success') }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('Memory Usage', memory_usage, 'Current', null, 'info', 'border-info') }}
+            {{ cards.kpi_card('monitoring.performance.memory_usage'|trans({}, 'monitoring'), memory_usage, 'monitoring.performance.current'|trans({}, 'monitoring'), null, 'info', 'border-info') }}
         </div>
         <div class="col-md-3">
-            {{ cards.kpi_card('Memory Peak', memory_peak, 'Peak usage', null, 'warning', 'border-warning') }}
+            {{ cards.kpi_card('monitoring.performance.memory_peak'|trans({}, 'monitoring'), memory_peak, 'monitoring.performance.peak_usage'|trans({}, 'monitoring'), null, 'warning', 'border-warning') }}
         </div>
     </div>
 
@@ -36,7 +37,7 @@
             <div class="card">
                 <div class="card-header bg-primary text-white">
                     <h3 class="mb-0">
-                        <i class="bi bi-activity" aria-hidden="true"></i> Top Actions (Last 24h)
+                        <i class="bi bi-activity" aria-hidden="true"></i> {{ 'monitoring.performance.top_actions'|trans({}, 'monitoring') }} ({{ 'monitoring.performance.last_24h'|trans({}, 'monitoring') }})
                     </h3>
                 </div>
                 <div class="card-body">
@@ -59,7 +60,7 @@
                         </div>
                     {% else %}
                         <div class="alert alert-info mb-0">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i> No data available
+                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'monitoring.performance.no_data'|trans({}, 'monitoring') }}
                         </div>
                     {% endif %}
                 </div>
@@ -71,7 +72,7 @@
             <div class="card">
                 <div class="card-header bg-success text-white">
                     <h3 class="mb-0">
-                        <i class="bi bi-folder" aria-hidden="true"></i> Most Active Entities (Last 24h)
+                        <i class="bi bi-folder" aria-hidden="true"></i> {{ 'monitoring.performance.top_entities'|trans({}, 'monitoring') }} ({{ 'monitoring.performance.last_24h'|trans({}, 'monitoring') }})
                     </h3>
                 </div>
                 <div class="card-body">
@@ -94,7 +95,7 @@
                         </div>
                     {% else %}
                         <div class="alert alert-info mb-0">
-                            <i class="bi bi-info-circle" aria-hidden="true"></i> No data available
+                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'monitoring.performance.no_data'|trans({}, 'monitoring') }}
                         </div>
                     {% endif %}
                 </div>
@@ -106,30 +107,28 @@
     <div class="card">
         <div class="card-header bg-info text-white">
             <h3 class="mb-0">
-                <i class="bi bi-cpu" aria-hidden="true"></i> System Resources
+                <i class="bi bi-cpu" aria-hidden="true"></i> {{ 'monitoring.performance.system_resources'|trans({}, 'monitoring') }}
             </h3>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
                     <dl class="row">
-                        <dt class="col-sm-6">Memory Limit:</dt>
+                        <dt class="col-sm-6">{{ 'monitoring.performance.memory_limit'|trans({}, 'monitoring') }}:</dt>
                         <dd class="col-sm-6"><code>{{ memory_limit }}</code></dd>
 
-                        <dt class="col-sm-6">Current Usage:</dt>
+                        <dt class="col-sm-6">{{ 'monitoring.performance.current_usage'|trans({}, 'monitoring') }}:</dt>
                         <dd class="col-sm-6"><code>{{ memory_usage }}</code></dd>
 
-                        <dt class="col-sm-6">Peak Usage:</dt>
+                        <dt class="col-sm-6">{{ 'monitoring.performance.peak_usage'|trans({}, 'monitoring') }}:</dt>
                         <dd class="col-sm-6"><code>{{ memory_peak }}</code></dd>
                     </dl>
                 </div>
                 <div class="col-md-8">
                     <div class="alert alert-info mb-0">
-                        <h4><i class="bi bi-info-circle" aria-hidden="true"></i> Performance Monitoring Note</h4>
+                        <h4><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'monitoring.performance.note_title'|trans({}, 'monitoring') }}</h4>
                         <p class="mb-0">
-                            These metrics are based on audit log data and current PHP process information.
-                            For production environments, consider integrating professional monitoring tools like:
-                            <strong>New Relic</strong>, <strong>Datadog</strong>, or <strong>Blackfire</strong> for detailed performance insights.
+                            {{ 'monitoring.performance.note_text'|trans({}, 'monitoring')|raw }}
                         </p>
                     </div>
                 </div>

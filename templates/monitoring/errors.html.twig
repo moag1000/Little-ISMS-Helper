@@ -1,14 +1,14 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'monitoring' %}
-{% block admin_title %}Error Logs{% endblock %}
+{% block admin_title %}{{ 'monitoring.errors.title'|trans({}, 'monitoring') }}{% endblock %}
 {% block admin_subtitle %}
-    <p class="text-muted">Systemfehler und Ausnahmen</p>
+    <p class="text-muted">{{ 'monitoring.errors.subtitle'|trans({}, 'monitoring') }}</p>
 {% endblock %}
 
 {% block admin_content %}
     <div class="mb-3">
         <a href="{{ path('monitoring_health') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left" aria-hidden="true"></i> Back to Health
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'monitoring.back_to_health'|trans({}, 'monitoring') }}
         </a>
     </div>
 
@@ -18,18 +18,18 @@
             <div class="col-md-3">
                 <div class="card border-danger">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-muted">Total Errors</h5>
+                        <h5 class="card-title text-muted">{{ 'monitoring.errors.total'|trans({}, 'monitoring') }}</h5>
                         <p class="display-6 text-danger">{{ error_stats.total }}</p>
-                        <small>Shown (last {{ errors|length }})</small>
+                        <small>{{ 'monitoring.errors.shown'|trans({'%count%': errors|length}, 'monitoring') }}</small>
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="card border-warning">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-muted">File Size</h5>
+                        <h5 class="card-title text-muted">{{ 'monitoring.errors.file_size'|trans({}, 'monitoring') }}</h5>
                         <p class="display-6 text-warning small">{{ error_stats.file_size }}</p>
-                        <small>Log file size</small>
+                        <small>{{ 'monitoring.errors.log_file_size'|trans({}, 'monitoring') }}</small>
                     </div>
                 </div>
             </div>
@@ -52,8 +52,8 @@
 
         {# Log File Info #}
         <div class="alert alert-secondary mb-4">
-            <strong>Log File:</strong> <code>{{ log_file }}</code><br>
-            <strong>Last Modified:</strong> {{ error_stats.last_modified }}
+            <strong>{{ 'monitoring.errors.log_file'|trans({}, 'monitoring') }}:</strong> <code>{{ log_file }}</code><br>
+            <strong>{{ 'monitoring.errors.last_modified'|trans({}, 'monitoring') }}:</strong> {{ error_stats.last_modified }}
         </div>
 
         {# Filter Options #}
@@ -79,7 +79,7 @@
         <div class="card">
             <div class="card-header bg-danger text-white">
                 <h3 class="mb-0">
-                    <i class="bi bi-list-ul" aria-hidden="true"></i> Recent Errors
+                    <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'monitoring.errors.recent'|trans({}, 'monitoring') }}
                 </h3>
             </div>
             <div class="card-body p-0">
@@ -101,7 +101,7 @@
                                         <p class="mb-1 font-monospace small">{{ error.message|slice(0, 300) }}{% if error.message|length > 300 %}...{% endif %}</p>
                                         <details class="mt-2">
                                             <summary class="text-muted small" style="cursor: pointer;">
-                                                <i class="bi bi-code-square" aria-hidden="true"></i> Show full log entry
+                                                <i class="bi bi-code-square" aria-hidden="true"></i> {{ 'monitoring.errors.show_full'|trans({}, 'monitoring') }}
                                             </summary>
                                             <pre class="mt-2 mb-0 small bg-light p-3 rounded">{{ error.raw }}</pre>
                                         </details>
@@ -121,7 +121,7 @@
 
         {# Warning Box #}
         <div class="alert alert-warning mt-4">
-            <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Important Notes</h5>
+            <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'monitoring.errors.important_notes'|trans({}, 'monitoring') }}</h5>
             <ul class="mb-0">
                 <li>{{ 'monitoring.reverse_order'|trans({}, 'monitoring')}}</li>
                 <li>{{ 'monitoring.recent_entries_only'|trans({}, 'monitoring')}}</li>
@@ -131,10 +131,9 @@
         </div>
     {% else %}
         <div class="alert alert-info">
-            <h5><i class="bi bi-info-circle" aria-hidden="true"></i> No Log File Found</h5>
+            <h5><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'monitoring.errors.no_log_file'|trans({}, 'monitoring') }}</h5>
             <p class="mb-0">
-                The log file <code>{{ log_file }}</code> does not exist yet.
-                Errors will be logged here once they occur.
+                {{ 'monitoring.errors.no_log_file_text'|trans({'%file%': log_file}, 'monitoring')|raw }}
             </p>
         </div>
     {% endif %}

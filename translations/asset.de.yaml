@@ -1,5 +1,7 @@
 asset:
     title: Titel
+    preview:
+        title: 'Asset-Informationen'
     action:
         bcm_insights: BCM-Erkenntnisse
         create: 'Asset anlegen'

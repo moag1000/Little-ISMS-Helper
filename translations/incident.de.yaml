@@ -4,6 +4,10 @@ incident_management:
     open_incidents: 'Offene Vorfälle'
     total_recorded: 'Insgesamt erfasste Vorfälle'
 incident:
+    preview:
+        title: 'Vorfalls-Informationen'
+        affected_assets: 'Betroffene Assets (%count%)'
+        more_assets: '+ %count% weitere'
     breadcrumb: Vorfallsmanagement
     header:
         title: Vorfallsmanagement
