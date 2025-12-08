@@ -5,7 +5,7 @@
             <div class="keyboard-shortcuts-header">
                 <h2>
                     <i class="bi bi-keyboard" aria-hidden="true"></i>
-                    Keyboard Shortcuts
+                    {{ 'ui.keyboard.shortcuts.title'|trans({}, 'ui') }}
                 </h2>
                 <button class="modal-close"
                         data-action="click->keyboard-shortcuts#close"
@@ -21,7 +21,7 @@
             <div class="keyboard-shortcuts-footer">
                 <p class="text-muted">
                     <i class="bi bi-lightbulb" aria-hidden="true"></i>
-                    Tipp: Drücken Sie <kbd>?</kbd> um diese Hilfe jederzeit anzuzeigen
+                    {{ 'ui.keyboard.shortcuts.tip'|trans({}, 'ui')|raw }}
                 </p>
             </div>
         </div>
@@ -30,7 +30,7 @@
     {# Floating Help Button #}
     <button class="keyboard-shortcuts-trigger"
             data-action="click->keyboard-shortcuts#show"
-            title="Keyboard Shortcuts (?)">
+            title="{{ 'ui.keyboard.shortcuts.trigger_title'|trans({}, 'ui') }}">
         <i class="bi bi-keyboard" aria-hidden="true"></i>
     </button>
 </div>

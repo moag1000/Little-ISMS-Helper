@@ -278,7 +278,7 @@
                     {% if recommendations[asset.id] is defined %}
                         {% set recData = recommendations[asset.id] %}
                         {% if recData.risk_count > 0 %}
-                            <a href="{{ path('app_risk_index') }}?asset={{ asset.id }}" class="{{ badge_score(recData.risk_count, 5, 3) }}" title="{{ recData.risk_count }} {{ 'asset.label.risks'|trans({}, 'asset') }}" aria-label="{{ recData.risk_count }} Risiken für Asset {{ asset.name }}">
+                            <a href="{{ path('app_risk_index') }}?asset={{ asset.id }}" class="{{ badge_score(recData.risk_count, 5, 3) }}" title="{{ recData.risk_count }} {{ 'asset.label.risks'|trans({}, 'asset') }}" aria-label="{{ 'asset.aria.risks_for_asset'|trans({'%count%': recData.risk_count, '%name%': asset.name}, 'asset') }}">
                                 {{ recData.risk_count }}
                             </a>
                         {% else %}
@@ -294,18 +294,18 @@
                     </span>
                 </td>
                 <td class="text-center">
-                    <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }} für Asset {{ asset.name }}">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'asset.aria.actions_for_asset'|trans({'%name%': asset.name}, 'asset') }}">
                         <a href="{{ path('app_asset_show', {id: asset.id}) }}"
                            class="btn btn-outline-primary"
                            data-turbo-action="advance"
-                           aria-label="Asset {{ asset.name }} anzeigen">
+                           aria-label="{{ 'asset.aria.view_asset'|trans({'%name%': asset.name}, 'asset') }}">
                             <i class="bi bi-eye" aria-hidden="true"></i>
                         </a>
                         {% if is_granted('ROLE_USER') %}
                         <a href="{{ path('app_asset_edit', {id: asset.id}) }}"
                            class="btn btn-outline-secondary"
                            data-turbo-action="advance"
-                           aria-label="Asset {{ asset.name }} bearbeiten">
+                           aria-label="{{ 'asset.aria.edit_asset'|trans({'%name%': asset.name}, 'asset') }}">
                             <i class="bi bi-pencil" aria-hidden="true"></i>
                         </a>
                         {% endif %}

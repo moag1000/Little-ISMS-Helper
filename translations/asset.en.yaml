@@ -201,6 +201,11 @@ asset:
     title.new: 'New Asset'
     title.edit: 'Edit Asset'
     title.bcm_insights: 'Bcm Insights'
+    aria:
+        risks_for_asset: '%count% risks for asset %name%'
+        view_asset: 'View asset %name%'
+        edit_asset: 'Edit asset %name%'
+        actions_for_asset: 'Actions for asset %name%'
 
 # QR Code Labels
 qr:

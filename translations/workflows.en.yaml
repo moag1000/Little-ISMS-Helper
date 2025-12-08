@@ -183,6 +183,10 @@ workflow:
         help_duplicate: 'Duplicate a step to reuse configuration'
         help_delete: 'Delete steps that are no longer needed'
         help_template: 'Choose a template to quickly set up common workflow patterns'
+        action:
+            edit: Edit
+            duplicate: Duplicate
+            delete: Delete
     step.name: 'Step Name'
     step.type: 'Step Type'
     step.type.approval: 'Approval Step'

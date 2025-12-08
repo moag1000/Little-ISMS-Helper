@@ -20,7 +20,12 @@ export default class extends Controller {
 
     static values = {
         storageKey: { type: String, default: 'notifications' },
-        maxNotifications: { type: Number, default: 50 }
+        maxNotifications: { type: Number, default: 50 },
+        // Translation strings
+        deleteTitle: { type: String, default: 'Delete' },
+        viewDetails: { type: String, default: 'View details' },
+        emptyTitle: { type: String, default: 'No notifications' },
+        emptyMessage: { type: String, default: 'You have read all notifications' }
     };
 
     connect() {
@@ -225,12 +230,12 @@ export default class extends Controller {
                         <span class="notification-time">${timeAgo}</span>
                     </div>
                     <div class="notification-message">${notification.message}</div>
-                    ${notification.link ? `<a href="${notification.link}" class="notification-link">Details anzeigen</a>` : ''}
+                    ${notification.link ? `<a href="${notification.link}" class="notification-link">${this.viewDetailsValue}</a>` : ''}
                 </div>
                 <button class="notification-delete"
                         data-action="click->notifications#deleteNotification:stop"
                         data-notifications-id-param="${notification.id}"
-                        title="Löschen">
+                        title="${this.deleteTitleValue}">
                     <i class="bi-x"></i>
                 </button>
             </div>
@@ -241,8 +246,8 @@ export default class extends Controller {
         this.listTarget.innerHTML = `
             <div class="notification-empty">
                 <i class="bi-bell-slash" style="font-size: 3rem; color: #ccc;"></i>
-                <p class="mt-3 mb-0">Keine Benachrichtigungen</p>
-                <p class="text-muted small">Sie haben alle Benachrichtigungen gelesen</p>
+                <p class="mt-3 mb-0">${this.emptyTitleValue}</p>
+                <p class="text-muted small">${this.emptyMessageValue}</p>
             </div>
         `;
     }
