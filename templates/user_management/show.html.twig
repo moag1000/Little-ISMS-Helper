@@ -43,7 +43,7 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> Grundinformationen</h3>
+                    <h3 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'user.section.basic_info'|trans({}, 'user') }}</h3>
                 </div>
                 <div class="card-body">
                     {% embed '_components/_table.html.twig' with {
@@ -52,39 +52,39 @@
                     } %}
                         {% block table_body %}
                             <tr>
-                                <th scope="row" width="40%">Profilbild:</th>
+                                <th scope="row" width="40%">{{ 'user.label.profile_picture'|trans({}, 'user') }}</th>
                                 <td>
                                     {% if user.profilePicture %}
                                         <img src="{{ asset(user.profilePicture) }}"
                                              alt="{{ user.firstName }} {{ user.lastName }}"
                                              class="rounded-circle profile-avatar profile-avatar-md">
                                     {% else %}
-                                        <span class="text-muted">Kein Profilbild</span>
+                                        <span class="text-muted">{{ 'user.label.no_profile_picture'|trans({}, 'user') }}</span>
                                     {% endif %}
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row" width="40%">Vorname:</th>
+                                <th scope="row" width="40%">{{ 'user.label.first_name'|trans({}, 'user') }}</th>
                                 <td>{{ user.firstName }}</td>
                             </tr>
                             <tr>
-                                <th scope="row">Nachname:</th>
+                                <th scope="row">{{ 'user.label.last_name'|trans({}, 'user') }}</th>
                                 <td>{{ user.lastName }}</td>
                             </tr>
                             <tr>
-                                <th scope="row">E-Mail:</th>
+                                <th scope="row">{{ 'user.label.email'|trans({}, 'user') }}</th>
                                 <td>{{ user.email }}</td>
                             </tr>
                             <tr>
-                                <th scope="row">Abteilung:</th>
+                                <th scope="row">{{ 'user.label.department'|trans({}, 'user') }}</th>
                                 <td>{{ user.department ?? '-' }}</td>
                             </tr>
                             <tr>
-                                <th scope="row">Position:</th>
+                                <th scope="row">{{ 'user.label.position'|trans({}, 'user') }}</th>
                                 <td>{{ user.jobTitle ?? '-' }}</td>
                             </tr>
                             <tr>
-                                <th scope="row">Telefon:</th>
+                                <th scope="row">{{ 'user.label.phone'|trans({}, 'user') }}</th>
                                 <td>{{ user.phoneNumber ?? '-' }}</td>
                             </tr>
                         {% endblock %}
@@ -97,7 +97,7 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header bg-success text-white">
-                    <h3 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> Sicherheit & Status</h3>
+                    <h3 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'user.section.security_status'|trans({}, 'user') }}</h3>
                 </div>
                 <div class="card-body">
                     {% embed '_components/_table.html.twig' with {
@@ -106,62 +106,62 @@
                     } %}
                         {% block table_body %}
                             <tr>
-                                <th scope="row" width="40%">Status:</th>
+                                <th scope="row" width="40%">{{ 'user.label.status'|trans({}, 'user') }}</th>
                                 <td>
                                     {% if user.isActive %}
                                         <span class="badge bg-success">
-                                            <i class="bi bi-check-circle" aria-hidden="true"></i> Aktiv
+                                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'user.status.active'|trans({}, 'user') }}
                                         </span>
                                     {% else %}
                                         <span class="badge bg-danger">
-                                            <i class="bi bi-x-circle" aria-hidden="true"></i> Inaktiv
+                                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'user.status.inactive'|trans({}, 'user') }}
                                         </span>
                                     {% endif %}
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row">Verifiziert:</th>
+                                <th scope="row">{{ 'user.label.verified'|trans({}, 'user') }}</th>
                                 <td>
                                     {% if user.isVerified %}
                                         <span class="badge bg-success">
-                                            <i class="bi bi-check-circle" aria-hidden="true"></i> Ja
+                                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'user.label.yes'|trans({}, 'user') }}
                                         </span>
                                     {% else %}
                                         <span class="badge bg-warning">
-                                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Nein
+                                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'user.label.no'|trans({}, 'user') }}
                                         </span>
                                     {% endif %}
                                 </td>
                             </tr>
                             <tr>
-                                <th scope="row">Auth Provider:</th>
+                                <th scope="row">{{ 'user.label.auth_provider'|trans({}, 'user') }}</th>
                                 <td>
                                     {% if user.authProvider == 'azure_oauth' %}
-                                        <i class="bi bi-microsoft" aria-hidden="true"></i> Azure OAuth
+                                        <i class="bi bi-microsoft" aria-hidden="true"></i> {{ 'user.auth.azure_oauth'|trans({}, 'user') }}
                                     {% elseif user.authProvider == 'azure_saml' %}
-                                        <i class="bi bi-microsoft" aria-hidden="true"></i> Azure SAML
+                                        <i class="bi bi-microsoft" aria-hidden="true"></i> {{ 'user.auth.azure_saml'|trans({}, 'user') }}
                                     {% else %}
-                                        <i class="bi bi-person-circle" aria-hidden="true"></i> Lokal
+                                        <i class="bi bi-person-circle" aria-hidden="true"></i> {{ 'user.auth.local'|trans({}, 'user') }}
                                     {% endif %}
                                 </td>
                             </tr>
                             {% if user.azureObjectId %}
                                 <tr>
-                                    <th scope="row">Azure Object ID:</th>
+                                    <th scope="row">{{ 'user.label.azure_object_id'|trans({}, 'user') }}</th>
                                     <td><code>{{ user.azureObjectId }}</code></td>
                                 </tr>
                             {% endif %}
                             <tr>
-                                <th scope="row">Erstellt am:</th>
+                                <th scope="row">{{ 'user.label.created_at'|trans({}, 'user') }}</th>
                                 <td>{{ user.createdAt|date('d.m.Y H:i') }}</td>
                             </tr>
                             <tr>
-                                <th scope="row">Letzte Anmeldung:</th>
+                                <th scope="row">{{ 'user.label.last_login'|trans({}, 'user') }}</th>
                                 <td>
                                     {% if user.lastLoginAt %}
                                         {{ user.lastLoginAt|date('d.m.Y H:i') }}
                                     {% else %}
-                                        <span class="text-muted">Nie</span>
+                                        <span class="text-muted">{{ 'user.status.never'|trans({}, 'user') }}</span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -177,7 +177,7 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header bg-warning text-dark">
-                    <h3 class="mb-0"><i class="bi bi-shield" aria-hidden="true"></i> Systemrollen</h3>
+                    <h3 class="mb-0"><i class="bi bi-shield" aria-hidden="true"></i> {{ 'user.section.system_roles'|trans({}, 'user') }}</h3>
                 </div>
                 <div class="card-body">
                     {% if user.roles|length > 0 %}
@@ -206,7 +206,7 @@
                         </ul>
                     {% else %}
                         <div class="alert alert-info mb-0">
-                            Keine Systemrollen zugewiesen.
+                            {{ 'user.message.no_system_roles'|trans({}, 'user') }}
                         </div>
                     {% endif %}
                 </div>
@@ -216,7 +216,7 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header bg-info text-white">
-                    <h3 class="mb-0"><i class="bi bi-key" aria-hidden="true"></i> Benutzerdefinierte Rollen</h3>
+                    <h3 class="mb-0"><i class="bi bi-key" aria-hidden="true"></i> {{ 'user.section.custom_roles'|trans({}, 'user') }}</h3>
                 </div>
                 <div class="card-body">
                     {% if user.customRoles|length > 0 %}
@@ -231,14 +231,14 @@
                                                 <small class="text-muted">{{ customRole.description }}</small>
                                             {% endif %}
                                         </div>
-                                        <span class="badge bg-info">{{ customRole.permissions|length }} Berechtigungen</span>
+                                        <span class="badge bg-info">{{ 'user.label.permissions_count'|trans({'%count%': customRole.permissions|length}, 'user') }}</span>
                                     </div>
                                 </li>
                             {% endfor %}
                         </ul>
                     {% else %}
                         <div class="alert alert-info mb-0">
-                            Keine benutzerdefinierten Rollen zugewiesen.
+                            {{ 'user.message.no_custom_roles_assigned'|trans({}, 'user') }}
                         </div>
                     {% endif %}
                 </div>
@@ -251,7 +251,7 @@
         <div class="col-md-12">
             <div class="card mb-4">
                 <div class="card-header bg-secondary text-white">
-                    <h3 class="mb-0"><i class="bi bi-unlock" aria-hidden="true"></i> Alle Berechtigungen</h3>
+                    <h3 class="mb-0"><i class="bi bi-unlock" aria-hidden="true"></i> {{ 'user.section.all_permissions'|trans({}, 'user') }}</h3>
                 </div>
                 <div class="card-body">
                     {% set allPermissions = [] %}
@@ -273,7 +273,7 @@
                         </div>
                     {% else %}
                         <div class="alert alert-info mb-0">
-                            Keine spezifischen Berechtigungen zugewiesen. Berechtigungen werden durch Systemrollen vererbt.
+                            {{ 'user.message.no_specific_permissions'|trans({}, 'user') }}
                         </div>
                     {% endif %}
                 </div>
@@ -284,7 +284,7 @@
     {# Actions #}
     <div class="card mb-4">
         <div class="card-header bg-dark text-white">
-            <h3 class="mb-0"><i class="bi bi-gear" aria-hidden="true"></i> Aktionen</h3>
+            <h3 class="mb-0"><i class="bi bi-gear" aria-hidden="true"></i> {{ 'user.section.actions'|trans({}, 'user') }}</h3>
         </div>
         <div class="card-body">
             <div class="btn-group" role="group">
@@ -296,7 +296,7 @@
                         <form method="post" action="{{ path('user_management_toggle_active', {'id': user.id}) }}" style="display: inline;">
                             <input type="hidden" name="_token" value="{{ csrf_token('toggle_active' ~ user.id) }}">
                             <button type="submit" class="btn btn-warning">
-                                <i class="bi bi-pause-circle" aria-hidden="true"></i> Deaktivieren
+                                <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'user.action.deactivate'|trans({}, 'user') }}
                             </button>
                         </form>
                     {% else %}
@@ -322,13 +322,13 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title">Benutzer löschen</h2>
+                <h2 class="modal-title">{{ 'user.modal.delete_user'|trans({}, 'user') }}</h2>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
             </div>
             <div class="modal-body">
-                Möchten Sie den Benutzer <strong>{{ user.firstName }} {{ user.lastName }}</strong> wirklich löschen?
+                {{ 'user.modal.delete_confirm'|trans({'%name%': user.firstName ~ ' ' ~ user.lastName}, 'user')|raw }}
                 <br><br>
-                <strong>Achtung:</strong> Diese Aktion kann nicht rückgängig gemacht werden.
+                <strong>{{ 'user.modal.delete_warning'|trans({}, 'user') }}</strong>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'common.cancel'|trans({}, 'messages') }}</button>

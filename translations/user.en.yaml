@@ -6,6 +6,7 @@ user:
         view: View
         edit: Edit
         delete_user: 'Delete User'
+        deactivate: 'Deactivate'
     stats:
         total: Total
         users: Users
@@ -27,6 +28,9 @@ user:
         all_users: 'All Users'
         no_users: 'No users available.'
         no_custom_roles: 'No custom roles available.'
+        no_system_roles: 'No system roles assigned.'
+        no_custom_roles_assigned: 'No custom roles assigned.'
+        no_specific_permissions: 'No specific permissions assigned. Permissions are inherited from system roles.'
     empty:
         title: 'No users yet'
         description: 'Create your first user to start managing users.'
@@ -58,6 +62,11 @@ user:
         roles: 'Roles & Permissions'
         status: Status
         avatar: Avatar
+        security_status: 'Security & Status'
+        system_roles: 'System Roles'
+        custom_roles: 'Custom Roles'
+        all_permissions: 'All Permissions'
+        actions: 'Actions'
     field:
         first_name: 'First Name'
         last_name: 'Last Name'
@@ -109,6 +118,28 @@ user:
         inactive: 'Inactive'
         not_verified: 'Not verified'
         never: 'Never'
+    label:
+        profile_picture: 'Profile Picture:'
+        no_profile_picture: 'No profile picture'
+        first_name: 'First Name:'
+        last_name: 'Last Name:'
+        email: 'Email:'
+        department: 'Department:'
+        position: 'Position:'
+        phone: 'Phone:'
+        status: 'Status:'
+        verified: 'Verified:'
+        yes: 'Yes'
+        no: 'No'
+        auth_provider: 'Auth Provider:'
+        azure_object_id: 'Azure Object ID:'
+        created_at: 'Created At:'
+        last_login: 'Last Login:'
+        permissions_count: '%count% Permissions'
+    modal:
+        delete_user: 'Delete User'
+        delete_confirm: 'Do you really want to delete user <strong>%name%</strong>?'
+        delete_warning: 'Warning: This action cannot be undone.'
     confirm:
         delete: 'Do you really want to delete user %name%?'
     profile:

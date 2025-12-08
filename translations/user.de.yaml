@@ -6,6 +6,7 @@ user:
         view: Anzeigen
         edit: Bearbeiten
         delete_user: 'Benutzer löschen'
+        deactivate: 'Deaktivieren'
     stats:
         total: Gesamt
         users: Benutzer
@@ -27,6 +28,9 @@ user:
         all_users: 'Alle Benutzer'
         no_users: 'Keine Benutzer vorhanden.'
         no_custom_roles: 'Keine benutzerdefinierten Rollen verfügbar.'
+        no_system_roles: 'Keine Systemrollen zugewiesen.'
+        no_custom_roles_assigned: 'Keine benutzerdefinierten Rollen zugewiesen.'
+        no_specific_permissions: 'Keine spezifischen Berechtigungen zugewiesen. Berechtigungen werden durch Systemrollen vererbt.'
     empty:
         title: 'Noch keine Benutzer vorhanden'
         description: 'Erstellen Sie Ihren ersten Benutzer, um mit der Benutzerverwaltung zu beginnen.'
@@ -52,12 +56,17 @@ user:
     new: 'Neuer Benutzer'
     create: 'Benutzer erstellen'
     section:
-        basic_info: 'Grundlegende Informationen'
+        basic_info: 'Grundinformationen'
         tenant: Mandant
         authentication: Authentifizierung
         roles: 'Rollen & Berechtigungen'
         status: Status
         avatar: Profilbild
+        security_status: 'Sicherheit & Status'
+        system_roles: 'Systemrollen'
+        custom_roles: 'Benutzerdefinierte Rollen'
+        all_permissions: 'Alle Berechtigungen'
+        actions: 'Aktionen'
     field:
         first_name: Vorname
         last_name: Nachname
@@ -109,6 +118,28 @@ user:
         inactive: 'Inaktiv'
         not_verified: 'Nicht verifiziert'
         never: 'Nie'
+    label:
+        profile_picture: 'Profilbild:'
+        no_profile_picture: 'Kein Profilbild'
+        first_name: 'Vorname:'
+        last_name: 'Nachname:'
+        email: 'E-Mail:'
+        department: 'Abteilung:'
+        position: 'Position:'
+        phone: 'Telefon:'
+        status: 'Status:'
+        verified: 'Verifiziert:'
+        yes: 'Ja'
+        no: 'Nein'
+        auth_provider: 'Auth Provider:'
+        azure_object_id: 'Azure Object ID:'
+        created_at: 'Erstellt am:'
+        last_login: 'Letzte Anmeldung:'
+        permissions_count: '%count% Berechtigungen'
+    modal:
+        delete_user: 'Benutzer löschen'
+        delete_confirm: 'Möchten Sie den Benutzer <strong>%name%</strong> wirklich löschen?'
+        delete_warning: 'Achtung: Diese Aktion kann nicht rückgängig gemacht werden.'
     confirm:
         delete: 'Möchten Sie den Benutzer %name% wirklich löschen?'
     role:
