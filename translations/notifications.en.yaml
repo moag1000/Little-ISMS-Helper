@@ -3,6 +3,8 @@ notifications:
     action:
         mark_all_read: 'Mark all as read'
         clear_all: 'Clear all'
+        delete: 'Delete'
+        view_details: 'View details'
     empty:
         title: 'No notifications'
         description: 'You have read all notifications'

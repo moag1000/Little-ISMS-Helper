@@ -55,6 +55,8 @@ role_management:
         system_role_desc: 'Dies ist eine Systemrolle und kann nicht gelöscht werden. Nur Berechtigungen können angepasst werden.'
     confirm:
         delete: 'Sind Sie sicher, dass Sie diese Rolle löschen möchten? Alle Benutzerzuweisungen werden entfernt.'
+    aria:
+        actions_for_role: 'Aktionen für Rolle %name%'
 role:
     user: Benutzer
     manager: Manager

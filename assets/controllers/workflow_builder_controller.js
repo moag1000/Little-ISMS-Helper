@@ -18,7 +18,11 @@ export default class extends Controller {
     static values = {
         workflowId: Number,
         apiUrl: String,
-        csrfToken: String
+        csrfToken: String,
+        // Translation strings
+        editTitle: { type: String, default: 'Edit' },
+        duplicateTitle: { type: String, default: 'Duplicate' },
+        deleteTitle: { type: String, default: 'Delete' }
     };
 
     connect() {
@@ -135,19 +139,19 @@ export default class extends Controller {
                                 <button class="btn btn-sm btn-outline-primary"
                                         data-action="click->workflow-builder#editStep"
                                         data-step-id="${stepId}"
-                                        title="Edit">
+                                        title="${this.editTitleValue}">
                                     <i class="bi bi-pencil"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-secondary"
                                         data-action="click->workflow-builder#duplicateStep"
                                         data-step-id="${stepId}"
-                                        title="Duplicate">
+                                        title="${this.duplicateTitleValue}">
                                     <i class="bi bi-copy"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-danger"
                                         data-action="click->workflow-builder#deleteStep"
                                         data-step-id="${stepId}"
-                                        title="Delete">
+                                        title="${this.deleteTitleValue}">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </div>

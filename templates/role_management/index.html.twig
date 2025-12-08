@@ -88,7 +88,7 @@
                 {% endif %}
             </td>
             <td class="text-center">
-                <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
+                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'role_management.aria.actions_for_role'|trans({'%name%': role.name}, 'role_management') }}">
                     <a href="{{ path('role_management_show', {id: role.id}) }}" class="btn btn-outline-primary">
                         👁 {{ 'common.view'|trans({}, 'messages') }}
                     </a>
