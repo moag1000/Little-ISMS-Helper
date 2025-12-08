@@ -46,6 +46,11 @@ ui:
             goto_audit_log: 'Audit Log anzeigen'
     global_search:
         placeholder: 'Suche nach Assets, Risiken, Controls...'
+        label: 'Suche'
+        trigger_title: 'Suche (Cmd+K)'
+        tip: 'Tipp: Drücke <kbd>Cmd</kbd>+<kbd>K</kbd> um die Suche zu öffnen'
+    theme:
+        toggle_title: 'Dark Mode umschalten (Aktuell: %current%)'
     keyboard:
         navigation: Navigation
         select: Auswählen

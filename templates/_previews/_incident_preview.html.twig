@@ -3,30 +3,30 @@
     <div class="preview-section">
         <h6 class="preview-section-title">
             <i class="bi bi-exclamation-circle text-danger"></i>
-            Vorfalls-Informationen
+            {{ 'incident.preview.title'|trans({}, 'incident') }}
         </h6>
         <dl class="row mb-0">
-            <dt class="col-sm-4">Titel:</dt>
+            <dt class="col-sm-4">{{ 'incident.field.title'|trans({}, 'incident') }}:</dt>
             <dd class="col-sm-8">{{ incident.title }}</dd>
 
-            <dt class="col-sm-4">Schweregrad:</dt>
+            <dt class="col-sm-4">{{ 'incident.field.severity'|trans({}, 'incident') }}:</dt>
             <dd class="col-sm-8">
                 {% set severityClass = incident.severity == 'critical' ? 'danger' : (incident.severity == 'high' ? 'warning' : 'info') %}
-                <span class="badge bg-{{ severityClass }}">{{ incident.severity|trans }}</span>
+                <span class="badge bg-{{ severityClass }}">{{ ('incident.severity.' ~ incident.severity)|trans({}, 'incident') }}</span>
             </dd>
 
-            <dt class="col-sm-4">Status:</dt>
+            <dt class="col-sm-4">{{ 'incident.field.status'|trans({}, 'incident') }}:</dt>
             <dd class="col-sm-8">
                 <span class="badge bg-{{ incident.status == 'closed' ? 'success' : 'warning' }}">
-                    {{ incident.status|trans }}
+                    {{ ('incident.status.' ~ incident.status)|trans({}, 'incident') }}
                 </span>
             </dd>
 
-            <dt class="col-sm-4">Erkannt am:</dt>
+            <dt class="col-sm-4">{{ 'incident.field.detected_at'|trans({}, 'incident') }}:</dt>
             <dd class="col-sm-8">{{ incident.detectedAt|date('d.m.Y H:i') }}</dd>
 
             {% if incident.reportedBy %}
-            <dt class="col-sm-4">Gemeldet von:</dt>
+            <dt class="col-sm-4">{{ 'incident.field.reported_by'|trans({}, 'incident') }}:</dt>
             <dd class="col-sm-8">{{ incident.reportedBy }}</dd>
             {% endif %}
         </dl>
@@ -35,7 +35,7 @@
     <div class="preview-section">
         <h6 class="preview-section-title">
             <i class="bi bi-file-text"></i>
-            Beschreibung
+            {{ 'incident.field.description'|trans({}, 'incident') }}
         </h6>
         <p class="mb-0">{{ incident.description }}</p>
     </div>
@@ -44,7 +44,7 @@
     <div class="preview-section">
         <h6 class="preview-section-title">
             <i class="bi bi-server"></i>
-            Betroffene Assets ({{ incident.affectedAssets|length }})
+            {{ 'incident.preview.affected_assets'|trans({'%count%': incident.affectedAssets|length}, 'incident') }}
         </h6>
         <ul class="list-unstyled mb-0">
             {% for asset in incident.affectedAssets|slice(0, 3) %}
@@ -55,7 +55,7 @@
             </li>
             {% endfor %}
             {% if incident.affectedAssets|length > 3 %}
-            <li class="text-muted small">+ {{ incident.affectedAssets|length - 3 }} weitere</li>
+            <li class="text-muted small">{{ 'incident.preview.more_assets'|trans({'%count%': incident.affectedAssets|length - 3}, 'incident') }}</li>
             {% endif %}
         </ul>
     </div>

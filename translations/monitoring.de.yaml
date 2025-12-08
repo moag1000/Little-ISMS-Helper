@@ -1,12 +1,43 @@
 monitoring:
     title: System-Überwachung
+    subtitle: 'Systemüberwachung und Diagnose'
     health:
         title: System-Gesundheit
         overall_status: Gesamtstatus
+        system_status: 'Systemstatus'
         healthy: Gesund
         warning: Warnung
         error: Fehler
         last_checked: 'Zuletzt geprüft'
+        json_api: 'JSON API'
+        yes: 'Ja'
+        no: 'Nein'
+        not_used: 'Nicht verwendet'
+        exists: 'Vorhanden'
+        on: 'AN'
+        off: 'AUS'
+        present: 'Vorhanden'
+    action:
+        optimize_disk: 'Speicherplatz optimieren'
+        fix_permissions: 'Berechtigungen reparieren'
+        clear_cache: 'Cache leeren'
+        clean_logs: 'Alte Logs bereinigen'
+        rotate_logs: 'Logs rotieren'
+        composer_install: 'Composer Install ausführen'
+        clean_uploads: 'Alte Uploads bereinigen'
+    card:
+        database: 'Datenbank'
+        disk_space: 'Festplattenspeicher'
+        php: 'PHP'
+        symfony: 'Symfony'
+        cache: 'Cache'
+        logs: 'Protokolle'
+        file_permissions: 'Dateiberechtigungen'
+        composer: 'Composer'
+        environment: 'Umgebung'
+        php_config: 'PHP-Konfiguration'
+        sessions: 'Sitzungen'
+        uploads: 'Uploads'
     database:
         title: Datenbank
         status: Status
@@ -42,28 +73,41 @@ monitoring:
         writable: Schreibbar
     performance:
         title: Performance-Metriken
+        subtitle: 'Leistungsüberwachung und Systemmetriken'
         total_requests: Gesamtanfragen
         unique_users: 'Eindeutige Benutzer'
         memory_usage: Speichernutzung
         memory_peak: Spitzenspeicher
         memory_limit: Speicherlimit
+        current_usage: 'Aktuelle Nutzung'
+        peak_usage: 'Spitzenauslastung'
         top_actions: Top-Aktionen
         top_entities: 'Aktivste Entitäten'
         last_24h: 'Letzte 24 Stunden'
         system_resources: Systemressourcen
+        active_today: 'Heute aktiv'
+        current: 'Aktuell'
         note: Hinweis
+        note_title: 'Hinweis zur Performance-Überwachung'
+        note_text: 'Diese Metriken basieren auf Audit-Log-Daten und aktuellen PHP-Prozessinformationen. Für Produktionsumgebungen empfehlen wir professionelle Monitoring-Tools wie: <strong>New Relic</strong>, <strong>Datadog</strong> oder <strong>Blackfire</strong> für detaillierte Performance-Einblicke.'
+        no_data: 'Keine Daten verfügbar'
     errors:
         title: Fehlerprotokolle
+        subtitle: 'Systemfehler und Ausnahmen'
         total: 'Fehler gesamt'
+        shown: 'Angezeigt (letzte %count%)'
         by_level: 'Nach Stufe'
         file_size: Dateigröße
+        log_file_size: 'Protokolldateigröße'
         last_modified: 'Zuletzt geändert'
         log_file: Protokolldatei
         show_entries: 'Einträge anzeigen'
         recent: 'Letzte Fehler'
         no_errors: 'Keine Fehler gefunden!'
         no_log_file: 'Keine Protokolldatei gefunden'
+        no_log_file_text: 'Die Protokolldatei <code>%file%</code> existiert noch nicht. Fehler werden hier protokolliert, sobald sie auftreten.'
         show_full: 'Vollständigen Eintrag anzeigen'
+        important_notes: 'Wichtige Hinweise'
     audit_log:
         title: Audit-Protokoll
         total_entries: 'Einträge gesamt'

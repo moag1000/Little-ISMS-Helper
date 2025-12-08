@@ -17,9 +17,9 @@
     <button type="button"
             class="btn btn-outline-secondary btn-sm global-search-trigger"
             data-action="click->search#open"
-            title="Suche (Cmd+K)">
+            title="{{ 'ui.global_search.trigger_title'|trans({}, 'ui') }}">
         <i class="bi bi-search"></i>
-        <span class="d-none d-md-inline ms-2">Suche</span>
+        <span class="d-none d-md-inline ms-2">{{ 'ui.global_search.label'|trans({}, 'ui') }}</span>
         <span class="d-none d-lg-inline ms-2">
             <kbd class="bg-light">⌘K</kbd>
         </span>
@@ -59,7 +59,7 @@
             <div class="global-search-footer">
                 <div class="text-muted small">
                     <i class="bi bi-lightning"></i>
-                    Tipp: Drücke <kbd>Cmd</kbd>+<kbd>K</kbd> um die Suche zu öffnen
+                    {{ 'ui.global_search.tip'|trans({}, 'ui')|raw }}
                 </div>
             </div>
         </div>

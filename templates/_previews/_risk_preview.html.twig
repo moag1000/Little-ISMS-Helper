@@ -3,21 +3,21 @@
     <div class="preview-section">
         <h6 class="preview-section-title">
             <i class="bi bi-exclamation-triangle text-warning"></i>
-            Risiko-Informationen
+            {{ 'risk.preview.title'|trans({}, 'risk') }}
         </h6>
         <dl class="row mb-0">
-            <dt class="col-sm-4">Titel:</dt>
+            <dt class="col-sm-4">{{ 'risk.field.title'|trans({}, 'risk') }}:</dt>
             <dd class="col-sm-8">{{ risk.title }}</dd>
 
-            <dt class="col-sm-4">Status:</dt>
+            <dt class="col-sm-4">{{ 'risk.field.status'|trans({}, 'risk') }}:</dt>
             <dd class="col-sm-8">
                 <span class="badge bg-{{ risk.status == 'closed' ? 'success' : 'warning' }}">
-                    {{ risk.status|trans }}
+                    {{ ('risk.modern.status.' ~ risk.status)|trans({}, 'risk') }}
                 </span>
             </dd>
 
             {% if risk.asset %}
-            <dt class="col-sm-4">Asset:</dt>
+            <dt class="col-sm-4">{{ 'risk.field.asset'|trans({}, 'risk') }}:</dt>
             <dd class="col-sm-8">
                 <a href="{{ path('app_asset_show', {id: risk.asset.id}) }}">
                     {{ risk.asset.name }}
@@ -26,7 +26,7 @@
             {% endif %}
 
             {% if risk.riskOwner %}
-            <dt class="col-sm-4">Eigentümer:</dt>
+            <dt class="col-sm-4">{{ 'risk.field.risk_owner'|trans({}, 'risk') }}:</dt>
             <dd class="col-sm-8">{{ risk.riskOwner }}</dd>
             {% endif %}
         </dl>
@@ -35,12 +35,12 @@
     <div class="preview-section">
         <h6 class="preview-section-title">
             <i class="bi bi-bar-chart"></i>
-            Risikobewertung
+            {{ 'risk.section.assessment'|trans({}, 'risk') }}
         </h6>
         <div class="row g-3">
             <div class="col-6">
                 <div class="risk-metric">
-                    <div class="risk-metric-label">Inhärentes Risiko</div>
+                    <div class="risk-metric-label">{{ 'risk.field.inherent_risk'|trans({}, 'risk') }}</div>
                     <div class="risk-metric-value text-danger">
                         {{ risk.inherentRiskLevel }}
                     </div>
@@ -51,7 +51,7 @@
             </div>
             <div class="col-6">
                 <div class="risk-metric">
-                    <div class="risk-metric-label">Restrisiko</div>
+                    <div class="risk-metric-label">{{ 'risk.field.residual_risk'|trans({}, 'risk') }}</div>
                     <div class="risk-metric-value text-warning">
                         {{ risk.residualRiskLevel }}
                     </div>
@@ -65,7 +65,7 @@
         <div class="mt-2">
             <small class="text-success">
                 <i class="bi bi-arrow-down"></i>
-                Risikoreduktion: {{ risk.riskReduction }}%
+                {{ 'risk.field.risk_reduction'|trans({}, 'risk') }}: {{ risk.riskReduction }}%
             </small>
         </div>
         {% endif %}
@@ -74,7 +74,7 @@
     <div class="preview-section">
         <h6 class="preview-section-title">
             <i class="bi bi-file-text"></i>
-            Beschreibung
+            {{ 'risk.field.description'|trans({}, 'risk') }}
         </h6>
         <p class="mb-0">{{ risk.description }}</p>
     </div>
@@ -82,10 +82,10 @@
     <div class="preview-section">
         <h6 class="preview-section-title">
             <i class="bi bi-shield"></i>
-            Behandlungsstrategie
+            {{ 'risk.section.treatment'|trans({}, 'risk') }}
         </h6>
         <div class="mb-2">
-            <span class="badge bg-primary">{{ risk.treatmentStrategy|trans }}</span>
+            <span class="badge bg-primary">{{ ('risk.treatment_strategy.' ~ risk.treatmentStrategy)|trans({}, 'risk') }}</span>
         </div>
         {% if risk.treatmentDescription %}
         <p class="mb-0 small text-muted">{{ risk.treatmentDescription }}</p>
@@ -95,11 +95,11 @@
     <div class="preview-section">
         <h6 class="preview-section-title">
             <i class="bi bi-graph-up"></i>
-            Maßnahmen
+            {{ 'control.title.plural'|trans({}, 'controls') }}
         </h6>
         <div class="stat-mini">
             <div class="stat-mini-value">{{ risk.controls|length }}</div>
-            <div class="stat-mini-label">Verknüpfte Controls</div>
+            <div class="stat-mini-label">{{ 'risk.field.linked_controls'|trans({}, 'risk') }}</div>
         </div>
     </div>
 

@@ -1,4 +1,9 @@
 risk:
+    preview:
+        title: 'Risk Information'
+    section:
+        assessment: 'Risk Assessment'
+        treatment: 'Treatment Strategy'
     filter:
         owner_placeholder: 'Search for owner...'
     modern:
@@ -63,6 +68,9 @@ risk:
         next_review: 'Next Review'
         review_date: 'Review Date'
         inherent_risk: 'Inherent Risk'
+        residual_risk: 'Residual Risk'
+        risk_reduction: 'Risk Reduction'
+        linked_controls: 'Linked Controls'
         category: 'Risk Category'
         person: 'Affected Person'
         location: 'Affected Location'

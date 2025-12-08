@@ -4,6 +4,10 @@ incident_management:
     open_incidents: 'Open Incidents'
     total_recorded: 'Total Recorded'
 incident:
+    preview:
+        title: 'Incident Information'
+        affected_assets: 'Affected Assets (%count%)'
+        more_assets: '+ %count% more'
     breadcrumb: 'Incident Management'
     header:
         title: 'Incident Management'
