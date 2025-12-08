@@ -12,33 +12,19 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static targets = ['modal', 'input', 'results', 'noResults'];
 
-    commands = [
-        // Navigation (paths match actual routes without locale prefix)
-        { id: 'goto-dashboard', label: 'Dashboard öffnen', category: 'Navigation', icon: 'bi-speedometer2', url: '/dashboard', keywords: ['home', 'start', 'übersicht'] },
-        { id: 'goto-assets', label: 'Assets verwalten', category: 'Navigation', icon: 'bi-server', url: '/asset', keywords: ['asset', 'inventory', 'bestände'] },
-        { id: 'goto-risks', label: 'Risiken anzeigen', category: 'Navigation', icon: 'bi-exclamation-triangle', url: '/risk', keywords: ['risk', 'risiko', 'gefahr'] },
-        { id: 'goto-incidents', label: 'Vorfälle anzeigen', category: 'Navigation', icon: 'bi-bug', url: '/incident', keywords: ['incident', 'vorfall', 'security'] },
-        { id: 'goto-soa', label: 'Statement of Applicability', category: 'Navigation', icon: 'bi-shield-check', url: '/soa', keywords: ['soa', 'controls', 'iso', '27001'] },
-        { id: 'goto-trainings', label: 'Schulungen verwalten', category: 'Navigation', icon: 'bi-mortarboard', url: '/training', keywords: ['training', 'schulung', 'awareness'] },
-        { id: 'goto-audits', label: 'Audits anzeigen', category: 'Navigation', icon: 'bi-clipboard-check', url: '/audit', keywords: ['audit', 'prüfung', 'review'] },
-        { id: 'goto-compliance', label: 'Compliance Frameworks', category: 'Navigation', icon: 'bi-patch-check', url: '/compliance', keywords: ['compliance', 'tisax', 'dora'] },
-        { id: 'goto-bcm', label: 'Business Continuity', category: 'Navigation', icon: 'bi-graph-up', url: '/bcm/business-process', keywords: ['bcm', 'bia', 'continuity', 'rto', 'rpo'] },
+    static values = {
+        // Commands passed from template as JSON array
+        commands: { type: Array, default: [] }
+    };
 
-        // Actions
-        { id: 'create-asset', label: 'Neues Asset erstellen', category: 'Erstellen', icon: 'bi-plus-circle', url: '/asset/new', keywords: ['new', 'create', 'neu', 'anlegen'] },
-        { id: 'create-risk', label: 'Neues Risiko erfassen', category: 'Erstellen', icon: 'bi-plus-circle', url: '/risk/new', keywords: ['new', 'create', 'neu', 'risiko'] },
-        { id: 'create-incident', label: 'Vorfall melden', category: 'Erstellen', icon: 'bi-plus-circle', url: '/incident/new', keywords: ['new', 'create', 'incident', 'melden'] },
-        { id: 'create-training', label: 'Schulung planen', category: 'Erstellen', icon: 'bi-plus-circle', url: '/training/new', keywords: ['new', 'training', 'schulung'] },
-        { id: 'create-audit', label: 'Audit anlegen', category: 'Erstellen', icon: 'bi-plus-circle', url: '/audit/new', keywords: ['new', 'audit', 'prüfung'] },
-
-        // Reports
-        { id: 'export-dashboard', label: 'Dashboard exportieren', category: 'Export', icon: 'bi-download', url: '/reports/dashboard/export', keywords: ['export', 'pdf', 'report'] },
-        { id: 'export-soa', label: 'SoA exportieren', category: 'Export', icon: 'bi-download', url: '/soa/export', keywords: ['export', 'soa', 'pdf'] },
-        { id: 'export-risks', label: 'Risikoregister exportieren', category: 'Export', icon: 'bi-download', url: '/reports/risks/export', keywords: ['export', 'risks', 'pdf'] },
-
-        // Settings
-        { id: 'goto-users', label: 'Benutzerverwaltung', category: 'Administration', icon: 'bi-people', url: '/admin/users', keywords: ['user', 'benutzer', 'admin', 'rolle'] },
-        { id: 'goto-audit-log', label: 'Audit Log anzeigen', category: 'Administration', icon: 'bi-clock-history', url: '/admin/audit-log', keywords: ['log', 'history', 'änderungen'] },
+    // Default commands (fallback if not provided via values)
+    defaultCommands = [
+        // Navigation
+        { id: 'goto-dashboard', label: 'Dashboard', category: 'Navigation', icon: 'bi-speedometer2', url: '/dashboard', keywords: ['home', 'start'] },
+        { id: 'goto-assets', label: 'Assets', category: 'Navigation', icon: 'bi-server', url: '/asset', keywords: ['asset', 'inventory'] },
+        { id: 'goto-risks', label: 'Risks', category: 'Navigation', icon: 'bi-exclamation-triangle', url: '/risk', keywords: ['risk'] },
+        { id: 'goto-incidents', label: 'Incidents', category: 'Navigation', icon: 'bi-bug', url: '/incident', keywords: ['incident'] },
+        { id: 'goto-soa', label: 'SoA', category: 'Navigation', icon: 'bi-shield-check', url: '/soa', keywords: ['soa', 'controls'] },
     ];
 
     filteredCommands = [];
@@ -57,6 +43,8 @@ export default class extends Controller {
         this.boundHandleBackdropClick = this.handleBackdropClick.bind(this);
         this.modalTarget.addEventListener('click', this.boundHandleBackdropClick);
 
+        // Use commands from value or fallback to defaults
+        this.commands = this.commandsValue.length > 0 ? this.commandsValue : this.defaultCommands;
         this.filteredCommands = this.commands;
     }
 

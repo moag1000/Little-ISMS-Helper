@@ -20,7 +20,12 @@ export default class extends Controller {
 
     static values = {
         url: String,
-        type: String
+        type: String,
+        // Translation strings
+        loadingText: { type: String, default: 'Loading preview...' },
+        errorTitle: { type: String, default: 'Error loading preview' },
+        errorSubtitle: { type: String, default: 'Please try again' },
+        closeText: { type: String, default: 'Close' }
     };
 
     connect() {
@@ -109,9 +114,9 @@ export default class extends Controller {
         this.bodyTarget.innerHTML = `
             <div class="text-center py-5">
                 <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
+                    <span class="visually-hidden">${this.loadingTextValue}</span>
                 </div>
-                <p class="mt-3 text-muted">Lade Vorschau...</p>
+                <p class="mt-3 text-muted">${this.loadingTextValue}</p>
             </div>
         `;
     }
@@ -124,10 +129,10 @@ export default class extends Controller {
         this.bodyTarget.innerHTML = `
             <div class="text-center py-5">
                 <i class="bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
-                <p class="mt-3 mb-2">Fehler beim Laden der Vorschau</p>
-                <p class="text-muted small">Bitte versuchen Sie es erneut</p>
+                <p class="mt-3 mb-2">${this.errorTitleValue}</p>
+                <p class="text-muted small">${this.errorSubtitleValue}</p>
                 <button class="btn btn-sm btn-primary mt-3" data-action="click->quick-view#close">
-                    Schließen
+                    ${this.closeTextValue}
                 </button>
             </div>
         `;

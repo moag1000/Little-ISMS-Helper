@@ -24,7 +24,16 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     static targets = ['item', 'actionBar', 'count', 'selectAllCheckbox'];
     static values = {
-        endpoint: String
+        endpoint: String,
+        // Translation strings
+        entityLabel: { type: String, default: 'items' },
+        deleteSuccess: { type: String, default: '%count% %entity% successfully deleted' },
+        deleteError: { type: String, default: 'Error deleting: ' },
+        exportSuccess: { type: String, default: 'Export successful' },
+        exportError: { type: String, default: 'Error exporting' },
+        tagPrompt: { type: String, default: 'Add tag:' },
+        tagSuccess: { type: String, default: 'Tag added' },
+        tagError: { type: String, default: 'Error adding tag' }
     };
 
     connect() {
@@ -107,8 +116,8 @@ export default class extends Controller {
             return;
         }
 
-        // Get entity label from data attribute or endpoint
-        const entityLabel = this.element.dataset.bulkActionsEntityLabel || 'Einträge';
+        // Get entity label from value
+        const entityLabel = this.entityLabelValue;
 
         // Get confirmation modal controller
         const confirmModal = document.getElementById('bulkDeleteModal');
@@ -153,7 +162,10 @@ export default class extends Controller {
             }
 
             // Show success toast
-            this.showToast(`${ids.length} ${entityLabel} erfolgreich gelöscht`, 'success');
+            const successMsg = this.deleteSuccessValue
+                .replace('%count%', ids.length)
+                .replace('%entity%', entityLabel);
+            this.showToast(successMsg, 'success');
 
             // Remove rows from DOM with animation
             this.getSelectedItems().forEach(item => {
@@ -175,7 +187,7 @@ export default class extends Controller {
             }
 
         } catch (error) {
-            this.showToast('Fehler beim Löschen: ' + error.message, 'error');
+            this.showToast(this.deleteErrorValue + error.message, 'error');
         }
     }
 
@@ -212,10 +224,10 @@ export default class extends Controller {
             window.URL.revokeObjectURL(url);
             a.remove();
 
-            this.showToast('Export erfolgreich', 'success');
+            this.showToast(this.exportSuccessValue, 'success');
 
         } catch (error) {
-            this.showToast('Fehler beim Export', 'error');
+            this.showToast(this.exportErrorValue, 'error');
         }
     }
 
@@ -228,7 +240,7 @@ export default class extends Controller {
             return;
         }
 
-        const tag = prompt('Tag hinzufügen:');
+        const tag = prompt(this.tagPromptValue);
         if (!tag) {
             return;
         }
@@ -247,13 +259,13 @@ export default class extends Controller {
                 throw new Error('Bulk tag failed');
             }
 
-            this.showToast('Tag hinzugefügt', 'success');
+            this.showToast(this.tagSuccessValue, 'success');
 
             // Optionally reload the page
             setTimeout(() => window.location.reload(), 1000);
 
         } catch (error) {
-            this.showToast('Fehler beim Taggen', 'error');
+            this.showToast(this.tagErrorValue, 'error');
         }
     }
 

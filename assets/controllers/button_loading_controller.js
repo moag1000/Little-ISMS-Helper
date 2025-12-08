@@ -27,7 +27,17 @@ import { Controller } from '@hotwired/stimulus';
  */
 export default class extends Controller {
     static values = {
-        text: String  // Optional custom loading text
+        text: String,  // Optional custom loading text
+        // Translation strings for loading states
+        saving: { type: String, default: 'Saving...' },
+        deleting: { type: String, default: 'Deleting...' },
+        sending: { type: String, default: 'Sending...' },
+        loading: { type: String, default: 'Loading...' },
+        creating: { type: String, default: 'Creating...' },
+        updating: { type: String, default: 'Updating...' },
+        importing: { type: String, default: 'Importing...' },
+        exporting: { type: String, default: 'Exporting...' },
+        processing: { type: String, default: 'Processing...' }
     }
 
     connect() {
@@ -101,23 +111,23 @@ export default class extends Controller {
         const text = this.originalText.toLowerCase();
 
         if (text.includes('speichern') || text.includes('save')) {
-            return 'Speichere...';
+            return this.savingValue;
         } else if (text.includes('löschen') || text.includes('delete')) {
-            return 'Lösche...';
+            return this.deletingValue;
         } else if (text.includes('senden') || text.includes('submit') || text.includes('absenden')) {
-            return 'Sende...';
+            return this.sendingValue;
         } else if (text.includes('laden') || text.includes('load')) {
-            return 'Lade...';
+            return this.loadingValue;
         } else if (text.includes('erstellen') || text.includes('create')) {
-            return 'Erstelle...';
+            return this.creatingValue;
         } else if (text.includes('aktualisieren') || text.includes('update') || text.includes('refresh')) {
-            return 'Aktualisiere...';
+            return this.updatingValue;
         } else if (text.includes('importieren') || text.includes('import')) {
-            return 'Importiere...';
+            return this.importingValue;
         } else if (text.includes('exportieren') || text.includes('export')) {
-            return 'Exportiere...';
+            return this.exportingValue;
         }
 
-        return 'Verarbeite...';
+        return this.processingValue;
     }
 }
