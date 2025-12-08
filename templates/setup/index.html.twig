@@ -17,34 +17,34 @@
                     {% if setup_complete %}
                         <div class="alert alert-success" role="alert">
                             <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
-                            <strong>Setup bereits abgeschlossen!</strong>
+                            <strong>{{ 'setup.already_complete.title'|trans({}, 'messages') }}</strong>
                             <p class="mb-0 mt-2">
-                                Ihr System wurde bereits konfiguriert. Sie können:
+                                {{ 'setup.already_complete.description'|trans({}, 'messages') }}
                             </p>
                         </div>
 
                         <div class="d-grid gap-3 mt-4">
                             <a href="{{ path('app_dashboard', {'_locale': app.request.locale}) }}" class="btn btn-lg btn-primary">
                                 <i class="bi bi-house me-2" aria-hidden="true"></i>
-                                Zum Dashboard
+                                {{ 'setup.go_to_dashboard'|trans({}, 'messages') }}
                             </a>
                             <a href="{{ path('module_management_index', {'_locale': app.request.locale}) }}" class="btn btn-lg btn-outline-primary">
                                 <i class="bi bi-puzzle me-2" aria-hidden="true"></i>
-                                Module verwalten
+                                {{ 'setup.manage_modules'|trans({}, 'messages') }}
                             </a>
                             {% if app.environment == 'dev' %}
                                 <a href="{{ path('setup_wizard_reset') }}" class="btn btn-sm btn-outline-danger">
                                     <i class="bi bi-arrow-clockwise me-2" aria-hidden="true"></i>
-                                    Setup zurücksetzen (Development)
+                                    {{ 'setup.reset_development'|trans({}, 'messages') }}
                                 </a>
                             {% endif %}
                         </div>
                     {% else %}
                         <div class="text-center mb-5">
                             <i class="bi bi-shield text-primary" style="font-size: 4rem;"></i>
-                            <h2 class="mt-3">Willkommen beim Setup-Assistenten</h2>
+                            <h2 class="mt-3">{{ 'setup.welcome_title'|trans({}, 'messages') }}</h2>
                             <p class="lead text-muted">
-                                Dieser Wizard führt Sie durch die Einrichtung Ihres ISMS-Systems
+                                {{ 'setup.welcome_subtitle'|trans({}, 'messages') }}
                             </p>
                         </div>
 
@@ -53,13 +53,13 @@
                                 <div class="card h-100 border-primary">
                                     <div class="card-body">
                                         <i class="bi bi-check-circle text-primary  mb-3" aria-hidden="true"></i>
-                                        <h5>{{ 'setup.what_will_be_setup'|trans({}, 'messages')}}</h5>
+                                        <h5>{{ 'setup.what_will_be_setup'|trans({}, 'messages') }}</h5>
                                         <ul class="list-unstyled">
-                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>System-Anforderungen prüfen</li>
-                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>Module auswählen</li>
-                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>Datenbank initialisieren</li>
-                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>Basis-Daten importieren</li>
-                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>Optional: Beispiel-Daten laden</li>
+                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.checklist.check_requirements'|trans({}, 'messages') }}</li>
+                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.checklist.select_modules'|trans({}, 'messages') }}</li>
+                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.checklist.init_database'|trans({}, 'messages') }}</li>
+                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.checklist.import_base_data'|trans({}, 'messages') }}</li>
+                                            <li><i class="bi bi-check text-success me-2" aria-hidden="true"></i>{{ 'setup.checklist.load_sample_data'|trans({}, 'messages') }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -68,12 +68,12 @@
                                 <div class="card h-100 border-info">
                                     <div class="card-body">
                                         <i class="bi bi-clock text-info  mb-3" aria-hidden="true"></i>
-                                        <h5>Dauer & Voraussetzungen</h5>
+                                        <h5>{{ 'setup.duration_requirements.title'|trans({}, 'messages') }}</h5>
                                         <ul class="list-unstyled">
-                                            <li><i class="bi bi-hourglass-split text-info me-2" aria-hidden="true"></i>~5-10 Minuten</li>
-                                            <li><i class="bi bi-database text-info me-2" aria-hidden="true"></i>Datenbank-Zugriff erforderlich</li>
-                                            <li><i class="bi bi-server text-info me-2" aria-hidden="true"></i>PHP 8.2+ und Extensions</li>
-                                            <li><i class="bi bi-folder text-info me-2" aria-hidden="true"></i>Schreibrechte für Verzeichnisse</li>
+                                            <li><i class="bi bi-hourglass-split text-info me-2" aria-hidden="true"></i>{{ 'setup.duration_requirements.duration'|trans({}, 'messages') }}</li>
+                                            <li><i class="bi bi-database text-info me-2" aria-hidden="true"></i>{{ 'setup.duration_requirements.database_access'|trans({}, 'messages') }}</li>
+                                            <li><i class="bi bi-server text-info me-2" aria-hidden="true"></i>{{ 'setup.duration_requirements.php_extensions'|trans({}, 'messages') }}</li>
+                                            <li><i class="bi bi-folder text-info me-2" aria-hidden="true"></i>{{ 'setup.duration_requirements.write_permissions'|trans({}, 'messages') }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -84,38 +84,38 @@
                             <div class="card-body">
                                 <h5 class="card-title">
                                     <i class="bi bi-puzzle me-2" aria-hidden="true"></i>
-                                    Verfügbare Module
+                                    {{ 'setup.available_modules'|trans({}, 'messages') }}
                                 </h5>
                                 <p class="text-muted mb-3">
-                                    Im nächsten Schritt können Sie aus folgenden Modulen wählen:
+                                    {{ 'setup.modules_selection_hint'|trans({}, 'messages') }}
                                 </p>
                                 <div class="row g-2">
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-shield-check-check text-primary me-1" aria-hidden="true"></i> Core ISMS (erforderlich)</small>
+                                        <small><i class="bi bi-shield-check-check text-primary me-1" aria-hidden="true"></i> {{ 'setup.module_core_isms'|trans({}, 'messages') }}</small>
                                     </div>
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-database text-muted me-1" aria-hidden="true"></i> Asset Management</small>
+                                        <small><i class="bi bi-database text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_asset_management'|trans({}, 'messages') }}</small>
                                     </div>
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-exclamation-triangle text-muted me-1" aria-hidden="true"></i> Risk Management</small>
+                                        <small><i class="bi bi-exclamation-triangle text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_risk_management'|trans({}, 'messages') }}</small>
                                     </div>
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-list-check text-muted me-1" aria-hidden="true"></i> Controls (SoA)</small>
+                                        <small><i class="bi bi-list-check text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_controls'|trans({}, 'messages') }}</small>
                                     </div>
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-bell text-muted me-1" aria-hidden="true"></i> Incident Management</small>
+                                        <small><i class="bi bi-bell text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_incident'|trans({}, 'messages') }}</small>
                                     </div>
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-clipboard-check text-muted me-1" aria-hidden="true"></i> Audit Management</small>
+                                        <small><i class="bi bi-clipboard-check text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_audit'|trans({}, 'messages') }}</small>
                                     </div>
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-arrow-clockwise text-muted me-1" aria-hidden="true"></i> BCM</small>
+                                        <small><i class="bi bi-arrow-clockwise text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_bcm'|trans({}, 'messages') }}</small>
                                     </div>
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-balance text-muted me-1" aria-hidden="true"></i> Compliance</small>
+                                        <small><i class="bi bi-balance text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_compliance'|trans({}, 'messages') }}</small>
                                     </div>
                                     <div class="col-md-4">
-                                        <small><i class="bi bi-mortarboard text-muted me-1" aria-hidden="true"></i> Training</small>
+                                        <small><i class="bi bi-mortarboard text-muted me-1" aria-hidden="true"></i> {{ 'setup.module_training'|trans({}, 'messages') }}</small>
                                     </div>
                                 </div>
                             </div>
@@ -124,7 +124,7 @@
                         <div class="d-grid">
                             <a href="{{ path('setup_step0_welcome') }}" class="btn btn-lg btn-primary">
                                 <i class="bi bi-play me-2" aria-hidden="true"></i>
-                                Setup starten
+                                {{ 'setup.start_setup'|trans({}, 'messages') }}
                             </a>
                         </div>
                     {% endif %}
