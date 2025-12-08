@@ -183,6 +183,10 @@ workflow:
         help_duplicate: 'Duplizieren: Erstellen Sie eine Kopie eines bestehenden Schritts'
         help_delete: 'Löschen: Entfernen Sie einen Schritt aus dem Workflow'
         help_template: 'Vorlage verwenden: Erstellen Sie einen Workflow aus einer vordefinierten Vorlage'
+        action:
+            edit: Bearbeiten
+            duplicate: Duplizieren
+            delete: Löschen
     step.name: Schrittname
     step.type: Schritttyp
     step.type.approval: 'Freigabe / Genehmigung'

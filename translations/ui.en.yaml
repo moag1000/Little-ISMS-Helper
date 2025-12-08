@@ -17,9 +17,15 @@ ui:
     n_a: N/A
     command_palette:
         placeholder: 'Search for commands or navigation...'
+        no_results: 'No commands found'
+        no_results_hint: 'Try different search terms'
     global_search:
         placeholder: 'Search for assets, risks, controls...'
     keyboard:
         navigation: Navigation
         select: Select
         close: Close
+        shortcuts:
+            title: 'Keyboard Shortcuts'
+            tip: 'Tip: Press <kbd>?</kbd> to show this help anytime'
+            trigger_title: 'Keyboard Shortcuts (?)'

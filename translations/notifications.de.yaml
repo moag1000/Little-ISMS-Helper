@@ -3,6 +3,8 @@ notifications:
     action:
         mark_all_read: 'Alle als gelesen markieren'
         clear_all: 'Alle löschen'
+        delete: 'Löschen'
+        view_details: 'Details anzeigen'
     empty:
         title: 'Keine Benachrichtigungen'
         description: 'Sie haben alle Benachrichtigungen gelesen'

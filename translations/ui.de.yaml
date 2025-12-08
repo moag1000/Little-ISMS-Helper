@@ -17,9 +17,15 @@ ui:
     n_a: N/A
     command_palette:
         placeholder: 'Suche nach Befehlen oder Navigation...'
+        no_results: 'Keine Befehle gefunden'
+        no_results_hint: 'Versuchen Sie andere Suchbegriffe'
     global_search:
         placeholder: 'Suche nach Assets, Risiken, Controls...'
     keyboard:
         navigation: Navigation
         select: Auswählen
         close: Schließen
+        shortcuts:
+            title: 'Tastenkürzel'
+            tip: 'Tipp: Drücken Sie <kbd>?</kbd> um diese Hilfe jederzeit anzuzeigen'
+            trigger_title: 'Tastenkürzel (?)'

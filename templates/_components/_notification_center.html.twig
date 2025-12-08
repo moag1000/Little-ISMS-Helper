@@ -5,7 +5,11 @@
    The button is in _notification_bell.html.twig (in header)
 #}
 
-<div class="notification-center-panel" data-controller="notifications">
+<div class="notification-center-panel" data-controller="notifications"
+     data-notifications-delete-title-value="{{ 'notifications.action.delete'|trans({}, 'notifications') }}"
+     data-notifications-view-details-value="{{ 'notifications.action.view_details'|trans({}, 'notifications') }}"
+     data-notifications-empty-title-value="{{ 'notifications.empty.title'|trans({}, 'notifications') }}"
+     data-notifications-empty-message-value="{{ 'notifications.empty.description'|trans({}, 'notifications') }}">
     {# Notification Panel #}
     <div class="notification-panel d-none"
          data-notifications-target="panel"

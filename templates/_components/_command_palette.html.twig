@@ -28,16 +28,16 @@
             {# No Results State #}
             <div class="command-palette-no-results hidden" data-command-palette-target="noResults">
                 <i class="bi bi-search" aria-hidden="true"></i>
-                <p>Keine Befehle gefunden</p>
-                <small>Versuchen Sie andere Suchbegriffe</small>
+                <p>{{ 'ui.command_palette.no_results'|trans({}, 'ui') }}</p>
+                <small>{{ 'ui.command_palette.no_results_hint'|trans({}, 'ui') }}</small>
             </div>
 
             {# Footer with Shortcuts #}
             <div class="command-palette-footer">
                 <div class="command-palette-shortcuts">
-                    <span><kbd>↑</kbd> <kbd>↓</kbd> Navigation</span>
-                    <span><kbd>↵</kbd> Auswählen</span>
-                    <span><kbd>ESC</kbd> Schließen</span>
+                    <span><kbd>↑</kbd> <kbd>↓</kbd> {{ 'ui.keyboard.navigation'|trans({}, 'ui') }}</span>
+                    <span><kbd>↵</kbd> {{ 'ui.keyboard.select'|trans({}, 'ui') }}</span>
+                    <span><kbd>ESC</kbd> {{ 'ui.keyboard.close'|trans({}, 'ui') }}</span>
                 </div>
             </div>
         </div>
