@@ -28,7 +28,13 @@ export default class extends Controller {
             'image/webp',
             'text/plain'
         ]},
-        uploadUrl: String
+        uploadUrl: String,
+        // Translation strings
+        fileTooLarge: { type: String, default: 'File "%name%" is too large. Maximum: %size%' },
+        invalidFileType: { type: String, default: 'File "%name%" has an invalid file type.' },
+        noFilesSelected: { type: String, default: 'No files selected' },
+        uploadSuccess: { type: String, default: 'Files uploaded successfully!' },
+        uploadError: { type: String, default: 'Error uploading files.' }
     };
 
     connect() {
@@ -108,7 +114,10 @@ export default class extends Controller {
     validateFile(file) {
         // Check file size
         if (file.size > this.maxFileSizeValue) {
-            this.showError(`Datei "${file.name}" ist zu groß. Maximum: ${this.formatFileSize(this.maxFileSizeValue)}`);
+            const msg = this.fileTooLargeValue
+                .replace('%name%', file.name)
+                .replace('%size%', this.formatFileSize(this.maxFileSizeValue));
+            this.showError(msg);
             return false;
         }
 
@@ -119,7 +128,8 @@ export default class extends Controller {
             const allowedExtensions = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'jpg', 'jpeg', 'png', 'gif', 'webp', 'txt'];
 
             if (!allowedExtensions.includes(extension)) {
-                this.showError(`Datei "${file.name}" hat einen ungültigen Dateityp.`);
+                const msg = this.invalidFileTypeValue.replace('%name%', file.name);
+                this.showError(msg);
                 return false;
             }
         }
@@ -133,7 +143,7 @@ export default class extends Controller {
         this.fileListTarget.innerHTML = '';
 
         if (this.selectedFiles.length === 0) {
-            this.fileListTarget.innerHTML = '<p class="text-muted">Keine Dateien ausgewählt</p>';
+            this.fileListTarget.innerHTML = `<p class="text-muted">${this.noFilesSelectedValue}</p>`;
             return;
         }
 
@@ -294,7 +304,7 @@ export default class extends Controller {
 
             if (response.ok) {
                 const result = await response.json();
-                this.showSuccess('Dateien erfolgreich hochgeladen!');
+                this.showSuccess(this.uploadSuccessValue);
 
                 // Reload or redirect
                 setTimeout(() => {
@@ -304,7 +314,7 @@ export default class extends Controller {
                 throw new Error('Upload failed');
             }
         } catch (error) {
-            this.showError('Fehler beim Hochladen der Dateien.');
+            this.showError(this.uploadErrorValue);
         }
     }
 

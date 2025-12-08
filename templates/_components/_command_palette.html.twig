@@ -1,5 +1,27 @@
 {# Command Palette Component - Modern ⌘P Interface #}
-<div data-controller="command-palette">
+{% set commands = [
+    { id: 'goto-dashboard', label: 'ui.command_palette.command.goto_dashboard'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'bi-speedometer2', url: '/dashboard', keywords: ['home', 'start', 'übersicht', 'overview'] },
+    { id: 'goto-assets', label: 'ui.command_palette.command.goto_assets'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'bi-server', url: '/asset', keywords: ['asset', 'inventory', 'bestände'] },
+    { id: 'goto-risks', label: 'ui.command_palette.command.goto_risks'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'bi-exclamation-triangle', url: '/risk', keywords: ['risk', 'risiko'] },
+    { id: 'goto-incidents', label: 'ui.command_palette.command.goto_incidents'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'bi-bug', url: '/incident', keywords: ['incident', 'vorfall'] },
+    { id: 'goto-soa', label: 'ui.command_palette.command.goto_soa'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'bi-shield-check', url: '/soa', keywords: ['soa', 'controls', 'iso', '27001'] },
+    { id: 'goto-trainings', label: 'ui.command_palette.command.goto_trainings'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'bi-mortarboard', url: '/training', keywords: ['training', 'schulung'] },
+    { id: 'goto-audits', label: 'ui.command_palette.command.goto_audits'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'bi-clipboard-check', url: '/audit', keywords: ['audit', 'prüfung'] },
+    { id: 'goto-compliance', label: 'ui.command_palette.command.goto_compliance'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'bi-patch-check', url: '/compliance', keywords: ['compliance', 'tisax', 'dora'] },
+    { id: 'goto-bcm', label: 'ui.command_palette.command.goto_bcm'|trans({}, 'ui'), category: 'ui.command_palette.category.navigation'|trans({}, 'ui'), icon: 'bi-graph-up', url: '/bcm/business-process', keywords: ['bcm', 'bia', 'continuity'] },
+    { id: 'create-asset', label: 'ui.command_palette.command.create_asset'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'bi-plus-circle', url: '/asset/new', keywords: ['new', 'create', 'neu'] },
+    { id: 'create-risk', label: 'ui.command_palette.command.create_risk'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'bi-plus-circle', url: '/risk/new', keywords: ['new', 'create', 'neu'] },
+    { id: 'create-incident', label: 'ui.command_palette.command.create_incident'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'bi-plus-circle', url: '/incident/new', keywords: ['new', 'create', 'melden'] },
+    { id: 'create-training', label: 'ui.command_palette.command.create_training'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'bi-plus-circle', url: '/training/new', keywords: ['new', 'training', 'schulung'] },
+    { id: 'create-audit', label: 'ui.command_palette.command.create_audit'|trans({}, 'ui'), category: 'ui.command_palette.category.create'|trans({}, 'ui'), icon: 'bi-plus-circle', url: '/audit/new', keywords: ['new', 'audit'] },
+    { id: 'export-dashboard', label: 'ui.command_palette.command.export_dashboard'|trans({}, 'ui'), category: 'ui.command_palette.category.export'|trans({}, 'ui'), icon: 'bi-download', url: '/reports/dashboard/export', keywords: ['export', 'pdf', 'report'] },
+    { id: 'export-soa', label: 'ui.command_palette.command.export_soa'|trans({}, 'ui'), category: 'ui.command_palette.category.export'|trans({}, 'ui'), icon: 'bi-download', url: '/soa/export', keywords: ['export', 'soa', 'pdf'] },
+    { id: 'export-risks', label: 'ui.command_palette.command.export_risks'|trans({}, 'ui'), category: 'ui.command_palette.category.export'|trans({}, 'ui'), icon: 'bi-download', url: '/reports/risks/export', keywords: ['export', 'risks', 'pdf'] },
+    { id: 'goto-users', label: 'ui.command_palette.command.goto_users'|trans({}, 'ui'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'bi-people', url: '/admin/users', keywords: ['user', 'benutzer', 'admin'] },
+    { id: 'goto-audit-log', label: 'ui.command_palette.command.goto_audit_log'|trans({}, 'ui'), category: 'ui.command_palette.category.administration'|trans({}, 'ui'), icon: 'bi-clock-history', url: '/admin/audit-log', keywords: ['log', 'history'] },
+] %}
+<div data-controller="command-palette"
+     data-command-palette-commands-value="{{ commands|json_encode|e('html_attr') }}">
     {# Modal Backdrop #}
     <div class="command-palette-modal" data-command-palette-target="modal">
         <div class="command-palette-container">
