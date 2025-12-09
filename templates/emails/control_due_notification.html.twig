@@ -19,37 +19,37 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🛡️ Control Target Date Approaching</h1>
+            <h1>🛡️ {{ 'emails.control_due.title'|trans({}, 'emails') }}</h1>
         </div>
 
         <div class="content">
             <div class="field">
-                <span class="label">Control ID:</span>
+                <span class="label">{{ 'emails.control_due.control_id'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ control.controlId }}</span>
             </div>
 
             <div class="field">
-                <span class="label">Control Name:</span>
+                <span class="label">{{ 'emails.control_due.control_name'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ control.name }}</span>
             </div>
 
             <div class="due-date">
-                <strong>⏰ Target Date:</strong>
+                <strong>⏰ {{ 'emails.control_due.target_date'|trans({}, 'emails') }}:</strong>
                 {{ control.targetDate|date('d.m.Y') }}
             </div>
 
             <div class="field">
-                <span class="label">Category:</span>
+                <span class="label">{{ 'emails.control_due.category'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ control.category }}</span>
             </div>
 
             <div class="field">
-                <span class="label">Implementation Status:</span>
+                <span class="label">{{ 'emails.control_due.implementation_status'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ control.implementationStatus|upper }}</span>
             </div>
 
             <div class="field">
-                <span class="label">Progress:</span>
+                <span class="label">{{ 'emails.control_due.progress'|trans({}, 'emails') }}:</span>
                 <div class="progress-bar">
                     <div class="progress-fill" style="width: {{ control.implementationProgress }}%;">
                         {{ control.implementationProgress }}%
@@ -59,15 +59,15 @@
 
             {% if control.implementationNotes %}
             <div class="field">
-                <span class="label">Notes:</span>
+                <span class="label">{{ 'emails.control_due.notes'|trans({}, 'emails') }}:</span>
                 <p class="value">{{ control.implementationNotes|slice(0, 200) }}{% if control.implementationNotes|length > 200 %}...{% endif %}</p>
             </div>
             {% endif %}
         </div>
 
         <div class="footer">
-            <p>{{ 'email.automated_reminder'|trans({}, 'messages')}}</p>
-            <p>{{ 'email.ensure_control_completion'|trans({}, 'messages')}}</p>
+            <p>{{ 'emails.common.automated_reminder'|trans({}, 'emails') }}</p>
+            <p>{{ 'emails.control_due.footer_ensure'|trans({}, 'emails') }}</p>
         </div>
     </div>
 </body>

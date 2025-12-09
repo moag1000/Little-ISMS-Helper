@@ -1,9 +1,6 @@
 risk:
     preview:
         title: 'Risiko-Informationen'
-    section:
-        assessment: 'Risikobewertung'
-        treatment: 'Behandlungsstrategie'
     filter:
         owner_placeholder: 'Suche nach Owner...'
     modern:
@@ -110,6 +107,7 @@ risk:
         impact_title: 'Schadensauswirkung (1-5)'
         tip: 'Tipp: Das Brutto-Risiko ergibt sich aus Wahrscheinlichkeit × Auswirkung'
     section:
+        assessment: 'Risikobewertung'
         basic_info: Grundinformationen
         gdpr_assessment: DSGVO-Bewertung
         inherent_risk: 'Inhärentes Risiko (Brutto-Risiko)'

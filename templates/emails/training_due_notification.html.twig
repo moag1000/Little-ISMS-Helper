@@ -17,44 +17,44 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🎓 Training Reminder</h1>
+            <h1>🎓 {{ 'emails.training.reminder'|trans({}, 'emails') }}</h1>
         </div>
 
         <div class="content">
             <div class="field">
-                <span class="label">Training:</span>
+                <span class="label">{{ 'emails.training.training_field'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ training.title }}</span>
             </div>
 
             <div class="training-date">
-                <strong>📅 Scheduled:</strong>
+                <strong>📅 {{ 'emails.training.scheduled'|trans({}, 'emails') }}:</strong>
                 {{ training.trainingDate|date('d.m.Y') }}
                 {% if training.durationMinutes %}
-                    <br><strong>Duration:</strong> {{ training.durationMinutes }} minutes
+                    <br><strong>{{ 'emails.training.duration'|trans({}, 'emails') }}:</strong> {{ training.durationMinutes }} {{ 'emails.training.minutes'|trans({}, 'emails') }}
                 {% endif %}
             </div>
 
             {% if training.description %}
             <div class="field">
-                <span class="label">Description:</span>
+                <span class="label">{{ 'emails.training.description'|trans({}, 'emails') }}:</span>
                 <p class="value">{{ training.description }}</p>
             </div>
             {% endif %}
 
             <div class="field">
-                <span class="label">Type:</span>
+                <span class="label">{{ 'emails.training.type'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ training.trainingType }}</span>
             </div>
 
             <div class="field">
-                <span class="label">Status:</span>
+                <span class="label">{{ 'emails.training.status'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ training.status|upper }}</span>
             </div>
         </div>
 
         <div class="footer">
-            <p>{{ 'email.automated_reminder'|trans({}, 'messages')}}</p>
-            <p>{{ 'email.training.mark_calendar'|trans({}, 'messages')}}</p>
+            <p>{{ 'emails.common.automated_reminder'|trans({}, 'emails') }}</p>
+            <p>{{ 'emails.training.mark_calendar'|trans({}, 'emails') }}</p>
         </div>
     </div>
 </body>

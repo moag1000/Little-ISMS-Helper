@@ -53,3 +53,91 @@ report:
     document_type: 'Document Type'
     header_center: 'Header (Center)'
     default_reviewer: 'Default Reviewer'
+
+# PDF Export Templates
+pdf:
+    common:
+        generated: 'Generated'
+        total: 'Total'
+        confidential: 'Confidential'
+        page: 'Page'
+        open: 'Open'
+        yes: 'YES'
+        no: 'No'
+    risk:
+        title: 'Risk Register'
+        header:
+            id: 'ID'
+            title: 'Title'
+            category: 'Category'
+            likelihood: 'L'
+            impact: 'I'
+            score: 'Score'
+            level: 'Level'
+            treatment: 'Treatment'
+            status: 'Status'
+            owner: 'Owner'
+        legend: 'Risk Matrix Legend'
+        legend_text: 'Critical (≥20): Immediate action required | High (12-19): High priority | Medium (6-11): Monitor closely | Low (<6): Acceptable'
+        footer: 'Confidential - Risk Register'
+    incident:
+        title: 'Incident Log'
+        header:
+            id: 'ID'
+            title: 'Title'
+            severity: 'Severity'
+            category: 'Category'
+            detected: 'Detected'
+            resolved: 'Resolved'
+            status: 'Status'
+            reporter: 'Reporter'
+    training:
+        title: 'Training Log'
+        header:
+            id: 'ID'
+            title: 'Title'
+            type: 'Type'
+            date: 'Date'
+            duration: 'Duration'
+            mandatory: 'Mandatory'
+            status: 'Status'
+            participants: 'Participants'
+    controls:
+        title: 'Controls Register'
+        header:
+            id: 'Control ID'
+            name: 'Name'
+            category: 'Category'
+            status: 'Status'
+            progress: 'Progress'
+            target_date: 'Target Date'
+            owner: 'Owner'
+    dashboard:
+        title: 'ISMS Dashboard Summary'
+        section:
+            overview: 'Overview'
+            assets: 'Assets'
+            risks: 'Risks'
+            controls: 'Controls'
+            incidents: 'Incidents'
+        stats:
+            assets: 'Assets'
+            total_risks: 'Total Risks'
+            high_critical: 'High/Critical'
+            controls: 'Controls'
+            implemented: 'Implemented'
+            compliance: 'Compliance'
+        metrics:
+            title: 'Key Metrics'
+            metric: 'Metric'
+            value: 'Value'
+            status: 'Status'
+            open_incidents: 'Open Incidents'
+            total_trainings: 'Total Trainings'
+            audits_this_year: 'Audits This Year'
+        status:
+            attention: 'Attention'
+            normal: 'Normal'
+            active: 'Active'
+            compliant: 'Compliant'
+            review: 'Review'

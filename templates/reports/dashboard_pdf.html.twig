@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>ISMS Dashboard Report</title>
+    <title>{{ 'pdf.dashboard.title'|trans({}, 'reports') }}</title>
     <style>
         body { font-family: 'DejaVu Sans', sans-serif; font-size: 11pt; }
         .header {
@@ -68,68 +68,68 @@
 </head>
 <body>
     <div class="header">
-        <h1>ISMS Dashboard Report</h1>
-        <div class="date">Generated: {{ generated_at|date('d.m.Y H:i') }}</div>
+        <h1>{{ 'pdf.dashboard.title'|trans({}, 'reports') }}</h1>
+        <div class="date">{{ 'pdf.common.generated'|trans({}, 'reports') }}: {{ generated_at|date('d.m.Y H:i') }}</div>
     </div>
 
     <div class="stats-grid">
         <div class="stat-box">
             <div class="number">{{ data.assets_count }}</div>
-            <div class="label">Assets</div>
+            <div class="label">{{ 'pdf.dashboard.stats.assets'|trans({}, 'reports') }}</div>
         </div>
         <div class="stat-box">
             <div class="number">{{ data.risks_count }}</div>
-            <div class="label">Total Risks</div>
+            <div class="label">{{ 'pdf.dashboard.stats.total_risks'|trans({}, 'reports') }}</div>
         </div>
         <div class="stat-box">
             <div class="number" style="color: #dc2626;">{{ data.high_risks }}</div>
-            <div class="label">High/Critical</div>
+            <div class="label">{{ 'pdf.dashboard.stats.high_critical'|trans({}, 'reports') }}</div>
         </div>
     </div>
 
     <div class="stats-grid">
         <div class="stat-box">
             <div class="number">{{ data.controls_count }}</div>
-            <div class="label">Controls</div>
+            <div class="label">{{ 'pdf.dashboard.stats.controls'|trans({}, 'reports') }}</div>
         </div>
         <div class="stat-box">
             <div class="number" style="color: #16a34a;">{{ data.implemented_controls }}</div>
-            <div class="label">Implemented</div>
+            <div class="label">{{ 'pdf.dashboard.stats.implemented'|trans({}, 'reports') }}</div>
         </div>
         <div class="stat-box">
             <div class="number">{{ data.compliance_percentage }}%</div>
-            <div class="label">Compliance</div>
+            <div class="label">{{ 'pdf.dashboard.stats.compliance'|trans({}, 'reports') }}</div>
         </div>
     </div>
 
     <div class="section">
-        <h2>Key Metrics</h2>
+        <h2>{{ 'pdf.dashboard.metrics.title'|trans({}, 'reports') }}</h2>
         <table>
             <tr>
-                <th scope="col">Metric</th>
-                <th scope="col">Value</th>
-                <th scope="col">Status</th>
+                <th scope="col">{{ 'pdf.dashboard.metrics.metric'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.dashboard.metrics.value'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.dashboard.metrics.status'|trans({}, 'reports') }}</th>
             </tr>
             <tr>
-                <td>Open Incidents</td>
+                <td>{{ 'pdf.dashboard.metrics.open_incidents'|trans({}, 'reports') }}</td>
                 <td>{{ data.open_incidents }}</td>
-                <td>{% if data.open_incidents > 5 %}⚠ Attention{% else %}✓ Normal{% endif %}</td>
+                <td>{% if data.open_incidents > 5 %}⚠ {{ 'pdf.dashboard.status.attention'|trans({}, 'reports') }}{% else %}✓ {{ 'pdf.dashboard.status.normal'|trans({}, 'reports') }}{% endif %}</td>
             </tr>
             <tr>
-                <td>Total Trainings</td>
+                <td>{{ 'pdf.dashboard.metrics.total_trainings'|trans({}, 'reports') }}</td>
                 <td>{{ data.total_trainings }}</td>
-                <td>✓ Active</td>
+                <td>✓ {{ 'pdf.dashboard.status.active'|trans({}, 'reports') }}</td>
             </tr>
             <tr>
-                <td>Audits This Year</td>
+                <td>{{ 'pdf.dashboard.metrics.audits_this_year'|trans({}, 'reports') }}</td>
                 <td>{{ data.audits_this_year }}</td>
-                <td>{% if data.audits_this_year >= 2 %}✓ Compliant{% else %}⚠ Review{% endif %}</td>
+                <td>{% if data.audits_this_year >= 2 %}✓ {{ 'pdf.dashboard.status.compliant'|trans({}, 'reports') }}{% else %}⚠ {{ 'pdf.dashboard.status.review'|trans({}, 'reports') }}{% endif %}</td>
             </tr>
         </table>
     </div>
 
     <div class="footer">
-        <p>Confidential - Little ISMS Helper | Page 1</p>
+        <p>{{ 'pdf.common.confidential'|trans({}, 'reports') }} - Little ISMS Helper | {{ 'pdf.common.page'|trans({}, 'reports') }} 1</p>
     </div>
 </body>
 </html>

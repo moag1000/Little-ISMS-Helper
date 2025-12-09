@@ -17,41 +17,41 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📋 Upcoming Audit Reminder</h1>
+            <h1>📋 {{ 'emails.audit_due.title'|trans({}, 'emails') }}</h1>
         </div>
 
         <div class="content">
             <div class="field">
-                <span class="label">Audit:</span>
+                <span class="label">{{ 'emails.audit_due.audit'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ audit.title }}</span>
             </div>
 
             <div class="due-date">
-                <strong>⏰ Scheduled Date:</strong>
+                <strong>⏰ {{ 'emails.audit_due.scheduled_date'|trans({}, 'emails') }}:</strong>
                 {{ audit.plannedDate|date('d.m.Y') }}
             </div>
 
             <div class="field">
-                <span class="label">Scope:</span>
+                <span class="label">{{ 'emails.audit_due.scope'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ audit.scope }}</span>
             </div>
 
             {% if audit.objectives %}
             <div class="field">
-                <span class="label">Objectives:</span>
+                <span class="label">{{ 'emails.audit_due.objectives'|trans({}, 'emails') }}:</span>
                 <p class="value">{{ audit.objectives }}</p>
             </div>
             {% endif %}
 
             <div class="field">
-                <span class="label">Status:</span>
+                <span class="label">{{ 'emails.audit_due.status'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ audit.status|upper }}</span>
             </div>
         </div>
 
         <div class="footer">
-            <p>{{ 'email.automated_reminder'|trans({}, 'messages')}}</p>
-            <p>{{ 'email.ensure_preparations'|trans({}, 'messages')}}</p>
+            <p>{{ 'emails.common.automated_reminder'|trans({}, 'emails') }}</p>
+            <p>{{ 'emails.audit_due.footer_preparations'|trans({}, 'emails') }}</p>
         </div>
     </div>
 </body>

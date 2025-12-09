@@ -18,53 +18,53 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>✅ Risk Acceptance Approved</h1>
+            <h1>✅ {{ 'emails.risk_acceptance.approved_title'|trans({}, 'emails') }}</h1>
         </div>
 
         <div class="content">
-            <p>Dear {{ risk_owner.firstName }} {{ risk_owner.lastName }},</p>
+            <p>{{ 'emails.common.dear'|trans({}, 'emails') }} {{ risk_owner.firstName }} {{ risk_owner.lastName }},</p>
 
             <div class="success">
-                <strong>✅ Your risk acceptance request has been approved!</strong>
+                <strong>✅ {{ 'emails.risk_acceptance.approved_message'|trans({}, 'emails') }}</strong>
             </div>
 
             <div class="field">
-                <span class="label">Risk Title:</span>
+                <span class="label">{{ 'emails.risk_acceptance.risk_title'|trans({}, 'emails') }}:</span>
                 <span class="value"><strong>{{ risk.title }}</strong></span>
             </div>
 
             <div class="field">
-                <span class="label">Residual Risk Score:</span>
+                <span class="label">{{ 'emails.risk_acceptance.residual_score'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ risk.residualRiskLevel }} ({{ risk.residualProbability }} × {{ risk.residualImpact }})</span>
             </div>
 
             <div class="field">
-                <span class="label">Approved By:</span>
+                <span class="label">{{ 'emails.risk_acceptance.approved_by'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ approver.fullName }} ({{ approver.email }})</span>
             </div>
 
             <div class="field">
-                <span class="label">Approval Date:</span>
+                <span class="label">{{ 'emails.risk_acceptance.approval_date'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ approved_at|date('d.m.Y H:i') }}</span>
             </div>
 
             <div class="info">
-                <strong>📋 Next Steps:</strong><br>
-                • The risk status has been updated to "Accepted"<br>
-                • Ensure that the accepted risk is monitored according to your organization's risk review schedule<br>
-                • Document this decision in your risk register for audit purposes<br>
-                • Consider setting a review date to reassess this risk periodically
+                <strong>📋 {{ 'emails.risk_acceptance.next_steps'|trans({}, 'emails') }}:</strong><br>
+                • {{ 'emails.risk_acceptance.next_step_1'|trans({}, 'emails') }}<br>
+                • {{ 'emails.risk_acceptance.next_step_2'|trans({}, 'emails') }}<br>
+                • {{ 'emails.risk_acceptance.next_step_3'|trans({}, 'emails') }}<br>
+                • {{ 'emails.risk_acceptance.next_step_4'|trans({}, 'emails') }}
             </div>
 
             <div class="info">
-                <strong>ℹ️ ISO 27005:2022 Compliance:</strong><br>
-                This formal risk acceptance is documented in accordance with ISO 27005:2022 Section 8.4.4. The decision has been logged in the audit trail for compliance purposes.
+                <strong>ℹ️ {{ 'emails.risk_acceptance.iso_compliance'|trans({}, 'emails') }}:</strong><br>
+                {{ 'emails.risk_acceptance.iso_compliance_text'|trans({}, 'emails') }}
             </div>
         </div>
 
         <div class="footer">
-            <p>{{ 'email.automated_notification'|trans({}, 'messages')}}</p>
-            <p>ISO 27001:2022 & ISO 27005:2022 Compliant Risk Management System</p>
+            <p>{{ 'emails.common.automated_notification'|trans({}, 'emails') }}</p>
+            <p>{{ 'emails.common.footer_compliance'|trans({}, 'emails') }}</p>
         </div>
     </div>
 </body>

@@ -19,67 +19,67 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>❌ Risk Acceptance Rejected</h1>
+            <h1>❌ {{ 'emails.risk_acceptance.rejected_title'|trans({}, 'emails') }}</h1>
         </div>
 
         <div class="content">
-            <p>Dear {{ risk_owner.firstName }} {{ risk_owner.lastName }},</p>
+            <p>{{ 'emails.common.dear'|trans({}, 'emails') }} {{ risk_owner.firstName }} {{ risk_owner.lastName }},</p>
 
             <div class="warning">
-                <strong>⚠️ Your risk acceptance request has been rejected.</strong>
+                <strong>⚠️ {{ 'emails.risk_acceptance.rejected_message'|trans({}, 'emails') }}</strong>
             </div>
 
             <div class="field">
-                <span class="label">Risk Title:</span>
+                <span class="label">{{ 'emails.risk_acceptance.risk_title'|trans({}, 'emails') }}:</span>
                 <span class="value"><strong>{{ risk.title }}</strong></span>
             </div>
 
             <div class="field">
-                <span class="label">Residual Risk Score:</span>
+                <span class="label">{{ 'emails.risk_acceptance.residual_score'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ risk.residualRiskLevel }} ({{ risk.residualProbability }} × {{ risk.residualImpact }})</span>
             </div>
 
             <div class="field">
-                <span class="label">Rejected By:</span>
+                <span class="label">{{ 'emails.risk_acceptance.rejected_by'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ rejector.fullName }} ({{ rejector.email }})</span>
             </div>
 
             <div class="field">
-                <span class="label">Rejection Date:</span>
+                <span class="label">{{ 'emails.risk_acceptance.rejection_date'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ rejected_at|date('d.m.Y H:i') }}</span>
             </div>
 
             <div class="info">
-                <strong>📝 Reason for Rejection:</strong><br>
+                <strong>📝 {{ 'emails.risk_acceptance.reason'|trans({}, 'emails') }}:</strong><br>
                 {{ rejection_reason }}
             </div>
 
             <div class="action-required">
-                <strong>🔧 Required Actions:</strong><br>
-                The risk has been returned to "Assessed" status. You must implement additional mitigation measures before requesting acceptance again. Please:
+                <strong>🔧 {{ 'emails.risk_acceptance.required_actions'|trans({}, 'emails') }}:</strong><br>
+                {{ 'emails.risk_acceptance.action_intro'|trans({}, 'emails') }}
                 <ul style="margin-top: 10px; margin-bottom: 0;">
-                    <li>{{ 'email.risk_acceptance.review_reason'|trans({}, 'messages')}}</li>
-                    <li>{{ 'email.risk_acceptance.identify_controls'|trans({}, 'messages')}}</li>
-                    <li>{{ 'email.risk_acceptance.update_assessment'|trans({}, 'messages')}}</li>
-                    <li>{{ 'email.risk_acceptance.reassess_risk'|trans({}, 'messages')}}</li>
-                    <li>{{ 'email.risk_acceptance.request_again'|trans({}, 'messages')}}</li>
+                    <li>{{ 'emails.risk_acceptance.review_reason'|trans({}, 'emails') }}</li>
+                    <li>{{ 'emails.risk_acceptance.identify_controls'|trans({}, 'emails') }}</li>
+                    <li>{{ 'emails.risk_acceptance.update_assessment'|trans({}, 'emails') }}</li>
+                    <li>{{ 'emails.risk_acceptance.reassess_risk'|trans({}, 'emails') }}</li>
+                    <li>{{ 'emails.risk_acceptance.request_again'|trans({}, 'emails') }}</li>
                 </ul>
             </div>
 
             <div class="info">
-                <strong>ℹ️ ISO 27005:2022 Guidance:</strong><br>
-                According to ISO 27005:2022 Section 8.4, risks that exceed the organization's risk appetite should be treated with additional controls rather than accepted. Consider the following treatment strategies:
+                <strong>ℹ️ {{ 'emails.risk_acceptance.iso_guidance'|trans({}, 'emails') }}:</strong><br>
+                {{ 'emails.risk_acceptance.iso_guidance_text'|trans({}, 'emails') }}
                 <ul style="margin-top: 10px; margin-bottom: 0;">
-                    <li><strong>Modify:</strong> Implement additional security controls to reduce likelihood or impact</li>
-                    <li><strong>Share:</strong> Transfer part of the risk through insurance or outsourcing</li>
-                    <li><strong>Avoid:</strong> Change processes to eliminate the risk entirely</li>
+                    <li><strong>{{ 'emails.risk_acceptance.modify'|trans({}, 'emails') }}:</strong> {{ 'emails.risk_acceptance.modify_desc'|trans({}, 'emails') }}</li>
+                    <li><strong>{{ 'emails.risk_acceptance.share'|trans({}, 'emails') }}:</strong> {{ 'emails.risk_acceptance.share_desc'|trans({}, 'emails') }}</li>
+                    <li><strong>{{ 'emails.risk_acceptance.avoid'|trans({}, 'emails') }}:</strong> {{ 'emails.risk_acceptance.avoid_desc'|trans({}, 'emails') }}</li>
                 </ul>
             </div>
         </div>
 
         <div class="footer">
-            <p>{{ 'email.automated_notification'|trans({}, 'messages')}}</p>
-            <p>ISO 27001:2022 & ISO 27005:2022 Compliant Risk Management System</p>
+            <p>{{ 'emails.common.automated_notification'|trans({}, 'emails') }}</p>
+            <p>{{ 'emails.common.footer_compliance'|trans({}, 'emails') }}</p>
         </div>
     </div>
 </body>

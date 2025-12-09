@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Training Log</title>
+    <title>{{ 'pdf.training.title'|trans({}, 'reports') }}</title>
     <style>
         body { font-family: 'DejaVu Sans', sans-serif; font-size: 10pt; }
         .header {
@@ -37,21 +37,21 @@
 </head>
 <body>
     <div class="header">
-        <h1>Training Log</h1>
-        <div style="color: #666; font-size: 9pt; margin-top: 5px;">Generated: {{ generated_at|date('d.m.Y H:i') }} | Total Trainings: {{ trainings|length }}</div>
+        <h1>{{ 'pdf.training.title'|trans({}, 'reports') }}</h1>
+        <div style="color: #666; font-size: 9pt; margin-top: 5px;">{{ 'pdf.common.generated'|trans({}, 'reports') }}: {{ generated_at|date('d.m.Y H:i') }} | {{ 'pdf.common.total'|trans({}, 'reports') }}: {{ trainings|length }}</div>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Title</th>
-                <th scope="col">Type</th>
-                <th scope="col">Date</th>
-                <th scope="col">Duration</th>
-                <th scope="col">Participants</th>
-                <th scope="col">Mandatory</th>
-                <th scope="col">Status</th>
+                <th scope="col">{{ 'pdf.training.header.id'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.training.header.title'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.training.header.type'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.training.header.date'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.training.header.duration'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.training.header.participants'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.training.header.mandatory'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.training.header.status'|trans({}, 'reports') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -63,7 +63,7 @@
                 <td>{{ training.scheduledDate|date('Y-m-d') }}</td>
                 <td>{{ training.duration }} min</td>
                 <td>{{ training.participants|length }}</td>
-                <td>{{ training.mandatory ? 'YES' : 'No' }}</td>
+                <td>{{ training.mandatory ? 'pdf.common.yes'|trans({}, 'reports') : 'pdf.common.no'|trans({}, 'reports') }}</td>
                 <td>{{ training.status }}</td>
             </tr>
             {% endfor %}
