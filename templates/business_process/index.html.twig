@@ -1,8 +1,9 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'business_process' %}
 {% import '_macros/inheritance_badge.html.twig' as inheritance %}
 {% import '_macros/cards.html.twig' as cards %}
 
-{% block title %}Business Continuity Management{% endblock %}
+{% block title %}{{ 'business_process.index.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
@@ -14,9 +15,9 @@
     } %}
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Business Continuity Management (BCM)</h1>
+        <h1>{{ 'business_process.index.page_title'|trans }}</h1>
         <a href="{{ path('app_business_process_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle" aria-hidden="true"></i> Neuer Geschäftsprozess
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'business_process.index.new_process'|trans }}
         </a>
     </div>
 
@@ -62,19 +63,19 @@
             <div class="col-md-3">
                 {% if currentTenant %}
                     {% set subtitle = 'corporate.stats.breakdown'|trans({'%own%': detailedStats.own, '%inherited%': detailedStats.inherited, '%subsidiaries%': detailedStats.subsidiaries}, 'tenant') %}
-                    {{ cards.kpi_card('Gesamt', detailedStats.total, subtitle, null, null, null) }}
+                    {{ cards.kpi_card('business_process.index.stats.total'|trans, detailedStats.total, subtitle, null, null, null) }}
                 {% else %}
-                    {{ cards.kpi_card('Gesamt', detailedStats.total, 'Geschäftsprozesse', null, null, null) }}
+                    {{ cards.kpi_card('business_process.index.stats.total'|trans, detailedStats.total, 'business_process.index.stats.total_subtitle'|trans, null, null, null) }}
                 {% endif %}
             </div>
             <div class="col-md-3">
-                {{ cards.kpi_card('Kritisch', stats.critical, 'Höchste Priorität', null, 'danger', 'border-danger') }}
+                {{ cards.kpi_card('business_process.index.stats.critical'|trans, stats.critical, 'business_process.index.stats.critical_subtitle'|trans, null, 'danger', 'border-danger') }}
             </div>
             <div class="col-md-3">
-                {{ cards.kpi_card('Ø RTO', stats.avg_rto ~ 'h', 'Recovery Time Objective', null, 'info', null) }}
+                {{ cards.kpi_card('business_process.index.stats.avg_rto'|trans, stats.avg_rto ~ 'business_process.index.stats.rto_unit'|trans, 'business_process.index.stats.rto_subtitle'|trans, null, 'info', null) }}
             </div>
             <div class="col-md-3">
-                {{ cards.kpi_card('Mit Risiken', stats.processes_with_risks, 'Aktive Risiken', null, 'warning', null) }}
+                {{ cards.kpi_card('business_process.index.stats.with_risks'|trans, stats.processes_with_risks, 'business_process.index.stats.with_risks_subtitle'|trans, null, 'warning', null) }}
             </div>
         </div>
     </turbo-frame>
@@ -83,7 +84,7 @@
     <turbo-frame id="business-processes-list">
         <div class="card">
             <div class="card-header">
-                <h3 class="mb-0">Geschäftsprozesse</h3>
+                <h3 class="mb-0">{{ 'business_process.index.table.title'|trans }}</h3>
             </div>
             <div class="card-body">
                 {% if business_processes|length > 0 %}
@@ -91,14 +92,14 @@
                         {% import '_macros/inheritance_badge.html.twig' as inheritance %}
                         {% block table_head %}
                             <tr>
-                                <th scope="col">Name</th>
-                                <th scope="col">Verantwortlicher</th>
-                                <th scope="col">Kritikalität</th>
-                                <th scope="col">RTO</th>
-                                <th scope="col">RPO</th>
-                                <th scope="col">MTPD</th>
-                                <th scope="col">Impact Score</th>
-                                <th scope="col">Aktionen</th>
+                                <th scope="col">{{ 'business_process.index.table.name'|trans }}</th>
+                                <th scope="col">{{ 'business_process.index.table.owner'|trans }}</th>
+                                <th scope="col">{{ 'business_process.index.table.criticality'|trans }}</th>
+                                <th scope="col">{{ 'business_process.index.table.rto'|trans }}</th>
+                                <th scope="col">{{ 'business_process.index.table.rpo'|trans }}</th>
+                                <th scope="col">{{ 'business_process.index.table.mtpd'|trans }}</th>
+                                <th scope="col">{{ 'business_process.index.table.impact_score'|trans }}</th>
+                                <th scope="col">{{ 'business_process.index.table.actions'|trans }}</th>
                             </tr>
                         {% endblock %}
                         {% block table_body_attrs %}id="business-processes-table-body"{% endblock %}
@@ -166,21 +167,11 @@
     </turbo-frame>
 </div>
 
+{# Note: Loading indicator is now handled via CSS variable or JavaScript for i18n #}
 <style>
 turbo-frame[busy] {
     opacity: 0.6;
     pointer-events: none;
-}
-
-turbo-frame::after {
-    content: "Lädt...";
-    display: none;
-}
-
-turbo-frame[busy]::after {
-    display: block;
-    text-align: center;
-    padding: 1rem;
 }
 </style>
 {% endblock %}

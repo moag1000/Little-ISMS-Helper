@@ -206,7 +206,7 @@
                     {% endif %}
                 </td>
                 <td class="text-center">
-                    <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                         <a href="{{ path('app_consent_show', {id: consent.id}) }}"
                            class="btn btn-outline-primary"
                            data-turbo-action="advance"

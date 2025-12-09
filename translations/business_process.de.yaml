@@ -64,3 +64,33 @@ business_process:
         medium: Mittel
         high: Hoch
         very_high: 'Sehr hoch'
+    index:
+        title: 'Business Continuity Management'
+        page_title: 'Business Continuity Management (BCM)'
+        new_process: 'Neuer Geschäftsprozess'
+        stats:
+            total: 'Gesamt'
+            total_subtitle: 'Geschäftsprozesse'
+            critical: 'Kritisch'
+            critical_subtitle: 'Höchste Priorität'
+            avg_rto: 'Ø RTO'
+            rto_unit: 'h'
+            rto_subtitle: 'Recovery Time Objective'
+            with_risks: 'Mit Risiken'
+            with_risks_subtitle: 'Aktive Risiken'
+        table:
+            title: 'Geschäftsprozesse'
+            name: 'Name'
+            owner: 'Verantwortlicher'
+            criticality: 'Kritikalität'
+            rto: 'RTO'
+            rpo: 'RPO'
+            mtpd: 'MTPD'
+            impact_score: 'Impact Score'
+            actions: 'Aktionen'
+        loading: 'Lädt...'
+    criticality:
+        critical: 'Kritisch'
+        high: 'Hoch'
+        medium: 'Mittel'
+        low: 'Niedrig'

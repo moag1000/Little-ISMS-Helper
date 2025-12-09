@@ -70,6 +70,13 @@ role:
         permission_matrix: Berechtigungsmatrix
         has_permission: 'Hat Berechtigung'
         no_permission: 'Keine Berechtigung'
+        select_label: 'Rollen zum Vergleichen auswählen (max. 5):'
+        select_hint: 'Halten Sie Strg/Cmd gedrückt, um mehrere Rollen auszuwählen.'
+        submit: 'Vergleichen'
+        permission_column: 'Berechtigung'
+        legend_title: 'Legende:'
+        select_prompt: 'Bitte wählen Sie mindestens eine Rolle zum Vergleichen aus.'
+        system_badge: 'System'
     templates:
         title: Rollenvorlagen
         description: 'Vordefinierte Rollenvorlagen für typische ISMS-Funktionen'

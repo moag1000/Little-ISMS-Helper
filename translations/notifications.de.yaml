@@ -1,10 +1,10 @@
 notifications:
     title: 'Benachrichtigungen'
     action:
-        mark_all_read: 'Alle als gelesen markieren'
-        clear_all: 'Alle löschen'
         delete: 'Löschen'
         view_details: 'Details anzeigen'
+        mark_all_read: 'Alle als gelesen markieren'
+        clear_all: 'Alle löschen'
     empty:
         title: 'Keine Benachrichtigungen'
-        description: 'Sie haben alle Benachrichtigungen gelesen'
+        description: 'Sie haben keine neuen Benachrichtigungen.'

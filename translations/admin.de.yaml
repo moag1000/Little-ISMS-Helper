@@ -79,6 +79,18 @@ admin:
         title: Daten-Export
         format: Export-Format
         format_selection: 'Export-Format Auswahl'
+        page_title: Daten-Export
+        about_title: 'Über Daten-Export'
+        about_description: 'Exportieren Sie Ihre Daten im JSON- oder CSV-Format. Sie können bestimmte Entitäten auswählen oder alle Daten exportieren.'
+        about_note: '<strong>Hinweis:</strong> Der Export großer Datensätze kann einige Zeit dauern.'
+        configure_title: 'Export konfigurieren'
+        format_help: 'JSON-Format behält Datentypen bei und wird für Re-Import empfohlen. CSV ist besser für Tabellenkalkulationsprogramme geeignet.'
+        select_entities: 'Entitäten zum Export auswählen:'
+        select_all: 'Alle auswählen'
+        deselect_all: 'Alle abwählen'
+        submit: 'Ausgewählte Entitäten exportieren'
+        notes_title: 'Wichtige Hinweise'
+        backup_link: 'Für ein vollständiges System-Backup nutzen Sie die <a href="%url%" class="alert-link">Datenbank-Backup</a> Funktion'
     data_management:
         title: Daten-Verwaltung
     settings:

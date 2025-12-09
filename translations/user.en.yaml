@@ -50,9 +50,22 @@ user:
         filter:
             show_count: 'Show count'
     import:
-        title: Title
-        description: Description
-        format: Format
+        title: 'Import Users'
+        description: 'CSV import for bulk user creation'
+        format: 'CSV format (Name, Email, Role, Department)'
+        example_csv: 'Example CSV:'
+        upload_title: 'Upload CSV File'
+        file_label: 'Select CSV File'
+        file_help: 'Maximum file size: 10 MB. Only CSV files are accepted.'
+        submit: 'Import'
+        template_title: 'Download Template'
+        template_description: 'Download a CSV template to prepare your user data:'
+        template_download: 'Download CSV Template'
+        notes_title: 'Important Notes'
+        note_existing_email: 'Users with already existing email addresses will be skipped'
+        note_random_password: 'If no password is provided, a random password will be generated'
+        note_role_case: 'Role names must match exactly (case-sensitive)'
+        note_default_role: 'All imported users automatically receive ROLE_USER'
     new: New
     create: Create
     section:
