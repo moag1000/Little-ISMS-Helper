@@ -53,3 +53,91 @@ report:
     document_type: 'Dokumenttyp'
     header_center: 'Kopfzeile (Mitte)'
     default_reviewer: 'Standard-Prüfer'
+
+# PDF Export Templates
+pdf:
+    common:
+        generated: 'Erstellt'
+        total: 'Gesamt'
+        confidential: 'Vertraulich'
+        page: 'Seite'
+        open: 'Offen'
+        yes: 'JA'
+        no: 'Nein'
+    risk:
+        title: 'Risikoregister'
+        header:
+            id: 'ID'
+            title: 'Titel'
+            category: 'Kategorie'
+            likelihood: 'W'
+            impact: 'A'
+            score: 'Score'
+            level: 'Stufe'
+            treatment: 'Behandlung'
+            status: 'Status'
+            owner: 'Verantwortlich'
+        legend: 'Risikomatrix-Legende'
+        legend_text: 'Kritisch (≥20): Sofortmaßnahme erforderlich | Hoch (12-19): Hohe Priorität | Mittel (6-11): Genau beobachten | Niedrig (<6): Akzeptabel'
+        footer: 'Vertraulich - Risikoregister'
+    incident:
+        title: 'Vorfallsprotokoll'
+        header:
+            id: 'ID'
+            title: 'Titel'
+            severity: 'Schweregrad'
+            category: 'Kategorie'
+            detected: 'Erkannt'
+            resolved: 'Gelöst'
+            status: 'Status'
+            reporter: 'Melder'
+    training:
+        title: 'Schulungsprotokoll'
+        header:
+            id: 'ID'
+            title: 'Titel'
+            type: 'Typ'
+            date: 'Datum'
+            duration: 'Dauer'
+            mandatory: 'Pflicht'
+            status: 'Status'
+            participants: 'Teilnehmer'
+    controls:
+        title: 'Maßnahmenregister'
+        header:
+            id: 'Control-ID'
+            name: 'Name'
+            category: 'Kategorie'
+            status: 'Status'
+            progress: 'Fortschritt'
+            target_date: 'Zieldatum'
+            owner: 'Verantwortlich'
+    dashboard:
+        title: 'ISMS Dashboard-Zusammenfassung'
+        section:
+            overview: 'Übersicht'
+            assets: 'Assets'
+            risks: 'Risiken'
+            controls: 'Maßnahmen'
+            incidents: 'Vorfälle'
+        stats:
+            assets: 'Assets'
+            total_risks: 'Risiken gesamt'
+            high_critical: 'Hoch/Kritisch'
+            controls: 'Maßnahmen'
+            implemented: 'Umgesetzt'
+            compliance: 'Compliance'
+        metrics:
+            title: 'Kennzahlen'
+            metric: 'Kennzahl'
+            value: 'Wert'
+            status: 'Status'
+            open_incidents: 'Offene Vorfälle'
+            total_trainings: 'Schulungen gesamt'
+            audits_this_year: 'Audits dieses Jahr'
+        status:
+            attention: 'Achtung'
+            normal: 'Normal'
+            active: 'Aktiv'
+            compliant: 'Konform'
+            review: 'Prüfen'

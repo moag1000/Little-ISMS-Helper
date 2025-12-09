@@ -18,59 +18,59 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>⚠️ Overdue Workflow Approval</h1>
+            <h1>⚠️ {{ 'emails.workflow.overdue_title'|trans({}, 'emails') }}</h1>
         </div>
 
         <div class="content">
             <div class="overdue-alert">
-                <strong>🚨 This workflow step requires your immediate attention!</strong>
+                <strong>🚨 {{ 'emails.workflow.overdue_alert'|trans({}, 'emails') }}</strong>
             </div>
 
             <div class="field">
-                <span class="label">Workflow:</span>
+                <span class="label">{{ 'emails.workflow.workflow_field'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ instance.workflow.name }}</span>
             </div>
 
             <div class="field">
-                <span class="label">Related Entity:</span>
+                <span class="label">{{ 'emails.workflow.related_entity'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ instance.entityType }} (ID: {{ instance.entityId }})</span>
             </div>
 
             <div class="field">
-                <span class="label">Current Step:</span>
+                <span class="label">{{ 'emails.workflow.current_step'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ instance.currentStep.name }}</span>
             </div>
 
             <div class="field">
-                <span class="label">Step Type:</span>
+                <span class="label">{{ 'emails.workflow.step_type'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ instance.currentStep.stepType|upper }}</span>
             </div>
 
             <div class="field">
-                <span class="label">Status:</span>
+                <span class="label">{{ 'emails.workflow.workflow_status'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ instance.status|upper }}</span>
             </div>
 
             <div class="field">
-                <span class="label">Started:</span>
+                <span class="label">{{ 'emails.workflow.started'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ instance.startedAt|date('d.m.Y H:i') }}</span>
             </div>
 
             {% if instance.currentStep.dueDate %}
             <div class="field">
-                <span class="label">Due Date:</span>
+                <span class="label">{{ 'emails.workflow.due_date'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ instance.currentStep.dueDate|date('d.m.Y') }}</span>
             </div>
             {% endif %}
 
             <div class="warning">
-                <strong>Action Required:</strong> Please review and complete this workflow step as soon as possible to avoid delays in the approval process.
+                <strong>{{ 'emails.workflow.action_required'|trans({}, 'emails') }}:</strong> {{ 'emails.workflow.action_required_text'|trans({}, 'emails') }}
             </div>
         </div>
 
         <div class="footer">
-            <p>{{ 'email.workflow.automated_alert'|trans({}, 'messages')}}</p>
-            <p>{{ 'email.workflow.login_to_process_step'|trans({}, 'messages')}}</p>
+            <p>{{ 'emails.workflow.automated_alert'|trans({}, 'emails') }}</p>
+            <p>{{ 'emails.workflow.login_process_step'|trans({}, 'emails') }}</p>
         </div>
     </div>
 </body>

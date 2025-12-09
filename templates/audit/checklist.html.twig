@@ -1,12 +1,13 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'audits' %}
 
-{% block title %}Audit Checklist - {{ audit.title }}{% endblock %}
+{% block title %}{{ 'checklist.title'|trans({}, 'audits') }} - {{ audit.title }}{% endblock %}
 
 {% block body %}
 <div class="container">
     <div class="page-header">
         <div>
-            <h1>Audit Checklist</h1>
+            <h1>{{ 'checklist.title'|trans({}, 'audits') }}</h1>
             <p class="text-muted">{{ audit.title }} - {{ audit.scopeDescription }}</p>
         </div>
         <div class="button-group">
@@ -14,7 +15,7 @@
                 ← {{ 'common.back'|trans({}, 'messages') }}
             </a>
             <button class="btn btn-success" id="saveProgress">
-                Fortschritt speichern
+                {{ 'checklist.save_progress'|trans({}, 'audits') }}
             </button>
         </div>
     </div>
@@ -22,16 +23,16 @@
     {# Quick Progress Bar #}
     <div class="progress-card">
         <div class="progress-info">
-            <span>Fortschritt: {{ stats.verified }}/{{ stats.total }} Anforderungen geprüft</span>
+            <span>{{ 'checklist.progress'|trans({'%verified%': stats.verified, '%total%': stats.total}, 'audits') }}</span>
             <span class="progress-percent">{{ ((stats.verified / stats.total) * 100)|number_format(0) }}%</span>
         </div>
         <div class="progress-bar">
             <div class="progress-fill" style="width: {{ ((stats.verified / stats.total) * 100) }}%;"></div>
         </div>
         <div class="progress-stats">
-            <span class="stat-success">✓ {{ stats.compliant }} Konform</span>
-            <span class="stat-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ stats.partial }} Teilweise</span>
-            <span class="stat-danger">✗ {{ stats.non_compliant }} Nicht konform</span>
+            <span class="stat-success">✓ {{ stats.compliant }} {{ 'checklist.status.compliant'|trans({}, 'audits') }}</span>
+            <span class="stat-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ stats.partial }} {{ 'checklist.status.partial'|trans({}, 'audits') }}</span>
+            <span class="stat-danger">✗ {{ stats.non_compliant }} {{ 'checklist.status.non_compliant'|trans({}, 'audits') }}</span>
         </div>
     </div>
 

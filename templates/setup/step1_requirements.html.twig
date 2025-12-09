@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'setup' %}
 
-{% block title %}Schritt 1: System-Anforderungen - Deployment Wizard{% endblock %}
+{% block title %}{{ 'setup.step1.title'|trans({}, 'setup') }}{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
@@ -10,8 +11,8 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h1 class="h4 mb-0">Setup-Fortschritt</h1>
-                        <small class="text-muted">Schritt 1 von 11</small>
+                        <h1 class="h4 mb-0">{{ 'setup.progress.title'|trans({}, 'setup') }}</h1>
+                        <small class="text-muted">{{ 'setup.progress.step_of'|trans({'%current%': 1, '%total%': 11}, 'setup') }}</small>
                     </div>
                     <div class="progress" style="height: 10px;">
                         <div class="progress-bar" role="progressbar" style="width: 9%;" aria-valuenow="9" aria-valuemin="0" aria-valuemax="100"></div>
@@ -23,7 +24,7 @@
                 <div class="card-header bg-primary text-white">
                     <h3 class="mb-0">
                         <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
-                        Schritt 1: System-Anforderungen prüfen
+                        {{ 'setup.step1.header'|trans({}, 'setup') }}
                     </h3>
                 </div>
                 <div class="card-body p-4">
@@ -34,18 +35,18 @@
                             {{ results.overall.message }}
                         </h5>
                         <div class="mt-2">
-                            <span class="badge bg-success">{{ results.overall.success }} erfolgreich</span>
+                            <span class="badge bg-success">{{ results.overall.success }} {{ 'setup.step1.status.success'|trans({}, 'setup') }}</span>
                             {% if results.overall.warnings > 0 %}
-                                <span class="badge bg-warning">{{ results.overall.warnings }} Warnungen</span>
+                                <span class="badge bg-warning">{{ results.overall.warnings }} {{ 'setup.step1.status.warnings'|trans({}, 'setup') }}</span>
                             {% endif %}
                             {% if results.overall.critical_errors > 0 %}
-                                <span class="badge bg-danger">{{ results.overall.critical_errors }} kritische Fehler</span>
+                                <span class="badge bg-danger">{{ results.overall.critical_errors }} {{ 'setup.step1.status.critical_errors'|trans({}, 'setup') }}</span>
                             {% endif %}
                         </div>
                     </div>
 
                     {# Individual Checks #}
-                    <h5 class="mb-3">Detaillierte Prüfungen:</h5>
+                    <h5 class="mb-3">{{ 'setup.step1.detailed_checks'|trans({}, 'setup') }}</h5>
 
                     {# PHP Version #}
                     <div class="card mb-3 border-{{ results.php.status == 'success' ? 'success' : 'danger' }}">
@@ -54,7 +55,7 @@
                                 <div>
                                     <h3 class="h5 mb-1">
                                         <i class="bi bi-{{ results.php.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
-                                        PHP-Version
+                                        {{ 'setup.step1.php.title'|trans({}, 'setup') }}
                                     </h3>
                                     <p class="mb-0 text-muted">{{ results.php.message }}</p>
                                 </div>
@@ -62,7 +63,7 @@
                                     <div class="badge bg-{{ results.php.status == 'success' ? 'success' : 'danger' }}">
                                         {{ results.php.current }}
                                     </div>
-                                    <small class="d-block text-muted">Erforderlich: {{ results.php.required }}</small>
+                                    <small class="d-block text-muted">{{ 'setup.step1.php.required'|trans({'%version%': results.php.required}, 'setup') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -73,12 +74,12 @@
                         <div class="card-body">
                             <h3 class="h5 mb-2">
                                 <i class="bi bi-{{ results.extensions.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
-                                PHP-Extensions
+                                {{ 'setup.step1.extensions.title'|trans({}, 'setup') }}
                             </h3>
                             <p class="mb-2 text-muted">{{ results.extensions.message }}</p>
                             {% if results.extensions.missing|length > 0 %}
                                 <div class="alert alert-danger mb-0">
-                                    <strong>Fehlende Extensions:</strong>
+                                    <strong>{{ 'setup.step1.extensions.missing'|trans({}, 'setup') }}</strong>
                                     <ul class="mb-0 mt-2">
                                         {% for ext in results.extensions.missing %}
                                             <li><code>{{ ext }}</code></li>
@@ -100,7 +101,7 @@
                         <div class="card-body">
                             <h4 class="mb-1">
                                 <i class="bi bi-database me-2 text-{{ results.database.status == 'success' ? 'success' : (results.database.status == 'warning' ? 'warning' : 'danger') }}" aria-hidden="true"></i>
-                                Datenbank
+                                {{ 'setup.step1.database.title'|trans({}, 'setup') }}
                             </h4>
                             <p class="mb-0 text-muted">{{ results.database.message }}</p>
                         </div>
@@ -111,12 +112,12 @@
                         <div class="card-body">
                             <h4 class="mb-2">
                                 <i class="bi bi-{{ results.permissions.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
-                                Verzeichnis-Berechtigungen
+                                {{ 'setup.step1.permissions.title'|trans({}, 'setup') }}
                             </h4>
                             <p class="mb-2 text-muted">{{ results.permissions.message }}</p>
                             {% if results.permissions.not_writable|length > 0 %}
                                 <div class="alert alert-danger mb-0">
-                                    <strong>Nicht beschreibbare Verzeichnisse:</strong>
+                                    <strong>{{ 'setup.step1.permissions.not_writable'|trans({}, 'setup') }}</strong>
                                     <ul class="mb-0 mt-2">
                                         {% for dir in results.permissions.not_writable %}
                                             <li><code>{{ dir }}</code></li>
@@ -134,10 +135,10 @@
                                 <div class="card-body">
                                     <h4 class="mb-1">
                                         <i class="bi bi-memory me-2 text-{{ results.memory.status == 'success' ? 'success' : 'warning' }}" aria-hidden="true"></i>
-                                        Memory Limit
+                                        {{ 'setup.step1.memory.title'|trans({}, 'setup') }}
                                     </h4>
                                     <p class="mb-0 text-muted">{{ results.memory.current }}</p>
-                                    <small class="text-muted">Empfohlen: {{ results.memory.required }}</small>
+                                    <small class="text-muted">{{ 'setup.step1.memory.recommended'|trans({'%value%': results.memory.required}, 'setup') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -146,10 +147,10 @@
                                 <div class="card-body">
                                     <h4 class="mb-1">
                                         <i class="bi bi-clock me-2 text-{{ results.execution_time.status == 'success' ? 'success' : 'warning' }}" aria-hidden="true"></i>
-                                        Max Execution Time
+                                        {{ 'setup.step1.execution_time.title'|trans({}, 'setup') }}
                                     </h4>
                                     <p class="mb-0 text-muted">{{ results.execution_time.current }}s</p>
-                                    <small class="text-muted">Empfohlen: {{ results.execution_time.required }}s</small>
+                                    <small class="text-muted">{{ 'setup.step1.execution_time.recommended'|trans({'%value%': results.execution_time.required}, 'setup') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -160,7 +161,7 @@
                         <div class="card-body">
                             <h4 class="mb-1">
                                 <i class="bi bi-{{ results.symfony.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
-                                Symfony Version
+                                {{ 'setup.step1.symfony.title'|trans({}, 'setup') }}
                             </h4>
                             <p class="mb-0 text-muted">{{ results.symfony.message }}</p>
                         </div>

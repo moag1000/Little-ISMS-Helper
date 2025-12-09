@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Incident Log</title>
+    <title>{{ 'pdf.incident.title'|trans({}, 'reports') }}</title>
     <style>
         body { font-family: 'DejaVu Sans', sans-serif; font-size: 10pt; }
         .header {
@@ -40,21 +40,21 @@
 </head>
 <body>
     <div class="header">
-        <h1>Incident Log</h1>
-        <div style="color: #666; font-size: 9pt; margin-top: 5px;">Generated: {{ generated_at|date('d.m.Y H:i') }} | Total Incidents: {{ incidents|length }}</div>
+        <h1>{{ 'pdf.incident.title'|trans({}, 'reports') }}</h1>
+        <div style="color: #666; font-size: 9pt; margin-top: 5px;">{{ 'pdf.common.generated'|trans({}, 'reports') }}: {{ generated_at|date('d.m.Y H:i') }} | {{ 'pdf.common.total'|trans({}, 'reports') }}: {{ incidents|length }}</div>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Title</th>
-                <th scope="col">Severity</th>
-                <th scope="col">Category</th>
-                <th scope="col">Detected</th>
-                <th scope="col">Resolved</th>
-                <th scope="col">Status</th>
-                <th scope="col">Reporter</th>
+                <th scope="col">{{ 'pdf.incident.header.id'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.incident.header.title'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.incident.header.severity'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.incident.header.category'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.incident.header.detected'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.incident.header.resolved'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.incident.header.status'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.incident.header.reporter'|trans({}, 'reports') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -65,7 +65,7 @@
                 <td><strong>{{ incident.severity|upper }}</strong></td>
                 <td>{{ incident.category }}</td>
                 <td>{{ incident.detectedDate|date('Y-m-d') }}</td>
-                <td>{{ incident.resolvedDate ? incident.resolvedDate|date('Y-m-d') : 'Open' }}</td>
+                <td>{{ incident.resolvedDate ? incident.resolvedDate|date('Y-m-d') : 'pdf.common.open'|trans({}, 'reports') }}</td>
                 <td>{{ incident.status }}</td>
                 <td>{{ incident.reportedBy ? incident.reportedBy.email|slice(0, 20) : '-' }}</td>
             </tr>

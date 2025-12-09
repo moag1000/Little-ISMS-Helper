@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
+{% trans_default_domain 'setup' %}
 
-{% block title %}Schritt 7: Module auswählen - Deployment Wizard{% endblock %}
+{% block title %}{{ 'setup.step7.title'|trans({}, 'setup') }}{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
@@ -10,8 +11,8 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h4 class="mb-0">Setup-Fortschritt</h4>
-                        <small class="text-muted">Schritt 7 von 11</small>
+                        <h4 class="mb-0">{{ 'setup.progress.title'|trans({}, 'setup') }}</h4>
+                        <small class="text-muted">{{ 'setup.progress.step_of'|trans({'%current%': 7, '%total%': 11}, 'setup') }}</small>
                     </div>
                     <div class="progress" style="height: 10px;">
                         <div class="progress-bar" role="progressbar" style="width: 64%;" aria-valuenow="64" aria-valuemin="0" aria-valuemax="100"></div>
@@ -23,24 +24,22 @@
                 <div class="card-header bg-primary text-white">
                     <h3 class="mb-0">
                         <i class="bi bi-puzzle me-2" aria-hidden="true"></i>
-                        Schritt 7: Module auswählen
+                        {{ 'setup.step7.header'|trans({}, 'setup') }}
                     </h3>
                 </div>
                 <div class="card-body p-4">
                     <p class="lead mb-4">
-                        Wählen Sie die Module aus, die Sie in Ihrem ISMS verwenden möchten.
-                        Abhängigkeiten werden automatisch aufgelöst.
+                        {{ 'setup.step7.intro'|trans({}, 'setup') }}
                     </p>
 
                     {% if recommended_modules is defined and recommended_modules|length > 0 %}
                     <div class="alert alert-info mb-4">
                         <h4 class="alert-heading">
                             <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
-                            Empfehlungen basierend auf Ihren Organisationsdaten
+                            {{ 'setup.step7.recommendations.title'|trans({}, 'setup') }}
                         </h4>
                         <p class="mb-0">
-                            Module mit <span class="badge bg-info">Empfohlen</span> wurden basierend auf Ihrer Branche und Unternehmensgröße vorausgewählt.
-                            Sie können diese Auswahl anpassen.
+                            {{ 'setup.step7.recommendations.description'|trans({}, 'setup')|raw }}
                         </p>
                     </div>
                     {% endif %}
@@ -51,7 +50,7 @@
                         {# Required Modules #}
                         <h5 class="mb-3">
                             <i class="bi bi-star text-warning me-2" aria-hidden="true"></i>
-                            Erforderliche Module
+                            {{ 'setup.step7.required_modules'|trans({}, 'setup') }}
                         </h5>
 
                         {% for key, module in all_modules %}
@@ -67,11 +66,11 @@
                                                     <h4 class="mb-1">
                                                         <i class="bi bi-{{ module.icon }} me-2" aria-hidden="true"></i>
                                                         {{ module.name }}
-                                                        <span class="badge bg-warning text-dark ms-2">Erforderlich</span>
+                                                        <span class="badge bg-warning text-dark ms-2">{{ 'setup.step7.badge.required'|trans({}, 'setup') }}</span>
                                                     </h4>
                                                     <p class="text-muted mb-1">{{ module.description }}</p>
                                                     <small class="text-muted">
-                                                        <strong>Entities:</strong>
+                                                        <strong>{{ 'setup.step7.entities'|trans({}, 'setup') }}</strong>
                                                         {% for entity in module.entities %}
                                                             <span class="badge bg-secondary">{{ entity }}</span>
                                                         {% endfor %}
@@ -88,7 +87,7 @@
                         {# Optional Modules #}
                         <h5 class="mb-3 mt-4">
                             <i class="bi bi-toggle-on text-info me-2" aria-hidden="true"></i>
-                            Optionale Module
+                            {{ 'setup.step7.optional_modules'|trans({}, 'setup') }}
                         </h5>
 
                         <div id="optional-modules">
@@ -105,12 +104,12 @@
                                                             <i class="bi bi-{{ module.icon }} me-2" aria-hidden="true"></i>
                                                             {{ module.name }}
                                                             {% if recommended_modules is defined and key in recommended_modules %}
-                                                                <span class="badge bg-info ms-2">Empfohlen</span>
+                                                                <span class="badge bg-info ms-2">{{ 'setup.step7.badge.recommended'|trans({}, 'setup') }}</span>
                                                             {% endif %}
                                                         </h4>
                                                         <p class="text-muted mb-1">{{ module.description }}</p>
                                                         <small class="text-muted">
-                                                            <strong>Entities:</strong>
+                                                            <strong>{{ 'setup.step7.entities'|trans({}, 'setup') }}</strong>
                                                             {% for entity in module.entities %}
                                                                 <span class="badge bg-secondary">{{ entity }}</span>
                                                             {% endfor %}
@@ -119,7 +118,7 @@
                                                             <div class="mt-2">
                                                                 <small class="text-warning">
                                                                     <i class="bi bi-link me-1" aria-hidden="true"></i>
-                                                                    <strong>Abhängigkeiten:</strong>
+                                                                    <strong>{{ 'setup.step7.dependencies'|trans({}, 'setup') }}</strong>
                                                                     {% for dep in module.dependencies %}
                                                                         <span class="badge bg-warning text-dark">{{ all_modules[dep].name }}</span>
                                                                     {% endfor %}
@@ -130,7 +129,7 @@
                                                             <div class="mt-1">
                                                                 <small class="text-info">
                                                                     <i class="bi bi-arrow-right me-1" aria-hidden="true"></i>
-                                                                    <strong>Wird benötigt von:</strong>
+                                                                    <strong>{{ 'setup.step7.required_by'|trans({}, 'setup') }}</strong>
                                                                     {% for dep in dependency_graph[key].dependents %}
                                                                         <span class="badge bg-info">{{ all_modules[dep].name }}</span>
                                                                     {% endfor %}
@@ -151,11 +150,11 @@
                             <div class="card-body">
                                 <h4 class="mb-2">
                                     <i class="bi bi-pie-chart me-2" aria-hidden="true"></i>
-                                    Zusammenfassung
+                                    {{ 'setup.step7.summary.title'|trans({}, 'setup') }}
                                 </h4>
                                 <div id="module-summary">
                                     <p class="mb-0">
-                                        <span id="selected-count">0</span> von {{ all_modules|length }} Modulen ausgewählt
+                                        {{ 'setup.step7.summary.selected'|trans({'%selected%': '<span id="selected-count">0</span>', '%total%': all_modules|length}, 'setup')|raw }}
                                     </p>
                                 </div>
                             </div>
