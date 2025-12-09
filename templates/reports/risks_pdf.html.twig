@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Risk Register</title>
+    <title>{{ 'pdf.risk.title'|trans({}, 'reports') }}</title>
     <style>
         body { font-family: 'DejaVu Sans', sans-serif; font-size: 10pt; }
         .header {
@@ -68,23 +68,23 @@
 </head>
 <body>
     <div class="header">
-        <h1>Risk Register</h1>
-        <div class="date">Generated: {{ generated_at|date('d.m.Y H:i') }} | Total Risks: {{ risks|length }}</div>
+        <h1>{{ 'pdf.risk.title'|trans({}, 'reports') }}</h1>
+        <div class="date">{{ 'pdf.common.generated'|trans({}, 'reports') }}: {{ generated_at|date('d.m.Y H:i') }} | {{ 'pdf.common.total'|trans({}, 'reports') }}: {{ risks|length }}</div>
     </div>
 
     <table>
         <thead>
             <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Title</th>
-                <th scope="col">Category</th>
-                <th scope="col">L</th>
-                <th scope="col">I</th>
-                <th scope="col">Score</th>
-                <th scope="col">Level</th>
-                <th scope="col">Treatment</th>
-                <th scope="col">Status</th>
-                <th scope="col">Owner</th>
+                <th scope="col">{{ 'pdf.risk.header.id'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.risk.header.title'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.risk.header.category'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.risk.header.likelihood'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.risk.header.impact'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.risk.header.score'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.risk.header.level'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.risk.header.treatment'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.risk.header.status'|trans({}, 'reports') }}</th>
+                <th scope="col">{{ 'pdf.risk.header.owner'|trans({}, 'reports') }}</th>
             </tr>
         </thead>
         <tbody>
@@ -107,12 +107,12 @@
     </table>
 
     <div style="margin-top: 30px; padding: 15px; background: #fef3c7; border-left: 4px solid #f59e0b;">
-        <strong>Risk Matrix Legend:</strong><br>
-        Critical (≥20): Immediate action required | High (12-19): High priority | Medium (6-11): Monitor closely | Low (<6): Acceptable
+        <strong>{{ 'pdf.risk.legend'|trans({}, 'reports') }}:</strong><br>
+        {{ 'pdf.risk.legend_text'|trans({}, 'reports') }}
     </div>
 
     <div class="footer">
-        <p>Confidential - Risk Register | Page {PAGE_NUM}</p>
+        <p>{{ 'pdf.risk.footer'|trans({}, 'reports') }} | {{ 'pdf.common.page'|trans({}, 'reports') }} {PAGE_NUM}</p>
     </div>
 </body>
 </html>

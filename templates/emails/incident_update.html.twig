@@ -17,33 +17,33 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔄 Incident Updated</h1>
+            <h1>🔄 {{ 'emails.incident.updated'|trans({}, 'emails') }}</h1>
         </div>
 
         <div class="content">
             <div class="field">
-                <span class="label">Incident:</span>
+                <span class="label">{{ 'emails.incident.title_field'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ incident.title }}</span>
             </div>
 
             <div class="update-box">
-                <strong>Update:</strong>
+                <strong>{{ 'emails.incident.update'|trans({}, 'emails') }}:</strong>
                 <p>{{ changeDescription }}</p>
             </div>
 
             <div class="field">
-                <span class="label">Current Status:</span>
+                <span class="label">{{ 'emails.incident.current_status'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ incident.status|upper }}</span>
             </div>
 
             <div class="field">
-                <span class="label">Severity:</span>
+                <span class="label">{{ 'emails.incident.severity'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ incident.severity|upper }}</span>
             </div>
         </div>
 
         <div class="footer">
-            <p>{{ 'email.automated_notification'|trans({}, 'messages')}}</p>
+            <p>{{ 'emails.common.automated_notification'|trans({}, 'emails') }}</p>
         </div>
     </div>
 </body>

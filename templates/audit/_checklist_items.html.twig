@@ -1,4 +1,5 @@
 {# Partial template for audit checklist items #}
+{% trans_default_domain 'audits' %}
 <div class="checklist-items">
     {% for item in items %}
         <div class="checklist-item {{ item.verificationStatus }}" data-controller="toggle">
@@ -12,19 +13,19 @@
                     <label>
                         <select class="status-select" data-item-id="{{ item.id }}" data-action="click->toggle#stopPropagation">
                             <option value="not_checked" {{ item.verificationStatus == 'not_checked' ? 'selected' : '' }}>
-                                Nicht geprüft
+                                {{ 'checklist.status.not_checked'|trans({}, 'audits') }}
                             </option>
                             <option value="compliant" {{ item.verificationStatus == 'compliant' ? 'selected' : '' }}>
-                                ✓ Konform
+                                ✓ {{ 'checklist.status.compliant'|trans({}, 'audits') }}
                             </option>
                             <option value="partial" {{ item.verificationStatus == 'partial' ? 'selected' : '' }}>
-                                <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Teilweise
+                                <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'checklist.status.partial'|trans({}, 'audits') }}
                             </option>
                             <option value="non_compliant" {{ item.verificationStatus == 'non_compliant' ? 'selected' : '' }}>
-                                ✗ Nicht konform
+                                ✗ {{ 'checklist.status.non_compliant'|trans({}, 'audits') }}
                             </option>
                             <option value="not_applicable" {{ item.verificationStatus == 'not_applicable' ? 'selected' : '' }}>
-                                N/A
+                                {{ 'checklist.status.not_applicable'|trans({}, 'audits') }}
                             </option>
                         </select>
                     </label>
@@ -35,44 +36,44 @@
             {# Detailed View - Expandable #}
             <div class="checklist-details" data-toggle-target="content" style="display: none;">
                 <div class="detail-section">
-                    <div class="fw-bold mb-2 text-muted" style="font-size: 0.9rem;">Anforderungsbeschreibung:</div>
+                    <div class="fw-bold mb-2 text-muted" style="font-size: 0.9rem;">{{ 'checklist.requirement_description'|trans({}, 'audits') }}:</div>
                     <p>{{ item.requirement.description }}</p>
                 </div>
 
                 <div class="detail-section">
-                    <label for="audit-notes-{{ item.id }}">Audit-Notizen:</label>
+                    <label for="audit-notes-{{ item.id }}">{{ 'checklist.audit_notes'|trans({}, 'audits') }}:</label>
                     <textarea class="form-control" id="audit-notes-{{ item.id }}" data-item-id="{{ item.id }}" data-field="auditNotes" rows="2">{{ item.auditNotes }}</textarea>
                 </div>
 
                 <div class="detail-section">
-                    <label for="evidence-{{ item.id }}">Gefundene Nachweise:</label>
+                    <label for="evidence-{{ item.id }}">{{ 'checklist.evidence_found'|trans({}, 'audits') }}:</label>
                     <textarea class="form-control" id="evidence-{{ item.id }}" data-item-id="{{ item.id }}" data-field="evidenceFound" rows="2">{{ item.evidenceFound }}</textarea>
                 </div>
 
                 {% if item.verificationStatus in ['non_compliant', 'partial'] %}
                     <div class="detail-section alert-warning">
-                        <label for="findings-{{ item.id }}">Feststellungen:</label>
+                        <label for="findings-{{ item.id }}">{{ 'checklist.findings'|trans({}, 'audits') }}:</label>
                         <textarea class="form-control" id="findings-{{ item.id }}" data-item-id="{{ item.id }}" data-field="findings" rows="2">{{ item.findings }}</textarea>
                     </div>
 
                     <div class="detail-section">
-                        <label for="recommendations-{{ item.id }}">Empfehlungen:</label>
+                        <label for="recommendations-{{ item.id }}">{{ 'checklist.recommendations'|trans({}, 'audits') }}:</label>
                         <textarea class="form-control" id="recommendations-{{ item.id }}" data-item-id="{{ item.id }}" data-field="recommendations" rows="2">{{ item.recommendations }}</textarea>
                     </div>
                 {% endif %}
 
                 <div class="detail-section" data-controller="ui-actions">
-                    <label for="compliance-score-{{ item.id }}">Compliance Score (0-100):</label>
+                    <label for="compliance-score-{{ item.id }}">{{ 'checklist.compliance_score'|trans({}, 'audits') }} (0-100):</label>
                     <input type="range" min="0" max="100" value="{{ item.complianceScore }}"
                            id="compliance-score-{{ item.id }}" class="score-slider" data-item-id="{{ item.id }}"
                            data-action="input->ui-actions#updateRangeDisplay"
-                           aria-label="Compliance Score">
+                           aria-label="{{ 'checklist.compliance_score'|trans({}, 'audits') }}">
                     <span class="score-value">{{ item.complianceScore }}%</span>
                 </div>
 
                 {% if item.requirement.hasDetailedRequirements() %}
                     <div class="detail-section">
-                        <div class="fw-bold mb-2 text-muted" style="font-size: 0.9rem;">Detailanforderungen ({{ item.requirement.detailedRequirements|length }}):</div>
+                        <div class="fw-bold mb-2 text-muted" style="font-size: 0.9rem;">{{ 'checklist.detailed_requirements'|trans({'%count%': item.requirement.detailedRequirements|length}, 'audits') }}:</div>
                         <div class="detailed-requirements-list">
                             {% for detailed in item.requirement.detailedRequirements %}
                                 <div class="detailed-req">

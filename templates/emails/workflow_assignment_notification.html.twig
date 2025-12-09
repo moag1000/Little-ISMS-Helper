@@ -19,70 +19,70 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔔 Approval Required</h1>
+            <h1>🔔 {{ 'emails.workflow.approval_required'|trans({}, 'emails') }}</h1>
         </div>
 
         <div class="content">
-            <p>Dear {{ recipient.firstName }},</p>
+            <p>{{ 'emails.common.dear'|trans({}, 'emails') }} {{ recipient.firstName }},</p>
 
             <div class="action-required">
-                <strong>✅ Your approval is needed for the following workflow step:</strong>
+                <strong>✅ {{ 'emails.workflow.approval_needed'|trans({}, 'emails') }}</strong>
             </div>
 
             <div class="field">
-                <span class="label">Workflow:</span>
+                <span class="label">{{ 'emails.workflow.workflow_field'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ instance.workflow.name }}</span>
             </div>
 
             <div class="field">
-                <span class="label">Current Step:</span>
+                <span class="label">{{ 'emails.workflow.current_step'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ step.name }}</span>
             </div>
 
             <div class="field">
-                <span class="label">Related Entity:</span>
+                <span class="label">{{ 'emails.workflow.related_entity'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ instance.entityType }} (ID: {{ instance.entityId }})</span>
             </div>
 
             <div class="field">
-                <span class="label">Step Type:</span>
+                <span class="label">{{ 'emails.workflow.step_type'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ step.stepType|upper }}</span>
             </div>
 
             {% if step.daysToComplete %}
             <div class="field">
-                <span class="label">{{ 'email.workflow.time_to_complete'|trans({}, 'messages')}}</span>
-                <span class="value">{{ step.daysToComplete }} days</span>
+                <span class="label">{{ 'emails.workflow.time_to_complete'|trans({}, 'emails') }}:</span>
+                <span class="value">{{ step.daysToComplete }} {{ 'emails.workflow.days'|trans({}, 'emails') }}</span>
             </div>
             {% endif %}
 
             {% if instance.dueDate %}
             <div class="field">
-                <span class="label">Due Date:</span>
+                <span class="label">{{ 'emails.workflow.due_date'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ instance.dueDate|date('d.m.Y') }}</span>
             </div>
             {% endif %}
 
             {% if instance.initiatedBy %}
             <div class="field">
-                <span class="label">Initiated By:</span>
+                <span class="label">{{ 'emails.workflow.initiated_by'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ instance.initiatedBy.firstName }} {{ instance.initiatedBy.lastName }}</span>
             </div>
             {% endif %}
 
             <div class="field">
-                <span class="label">Started:</span>
+                <span class="label">{{ 'emails.workflow.started'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ instance.startedAt|date('d.m.Y H:i') }}</span>
             </div>
 
             <div class="info">
-                <strong>Next Steps:</strong> Please log in to the ISMS system to review the details and provide your approval or rejection with comments.
+                <strong>{{ 'emails.workflow.next_steps'|trans({}, 'emails') }}:</strong> {{ 'emails.workflow.next_steps_text'|trans({}, 'emails') }}
             </div>
         </div>
 
         <div class="footer">
-            <p>{{ 'email.automated_notification'|trans({}, 'messages')}}</p>
-            <p>{{ 'email.workflow.login_to_process'|trans({}, 'messages')}}</p>
+            <p>{{ 'emails.common.automated_notification'|trans({}, 'emails') }}</p>
+            <p>{{ 'emails.workflow.login_process'|trans({}, 'emails') }}</p>
         </div>
     </div>
 </body>

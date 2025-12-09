@@ -20,46 +20,46 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚨 {{ 'email.new_incident_reported'|trans({}, 'messages')}}</h1>
+            <h1>🚨 {{ 'emails.incident.new_reported'|trans({}, 'emails') }}</h1>
         </div>
 
         <div class="content">
             <div class="field">
-                <span class="label">Incident Title:</span>
+                <span class="label">{{ 'emails.incident.title_field'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ incident.title }}</span>
             </div>
 
             <div class="field">
-                <span class="label">Severity:</span>
+                <span class="label">{{ 'emails.incident.severity'|trans({}, 'emails') }}:</span>
                 <span class="value severity-{{ incident.severity|lower }}">{{ incident.severity|upper }}</span>
             </div>
 
             <div class="field">
-                <span class="label">Category:</span>
+                <span class="label">{{ 'emails.incident.category'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ incident.category }}</span>
             </div>
 
             <div class="field">
-                <span class="label">Reported:</span>
+                <span class="label">{{ 'emails.incident.reported'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ incident.reportedDate|date('d.m.Y H:i') }}</span>
             </div>
 
             {% if incident.description %}
             <div class="field">
-                <span class="label">Description:</span>
+                <span class="label">{{ 'emails.incident.description'|trans({}, 'emails') }}:</span>
                 <p class="value">{{ incident.description }}</p>
             </div>
             {% endif %}
 
             <div class="field">
-                <span class="label">Status:</span>
+                <span class="label">{{ 'emails.incident.status'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ incident.status|upper }}</span>
             </div>
         </div>
 
         <div class="footer">
-            <p>{{ 'email.automated_notification'|trans({}, 'messages')}}</p>
-            <p>{{ 'email.take_appropriate_action'|trans({}, 'messages')}}</p>
+            <p>{{ 'emails.common.automated_notification'|trans({}, 'emails') }}</p>
+            <p>{{ 'emails.incident.footer_action'|trans({}, 'emails') }}</p>
         </div>
     </div>
 </body>

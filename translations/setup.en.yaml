@@ -1,0 +1,103 @@
+setup:
+    # Progress Bar
+    progress:
+        title: 'Setup Progress'
+        step_of: 'Step %current% of %total%'
+
+    # Step 1: System Requirements
+    step1:
+        title: 'Step 1: System Requirements - Deployment Wizard'
+        header: 'Step 1: Check System Requirements'
+        detailed_checks: 'Detailed Checks:'
+        status:
+            success: 'successful'
+            warnings: 'warnings'
+            critical_errors: 'critical errors'
+        php:
+            title: 'PHP Version'
+            required: 'Required: %version%'
+        extensions:
+            title: 'PHP Extensions'
+            missing: 'Missing Extensions:'
+        database:
+            title: 'Database'
+        permissions:
+            title: 'Directory Permissions'
+            not_writable: 'Non-writable Directories:'
+        memory:
+            title: 'Memory Limit'
+            recommended: 'Recommended: %value%'
+        execution_time:
+            title: 'Max Execution Time'
+            recommended: 'Recommended: %value%s'
+        symfony:
+            title: 'Symfony Version'
+
+    # Step 3: Restore Backup
+    step3:
+        title: 'Step 3: Restore Backup (Optional) - Deployment Wizard'
+        header: 'Step 3: Restore Backup (Optional)'
+        intro: 'You have two options:'
+        info:
+            title: 'Backup vs. New Installation'
+            restore: 'Restore Backup:'
+            restore_desc: 'If you want to migrate an existing installation, upload your backup here. All following steps will be skipped!'
+            new_install: 'New Installation:'
+            new_install_desc: 'Click "Skip" to create a fresh installation and go through all setup steps.'
+        restore_result:
+            success: 'Backup successfully restored!'
+            created: 'created'
+            updated: 'updated'
+            entries: 'entries'
+            error: 'Error during restoration:'
+        orphaned:
+            title: 'Orphaned Entities Found'
+            description: 'After restoration, <strong>%count%</strong> entities without tenant assignment were found:'
+            assets: 'Assets'
+            risks: 'Risks'
+            incidents: 'Incidents'
+            repair:
+                title: 'Repair Orphaned Entities'
+                description: 'Select a tenant to assign the orphaned entities to:'
+                target_tenant: 'Target Tenant'
+                select_tenant: 'Please select tenant...'
+                submit: 'Repair Now'
+        asset_links:
+            title: 'Repair Asset Assignments'
+            description: '<strong>%count%</strong> risks have no asset assignment. You can fix this in the'
+            link_text: 'Admin Data Repair Tool'
+            suffix: '.'
+        complete_setup: 'Complete Setup'
+        schema:
+            title: 'Step 1: Create Database Schema'
+            description: 'Before you can restore a backup, the database schema (tables) must be created. This process may take a few minutes.'
+            hint: 'The migrations will be executed and create all required tables. Please wait until the process is complete.'
+            submit: 'Create Database Schema Now'
+        restore:
+            title: 'Option 1: Restore Backup'
+            schema_success: 'Database schema successfully created!'
+            schema_success_msg: 'You can now upload a backup.'
+            description: 'Do you have a backup from another installation? Upload it here. After successful restoration, the setup will be automatically completed.'
+            file_label: 'Select Backup File'
+            file_formats: 'Allowed formats: .json, .json.gz'
+            clear_before: 'Delete all existing data before restoration (recommended)'
+
+    # Step 7: Modules
+    step7:
+        title: 'Step 7: Select Modules - Deployment Wizard'
+        header: 'Step 7: Select Modules'
+        intro: 'Select the modules you want to use in your ISMS. Dependencies are resolved automatically.'
+        recommendations:
+            title: 'Recommendations Based on Your Organization Data'
+            description: 'Modules with <span class="badge bg-info">Recommended</span> have been pre-selected based on your industry and company size. You can adjust this selection.'
+        required_modules: 'Required Modules'
+        optional_modules: 'Optional Modules'
+        badge:
+            required: 'Required'
+            recommended: 'Recommended'
+        entities: 'Entities:'
+        dependencies: 'Dependencies:'
+        required_by: 'Required by:'
+        summary:
+            title: 'Summary'
+            selected: '%selected% of %total% modules selected'

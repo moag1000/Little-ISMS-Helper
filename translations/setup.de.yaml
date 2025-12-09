@@ -1,0 +1,103 @@
+setup:
+    # Progress Bar
+    progress:
+        title: 'Setup-Fortschritt'
+        step_of: 'Schritt %current% von %total%'
+
+    # Step 1: System Requirements
+    step1:
+        title: 'Schritt 1: System-Anforderungen - Deployment Wizard'
+        header: 'Schritt 1: System-Anforderungen prüfen'
+        detailed_checks: 'Detaillierte Prüfungen:'
+        status:
+            success: 'erfolgreich'
+            warnings: 'Warnungen'
+            critical_errors: 'kritische Fehler'
+        php:
+            title: 'PHP-Version'
+            required: 'Erforderlich: %version%'
+        extensions:
+            title: 'PHP-Extensions'
+            missing: 'Fehlende Extensions:'
+        database:
+            title: 'Datenbank'
+        permissions:
+            title: 'Verzeichnis-Berechtigungen'
+            not_writable: 'Nicht beschreibbare Verzeichnisse:'
+        memory:
+            title: 'Memory Limit'
+            recommended: 'Empfohlen: %value%'
+        execution_time:
+            title: 'Max Execution Time'
+            recommended: 'Empfohlen: %value%s'
+        symfony:
+            title: 'Symfony Version'
+
+    # Step 3: Restore Backup
+    step3:
+        title: 'Schritt 3: Backup wiederherstellen (Optional) - Deployment Wizard'
+        header: 'Schritt 3: Backup wiederherstellen (Optional)'
+        intro: 'Sie haben zwei Möglichkeiten:'
+        info:
+            title: 'Backup vs. Neu-Installation'
+            restore: 'Backup wiederherstellen:'
+            restore_desc: 'Wenn Sie eine bestehende Installation migrieren möchten, laden Sie hier Ihr Backup hoch. Alle folgenden Schritte werden übersprungen!'
+            new_install: 'Neu-Installation:'
+            new_install_desc: 'Klicken Sie auf "Überspringen", um eine frische Installation zu erstellen und alle weiteren Setup-Schritte durchzuführen.'
+        restore_result:
+            success: 'Backup erfolgreich wiederhergestellt!'
+            created: 'erstellt'
+            updated: 'aktualisiert'
+            entries: 'Einträge'
+            error: 'Fehler bei der Wiederherstellung:'
+        orphaned:
+            title: 'Verwaiste Entitäten gefunden'
+            description: 'Nach der Wiederherstellung wurden <strong>%count%</strong> Entitäten ohne Mandanten-Zuordnung gefunden:'
+            assets: 'Assets'
+            risks: 'Risiken'
+            incidents: 'Vorfälle'
+            repair:
+                title: 'Verwaiste Entitäten reparieren'
+                description: 'Wählen Sie einen Mandanten, dem die verwaisten Entitäten zugewiesen werden sollen:'
+                target_tenant: 'Ziel-Mandant'
+                select_tenant: 'Bitte Mandanten auswählen...'
+                submit: 'Jetzt reparieren'
+        asset_links:
+            title: 'Asset-Zuordnungen reparieren'
+            description: '<strong>%count%</strong> Risiken haben keine Asset-Zuordnung. Sie können diese im'
+            link_text: 'Admin Data Repair Tool'
+            suffix: 'korrigieren.'
+        complete_setup: 'Setup abschließen'
+        schema:
+            title: 'Schritt 1: Datenbank-Struktur erstellen'
+            description: 'Bevor Sie ein Backup wiederherstellen können, muss die Datenbank-Struktur (Tabellen) erstellt werden. Dieser Vorgang kann einige Minuten dauern.'
+            hint: 'Die Migrationen werden ausgeführt und erstellen alle benötigten Tabellen. Bitte warten Sie, bis der Vorgang abgeschlossen ist.'
+            submit: 'Datenbank-Struktur jetzt erstellen'
+        restore:
+            title: 'Option 1: Backup wiederherstellen'
+            schema_success: 'Datenbank-Struktur erfolgreich erstellt!'
+            schema_success_msg: 'Sie können jetzt ein Backup hochladen.'
+            description: 'Haben Sie ein Backup von einer anderen Installation? Laden Sie es hier hoch. Nach erfolgreicher Wiederherstellung wird das Setup automatisch abgeschlossen.'
+            file_label: 'Backup-Datei auswählen'
+            file_formats: 'Erlaubte Formate: .json, .json.gz'
+            clear_before: 'Alle bestehenden Daten löschen vor Wiederherstellung (empfohlen)'
+
+    # Step 7: Modules
+    step7:
+        title: 'Schritt 7: Module auswählen - Deployment Wizard'
+        header: 'Schritt 7: Module auswählen'
+        intro: 'Wählen Sie die Module aus, die Sie in Ihrem ISMS verwenden möchten. Abhängigkeiten werden automatisch aufgelöst.'
+        recommendations:
+            title: 'Empfehlungen basierend auf Ihren Organisationsdaten'
+            description: 'Module mit <span class="badge bg-info">Empfohlen</span> wurden basierend auf Ihrer Branche und Unternehmensgröße vorausgewählt. Sie können diese Auswahl anpassen.'
+        required_modules: 'Erforderliche Module'
+        optional_modules: 'Optionale Module'
+        badge:
+            required: 'Erforderlich'
+            recommended: 'Empfohlen'
+        entities: 'Entities:'
+        dependencies: 'Abhängigkeiten:'
+        required_by: 'Wird benötigt von:'
+        summary:
+            title: 'Zusammenfassung'
+            selected: '%selected% von %total% Modulen ausgewählt'

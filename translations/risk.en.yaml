@@ -1,9 +1,6 @@
 risk:
     preview:
         title: 'Risk Information'
-    section:
-        assessment: 'Risk Assessment'
-        treatment: 'Treatment Strategy'
     filter:
         owner_placeholder: 'Search for owner...'
     modern:
@@ -113,8 +110,9 @@ risk:
         impact_title: 'Impact Title'
         tip: Tip
     section:
+        assessment: 'Risk Assessment'
         basic_info: 'Basic Information'
-        gdpr_assessment: 'Gdpr Assessment'
+        gdpr_assessment: 'GDPR Assessment'
         inherent_risk: 'Inherent Risk'
         residual_risk: 'Residual Risk'
         treatment: Treatment

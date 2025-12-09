@@ -18,61 +18,61 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>ℹ️ {{ 'email.workflow.workflow_update'|trans({}, 'messages')}}</h1>
+            <h1>ℹ️ {{ 'emails.workflow.workflow_update'|trans({}, 'emails') }}</h1>
         </div>
 
         <div class="content">
-            <p>Dear {{ recipient.firstName }},</p>
+            <p>{{ 'emails.common.dear'|trans({}, 'emails') }} {{ recipient.firstName }},</p>
 
             <div class="info-box">
-                <strong>📋 You are being notified about a workflow update:</strong>
+                <strong>📋 {{ 'emails.workflow.notified_about'|trans({}, 'emails') }}</strong>
             </div>
 
             <div class="field">
-                <span class="label">Workflow:</span>
+                <span class="label">{{ 'emails.workflow.workflow_field'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ instance.workflow.name }}</span>
             </div>
 
             <div class="field">
-                <span class="label">Step Completed:</span>
+                <span class="label">{{ 'emails.workflow.step_completed'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ step.name }}</span>
             </div>
 
             <div class="field">
-                <span class="label">Related Entity:</span>
+                <span class="label">{{ 'emails.workflow.related_entity'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ instance.entityType }} (ID: {{ instance.entityId }})</span>
             </div>
 
             <div class="field">
-                <span class="label">Step Type:</span>
-                <span class="value">Notification (Informational)</span>
+                <span class="label">{{ 'emails.workflow.step_type'|trans({}, 'emails') }}:</span>
+                <span class="value">{{ 'emails.workflow.notification_info'|trans({}, 'emails') }}</span>
             </div>
 
             <div class="field">
-                <span class="label">Workflow Status:</span>
+                <span class="label">{{ 'emails.workflow.workflow_status'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ instance.status|upper }}</span>
             </div>
 
             {% if instance.initiatedBy %}
             <div class="field">
-                <span class="label">Initiated By:</span>
+                <span class="label">{{ 'emails.workflow.initiated_by'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ instance.initiatedBy.firstName }} {{ instance.initiatedBy.lastName }}</span>
             </div>
             {% endif %}
 
             <div class="field">
-                <span class="label">Started:</span>
+                <span class="label">{{ 'emails.workflow.started'|trans({}, 'emails') }}:</span>
                 <span class="value">{{ instance.startedAt|date('d.m.Y H:i') }}</span>
             </div>
 
             <div class="note">
-                <strong>Note:</strong> This is an informational notification. No action is required from you at this time.
+                <strong>{{ 'common.note'|trans({}, 'messages') }}:</strong> {{ 'emails.workflow.note_no_action'|trans({}, 'emails') }}
             </div>
         </div>
 
         <div class="footer">
-            <p>{{ 'email.automated_notification'|trans({}, 'messages')}}</p>
-            <p>{{ 'email.workflow.login_for_details'|trans({}, 'messages')}}</p>
+            <p>{{ 'emails.common.automated_notification'|trans({}, 'emails') }}</p>
+            <p>{{ 'emails.workflow.login_details'|trans({}, 'emails') }}</p>
         </div>
     </div>
 </body>
