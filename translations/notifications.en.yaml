@@ -1,10 +1,10 @@
 notifications:
     title: 'Notifications'
     action:
+        delete: 'Delete'
+        view_details: 'View Details'
         mark_all_read: 'Mark all as read'
         clear_all: 'Clear all'
-        delete: 'Delete'
-        view_details: 'View details'
     empty:
-        title: 'No notifications'
-        description: 'You have read all notifications'
+        title: 'No Notifications'
+        description: 'You have no new notifications.'

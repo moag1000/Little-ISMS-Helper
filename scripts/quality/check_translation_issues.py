@@ -43,7 +43,8 @@ class TranslationChecker:
             'physical_access', 'privacy', 'reports', 'risk_appetite',
             'risk_treatment_plan', 'risk', 'security', 'security_reports',
             'soa', 'suppliers', 'training', 'ui', 'user', 'validators',
-            'vulnerabilities', 'workflows', 'threat', 'consent', 'emails', 'assets'
+            'vulnerabilities', 'workflows', 'threat', 'consent', 'emails', 'assets',
+            'setup', 'notifications'
         }
 
         # Patterns for HTML attributes that should be translated

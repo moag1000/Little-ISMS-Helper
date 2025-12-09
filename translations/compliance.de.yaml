@@ -522,6 +522,12 @@ compliance_requirement:
         modules_required_hint: 'Dieses Framework erfordert die Aktivierung der folgenden ISMS-Module für vollständige Compliance.'
     mapping_quality:
         no_mappings_found: 'Es wurden keine Compliance-Mappings in der Datenbank gefunden.'
+        quick_analysis: 'Schnellanalyse'
+        full_analysis: 'Vollständige Analyse'
+        re_analysis: 'Re-Analyse'
+        re_analyze_title: 'Re-analysiert alle Mappings mit neuestem Algorithmus'
+        re_analyze_button: 'Re-Analyse'
+        analysis_running: 'Analyse läuft...'
     gaps:
         title_description: 'Identifizierte Lücken in Compliance-Mappings'
         by_priority: 'Nach Priorität'

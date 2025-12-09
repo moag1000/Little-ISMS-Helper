@@ -1,11 +1,12 @@
 {% extends 'admin/layout.html.twig' %}
+{% trans_default_domain 'role_management' %}
 
-{% block title %}{{ 'role.compare.title'|trans({}, 'role_management') }}{% endblock %}
+{% block title %}{{ 'role.compare.title'|trans }}{% endblock %}
 
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'role.compare.title'|trans({}, 'role_management') }}</h1>
+        <h1><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'role.compare.title'|trans }}</h1>
         <a href="{{ path('role_management_index') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
@@ -15,30 +16,30 @@
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
             <h3 class="mb-0">
-                <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'role.compare.select_roles'|trans({}, 'role_management') }}
+                <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'role.compare.select_roles'|trans }}
             </h3>
         </div>
         <div class="card-body">
             <form method="get">
                 <div class="row g-3">
                     <div class="col-md-10">
-                        <label class="form-label" for="role-select">Rollen zum Vergleichen auswählen (max. 5):</label>
+                        <label class="form-label" for="role-select">{{ 'role.compare.select_label'|trans }}</label>
                         <select name="roles[]" id="role-select" class="form-select" multiple size="8" required>
                             {% for role in all_roles %}
                                 <option value="{{ role.id }}"
                                         {{ role.id in selected_role_ids ? 'selected' : '' }}>
                                     {{ role.name }}
-                                    {% if role.isSystemRole %}(System){% endif %}
+                                    {% if role.isSystemRole %}({{ 'role.compare.system_badge'|trans }}){% endif %}
                                 </option>
                             {% endfor %}
                         </select>
                         <div class="form-text">
-                            Halten Sie Strg/Cmd gedrückt, um mehrere Rollen auszuwählen.
+                            {{ 'role.compare.select_hint'|trans }}
                         </div>
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-arrow-repeat" aria-hidden="true"></i> Vergleichen
+                            <i class="bi bi-arrow-repeat" aria-hidden="true"></i> {{ 'role.compare.submit'|trans }}
                         </button>
                     </div>
                 </div>
@@ -51,7 +52,7 @@
         <div class="card">
             <div class="card-header bg-success text-white">
                 <h3 class="mb-0">
-                    <i class="bi bi-table" aria-hidden="true"></i> {{ 'role.compare.permission_matrix'|trans({}, 'role_management') }}
+                    <i class="bi bi-table" aria-hidden="true"></i> {{ 'role.compare.permission_matrix'|trans }}
                 </h3>
             </div>
             <div class="card-body p-0">
@@ -63,12 +64,12 @@
                 } %}
                     {% block table_head %}
                         <tr>
-                            <th scope="col" style="width: 30%">Berechtigung</th>
+                            <th scope="col" style="width: 30%">{{ 'role.compare.permission_column'|trans }}</th>
                             {% for role in roles %}
                                 <th scope="col" class="text-center" style="width: {{ 70 / roles|length }}%">
                                     <div>{{ role.name }}</div>
                                     {% if role.isSystemRole %}
-                                        <span class="badge bg-warning text-dark">System</span>
+                                        <span class="badge bg-warning text-dark">{{ 'role.compare.system_badge'|trans }}</span>
                                     {% endif %}
                                 </th>
                             {% endfor %}
@@ -111,15 +112,15 @@
         {# Legend #}
         <div class="card mt-4">
             <div class="card-body">
-                <h4>Legende:</h4>
+                <h4>{{ 'role.compare.legend_title'|trans }}</h4>
                 <div class="d-flex gap-4">
                     <div>
                         <i class="bi bi-check-circle-fill text-success" aria-hidden="true"></i>
-                        {{ 'role.compare.has_permission'|trans({}, 'role_management') }}
+                        {{ 'role.compare.has_permission'|trans }}
                     </div>
                     <div>
                         <i class="bi bi-x-circle text-muted" aria-hidden="true"></i>
-                        {{ 'role.compare.no_permission'|trans({}, 'role_management') }}
+                        {{ 'role.compare.no_permission'|trans }}
                     </div>
                 </div>
             </div>
@@ -127,7 +128,7 @@
     {% else %}
         <div class="alert alert-info">
             <i class="bi bi-info-circle" aria-hidden="true"></i>
-            Bitte wählen Sie mindestens eine Rolle zum Vergleichen aus.
+            {{ 'role.compare.select_prompt'|trans }}
         </div>
     {% endif %}
 </div>

@@ -79,6 +79,18 @@ admin:
         title: 'Data Export'
         format: 'Export Format'
         format_selection: 'Export Format Selection'
+        page_title: 'Data Export'
+        about_title: 'About Data Export'
+        about_description: 'Export your data in JSON or CSV format. You can select specific entities to export or export all data.'
+        about_note: '<strong>Note:</strong> Large datasets may take some time to export.'
+        configure_title: 'Configure Export'
+        format_help: 'JSON format preserves data types and is recommended for re-import. CSV is better for spreadsheet applications.'
+        select_entities: 'Select Entities to Export:'
+        select_all: 'Select All'
+        deselect_all: 'Deselect All'
+        submit: 'Export Selected Entities'
+        notes_title: 'Important Notes'
+        backup_link: 'For complete system backup, use the <a href="%url%" class="alert-link">Database Backup</a> function'
     data_management:
         title: 'Data Management'
     settings:
