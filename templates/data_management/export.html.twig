@@ -1,20 +1,20 @@
 {% extends 'base.html.twig' %}
 {% trans_default_domain 'admin' %}
 
-{% block title %}{{ 'admin.data_export.title'|trans({}, 'admin') }} - {{ 'admin.data_management.title'|trans({}, 'admin') }}{% endblock %}
+{% block title %}{{ 'admin.data_export.title'|trans }} - {{ 'admin.data_management.title'|trans }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-box-arrow-up" aria-hidden="true"></i> Data Export</h1>
+        <h1><i class="bi bi-box-arrow-up" aria-hidden="true"></i> {{ 'admin.data_export.page_title'|trans }}</h1>
     </div>
 
     {# Info Box #}
     <div class="alert alert-info mb-4">
-        <h2><i class="bi bi-info-circle" aria-hidden="true"></i> About Data Export</h2>
+        <h2><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'admin.data_export.about_title'|trans }}</h2>
         <p class="mb-0">
-            Export your data in JSON or CSV format. You can select specific entities to export or export all data.
-            <strong>Note:</strong> Large datasets may take some time to export.
+            {{ 'admin.data_export.about_description'|trans }}
+            {{ 'admin.data_export.about_note'|trans|raw }}
         </p>
     </div>
 
@@ -22,7 +22,7 @@
     <div class="card">
         <div class="card-header bg-primary text-white">
             <h3 class="mb-0">
-                <i class="bi bi-file-earmark-arrow-up" aria-hidden="true"></i> Configure Export
+                <i class="bi bi-file-earmark-arrow-up" aria-hidden="true"></i> {{ 'admin.data_export.configure_title'|trans }}
             </h3>
         </div>
         <div class="card-body">
@@ -31,8 +31,8 @@
 
                 {# Export Format #}
                 <div class="mb-4">
-                    <div class="form-label"><strong>{{ 'admin.data_export.format'|trans({}, 'admin') }}:</strong></div>
-                    <div class="btn-group" role="group" aria-label="{{ 'admin.data_export.format_selection'|trans({}, 'admin') }}">
+                    <div class="form-label"><strong>{{ 'admin.data_export.format'|trans }}:</strong></div>
+                    <div class="btn-group" role="group" aria-label="{{ 'admin.data_export.format_selection'|trans }}">
                         <input type="radio" class="btn-check" name="format" id="format_json" value="json" checked>
                         <label class="btn btn-outline-primary" for="format_json">
                             <i class="bi bi-filetype-json" aria-hidden="true"></i> JSON
@@ -44,20 +44,20 @@
                         </label>
                     </div>
                     <div class="form-text">
-                        JSON format preserves data types and is recommended for re-import. CSV is better for spreadsheet applications.
+                        {{ 'admin.data_export.format_help'|trans }}
                     </div>
                 </div>
 
                 {# Entity Selection #}
                 <div class="mb-4">
-                    <label class="form-label" id="entity-selection-label"><strong>Select Entities to Export:</strong></label>
+                    <label class="form-label" id="entity-selection-label"><strong>{{ 'admin.data_export.select_entities'|trans }}</strong></label>
 
                     <div class="mb-2" role="group" aria-labelledby="entity-selection-label" data-controller="ui-actions">
                         <button type="button" class="btn btn-sm btn-outline-secondary" data-action="ui-actions#selectAll" data-ui-actions-container-param=".row">
-                            <i class="bi bi-check-all" aria-hidden="true"></i> Select All
+                            <i class="bi bi-check-all" aria-hidden="true"></i> {{ 'admin.data_export.select_all'|trans }}
                         </button>
                         <button type="button" class="btn btn-sm btn-outline-secondary" data-action="ui-actions#deselectAll" data-ui-actions-container-param=".row">
-                            <i class="bi bi-x" aria-hidden="true"></i> Deselect All
+                            <i class="bi bi-x" aria-hidden="true"></i> {{ 'admin.data_export.deselect_all'|trans }}
                         </button>
                     </div>
 
@@ -83,7 +83,7 @@
                 {# Submit Button #}
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="bi bi-download" aria-hidden="true"></i> Export Selected Entities
+                        <i class="bi bi-download" aria-hidden="true"></i> {{ 'admin.data_export.submit'|trans }}
                     </button>
                 </div>
             </form>
@@ -92,13 +92,13 @@
 
     {# Warning Box #}
     <div class="alert alert-warning mt-4">
-        <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Important Notes</h5>
+        <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_export.notes_title'|trans }}</h5>
         <ul class="mb-0">
-            <li>{{ 'data_management.export.includes_all_records'|trans({}, 'messages')}}</li>
-            <li>{{ 'data_management.export.sensitive_data_warning'|trans({}, 'messages')}}</li>
-            <li>{{ 'data_management.export.large_exports_warning'|trans({}, 'messages')}}</li>
-            <li>{{ 'data_management.export.relationships_warning'|trans({}, 'messages')}}</li>
-            <li>For complete system backup, use the <a href="{{ path('data_backup_index') }}" class="alert-link">Database Backup</a> function</li>
+            <li>{{ 'data_management.export.includes_all_records'|trans({}, 'messages') }}</li>
+            <li>{{ 'data_management.export.sensitive_data_warning'|trans({}, 'messages') }}</li>
+            <li>{{ 'data_management.export.large_exports_warning'|trans({}, 'messages') }}</li>
+            <li>{{ 'data_management.export.relationships_warning'|trans({}, 'messages') }}</li>
+            <li>{{ 'admin.data_export.backup_link'|trans({'%url%': path('data_backup_index')})|raw }}</li>
         </ul>
     </div>
 </div>

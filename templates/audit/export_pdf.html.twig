@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{{ audit.title }} - {{ 'pdf.title'|trans({}, 'audits') }}</title>
+    <title>{{ audit.title }} - {{ 'pdf.title'|trans({}, 'audit') }}</title>
     <style>
         body {
             font-family: 'DejaVu Sans', sans-serif;
@@ -139,40 +139,40 @@
 </head>
 <body>
     <div class="header">
-        <h1>{{ 'pdf.title'|trans({}, 'audits') }}</h1>
+        <h1>{{ 'pdf.title'|trans({}, 'audit') }}</h1>
         <div class="audit-number">{{ audit.auditNumber }}</div>
         <div class="subtitle">{{ audit.title }}</div>
     </div>
 
     {# Basic Information #}
     <div class="section">
-        <div class="section-title">{{ 'pdf.section.audit_information'|trans({}, 'audits') }}</div>
+        <div class="section-title">{{ 'pdf.section.audit_information'|trans({}, 'audit') }}</div>
         <div class="info-grid">
             <div class="info-row">
-                <div class="info-label">{{ 'pdf.label.audit_number'|trans({}, 'audits') }}</div>
+                <div class="info-label">{{ 'pdf.label.audit_number'|trans({}, 'audit') }}</div>
                 <div class="info-value">{{ audit.auditNumber }}</div>
             </div>
             <div class="info-row">
-                <div class="info-label">{{ 'pdf.label.title'|trans({}, 'audits') }}</div>
+                <div class="info-label">{{ 'pdf.label.title'|trans({}, 'audit') }}</div>
                 <div class="info-value">{{ audit.title }}</div>
             </div>
             <div class="info-row">
-                <div class="info-label">{{ 'pdf.label.status'|trans({}, 'audits') }}</div>
+                <div class="info-label">{{ 'pdf.label.status'|trans({}, 'audit') }}</div>
                 <div class="info-value">
-                    <span class="status-badge status-{{ audit.status }}">{{ ('audit.status.' ~ audit.status)|trans({}, 'audits') }}</span>
+                    <span class="status-badge status-{{ audit.status }}">{{ ('audit.status.' ~ audit.status)|trans({}, 'audit') }}</span>
                 </div>
             </div>
             <div class="info-row">
-                <div class="info-label">{{ 'pdf.label.scope_type'|trans({}, 'audits') }}</div>
-                <div class="info-value">{{ audit.scopeType ? ('audit.scope_type.' ~ audit.scopeType)|trans({}, 'audits') : 'pdf.default_scope'|trans({}, 'audits') }}</div>
+                <div class="info-label">{{ 'pdf.label.scope_type'|trans({}, 'audit') }}</div>
+                <div class="info-value">{{ audit.scopeType ? ('audit.scope_type.' ~ audit.scopeType)|trans({}, 'audit') : 'pdf.default_scope'|trans({}, 'audit') }}</div>
             </div>
             <div class="info-row">
-                <div class="info-label">{{ 'pdf.label.lead_auditor'|trans({}, 'audits') }}</div>
+                <div class="info-label">{{ 'pdf.label.lead_auditor'|trans({}, 'audit') }}</div>
                 <div class="info-value">{{ audit.leadAuditor }}</div>
             </div>
             {% if audit.auditTeam %}
             <div class="info-row">
-                <div class="info-label">{{ 'pdf.label.audit_team'|trans({}, 'audits') }}</div>
+                <div class="info-label">{{ 'pdf.label.audit_team'|trans({}, 'audit') }}</div>
                 <div class="info-value">{{ audit.auditTeam }}</div>
             </div>
             {% endif %}
@@ -181,21 +181,21 @@
 
     {# Dates #}
     <div class="section">
-        <div class="section-title">{{ 'pdf.section.schedule'|trans({}, 'audits') }}</div>
+        <div class="section-title">{{ 'pdf.section.schedule'|trans({}, 'audit') }}</div>
         <div class="info-grid">
             <div class="info-row">
-                <div class="info-label">{{ 'pdf.label.planned_date'|trans({}, 'audits') }}</div>
+                <div class="info-label">{{ 'pdf.label.planned_date'|trans({}, 'audit') }}</div>
                 <div class="info-value">{{ audit.plannedDate|date('d.m.Y') }}</div>
             </div>
             {% if audit.actualDate %}
             <div class="info-row">
-                <div class="info-label">{{ 'pdf.label.actual_date'|trans({}, 'audits') }}</div>
+                <div class="info-label">{{ 'pdf.label.actual_date'|trans({}, 'audit') }}</div>
                 <div class="info-value">{{ audit.actualDate|date('d.m.Y') }}</div>
             </div>
             {% endif %}
             {% if audit.reportDate %}
             <div class="info-row">
-                <div class="info-label">{{ 'pdf.label.report_date'|trans({}, 'audits') }}</div>
+                <div class="info-label">{{ 'pdf.label.report_date'|trans({}, 'audit') }}</div>
                 <div class="info-value">{{ audit.reportDate|date('d.m.Y') }}</div>
             </div>
             {% endif %}
@@ -205,22 +205,22 @@
     {# Scope #}
     {% if audit.scope or audit.objectives or audit.auditedDepartments %}
     <div class="section">
-        <div class="section-title">{{ 'pdf.section.scope_objectives'|trans({}, 'audits') }}</div>
+        <div class="section-title">{{ 'pdf.section.scope_objectives'|trans({}, 'audit') }}</div>
         {% if audit.scope %}
         <div class="content-box">
-            <strong>{{ 'pdf.label.scope'|trans({}, 'audits') }}:</strong><br>
+            <strong>{{ 'pdf.label.scope'|trans({}, 'audit') }}:</strong><br>
             {{ audit.scope|nl2br }}
         </div>
         {% endif %}
         {% if audit.objectives %}
         <div class="content-box">
-            <strong>{{ 'pdf.label.objectives'|trans({}, 'audits') }}:</strong><br>
+            <strong>{{ 'pdf.label.objectives'|trans({}, 'audit') }}:</strong><br>
             {{ audit.objectives|nl2br }}
         </div>
         {% endif %}
         {% if audit.auditedDepartments %}
         <div class="content-box">
-            <strong>{{ 'pdf.label.audited_departments'|trans({}, 'audits') }}:</strong><br>
+            <strong>{{ 'pdf.label.audited_departments'|trans({}, 'audit') }}:</strong><br>
             {{ audit.auditedDepartments|nl2br }}
         </div>
         {% endif %}
@@ -230,15 +230,15 @@
     {# Scoped Framework #}
     {% if audit.scopedFramework %}
     <div class="section">
-        <div class="section-title">{{ 'pdf.section.compliance_framework'|trans({}, 'audits') }}</div>
+        <div class="section-title">{{ 'pdf.section.compliance_framework'|trans({}, 'audit') }}</div>
         <div class="info-grid">
             <div class="info-row">
-                <div class="info-label">{{ 'pdf.label.framework'|trans({}, 'audits') }}</div>
+                <div class="info-label">{{ 'pdf.label.framework'|trans({}, 'audit') }}</div>
                 <div class="info-value">{{ audit.scopedFramework.name }}</div>
             </div>
             {% if audit.scopedFramework.version %}
             <div class="info-row">
-                <div class="info-label">{{ 'pdf.label.version'|trans({}, 'audits') }}</div>
+                <div class="info-label">{{ 'pdf.label.version'|trans({}, 'audit') }}</div>
                 <div class="info-value">{{ audit.scopedFramework.version }}</div>
             </div>
             {% endif %}
@@ -249,13 +249,13 @@
     {# Scoped Assets #}
     {% if audit.scopedAssets|length > 0 %}
     <div class="section">
-        <div class="section-title">{{ 'pdf.section.audited_assets'|trans({}, 'audits') }} ({{ audit.scopedAssets|length }})</div>
+        <div class="section-title">{{ 'pdf.section.audited_assets'|trans({}, 'audit') }} ({{ audit.scopedAssets|length }})</div>
         <table class="assets-table">
             <thead>
                 <tr>
-                    <th>{{ 'pdf.label.asset_name'|trans({}, 'audits') }}</th>
-                    <th>{{ 'pdf.label.type'|trans({}, 'audits') }}</th>
-                    <th>{{ 'pdf.label.status'|trans({}, 'audits') }}</th>
+                    <th>{{ 'pdf.label.asset_name'|trans({}, 'audit') }}</th>
+                    <th>{{ 'pdf.label.type'|trans({}, 'audit') }}</th>
+                    <th>{{ 'pdf.label.status'|trans({}, 'audit') }}</th>
                 </tr>
             </thead>
             <tbody>
@@ -274,32 +274,32 @@
     {# Findings - Only if audit has results #}
     {% if audit.findings or audit.nonConformities or audit.observations or audit.recommendations %}
     <div class="section page-break">
-        <div class="section-title">{{ 'pdf.section.audit_findings'|trans({}, 'audits') }}</div>
+        <div class="section-title">{{ 'pdf.section.audit_findings'|trans({}, 'audit') }}</div>
 
         {% if audit.findings %}
         <div class="findings-section">
-            <div class="finding-type">{{ 'pdf.findings.general'|trans({}, 'audits') }}</div>
+            <div class="finding-type">{{ 'pdf.findings.general'|trans({}, 'audit') }}</div>
             <div class="content-box">{{ audit.findings|nl2br }}</div>
         </div>
         {% endif %}
 
         {% if audit.nonConformities %}
         <div class="findings-section">
-            <div class="finding-type non-conformities">{{ 'pdf.findings.non_conformities'|trans({}, 'audits') }}</div>
+            <div class="finding-type non-conformities">{{ 'pdf.findings.non_conformities'|trans({}, 'audit') }}</div>
             <div class="content-box">{{ audit.nonConformities|nl2br }}</div>
         </div>
         {% endif %}
 
         {% if audit.observations %}
         <div class="findings-section">
-            <div class="finding-type observations">{{ 'pdf.findings.observations'|trans({}, 'audits') }}</div>
+            <div class="finding-type observations">{{ 'pdf.findings.observations'|trans({}, 'audit') }}</div>
             <div class="content-box">{{ audit.observations|nl2br }}</div>
         </div>
         {% endif %}
 
         {% if audit.recommendations %}
         <div class="findings-section">
-            <div class="finding-type recommendations">{{ 'pdf.findings.recommendations'|trans({}, 'audits') }}</div>
+            <div class="finding-type recommendations">{{ 'pdf.findings.recommendations'|trans({}, 'audit') }}</div>
             <div class="content-box">{{ audit.recommendations|nl2br }}</div>
         </div>
         {% endif %}
@@ -309,26 +309,26 @@
     {# Conclusion #}
     {% if audit.conclusion %}
     <div class="section">
-        <div class="section-title">{{ 'pdf.section.conclusion'|trans({}, 'audits') }}</div>
+        <div class="section-title">{{ 'pdf.section.conclusion'|trans({}, 'audit') }}</div>
         <div class="content-box">{{ audit.conclusion|nl2br }}</div>
     </div>
     {% endif %}
 
     {# Metadata #}
     <div class="section">
-        <div class="section-title">{{ 'pdf.section.document_information'|trans({}, 'audits') }}</div>
+        <div class="section-title">{{ 'pdf.section.document_information'|trans({}, 'audit') }}</div>
         <div class="info-grid">
             <div class="info-row">
-                <div class="info-label">{{ 'pdf.label.generated'|trans({}, 'audits') }}</div>
+                <div class="info-label">{{ 'pdf.label.generated'|trans({}, 'audit') }}</div>
                 <div class="info-value">{{ "now"|date('d.m.Y H:i') }}</div>
             </div>
             <div class="info-row">
-                <div class="info-label">{{ 'pdf.label.created'|trans({}, 'audits') }}</div>
+                <div class="info-label">{{ 'pdf.label.created'|trans({}, 'audit') }}</div>
                 <div class="info-value">{{ audit.createdAt|date('d.m.Y H:i') }}</div>
             </div>
             {% if audit.updatedAt %}
             <div class="info-row">
-                <div class="info-label">{{ 'pdf.label.last_updated'|trans({}, 'audits') }}</div>
+                <div class="info-label">{{ 'pdf.label.last_updated'|trans({}, 'audit') }}</div>
                 <div class="info-value">{{ audit.updatedAt|date('d.m.Y H:i') }}</div>
             </div>
             {% endif %}
@@ -336,7 +336,7 @@
     </div>
 
     <div class="footer">
-        {{ 'pdf.footer'|trans({'%audit_number%': audit.auditNumber, '%datetime%': "now"|date('d.m.Y H:i')}, 'audits') }}
+        {{ 'pdf.footer'|trans({'%audit_number%': audit.auditNumber, '%datetime%': "now"|date('d.m.Y H:i')}, 'audit') }}
     </div>
 </body>
 </html>

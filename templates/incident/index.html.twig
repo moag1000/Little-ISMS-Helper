@@ -263,7 +263,7 @@
                     {% endif %}
                 </td>
                 <td class="text-center">
-                    <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                         <a href="{{ path('app_incident_show', {id: incident.id}) }}"
                            class="btn btn-outline-primary"
                            data-turbo-action="advance"

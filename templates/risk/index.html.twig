@@ -112,28 +112,28 @@
                 <div class="col-md-3">
                     <div class="risk-level-card risk-critical">
                         <div class="risk-level-icon"><i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i></div>
-                        <div class="risk-level-label">Kritisch (20-25)</div>
+                        <div class="risk-level-label">{{ 'risk.index.risk_level.critical'|trans({}, 'risk') }}</div>
                         <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() >= 20)|length }}</div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="risk-level-card risk-high">
                         <div class="risk-level-icon">🟠</div>
-                        <div class="risk-level-label">Hoch (12-19)</div>
+                        <div class="risk-level-label">{{ 'risk.index.risk_level.high'|trans({}, 'risk') }}</div>
                         <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() >= 12 and r.getRiskScore() < 20)|length }}</div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="risk-level-card risk-medium">
                         <div class="risk-level-icon">🟡</div>
-                        <div class="risk-level-label">Mittel (6-11)</div>
+                        <div class="risk-level-label">{{ 'risk.index.risk_level.medium'|trans({}, 'risk') }}</div>
                         <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() >= 6 and r.getRiskScore() < 12)|length }}</div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="risk-level-card risk-low">
                         <div class="risk-level-icon">🟢</div>
-                        <div class="risk-level-label">Niedrig (1-5)</div>
+                        <div class="risk-level-label">{{ 'risk.index.risk_level.low'|trans({}, 'risk') }}</div>
                         <div class="risk-level-count">{{ risks|filter(r => r.getRiskScore() < 6)|length }}</div>
                     </div>
                 </div>
@@ -144,17 +144,17 @@
 
 {# Treatment Status #}
 {% embed '_components/_card.html.twig' with {
-    'title': 'Behandlungsstatus',
+    'title': 'risk.index.treatment_status'|trans({}, 'risk'),
     'headerIcon': 'bi-shield-check',
     'class': 'mb-4'
 } %}
     {% block card_body %}
         <div class="row">
             {% set treatments = {
-                'mitigate': { label: 'Mindern', icon: 'bi-shield-check', color: 'success' },
-                'accept': { label: 'Akzeptieren', icon: 'bi-check-circle', color: 'info' },
-                'transfer': { label: 'Übertragen', icon: 'bi-arrow-right-circle', color: 'warning' },
-                'avoid': { label: 'Vermeiden', icon: 'bi-x-circle', color: 'danger' }
+                'mitigate': { label: 'risk.index.treatment.mitigate'|trans({}, 'risk'), icon: 'bi-shield-check', color: 'success' },
+                'accept': { label: 'risk.index.treatment.accept'|trans({}, 'risk'), icon: 'bi-check-circle', color: 'info' },
+                'transfer': { label: 'risk.index.treatment.transfer'|trans({}, 'risk'), icon: 'bi-arrow-right-circle', color: 'warning' },
+                'avoid': { label: 'risk.index.treatment.avoid'|trans({}, 'risk'), icon: 'bi-x-circle', color: 'danger' }
             } %}
             {% for strategy, data in treatments %}
                 {% set count = risks|filter(r => r.treatmentStrategy == strategy)|length %}
@@ -179,45 +179,45 @@
 
 {# Risk Filters #}
 {% embed '_components/_card.html.twig' with {
-    'title': 'Filteroptionen',
+    'title': 'risk.index.filter_options'|trans({}, 'risk'),
     'headerIcon': 'bi-funnel',
     'class': 'mb-4'
 } %}
     {% block card_body %}
         <form method="get" action="{{ path('app_risk_index') }}" class="row g-3">
             <div class="col-md-3">
-                <label for="filter-level" class="form-label">Risikolevel</label>
+                <label for="filter-level" class="form-label">{{ 'risk.filter.level_label'|trans({}, 'risk') }}</label>
                 <select class="form-select" id="filter-level" name="level" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                    <option value="">Alle Risiken</option>
-                    <option value="critical" {{ app.request.query.get('level') == 'critical' ? 'selected' : '' }}>Kritisch (15-25)</option>
-                    <option value="high" {{ app.request.query.get('level') == 'high' ? 'selected' : '' }}>Hoch (8-14)</option>
-                    <option value="medium" {{ app.request.query.get('level') == 'medium' ? 'selected' : '' }}>Mittel (4-7)</option>
-                    <option value="low" {{ app.request.query.get('level') == 'low' ? 'selected' : '' }}>Niedrig (1-3)</option>
+                    <option value="">{{ 'risk.filter.all_risks'|trans({}, 'risk') }}</option>
+                    <option value="critical" {{ app.request.query.get('level') == 'critical' ? 'selected' : '' }}>{{ 'risk.filter.level_critical'|trans({}, 'risk') }}</option>
+                    <option value="high" {{ app.request.query.get('level') == 'high' ? 'selected' : '' }}>{{ 'risk.filter.level_high'|trans({}, 'risk') }}</option>
+                    <option value="medium" {{ app.request.query.get('level') == 'medium' ? 'selected' : '' }}>{{ 'risk.filter.level_medium'|trans({}, 'risk') }}</option>
+                    <option value="low" {{ app.request.query.get('level') == 'low' ? 'selected' : '' }}>{{ 'risk.filter.level_low'|trans({}, 'risk') }}</option>
                 </select>
             </div>
             <div class="col-md-3">
-                <label for="filter-status" class="form-label">Status</label>
+                <label for="filter-status" class="form-label">{{ 'risk.filter.status_label'|trans({}, 'risk') }}</label>
                 <select class="form-select" id="filter-status" name="status" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                    <option value="">Alle Status</option>
-                    <option value="identified" {{ app.request.query.get('status') == 'identified' ? 'selected' : '' }}>Identifiziert</option>
-                    <option value="assessed" {{ app.request.query.get('status') == 'assessed' ? 'selected' : '' }}>Bewertet</option>
-                    <option value="treated" {{ app.request.query.get('status') == 'treated' ? 'selected' : '' }}>Behandelt</option>
-                    <option value="monitored" {{ app.request.query.get('status') == 'monitored' ? 'selected' : '' }}>Überwacht</option>
-                    <option value="closed" {{ app.request.query.get('status') == 'closed' ? 'selected' : '' }}>Geschlossen</option>
+                    <option value="">{{ 'risk.filter.all_status'|trans({}, 'risk') }}</option>
+                    <option value="identified" {{ app.request.query.get('status') == 'identified' ? 'selected' : '' }}>{{ 'risk.filter.status_identified'|trans({}, 'risk') }}</option>
+                    <option value="assessed" {{ app.request.query.get('status') == 'assessed' ? 'selected' : '' }}>{{ 'risk.filter.status_assessed'|trans({}, 'risk') }}</option>
+                    <option value="treated" {{ app.request.query.get('status') == 'treated' ? 'selected' : '' }}>{{ 'risk.filter.status_treated'|trans({}, 'risk') }}</option>
+                    <option value="monitored" {{ app.request.query.get('status') == 'monitored' ? 'selected' : '' }}>{{ 'risk.filter.status_monitored'|trans({}, 'risk') }}</option>
+                    <option value="closed" {{ app.request.query.get('status') == 'closed' ? 'selected' : '' }}>{{ 'risk.filter.status_closed'|trans({}, 'risk') }}</option>
                 </select>
             </div>
             <div class="col-md-3">
-                <label for="filter-treatment" class="form-label">Behandlungsstrategie</label>
+                <label for="filter-treatment" class="form-label">{{ 'risk.filter.treatment_label'|trans({}, 'risk') }}</label>
                 <select class="form-select" id="filter-treatment" name="treatment" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                    <option value="">Alle Strategien</option>
-                    <option value="mitigate" {{ app.request.query.get('treatment') == 'mitigate' ? 'selected' : '' }}>Mindern</option>
-                    <option value="accept" {{ app.request.query.get('treatment') == 'accept' ? 'selected' : '' }}>Akzeptieren</option>
-                    <option value="transfer" {{ app.request.query.get('treatment') == 'transfer' ? 'selected' : '' }}>Übertragen</option>
-                    <option value="avoid" {{ app.request.query.get('treatment') == 'avoid' ? 'selected' : '' }}>Vermeiden</option>
+                    <option value="">{{ 'risk.filter.all_strategies'|trans({}, 'risk') }}</option>
+                    <option value="mitigate" {{ app.request.query.get('treatment') == 'mitigate' ? 'selected' : '' }}>{{ 'risk.index.treatment.mitigate'|trans({}, 'risk') }}</option>
+                    <option value="accept" {{ app.request.query.get('treatment') == 'accept' ? 'selected' : '' }}>{{ 'risk.index.treatment.accept'|trans({}, 'risk') }}</option>
+                    <option value="transfer" {{ app.request.query.get('treatment') == 'transfer' ? 'selected' : '' }}>{{ 'risk.index.treatment.transfer'|trans({}, 'risk') }}</option>
+                    <option value="avoid" {{ app.request.query.get('treatment') == 'avoid' ? 'selected' : '' }}>{{ 'risk.index.treatment.avoid'|trans({}, 'risk') }}</option>
                 </select>
             </div>
             <div class="col-md-3">
-                <label for="filter-owner" class="form-label">Risk Owner</label>
+                <label for="filter-owner" class="form-label">{{ 'risk.filter.owner_label'|trans({}, 'risk') }}</label>
                 <input type="text" class="form-control" id="filter-owner" name="owner"
                        value="{{ app.request.query.get('owner') }}"
                        placeholder="{{ 'risk.filter.owner_placeholder'|trans({}, 'risk') }}">
@@ -238,21 +238,21 @@
 {% if risks|length == 0 %}
     {% include '_components/_empty_state.html.twig' with {
         icon: 'bi-exclamation-triangle',
-        title: 'Noch keine Risiken identifiziert',
-        description: 'Beginnen Sie mit der Risikoidentifikation, um potenzielle Bedrohungen für Ihr ISMS zu erfassen und zu bewerten.',
-        action: { label: 'Erstes Risiko erfassen', url: path('app_risk_new'), icon: 'bi-plus-circle' }
+        title: 'risk.index.empty.title'|trans({}, 'risk'),
+        description: 'risk.index.empty.description'|trans({}, 'risk'),
+        action: { label: 'risk.index.empty.action'|trans({}, 'risk'), url: path('app_risk_new'), icon: 'bi-plus-circle' }
     } %}
 {% else %}
 <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/risk">
     <div class="card-header d-flex justify-content-between align-items-center">
-        <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> Alle Risiken ({{ risks|length }})</h3>
+        <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'risk.index.all_risks'|trans({}, 'risk') }} ({{ risks|length }})</h3>
         <div class="d-flex gap-2">
-            <select class="form-select form-select-sm w-150px" id="risk-filter">
-                <option value="">Alle Risiken</option>
-                <option value="critical">Kritisch</option>
-                <option value="high">Hoch</option>
-                <option value="medium">Mittel</option>
-                <option value="low">Niedrig</option>
+            <select class="form-select form-select-sm w-150px" id="risk-filter" aria-label="{{ 'risk.filter.level_label'|trans({}, 'risk') }}">
+                <option value="">{{ 'risk.filter.all_risks'|trans({}, 'risk') }}</option>
+                <option value="critical">{{ 'risk.modern.kpi.critical'|trans({}, 'risk') }}</option>
+                <option value="high">{{ 'risk.modern.kpi.high'|trans({}, 'risk') }}</option>
+                <option value="medium">{{ 'risk.index.risk_level.medium'|trans({}, 'risk') }}</option>
+                <option value="low">{{ 'risk.index.risk_level.low'|trans({}, 'risk') }}</option>
             </select>
             <label for="risk-search" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
             <input type="search"
@@ -274,17 +274,17 @@
                            class="form-check-input"
                            data-action="bulk-actions#selectAll"
                            data-bulk-actions-target="selectAllCheckbox"
-                           aria-label="Alle auswählen">
+                           aria-label="{{ 'risk.index.table.select_all'|trans({}, 'risk') }}">
                 </th>
-                <th scope="col">Titel</th>
-                <th scope="col">Bedrohung</th>
-                <th scope="col" class="text-center">Wahrscheinlichkeit</th>
-                <th scope="col" class="text-center">Auswirkung</th>
-                <th scope="col" class="text-center">Risikoscore</th>
-                <th scope="col" class="text-center">Restrisiko</th>
-                <th scope="col">Behandlung</th>
-                <th scope="col" class="text-center">Risikosubjekt</th>
-                <th scope="col" class="text-center">Aktionen</th>
+                <th scope="col">{{ 'risk.index.table.title'|trans({}, 'risk') }}</th>
+                <th scope="col">{{ 'risk.index.table.threat'|trans({}, 'risk') }}</th>
+                <th scope="col" class="text-center">{{ 'risk.index.table.probability'|trans({}, 'risk') }}</th>
+                <th scope="col" class="text-center">{{ 'risk.index.table.impact'|trans({}, 'risk') }}</th>
+                <th scope="col" class="text-center">{{ 'risk.index.table.risk_score'|trans({}, 'risk') }}</th>
+                <th scope="col" class="text-center">{{ 'risk.index.table.residual_risk'|trans({}, 'risk') }}</th>
+                <th scope="col">{{ 'risk.index.table.treatment'|trans({}, 'risk') }}</th>
+                <th scope="col" class="text-center">{{ 'risk.index.table.risk_subject'|trans({}, 'risk') }}</th>
+                <th scope="col" class="text-center">{{ 'risk.index.table.actions'|trans({}, 'risk') }}</th>
             </tr>
         {% endblock %}
         {% block table_body %}
@@ -338,34 +338,34 @@
                 </td>
                 <td>
                     {% if risk.treatmentStrategy %}
-                        <span class="badge bg-info">{{ risk.treatmentStrategy|replace({'_': ' '})|title }}</span>
+                        <span class="badge bg-info">{{ ('risk.index.treatment.' ~ risk.treatmentStrategy)|trans({}, 'risk') }}</span>
                     {% else %}
-                        <span class="text-muted">Nicht definiert</span>
+                        <span class="text-muted">{{ 'risk.index.table.not_defined'|trans({}, 'risk') }}</span>
                     {% endif %}
                 </td>
                 <td class="text-center">
                     {% if risk.asset %}
                         <a href="{{ path('app_asset_show', {id: risk.asset.id}) }}" class="badge bg-primary" title="{{ risk.asset.name }}">
-                            <i class="bi bi-cpu" aria-hidden="true"></i> Asset
+                            <i class="bi bi-cpu" aria-hidden="true"></i> {{ 'risk.index.table.asset'|trans({}, 'risk') }}
                         </a>
                     {% elseif risk.person %}
                         <a href="{{ path('app_person_show', {id: risk.person.id}) }}" class="badge bg-info" title="{{ risk.person.fullName }}">
-                            <i class="bi bi-person" aria-hidden="true"></i> Person
+                            <i class="bi bi-person" aria-hidden="true"></i> {{ 'risk.index.table.person'|trans({}, 'risk') }}
                         </a>
                     {% elseif risk.location %}
                         <a href="{{ path('app_location_show', {id: risk.location.id}) }}" class="badge bg-warning text-dark" title="{{ risk.location.name }}">
-                            <i class="bi bi-geo-alt" aria-hidden="true"></i> Location
+                            <i class="bi bi-geo-alt" aria-hidden="true"></i> {{ 'risk.index.table.location'|trans({}, 'risk') }}
                         </a>
                     {% elseif risk.supplier %}
                         <a href="{{ path('app_supplier_show', {id: risk.supplier.id}) }}" class="badge bg-success" title="{{ risk.supplier.name }}">
-                            <i class="bi bi-truck" aria-hidden="true"></i> Supplier
+                            <i class="bi bi-truck" aria-hidden="true"></i> {{ 'risk.index.table.supplier'|trans({}, 'risk') }}
                         </a>
                     {% else %}
-                        <span class="badge bg-secondary">None</span>
+                        <span class="badge bg-secondary">{{ 'risk.index.table.none'|trans({}, 'risk') }}</span>
                     {% endif %}
                 </td>
                 <td class="text-center">
-                    <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                         <a href="{{ path('app_risk_show', {id: risk.id}) }}"
                            class="btn btn-outline-primary"
                            data-turbo-action="advance"

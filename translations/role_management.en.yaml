@@ -65,11 +65,18 @@ role:
     auditor: Auditor
     admin: Admin
     compare:
-        title: Title
-        select_roles: 'Select Roles'
+        title: 'Compare Roles'
+        select_roles: 'Select Roles to Compare'
         permission_matrix: 'Permission Matrix'
         has_permission: 'Has Permission'
         no_permission: 'No Permission'
+        select_label: 'Select roles to compare (max. 5):'
+        select_hint: 'Hold Ctrl/Cmd to select multiple roles.'
+        submit: 'Compare'
+        permission_column: 'Permission'
+        legend_title: 'Legend:'
+        select_prompt: 'Please select at least one role to compare.'
+        system_badge: 'System'
     templates:
         title: Title
         description: Description

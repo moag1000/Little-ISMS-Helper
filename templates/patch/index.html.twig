@@ -101,7 +101,7 @@
                             <td><span class="badge bg-secondary">{{ ('patch.type.' ~ patch.patchType)|trans({}, 'patches') }}</span></td>
                             <td><span class="badge bg-info">{{ ('patch.status.' ~ patch.status)|trans({}, 'patches') }}</span></td>
                             <td>
-                                <div class="btn-group btn-group-sm" role="group" aria-label="Actions">
+                                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                                     <a href="{{ path('app_patch_show', {id: patch.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
                                         <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
