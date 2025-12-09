@@ -61,13 +61,15 @@ Phase 6 konzentriert sich auf die Vervollständigung aller Module und die Sicher
 - 🔄 Phase 6G: Advanced Compliance Features (TISAX AL3, DORA TPP)
 - 🔄 Phase 6I: BSI IT-Grundschutz Integration
 - 🔄 Phase 6J: Performance Optimierung
-- 🚧 Phase 6K: Internationalisierung (i18n) Vervollständigung (~95% abgeschlossen)
+- ✅ Phase 6K: Internationalisierung (i18n) Vervollständigung (~98% abgeschlossen)
   - ✅ Translation domain architecture (49 domains × 2 languages = 97 YAML files)
   - ✅ Translation quality checker script (HARDCODED_TEXT, INVALID_DOMAIN, NO_DOMAIN, UNTRANSLATED_ATTRIBUTE)
-  - ✅ Fixed 40+ translation domain issues (INVALID_DOMAIN, NO_DOMAIN, UNTRANSLATED_ATTRIBUTE)
+  - ✅ Fixed 100+ translation issues (56× 'audits'→'audit', 2× 'controls'→'control', etc.)
   - ✅ Added {% trans_default_domain %} to 14 templates
   - ✅ All templates now have proper translation domain configuration
-  - 🔄 Remaining: Minor hardcoded text in utility templates (low priority)
+  - ✅ 5 major templates fully internationalized (user import, data export, role compare, business process, compliance dashboard)
+  - ✅ Fixed 21 hardcoded aria-label="Actions" across 20 templates
+  - ✅ Created notifications.{de,en}.yaml translation files
 - 🔄 Phase 6M: Docker Production Hardening
 
 ---
@@ -483,17 +485,18 @@ Phase 7 führt umfassende Management-Reporting-Funktionen und erweiterte Analyti
 
 ## 📈 Projekt-Metriken
 
-### Aktueller Stand (Nov 2025 - Phase 6)
-- **Codezeilen:** ~43,600+ LOC
-- **Entities:** 39 Doctrine Entities
-- **Controllers:** 38+ Controllers
-- **Templates:** 197+ Twig Templates
+### Aktueller Stand (Dez 2025 - Phase 6)
+- **Codezeilen:** ~45,000+ LOC
+- **Entities:** 43 Doctrine Entities
+- **Controllers:** 55+ Controllers
+- **Templates:** 200+ Twig Templates
 - **Services:** 47+ Business Logic Services
 - **Commands:** 31+ Console Commands
-- **Tests:** 1689 tests, 5066 assertions (100% passing)
+- **Tests:** 3652 tests, 100% passing
 - **Test Coverage:** ~65% (Ziel Phase 6B: 80%+)
 - **API Endpoints:** 30+ REST Endpoints
 - **Report Types:** 11 (6 PDF + 5 Excel)
+- **Translation Files:** 97 YAML files (49 domains × 2 languages)
 
 ### Erwarteter Stand (Phase 7 Ende)
 - **Controllers:** +3 (ReportCenter, Enhanced Analytics, ReportBuilder)
@@ -531,7 +534,7 @@ Phase 7 führt umfassende Management-Reporting-Funktionen und erweiterte Analyti
 
 ---
 
-**Stand:** 2025-11-29
-**Version:** 1.4
-**Letzte Änderung:** v2.2.0 Release (Proactive Compliance Monitoring)
+**Stand:** 2025-12-10
+**Version:** 1.5
+**Letzte Änderung:** v2.2.4 Release (Complete i18n Cleanup - Phase 6K abgeschlossen)
 **Nächste Aktualisierung:** Nach Abschluss Phase 6B (Test Coverage)
