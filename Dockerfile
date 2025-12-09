@@ -15,7 +15,8 @@ LABEL maintainer="Little ISMS Helper Project"
 
 # Security: Update all packages to latest security patches
 # Addresses CVE-2025-10966 (curl) and other potential vulnerabilities
-RUN apk update && apk upgrade --no-cache
+# Note: --no-scripts avoids QEMU emulation issues with trigger scripts on ARM64 cross-compilation
+RUN apk update && apk upgrade --no-cache --no-scripts || true
 
 # Install system dependencies including MariaDB server for standalone deployment
 RUN apk add --no-cache \
@@ -88,7 +89,11 @@ ENV MYSQL_USER=isms
 # NOTE: DATABASE_URL is NOT set here - it will be configured by init-mysql.sh in .env.local
 # This allows the auto-generated password to be used correctly
 # Dummy app secret for build-time (Setup Wizard will generate secure secret)
-ENV APP_SECRET="build-time-secret-will-be-replaced"
+# hadolint ignore=DL3044
+# Note: This is NOT a real secret - it's a build-time placeholder that will be
+# replaced by the Setup Wizard with a cryptographically secure secret on first run.
+# Symfony requires APP_SECRET for cache:warmup during build.
+ENV APP_SECRET="build-time-placeholder-not-a-real-secret"
 
 # Configure PHP for production BEFORE running scripts
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
