@@ -1,6 +1,7 @@
 # Multi-stage Dockerfile for Little ISMS Helper
 # Stage 1: Production Build
-FROM php:8.4-fpm-alpine AS production
+# Using Debian Bookworm instead of Alpine for better QEMU cross-compilation support
+FROM php:8.4-fpm-bookworm AS production
 
 # OCI Image Labels (https://github.com/opencontainers/image-spec/blob/main/annotations.md)
 LABEL org.opencontainers.image.title="Little ISMS Helper"
@@ -14,47 +15,28 @@ LABEL org.opencontainers.image.documentation="https://github.com/moag1000/Little
 LABEL maintainer="Little ISMS Helper Project"
 
 # Security: Update all packages to latest security patches
-# Addresses CVE-2025-10966 (curl) and other potential vulnerabilities
-# Note: --no-scripts avoids QEMU emulation issues with trigger scripts on ARM64 cross-compilation
-RUN apk update && apk upgrade --no-cache --no-scripts || true
-
-# Create mysql user/group before installing mariadb (needed because --no-scripts skips pre-install)
-# Using same UID/GID as Alpine's mariadb package would use
-RUN addgroup -S mysql && adduser -S -G mysql -H -D mysql
-
-# Create nginx user/group before installing nginx (needed because --no-scripts skips pre-install)
-RUN addgroup -S nginx && adduser -S -G nginx -H -D nginx
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
 
 # Install system dependencies including MariaDB server for standalone deployment
-# Note: --no-scripts avoids QEMU emulation issues with busybox trigger on ARM64 cross-compilation
-RUN apk add --no-cache --no-scripts \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
     libzip-dev \
-    mariadb-dev \
-    mariadb \
+    libmariadb-dev \
+    mariadb-server \
     mariadb-client \
-    icu-dev \
-    oniguruma-dev \
+    libicu-dev \
+    libonig-dev \
     libpng-dev \
-    freetype-dev \
-    libjpeg-turbo-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
     libxml2-dev \
     nginx \
     supervisor \
-    py3-pip \
+    python3-pip \
     curl \
-    su-exec
-
-# Upgrade pip and setuptools first, then supervisor to latest version (4.3+)
-# This fixes pkg_resources deprecation warning by using importlib.metadata
-RUN pip3 install --break-system-packages --upgrade pip setuptools && \
-    pip3 install --break-system-packages --upgrade supervisor
-
-# Prevent Docker from creating automatic volume for /var/lib/mysql
-# We store MySQL data in /var/www/html/var/mysql instead (part of the app volume)
-# This removes the VOLUME directive that MariaDB package adds
-RUN rm -rf /var/lib/mysql && mkdir -p /var/lib/mysql && chown mysql:mysql /var/lib/mysql
+    gosu \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
@@ -146,22 +128,24 @@ RUN sed -i 's|listen = .*|listen = /run/php-fpm.sock|' /usr/local/etc/php-fpm.d/
     mkdir -p /run/php-fpm && \
     chown www-data:www-data /run/php-fpm
 
-# Create nginx runtime directories (needed because --no-scripts skips post-install)
-RUN mkdir -p /run/nginx && \
-    chown nginx:nginx /run/nginx
-
 # Configure MariaDB for standalone deployment
 # Note: Data is stored in /var/www/html/var/mysql (part of app volume), not /var/lib/mysql
 RUN mkdir -p /run/mysqld && \
     chown -R mysql:mysql /run/mysqld && \
     chmod 755 /run/mysqld
 
+# Prevent Docker from creating automatic volume for /var/lib/mysql
+# We store MySQL data in /var/www/html/var/mysql instead (part of the app volume)
+RUN rm -rf /var/lib/mysql && mkdir -p /var/lib/mysql && chown mysql:mysql /var/lib/mysql
+
 # Copy MariaDB initialization script
 COPY docker/scripts/init-mysql.sh /var/www/html/docker/scripts/init-mysql.sh
 RUN chmod +x /var/www/html/docker/scripts/init-mysql.sh
 
-# Configure Nginx
-COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
+# Configure Nginx (Debian uses /etc/nginx/sites-enabled/)
+COPY docker/nginx/default.conf /etc/nginx/sites-available/default
+RUN rm -f /etc/nginx/sites-enabled/default && \
+    ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 # Configure Supervisor
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
@@ -176,17 +160,16 @@ EXPOSE 80
 # No VOLUME directive for /var/lib/mysql - we use /var/www/html/var/mysql instead
 # Users should mount a volume to /var/www/html/var for persistent data
 
-# Start supervisor (use supervisord from PATH - pip installs to /usr/local/bin)
+# Start supervisor
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 
 # Stage 2: Development Build
 FROM production AS development
 
 # Install development dependencies
-# Note: --no-scripts for QEMU compatibility
-RUN apk add --no-cache --no-scripts \
-    linux-headers \
-    $PHPIZE_DEPS
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    linux-headers-generic \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Xdebug for development (latest stable version)
 RUN pecl channel-update pecl.php.net && \
