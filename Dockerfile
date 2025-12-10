@@ -19,7 +19,8 @@ LABEL maintainer="Little ISMS Helper Project"
 RUN apk update && apk upgrade --no-cache --no-scripts || true
 
 # Install system dependencies including MariaDB server for standalone deployment
-RUN apk add --no-cache \
+# Note: --no-scripts avoids QEMU emulation issues with busybox trigger on ARM64 cross-compilation
+RUN apk add --no-cache --no-scripts \
     git \
     unzip \
     libzip-dev \
@@ -171,7 +172,8 @@ CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
 FROM production AS development
 
 # Install development dependencies
-RUN apk add --no-cache \
+# Note: --no-scripts for QEMU compatibility
+RUN apk add --no-cache --no-scripts \
     linux-headers \
     $PHPIZE_DEPS
 
