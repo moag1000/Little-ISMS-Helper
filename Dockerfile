@@ -146,6 +146,10 @@ RUN sed -i 's|listen = .*|listen = /run/php-fpm.sock|' /usr/local/etc/php-fpm.d/
     mkdir -p /run/php-fpm && \
     chown www-data:www-data /run/php-fpm
 
+# Create nginx runtime directories (needed because --no-scripts skips post-install)
+RUN mkdir -p /run/nginx && \
+    chown nginx:nginx /run/nginx
+
 # Configure MariaDB for standalone deployment
 # Note: Data is stored in /var/www/html/var/mysql (part of app volume), not /var/lib/mysql
 RUN mkdir -p /run/mysqld && \
