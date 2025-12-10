@@ -1,7 +1,8 @@
 # Multi-stage Dockerfile for Little ISMS Helper
 # Stage 1: Production Build
 # Using Debian Trixie (13) instead of Alpine for better QEMU cross-compilation support
-FROM php:8.5-fpm-trixie AS production
+# PHP 8.4 used instead of 8.5 due to extension build issues in 8.5 Docker images
+FROM php:8.4-fpm-trixie AS production
 
 # OCI Image Labels (https://github.com/opencontainers/image-spec/blob/main/annotations.md)
 LABEL org.opencontainers.image.title="Little ISMS Helper"
