@@ -18,6 +18,13 @@ LABEL maintainer="Little ISMS Helper Project"
 # Note: --no-scripts avoids QEMU emulation issues with trigger scripts on ARM64 cross-compilation
 RUN apk update && apk upgrade --no-cache --no-scripts || true
 
+# Create mysql user/group before installing mariadb (needed because --no-scripts skips pre-install)
+# Using same UID/GID as Alpine's mariadb package would use
+RUN addgroup -S mysql && adduser -S -G mysql -H -D mysql
+
+# Create nginx user/group before installing nginx (needed because --no-scripts skips pre-install)
+RUN addgroup -S nginx && adduser -S -G nginx -H -D nginx
+
 # Install system dependencies including MariaDB server for standalone deployment
 # Note: --no-scripts avoids QEMU emulation issues with busybox trigger on ARM64 cross-compilation
 RUN apk add --no-cache --no-scripts \
