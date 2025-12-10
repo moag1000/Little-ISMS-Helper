@@ -15,6 +15,90 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.2.4] - 2025-12-10
+
+### 🌍 Internationalization - Complete i18n Cleanup
+
+Major effort to eliminate all hardcoded text and fix translation domain issues across the entire application.
+
+### ✅ Fixed
+
+#### Translation Domain Corrections
+- **56 instances** of `'audits'` → `'audit'` domain
+- **2 instances** of `'controls'` → `'control'` domain
+- Created new `notifications.{de,en}.yaml` translation files
+
+#### Hardcoded Text Translations (5 Templates)
+- `user_management/import.html.twig` - 14 German texts translated
+- `data_management/export.html.twig` - 12 English texts translated
+- `role_management/compare.html.twig` - 8 German texts translated
+- `business_process/index.html.twig` - 16 German texts translated
+- `compliance/mapping_quality/dashboard.html.twig` - 6 texts translated
+
+#### Accessibility Improvements
+- **21 instances** of hardcoded `aria-label="Actions"` replaced with `trans()`
+- Added translated aria-labels to mapping_quality dashboard buttons
+
+### 🔧 Changed
+- Updated `check_translation_issues.py` script with `setup`, `notifications` domains
+- Translation issues reduced from **215 → 70** (remaining are false positives)
+
+### 📊 Statistics
+- **44 files changed** (32 templates, 12 translation files)
+- **0 HARDCODED_TEXT** issues remaining
+- **0 INVALID_DOMAIN** issues remaining
+
+---
+
+## [2.2.3] - 2025-12-09
+
+### 🌍 Internationalization - PDF, Email & Setup Templates
+
+### ✅ Fixed
+- PDF templates fully internationalized (dashboard, risks, incidents, trainings)
+- Email templates translated (review_reminder, data_breach_deadline_reminder)
+- Audit checklist templates (`_checklist_items.html.twig`, `checklist.html.twig`)
+- Setup wizard templates (`step1-5`) with new `setup.{de,en}.yaml` files
+- Extended `window.translations` in base.html.twig for JavaScript i18n
+
+### 📊 Statistics
+- **34 files changed** (1147 insertions, 363 deletions)
+
+---
+
+## [2.2.2] - 2025-12-08
+
+### 🐛 Bug Fixes
+
+#### CI/CD Pipeline Fixes
+- Fix PHPUnit test environment setup
+- Create `isms_test` database with root privileges
+- Add missing environment variables for tests
+- Create `setup_complete.lock` to bypass setup wizard in tests
+
+#### Dependency Updates
+- Bump PHP dependencies to latest compatible versions
+- Update composer.lock
+
+---
+
+## [2.2.1] - 2025-11-29
+
+### 🚀 Proactive Compliance Monitoring
+
+First release with automated review reminders and visual risk slider component.
+
+### ✨ Features
+- **ReviewReminderService** - Tracks overdue reviews across all ISMS entities
+- **SendReviewRemindersCommand** - Cron-compatible with `--dry-run`, `--breaches-only` options
+- **Risk Slider Component** - Interactive 5x5 matrix with quick presets
+- **Dashboard Widget** - Shows overdue items with direct links
+
+### 🐛 Bug Fixes
+- Symfony 7.4 compatibility for console command Option attributes
+
+---
+
 ## [2.2.0] - 2025-11-29
 
 ### 🚀 Major Features: Automated Review Reminders & Visual Risk Slider

@@ -228,11 +228,9 @@ jobs:
         with:
           context: .
           target: production
-          # ARM64 temporarily disabled due to QEMU emulation issues with Alpine busybox triggers
-          # in docker-php-ext-install. ARM64 builds work natively on Apple Silicon.
-          # See: https://github.com/docker/buildx/issues/314
-          # Re-enable when upstream QEMU/Alpine fixes the busybox trigger compatibility.
-          platforms: linux/amd64
+          # Multi-arch build: AMD64 for servers, ARM64 for Raspberry Pi and Apple Silicon
+          # Switched from Alpine to Debian Bookworm to avoid QEMU/busybox compatibility issues
+          platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
