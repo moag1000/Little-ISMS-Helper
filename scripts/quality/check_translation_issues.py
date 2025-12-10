@@ -88,12 +88,17 @@ class TranslationChecker:
         """Check a single Twig template file."""
         try:
             with open(filepath, 'r', encoding='utf-8') as f:
-                lines = f.readlines()
+                content = f.read()
+                lines = content.split('\n')
         except Exception as e:
             print(f"⚠️  Error reading {filepath}: {e}")
             return
 
         rel_path = str(filepath.relative_to(self.templates_dir))
+
+        # Check if file has trans_default_domain set
+        default_domain_match = re.search(r"{%\s*trans_default_domain\s+['\"](\w+)['\"]\s*%}", content)
+        has_default_domain = default_domain_match is not None
 
         for line_num, line in enumerate(lines, 1):
             # Skip empty lines and comments
@@ -103,7 +108,9 @@ class TranslationChecker:
             # Check for various issues
             self.check_hardcoded_text(rel_path, line_num, line)
             self.check_untranslated_attributes(rel_path, line_num, line)
-            self.check_incorrect_trans_usage(rel_path, line_num, line)
+            # Only check for missing trans params if no default domain is set
+            if not has_default_domain:
+                self.check_incorrect_trans_usage(rel_path, line_num, line)
             self.check_missing_domain(rel_path, line_num, line)
 
     def check_hardcoded_text(self, file: str, line_num: int, line: str) -> None:

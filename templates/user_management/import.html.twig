@@ -1,12 +1,12 @@
 {% extends 'admin/layout.html.twig' %}
 {% trans_default_domain 'user' %}
 
-{% block title %}{{ 'user.import.title'|trans }}{% endblock %}
+{% block title %}{{ 'user.import.title'|trans({}, 'user') }}{% endblock %}
 
 {% block admin_content %}
 <div class="container-fluid">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1><i class="bi bi-upload" aria-hidden="true"></i> {{ 'user.import.title'|trans }}</h1>
+        <h1><i class="bi bi-upload" aria-hidden="true"></i> {{ 'user.import.title'|trans({}, 'user') }}</h1>
         <a href="{{ path('user_management_index') }}" class="btn btn-outline-secondary">
             <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
@@ -14,13 +14,13 @@
 
     {# Instructions #}
     <div class="alert alert-info mb-4">
-        <h2><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'user.import.description'|trans }}</h2>
-        <p class="mb-2">{{ 'user.import.format'|trans }}</p>
+        <h2><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'user.import.description'|trans({}, 'user') }}</h2>
+        <p class="mb-2">{{ 'user.import.format'|trans({}, 'user') }}</p>
         <code>email, first_name, last_name, password, is_active, roles</code>
 
         <hr>
 
-        <h6>{{ 'user.import.example_csv'|trans }}</h6>
+        <h6>{{ 'user.import.example_csv'|trans({}, 'user') }}</h6>
         <pre class="mb-0">email,first_name,last_name,password,is_active,roles
 john.doe@example.com,John,Doe,SecurePass123,yes,"Admin,User"
 jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
@@ -30,13 +30,13 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
     <div class="card">
         <div class="card-header bg-primary text-white">
             <h3 class="mb-0">
-                <i class="bi bi-file-earmark-arrow-up" aria-hidden="true"></i> {{ 'user.import.upload_title'|trans }}
+                <i class="bi bi-file-earmark-arrow-up" aria-hidden="true"></i> {{ 'user.import.upload_title'|trans({}, 'user') }}
             </h3>
         </div>
         <div class="card-body">
             <form method="post" enctype="multipart/form-data">
                 <div class="mb-3">
-                    <label for="import_file" class="form-label">{{ 'user.import.file_label'|trans }}</label>
+                    <label for="import_file" class="form-label">{{ 'user.import.file_label'|trans({}, 'user') }}</label>
                     <input type="file"
                            class="form-control"
                            id="import_file"
@@ -44,7 +44,7 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
                            accept=".csv"
                            required>
                     <div class="form-text">
-                        {{ 'user.import.file_help'|trans }}
+                        {{ 'user.import.file_help'|trans({}, 'user') }}
                     </div>
                 </div>
 
@@ -53,7 +53,7 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
                         <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                     </a>
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-upload" aria-hidden="true"></i> {{ 'user.import.submit'|trans }}
+                        <i class="bi bi-upload" aria-hidden="true"></i> {{ 'user.import.submit'|trans({}, 'user') }}
                     </button>
                 </div>
             </form>
@@ -64,28 +64,28 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
     <div class="card mt-4">
         <div class="card-header bg-secondary text-white">
             <h3 class="mb-0">
-                <i class="bi bi-download" aria-hidden="true"></i> {{ 'user.import.template_title'|trans }}
+                <i class="bi bi-download" aria-hidden="true"></i> {{ 'user.import.template_title'|trans({}, 'user') }}
             </h3>
         </div>
         <div class="card-body">
-            <p>{{ 'user.import.template_description'|trans }}</p>
+            <p>{{ 'user.import.template_description'|trans({}, 'user') }}</p>
             <a href="data:text/csv;charset=utf-8,email%2Cfirst_name%2Clast_name%2Cpassword%2Cis_active%2Croles%0A"
                download="user_import_template.csv"
                class="btn btn-outline-primary">
-                <i class="bi bi-file-earmark-spreadsheet" aria-hidden="true"></i> {{ 'user.import.template_download'|trans }}
+                <i class="bi bi-file-earmark-spreadsheet" aria-hidden="true"></i> {{ 'user.import.template_download'|trans({}, 'user') }}
             </a>
         </div>
     </div>
 
     {# Important Notes #}
     <div class="alert alert-warning mt-4">
-        <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'user.import.notes_title'|trans }}</h5>
+        <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'user.import.notes_title'|trans({}, 'user') }}</h5>
         <ul class="mb-0">
-            <li>{{ 'user.import.note_existing_email'|trans }}</li>
-            <li>{{ 'user.import.note_random_password'|trans }}</li>
-            <li>{{ 'user.import.note_role_case'|trans }}</li>
-            <li>{{ 'user_management.import_irreversible'|trans }}</li>
-            <li>{{ 'user.import.note_default_role'|trans }}</li>
+            <li>{{ 'user.import.note_existing_email'|trans({}, 'user') }}</li>
+            <li>{{ 'user.import.note_random_password'|trans({}, 'user') }}</li>
+            <li>{{ 'user.import.note_role_case'|trans({}, 'user') }}</li>
+            <li>{{ 'user_management.import_irreversible'|trans({}, 'user') }}</li>
+            <li>{{ 'user.import.note_default_role'|trans({}, 'user') }}</li>
         </ul>
     </div>
 </div>
