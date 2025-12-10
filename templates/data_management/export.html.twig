@@ -98,7 +98,7 @@
             <li>{{ 'data_management.export.sensitive_data_warning'|trans({}, 'messages') }}</li>
             <li>{{ 'data_management.export.large_exports_warning'|trans({}, 'messages') }}</li>
             <li>{{ 'data_management.export.relationships_warning'|trans({}, 'messages') }}</li>
-            <li>{{ 'admin.data_export.backup_link'|trans({'%url%': path('data_backup_index')})|raw }}</li>
+            <li>{{ 'admin.data_export.backup_link'|trans({'%url%': path('data_backup_index')}, 'admin')|raw }}</li>
         </ul>
     </div>
 </div>
