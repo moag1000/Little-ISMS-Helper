@@ -1,0 +1,253 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'welcome.title'|trans({}, 'welcome') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid welcome-page">
+    {# Hero Section with Logo #}
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10 col-xl-8">
+            <div class="welcome-hero text-center py-5">
+                <div class="welcome-logo mb-4">
+                    <img src="{{ asset('logo.svg') }}"
+                         alt="Little ISMS Helper Logo"
+                         class="img-fluid"
+                         style="max-height: 120px;">
+                </div>
+                <h1 class="display-5 fw-bold mb-3">{{ 'welcome.headline'|trans({}, 'welcome') }}</h1>
+                <p class="lead text-muted mb-4">
+                    {{ 'welcome.tagline'|trans({}, 'welcome') }}
+                </p>
+
+                {# Quick Action Buttons #}
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{{ path('app_dashboard') }}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>
+                        {{ 'welcome.action.dashboard'|trans({}, 'welcome') }}
+                    </a>
+                    {% if total_urgent_count > 0 %}
+                        <a href="#urgent-tasks" class="btn btn-outline-warning btn-lg">
+                            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+                            {{ 'welcome.action.urgent_tasks'|trans({'%count%': total_urgent_count}, 'welcome') }}
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Urgent Tasks Alert (if any) #}
+    {% if urgent_tasks|length > 0 %}
+        <div class="row justify-content-center mb-5" id="urgent-tasks">
+            <div class="col-lg-10 col-xl-8">
+                <div class="card border-warning shadow-sm">
+                    <div class="card-header bg-warning-subtle d-flex align-items-center">
+                        <i class="bi bi-bell-fill text-warning me-2" aria-hidden="true"></i>
+                        <h2 class="h5 mb-0">{{ 'welcome.urgent_tasks.title'|trans({}, 'welcome') }}</h2>
+                        <span class="badge bg-warning text-dark ms-auto">{{ total_urgent_count }}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            {% for task in urgent_tasks %}
+                                <div class="col-md-6">
+                                    <a href="{{ path(task.route) }}" class="text-decoration-none">
+                                        <div class="d-flex align-items-center p-3 rounded border border-{{ task.color }}-subtle bg-{{ task.color }}-subtle hover-lift">
+                                            <div class="flex-shrink-0 me-3">
+                                                <span class="badge bg-{{ task.color }} rounded-circle p-2">
+                                                    <i class="{{ task.icon }}" aria-hidden="true" style="font-size: 1.2rem;"></i>
+                                                </span>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <div class="fw-semibold text-dark">
+                                                    {{ task.title|trans({'%count%': task.count}, 'welcome') }}
+                                                </div>
+                                                <small class="text-muted">
+                                                    {{ 'welcome.urgent_tasks.click_to_view'|trans({}, 'welcome') }}
+                                                </small>
+                                            </div>
+                                            <div class="flex-shrink-0">
+                                                <span class="badge bg-{{ task.color }} fs-6">{{ task.count }}</span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {# Active Modules Section #}
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10 col-xl-8">
+            <h2 class="h4 mb-4 text-center">
+                <i class="bi bi-grid-3x3-gap me-2" aria-hidden="true"></i>
+                {{ 'welcome.modules.title'|trans({}, 'welcome') }}
+            </h2>
+            <div class="row g-3">
+                {% for module in active_modules %}
+                    <div class="col-6 col-md-4 col-lg-3">
+                        <a href="{{ path(module.route) }}" class="text-decoration-none">
+                            <div class="card h-100 text-center module-card hover-lift border-0 shadow-sm">
+                                <div class="card-body py-4">
+                                    <div class="module-icon mb-3">
+                                        <span class="badge bg-{{ module.color }}-subtle text-{{ module.color }} rounded-circle p-3">
+                                            <i class="{{ module.icon }}" aria-hidden="true" style="font-size: 1.8rem;"></i>
+                                        </span>
+                                    </div>
+                                    <h3 class="h6 mb-2 text-dark">{{ module.name }}</h3>
+                                    {% if module.count is not null %}
+                                        <span class="badge bg-{{ module.color }}">{{ module.count }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {# Quick Actions Section #}
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10 col-xl-8">
+            <h2 class="h4 mb-4 text-center">
+                <i class="bi bi-lightning me-2" aria-hidden="true"></i>
+                {{ 'welcome.quick_actions.title'|trans({}, 'welcome') }}
+            </h2>
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <a href="{{ path('app_asset_new') }}" class="btn btn-outline-primary w-100 py-3">
+                        <i class="bi bi-plus-circle d-block mb-2" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                        {{ 'welcome.quick_actions.new_asset'|trans({}, 'welcome') }}
+                    </a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <a href="{{ path('app_risk_new') }}" class="btn btn-outline-warning w-100 py-3">
+                        <i class="bi bi-exclamation-triangle d-block mb-2" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                        {{ 'welcome.quick_actions.new_risk'|trans({}, 'welcome') }}
+                    </a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <a href="{{ path('app_incident_new') }}" class="btn btn-outline-danger w-100 py-3">
+                        <i class="bi bi-exclamation-circle d-block mb-2" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                        {{ 'welcome.quick_actions.report_incident'|trans({}, 'welcome') }}
+                    </a>
+                </div>
+                <div class="col-6 col-md-3">
+                    <a href="{{ path('app_document_index') }}" class="btn btn-outline-secondary w-100 py-3">
+                        <i class="bi bi-file-earmark-text d-block mb-2" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                        {{ 'welcome.quick_actions.documents'|trans({}, 'welcome') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Skip Welcome Preference #}
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-10 col-xl-8">
+            <div class="card bg-light border-0">
+                <div class="card-body py-3">
+                    <form action="{{ path('app_welcome_preference') }}" method="post" class="d-flex align-items-center justify-content-center gap-3 flex-wrap">
+                        <input type="hidden" name="_token" value="{{ csrf_token('welcome_preference') }}">
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   id="skipWelcome"
+                                   name="skip_welcome"
+                                   value="1"
+                                   {% if skip_welcome %}checked{% endif %}
+                                   onchange="this.form.submit()">
+                            <label class="form-check-label" for="skipWelcome">
+                                {{ 'welcome.preference.skip_next_time'|trans({}, 'welcome') }}
+                            </label>
+                        </div>
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                            {{ 'welcome.preference.hint'|trans({}, 'welcome') }}
+                        </small>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Footer with Tenant Info #}
+    {% if tenant %}
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-8">
+                <div class="text-center text-muted small py-3">
+                    <i class="bi bi-building me-1" aria-hidden="true"></i>
+                    {{ 'welcome.footer.tenant'|trans({'%tenant%': tenant.name}, 'welcome') }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .welcome-page {
+        padding-top: 2rem;
+    }
+
+    .welcome-hero {
+        background: linear-gradient(135deg, var(--bs-light) 0%, var(--bs-white) 100%);
+        border-radius: 1rem;
+        padding: 3rem 2rem;
+    }
+
+    [data-bs-theme="dark"] .welcome-hero {
+        background: linear-gradient(135deg, var(--bs-dark) 0%, var(--bs-gray-900) 100%);
+    }
+
+    .welcome-logo img {
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+    }
+
+    .module-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .module-icon .badge {
+        width: 60px;
+        height: 60px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Purple color for compliance module */
+    .bg-purple-subtle {
+        background-color: rgba(111, 66, 193, 0.1) !important;
+    }
+    .text-purple {
+        color: #6f42c1 !important;
+    }
+    .bg-purple {
+        background-color: #6f42c1 !important;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .welcome-hero {
+            padding: 2rem 1rem;
+        }
+
+        .welcome-logo img {
+            max-height: 80px !important;
+        }
+
+        .display-5 {
+            font-size: 1.75rem;
+        }
+    }
+</style>
+{% endblock %}
