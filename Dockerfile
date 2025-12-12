@@ -41,7 +41,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
-    docker-php-ext-install -j$(nproc) \
+    docker-php-ext-install -j"$(nproc)" \
     pdo \
     pdo_mysql \
     mysqli \
@@ -53,8 +53,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
     xml \
     soap
 
-# Install Composer (latest 2.x version)
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Install Composer (pinned to major version 2 for stability)
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Set working directory
 WORKDIR /var/www/html
@@ -87,13 +87,12 @@ ENV MYSQL_USER=isms
 ENV APP_SECRET="build-time-placeholder-not-a-real-secret"
 
 # Configure PHP for production BEFORE running scripts
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-
-# Increase PHP memory limit for Symfony cache:clear and other CLI operations
-RUN echo "memory_limit=512M" > "$PHP_INI_DIR/conf.d/memory-limit.ini"
-
-# Set max_execution_time for long-running operations (migrations, imports)
-RUN echo "max_execution_time=300" > "$PHP_INI_DIR/conf.d/execution-time.ini"
+# - Use production php.ini
+# - Increase memory limit for Symfony cache:clear and CLI operations
+# - Set max_execution_time for long-running operations (migrations, imports)
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
+    echo "memory_limit=512M" > "$PHP_INI_DIR/conf.d/memory-limit.ini" && \
+    echo "max_execution_time=300" > "$PHP_INI_DIR/conf.d/execution-time.ini"
 
 # Now run Symfony scripts (bin/console is now available, memory limit is set)
 # Use a build-time DATABASE_URL that won't persist (init-mysql.sh will set the real one)
