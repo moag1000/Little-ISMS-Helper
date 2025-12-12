@@ -64,6 +64,9 @@ class HomeController extends AbstractController
         // Get all statistics from service (better separation of concerns)
         $stats = $this->dashboardStatisticsService->getDashboardStatistics();
 
+        // Get module-aware management KPIs for expanded dashboard
+        $managementKpis = $this->dashboardStatisticsService->getManagementKPIs();
+
         // Build KPIs array for template
         $kpis = [
             [
@@ -125,6 +128,7 @@ class HomeController extends AbstractController
         return $this->render('home/dashboard.html.twig', [
             'kpis' => $kpis,
             'stats' => $stats,
+            'management_kpis' => $managementKpis,
             'activities' => $activities,
             'iso_compliance' => $isoCompliance,
             'overdue_reviews' => $overdueReviews,
