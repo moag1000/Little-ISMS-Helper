@@ -46,8 +46,16 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        // Authenticated → redirect to dashboard (with locale)
-        return $this->redirectToRoute('app_dashboard', ['_locale' => $locale]);
+        // Check user preference: skip welcome page?
+        $skipWelcome = $request->getSession()->get('skip_welcome_page', false);
+
+        if ($skipWelcome) {
+            // User prefers to go directly to dashboard
+            return $this->redirectToRoute('app_dashboard', ['_locale' => $locale]);
+        }
+
+        // Show welcome page
+        return $this->redirectToRoute('app_welcome', ['_locale' => $locale]);
     }
 
     #[IsGranted('ROLE_USER')]
