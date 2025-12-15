@@ -667,9 +667,24 @@ class DeploymentWizardController extends AbstractController
         }
 
         // Check if database is configured
+        // For Docker standalone: Auto-detect configured database
+        $isDockerStandalone = @file_exists('/run/mysqld/mysqld.sock') || @file_exists('/.dockerenv');
         if (!$session->get('setup_database_configured')) {
-            $this->addFlash('error', $this->translator->trans('setup.error.configure_database_first'));
-            return $this->redirectToRoute('setup_step2_database_config');
+            // In Docker, check if DATABASE_URL is already configured by init-mysql.sh
+            if ($isDockerStandalone && file_exists($this->environmentWriter->getEnvLocalPath())) {
+                $envVars = $this->environmentWriter->readEnvLocal();
+                if (!empty($envVars['DATABASE_URL']) && str_contains($envVars['DATABASE_URL'], 'unix_socket=')) {
+                    // Database already configured - mark as done
+                    $session->set('setup_database_configured', true);
+                    $session->set('setup_schema_created', true);
+                }
+            }
+
+            // Still not configured? Redirect to step 2
+            if (!$session->get('setup_database_configured')) {
+                $this->addFlash('error', $this->translator->trans('setup.error.configure_database_first'));
+                return $this->redirectToRoute('setup_step2_database_config');
+            }
         }
 
         // Clear previous debug info only on GET (to show results from previous POST)
@@ -700,6 +715,9 @@ class DeploymentWizardController extends AbstractController
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
+            // Start output buffering to capture any stray output from migrations/commands
+            ob_start();
+
             $session->set('debug_processing', 'Step 1: Entering form processing block');
             $data = $form->getData();
 
@@ -785,7 +803,8 @@ class DeploymentWizardController extends AbstractController
                     $session->set('debug_error', 'Migration failed: ' . $migrationResult['message']);
                     $this->addFlash('error', 'DEBUG: Migration failed - ' . $migrationResult['message']);
                     $this->addFlash('error', $this->translator->trans('setup.admin.migration_failed') . ': ' . $migrationResult['message']);
-                    // Turbo requires redirect after POST
+                    // Clean up output buffer and redirect
+                    ob_end_clean();
                     return $this->redirectToRoute('setup_step4_admin_user');
                 }
 
@@ -799,7 +818,7 @@ class DeploymentWizardController extends AbstractController
                 $result = $this->createAdminUserViaCommand($data);
 
                 if ($result['success']) {
-                    $session->set('debug_processing', 'Step 4: Admin user created successfully - redirecting to step3');
+                    $session->set('debug_processing', 'Step 4: Admin user created successfully - redirecting to step5');
                     $session->set('setup_admin_created', true);
                     $session->set('setup_admin_email', $data['email']);
 
@@ -808,10 +827,14 @@ class DeploymentWizardController extends AbstractController
 
                     $this->addFlash('success', $this->translator->trans('setup.admin.user_created'));
 
+                    // Clean up output buffer and redirect
+                    ob_end_clean();
                     return $this->redirectToRoute('setup_step5_email_config');
                 }
                 $session->set('debug_error', 'Step 4 ERROR: Admin user creation failed: ' . $result['message']);
-                // Turbo requires redirect after POST
+                $this->addFlash('error', $this->translator->trans('setup.admin.creation_failed') . ': ' . $result['message']);
+                // Clean up output buffer and redirect
+                ob_end_clean();
                 return $this->redirectToRoute('setup_step4_admin_user');
             } catch (Exception $e) {
                 $session->set('debug_error', 'EXCEPTION: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
