@@ -28,7 +28,6 @@ class GenerateIsoProceduresCommand
         ?SymfonyStyle $symfonyStyle = null
     ): int
     {
-        $outputDir = $output_dir;
         $symfonyStyle->title('ISO 27001 Procedure Templates Generator');
         $symfonyStyle->text('Generating comprehensive ISMS procedure templates...');
         // Create output directory

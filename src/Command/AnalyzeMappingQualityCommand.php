@@ -36,8 +36,7 @@ class AnalyzeMappingQualityCommand
     {
         $symfonyStyle->title('Compliance Mapping Quality Analysis');
         $frameworkCode = $framework;
-        $lowQualityOnly = $low_quality;
-        $dryRun = $dry_run;
+        $lowQualityOnly = $lowQuality;
 
         if ($dryRun) {
             $symfonyStyle->note('Running in DRY-RUN mode - no changes will be saved');
