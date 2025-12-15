@@ -282,4 +282,25 @@ class ControlRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find controls by their control IDs (e.g., '5.1', '5.2', 'A.5.1')
+     *
+     * @param array $controlIds Array of control ID strings
+     * @return Control[] Array of matching Control entities
+     */
+    public function findByControlIds(array $controlIds): array
+    {
+        if (empty($controlIds)) {
+            return [];
+        }
+
+        return $this->createQueryBuilder('c')
+            ->where('c.controlId IN (:controlIds)')
+            ->setParameter('controlIds', $controlIds)
+            ->orderBy('LENGTH(c.controlId)', 'ASC')
+            ->addOrderBy('c.controlId', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

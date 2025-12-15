@@ -10,7 +10,6 @@ use App\Repository\RiskTreatmentPlanRepository;
 use App\Service\EmailNotificationService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -70,11 +69,11 @@ class RiskTreatmentPlanMonitorCommand
     }
 
     public function __invoke(
-        #[Option(name: 'tenant', shortcut: 't', mode: InputOption::VALUE_OPTIONAL, description: 'Process only specific tenant ID')]
+        #[Option(name: 'tenant', shortcut: 't', description: 'Process only specific tenant ID')]
         $tenant,
-        #[Option(name: 'days', shortcut: 'd', mode: InputOption::VALUE_OPTIONAL, description: 'Days ahead to check for approaching deadlines')]
+        #[Option(name: 'days', shortcut: 'd', description: 'Days ahead to check for approaching deadlines')]
         int $days = 7,
-        #[Option(name: 'send-notifications', mode: InputOption::VALUE_NONE, description: 'Actually send email notifications (default: dry-run)')]
+        #[Option(name: 'send-notifications', description: 'Actually send email notifications (default: dry-run)')]
         bool $sendNotifications = false,
         ?SymfonyStyle $symfonyStyle = null
     ): int

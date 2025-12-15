@@ -1,0 +1,410 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'analytics' %}
+
+{% block title %}{{ 'analytics.compliance.title'|trans({}, 'analytics') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="analytics-dashboard" data-controller="compliance-analytics">
+    {# Page Header #}
+    <div class="page-header">
+        <div>
+            <h1>
+                <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                {{ 'analytics.compliance.title'|trans({}, 'analytics') }}
+            </h1>
+            <p class="text-muted">{{ 'analytics.compliance.subtitle'|trans({}, 'analytics') }}</p>
+        </div>
+        <div class="page-header-actions">
+            <a href="{{ path('app_analytics_dashboard') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'analytics.action.back_to_basic'|trans({}, 'analytics') }}
+            </a>
+        </div>
+    </div>
+
+    {# Tab Navigation #}
+    <ul class="nav nav-tabs mb-4" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#comparison-tab" type="button" role="tab">
+                <i class="bi bi-bar-chart me-1"></i> {{ 'analytics.compliance.tabs.comparison'|trans({}, 'analytics') }}
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#overlap-tab" type="button" role="tab">
+                <i class="bi bi-intersect me-1"></i> {{ 'analytics.compliance.tabs.overlap'|trans({}, 'analytics') }}
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#roadmap-tab" type="button" role="tab">
+                <i class="bi bi-signpost-split me-1"></i> {{ 'analytics.compliance.tabs.roadmap'|trans({}, 'analytics') }}
+            </button>
+        </li>
+    </ul>
+
+    {# Tab Content #}
+    <div class="tab-content">
+        {# Framework Comparison Tab #}
+        <div class="tab-pane fade show active" id="comparison-tab" role="tabpanel">
+            <div class="row">
+                {# Comparison Chart #}
+                <div class="col-lg-8 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">{{ 'analytics.compliance.comparison.chart_title'|trans({}, 'analytics') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div style="height: 300px; position: relative;">
+                                <canvas id="frameworkComparisonChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {# Summary Cards #}
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">{{ 'analytics.compliance.comparison.summary'|trans({}, 'analytics') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            {% for framework in comparison.frameworks %}
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                                <div>
+                                    <h6 class="mb-0">{{ framework.name }}</h6>
+                                    <small class="text-muted">{{ framework.total }} {{ 'analytics.compliance.comparison.requirements'|trans({}, 'analytics') }}</small>
+                                </div>
+                                <div class="text-end">
+                                    <h4 class="mb-0
+                                        {% if framework.compliance_percentage >= 80 %}text-success
+                                        {% elseif framework.compliance_percentage >= 50 %}text-warning
+                                        {% else %}text-danger{% endif %}
+                                    ">{{ framework.compliance_percentage }}%</h4>
+                                    <small class="text-muted">{{ framework.fulfilled }}/{{ framework.applicable }}</small>
+                                </div>
+                            </div>
+                            {% else %}
+                            <p class="text-muted text-center">{{ 'analytics.compliance.comparison.no_data'|trans({}, 'analytics') }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Detailed Table #}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ 'analytics.compliance.comparison.detailed_breakdown'|trans({}, 'analytics') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'analytics.compliance.table.framework'|trans({}, 'analytics') }}</th>
+                                    <th class="text-center">{{ 'analytics.compliance.table.total'|trans({}, 'analytics') }}</th>
+                                    <th class="text-center">{{ 'analytics.compliance.table.compliant'|trans({}, 'analytics') }}</th>
+                                    <th class="text-center">{{ 'analytics.compliance.table.partial'|trans({}, 'analytics') }}</th>
+                                    <th class="text-center">{{ 'analytics.compliance.table.non_compliant'|trans({}, 'analytics') }}</th>
+                                    <th class="text-center">{{ 'analytics.compliance.table.compliance'|trans({}, 'analytics') }}</th>
+                                    <th>{{ 'analytics.compliance.table.progress'|trans({}, 'analytics') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for framework in comparison.frameworks %}
+                                <tr>
+                                    <td><strong>{{ framework.name }}</strong></td>
+                                    <td class="text-center">{{ framework.applicable }}</td>
+                                    <td class="text-center text-success">{{ framework.fulfilled }}</td>
+                                    <td class="text-center text-warning">{{ framework.in_progress }}</td>
+                                    <td class="text-center text-danger">{{ framework.not_started }}</td>
+                                    <td class="text-center">
+                                        <span class="badge
+                                            {% if framework.compliance_percentage >= 80 %}bg-success
+                                            {% elseif framework.compliance_percentage >= 50 %}bg-warning
+                                            {% else %}bg-danger{% endif %}
+                                        ">{{ framework.compliance_percentage }}%</span>
+                                    </td>
+                                    <td>
+                                        {% if framework.applicable > 0 %}
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar bg-success" style="width: {{ (framework.fulfilled / framework.applicable * 100)|round }}%"></div>
+                                            <div class="progress-bar bg-warning" style="width: {{ (framework.in_progress / framework.applicable * 100)|round }}%"></div>
+                                            <div class="progress-bar bg-danger" style="width: {{ (framework.not_started / framework.applicable * 100)|round }}%"></div>
+                                        </div>
+                                        {% else %}
+                                        <span class="text-muted">-</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Framework Overlap Tab #}
+        <div class="tab-pane fade" id="overlap-tab" role="tabpanel">
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">{{ 'analytics.compliance.overlap.title'|trans({}, 'analytics') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="text-center mb-4">
+                                <h2 class="text-primary">{{ overlap.frameworks|length }}</h2>
+                                <p class="text-muted">{{ 'analytics.compliance.overlap.unique_controls'|trans({}, 'analytics') }}</p>
+                            </div>
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <h4 class="text-success">{{ overlap.overlaps|length }}</h4>
+                                    <p class="text-muted small">{{ 'analytics.compliance.overlap.shared_controls'|trans({}, 'analytics') }}</p>
+                                </div>
+                                <div class="col-6">
+                                    {% set total_overlap = 0 %}
+                                    {% for o in overlap.overlaps %}
+                                        {% set total_overlap = total_overlap + o.overlap_percentage %}
+                                    {% endfor %}
+                                    <h4 class="text-info">{{ overlap.overlaps|length > 0 ? (total_overlap / overlap.overlaps|length)|round : 0 }}%</h4>
+                                    <p class="text-muted small">{{ 'analytics.compliance.overlap.overlap_rate'|trans({}, 'analytics') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">{{ 'analytics.compliance.overlap.efficiency'|trans({}, 'analytics') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if overlap.overlaps|length > 0 %}
+                            <div class="alert alert-success">
+                                <i class="bi bi-lightbulb me-2"></i>
+                                <strong>{{ 'analytics.compliance.overlap.efficiency_info'|trans({}, 'analytics') }}</strong>
+                            </div>
+                            <p>{{ 'analytics.compliance.overlap.efficiency_description'|trans({'%percentage%': (total_overlap / overlap.overlaps|length)|round}, 'analytics') }}</p>
+                            {% else %}
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                {{ 'analytics.compliance.comparison.no_data'|trans({}, 'analytics') }}
+                            </div>
+                            {% endif %}
+                            <div style="height: 200px; position: relative;">
+                                <canvas id="overlapChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Framework Overlaps List #}
+            {% if overlap.overlaps|length > 0 %}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ 'analytics.compliance.overlap.matrix_title'|trans({}, 'analytics') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Framework 1</th>
+                                    <th>Framework 2</th>
+                                    <th class="text-center">{{ 'analytics.compliance.overlap.shared_controls'|trans({}, 'analytics') }}</th>
+                                    <th class="text-center">{{ 'analytics.compliance.overlap.overlap_rate'|trans({}, 'analytics') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for o in overlap.overlaps %}
+                                <tr>
+                                    <td>{{ o.framework1_name }}</td>
+                                    <td>{{ o.framework2_name }}</td>
+                                    <td class="text-center">{{ o.shared_controls }}</td>
+                                    <td class="text-center">
+                                        <span class="badge {% if o.overlap_percentage > 50 %}bg-success{% elseif o.overlap_percentage > 20 %}bg-warning{% else %}bg-secondary{% endif %}">
+                                            {{ o.overlap_percentage }}%
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        {# Compliance Roadmap Tab #}
+        <div class="tab-pane fade" id="roadmap-tab" role="tabpanel">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ 'analytics.compliance.roadmap.title'|trans({}, 'analytics') }}</h5>
+                    <span class="badge bg-primary">{{ roadmap.roadmap|length }} {{ 'analytics.compliance.tabs.frameworks'|trans({}, 'analytics') }}</span>
+                </div>
+                <div class="card-body">
+                    {% if roadmap.roadmap|length > 0 %}
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card bg-success bg-opacity-10 border-success">
+                                <div class="card-body text-center">
+                                    <h3 class="text-success">{{ roadmap.summary.frameworks_compliant }}</h3>
+                                    <p class="mb-0">{{ 'analytics.compliance.table.compliant'|trans({}, 'analytics') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-warning bg-opacity-10 border-warning">
+                                <div class="card-body text-center">
+                                    <h3 class="text-warning">{{ roadmap.summary.frameworks_in_progress }}</h3>
+                                    <p class="mb-0">{{ 'analytics.compliance.table.partial'|trans({}, 'analytics') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-secondary bg-opacity-10 border-secondary">
+                                <div class="card-body text-center">
+                                    <h3 class="text-secondary">{{ roadmap.summary.frameworks_not_started }}</h3>
+                                    <p class="mb-0">{{ 'analytics.compliance.table.non_compliant'|trans({}, 'analytics') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'analytics.compliance.table.framework'|trans({}, 'analytics') }}</th>
+                                    <th class="text-center">{{ 'analytics.compliance.table.compliance'|trans({}, 'analytics') }}</th>
+                                    <th class="text-center">Gaps</th>
+                                    <th class="text-center">Est. Weeks</th>
+                                    <th>Status</th>
+                                    <th>{{ 'analytics.compliance.table.progress'|trans({}, 'analytics') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in roadmap.roadmap %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ item.framework }}</strong>
+                                        {% if item.mandatory %}
+                                        <span class="badge bg-danger ms-1">Mandatory</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge
+                                            {% if item.current_compliance >= 80 %}bg-success
+                                            {% elseif item.current_compliance >= 50 %}bg-warning
+                                            {% else %}bg-danger{% endif %}
+                                        ">{{ item.current_compliance }}%</span>
+                                    </td>
+                                    <td class="text-center">{{ item.gaps_remaining }}</td>
+                                    <td class="text-center">{{ item.estimated_weeks }}</td>
+                                    <td>
+                                        <span class="badge bg-
+                                            {% if item.status == 'completed' %}success
+                                            {% elseif item.status == 'on_track' %}info
+                                            {% elseif item.status == 'in_progress' %}warning
+                                            {% elseif item.status == 'at_risk' %}warning
+                                            {% elseif item.status == 'critical' %}danger
+                                            {% else %}secondary{% endif %}
+                                        ">{{ item.status|replace({'_': ' '})|title }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar
+                                                {% if item.current_compliance >= 80 %}bg-success
+                                                {% elseif item.current_compliance >= 50 %}bg-warning
+                                                {% else %}bg-danger{% endif %}
+                                            " style="width: {{ item.current_compliance }}%">
+                                                {{ item.current_compliance }}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-check-circle display-1 text-success"></i>
+                        <h4 class="mt-3">{{ 'analytics.compliance.roadmap.no_gaps'|trans({}, 'analytics') }}</h4>
+                        <p class="text-muted">{{ 'analytics.compliance.roadmap.fully_compliant'|trans({}, 'analytics') }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        document.addEventListener('turbo:load', function() {
+            // Framework Comparison Chart
+            const comparisonCtx = document.getElementById('frameworkComparisonChart');
+            if (comparisonCtx) {
+                const comparisonData = {{ comparison.frameworks|json_encode|raw }};
+                new Chart(comparisonCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: comparisonData.map(f => f.name),
+                        datasets: [
+                            {
+                                label: '{{ 'analytics.compliance.chart.compliant'|trans({}, 'analytics') }}',
+                                data: comparisonData.map(f => f.fulfilled),
+                                backgroundColor: '#198754'
+                            },
+                            {
+                                label: '{{ 'analytics.compliance.chart.partial'|trans({}, 'analytics') }}',
+                                data: comparisonData.map(f => f.in_progress),
+                                backgroundColor: '#ffc107'
+                            },
+                            {
+                                label: '{{ 'analytics.compliance.chart.non_compliant'|trans({}, 'analytics') }}',
+                                data: comparisonData.map(f => f.not_started),
+                                backgroundColor: '#dc3545'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { stacked: true },
+                            y: { stacked: true, beginAtZero: true }
+                        }
+                    }
+                });
+            }
+
+            // Overlap Chart
+            const overlapCtx = document.getElementById('overlapChart');
+            if (overlapCtx) {
+                const overlapData = {{ overlap|json_encode|raw }};
+                const totalShared = overlapData.overlaps.reduce((sum, o) => sum + o.shared_controls, 0);
+                const totalFrameworks = overlapData.frameworks.length;
+                new Chart(overlapCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['{{ 'analytics.compliance.chart.shared'|trans({}, 'analytics') }}', '{{ 'analytics.compliance.chart.unique'|trans({}, 'analytics') }}'],
+                        datasets: [{
+                            data: [totalShared, Math.max(0, totalFrameworks - totalShared)],
+                            backgroundColor: ['#198754', '#6c757d']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

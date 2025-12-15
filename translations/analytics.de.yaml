@@ -12,6 +12,281 @@ analytics:
         refresh: Aktualisieren
         export_png: 'Als PNG exportieren'
         reset_filters: 'Filter zurücksetzen'
+        advanced: 'Erweiterte Analytics'
+        back_to_basic: 'Zurück zu Basis-Analytics'
+        back_to_advanced: 'Zurück zu erweiterten Analytics'
+        view_dashboard: 'Dashboard ansehen'
+        add_assets: 'Assets hinzufügen'
+
+    # Phase 7B: Erweiterte Analytics
+    advanced:
+        title: 'Erweiterte Analytics'
+        subtitle: 'Multi-Framework-Compliance, Maßnahmenwirksamkeit und Prognose-Analytics'
+        kpi:
+            overall_compliance: 'Gesamt-Compliance'
+            frameworks_count: '%count% Frameworks'
+            control_effectiveness: 'Maßnahmenwirksamkeit'
+            controls_count: '%count% Maßnahmen'
+            implementation_rate: 'Umsetzungsrate'
+            implemented: 'umgesetzt'
+            risk_velocity: 'Risiko-Geschwindigkeit'
+            velocity_period: 'Letzte %days% Tage'
+        card:
+            compliance_frameworks:
+                title: 'Multi-Framework-Compliance'
+                subtitle: 'Framework-übergreifende Analyse'
+                description: 'Compliance über mehrere Frameworks vergleichen, Überschneidungen identifizieren und Compliance-Roadmap verfolgen.'
+                feature1: 'Framework-Vergleich'
+                feature2: 'Überlappungsanalyse'
+                feature3: 'Compliance-Roadmap'
+            control_effectiveness:
+                title: 'Maßnahmenwirksamkeit'
+                subtitle: 'Performance-Analytics'
+                description: 'Maßnahmen-Performance analysieren, verwaiste Maßnahmen identifizieren und Review-Alterung verfolgen.'
+                feature1: 'Wirksamkeitsbewertung'
+                feature2: 'Alterungsanalyse'
+                feature3: 'Risikominderungsmatrix'
+            risk_forecast:
+                title: 'Risiko-Prognose'
+                subtitle: 'Prognose-Analytics'
+                description: 'Zukünftige Risikoniveaus vorhersagen, Risiko-Geschwindigkeit verfolgen und Anomalien erkennen.'
+                feature1: 'Prognosemodellierung'
+                feature2: 'Geschwindigkeitsverfolgung'
+                feature3: 'Anomalieerkennung'
+            asset_criticality:
+                title: 'Asset-Kritikalität'
+                subtitle: 'Vorfallwahrscheinlichkeit'
+                description: 'Asset-Kritikalität analysieren und Vorfallwahrscheinlichkeit basierend auf historischen Daten vorhersagen.'
+            basic_analytics:
+                title: 'Basis-Analytics'
+                subtitle: 'Standard-Dashboards'
+                description: 'Standard-Analytics inkl. Risiko-Heatmap, Compliance-Radar und Trendanalyse.'
+        executive_summary:
+            title: 'Management-Zusammenfassung'
+            requirements: 'Anforderungen'
+            no_frameworks: 'Keine Compliance-Frameworks konfiguriert'
+
+    # Compliance Analytics
+    compliance:
+        title: 'Multi-Framework Compliance Analytics'
+        subtitle: 'Framework-übergreifender Vergleich und Gap-Analyse'
+        tabs:
+            frameworks: 'Frameworks'
+            comparison: 'Framework-Vergleich'
+            overlap: 'Framework-Überlappung'
+            roadmap: 'Compliance-Roadmap'
+        comparison:
+            chart_title: 'Compliance nach Framework'
+            summary: 'Framework-Zusammenfassung'
+            requirements: 'Anforderungen'
+            detailed_breakdown: 'Detaillierte Aufschlüsselung'
+            no_data: 'Keine Compliance-Daten verfügbar'
+        table:
+            framework: 'Framework'
+            total: 'Gesamt'
+            compliant: 'Konform'
+            partial: 'Teilweise'
+            non_compliant: 'Nicht konform'
+            compliance: 'Compliance'
+            progress: 'Fortschritt'
+        chart:
+            compliant: 'Konform'
+            partial: 'Teilweise'
+            non_compliant: 'Nicht konform'
+            shared: 'Gemeinsame Maßnahmen'
+            unique: 'Einzigartige Maßnahmen'
+        overlap:
+            title: 'Framework-Maßnahmenüberlappung'
+            unique_controls: 'Einzigartige Maßnahmen gesamt'
+            shared_controls: 'Gemeinsame Maßnahmen'
+            overlap_rate: 'Überlappungsrate'
+            efficiency: 'Effizienzpotenzial'
+            efficiency_info: 'Wiederverwendungsmöglichkeit erkannt!'
+            efficiency_description: '%percentage%% der Maßnahmen können über mehrere Frameworks wiederverwendet werden, was den Implementierungsaufwand reduziert.'
+            matrix_title: 'Framework-Überlappungsmatrix'
+        roadmap:
+            title: 'Compliance-Verbesserungsplan'
+            gaps_identified: 'Lücken identifiziert'
+            high_priority: 'Hohe Priorität'
+            medium_priority: 'Mittlere Priorität'
+            low_priority: 'Niedrige Priorität'
+            no_gaps: 'Keine Compliance-Lücken'
+            fully_compliant: 'Herzlichen Glückwunsch! Alle Compliance-Anforderungen sind erfüllt.'
+            table:
+                framework: 'Framework'
+                requirement: 'Anforderung'
+                status: 'Status'
+                priority: 'Priorität'
+                recommendation: 'Empfehlung'
+
+    # Maßnahmenwirksamkeit Analytics
+    controls:
+        title: 'Maßnahmenwirksamkeit Analytics'
+        subtitle: 'Performance-Analyse und Alterungsverfolgung'
+        kpi:
+            total_controls: 'Maßnahmen gesamt'
+            implementation_rate: 'Umsetzungsrate'
+            avg_effectiveness: 'Ø Wirksamkeit'
+            risk_coverage: 'Risikoabdeckung'
+        tabs:
+            overview: 'Übersicht'
+            performance: 'Performance'
+            aging: 'Alterungsanalyse'
+            orphans: 'Verwaiste Maßnahmen'
+        overview:
+            status_distribution: 'Verteilung Umsetzungsstatus'
+            category_performance: 'Kategorie-Performance'
+            by_category: 'Maßnahmen nach Kategorie'
+        table:
+            category: 'Kategorie'
+            total: 'Gesamt'
+            implemented: 'Umgesetzt'
+            impl_rate: 'Umset.-Rate'
+            effectiveness: 'Wirksamkeit'
+            progress: 'Fortschritt'
+            control: 'Maßnahme'
+            score: 'Bewertung'
+            risks: 'Risiken'
+            status: 'Status'
+            days_overdue: 'Tage überfällig'
+            reason: 'Grund'
+            recommendation: 'Empfehlung'
+            risks_mitigated: 'Geminderte Risiken'
+            total_reduction: 'Gesamtreduktion'
+            avg_reduction: 'Ø Reduktion'
+        status:
+            implemented: 'Umgesetzt'
+            partially: 'Teilweise umgesetzt'
+            planned: 'Geplant'
+            not_applicable: 'Nicht anwendbar'
+            not_implemented: 'Nicht umgesetzt'
+        chart:
+            effectiveness: 'Wirksamkeit'
+            implementation: 'Umsetzungsrate'
+        performance:
+            top_performing: 'Bestleistende Maßnahmen'
+            needs_attention: 'Erfordert Aufmerksamkeit'
+            risk_reduction_matrix: 'Maßnahmen-Risiko-Reduktionsmatrix'
+            matrix_info: '%controls% Maßnahmen reduzieren aktiv Risiken mit einer durchschnittlichen Reduktion von %reduction%%'
+        aging:
+            current: 'Aktuell (<90 Tage)'
+            due_soon: 'Bald fällig (90-180 Tage)'
+            overdue: 'Überfällig (180-365 Tage)'
+            critical: 'Kritisch (>365 Tage)'
+            never_reviewed: 'Nie geprüft'
+            compliance_rate: 'Review-Compliance'
+            distribution_chart: 'Alterungsverteilung'
+            overdue_controls: 'Überfällige Maßnahmen'
+            never: 'Nie'
+            all_current: 'Alle Maßnahmen sind aktuell!'
+        orphans:
+            title: 'Verwaiste Maßnahmen'
+            found: 'gefunden'
+            info: 'Verwaiste Maßnahmen sind nicht mit Risiken oder Compliance-Anforderungen verknüpft. Erwägen Sie, diese mit relevanten Elementen zu verbinden.'
+            none_found: 'Keine verwaisten Maßnahmen'
+            all_linked: 'Alle Maßnahmen sind ordnungsgemäß mit Risiken oder Compliance-Anforderungen verknüpft.'
+
+    # Risiko-Prognose Analytics
+    forecast:
+        title: 'Risiko-Prognose Analytics'
+        subtitle: 'Prädiktive Risikomodellierung und Anomalieerkennung'
+        kpi:
+            current_risks: 'Aktuelle Risiken'
+            predicted: 'Prognostiziert'
+            in_months: 'in %months% Monaten'
+            risk_velocity: 'Risiko-Geschwindigkeit'
+            velocity_period: 'Letzte %days% Tage'
+            appetite_compliance: 'Risikoappetit-Compliance'
+        tabs:
+            forecast: 'Risiko-Prognose'
+            velocity: 'Risiko-Geschwindigkeit'
+            appetite: 'Risikoappetit'
+            anomalies: 'Anomalien'
+        chart:
+            risk_forecast: 'Risikoniveau-Prognose'
+            historical: 'Historisch'
+            predicted: 'Prognostiziert'
+            new_risks: 'Neue Risiken'
+            closed_risks: 'Geschlossene Risiken'
+            compliant: 'Konform'
+            gap: 'Lücke'
+        predictions:
+            title: 'Prognose-Details'
+            trend: 'Trendrichtung'
+            increasing: 'Steigend'
+            decreasing: 'Sinkend'
+            stable: 'Stabil'
+            confidence: 'Konfidenzgrad'
+            change: 'Prognostizierte Änderung'
+            by_level: 'Nach Risikoniveau'
+        velocity:
+            chart_title: 'Risiko-Geschwindigkeit über Zeit'
+            summary: 'Geschwindigkeits-Zusammenfassung'
+            new_risks: 'Neue Risiken'
+            closed_risks: 'Geschlossene Risiken'
+            net_change: 'Netto-Änderung'
+            avg_per_month: 'Ø pro Monat'
+            period: 'Analysezeitraum'
+            monthly_breakdown: 'Monatliche Aufschlüsselung'
+        table:
+            month: 'Monat'
+            new: 'Neu'
+            closed: 'Geschlossen'
+            net: 'Netto'
+            total: 'Gesamt'
+            trend: 'Trend'
+        appetite:
+            compliance_score: 'Risikoappetit-Compliance'
+            score_description: 'Prozentsatz der Risikoniveaus innerhalb definierter Schwellenwerte'
+            by_level: 'Compliance nach Risikoniveau'
+            threshold: 'Schwellenwert'
+            within_threshold: 'Innerhalb akzeptablem Schwellenwert'
+            exceeds_threshold: 'Überschreitet Schwellenwert um %excess%'
+            recommendations: 'Empfehlungen'
+        anomalies:
+            none_detected: 'Keine Anomalien erkannt'
+            all_normal: 'Alle Risikomuster liegen innerhalb normaler Parameter.'
+            items_affected: 'Elemente betroffen'
+            historical_patterns: 'Historische Anomaliemuster'
+
+    # Asset-Kritikalität Analytics
+    assets:
+        title: 'Asset-Kritikalität Analytics'
+        subtitle: 'Kritikalitätsanalyse und Vorfallwahrscheinlichkeit'
+        kpi:
+            total_assets: 'Assets gesamt'
+            high_risk: 'Hochrisiko-Assets'
+            with_incidents: 'Mit Vorfällen'
+            avg_probability: 'Ø Wahrscheinlichkeit'
+        chart:
+            criticality_distribution: 'Kritikalitätsverteilung'
+            probability_distribution: 'Vorfallwahrscheinlichkeitsverteilung'
+            asset_count: 'Asset-Anzahl'
+        high_risk:
+            title: 'Hochrisiko-Assets'
+            count: 'Assets'
+            none: 'Keine Hochrisiko-Assets gefunden'
+        table:
+            asset: 'Asset'
+            type: 'Typ'
+            criticality: 'Kritikalität'
+            incidents: 'Vorfälle'
+            probability: 'Wahrscheinlichkeit'
+            risk_level: 'Risikoniveau'
+        criticality:
+            very_high: 'Sehr hoch (12+)'
+            high: 'Hoch (8-11)'
+            medium: 'Mittel (4-7)'
+            low: 'Niedrig (1-3)'
+        risk_level:
+            critical: 'Kritisch'
+            high: 'Hoch'
+            medium: 'Mittel'
+            low: 'Niedrig'
+        all_assets:
+            title: 'Alle Assets nach Risikoniveau'
+        no_assets: 'Keine Assets gefunden'
+        add_assets_hint: 'Fügen Sie Assets hinzu, um Kritikalitäts-Analytics anzuzeigen'
     filter:
         period:
             last_6_months: 'Letzte 6 Monate'
@@ -26,6 +301,11 @@ analytics:
         heat_map: Risiko-Heatmap
         compliance_radar: Compliance-Radar
         trends: Trends
+        advanced_section: 'Erweitert'
+        frameworks: 'Frameworks'
+        controls: 'Maßnahmen'
+        forecast: 'Prognose'
+        assets: 'Assets'
     card:
         risk_heat_map: Risiko-Heatmap
         compliance_radar: Compliance-Radar

@@ -104,6 +104,33 @@
                 <i class="bi bi-graph-up-arrow" aria-hidden="true"></i> {{ 'analytics.tabs.trends'|trans({}, 'analytics') }}
             </button>
         </li>
+        {% if is_granted('ROLE_MANAGER') %}
+        <li class="nav-item ms-auto" role="presentation">
+            <span class="nav-link disabled text-muted border-0 bg-transparent">
+                <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'analytics.tabs.advanced_section'|trans({}, 'analytics') }}
+            </span>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" href="{{ path('app_analytics_compliance_frameworks') }}">
+                <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'analytics.tabs.frameworks'|trans({}, 'analytics') }}
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" href="{{ path('app_analytics_control_effectiveness') }}">
+                <i class="bi bi-toggles" aria-hidden="true"></i> {{ 'analytics.tabs.controls'|trans({}, 'analytics') }}
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" href="{{ path('app_analytics_risk_forecast') }}">
+                <i class="bi bi-graph-up-arrow" aria-hidden="true"></i> {{ 'analytics.tabs.forecast'|trans({}, 'analytics') }}
+            </a>
+        </li>
+        <li class="nav-item" role="presentation">
+            <a class="nav-link" href="{{ path('app_analytics_asset_criticality') }}">
+                <i class="bi bi-server" aria-hidden="true"></i> {{ 'analytics.tabs.assets'|trans({}, 'analytics') }}
+            </a>
+        </li>
+        {% endif %}
     </ul>
 
     {# Tab Content #}

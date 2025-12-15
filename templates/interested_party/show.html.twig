@@ -31,7 +31,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h3>{{ 'interested_party.page.show_title'|trans({}, 'interested_parties') }}</h3>
+            <h2>{{ 'interested_party.page.show_title'|trans({}, 'interested_parties') }}</h2>
             <div>
                 <span class="badge badge-{{ interested_party.partyType }}">{{ interested_party.partyType }}</span>
                 <span class="badge badge-{{ interested_party.importance }}">{{ interested_party.importance|upper }}</span>
@@ -44,13 +44,13 @@
 
             {% if interested_party.description %}
             <div class="detail-section">
-                <h2>{{ 'interested_party.field.description'|trans({}, 'interested_parties') }}</h2>
+                <h3>{{ 'interested_party.field.description'|trans({}, 'interested_parties') }}</h3>
                 <p>{{ interested_party.description }}</p>
             </div>
             {% endif %}
 
             <div class="detail-section">
-                <h2>{{ 'interested_party.section.contact_info'|trans({}, 'interested_parties') }}</h2>
+                <h3>{{ 'interested_party.section.contact_info'|trans({}, 'interested_parties') }}</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
                         <span class="label">{{ 'interested_party.field.contact_person'|trans({}, 'interested_parties') }}:</span>
@@ -71,7 +71,7 @@
                 <h3>{{ 'interested_party.section.requirements'|trans({}, 'interested_parties') }}</h3>
                 <p>{{ interested_party.requirements }}</p>
                 {% if interested_party.howAddressed %}
-                <h4>{{ 'interested_party.field.how_addressed'|trans({}, 'interested_parties') }}</h4>
+                <div class="fw-bold mt-3">{{ 'interested_party.field.how_addressed'|trans({}, 'interested_parties') }}</div>
                 <p>{{ interested_party.howAddressed }}</p>
                 {% endif %}
             </div>

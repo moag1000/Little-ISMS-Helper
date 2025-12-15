@@ -16,6 +16,52 @@ bcm:
         view_bia: 'View BIA'
         export: Export
         plan: 'Recovery plan'
+    section:
+        protection_analysis: 'Protection Requirements Analysis'
+        business_processes: 'Business Processes'
+        asset_details: 'Asset Details'
+        rto_legend: 'RTO Legend'
+        critical_processes: 'Critical Business Processes'
+    field:
+        confidentiality: Confidentiality
+        integrity: Integrity
+        availability: Availability
+        overall_protection_level: 'Overall Protection Level'
+        reputational_impact: 'Reputational Impact'
+        regulatory_impact: 'Regulatory Impact'
+        operational_impact: 'Operational Impact'
+        mtpd: 'MTPD (Maximum Tolerable Period of Disruption)'
+        supporting_assets: 'Supporting Assets'
+        process_name: 'Process Name'
+        criticality: Criticality
+        rto: RTO
+        rpo: RPO
+    message:
+        no_processes: 'No business processes assigned'
+        no_matching_processes: 'No matching processes found'
+        rto_tooltip: 'Recovery Time Objective - Maximum time to restore business operations'
+        rpo_tooltip: 'Recovery Point Objective - Maximum acceptable data loss (time period)'
+        mtd_tooltip: 'Maximum Tolerable Downtime - Maximum tolerable outage duration'
+        bcm_influences_asset_ratings: 'BCM assessments influence asset risk ratings'
+        no_critical_processes: 'No critical processes'
+        no_critical_processes_desc: 'There are currently no critical processes defined'
+    data_reuse:
+        asset_recommendations_title: 'Asset Recommendations from BCM Analysis'
+        benefits_title: 'Benefits of Data Reuse'
+        benefit_efficiency: 'Efficiency: No duplicate data entry required'
+        benefit_consistency: 'Consistency: Unified data across all modules'
+        benefit_compliance: 'Compliance: Automatic linking to requirements'
+        benefit_quality: 'Quality: Verified data from validated source'
+    stats:
+        critical_processes: 'Critical Processes'
+        avg_rto: 'Average RTO'
+        high_priority: 'High Priority'
+    badge:
+        immediate: Immediate
+        urgent: Urgent
+    rto:
+        standard: Standard
+        flexible: Flexible
 business_process:
     confirm:
         delete: 'Are you sure you want to delete this business process?'
@@ -77,11 +123,11 @@ business_process:
         never_tested: 'Never tested'
         no_critical_assets: 'No critical assets — well done!'
         no_critical_processes: 'No critical processes'
-        no_matching_processes: 'No Matching Processes'
-        rto_tooltip: 'Rto Tooltip'
-        rpo_tooltip: 'Rpo Tooltip'
-        mtd_tooltip: 'Mtd Tooltip'
-        bcm_influences_asset_ratings: 'Bcm Influences Asset Ratings'
+        no_matching_processes: 'No matching processes found'
+        rto_tooltip: 'Recovery Time Objective - Maximum time to restore business operations'
+        rpo_tooltip: 'Recovery Point Objective - Maximum acceptable data loss (time period)'
+        mtd_tooltip: 'Maximum Tolerable Downtime - Maximum tolerable outage duration'
+        bcm_influences_asset_ratings: 'BCM assessments influence asset risk ratings'
     type:
         information: Information
         software: Software
@@ -106,9 +152,9 @@ business_process:
         standard: Standard
         flexible: Flexible
     data_reuse:
-        asset_recommendations_title: 'Asset Recommendations Title'
-        benefits_title: 'Benefits Title'
-        benefit_efficiency: 'Benefit Efficiency'
-        benefit_consistency: 'Benefit Consistency'
-        benefit_compliance: 'Benefit Compliance'
-        benefit_quality: 'Benefit Quality'
+        asset_recommendations_title: 'Asset Recommendations from BCM Analysis'
+        benefits_title: 'Benefits of Data Reuse'
+        benefit_efficiency: 'Efficiency: No duplicate data entry required'
+        benefit_consistency: 'Consistency: Unified data across all modules'
+        benefit_compliance: 'Compliance: Automatic linking to requirements'
+        benefit_quality: 'Quality: Verified data from validated source'

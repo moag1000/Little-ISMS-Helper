@@ -22,10 +22,10 @@
 
             <div class="card shadow-lg">
                 <div class="card-header bg-info text-white">
-                    <h3 class="mb-0">
+                    <h1 class="h3 mb-0">
                         <i class="bi bi-cloud-upload-alt me-2" aria-hidden="true"></i>
                         {{ 'setup.step3.header'|trans({}, 'setup') }}
-                    </h3>
+                    </h1>
                 </div>
                 <div class="card-body p-4">
                     <p class="lead mb-4">
@@ -33,10 +33,10 @@
                     </p>
 
                     <div class="alert alert-info" role="alert">
-                        <h4 class="alert-heading">
+                        <p class="h5 mb-2">
                             <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
                             {{ 'setup.step3.info.title'|trans({}, 'setup') }}
-                        </h4>
+                        </p>
                         <ul class="mb-0">
                             <li><strong>{{ 'setup.step3.info.restore'|trans({}, 'setup') }}</strong> {{ 'setup.step3.info.restore_desc'|trans({}, 'setup') }}</li>
                             <li><strong>{{ 'setup.step3.info.new_install'|trans({}, 'setup') }}</strong> {{ 'setup.step3.info.new_install_desc'|trans({}, 'setup') }}</li>
@@ -67,10 +67,10 @@
                                 {# Orphaned Entities Detection and Repair #}
                                 {% if backup_restore_result.orphaned_entities is defined and backup_restore_result.orphaned_entities.total > 0 %}
                                     <div class="alert alert-warning mt-3">
-                                        <h4 class="alert-heading">
+                                        <p class="h5 mb-2">
                                             <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
                                             {{ 'setup.step3.orphaned.title'|trans({}, 'setup') }}
-                                        </h4>
+                                        </p>
                                         <p>
                                             {{ 'setup.step3.orphaned.description'|trans({'%count%': backup_restore_result.orphaned_entities.total}, 'setup')|raw }}
                                         </p>
@@ -88,10 +88,10 @@
 
                                         <div class="card border-warning">
                                             <div class="card-body">
-                                                <h4 class="card-title">
+                                                <p class="h5 mb-3">
                                                     <i class="bi bi-tools me-2" aria-hidden="true"></i>
                                                     {{ 'setup.step3.orphaned.repair.title'|trans({}, 'setup') }}
-                                                </h4>
+                                                </p>
                                                 <p class="card-text text-muted">
                                                     {{ 'setup.step3.orphaned.repair.description'|trans({}, 'setup') }}
                                                 </p>
@@ -130,10 +130,10 @@
                                 {# Risk-Asset and Incident-Asset Repair #}
                                 {% if backup_restore_result.risks_without_assets is defined and backup_restore_result.risks_without_assets > 0 %}
                                     <div class="alert alert-info mt-3">
-                                        <h4 class="alert-heading">
+                                        <p class="h5 mb-2">
                                             <i class="bi bi-link me-2" aria-hidden="true"></i>
                                             {{ 'setup.step3.asset_links.title'|trans({}, 'setup') }}
-                                        </h4>
+                                        </p>
                                         <p>
                                             {{ 'setup.step3.asset_links.description'|trans({'%count%': backup_restore_result.risks_without_assets}, 'setup')|raw }}
                                             <a href="{{ path('admin_data_repair_index') }}" class="alert-link">{{ 'setup.step3.asset_links.link_text'|trans({}, 'setup') }}</a>
@@ -165,10 +165,10 @@
                     {% if not schema_created %}
                     <div class="card border-warning mb-4">
                         <div class="card-header bg-warning text-dark">
-                            <h3 class="mb-0">
+                            <h2 class="h5 mb-0">
                                 <i class="bi bi-database me-2" aria-hidden="true"></i>
                                 {{ 'setup.step3.schema.title'|trans({}, 'setup') }}
-                            </h3>
+                            </h2>
                         </div>
                         <div class="card-body">
                             <p class="text-muted mb-3">
@@ -176,13 +176,19 @@
                             </p>
                             <div class="alert alert-info" role="alert">
                                 <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                                <strong>{{ 'common.note'|trans({}, 'messages') }}:</strong> {{ 'setup.step3.schema.hint'|trans({}, 'setup') }}
+                                <strong>{{ 'setup.common.note'|trans({}, 'setup') }}:</strong> {{ 'setup.step3.schema.hint'|trans({}, 'setup') }}
                             </div>
-                            <form method="post" action="{{ path('setup_step3_create_schema') }}">
+                            <form method="post" action="{{ path('setup_step3_create_schema') }}" class="setup-form-loading" data-turbo="false">
                                 <input type="hidden" name="_token" value="{{ csrf_token('setup_create_schema') }}">
                                 <button type="submit" class="btn btn-warning btn-lg">
-                                    <i class="bi bi-gears me-2" aria-hidden="true"></i>
-                                    {{ 'setup.step3.schema.submit'|trans({}, 'setup') }}
+                                    <span class="btn-text">
+                                        <i class="bi bi-gears me-2" aria-hidden="true"></i>
+                                        {{ 'setup.step3.schema.submit'|trans({}, 'setup') }}
+                                    </span>
+                                    <span class="btn-loading d-none">
+                                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        {{ 'setup.step3.loading.creating_schema'|trans({}, 'setup') }}
+                                    </span>
                                 </button>
                             </form>
                         </div>
@@ -193,10 +199,10 @@
                     {% if schema_created %}
                     <div class="card border-info mb-4">
                         <div class="card-header bg-info text-white">
-                            <h3 class="mb-0">
+                            <h2 class="h5 mb-0">
                                 <i class="bi bi-cloud-upload-alt me-2" aria-hidden="true"></i>
                                 {{ 'setup.step3.restore.title'|trans({}, 'setup') }}
-                            </h3>
+                            </h2>
                         </div>
                         <div class="card-body">
                             <div class="alert alert-success mb-3" role="alert">
@@ -206,7 +212,7 @@
                             <p class="text-muted">
                                 {{ 'setup.step3.restore.description'|trans({}, 'setup') }}
                             </p>
-                            <form method="post" action="{{ path('setup_step3_restore_backup_upload') }}" enctype="multipart/form-data">
+                            <form method="post" action="{{ path('setup_step3_restore_backup_upload') }}" enctype="multipart/form-data" class="setup-form-loading" data-turbo="false">
                                 <input type="hidden" name="_token" value="{{ csrf_token('setup_restore_backup') }}">
 
                                 <div class="mb-3">
@@ -224,18 +230,24 @@
 
                                 <div class="mb-3">
                                     <label for="adminPassword" class="form-label">
-                                        <strong>{{ 'setup.restore.set_admin_password'|trans({}, 'messages') }}</strong>
+                                        <strong>{{ 'setup.restore.set_admin_password'|trans({}, 'setup') }}</strong>
                                     </label>
-                                    <input type="password" class="form-control" id="adminPassword" name="admin_password" placeholder="{{ 'setup.restore.password_placeholder'|trans({}, 'messages') }}" required>
+                                    <input type="password" class="form-control" id="adminPassword" name="admin_password" placeholder="{{ 'setup.restore.password_placeholder'|trans({}, 'setup') }}" required>
                                     <div class="form-text">
                                         <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
-                                        {{ 'setup.restore.password_hint'|trans({}, 'messages') }}
+                                        {{ 'setup.restore.password_hint'|trans({}, 'setup') }}
                                     </div>
                                 </div>
 
                                 <button type="submit" class="btn btn-info btn-lg">
-                                    <i class="bi bi-upload me-2" aria-hidden="true"></i>
-                                    {{ 'setup.restore.upload_and_restore'|trans({}, 'messages') }}
+                                    <span class="btn-text">
+                                        <i class="bi bi-upload me-2" aria-hidden="true"></i>
+                                        {{ 'setup.restore.upload_and_restore'|trans({}, 'setup') }}
+                                    </span>
+                                    <span class="btn-loading d-none">
+                                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        {{ 'setup.step3.loading.restoring_backup'|trans({}, 'setup') }}
+                                    </span>
                                 </button>
                             </form>
                         </div>
@@ -245,19 +257,26 @@
                     {# Skip Option #}
                     <div class="card border-secondary">
                         <div class="card-header bg-secondary text-white">
-                            <h3 class="mb-0">
+                            <h2 class="h5 mb-0">
                                 <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
-                                {{ 'setup.restore.option_new_install'|trans({}, 'messages') }}
-                            </h3>
+                                {{ 'setup.restore.option_new_install'|trans({}, 'setup') }}
+                            </h2>
                         </div>
                         <div class="card-body">
                             <p class="text-muted">
-                                {{ 'setup.restore.new_install_description'|trans({}, 'messages') }}
+                                {{ 'setup.restore.new_install_description'|trans({}, 'setup') }}
                             </p>
-                            <form method="post" action="{{ path('setup_step3_restore_backup_skip') }}">
+                            <form method="post" action="{{ path('setup_step3_restore_backup_skip') }}" class="setup-form-loading" data-turbo="false">
+                                <input type="hidden" name="_token" value="{{ csrf_token('setup_skip_restore') }}">
                                 <button type="submit" class="btn btn-secondary btn-lg">
-                                    <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
-                                    {{ 'setup.restore.skip_new_install'|trans({}, 'messages') }}
+                                    <span class="btn-text">
+                                        <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
+                                        {{ 'setup.restore.skip_new_install'|trans({}, 'setup') }}
+                                    </span>
+                                    <span class="btn-loading d-none">
+                                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        {{ 'setup.step3.loading.skipping'|trans({}, 'setup') }}
+                                    </span>
                                 </button>
                             </form>
                         </div>
@@ -267,4 +286,35 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle all setup forms with loading spinners
+    document.querySelectorAll('form.setup-form-loading').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            var button = form.querySelector('button[type="submit"]');
+            if (button) {
+                var btnText = button.querySelector('.btn-text');
+                var btnLoading = button.querySelector('.btn-loading');
+
+                if (btnText && btnLoading) {
+                    btnText.classList.add('d-none');
+                    btnLoading.classList.remove('d-none');
+                }
+
+                // Disable button to prevent double submission
+                button.disabled = true;
+
+                // Disable all other submit buttons on the page
+                document.querySelectorAll('form.setup-form-loading button[type="submit"]').forEach(function(btn) {
+                    btn.disabled = true;
+                });
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

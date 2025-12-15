@@ -56,7 +56,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h3>{{ 'supplier.section.details'|trans({}, 'suppliers') }}</h3>
+            <h2>{{ 'supplier.section.details'|trans({}, 'suppliers') }}</h2>
             <div>
                 <span class="badge badge-{{ supplier.criticality }}">{{ supplier.criticality|upper }}</span>
                 <span class="{{ badge_status(supplier.status) }}">{{ supplier.status }}</span>
@@ -86,13 +86,13 @@
 
             {% if supplier.description %}
                 <div class="detail-section">
-                    <h2>{{ 'supplier.section.description'|trans({}, 'suppliers') }}</h2>
+                    <h3>{{ 'supplier.section.description'|trans({}, 'suppliers') }}</h3>
                     <p>{{ supplier.description }}</p>
                 </div>
             {% endif %}
 
             <div class="detail-section">
-                <h2>{{ 'supplier.section.contact_info'|trans({}, 'suppliers') }}</h2>
+                <h3>{{ 'supplier.section.contact_info'|trans({}, 'suppliers') }}</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
                         <span class="label">{{ 'supplier.field.contact_person'|trans({}, 'suppliers') }}:</span>

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use RuntimeException;
 use Exception;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use App\Entity\Risk;
 use App\Entity\Asset;
 use DateTimeImmutable;
@@ -367,8 +368,10 @@ class DeploymentWizardController extends AbstractController
             return $this->redirectToRoute('setup_step3_restore_backup');
         }
 
-        // Increase timeout for migrations (can take several minutes)
-        set_time_limit(300);
+        // Prevent timeouts during database operations
+        set_time_limit(0);
+        ignore_user_abort(true);
+        ini_set('max_execution_time', 0);
 
         try {
             $logger->info('Creating database schema (running migrations)');
@@ -445,8 +448,10 @@ class DeploymentWizardController extends AbstractController
             return $this->redirectToRoute('setup_step3_restore_backup');
         }
 
-        // Increase timeout for restore (can take several minutes for large backups)
-        set_time_limit(300);
+        // Prevent timeouts during backup restore (can take a long time for large backups)
+        set_time_limit(0);
+        ignore_user_abort(true);
+        ini_set('max_execution_time', 0);
 
         try {
             // Save file temporarily
@@ -552,18 +557,109 @@ class DeploymentWizardController extends AbstractController
         }
     }
     /**
-     * Step 3: Skip Backup Restore
+     * Step 3: Skip Backup Restore - Creates fresh database schema
      */
     #[Route('/setup/step3-restore-backup/skip', name: 'setup_step3_restore_backup_skip', methods: ['POST'])]
-    public function step3RestoreBackupSkip(SessionInterface $session): Response
+    public function step3RestoreBackupSkip(Request $request, SessionInterface $session, LoggerInterface $logger): Response
     {
+        // Validate CSRF token
+        $token = $request->request->get('_token');
+        if (!$this->isCsrfTokenValid('setup_skip_restore', $token)) {
+            $this->addFlash('error', $this->translator->trans('common.csrf_error'));
+            return $this->redirectToRoute('setup_step3_restore_backup');
+        }
+
         // Validate database is configured
         if (!$session->get('setup_database_configured')) {
             return $this->redirectToRoute('setup_step2_database_config');
         }
 
-        // Proceed to step 4 (admin user creation)
-        return $this->redirectToRoute('setup_step4_admin_user');
+        // Prevent timeouts during database operations
+        set_time_limit(0);
+        ignore_user_abort(true);
+        ini_set('max_execution_time', 0);
+
+        // Start output buffering to capture any stray output
+        ob_start();
+
+        try {
+            $logger->info('Step 3 Skip: Starting fresh database setup');
+
+            // Build database config from session
+            $isDockerStandalone = @file_exists('/run/mysqld/mysqld.sock') || @file_exists('/.dockerenv');
+
+            $dbConfig = [
+                'type' => $session->get('setup_db_type', 'mysql'),
+                'host' => $session->get('setup_db_host', 'localhost'),
+                'port' => $session->get('setup_db_port', 3306),
+                'name' => $session->get('setup_db_name', $isDockerStandalone ? 'isms' : 'little_isms_helper'),
+                'user' => $session->get('setup_db_user', $isDockerStandalone ? 'isms' : 'root'),
+                'password' => $session->get('setup_db_password', ''),
+                'unixSocket' => $session->get('setup_db_socket'),
+            ];
+
+            // Drop all existing tables
+            $logger->info('Step 3 Skip: Dropping existing tables');
+            $this->dropAndRecreateDatabase($dbConfig);
+
+            // Run migrations to create fresh schema
+            $logger->info('Step 3 Skip: Running migrations');
+            $migrationResult = $this->runMigrationsInternal();
+            $logger->info('Step 3 Skip: Migration result', ['success' => $migrationResult['success'], 'message' => $migrationResult['message'] ?? 'no message']);
+
+            if (!$migrationResult['success']) {
+                $logger->error('Step 3 Skip: Migration failed', ['result' => $migrationResult]);
+                $this->addFlash('error', $this->translator->trans('setup.admin.migration_failed') . ': ' . $migrationResult['message']);
+
+                while (ob_get_level() > 0) {
+                    ob_end_clean();
+                }
+
+                $url = $this->generateUrl('setup_step3_restore_backup');
+                return new RedirectResponse($url);
+            }
+
+            $logger->info('Step 3 Skip: Migration successful, preparing redirect');
+
+            // Mark schema as created
+            $session->set('setup_schema_created', true);
+
+            $logger->info('Step 3 Skip: Fresh database schema created successfully');
+            $this->addFlash('success', $this->translator->trans('setup.database.schema_created', [], 'setup'));
+
+            // Discard any buffered output and redirect
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+
+            // Use direct redirect response with explicit 302 status
+            $url = $this->generateUrl('setup_step4_admin_user');
+            $logger->info('Step 3 Skip: Redirecting to ' . $url);
+            $response = new RedirectResponse($url, 302);
+            $response->headers->set('X-Redirected-From', 'step3-skip');
+            return $response;
+
+        } catch (\Throwable $e) {
+            $logger->error('Step 3 Skip: Exception', [
+                'error' => $e->getMessage(),
+                'type' => $e::class,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
+
+            try {
+                $this->addFlash('error', 'Fehler: ' . $e->getMessage());
+            } catch (\Throwable) {
+                // Ignore flash errors
+            }
+
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+
+            $url = $this->generateUrl('setup_step3_restore_backup');
+            return new RedirectResponse($url, 302);
+        }
     }
     /**
      * Step 3: Repair Orphaned Entities
@@ -715,110 +811,16 @@ class DeploymentWizardController extends AbstractController
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Start output buffering to capture any stray output from migrations/commands
-            ob_start();
-
-            $session->set('debug_processing', 'Step 1: Entering form processing block');
             $data = $form->getData();
 
             // Normalize email to lowercase for consistent lookup
             $data['email'] = strtolower((string) $data['email']);
 
             try {
-                $session->set('debug_processing', 'Step 2: Starting admin user creation process');
-
-                // Build database configuration from session (set in step1)
-                // If session doesn't have values, try to read from .env.local as fallback
-                // For Docker, use Docker-specific defaults
-                $isDockerStandalone = @file_exists('/run/mysqld/mysqld.sock') || @file_exists('/.dockerenv');
-
-                // Try to get defaults from .env.local if session is empty
-                $envDefaults = [];
-                if (file_exists($this->environmentWriter->getEnvLocalPath())) {
-                    $envVars = $this->environmentWriter->readEnvLocal();
-                    if (!empty($envVars['DB_TYPE']) || !empty($envVars['DB_HOST'])) {
-                        $envDefaults = [
-                            'type' => $envVars['DB_TYPE'] ?? 'mysql',
-                            'host' => $envVars['DB_HOST'] ?? ($isDockerStandalone ? 'localhost' : 'localhost'),
-                            'port' => isset($envVars['DB_PORT']) ? (int)$envVars['DB_PORT'] : 3306,
-                            'name' => $envVars['DB_NAME'] ?? ($isDockerStandalone ? 'isms' : 'little_isms_helper'),
-                            'user' => $envVars['DB_USER'] ?? ($isDockerStandalone ? 'isms' : 'root'),
-                            'password' => $envVars['DB_PASS'] ?? '',
-                            'unixSocket' => $envVars['DB_SOCKET'] ?? null,
-                        ];
-                    }
-                }
-
-                // Build config: Session takes priority, then .env.local, then hardcoded defaults
-                $dbConfig = [
-                    'type' => $session->get('setup_db_type', $envDefaults['type'] ?? 'mysql'),
-                    'host' => $session->get('setup_db_host', $envDefaults['host'] ?? 'localhost'),
-                    'port' => $session->get('setup_db_port', $envDefaults['port'] ?? 3306),
-                    'name' => $session->get('setup_db_name', $envDefaults['name'] ?? ($isDockerStandalone ? 'isms' : 'little_isms_helper')),
-                    'user' => $session->get('setup_db_user', $envDefaults['user'] ?? ($isDockerStandalone ? 'isms' : 'root')),
-                    'password' => $session->get('setup_db_password', $envDefaults['password'] ?? ''),
-                    'unixSocket' => $session->get('setup_db_socket', $envDefaults['unixSocket'] ?? null),
-                ];
-
-                // ALWAYS drop all existing tables to ensure clean state
-                // This is safer than trying to detect tables, as the detection might use
-                // a different connection than the migrations
-                $session->set('debug_processing', 'Step 2b: Dropping all existing tables to ensure clean state');
-                $this->dropAndRecreateDatabase($dbConfig);
-
-                // Ensure DATABASE_URL is written to .env.local before running migrations
-                // This is critical because migrations use Doctrine which reads from .env.local
-                $session->set('debug_processing', 'Step 2d: Writing DATABASE_URL to .env.local');
-
-                // In Docker standalone: Check if DATABASE_URL is already properly configured
-                // by init-mysql.sh with literal values (not ${VAR} references)
-                $skipDatabaseWrite = false;
-                if ($isDockerStandalone && file_exists($this->environmentWriter->getEnvLocalPath())) {
-                    $existingVars = $this->environmentWriter->readEnvLocal();
-                    $existingUrl = $existingVars['DATABASE_URL'] ?? '';
-                    // If DATABASE_URL has literal values (contains unix_socket and doesn't use ${})
-                    if (str_contains($existingUrl, 'unix_socket=') && !str_contains($existingUrl, '${')) {
-                        $skipDatabaseWrite = true;
-                        $session->set('debug_processing', 'Step 2d: Skipping DATABASE_URL write - already configured by init-mysql.sh');
-                    }
-                }
-
-                if (!$skipDatabaseWrite) {
-                    $this->environmentWriter->writeDatabaseConfig([
-                        'type' => $dbConfig['type'],
-                        'host' => $dbConfig['host'],
-                        'port' => $dbConfig['port'],
-                        'name' => $dbConfig['name'],
-                        'user' => $dbConfig['user'],
-                        'password' => $dbConfig['password'],
-                        'unixSocket' => $dbConfig['unixSocket'] ?? null,
-                    ]);
-                }
-
-                // First run migrations to create database structure
-                $session->set('debug_processing', 'Step 2e: Running migrations');
-                $migrationResult = $this->runMigrationsInternal();
-
-                if (!$migrationResult['success']) {
-                    $session->set('debug_error', 'Migration failed: ' . $migrationResult['message']);
-                    $this->addFlash('error', 'DEBUG: Migration failed - ' . $migrationResult['message']);
-                    $this->addFlash('error', $this->translator->trans('setup.admin.migration_failed') . ': ' . $migrationResult['message']);
-                    // Clean up output buffer and redirect
-                    ob_end_clean();
-                    return $this->redirectToRoute('setup_step4_admin_user');
-                }
-
-                $session->set('debug_processing', 'Step 3: Migration successful, creating admin user');
-
-                // Clean up database connection state after migrations
-                // Migrations can leave orphaned transactions/savepoints
-                $this->cleanupDatabaseConnection();
-
-                // Create admin user via command
+                // Create admin user via command (database schema already created in step 3)
                 $result = $this->createAdminUserViaCommand($data);
 
                 if ($result['success']) {
-                    $session->set('debug_processing', 'Step 4: Admin user created successfully - redirecting to step5');
                     $session->set('setup_admin_created', true);
                     $session->set('setup_admin_email', $data['email']);
 
@@ -827,18 +829,14 @@ class DeploymentWizardController extends AbstractController
 
                     $this->addFlash('success', $this->translator->trans('setup.admin.user_created'));
 
-                    // Clean up output buffer and redirect
-                    ob_end_clean();
                     return $this->redirectToRoute('setup_step5_email_config');
                 }
-                $session->set('debug_error', 'Step 4 ERROR: Admin user creation failed: ' . $result['message']);
+
                 $this->addFlash('error', $this->translator->trans('setup.admin.creation_failed') . ': ' . $result['message']);
-                // Clean up output buffer and redirect
-                ob_end_clean();
                 return $this->redirectToRoute('setup_step4_admin_user');
+
             } catch (Exception $e) {
-                $session->set('debug_error', 'EXCEPTION: ' . $e->getMessage() . ' in ' . $e->getFile() . ':' . $e->getLine());
-                // Turbo requires redirect after POST
+                $this->addFlash('error', 'Fehler: ' . $e->getMessage());
                 return $this->redirectToRoute('setup_step4_admin_user');
             }
         }

@@ -5,7 +5,6 @@ namespace App\Command;
 use Symfony\Component\Console\Attribute\Option;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -22,9 +21,9 @@ class GenerateIsoProceduresCommand
     }
 
     public function __invoke(
-        #[Option(name: 'output-dir', shortcut: 'o', mode: InputOption::VALUE_OPTIONAL, description: 'Output directory for templates')]
+        #[Option(name: 'output-dir', shortcut: 'o', description: 'Output directory for templates')]
         string $outputDir = 'var/iso_procedures',
-        #[Option(name: 'format', shortcut: 'f', mode: InputOption::VALUE_OPTIONAL, description: 'Output format (markdown, html)')]
+        #[Option(name: 'format', shortcut: 'f', description: 'Output format (markdown, html)')]
         string $format = 'markdown',
         ?SymfonyStyle $symfonyStyle = null
     ): int

@@ -37,10 +37,10 @@
     {# Empty State for No Mappings #}
     {% if quality_stats.total_mappings == 0 %}
     <div class="alert alert-warning">
-        <h2><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Keine Mappings gefunden</h2>
+        <p class="fw-bold fs-5"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Keine Mappings gefunden</p>
         <p>{{ 'compliance.mapping_quality.no_mappings_found'|trans({}, 'compliance') }}</p>
         <hr>
-        <h6>Nächste Schritte:</h6>
+        <p class="fw-bold">Nächste Schritte:</p>
         <ol>
             <li>Prüfen Sie ob Frameworks importiert sind: <code>php bin/console app:list-frameworks</code></li>
             <li>Erstellen Sie Mappings: <code>php bin/console app:create-cross-framework-mappings</code></li>
@@ -50,10 +50,10 @@
     </div>
     {% elseif quality_stats.analyzed_mappings == 0 %}
     <div class="alert alert-info">
-        <h4><i class="bi bi-info-circle text-info" aria-hidden="true"></i> Noch keine Analyse durchgeführt</h4>
+        <p class="fw-bold fs-5"><i class="bi bi-info-circle text-info" aria-hidden="true"></i> Noch keine Analyse durchgeführt</p>
         <p>{{ quality_stats.total_mappings }} Mappings gefunden, aber noch nicht analysiert.</p>
         <hr>
-        <h6>Analyse starten:</h6>
+        <p class="fw-bold">Analyse starten:</p>
         <ol>
             <li>Sanity Check durchführen: <code>php bin/console app:mapping-quality:sanity-check</code></li>
             <li>Analyse starten: <code>php bin/console app:analyze-mapping-quality</code></li>
@@ -84,7 +84,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="mb-0">⭐ Durchschnittliche Qualität</h3>
+                    <h2 class="mb-0">⭐ Durchschnittliche Qualität</h2>
                 </div>
                 <div class="card-body">
                     <div class="progress mb-2" style="height: 30px;">
@@ -191,7 +191,7 @@
             {# Progress Section (hidden initially) #}
             <div data-batch-analysis-target="progress" style="display: none;">
                 <hr>
-                <h4 class="mb-3">{{ 'compliance.mapping_quality.analysis_running'|trans({}, 'compliance') }}</h4>
+                <p class="fw-bold fs-5 mb-3">{{ 'compliance.mapping_quality.analysis_running'|trans({}, 'compliance') }}</p>
 
                 <div class="progress mb-3" style="height: 30px;">
                     <div data-batch-analysis-target="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-info"
@@ -203,19 +203,19 @@
                 <div class="row text-center mb-3">
                     <div class="col-md-3">
                         <small class="text-muted">Analysiert</small>
-                        <h5 data-batch-analysis-target="analyzedCount">0</h5>
+                        <div class="fw-bold h5" data-batch-analysis-target="analyzedCount">0</div>
                     </div>
                     <div class="col-md-3">
                         <small class="text-muted">Verbleibend</small>
-                        <h5 data-batch-analysis-target="remainingCount">{{ quality_stats.unanalyzed_mappings }}</h5>
+                        <div class="fw-bold h5" data-batch-analysis-target="remainingCount">{{ quality_stats.unanalyzed_mappings }}</div>
                     </div>
                     <div class="col-md-3">
                         <small class="text-muted">Fehler</small>
-                        <h5 data-batch-analysis-target="errorCount" class="text-danger">0</h5>
+                        <div class="fw-bold h5 text-danger" data-batch-analysis-target="errorCount">0</div>
                     </div>
                     <div class="col-md-3">
                         <small class="text-muted">Status</small>
-                        <h5 data-batch-analysis-target="statusText" class="text-info">Bereit</h5>
+                        <div class="fw-bold h5 text-info" data-batch-analysis-target="statusText">Bereit</div>
                     </div>
                 </div>
 
@@ -233,7 +233,7 @@
             <div data-batch-analysis-target="results" style="display: none;">
                 <hr>
                 <div class="alert alert-success">
-                    <h5><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Analyse abgeschlossen!</h5>
+                    <p class="fw-bold"><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Analyse abgeschlossen!</p>
                     <p data-batch-analysis-target="resultsMessage"></p>
                     <button type="button" class="btn btn-primary mt-2" data-controller="ui-actions" data-action="ui-actions#reload">
                         <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> Seite neu laden
@@ -338,12 +338,12 @@
     {# Help Box #}
     <div class="card mb-4">
         <div class="card-header bg-light">
-            <h3 class="mb-0"><i class="bi bi-info-circle text-info" aria-hidden="true"></i> Wie funktioniert die Qualitätsanalyse?</h3>
+            <h2 class="mb-0"><i class="bi bi-info-circle text-info" aria-hidden="true"></i> Wie funktioniert die Qualitätsanalyse?</h2>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-4">
-                    <h4><i class="bi bi-bullseye" aria-hidden="true"></i> Confidence Score</h4>
+                    <p class="fw-bold fs-5"><i class="bi bi-bullseye" aria-hidden="true"></i> Confidence Score</p>
                     <p class="small">Misst die Zuverlässigkeit der automatischen Analyse:</p>
                     <ul class="small">
                         <li><strong>High (≥80):</strong> Sehr zuverlässig, kann auto-approved werden</li>
@@ -352,7 +352,7 @@
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h4>⭐ Quality Score</h4>
+                    <p class="fw-bold fs-5">⭐ Quality Score</p>
                     <p class="small">Gesamtqualität des Mappings basierend auf:</p>
                     <ul class="small">
                         <li>Confidence (40%)</li>
@@ -362,7 +362,7 @@
                     <p class="small mb-0"><strong>Ziel:</strong> Alle Mappings ≥75 Quality Score</p>
                 </div>
                 <div class="col-md-4">
-                    <h4>🔬 Similarity Metriken</h4>
+                    <p class="fw-bold fs-5">🔬 Similarity Metriken</p>
                     <p class="small">Automatische Berechnung durch:</p>
                     <ul class="small">
                         <li><strong>Keyword Overlap (40%):</strong> Sicherheitsbegriffe</li>
@@ -378,7 +378,7 @@
     {# Quick Actions - Show only if mappings exist #}
     {% if quality_stats.total_mappings > 0 %}
     <div class="alert alert-info">
-        <h5>🚀 Nächste Schritte</h5>
+        <p class="fw-bold">🚀 Nächste Schritte</p>
         <ul class="mb-0">
             <li><a href="{{ path('app_mapping_quality_review_queue') }}">Review Queue ansehen</a> - Prüfen Sie Mappings mit niedrigem Confidence</li>
             <li><a href="{{ path('app_mapping_quality_gaps') }}">Gap-Übersicht</a> - Identifizierte Lücken adressieren</li>

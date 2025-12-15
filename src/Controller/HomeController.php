@@ -10,6 +10,7 @@ use App\Repository\AssetRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\WorkflowInstanceRepository;
+use App\Service\ComplianceWizardService;
 use App\Service\DashboardStatisticsService;
 use App\Service\ISOComplianceIntelligenceService;
 use App\Service\RiskReviewService;
@@ -25,6 +26,7 @@ class HomeController extends AbstractController
     public function __construct(
         private readonly DashboardStatisticsService $dashboardStatisticsService,
         private readonly ISOComplianceIntelligenceService $isoComplianceIntelligenceService,
+        private readonly ComplianceWizardService $complianceWizardService,
         private readonly AssetRepository $assetRepository,
         private readonly RiskRepository $riskRepository,
         private readonly RiskReviewService $riskReviewService,
@@ -125,6 +127,9 @@ class HomeController extends AbstractController
             new DateTimeImmutable('+24 hours')
         );
 
+        // Compliance Wizard Status (quick overview for dashboard)
+        $complianceSummary = $this->complianceWizardService->getOverallComplianceSummary($tenant);
+
         return $this->render('home/dashboard.html.twig', [
             'kpis' => $kpis,
             'stats' => $stats,
@@ -138,6 +143,7 @@ class HomeController extends AbstractController
             'pending_workflows' => $pendingWorkflows,
             'overdue_workflows' => $overdueWorkflows,
             'upcoming_workflow_deadlines' => $upcomingDeadlines,
+            'compliance_summary' => $complianceSummary,
         ]);
     }
 

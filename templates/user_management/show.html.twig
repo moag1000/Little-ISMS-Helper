@@ -43,7 +43,7 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'user.section.basic_info'|trans({}, 'user') }}</h3>
+                    <h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'user.section.basic_info'|trans({}, 'user') }}</h2>
                 </div>
                 <div class="card-body">
                     {% embed '_components/_table.html.twig' with {
@@ -97,7 +97,7 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header bg-success text-white">
-                    <h3 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'user.section.security_status'|trans({}, 'user') }}</h3>
+                    <h2 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'user.section.security_status'|trans({}, 'user') }}</h2>
                 </div>
                 <div class="card-body">
                     {% embed '_components/_table.html.twig' with {
@@ -177,7 +177,7 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header bg-warning text-dark">
-                    <h3 class="mb-0"><i class="bi bi-shield" aria-hidden="true"></i> {{ 'user.section.system_roles'|trans({}, 'user') }}</h3>
+                    <h2 class="mb-0"><i class="bi bi-shield" aria-hidden="true"></i> {{ 'user.section.system_roles'|trans({}, 'user') }}</h2>
                 </div>
                 <div class="card-body">
                     {% if user.roles|length > 0 %}
@@ -216,7 +216,7 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header bg-info text-white">
-                    <h3 class="mb-0"><i class="bi bi-key" aria-hidden="true"></i> {{ 'user.section.custom_roles'|trans({}, 'user') }}</h3>
+                    <h2 class="mb-0"><i class="bi bi-key" aria-hidden="true"></i> {{ 'user.section.custom_roles'|trans({}, 'user') }}</h2>
                 </div>
                 <div class="card-body">
                     {% if user.customRoles|length > 0 %}
@@ -251,7 +251,7 @@
         <div class="col-md-12">
             <div class="card mb-4">
                 <div class="card-header bg-secondary text-white">
-                    <h3 class="mb-0"><i class="bi bi-unlock" aria-hidden="true"></i> {{ 'user.section.all_permissions'|trans({}, 'user') }}</h3>
+                    <h2 class="mb-0"><i class="bi bi-unlock" aria-hidden="true"></i> {{ 'user.section.all_permissions'|trans({}, 'user') }}</h2>
                 </div>
                 <div class="card-body">
                     {% set allPermissions = [] %}
@@ -284,7 +284,7 @@
     {# Actions #}
     <div class="card mb-4">
         <div class="card-header bg-dark text-white">
-            <h3 class="mb-0"><i class="bi bi-gear" aria-hidden="true"></i> {{ 'user.section.actions'|trans({}, 'user') }}</h3>
+            <h2 class="mb-0"><i class="bi bi-gear" aria-hidden="true"></i> {{ 'user.section.actions'|trans({}, 'user') }}</h2>
         </div>
         <div class="card-body">
             <div class="btn-group" role="group">

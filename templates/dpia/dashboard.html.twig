@@ -27,14 +27,14 @@
     {# Overall Compliance Score #}
     <div class="card mb-4 text-center">
         <div class="card-body">
-            <h6 class="text-muted mb-2">Overall DPIA Compliance Score</h6>
+            <div class="text-muted mb-2 fw-semibold">Overall DPIA Compliance Score</div>
             {% set score = compliance_score.overall_score %}
-            <h1 class="display-1 mb-0
+            <div class="display-1 mb-0
                 {% if score >= 80 %}text-success
                 {% elseif score >= 60 %}text-warning
                 {% else %}text-danger{% endif %}">
                 {{ score }}%
-            </h1>
+            </div>
             <p class="text-muted mt-2">
                 {{ compliance_score.approved_dpias }} of {{ compliance_score.total_dpias }} DPIAs approved
                 {% if compliance_score.due_for_review > 0 %}
@@ -44,15 +44,15 @@
             <div class="row mt-3">
                 <div class="col-md-4">
                     <small class="text-muted">Completeness</small>
-                    <h4 class="mb-0">{{ compliance_score.completeness_score }}%</h4>
+                    <div class="fs-4 fw-bold mb-0">{{ compliance_score.completeness_score }}%</div>
                 </div>
                 <div class="col-md-4">
                     <small class="text-muted">Approval Rate</small>
-                    <h4 class="mb-0">{{ compliance_score.approval_score }}%</h4>
+                    <div class="fs-4 fw-bold mb-0">{{ compliance_score.approval_score }}%</div>
                 </div>
                 <div class="col-md-4">
                     <small class="text-muted">Review Compliance</small>
-                    <h4 class="mb-0">{{ compliance_score.review_compliance_score }}%</h4>
+                    <div class="fs-4 fw-bold mb-0">{{ compliance_score.review_compliance_score }}%</div>
                 </div>
             </div>
         </div>
@@ -78,11 +78,11 @@
         {# Action Items #}
         <div class="col-md-6">
             <div class="card mb-4">
-                <div class="card-header bg-warning text-dark"><h5 class="mb-0"><i class="bi bi-exclamation-circle"></i> Action Items</h5>
+                <div class="card-header bg-warning text-dark"><h2 class="h5 mb-0"><i class="bi bi-exclamation-circle"></i> Action Items</h2>
                 </div>
                 <div class="card-body">
                     {% if incomplete|length > 0 %}
-                        <h6>Incomplete DPIAs ({{ incomplete|length }})</h6>
+                        <h3 class="h6">Incomplete DPIAs ({{ incomplete|length }})</h3>
                         <ul class="list-unstyled">
                             {% for dpia in incomplete|slice(0, 5) %}
                                 <li class="mb-2">
@@ -94,7 +94,7 @@
                     {% endif %}
 
                     {% if awaiting_dpo|length > 0 %}
-                        <h6 class="mt-3">Awaiting DPO Consultation ({{ awaiting_dpo|length }})</h6>
+                        <h3 class="h6 mt-3">Awaiting DPO Consultation ({{ awaiting_dpo|length }})</h3>
                         <ul class="list-unstyled">
                             {% for dpia in awaiting_dpo|slice(0, 5) %}
                                 <li class="mb-2">
@@ -106,7 +106,7 @@
                     {% endif %}
 
                     {% if requires_supervisory|length > 0 %}
-                        <h6 class="mt-3">Requires Supervisory Consultation ({{ requires_supervisory|length }})</h6>
+                        <h3 class="h6 mt-3">Requires Supervisory Consultation ({{ requires_supervisory|length }})</h3>
                         <ul class="list-unstyled">
                             {% for dpia in requires_supervisory|slice(0, 5) %}
                                 <li class="mb-2">
@@ -118,7 +118,7 @@
                     {% endif %}
 
                     {% if due_for_review|length > 0 %}
-                        <h6 class="mt-3">Due for Review ({{ due_for_review|length }})</h6>
+                        <h3 class="h6 mt-3">Due for Review ({{ due_for_review|length }})</h3>
                         <ul class="list-unstyled">
                             {% for dpia in due_for_review|slice(0, 5) %}
                                 <li class="mb-2">
@@ -139,10 +139,10 @@
         {# Statistics Charts #}
         <div class="col-md-6">
             <div class="card mb-4">
-                <div class="card-header"><h5 class="mb-0"><i class="bi bi-bar-chart"></i> Statistics</h5>
+                <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-bar-chart"></i> Statistics</h2>
                 </div>
                 <div class="card-body">
-                    <h6>{{ 'privacy.chart.by_status'|trans({}, 'privacy') }}</h6>
+                    <h3 class="h6">{{ 'privacy.chart.by_status'|trans({}, 'privacy') }}</h3>
                     <ul class="list-unstyled">
                         <li class="mb-2">
                             <span class="badge bg-secondary">{{ statistics.draft }}</span>
@@ -158,7 +158,7 @@
                         </li>
                     </ul>
 
-                    <h6 class="mt-4">{{ 'privacy.chart.by_risk_level'|trans({}, 'privacy') }}</h6>
+                    <h3 class="h6 mt-4">{{ 'privacy.chart.by_risk_level'|trans({}, 'privacy') }}</h3>
                     {% if statistics.risk_distribution %}
                         <ul class="list-unstyled">
                             {% for level, count in statistics.risk_distribution %}
@@ -178,7 +178,7 @@
                         </ul>
                     {% endif %}
 
-                    <h6 class="mt-4">Residual Risk Distribution</h6>
+                    <h3 class="h6 mt-4">Residual Risk Distribution</h3>
                     {% if statistics.residual_risk_distribution %}
                         <ul class="list-unstyled">
                             {% for level, count in statistics.residual_risk_distribution %}
@@ -198,7 +198,7 @@
                         </ul>
                     {% endif %}
 
-                    <h6 class="mt-4">Compliance</h6>
+                    <h3 class="h6 mt-4">Compliance</h3>
                     <ul class="list-unstyled">
                         <li class="mb-2">
                             <span class="badge bg-warning">{{ statistics.awaiting_dpo_consultation }}</span>
@@ -215,7 +215,7 @@
             {# High Risk DPIAs #}
             {% if high_risk|length > 0 %}
                 <div class="card mb-4">
-                    <div class="card-header bg-danger text-white"><h5 class="mb-0"><i class="bi bi-exclamation-triangle-fill"></i> High Risk DPIAs</h5>
+                    <div class="card-header bg-danger text-white"><h2 class="h5 mb-0"><i class="bi bi-exclamation-triangle-fill"></i> High Risk DPIAs</h2>
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled">

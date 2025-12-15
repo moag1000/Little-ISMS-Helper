@@ -15,9 +15,9 @@
     <div class="row">
         <div class="col-lg-8 offset-lg-2">
             <div class="alert alert-danger">
-                <h4 class="alert-heading">
+                <h2 class="alert-heading h4">
                     <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.warning'|trans({}, 'mfa') }}
-                </h4>
+                </h2>
                 <p>{{ 'mfa_token.backup_codes.warning_text'|trans({}, 'mfa') }}</p>
                 <hr>
                 <p class="mb-0">
@@ -47,7 +47,7 @@
                  data-backup-codes-copy-failed-text-value="{{ 'common.copy_failed'|trans({}, 'messages') }}">
                 <div class="card-header bg-warning">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="mb-0">{{ 'mfa_token.backup_codes.codes'|trans({}, 'mfa') }}</h3>
+                        <h2 class="mb-0 h3">{{ 'mfa_token.backup_codes.codes'|trans({}, 'mfa') }}</h2>
                         <span class="badge bg-dark">{{ backup_codes|length }} {{ 'mfa_token.backup_codes.codes_count'|trans({}, 'mfa') }}</span>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    <h5><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.usage_title'|trans({}, 'mfa') }}</h5>
+                    <h3 class="h5"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'mfa_token.backup_codes.usage_title'|trans({}, 'mfa') }}</h3>
                     <ul>
                         <li>{{ 'mfa_token.backup_codes.usage_1'|trans({}, 'mfa') }}</li>
                         <li>{{ 'mfa_token.backup_codes.usage_2'|trans({}, 'mfa') }}</li>

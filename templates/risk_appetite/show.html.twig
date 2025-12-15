@@ -91,7 +91,7 @@
 {# Appetite Details #}
 <div class="card mb-4">
     <div class="card-header">
-        <h3><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_appetite.section.details'|trans({}, 'risk_appetite') }}</h3>
+        <h2><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_appetite.section.details'|trans({}, 'risk_appetite') }}</h2>
     </div>
     <div class="card-body">
         <div class="row">
@@ -145,7 +145,7 @@
 {% if risksExceedingAppetite|length > 0 %}
 <div class="card border-danger mb-4">
     <div class="card-header bg-danger text-white">
-        <h3><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_appetite.risks_exceeding_title'|trans({}, 'risk_appetite') }} ({{ risksExceedingAppetite|length }})</h3>
+        <h2><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_appetite.risks_exceeding_title'|trans({}, 'risk_appetite') }} ({{ risksExceedingAppetite|length }})</h2>
     </div>
     <div class="card-body">
         <p>{{ 'risk_appetite.risks_exceeding_description'|trans({}, 'risk_appetite') }}</p>
@@ -197,7 +197,7 @@
 {% if risksWithinAppetite|length > 0 %}
 <div class="card border-success mb-4">
     <div class="card-header bg-success text-white">
-        <h3><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'risk_appetite.risks_within_title'|trans({}, 'risk_appetite') }} ({{ risksWithinAppetite|length }})</h3>
+        <h2><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'risk_appetite.risks_within_title'|trans({}, 'risk_appetite') }} ({{ risksWithinAppetite|length }})</h2>
     </div>
     <div class="card-body">
         <p>{{ 'risk_appetite.risks_within_description'|trans({}, 'risk_appetite') }}</p>
@@ -264,7 +264,7 @@
 {% if auditLogs is defined and auditLogs|length > 0 %}
 <div class="card mb-4">
     <div class="card-header">
-        <h3><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'risk_appetite.section.history'|trans({}, 'risk_appetite') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h3>
+        <h2><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'risk_appetite.section.history'|trans({}, 'risk_appetite') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h2>
     </div>
     <div class="card-body">
         <div class="audit-log-list">
@@ -313,7 +313,7 @@
 {% if is_granted('ROLE_ADMIN') %}
 <div class="card border-danger">
     <div class="card-header bg-danger text-white">
-        <h3><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h3>
+        <h2><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h2>
     </div>
     <div class="card-body">
         <p>{{ 'risk_appetite.delete.warning'|trans({}, 'risk_appetite') }}</p>

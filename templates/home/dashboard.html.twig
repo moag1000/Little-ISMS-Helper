@@ -122,6 +122,17 @@
         </div>
     </div>
 
+    {# Management KPIs Row (if available) #}
+    {% if management_kpis is defined and management_kpis|length > 1 %}
+    <div class="row mb-4">
+        <div class="col-12">
+            {% include 'home/_management_kpis_widget.html.twig' with {
+                management_kpis: management_kpis
+            } %}
+        </div>
+    </div>
+    {% endif %}
+
     {# Charts and Activity Row #}
     <div class="row">
         {# Charts Column #}
@@ -170,6 +181,11 @@
 
         {# Activity Feed Column #}
         <div class="col-lg-4">
+            {# Compliance Status Widget (Overview of all frameworks) #}
+            {% include 'home/_compliance_status_widget.html.twig' with {
+                compliance_summary: compliance_summary|default({has_frameworks: false})
+            } %}
+
             {# Workflow Approvals Widget (UX High Priority #1) #}
             {% include 'home/_workflow_widget.html.twig' with {
                 pending_workflows: pending_workflows|default([]),

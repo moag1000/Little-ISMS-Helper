@@ -32,7 +32,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h3>{{ 'bc_exercises.section.details'|trans({}, 'bc_exercises') }}</h3>
+            <h2>{{ 'bc_exercises.section.details'|trans({}, 'bc_exercises') }}</h2>
             <div>
                 <span class="badge badge-{{ bc_exercise.exerciseType }}">{{ bc_exercise.exerciseType }}</span>
                 <span class="badge badge-{{ bc_exercise.status }}">{{ bc_exercise.status }}</span>
@@ -69,13 +69,13 @@
 
             {% if bc_exercise.description %}
             <div class="detail-section">
-                <h2>{{ 'bc_exercises.section.details'|trans({}, 'bc_exercises') }}</h2>
+                <h3>{{ 'bc_exercises.section.details'|trans({}, 'bc_exercises') }}</h3>
                 <p>{{ bc_exercise.description }}</p>
             </div>
             {% endif %}
 
             <div class="detail-section">
-                <h2>{{ 'bc_exercises.section.scope_objectives'|trans({}, 'bc_exercises') }}</h2>
+                <h3>{{ 'bc_exercises.section.scope_objectives'|trans({}, 'bc_exercises') }}</h3>
                 <p><strong>{{ 'bc_exercises.section.scope_objectives'|trans({}, 'bc_exercises') }}:</strong> {{ bc_exercise.scope }}</p>
                 <p><strong>{{ 'bc_exercises.section.scope_objectives'|trans({}, 'bc_exercises') }}:</strong> {{ bc_exercise.objectives|nl2br }}</p>
             </div>

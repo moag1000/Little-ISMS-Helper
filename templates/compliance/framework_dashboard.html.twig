@@ -80,7 +80,7 @@
                  title="{{ 'common.tooltip.framework_loaded_success'|trans({}, 'messages') }}">
                 <div class="step-icon">{% if dashboard.statistics.total > 0 %}<i class="bi bi-check-circle text-success" aria-hidden="true"></i>{% else %}<span class="step-number">1</span>{% endif %}</div>
                 <div class="step-content">
-                    <h2>Framework Loaded</h2>
+                    <p class="fw-bold">Framework Loaded</p>
                     <p>{{ dashboard.statistics.total }} requirements loaded</p>
                 </div>
             </div>
@@ -90,7 +90,7 @@
                  title="{{ 'compliance.dashboard.tooltip.review_requirements'|trans({}, 'compliance') }}">
                 <div class="step-icon">{% if dashboard.statistics.applicable == dashboard.statistics.total %}<i class="bi bi-check-circle text-success" aria-hidden="true"></i>{% else %}{% if dashboard.statistics.applicable > 0 %}<i class="bi bi-arrow-clockwise text-info" aria-hidden="true"></i>{% else %}<span class="step-number">2</span>{% endif %}{% endif %}</div>
                 <div class="step-content">
-                    <h2>{{ 'compliance.dashboard.review_applicable'|trans({}, 'compliance') }}</h2>
+                    <p class="fw-bold">{{ 'compliance.dashboard.review_applicable'|trans({}, 'compliance') }}</p>
                     <p>{{ 'compliance.dashboard.reviewed_count'|trans({'%reviewed%': dashboard.statistics.applicable, '%total%': dashboard.statistics.total}, 'compliance') }}</p>
                     {% if dashboard.statistics.applicable < dashboard.statistics.total %}
                         <a href="{{ path('app_compliance_requirement_index') }}?framework={{ framework.id }}" class="step-action"
@@ -107,7 +107,7 @@
                  title="{{ 'compliance.dashboard.tooltip.implement_requirements'|trans({}, 'compliance') }}">
                 <div class="step-icon">{% if dashboard.statistics.fulfilled == dashboard.statistics.applicable %}<i class="bi bi-check-circle text-success" aria-hidden="true"></i>{% else %}{% if dashboard.statistics.fulfilled > 0 %}<i class="bi bi-arrow-clockwise text-info" aria-hidden="true"></i>{% else %}<span class="step-number">3</span>{% endif %}{% endif %}</div>
                 <div class="step-content">
-                    <h3>{{ 'compliance.dashboard.implement_requirements'|trans({}, 'compliance') }}</h3>
+                    <p class="fw-bold">{{ 'compliance.dashboard.implement_requirements'|trans({}, 'compliance') }}</p>
                     <p>{{ 'compliance.dashboard.implemented_count'|trans({'%implemented%': dashboard.statistics.fulfilled, '%total%': dashboard.statistics.applicable}, 'compliance') }}</p>
                     {% if dashboard.gaps.total > 0 %}
                         <a href="{{ path('app_compliance_requirement_index') }}?framework={{ framework.id }}&sort=fulfillment" class="step-action"
@@ -124,7 +124,7 @@
                  title="{{ 'common.tooltip.reach_100_percent'|trans({}, 'messages') }}">
                 <div class="step-icon">{% if dashboard.compliance_percentage == 100 %}<i class="bi bi-check-circle text-success" aria-hidden="true"></i>{% else %}{% if dashboard.compliance_percentage >= 75 %}<i class="bi bi-arrow-clockwise text-info" aria-hidden="true"></i>{% else %}<span class="step-number">4</span>{% endif %}{% endif %}</div>
                 <div class="step-content">
-                    <h3>{{ 'compliance.dashboard.achieve_100'|trans({}, 'compliance') }}</h3>
+                    <p class="fw-bold">{{ 'compliance.dashboard.achieve_100'|trans({}, 'compliance') }}</p>
                     <p>{{ 'compliance.dashboard.currently_at'|trans({'%percentage%': dashboard.compliance_percentage}, 'compliance') }}</p>
                     {% if dashboard.compliance_percentage < 100 %}
                         <a href="{{ path('app_compliance_gaps', {id: framework.id}) }}" class="step-action"
@@ -164,7 +164,7 @@
                                     <span class="status-text inactive">{{ 'common.not_active'|trans({}, 'messages') }}</span>
                                 {% endif %}
                             </div>
-                            <h3 class="module-title">{{ module.name }}</h3>
+                            <p class="fw-bold">{{ module.name }}</p>
                             <p class="module-description">{{ module.description }}</p>
                             {% if not isActive %}
                                 <a href="{{ path('admin_modules_index') }}" class="btn btn-primary btn-sm"
@@ -225,7 +225,7 @@
     <div class="next-action-card priority-{{ next_action.priority }}">
         <div class="next-action-icon">{{ next_action.icon|raw }}</div>
         <div class="next-action-content">
-            <h3>{{ next_action.title }}</h3>
+            <p class="fw-bold fs-4">{{ next_action.title }}</p>
             <p>{{ next_action.description }}</p>
             <a href="{{ next_action.action_url }}" class="btn btn-primary">
                 {{ next_action.action_text }} →
@@ -236,7 +236,7 @@
     <div class="next-action-card success">
         <div class="next-action-icon">🎉</div>
         <div class="next-action-content">
-            <h3>Congratulations!</h3>
+            <p class="fw-bold fs-4">Congratulations!</p>
             <p>You have achieved 100% compliance with {{ framework.name }}!</p>
             <a href="{{ path('app_compliance_index') }}" class="btn btn-success">
                 Back to All Frameworks →

@@ -1,0 +1,165 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'management_reports' %}
+
+{% block title %}{{ 'management_reports.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+{% import '_macros/cards.html.twig' as cards %}
+
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.reports'|trans({}, 'nav'), path: 'app_reports_index' },
+            { label: 'management_reports.title'|trans({}, 'management_reports') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">
+            <i class="bi bi-graph-up-arrow" aria-hidden="true"></i> {{ 'management_reports.title'|trans({}, 'management_reports') }}
+        </h1>
+    </div>
+
+    <div class="alert alert-info mb-4">
+        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'management_reports.subtitle'|trans({}, 'management_reports') }}
+    </div>
+
+    {# Quick Stats Row #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">{{ summary.summary.total_assets }}</h3>
+                            <small>{{ 'management_reports.stats.assets'|trans({}, 'management_reports') }}</small>
+                        </div>
+                        <i class="bi bi-server fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-danger text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">{{ summary.risk_distribution.critical + summary.risk_distribution.high }}</h3>
+                            <small>{{ 'management_reports.stats.high_risks'|trans({}, 'management_reports') }}</small>
+                        </div>
+                        <i class="bi bi-exclamation-triangle fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">{{ summary.summary.compliance_percentage }}%</h3>
+                            <small>{{ 'management_reports.stats.compliance'|trans({}, 'management_reports') }}</small>
+                        </div>
+                        <i class="bi bi-shield-check fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0">{{ summary.incident_summary.open }}</h3>
+                            <small>{{ 'management_reports.stats.open_incidents'|trans({}, 'management_reports') }}</small>
+                        </div>
+                        <i class="bi bi-bell fs-1 opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Report Categories #}
+    <h2 class="h4 mb-3">
+        <i class="bi bi-collection" aria-hidden="true"></i> {{ 'management_reports.categories.title'|trans({}, 'management_reports') }}
+    </h2>
+
+    <div class="row">
+        {% for category in categories %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm border-{{ category.color }}">
+                <div class="card-header bg-{{ category.color }} {% if category.color in ['warning', 'light'] %}text-dark{% else %}text-white{% endif %}">
+                    <h3 class="h5 mb-0">
+                        <i class="bi bi-{{ category.icon }}" aria-hidden="true"></i>
+                        {{ ('management_reports.category.' ~ category.key ~ '.title')|trans({}, 'management_reports') }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted small mb-3">{{ ('management_reports.category.' ~ category.key ~ '.description')|trans({}, 'management_reports') }}</p>
+                    <ul class="list-unstyled small mb-0">
+                        {% for report in category.reports %}
+                        <li class="mb-2">
+                            <i class="bi bi-file-earmark-text text-{{ category.color }}" aria-hidden="true"></i>
+                            {{ ('management_reports.report.' ~ report.key)|trans({}, 'management_reports') }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-footer bg-light">
+                    {% set route_name = 'app_management_reports_' ~ category.key %}
+                    <a href="{{ path(route_name) }}" class="btn btn-sm btn-outline-{{ category.color }}">
+                        <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'management_reports.action.view_reports'|trans({}, 'management_reports') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {# Quick Access Section #}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h3 class="h5 mb-0">
+                        <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'management_reports.quick_access.title'|trans({}, 'management_reports') }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="h6">{{ 'management_reports.quick_access.pdf_exports'|trans({}, 'management_reports') }}</h4>
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <a href="{{ path('app_management_reports_executive_pdf') }}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-file-pdf" aria-hidden="true"></i> Executive Summary
+                                </a>
+                                <a href="{{ path('app_management_reports_risk_pdf') }}" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-file-pdf" aria-hidden="true"></i> Risk Report
+                                </a>
+                                <a href="{{ path('app_management_reports_bcm_pdf') }}" class="btn btn-sm btn-outline-success">
+                                    <i class="bi bi-file-pdf" aria-hidden="true"></i> BCM Report
+                                </a>
+                                <a href="{{ path('app_management_reports_compliance_pdf') }}" class="btn btn-sm btn-outline-info">
+                                    <i class="bi bi-file-pdf" aria-hidden="true"></i> Compliance Status
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h4 class="h6">{{ 'management_reports.quick_access.excel_exports'|trans({}, 'management_reports') }}</h4>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="{{ path('app_management_reports_risk_excel') }}" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-file-excel" aria-hidden="true"></i> Risk Register
+                                </a>
+                                <a href="{{ path('app_management_reports_assets_excel') }}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-file-excel" aria-hidden="true"></i> Asset Inventory
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

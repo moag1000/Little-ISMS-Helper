@@ -20,7 +20,7 @@
 
         <hr>
 
-        <h6>{{ 'user.import.example_csv'|trans({}, 'user') }}</h6>
+        <h3>{{ 'user.import.example_csv'|trans({}, 'user') }}</h3>
         <pre class="mb-0">email,first_name,last_name,password,is_active,roles
 john.doe@example.com,John,Doe,SecurePass123,yes,"Admin,User"
 jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
@@ -29,9 +29,9 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
     {# Import Form #}
     <div class="card">
         <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-file-earmark-arrow-up" aria-hidden="true"></i> {{ 'user.import.upload_title'|trans({}, 'user') }}
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             <form method="post" enctype="multipart/form-data">
@@ -63,9 +63,9 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
     {# CSV Template Download #}
     <div class="card mt-4">
         <div class="card-header bg-secondary text-white">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-download" aria-hidden="true"></i> {{ 'user.import.template_title'|trans({}, 'user') }}
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             <p>{{ 'user.import.template_description'|trans({}, 'user') }}</p>
@@ -79,7 +79,7 @@ jane.smith@example.com,Jane,Smith,SecurePass456,yes,"User"</pre>
 
     {# Important Notes #}
     <div class="alert alert-warning mt-4">
-        <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'user.import.notes_title'|trans({}, 'user') }}</h5>
+        <h3><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'user.import.notes_title'|trans({}, 'user') }}</h3>
         <ul class="mb-0">
             <li>{{ 'user.import.note_existing_email'|trans({}, 'user') }}</li>
             <li>{{ 'user.import.note_random_password'|trans({}, 'user') }}</li>

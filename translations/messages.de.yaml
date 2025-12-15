@@ -222,6 +222,12 @@ common:
     target_date: Zieldatum
     export_pdf: 'PDF exportieren'
     optional: '(optional)'
+    modules: Module
+    confirm: Bestätigen
+    report_regenerated: 'Bericht wurde neu generiert'
+    regenerate: 'Neu generieren'
+    statistics: Statistiken
+    error.unknown: 'Ein unbekannter Fehler ist aufgetreten'
     tooltip:
         go_to_module_management: 'Zur Modulverwaltung gehen, um weitere Funktionen zu aktivieren'
         framework_dashboard_description: 'Übersicht über alle aktivierten Compliance-Frameworks mit Erfüllungsgrad'
@@ -380,6 +386,8 @@ role:
         title: Rollenvergleich
         select_roles: 'Rollen zum Vergleich auswählen'
         permission_matrix: Berechtigungsmatrix
+        permission_column: Berechtigung
+        system_badge: System
         has_permission: 'Hat Berechtigung'
         no_permission: 'Keine Berechtigung'
     templates:
@@ -1420,6 +1428,16 @@ admin:
         asset_not_found: 'Asset nicht gefunden'
         select_risk: 'Risiko auswählen'
 business_process:
+    index:
+        table:
+            name: Name
+            owner: Verantwortlicher
+            criticality: Kritikalität
+            rto: RTO
+            rpo: RPO
+            mtpd: MTPD
+            impact_score: Impact Score
+            actions: Aktionen
     success:
         created: 'Geschäftsprozess erfolgreich erstellt'
         updated: 'Geschäftsprozess erfolgreich aktualisiert'

@@ -24,7 +24,7 @@
             {# Profile Picture Card #}
             <div class="card">
                 <div class="card-body text-center">
-                    <h5 class="card-title">{{ 'user.profile.section.avatar'|trans({}, 'user') }}</h5>
+                    <h2 class="h5 card-title">{{ 'user.profile.section.avatar'|trans({}, 'user') }}</h2>
 
                     {% if user.profilePicture %}
                         <img src="{{ asset(user.profilePicture) }}"
@@ -38,7 +38,7 @@
                         </div>
                     {% endif %}
 
-                    <h4 class="mb-0">{{ user.fullName }}</h4>
+                    <p class="fs-5 fw-semibold mb-0">{{ user.fullName }}</p>
                     <p class="text-muted">{{ user.email }}</p>
 
                     {% if user.profilePicture %}
@@ -61,7 +61,7 @@
             {# Basic Information Card #}
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">{{ 'user.section.basic_info'|trans({}, 'user') }}</h5>
+                    <h2 class="h5 mb-0">{{ 'user.section.basic_info'|trans({}, 'user') }}</h2>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
@@ -95,7 +95,7 @@
             {# Account Information Card #}
             <div class="card mb-4">
                 <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">{{ 'user.profile.section.account'|trans({}, 'user') }}</h5>
+                    <h2 class="h5 mb-0">{{ 'user.profile.section.account'|trans({}, 'user') }}</h2>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
@@ -131,10 +131,10 @@
             {# MFA Status Card #}
             <div class="card mt-4">
                 <div class="card-header {% if user.hasMfaEnabled %}bg-success{% else %}bg-warning{% endif %} text-white">
-                    <h5 class="mb-0">
+                    <h2 class="h5 mb-0">
                         <i class="bi bi-shield{% if user.hasMfaEnabled %}-check{% else %}-exclamation{% endif %}" aria-hidden="true"></i>
                         {{ 'user.profile.section.mfa'|trans({}, 'user') }}
-                    </h5>
+                    </h2>
                 </div>
                 <div class="card-body">
                     {% if user.hasMfaEnabled %}

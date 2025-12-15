@@ -1,0 +1,379 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'dora' %}
+
+{% block title %}{{ 'dora.dashboard.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {# Header #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h1 class="mb-2">
+                        <i class="bi bi-bank me-2"></i>{{ 'dora.dashboard.title'|trans }}
+                    </h1>
+                    <p class="text-muted mb-0">{{ 'dora.dashboard.subtitle'|trans }}</p>
+                </div>
+                <div>
+                    <a href="{{ path('app_compliance_wizard_assess', {wizard: 'dora'}) }}" class="btn btn-outline-info">
+                        <i class="bi bi-clipboard-check me-1"></i>{{ 'dora.run_wizard'|trans }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Overall Compliance Score #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-{{ overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : 'danger') }}">
+                <div class="card-body text-center py-4">
+                    <h2 class="h4 mb-3">{{ 'dora.dashboard.overall_compliance'|trans }}</h2>
+                    <div class="display-1 fw-bold text-{{ overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : 'danger') }}">
+                        {{ overall_score.score }}%
+                    </div>
+                    <div class="progress mt-3 mx-auto" style="height: 20px; max-width: 600px;">
+                        <div class="progress-bar bg-{{ overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : 'danger') }}"
+                             role="progressbar"
+                             style="width: {{ overall_score.score }}%"
+                             aria-valuenow="{{ overall_score.score }}"
+                             aria-valuemin="0"
+                             aria-valuemax="100">
+                        </div>
+                    </div>
+                    <p class="mt-3 mb-0">
+                        <span class="badge bg-{{ overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : (overall_score.status == 'in_progress' ? 'info' : 'danger')) }} fs-6">
+                            {{ ('dora.status.' ~ overall_score.status)|trans }}
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Pillar Scores Overview #}
+    <div class="row g-3 mb-4">
+        {% for pillar, score in overall_score.pillar_scores %}
+        <div class="col-md-3">
+            <div class="card h-100 border-{{ score >= 80 ? 'success' : (score >= 60 ? 'warning' : 'danger') }}">
+                <div class="card-body text-center">
+                    <div class="h6 text-muted mb-2">
+                        {% if pillar == 'ict_risk' %}
+                            <i class="bi bi-shield-exclamation"></i> {{ 'dora.pillar.ict_risk'|trans }}
+                        {% elseif pillar == 'incidents' %}
+                            <i class="bi bi-exclamation-triangle"></i> {{ 'dora.pillar.incidents'|trans }}
+                        {% elseif pillar == 'testing' %}
+                            <i class="bi bi-clipboard-check"></i> {{ 'dora.pillar.testing'|trans }}
+                        {% elseif pillar == 'third_party' %}
+                            <i class="bi bi-building"></i> {{ 'dora.pillar.third_party'|trans }}
+                        {% endif %}
+                    </div>
+                    <div class="display-5 fw-bold text-{{ score >= 80 ? 'success' : (score >= 60 ? 'warning' : 'danger') }}">
+                        {{ score }}%
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {# Detailed Pillar Cards #}
+    <div class="row g-4">
+        {# PILLAR 1: ICT Risk Management #}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-primary bg-opacity-10">
+                    <h3 class="card-title h5 mb-0">
+                        <i class="bi bi-shield-exclamation me-2"></i>{{ 'dora.pillar.ict_risk'|trans }}
+                    </h3>
+                    <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '5-16'}) }}</small>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1 text-{{ ict_risk.critical_ict_risks > 0 ? 'danger' : 'success' }}">{{ ict_risk.ict_risks }}</div>
+                                <small class="text-muted">{{ 'dora.metric.ict_risks'|trans }}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1 text-{{ ict_risk.critical_ict_risks > 0 ? 'danger' : (ict_risk.high_ict_risks > 0 ? 'warning' : 'success') }}">
+                                    {{ ict_risk.high_ict_risks }} / {{ ict_risk.critical_ict_risks }}
+                                </div>
+                                <small class="text-muted">{{ 'dora.metric.high_critical_risks'|trans }}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1">{{ ict_risk.ict_assets }}</div>
+                                <small class="text-muted">{{ 'dora.metric.ict_assets'|trans }}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1 text-{{ ict_risk.treatment_rate >= 80 ? 'success' : (ict_risk.treatment_rate >= 60 ? 'warning' : 'danger') }}">
+                                    {{ ict_risk.treatment_rate }}%
+                                </div>
+                                <small class="text-muted">{{ 'dora.metric.risk_treatment_rate'|trans }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6">
+                            <small class="text-muted d-block">{{ 'dora.metric.asset_classification'|trans }}</small>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-{{ ict_risk.asset_classification_rate >= 80 ? 'success' : 'warning' }}" style="width: {{ ict_risk.asset_classification_rate }}%"></div>
+                            </div>
+                            <small>{{ ict_risk.asset_classification_rate }}%</small>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted d-block">{{ 'dora.metric.control_implementation'|trans }}</small>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-{{ ict_risk.control_implementation_rate >= 80 ? 'success' : 'warning' }}" style="width: {{ ict_risk.control_implementation_rate }}%"></div>
+                            </div>
+                            <small>{{ ict_risk.control_implementation_rate }}%</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# PILLAR 2: ICT Incident Management #}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-warning bg-opacity-10">
+                    <h3 class="card-title h5 mb-0">
+                        <i class="bi bi-exclamation-triangle me-2"></i>{{ 'dora.pillar.incidents'|trans }}
+                    </h3>
+                    <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '17-23'}) }}</small>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1">{{ incidents.total_incidents }}</div>
+                                <small class="text-muted">{{ 'dora.metric.total_incidents'|trans }}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1 text-{{ incidents.major_incidents_ytd > 5 ? 'danger' : (incidents.major_incidents_ytd > 0 ? 'warning' : 'success') }}">
+                                    {{ incidents.major_incidents_ytd }}
+                                </div>
+                                <small class="text-muted">{{ 'dora.metric.major_incidents_ytd'|trans }}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1 text-{{ incidents.open_major_incidents > 0 ? 'danger' : 'success' }}">
+                                    {{ incidents.open_major_incidents }}
+                                </div>
+                                <small class="text-muted">{{ 'dora.metric.open_major_incidents'|trans }}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1 text-{{ incidents.mttr_hours <= 24 ? 'success' : (incidents.mttr_hours <= 72 ? 'warning' : 'danger') }}">
+                                    {{ incidents.mttr_hours }}h
+                                </div>
+                                <small class="text-muted">{{ 'dora.metric.mttr'|trans }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="alert alert-{{ incidents.reporting_compliance_rate >= 80 ? 'success' : (incidents.reporting_compliance_rate >= 60 ? 'warning' : 'danger') }} mb-0 py-2">
+                        <strong>{{ 'dora.metric.4h_reporting'|trans }}:</strong> {{ incidents.reporting_compliance_rate }}%
+                        <small class="d-block">{{ 'dora.article_19_hint'|trans }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# PILLAR 3: Digital Operational Resilience Testing #}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-info bg-opacity-10">
+                    <h3 class="card-title h5 mb-0">
+                        <i class="bi bi-clipboard-check me-2"></i>{{ 'dora.pillar.testing'|trans }}
+                    </h3>
+                    <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '24-27'}) }}</small>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1">{{ testing.exercises_completed }} / {{ testing.exercises_planned }}</div>
+                                <small class="text-muted">{{ 'dora.metric.exercises'|trans }}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1">{{ testing.active_bc_plans }}</div>
+                                <small class="text-muted">{{ 'dora.metric.bc_plans'|trans }}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1 text-{{ testing.bc_plan_coverage >= 80 ? 'success' : 'warning' }}">
+                                    {{ testing.bc_plan_coverage }}%
+                                </div>
+                                <small class="text-muted">{{ 'dora.metric.bc_coverage'|trans }}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1">{{ testing.resilience_trainings }}</div>
+                                <small class="text-muted">{{ 'dora.metric.resilience_trainings'|trans }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="alert alert-{{ testing.exercise_compliance >= 100 ? 'success' : 'warning' }} mb-0 py-2">
+                        <i class="bi bi-info-circle me-1"></i>
+                        {{ 'dora.testing_requirement'|trans }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# PILLAR 4: ICT Third-Party Risk Management #}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header bg-secondary bg-opacity-10">
+                    <h3 class="card-title h5 mb-0">
+                        <i class="bi bi-building me-2"></i>{{ 'dora.pillar.third_party'|trans }}
+                    </h3>
+                    <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '28-44'}) }}</small>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1">{{ third_party.total_ict_providers }}</div>
+                                <small class="text-muted">{{ 'dora.metric.ict_providers'|trans }}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1 text-{{ third_party.critical_providers > 10 ? 'warning' : 'info' }}">
+                                    {{ third_party.critical_providers }}
+                                </div>
+                                <small class="text-muted">{{ 'dora.metric.critical_providers'|trans }}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1 text-{{ third_party.assessment_rate >= 80 ? 'success' : 'warning' }}">
+                                    {{ third_party.assessment_rate }}%
+                                </div>
+                                <small class="text-muted">{{ 'dora.metric.assessment_rate'|trans }}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="border rounded p-3 text-center">
+                                <div class="h3 mb-1 text-{{ third_party.overdue_assessments > 0 ? 'danger' : 'success' }}">
+                                    {{ third_party.overdue_assessments }}
+                                </div>
+                                <small class="text-muted">{{ 'dora.metric.overdue_assessments'|trans }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6">
+                            <small class="text-muted">{{ 'dora.metric.concentration_risk'|trans }}</small>
+                            <div class="h5 text-{{ third_party.high_dependency_providers > 5 ? 'warning' : 'success' }}">
+                                {{ third_party.high_dependency_providers }} {{ 'dora.high_dependency_providers'|trans }}
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">{{ 'dora.metric.exit_strategies'|trans }}</small>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-{{ third_party.exit_strategy_rate >= 80 ? 'success' : 'warning' }}" style="width: {{ third_party.exit_strategy_rate }}%"></div>
+                            </div>
+                            <small>{{ third_party.exit_strategy_rate }}%</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Information Sharing (Pillar 5) #}
+    {% if information_sharing.controls_total > 0 %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success bg-opacity-10">
+                    <h3 class="card-title h5 mb-0">
+                        <i class="bi bi-share me-2"></i>{{ 'dora.pillar.information_sharing'|trans }}
+                    </h3>
+                    <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '45'}) }}</small>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-4 text-center">
+                            <div class="display-4 text-{{ information_sharing.implementation_rate >= 80 ? 'success' : 'warning' }}">
+                                {{ information_sharing.implementation_rate }}%
+                            </div>
+                            <small class="text-muted">{{ 'dora.metric.implementation_rate'|trans }}</small>
+                        </div>
+                        <div class="col-md-8">
+                            <p class="mb-2">{{ 'dora.information_sharing_desc'|trans }}</p>
+                            <div class="progress" style="height: 10px;">
+                                <div class="progress-bar bg-{{ information_sharing.implementation_rate >= 80 ? 'success' : 'warning' }}"
+                                     style="width: {{ information_sharing.implementation_rate }}%">
+                                </div>
+                            </div>
+                            <small class="text-muted">
+                                {{ information_sharing.controls_implemented }} / {{ information_sharing.controls_total }} {{ 'dora.controls_implemented'|trans }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Quick Actions #}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title h5 mb-0">
+                        <i class="bi bi-lightning me-2"></i>{{ 'dora.quick_actions'|trans }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a href="{{ path('app_risk_index') }}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-shield-exclamation me-1"></i>{{ 'dora.action.manage_risks'|trans }}
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ path('app_incident_index') }}" class="btn btn-outline-warning w-100">
+                                <i class="bi bi-exclamation-triangle me-1"></i>{{ 'dora.action.manage_incidents'|trans }}
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ path('app_bc_exercise_index') }}" class="btn btn-outline-info w-100">
+                                <i class="bi bi-clipboard-check me-1"></i>{{ 'dora.action.plan_exercises'|trans }}
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ path('app_supplier_index') }}" class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-building me-1"></i>{{ 'dora.action.manage_suppliers'|trans }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

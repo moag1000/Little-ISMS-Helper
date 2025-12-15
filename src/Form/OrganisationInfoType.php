@@ -33,7 +33,6 @@ class OrganisationInfoType extends AbstractType
                     'placeholder' => 'setup.organisation.name_placeholder',
                 ],
                 'help' => 'setup.organisation.name_help',
-            'translation_domain' => 'admin',
             ]);
         }
 
@@ -140,6 +139,7 @@ class OrganisationInfoType extends AbstractType
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'organisation_info',
             'include_name' => true, // Set to false when editing tenant context (name comes from Tenant entity)
+            'translation_domain' => 'setup',
         ]);
     }
 }

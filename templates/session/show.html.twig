@@ -22,7 +22,7 @@
         <div class="col-md-4">
             <div class="card border-primary">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">Aktivitäten (7 Tage)</h5>
+                    <div class="card-title text-muted fw-semibold">Aktivitäten (7 Tage)</div>
                     <p class="display-6 text-primary">{{ total_activities }}</p>
                 </div>
             </div>
@@ -30,7 +30,7 @@
         <div class="col-md-4">
             <div class="card border-info">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'session.unique_ips'|trans({}, 'session') }}</h5>
+                    <div class="card-title text-muted fw-semibold">{{ 'session.unique_ips'|trans({}, 'session') }}</div>
                     <p class="display-6 text-info">{{ ip_addresses|length }}</p>
                 </div>
             </div>
@@ -38,7 +38,7 @@
         <div class="col-md-4">
             <div class="card border-success">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'session.unique_devices'|trans({}, 'session') }}</h5>
+                    <div class="card-title text-muted fw-semibold">{{ 'session.unique_devices'|trans({}, 'session') }}</div>
                     <p class="display-6 text-success">{{ user_agents|length }}</p>
                 </div>
             </div>
@@ -48,9 +48,9 @@
     {# IP Addresses #}
     <div class="card mb-4">
         <div class="card-header bg-info text-white">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-geo-alt" aria-hidden="true"></i> IP-Adressen
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             {% for ip in ip_addresses %}
@@ -62,19 +62,19 @@
     {# Activity Timeline #}
     <div class="card">
         <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'session.activity_timeline'|trans({}, 'session') }}
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             {% if activity_timeline|length > 0 %}
                 {% for date, daily_activities in activity_timeline|reverse %}
                     <div class="mb-4">
-                        <h6 class="text-muted">
+                        <div class="text-muted fw-semibold">
                             <i class="bi bi-calendar" aria-hidden="true"></i>
                             {{ date|date('d.m.Y') }}
                             <span class="badge bg-secondary">{{ daily_activities|length }}</span>
-                        </h6>
+                        </div>
                         <ul class="list-group">
                             {% for activity in daily_activities %}
                                 <li class="list-group-item">

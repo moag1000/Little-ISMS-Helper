@@ -32,7 +32,7 @@
         <div class="d-flex align-items-center">
             <i class="bi bi-{{ overall_status == 'healthy' ? 'check-circle-fill' : (overall_status == 'warning' ? 'exclamation-triangle-fill' : 'x-circle-fill') }} fs-1 me-3" aria-hidden="true"></i>
             <div>
-                <h4 class="mb-1">
+                <h2 class="mb-1">
                     System Status:
                     {% if overall_status == 'healthy' %}
                         <strong>Healthy</strong>
@@ -41,7 +41,7 @@
                     {% else %}
                         <strong>Error</strong>
                     {% endif %}
-                </h4>
+                </h2>
                 <p class="mb-0">
                     Last checked: {{ 'now'|date('Y-m-d H:i:s') }}
                 </p>
@@ -582,9 +582,9 @@
     {# Quick Actions #}
     <div class="card mt-4">
         <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-link-45deg" aria-hidden="true"></i> Related Monitoring
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             <div class="row">

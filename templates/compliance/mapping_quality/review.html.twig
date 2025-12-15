@@ -28,13 +28,13 @@
     {# Mapping Overview #}
     <div class="card mb-4">
         <div class="card-header">
-            <h3 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'mapping_review.section.overview'|trans({}, 'compliance') }}</h3>
+            <h2 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'mapping_review.section.overview'|trans({}, 'compliance') }}</h2>
         </div>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-5">
-                    <h6 class="text-muted">{{ 'mapping_review.field.source_requirement'|trans({}, 'compliance') }}</h6>
-                    <h5><span class="badge bg-primary">{{ mapping.sourceRequirement.framework.code }}</span> {{ mapping.sourceRequirement.requirementId }}</h5>
+                    <p class="fw-bold text-muted">{{ 'mapping_review.field.source_requirement'|trans({}, 'compliance') }}</p>
+                    <p class="fw-bold"><span class="badge bg-primary">{{ mapping.sourceRequirement.framework.code }}</span> {{ mapping.sourceRequirement.requirementId }}</p>
                     <p><strong>{{ mapping.sourceRequirement.title }}</strong></p>
                     <p class="text-muted small">{{ mapping.sourceRequirement.description|slice(0, 200) }}...</p>
                     {% if mapping.sourceRequirement.category %}
@@ -47,11 +47,11 @@
                     {% endif %}
                 </div>
                 <div class="col-md-2 text-center d-flex align-items-center justify-content-center">
-                    <h3>→</h3>
+                    <p class="fs-3">→</p>
                 </div>
                 <div class="col-md-5">
-                    <h6 class="text-muted">{{ 'mapping_review.field.target_requirement'|trans({}, 'compliance') }}</h6>
-                    <h2><span class="badge bg-success">{{ mapping.targetRequirement.framework.code }}</span> {{ mapping.targetRequirement.requirementId }}</h2>
+                    <p class="fw-bold text-muted">{{ 'mapping_review.field.target_requirement'|trans({}, 'compliance') }}</p>
+                    <p class="fw-bold"><span class="badge bg-success">{{ mapping.targetRequirement.framework.code }}</span> {{ mapping.targetRequirement.requirementId }}</p>
                     <p><strong>{{ mapping.targetRequirement.title }}</strong></p>
                     <p class="text-muted small">{{ mapping.targetRequirement.description|slice(0, 200) }}...</p>
                     {% if mapping.targetRequirement.category %}
@@ -71,31 +71,31 @@
     <div class="row mb-4">
         <div class="col-md-4">
             <div class="card">
-                <div class="card-header"><h5 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'mapping_review.section.percentages'|trans({}, 'compliance') }}</h5>
+                <div class="card-header"><h2 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'mapping_review.section.percentages'|trans({}, 'compliance') }}</h2>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
                         <small class="text-muted">{{ 'mapping_review.field.original_heuristic'|trans({}, 'compliance') }}</small>
-                        <h4><span class="badge bg-secondary">{{ mapping.mappingPercentage }}%</span></h4>
+                        <p class="fw-bold fs-4"><span class="badge bg-secondary">{{ mapping.mappingPercentage }}%</span></p>
                     </div>
                     {% if mapping.calculatedPercentage is not null %}
                     <div class="mb-3">
                         <small class="text-muted">{{ 'mapping_review.field.calculated_auto'|trans({}, 'compliance') }}</small>
-                        <h4><span class="badge {% if mapping.calculatedPercentage >= 70 %}bg-success{% elseif mapping.calculatedPercentage >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
+                        <p class="fw-bold fs-4"><span class="badge {% if mapping.calculatedPercentage >= 70 %}bg-success{% elseif mapping.calculatedPercentage >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
                             {{ mapping.calculatedPercentage }}%
-                        </span></h4>
+                        </span></p>
                     </div>
                     {% endif %}
                     {% if mapping.manualPercentage is not null %}
                     <div>
                         <small class="text-muted">{{ 'mapping_review.field.manual_override'|trans({}, 'compliance') }}</small>
-                        <h4><span class="badge bg-info">{{ mapping.manualPercentage }}%</span></h4>
+                        <p class="fw-bold fs-4"><span class="badge bg-info">{{ mapping.manualPercentage }}%</span></p>
                     </div>
                     {% endif %}
                     <hr>
                     <div>
                         <strong>{{ 'mapping_review.field.final'|trans({}, 'compliance') }}:</strong>
-                        <h3><span class="badge bg-primary">{{ mapping.finalPercentage }}%</span></h3>
+                        <p class="fw-bold fs-3"><span class="badge bg-primary">{{ mapping.finalPercentage }}%</span></p>
                     </div>
                 </div>
             </div>
@@ -103,7 +103,7 @@
 
         <div class="col-md-4">
             <div class="card">
-                <div class="card-header"><h5 class="mb-0"><i class="bi bi-star" aria-hidden="true"></i> {{ 'mapping_review.section.quality_confidence'|trans({}, 'compliance') }}</h5>
+                <div class="card-header"><h3 class="mb-0 h5"><i class="bi bi-star" aria-hidden="true"></i> {{ 'mapping_review.section.quality_confidence'|trans({}, 'compliance') }}</h3>
                 </div>
                 <div class="card-body">
                     {% if mapping.qualityScore is not null %}
@@ -144,7 +144,7 @@
 
         <div class="col-md-4">
             <div class="card">
-                <div class="card-header"><h5 class="mb-0"><i class="bi bi-activity" aria-hidden="true"></i> {{ 'mapping_review.section.similarity_scores'|trans({}, 'compliance') }}</h5>
+                <div class="card-header"><h4 class="mb-0 h5"><i class="bi bi-activity" aria-hidden="true"></i> {{ 'mapping_review.section.similarity_scores'|trans({}, 'compliance') }}</h4>
                 </div>
                 <div class="card-body">
                     {% if mapping.textualSimilarity is not null %}
@@ -253,7 +253,7 @@
     </div>
     {% else %}
         <div class="alert alert-success">
-            <h5><i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'mapping_review.gap.no_gaps'|trans({}, 'compliance') }}</h5>
+            <div class="fw-bold"><i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'mapping_review.gap.no_gaps'|trans({}, 'compliance') }}</div>
             <p class="mb-0">{{ 'mapping_review.gap.no_gaps_desc'|trans({}, 'compliance') }}</p>
         </div>
     {% endif %}
@@ -307,7 +307,7 @@
     {# Metadata #}
     {% if mapping.reviewedBy or mapping.verifiedBy %}
     <div class="card">
-        <div class="card-header"><h5 class="mb-0"><i class="bi bi-info-circle text-info" aria-hidden="true"></i> {{ 'mapping_review.section.metadata'|trans({}, 'compliance') }}</h5>
+        <div class="card-header"><h3 class="mb-0 h5"><i class="bi bi-info-circle text-info" aria-hidden="true"></i> {{ 'mapping_review.section.metadata'|trans({}, 'compliance') }}</h3>
         </div>
         <div class="card-body">
             {% if mapping.reviewedBy %}

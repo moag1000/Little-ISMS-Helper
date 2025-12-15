@@ -31,7 +31,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h3>{{ 'change_request.details.title'|trans({}, 'change_requests') }}</h3>
+            <h2>{{ 'change_request.details.title'|trans({}, 'change_requests') }}</h2>
             <div>
                 <span class="badge badge-{{ change_request.changeType }}">{{ change_request.changeType }}</span>
                 <span class="badge badge-{{ change_request.priority }}">{{ change_request.priority }}</span>
@@ -59,12 +59,12 @@
             </div>
 
             <div class="detail-section">
-                <h2>{{ 'change_request.section.description'|trans({}, 'change_requests') }}</h2>
+                <h3>{{ 'change_request.section.description'|trans({}, 'change_requests') }}</h3>
                 <p>{{ change_request.description|nl2br }}</p>
             </div>
 
             <div class="detail-section">
-                <h2>{{ 'change_request.section.justification'|trans({}, 'change_requests') }}</h2>
+                <h3>{{ 'change_request.section.justification'|trans({}, 'change_requests') }}</h3>
                 <p>{{ change_request.justification|nl2br }}</p>
             </div>
 

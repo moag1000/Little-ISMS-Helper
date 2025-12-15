@@ -12,4 +12,7 @@ bulk_delete:
     will_be_deleted: 'Will Be Deleted'
     selected_items: 'Selected Items'
     understand: Understand
-    confirm_help: 'Confirm Help'
+    confirm_help: 'Type "DELETE" to confirm deletion'
+    confirm_count: '%count% items will be permanently deleted'
+    success: '%count% items were successfully deleted'
+    error: 'Error deleting items'

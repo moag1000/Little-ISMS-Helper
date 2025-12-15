@@ -20,13 +20,13 @@
         <div class="d-flex align-items-center">
             <i class="bi {{ mfa_enabled ? 'bi-shield-check' : 'bi-shield-exclamation' }} fs-1 me-3" aria-hidden="true"></i>
             <div>
-                <h5 class="mb-1">
+                <p class="fw-bold mb-1">
                     {% if mfa_enabled %}
                         {{ 'mfa.enabled'|trans({}, 'mfa') }}
                     {% else %}
                         {{ 'mfa.disabled'|trans({}, 'mfa') }}
                     {% endif %}
-                </h5>
+                </p>
                 <p class="mb-0">
                     {% if mfa_enabled %}
                         {{ 'mfa.enabled_description'|trans({}, 'mfa') }}
@@ -51,7 +51,7 @@
         <div class="col-md-4">
             <div class="card border-primary">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'mfa.statistics.active_tokens'|trans({}, 'mfa') }}</h5>
+                    <p class="card-title text-muted fw-semibold">{{ 'mfa.statistics.active_tokens'|trans({}, 'mfa') }}</p>
                     <p class="display-6 text-primary">{{ active_tokens_count }}</p>
                 </div>
             </div>
@@ -59,7 +59,7 @@
         <div class="col-md-4">
             <div class="card border-info">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'mfa.statistics.total_tokens'|trans({}, 'mfa') }}</h5>
+                    <p class="card-title text-muted fw-semibold">{{ 'mfa.statistics.total_tokens'|trans({}, 'mfa') }}</p>
                     <p class="display-6 text-info">{{ mfa_tokens|length }}</p>
                 </div>
             </div>
@@ -67,7 +67,7 @@
         <div class="col-md-4">
             <div class="card border-success">
                 <div class="card-body">
-                    <h5 class="card-title text-muted">{{ 'mfa.statistics.by_type'|trans({}, 'mfa') }}</h5>
+                    <p class="card-title text-muted fw-semibold">{{ 'mfa.statistics.by_type'|trans({}, 'mfa') }}</p>
                     {% if tokens_by_type|length > 0 %}
                         {% for type, count in tokens_by_type %}
                             <div class="d-flex justify-content-between">
@@ -86,10 +86,10 @@
     {# MFA Tokens List #}
     <div class="card">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-key" aria-hidden="true"></i>
                 {{ 'mfa.my_tokens'|trans({}, 'mfa') }}
-            </h3>
+            </h2>
             {% if mfa_enabled %}
                 <a href="{{ path('app_profile_mfa_setup_totp') }}" class="btn btn-light btn-sm">
                     <i class="bi bi-plus-circle" aria-hidden="true"></i>
@@ -218,10 +218,10 @@
 
     {# Security Recommendations #}
     <div class="alert alert-info mt-4">
-        <h4>
+        <p class="fw-bold fs-5">
             <i class="bi bi-shield-check" aria-hidden="true"></i>
             {{ 'mfa.security_recommendations.title'|trans({}, 'mfa') }}
-        </h4>
+        </p>
         <ul class="mb-0">
             <li>{{ 'mfa.security_recommendations.item1'|trans({}, 'mfa') }}</li>
             <li>{{ 'mfa.security_recommendations.item2'|trans({}, 'mfa') }}</li>

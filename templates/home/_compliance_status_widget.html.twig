@@ -1,0 +1,103 @@
+{#
+ # Compliance Status Widget
+ # Displays quick overview of compliance wizard status for all frameworks
+ #}
+
+{% if compliance_summary is defined and compliance_summary.has_frameworks %}
+<div class="widget-card mb-4"
+     data-widget-id="compliance-status"
+     data-dashboard-customizer-target="widget">
+    <div class="widget-header">
+        <h3 class="widget-title">
+            <i class="bi bi-award" aria-hidden="true"></i>
+            {{ 'dashboard.compliance_status'|trans({}, 'dashboard') }}
+        </h3>
+        <div class="widget-actions">
+            <span class="badge bg-{{ compliance_summary.status == 'compliant' ? 'success' : (compliance_summary.status == 'partial' ? 'warning' : (compliance_summary.status == 'in_progress' ? 'info' : 'danger')) }}">
+                {{ compliance_summary.average_score }}%
+            </span>
+        </div>
+    </div>
+    <div class="widget-body p-3">
+        {# Overall Progress Bar #}
+        <div class="mb-3">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="small text-muted">{{ 'wizard.overall_compliance'|trans({}, 'wizard') }}</span>
+                <span class="fw-bold">{{ compliance_summary.average_score }}%</span>
+            </div>
+            <div class="progress" style="height: 8px;">
+                <div class="progress-bar bg-{{ compliance_summary.status == 'compliant' ? 'success' : (compliance_summary.status == 'partial' ? 'warning' : (compliance_summary.status == 'in_progress' ? 'info' : 'danger')) }}"
+                     role="progressbar"
+                     style="width: {{ compliance_summary.average_score }}%"
+                     aria-valuenow="{{ compliance_summary.average_score }}"
+                     aria-valuemin="0"
+                     aria-valuemax="100"></div>
+            </div>
+        </div>
+
+        {# Critical Gaps Alert #}
+        {% if compliance_summary.critical_gaps_total > 0 %}
+        <div class="alert alert-danger alert-sm py-2 px-3 mb-3" role="alert">
+            <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+            <span class="small">
+                {{ 'wizard.critical_gaps_count'|trans({'%count%': compliance_summary.critical_gaps_total}, 'wizard') }}
+            </span>
+        </div>
+        {% endif %}
+
+        {# Framework Status List #}
+        {% if compliance_summary.frameworks|default([])|length > 0 %}
+        <div class="framework-status-list">
+            {% for framework in compliance_summary.frameworks %}
+            <a href="{{ path(framework.route, framework.route_params) }}"
+               class="d-flex align-items-center justify-content-between p-2 rounded mb-2 text-decoration-none border-start border-3 border-{{ framework.color }}"
+               style="background: var(--bs-{{ framework.color }}-bg-subtle, #f8f9fa);">
+                <div class="d-flex align-items-center">
+                    <i class="bi {{ framework.icon }} me-2 text-{{ framework.color }}" aria-hidden="true"></i>
+                    <span class="fw-medium">{{ framework.code }}</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    {% if framework.critical_gaps > 0 %}
+                    <span class="badge bg-danger-subtle text-danger me-2" title="{{ 'wizard.critical_gaps'|trans({}, 'wizard') }}">
+                        <i class="bi bi-exclamation-circle" aria-hidden="true"></i> {{ framework.critical_gaps }}
+                    </span>
+                    {% endif %}
+                    <span class="badge bg-{{ framework.status == 'compliant' ? 'success' : (framework.status == 'partial' ? 'warning' : (framework.status == 'in_progress' ? 'info' : 'danger')) }}">
+                        {{ framework.score }}%
+                    </span>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {# View All Wizards Link #}
+        <div class="text-center mt-3">
+            <a href="{{ path('app_compliance_wizard_index') }}" class="btn btn-sm btn-outline-primary">
+                <i class="bi bi-magic" aria-hidden="true"></i>
+                {{ 'wizard.view_all_wizards'|trans({}, 'wizard') }}
+            </a>
+        </div>
+    </div>
+</div>
+{% else %}
+{# No frameworks available - show getting started hint #}
+<div class="widget-card mb-4"
+     data-widget-id="compliance-status"
+     data-dashboard-customizer-target="widget">
+    <div class="widget-header">
+        <h3 class="widget-title">
+            <i class="bi bi-award" aria-hidden="true"></i>
+            {{ 'dashboard.compliance_status'|trans({}, 'dashboard') }}
+        </h3>
+    </div>
+    <div class="widget-body p-3 text-center">
+        <i class="bi bi-magic display-4 text-muted mb-3" aria-hidden="true"></i>
+        <p class="text-muted mb-3">{{ 'wizard.no_frameworks_available'|trans({}, 'wizard') }}</p>
+        <a href="{{ path('app_compliance_wizard_index') }}" class="btn btn-sm btn-primary">
+            <i class="bi bi-rocket" aria-hidden="true"></i>
+            {{ 'wizard.get_started'|trans({}, 'wizard') }}
+        </a>
+    </div>
+</div>
+{% endif %}

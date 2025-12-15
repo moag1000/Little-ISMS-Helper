@@ -12,6 +12,281 @@ analytics:
         refresh: Refresh
         export_png: 'Export as PNG'
         reset_filters: 'Reset filters'
+        advanced: 'Advanced Analytics'
+        back_to_basic: 'Back to Basic Analytics'
+        back_to_advanced: 'Back to Advanced Analytics'
+        view_dashboard: 'View Dashboard'
+        add_assets: 'Add Assets'
+
+    # Phase 7B: Advanced Analytics
+    advanced:
+        title: 'Advanced Analytics'
+        subtitle: 'Multi-framework compliance, control effectiveness, and predictive analytics'
+        kpi:
+            overall_compliance: 'Overall Compliance'
+            frameworks_count: '%count% frameworks'
+            control_effectiveness: 'Control Effectiveness'
+            controls_count: '%count% controls'
+            implementation_rate: 'Implementation Rate'
+            implemented: 'implemented'
+            risk_velocity: 'Risk Velocity'
+            velocity_period: 'Last %days% days'
+        card:
+            compliance_frameworks:
+                title: 'Multi-Framework Compliance'
+                subtitle: 'Cross-framework analysis'
+                description: 'Compare compliance across multiple frameworks, identify overlaps, and track compliance roadmap.'
+                feature1: 'Framework comparison'
+                feature2: 'Overlap analysis'
+                feature3: 'Compliance roadmap'
+            control_effectiveness:
+                title: 'Control Effectiveness'
+                subtitle: 'Performance analytics'
+                description: 'Analyze control performance, identify orphaned controls, and track review aging.'
+                feature1: 'Effectiveness scoring'
+                feature2: 'Aging analysis'
+                feature3: 'Risk reduction matrix'
+            risk_forecast:
+                title: 'Risk Forecast'
+                subtitle: 'Predictive analytics'
+                description: 'Predict future risk levels, track risk velocity, and detect anomalies.'
+                feature1: 'Predictive modeling'
+                feature2: 'Velocity tracking'
+                feature3: 'Anomaly detection'
+            asset_criticality:
+                title: 'Asset Criticality'
+                subtitle: 'Incident probability'
+                description: 'Analyze asset criticality and predict incident probability based on historical data.'
+            basic_analytics:
+                title: 'Basic Analytics'
+                subtitle: 'Core dashboards'
+                description: 'Standard analytics including risk heat map, compliance radar, and trend analysis.'
+        executive_summary:
+            title: 'Executive Summary'
+            requirements: 'requirements'
+            no_frameworks: 'No compliance frameworks configured'
+
+    # Compliance Analytics
+    compliance:
+        title: 'Multi-Framework Compliance Analytics'
+        subtitle: 'Cross-framework comparison and gap analysis'
+        tabs:
+            frameworks: 'Frameworks'
+            comparison: 'Framework Comparison'
+            overlap: 'Framework Overlap'
+            roadmap: 'Compliance Roadmap'
+        comparison:
+            chart_title: 'Compliance by Framework'
+            summary: 'Framework Summary'
+            requirements: 'requirements'
+            detailed_breakdown: 'Detailed Breakdown'
+            no_data: 'No compliance data available'
+        table:
+            framework: 'Framework'
+            total: 'Total'
+            compliant: 'Compliant'
+            partial: 'Partial'
+            non_compliant: 'Non-Compliant'
+            compliance: 'Compliance'
+            progress: 'Progress'
+        chart:
+            compliant: 'Compliant'
+            partial: 'Partial'
+            non_compliant: 'Non-Compliant'
+            shared: 'Shared Controls'
+            unique: 'Unique Controls'
+        overlap:
+            title: 'Framework Control Overlap'
+            unique_controls: 'Total Unique Controls'
+            shared_controls: 'Shared Controls'
+            overlap_rate: 'Overlap Rate'
+            efficiency: 'Efficiency Potential'
+            efficiency_info: 'Control reuse opportunity detected!'
+            efficiency_description: '%percentage%% of controls can be reused across multiple frameworks, reducing implementation effort.'
+            matrix_title: 'Framework Overlap Matrix'
+        roadmap:
+            title: 'Compliance Improvement Roadmap'
+            gaps_identified: 'gaps identified'
+            high_priority: 'High Priority'
+            medium_priority: 'Medium Priority'
+            low_priority: 'Low Priority'
+            no_gaps: 'No Compliance Gaps'
+            fully_compliant: 'Congratulations! All compliance requirements are met.'
+            table:
+                framework: 'Framework'
+                requirement: 'Requirement'
+                status: 'Status'
+                priority: 'Priority'
+                recommendation: 'Recommendation'
+
+    # Control Effectiveness Analytics
+    controls:
+        title: 'Control Effectiveness Analytics'
+        subtitle: 'Performance analysis and aging tracking'
+        kpi:
+            total_controls: 'Total Controls'
+            implementation_rate: 'Implementation Rate'
+            avg_effectiveness: 'Avg. Effectiveness'
+            risk_coverage: 'Risk Coverage'
+        tabs:
+            overview: 'Overview'
+            performance: 'Performance'
+            aging: 'Aging Analysis'
+            orphans: 'Orphaned Controls'
+        overview:
+            status_distribution: 'Implementation Status Distribution'
+            category_performance: 'Category Performance'
+            by_category: 'Controls by Category'
+        table:
+            category: 'Category'
+            total: 'Total'
+            implemented: 'Implemented'
+            impl_rate: 'Impl. Rate'
+            effectiveness: 'Effectiveness'
+            progress: 'Progress'
+            control: 'Control'
+            score: 'Score'
+            risks: 'Risks'
+            status: 'Status'
+            days_overdue: 'Days Overdue'
+            reason: 'Reason'
+            recommendation: 'Recommendation'
+            risks_mitigated: 'Risks Mitigated'
+            total_reduction: 'Total Reduction'
+            avg_reduction: 'Avg. Reduction'
+        status:
+            implemented: 'Implemented'
+            partially: 'Partially Implemented'
+            planned: 'Planned'
+            not_applicable: 'Not Applicable'
+            not_implemented: 'Not Implemented'
+        chart:
+            effectiveness: 'Effectiveness'
+            implementation: 'Implementation Rate'
+        performance:
+            top_performing: 'Top Performing Controls'
+            needs_attention: 'Needs Attention'
+            risk_reduction_matrix: 'Control-Risk Reduction Matrix'
+            matrix_info: '%controls% controls are actively reducing risks with an average reduction of %reduction%%'
+        aging:
+            current: 'Current (<90 days)'
+            due_soon: 'Due Soon (90-180 days)'
+            overdue: 'Overdue (180-365 days)'
+            critical: 'Critical (>365 days)'
+            never_reviewed: 'Never Reviewed'
+            compliance_rate: 'Review Compliance'
+            distribution_chart: 'Aging Distribution'
+            overdue_controls: 'Overdue Controls'
+            never: 'Never'
+            all_current: 'All controls are up to date!'
+        orphans:
+            title: 'Orphaned Controls'
+            found: 'found'
+            info: 'Orphaned controls are not linked to any risks or compliance requirements. Consider mapping them to relevant items.'
+            none_found: 'No Orphaned Controls'
+            all_linked: 'All controls are properly linked to risks or compliance requirements.'
+
+    # Risk Forecast Analytics
+    forecast:
+        title: 'Risk Forecast Analytics'
+        subtitle: 'Predictive risk modeling and anomaly detection'
+        kpi:
+            current_risks: 'Current Risks'
+            predicted: 'Predicted'
+            in_months: 'in %months% months'
+            risk_velocity: 'Risk Velocity'
+            velocity_period: 'Last %days% days'
+            appetite_compliance: 'Appetite Compliance'
+        tabs:
+            forecast: 'Risk Forecast'
+            velocity: 'Risk Velocity'
+            appetite: 'Risk Appetite'
+            anomalies: 'Anomalies'
+        chart:
+            risk_forecast: 'Risk Level Forecast'
+            historical: 'Historical'
+            predicted: 'Predicted'
+            new_risks: 'New Risks'
+            closed_risks: 'Closed Risks'
+            compliant: 'Compliant'
+            gap: 'Gap'
+        predictions:
+            title: 'Forecast Details'
+            trend: 'Trend Direction'
+            increasing: 'Increasing'
+            decreasing: 'Decreasing'
+            stable: 'Stable'
+            confidence: 'Confidence Level'
+            change: 'Predicted Change'
+            by_level: 'By Risk Level'
+        velocity:
+            chart_title: 'Risk Velocity Over Time'
+            summary: 'Velocity Summary'
+            new_risks: 'New Risks'
+            closed_risks: 'Closed Risks'
+            net_change: 'Net Change'
+            avg_per_month: 'Avg per Month'
+            period: 'Analysis Period'
+            monthly_breakdown: 'Monthly Breakdown'
+        table:
+            month: 'Month'
+            new: 'New'
+            closed: 'Closed'
+            net: 'Net'
+            total: 'Total'
+            trend: 'Trend'
+        appetite:
+            compliance_score: 'Risk Appetite Compliance'
+            score_description: 'Percentage of risk levels within defined thresholds'
+            by_level: 'Compliance by Risk Level'
+            threshold: 'threshold'
+            within_threshold: 'Within acceptable threshold'
+            exceeds_threshold: 'Exceeds threshold by %excess%'
+            recommendations: 'Recommendations'
+        anomalies:
+            none_detected: 'No Anomalies Detected'
+            all_normal: 'All risk patterns are within normal parameters.'
+            items_affected: 'items affected'
+            historical_patterns: 'Historical Anomaly Patterns'
+
+    # Asset Criticality Analytics
+    assets:
+        title: 'Asset Criticality Analytics'
+        subtitle: 'Criticality analysis and incident probability'
+        kpi:
+            total_assets: 'Total Assets'
+            high_risk: 'High Risk Assets'
+            with_incidents: 'With Incidents'
+            avg_probability: 'Avg. Probability'
+        chart:
+            criticality_distribution: 'Criticality Distribution'
+            probability_distribution: 'Incident Probability Distribution'
+            asset_count: 'Asset Count'
+        high_risk:
+            title: 'High Risk Assets'
+            count: 'assets'
+            none: 'No high-risk assets found'
+        table:
+            asset: 'Asset'
+            type: 'Type'
+            criticality: 'Criticality'
+            incidents: 'Incidents'
+            probability: 'Probability'
+            risk_level: 'Risk Level'
+        criticality:
+            very_high: 'Very High (12+)'
+            high: 'High (8-11)'
+            medium: 'Medium (4-7)'
+            low: 'Low (1-3)'
+        risk_level:
+            critical: 'Critical'
+            high: 'High'
+            medium: 'Medium'
+            low: 'Low'
+        all_assets:
+            title: 'All Assets by Risk Level'
+        no_assets: 'No Assets Found'
+        add_assets_hint: 'Add assets to see criticality analytics'
     filter:
         period:
             last_6_months: 'Last 6 months'
@@ -26,6 +301,11 @@ analytics:
         heat_map: 'Risk Heat Map'
         compliance_radar: 'Compliance Radar'
         trends: Trends
+        advanced_section: 'Advanced'
+        frameworks: 'Frameworks'
+        controls: 'Controls'
+        forecast: 'Forecast'
+        assets: 'Assets'
     card:
         risk_heat_map: 'Risk Heat Map'
         compliance_radar: 'Compliance Radar'

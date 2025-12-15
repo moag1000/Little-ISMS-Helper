@@ -1,0 +1,581 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'analytics' %}
+
+{% block title %}{{ 'analytics.controls.title'|trans({}, 'analytics') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="analytics-dashboard" data-controller="control-analytics">
+    {# Page Header #}
+    <div class="page-header">
+        <div>
+            <h1>
+                <i class="bi bi-toggles" aria-hidden="true"></i>
+                {{ 'analytics.controls.title'|trans({}, 'analytics') }}
+            </h1>
+            <p class="text-muted">{{ 'analytics.controls.subtitle'|trans({}, 'analytics') }}</p>
+        </div>
+        <div class="page-header-actions">
+            <a href="{{ path('app_analytics_advanced') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'analytics.action.back_to_advanced'|trans({}, 'analytics') }}
+            </a>
+        </div>
+    </div>
+
+    {# KPI Summary #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-primary h-100">
+                <div class="card-body text-center">
+                    <h2 class="text-primary">{{ dashboard.metrics.total_controls }}</h2>
+                    <p class="text-muted mb-0">{{ 'analytics.controls.kpi.total_controls'|trans({}, 'analytics') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-success h-100">
+                <div class="card-body text-center">
+                    <h2 class="text-success">{{ dashboard.metrics.implementation_rate }}%</h2>
+                    <p class="text-muted mb-0">{{ 'analytics.controls.kpi.implementation_rate'|trans({}, 'analytics') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-info h-100">
+                <div class="card-body text-center">
+                    <h2 class="text-info">{{ dashboard.metrics.average_effectiveness }}%</h2>
+                    <p class="text-muted mb-0">{{ 'analytics.controls.kpi.avg_effectiveness'|trans({}, 'analytics') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-warning h-100">
+                <div class="card-body text-center">
+                    <h2 class="text-warning">{{ dashboard.metrics.risk_coverage }}%</h2>
+                    <p class="text-muted mb-0">{{ 'analytics.controls.kpi.risk_coverage'|trans({}, 'analytics') }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Tab Navigation #}
+    <ul class="nav nav-tabs mb-4" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#overview-tab" type="button" role="tab">
+                <i class="bi bi-speedometer2 me-1"></i> {{ 'analytics.controls.tabs.overview'|trans({}, 'analytics') }}
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#performance-tab" type="button" role="tab">
+                <i class="bi bi-trophy me-1"></i> {{ 'analytics.controls.tabs.performance'|trans({}, 'analytics') }}
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#aging-tab" type="button" role="tab">
+                <i class="bi bi-clock-history me-1"></i> {{ 'analytics.controls.tabs.aging'|trans({}, 'analytics') }}
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#orphans-tab" type="button" role="tab">
+                <i class="bi bi-exclamation-triangle me-1"></i> {{ 'analytics.controls.tabs.orphans'|trans({}, 'analytics') }}
+            </button>
+        </li>
+    </ul>
+
+    {# Tab Content #}
+    <div class="tab-content">
+        {# Overview Tab #}
+        <div class="tab-pane fade show active" id="overview-tab" role="tabpanel">
+            <div class="row">
+                {# Implementation Status Distribution #}
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">{{ 'analytics.controls.overview.status_distribution'|trans({}, 'analytics') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div style="height: 250px; position: relative;">
+                                <canvas id="statusDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {# Category Performance #}
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">{{ 'analytics.controls.overview.category_performance'|trans({}, 'analytics') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div style="height: 250px; position: relative;">
+                                <canvas id="categoryPerformanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Category Table #}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ 'analytics.controls.overview.by_category'|trans({}, 'analytics') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'analytics.controls.table.category'|trans({}, 'analytics') }}</th>
+                                    <th class="text-center">{{ 'analytics.controls.table.total'|trans({}, 'analytics') }}</th>
+                                    <th class="text-center">{{ 'analytics.controls.table.implemented'|trans({}, 'analytics') }}</th>
+                                    <th class="text-center">{{ 'analytics.controls.table.impl_rate'|trans({}, 'analytics') }}</th>
+                                    <th class="text-center">{{ 'analytics.controls.table.effectiveness'|trans({}, 'analytics') }}</th>
+                                    <th>{{ 'analytics.controls.table.progress'|trans({}, 'analytics') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for cat in category_performance %}
+                                <tr>
+                                    <td><strong>{{ cat.category }}</strong></td>
+                                    <td class="text-center">{{ cat.total_controls }}</td>
+                                    <td class="text-center text-success">{{ cat.implemented }}</td>
+                                    <td class="text-center">
+                                        <span class="badge {% if cat.implementation_rate >= 80 %}bg-success{% elseif cat.implementation_rate >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ cat.implementation_rate }}%
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge bg-info">{{ cat.average_effectiveness }}%</span>
+                                    </td>
+                                    <td>
+                                        <div class="progress" style="height: 20px;">
+                                            <div class="progress-bar bg-success" style="width: {{ cat.implementation_rate }}%">
+                                                {{ cat.implementation_rate }}%
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Performance Tab #}
+        <div class="tab-pane fade" id="performance-tab" role="tabpanel">
+            <div class="row">
+                {# Top Performing #}
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100 border-success">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-trophy me-2"></i>
+                                {{ 'analytics.controls.performance.top_performing'|trans({}, 'analytics') }}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ 'analytics.controls.table.control'|trans({}, 'analytics') }}</th>
+                                            <th class="text-center">{{ 'analytics.controls.table.score'|trans({}, 'analytics') }}</th>
+                                            <th class="text-center">{{ 'analytics.controls.table.risks'|trans({}, 'analytics') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for control in dashboard.performance.top_performing %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ control.control_id }}</strong><br>
+                                                <small class="text-muted">{{ control.name|u.truncate(30) }}</small>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-success">{{ control.effectiveness_score|round }}</span>
+                                            </td>
+                                            <td class="text-center">{{ control.linked_risks }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {# Bottom Performing #}
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100 border-danger">
+                        <div class="card-header bg-danger text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                {{ 'analytics.controls.performance.needs_attention'|trans({}, 'analytics') }}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ 'analytics.controls.table.control'|trans({}, 'analytics') }}</th>
+                                            <th class="text-center">{{ 'analytics.controls.table.score'|trans({}, 'analytics') }}</th>
+                                            <th class="text-center">{{ 'analytics.controls.table.status'|trans({}, 'analytics') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for control in dashboard.performance.bottom_performing %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ control.control_id }}</strong><br>
+                                                <small class="text-muted">{{ control.name|u.truncate(30) }}</small>
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-danger">{{ control.effectiveness_score|round }}</span>
+                                            </td>
+                                            <td class="text-center">
+                                                <small>{{ control.implementation_status|replace({'_': ' '})|title }}</small>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Risk Matrix #}
+            {% if risk_matrix.matrix|length > 0 %}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ 'analytics.controls.performance.risk_reduction_matrix'|trans({}, 'analytics') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        {{ 'analytics.controls.performance.matrix_info'|trans({'%controls%': risk_matrix.summary.controls_with_risks, '%reduction%': risk_matrix.summary.average_reduction}, 'analytics') }}
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'analytics.controls.table.control'|trans({}, 'analytics') }}</th>
+                                    <th class="text-center">{{ 'analytics.controls.table.risks_mitigated'|trans({}, 'analytics') }}</th>
+                                    <th class="text-center">{{ 'analytics.controls.table.total_reduction'|trans({}, 'analytics') }}</th>
+                                    <th class="text-center">{{ 'analytics.controls.table.avg_reduction'|trans({}, 'analytics') }}</th>
+                                    <th class="text-center">{{ 'analytics.controls.table.effectiveness'|trans({}, 'analytics') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in risk_matrix.matrix|slice(0, 15) %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ item.control_id }}</strong><br>
+                                        <small class="text-muted">{{ item.control_name|u.truncate(40) }}</small>
+                                    </td>
+                                    <td class="text-center">{{ item.risks_mitigated }}</td>
+                                    <td class="text-center text-success">-{{ item.total_reduction }}</td>
+                                    <td class="text-center">{{ item.average_reduction_percentage }}%</td>
+                                    <td class="text-center">
+                                        <span class="badge {% if item.effectiveness_score >= 70 %}bg-success{% elseif item.effectiveness_score >= 40 %}bg-warning{% else %}bg-danger{% endif %}">
+                                            {{ item.effectiveness_score|round }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        {# Aging Tab #}
+        <div class="tab-pane fade" id="aging-tab" role="tabpanel">
+            <div class="row mb-4">
+                <div class="col-md-2">
+                    <div class="card bg-success bg-opacity-10 border-success h-100">
+                        <div class="card-body text-center">
+                            <h3 class="text-success">{{ dashboard.aging_analysis.distribution.current }}</h3>
+                            <small class="text-muted">{{ 'analytics.controls.aging.current'|trans({}, 'analytics') }}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card bg-info bg-opacity-10 border-info h-100">
+                        <div class="card-body text-center">
+                            <h3 class="text-info">{{ dashboard.aging_analysis.distribution.due_soon }}</h3>
+                            <small class="text-muted">{{ 'analytics.controls.aging.due_soon'|trans({}, 'analytics') }}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card bg-warning bg-opacity-10 border-warning h-100">
+                        <div class="card-body text-center">
+                            <h3 class="text-warning">{{ dashboard.aging_analysis.distribution.overdue }}</h3>
+                            <small class="text-muted">{{ 'analytics.controls.aging.overdue'|trans({}, 'analytics') }}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card bg-danger bg-opacity-10 border-danger h-100">
+                        <div class="card-body text-center">
+                            <h3 class="text-danger">{{ dashboard.aging_analysis.distribution.critical }}</h3>
+                            <small class="text-muted">{{ 'analytics.controls.aging.critical'|trans({}, 'analytics') }}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card bg-secondary bg-opacity-10 border-secondary h-100">
+                        <div class="card-body text-center">
+                            <h3 class="text-secondary">{{ dashboard.aging_analysis.distribution.never_reviewed }}</h3>
+                            <small class="text-muted">{{ 'analytics.controls.aging.never_reviewed'|trans({}, 'analytics') }}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="card bg-primary bg-opacity-10 border-primary h-100">
+                        <div class="card-body text-center">
+                            <h3 class="text-primary">{{ dashboard.aging_analysis.review_compliance_rate }}%</h3>
+                            <small class="text-muted">{{ 'analytics.controls.aging.compliance_rate'|trans({}, 'analytics') }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">{{ 'analytics.controls.aging.distribution_chart'|trans({}, 'analytics') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div style="height: 250px; position: relative;">
+                                <canvas id="agingDistributionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                {{ 'analytics.controls.aging.overdue_controls'|trans({}, 'analytics') }}
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            {% if dashboard.aging_analysis.overdue_controls|length > 0 %}
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>{{ 'analytics.controls.table.control'|trans({}, 'analytics') }}</th>
+                                            <th class="text-center">{{ 'analytics.controls.table.days_overdue'|trans({}, 'analytics') }}</th>
+                                            <th class="text-center">{{ 'analytics.controls.table.status'|trans({}, 'analytics') }}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for control in dashboard.aging_analysis.overdue_controls %}
+                                        <tr>
+                                            <td>
+                                                <strong>{{ control.control_id }}</strong><br>
+                                                <small class="text-muted">{{ control.name|u.truncate(25) }}</small>
+                                            </td>
+                                            <td class="text-center">
+                                                {% if control.days_overdue %}
+                                                    <span class="badge bg-{{ control.status == 'critical' ? 'danger' : 'warning' }}">
+                                                        {{ control.days_overdue }} {{ 'common.days'|trans({}, 'messages') }}
+                                                    </span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">{{ 'analytics.controls.aging.never'|trans({}, 'analytics') }}</span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-center">
+                                                <span class="badge bg-{{ control.status == 'critical' ? 'danger' : (control.status == 'overdue' ? 'warning' : 'secondary') }}">
+                                                    {{ control.status|replace({'_': ' '})|title }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            {% else %}
+                            <div class="text-center py-4">
+                                <i class="bi bi-check-circle display-4 text-success"></i>
+                                <p class="mt-2">{{ 'analytics.controls.aging.all_current'|trans({}, 'analytics') }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Orphans Tab #}
+        <div class="tab-pane fade" id="orphans-tab" role="tabpanel">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-exclamation-triangle text-warning me-2"></i>
+                        {{ 'analytics.controls.orphans.title'|trans({}, 'analytics') }}
+                    </h5>
+                    <span class="badge bg-warning">{{ dashboard.orphaned_controls.count }} {{ 'analytics.controls.orphans.found'|trans({}, 'analytics') }}</span>
+                </div>
+                <div class="card-body">
+                    {% if dashboard.orphaned_controls.controls|length > 0 %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-info-circle me-2"></i>
+                        {{ 'analytics.controls.orphans.info'|trans({}, 'analytics') }}
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'analytics.controls.table.control'|trans({}, 'analytics') }}</th>
+                                    <th>{{ 'analytics.controls.table.category'|trans({}, 'analytics') }}</th>
+                                    <th>{{ 'analytics.controls.table.status'|trans({}, 'analytics') }}</th>
+                                    <th>{{ 'analytics.controls.table.reason'|trans({}, 'analytics') }}</th>
+                                    <th>{{ 'analytics.controls.table.recommendation'|trans({}, 'analytics') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for control in dashboard.orphaned_controls.controls %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ control.control_id }}</strong><br>
+                                        <small class="text-muted">{{ control.name|u.truncate(30) }}</small>
+                                    </td>
+                                    <td>{{ control.category }}</td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ control.implementation_status|replace({'_': ' '})|title }}</span>
+                                    </td>
+                                    <td><small class="text-muted">{{ control.reason }}</small></td>
+                                    <td><small>{{ control.recommendation }}</small></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-check-circle display-1 text-success"></i>
+                        <h4 class="mt-3">{{ 'analytics.controls.orphans.none_found'|trans({}, 'analytics') }}</h4>
+                        <p class="text-muted">{{ 'analytics.controls.orphans.all_linked'|trans({}, 'analytics') }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        document.addEventListener('turbo:load', function() {
+            // Status Distribution Chart
+            const statusCtx = document.getElementById('statusDistributionChart');
+            if (statusCtx) {
+                const statusData = {{ dashboard.implementation_status|json_encode|raw }};
+                new Chart(statusCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: [
+                            '{{ 'analytics.controls.status.implemented'|trans({}, 'analytics') }}',
+                            '{{ 'analytics.controls.status.partially'|trans({}, 'analytics') }}',
+                            '{{ 'analytics.controls.status.planned'|trans({}, 'analytics') }}',
+                            '{{ 'analytics.controls.status.not_applicable'|trans({}, 'analytics') }}',
+                            '{{ 'analytics.controls.status.not_implemented'|trans({}, 'analytics') }}'
+                        ],
+                        datasets: [{
+                            data: [
+                                statusData.implemented || 0,
+                                statusData.partially_implemented || 0,
+                                statusData.planned || 0,
+                                statusData.not_applicable || 0,
+                                statusData.not_implemented || 0
+                            ],
+                            backgroundColor: ['#198754', '#ffc107', '#0dcaf0', '#6c757d', '#dc3545']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+
+            // Category Performance Chart
+            const categoryCtx = document.getElementById('categoryPerformanceChart');
+            if (categoryCtx) {
+                const categoryData = {{ category_performance|json_encode|raw }};
+                new Chart(categoryCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: categoryData.map(c => c.category),
+                        datasets: [{
+                            label: '{{ 'analytics.controls.chart.effectiveness'|trans({}, 'analytics') }}',
+                            data: categoryData.map(c => c.average_effectiveness),
+                            backgroundColor: '#0d6efd'
+                        }, {
+                            label: '{{ 'analytics.controls.chart.implementation'|trans({}, 'analytics') }}',
+                            data: categoryData.map(c => c.implementation_rate),
+                            backgroundColor: '#198754'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, max: 100 }
+                        }
+                    }
+                });
+            }
+
+            // Aging Distribution Chart
+            const agingCtx = document.getElementById('agingDistributionChart');
+            if (agingCtx) {
+                const agingData = {{ dashboard.aging_analysis.distribution|json_encode|raw }};
+                new Chart(agingCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: [
+                            '{{ 'analytics.controls.aging.current'|trans({}, 'analytics') }}',
+                            '{{ 'analytics.controls.aging.due_soon'|trans({}, 'analytics') }}',
+                            '{{ 'analytics.controls.aging.overdue'|trans({}, 'analytics') }}',
+                            '{{ 'analytics.controls.aging.critical'|trans({}, 'analytics') }}',
+                            '{{ 'analytics.controls.aging.never_reviewed'|trans({}, 'analytics') }}'
+                        ],
+                        datasets: [{
+                            data: [
+                                agingData.current || 0,
+                                agingData.due_soon || 0,
+                                agingData.overdue || 0,
+                                agingData.critical || 0,
+                                agingData.never_reviewed || 0
+                            ],
+                            backgroundColor: ['#198754', '#0dcaf0', '#ffc107', '#dc3545', '#6c757d']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom' }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

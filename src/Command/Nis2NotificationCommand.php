@@ -12,7 +12,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -52,7 +51,7 @@ class Nis2NotificationCommand
     {
     }
 
-    public function __invoke(#[Option(name: 'dry-run', mode: InputOption::VALUE_NONE, description: 'Simulate notifications without sending')]
+    public function __invoke(#[Option(name: 'dry-run', description: 'Simulate notifications without sending')]
     bool $dryRun = false, ?SymfonyStyle $symfonyStyle = null): int
     {
         $dryRun = $dry_run;

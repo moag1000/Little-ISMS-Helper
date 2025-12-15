@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Risk Management Report</title>
+    <style>
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 15px; }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #dc2626;
+            padding-bottom: 10px;
+        }
+        .header h1 { color: #0f172a; margin: 0; font-size: 18pt; }
+        .header .date { color: #888; font-size: 9pt; margin-top: 3px; }
+
+        .stats-grid { display: table; width: 100%; margin: 15px 0; }
+        .stat-box {
+            display: table-cell;
+            width: 16.66%;
+            padding: 8px;
+            border: 1px solid #cbd5e1;
+            text-align: center;
+        }
+        .stat-box .number { font-size: 18pt; font-weight: bold; }
+        .stat-box .label { font-size: 7pt; color: #666; text-transform: uppercase; }
+
+        .section { margin: 15px 0; page-break-inside: avoid; }
+        .section h2 { background: #dc2626; color: white; padding: 6px; font-size: 10pt; margin: 0 0 8px 0; }
+
+        table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+        th { background: #0f172a; color: #06b6d4; padding: 5px; text-align: left; font-size: 8pt; }
+        td { padding: 5px; border-bottom: 1px solid #ddd; font-size: 8pt; }
+        tr:nth-child(even) { background: #f8fafc; }
+
+        .badge { display: inline-block; padding: 2px 5px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
+        .badge-critical { background: #fecaca; color: #991b1b; }
+        .badge-high { background: #fef3c7; color: #92400e; }
+        .badge-medium { background: #e0f2fe; color: #0369a1; }
+        .badge-low { background: #dcfce7; color: #166534; }
+
+        .footer { position: fixed; bottom: 10px; left: 15px; right: 15px; text-align: center; font-size: 7pt; color: #888; border-top: 1px solid #ddd; padding-top: 5px; }
+        .page-break { page-break-after: always; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Risk Management Report</h1>
+        <div class="date">Generated: {{ generated_at|date('d.m.Y H:i') }} | Version: {{ version }}</div>
+    </div>
+
+    {# Summary Statistics #}
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="number" style="color: #0ea5e9;">{{ report.total_risks }}</div>
+            <div class="label">Total Risks</div>
+        </div>
+        <div class="stat-box">
+            <div class="number" style="color: #dc2626;">{{ report.level_counts.critical }}</div>
+            <div class="label">Critical</div>
+        </div>
+        <div class="stat-box">
+            <div class="number" style="color: #d97706;">{{ report.level_counts.high }}</div>
+            <div class="label">High</div>
+        </div>
+        <div class="stat-box">
+            <div class="number" style="color: #0ea5e9;">{{ report.level_counts.medium }}</div>
+            <div class="label">Medium</div>
+        </div>
+        <div class="stat-box">
+            <div class="number" style="color: #16a34a;">{{ report.level_counts.low }}</div>
+            <div class="label">Low</div>
+        </div>
+        <div class="stat-box">
+            <div class="number" style="color: #6366f1;">{{ report.average_risk_score }}</div>
+            <div class="label">Avg. Score</div>
+        </div>
+    </div>
+
+    {# Treatment Plan Summary #}
+    <div class="section">
+        <h2>Treatment Plan Summary</h2>
+        <table>
+            <tr>
+                <th>Metric</th>
+                <th>Count</th>
+            </tr>
+            <tr>
+                <td>Total Treatment Plans</td>
+                <td>{{ report.treatment_plans.total }}</td>
+            </tr>
+            <tr>
+                <td>Active Treatment Plans</td>
+                <td>{{ report.treatment_plans.active }}</td>
+            </tr>
+            <tr>
+                <td>Overdue Treatment Plans</td>
+                <td>{% if report.treatment_plans.overdue > 0 %}<span class="badge badge-critical">{{ report.treatment_plans.overdue }}</span>{% else %}0{% endif %}</td>
+            </tr>
+        </table>
+    </div>
+
+    {# Critical & High Risks #}
+    {% set critical_high = report.by_level.critical|merge(report.by_level.high) %}
+    {% if critical_high|length > 0 %}
+    <div class="section">
+        <h2>Critical & High Risks (Requires Immediate Attention)</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Score</th>
+                <th>Level</th>
+                <th>Treatment</th>
+                <th>Owner</th>
+            </tr>
+            {% for risk in critical_high %}
+            <tr>
+                <td>{{ risk.id }}</td>
+                <td>{{ risk.title|slice(0, 40) }}{% if risk.title|length > 40 %}...{% endif %}</td>
+                <td>{{ risk.category }}</td>
+                <td><strong>{{ risk.riskScore }}</strong></td>
+                <td>
+                    {% if risk.riskScore >= 20 %}
+                    <span class="badge badge-critical">Critical</span>
+                    {% else %}
+                    <span class="badge badge-high">High</span>
+                    {% endif %}
+                </td>
+                <td>{{ risk.treatmentStrategy|default('-')|slice(0, 20) }}</td>
+                <td>{{ risk.riskOwner ? risk.riskOwner.email|slice(0, 20) : '-' }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    {# Risk by Category #}
+    <div class="section">
+        <h2>Risks by Category</h2>
+        <table>
+            <tr>
+                <th>Category</th>
+                <th>Count</th>
+            </tr>
+            {% for category, risks in report.by_category %}
+            <tr>
+                <td>{{ category }}</td>
+                <td>{{ risks|length }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    {# Risk Trends #}
+    {% if trends|length > 0 %}
+    <div class="page-break"></div>
+    <div class="section">
+        <h2>Risk Trends (Last 12 Months)</h2>
+        <table>
+            <tr>
+                <th>Month</th>
+                <th>New Risks</th>
+                <th>High/Critical</th>
+            </tr>
+            {% for trend in trends %}
+            <tr>
+                <td>{{ trend.month_name }}</td>
+                <td>{{ trend.new_risks }}</td>
+                <td>{% if trend.high_critical > 0 %}<span class="badge badge-critical">{{ trend.high_critical }}</span>{% else %}<span class="badge badge-low">0</span>{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    {# Complete Risk Register #}
+    {% if report.risks|length > 0 %}
+    <div class="section">
+        <h2>Complete Risk Register</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>L</th>
+                <th>I</th>
+                <th>Score</th>
+                <th>Level</th>
+                <th>Status</th>
+            </tr>
+            {% for risk in report.risks %}
+            <tr>
+                <td>{{ risk.id }}</td>
+                <td>{{ risk.title|slice(0, 35) }}{% if risk.title|length > 35 %}...{% endif %}</td>
+                <td>{{ risk.category }}</td>
+                <td>{{ risk.probability }}</td>
+                <td>{{ risk.impact }}</td>
+                <td><strong>{{ risk.riskScore }}</strong></td>
+                <td>
+                    {% set score = risk.riskScore %}
+                    {% if score >= 20 %}
+                    <span class="badge badge-critical">Critical</span>
+                    {% elseif score >= 12 %}
+                    <span class="badge badge-high">High</span>
+                    {% elseif score >= 6 %}
+                    <span class="badge badge-medium">Medium</span>
+                    {% else %}
+                    <span class="badge badge-low">Low</span>
+                    {% endif %}
+                </td>
+                <td>{{ risk.status }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    <div class="footer">
+        Confidential - Risk Management Report | Little ISMS Helper
+    </div>
+</body>
+</html>

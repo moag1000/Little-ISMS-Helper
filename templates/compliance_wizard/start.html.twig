@@ -1,0 +1,142 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'wizard' %}
+
+{% block title %}{{ config.name }} - {{ 'wizard.title'|trans }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {# Breadcrumb #}
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ path('app_compliance_wizard_index') }}">{{ 'wizard.title'|trans }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ config.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <div class="col-lg-8">
+            {# Wizard Header #}
+            <div class="card mb-4 border-{{ config.color }}">
+                <div class="card-header bg-{{ config.color }} bg-opacity-10 border-{{ config.color }}">
+                    <div class="d-flex align-items-center">
+                        <i class="{{ config.icon }} fs-2 text-{{ config.color }} me-3"></i>
+                        <div>
+                            <h1 class="h3 mb-0">{{ config.name }}</h1>
+                            <span class="badge bg-{{ config.color }}">{{ config.code }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="lead">{{ config.description|trans }}</p>
+
+                    <hr>
+
+                    <h2 class="h5 mb-3">{{ 'wizard.assessment_scope'|trans }}</h2>
+                    <p class="text-muted">{{ 'wizard.assessment_scope_desc'|trans({'%framework%': config.name}) }}</p>
+
+                    {# Categories Overview #}
+                    <div class="row mt-4">
+                        {% for key, category in config.categories %}
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="d-flex align-items-start">
+                                <i class="{{ category.icon|default('bi-check-circle') }} text-{{ config.color }} me-2 mt-1"></i>
+                                <div>
+                                    <strong>{{ category.name|trans }}</strong>
+                                    {% if category.clause is defined %}
+                                        <span class="badge bg-secondary ms-1">{{ category.clause }}</span>
+                                    {% elseif category.article is defined %}
+                                        <span class="badge bg-secondary ms-1">Art. {{ category.article }}</span>
+                                    {% endif %}
+                                    <br>
+                                    <small class="text-muted">{{ category.checks|length }} {{ 'wizard.checks'|trans }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            {# Missing Recommended Modules Warning #}
+            {% if missing_recommended|length > 0 %}
+            <div class="alert alert-warning">
+                <h4 class="alert-heading h6">
+                    <i class="bi bi-exclamation-triangle me-2"></i>{{ 'wizard.missing_recommended_title'|trans }}
+                </h4>
+                <p class="mb-2">{{ 'wizard.missing_recommended_desc'|trans }}</p>
+                <ul class="mb-0">
+                    {% for mod in missing_recommended %}
+                    <li><strong>{{ mod }}</strong></li>
+                    {% endfor %}
+                </ul>
+                <hr>
+                <a href="{{ path('admin_modules_index') }}" class="btn btn-warning btn-sm">
+                    <i class="bi bi-gear me-1"></i>{{ 'wizard.activate_modules'|trans }}
+                </a>
+            </div>
+            {% endif %}
+
+            {# Start Button #}
+            <div class="d-grid gap-2 d-md-flex justify-content-md-between">
+                <a href="{{ path('app_compliance_wizard_index') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left me-1"></i>{{ 'wizard.back'|trans }}
+                </a>
+                <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}" class="btn btn-{{ config.color }} btn-lg">
+                    <i class="bi bi-play-circle me-2"></i>{{ 'wizard.run_assessment'|trans }}
+                </a>
+            </div>
+        </div>
+
+        {# Sidebar #}
+        <div class="col-lg-4">
+            {# Active Modules #}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title h6 mb-0">
+                        <i class="bi bi-puzzle me-2"></i>{{ 'wizard.active_modules'|trans }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <p class="small text-muted mb-3">{{ 'wizard.data_sources_info'|trans }}</p>
+                    {% for mod in active_modules %}
+                        <span class="badge bg-success me-1 mb-1">
+                            <i class="bi bi-check-circle me-1"></i>{{ mod }}
+                        </span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {# What to expect #}
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title h6 mb-0">
+                        <i class="bi bi-lightbulb me-2"></i>{{ 'wizard.what_to_expect'|trans }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="bi bi-clock text-muted me-2"></i>
+                            <span class="small">{{ 'wizard.duration_hint'|trans }}</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-bar-chart text-muted me-2"></i>
+                            <span class="small">{{ 'wizard.score_hint'|trans }}</span>
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-flag text-muted me-2"></i>
+                            <span class="small">{{ 'wizard.gap_hint'|trans }}</span>
+                        </li>
+                        <li>
+                            <i class="bi bi-file-pdf text-muted me-2"></i>
+                            <span class="small">{{ 'wizard.export_hint'|trans }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

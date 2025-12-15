@@ -45,6 +45,7 @@ management_review:
         followup: 'Status früherer Maßnahmen'
         outputs: 'Ergebnisse der Bewertung (9.3.3)'
     field:
+        basic_info: 'Basisinformationen'
         title: Titel
         review_date: Bewertungsdatum
         reviewed_by: 'Durchgeführt von'

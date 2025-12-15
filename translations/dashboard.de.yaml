@@ -73,3 +73,87 @@ dashboard:
             all_good: 'Alles aktuell!'
             all_good_desc: 'Keine überfälligen Prüfungen. Ihr ISMS ist auf dem neuesten Stand.'
             manage: 'Verwalten'
+
+    # Management KPIs Section
+    management_kpis:
+        title: 'Management-Kennzahlen'
+        subtitle: 'Modul-basierte KPIs für Managementberichte'
+        core:
+            title: 'Kern-ISMS'
+            icon: 'bi-shield-check'
+        risk_management:
+            title: 'Risikomanagement'
+            icon: 'bi-exclamation-triangle'
+        asset_management:
+            title: 'Asset-Management'
+            icon: 'bi-server'
+        incident_management:
+            title: 'Incident-Management'
+            icon: 'bi-fire'
+        business_continuity:
+            title: 'Business Continuity'
+            icon: 'bi-diagram-3'
+        training:
+            title: 'Schulungen'
+            icon: 'bi-mortarboard'
+        audits:
+            title: 'Audits'
+            icon: 'bi-clipboard-check'
+        supplier_management:
+            title: 'Lieferanten-Management'
+            icon: 'bi-building'
+        documentation:
+            title: 'Dokumentation'
+            icon: 'bi-file-text'
+        no_data: 'Keine Daten verfügbar'
+        view_details: 'Details anzeigen'
+        status:
+            good: 'Gut'
+            warning: 'Warnung'
+            danger: 'Kritisch'
+            info: 'Info'
+
+    # KPI Labels (for management dashboard)
+    kpi:
+        control_compliance: 'Control-Compliance'
+        controls_implemented: 'Controls implementiert'
+        total_risks: 'Risiken gesamt'
+        high_risks: 'Hohe Risiken'
+        critical_risks: 'Kritische Risiken'
+        risk_treatment_rate: 'Behandlungsrate'
+        overdue_treatments: 'Überfällige Behandlungen'
+        total_assets: 'Assets gesamt'
+        critical_assets: 'Kritische Assets'
+        asset_classification_rate: 'Klassifizierungsrate'
+        open_incidents: 'Offene Incidents'
+        resolved_incidents_ytd: 'Gelöste Incidents (YTD)'
+        mttr: 'MTTR'
+        overdue_incidents: 'Überfällige Incidents'
+        critical_processes: 'Kritische Prozesse'
+        bia_coverage: 'BIA-Abdeckung'
+        active_bc_plans: 'Aktive BC-Pläne'
+        bc_exercises_ytd: 'BC-Übungen (YTD)'
+        training_completion_rate: 'Abschlussrate'
+        overdue_trainings: 'Überfällige Schulungen'
+        audits_completed_ytd: 'Audits abgeschlossen (YTD)'
+        planned_audits: 'Geplante Audits'
+        open_audit_findings: 'Offene Feststellungen'
+        total_suppliers: 'Lieferanten gesamt'
+        critical_suppliers: 'Kritische Lieferanten'
+        supplier_assessment_rate: 'Bewertungsrate'
+        overdue_supplier_assessments: 'Überfällige Bewertungen'
+        total_documents: 'Dokumente gesamt'
+        documents_needing_review: 'Prüfung erforderlich'
+        documents_without_owner: 'Ohne Eigentümer'
+
+    # Quick Actions
+    quick_actions:
+        title: 'Schnellaktionen'
+        new_asset: 'Neues Asset'
+        new_risk: 'Risiko erfassen'
+        controls: 'Maßnahmen'
+        report_incident: 'Vorfall melden'
+
+    # Activity Feed
+    activity_feed:
+        title: 'Letzte Aktivitäten'

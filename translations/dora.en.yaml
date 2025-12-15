@@ -1,0 +1,74 @@
+# DORA Dashboard Translations - English
+# Domain: dora
+
+dora:
+    # General
+    not_installed: "DORA framework is not installed. If your organization is subject to DORA, please load the framework from the compliance frameworks page."
+    not_active: "DORA framework is deactivated. This indicates that DORA is not relevant for your organization. Activate it in compliance frameworks if needed."
+
+    # Dashboard
+    dashboard:
+        title: "DORA Compliance Dashboard"
+        subtitle: "Digital Operational Resilience Act (EU 2022/2554) - Real-time Compliance Monitoring"
+        overall_compliance: "Overall DORA Compliance"
+
+    # Status
+    status:
+        compliant: "Compliant"
+        partial: "Partially Compliant"
+        in_progress: "In Progress"
+        non_compliant: "Non-Compliant"
+
+    # Pillars
+    pillar:
+        ict_risk: "ICT Risk Management"
+        incidents: "ICT Incident Management"
+        testing: "Resilience Testing"
+        third_party: "Third-Party Risk"
+        information_sharing: "Information Sharing"
+
+    # Articles reference
+    articles: "Art. %articles%"
+
+    # Metrics
+    metric:
+        ict_risks: "ICT Risks"
+        high_critical_risks: "High / Critical"
+        ict_assets: "ICT Assets"
+        risk_treatment_rate: "Treatment Rate"
+        asset_classification: "Asset Classification"
+        control_implementation: "Control Implementation"
+        total_incidents: "Total Incidents"
+        major_incidents_ytd: "Major (YTD)"
+        open_major_incidents: "Open Major"
+        mttr: "MTTR"
+        4h_reporting: "4h Initial Notification"
+        exercises: "Exercises"
+        bc_plans: "BC Plans"
+        bc_coverage: "BC Coverage"
+        resilience_trainings: "Resilience Trainings"
+        ict_providers: "ICT Providers"
+        critical_providers: "Critical Providers"
+        assessment_rate: "Assessment Rate"
+        overdue_assessments: "Overdue Assessments"
+        concentration_risk: "Concentration Risk"
+        exit_strategies: "Exit Strategies"
+        implementation_rate: "Implementation Rate"
+
+    # Hints and descriptions
+    article_19_hint: "Art. 19 DORA: Initial notification of major ICT incidents within 4 hours"
+    testing_requirement: "DORA requires at least annual resilience testing for critical functions"
+    information_sharing_desc: "Voluntary sharing of cyber threat information between financial entities"
+    high_dependency_providers: "High dependency providers"
+    controls_implemented: "Controls implemented"
+
+    # Quick actions
+    quick_actions: "Quick Actions"
+    action:
+        manage_risks: "Manage Risks"
+        manage_incidents: "Manage Incidents"
+        plan_exercises: "Plan Exercises"
+        manage_suppliers: "Manage Suppliers"
+
+    # Wizard
+    run_wizard: "Run DORA Wizard"

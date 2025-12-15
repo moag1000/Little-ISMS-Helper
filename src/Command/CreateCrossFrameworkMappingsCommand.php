@@ -9,7 +9,6 @@ use App\Entity\ComplianceRequirement;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
@@ -22,7 +21,7 @@ class CreateCrossFrameworkMappingsCommand
     {
     }
 
-    public function __invoke(#[Option(name: 'clear', mode: InputOption::VALUE_NONE, description: 'Clear all existing mappings before creating new ones')]
+    public function __invoke(#[Option(name: 'clear', description: 'Clear all existing mappings before creating new ones')]
     bool $clear = false, ?SymfonyStyle $symfonyStyle = null): int
     {
         $symfonyStyle->title('Creating Comprehensive Cross-Framework Compliance Mappings');

@@ -37,7 +37,7 @@
 
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">{{ form.vars.data.id ? 'consent.edit'|trans({}, 'consent') : 'consent.new'|trans({}, 'consent') }}</h3>
+                    <h2 class="mb-0">{{ form.vars.data.id ? 'consent.edit'|trans({}, 'consent') : 'consent.new'|trans({}, 'consent') }}</h2>
                 </div>
                 <div class="card-body">
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'id': 'consent-form'}}) }}
@@ -45,10 +45,10 @@
                     {# Section 1: Data Subject #}
                     <div class="card mb-4">
                         <div class="card-header bg-light">
-                            <h5 class="mb-0">
+                            <h3 class="mb-0">
                                 <i class="bi bi-person" aria-hidden="true"></i>
                                 {{ 'consent.section.data_subject'|trans({}, 'consent') }}
-                            </h5>
+                            </h3>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -65,10 +65,10 @@
                     {# Section 2: Processing Activity #}
                     <div class="card mb-4">
                         <div class="card-header bg-light">
-                            <h5 class="mb-0">
+                            <h3 class="mb-0">
                                 <i class="bi bi-gear" aria-hidden="true"></i>
                                 {{ 'consent.section.processing_activity'|trans({}, 'consent') }}
-                            </h5>
+                            </h3>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -85,10 +85,10 @@
                     {# Section 3: Consent Grant #}
                     <div class="card mb-4">
                         <div class="card-header bg-light">
-                            <h5 class="mb-0">
+                            <h3 class="mb-0">
                                 <i class="bi bi-check-circle" aria-hidden="true"></i>
                                 {{ 'consent.section.consent_grant'|trans({}, 'consent') }}
-                            </h5>
+                            </h3>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -113,10 +113,10 @@
                     {# Section 4: Proof Documentation #}
                     <div class="card mb-4">
                         <div class="card-header bg-light">
-                            <h5 class="mb-0">
+                            <h3 class="mb-0">
                                 <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
                                 {{ 'consent.section.proof_documentation'|trans({}, 'consent') }}
-                            </h5>
+                            </h3>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -130,10 +130,10 @@
                     {# Section 5: Expiry #}
                     <div class="card mb-4">
                         <div class="card-header bg-light">
-                            <h5 class="mb-0">
+                            <h3 class="mb-0">
                                 <i class="bi bi-calendar-event" aria-hidden="true"></i>
                                 {{ 'consent.section.expiry'|trans({}, 'consent') }}
-                            </h5>
+                            </h3>
                         </div>
                         <div class="card-body">
                             <div class="row">
@@ -148,10 +148,10 @@
                     {# Section 6: Notes #}
                     <div class="card mb-4">
                         <div class="card-header bg-light">
-                            <h5 class="mb-0">
+                            <h3 class="mb-0">
                                 <i class="bi bi-sticky" aria-hidden="true"></i>
                                 {{ 'consent.section.notes'|trans({}, 'consent') }}
-                            </h5>
+                            </h3>
                         </div>
                         <div class="card-body">
                             <div class="row">

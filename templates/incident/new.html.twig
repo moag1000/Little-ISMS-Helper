@@ -27,9 +27,9 @@
 
             {# NIS2 Reporting Alert Banner #}
             <div id="nis2-alert" class="alert alert-warning d-none mb-4" role="alert">
-                <h6 class="alert-heading">
+                <div class="alert-heading fw-bold">
                     <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ 'incident.nis2_alert.title'|trans({}, 'incident') }}
-                </h6>
+                </div>
                 <p class="mb-2 small">{{ 'incident.nis2_alert.description'|trans({}, 'incident') }}</p>
                 <ul class="mb-0 small">
                     <li>{{ 'incident.nis2_alert.early_warning'|trans({}, 'incident') }}</li>
@@ -40,7 +40,7 @@
 
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">{{ 'incident.new'|trans({}, 'incident') }}</h3>
+                    <h2 class="h5 mb-0">{{ 'incident.new'|trans({}, 'incident') }}</h2>
                 </div>
                 <div class="card-body" data-controller="incident-escalation-preview"
                      data-incident-escalation-preview-preview-url-value="{{ path('app_incident_escalation_preview') }}">
@@ -175,7 +175,7 @@
 
                         {# NIS2 Timeline - Article 23 #}
                         <div class="alert alert-info mt-3">
-                            <h2 class="alert-heading h6">{{ 'incident.nis2_timeline.title'|trans({}, 'incident') }}</h2>
+                            <div class="alert-heading fw-bold">{{ 'incident.nis2_timeline.title'|trans({}, 'incident') }}</div>
                             <p class="mb-0 small">{{ 'incident.nis2_timeline.description'|trans({}, 'incident') }}</p>
                         </div>
 

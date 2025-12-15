@@ -36,9 +36,9 @@
         <div class="col-md-6 mb-4">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">
+                    <h2 class="mb-0">
                         <i class="bi bi-activity" aria-hidden="true"></i> {{ 'monitoring.performance.top_actions'|trans({}, 'monitoring') }} ({{ 'monitoring.performance.last_24h'|trans({}, 'monitoring') }})
-                    </h3>
+                    </h2>
                 </div>
                 <div class="card-body">
                     {% if top_actions|length > 0 %}
@@ -71,9 +71,9 @@
         <div class="col-md-6 mb-4">
             <div class="card">
                 <div class="card-header bg-success text-white">
-                    <h3 class="mb-0">
+                    <h2 class="mb-0">
                         <i class="bi bi-folder" aria-hidden="true"></i> {{ 'monitoring.performance.top_entities'|trans({}, 'monitoring') }} ({{ 'monitoring.performance.last_24h'|trans({}, 'monitoring') }})
-                    </h3>
+                    </h2>
                 </div>
                 <div class="card-body">
                     {% if top_entities|length > 0 %}
@@ -106,9 +106,9 @@
     {# System Resources #}
     <div class="card">
         <div class="card-header bg-info text-white">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-cpu" aria-hidden="true"></i> {{ 'monitoring.performance.system_resources'|trans({}, 'monitoring') }}
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             <div class="row">
@@ -126,7 +126,7 @@
                 </div>
                 <div class="col-md-8">
                     <div class="alert alert-info mb-0">
-                        <h4><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'monitoring.performance.note_title'|trans({}, 'monitoring') }}</h4>
+                        <h3><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'monitoring.performance.note_title'|trans({}, 'monitoring') }}</h3>
                         <p class="mb-0">
                             {{ 'monitoring.performance.note_text'|trans({}, 'monitoring')|raw }}
                         </p>

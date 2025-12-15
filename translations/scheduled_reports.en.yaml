@@ -1,0 +1,169 @@
+# Scheduled Reports Translations - English
+
+scheduled_report:
+    title: 'Scheduled Reports'
+
+    # Page titles
+    new:
+        title: 'Create New Scheduled Report'
+    edit:
+        title: 'Edit Scheduled Report'
+    show:
+        title: 'Report Details'
+
+    # Form labels
+    form:
+        name: 'Name'
+        name_placeholder: 'e.g. Weekly Risk Report'
+        report_type: 'Report Type'
+        select_type: '-- Select report type --'
+        schedule: 'Schedule'
+        format: 'Format'
+        locale: 'Language'
+        description: 'Description'
+        preferred_time: 'Preferred Time'
+        preferred_time_help: 'When should the report be generated?'
+        day_of_week: 'Day of Week'
+        day_of_week_help: 'Only for weekly reports'
+        select_day: '-- Select day --'
+        day_of_month: 'Day of Month'
+        day_of_month_help: 'Only for monthly reports (1-28)'
+        recipients: 'Recipients'
+        recipients_placeholder: 'Enter email addresses (one per line or comma-separated)'
+        recipients_help: 'Enter one or more email addresses'
+        configuration: 'Configuration'
+        schedule_settings: 'Schedule Settings'
+        output_settings: 'Output Settings'
+        delivery_settings: 'Delivery Settings'
+
+    # Report types
+    type:
+        executive: 'Executive Summary'
+        risk: 'Risk Report'
+        bcm: 'BCM Report'
+        compliance: 'Compliance Report'
+        audit: 'Audit Report'
+        assets: 'Asset Report'
+        gdpr: 'GDPR Report'
+
+    # Schedule options
+    schedule:
+        daily: 'Daily'
+        weekly: 'Weekly'
+        monthly: 'Monthly'
+
+    # Status
+    status:
+        label: 'Status'
+        active: 'Active'
+        inactive: 'Inactive'
+        due: 'Due'
+
+    # Actions
+    action:
+        new: 'Create New Report'
+        edit: 'Edit'
+        view: 'View'
+        delete: 'Delete'
+        cancel: 'Cancel'
+        create: 'Create Report'
+        save: 'Save Changes'
+        activate: 'Activate'
+        deactivate: 'Deactivate'
+        preview: 'Preview / Download'
+        trigger: 'Send Now'
+
+    # Table headers
+    table:
+        name: 'Name'
+        type: 'Type'
+        schedule: 'Schedule'
+        format: 'Format'
+        status: 'Status'
+        next_run: 'Next Run'
+        recipients: 'Recipients'
+        actions: 'Actions'
+
+    # Statistics
+    stats:
+        total: 'Total'
+        active: 'Active'
+        inactive: 'Inactive'
+        due: 'Due'
+
+    # Empty state
+    empty:
+        title: 'No Scheduled Reports'
+        text: 'Create your first scheduled report to receive regular reports automatically via email.'
+
+    # Info messages
+    info:
+        activation_required: 'Scheduled reports must be manually activated before they will run.'
+        cron_hint: 'Make sure the cron job for report processing is set up.'
+        create_hint: 'Create a scheduled report to automatically generate and send reports via email. After creation, the report must be manually activated.'
+
+    # Due reports warning
+    due_reports:
+        title: 'Due Reports'
+        text: 'There are %count% report(s) waiting to be processed. Run the following command:'
+
+    # Details card
+    details:
+        title: 'Report Details'
+
+    # Recipients card
+    recipients:
+        title: 'Recipients'
+        empty: 'No recipients configured'
+
+    # Last run info
+    last_run:
+        title: 'Last Run'
+        time: 'Time'
+        status: 'Status'
+        message: 'Message'
+        success: 'Success'
+        failed: 'Failed'
+
+    # Next run
+    next_run: 'Next Run'
+
+    # Actions card
+    actions:
+        title: 'Actions'
+
+    # Metadata card
+    metadata:
+        title: 'Metadata'
+        created: 'Created at'
+        updated: 'Updated at'
+
+    # Confirmation dialogs
+    confirm:
+        delete: 'Are you sure you want to delete this scheduled report?'
+        trigger: 'Do you want to manually trigger this report and send it via email now?'
+
+    # Flash messages
+    flash:
+        created: 'Scheduled report has been created successfully.'
+        updated: 'Scheduled report has been updated successfully.'
+        deleted: 'Scheduled report has been deleted successfully.'
+        activated: 'Scheduled report has been activated.'
+        deactivated: 'Scheduled report has been deactivated.'
+        triggered: 'Report has been generated and sent successfully.'
+        trigger_failed: 'Error sending the report.'
+        preview_failed: 'Error creating the preview.'
+
+    # Email
+    email:
+        subject: 'Scheduled Report: %name%'
+        body: |
+            Dear Sir or Madam,
+
+            Please find attached the scheduled report "%name%".
+
+            Report Type: %type%
+            Generated on: %date%
+
+            Best regards,
+            Your ISMS System

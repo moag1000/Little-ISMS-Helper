@@ -30,9 +30,9 @@
 
             <div class="card">
                 <div class="card-header">
-                    <h3 class="mb-0">
+                    <h2 class="mb-0">
                         <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'workflow.section.basic_information'|trans({}, 'workflows') }}
-                    </h3>
+                    </h2>
                 </div>
                 <div class="card-body">
                     {{ form_start(form) }}
@@ -93,9 +93,9 @@
             {% if is_edit %}
                 <div class="card mt-4">
                     <div class="card-header bg-warning">
-                        <h3 class="mb-0">
+                        <h2 class="mb-0">
                             <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'workflow.section.danger_zone'|trans({}, 'workflows') }}
-                        </h3>
+                        </h2>
                     </div>
                     <div class="card-body">
                         <p class="text-muted">{{ 'workflow.help.delete_warning'|trans({}, 'workflows') }}</p>

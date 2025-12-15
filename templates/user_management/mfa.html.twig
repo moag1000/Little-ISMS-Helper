@@ -19,13 +19,13 @@
         <div class="d-flex align-items-center">
             <i class="bi {{ mfa_enabled ? 'bi-shield-check' : 'bi-shield-exclamation' }} fs-1 me-3"></i>
             <div>
-                <h5 class="mb-1">
+                <h2 class="mb-1">
                     {% if mfa_enabled %}
                         {{ 'mfa.enabled'|trans({}, 'mfa') }}
                     {% else %}
                         {{ 'mfa.disabled'|trans({}, 'mfa') }}
                     {% endif %}
-                </h5>
+                </h2>
                 <p class="mb-0">
                     {% if mfa_enabled %}
                         {{ 'mfa.enabled_description'|trans({}, 'mfa') }}
@@ -42,7 +42,7 @@
         <div class="col-md-4">
             <div class="card border-primary">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'mfa.statistics.active_tokens'|trans({}, 'mfa') }}</h5>
+                    <h2 class="card-title text-muted">{{ 'mfa.statistics.active_tokens'|trans({}, 'mfa') }}</h2>
                     <p class="display-6 text-primary">{{ active_tokens_count }}</p>
                 </div>
             </div>
@@ -50,7 +50,7 @@
         <div class="col-md-4">
             <div class="card border-info">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'mfa.statistics.total_tokens'|trans({}, 'mfa') }}</h5>
+                    <h2 class="card-title text-muted">{{ 'mfa.statistics.total_tokens'|trans({}, 'mfa') }}</h2>
                     <p class="display-6 text-info">{{ mfa_tokens|length }}</p>
                 </div>
             </div>
@@ -58,7 +58,7 @@
         <div class="col-md-4">
             <div class="card border-success">
                 <div class="card-body">
-                    <h5 class="card-title text-muted">{{ 'mfa.statistics.by_type'|trans({}, 'mfa') }}</h5>
+                    <h2 class="card-title text-muted">{{ 'mfa.statistics.by_type'|trans({}, 'mfa') }}</h2>
                     {% for type, count in tokens_by_type %}
                         <div class="d-flex justify-content-between">
                             <span>{{ type|upper }}</span>
@@ -73,9 +73,9 @@
     {# MFA Tokens List #}
     <div class="card">
         <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-key" aria-hidden="true"></i> {{ 'mfa.tokens'|trans({}, 'mfa') }}
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             {% if mfa_tokens|length > 0 %}
@@ -175,7 +175,7 @@
     {# Info Box for Super Admins #}
     {% if is_granted('ROLE_SUPER_ADMIN') %}
         <div class="alert alert-warning mt-4">
-            <h2><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'mfa.admin.notice_title'|trans({}, 'mfa') }}</h2>
+            <h3><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'mfa.admin.notice_title'|trans({}, 'mfa') }}</h3>
             <p class="mb-0">
                 {{ 'mfa.admin.notice_text'|trans({}, 'mfa') }}
             </p>

@@ -19,7 +19,7 @@
         <div class="col-md-6">
             <div class="card border-primary">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'user.activity.total'|trans({}, 'user') }}</h5>
+                    <h2 class="card-title text-muted">{{ 'user.activity.total'|trans({}, 'user') }}</h2>
                     <p class="display-6 text-primary">{{ total_activities }}</p>
                 </div>
             </div>
@@ -27,7 +27,7 @@
         <div class="col-md-6">
             <div class="card border-info">
                 <div class="card-body">
-                    <h5 class="card-title text-muted">{{ 'user.activity.by_action'|trans({}, 'user') }}</h5>
+                    <h2 class="card-title text-muted">{{ 'user.activity.by_action'|trans({}, 'user') }}</h2>
                     {% for action, count in action_counts %}
                         <div class="d-flex justify-content-between">
                             <span class="badge bg-primary">{{ action }}</span>
@@ -42,19 +42,19 @@
     {# Activity Timeline #}
     <div class="card">
         <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'user.activity.timeline'|trans({}, 'user') }}
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             {% if activities_by_date|length > 0 %}
                 {% for date, daily_activities in activities_by_date|reverse %}
                     <div class="mb-4">
-                        <h6 class="text-muted border-bottom pb-2">
+                        <h3 class="text-muted border-bottom pb-2">
                             <i class="bi bi-calendar" aria-hidden="true"></i>
                             {{ date|date('d.m.Y') }}
                             <span class="badge bg-secondary">{{ daily_activities|length }}</span>
-                        </h6>
+                        </h3>
 
                         <div class="timeline">
                             {% for activity in daily_activities %}

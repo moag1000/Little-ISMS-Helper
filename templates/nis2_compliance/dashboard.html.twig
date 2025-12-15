@@ -19,7 +19,7 @@
         <div class="col-12">
             <div class="card {% if overall_compliance_score >= 95 %}border-success{% elseif overall_compliance_score >= 75 %}border-warning{% else %}border-danger{% endif %}">
                 <div class="card-body text-center">
-                    <h2 class="mb-3">{{ 'nis2.dashboard.overall_compliance'|trans({}, 'messages') }}</h2>
+                    <div class="h2 mb-3">{{ 'nis2.dashboard.overall_compliance'|trans({}, 'messages') }}</div>
                     <div class="display-1 {% if overall_compliance_score >= 95 %}text-success{% elseif overall_compliance_score >= 75 %}text-warning{% else %}text-danger{% endif %}">
                         {{ overall_compliance_score }}%
                     </div>
@@ -53,10 +53,10 @@
         <div class="col-md-3">
             <div class="card h-100">
                 <div class="card-body">
-                    <h6 class="card-title text-muted">
+                    <div class="h6 card-title text-muted">
                         <i class="bi bi-shield-lock" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.mfa.title'|trans({}, 'messages') }}
-                    </h6>
+                    </div>
                     <div class="display-6 {% if mfa_adoption_rate >= 95 %}text-success{% elseif mfa_adoption_rate >= 75 %}text-warning{% else %}text-danger{% endif %}">
                         {{ mfa_adoption_rate }}%
                     </div>
@@ -72,10 +72,10 @@
         <div class="col-md-3">
             <div class="card h-100">
                 <div class="card-body">
-                    <h6 class="card-title text-muted">
+                    <div class="h6 card-title text-muted">
                         <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.incident_reporting.title'|trans({}, 'messages') }}
-                    </h6>
+                    </div>
                     <div class="display-6 {% if reporting_compliance_rate >= 95 %}text-success{% elseif reporting_compliance_rate >= 75 %}text-warning{% else %}text-danger{% endif %}">
                         {{ reporting_compliance_rate }}%
                     </div>
@@ -92,10 +92,10 @@
         <div class="col-md-3">
             <div class="card h-100">
                 <div class="card-body">
-                    <h6 class="card-title text-muted">
+                    <div class="h6 card-title text-muted">
                         <i class="bi bi-bug" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.vulnerability.title'|trans({}, 'messages') }}
-                    </h6>
+                    </div>
                     <div class="display-6 {% if critical_vulnerabilities + high_vulnerabilities == 0 %}text-success{% elseif critical_vulnerabilities > 0 %}text-danger{% else %}text-warning{% endif %}">
                         {{ critical_vulnerabilities + high_vulnerabilities }}
                     </div>
@@ -111,10 +111,10 @@
         <div class="col-md-3">
             <div class="card h-100">
                 <div class="card-body">
-                    <h6 class="card-title text-muted">
+                    <div class="h6 card-title text-muted">
                         <i class="bi bi-download" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.patch.title'|trans({}, 'messages') }}
-                    </h6>
+                    </div>
                     <div class="display-6 {% if patch_deployment_rate >= 95 %}text-success{% elseif patch_deployment_rate >= 75 %}text-warning{% else %}text-danger{% endif %}">
                         {{ patch_deployment_rate }}%
                     </div>
@@ -132,10 +132,10 @@
         <div class="row mb-4">
             <div class="col-12">
                 <div class="alert alert-danger">
-                    <h5 class="alert-heading">
+                    <div class="h4 alert-heading">
                         <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.overdue.title'|trans({}, 'messages') }}
-                    </h5>
+                    </div>
                     <p>{{ 'nis2.dashboard.overdue.description'|trans({'%count%': overdue_incidents|length}, 'messages') }}</p>
                     <hr>
                     <ul class="mb-0">
@@ -168,7 +168,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="mb-0">{{ 'nis2.dashboard.incident_details.title'|trans({}, 'messages') }}</h3>
+                    <h2 class="mb-0">{{ 'nis2.dashboard.incident_details.title'|trans({}, 'messages') }}</h2>
                 </div>
                 <div class="card-body">
                     {% embed '_components/_table.html.twig' with {
@@ -228,7 +228,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="mb-0">{{ 'nis2.dashboard.actions.title'|trans({}, 'messages') }}</h3>
+                    <h2 class="mb-0">{{ 'nis2.dashboard.actions.title'|trans({}, 'messages') }}</h2>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">

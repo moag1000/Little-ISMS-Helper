@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>BCM Report</title>
+    <style>
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 15px; }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #16a34a;
+            padding-bottom: 10px;
+        }
+        .header h1 { color: #0f172a; margin: 0; font-size: 18pt; }
+        .header .date { color: #888; font-size: 9pt; margin-top: 3px; }
+
+        .stats-grid { display: table; width: 100%; margin: 15px 0; }
+        .stat-box {
+            display: table-cell;
+            width: 25%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            text-align: center;
+        }
+        .stat-box .number { font-size: 20pt; font-weight: bold; }
+        .stat-box .label { font-size: 7pt; color: #666; text-transform: uppercase; }
+
+        .section { margin: 15px 0; page-break-inside: avoid; }
+        .section h2 { background: #16a34a; color: white; padding: 6px; font-size: 10pt; margin: 0 0 8px 0; }
+
+        table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+        th { background: #0f172a; color: #06b6d4; padding: 5px; text-align: left; font-size: 8pt; }
+        td { padding: 5px; border-bottom: 1px solid #ddd; font-size: 8pt; }
+        tr:nth-child(even) { background: #f8fafc; }
+
+        .badge { display: inline-block; padding: 2px 5px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-info { background: #e0f2fe; color: #0369a1; }
+        .badge-danger { background: #fecaca; color: #991b1b; }
+
+        .alert { padding: 8px; margin: 8px 0; border-radius: 4px; font-size: 8pt; }
+        .alert-success { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+        .alert-warning { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+
+        .footer { position: fixed; bottom: 10px; left: 15px; right: 15px; text-align: center; font-size: 7pt; color: #888; border-top: 1px solid #ddd; padding-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Business Continuity Management Report</h1>
+        <div class="date">Generated: {{ generated_at|date('d.m.Y H:i') }} | Version: {{ version }}</div>
+    </div>
+
+    {# BC Plans Summary #}
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="number" style="color: #0ea5e9;">{{ report.bc_plans.total }}</div>
+            <div class="label">Total BC Plans</div>
+        </div>
+        <div class="stat-box">
+            <div class="number" style="color: #16a34a;">{{ report.bc_plans.active }}</div>
+            <div class="label">Active Plans</div>
+        </div>
+        <div class="stat-box">
+            <div class="number" style="color: #d97706;">{{ report.bc_plans.draft }}</div>
+            <div class="label">Draft Plans</div>
+        </div>
+        <div class="stat-box">
+            <div class="number" style="color: #0ea5e9;">{{ report.bc_plans.review }}</div>
+            <div class="label">Under Review</div>
+        </div>
+    </div>
+
+    {# BC Exercises #}
+    <div class="section">
+        <h2>BC Exercises</h2>
+        <table>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>Total Exercises</td>
+                <td>{{ report.exercises.total }}</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>Exercises (Last 12 Months)</td>
+                <td>{{ report.exercises.last_12_months }}</td>
+                <td>
+                    {% if report.exercises.last_12_months >= 2 %}
+                    <span class="badge badge-success">Compliant (ISO 22301)</span>
+                    {% elseif report.exercises.last_12_months >= 1 %}
+                    <span class="badge badge-warning">Minimum Met</span>
+                    {% else %}
+                    <span class="badge badge-danger">Non-Compliant</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+        {% if report.exercises.last_12_months >= 2 %}
+        <div class="alert alert-success">ISO 22301 recommends at least 2 BC exercises per year. Current status: Compliant.</div>
+        {% else %}
+        <div class="alert alert-warning">ISO 22301 recommends at least 2 BC exercises per year. Consider scheduling additional exercises.</div>
+        {% endif %}
+    </div>
+
+    {# Business Processes #}
+    <div class="section">
+        <h2>Business Processes</h2>
+        <table>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Total Business Processes</td>
+                <td>{{ report.business_processes.total }}</td>
+            </tr>
+            <tr>
+                <td>Critical/High Priority Processes</td>
+                <td><span class="badge badge-danger">{{ report.business_processes.critical }}</span></td>
+            </tr>
+        </table>
+    </div>
+
+    {# BIA Summary #}
+    <div class="section">
+        <h2>Business Impact Analysis (BIA)</h2>
+        <table>
+            <tr>
+                <th>Criticality</th>
+                <th>Count</th>
+            </tr>
+            <tr>
+                <td><span class="badge badge-danger">Critical</span></td>
+                <td>{{ bia.by_criticality.critical }}</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-warning">High</span></td>
+                <td>{{ bia.by_criticality.high }}</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-info">Medium</span></td>
+                <td>{{ bia.by_criticality.medium }}</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-success">Low</span></td>
+                <td>{{ bia.by_criticality.low }}</td>
+            </tr>
+        </table>
+
+        <h3 style="font-size: 9pt; margin: 10px 0 5px;">RTO/RPO Coverage</h3>
+        <table>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+            </tr>
+            <tr>
+                <td>Total Processes</td>
+                <td>{{ bia.total_processes }}</td>
+            </tr>
+            <tr>
+                <td>Processes with RTO Defined</td>
+                <td>{{ bia.rto_defined }}</td>
+            </tr>
+            <tr>
+                <td>Processes with RPO Defined</td>
+                <td>{{ bia.rpo_defined }}</td>
+            </tr>
+            <tr>
+                <td>Coverage Rate</td>
+                <td>
+                    {% if bia.coverage >= 80 %}
+                    <span class="badge badge-success">{{ bia.coverage }}%</span>
+                    {% elseif bia.coverage >= 60 %}
+                    <span class="badge badge-warning">{{ bia.coverage }}%</span>
+                    {% else %}
+                    <span class="badge badge-danger">{{ bia.coverage }}%</span>
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    {# BC Plans List #}
+    {% if report.bc_plans.plans|length > 0 %}
+    <div class="section">
+        <h2>BC Plans Overview</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Last Review</th>
+                <th>Next Review</th>
+            </tr>
+            {% for plan in report.bc_plans.plans %}
+            <tr>
+                <td>{{ plan.name|slice(0, 40) }}{% if plan.name|length > 40 %}...{% endif %}</td>
+                <td>
+                    {% if plan.status == 'active' or plan.status == 'approved' %}
+                    <span class="badge badge-success">{{ plan.status }}</span>
+                    {% elseif plan.status == 'draft' %}
+                    <span class="badge badge-warning">{{ plan.status }}</span>
+                    {% elseif plan.status == 'review' %}
+                    <span class="badge badge-info">{{ plan.status }}</span>
+                    {% else %}
+                    <span class="badge">{{ plan.status }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ plan.lastReviewDate ? plan.lastReviewDate|date('Y-m-d') : '-' }}</td>
+                <td>{{ plan.nextReviewDate ? plan.nextReviewDate|date('Y-m-d') : '-' }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    <div class="footer">
+        Confidential - Business Continuity Management Report | Little ISMS Helper
+    </div>
+</body>
+</html>

@@ -1,0 +1,178 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'scheduled_reports' %}
+
+{% block title %}{{ 'scheduled_report.edit.title'|trans({}, 'scheduled_reports') }} - {{ report.name }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.reports'|trans({}, 'nav'), path: 'app_reports_index' },
+            { label: 'scheduled_report.title'|trans({}, 'scheduled_reports'), path: 'app_scheduled_report_index' },
+            { label: report.name, path: 'app_scheduled_report_show', params: {id: report.id} },
+            { label: 'scheduled_report.edit.title'|trans({}, 'scheduled_reports') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">
+            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'scheduled_report.edit.title'|trans({}, 'scheduled_reports') }}
+        </h1>
+        <span class="badge {% if report.active %}bg-success{% else %}bg-secondary{% endif %} fs-6">
+            {% if report.active %}
+            {{ 'scheduled_report.status.active'|trans({}, 'scheduled_reports') }}
+            {% else %}
+            {{ 'scheduled_report.status.inactive'|trans({}, 'scheduled_reports') }}
+            {% endif %}
+        </span>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header">
+            <h3 class="h5 mb-0">
+                <i class="bi bi-gear"></i> {{ 'scheduled_report.form.configuration'|trans({}, 'scheduled_reports') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+
+            <div class="row">
+                {# Basic Info #}
+                <div class="col-md-6 mb-3">
+                    {{ form_row(form.name) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form_row(form.reportType) }}
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    {{ form_row(form.description) }}
+                </div>
+            </div>
+
+            <hr>
+
+            <h4 class="h6 mb-3">
+                <i class="bi bi-calendar-event"></i> {{ 'scheduled_report.form.schedule_settings'|trans({}, 'scheduled_reports') }}
+            </h4>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    {{ form_row(form.schedule) }}
+                </div>
+                <div class="col-md-4 mb-3" id="dayOfWeekGroup" style="{% if report.schedule != 'weekly' %}display: none;{% endif %}">
+                    {{ form_row(form.dayOfWeek) }}
+                </div>
+                <div class="col-md-4 mb-3" id="dayOfMonthGroup" style="{% if report.schedule != 'monthly' %}display: none;{% endif %}">
+                    {{ form_row(form.dayOfMonth) }}
+                </div>
+                <div class="col-md-4 mb-3">
+                    {{ form_row(form.preferredTime) }}
+                </div>
+            </div>
+
+            <hr>
+
+            <h4 class="h6 mb-3">
+                <i class="bi bi-file-earmark"></i> {{ 'scheduled_report.form.output_settings'|trans({}, 'scheduled_reports') }}
+            </h4>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    {{ form_row(form.format) }}
+                </div>
+                <div class="col-md-6 mb-3">
+                    {{ form_row(form.locale) }}
+                </div>
+            </div>
+
+            <hr>
+
+            <h4 class="h6 mb-3">
+                <i class="bi bi-envelope"></i> {{ 'scheduled_report.form.delivery_settings'|trans({}, 'scheduled_reports') }}
+            </h4>
+
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    {{ form_row(form.recipientsText) }}
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="d-flex justify-content-between">
+                <a href="{{ path('app_scheduled_report_show', {id: report.id}) }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> {{ 'scheduled_report.action.cancel'|trans({}, 'scheduled_reports') }}
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-circle"></i> {{ 'scheduled_report.action.save'|trans({}, 'scheduled_reports') }}
+                </button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    {# Last Run Info (if available) #}
+    {% if report.lastRunAt %}
+    <div class="card shadow-sm mt-4">
+        <div class="card-header">
+            <h3 class="h5 mb-0">
+                <i class="bi bi-clock-history"></i> {{ 'scheduled_report.last_run.title'|trans({}, 'scheduled_reports') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <strong>{{ 'scheduled_report.last_run.time'|trans({}, 'scheduled_reports') }}:</strong><br>
+                    {{ report.lastRunAt|date('Y-m-d H:i') }}
+                </div>
+                <div class="col-md-4">
+                    <strong>{{ 'scheduled_report.last_run.status'|trans({}, 'scheduled_reports') }}:</strong><br>
+                    {% if report.lastRunStatus == 1 %}
+                    <span class="badge bg-success">{{ 'scheduled_report.last_run.success'|trans({}, 'scheduled_reports') }}</span>
+                    {% else %}
+                    <span class="badge bg-danger">{{ 'scheduled_report.last_run.failed'|trans({}, 'scheduled_reports') }}</span>
+                    {% endif %}
+                </div>
+                <div class="col-md-4">
+                    <strong>{{ 'scheduled_report.last_run.message'|trans({}, 'scheduled_reports') }}:</strong><br>
+                    {{ report.lastRunMessage|default('-') }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('turbo:load', function() {
+    const scheduleSelect = document.getElementById('scheduled_report_schedule');
+    const dayOfWeekGroup = document.getElementById('dayOfWeekGroup');
+    const dayOfMonthGroup = document.getElementById('dayOfMonthGroup');
+
+    function updateScheduleFields() {
+        if (!scheduleSelect) return;
+
+        const schedule = scheduleSelect.value;
+
+        if (dayOfWeekGroup) {
+            dayOfWeekGroup.style.display = schedule === 'weekly' ? 'block' : 'none';
+        }
+        if (dayOfMonthGroup) {
+            dayOfMonthGroup.style.display = schedule === 'monthly' ? 'block' : 'none';
+        }
+    }
+
+    if (scheduleSelect) {
+        scheduleSelect.addEventListener('change', updateScheduleFields);
+        updateScheduleFields();
+    }
+});
+</script>
+{% endblock %}

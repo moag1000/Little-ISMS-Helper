@@ -22,6 +22,12 @@ welcome:
     modules:
         title: "Aktive Module"
 
+    wizards:
+        title: "Compliance Prüfung"
+        description: "Führen Sie gezielte Compliance-Prüfungen durch und identifizieren Sie Lücken in Ihrem ISMS."
+        view_all: "Alle Wizards"
+        complete: "abgeschlossen"
+
     quick_actions:
         title: "Schnellzugriff"
         new_asset: "Neues Asset"

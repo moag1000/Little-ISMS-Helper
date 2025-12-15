@@ -24,14 +24,14 @@
     {# Overall Compliance Score #}
     <div class="card mb-4 text-center">
         <div class="card-body">
-            <h6 class="text-muted mb-2">Overall VVT Compliance Score</h6>
+            <div class="text-muted mb-2 fw-bold">Overall VVT Compliance Score</div>
             {% set score = compliance_score.overall_score %}
-            <h1 class="display-1 mb-0
+            <div class="display-1 mb-0
                 {% if score >= 80 %}text-success
                 {% elseif score >= 60 %}text-warning
                 {% else %}text-danger{% endif %}">
                 {{ score }}%
-            </h1>
+            </div>
             <p class="text-muted mt-2">
                 {{ compliance_score.complete_activities }} of {{ compliance_score.total_activities }} activities complete
                 {% if compliance_score.dpia_required > 0 %}
@@ -46,8 +46,8 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">Total Activities</h6>
-                    <h2>{{ statistics.total }}</h2>
+                    <div class="text-muted fw-bold">Total Activities</div>
+                    <div class="fs-2 fw-bold">{{ statistics.total }}</div>
                     <div class="mt-2">
                         <small class="text-success"><i class="bi bi-check-circle"></i> {{ statistics.active }} active</small>
                     </div>
@@ -57,8 +57,8 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">High Risk</h6>
-                    <h2 class="text-warning">{{ statistics.high_risk }}</h2>
+                    <div class="text-muted fw-bold">High Risk</div>
+                    <div class="fs-2 fw-bold text-warning">{{ statistics.high_risk }}</div>
                     <div class="mt-2">
                         <small class="text-danger"><i class="bi bi-exclamation-triangle"></i> {{ statistics.missing_dpia }} missing DPIA</small>
                     </div>
@@ -68,8 +68,8 @@
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">Completeness Rate</h6>
-                    <h2>{{ statistics.completeness_rate }}%</h2>
+                    <div class="text-muted fw-bold">Completeness Rate</div>
+                    <div class="fs-2 fw-bold">{{ statistics.completeness_rate }}%</div>
                     <div class="progress mt-2" style="height: 10px;">
                         <div class="progress-bar bg-success" style="width: {{ statistics.completeness_rate }}%"></div>
                     </div>
@@ -82,11 +82,11 @@
         {# Action Items #}
         <div class="col-md-6">
             <div class="card mb-4">
-                <div class="card-header bg-warning text-dark"><h5 class="mb-0"><i class="bi bi-exclamation-circle"></i> Action Items</h5>
+                <div class="card-header bg-warning text-dark"><h2 class="mb-0 h5"><i class="bi bi-exclamation-circle"></i> Action Items</h2>
                 </div>
                 <div class="card-body">
                     {% if incomplete|length > 0 %}
-                        <h6>Incomplete Activities ({{ incomplete|length }})</h6>
+                        <h3 class="h6">Incomplete Activities ({{ incomplete|length }})</h3>
                         <ul class="list-unstyled">
                             {% for pa in incomplete|slice(0, 5) %}
                                 <li class="mb-2">
@@ -98,7 +98,7 @@
                     {% endif %}
 
                     {% if requiring_dpia|length > 0 %}
-                        <h6 class="mt-3">Requiring DPIA ({{ requiring_dpia|length }})</h6>
+                        <h3 class="h6 mt-3">Requiring DPIA ({{ requiring_dpia|length }})</h3>
                         <ul class="list-unstyled">
                             {% for pa in requiring_dpia|slice(0, 5) %}
                                 <li class="mb-2">
@@ -110,7 +110,7 @@
                     {% endif %}
 
                     {% if due_for_review|length > 0 %}
-                        <h6 class="mt-3">Due for Review ({{ due_for_review|length }})</h6>
+                        <h3 class="h6 mt-3">Due for Review ({{ due_for_review|length }})</h3>
                         <ul class="list-unstyled">
                             {% for pa in due_for_review|slice(0, 5) %}
                                 <li class="mb-2">
@@ -131,10 +131,10 @@
         {# Statistics Charts #}
         <div class="col-md-6">
             <div class="card mb-4">
-                <div class="card-header"><h5 class="mb-0"><i class="bi bi-bar-chart"></i> Statistics</h5>
+                <div class="card-header"><h2 class="mb-0 h5"><i class="bi bi-bar-chart"></i> Statistics</h2>
                 </div>
                 <div class="card-body">
-                    <h6>{{ 'privacy.chart.by_legal_basis'|trans({}, 'privacy') }}</h6>
+                    <h3 class="h6">{{ 'privacy.chart.by_legal_basis'|trans({}, 'privacy') }}</h3>
                     {% if statistics.by_legal_basis %}
                         <ul class="list-unstyled">
                             {% for basis, count in statistics.by_legal_basis %}
@@ -146,7 +146,7 @@
                         </ul>
                     {% endif %}
 
-                    <h6 class="mt-4">{{ 'privacy.chart.by_risk_level'|trans({}, 'privacy') }}</h6>
+                    <h3 class="h6 mt-4">{{ 'privacy.chart.by_risk_level'|trans({}, 'privacy') }}</h3>
                     {% if statistics.by_risk_level %}
                         <ul class="list-unstyled">
                             {% for level, count in statistics.by_risk_level %}
@@ -164,7 +164,7 @@
                         </ul>
                     {% endif %}
 
-                    <h6 class="mt-4">Special Processing</h6>
+                    <h3 class="h6 mt-4">Special Processing</h3>
                     <ul class="list-unstyled">
                         <li class="mb-2">
                             <span class="badge bg-danger">{{ statistics.special_categories }}</span>

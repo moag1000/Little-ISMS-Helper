@@ -1,0 +1,182 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'management_reports' %}
+
+{% block title %}{{ 'management_reports.assets.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.reports'|trans({}, 'nav'), path: 'app_reports_index' },
+            { label: 'management_reports.title'|trans({}, 'management_reports'), path: 'app_management_reports' },
+            { label: 'management_reports.assets.title'|trans({}, 'management_reports') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">
+            <i class="bi bi-server text-secondary" aria-hidden="true"></i> {{ 'management_reports.assets.title'|trans({}, 'management_reports') }}
+        </h1>
+        <div class="btn-group">
+            <a href="{{ path('app_management_reports_assets_pdf') }}" class="btn btn-outline-danger">
+                <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
+            </a>
+            <a href="{{ path('app_management_reports_assets_excel') }}" class="btn btn-outline-success">
+                <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'management_reports.action.download_excel'|trans({}, 'management_reports') }}
+            </a>
+        </div>
+    </div>
+
+    {# Total Assets #}
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center h-100 bg-primary text-white">
+                <div class="card-body">
+                    <i class="bi bi-server fs-1"></i>
+                    <h3 class="display-3">{{ report.total_assets }}</h3>
+                    <p class="mb-0">{{ 'management_reports.assets.total'|trans({}, 'management_reports') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h3 class="h5 mb-0">
+                        <i class="bi bi-bar-chart" aria-hidden="true"></i>
+                        {{ 'management_reports.assets.by_type'|trans({}, 'management_reports') }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    {% if report.by_type|length > 0 %}
+                    <div class="row">
+                        {% for type, count in report.by_type %}
+                        <div class="col-md-4 mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span>{{ type }}</span>
+                                <span class="badge bg-primary">{{ count }}</span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar" style="width: {{ report.total_assets > 0 ? (count / report.total_assets * 100) : 0 }}%"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info mb-0">
+                        {{ 'management_reports.assets.no_assets'|trans({}, 'management_reports') }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Classification Breakdown #}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h3 class="h5 mb-0">
+                <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                {{ 'management_reports.assets.by_classification'|trans({}, 'management_reports') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            {% if report.by_classification|length > 0 %}
+            <div class="row">
+                {% for classification, count in report.by_classification %}
+                <div class="col-md-3 text-center mb-3">
+                    <div class="border rounded p-3 h-100">
+                        <h4 class="{% if classification == 'Confidential' or classification == 'Restricted' %}text-danger{% elseif classification == 'Internal' %}text-warning{% else %}text-success{% endif %}">
+                            {{ count }}
+                        </h4>
+                        <small class="text-muted">{{ classification }}</small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="alert alert-info mb-0">
+                {{ 'management_reports.assets.no_classification'|trans({}, 'management_reports') }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Asset Table #}
+    {% if report.assets|length > 0 %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h3 class="h5 mb-0">
+                <i class="bi bi-list" aria-hidden="true"></i>
+                {{ 'management_reports.assets.inventory'|trans({}, 'management_reports') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>{{ 'management_reports.assets.header.id'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.assets.header.name'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.assets.header.type'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.assets.header.classification'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.assets.header.owner'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.assets.header.status'|trans({}, 'management_reports') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for asset in report.assets|slice(0, 50) %}
+                        <tr>
+                            <td>{{ asset.id }}</td>
+                            <td>
+                                <a href="{{ path('app_asset_show', {id: asset.id}) }}">
+                                    {{ asset.name }}
+                                </a>
+                            </td>
+                            <td>{{ asset.assetType }}</td>
+                            <td>
+                                {% set classification = asset.classification|default('Unclassified') %}
+                                <span class="badge {% if classification == 'Confidential' or classification == 'Restricted' %}bg-danger{% elseif classification == 'Internal' %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                                    {{ classification }}
+                                </span>
+                            </td>
+                            <td>{{ asset.owner ? asset.owner.email : '-' }}</td>
+                            <td>{{ asset.status|default('Active') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% if report.assets|length > 50 %}
+            <div class="text-muted text-center mt-2">
+                {{ 'management_reports.assets.showing_first'|trans({'%count%': 50, '%total%': report.assets|length}, 'management_reports') }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# Quick Links #}
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="{{ path('app_asset_index') }}" class="btn btn-outline-primary btn-lg w-100">
+                        <i class="bi bi-server" aria-hidden="true"></i> {{ 'management_reports.assets.view_all'|trans({}, 'management_reports') }}
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <a href="{{ path('app_management_reports_assets_excel') }}" class="btn btn-outline-success btn-lg w-100">
+                        <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'management_reports.assets.export_full'|trans({}, 'management_reports') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Report Generated Info #}
+    <div class="text-muted small text-end">
+        <i class="bi bi-clock" aria-hidden="true"></i>
+        {{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ report.generated_at|date('Y-m-d H:i') }}
+    </div>
+</div>
+{% endblock %}

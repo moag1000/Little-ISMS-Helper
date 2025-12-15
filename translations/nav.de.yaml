@@ -17,6 +17,7 @@ nav:
     compliance_frameworks: 'Compliance Frameworks'
     framework_dashboard: Framework-Dashboard
     nis2: NIS2-Bewertung
+    compliance_wizard: 'Compliance Wizard'
     treatment_plans: Behandlungspläne
     roles: 'Rollen & Berechtigungen'
     tenants: Mandanten
@@ -123,6 +124,7 @@ nav:
             framework_dashboard: 'Framework-übergreifende Übersicht'
             mapping_quality: 'Framework-übergreifende Mapping-Qualitätsanalyse'
             nis2: 'NIS2-Richtlinienbewertung'
+            compliance_wizard: 'Geführte Compliance-Prüfung'
             users: 'Benutzerkontenverwaltung'
             roles: 'Rollen und Berechtigungen'
             tenants: 'Mandantenverwaltung'

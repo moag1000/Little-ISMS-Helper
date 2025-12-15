@@ -188,6 +188,10 @@ setup:
             link_text: 'Admin Data Repair Tool'
             suffix: 'korrigieren.'
         complete_setup: 'Setup abschließen'
+        loading:
+            creating_schema: 'Datenbank-Struktur wird erstellt...'
+            restoring_backup: 'Backup wird wiederhergestellt...'
+            skipping: 'Neue Installation wird vorbereitet...'
         schema:
             title: 'Schritt 1: Datenbank-Struktur erstellen'
             description: 'Bevor Sie ein Backup wiederherstellen können, muss die Datenbank-Struktur (Tabellen) erstellt werden. Dieser Vorgang kann einige Minuten dauern.'

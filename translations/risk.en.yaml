@@ -19,6 +19,7 @@ risk:
         treatment_label: 'Treatment Strategy'
         all_strategies: 'All Strategies'
         owner_label: 'Risk Owner'
+        at_risk: 'Assets at Risk'
     index:
         risk_level:
             critical: 'Critical (20-25)'

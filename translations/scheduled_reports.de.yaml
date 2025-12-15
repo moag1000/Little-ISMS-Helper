@@ -1,0 +1,169 @@
+# Scheduled Reports Translations - German
+
+scheduled_report:
+    title: 'Geplante Berichte'
+
+    # Page titles
+    new:
+        title: 'Neuen geplanten Bericht erstellen'
+    edit:
+        title: 'Geplanten Bericht bearbeiten'
+    show:
+        title: 'Bericht Details'
+
+    # Form labels
+    form:
+        name: 'Name'
+        name_placeholder: 'z.B. Wöchentlicher Risikobericht'
+        report_type: 'Berichtstyp'
+        select_type: '-- Berichtstyp wählen --'
+        schedule: 'Zeitplan'
+        format: 'Format'
+        locale: 'Sprache'
+        description: 'Beschreibung'
+        preferred_time: 'Bevorzugte Uhrzeit'
+        preferred_time_help: 'Wann soll der Bericht generiert werden?'
+        day_of_week: 'Wochentag'
+        day_of_week_help: 'Nur für wöchentliche Berichte'
+        select_day: '-- Tag wählen --'
+        day_of_month: 'Tag des Monats'
+        day_of_month_help: 'Nur für monatliche Berichte (1-28)'
+        recipients: 'Empfänger'
+        recipients_placeholder: 'E-Mail-Adressen eingeben (eine pro Zeile oder durch Komma getrennt)'
+        recipients_help: 'Geben Sie eine oder mehrere E-Mail-Adressen ein'
+        configuration: 'Konfiguration'
+        schedule_settings: 'Zeitplan-Einstellungen'
+        output_settings: 'Ausgabe-Einstellungen'
+        delivery_settings: 'Zustellungs-Einstellungen'
+
+    # Report types
+    type:
+        executive: 'Executive Summary'
+        risk: 'Risikobericht'
+        bcm: 'BCM-Bericht'
+        compliance: 'Compliance-Bericht'
+        audit: 'Audit-Bericht'
+        assets: 'Asset-Bericht'
+        gdpr: 'DSGVO-Bericht'
+
+    # Schedule options
+    schedule:
+        daily: 'Täglich'
+        weekly: 'Wöchentlich'
+        monthly: 'Monatlich'
+
+    # Status
+    status:
+        label: 'Status'
+        active: 'Aktiv'
+        inactive: 'Inaktiv'
+        due: 'Fällig'
+
+    # Actions
+    action:
+        new: 'Neuen Bericht erstellen'
+        edit: 'Bearbeiten'
+        view: 'Anzeigen'
+        delete: 'Löschen'
+        cancel: 'Abbrechen'
+        create: 'Bericht erstellen'
+        save: 'Änderungen speichern'
+        activate: 'Aktivieren'
+        deactivate: 'Deaktivieren'
+        preview: 'Vorschau / Download'
+        trigger: 'Jetzt senden'
+
+    # Table headers
+    table:
+        name: 'Name'
+        type: 'Typ'
+        schedule: 'Zeitplan'
+        format: 'Format'
+        status: 'Status'
+        next_run: 'Nächste Ausführung'
+        recipients: 'Empfänger'
+        actions: 'Aktionen'
+
+    # Statistics
+    stats:
+        total: 'Gesamt'
+        active: 'Aktiv'
+        inactive: 'Inaktiv'
+        due: 'Fällig'
+
+    # Empty state
+    empty:
+        title: 'Keine geplanten Berichte'
+        text: 'Erstellen Sie Ihren ersten geplanten Bericht, um regelmäßige Berichte automatisch per E-Mail zu erhalten.'
+
+    # Info messages
+    info:
+        activation_required: 'Geplante Berichte müssen manuell aktiviert werden, bevor sie ausgeführt werden.'
+        cron_hint: 'Stellen Sie sicher, dass der Cron-Job für die Berichtsverarbeitung eingerichtet ist.'
+        create_hint: 'Erstellen Sie einen geplanten Bericht, um automatisch Berichte zu generieren und per E-Mail zu versenden. Nach der Erstellung muss der Bericht manuell aktiviert werden.'
+
+    # Due reports warning
+    due_reports:
+        title: 'Fällige Berichte'
+        text: 'Es gibt %count% Bericht(e), die zur Verarbeitung anstehen. Führen Sie den folgenden Befehl aus:'
+
+    # Details card
+    details:
+        title: 'Berichtsdetails'
+
+    # Recipients card
+    recipients:
+        title: 'Empfänger'
+        empty: 'Keine Empfänger konfiguriert'
+
+    # Last run info
+    last_run:
+        title: 'Letzte Ausführung'
+        time: 'Zeitpunkt'
+        status: 'Status'
+        message: 'Nachricht'
+        success: 'Erfolgreich'
+        failed: 'Fehlgeschlagen'
+
+    # Next run
+    next_run: 'Nächste Ausführung'
+
+    # Actions card
+    actions:
+        title: 'Aktionen'
+
+    # Metadata card
+    metadata:
+        title: 'Metadaten'
+        created: 'Erstellt am'
+        updated: 'Aktualisiert am'
+
+    # Confirmation dialogs
+    confirm:
+        delete: 'Möchten Sie diesen geplanten Bericht wirklich löschen?'
+        trigger: 'Möchten Sie diesen Bericht jetzt manuell auslösen und per E-Mail versenden?'
+
+    # Flash messages
+    flash:
+        created: 'Geplanter Bericht wurde erfolgreich erstellt.'
+        updated: 'Geplanter Bericht wurde erfolgreich aktualisiert.'
+        deleted: 'Geplanter Bericht wurde erfolgreich gelöscht.'
+        activated: 'Geplanter Bericht wurde aktiviert.'
+        deactivated: 'Geplanter Bericht wurde deaktiviert.'
+        triggered: 'Bericht wurde erfolgreich generiert und versendet.'
+        trigger_failed: 'Fehler beim Versenden des Berichts.'
+        preview_failed: 'Fehler beim Erstellen der Vorschau.'
+
+    # Email
+    email:
+        subject: 'Geplanter Bericht: %name%'
+        body: |
+            Sehr geehrte Damen und Herren,
+
+            anbei finden Sie den geplanten Bericht "%name%".
+
+            Berichtstyp: %type%
+            Generiert am: %date%
+
+            Mit freundlichen Grüßen,
+            Ihr ISMS-System

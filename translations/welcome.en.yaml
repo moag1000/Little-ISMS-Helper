@@ -22,6 +22,12 @@ welcome:
     modules:
         title: "Active Modules"
 
+    wizards:
+        title: "Compliance Assessment"
+        description: "Run targeted compliance assessments and identify gaps in your ISMS."
+        view_all: "All Wizards"
+        complete: "complete"
+
     quick_actions:
         title: "Quick Actions"
         new_asset: "New Asset"

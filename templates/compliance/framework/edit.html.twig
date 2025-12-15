@@ -16,10 +16,10 @@
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-header bg-warning">
-                    <h3 class="mb-0">
+                    <h1 class="mb-0 h3">
                         <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'compliance.framework.edit.heading'|trans({}, 'compliance') }}
                         <small class="text-muted">{{ framework.name }}</small>
-                    </h3>
+                    </h1>
                 </div>
                 <div class="card-body">
                     {{ form_start(form) }}
@@ -68,7 +68,7 @@
         </div>
         <div class="col-lg-4">
             <div class="card mb-3">
-                <div class="card-header bg-secondary text-white"><h5 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'compliance.framework.info'|trans({}, 'compliance') }}</h5>
+                <div class="card-header bg-secondary text-white"><h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'compliance.framework.info'|trans({}, 'compliance') }}</h2>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0">
@@ -86,7 +86,7 @@
 
             {% if is_granted('ROLE_ADMIN') %}
             <div class="card border-danger">
-                <div class="card-header bg-danger text-white"><h5 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h5>
+                <div class="card-header bg-danger text-white"><h2 class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h2>
                 </div>
                 <div class="card-body">
                     <form method="post" action="{{ path('app_compliance_framework_delete', {id: framework.id}) }}"

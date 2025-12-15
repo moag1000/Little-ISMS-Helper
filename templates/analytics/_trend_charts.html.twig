@@ -14,10 +14,10 @@
      data-trend-chart-url-value="{{ path('app_analytics_trends_data') }}"
      data-trend-chart-locale-value="{{ app.request.locale }}">
     <div class="card-header">
-        <h3 class="card-title">
+        <h2 class="card-title">
             <i class="bi bi-graph-up-arrow text-info"></i>
             {{ 'analytics.card.trend_analysis'|trans({}, 'analytics') }}
-        </h3>
+        </h2>
         <div class="card-actions">
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->trend-chart#refresh"
@@ -69,7 +69,7 @@
 
             {# Risk Trend Chart #}
             <div class="trend-chart-wrapper" data-trend-chart-target="riskChart">
-                <h4 class="chart-title">{{ 'analytics.chart_title.risk_trends_last_12'|trans({}, 'analytics') }}</h4>
+                <h3 class="chart-title">{{ 'analytics.chart_title.risk_trends_last_12'|trans({}, 'analytics') }}</h3>
                 <canvas data-trend-chart-target="riskCanvas"
                         width="800"
                         height="300"></canvas>
@@ -91,7 +91,7 @@
 
             {# Asset Trend Chart #}
             <div class="trend-chart-wrapper d-none" data-trend-chart-target="assetChart">
-                <h4 class="chart-title">{{ 'analytics.chart_title.asset_growth_last_12'|trans({}, 'analytics') }}</h4>
+                <h3 class="chart-title">{{ 'analytics.chart_title.asset_growth_last_12'|trans({}, 'analytics') }}</h3>
                 <canvas data-trend-chart-target="assetCanvas"
                         width="800"
                         height="300"></canvas>
@@ -109,7 +109,7 @@
 
             {# Incident Trend Chart #}
             <div class="trend-chart-wrapper d-none" data-trend-chart-target="incidentChart">
-                <h4 class="chart-title">{{ 'analytics.chart_title.incident_trends_last_12'|trans({}, 'analytics') }}</h4>
+                <h3 class="chart-title">{{ 'analytics.chart_title.incident_trends_last_12'|trans({}, 'analytics') }}</h3>
                 <canvas data-trend-chart-target="incidentCanvas"
                         width="800"
                         height="300"></canvas>

@@ -18,7 +18,7 @@
         <div class="col-md-4">
             <div class="card border-primary">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'audit_log.stats.total_entries'|trans({}, 'audit_log') }}</h5>
+                    <div class="card-title text-muted fw-bold">{{ 'audit_log.stats.total_entries'|trans({}, 'audit_log') }}</div>
                     <p class="display-6 text-primary">{{ statistics.total }}</p>
                 </div>
             </div>
@@ -26,7 +26,7 @@
         <div class="col-md-4">
             <div class="card border-success">
                 <div class="card-body">
-                    <h5 class="card-title text-muted">{{ 'audit_log.stats.top_actions'|trans({}, 'audit_log') }}</h5>
+                    <div class="card-title text-muted fw-bold">{{ 'audit_log.stats.top_actions'|trans({}, 'audit_log') }}</div>
                     {% for stat in statistics.action_stats|slice(0, 5) %}
                         <div class="d-flex justify-content-between">
                             <span class="badge bg-primary">{{ stat.action }}</span>
@@ -39,7 +39,7 @@
         <div class="col-md-4">
             <div class="card border-info">
                 <div class="card-body">
-                    <h5 class="card-title text-muted">{{ 'audit_log.stats.top_entities'|trans({}, 'audit_log') }}</h5>
+                    <div class="card-title text-muted fw-bold">{{ 'audit_log.stats.top_entities'|trans({}, 'audit_log') }}</div>
                     {% for stat in statistics.entity_stats|slice(0, 5) %}
                         <div class="d-flex justify-content-between">
                             <span>{{ stat.entityType }}</span>
@@ -54,9 +54,9 @@
     {# Quick Filters #}
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'audit_log.section.quick_filters'|trans({}, 'audit_log') }}
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             <div class="btn-group btn-group-sm" role="group">
@@ -83,9 +83,9 @@
     {# Audit Log Entries #}
     <div class="card">
         <div class="card-header bg-success text-white">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'audit_log.section.entries'|trans({}, 'audit_log') }} ({{ logs|length }})
-            </h3>
+            </h2>
         </div>
         <div class="card-body p-0">
             {% if logs|length > 0 %}
@@ -153,7 +153,7 @@
                                     <div class="modal-dialog modal-lg">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title">{{ 'audit_log.modal.title'|trans({}, 'audit_log') }}</h5>
+                                                <h3 class="modal-title h5">{{ 'audit_log.modal.title'|trans({}, 'audit_log') }}</h3>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                                             </div>
                                             <div class="modal-body">
@@ -200,7 +200,7 @@
 
     {# Info Box #}
     <div class="alert alert-info mt-4">
-        <h5><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'audit_log.info.about_title'|trans({}, 'audit_log') }}</h5>
+        <div class="fw-bold h5"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'audit_log.info.about_title'|trans({}, 'audit_log') }}</div>
         <p class="mb-0">
             {{ 'audit_log.info.about_text'|trans({}, 'audit_log') }}
             <a href="{{ path('app_audit_log_index') }}" class="alert-link">{{ 'audit_log.info.module_link'|trans({}, 'audit_log') }}</a>.

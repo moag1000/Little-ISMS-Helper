@@ -1,0 +1,189 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'wizard' %}
+
+{% block title %}{{ 'wizard.title'|trans }} - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h2 mb-1">
+                        <i class="bi bi-compass me-2"></i>{{ 'wizard.title'|trans }}
+                    </h1>
+                    <p class="text-muted mb-0">{{ 'wizard.subtitle'|trans }}</p>
+                </div>
+                {% if available_wizards|length > 1 %}
+                <a href="{{ path('app_compliance_wizard_compare') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-columns-gap me-1"></i>{{ 'wizard.compare_frameworks'|trans }}
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {# Available Wizards #}
+    {% if available_wizards|length > 0 %}
+    <div class="row mb-4">
+        <div class="col-12">
+            <h2 class="h5 text-muted mb-3">
+                <i class="bi bi-check-circle text-success me-2"></i>{{ 'wizard.available_wizards'|trans }}
+            </h2>
+        </div>
+        {% for key, wizard in available_wizards %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-{{ wizard.color }} wizard-card">
+                <div class="card-header bg-{{ wizard.color }} bg-opacity-10 border-{{ wizard.color }}">
+                    <div class="d-flex align-items-center">
+                        <i class="{{ wizard.icon }} fs-3 text-{{ wizard.color }} me-3"></i>
+                        <div>
+                            <h3 class="card-title h5 mb-0">{{ wizard.name }}</h3>
+                            <span class="badge bg-{{ wizard.color }}">{{ wizard.code }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text text-muted">{{ wizard.description|trans }}</p>
+
+                    <div class="mb-3">
+                        <small class="text-muted d-block mb-1">{{ 'wizard.required_modules'|trans }}:</small>
+                        {% for mod in wizard.required_modules %}
+                            <span class="badge bg-success me-1">
+                                <i class="bi bi-check-circle me-1"></i>{{ mod }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                    {% if wizard.recommended_modules|default([])|length > 0 %}
+                    <div class="mb-3">
+                        <small class="text-muted d-block mb-1">{{ 'wizard.recommended_modules'|trans }}:</small>
+                        {% for mod in wizard.recommended_modules %}
+                            {% if mod in active_modules %}
+                                <span class="badge bg-success me-1">
+                                    <i class="bi bi-check-circle me-1"></i>{{ mod }}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark me-1">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>{{ mod }}
+                                </span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="small text-muted">
+                        <i class="bi bi-list-check me-1"></i>
+                        {{ wizard.categories|length }} {{ 'wizard.categories_count'|trans }}
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-{{ wizard.color }}">
+                    <a href="{{ path('app_compliance_wizard_start', {wizard: key}) }}" class="btn btn-{{ wizard.color }} w-100">
+                        <i class="bi bi-play-circle me-1"></i>{{ 'wizard.start_wizard'|trans }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {# Unavailable Wizards #}
+    {% if unavailable_wizards|length > 0 %}
+    <div class="row">
+        <div class="col-12">
+            <h2 class="h5 text-muted mb-3">
+                <i class="bi bi-lock text-secondary me-2"></i>{{ 'wizard.unavailable_wizards'|trans }}
+            </h2>
+            <p class="text-muted small mb-3">{{ 'wizard.unavailable_hint'|trans }}</p>
+        </div>
+        {% for key, wizard in unavailable_wizards %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 border-secondary opacity-75">
+                <div class="card-header bg-secondary bg-opacity-10">
+                    <div class="d-flex align-items-center">
+                        <i class="{{ wizard.icon }} fs-3 text-secondary me-3"></i>
+                        <div>
+                            <h3 class="card-title h5 mb-0 text-muted">{{ wizard.name }}</h3>
+                            <span class="badge bg-secondary">{{ wizard.code }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning py-2 mb-3">
+                        <small>
+                            <i class="bi bi-exclamation-triangle me-1"></i>
+                            {{ 'wizard.missing_modules'|trans }}:
+                            {% for mod in wizard.missing_modules %}
+                                <strong>{{ mod }}</strong>{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </small>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <a href="{{ path('admin_modules_index') }}" class="btn btn-outline-secondary btn-sm w-100">
+                        <i class="bi bi-gear me-1"></i>{{ 'wizard.activate_modules'|trans }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {# Info Section #}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card bg-light border-0">
+                <div class="card-body">
+                    <h4 class="h6 mb-3">
+                        <i class="bi bi-info-circle text-info me-2"></i>{{ 'wizard.how_it_works'|trans }}
+                    </h4>
+                    <div class="row">
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <div class="d-flex">
+                                <div class="badge bg-primary rounded-circle me-2" style="width: 24px; height: 24px; line-height: 16px;">1</div>
+                                <div>
+                                    <strong>{{ 'wizard.step1_title'|trans }}</strong>
+                                    <p class="small text-muted mb-0">{{ 'wizard.step1_desc'|trans }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3 mb-md-0">
+                            <div class="d-flex">
+                                <div class="badge bg-primary rounded-circle me-2" style="width: 24px; height: 24px; line-height: 16px;">2</div>
+                                <div>
+                                    <strong>{{ 'wizard.step2_title'|trans }}</strong>
+                                    <p class="small text-muted mb-0">{{ 'wizard.step2_desc'|trans }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex">
+                                <div class="badge bg-primary rounded-circle me-2" style="width: 24px; height: 24px; line-height: 16px;">3</div>
+                                <div>
+                                    <strong>{{ 'wizard.step3_title'|trans }}</strong>
+                                    <p class="small text-muted mb-0">{{ 'wizard.step3_desc'|trans }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+.wizard-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.wizard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+</style>
+{% endblock %}

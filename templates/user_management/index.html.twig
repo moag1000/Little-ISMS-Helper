@@ -28,7 +28,7 @@
             <div class="col-md-3">
                 <div class="card border-primary">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-muted">{{ 'user.stats.total'|trans({}, 'user') }}</h5>
+                        <h2 class="card-title text-muted">{{ 'user.stats.total'|trans({}, 'user') }}</h2>
                         <p class="display-6 text-primary">
                             <span id="user-total-count">{{ statistics.total ?? users|length }}</span>
                         </p>
@@ -39,7 +39,7 @@
             <div class="col-md-3">
                 <div class="card border-success">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-muted">{{ 'user.stats.active'|trans({}, 'user') }}</h5>
+                        <h2 class="card-title text-muted">{{ 'user.stats.active'|trans({}, 'user') }}</h2>
                         <p class="display-6 text-success">
                             <span id="user-active-count">{{ statistics.active ?? 0 }}</span>
                         </p>
@@ -50,7 +50,7 @@
             <div class="col-md-3">
                 <div class="card border-warning">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-muted">{{ 'user.stats.admins'|trans({}, 'user') }}</h5>
+                        <h2 class="card-title text-muted">{{ 'user.stats.admins'|trans({}, 'user') }}</h2>
                         <p class="display-6 text-warning">
                             <span id="user-admin-count">{{ statistics.admins ?? 0 }}</span>
                         </p>
@@ -61,7 +61,7 @@
             <div class="col-md-3">
                 <div class="card border-info">
                     <div class="card-body text-center">
-                        <h5 class="card-title text-muted">{{ 'user.stats.today_active'|trans({}, 'user') }}</h5>
+                        <h2 class="card-title text-muted">{{ 'user.stats.today_active'|trans({}, 'user') }}</h2>
                         <p class="display-6 text-info">{{ statistics.today_active ?? 0 }}</p>
                         <small>{{ 'user.stats.logins_today'|trans({}, 'user') }}</small>
                     </div>
@@ -74,9 +74,9 @@
     <turbo-frame id="users-list">
         <div class="card">
             <div class="card-header bg-primary text-white">
-                <h3 class="mb-0">
+                <h2 class="mb-0">
                     <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'user.message.all_users'|trans({}, 'user') }}
-                </h3>
+                </h2>
             </div>
             <div class="card-body">
                 {% if users|length > 0 %}

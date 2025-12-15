@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Compliance Status Report</title>
+    <style>
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 15px; }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #0ea5e9;
+            padding-bottom: 10px;
+        }
+        .header h1 { color: #0f172a; margin: 0; font-size: 18pt; }
+        .header .date { color: #888; font-size: 9pt; margin-top: 3px; }
+
+        .compliance-score {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            border: 3px solid #cbd5e1;
+            border-radius: 10px;
+        }
+        .compliance-score .number { font-size: 48pt; font-weight: bold; }
+        .compliance-score .label { font-size: 12pt; color: #666; }
+
+        .section { margin: 15px 0; page-break-inside: avoid; }
+        .section h2 { background: #0ea5e9; color: white; padding: 6px; font-size: 10pt; margin: 0 0 8px 0; }
+
+        table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+        th { background: #0f172a; color: #06b6d4; padding: 5px; text-align: left; font-size: 8pt; }
+        td { padding: 5px; border-bottom: 1px solid #ddd; font-size: 8pt; }
+        tr:nth-child(even) { background: #f8fafc; }
+
+        .badge { display: inline-block; padding: 2px 5px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-info { background: #e0f2fe; color: #0369a1; }
+
+        .progress-bar { background: #e5e7eb; height: 15px; border-radius: 8px; overflow: hidden; margin: 5px 0; }
+        .progress-fill { height: 100%; border-radius: 8px; }
+        .progress-fill.success { background: #16a34a; }
+        .progress-fill.warning { background: #d97706; }
+        .progress-fill.danger { background: #dc2626; }
+
+        .footer { position: fixed; bottom: 10px; left: 15px; right: 15px; text-align: center; font-size: 7pt; color: #888; border-top: 1px solid #ddd; padding-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Compliance Status Report</h1>
+        <div class="date">Generated: {{ generated_at|date('d.m.Y H:i') }} | Version: {{ version }}</div>
+    </div>
+
+    {# Overall Compliance Score #}
+    <div class="compliance-score">
+        <div class="number" style="color: {% if report.overall_compliance >= 80 %}#16a34a{% elseif report.overall_compliance >= 60 %}#d97706{% else %}#dc2626{% endif %};">
+            {{ report.overall_compliance }}%
+        </div>
+        <div class="label">Overall Compliance Rate</div>
+        <div class="progress-bar" style="width: 80%; margin: 10px auto;">
+            <div class="progress-fill {% if report.overall_compliance >= 80 %}success{% elseif report.overall_compliance >= 60 %}warning{% else %}danger{% endif %}" style="width: {{ report.overall_compliance }}%"></div>
+        </div>
+    </div>
+
+    {# Control Status #}
+    <div class="section">
+        <h2>Control Implementation Status</h2>
+        <table>
+            <tr>
+                <th>Metric</th>
+                <th>Count</th>
+                <th>Percentage</th>
+            </tr>
+            <tr>
+                <td>Total Controls</td>
+                <td>{{ report.controls.total }}</td>
+                <td>100%</td>
+            </tr>
+            <tr>
+                <td>Applicable Controls</td>
+                <td>{{ report.controls.applicable }}</td>
+                <td>{{ report.controls.total > 0 ? ((report.controls.applicable / report.controls.total) * 100)|round(1) : 0 }}%</td>
+            </tr>
+            <tr>
+                <td>Implemented Controls</td>
+                <td><span class="badge badge-success">{{ report.controls.implemented }}</span></td>
+                <td>{{ report.controls.total > 0 ? ((report.controls.implemented / report.controls.total) * 100)|round(1) : 0 }}%</td>
+            </tr>
+            <tr>
+                <td>Not Applicable</td>
+                <td><span class="badge badge-info">{{ report.controls.not_applicable }}</span></td>
+                <td>{{ report.controls.total > 0 ? ((report.controls.not_applicable / report.controls.total) * 100)|round(1) : 0 }}%</td>
+            </tr>
+        </table>
+    </div>
+
+    {# Frameworks #}
+    <div class="section">
+        <h2>Compliance Frameworks</h2>
+        <table>
+            <tr>
+                <th>Framework</th>
+                <th>Code</th>
+                <th>Status</th>
+            </tr>
+            {% for framework in report.frameworks %}
+            <tr>
+                <td>{{ framework.name }}</td>
+                <td><code>{{ framework.code }}</code></td>
+                <td>
+                    {% if framework.active %}
+                    <span class="badge badge-success">Active</span>
+                    {% else %}
+                    <span class="badge badge-warning">Inactive</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <p style="font-size: 8pt; color: #666; margin-top: 5px;">
+            Active Frameworks: {{ report.active_frameworks }} / {{ report.frameworks|length }}
+        </p>
+    </div>
+
+    {# Compliance Status Assessment #}
+    <div class="section">
+        <h2>Compliance Assessment</h2>
+        {% if report.overall_compliance >= 80 %}
+        <div style="background: #dcfce7; padding: 10px; border-radius: 5px; border: 1px solid #86efac;">
+            <strong style="color: #166534;">Good Standing</strong>
+            <p style="margin: 5px 0 0; font-size: 8pt; color: #166534;">
+                Your organization demonstrates a strong compliance posture. Continue regular reviews and audits to maintain this status.
+            </p>
+        </div>
+        {% elseif report.overall_compliance >= 60 %}
+        <div style="background: #fef3c7; padding: 10px; border-radius: 5px; border: 1px solid #fcd34d;">
+            <strong style="color: #92400e;">Improvement Needed</strong>
+            <p style="margin: 5px 0 0; font-size: 8pt; color: #92400e;">
+                Your compliance rate is acceptable but below optimal levels. Focus on implementing remaining controls to achieve full compliance.
+            </p>
+        </div>
+        {% else %}
+        <div style="background: #fecaca; padding: 10px; border-radius: 5px; border: 1px solid #f87171;">
+            <strong style="color: #991b1b;">Immediate Action Required</strong>
+            <p style="margin: 5px 0 0; font-size: 8pt; color: #991b1b;">
+                Your compliance rate is below acceptable levels. Prioritize control implementation and consider engaging compliance specialists.
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
+    {# Recommendations #}
+    <div class="section">
+        <h2>Recommendations</h2>
+        <table>
+            <tr>
+                <th>Priority</th>
+                <th>Action</th>
+            </tr>
+            <tr>
+                <td><span class="badge badge-success">High</span></td>
+                <td>Review and implement all critical controls (A.5, A.8)</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-warning">Medium</span></td>
+                <td>Complete documentation for implemented controls</td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-info">Low</span></td>
+                <td>Schedule regular compliance reviews (quarterly)</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer">
+        Confidential - Compliance Status Report | Little ISMS Helper
+    </div>
+</body>
+</html>

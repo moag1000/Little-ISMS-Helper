@@ -60,7 +60,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h3>{{ 'asset.details.title'|trans({}, 'asset') }}</h3>
+            <h2>{{ 'asset.details.title'|trans({}, 'asset') }}</h2>
             <span class="{{ badge_status(asset.status) }}">{{ asset.status|upper }}</span>
         </div>
         <div class="card-body">
@@ -85,13 +85,13 @@
 
             {% if asset.description %}
                 <div class="detail-section">
-                    <h2>{{ 'common.description'|trans({}, 'messages') }}</h2>
+                    <h3>{{ 'common.description'|trans({}, 'messages') }}</h3>
                     <p>{{ asset.description }}</p>
                 </div>
             {% endif %}
 
             <div class="detail-section">
-                <h2>{{ 'asset.section.valuation'|trans({}, 'asset') }}</h2>
+                <h3>{{ 'asset.section.valuation'|trans({}, 'asset') }}</h3>
                 <div class="detail-grid">
                     <div class="detail-item">
                         <span class="label">{{ 'asset.label.acquisition_value'|trans({}, 'asset') }}</span>

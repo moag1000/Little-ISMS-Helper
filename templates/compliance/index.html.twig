@@ -40,7 +40,7 @@
     {% if frameworks|length > 0 %}
     <div class="quick-access-bar">
         <div class="quick-access-header">
-            <h2>{{ 'compliance.quick_access'|trans({}, 'compliance') }}</h2>
+            <p class="fw-bold fs-5 mb-0">{{ 'compliance.quick_access'|trans({}, 'compliance') }}</p>
             <span class="quick-access-hint">{{ 'compliance.quick_access_hint'|trans({}, 'compliance') }}</span>
         </div>
         <div class="quick-access-items">
@@ -67,7 +67,7 @@
 
     {# Data Reuse Value Highlight #}
     <div class="alert alert-success alert-gradient-success">
-        <h2 class="h3-m0-mb-sm">💎 {{ 'compliance.data_reuse.title'|trans({}, 'compliance') }}</h2>
+        <p class="fw-bold fs-4 mb-2">💎 {{ 'compliance.data_reuse.title'|trans({}, 'compliance') }}</p>
         <p class="text-lg-m0">
             {{ 'compliance.data_reuse.description'|trans({'%hours%': total_time_savings, '%days%': total_days_savings}, 'compliance')|raw }}
         </p>
@@ -80,7 +80,7 @@
             <div class="framework-card">
                 <div class="framework-header {% if framework and framework.mandatory %}bg-gradient-danger{% else %}bg-gradient-primary{% endif %}">
                     <div>
-                        <h2>{{ item.code }}</h2>
+                        <p class="fw-bold fs-5 mb-1">{{ item.code }}</p>
                         <p class="framework-subtitle">{{ item.name|length > 40 ? item.name|slice(0, 40) ~ '...' : item.name }}</p>
                     </div>
                     {% if framework and framework.mandatory %}
@@ -141,7 +141,7 @@
     {% if mapping_stats.total_mappings > 0 %}
         <div class="card mt-lg">
             <div class="card-header">
-                <h3>🔗 {{ 'compliance.cross_framework.title'|trans({}, 'compliance') }}</h3>
+                <h2>🔗 {{ 'compliance.cross_framework.title'|trans({}, 'compliance') }}</h2>
             </div>
             <div class="card-body">
                 <div class="stats-grid">

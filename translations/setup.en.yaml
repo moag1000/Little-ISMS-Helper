@@ -10,6 +10,7 @@ setup:
         save: 'Save'
         cancel: 'Cancel'
         import: 'Import'
+        copy: 'Copy'
 
     # Index/Landing Page
     already_complete:
@@ -187,6 +188,10 @@ setup:
             link_text: 'Admin Data Repair Tool'
             suffix: '.'
         complete_setup: 'Complete Setup'
+        loading:
+            creating_schema: 'Creating database schema...'
+            restoring_backup: 'Restoring backup...'
+            skipping: 'Preparing new installation...'
         schema:
             title: 'Step 1: Create Database Schema'
             description: 'Before you can restore a backup, the database schema (tables) must be created. This process may take a few minutes.'

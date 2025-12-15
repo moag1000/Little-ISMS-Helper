@@ -20,9 +20,9 @@
     {# Permission Details #}
     <div class="card mb-4">
         <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-info-circle" aria-hidden="true"></i> Berechtigungsdetails
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             <div class="row mb-3">
@@ -65,10 +65,10 @@
     {# Roles using this permission #}
     <div class="card mb-4">
         <div class="card-header bg-info text-white">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-people-fill" aria-hidden="true"></i> {{ 'permission.roles_using'|trans({}, 'messages') }}
                 <span class="badge bg-light text-dark">{{ roles|length }}</span>
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             {% if roles|length > 0 %}

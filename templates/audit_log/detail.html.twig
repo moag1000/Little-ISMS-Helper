@@ -14,7 +14,7 @@
 </p>
 
 <div class="info-box mt-2">
-    <h1>{{ 'audit_log.entry'|trans({'%id%': auditLog.id}, 'audit_log') }}</h1>
+    <h2>{{ 'audit_log.entry'|trans({'%id%': auditLog.id}, 'audit_log') }}</h2>
 
     {% embed '_components/_table.html.twig' with {
         'class': 'w-100 mt-lg',
@@ -88,7 +88,7 @@
     <div class="grid-2-cols mt-lg">
         {% if oldValues %}
         <div>
-            <h4 class="text-danger">{{ 'audit_log.old_values'|trans({}, 'audit_log') }}</h4>
+            <h3 class="text-danger">{{ 'audit_log.old_values'|trans({}, 'audit_log') }}</h3>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-collapse-mt',
                 'noMargin': true
@@ -111,7 +111,7 @@
 
         {% if newValues %}
         <div>
-            <h4 class="text-success">{{ 'audit_log.new_values'|trans({}, 'audit_log') }}</h4>
+            <h3 class="text-success">{{ 'audit_log.new_values'|trans({}, 'audit_log') }}</h3>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-collapse-mt',
                 'noMargin': true

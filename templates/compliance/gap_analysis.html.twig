@@ -87,7 +87,7 @@
 
     <div class="card card-border-left-info">
         <div class="fs-2-mb-sm">🔵</div>
-        <h3>{{ 'compliance.severity.medium'|trans({}, 'compliance') }}</h3>
+        <h2>{{ 'compliance.severity.medium'|trans({}, 'compliance') }}</h2>
         <div class="mt-2">
             <strong class="fs-15-info">{{ gaps|filter(g => g.severity == 'medium')|length }}</strong>
         </div>
@@ -98,7 +98,7 @@
 
     <div class="card card-border-left-secondary">
         <div class="fs-2-mb-sm">⚪</div>
-        <h3>{{ 'compliance.severity.low'|trans({}, 'compliance') }}</h3>
+        <h2>{{ 'compliance.severity.low'|trans({}, 'compliance') }}</h2>
         <div class="mt-2">
             <strong class="fs-4">{{ gaps|filter(g => g.severity == 'low')|length }}</strong>
         </div>

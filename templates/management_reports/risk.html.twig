@@ -1,0 +1,238 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'management_reports' %}
+
+{% block title %}{{ 'management_reports.risk.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.reports'|trans({}, 'nav'), path: 'app_reports_index' },
+            { label: 'management_reports.title'|trans({}, 'management_reports'), path: 'app_management_reports' },
+            { label: 'management_reports.risk.title'|trans({}, 'management_reports') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">
+            <i class="bi bi-exclamation-triangle text-danger" aria-hidden="true"></i> {{ 'management_reports.risk.title'|trans({}, 'management_reports') }}
+        </h1>
+        <div class="btn-group">
+            <a href="{{ path('app_management_reports_risk_pdf') }}" class="btn btn-outline-danger">
+                <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
+            </a>
+            <a href="{{ path('app_management_reports_risk_excel') }}" class="btn btn-outline-success">
+                <i class="bi bi-file-excel" aria-hidden="true"></i> {{ 'management_reports.action.download_excel'|trans({}, 'management_reports') }}
+            </a>
+        </div>
+    </div>
+
+    {# Summary Stats #}
+    <div class="row mb-4">
+        <div class="col-md-2">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <h3 class="display-5 text-primary">{{ report.total_risks }}</h3>
+                    <small class="text-muted">{{ 'management_reports.risk.total_risks'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-center h-100 border-danger">
+                <div class="card-body">
+                    <h3 class="display-5 text-danger">{{ report.level_counts.critical }}</h3>
+                    <small class="text-muted">{{ 'management_reports.risk_level.critical'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-center h-100 border-warning">
+                <div class="card-body">
+                    <h3 class="display-5 text-warning">{{ report.level_counts.high }}</h3>
+                    <small class="text-muted">{{ 'management_reports.risk_level.high'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-center h-100 border-info">
+                <div class="card-body">
+                    <h3 class="display-5 text-info">{{ report.level_counts.medium }}</h3>
+                    <small class="text-muted">{{ 'management_reports.risk_level.medium'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-center h-100 border-success">
+                <div class="card-body">
+                    <h3 class="display-5 text-success">{{ report.level_counts.low }}</h3>
+                    <small class="text-muted">{{ 'management_reports.risk_level.low'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <h3 class="display-5 text-secondary">{{ report.average_risk_score }}</h3>
+                    <small class="text-muted">{{ 'management_reports.risk.avg_score'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {# Treatment Plans Summary #}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="h5 mb-0">
+                        <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                        {{ 'management_reports.risk.treatment_plans'|trans({}, 'management_reports') }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <h4 class="text-primary">{{ report.treatment_plans.total }}</h4>
+                            <small class="text-muted">{{ 'management_reports.treatment_status.total'|trans({}, 'management_reports') }}</small>
+                        </div>
+                        <div class="col-4">
+                            <h4 class="text-warning">{{ report.treatment_plans.active }}</h4>
+                            <small class="text-muted">{{ 'management_reports.treatment_status.active'|trans({}, 'management_reports') }}</small>
+                        </div>
+                        <div class="col-4">
+                            <h4 class="text-danger">{{ report.treatment_plans.overdue }}</h4>
+                            <small class="text-muted">{{ 'management_reports.treatment_status.overdue'|trans({}, 'management_reports') }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Risk by Category #}
+        <div class="col-md-8 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header">
+                    <h3 class="h5 mb-0">
+                        <i class="bi bi-pie-chart" aria-hidden="true"></i>
+                        {{ 'management_reports.risk.by_category'|trans({}, 'management_reports') }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for category, risks in report.by_category %}
+                        <div class="col-md-4 mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span>{{ category }}</span>
+                                <span class="badge bg-secondary">{{ risks|length }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Critical and High Risks Table #}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-danger text-white">
+            <h3 class="h5 mb-0">
+                <i class="bi bi-exclamation-octagon" aria-hidden="true"></i>
+                {{ 'management_reports.risk.critical_high'|trans({}, 'management_reports') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            {% set critical_high_risks = report.by_level.critical|merge(report.by_level.high) %}
+            {% if critical_high_risks|length > 0 %}
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>{{ 'management_reports.risk.header.id'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.risk.header.title'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.risk.header.category'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.risk.header.score'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.risk.header.level'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.risk.header.treatment'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.risk.header.owner'|trans({}, 'management_reports') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for risk in critical_high_risks %}
+                        <tr>
+                            <td>{{ risk.id }}</td>
+                            <td>
+                                <a href="{{ path('app_risk_show', {id: risk.id}) }}">
+                                    {{ risk.title }}
+                                </a>
+                            </td>
+                            <td>{{ risk.category }}</td>
+                            <td><strong>{{ risk.riskScore }}</strong></td>
+                            <td>
+                                {% if risk.riskScore >= 20 %}
+                                <span class="badge bg-danger">{{ 'management_reports.risk_level.critical'|trans({}, 'management_reports') }}</span>
+                                {% else %}
+                                <span class="badge bg-warning text-dark">{{ 'management_reports.risk_level.high'|trans({}, 'management_reports') }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ risk.treatmentStrategy|default('-') }}</td>
+                            <td>{{ risk.riskOwner ? risk.riskOwner.email : '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-success mb-0">
+                <i class="bi bi-check-circle" aria-hidden="true"></i>
+                {{ 'management_reports.risk.no_critical_high'|trans({}, 'management_reports') }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Risk Trends #}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h3 class="h5 mb-0">
+                <i class="bi bi-graph-up" aria-hidden="true"></i>
+                {{ 'management_reports.risk.trends_12m'|trans({}, 'management_reports') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>{{ 'management_reports.trend.month'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.trend.new_risks'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.trend.high_critical'|trans({}, 'management_reports') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trend in trends %}
+                        <tr>
+                            <td>{{ trend.month_name }}</td>
+                            <td>{{ trend.new_risks }}</td>
+                            <td>
+                                {% if trend.high_critical > 0 %}
+                                <span class="badge bg-danger">{{ trend.high_critical }}</span>
+                                {% else %}
+                                <span class="badge bg-success">0</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {# Report Generated Info #}
+    <div class="text-muted small text-end">
+        <i class="bi bi-clock" aria-hidden="true"></i>
+        {{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ report.generated_at|date('Y-m-d H:i') }}
+    </div>
+</div>
+{% endblock %}

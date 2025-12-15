@@ -20,7 +20,7 @@
     {% if coverage_matrix is not empty %}
         <div class="card">
             <div class="card-header">
-                <h3>📊 {{ 'compliance.cross_framework.coverage_matrix'|trans({}, 'compliance') }}</h3>
+                <h2>📊 {{ 'compliance.cross_framework.coverage_matrix'|trans({}, 'compliance') }}</h2>
                 <p class="text-muted">{{ 'compliance.cross_framework.coverage_description'|trans({}, 'compliance') }}</p>
             </div>
             <div class="card-body">
@@ -95,9 +95,9 @@
     {% for mapping_group in cross_mappings %}
         <div class="card mt-lg">
             <div class="card-header">
-                <h3>
+                <h2>
                     {{ mapping_group.source.code }} → {{ mapping_group.target.code }}
-                </h3>
+                </h2>
                 <p class="text-muted">
                     {{ mapping_group.coverage.covered_requirements }} of {{ mapping_group.coverage.total_target_requirements }}
                     requirements covered ({{ mapping_group.coverage.coverage_percentage }}%)
@@ -210,7 +210,7 @@
                     <p>{{ 'compliance.cross_framework.bidirectional_description'|trans({}, 'compliance') }}</p>
                 </div>
                 <div class="explanation-item">
-                    <h4>{{ 'compliance.cross_framework.strategic_title'|trans({}, 'compliance') }}</h4>
+                    <h3>{{ 'compliance.cross_framework.strategic_title'|trans({}, 'compliance') }}</h3>
                     <p>{{ 'compliance.cross_framework.strategic_description'|trans({}, 'compliance') }}</p>
                 </div>
             </div>

@@ -15,28 +15,28 @@
     <div class="row">
         <div class="col-lg-8">
             <div class="card mb-4">
-                <div class="card-header bg-primary text-white d-flex justify-content-between"><h5 class="mb-0">{{ objective.title }}</h5>
+                <div class="card-header bg-primary text-white d-flex justify-content-between"><h1 class="mb-0 h2">{{ objective.title }}</h1>
                     <span class="badge bg-{{ objective.status == 'achieved' ? 'success' : 'info' }} fs-6">{{ ('objective.status.' ~ objective.status)|trans({}, 'objective') }}</span>
                 </div>
                 <div class="card-body">
                     <p class="lead">{{ objective.description }}</p>
 
                     <div class="row mb-3">
-                        <div class="col-md-6"><h6 class="text-muted">{{ 'objective.field.category'|trans({}, 'objective') }}</h6><p>{{ objective.category }}</p></div>
-                        <div class="col-md-6"><h6 class="text-muted">{{ 'objective.field.responsible_person'|trans({}, 'objective') }}</h6><p>{{ objective.responsiblePerson }}</p></div>
+                        <div class="col-md-6"><div class="fw-bold text-muted small text-uppercase mb-2">{{ 'objective.field.category'|trans({}, 'objective') }}</div><p>{{ objective.category }}</p></div>
+                        <div class="col-md-6"><div class="fw-bold text-muted small text-uppercase mb-2">{{ 'objective.field.responsible_person'|trans({}, 'objective') }}</div><p>{{ objective.responsiblePerson }}</p></div>
                     </div>
 
                     <div class="row mb-3">
-                        <div class="col-md-6"><h6 class="text-muted">{{ 'objective.field.target_date'|trans({}, 'objective') }}</h6><p>{{ objective.targetDate|date('d.m.Y') }}</p></div>
-                        <div class="col-md-6"><h6 class="text-muted">{{ 'objective.field.achieved_date'|trans({}, 'objective') }}</h6><p>{{ objective.achievedDate ? objective.achievedDate|date('d.m.Y') : '-' }}</p></div>
+                        <div class="col-md-6"><div class="fw-bold text-muted small text-uppercase mb-2">{{ 'objective.field.target_date'|trans({}, 'objective') }}</div><p>{{ objective.targetDate|date('d.m.Y') }}</p></div>
+                        <div class="col-md-6"><div class="fw-bold text-muted small text-uppercase mb-2">{{ 'objective.field.achieved_date'|trans({}, 'objective') }}</div><p>{{ objective.achievedDate ? objective.achievedDate|date('d.m.Y') : '-' }}</p></div>
                     </div>
 
                     {% if objective.measurableIndicators %}
-                    <h6 class="text-muted">{{ 'objective.field.measurable_indicators'|trans({}, 'objective') }}</h6>
+                    <div class="fw-bold text-muted small text-uppercase mb-2">{{ 'objective.field.measurable_indicators'|trans({}, 'objective') }}</div>
                     <p>{{ objective.measurableIndicators|nl2br }}</p>
                     {% endif %}
 
-                    <h6 class="text-muted">{{ 'objective.table.progress'|trans({}, 'objective') }}</h6>
+                    <div class="fw-bold text-muted small text-uppercase mb-2">{{ 'objective.table.progress'|trans({}, 'objective') }}</div>
                     <div class="progress mb-2" style="height: 30px;">
                         <div class="progress-bar {% if objective.progressPercentage >= 75 %}bg-success{% elseif objective.progressPercentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
                              style="width: {{ objective.progressPercentage }}%">
@@ -46,7 +46,7 @@
                     <p><strong>{{ 'objective.label.current'|trans({}, 'objective') }}:</strong> {{ objective.currentValue }} {{ objective.unit }} / <strong>{{ 'objective.label.target'|trans({}, 'objective') }}:</strong> {{ objective.targetValue }} {{ objective.unit }}</p>
 
                     {% if objective.progressNotes %}
-                    <h6 class="text-muted mt-3">{{ 'objective.field.progress_notes'|trans({}, 'objective') }}</h6>
+                    <div class="fw-bold text-muted small text-uppercase mb-2 mt-3">{{ 'objective.field.progress_notes'|trans({}, 'objective') }}</div>
                     <div class="alert alert-info">{{ objective.progressNotes|nl2br }}</div>
                     {% endif %}
                 </div>
@@ -55,7 +55,7 @@
 
         <div class="col-lg-4">
             <div class="card mb-4">
-                <div class="card-header bg-light"><h5 class="mb-0">{{ 'common.actions'|trans({}, 'messages') }}</h5></div>
+                <div class="card-header bg-light"><h2 class="mb-0">{{ 'common.actions'|trans({}, 'messages') }}</h2></div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         {% if is_granted('ROLE_ADMIN') %}
@@ -67,7 +67,7 @@
             </div>
 
             <div class="card">
-                <div class="card-header bg-light"><h5 class="mb-0">{{ 'common.metadata'|trans({}, 'messages') }}</h5></div>
+                <div class="card-header bg-light"><h2 class="mb-0">{{ 'common.metadata'|trans({}, 'messages') }}</h2></div>
                 <div class="card-body">
                     <dl class="row mb-0 small">
                         <dt class="col-sm-5">{{ 'common.created_at'|trans({}, 'messages') }}</dt><dd class="col-sm-7">{{ objective.createdAt|date('d.m.Y H:i') }}</dd>

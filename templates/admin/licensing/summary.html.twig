@@ -25,9 +25,9 @@
             {# Navigation Sidebar #}
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title mb-0">
+                    <h2 class="card-title mb-0">
                         <i class="bi bi-list-ul me-2"></i>Navigation
-                    </h3>
+                    </h2>
                 </div>
                 <div class="list-group list-group-flush">
                     <a href="{{ path('admin_licensing_index') }}" class="list-group-item list-group-item-action">
@@ -56,7 +56,7 @@
                                         <i class="bi bi-check-circle-fill fs-3 me-3"></i>
                                     </div>
                                     <div>
-                                        <h5 class="alert-heading mb-1"<><i class="bi bi-check-circle" aria-hidden="true"></i> Hervorragend Lizenzkonform</h5>
+                                        <h2 class="alert-heading mb-1 h5"><i class="bi bi-check-circle" aria-hidden="true"></i> Hervorragend Lizenzkonform</h2>
                                         <p class="mb-0">
                                             {{ compliance_percentage }}% der Pakete haben permissive Lizenzen.
                                             Das Projekt ist für kommerzielle Nutzung freigegeben.
@@ -71,7 +71,7 @@
                                         <i class="bi bi-info-circle-fill fs-3 me-3"></i>
                                     </div>
                                     <div>
-                                        <h5 class="alert-heading mb-1">✓ Überwiegend Lizenzkonform</h5>
+                                        <h2 class="alert-heading mb-1 h5">✓ Überwiegend Lizenzkonform</h2>
                                         <p class="mb-0">
                                             {{ compliance_percentage }}% der Pakete haben permissive Lizenzen.
                                             Einzelne Pakete erfordern besondere Aufmerksamkeit.
@@ -86,7 +86,7 @@
                                         <i class="bi bi-exclamation-triangle-fill fs-3 me-3"></i>
                                     </div>
                                     <div>
-                                        <h5 class="alert-heading mb-1"<><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Prüfung erforderlich</h5>
+                                        <h2 class="alert-heading mb-1 h5"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Prüfung erforderlich</h2>
                                         <p class="mb-0">
                                             {{ compliance_percentage }}% der Pakete haben permissive Lizenzen.
                                             Bitte prüfen Sie problematische Lizenzen im Detail.
@@ -104,7 +104,7 @@
                         <div class="card h-100">
                             <div class="card-body text-center">
                                 <div class="display-4 mb-2 text-primary">{{ stats.total }}</div>
-                                <h6 class="text-muted mb-0">Pakete Gesamt</h6>
+                                <p class="fw-semibold text-muted mb-0">Pakete Gesamt</p>
                                 <small class="text-muted">
                                     {% if stats.generated_at %}
                                         Stand: {{ stats.generated_at }}
@@ -118,7 +118,7 @@
                         <div class="card h-100 border-success">
                             <div class="card-body text-center">
                                 <div class="display-4 mb-2 text-success">{{ stats.allowed }}</div>
-                                <h6 class="text-muted mb-0">Erlaubt</h6>
+                                <p class="fw-semibold text-muted mb-0">Erlaubt</p>
                                 <small class="text-muted">{{ (stats.allowed / stats.total * 100)|round(1) }}%</small>
                             </div>
                         </div>
@@ -130,7 +130,7 @@
                                 <div class="display-4 mb-2 {% if stats.unknown > 0 or stats.not_allowed > 0 %}text-warning{% else %}text-muted{% endif %}">
                                     {{ stats.restricted + stats.copyleft + stats.not_allowed + stats.unknown }}
                                 </div>
-                                <h6 class="text-muted mb-0">Prüfung erforderlich</h6>
+                                <p class="fw-semibold text-muted mb-0">Prüfung erforderlich</p>
                                 <small class="text-muted">
                                     {{ ((stats.restricted + stats.copyleft + stats.not_allowed + stats.unknown) / stats.total * 100)|round(1) }}%
                                 </small>
@@ -142,9 +142,9 @@
                 {# Detailed Breakdown #}
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h3 class="card-title mb-0">
+                        <h2 class="card-title mb-0">
                             <i class="bi bi-pie-chart me-2"></i>Lizenzverteilung
-                        </h3>
+                        </h2>
                     </div>
                     <div class="card-body">
                         {% embed '_components/_table.html.twig' with {
@@ -241,9 +241,9 @@
                 {% if stats.unknown > 0 or stats.not_allowed > 0 %}
                     <div class="card border-warning mb-4">
                         <div class="card-header bg-warning text-dark">
-                            <h3 class="card-title mb-0">
+                            <h2 class="card-title mb-0">
                                 <i class="bi bi-exclamation-triangle-fill me-2"></i>Handlungsbedarf
-                            </h3>
+                            </h2>
                         </div>
                         <div class="card-body">
                             <ul class="mb-0">
@@ -269,9 +269,9 @@
                 {# Next Steps #}
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title mb-0">
+                        <h2 class="card-title mb-0">
                             <i class="bi bi-list-check me-2"></i>Nächste Schritte
-                        </h3>
+                        </h2>
                     </div>
                     <div class="card-body">
                         <ol class="mb-0">
@@ -292,7 +292,7 @@
                             <i class="bi bi-exclamation-triangle-fill fs-3 me-3"></i>
                         </div>
                         <div>
-                            <h5 class="alert-heading mb-1">Kein Bericht gefunden</h5>
+                            <h2 class="alert-heading mb-1 h5">Kein Bericht gefunden</h2>
                             <p class="mb-3">
                                 Der Lizenzbericht wurde noch nicht generiert. Bitte führen Sie das folgende Kommando aus:
                             </p>

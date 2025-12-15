@@ -25,7 +25,7 @@
     {# CRITICAL: Overdue Notifications Alert #}
     {% if compliance_score.overdue_notifications > 0 %}
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <h5 class="alert-heading"><i class="bi bi-exclamation-triangle-fill"></i> {{ 'privacy.data_breach.alert.overdue_title'|trans({}, 'privacy') }}</h5>
+            <div class="alert-heading fw-bold"><i class="bi bi-exclamation-triangle-fill"></i> {{ 'privacy.data_breach.alert.overdue_title'|trans({}, 'privacy') }}</div>
             <p>{{ 'privacy.data_breach.alert.overdue_text'|trans({'%count%': compliance_score.overdue_notifications}, 'privacy')|raw }}</p>
             <hr>
             <p class="mb-0">
@@ -75,8 +75,8 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">{{ 'privacy.data_breach.kpi.total_breaches'|trans({}, 'privacy') }}</h6>
-                    <h2>{{ statistics.total }}</h2>
+                    <div class="text-muted small">{{ 'privacy.data_breach.kpi.total_breaches'|trans({}, 'privacy') }}</div>
+                    <div class="fs-2 fw-bold">{{ statistics.total }}</div>
                     <div class="mt-2">
                         <small class="text-danger"><i class="bi bi-exclamation-triangle"></i> {{ statistics.high_risk + statistics.critical_risk }} {{ 'privacy.data_breach.kpi.high_critical_risk'|trans({}, 'privacy') }}</small>
                     </div>
@@ -86,8 +86,8 @@
         <div class="col-md-3">
             <div class="card border-warning">
                 <div class="card-body">
-                    <h6 class="text-muted">{{ 'privacy.data_breach.kpi.pending_authority'|trans({}, 'privacy') }}</h6>
-                    <h2 class="text-warning">{{ statistics.requires_authority_notification - statistics.authority_notified }}</h2>
+                    <div class="text-muted small">{{ 'privacy.data_breach.kpi.pending_authority'|trans({}, 'privacy') }}</div>
+                    <div class="fs-2 fw-bold text-warning">{{ statistics.requires_authority_notification - statistics.authority_notified }}</div>
                     <div class="mt-2">
                         <small class="text-muted"><i class="bi bi-clock"></i> {{ 'privacy.data_breach.kpi.deadline_72h'|trans({}, 'privacy') }}</small>
                     </div>
@@ -97,8 +97,8 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">{{ 'privacy.data_breach.kpi.special_categories'|trans({}, 'privacy') }}</h6>
-                    <h2 class="text-info">{{ statistics.special_categories_affected }}</h2>
+                    <div class="text-muted small">{{ 'privacy.data_breach.kpi.special_categories'|trans({}, 'privacy') }}</div>
+                    <div class="fs-2 fw-bold text-info">{{ statistics.special_categories_affected }}</div>
                     <div class="mt-2">
                         <small class="text-muted"><i class="bi bi-shield-lock"></i> {{ 'privacy.data_breach.kpi.art9_data'|trans({}, 'privacy') }}</small>
                     </div>
@@ -108,8 +108,8 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">Affected Subjects</h6>
-                    <h2>{{ compliance_score.total_affected_subjects }}</h2>
+                    <div class="text-muted small">Affected Subjects</div>
+                    <div class="fs-2 fw-bold">{{ compliance_score.total_affected_subjects }}</div>
                     <div class="mt-2">
                         <small class="text-muted"><i class="bi bi-people"></i> Total count</small>
                     </div>
@@ -120,7 +120,7 @@
 
     {# Filters #}
     <div class="card mb-4">
-        <div class="card-header"><h5 class="mb-0"><i class="bi bi-filter"></i> Filter Data Breaches</h5>
+        <div class="card-header"><h2 class="mb-0"><i class="bi bi-filter"></i> Filter Data Breaches</h2>
         </div>
         <div class="card-body">
             <div class="btn-group flex-wrap" role="group">
@@ -162,7 +162,7 @@
 
     {# Breaches Table #}
     <div class="card">
-        <div class="card-header"><h5 class="mb-0"><i class="bi bi-list-check"></i> Data Breaches ({{ breaches|length }})</h5>
+        <div class="card-header"><h2 class="mb-0"><i class="bi bi-list-check"></i> Data Breaches ({{ breaches|length }})</h2>
         </div>
         <div class="card-body p-0">
             {% if breaches|length > 0 %}

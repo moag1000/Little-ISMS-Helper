@@ -13,7 +13,7 @@
 </p>
 
 <div class="info-box">
-    <h1>Gesamtstatistik</h1>
+    <h2>Gesamtstatistik</h2>
     <p><strong>Gesamt Protokolleinträge:</strong> {{ totalLogs }}</p>
 </div>
 
@@ -54,7 +54,7 @@
     </div>
 
     <div class="info-box">
-        <h3>Entitätstypen</h3>
+        <h2>Entitätstypen</h2>
         {% if entityTypeStats|length > 0 %}
         {% embed '_components/_table.html.twig' with {
             'class': 'table-stats',
@@ -90,7 +90,7 @@
 </div>
 
 <div class="info-box mt-2">
-    <h3>Aktivität der letzten 30 Tage</h3>
+    <h2>Aktivität der letzten 30 Tage</h2>
     {% if activityByDay|length > 0 %}
     <div class="chart-container">
         <svg viewBox="0 0 900 300" class="w-h-100">

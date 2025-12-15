@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Asset Inventory Report</title>
+    <style>
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 15px; }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #6b7280;
+            padding-bottom: 10px;
+        }
+        .header h1 { color: #0f172a; margin: 0; font-size: 18pt; }
+        .header .date { color: #888; font-size: 9pt; margin-top: 3px; }
+
+        .summary-box {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            border: 2px solid #6b7280;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+        .summary-box .number { font-size: 36pt; font-weight: bold; color: #0ea5e9; }
+        .summary-box .label { font-size: 11pt; color: #666; }
+
+        .section { margin: 15px 0; page-break-inside: avoid; }
+        .section h2 { background: #6b7280; color: white; padding: 6px; font-size: 10pt; margin: 0 0 8px 0; }
+
+        table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+        th { background: #0f172a; color: #06b6d4; padding: 5px; text-align: left; font-size: 8pt; }
+        td { padding: 5px; border-bottom: 1px solid #ddd; font-size: 8pt; }
+        tr:nth-child(even) { background: #f8fafc; }
+
+        .badge { display: inline-block; padding: 2px 5px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
+        .badge-danger { background: #fecaca; color: #991b1b; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-info { background: #e0f2fe; color: #0369a1; }
+
+        .footer { position: fixed; bottom: 10px; left: 15px; right: 15px; text-align: center; font-size: 7pt; color: #888; border-top: 1px solid #ddd; padding-top: 5px; }
+        .page-break { page-break-after: always; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Asset Inventory Report</h1>
+        <div class="date">Generated: {{ generated_at|date('d.m.Y H:i') }} | Version: {{ version }}</div>
+    </div>
+
+    {# Total Assets #}
+    <div class="summary-box">
+        <div class="number">{{ report.total_assets }}</div>
+        <div class="label">Total Assets</div>
+    </div>
+
+    {# Assets by Type #}
+    <div class="section">
+        <h2>Assets by Type</h2>
+        <table>
+            <tr>
+                <th>Asset Type</th>
+                <th>Count</th>
+            </tr>
+            {% for type, count in report.by_type %}
+            <tr>
+                <td>{{ type }}</td>
+                <td>{{ count }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    {# Assets by Classification #}
+    <div class="section">
+        <h2>Assets by Classification</h2>
+        <table>
+            <tr>
+                <th>Classification</th>
+                <th>Count</th>
+            </tr>
+            {% for classification, count in report.by_classification %}
+            <tr>
+                <td>
+                    {% if classification == 'Confidential' or classification == 'Restricted' %}
+                    <span class="badge badge-danger">{{ classification }}</span>
+                    {% elseif classification == 'Internal' %}
+                    <span class="badge badge-warning">{{ classification }}</span>
+                    {% else %}
+                    <span class="badge badge-success">{{ classification }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ count }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    {# Asset Inventory Table #}
+    {% if report.assets|length > 0 %}
+    <div class="page-break"></div>
+    <div class="section">
+        <h2>Asset Inventory</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Classification</th>
+                <th>Owner</th>
+                <th>Status</th>
+            </tr>
+            {% for asset in report.assets %}
+            <tr>
+                <td>{{ asset.id }}</td>
+                <td>{{ asset.name|slice(0, 30) }}{% if asset.name|length > 30 %}...{% endif %}</td>
+                <td>{{ asset.assetType }}</td>
+                <td>
+                    {% set classification = asset.classification|default('Unclassified') %}
+                    {% if classification == 'Confidential' or classification == 'Restricted' %}
+                    <span class="badge badge-danger">{{ classification }}</span>
+                    {% elseif classification == 'Internal' %}
+                    <span class="badge badge-warning">{{ classification }}</span>
+                    {% else %}
+                    <span class="badge badge-success">{{ classification }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ asset.owner ? asset.owner.email|slice(0, 20) : '-' }}</td>
+                <td>{{ asset.status|default('Active') }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    <div class="footer">
+        Confidential - Asset Inventory Report | Little ISMS Helper
+    </div>
+</body>
+</html>

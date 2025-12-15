@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'setup.admin.title'|trans({}, 'messages') }} - Deployment Wizard{% endblock %}
+{% block title %}{{ 'setup.admin.title'|trans({}, 'setup') }} - Deployment Wizard{% endblock %}
 
 {% block head %}
     {{ parent() }}
@@ -17,7 +17,7 @@
                 {% for message in messages %}
                     <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
                         {{ message|raw }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'setup.common.close'|trans({}, 'setup') }}"></button>
                     </div>
                 {% endfor %}
             {% endfor %}
@@ -26,8 +26,8 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h4 class="mb-0">{{ 'setup.progress.title'|trans({}, 'messages') }}</h4>
-                        <small class="text-muted">{{ 'setup.progress.step'|trans({'%current%': 4, '%total%': 11}, 'messages') }}</small>
+                        <h4 class="mb-0">{{ 'setup.progress.title'|trans({}, 'setup') }}</h4>
+                        <small class="text-muted">{{ 'setup.progress.step_of'|trans({'%current%': 4, '%total%': 11}, 'setup') }}</small>
                     </div>
                     <div class="progress" style="height: 10px;">
                         <div class="progress-bar" role="progressbar" style="width: 20%;" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
@@ -37,31 +37,31 @@
 
             <div class="card shadow-lg">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">
+                    <h1 class="h3 mb-0">
                         <i class="bi bi-person-shield me-2" aria-hidden="true"></i>
-                        {{ 'setup.admin.header'|trans({}, 'messages') }}
-                    </h3>
+                        {{ 'setup.admin.header'|trans({}, 'setup') }}
+                    </h1>
                 </div>
                 <div class="card-body p-4">
                     <p class="text-muted mb-4">
-                        {{ 'setup.admin.description'|trans({}, 'messages') }}
+                        {{ 'setup.admin.description'|trans({}, 'setup') }}
                     </p>
 
-                    {# Admin User Form #}
-                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                    {# Admin User Form - Turbo disabled due to complex server-side processing #}
+                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate', 'data-turbo': 'false'}}) }}
 
                     <div class="row">
                         <div class="col-md-6">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.firstName,
-                                'label': 'setup.admin.first_name'|trans({}, 'messages'),
+                                'label': 'setup.admin.first_name'|trans({}, 'setup'),
                                 'required': true
                             } %}
                         </div>
                         <div class="col-md-6">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.lastName,
-                                'label': 'setup.admin.last_name'|trans({}, 'messages'),
+                                'label': 'setup.admin.last_name'|trans({}, 'setup'),
                                 'required': true
                             } %}
                         </div>
@@ -71,8 +71,8 @@
                         <div class="col-md-12">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.email,
-                                'label': 'setup.admin.email'|trans({}, 'messages'),
-                                'help': 'setup.admin.email_help'|trans({}, 'messages'),
+                                'label': 'setup.admin.email'|trans({}, 'setup'),
+                                'help': 'setup.admin.email_help'|trans({}, 'setup'),
                                 'required': true
                             } %}
                         </div>
@@ -82,14 +82,14 @@
                         <div class="col-md-6">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.password.first,
-                                'label': 'setup.admin.password'|trans({}, 'messages'),
+                                'label': 'setup.admin.password'|trans({}, 'setup'),
                                 'required': true
                             } %}
                         </div>
                         <div class="col-md-6">
                             {% include '_components/_form_field.html.twig' with {
                                 'field': form.password.second,
-                                'label': 'setup.admin.password_confirm'|trans({}, 'messages'),
+                                'label': 'setup.admin.password_confirm'|trans({}, 'setup'),
                                 'required': true
                             } %}
                         </div>
@@ -98,31 +98,31 @@
                     {# Password Requirements Info #}
                     <div class="alert alert-info">
                         <i class="bi bi-shield me-2" aria-hidden="true"></i>
-                        <strong>{{ 'setup.admin.password_requirements.title'|trans({}, 'messages') }}</strong>
+                        <strong>{{ 'setup.admin.password_requirements.title'|trans({}, 'setup') }}</strong>
                         <ul class="mb-0 mt-2">
-                            <li>{{ 'setup.admin.password_requirements.length'|trans({}, 'messages') }}</li>
-                            <li>{{ 'setup.admin.password_requirements.uppercase'|trans({}, 'messages') }}</li>
-                            <li>{{ 'setup.admin.password_requirements.lowercase'|trans({}, 'messages') }}</li>
-                            <li>{{ 'setup.admin.password_requirements.number'|trans({}, 'messages') }}</li>
+                            <li>{{ 'setup.admin.password_requirements.length'|trans({}, 'setup') }}</li>
+                            <li>{{ 'setup.admin.password_requirements.uppercase'|trans({}, 'setup') }}</li>
+                            <li>{{ 'setup.admin.password_requirements.lowercase'|trans({}, 'setup') }}</li>
+                            <li>{{ 'setup.admin.password_requirements.number'|trans({}, 'setup') }}</li>
                         </ul>
                     </div>
 
                     {# Security Note #}
                     <div class="alert alert-warning">
                         <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
-                        <strong>{{ 'setup.admin.security_note.title'|trans({}, 'messages') }}</strong>
-                        <p class="mb-0">{{ 'setup.admin.security_note.message'|trans({}, 'messages') }}</p>
+                        <strong>{{ 'setup.admin.security_note.title'|trans({}, 'setup') }}</strong>
+                        <p class="mb-0">{{ 'setup.admin.security_note.message'|trans({}, 'setup') }}</p>
                     </div>
 
                     {# Navigation #}
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ path('setup_step3_restore_backup') }}" class="btn btn-outline-secondary">
                             <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
-                            {{ 'setup.navigation.back'|trans({}, 'messages') }}
+                            {{ 'setup.navigation.back'|trans({}, 'setup') }}
                         </a>
 
                         <button type="submit" class="btn btn-primary">
-                            {{ 'setup.navigation.next'|trans({}, 'messages') }}
+                            {{ 'setup.navigation.next'|trans({}, 'setup') }}
                             <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
                         </button>
                     </div>
@@ -134,12 +134,12 @@
             {# Information Card #}
             <div class="card mt-4 border-info">
                 <div class="card-body">
-                    <h5 class="card-title">
+                    <p class="h5 mb-3">
                         <i class="bi bi-info-circle text-info me-2" aria-hidden="true"></i>
-                        {{ 'setup.admin.next_steps.title'|trans({}, 'messages') }}
-                    </h5>
+                        {{ 'setup.admin.next_steps.title'|trans({}, 'setup') }}
+                    </p>
                     <p class="text-muted mb-0">
-                        {{ 'setup.admin.next_steps.description'|trans({}, 'messages') }}
+                        {{ 'setup.admin.next_steps.description'|trans({}, 'setup') }}
                     </p>
                 </div>
             </div>

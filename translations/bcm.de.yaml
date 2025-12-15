@@ -16,6 +16,52 @@ bcm:
         view_bia: 'BIA anzeigen'
         export: Exportieren
         plan: Wiederherstellungsplan
+    section:
+        protection_analysis: Schutzbedarfsanalyse
+        business_processes: Geschäftsprozesse
+        asset_details: Asset-Details
+        rto_legend: RTO-Legende
+        critical_processes: 'Kritische Geschäftsprozesse'
+    field:
+        confidentiality: Vertraulichkeit
+        integrity: Integrität
+        availability: Verfügbarkeit
+        overall_protection_level: Gesamtschutzbedarf
+        reputational_impact: Reputationsschaden
+        regulatory_impact: 'Regulatorische Auswirkungen'
+        operational_impact: 'Operative Auswirkungen'
+        mtpd: 'MTPD (Maximum Tolerable Period of Disruption)'
+        supporting_assets: 'Unterstützende Assets'
+        process_name: Prozessname
+        criticality: Kritikalität
+        rto: RTO
+        rpo: RPO
+    message:
+        no_processes: 'Keine Geschäftsprozesse zugeordnet'
+        no_matching_processes: 'Keine übereinstimmenden Prozesse gefunden'
+        rto_tooltip: 'Recovery Time Objective - Maximale Zeit bis zur Wiederherstellung des Geschäftsbetriebs'
+        rpo_tooltip: 'Recovery Point Objective - Maximaler akzeptabler Datenverlust (Zeitraum)'
+        mtd_tooltip: 'Maximum Tolerable Downtime - Maximale tolerierbare Ausfallzeit'
+        bcm_influences_asset_ratings: 'BCM-Bewertungen beeinflussen die Risikoeinstufung von Assets'
+        no_critical_processes: 'Keine kritischen Prozesse vorhanden'
+        no_critical_processes_desc: 'Es sind derzeit keine kritischen Prozesse definiert'
+    data_reuse:
+        asset_recommendations_title: 'Asset-Empfehlungen aus BCM-Analyse'
+        benefits_title: 'Vorteile der Datenwiederverwendung'
+        benefit_efficiency: 'Effizienz: Keine doppelte Dateneingabe erforderlich'
+        benefit_consistency: 'Konsistenz: Einheitliche Daten in allen Modulen'
+        benefit_compliance: 'Compliance: Automatische Verknüpfung mit Anforderungen'
+        benefit_quality: 'Qualität: Geprüfte Daten aus validierter Quelle'
+    stats:
+        critical_processes: 'Kritische Prozesse'
+        avg_rto: 'Durchschnittliches RTO'
+        high_priority: 'Hohe Priorität'
+    badge:
+        immediate: Sofort
+        urgent: Dringend
+    rto:
+        standard: Standard
+        flexible: Flexibel
 business_process:
     confirm:
         delete: 'Möchten Sie diesen Geschäftsprozess wirklich löschen?'
@@ -77,11 +123,11 @@ business_process:
         never_tested: 'Nie getestet'
         no_critical_assets: 'Keine kritischen Assets vorhanden – gute Arbeit!'
         no_critical_processes: 'Keine kritischen Prozesse vorhanden'
-        no_matching_processes: 'No Matching Processes'
-        rto_tooltip: 'Rto Tooltip'
-        rpo_tooltip: 'Rpo Tooltip'
-        mtd_tooltip: 'Mtd Tooltip'
-        bcm_influences_asset_ratings: 'Bcm Influences Asset Ratings'
+        no_matching_processes: 'Keine übereinstimmenden Prozesse gefunden'
+        rto_tooltip: 'Recovery Time Objective - Maximale Zeit bis zur Wiederherstellung des Geschäftsbetriebs'
+        rpo_tooltip: 'Recovery Point Objective - Maximaler akzeptabler Datenverlust (Zeitraum)'
+        mtd_tooltip: 'Maximum Tolerable Downtime - Maximale tolerierbare Ausfallzeit'
+        bcm_influences_asset_ratings: 'BCM-Bewertungen beeinflussen die Risikoeinstufung von Assets'
     type:
         information: Information
         software: Software
@@ -106,12 +152,12 @@ business_process:
         standard: Standard
         flexible: Flexibel
     data_reuse:
-        asset_recommendations_title: 'Asset Empfehlungen Titel'
-        benefits_title: 'Benefits Title'
-        benefit_efficiency: 'Benefit Efficiency'
-        benefit_consistency: 'Benefit Consistency'
-        benefit_compliance: 'Benefit Compliance'
-        benefit_quality: 'Benefit Quality'
+        asset_recommendations_title: 'Asset-Empfehlungen aus BCM-Analyse'
+        benefits_title: 'Vorteile der Datenwiederverwendung'
+        benefit_efficiency: 'Effizienz: Keine doppelte Dateneingabe erforderlich'
+        benefit_consistency: 'Konsistenz: Einheitliche Daten in allen Modulen'
+        benefit_compliance: 'Compliance: Automatische Verknüpfung mit Anforderungen'
+        benefit_quality: 'Qualität: Geprüfte Daten aus validierter Quelle'
 
 bc_exercises:
     exercise_type:

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'setup.compliance.title'|trans({}, 'messages') }} - Deployment Wizard{% endblock %}
+{% block title %}{{ 'setup.compliance.title'|trans({}, 'setup') }} - Deployment Wizard{% endblock %}
 
 {% block head %}
     {{ parent() }}
@@ -18,7 +18,7 @@
                 {% for message in messages %}
                     <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
                         {{ message|raw }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ 'setup.common.close'|trans({}, 'setup') }}"></button>
                     </div>
                 {% endfor %}
             {% endfor %}
@@ -27,8 +27,8 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h4 class="mb-0">{{ 'setup.progress.title'|trans({}, 'messages') }}</h4>
-                        <small class="text-muted">{{ 'setup.progress.step'|trans({'%current%': 8, '%total%': 11}, 'messages') }}</small>
+                        <h4 class="mb-0">{{ 'setup.progress.title'|trans({}, 'setup') }}</h4>
+                        <small class="text-muted">{{ 'setup.progress.step_of'|trans({'%current%': 8, '%total%': 11}, 'setup') }}</small>
                     </div>
                     <div class="progress" style="height: 10px;">
                         <div class="progress-bar" role="progressbar" style="width: 70%;" aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
@@ -38,22 +38,22 @@
 
             <div class="card shadow-lg">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">
+                    <h1 class="h3 mb-0">
                         <i class="bi bi-balance me-2" aria-hidden="true"></i>
-                        {{ 'setup.compliance.header'|trans({}, 'messages') }}
-                    </h3>
+                        {{ 'setup.compliance.header'|trans({}, 'setup') }}
+                    </h1>
                 </div>
                 <div class="card-body p-4">
                     <p class="lead mb-4">
-                        {{ 'setup.compliance.description'|trans({}, 'messages') }}
+                        {{ 'setup.compliance.description'|trans({}, 'setup') }}
                     </p>
 
                     {# Recommended Frameworks Alert #}
                     {% if recommended_frameworks is not empty %}
                         <div class="alert alert-success">
                             <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
-                            <strong>{{ 'setup.compliance.recommended.title'|trans({}, 'messages') }}</strong>
-                            <p class="mb-2">{{ 'setup.compliance.recommended.description'|trans({}, 'messages') }}</p>
+                            <strong>{{ 'setup.compliance.recommended.title'|trans({}, 'setup') }}</strong>
+                            <p class="mb-2">{{ 'setup.compliance.recommended.description'|trans({}, 'setup') }}</p>
                             <div class="d-flex flex-wrap gap-2">
                                 {% for code in recommended_frameworks %}
                                     {% for framework in available_frameworks|filter(f => f.code == code) %}
@@ -69,23 +69,23 @@
                     {# ISO 27001 Mandatory Notice #}
                     <div class="alert alert-info">
                         <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                        <strong>{{ 'setup.compliance.mandatory.title'|trans({}, 'messages') }}</strong>
-                        <p class="mb-0">{{ 'setup.compliance.mandatory.message'|trans({}, 'messages') }}</p>
+                        <strong>{{ 'setup.compliance.mandatory.title'|trans({}, 'setup') }}</strong>
+                        <p class="mb-0">{{ 'setup.compliance.mandatory.message'|trans({}, 'setup') }}</p>
                     </div>
 
                     {# Critical Infrastructure Notice for NIS2 #}
                     {% if 'NIS2' in recommended_frameworks and (app.session.get('setup_organisation_employee_count', '1-10') in ['1-10', '11-50']) %}
                         <div class="alert alert-warning">
                             <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
-                            <strong>{{ 'setup.compliance.critical_infrastructure.title'|trans({}, 'messages') }}</strong>
-                            <p class="mb-0">{{ 'setup.compliance.critical_infrastructure.message'|trans({}, 'messages') }}</p>
+                            <strong>{{ 'setup.compliance.critical_infrastructure.title'|trans({}, 'setup') }}</strong>
+                            <p class="mb-0">{{ 'setup.compliance.critical_infrastructure.message'|trans({}, 'setup') }}</p>
                         </div>
                     {% endif %}
 
                     {# Compliance Framework Selection Form #}
                     {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
-                    <h5 class="mb-3">{{ 'setup.compliance.select_frameworks'|trans({}, 'messages') }}</h5>
+                    <h2 class="h5 mb-3">{{ 'setup.compliance.select_frameworks'|trans({}, 'setup') }}</h2>
 
                     <div class="row">
                         {% for child in form.frameworks %}
@@ -108,7 +108,7 @@
                                             {% if framework_code in recommended_frameworks %}
                                                 <span class="badge bg-success mt-2">
                                                     <i class="bi bi-star me-1" aria-hidden="true"></i>
-                                                    {{ 'setup.compliance.recommended_badge'|trans({}, 'messages') }}
+                                                    {{ 'setup.compliance.recommended_badge'|trans({}, 'setup') }}
                                                 </span>
                                             {% endif %}
 
@@ -116,7 +116,7 @@
                                             {% if framework_code == 'ISO27001' %}
                                                 <span class="badge bg-primary mt-2">
                                                     <i class="bi bi-lock me-1" aria-hidden="true"></i>
-                                                    {{ 'setup.compliance.mandatory_badge'|trans({}, 'messages') }}
+                                                    {{ 'setup.compliance.mandatory_badge'|trans({}, 'setup') }}
                                                 </span>
                                             {% endif %}
                                         {% endfor %}
@@ -129,19 +129,19 @@
                     {# Information Box #}
                     <div class="alert alert-warning mt-4">
                         <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
-                        <strong>{{ 'setup.compliance.note.title'|trans({}, 'messages') }}</strong>
-                        <p class="mb-0">{{ 'setup.compliance.note.message'|trans({}, 'messages') }}</p>
+                        <strong>{{ 'setup.compliance.note.title'|trans({}, 'setup') }}</strong>
+                        <p class="mb-0">{{ 'setup.compliance.note.message'|trans({}, 'setup') }}</p>
                     </div>
 
                     {# Navigation #}
                     <div class="d-flex justify-content-between mt-4">
                         <a href="{{ path('setup_step7_modules') }}" class="btn btn-outline-secondary">
                             <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
-                            {{ 'setup.navigation.back'|trans({}, 'messages') }}
+                            {{ 'setup.navigation.back'|trans({}, 'setup') }}
                         </a>
 
                         <button type="submit" class="btn btn-primary">
-                            {{ 'setup.navigation.next'|trans({}, 'messages') }}
+                            {{ 'setup.navigation.next'|trans({}, 'setup') }}
                             <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
                         </button>
                     </div>
@@ -153,14 +153,14 @@
             {# Framework Details Card #}
             <div class="card mt-4 border-info">
                 <div class="card-body">
-                    <h5 class="card-title">
+                    <p class="h5 mb-3">
                         <i class="bi bi-book text-info me-2" aria-hidden="true"></i>
-                        {{ 'setup.compliance.details.title'|trans({}, 'messages') }}
-                    </h5>
+                        {{ 'setup.compliance.details.title'|trans({}, 'setup') }}
+                    </p>
                     <div class="row">
                         {% for framework in available_frameworks %}
                             <div class="col-md-6 mb-3">
-                                <h4>{{ framework.icon }} {{ framework.name }}</h4>
+                                <p class="h6 mb-1">{{ framework.icon }} {{ framework.name }}</p>
                                 <p class="text-muted small mb-0">{{ framework.description }}</p>
                             </div>
                         {% endfor %}

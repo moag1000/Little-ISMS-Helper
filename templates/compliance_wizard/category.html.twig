@@ -1,0 +1,218 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'wizard' %}
+
+{% block title %}{{ category.name|trans }} - {{ config.name }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {# Breadcrumb #}
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ path('app_compliance_wizard_index') }}">{{ 'wizard.title'|trans }}</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}">{{ config.name }}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{{ category.name|trans }}</li>
+        </ol>
+    </nav>
+
+    {# Header #}
+    <div class="row mb-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h1 class="h3 mb-2">
+                                <i class="{{ category.icon|default('bi-check-circle') }} me-2 text-{{ config.color }}"></i>
+                                {{ category.name|trans }}
+                            </h1>
+                            {% if category.description is defined %}
+                                <p class="text-muted mb-0">{{ category.description|trans }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="text-end">
+                            <div class="display-5 fw-bold
+                                {% if category.score >= 80 %}text-success
+                                {% elseif category.score >= 60 %}text-warning
+                                {% else %}text-danger{% endif %}">
+                                {{ category.score }}%
+                            </div>
+                            <span class="badge
+                                {% if category.status == 'compliant' %}bg-success
+                                {% elseif category.status == 'partial' %}bg-warning text-dark
+                                {% elseif category.status == 'in_progress' %}bg-info
+                                {% else %}bg-danger{% endif %}">
+                                {{ ('wizard.status.' ~ category.status)|trans }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-body">
+                    <h2 class="h6 mb-3">{{ 'wizard.category_summary'|trans }}</h2>
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <i class="bi bi-list-check text-muted me-2"></i>
+                            {{ category.items|length }} {{ 'wizard.total_checks'|trans }}
+                        </li>
+                        <li class="mb-2">
+                            <i class="bi bi-flag text-danger me-2"></i>
+                            {{ category.gap_count }} {{ 'wizard.gaps_identified'|trans }}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Checks List #}
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title h5 mb-0">{{ 'wizard.detailed_checks'|trans }}</h2>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 50px;">{{ 'wizard.status_label'|trans }}</th>
+                            <th>{{ 'wizard.check_name'|trans }}</th>
+                            <th style="width: 100px;">{{ 'wizard.score'|trans }}</th>
+                            <th style="width: 150px;">{{ 'wizard.actions'|trans }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for key, item in category.items %}
+                        <tr>
+                            <td class="text-center">
+                                {% if item.score >= 100 %}
+                                    <i class="bi bi-check-circle-fill text-success fs-5" title="{{ 'wizard.status.compliant'|trans }}"></i>
+                                {% elseif item.score >= 50 %}
+                                    <i class="bi bi-exclamation-circle-fill text-warning fs-5" title="{{ 'wizard.status.partial'|trans }}"></i>
+                                {% elseif item.score > 0 %}
+                                    <i class="bi bi-dash-circle-fill text-info fs-5" title="{{ 'wizard.status.in_progress'|trans }}"></i>
+                                {% else %}
+                                    <i class="bi bi-x-circle-fill text-danger fs-5" title="{{ 'wizard.status.not_started'|trans }}"></i>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <strong>{{ item.name|trans }}</strong>
+                                {% if item.description is defined and item.description %}
+                                    <br><small class="text-muted">{{ item.description|trans }}</small>
+                                {% endif %}
+                                {% if item.gap %}
+                                    <div class="alert alert-danger py-1 px-2 mt-2 mb-0 small">
+                                        <i class="bi bi-flag me-1"></i>
+                                        <strong>{{ item.gap.title|trans({}, 'wizard') }}</strong>
+                                        {% if item.gap.description is defined %}
+                                            <br>{{ item.gap.description|trans({}, 'wizard') }}
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+
+                                {# Details #}
+                                {% if item.details|default({})|length > 0 %}
+                                <details class="mt-2">
+                                    <summary class="small text-muted" style="cursor: pointer;">
+                                        <i class="bi bi-info-circle me-1"></i>{{ 'wizard.view_details'|trans }}
+                                    </summary>
+                                    <div class="small bg-light p-2 rounded mt-1">
+                                        {% for detailKey, detailValue in item.details %}
+                                            {% if detailValue is not iterable %}
+                                                <span class="badge bg-secondary me-1">{{ detailKey }}: {{ detailValue }}</span>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </details>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="progress flex-grow-1 me-2" style="height: 6px; width: 60px;">
+                                        <div class="progress-bar
+                                            {% if item.score >= 80 %}bg-success
+                                            {% elseif item.score >= 50 %}bg-warning
+                                            {% else %}bg-danger{% endif %}"
+                                            style="width: {{ item.score }}%">
+                                        </div>
+                                    </div>
+                                    <small class="fw-semibold">{{ item.score|round }}%</small>
+                                </div>
+                            </td>
+                            <td>
+                                {% if item.route is defined and item.route %}
+                                    <a href="{{ path(item.route) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-arrow-right me-1"></i>{{ 'wizard.go_to_module'|trans }}
+                                    </a>
+                                {% elseif item.gap and item.gap.route is defined and item.gap.route %}
+                                    <a href="{{ path(item.gap.route) }}" class="btn btn-sm btn-outline-warning">
+                                        <i class="bi bi-flag me-1"></i>{{ 'wizard.fix_gap'|trans({}, 'wizard') }}
+                                    </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {# Gaps Summary #}
+    {% if category.gaps|length > 0 %}
+    <div class="card mt-4">
+        <div class="card-header bg-danger bg-opacity-10">
+            <h2 class="card-title h5 mb-0 text-danger">
+                <i class="bi bi-flag me-2"></i>{{ 'wizard.gaps_to_address'|trans }}
+            </h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for gap in category.gaps %}
+                <div class="col-md-6 mb-3">
+                    <div class="border rounded p-3 h-100 {% if gap.priority == 'critical' %}border-danger{% elseif gap.priority == 'high' %}border-warning{% else %}border-secondary{% endif %}">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <strong>{{ gap.title|trans({}, 'wizard') }}</strong>
+                            <span class="badge
+                                {% if gap.priority == 'critical' %}bg-danger
+                                {% elseif gap.priority == 'high' %}bg-warning text-dark
+                                {% else %}bg-secondary{% endif %}">
+                                {{ gap.priority|default('medium') }}
+                            </span>
+                        </div>
+                        {% if gap.description is defined %}
+                            <p class="text-muted small mb-2">{{ gap.description|trans({}, 'wizard') }}</p>
+                        {% endif %}
+                        {% if gap.action is defined %}
+                            <p class="small mb-2">
+                                <i class="bi bi-lightbulb text-warning me-1"></i>
+                                <strong>{{ 'wizard.recommended_action'|trans }}:</strong> {{ gap.action|trans({}, 'wizard') }}
+                            </p>
+                        {% endif %}
+                        {% if gap.route is defined and gap.route %}
+                            <a href="{{ path(gap.route) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-arrow-right me-1"></i>{{ 'wizard.take_action'|trans({}, 'wizard') }}
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Navigation #}
+    <div class="d-flex justify-content-between mt-4">
+        <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>{{ 'wizard.back_to_results'|trans }}
+        </a>
+    </div>
+</div>
+{% endblock %}

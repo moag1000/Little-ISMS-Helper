@@ -1,0 +1,281 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'analytics' %}
+
+{% block title %}{{ 'analytics.advanced.title'|trans({}, 'analytics') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="analytics-dashboard" data-controller="analytics-advanced">
+    {# Page Header #}
+    <div class="page-header">
+        <div>
+            <h1>
+                <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                {{ 'analytics.advanced.title'|trans({}, 'analytics') }}
+            </h1>
+            <p class="text-muted">{{ 'analytics.advanced.subtitle'|trans({}, 'analytics') }}</p>
+        </div>
+        <div class="page-header-actions">
+            <a href="{{ path('app_analytics_dashboard') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'analytics.action.back_to_basic'|trans({}, 'analytics') }}
+            </a>
+        </div>
+    </div>
+
+    {# KPI Summary Cards #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-primary h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-1 text-muted">{{ 'analytics.advanced.kpi.overall_compliance'|trans({}, 'analytics') }}</h6>
+                            <h2 class="card-title mb-0">{{ compliance_summary.overall_compliance }}%</h2>
+                        </div>
+                        <div class="display-6 text-primary">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                    </div>
+                    <small class="text-muted">{{ 'analytics.advanced.kpi.frameworks_count'|trans({'%count%': compliance_summary.frameworks.total}, 'analytics') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-success h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-1 text-muted">{{ 'analytics.advanced.kpi.control_effectiveness'|trans({}, 'analytics') }}</h6>
+                            <h2 class="card-title mb-0">{{ control_metrics.average_effectiveness }}%</h2>
+                        </div>
+                        <div class="display-6 text-success">
+                            <i class="bi bi-toggles"></i>
+                        </div>
+                    </div>
+                    <small class="text-muted">{{ 'analytics.advanced.kpi.controls_count'|trans({'%count%': control_metrics.total_controls}, 'analytics') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-warning h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-1 text-muted">{{ 'analytics.advanced.kpi.implementation_rate'|trans({}, 'analytics') }}</h6>
+                            <h2 class="card-title mb-0">{{ control_metrics.implementation_rate }}%</h2>
+                        </div>
+                        <div class="display-6 text-warning">
+                            <i class="bi bi-check2-all"></i>
+                        </div>
+                    </div>
+                    <small class="text-muted">{{ control_metrics.implemented }} / {{ control_metrics.total_controls }} {{ 'analytics.advanced.kpi.implemented'|trans({}, 'analytics') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-info h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-subtitle mb-1 text-muted">{{ 'analytics.advanced.kpi.risk_velocity'|trans({}, 'analytics') }}</h6>
+                            <h2 class="card-title mb-0">
+                                {% set net_change = risk_velocity.last_30_days.net_change %}
+                                {% if net_change > 0 %}
+                                    <span class="text-danger">+{{ net_change }}</span>
+                                {% elseif net_change < 0 %}
+                                    <span class="text-success">{{ net_change }}</span>
+                                {% else %}
+                                    <span class="text-secondary">0</span>
+                                {% endif %}
+                            </h2>
+                        </div>
+                        <div class="display-6 text-info">
+                            <i class="bi bi-speedometer2"></i>
+                        </div>
+                    </div>
+                    <small class="text-muted">{{ 'analytics.advanced.kpi.velocity_period'|trans({'%days%': 30}, 'analytics') }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Advanced Analytics Navigation #}
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-diagram-3 fs-3 text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-1">{{ 'analytics.advanced.card.compliance_frameworks.title'|trans({}, 'analytics') }}</h5>
+                            <small class="text-muted">{{ 'analytics.advanced.card.compliance_frameworks.subtitle'|trans({}, 'analytics') }}</small>
+                        </div>
+                    </div>
+                    <p class="card-text">{{ 'analytics.advanced.card.compliance_frameworks.description'|trans({}, 'analytics') }}</p>
+                    <ul class="list-unstyled mb-3">
+                        <li><i class="bi bi-check text-success me-2"></i>{{ 'analytics.advanced.card.compliance_frameworks.feature1'|trans({}, 'analytics') }}</li>
+                        <li><i class="bi bi-check text-success me-2"></i>{{ 'analytics.advanced.card.compliance_frameworks.feature2'|trans({}, 'analytics') }}</li>
+                        <li><i class="bi bi-check text-success me-2"></i>{{ 'analytics.advanced.card.compliance_frameworks.feature3'|trans({}, 'analytics') }}</li>
+                    </ul>
+                    <a href="{{ path('app_analytics_compliance_frameworks') }}" class="btn btn-primary">
+                        <i class="bi bi-arrow-right me-1"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-success bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-toggles fs-3 text-success"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-1">{{ 'analytics.advanced.card.control_effectiveness.title'|trans({}, 'analytics') }}</h5>
+                            <small class="text-muted">{{ 'analytics.advanced.card.control_effectiveness.subtitle'|trans({}, 'analytics') }}</small>
+                        </div>
+                    </div>
+                    <p class="card-text">{{ 'analytics.advanced.card.control_effectiveness.description'|trans({}, 'analytics') }}</p>
+                    <ul class="list-unstyled mb-3">
+                        <li><i class="bi bi-check text-success me-2"></i>{{ 'analytics.advanced.card.control_effectiveness.feature1'|trans({}, 'analytics') }}</li>
+                        <li><i class="bi bi-check text-success me-2"></i>{{ 'analytics.advanced.card.control_effectiveness.feature2'|trans({}, 'analytics') }}</li>
+                        <li><i class="bi bi-check text-success me-2"></i>{{ 'analytics.advanced.card.control_effectiveness.feature3'|trans({}, 'analytics') }}</li>
+                    </ul>
+                    <a href="{{ path('app_analytics_control_effectiveness') }}" class="btn btn-success">
+                        <i class="bi bi-arrow-right me-1"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-warning bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-graph-up-arrow fs-3 text-warning"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-1">{{ 'analytics.advanced.card.risk_forecast.title'|trans({}, 'analytics') }}</h5>
+                            <small class="text-muted">{{ 'analytics.advanced.card.risk_forecast.subtitle'|trans({}, 'analytics') }}</small>
+                        </div>
+                    </div>
+                    <p class="card-text">{{ 'analytics.advanced.card.risk_forecast.description'|trans({}, 'analytics') }}</p>
+                    <ul class="list-unstyled mb-3">
+                        <li><i class="bi bi-check text-success me-2"></i>{{ 'analytics.advanced.card.risk_forecast.feature1'|trans({}, 'analytics') }}</li>
+                        <li><i class="bi bi-check text-success me-2"></i>{{ 'analytics.advanced.card.risk_forecast.feature2'|trans({}, 'analytics') }}</li>
+                        <li><i class="bi bi-check text-success me-2"></i>{{ 'analytics.advanced.card.risk_forecast.feature3'|trans({}, 'analytics') }}</li>
+                    </ul>
+                    <a href="{{ path('app_analytics_risk_forecast') }}" class="btn btn-warning">
+                        <i class="bi bi-arrow-right me-1"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Additional Navigation #}
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-info bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-server fs-3 text-info"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-1">{{ 'analytics.advanced.card.asset_criticality.title'|trans({}, 'analytics') }}</h5>
+                            <small class="text-muted">{{ 'analytics.advanced.card.asset_criticality.subtitle'|trans({}, 'analytics') }}</small>
+                        </div>
+                    </div>
+                    <p class="card-text">{{ 'analytics.advanced.card.asset_criticality.description'|trans({}, 'analytics') }}</p>
+                    <a href="{{ path('app_analytics_asset_criticality') }}" class="btn btn-info">
+                        <i class="bi bi-arrow-right me-1"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 border-secondary">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-secondary bg-opacity-10 rounded-3 p-3 me-3">
+                            <i class="bi bi-bar-chart fs-3 text-secondary"></i>
+                        </div>
+                        <div>
+                            <h5 class="card-title mb-1">{{ 'analytics.advanced.card.basic_analytics.title'|trans({}, 'analytics') }}</h5>
+                            <small class="text-muted">{{ 'analytics.advanced.card.basic_analytics.subtitle'|trans({}, 'analytics') }}</small>
+                        </div>
+                    </div>
+                    <p class="card-text">{{ 'analytics.advanced.card.basic_analytics.description'|trans({}, 'analytics') }}</p>
+                    <a href="{{ path('app_analytics_dashboard') }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-right me-1"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Executive Summary Section #}
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="bi bi-file-earmark-bar-graph me-2"></i>
+                {{ 'analytics.advanced.executive_summary.title'|trans({}, 'analytics') }}
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if compliance_summary.frameworks.total > 0 %}
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded">
+                        <div>
+                            <h6 class="mb-0">{{ 'analytics.advanced.kpi.overall_compliance'|trans({}, 'analytics') }}</h6>
+                            <small class="text-muted">{{ compliance_summary.frameworks.total }} Frameworks</small>
+                        </div>
+                        <div class="text-end">
+                            <h5 class="mb-0
+                                {% if compliance_summary.overall_compliance >= 80 %}text-success
+                                {% elseif compliance_summary.overall_compliance >= 50 %}text-warning
+                                {% else %}text-danger{% endif %}
+                            ">{{ compliance_summary.overall_compliance }}%</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="d-flex justify-content-between align-items-center p-3 bg-success bg-opacity-10 rounded">
+                        <div>
+                            <h6 class="mb-0">{{ 'compliance.framework.status.compliant'|trans({}, 'compliance') }}</h6>
+                            <small class="text-muted">100% {{ 'analytics.advanced.executive_summary.requirements'|trans({}, 'analytics') }}</small>
+                        </div>
+                        <div class="text-end">
+                            <h5 class="mb-0 text-success">{{ compliance_summary.frameworks.compliant }}</h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="d-flex justify-content-between align-items-center p-3 bg-danger bg-opacity-10 rounded">
+                        <div>
+                            <h6 class="mb-0">{{ 'risk.filter.at_risk'|trans({}, 'risk') }}</h6>
+                            <small class="text-muted">< 80% {{ 'analytics.compliance.table.compliance'|trans({}, 'analytics') }}</small>
+                        </div>
+                        <div class="text-end">
+                            <h5 class="mb-0 text-danger">{{ compliance_summary.frameworks.at_risk }}</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="text-center py-4">
+                <p class="text-muted">{{ 'analytics.advanced.executive_summary.no_frameworks'|trans({}, 'analytics') }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+{% endblock %}

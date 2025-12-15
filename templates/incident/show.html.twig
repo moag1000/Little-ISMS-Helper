@@ -107,7 +107,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h3>Incident #{{ incident.incidentNumber }}</h3>
+            <h2 class="h5">Incident #{{ incident.incidentNumber }}</h2>
             <div class="badges">
                 <span class="{{ badge_severity(incident.severity) }}">{{ incident.severity|upper }}</span>
                 <span class="{{ badge_status(incident.status) }}">{{ incident.status|upper|replace({'_': ' '}) }}</span>
@@ -145,10 +145,10 @@
             {# NIS2 Article 23 Reporting Timeline #}
             {% if is_nis2_active() and incident.requiresNis2Reporting and incident.detectedAt %}
                 <div class="detail-section nis2-timeline-section">
-                    <h2>
+                    <h3 class="h5">
                         <i class="bi bi-clock-history" aria-hidden="true"></i>
                         {{ 'incident.nis2_timeline.title'|trans({}, 'incident') }}
-                    </h2>
+                    </h3>
                     <p class="text-muted">{{ 'incident.nis2_timeline.description'|trans({}, 'incident') }}</p>
 
                     <div class="timeline-container">
@@ -164,7 +164,7 @@
                                 {% endif %}
                             </div>
                             <div class="timeline-content">
-                                <h4>{{ 'incident.timeline.early_warning'|trans({}, 'incident') }}</h4>
+                                <div class="fw-bold fs-6">{{ 'incident.timeline.early_warning'|trans({}, 'incident') }}</div>
                                 <p class="timeline-deadline">
                                     <strong>{{ 'incident.timeline.deadline'|trans({}, 'incident') }}:</strong>
                                     {{ incident.earlyWarningDeadline|date('d.m.Y H:i') }}
@@ -202,7 +202,7 @@
                                 {% endif %}
                             </div>
                             <div class="timeline-content">
-                                <h4>{{ 'incident.timeline.detailed_notification'|trans({}, 'incident') }}</h4>
+                                <div class="fw-bold fs-6">{{ 'incident.timeline.detailed_notification'|trans({}, 'incident') }}</div>
                                 <p class="timeline-deadline">
                                     <strong>{{ 'incident.timeline.deadline'|trans({}, 'incident') }}:</strong>
                                     {{ incident.detailedNotificationDeadline|date('d.m.Y H:i') }}
@@ -240,7 +240,7 @@
                                 {% endif %}
                             </div>
                             <div class="timeline-content">
-                                <h4>{{ 'incident.timeline.final_report'|trans({}, 'incident') }}</h4>
+                                <div class="fw-bold fs-6">{{ 'incident.timeline.final_report'|trans({}, 'incident') }}</div>
                                 <p class="timeline-deadline">
                                     <strong>{{ 'incident.timeline.deadline'|trans({}, 'incident') }}:</strong>
                                     {{ incident.finalReportDeadline|date('d.m.Y H:i') }}
@@ -315,42 +315,42 @@
 
             {% if incident.description %}
                 <div class="detail-section">
-                    <h3>Description</h3>
+                    <h3 class="h5">Description</h3>
                     <p>{{ incident.description }}</p>
                 </div>
             {% endif %}
 
             {% if incident.affectedSystems %}
                 <div class="detail-section">
-                    <h3>Affected Systems</h3>
+                    <h3 class="h5">Affected Systems</h3>
                     <p>{{ incident.affectedSystems }}</p>
                 </div>
             {% endif %}
 
             {% if incident.rootCause %}
                 <div class="detail-section">
-                    <h3>Root Cause Analysis</h3>
+                    <h3 class="h5">Root Cause Analysis</h3>
                     <p>{{ incident.rootCause }}</p>
                 </div>
             {% endif %}
 
             {% if incident.correctiveActions %}
                 <div class="detail-section">
-                    <h3>Corrective Actions</h3>
+                    <h3 class="h5">Corrective Actions</h3>
                     <p>{{ incident.correctiveActions }}</p>
                 </div>
             {% endif %}
 
             {% if incident.lessonsLearned %}
                 <div class="detail-section">
-                    <h3>Lessons Learned</h3>
+                    <h3 class="h5">Lessons Learned</h3>
                     <p>{{ incident.lessonsLearned }}</p>
                 </div>
             {% endif %}
 
             {% if incident.closedAt %}
                 <div class="detail-section">
-                    <h3>{{ 'incident.section.closure'|trans({}, 'incident') }}</h3>
+                    <h3 class="h5">{{ 'incident.section.closure'|trans({}, 'incident') }}</h3>
                     <p>{{ 'incident.field.closed_date'|trans({}, 'incident') }}: <strong>{{ incident.closedAt|date('d.m.Y H:i') }}</strong></p>
                 </div>
             {% endif %}
@@ -358,7 +358,7 @@
             {# Audit Log History #}
             {% if auditLogs is defined and auditLogs|length > 0 %}
                 <div class="detail-section">
-                    <h3><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'incident.section.history'|trans({}, 'incident') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h3>
+                    <h3 class="h5"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'incident.section.history'|trans({}, 'incident') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h3>
                     <div class="audit-log-list">
                         {% for log in auditLogs %}
                         <div class="audit-log-entry">
@@ -403,7 +403,7 @@
             {# Data Reuse: Affected Assets #}
             {% if incident.affectedAssets is defined and incident.affectedAssets|length > 0 %}
                 <div class="detail-section">
-                    <h3>🏢 Affected Assets ({{ incident.affectedAssets|length }})</h3>
+                    <h3 class="h5">🏢 Affected Assets ({{ incident.affectedAssets|length }})</h3>
                     <div class="data-reuse-list">
                         {% for asset in incident.affectedAssets %}
                             <div class="data-reuse-item">
@@ -421,14 +421,14 @@
 
             {# CRITICAL-05: BCM Impact Analysis #}
             <div class="detail-section">
-                <h3>📊 Business Continuity Impact</h3>
+                <h3 class="h5">📊 Business Continuity Impact</h3>
 
                 {% if incident.affectedBusinessProcesses|length > 0 %}
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <div class="card bg-light">
                                 <div class="card-body text-center">
-                                    <h5>{{ incident.affectedProcessCount }}</h5>
+                                    <div class="fs-5 fw-bold">{{ incident.affectedProcessCount }}</div>
                                     <small class="text-muted">Affected Processes</small>
                                     {% if incident.hasCriticalProcessesAffected %}
                                         <br><span class="badge bg-danger mt-1">Critical</span>
@@ -439,7 +439,7 @@
                         <div class="col-md-4">
                             <div class="card bg-light">
                                 <div class="card-body text-center">
-                                    <h5>
+                                    <div class="fs-5">
                                         {% set priority_class = {
                                             'immediate': 'danger',
                                             'high': 'warning',
@@ -447,7 +447,7 @@
                                             'low': 'secondary'
                                         }[incident.suggestedRecoveryPriority] %}
                                         <span class="badge bg-{{ priority_class }}">{{ incident.suggestedRecoveryPriority|upper }}</span>
-                                    </h5>
+                                    </div>
                                     <small class="text-muted">Recovery Priority</small>
                                 </div>
                             </div>
@@ -455,7 +455,7 @@
                         <div class="col-md-4">
                             <div class="card bg-light">
                                 <div class="card-body text-center">
-                                    <h5>€{{ incident.calculateEstimatedFinancialImpact(24)|number_format(0) }}</h5>
+                                    <div class="fs-5 fw-bold">€{{ incident.calculateEstimatedFinancialImpact(24)|number_format(0) }}</div>
                                     <small class="text-muted">Est. Impact (24h)</small>
                                 </div>
                             </div>
@@ -507,7 +507,7 @@
             {# Data Reuse: Realized Risks #}
             {% if incident.realizedRisks is defined and incident.realizedRisks|length > 0 %}
                 <div class="detail-section">
-                    <h3><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Realized Risks ({{ incident.realizedRisks|length }})</h3>
+                    <h3 class="h5"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Realized Risks ({{ incident.realizedRisks|length }})</h3>
                     <div class="alert alert-warning">
                         <strong>Risk Realization:</strong> This incident realized {{ incident.realizedRisks|length }} identified risk(s).
                         Consider reviewing risk probability assessments.
@@ -529,7 +529,7 @@
             {# Data Reuse: Related Controls #}
             {% if incident.relatedControls is defined and incident.relatedControls|length > 0 %}
                 <div class="detail-section">
-                    <h3><i class="bi bi-shield-check" aria-hidden="true"></i> Related Controls ({{ incident.relatedControls|length }})</h3>
+                    <h3 class="h5"><i class="bi bi-shield-check" aria-hidden="true"></i> Related Controls ({{ incident.relatedControls|length }})</h3>
                     <p class="text-muted">{{ 'incident.controls_should_prevent'|trans({}, 'incident') }}</p>
                     <div class="data-reuse-list">
                         {% for control in incident.relatedControls %}
@@ -715,10 +715,9 @@
     flex: 1;
 }
 
-.timeline-content h4 {
-    margin: 0 0 0.5rem 0;
-    color: #1f2937;
-    font-size: 1.1rem;
+.timeline-content .fw-bold {
+    margin-bottom: 0.5rem;
+    display: block;
 }
 
 .timeline-deadline {

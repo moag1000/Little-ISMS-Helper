@@ -1,4 +1,6 @@
 control:
+    title:
+        plural: Controls
     section:
         applicability: Applicability
         implementation: Implementation

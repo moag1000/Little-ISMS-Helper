@@ -1,4 +1,6 @@
 control:
+    title:
+        plural: Maßnahmen
     section:
         applicability: Anwendbarkeit
         implementation: Umsetzung

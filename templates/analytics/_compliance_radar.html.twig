@@ -12,10 +12,10 @@
      data-controller="radar-chart"
      data-radar-chart-url-value="{{ path('app_analytics_compliance_radar_data') }}">
     <div class="card-header">
-        <h3 class="card-title">
+        <h2 class="card-title">
             <i class="bi bi-diagram-3 text-success"></i>
             {{ 'analytics.card.compliance_radar'|trans({}, 'analytics') }}
-        </h3>
+        </h2>
         <div class="card-actions">
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->radar-chart#refresh"

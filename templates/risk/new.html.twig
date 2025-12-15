@@ -87,14 +87,14 @@
 
         {# Risk Assessment Guidance Helper #}
         <fieldset class="mb-4">
-            <legend class="h5 mb-3">
+            <legend class="h3 mb-3">
                 <i class="bi bi-lightbulb" aria-hidden="true"></i>
                 {{ 'risk.guidance.title'|trans({}, 'risk')}}
             </legend>
 
             <div class="card border-primary mb-3">
                 <div class="card-header bg-primary-subtle">
-                    <h5 class="mb-0">
+                    <div class="mb-0">
                         <button class="btn btn-link text-decoration-none p-0 w-100 text-start"
                                 type="button"
                                 data-bs-toggle="collapse"
@@ -105,7 +105,7 @@
                             {{ 'risk.guidance.title'|trans({}, 'risk')}}
                             <i class="bi bi-chevron-down float-end" aria-hidden="true"></i>
                         </button>
-                    </h5>
+                    </div>
                 </div>
                 <div class="collapse" id="riskAssessmentGuidance">
                     <div class="card-body">
@@ -114,10 +114,10 @@
                         </p>
 
                         {# Probability Scale #}
-                        <h6 class="fw-bold mb-2">
+                        <div class="fw-bold mb-2">
                             <i class="bi bi-graph-up" aria-hidden="true"></i>
                             {{ 'risk.guidance.probability_title'|trans({}, 'risk')}}
-                        </h6>
+                        </div>
                         <div class="mb-4">
                             {% embed '_components/_table.html.twig' with {
                                 'class': 'table-sm table-bordered',
@@ -156,10 +156,10 @@
                         </div>
 
                         {# Impact Scale #}
-                        <h6 class="fw-bold mb-2">
+                        <div class="fw-bold mb-2">
                             <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                             {{ 'risk.guidance.impact_title'|trans({}, 'risk')}}
-                        </h6>
+                        </div>
                         {% embed '_components/_table.html.twig' with {
                             'class': 'table-sm table-bordered',
                             'noMargin': true,
