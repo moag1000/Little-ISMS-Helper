@@ -78,10 +78,10 @@
     {# Data Subject Section #}
     <div class="card mb-4">
         <div class="card-header bg-light">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-person" aria-hidden="true"></i>
                 {{ 'consent.section.data_subject'|trans({}, 'consent') }}
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             <div class="row">
@@ -104,10 +104,10 @@
     {# Processing Activity Section #}
     <div class="card mb-4">
         <div class="card-header bg-light">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-gear" aria-hidden="true"></i>
                 {{ 'consent.section.processing_activity'|trans({}, 'consent') }}
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             <div class="row">
@@ -136,10 +136,10 @@
     {# Consent Grant Section #}
     <div class="card mb-4">
         <div class="card-header bg-light">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-check-circle" aria-hidden="true"></i>
                 {{ 'consent.section.consent_grant'|trans({}, 'consent') }}
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             <div class="row">
@@ -180,10 +180,10 @@
     {# Proof Documentation Section #}
     <div class="card mb-4">
         <div class="card-header bg-light">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
                 {{ 'consent.section.proof_documentation'|trans({}, 'consent') }}
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             {% if consent.proofDocument %}
@@ -208,10 +208,10 @@
     {% if consent.expiresAt %}
     <div class="card mb-4">
         <div class="card-header bg-light">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-calendar-event" aria-hidden="true"></i>
                 {{ 'consent.section.expiry'|trans({}, 'consent') }}
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             <div class="detail-item">
@@ -225,10 +225,10 @@
     {# DPO Verification Section #}
     <div class="card mb-4">
         <div class="card-header bg-light">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-shield-check" aria-hidden="true"></i>
                 {{ 'consent.section.dpo_verification'|trans({}, 'consent') }}
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             {% if consent.verifiedBy %}
@@ -259,10 +259,10 @@
     {% if consent.revokedAt %}
     <div class="card mb-4">
         <div class="card-header bg-light">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-x-circle" aria-hidden="true"></i>
                 {{ 'consent.section.revocation'|trans({}, 'consent') }}
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             <div class="alert alert-danger mb-0">
@@ -282,10 +282,10 @@
     {% if consent.notes %}
     <div class="card mb-4">
         <div class="card-header bg-light">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-sticky" aria-hidden="true"></i>
                 {{ 'consent.section.notes'|trans({}, 'consent') }}
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             <div class="bg-light p-3 rounded">
@@ -298,10 +298,10 @@
     {# Metadata Section #}
     <div class="card mb-4">
         <div class="card-header bg-light">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-info-circle" aria-hidden="true"></i>
                 {{ 'consent.section.metadata'|trans({}, 'consent') }}
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             <div class="row">
@@ -335,7 +335,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="verifyModalLabel">{{ 'consent.action.verify'|trans({}, 'consent') }}</h5>
+                <h3 class="modal-title h5" id="verifyModalLabel">{{ 'consent.action.verify'|trans({}, 'consent') }}</h3>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
             </div>
             <form method="post" action="{{ path('app_consent_verify', {id: consent.id}) }}">
@@ -360,7 +360,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="revokeModalLabel">{{ 'consent.action.document_revocation'|trans({}, 'consent') }}</h5>
+                <h4 class="modal-title h5" id="revokeModalLabel">{{ 'consent.action.document_revocation'|trans({}, 'consent') }}</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
             </div>
             <form method="post" action="{{ path('app_consent_revoke', {id: consent.id}) }}">

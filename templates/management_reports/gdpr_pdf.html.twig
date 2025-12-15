@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Data Breach Report (GDPR)</title>
+    <style>
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 9pt; margin: 0; padding: 15px; }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #1f2937;
+            padding-bottom: 10px;
+        }
+        .header h1 { color: #0f172a; margin: 0; font-size: 18pt; }
+        .header .subtitle { color: #666; font-size: 10pt; margin-top: 3px; }
+        .header .date { color: #888; font-size: 9pt; margin-top: 3px; }
+
+        .stats-grid { display: table; width: 100%; margin: 15px 0; }
+        .stat-box {
+            display: table-cell;
+            width: 25%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            text-align: center;
+        }
+        .stat-box .number { font-size: 24pt; font-weight: bold; }
+        .stat-box .label { font-size: 7pt; color: #666; text-transform: uppercase; }
+
+        .section { margin: 15px 0; page-break-inside: avoid; }
+        .section h2 { background: #1f2937; color: white; padding: 6px; font-size: 10pt; margin: 0 0 8px 0; }
+
+        table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+        th { background: #0f172a; color: #06b6d4; padding: 5px; text-align: left; font-size: 8pt; }
+        td { padding: 5px; border-bottom: 1px solid #ddd; font-size: 8pt; }
+        tr:nth-child(even) { background: #f8fafc; }
+
+        .badge { display: inline-block; padding: 2px 5px; border-radius: 3px; font-size: 7pt; font-weight: bold; }
+        .badge-danger { background: #fecaca; color: #991b1b; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-info { background: #e0f2fe; color: #0369a1; }
+
+        .alert { padding: 8px; margin: 10px 0; border-radius: 4px; font-size: 8pt; }
+        .alert-danger { background: #fecaca; color: #991b1b; border: 1px solid #f87171; }
+        .alert-info { background: #e0f2fe; color: #0369a1; border: 1px solid #7dd3fc; }
+
+        .progress-bar { background: #e5e7eb; height: 12px; border-radius: 6px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 6px; }
+
+        .footer { position: fixed; bottom: 10px; left: 15px; right: 15px; text-align: center; font-size: 7pt; color: #888; border-top: 1px solid #ddd; padding-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Data Breach Report</h1>
+        <div class="subtitle">GDPR / DSGVO Compliance</div>
+        <div class="date">Generated: {{ generated_at|date('d.m.Y H:i') }} | Version: {{ version }}</div>
+    </div>
+
+    {# Summary Statistics #}
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="number" style="color: #1f2937;">{{ report.total_breaches }}</div>
+            <div class="label">Total Breaches</div>
+        </div>
+        <div class="stat-box">
+            <div class="number" style="color: #0ea5e9;">{{ report.this_year }}</div>
+            <div class="label">This Year</div>
+        </div>
+        <div class="stat-box">
+            <div class="number" style="color: #16a34a;">{{ report.notification_status.notified }}</div>
+            <div class="label">Notified</div>
+        </div>
+        <div class="stat-box">
+            <div class="number" style="color: #d97706;">{{ report.notification_status.pending }}</div>
+            <div class="label">Pending</div>
+        </div>
+    </div>
+
+    {# Pending Notification Alert #}
+    {% if report.notification_status.pending > 0 %}
+    <div class="alert alert-danger">
+        <strong>URGENT:</strong> {{ report.notification_status.pending }} data breach(es) require notification to supervisory authority.
+        GDPR Article 33 requires notification within 72 hours of becoming aware of a breach.
+    </div>
+    {% endif %}
+
+    {# Severity Breakdown #}
+    <div class="section">
+        <h2>Breaches by Severity</h2>
+        <table>
+            <tr>
+                <th>Severity</th>
+                <th>Count</th>
+                <th>Distribution</th>
+            </tr>
+            <tr>
+                <td><span class="badge badge-danger">Critical</span></td>
+                <td>{{ report.by_severity.critical }}</td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ report.total_breaches > 0 ? (report.by_severity.critical / report.total_breaches * 100) : 0 }}%; background: #dc2626;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-warning">High</span></td>
+                <td>{{ report.by_severity.high }}</td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ report.total_breaches > 0 ? (report.by_severity.high / report.total_breaches * 100) : 0 }}%; background: #d97706;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-info">Medium</span></td>
+                <td>{{ report.by_severity.medium }}</td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ report.total_breaches > 0 ? (report.by_severity.medium / report.total_breaches * 100) : 0 }}%; background: #0ea5e9;"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-success">Low</span></td>
+                <td>{{ report.by_severity.low }}</td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ report.total_breaches > 0 ? (report.by_severity.low / report.total_breaches * 100) : 0 }}%; background: #16a34a;"></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    {# GDPR Requirements #}
+    <div class="section">
+        <h2>GDPR Requirements</h2>
+        <div class="alert alert-info">
+            <strong>Article 33 & 34 Requirements</strong>
+        </div>
+        <table>
+            <tr>
+                <th>Requirement</th>
+                <th>Description</th>
+            </tr>
+            <tr>
+                <td>72-Hour Notification</td>
+                <td>Notify supervisory authority within 72 hours of becoming aware of breach (Art. 33)</td>
+            </tr>
+            <tr>
+                <td>Data Subject Notification</td>
+                <td>Notify affected individuals when breach likely results in high risk (Art. 34)</td>
+            </tr>
+            <tr>
+                <td>Documentation</td>
+                <td>Document all breaches including facts, effects, and remedial action taken</td>
+            </tr>
+            <tr>
+                <td>Risk Assessment</td>
+                <td>Assess risk to rights and freedoms of data subjects</td>
+            </tr>
+        </table>
+    </div>
+
+    {# Breach List #}
+    {% if report.breaches|length > 0 %}
+    <div class="section">
+        <h2>Data Breach Register</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Severity</th>
+                <th>Discovered</th>
+                <th>Notification Req.</th>
+                <th>Notified</th>
+            </tr>
+            {% for breach in report.breaches %}
+            <tr>
+                <td>{{ breach.id }}</td>
+                <td>{{ breach.title|slice(0, 30) }}{% if breach.title|length > 30 %}...{% endif %}</td>
+                <td>
+                    {% set severity = breach.severity|default('medium') %}
+                    {% if severity == 'critical' %}
+                    <span class="badge badge-danger">{{ severity }}</span>
+                    {% elseif severity == 'high' %}
+                    <span class="badge badge-warning">{{ severity }}</span>
+                    {% elseif severity == 'medium' %}
+                    <span class="badge badge-info">{{ severity }}</span>
+                    {% else %}
+                    <span class="badge badge-success">{{ severity }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ breach.discoveredAt ? breach.discoveredAt|date('Y-m-d') : '-' }}</td>
+                <td>{{ breach.notificationRequired ? 'Yes' : 'No' }}</td>
+                <td>
+                    {% if breach.notificationDate %}
+                    {{ breach.notificationDate|date('Y-m-d') }}
+                    {% elseif breach.notificationRequired %}
+                    <span class="badge badge-warning">Pending</span>
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% else %}
+    <div class="section">
+        <h2>Data Breach Register</h2>
+        <div class="alert" style="background: #dcfce7; color: #166534; border: 1px solid #86efac;">
+            <strong>No data breaches recorded.</strong> Continue monitoring and maintaining data protection practices.
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="footer">
+        Confidential - Data Breach Report (GDPR) | Little ISMS Helper
+    </div>
+</body>
+</html>

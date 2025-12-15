@@ -30,8 +30,8 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">{{ 'processing_activity.stat.total'|trans({}, 'privacy')}}</h6>
-                    <h2 class="mb-0">{{ statistics.total }}</h2>
+                    <div class="text-muted mb-2 fw-bold">{{ 'processing_activity.stat.total'|trans({}, 'privacy')}}</div>
+                    <div class="fs-2 fw-bold mb-0">{{ statistics.total }}</div>
                     <small class="text-success">{{ statistics.active }} {{ 'processing_activity.stat.active'|trans({}, 'privacy')}}</small>
                 </div>
             </div>
@@ -39,13 +39,13 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">{{ 'processing_activity.stat.compliance_score'|trans({}, 'privacy')}}</h6>
-                    <h2 class="mb-0
+                    <div class="text-muted mb-2 fw-bold">{{ 'processing_activity.stat.compliance_score'|trans({}, 'privacy')}}</div>
+                    <div class="fs-2 fw-bold mb-0
                         {% if compliance_score.overall_score >= 80 %}text-success
                         {% elseif compliance_score.overall_score >= 60 %}text-warning
                         {% else %}text-danger{% endif %}">
                         {{ compliance_score.overall_score }}%
-                    </h2>
+                    </div>
                     <small class="text-muted">{{ compliance_score.complete_activities }}/{{ compliance_score.total_activities }} {{ 'processing_activity.stat.complete'|trans({}, 'privacy')}}</small>
                 </div>
             </div>
@@ -53,8 +53,8 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">{{ 'processing_activity.stat.high_risk'|trans({}, 'privacy')}}</h6>
-                    <h2 class="mb-0">{{ statistics.high_risk }}</h2>
+                    <div class="text-muted mb-2 fw-bold">{{ 'processing_activity.stat.high_risk'|trans({}, 'privacy')}}</div>
+                    <div class="fs-2 fw-bold mb-0">{{ statistics.high_risk }}</div>
                     <small class="text-danger">{{ statistics.missing_dpia }} {{ 'processing_activity.stat.missing_dpia'|trans({}, 'privacy')}}</small>
                 </div>
             </div>
@@ -62,8 +62,8 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">{{ 'processing_activity.stat.special_categories'|trans({}, 'privacy')}}</h6>
-                    <h2 class="mb-0">{{ statistics.special_categories }}</h2>
+                    <div class="text-muted mb-2 fw-bold">{{ 'processing_activity.stat.special_categories'|trans({}, 'privacy')}}</div>
+                    <div class="fs-2 fw-bold mb-0">{{ statistics.special_categories }}</div>
                     <small class="text-muted">{{ 'processing_activity.stat.art9_data'|trans({}, 'privacy')}}</small>
                 </div>
             </div>
@@ -73,7 +73,7 @@
     {# Filters #}
     <div class="card mb-4">
         <div class="card-body">
-            <h5 class="mb-3"><i class="bi bi-funnel" aria-hidden="true"></i> {{ 'processing_activity.filter.title'|trans({}, 'privacy')}}</h5>
+            <h2 class="h5 mb-3"><i class="bi bi-funnel" aria-hidden="true"></i> {{ 'processing_activity.filter.title'|trans({}, 'privacy')}}</h2>
             <div class="btn-group" role="group">
                 <a href="{{ path('app_processing_activity_index') }}"
                    class="btn btn-outline-primary {{ current_filter == 'all' ? 'active' : '' }}">
@@ -106,7 +106,7 @@
     {# Processing Activities Table #}
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0"><i class="bi bi-table" aria-hidden="true"></i> {{ 'processing_activity.table.title'|trans({}, 'privacy')}}</h5>
+            <h2 class="mb-0 h5"><i class="bi bi-table" aria-hidden="true"></i> {{ 'processing_activity.table.title'|trans({}, 'privacy')}}</h2>
             <span class="badge bg-secondary">{{ processing_activities|length }} {{ 'processing_activity.table.items'|trans({}, 'privacy')}}</span>
         </div>
         <div class="card-body p-0">

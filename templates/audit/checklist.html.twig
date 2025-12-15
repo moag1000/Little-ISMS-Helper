@@ -40,7 +40,7 @@
     {% if audit.isComplianceAudit() %}
         {# Single Framework Audit #}
         <div class="checklist-section">
-            <h2>{{ audit.scopedFramework.name }}</h2>
+            <h2 class="h4">{{ audit.scopedFramework.name }}</h2>
             {% include 'audit/_checklist_items.html.twig' with {items: checklist_items} %}
         </div>
     {% else %}

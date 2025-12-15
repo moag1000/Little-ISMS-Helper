@@ -136,7 +136,7 @@
             </td>
             <td class="text-center">
                 <div class="btn-group" role="group">
-                    {% if instance.status in ['pending', 'in_progress'] and userCanApprove[instance.id] ?? false %}
+                    {% if instance.status in ['pending', 'in_progress'] and (userCanApprove[instance.id] ?? false) %}
                         <button type="button"
                                 class="btn btn-sm btn-success"
                                 data-bs-toggle="modal"
@@ -176,7 +176,7 @@
 
 {# Modals for Approve/Reject Actions #}
 {% for instance in overdue_workflows %}
-    {% if instance.status in ['pending', 'in_progress'] and userCanApprove[instance.id] ?? false %}
+    {% if instance.status in ['pending', 'in_progress'] and (userCanApprove[instance.id] ?? false) %}
         {# Approve Modal #}
         <div class="modal fade" id="approveWorkflow{{ instance.id }}" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
@@ -184,10 +184,10 @@
                     <form method="post" action="{{ path('app_workflow_instance_approve', {id: instance.id}) }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ instance.id) }}">
                         <div class="modal-header">
-                            <h5 class="modal-title">
+                            <h2 class="modal-title h5">
                                 <i class="bi bi-check-circle"></i>
                                 {{ 'workflow.widget.action.approve'|trans({}, 'workflows') }}
-                            </h5>
+                            </h2>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
@@ -225,10 +225,10 @@
                     <form method="post" action="{{ path('app_workflow_instance_reject', {id: instance.id}) }}">
                         <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ instance.id) }}">
                         <div class="modal-header bg-danger text-white">
-                            <h5 class="modal-title">
+                            <h2 class="modal-title h5">
                                 <i class="bi bi-x-circle"></i>
                                 {{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}
-                            </h5>
+                            </h2>
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">

@@ -1,0 +1,184 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'management_reports' %}
+
+{% block title %}{{ 'management_reports.audit.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.reports'|trans({}, 'nav'), path: 'app_reports_index' },
+            { label: 'management_reports.title'|trans({}, 'management_reports'), path: 'app_management_reports' },
+            { label: 'management_reports.audit.title'|trans({}, 'management_reports') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">
+            <i class="bi bi-search text-warning" aria-hidden="true"></i> {{ 'management_reports.audit.title'|trans({}, 'management_reports') }}
+        </h1>
+        <div class="btn-group">
+            <a href="{{ path('app_management_reports_audit_pdf') }}" class="btn btn-outline-danger">
+                <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
+            </a>
+        </div>
+    </div>
+
+    {# Audit Summary #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center h-100 bg-primary text-white">
+                <div class="card-body">
+                    <i class="bi bi-clipboard-check fs-1"></i>
+                    <h3 class="display-5">{{ report.audits.total }}</h3>
+                    <small>{{ 'management_reports.audit.total_audits'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100 bg-success text-white">
+                <div class="card-body">
+                    <i class="bi bi-calendar-check fs-1"></i>
+                    <h3 class="display-5">{{ report.audits.this_year }}</h3>
+                    <small>{{ 'management_reports.audit.this_year'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100 bg-info text-white">
+                <div class="card-body">
+                    <i class="bi bi-people fs-1"></i>
+                    <h3 class="display-5">{{ report.management_reviews.total }}</h3>
+                    <small>{{ 'management_reports.audit.total_reviews'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100 bg-warning text-dark">
+                <div class="card-body">
+                    <i class="bi bi-calendar-event fs-1"></i>
+                    <h3 class="display-5">{{ report.management_reviews.this_year }}</h3>
+                    <small>{{ 'management_reports.audit.reviews_this_year'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {# Audit Status Breakdown #}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="h5 mb-0">
+                        <i class="bi bi-pie-chart" aria-hidden="true"></i>
+                        {{ 'management_reports.audit.status_breakdown'|trans({}, 'management_reports') }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="badge bg-secondary">{{ 'management_reports.audit_status.planned'|trans({}, 'management_reports') }}</span>
+                            <span>{{ report.audits.by_status.planned }}</span>
+                        </div>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-secondary" style="width: {{ report.audits.total > 0 ? (report.audits.by_status.planned / report.audits.total * 100) : 0 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="badge bg-primary">{{ 'management_reports.audit_status.in_progress'|trans({}, 'management_reports') }}</span>
+                            <span>{{ report.audits.by_status.in_progress }}</span>
+                        </div>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-primary" style="width: {{ report.audits.total > 0 ? (report.audits.by_status.in_progress / report.audits.total * 100) : 0 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="badge bg-success">{{ 'management_reports.audit_status.completed'|trans({}, 'management_reports') }}</span>
+                            <span>{{ report.audits.by_status.completed }}</span>
+                        </div>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-success" style="width: {{ report.audits.total > 0 ? (report.audits.by_status.completed / report.audits.total * 100) : 0 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="badge bg-danger">{{ 'management_reports.audit_status.cancelled'|trans({}, 'management_reports') }}</span>
+                            <span>{{ report.audits.by_status.cancelled }}</span>
+                        </div>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-danger" style="width: {{ report.audits.total > 0 ? (report.audits.by_status.cancelled / report.audits.total * 100) : 0 }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# ISO 27001 Requirements #}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header">
+                    <h3 class="h5 mb-0">
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        {{ 'management_reports.audit.iso_requirements'|trans({}, 'management_reports') }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-3">
+                        <strong>{{ 'management_reports.audit.iso_clause_9'|trans({}, 'management_reports') }}</strong>
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ 'management_reports.audit.internal_audits'|trans({}, 'management_reports') }}
+                            {% if report.audits.this_year >= 1 %}
+                            <span class="badge bg-success">{{ 'management_reports.audit.compliant'|trans({}, 'management_reports') }}</span>
+                            {% else %}
+                            <span class="badge bg-warning text-dark">{{ 'management_reports.audit.pending'|trans({}, 'management_reports') }}</span>
+                            {% endif %}
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ 'management_reports.audit.management_review'|trans({}, 'management_reports') }}
+                            {% if report.management_reviews.this_year >= 1 %}
+                            <span class="badge bg-success">{{ 'management_reports.audit.compliant'|trans({}, 'management_reports') }}</span>
+                            {% else %}
+                            <span class="badge bg-warning text-dark">{{ 'management_reports.audit.pending'|trans({}, 'management_reports') }}</span>
+                            {% endif %}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Quick Links #}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h3 class="h5 mb-0">
+                <i class="bi bi-link-45deg" aria-hidden="true"></i>
+                {{ 'management_reports.audit.quick_links'|trans({}, 'management_reports') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="{{ path('app_audit_index') }}" class="btn btn-outline-primary btn-lg w-100 mb-2">
+                        <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'management_reports.audit.view_audits'|trans({}, 'management_reports') }}
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <a href="{{ path('app_management_review_index') }}" class="btn btn-outline-info btn-lg w-100 mb-2">
+                        <i class="bi bi-people" aria-hidden="true"></i> {{ 'management_reports.audit.view_reviews'|trans({}, 'management_reports') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Report Generated Info #}
+    <div class="text-muted small text-end">
+        <i class="bi bi-clock" aria-hidden="true"></i>
+        {{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ report.generated_at|date('Y-m-d H:i') }}
+    </div>
+</div>
+{% endblock %}

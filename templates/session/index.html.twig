@@ -15,7 +15,7 @@
         <div class="col-md-3">
             <div class="card border-primary">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'session.statistics.total'|trans({}, 'session') }}</h5>
+                    <div class="card-title text-muted fw-semibold">{{ 'session.statistics.total'|trans({}, 'session') }}</div>
                     <p class="display-6 text-primary">{{ statistics.total_active }}</p>
                     <small>{{ 'session.statistics.active_sessions'|trans({}, 'session') }}</small>
                 </div>
@@ -24,7 +24,7 @@
         <div class="col-md-3">
             <div class="card border-success">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'session.statistics.today'|trans({}, 'session') }}</h5>
+                    <div class="card-title text-muted fw-semibold">{{ 'session.statistics.today'|trans({}, 'session') }}</div>
                     <p class="display-6 text-success">{{ statistics.total_last_24h }}</p>
                     <small>{{ 'session.statistics.last_24h'|trans({}, 'session') }}</small>
                 </div>
@@ -33,7 +33,7 @@
         <div class="col-md-3">
             <div class="card border-info">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'session.statistics.unique_users'|trans({}, 'session') }}</h5>
+                    <div class="card-title text-muted fw-semibold">{{ 'session.statistics.unique_users'|trans({}, 'session') }}</div>
                     <p class="display-6 text-info">{{ statistics.unique_users }}</p>
                     <small>{{ 'session.statistics.active_users'|trans({}, 'session') }}</small>
                 </div>
@@ -42,7 +42,7 @@
         <div class="col-md-3">
             <div class="card border-warning">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-muted">{{ 'session.statistics.limit_per_user'|trans({}, 'session') }}</h5>
+                    <div class="card-title text-muted fw-semibold">{{ 'session.statistics.limit_per_user'|trans({}, 'session') }}</div>
                     <p class="display-6 text-warning">{{ statistics.max_concurrent }}</p>
                     <small>{{ 'session.statistics.max_concurrent'|trans({}, 'session') }}</small>
                 </div>
@@ -82,9 +82,9 @@
     {# Active Sessions Table #}
     <div class="card">
         <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">
+            <h2 class="mb-0">
                 <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'session.active_sessions'|trans({}, 'session') }}
-            </h3>
+            </h2>
         </div>
         <div class="card-body">
             {% if sessions|length > 0 %}

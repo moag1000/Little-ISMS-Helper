@@ -1,0 +1,292 @@
+management_reports:
+    title: 'Management-Berichte'
+    subtitle: 'Umfassende Berichte für Führungskräfte, Compliance-Manager und Auditoren.'
+
+    # Quick Stats
+    stats:
+        assets: 'Assets'
+        high_risks: 'Hohe/Kritische Risiken'
+        compliance: 'Compliance'
+        open_incidents: 'Offene Vorfälle'
+
+    # Categories
+    categories:
+        title: 'Berichtskategorien'
+
+    category:
+        executive:
+            title: 'Executive Summary'
+            description: 'Übersicht für die Geschäftsführung mit allen wichtigen KPIs und Trends.'
+        risk:
+            title: 'Risikomanagement'
+            description: 'Risikoregister, Trends, Behandlungspläne und kritische Risiken.'
+        bcm:
+            title: 'Business Continuity'
+            description: 'BC-Pläne, Übungen und Business Impact Analysis (BIA).'
+        compliance:
+            title: 'Compliance'
+            description: 'Compliance-Status, Frameworks und Maßnahmenumsetzung.'
+        audit:
+            title: 'Audit-Management'
+            description: 'Interne Audits und Managementbewertungen (ISO 27001 Clause 9).'
+        assets:
+            title: 'Asset-Management'
+            description: 'Asset-Inventar nach Typ und Klassifizierung.'
+        gdpr:
+            title: 'Datenschutz (DSGVO)'
+            description: 'Datenpannen-Übersicht und DSGVO-Compliance.'
+
+    # Report Names
+    report:
+        executive_summary: 'Executive Dashboard'
+        kpi_overview: 'KPI-Übersicht'
+        risk_register: 'Risikoregister'
+        risk_trends: 'Risikotrends'
+        treatment_plans: 'Behandlungspläne'
+        bc_plans: 'BC-Pläne Übersicht'
+        bc_exercises: 'BC-Übungen'
+        bia_summary: 'BIA-Zusammenfassung'
+        compliance_status: 'Compliance-Status'
+        soa_report: 'Statement of Applicability'
+        audit_summary: 'Audit-Zusammenfassung'
+        management_reviews: 'Managementbewertungen'
+        asset_inventory: 'Asset-Inventar'
+        data_breach_summary: 'Datenpannen-Übersicht'
+
+    # Actions
+    action:
+        view_reports: 'Berichte anzeigen'
+        download_pdf: 'PDF herunterladen'
+        download_excel: 'Excel herunterladen'
+
+    # Quick Access
+    quick_access:
+        title: 'Schnellzugriff'
+        pdf_exports: 'PDF-Exporte'
+        excel_exports: 'Excel-Exporte'
+
+    # Generated At
+    generated_at: 'Erstellt am'
+
+    # Executive Report
+    executive:
+        title: 'Executive Summary'
+        assets: 'Assets'
+        risks: 'Risiken'
+        compliance: 'Compliance'
+        controls: 'Maßnahmen'
+        risk_distribution: 'Risikoverteilung'
+        control_status: 'Maßnahmenstatus'
+        incidents_12m: 'Vorfälle (12 Monate)'
+        audits: 'Audits'
+        trainings: 'Schulungen'
+        risk_trends: 'Risikotrends'
+        incident_trends: 'Vorfalltrends'
+
+    # Risk Levels
+    risk_level:
+        critical: 'Kritisch'
+        high: 'Hoch'
+        medium: 'Mittel'
+        low: 'Niedrig'
+
+    # Control Status
+    control_status:
+        implemented: 'Umgesetzt'
+        in_progress: 'In Bearbeitung'
+        not_started: 'Nicht gestartet'
+
+    # Incident Status
+    incident_status:
+        total: 'Gesamt'
+        open: 'Offen'
+        resolved: 'Gelöst'
+
+    # Audit Status
+    audit_status:
+        total: 'Gesamt'
+        this_year: 'Dieses Jahr'
+        planned: 'Geplant'
+        in_progress: 'Laufend'
+        completed: 'Abgeschlossen'
+        cancelled: 'Abgebrochen'
+
+    # Training Status
+    training_status:
+        total: 'Gesamt'
+
+    # Trend
+    trend:
+        month: 'Monat'
+        new_risks: 'Neue Risiken'
+        high_critical: 'Hoch/Kritisch'
+        total_incidents: 'Vorfälle gesamt'
+
+    # Risk Report
+    risk:
+        title: 'Risikomanagement-Bericht'
+        total_risks: 'Risiken gesamt'
+        avg_score: 'Durchschn. Score'
+        treatment_plans: 'Behandlungspläne'
+        by_category: 'Nach Kategorie'
+        critical_high: 'Kritische & Hohe Risiken'
+        no_critical_high: 'Keine kritischen oder hohen Risiken vorhanden.'
+        trends_12m: 'Risikotrends (12 Monate)'
+        header:
+            id: 'ID'
+            title: 'Titel'
+            category: 'Kategorie'
+            score: 'Score'
+            level: 'Stufe'
+            treatment: 'Behandlung'
+            owner: 'Verantwortlich'
+
+    # Treatment Status
+    treatment_status:
+        total: 'Gesamt'
+        active: 'Aktiv'
+        overdue: 'Überfällig'
+
+    # BCM Report
+    bcm:
+        title: 'BCM-Bericht'
+        total_plans: 'BC-Pläne gesamt'
+        active_plans: 'Aktive Pläne'
+        draft_plans: 'Entwürfe'
+        review_plans: 'In Prüfung'
+        exercises: 'BC-Übungen'
+        total_exercises: 'Übungen gesamt'
+        exercises_12m: 'Übungen (12 Mon.)'
+        exercises_compliant: 'ISO 22301 empfiehlt mindestens 2 BC-Übungen pro Jahr. Status: Konform.'
+        exercises_warning: 'ISO 22301 empfiehlt mindestens 2 BC-Übungen pro Jahr. Weitere Übungen planen.'
+        business_processes: 'Geschäftsprozesse'
+        total_processes: 'Prozesse gesamt'
+        critical_processes: 'Kritische Prozesse'
+        bia_summary: 'BIA-Zusammenfassung'
+        rto_rpo_coverage: 'RTO/RPO-Abdeckung'
+        processes_with_rto: 'Prozesse mit RTO'
+        processes_with_rpo: 'Prozesse mit RPO'
+        coverage: 'Abdeckung'
+        bia_warning_title: 'BIA unvollständig'
+        bia_warning_text: 'Die RTO/RPO-Abdeckung liegt unter 80%. Bitte vervollständigen Sie die Business Impact Analysis.'
+        bia_success_title: 'BIA vollständig'
+        bia_success_text: 'Die RTO/RPO-Abdeckung ist ausreichend für eine effektive Business Continuity Planung.'
+        plans_overview: 'BC-Pläne Übersicht'
+        header:
+            name: 'Name'
+            status: 'Status'
+            last_review: 'Letzte Prüfung'
+            next_review: 'Nächste Prüfung'
+
+    # Criticality
+    criticality:
+        critical: 'Kritisch'
+        high: 'Hoch'
+        medium: 'Mittel'
+        low: 'Niedrig'
+
+    # Compliance Report
+    compliance:
+        title: 'Compliance-Status'
+        overall: 'Gesamte Compliance-Rate'
+        control_status: 'Maßnahmenstatus'
+        total: 'Gesamt'
+        applicable: 'Anwendbar'
+        implemented: 'Umgesetzt'
+        not_applicable: 'Nicht anwendbar'
+        frameworks: 'Compliance-Frameworks'
+        active_frameworks: 'Aktive Frameworks'
+        framework_name: 'Framework'
+        framework_code: 'Code'
+        framework_status: 'Status'
+        active: 'Aktiv'
+        inactive: 'Inaktiv'
+        no_frameworks: 'Keine Compliance-Frameworks konfiguriert.'
+        improvement_needed: 'Verbesserung erforderlich'
+        improvement_text: 'Ihre Compliance-Rate liegt unter 80%. Fokussieren Sie sich auf:'
+        tip_1: 'Priorisieren Sie kritische Maßnahmen (A.5, A.8)'
+        tip_2: 'Dokumentieren Sie alle umgesetzten Maßnahmen'
+        tip_3: 'Planen Sie regelmäßige Compliance-Reviews'
+        good_standing: 'Guter Status'
+        good_standing_text: 'Ihre Organisation zeigt eine starke Compliance-Position. Führen Sie regelmäßige Reviews durch.'
+        quick_links: 'Schnellzugriff'
+        view_soa: 'SoA anzeigen'
+        view_controls: 'Maßnahmen anzeigen'
+
+    # Audit Report
+    audit:
+        title: 'Audit-Management'
+        total_audits: 'Audits gesamt'
+        this_year: 'Dieses Jahr'
+        total_reviews: 'Bewertungen'
+        reviews_this_year: 'Bewertungen (Jahr)'
+        status_breakdown: 'Status-Übersicht'
+        iso_requirements: 'ISO 27001 Anforderungen'
+        iso_clause_9: 'ISO 27001 Clause 9 - Leistungsbewertung'
+        internal_audits: 'Interne Audits (9.2)'
+        management_review: 'Managementbewertung (9.3)'
+        compliant: 'Konform'
+        pending: 'Ausstehend'
+        quick_links: 'Schnellzugriff'
+        view_audits: 'Audits anzeigen'
+        view_reviews: 'Bewertungen anzeigen'
+
+    # Assets Report
+    assets:
+        title: 'Asset-Inventar'
+        total: 'Assets gesamt'
+        by_type: 'Nach Typ'
+        by_classification: 'Nach Klassifizierung'
+        no_assets: 'Keine Assets vorhanden.'
+        no_classification: 'Keine Klassifizierungen vorhanden.'
+        inventory: 'Asset-Liste'
+        showing_first: 'Zeige erste %count% von %total% Assets.'
+        view_all: 'Alle Assets anzeigen'
+        export_full: 'Vollständig exportieren'
+        header:
+            id: 'ID'
+            name: 'Name'
+            type: 'Typ'
+            classification: 'Klassifizierung'
+            owner: 'Verantwortlich'
+            status: 'Status'
+
+    # GDPR Report
+    gdpr:
+        title: 'Datenpannen-Bericht (DSGVO)'
+        total_breaches: 'Pannen gesamt'
+        this_year: 'Dieses Jahr'
+        notified: 'Gemeldet'
+        pending_notification: 'Ausstehend'
+        by_severity: 'Nach Schweregrad'
+        requirements: 'DSGVO-Anforderungen'
+        article_33_34: 'Artikel 33 & 34 - Meldepflichten'
+        72h_notification: '72-Stunden-Meldung'
+        72h_description: 'Meldung an Aufsichtsbehörde innerhalb von 72 Stunden nach Bekanntwerden (Art. 33)'
+        data_subject_notification: 'Betroffenen-Benachrichtigung'
+        data_subject_description: 'Benachrichtigung betroffener Personen bei hohem Risiko (Art. 34)'
+        documentation: 'Dokumentation'
+        documentation_description: 'Dokumentation aller Pannen inkl. Fakten, Auswirkungen und ergriffene Maßnahmen'
+        urgent_attention: 'Dringende Aufmerksamkeit erforderlich'
+        pending_notification_warning: '%count% Datenpanne(n) erfordern eine Meldung an die Aufsichtsbehörde.'
+        view_breaches: 'Datenpannen anzeigen'
+        view_ropa: 'Verarbeitungsverzeichnis'
+        view_dpia: 'DSFA anzeigen'
+        breach_list: 'Datenpannen-Register'
+        pending: 'Ausstehend'
+        no_breaches_title: 'Keine Datenpannen'
+        no_breaches_text: 'Keine Datenpannen erfasst. Überwachen Sie weiterhin die Datenschutzpraktiken.'
+        header:
+            id: 'ID'
+            title: 'Titel'
+            severity: 'Schweregrad'
+            discovered: 'Entdeckt'
+            notification_required: 'Meldepflicht'
+            notified: 'Gemeldet'
+
+    # Severity
+    severity:
+        critical: 'Kritisch'
+        high: 'Hoch'
+        medium: 'Mittel'
+        low: 'Niedrig'

@@ -25,14 +25,14 @@
 
     {% if dpia.status == 'requires_revision' and dpia.rejectionReason %}
         <div class="alert alert-warning">
-            <h6><i class="bi bi-exclamation-triangle"></i> Revision Required</h6>
+            <div class="fw-bold"><i class="bi bi-exclamation-triangle"></i> Revision Required</div>
             <p class="mb-0">{{ dpia.rejectionReason }}</p>
         </div>
     {% endif %}
 
     <div class="card">
         <div class="card-header">
-            <h1 class="h5 mb-0"><i class="bi bi-clipboard-check"></i> DPIA Form</h1>
+            <h2 class="h5 mb-0"><i class="bi bi-clipboard-check"></i> DPIA Form</h2>
         </div>
         <div class="card-body">
             {{ form_start(form) }}

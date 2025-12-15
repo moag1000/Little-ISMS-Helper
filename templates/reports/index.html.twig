@@ -117,26 +117,51 @@
             ) }}
         </div>
 
-        {# Custom Reports (Coming Soon) #}
+        {# Management Reports #}
         <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100 shadow-sm border-secondary">
-                <div class="card-header bg-secondary text-white">
-                    <h3 class="mb-0"><i class="bi bi-file-earmark-plus" aria-hidden="true"></i> {{ 'reports.custom.title'|trans({}, 'reports') }}</h3>
+            <div class="card h-100 shadow-sm border-dark">
+                <div class="card-header bg-dark text-white">
+                    <h2 class="mb-0"><i class="bi bi-graph-up-arrow" aria-hidden="true"></i> {{ 'reports.management.title'|trans({}, 'reports') }}</h2>
                 </div>
                 <div class="card-body">
-                    <p class="text-muted">{{ 'reports.custom.subtitle'|trans({}, 'reports') }}</p>
+                    <p class="text-muted">{{ 'reports.management.description'|trans({}, 'reports') }}</p>
                     <ul class="small mb-3">
-                        <li>{{ 'reports.custom.items.item_1'|trans({}, 'reports') }}</li>
-                        <li>{{ 'reports.custom.items.item_2'|trans({}, 'reports') }}</li>
-                        <li>{{ 'reports.custom.items.item_3'|trans({}, 'reports') }}</li>
-                        <li>{{ 'reports.custom.items.item_4'|trans({}, 'reports') }}</li>
+                        <li>{{ 'reports.management.features.feature_1'|trans({}, 'reports') }}</li>
+                        <li>{{ 'reports.management.features.feature_2'|trans({}, 'reports') }}</li>
+                        <li>{{ 'reports.management.features.feature_3'|trans({}, 'reports') }}</li>
+                        <li>{{ 'reports.management.features.feature_4'|trans({}, 'reports') }}</li>
                     </ul>
                 </div>
                 <div class="card-footer bg-light">
                     <div class="d-grid">
-                        <button class="btn btn-sm btn-outline-secondary" disabled>
-                            <i class="bi bi-hourglass-split" aria-hidden="true"></i> {{ 'reports.custom.coming_soon'|trans({}, 'reports') }}
-                        </button>
+                        <a href="{{ path('app_management_reports') }}" class="btn btn-sm btn-dark">
+                            <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'reports.management.view_all'|trans({}, 'reports') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Scheduled Reports #}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100 shadow-sm border-secondary">
+                <div class="card-header bg-secondary text-white">
+                    <h2 class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'reports.scheduled.title'|trans({}, 'reports') }}</h2>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">{{ 'reports.scheduled.description'|trans({}, 'reports') }}</p>
+                    <ul class="small mb-3">
+                        <li>{{ 'reports.scheduled.features.feature_1'|trans({}, 'reports') }}</li>
+                        <li>{{ 'reports.scheduled.features.feature_2'|trans({}, 'reports') }}</li>
+                        <li>{{ 'reports.scheduled.features.feature_3'|trans({}, 'reports') }}</li>
+                        <li>{{ 'reports.scheduled.features.feature_4'|trans({}, 'reports') }}</li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-light">
+                    <div class="d-grid">
+                        <a href="{{ path('app_scheduled_report_index') }}" class="btn btn-sm btn-secondary">
+                            <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'reports.scheduled.manage'|trans({}, 'reports') }}
+                        </a>
                     </div>
                 </div>
             </div>
@@ -149,7 +174,7 @@
             {% set best_practices_content %}
                 <div class="row">
                     <div class="col-md-6">
-                        <h4>{{ 'reports.best_practices.audits.title'|trans({}, 'reports') }}</h4>
+                        <h2>{{ 'reports.best_practices.audits.title'|trans({}, 'reports') }}</h2>
                         <ul class="small">
                             <li>{{ 'reports.best_practices.audits.items.item_1'|trans({}, 'reports') }}</li>
                             <li>{{ 'reports.best_practices.audits.items.item_2'|trans({}, 'reports') }}</li>
@@ -158,7 +183,7 @@
                         </ul>
                     </div>
                     <div class="col-md-6">
-                        <h4>{{ 'reports.best_practices.management.title'|trans({}, 'reports') }}</h4>
+                        <h2>{{ 'reports.best_practices.management.title'|trans({}, 'reports') }}</h2>
                         <ul class="small">
                             <li>{{ 'reports.best_practices.management.items.item_1'|trans({}, 'reports') }}</li>
                             <li>{{ 'reports.best_practices.management.items.item_2'|trans({}, 'reports') }}</li>

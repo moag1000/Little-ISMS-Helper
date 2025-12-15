@@ -349,3 +349,74 @@ data_management:
         sensitive_data_warning: 'Warning: This export may contain sensitive data. Please store securely.'
         large_exports_warning: 'Note: Large datasets may take some time to export.'
         relationships_warning: 'Info: Relationships between entities are exported as IDs.'
+
+setup:
+    # Database configuration choices
+    database:
+        type:
+            mysql: MySQL
+            mariadb: MariaDB
+            postgresql: PostgreSQL
+            sqlite: SQLite
+
+    # Organisation form choices
+    organisation:
+        # Industries
+        industry:
+            automotive: Automotive Industry
+            financial_services: Financial Services
+            healthcare: Healthcare
+            pharmaceutical: Pharmaceutical Industry
+            digital_health: Digital Health / DiGA
+            manufacturing: Manufacturing / Production
+            it_services: IT Services
+            cloud_services: Cloud Services
+            energy: Energy Supply
+            telecommunications: Telecommunications
+            critical_infrastructure: Critical Infrastructure
+            retail: Retail / E-Commerce
+            public_sector: Public Sector
+            education: Education / Research
+            other: Other Industry
+
+        # Employee counts
+        employee_count:
+            '1_10': '1-10 Employees'
+            '11_50': '11-50 Employees'
+            '51_250': '51-250 Employees'
+            '251_1000': '251-1,000 Employees'
+            '1001_plus': 'Over 1,000 Employees'
+            select: 'Please select...'
+
+        # Countries
+        country:
+            de: Germany
+            at: Austria
+            ch: Switzerland
+            be: Belgium
+            dk: Denmark
+            fi: Finland
+            fr: France
+            it: Italy
+            lu: Luxembourg
+            nl: Netherlands
+            pl: Poland
+            es: Spain
+            se: Sweden
+            cz: Czech Republic
+            eu_other: 'Other EU'
+            non_eu: 'Outside EU'
+
+    # Email configuration choices
+    email:
+        transport:
+            smtp: 'SMTP Server'
+            sendmail: 'Sendmail (local)'
+            native: 'System Mail (PHP mail())'
+        encryption:
+            none: 'No Encryption'
+            tls: 'TLS (recommended)'
+            ssl: SSL
+
+    section:
+        overview: Overview

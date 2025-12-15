@@ -15,6 +15,71 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.3.0] - 2025-12-15
+
+### 🚀 Phase 7: Management Dashboard & Compliance Wizard
+
+Major release introducing management-level reporting, compliance assessment wizards, and DORA compliance tracking.
+
+### ✨ Added
+
+#### Compliance Wizard
+- **Interactive assessment wizards** for ISO 27001, TISAX AL2/AL3, BSI IT-Grundschutz
+- **Category-based assessments** with progress tracking
+- **Real-time compliance scoring** with radar charts
+- **Gap analysis** with prioritized recommendations
+- **PDF export** of assessment results
+- **Framework comparison** tool for multi-framework environments
+
+#### Management Reports
+- **Executive Summary Report** - High-level KPIs for C-level management
+- **Risk Management Report** - Detailed risk analysis with trends
+- **BCM Report** - Business continuity metrics and RTO/RPO analysis
+- **Compliance Report** - Framework status and gap overview
+- **Audit Report** - Audit findings and follow-up status
+- **GDPR Report** - Data protection compliance metrics
+- **Asset Report** - Asset inventory and criticality analysis
+- **PDF & Excel export** for all reports
+
+#### DORA Compliance Dashboard
+- **EU-DORA regulation tracking** (Digital Operational Resilience Act)
+- **ICT Risk Management** module status
+- **Incident Reporting** timeline tracking (24h/72h deadlines)
+- **Third-Party Risk** management overview
+- **Resilience Testing** schedule and results
+- **Information Sharing** requirements status
+
+#### Dashboard Improvements
+- **Compliance Status Widget** with framework breakdown
+- **Management KPIs Widget** with trend indicators
+- **Quick action buttons** for common tasks
+
+### 🔧 Changed
+
+#### Setup Wizard Enhancements
+- **Loading spinners** on all Step 3 forms for visual feedback
+- **Timeout prevention** for database operations (schema creation, migrations, backup restore)
+- **Improved error handling** with detailed logging
+
+#### Translation System
+- Fixed compliance translations (moved `dashboard` and `mapping_quality` to correct namespace)
+- Added loading state translations for setup wizard
+- Fixed inconsistent translation key formats
+
+### 🐛 Fixed
+- Route errors in compliance wizard (`app_admin_module_index` → `admin_modules_index`)
+- Route errors in management reports (`app_control_index` → `app_soa_index`)
+- Translation domain errors (`risks` → `risk`)
+- YAML duplicate key errors in compliance translation files
+
+### 📊 Statistics
+- **22 new template files** for wizards and reports
+- **8 new translation files** (wizard, dora, kpi, management_reports)
+- **375 templates** validated without errors
+- **0 missing translations** for German locale
+
+---
+
 ## [2.2.4] - 2025-12-10
 
 ### 🌍 Internationalization - Complete i18n Cleanup

@@ -34,7 +34,7 @@
 
     {% if upcoming|length > 0 %}
     <div class="info-box">
-        <h2>{{ 'bc_exercises.section.upcoming'|trans({}, 'bc_exercises') }}</h2>
+        <h2 class="h4">{{ 'bc_exercises.section.upcoming'|trans({}, 'bc_exercises') }}</h2>
         <ul>
             {% for exercise in upcoming %}
             <li>
@@ -48,7 +48,7 @@
 
     {% if incomplete_reports|length > 0 %}
     <div class="alert alert-warning">
-        <h4><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'bc_exercises.section.incomplete_reports'|trans({}, 'bc_exercises') }}</h4>
+        <h2 class="h4"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> {{ 'bc_exercises.section.incomplete_reports'|trans({}, 'bc_exercises') }}</h2>
         <ul>
             {% for exercise in incomplete_reports %}
             <li>
@@ -61,7 +61,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h3>{{ 'bc_exercises.page.header'|trans({}, 'bc_exercises') }} ({{ bc_exercises|length }})</h3>
+            <h2>{{ 'bc_exercises.page.header'|trans({}, 'bc_exercises') }} ({{ bc_exercises|length }})</h2>
         </div>
         <div class="card-body">
             {% if bc_exercises|length > 0 %}

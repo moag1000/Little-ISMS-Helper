@@ -1,0 +1,262 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'management_reports' %}
+
+{% block title %}{{ 'management_reports.bcm.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.reports'|trans({}, 'nav'), path: 'app_reports_index' },
+            { label: 'management_reports.title'|trans({}, 'management_reports'), path: 'app_management_reports' },
+            { label: 'management_reports.bcm.title'|trans({}, 'management_reports') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">
+            <i class="bi bi-shield-check text-success" aria-hidden="true"></i> {{ 'management_reports.bcm.title'|trans({}, 'management_reports') }}
+        </h1>
+        <div class="btn-group">
+            <a href="{{ path('app_management_reports_bcm_pdf') }}" class="btn btn-outline-danger">
+                <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
+            </a>
+        </div>
+    </div>
+
+    {# BC Plans Summary #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center h-100 bg-primary text-white">
+                <div class="card-body">
+                    <i class="bi bi-file-earmark-text fs-1"></i>
+                    <h3 class="display-5">{{ report.bc_plans.total }}</h3>
+                    <small>{{ 'management_reports.bcm.total_plans'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100 bg-success text-white">
+                <div class="card-body">
+                    <i class="bi bi-check-circle fs-1"></i>
+                    <h3 class="display-5">{{ report.bc_plans.active }}</h3>
+                    <small>{{ 'management_reports.bcm.active_plans'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100 bg-warning text-dark">
+                <div class="card-body">
+                    <i class="bi bi-hourglass-split fs-1"></i>
+                    <h3 class="display-5">{{ report.bc_plans.draft }}</h3>
+                    <small>{{ 'management_reports.bcm.draft_plans'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100 bg-info text-white">
+                <div class="card-body">
+                    <i class="bi bi-search fs-1"></i>
+                    <h3 class="display-5">{{ report.bc_plans.review }}</h3>
+                    <small>{{ 'management_reports.bcm.review_plans'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {# BC Exercises #}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-info text-white">
+                    <h3 class="h5 mb-0">
+                        <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                        {{ 'management_reports.bcm.exercises'|trans({}, 'management_reports') }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center mb-3">
+                        <div class="col-6">
+                            <h4 class="text-primary">{{ report.exercises.total }}</h4>
+                            <small class="text-muted">{{ 'management_reports.bcm.total_exercises'|trans({}, 'management_reports') }}</small>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="text-success">{{ report.exercises.last_12_months }}</h4>
+                            <small class="text-muted">{{ 'management_reports.bcm.exercises_12m'|trans({}, 'management_reports') }}</small>
+                        </div>
+                    </div>
+                    {% if report.exercises.last_12_months >= 2 %}
+                    <div class="alert alert-success mb-0">
+                        <i class="bi bi-check-circle" aria-hidden="true"></i>
+                        {{ 'management_reports.bcm.exercises_compliant'|trans({}, 'management_reports') }}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning mb-0">
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                        {{ 'management_reports.bcm.exercises_warning'|trans({}, 'management_reports') }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Business Processes #}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h3 class="h5 mb-0">
+                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                        {{ 'management_reports.bcm.business_processes'|trans({}, 'management_reports') }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <h4 class="text-primary">{{ report.business_processes.total }}</h4>
+                            <small class="text-muted">{{ 'management_reports.bcm.total_processes'|trans({}, 'management_reports') }}</small>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="text-danger">{{ report.business_processes.critical }}</h4>
+                            <small class="text-muted">{{ 'management_reports.bcm.critical_processes'|trans({}, 'management_reports') }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# BIA Summary #}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-primary text-white">
+            <h3 class="h5 mb-0">
+                <i class="bi bi-clipboard-data" aria-hidden="true"></i>
+                {{ 'management_reports.bcm.bia_summary'|trans({}, 'management_reports') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-3 text-center">
+                    <div class="border rounded p-3 h-100">
+                        <h4 class="text-danger">{{ bia.by_criticality.critical }}</h4>
+                        <small class="text-muted">{{ 'management_reports.criticality.critical'|trans({}, 'management_reports') }}</small>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="border rounded p-3 h-100">
+                        <h4 class="text-warning">{{ bia.by_criticality.high }}</h4>
+                        <small class="text-muted">{{ 'management_reports.criticality.high'|trans({}, 'management_reports') }}</small>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="border rounded p-3 h-100">
+                        <h4 class="text-info">{{ bia.by_criticality.medium }}</h4>
+                        <small class="text-muted">{{ 'management_reports.criticality.medium'|trans({}, 'management_reports') }}</small>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="border rounded p-3 h-100">
+                        <h4 class="text-success">{{ bia.by_criticality.low }}</h4>
+                        <small class="text-muted">{{ 'management_reports.criticality.low'|trans({}, 'management_reports') }}</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>{{ 'management_reports.bcm.rto_rpo_coverage'|trans({}, 'management_reports') }}</h5>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>{{ 'management_reports.bcm.processes_with_rto'|trans({}, 'management_reports') }}</span>
+                                <span class="badge bg-primary">{{ bia.rto_defined }} / {{ bia.total_processes }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span>{{ 'management_reports.bcm.processes_with_rpo'|trans({}, 'management_reports') }}</span>
+                                <span class="badge bg-primary">{{ bia.rpo_defined }} / {{ bia.total_processes }}</span>
+                            </div>
+                            <div class="progress mt-3" style="height: 25px;">
+                                <div class="progress-bar bg-success" style="width: {{ bia.coverage }}%">
+                                    {{ bia.coverage }}% {{ 'management_reports.bcm.coverage'|trans({}, 'management_reports') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    {% if bia.coverage < 80 %}
+                    <div class="alert alert-warning h-100 d-flex align-items-center">
+                        <div>
+                            <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'management_reports.bcm.bia_warning_title'|trans({}, 'management_reports') }}</h5>
+                            <p class="mb-0">{{ 'management_reports.bcm.bia_warning_text'|trans({}, 'management_reports') }}</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-success h-100 d-flex align-items-center">
+                        <div>
+                            <h5><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'management_reports.bcm.bia_success_title'|trans({}, 'management_reports') }}</h5>
+                            <p class="mb-0">{{ 'management_reports.bcm.bia_success_text'|trans({}, 'management_reports') }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# BC Plans Table #}
+    {% if report.bc_plans.plans|length > 0 %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h3 class="h5 mb-0">
+                <i class="bi bi-list-check" aria-hidden="true"></i>
+                {{ 'management_reports.bcm.plans_overview'|trans({}, 'management_reports') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>{{ 'management_reports.bcm.header.name'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.bcm.header.status'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.bcm.header.last_review'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.bcm.header.next_review'|trans({}, 'management_reports') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for plan in report.bc_plans.plans %}
+                        <tr>
+                            <td>
+                                <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}">
+                                    {{ plan.name }}
+                                </a>
+                            </td>
+                            <td>
+                                {% if plan.status == 'active' or plan.status == 'approved' %}
+                                <span class="badge bg-success">{{ plan.status }}</span>
+                                {% elseif plan.status == 'draft' %}
+                                <span class="badge bg-warning text-dark">{{ plan.status }}</span>
+                                {% elseif plan.status == 'review' %}
+                                <span class="badge bg-info">{{ plan.status }}</span>
+                                {% else %}
+                                <span class="badge bg-secondary">{{ plan.status }}</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ plan.lastReviewDate ? plan.lastReviewDate|date('Y-m-d') : '-' }}</td>
+                            <td>{{ plan.nextReviewDate ? plan.nextReviewDate|date('Y-m-d') : '-' }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Report Generated Info #}
+    <div class="text-muted small text-end">
+        <i class="bi bi-clock" aria-hidden="true"></i>
+        {{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ report.generated_at|date('Y-m-d H:i') }}
+    </div>
+</div>
+{% endblock %}

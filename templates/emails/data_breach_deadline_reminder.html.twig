@@ -6,28 +6,28 @@
 {% block content %}
     {% if urgency_level == 'OVERDUE' %}
         <div style="background-color: #f8d7da; border: 2px solid #dc3545; padding: 20px; margin-bottom: 20px; text-align: center;">
-            <h2 style="color: #dc3545; margin: 0;">🔴 GDPR 72h DEADLINE EXCEEDED</h2>
+            <h1 style="color: #dc3545; margin: 0;">🔴 GDPR 72h DEADLINE EXCEEDED</h1>
             <p style="color: #721c24; margin: 10px 0 0 0; font-size: 1.1em;">
                 The supervisory authority notification deadline has passed!
             </p>
         </div>
     {% elseif urgency_level == 'CRITICAL' %}
         <div style="background-color: #fff3cd; border: 2px solid #fd7e14; padding: 20px; margin-bottom: 20px; text-align: center;">
-            <h2 style="color: #fd7e14; margin: 0;">🟠 CRITICAL: Less than 12 hours remaining</h2>
+            <h1 style="color: #fd7e14; margin: 0;">🟠 CRITICAL: Less than 12 hours remaining</h1>
             <p style="color: #856404; margin: 10px 0 0 0; font-size: 1.1em;">
                 Immediate action required to meet GDPR Art. 33 deadline!
             </p>
         </div>
     {% else %}
         <div style="background-color: #fff3cd; border: 2px solid #ffc107; padding: 20px; margin-bottom: 20px; text-align: center;">
-            <h2 style="color: #856404; margin: 0;">🟡 WARNING: Notification deadline approaching</h2>
+            <h1 style="color: #856404; margin: 0;">🟡 WARNING: Notification deadline approaching</h1>
             <p style="color: #856404; margin: 10px 0 0 0; font-size: 1.1em;">
                 Action required within {{ hours_remaining }} hours
             </p>
         </div>
     {% endif %}
 
-    <h2>Data Breach Notification Required</h2>
+    <h2 style="margin-top: 20px;">Data Breach Notification Required</h2>
 
     <p>Dear Data Protection Officer,</p>
 
@@ -83,7 +83,7 @@
         </table>
     </div>
 
-    <h3>{{ 'emails.data_breach.requirements_title'|trans({}, 'emails') }}</h3>
+    <h2>{{ 'emails.data_breach.requirements_title'|trans({}, 'emails') }}</h2>
 
     <p>{{ 'emails.data_breach.requirements_intro'|trans({}, 'emails') }}</p>
 
@@ -131,7 +131,7 @@
 
     {% if urgency_level == 'OVERDUE' %}
     <div style="background-color: #f8d7da; border-left: 4px solid #dc3545; padding: 15px; margin: 20px 0;">
-        <h4 style="margin-top: 0; color: #721c24;">⚠️ Deadline Exceeded - Required Actions</h4>
+        <h2 style="margin-top: 0; color: #721c24;">⚠️ Deadline Exceeded - Required Actions</h2>
         <ol style="margin-bottom: 0;">
             <li><strong>Notify immediately</strong> - Contact the supervisory authority as soon as possible</li>
             <li><strong>Document the delay</strong> - Record the reasons for the delay (Art. 33(1))</li>
@@ -142,7 +142,7 @@
     {% endif %}
 
     <div style="background-color: #e7f3ff; border-left: 4px solid #007bff; padding: 15px; margin: 20px 0;">
-        <h4 style="margin-top: 0;">Supervisory Authority Contact (Germany)</h4>
+        <h3 style="margin-top: 0;">Supervisory Authority Contact (Germany)</h3>
         <p style="margin-bottom: 5px;"><strong>National:</strong> BfDI (Bundesbeauftragter für den Datenschutz)</p>
         <p style="margin-bottom: 5px;">Website: <a href="https://www.bfdi.bund.de">www.bfdi.bund.de</a></p>
         <p style="margin-bottom: 0; font-size: 0.9em; color: #6c757d;">
@@ -151,7 +151,7 @@
     </div>
 
     <div style="background-color: #d4edda; border-left: 4px solid #28a745; padding: 15px; margin: 20px 0;">
-        <h4 style="margin-top: 0; color: #155724;">GDPR Art. 33 Reference</h4>
+        <h3 style="margin-top: 0; color: #155724;">GDPR Art. 33 Reference</h3>
         <p style="margin-bottom: 0; font-style: italic;">
             "In the case of a personal data breach, the controller shall without undue delay and, where feasible,
             not later than <strong>72 hours</strong> after having become aware of it, notify the personal data breach

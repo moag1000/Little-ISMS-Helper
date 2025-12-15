@@ -35,7 +35,7 @@
 {# Instance Overview #}
 <div class="card mb-4">
     <div class="card-header">
-        <h3 class="mb-0">{{ 'workflow.section.overview'|trans({}, 'workflows') }}</h3>
+        <h2 class="mb-0">{{ 'workflow.section.overview'|trans({}, 'workflows') }}</h2>
     </div>
     <div class="card-body">
         <div class="row">
@@ -99,10 +99,10 @@
     <div class="d-flex align-items-start">
         <i class="bi bi-exclamation-triangle-fill fs-4 me-3" aria-hidden="true"></i>
         <div class="flex-grow-1">
-            <h4 class="alert-heading mb-2">
+            <h2 class="alert-heading mb-2">
                 <i class="bi bi-person-exclamation" aria-hidden="true"></i>
                 {{ 'workflow.warning.no_eligible_approvers_title'|trans({}, 'workflows') }}
-            </h4>
+            </h2>
             <p class="mb-2">{{ 'workflow.warning.no_eligible_approvers_desc'|trans({}, 'workflows') }}</p>
 
             {% if is_granted('ROLE_ADMIN') %}
@@ -131,7 +131,7 @@
 {% if instance.workflow and instance.workflow.steps|length > 0 %}
 <div class="card mb-4">
     <div class="card-header">
-        <h3 class="mb-0">{{ 'workflow.section.steps'|trans({}, 'workflows') }}</h3>
+        <h2 class="mb-0">{{ 'workflow.section.steps'|trans({}, 'workflows') }}</h2>
     </div>
     <div class="card-body">
         {% for step in instance.workflow.steps %}
@@ -176,7 +176,7 @@
 {% if instance.approvalHistory|length > 0 %}
 <div class="card mb-4">
     <div class="card-header">
-        <h3 class="mb-0">{{ 'workflow.section.activity_log'|trans({}, 'workflows') }}</h3>
+        <h2 class="mb-0">{{ 'workflow.section.activity_log'|trans({}, 'workflows') }}</h2>
     </div>
     <div class="card-body">
         <div class="table-responsive">
@@ -254,7 +254,7 @@
             <form method="post" action="{{ path('app_workflow_instance_reject', {id: instance.id}) }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ instance.id) }}">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="rejectModalLabel">{{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}</h5>
+                    <h2 class="modal-title h5" id="rejectModalLabel">{{ 'workflow.widget.action.reject'|trans({}, 'workflows') }}</h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">

@@ -1,0 +1,169 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'management_reports' %}
+
+{% block title %}{{ 'management_reports.compliance.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.reports'|trans({}, 'nav'), path: 'app_reports_index' },
+            { label: 'management_reports.title'|trans({}, 'management_reports'), path: 'app_management_reports' },
+            { label: 'management_reports.compliance.title'|trans({}, 'management_reports') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">
+            <i class="bi bi-clipboard-check text-info" aria-hidden="true"></i> {{ 'management_reports.compliance.title'|trans({}, 'management_reports') }}
+        </h1>
+        <div class="btn-group">
+            <a href="{{ path('app_management_reports_compliance_pdf') }}" class="btn btn-outline-danger">
+                <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
+            </a>
+        </div>
+    </div>
+
+    {# Overall Compliance #}
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card text-center h-100 bg-{% if report.overall_compliance >= 80 %}success{% elseif report.overall_compliance >= 60 %}warning{% else %}danger{% endif %} text-white">
+                <div class="card-body">
+                    <h3 class="display-3">{{ report.overall_compliance }}%</h3>
+                    <p class="mb-0">{{ 'management_reports.compliance.overall'|trans({}, 'management_reports') }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4>{{ 'management_reports.compliance.control_status'|trans({}, 'management_reports') }}</h4>
+                    <div class="progress mb-3" style="height: 30px;">
+                        <div class="progress-bar bg-success" style="width: {{ report.controls.total > 0 ? (report.controls.implemented / report.controls.total * 100) : 0 }}%">
+                            {{ report.controls.implemented }} {{ 'management_reports.compliance.implemented'|trans({}, 'management_reports') }}
+                        </div>
+                        <div class="progress-bar bg-secondary" style="width: {{ report.controls.total > 0 ? (report.controls.not_applicable / report.controls.total * 100) : 0 }}%">
+                            {{ report.controls.not_applicable }} {{ 'management_reports.compliance.not_applicable'|trans({}, 'management_reports') }}
+                        </div>
+                    </div>
+                    <div class="row text-center">
+                        <div class="col-3">
+                            <h5 class="text-primary">{{ report.controls.total }}</h5>
+                            <small class="text-muted">{{ 'management_reports.compliance.total'|trans({}, 'management_reports') }}</small>
+                        </div>
+                        <div class="col-3">
+                            <h5 class="text-success">{{ report.controls.implemented }}</h5>
+                            <small class="text-muted">{{ 'management_reports.compliance.implemented'|trans({}, 'management_reports') }}</small>
+                        </div>
+                        <div class="col-3">
+                            <h5 class="text-info">{{ report.controls.applicable }}</h5>
+                            <small class="text-muted">{{ 'management_reports.compliance.applicable'|trans({}, 'management_reports') }}</small>
+                        </div>
+                        <div class="col-3">
+                            <h5 class="text-secondary">{{ report.controls.not_applicable }}</h5>
+                            <small class="text-muted">{{ 'management_reports.compliance.not_applicable'|trans({}, 'management_reports') }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Frameworks #}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h3 class="h5 mb-0">
+                <i class="bi bi-collection" aria-hidden="true"></i>
+                {{ 'management_reports.compliance.frameworks'|trans({}, 'management_reports') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 text-center mb-3">
+                    <h4 class="text-primary">{{ report.active_frameworks }}</h4>
+                    <small class="text-muted">{{ 'management_reports.compliance.active_frameworks'|trans({}, 'management_reports') }}</small>
+                </div>
+                <div class="col-md-9">
+                    {% if report.frameworks|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'management_reports.compliance.framework_name'|trans({}, 'management_reports') }}</th>
+                                    <th>{{ 'management_reports.compliance.framework_code'|trans({}, 'management_reports') }}</th>
+                                    <th>{{ 'management_reports.compliance.framework_status'|trans({}, 'management_reports') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for framework in report.frameworks %}
+                                <tr>
+                                    <td>{{ framework.name }}</td>
+                                    <td><code>{{ framework.code }}</code></td>
+                                    <td>
+                                        {% if framework.active %}
+                                        <span class="badge bg-success">{{ 'management_reports.compliance.active'|trans({}, 'management_reports') }}</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">{{ 'management_reports.compliance.inactive'|trans({}, 'management_reports') }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info mb-0">
+                        {{ 'management_reports.compliance.no_frameworks'|trans({}, 'management_reports') }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Compliance Advice #}
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            {% if report.overall_compliance < 80 %}
+            <div class="alert alert-warning h-100">
+                <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'management_reports.compliance.improvement_needed'|trans({}, 'management_reports') }}</h5>
+                <p>{{ 'management_reports.compliance.improvement_text'|trans({}, 'management_reports') }}</p>
+                <ul class="mb-0">
+                    <li>{{ 'management_reports.compliance.tip_1'|trans({}, 'management_reports') }}</li>
+                    <li>{{ 'management_reports.compliance.tip_2'|trans({}, 'management_reports') }}</li>
+                    <li>{{ 'management_reports.compliance.tip_3'|trans({}, 'management_reports') }}</li>
+                </ul>
+            </div>
+            {% else %}
+            <div class="alert alert-success h-100">
+                <h5><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'management_reports.compliance.good_standing'|trans({}, 'management_reports') }}</h5>
+                <p class="mb-0">{{ 'management_reports.compliance.good_standing_text'|trans({}, 'management_reports') }}</p>
+            </div>
+            {% endif %}
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ 'management_reports.compliance.quick_links'|trans({}, 'management_reports') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{{ path('app_soa_index') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'management_reports.compliance.view_soa'|trans({}, 'management_reports') }}
+                        </a>
+                        <a href="{{ path('app_soa_index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'management_reports.compliance.view_controls'|trans({}, 'management_reports') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Report Generated Info #}
+    <div class="text-muted small text-end">
+        <i class="bi bi-clock" aria-hidden="true"></i>
+        {{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ report.generated_at|date('Y-m-d H:i') }}
+    </div>
+</div>
+{% endblock %}

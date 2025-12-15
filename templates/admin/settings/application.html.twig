@@ -12,10 +12,10 @@
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-header bg-white">
-                    <h3 class="card-title mb-0">
+                    <h2 class="card-title mb-0">
                         <i class="bi bi-gear-fill text-primary" aria-hidden="true"></i>
                         {{ 'admin.settings.application.title'|trans({}, 'admin') }}
-                    </h3>
+                    </h2>
                 </div>
                 <div class="card-body">
                     {{ form_start(form) }}
@@ -57,7 +57,8 @@
 
         <div class="col-lg-4">
             <div class="card">
-                <div class="card-header bg-white"><h5 class="card-title mb-0">{{ 'admin.settings.help'|trans({}, 'admin') }}</h5>
+                <div class="card-header bg-white">
+                    <h2 class="card-title mb-0">{{ 'admin.settings.help'|trans({}, 'admin') }}</h2>
                 </div>
                 <div class="card-body">
                     <p class="small">{{ 'admin.settings.application.help_text'|trans({}, 'admin') }}</p>

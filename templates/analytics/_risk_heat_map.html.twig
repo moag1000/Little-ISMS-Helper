@@ -13,10 +13,10 @@
      data-controller="heat-map"
      data-heat-map-url-value="{{ path('app_analytics_heat_map_data') }}">
     <div class="card-header">
-        <h3 class="card-title">
+        <h2 class="card-title">
             <i class="bi bi-grid-3x3-gap text-danger"></i>
             {{ 'analytics.card.risk_heat_map'|trans({}, 'analytics') }}
-        </h3>
+        </h2>
         <div class="card-actions">
             <button class="btn btn-sm btn-outline-secondary"
                     data-action="click->heat-map#toggleFilters"
@@ -137,7 +137,7 @@
         {# Risk Details Modal #}
         <div class="heat-map-details d-none" data-heat-map-target="details">
             <div class="details-header">
-                <h4 data-heat-map-target="detailsTitle">{{ 'analytics.details.risks_in_cell'|trans({}, 'analytics') }}</h4>
+                <h3 data-heat-map-target="detailsTitle">{{ 'analytics.details.risks_in_cell'|trans({}, 'analytics') }}</h3>
                 <button class="btn-close btn-sm"
                         data-action="click->heat-map#closeDetails"></button>
             </div>

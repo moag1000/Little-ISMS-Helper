@@ -11,7 +11,6 @@ use App\Service\AutomatedGapAnalysisService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -28,11 +27,11 @@ class AnalyzeMappingQualityCommand
     {
     }
 
-    public function __invoke(#[Option(name: 'limit', shortcut: 'l', mode: InputOption::VALUE_OPTIONAL, description: 'Limit number of mappings to analyze')]
-    ?int $limit, #[Option(name: 'reanalyze', shortcut: 'r', mode: InputOption::VALUE_NONE, description: 'Re-analyze all mappings (including already analyzed)')]
-    bool $reanalyze = false, #[Option(name: 'framework', shortcut: 'f', mode: InputOption::VALUE_OPTIONAL, description: 'Analyze only mappings for specific framework code')]
-    $framework = null, #[Option(name: 'low-quality', mode: InputOption::VALUE_NONE, description: 'Only analyze mappings with current low quality scores')]
-    bool $lowQuality = false, #[Option(name: 'dry-run', mode: InputOption::VALUE_NONE, description: 'Run analysis without saving results')]
+    public function __invoke(#[Option(name: 'limit', shortcut: 'l', description: 'Limit number of mappings to analyze')]
+    ?int $limit, #[Option(name: 'reanalyze', shortcut: 'r', description: 'Re-analyze all mappings (including already analyzed)')]
+    bool $reanalyze = false, #[Option(name: 'framework', shortcut: 'f', description: 'Analyze only mappings for specific framework code')]
+    $framework = null, #[Option(name: 'low-quality', description: 'Only analyze mappings with current low quality scores')]
+    bool $lowQuality = false, #[Option(name: 'dry-run', description: 'Run analysis without saving results')]
     bool $dryRun = false, ?OutputInterface $output = null, ?SymfonyStyle $symfonyStyle = null): int
     {
         $symfonyStyle->title('Compliance Mapping Quality Analysis');

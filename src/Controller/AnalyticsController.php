@@ -10,26 +10,112 @@ use App\Repository\AssetRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
+use App\Service\ComplianceAnalyticsService;
+use App\Service\ControlEffectivenessService;
+use App\Service\RiskForecastService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * Analytics Controller
+ *
+ * Phase 7B: Advanced Analytics Dashboards with multi-framework compliance,
+ * control effectiveness, and predictive risk analytics.
+ */
+#[Route('/analytics')]
 class AnalyticsController extends AbstractController
 {
     public function __construct(
         private readonly AssetRepository $assetRepository,
         private readonly RiskRepository $riskRepository,
         private readonly IncidentRepository $incidentRepository,
-        private readonly ControlRepository $controlRepository
+        private readonly ControlRepository $controlRepository,
+        private readonly ComplianceAnalyticsService $complianceAnalyticsService,
+        private readonly ControlEffectivenessService $controlEffectivenessService,
+        private readonly RiskForecastService $riskForecastService,
     ) {}
-    #[Route('/analytics', name: 'app_analytics_dashboard')]
+    #[Route('', name: 'app_analytics_dashboard')]
     public function dashboard(): Response
     {
         return $this->render('analytics/dashboard.html.twig');
     }
-    #[Route('/analytics/api/heat-map', name: 'app_analytics_heat_map_data')]
+
+    /**
+     * Phase 7B: Advanced Analytics Hub with tabbed navigation
+     */
+    #[Route('/advanced', name: 'app_analytics_advanced')]
+    #[IsGranted('ROLE_MANAGER')]
+    public function advancedDashboard(): Response
+    {
+        return $this->render('analytics/advanced.html.twig', [
+            'compliance_summary' => $this->complianceAnalyticsService->getExecutiveSummary(),
+            'control_metrics' => $this->controlEffectivenessService->getEffectivenessDashboard()['metrics'],
+            'risk_velocity' => $this->riskForecastService->getRiskVelocity(),
+        ]);
+    }
+
+    /**
+     * Phase 7B: Multi-Framework Compliance Dashboard
+     */
+    #[Route('/compliance/frameworks', name: 'app_analytics_compliance_frameworks')]
+    #[IsGranted('ROLE_MANAGER')]
+    public function complianceFrameworks(): Response
+    {
+        return $this->render('analytics/compliance_frameworks.html.twig', [
+            'comparison' => $this->complianceAnalyticsService->getFrameworkComparison(),
+            'overlap' => $this->complianceAnalyticsService->getFrameworkOverlap(),
+            'roadmap' => $this->complianceAnalyticsService->getComplianceRoadmap(),
+        ]);
+    }
+
+    /**
+     * Phase 7B: Control Effectiveness Dashboard
+     */
+    #[Route('/controls/effectiveness', name: 'app_analytics_control_effectiveness')]
+    #[IsGranted('ROLE_MANAGER')]
+    public function controlEffectiveness(): Response
+    {
+        return $this->render('analytics/control_effectiveness.html.twig', [
+            'dashboard' => $this->controlEffectivenessService->getEffectivenessDashboard(),
+            'category_performance' => $this->controlEffectivenessService->getCategoryPerformance(),
+            'risk_matrix' => $this->controlEffectivenessService->getControlRiskMatrix(),
+        ]);
+    }
+
+    /**
+     * Phase 7B: Risk Forecast Dashboard
+     */
+    #[Route('/risk/forecast', name: 'app_analytics_risk_forecast')]
+    #[IsGranted('ROLE_MANAGER')]
+    public function riskForecast(): Response
+    {
+        return $this->render('analytics/risk_forecast.html.twig', [
+            'forecast' => $this->riskForecastService->getRiskForecast(6),
+            'velocity' => $this->riskForecastService->getRiskVelocity(),
+            'appetite' => $this->riskForecastService->getRiskAppetiteCompliance(),
+            'anomalies' => $this->riskForecastService->getAnomalyDetection(),
+        ]);
+    }
+
+    /**
+     * Phase 7B: Asset Criticality Dashboard
+     */
+    #[Route('/assets/criticality', name: 'app_analytics_asset_criticality')]
+    #[IsGranted('ROLE_MANAGER')]
+    public function assetCriticality(): Response
+    {
+        return $this->render('analytics/asset_criticality.html.twig', [
+            'incident_probability' => $this->riskForecastService->getAssetIncidentProbability(),
+        ]);
+    }
+
+    // ========== API Endpoints for Charts ==========
+
+    #[Route('/api/heat-map', name: 'app_analytics_heat_map_data')]
     public function getHeatMapData(): JsonResponse
     {
         $risks = $this->riskRepository->findAll();
@@ -77,7 +163,7 @@ class AnalyticsController extends AbstractController
             'total_risks' => count($risks)
         ]);
     }
-    #[Route('/analytics/api/compliance-radar', name: 'app_analytics_compliance_radar_data')]
+    #[Route('/api/compliance-radar', name: 'app_analytics_compliance_radar_data')]
     public function getComplianceRadarData(): JsonResponse
     {
         $controls = $this->controlRepository->findAll();
@@ -122,7 +208,7 @@ class AnalyticsController extends AbstractController
             'overall_compliance' => $this->calculateOverallCompliance($radarData)
         ]);
     }
-    #[Route('/analytics/api/trends', name: 'app_analytics_trends_data')]
+    #[Route('/api/trends', name: 'app_analytics_trends_data')]
     public function getTrendsData(Request $request): JsonResponse
     {
         $period = $request->query->get('period', '12'); // months
@@ -142,7 +228,7 @@ class AnalyticsController extends AbstractController
             'incidents' => $incidentTrend
         ]);
     }
-    #[Route('/analytics/api/export/{type}', name: 'app_analytics_export')]
+    #[Route('/api/export/{type}', name: 'app_analytics_export')]
     public function exportData(Request $request, string $type): Response
     {
         $data = [];
@@ -331,6 +417,146 @@ class AnalyticsController extends AbstractController
 
         return $data;
     }
+    // ========== Phase 7B: New API Endpoints ==========
+
+    /**
+     * API: Framework Comparison Data
+     */
+    #[Route('/api/frameworks/comparison', name: 'app_analytics_api_framework_comparison')]
+    public function getFrameworkComparisonData(): JsonResponse
+    {
+        return new JsonResponse($this->complianceAnalyticsService->getFrameworkComparison());
+    }
+
+    /**
+     * API: Framework Overlap Data
+     */
+    #[Route('/api/frameworks/overlap', name: 'app_analytics_api_framework_overlap')]
+    public function getFrameworkOverlapData(): JsonResponse
+    {
+        return new JsonResponse($this->complianceAnalyticsService->getFrameworkOverlap());
+    }
+
+    /**
+     * API: Control Coverage Matrix
+     */
+    #[Route('/api/controls/coverage', name: 'app_analytics_api_control_coverage')]
+    public function getControlCoverageData(): JsonResponse
+    {
+        return new JsonResponse($this->complianceAnalyticsService->getControlCoverageMatrix());
+    }
+
+    /**
+     * API: Gap Analysis Data
+     */
+    #[Route('/api/compliance/gaps', name: 'app_analytics_api_compliance_gaps')]
+    public function getGapAnalysisData(): JsonResponse
+    {
+        return new JsonResponse($this->complianceAnalyticsService->getGapAnalysis());
+    }
+
+    /**
+     * API: Transitive Compliance Data
+     */
+    #[Route('/api/compliance/transitive', name: 'app_analytics_api_transitive_compliance')]
+    public function getTransitiveComplianceData(): JsonResponse
+    {
+        return new JsonResponse($this->complianceAnalyticsService->getTransitiveCompliance());
+    }
+
+    /**
+     * API: Compliance Roadmap Data
+     */
+    #[Route('/api/compliance/roadmap', name: 'app_analytics_api_compliance_roadmap')]
+    public function getComplianceRoadmapData(): JsonResponse
+    {
+        return new JsonResponse($this->complianceAnalyticsService->getComplianceRoadmap());
+    }
+
+    /**
+     * API: Control Effectiveness Data
+     */
+    #[Route('/api/controls/effectiveness', name: 'app_analytics_api_control_effectiveness')]
+    public function getControlEffectivenessData(): JsonResponse
+    {
+        return new JsonResponse($this->controlEffectivenessService->getEffectivenessDashboard());
+    }
+
+    /**
+     * API: Control Category Performance
+     */
+    #[Route('/api/controls/categories', name: 'app_analytics_api_control_categories')]
+    public function getControlCategoryData(): JsonResponse
+    {
+        return new JsonResponse($this->controlEffectivenessService->getCategoryPerformance());
+    }
+
+    /**
+     * API: Control-Risk Matrix
+     */
+    #[Route('/api/controls/risk-matrix', name: 'app_analytics_api_control_risk_matrix')]
+    public function getControlRiskMatrixData(): JsonResponse
+    {
+        return new JsonResponse($this->controlEffectivenessService->getControlRiskMatrix());
+    }
+
+    /**
+     * API: Risk Forecast Data
+     */
+    #[Route('/api/risk/forecast', name: 'app_analytics_api_risk_forecast')]
+    public function getRiskForecastData(Request $request): JsonResponse
+    {
+        $months = (int) $request->query->get('months', 6);
+        return new JsonResponse($this->riskForecastService->getRiskForecast($months));
+    }
+
+    /**
+     * API: Risk Velocity Data
+     */
+    #[Route('/api/risk/velocity', name: 'app_analytics_api_risk_velocity')]
+    public function getRiskVelocityData(): JsonResponse
+    {
+        return new JsonResponse($this->riskForecastService->getRiskVelocity());
+    }
+
+    /**
+     * API: Risk Appetite Compliance
+     */
+    #[Route('/api/risk/appetite', name: 'app_analytics_api_risk_appetite')]
+    public function getRiskAppetiteData(): JsonResponse
+    {
+        return new JsonResponse($this->riskForecastService->getRiskAppetiteCompliance());
+    }
+
+    /**
+     * API: Anomaly Detection
+     */
+    #[Route('/api/risk/anomalies', name: 'app_analytics_api_anomalies')]
+    public function getAnomalyData(): JsonResponse
+    {
+        return new JsonResponse($this->riskForecastService->getAnomalyDetection());
+    }
+
+    /**
+     * API: Asset Incident Probability
+     */
+    #[Route('/api/assets/incident-probability', name: 'app_analytics_api_asset_probability')]
+    public function getAssetProbabilityData(): JsonResponse
+    {
+        return new JsonResponse($this->riskForecastService->getAssetIncidentProbability());
+    }
+
+    /**
+     * API: Executive Summary
+     */
+    #[Route('/api/executive-summary', name: 'app_analytics_api_executive_summary')]
+    public function getExecutiveSummaryData(): JsonResponse
+    {
+        return new JsonResponse($this->complianceAnalyticsService->getExecutiveSummary());
+    }
+
+    // ========== Private Helper Methods ==========
+
     private function exportCompliance(): array
     {
         $controls = $this->controlRepository->findAll();
@@ -349,6 +575,7 @@ class AnalyticsController extends AbstractController
 
         return $data;
     }
+
     private function generateCSV(array $data): string
     {
         $output = fopen('php://temp', 'r+');

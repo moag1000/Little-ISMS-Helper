@@ -135,10 +135,10 @@
     {% if is_granted('ROLE_MANAGER') %}
         <div class="card mt-4 border-danger">
             <div class="card-body">
-                <h5 class="text-danger">
+                <h2 class="h5 text-danger">
                     <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
                     {{ 'common.danger_zone'|trans({}, 'messages') }}
-                </h5>
+                </h2>
                 <p class="text-muted">{{ 'processing_activity.permanently_delete'|trans({}, 'privacy')}}</p>
                 <form method="post" action="{{ path('app_processing_activity_delete', {id: processing_activity.id}) }}"
                       data-controller="ui-actions"

@@ -29,8 +29,8 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Affected Processes</h6>
-                    <h2 class="mb-0">{{ analysis.affected_processes.total_count }}</h2>
+                    <div class="text-muted mb-2 fw-bold">Affected Processes</div>
+                    <div class="fs-2 mb-0">{{ analysis.affected_processes.total_count }}</div>
                     {% if analysis.affected_processes.critical_count > 0 %}
                         <span class="badge bg-danger mt-2">{{ analysis.affected_processes.critical_count }} Critical</span>
                     {% endif %}
@@ -41,8 +41,8 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Financial Impact</h6>
-                    <h2 class="mb-0">€{{ analysis.financial_impact.total_eur|number_format(0, '.', ',') }}</h2>
+                    <div class="text-muted mb-2 fw-bold">Financial Impact</div>
+                    <div class="fs-2 mb-0">€{{ analysis.financial_impact.total_eur|number_format(0, '.', ',') }}</div>
                     <small class="text-muted">€{{ analysis.financial_impact.per_hour_eur|number_format(2) }}/hour</small>
                 </div>
             </div>
@@ -51,8 +51,8 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">Recovery Priority</h6>
-                    <h3 class="mb-0">
+                    <div class="text-muted mb-2 fw-bold">Recovery Priority</div>
+                    <div class="fs-3 mb-0">
                         {% set priority_class = {
                             'immediate': 'danger',
                             'high': 'warning',
@@ -60,7 +60,7 @@
                             'low': 'secondary'
                         }[analysis.recovery_priority.level] %}
                         <span class="badge bg-{{ priority_class }}">{{ analysis.recovery_priority.level|upper }}</span>
-                    </h3>
+                    </div>
                     <small class="text-muted">{{ analysis.recovery_priority.most_critical_process }}</small>
                 </div>
             </div>
@@ -69,11 +69,11 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body text-center">
-                    <h6 class="text-muted mb-2">RTO Compliance</h6>
+                    <div class="text-muted mb-2 fw-bold">RTO Compliance</div>
                     {% if analysis.rto_compliance.is_compliant %}
-                        <h3 class="mb-0 text-success"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Compliant</h3>
+                        <div class="fs-3 mb-0 text-success"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Compliant</div>
                     {% else %}
-                        <h3 class="mb-0 text-danger"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ analysis.rto_compliance.violations_count }} Violations</h3>
+                        <div class="fs-3 mb-0 text-danger"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ analysis.rto_compliance.violations_count }} Violations</div>
                     {% endif %}
                 </div>
             </div>
@@ -82,7 +82,7 @@
 
     {# Downtime Information #}
     <div class="card mb-4">
-        <div class="card-header"><h5 class="mb-0"><i class="bi bi-clock" aria-hidden="true"></i> Downtime Analysis</h5>
+        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-clock" aria-hidden="true"></i> Downtime Analysis</h2>
         </div>
         <div class="card-body">
             <div class="row">
@@ -106,7 +106,7 @@
 
     {# Affected Processes Detail #}
     <div class="card mb-4">
-        <div class="card-header"><h5 class="mb-0"><i class="bi bi-diagram-3" aria-hidden="true"></i> Affected Business Processes</h5>
+        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-diagram-3" aria-hidden="true"></i> Affected Business Processes</h2>
         </div>
         <div class="card-body">
             {% if analysis.affected_processes.processes|length > 0 %}
@@ -179,12 +179,12 @@
 
     {# Recovery Priority Recommendations #}
     <div class="card mb-4">
-        <div class="card-header bg-{{ priority_class }}"><h5 class="mb-0 text-white"><i class="bi bi-lightbulb" aria-hidden="true"></i> Recovery Priority: {{ analysis.recovery_priority.level|upper }}</h5>
+        <div class="card-header bg-{{ priority_class }}"><h2 class="h5 mb-0 text-white"><i class="bi bi-lightbulb" aria-hidden="true"></i> Recovery Priority: {{ analysis.recovery_priority.level|upper }}</h2>
         </div>
         <div class="card-body">
             <p><strong>Reasoning:</strong> {{ analysis.recovery_priority.reasoning }}</p>
 
-            <h6 class="mt-3">Recommended Actions:</h6>
+            <h3 class="h6 mt-3">Recommended Actions:</h3>
             <ul>
                 {% for action in analysis.recovery_priority.recommended_actions %}
                     <li>{{ action }}</li>
@@ -196,7 +196,7 @@
     {# Recommendations #}
     {% if analysis.recommendations|length > 0 %}
         <div class="card mb-4">
-            <div class="card-header"><h5 class="mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> Recommendations</h5>
+            <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> Recommendations</h2>
             </div>
             <div class="card-body">
                 {% for recommendation in analysis.recommendations %}
@@ -205,7 +205,7 @@
                         'medium': 'warning',
                         'low': 'info'
                     }[recommendation.priority] }} mb-3">
-                        <h6><strong>{{ recommendation.title }}</strong></h6>
+                        <div class="fw-bold mb-2">{{ recommendation.title }}</div>
                         <p>{{ recommendation.description }}</p>
                         <p class="mb-0"><strong>Action:</strong> {{ recommendation.action }}</p>
                     </div>
@@ -217,7 +217,7 @@
     {# Historical Context #}
     {% if analysis.historical_context.total_past_incidents > 0 %}
         <div class="card mb-4">
-            <div class="card-header"><h5 class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> Historical Context</h5>
+            <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> Historical Context</h2>
             </div>
             <div class="card-body">
                 <div class="row">

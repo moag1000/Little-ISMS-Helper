@@ -20,10 +20,10 @@
             {# Token Details #}
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">
+                    <h2 class="mb-0">
                         <i class="bi bi-info-circle" aria-hidden="true"></i>
                         {{ 'mfa.details.title'|trans({}, 'mfa') }}
-                    </h3>
+                    </h2>
                 </div>
                 <div class="card-body">
                     <dl class="row">
@@ -77,10 +77,10 @@
             {# Usage Statistics #}
             <div class="card mb-4">
                 <div class="card-header bg-info text-white">
-                    <h3 class="mb-0">
+                    <h2 class="mb-0">
                         <i class="bi bi-graph-up" aria-hidden="true"></i>
                         {{ 'mfa.usage.title'|trans({}, 'mfa') }}
-                    </h3>
+                    </h2>
                 </div>
                 <div class="card-body">
                     <dl class="row">
@@ -126,10 +126,10 @@
             {% if mfa_token.tokenType == 'totp' %}
                 <div class="card mb-4 border-warning">
                     <div class="card-header bg-warning">
-                        <h3 class="mb-0">
+                        <h2 class="mb-0">
                             <i class="bi bi-key-fill" aria-hidden="true"></i>
                             {{ 'mfa.backup_codes.title'|trans({}, 'mfa') }}
-                        </h3>
+                        </h2>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -174,10 +174,10 @@
             {# Actions #}
             <div class="card mb-4">
                 <div class="card-header bg-secondary text-white">
-                    <h3 class="mb-0">
+                    <h2 class="mb-0">
                         <i class="bi bi-gear" aria-hidden="true"></i>
                         {{ 'common.actions'|trans({}, 'messages') }}
-                    </h3>
+                    </h2>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
@@ -210,10 +210,10 @@
 
             {# Security Notice #}
             <div class="alert alert-info">
-                <h5>
+                <p class="fw-bold">
                     <i class="bi bi-shield-check" aria-hidden="true"></i>
                     {{ 'mfa.security_notice.title'|trans({}, 'mfa') }}
-                </h5>
+                </p>
                 <p class="small mb-0">
                     {{ 'mfa.security_notice.description'|trans({}, 'mfa') }}
                 </p>

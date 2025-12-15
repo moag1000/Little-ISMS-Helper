@@ -37,7 +37,10 @@
 
 {# Document Type Selection #}
 <div class="card mb-4">
-    <h2>{{ 'document.section.select_type'|trans({}, 'document') }}</h2>
+    <div class="card-header">
+        <h2 class="mb-0">{{ 'document.section.select_type'|trans({}, 'document') }}</h2>
+    </div>
+    <div class="card-body">
 
     <form method="get" class="mt-md" data-controller="ui-actions">
         <div class="form-group">
@@ -54,6 +57,7 @@
             </select>
         </div>
     </form>
+    </div>
 </div>
 
 {# Document Types Overview #}
@@ -63,7 +67,7 @@
     {% for type in documentTypes|slice(0, 6) %}
     <div class="card">
         <div class="fs-2-mb-sm">{{ type.icon ?? '📄' }}</div>
-        <h2 class="fs-11-mb-sm">{{ type.name }}</h2>
+        <h3 class="fs-11-mb-sm">{{ type.name }}</h3>
         <p class="text-muted-mb-md">
             {{ type.description|default('-') }}
         </p>
@@ -96,7 +100,11 @@
 
 {# Documents by Selected Type #}
 {% if selectedType %}
-<h2>{{ selectedType.name }} - {{ 'document.section.documents'|trans({}, 'document') }}</h2>
+<div class="card">
+    <div class="card-header">
+        <h2 class="mb-0">{{ selectedType.name }} - {{ 'document.section.documents'|trans({}, 'document') }}</h2>
+    </div>
+    <div class="card-body p-0">
 
 {% embed '_components/_table.html.twig' with {
     'noMargin': true,
@@ -173,11 +181,16 @@
         {% endfor %}
     {% endblock %}
 {% endembed %}
+    </div>
+</div>
 
 {# Type Statistics #}
 <div class="module-grid mt-4">
     <div class="card">
-        <h2>{{ 'document.section.type_statistics'|trans({}, 'document') }}</h2>
+        <div class="card-header">
+            <h2 class="mb-0">{{ 'document.section.type_statistics'|trans({}, 'document') }}</h2>
+        </div>
+        <div class="card-body">
 
         <div class="stats-grid mt-3 grid-col-1">
             <div class="stat-item">
@@ -197,10 +210,14 @@
                 <span>{{ 'document.stats.overdue_reviews'|trans({}, 'document') }}</span>
             </div>
         </div>
+        </div>
     </div>
 
     <div class="card">
-        <h3>{{ 'document.section.recent_activity'|trans({}, 'document') }}</h3>
+        <div class="card-header">
+            <h2 class="mb-0">{{ 'document.section.recent_activity'|trans({}, 'document') }}</h2>
+        </div>
+        <div class="card-body">
 
         {% if selectedType.recentDocuments|length > 0 %}
         <ul class="list-unstyled-mt-md">
@@ -218,13 +235,18 @@
             {{ 'document.message.no_recent_activity'|trans({}, 'document') }}
         </p>
         {% endif %}
+        </div>
     </div>
 </div>
 
 {% else %}
 
 {# All Document Types Table #}
-<h2>{{ 'document.section.all_types'|trans({}, 'document') }}</h2>
+<div class="card">
+    <div class="card-header">
+        <h2 class="mb-0">{{ 'document.section.all_types'|trans({}, 'document') }}</h2>
+    </div>
+    <div class="card-body p-0">
 
 {% embed '_components/_table.html.twig' with {
     'noMargin': true,
@@ -283,6 +305,8 @@
         {% endfor %}
     {% endblock %}
 {% endembed %}
+    </div>
+</div>
 
 {% endif %}
 {% endblock %}

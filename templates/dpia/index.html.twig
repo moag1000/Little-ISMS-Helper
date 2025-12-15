@@ -24,14 +24,14 @@
     {# Overall Compliance Score #}
     <div class="card mb-4 text-center">
         <div class="card-body">
-            <h6 class="text-muted mb-2">{{ 'dpia.index.compliance_score'|trans({}, 'privacy') }}</h6>
+            <div class="text-muted mb-2 fw-semibold">{{ 'dpia.index.compliance_score'|trans({}, 'privacy') }}</div>
             {% set score = compliance_score.overall_score %}
-            <h1 class="display-1 mb-0
+            <div class="display-1 mb-0
                 {% if score >= 80 %}text-success
                 {% elseif score >= 60 %}text-warning
                 {% else %}text-danger{% endif %}">
                 {{ score }}%
-            </h1>
+            </div>
             <p class="text-muted mt-2">
                 {{ compliance_score.approved_dpias }} {{ 'dpia.index.of'|trans({}, 'privacy') }} {{ compliance_score.total_dpias }} {{ 'dpia.index.dpias_approved'|trans({}, 'privacy') }}
                 {% if compliance_score.due_for_review > 0 %}
@@ -46,8 +46,8 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">{{ 'dpia.index.total_dpias'|trans({}, 'privacy') }}</h6>
-                    <h2>{{ statistics.total }}</h2>
+                    <div class="text-muted fw-semibold">{{ 'dpia.index.total_dpias'|trans({}, 'privacy') }}</div>
+                    <div class="fs-2 fw-bold">{{ statistics.total }}</div>
                     <div class="mt-2">
                         <small class="text-success"><i class="bi bi-check-circle"></i> {{ statistics.approved }} {{ 'dpia.index.approved'|trans({}, 'privacy') }}</small>
                     </div>
@@ -57,8 +57,8 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">{{ 'dpia.index.in_review'|trans({}, 'privacy') }}</h6>
-                    <h2 class="text-info">{{ statistics.in_review }}</h2>
+                    <div class="text-muted fw-semibold">{{ 'dpia.index.in_review'|trans({}, 'privacy') }}</div>
+                    <div class="fs-2 fw-bold text-info">{{ statistics.in_review }}</div>
                     <div class="mt-2">
                         <small class="text-muted"><i class="bi bi-clock"></i> {{ 'dpia.index.awaiting_approval'|trans({}, 'privacy') }}</small>
                     </div>
@@ -68,8 +68,8 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">{{ 'dpia.index.high_risk'|trans({}, 'privacy') }}</h6>
-                    <h2 class="text-danger">{{ statistics.high_risk }}</h2>
+                    <div class="text-muted fw-semibold">{{ 'dpia.index.high_risk'|trans({}, 'privacy') }}</div>
+                    <div class="fs-2 fw-bold text-danger">{{ statistics.high_risk }}</div>
                     <div class="mt-2">
                         <small class="text-warning"><i class="bi bi-exclamation-triangle"></i> {{ 'dpia.index.requires_attention'|trans({}, 'privacy') }}</small>
                     </div>
@@ -79,8 +79,8 @@
         <div class="col-md-3">
             <div class="card">
                 <div class="card-body">
-                    <h6 class="text-muted">{{ 'dpia.index.completeness'|trans({}, 'privacy') }}</h6>
-                    <h2>{{ statistics.completeness_rate }}%</h2>
+                    <div class="text-muted fw-semibold">{{ 'dpia.index.completeness'|trans({}, 'privacy') }}</div>
+                    <div class="fs-2 fw-bold">{{ statistics.completeness_rate }}%</div>
                     <div class="progress mt-2" style="height: 10px;">
                         <div class="progress-bar bg-success" style="width: {{ statistics.completeness_rate }}%"></div>
                     </div>
@@ -91,7 +91,7 @@
 
     {# Filters #}
     <div class="card mb-4">
-        <div class="card-header"><h5 class="mb-0"><i class="bi bi-filter"></i> {{ 'dpia.index.filter_dpias'|trans({}, 'privacy') }}</h5>
+        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-filter"></i> {{ 'dpia.index.filter_dpias'|trans({}, 'privacy') }}</h2>
         </div>
         <div class="card-body">
             <div class="btn-group flex-wrap" role="group">
@@ -133,7 +133,7 @@
 
     {# DPIA Table #}
     <div class="card">
-        <div class="card-header"><h5 class="mb-0"><i class="bi bi-list-check"></i> {{ 'dpia.index.dpias_list'|trans({}, 'privacy') }} ({{ dpias|length }})</h5>
+        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-list-check"></i> {{ 'dpia.index.dpias_list'|trans({}, 'privacy') }} ({{ dpias|length }})</h2>
         </div>
         <div class="card-body p-0">
             {% if dpias|length > 0 %}

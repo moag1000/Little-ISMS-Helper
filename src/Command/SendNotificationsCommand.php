@@ -14,7 +14,6 @@ use App\Repository\UserRepository;
 use App\Service\EmailNotificationService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'app:send-notifications', description: 'Send scheduled email notifications for due dates and reminders', help: <<<'TXT'
@@ -40,11 +39,11 @@ class SendNotificationsCommand
     }
 
     public function __invoke(
-        #[Option(name: 'type', shortcut: 't', mode: InputOption::VALUE_OPTIONAL, description: 'Notification type (audits, trainings, incidents, controls, workflows, all)')]
+        #[Option(name: 'type', shortcut: 't', description: 'Notification type (audits, trainings, incidents, controls, workflows, all)')]
         string $type = 'all',
-        #[Option(name: 'days-ahead', shortcut: 'd', mode: InputOption::VALUE_OPTIONAL, description: 'Days ahead to check for upcoming items')]
+        #[Option(name: 'days-ahead', shortcut: 'd', description: 'Days ahead to check for upcoming items')]
         int $daysAhead = 7,
-        #[Option(name: 'dry-run', mode: InputOption::VALUE_NONE, description: 'Dry run - show what would be sent without actually sending')]
+        #[Option(name: 'dry-run', description: 'Dry run - show what would be sent without actually sending')]
         bool $dryRun = false,
         ?SymfonyStyle $symfonyStyle = null
     ): int

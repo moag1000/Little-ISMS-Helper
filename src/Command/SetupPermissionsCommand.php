@@ -13,7 +13,6 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -28,15 +27,15 @@ class SetupPermissionsCommand
     }
 
     public function __invoke(
-        #[Option(name: 'reset', mode: InputOption::VALUE_NONE, description: 'Reset all permissions and roles (WARNING: deletes existing data)')]
+        #[Option(name: 'reset', description: 'Reset all permissions and roles (WARNING: deletes existing data)')]
         bool $reset = false,
-        #[Option(name: 'admin-email', mode: InputOption::VALUE_REQUIRED, description: 'Create admin user with this email')]
-        $adminEmail = null,
-        #[Option(name: 'admin-password', mode: InputOption::VALUE_REQUIRED, description: 'Password for admin user')]
-        $adminPassword = null,
-        #[Option(name: 'admin-firstname', mode: InputOption::VALUE_OPTIONAL, description: 'First name for admin user')]
+        #[Option(name: 'admin-email', description: 'Create admin user with this email')]
+        ?string $adminEmail = null,
+        #[Option(name: 'admin-password', description: 'Password for admin user')]
+        ?string $adminPassword = null,
+        #[Option(name: 'admin-firstname', description: 'First name for admin user')]
         string $adminFirstname = 'Admin',
-        #[Option(name: 'admin-lastname', mode: InputOption::VALUE_OPTIONAL, description: 'Last name for admin user')]
+        #[Option(name: 'admin-lastname', description: 'Last name for admin user')]
         string $adminLastname = 'User',
         ?SymfonyStyle $symfonyStyle = null
     ): int
@@ -78,13 +77,13 @@ class SetupPermissionsCommand
         $symfonyStyle->section('Creating Roles');
         $this->createRoles($symfonyStyle);
         // Create admin user if requested
-        if ($admin_email && $admin_password) {
+        if ($adminEmail && $adminPassword) {
             $symfonyStyle->section('Creating Admin User');
             $this->createAdminUser(
-                $admin_email,
-                $admin_password,
-                $admin_firstname,
-                $admin_lastname,
+                $adminEmail,
+                $adminPassword,
+                $adminFirstname,
+                $adminLastname,
                 $symfonyStyle
             );
         }

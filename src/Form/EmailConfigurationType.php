@@ -107,7 +107,6 @@ class EmailConfigurationType extends AbstractType
                     'placeholder' => 'setup.email.from_name_placeholder',
                 ],
                 'help' => 'setup.email.from_name_help',
-            'translation_domain' => 'admin',
             ]);
     }
 
@@ -118,6 +117,7 @@ class EmailConfigurationType extends AbstractType
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'email_config',
+            'translation_domain' => 'setup',
         ]);
     }
 }

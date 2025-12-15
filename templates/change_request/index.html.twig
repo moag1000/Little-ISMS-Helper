@@ -36,7 +36,7 @@
 
     {% if pending_approval|length > 0 %}
     <div class="alert alert-info">
-        <h2><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'change_request.alert.pending_approval'|trans({}, 'change_requests') }}</h2>
+        <div class="fw-bold mb-2"><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'change_request.alert.pending_approval'|trans({}, 'change_requests') }}</div>
         <ul>
             {% for change in pending_approval %}
             <li>
@@ -50,7 +50,7 @@
 
     {% if overdue|length > 0 %}
     <div class="alert alert-danger">
-        <h4>🚨 {{ 'change_request.alert.overdue'|trans({}, 'change_requests') }}</h4>
+        <div class="fw-bold mb-2">{{ 'change_request.alert.overdue'|trans({}, 'change_requests') }}</div>
         <ul>
             {% for change in overdue %}
             <li>
@@ -64,7 +64,7 @@
     <div class="card">
         <div class="card-header">
             {%- set requestCount = change_requests|length -%}
-            <h3>{{ 'change_request.list.title'|trans({'count': requestCount}, 'change_requests') }}</h3>
+            <h2>{{ 'change_request.list.title'|trans({'count': requestCount}, 'change_requests') }}</h2>
         </div>
         <div class="card-body">
             {% if change_requests|length > 0 %}

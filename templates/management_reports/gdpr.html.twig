@@ -1,0 +1,258 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'management_reports' %}
+
+{% block title %}{{ 'management_reports.gdpr.title'|trans({}, 'management_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.reports'|trans({}, 'nav'), path: 'app_reports_index' },
+            { label: 'management_reports.title'|trans({}, 'management_reports'), path: 'app_management_reports' },
+            { label: 'management_reports.gdpr.title'|trans({}, 'management_reports') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">
+            <i class="bi bi-shield-lock text-dark" aria-hidden="true"></i> {{ 'management_reports.gdpr.title'|trans({}, 'management_reports') }}
+        </h1>
+        <div class="btn-group">
+            <a href="{{ path('app_management_reports_gdpr_pdf') }}" class="btn btn-outline-danger">
+                <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'management_reports.action.download_pdf'|trans({}, 'management_reports') }}
+            </a>
+        </div>
+    </div>
+
+    {# Data Breach Summary #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center h-100 bg-dark text-white">
+                <div class="card-body">
+                    <i class="bi bi-shield-exclamation fs-1"></i>
+                    <h3 class="display-5">{{ report.total_breaches }}</h3>
+                    <small>{{ 'management_reports.gdpr.total_breaches'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100 bg-primary text-white">
+                <div class="card-body">
+                    <i class="bi bi-calendar fs-1"></i>
+                    <h3 class="display-5">{{ report.this_year }}</h3>
+                    <small>{{ 'management_reports.gdpr.this_year'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100 bg-success text-white">
+                <div class="card-body">
+                    <i class="bi bi-check-circle fs-1"></i>
+                    <h3 class="display-5">{{ report.notification_status.notified }}</h3>
+                    <small>{{ 'management_reports.gdpr.notified'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100 bg-warning text-dark">
+                <div class="card-body">
+                    <i class="bi bi-hourglass-split fs-1"></i>
+                    <h3 class="display-5">{{ report.notification_status.pending }}</h3>
+                    <small>{{ 'management_reports.gdpr.pending_notification'|trans({}, 'management_reports') }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {# Severity Breakdown #}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h3 class="h5 mb-0">
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                        {{ 'management_reports.gdpr.by_severity'|trans({}, 'management_reports') }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="badge bg-danger">{{ 'management_reports.severity.critical'|trans({}, 'management_reports') }}</span>
+                            <span>{{ report.by_severity.critical }}</span>
+                        </div>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-danger" style="width: {{ report.total_breaches > 0 ? (report.by_severity.critical / report.total_breaches * 100) : 0 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="badge bg-warning text-dark">{{ 'management_reports.severity.high'|trans({}, 'management_reports') }}</span>
+                            <span>{{ report.by_severity.high }}</span>
+                        </div>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-warning" style="width: {{ report.total_breaches > 0 ? (report.by_severity.high / report.total_breaches * 100) : 0 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="badge bg-info">{{ 'management_reports.severity.medium'|trans({}, 'management_reports') }}</span>
+                            <span>{{ report.by_severity.medium }}</span>
+                        </div>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-info" style="width: {{ report.total_breaches > 0 ? (report.by_severity.medium / report.total_breaches * 100) : 0 }}%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="badge bg-success">{{ 'management_reports.severity.low'|trans({}, 'management_reports') }}</span>
+                            <span>{{ report.by_severity.low }}</span>
+                        </div>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar bg-success" style="width: {{ report.total_breaches > 0 ? (report.by_severity.low / report.total_breaches * 100) : 0 }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# GDPR Requirements #}
+        <div class="col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header">
+                    <h3 class="h5 mb-0">
+                        <i class="bi bi-info-circle" aria-hidden="true"></i>
+                        {{ 'management_reports.gdpr.requirements'|trans({}, 'management_reports') }}
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-3">
+                        <strong>{{ 'management_reports.gdpr.article_33_34'|trans({}, 'management_reports') }}</strong>
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            <strong>{{ 'management_reports.gdpr.72h_notification'|trans({}, 'management_reports') }}</strong>
+                            <p class="mb-0 small text-muted">{{ 'management_reports.gdpr.72h_description'|trans({}, 'management_reports') }}</p>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>{{ 'management_reports.gdpr.data_subject_notification'|trans({}, 'management_reports') }}</strong>
+                            <p class="mb-0 small text-muted">{{ 'management_reports.gdpr.data_subject_description'|trans({}, 'management_reports') }}</p>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>{{ 'management_reports.gdpr.documentation'|trans({}, 'management_reports') }}</strong>
+                            <p class="mb-0 small text-muted">{{ 'management_reports.gdpr.documentation_description'|trans({}, 'management_reports') }}</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Pending Notifications Alert #}
+    {% if report.notification_status.pending > 0 %}
+    <div class="alert alert-danger mb-4">
+        <h5><i class="bi bi-exclamation-octagon" aria-hidden="true"></i> {{ 'management_reports.gdpr.urgent_attention'|trans({}, 'management_reports') }}</h5>
+        <p>{{ 'management_reports.gdpr.pending_notification_warning'|trans({'%count%': report.notification_status.pending}, 'management_reports') }}</p>
+        <a href="{{ path('app_data_breach_index') }}" class="btn btn-danger">
+            <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'management_reports.gdpr.view_breaches'|trans({}, 'management_reports') }}
+        </a>
+    </div>
+    {% endif %}
+
+    {# Breaches Table #}
+    {% if report.breaches|length > 0 %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-header">
+            <h3 class="h5 mb-0">
+                <i class="bi bi-list" aria-hidden="true"></i>
+                {{ 'management_reports.gdpr.breach_list'|trans({}, 'management_reports') }}
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead>
+                        <tr>
+                            <th>{{ 'management_reports.gdpr.header.id'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.gdpr.header.title'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.gdpr.header.severity'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.gdpr.header.discovered'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.gdpr.header.notification_required'|trans({}, 'management_reports') }}</th>
+                            <th>{{ 'management_reports.gdpr.header.notified'|trans({}, 'management_reports') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for breach in report.breaches %}
+                        <tr>
+                            <td>{{ breach.id }}</td>
+                            <td>
+                                <a href="{{ path('app_data_breach_show', {id: breach.id}) }}">
+                                    {{ breach.title }}
+                                </a>
+                            </td>
+                            <td>
+                                {% set severity = breach.severity|default('medium') %}
+                                <span class="badge {% if severity == 'critical' %}bg-danger{% elseif severity == 'high' %}bg-warning text-dark{% elseif severity == 'medium' %}bg-info{% else %}bg-success{% endif %}">
+                                    {{ severity }}
+                                </span>
+                            </td>
+                            <td>{{ breach.discoveredAt ? breach.discoveredAt|date('Y-m-d') : '-' }}</td>
+                            <td>
+                                {% if breach.notificationRequired %}
+                                <span class="badge bg-danger">{{ 'common.yes'|trans({}, 'messages') }}</span>
+                                {% else %}
+                                <span class="badge bg-secondary">{{ 'common.no'|trans({}, 'messages') }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if breach.notificationDate %}
+                                <span class="text-success">{{ breach.notificationDate|date('Y-m-d') }}</span>
+                                {% elseif breach.notificationRequired %}
+                                <span class="badge bg-warning text-dark">{{ 'management_reports.gdpr.pending'|trans({}, 'management_reports') }}</span>
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-success mb-4">
+        <h5><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'management_reports.gdpr.no_breaches_title'|trans({}, 'management_reports') }}</h5>
+        <p class="mb-0">{{ 'management_reports.gdpr.no_breaches_text'|trans({}, 'management_reports') }}</p>
+    </div>
+    {% endif %}
+
+    {# Quick Links #}
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <a href="{{ path('app_data_breach_index') }}" class="btn btn-outline-dark btn-lg w-100">
+                        <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'management_reports.gdpr.view_breaches'|trans({}, 'management_reports') }}
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{{ path('app_processing_activity_index') }}" class="btn btn-outline-primary btn-lg w-100">
+                        <i class="bi bi-database" aria-hidden="true"></i> {{ 'management_reports.gdpr.view_ropa'|trans({}, 'management_reports') }}
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <a href="{{ path('app_dpia_index') }}" class="btn btn-outline-info btn-lg w-100">
+                        <i class="bi bi-clipboard-data" aria-hidden="true"></i> {{ 'management_reports.gdpr.view_dpia'|trans({}, 'management_reports') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Report Generated Info #}
+    <div class="text-muted small text-end">
+        <i class="bi bi-clock" aria-hidden="true"></i>
+        {{ 'management_reports.generated_at'|trans({}, 'management_reports') }}: {{ report.generated_at|date('Y-m-d H:i') }}
+    </div>
+</div>
+{% endblock %}

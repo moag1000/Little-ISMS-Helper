@@ -26,6 +26,24 @@ reports:
             title: 'Training Log'
             description: 'Security awareness and training documentation with attendance records.'
             features: { feature_1: 'All conducted trainings', feature_2: 'Participant lists', feature_3: 'Training types & methods', feature_4: 'Mandatory trainings' }
+    management:
+        title: 'Management Reports'
+        description: 'Comprehensive reports for executives with KPIs, trends, and compliance status.'
+        features:
+            feature_1: 'Executive Summary'
+            feature_2: 'Risk Management Reports'
+            feature_3: 'BCM & Compliance Status'
+            feature_4: 'Audit & Data Protection Reports'
+        view_all: 'View All Management Reports'
+    scheduled:
+        title: 'Scheduled Reports'
+        description: 'Automatic report generation and delivery via email on a schedule.'
+        features:
+            feature_1: 'Daily, weekly, or monthly'
+            feature_2: 'PDF and Excel export'
+            feature_3: 'Automatic email delivery'
+            feature_4: 'Manual activation required'
+        manage: 'Manage Scheduled Reports'
     custom:
         title: 'Custom Reports'
         subtitle: 'Additional custom reports coming soon:'

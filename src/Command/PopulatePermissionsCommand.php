@@ -9,7 +9,6 @@ use App\Security\Voter\PermissionVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(name: 'app:permissions:populate', description: 'Populate system permissions from PermissionVoter', help: <<<'TXT'
@@ -21,7 +20,7 @@ class PopulatePermissionsCommand
     {
     }
 
-    public function __invoke(#[Option(name: 'force', shortcut: 'f', mode: InputOption::VALUE_NONE, description: 'Force update existing permissions')]
+    public function __invoke(#[Option(name: 'force', shortcut: 'f', description: 'Force update existing permissions')]
     bool $force = false, ?SymfonyStyle $symfonyStyle = null): int
     {
         $symfonyStyle->title('Populating System Permissions');

@@ -1,0 +1,292 @@
+management_reports:
+    title: 'Management Reports'
+    subtitle: 'Comprehensive reports for executives, compliance managers, and auditors.'
+
+    # Quick Stats
+    stats:
+        assets: 'Assets'
+        high_risks: 'High/Critical Risks'
+        compliance: 'Compliance'
+        open_incidents: 'Open Incidents'
+
+    # Categories
+    categories:
+        title: 'Report Categories'
+
+    category:
+        executive:
+            title: 'Executive Summary'
+            description: 'Overview for management with key KPIs and trends.'
+        risk:
+            title: 'Risk Management'
+            description: 'Risk register, trends, treatment plans, and critical risks.'
+        bcm:
+            title: 'Business Continuity'
+            description: 'BC plans, exercises, and Business Impact Analysis (BIA).'
+        compliance:
+            title: 'Compliance'
+            description: 'Compliance status, frameworks, and control implementation.'
+        audit:
+            title: 'Audit Management'
+            description: 'Internal audits and management reviews (ISO 27001 Clause 9).'
+        assets:
+            title: 'Asset Management'
+            description: 'Asset inventory by type and classification.'
+        gdpr:
+            title: 'Data Protection (GDPR)'
+            description: 'Data breach overview and GDPR compliance.'
+
+    # Report Names
+    report:
+        executive_summary: 'Executive Dashboard'
+        kpi_overview: 'KPI Overview'
+        risk_register: 'Risk Register'
+        risk_trends: 'Risk Trends'
+        treatment_plans: 'Treatment Plans'
+        bc_plans: 'BC Plans Overview'
+        bc_exercises: 'BC Exercises'
+        bia_summary: 'BIA Summary'
+        compliance_status: 'Compliance Status'
+        soa_report: 'Statement of Applicability'
+        audit_summary: 'Audit Summary'
+        management_reviews: 'Management Reviews'
+        asset_inventory: 'Asset Inventory'
+        data_breach_summary: 'Data Breach Summary'
+
+    # Actions
+    action:
+        view_reports: 'View Reports'
+        download_pdf: 'Download PDF'
+        download_excel: 'Download Excel'
+
+    # Quick Access
+    quick_access:
+        title: 'Quick Access'
+        pdf_exports: 'PDF Exports'
+        excel_exports: 'Excel Exports'
+
+    # Generated At
+    generated_at: 'Generated at'
+
+    # Executive Report
+    executive:
+        title: 'Executive Summary'
+        assets: 'Assets'
+        risks: 'Risks'
+        compliance: 'Compliance'
+        controls: 'Controls'
+        risk_distribution: 'Risk Distribution'
+        control_status: 'Control Status'
+        incidents_12m: 'Incidents (12 Months)'
+        audits: 'Audits'
+        trainings: 'Trainings'
+        risk_trends: 'Risk Trends'
+        incident_trends: 'Incident Trends'
+
+    # Risk Levels
+    risk_level:
+        critical: 'Critical'
+        high: 'High'
+        medium: 'Medium'
+        low: 'Low'
+
+    # Control Status
+    control_status:
+        implemented: 'Implemented'
+        in_progress: 'In Progress'
+        not_started: 'Not Started'
+
+    # Incident Status
+    incident_status:
+        total: 'Total'
+        open: 'Open'
+        resolved: 'Resolved'
+
+    # Audit Status
+    audit_status:
+        total: 'Total'
+        this_year: 'This Year'
+        planned: 'Planned'
+        in_progress: 'In Progress'
+        completed: 'Completed'
+        cancelled: 'Cancelled'
+
+    # Training Status
+    training_status:
+        total: 'Total'
+
+    # Trend
+    trend:
+        month: 'Month'
+        new_risks: 'New Risks'
+        high_critical: 'High/Critical'
+        total_incidents: 'Total Incidents'
+
+    # Risk Report
+    risk:
+        title: 'Risk Management Report'
+        total_risks: 'Total Risks'
+        avg_score: 'Avg. Score'
+        treatment_plans: 'Treatment Plans'
+        by_category: 'By Category'
+        critical_high: 'Critical & High Risks'
+        no_critical_high: 'No critical or high risks identified.'
+        trends_12m: 'Risk Trends (12 Months)'
+        header:
+            id: 'ID'
+            title: 'Title'
+            category: 'Category'
+            score: 'Score'
+            level: 'Level'
+            treatment: 'Treatment'
+            owner: 'Owner'
+
+    # Treatment Status
+    treatment_status:
+        total: 'Total'
+        active: 'Active'
+        overdue: 'Overdue'
+
+    # BCM Report
+    bcm:
+        title: 'BCM Report'
+        total_plans: 'Total BC Plans'
+        active_plans: 'Active Plans'
+        draft_plans: 'Drafts'
+        review_plans: 'Under Review'
+        exercises: 'BC Exercises'
+        total_exercises: 'Total Exercises'
+        exercises_12m: 'Exercises (12 Mo.)'
+        exercises_compliant: 'ISO 22301 recommends at least 2 BC exercises per year. Status: Compliant.'
+        exercises_warning: 'ISO 22301 recommends at least 2 BC exercises per year. Schedule additional exercises.'
+        business_processes: 'Business Processes'
+        total_processes: 'Total Processes'
+        critical_processes: 'Critical Processes'
+        bia_summary: 'BIA Summary'
+        rto_rpo_coverage: 'RTO/RPO Coverage'
+        processes_with_rto: 'Processes with RTO'
+        processes_with_rpo: 'Processes with RPO'
+        coverage: 'Coverage'
+        bia_warning_title: 'BIA Incomplete'
+        bia_warning_text: 'RTO/RPO coverage is below 80%. Please complete the Business Impact Analysis.'
+        bia_success_title: 'BIA Complete'
+        bia_success_text: 'RTO/RPO coverage is sufficient for effective Business Continuity planning.'
+        plans_overview: 'BC Plans Overview'
+        header:
+            name: 'Name'
+            status: 'Status'
+            last_review: 'Last Review'
+            next_review: 'Next Review'
+
+    # Criticality
+    criticality:
+        critical: 'Critical'
+        high: 'High'
+        medium: 'Medium'
+        low: 'Low'
+
+    # Compliance Report
+    compliance:
+        title: 'Compliance Status'
+        overall: 'Overall Compliance Rate'
+        control_status: 'Control Status'
+        total: 'Total'
+        applicable: 'Applicable'
+        implemented: 'Implemented'
+        not_applicable: 'Not Applicable'
+        frameworks: 'Compliance Frameworks'
+        active_frameworks: 'Active Frameworks'
+        framework_name: 'Framework'
+        framework_code: 'Code'
+        framework_status: 'Status'
+        active: 'Active'
+        inactive: 'Inactive'
+        no_frameworks: 'No compliance frameworks configured.'
+        improvement_needed: 'Improvement Needed'
+        improvement_text: 'Your compliance rate is below 80%. Focus on:'
+        tip_1: 'Prioritize critical controls (A.5, A.8)'
+        tip_2: 'Document all implemented controls'
+        tip_3: 'Schedule regular compliance reviews'
+        good_standing: 'Good Standing'
+        good_standing_text: 'Your organization demonstrates a strong compliance posture. Continue regular reviews.'
+        quick_links: 'Quick Links'
+        view_soa: 'View SoA'
+        view_controls: 'View Controls'
+
+    # Audit Report
+    audit:
+        title: 'Audit Management'
+        total_audits: 'Total Audits'
+        this_year: 'This Year'
+        total_reviews: 'Reviews'
+        reviews_this_year: 'Reviews (Year)'
+        status_breakdown: 'Status Breakdown'
+        iso_requirements: 'ISO 27001 Requirements'
+        iso_clause_9: 'ISO 27001 Clause 9 - Performance Evaluation'
+        internal_audits: 'Internal Audits (9.2)'
+        management_review: 'Management Review (9.3)'
+        compliant: 'Compliant'
+        pending: 'Pending'
+        quick_links: 'Quick Links'
+        view_audits: 'View Audits'
+        view_reviews: 'View Reviews'
+
+    # Assets Report
+    assets:
+        title: 'Asset Inventory'
+        total: 'Total Assets'
+        by_type: 'By Type'
+        by_classification: 'By Classification'
+        no_assets: 'No assets available.'
+        no_classification: 'No classifications available.'
+        inventory: 'Asset List'
+        showing_first: 'Showing first %count% of %total% assets.'
+        view_all: 'View All Assets'
+        export_full: 'Export Full Inventory'
+        header:
+            id: 'ID'
+            name: 'Name'
+            type: 'Type'
+            classification: 'Classification'
+            owner: 'Owner'
+            status: 'Status'
+
+    # GDPR Report
+    gdpr:
+        title: 'Data Breach Report (GDPR)'
+        total_breaches: 'Total Breaches'
+        this_year: 'This Year'
+        notified: 'Notified'
+        pending_notification: 'Pending'
+        by_severity: 'By Severity'
+        requirements: 'GDPR Requirements'
+        article_33_34: 'Article 33 & 34 - Notification Requirements'
+        72h_notification: '72-Hour Notification'
+        72h_description: 'Notify supervisory authority within 72 hours of becoming aware (Art. 33)'
+        data_subject_notification: 'Data Subject Notification'
+        data_subject_description: 'Notify affected individuals when breach likely results in high risk (Art. 34)'
+        documentation: 'Documentation'
+        documentation_description: 'Document all breaches including facts, effects, and remedial action taken'
+        urgent_attention: 'Urgent Attention Required'
+        pending_notification_warning: '%count% data breach(es) require notification to supervisory authority.'
+        view_breaches: 'View Data Breaches'
+        view_ropa: 'View Processing Activities'
+        view_dpia: 'View DPIAs'
+        breach_list: 'Data Breach Register'
+        pending: 'Pending'
+        no_breaches_title: 'No Data Breaches'
+        no_breaches_text: 'No data breaches recorded. Continue monitoring data protection practices.'
+        header:
+            id: 'ID'
+            title: 'Title'
+            severity: 'Severity'
+            discovered: 'Discovered'
+            notification_required: 'Notification Req.'
+            notified: 'Notified'
+
+    # Severity
+    severity:
+        critical: 'Critical'
+        high: 'High'
+        medium: 'Medium'
+        low: 'Low'

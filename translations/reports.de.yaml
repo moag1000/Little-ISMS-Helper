@@ -26,6 +26,24 @@ reports:
             title: Schulungsprotokoll
             description: 'Dokumentation zu Awareness‑Schulungen inkl. Teilnehmerlisten.'
             features: { feature_1: 'Alle durchgeführten Schulungen', feature_2: Teilnehmerlisten, feature_3: 'Schulungstypen & Methoden', feature_4: Pflichtschulungen }
+    management:
+        title: 'Management-Berichte'
+        description: 'Umfassende Berichte für Führungskräfte mit KPIs, Trends und Compliance-Status.'
+        features:
+            feature_1: 'Executive Summary'
+            feature_2: 'Risikomanagement-Berichte'
+            feature_3: 'BCM & Compliance-Status'
+            feature_4: 'Audit- & Datenschutz-Berichte'
+        view_all: 'Alle Management-Berichte'
+    scheduled:
+        title: 'Geplante Berichte'
+        description: 'Automatische Berichtserstellung und Versand per E-Mail nach Zeitplan.'
+        features:
+            feature_1: 'Täglich, wöchentlich oder monatlich'
+            feature_2: 'PDF- und Excel-Export'
+            feature_3: 'Automatischer E-Mail-Versand'
+            feature_4: 'Manuelle Aktivierung erforderlich'
+        manage: 'Geplante Berichte verwalten'
     custom:
         title: 'Benutzerdefinierte Berichte'
         subtitle: 'Zusätzliche benutzerdefinierte Berichte folgen in Kürze:'

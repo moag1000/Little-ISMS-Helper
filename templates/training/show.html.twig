@@ -21,7 +21,7 @@
             {# Main Training Information #}
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h1 class="h5 mb-0">
+                    <h1 class="mb-0 h2">
                         <i class="bi bi-mortarboard" aria-hidden="true"></i> {{ training.title }}
                     </h1>
                     <span class="{{ badge_status(training.status) }} fs-6">
@@ -32,9 +32,9 @@
                     {# Mandatory Warning Banner #}
                     {% if training.mandatory %}
                     <div class="alert alert-warning mb-4" role="alert">
-                        <h5 class="alert-heading">
+                        <div class="alert-heading fw-bold">
                             <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ 'training.mandatory_training'|trans({}, 'training')}}
-                        </h5>
+                        </div>
                         <p class="mb-0">{{ 'training.mandatory_info'|trans({}, 'training')}}</p>
                     </div>
                     {% endif %}
@@ -42,7 +42,7 @@
                     {# Description #}
                     {% if training.description %}
                     <div class="mb-4">
-                        <h5><i class="bi bi-file-text" aria-hidden="true"></i> {{ 'training.description'|trans({}, 'training')}}</h5>
+                        <h2><i class="bi bi-file-text" aria-hidden="true"></i> {{ 'training.description'|trans({}, 'training')}}</h2>
                         <p class="text-muted">{{ training.description|nl2br }}</p>
                     </div>
                     <hr>
@@ -51,7 +51,7 @@
                     {# Training Details #}
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-2">{{ 'training.type_label'|trans({}, 'training')}}</h6>
+                            <div class="text-muted mb-2 fw-semibold">{{ 'training.type_label'|trans({}, 'training')}}</div>
                             <p>
                                 <span class="badge bg-secondary fs-6">
                                     {{ ('training.type.' ~ training.trainingType)|trans }}
@@ -59,7 +59,7 @@
                             </p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-2">{{ 'training.delivery_method'|trans({}, 'training')}}</h6>
+                            <div class="text-muted mb-2 fw-semibold">{{ 'training.delivery_method'|trans({}, 'training')}}</div>
                             <p>
                                 {% if training.deliveryMethod %}
                                 <span class="badge bg-info fs-6">
@@ -74,33 +74,33 @@
 
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-2">
+                            <div class="text-muted mb-2 fw-semibold">
                                 <i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'training.scheduled_date'|trans({}, 'training')}}
-                            </h6>
+                            </div>
                             <p class="fs-5">{{ training.scheduledDate|date('d.m.Y') }}</p>
                         </div>
                         <div class="col-md-6">
-                            <h6 class="text-muted mb-2">
+                            <div class="text-muted mb-2 fw-semibold">
                                 <i class="bi bi-hourglass" aria-hidden="true"></i> {{ 'training.duration'|trans({}, 'training')}}
-                            </h6>
+                            </div>
                             <p class="fs-5">{{ training.durationMinutes ?? '-' }} {{ 'training.minutes'|trans({}, 'training')}}</p>
                         </div>
                     </div>
 
                     {% if training.targetAudience %}
                     <div class="mb-3">
-                        <h6 class="text-muted mb-2">
+                        <div class="text-muted mb-2 fw-semibold">
                             <i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'training.target_audience'|trans({}, 'training')}}
-                        </h6>
+                        </div>
                         <p>{{ training.targetAudience }}</p>
                     </div>
                     {% endif %}
 
                     {% if training.trainer %}
                     <div class="mb-3">
-                        <h6 class="text-muted mb-2">
+                        <div class="text-muted mb-2 fw-semibold">
                             <i class="bi bi-person-badge" aria-hidden="true"></i> {{ 'training.trainer'|trans({}, 'training')}}
-                        </h6>
+                        </div>
                         <p>{{ training.trainer }}</p>
                     </div>
                     {% endif %}
@@ -110,10 +110,10 @@
             {# Participants Section #}
             <div class="card mb-4">
                 <div class="card-header bg-light">
-                    <h3 class="mb-0">
+                    <h2 class="mb-0">
                         <i class="bi bi-people" aria-hidden="true"></i> {{ 'training.participants'|trans({}, 'training')}}
                         <span class="badge bg-primary">{{ training.attendeeCount ?? 0 }}</span>
-                    </h3>
+                    </h2>
                 </div>
                 <div class="card-body">
                     {% if training.participants %}
@@ -130,9 +130,9 @@
             {% if training.materials %}
             <div class="card mb-4">
                 <div class="card-header bg-light">
-                    <h3 class="mb-0">
+                    <h2 class="mb-0">
                         <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'training.materials'|trans({}, 'training')}}
-                    </h3>
+                    </h2>
                 </div>
                 <div class="card-body">
                     <p>{{ training.materials|nl2br }}</p>
@@ -144,9 +144,9 @@
             {% if training.feedback %}
             <div class="card mb-4">
                 <div class="card-header bg-light">
-                    <h3 class="mb-0">
+                    <h2 class="mb-0">
                         <i class="bi bi-chat-left-text" aria-hidden="true"></i> {{ 'training.feedback'|trans({}, 'training')}}
-                    </h3>
+                    </h2>
                 </div>
                 <div class="card-body">
                     <p>{{ training.feedback|nl2br }}</p>
@@ -159,7 +159,7 @@
             {# Action Buttons #}
             <div class="card mb-4">
                 <div class="card-header bg-light">
-                    <h3 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h3>
+                    <h2 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h2>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
@@ -194,10 +194,10 @@
             {% if training.coveredControls is defined and training.coveredControls|length > 0 %}
             <div class="card mb-4">
                 <div class="card-header bg-light">
-                    <h3 class="mb-0">
+                    <h2 class="mb-0">
                         <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'training.covered_controls'|trans({}, 'training')}}
                         <span class="badge bg-primary">{{ training.coveredControls|length }}</span>
-                    </h3>
+                    </h2>
                 </div>
                 <div class="card-body">
                     <div class="list-group list-group-flush">
@@ -205,7 +205,7 @@
                         <div class="list-group-item px-0">
                             <div class="d-flex w-100 justify-content-between align-items-start">
                                 <div>
-                                    <h4 class="mb-1">{{ control.controlId }}</h4>
+                                    <div class="fw-bold mb-1">{{ control.controlId }}</div>
                                     <p class="mb-1 small text-muted">{{ control.name }}</p>
                                 </div>
                                 <span class="{{ badge_status(control.implementationStatus) }} rounded-pill">
@@ -223,10 +223,10 @@
             {% if training.complianceRequirements is defined and training.complianceRequirements|length > 0 %}
             <div class="card mb-4">
                 <div class="card-header bg-light">
-                    <h3 class="mb-0">
+                    <h2 class="mb-0">
                         <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'training.compliance_coverage'|trans({}, 'training') }}
                         <span class="badge bg-success">{{ training.complianceRequirements|length }}</span>
-                    </h3>
+                    </h2>
                 </div>
                 <div class="card-body">
                     <p class="small text-muted mb-2">{{ 'training.compliance_coverage_info'|trans({}, 'training') }}</p>
@@ -246,9 +246,9 @@
             {% if training.status == 'completed' %}
             <div class="card mb-4">
                 <div class="card-header bg-light">
-                    <h3 class="mb-0">
+                    <h2 class="mb-0">
                         <i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'training.statistics'|trans({}, 'training') }}
-                    </h3>
+                    </h2>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
@@ -277,7 +277,7 @@
             {# Metadata #}
             <div class="card mb-4">
                 <div class="card-header bg-light">
-                    <h3 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h3>
+                    <h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
                 </div>
                 <div class="card-body">
                     <dl class="row mb-0 small">
@@ -301,9 +301,9 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="deleteModalLabel">
+                <h2 class="modal-title h5" id="deleteModalLabel">
                     <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'training.confirm_delete'|trans({}, 'training')}}
-                </h5>
+                </h2>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="{{ 'common.close'|trans({}, 'messages') }}"></button>
             </div>
             <div class="modal-body">

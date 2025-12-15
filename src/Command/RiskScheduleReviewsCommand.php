@@ -7,7 +7,6 @@ use App\Repository\TenantRepository;
 use App\Service\RiskReviewService;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
@@ -45,7 +44,7 @@ class RiskScheduleReviewsCommand
     {
     }
 
-    public function __invoke(#[Option(name: 'tenant', shortcut: 't', mode: InputOption::VALUE_OPTIONAL, description: 'Process only specific tenant ID')]
+    public function __invoke(#[Option(name: 'tenant', shortcut: 't', description: 'Process only specific tenant ID')]
     $tenant, SymfonyStyle $symfonyStyle): int
     {
         $symfonyStyle->title('Risk Review Scheduling (ISO 27001:2022 Clause 6.1.3.d)');

@@ -1,0 +1,167 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'scheduled_reports' %}
+
+{% block title %}{{ 'scheduled_report.title'|trans({}, 'scheduled_reports') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.reports'|trans({}, 'nav'), path: 'app_reports_index' },
+            { label: 'scheduled_report.title'|trans({}, 'scheduled_reports') }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">
+            <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'scheduled_report.title'|trans({}, 'scheduled_reports') }}
+        </h1>
+        <a href="{{ path('app_scheduled_report_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'scheduled_report.action.new'|trans({}, 'scheduled_reports') }}
+        </a>
+    </div>
+
+    {# Statistics #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-center h-100 bg-primary text-white">
+                <div class="card-body">
+                    <i class="bi bi-calendar-event fs-1"></i>
+                    <h3 class="display-5">{{ statistics.total }}</h3>
+                    <small>{{ 'scheduled_report.stats.total'|trans({}, 'scheduled_reports') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100 bg-success text-white">
+                <div class="card-body">
+                    <i class="bi bi-check-circle fs-1"></i>
+                    <h3 class="display-5">{{ statistics.active }}</h3>
+                    <small>{{ 'scheduled_report.stats.active'|trans({}, 'scheduled_reports') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100 bg-secondary text-white">
+                <div class="card-body">
+                    <i class="bi bi-pause-circle fs-1"></i>
+                    <h3 class="display-5">{{ statistics.inactive }}</h3>
+                    <small>{{ 'scheduled_report.stats.inactive'|trans({}, 'scheduled_reports') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-center h-100 bg-warning text-dark">
+                <div class="card-body">
+                    <i class="bi bi-hourglass-split fs-1"></i>
+                    <h3 class="display-5">{{ due_reports|length }}</h3>
+                    <small>{{ 'scheduled_report.stats.due'|trans({}, 'scheduled_reports') }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Info Alert #}
+    <div class="alert alert-info mb-4">
+        <i class="bi bi-info-circle" aria-hidden="true"></i>
+        {{ 'scheduled_report.info.activation_required'|trans({}, 'scheduled_reports') }}
+        <br><small class="text-muted">{{ 'scheduled_report.info.cron_hint'|trans({}, 'scheduled_reports') }}</small>
+    </div>
+
+    {# Due Reports Warning #}
+    {% if due_reports|length > 0 %}
+    <div class="alert alert-warning mb-4">
+        <h5><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'scheduled_report.due_reports.title'|trans({}, 'scheduled_reports') }}</h5>
+        <p class="mb-2">{{ 'scheduled_report.due_reports.text'|trans({'%count%': due_reports|length}, 'scheduled_reports') }}</p>
+        <code>php bin/console app:process-scheduled-reports</code>
+    </div>
+    {% endif %}
+
+    {# Reports Table #}
+    {% if reports|length > 0 %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>{{ 'scheduled_report.table.name'|trans({}, 'scheduled_reports') }}</th>
+                            <th>{{ 'scheduled_report.table.type'|trans({}, 'scheduled_reports') }}</th>
+                            <th>{{ 'scheduled_report.table.schedule'|trans({}, 'scheduled_reports') }}</th>
+                            <th>{{ 'scheduled_report.table.format'|trans({}, 'scheduled_reports') }}</th>
+                            <th>{{ 'scheduled_report.table.status'|trans({}, 'scheduled_reports') }}</th>
+                            <th>{{ 'scheduled_report.table.next_run'|trans({}, 'scheduled_reports') }}</th>
+                            <th>{{ 'scheduled_report.table.recipients'|trans({}, 'scheduled_reports') }}</th>
+                            <th>{{ 'scheduled_report.table.actions'|trans({}, 'scheduled_reports') }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for report in reports %}
+                        <tr>
+                            <td>
+                                <a href="{{ path('app_scheduled_report_show', {id: report.id}) }}">
+                                    <strong>{{ report.name }}</strong>
+                                </a>
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ ('scheduled_report.type.' ~ report.reportType)|trans({}, 'scheduled_reports') }}</span>
+                            </td>
+                            <td>{{ ('scheduled_report.schedule.' ~ report.schedule)|trans({}, 'scheduled_reports') }}</td>
+                            <td>
+                                {% if report.format == 'pdf' %}
+                                <span class="badge bg-danger"><i class="bi bi-file-pdf"></i> PDF</span>
+                                {% else %}
+                                <span class="badge bg-success"><i class="bi bi-file-excel"></i> Excel</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if report.active %}
+                                <span class="badge bg-success">{{ 'scheduled_report.status.active'|trans({}, 'scheduled_reports') }}</span>
+                                {% else %}
+                                <span class="badge bg-secondary">{{ 'scheduled_report.status.inactive'|trans({}, 'scheduled_reports') }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if report.nextRunAt %}
+                                {{ report.nextRunAt|date('Y-m-d H:i') }}
+                                {% if report.isDue() %}
+                                <span class="badge bg-warning text-dark">{{ 'scheduled_report.status.due'|trans({}, 'scheduled_reports') }}</span>
+                                {% endif %}
+                                {% else %}
+                                <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-primary">{{ report.recipients|length }}</span>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ path('app_scheduled_report_show', {id: report.id}) }}" class="btn btn-outline-primary" title="{{ 'scheduled_report.action.view'|trans({}, 'scheduled_reports') }}">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{{ path('app_scheduled_report_edit', {id: report.id}) }}" class="btn btn-outline-secondary" title="{{ 'scheduled_report.action.edit'|trans({}, 'scheduled_reports') }}">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="card shadow-sm">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-calendar-x display-1 text-muted"></i>
+            <h3 class="mt-3">{{ 'scheduled_report.empty.title'|trans({}, 'scheduled_reports') }}</h3>
+            <p class="text-muted">{{ 'scheduled_report.empty.text'|trans({}, 'scheduled_reports') }}</p>
+            <a href="{{ path('app_scheduled_report_new') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> {{ 'scheduled_report.action.new'|trans({}, 'scheduled_reports') }}
+            </a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

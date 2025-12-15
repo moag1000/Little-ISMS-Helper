@@ -23,7 +23,6 @@
                 </div>
             {% endif %}
             <div>
-                <h1>{{ tenant.name }}</h1>
                 <p class="text-muted mb-2">
                     <code class="text-primary">{{ tenant.code }}</code>
                     {% if tenant.isActive %}
@@ -71,8 +70,8 @@
                             <i class="bi bi-people text-primary fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'tenant.stats.total_users'|trans({}, 'tenant') }}</h6>
-                            <h2 class="mb-0">{{ userCount }}</h2>
+                            <div class="text-muted mb-1 small fw-semibold">{{ 'tenant.stats.total_users'|trans({}, 'tenant') }}</div>
+                            <div class="fs-2 fw-bold">{{ userCount }}</div>
                         </div>
                     </div>
                 </div>
@@ -86,8 +85,8 @@
                             <i class="bi bi-person-check text-success fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'tenant.stats.active_users'|trans({}, 'tenant') }}</h6>
-                            <h3 class="mb-0">{{ activeUsers }}</h3>
+                            <div class="text-muted mb-1 small fw-semibold">{{ 'tenant.stats.active_users'|trans({}, 'tenant') }}</div>
+                            <div class="fs-2 fw-bold">{{ activeUsers }}</div>
                         </div>
                     </div>
                 </div>
@@ -101,8 +100,8 @@
                             <i class="bi bi-person-x text-secondary fs-3" aria-hidden="true"></i>
                         </div>
                         <div>
-                            <h6 class="text-muted mb-1">{{ 'tenant.stats.inactive_users'|trans({}, 'tenant') }}</h6>
-                            <h3 class="mb-0">{{ inactiveUsers }}</h3>
+                            <div class="text-muted mb-1 small fw-semibold">{{ 'tenant.stats.inactive_users'|trans({}, 'tenant') }}</div>
+                            <div class="fs-2 fw-bold">{{ inactiveUsers }}</div>
                         </div>
                     </div>
                 </div>
@@ -139,10 +138,10 @@
         <div class="col-lg-6 mb-4">
             <div class="card h-100">
                 <div class="card-header bg-white">
-                    <h3 class="card-title mb-0">
+                    <h2 class="card-title mb-0 h5">
                         <i class="bi bi-info-circle text-primary" aria-hidden="true"></i>
                         {{ 'tenant.section.information'|trans({}, 'tenant') }}
-                    </h3>
+                    </h2>
                 </div>
                 <div class="card-body">
                     {% embed '_components/_table.html.twig' with {
@@ -208,9 +207,9 @@
                     {# Corporate Structure Information #}
                     {% if tenant.isPartOfCorporateStructure %}
                         <hr>
-                        <h6 class="text-muted mb-3">
+                        <h3 class="text-muted mb-3 h6">
                             <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'corporate.section.structure'|trans({}, 'tenant') }}
-                        </h6>
+                        </h3>
                         {% embed '_components/_table.html.twig' with {
                             'class': 'table-sm',
                             'noMargin': true
@@ -287,9 +286,9 @@
                              data-tenant-governance-delete-error-text-value="{{ 'corporate.granular.flash.error'|trans({}, 'tenant') }}"
                              data-tenant-governance-organization-label-value="{{ 'corporate.inheritance.organization'|trans({}, 'tenant') }}">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h6 class="text-muted mb-0">
+                            <h3 class="text-muted mb-0 h6">
                                 <i class="bi bi-building-gear" aria-hidden="true"></i> {{ 'corporate.inheritance.title'|trans({}, 'tenant') }}
-                            </h6>
+                            </h3>
                             {% if tenant.isCorporateParent %}
                                 <button type="button" class="btn btn-sm btn-primary"
                                         data-action="click->tenant-governance#propagateContext">
@@ -310,9 +309,9 @@
                         {% if tenant.parent %}
                             <hr>
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h6 class="text-muted mb-0">
+                                <h3 class="text-muted mb-0 h6">
                                     <i class="bi bi-gear" aria-hidden="true"></i> {{ 'corporate.granular.title'|trans({}, 'tenant') }}
-                                </h6>
+                                </h3>
                                 <button type="button" class="btn btn-sm btn-success"
                                         data-action="click->tenant-governance#showAddRuleModal">
                                     <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'corporate.granular.add_rule'|trans({}, 'tenant') }}
@@ -333,7 +332,7 @@
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title">{{ 'corporate.granular.modal.title'|trans({}, 'tenant') }}</h5>
+                                        <h2 class="modal-title h5">{{ 'corporate.granular.modal.title'|trans({}, 'tenant') }}</h2>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                                     </div>
                                     <div class="modal-body">
@@ -375,7 +374,7 @@
 
                     {% if tenant.settings %}
                         <hr>
-                        <h6 class="text-muted mb-2">{{ 'tenant.field.settings'|trans({}, 'tenant') }}</h6>
+                        <h3 class="text-muted mb-2 h6">{{ 'tenant.field.settings'|trans({}, 'tenant') }}</h3>
                         <pre class="bg-light p-3 rounded small"><code>{{ tenant.settings|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</code></pre>
                     {% endif %}
                 </div>
@@ -405,11 +404,11 @@
             <div class="card h-100">
                 <div class="card-header bg-white">
                     <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="card-title mb-0">
+                        <h2 class="card-title mb-0 h5">
                             <i class="bi bi-people text-primary" aria-hidden="true"></i>
                             {{ 'tenant.section.users'|trans({}, 'tenant') }}
                             <span class="badge bg-primary ms-2">{{ userCount }}</span>
-                        </h3>
+                        </h2>
                         <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#manageUsersModal">
                             <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'tenant.users.manage'|trans({}, 'tenant') }}
                         </button>
@@ -464,15 +463,15 @@
     {% if userCount == 0 %}
         <div class="card border-danger mt-4">
             <div class="card-header bg-danger text-white">
-                <h3 class="card-title mb-0">
+                <h2 class="card-title mb-0 h5">
                     <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                     {{ 'tenant.section.danger_zone'|trans({}, 'tenant') }}
-                </h3>
+                </h2>
             </div>
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <h4 class="mb-1">{{ 'tenant.action.delete'|trans({}, 'tenant') }}</h4>
+                        <h3 class="mb-1 h6">{{ 'tenant.action.delete'|trans({}, 'tenant') }}</h3>
                         <p class="text-muted small mb-0">{{ 'tenant.delete.warning'|trans({}, 'tenant') }}</p>
                     </div>
                     <form method="post" action="{{ path('tenant_management_delete', {id: tenant.id}) }}" class="d-inline"
@@ -494,17 +493,17 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">
+                    <h2 class="modal-title h5">
                         <i class="bi bi-people" aria-hidden="true"></i> {{ 'tenant.users.manage_title'|trans({}, 'tenant') }}
-                    </h5>
+                    </h2>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ 'action.close'|trans({}, 'messages') }}"></button>
                 </div>
                 <div class="modal-body">
                     {# Add User Section #}
                     <div class="mb-4">
-                        <h4 class="border-bottom pb-2 mb-3">
+                        <h3 class="border-bottom pb-2 mb-3 h6">
                             <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'tenant.users.add_user'|trans({}, 'tenant') }}
-                        </h4>
+                        </h3>
                         <form method="post" action="{{ path('tenant_management_add_user', {id: tenant.id}) }}" id="addUserForm">
                             <input type="hidden" name="_token" value="{{ csrf_token('add_user_' ~ tenant.id) }}">
                             <div class="input-group">
@@ -525,9 +524,9 @@
 
                     {# Current Users List #}
                     <div>
-                        <h4 class="border-bottom pb-2 mb-3">
+                        <h3 class="border-bottom pb-2 mb-3 h6">
                             <i class="bi bi-people-fill" aria-hidden="true"></i> {{ 'tenant.users.current_users'|trans({}, 'tenant') }} ({{ userCount }})
-                        </h4>
+                        </h3>
                         {% if userCount == 0 %}
                             <div class="text-center text-muted py-3">
                                 <i class="bi bi-people" style="font-size: 2rem;" aria-hidden="true"></i>
@@ -702,8 +701,8 @@
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div>
-                                        <h6 class="text-muted mb-2">{{ 'context.kpi.completeness'|trans({}, 'context') }}</h6>
-                                        <h2 class="mb-0">${safeCompleteness}%</h2>
+                                        <div class="text-muted mb-2 small fw-semibold">{{ 'context.kpi.completeness'|trans({}, 'context') }}</div>
+                                        <div class="fs-2 fw-bold">${safeCompleteness}%</div>
                                     </div>
                                     <div>
                                         ${canEdit ?
@@ -749,9 +748,9 @@
                                 <div class="col-md-6 mb-3">
                                     <div class="card h-100">
                                         <div class="card-body">
-                                            <h6 class="text-muted mb-2">
+                                            <div class="text-muted mb-2 small fw-semibold">
                                                 <i class="bi bi-${escapeHtml(field.icon)}" aria-hidden="true"></i> ${escapeHtml(field.label)}
-                                            </h6>
+                                            </div>
                                             <p class="mb-0">${nl2br(displayValue)}</p>
                                         </div>
                                     </div>

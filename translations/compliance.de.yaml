@@ -211,6 +211,7 @@ compliance:
             version: Version
             name: Name
             description: Beschreibung
+            details: Details
             industry: Branche
             regulatory_body: 'Regulierungsbehörde'
             scope: Anwendungsbereich
@@ -219,6 +220,11 @@ compliance:
             requirements: Anforderungen
             status: Status
             compliance: Compliance
+        status:
+            compliant: 'Konform'
+            non_compliant: 'Nicht konform'
+            partial: 'Teilweise konform'
+            not_applicable: 'Nicht anwendbar'
         info: 'Informationen zum Compliance-Framework'
         confirm:
             delete: 'Sind Sie sicher, dass Sie dieses Compliance-Framework löschen möchten? Alle zugehörigen Anforderungen und Bewertungen werden ebenfalls entfernt.'
@@ -391,8 +397,6 @@ compliance:
         fulfilled_percentage: 'Erfüllungsgrad'
         none: 'Keine Lücken'
         none_description: 'Alle Anforderungen sind erfüllt oder nicht anwendbar'
-    mapping_quality:
-        no_mappings_found: 'Keine Mappings zwischen den gewählten Frameworks gefunden'
     explanation:
         what_are_mappings_title: 'Was sind Compliance-Mappings?'
         what_are_mappings: 'Mappings zeigen Beziehungen zwischen Anforderungen verschiedener Frameworks. Sie ermöglichen die Wiederverwendung von Nachweisen und reduzieren Doppelarbeit.'
@@ -444,6 +448,29 @@ compliance:
         not_started: 'Nicht begonnen - Keine Umsetzung bisher'
         planning_phase: 'Planungsphase - Anforderungen analysiert, Plan erstellt'
         nearly_complete: 'Fast abgeschlossen - Die meisten Anforderungen erfüllt, kleinere Lücken verbleiben'
+    dashboard:
+        tooltip:
+            review_requirements: 'Prüfen Sie jede Anforderung und markieren Sie, ob sie für Ihre Organisation gilt. Nicht anwendbare Anforderungen werden nicht zur Compliance-Quote gezählt.'
+            implement_requirements: 'Verknüpfen Sie Anforderungen mit bestehenden Controls oder erstellen Sie neue Controls zur Umsetzung. Dies zeigt, wie Sie jede Anforderung erfüllen.'
+        review_applicable: 'Prüfen & Anwendbarkeit markieren'
+        reviewed_count: '%reviewed% von %total% geprüft'
+        action:
+            review_requirements: 'Anforderungen prüfen'
+            implement_requirements: 'Anforderungen umsetzen'
+            view_gaps: '%count% Lücken anzeigen'
+        implement_requirements: 'Anforderungen umsetzen'
+        implemented_count: '%implemented% von %total% Anforderungen vollständig umgesetzt'
+        achieve_100: '100% Compliance erreichen'
+        currently_at: 'Derzeit bei %percentage%%'
+        modules_required_hint: 'Dieses Framework erfordert die Aktivierung der folgenden ISMS-Module für vollständige Compliance.'
+    mapping_quality:
+        no_mappings_found: 'Es wurden keine Compliance-Mappings in der Datenbank gefunden.'
+        quick_analysis: 'Schnellanalyse'
+        full_analysis: 'Vollständige Analyse'
+        re_analysis: 'Re-Analyse'
+        re_analyze_title: 'Re-analysiert alle Mappings mit neuestem Algorithmus'
+        re_analyze_button: 'Re-Analyse'
+        analysis_running: 'Analyse läuft...'
 compliance_mapping:
     mapping_type:
         weak: 'Schwach (0-49%)'
@@ -503,35 +530,6 @@ compliance_requirement:
     badge:
         overdue: Überfällig
         reusable: wiederverwendbar
-    framework_dashboard:
-        compliance_steps: 'Folgen Sie diesen Schritten, um 100% Compliance zu erreichen'
-    dashboard:
-        tooltip:
-            review_requirements: 'Prüfen Sie jede Anforderung und markieren Sie, ob sie für Ihre Organisation gilt. Nicht anwendbare Anforderungen werden nicht zur Compliance-Quote gezählt.'
-            implement_requirements: 'Verknüpfen Sie Anforderungen mit bestehenden Controls oder erstellen Sie neue Controls zur Umsetzung. Dies zeigt, wie Sie jede Anforderung erfüllen.'
-        review_applicable: 'Prüfen & Anwendbarkeit markieren'
-        reviewed_count: '%reviewed% von %total% geprüft'
-        action:
-            review_requirements: 'Anforderungen prüfen'
-            implement_requirements: 'Anforderungen umsetzen'
-            view_gaps: '%count% Lücken anzeigen'
-        implement_requirements: 'Anforderungen umsetzen'
-        implemented_count: '%implemented% von %total% Anforderungen vollständig umgesetzt'
-        achieve_100: '100% Compliance erreichen'
-        currently_at: 'Derzeit bei %percentage%%'
-        modules_required_hint: 'Dieses Framework erfordert die Aktivierung der folgenden ISMS-Module für vollständige Compliance.'
-    mapping_quality:
-        no_mappings_found: 'Es wurden keine Compliance-Mappings in der Datenbank gefunden.'
-        quick_analysis: 'Schnellanalyse'
-        full_analysis: 'Vollständige Analyse'
-        re_analysis: 'Re-Analyse'
-        re_analyze_title: 'Re-analysiert alle Mappings mit neuestem Algorithmus'
-        re_analyze_button: 'Re-Analyse'
-        analysis_running: 'Analyse läuft...'
-    gaps:
-        title_description: 'Identifizierte Lücken in Compliance-Mappings'
-        by_priority: 'Nach Priorität'
-        change_status_instruction: 'Ändern Sie den Gap-Status in den jeweiligen Mapping-Reviews:'
 nis2:
     article: Artikel
 

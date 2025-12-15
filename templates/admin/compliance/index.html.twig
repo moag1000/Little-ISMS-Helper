@@ -2,6 +2,8 @@
 
 {% block title %}{{ 'compliance.manage_frameworks'|trans({}, 'compliance') }}{% endblock %}
 
+{% block admin_title %}📦 {{ 'compliance.manage_frameworks'|trans({}, 'compliance') }}{% endblock %}
+
 {% block admin_content %}
 <div class="container">
     {% include '_components/_breadcrumb.html.twig' with {
@@ -13,7 +15,6 @@
 
     <div class="page-header">
         <div>
-            <h1>📦 {{ 'compliance.manage_frameworks'|trans({}, 'compliance') }}</h1>
             <p class="text-muted">{{ 'compliance.manage_frameworks_subtitle'|trans({}, 'compliance') }}</p>
         </div>
         <div class="button-group">
@@ -26,7 +27,7 @@
     {# Statistics Card #}
     <div class="card mb-4">
         <div class="card-header">
-            <h3>📊 {{ 'compliance.framework_statistics'|trans({}, 'compliance') }}</h3>
+            <h2>📊 {{ 'compliance.framework_statistics'|trans({}, 'compliance') }}</h2>
         </div>
         <div class="card-body">
             <div class="stats-grid">
@@ -64,7 +65,7 @@
                     <div class="framework-card-header {% if framework.mandatory %}bg-gradient-danger{% else %}bg-gradient-primary{% endif %}">
                         <div class="framework-icon">{{ framework.icon }}</div>
                         <div class="framework-title">
-                            <h2>{{ framework.code }}</h2>
+                            <h3>{{ framework.code }}</h3>
                             <p>{{ framework.name }}</p>
                         </div>
                         {% if framework.loaded %}
@@ -104,7 +105,7 @@
 
                         {% if framework.required_modules is defined and framework.required_modules|length > 0 %}
                             <div class="framework-modules">
-                                <h2 class="modules-title">{{ 'compliance.required_modules'|trans({}, 'compliance') }}</h2>
+                                <h3 class="modules-title">{{ 'compliance.required_modules'|trans({}, 'compliance') }}</h3>
                                 <div class="modules-list">
                                     {% for moduleKey in framework.required_modules %}
                                         {% set module = all_modules[moduleKey] ?? null %}

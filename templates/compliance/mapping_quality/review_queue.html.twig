@@ -40,7 +40,7 @@
     {% if mappings_requiring_review is not empty %}
     <div class="card mb-4">
         <div class="card-header bg-warning">
-            <h3 class="mb-0"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Benötigt dringend Review ({{ mappings_requiring_review|length }})</h3>
+            <h2 class="mb-0"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Benötigt dringend Review ({{ mappings_requiring_review|length }})</h2>
         </div>
         <div class="card-body">
             {% embed '_components/_table.html.twig' with {
@@ -261,7 +261,7 @@
         <h2><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Keine Mappings benötigen Review!</h2>
         <p>Alle Mappings haben akzeptable Confidence-Scores oder wurden bereits reviewed.</p>
         <hr>
-        <h4>Status:</h4>
+        <h3>Status:</h3>
         <ul>
             <li><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Alle Mappings mit niedrigem Confidence (<70) wurden geprüft</li>
             <li><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Keine großen Diskrepanzen gefunden</li>

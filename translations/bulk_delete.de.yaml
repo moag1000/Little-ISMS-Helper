@@ -13,3 +13,6 @@ bulk_delete:
         title: 'Betroffene Verknüpfungen'
         list: 'Liste der betroffenen Verknüpfungen'
     loading: 'Abhängigkeiten werden geprüft...'
+    confirm_count: '%count% Elemente werden dauerhaft gelöscht'
+    success: '%count% Elemente wurden erfolgreich gelöscht'
+    error: 'Fehler beim Löschen der Elemente'

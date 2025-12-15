@@ -4,7 +4,7 @@
 {% block subject %}[ISMS Reminder] {{ entity_type }} Review Overdue: {{ entity_name }}{% endblock %}
 
 {% block content %}
-    <h2>{{ entity_type }} Review Required</h2>
+    <h1>{{ entity_type }} Review Required</h1>
 
     <p>Dear Colleague,</p>
 
@@ -14,7 +14,7 @@
     </p>
 
     <div style="background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0;">
-        <h3 style="margin-top: 0; color: #856404;">Review Details</h3>
+        <h2 style="margin-top: 0; color: #856404;">Review Details</h2>
         <table style="width: 100%; border-collapse: collapse;">
             <tr>
                 <td style="padding: 8px 0; font-weight: bold; width: 180px;">Entity Type:</td>
@@ -64,7 +64,7 @@
         </table>
     </div>
 
-    <h3>Required Actions</h3>
+    <h2>Required Actions</h2>
 
     {% if entity_type == 'Risk' %}
     <ol>
@@ -117,7 +117,7 @@
     {% endif %}
 
     <div style="background-color: #e7f3ff; border-left: 4px solid #007bff; padding: 15px; margin: 20px 0;">
-        <h4 style="margin-top: 0;">Compliance Note</h4>
+        <h2 style="margin-top: 0;">Compliance Note</h2>
         <p style="margin-bottom: 0;">
             Regular reviews are required to maintain compliance with:
         </p>

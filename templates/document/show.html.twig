@@ -57,7 +57,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h3>{{ 'document.details.title'|trans({}, 'document') }}</h3>
+            <h2>{{ 'document.details.title'|trans({}, 'document') }}</h2>
             <span class="badge">{{ document.category|upper }}</span>
         </div>
         <div class="card-body">
@@ -96,14 +96,14 @@
 
             {% if document.description %}
                 <div class="detail-section">
-                    <h2>{{ 'common.description'|trans({}, 'messages') }}</h2>
+                    <h3>{{ 'common.description'|trans({}, 'messages') }}</h3>
                     <p>{{ document.description }}</p>
                 </div>
             {% endif %}
 
             {% if document.entityType and document.entityId %}
                 <div class="detail-section">
-                    <h2>{{ 'document.label.related_entity'|trans({}, 'document') }}</h2>
+                    <h3>{{ 'document.label.related_entity'|trans({}, 'document') }}</h3>
                     <p>{{ document.entityType }} #{{ document.entityId }}</p>
                 </div>
             {% endif %}

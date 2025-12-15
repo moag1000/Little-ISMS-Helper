@@ -207,19 +207,25 @@ compliance:
             details: __compliance.framework.section.details
             configuration: __compliance.framework.section.configuration
         field:
-            code: __compliance.framework.field.code
-            version: __compliance.framework.field.version
-            name: __compliance.framework.field.name
-            description: __compliance.framework.field.description
-            industry: __compliance.framework.field.industry
-            regulatory_body: __compliance.framework.field.regulatory_body
-            scope: __compliance.framework.field.scope
-            mandatory: __compliance.framework.field.mandatory
-            active: __compliance.framework.field.active
-            requirements: __compliance.framework.field.requirements
-            status: __compliance.framework.field.status
-            compliance: __compliance.framework.field.compliance
-        info: __compliance.framework.info
+            code: Code
+            version: Version
+            name: Name
+            description: Description
+            details: Details
+            industry: Industry
+            regulatory_body: Regulatory Body
+            scope: Scope
+            mandatory: Mandatory
+            active: Active
+            requirements: Requirements
+            status: Status
+            compliance: Compliance
+        status:
+            compliant: 'Compliant'
+            non_compliant: 'Non-Compliant'
+            partial: 'Partially Compliant'
+            not_applicable: 'Not Applicable'
+        info: 'Compliance Framework Information'
         confirm:
             delete: __compliance.framework.confirm.delete
         new:
@@ -390,9 +396,7 @@ compliance:
         title: __compliance.gaps.title
         fulfilled_percentage: __compliance.gaps.fulfilled_percentage
         none: __compliance.gaps.none
-        none_description: __compliance.gaps.none_description
-    mapping_quality:
-        no_mappings_found: __compliance.mapping_quality.no_mappings_found
+        none_description: 'All requirements are fulfilled or not applicable'
     explanation:
         what_are_mappings_title: __compliance.explanation.what_are_mappings_title
         what_are_mappings: __compliance.explanation.what_are_mappings
@@ -444,6 +448,29 @@ compliance:
         not_started: 'Not started - No implementation yet'
         planning_phase: 'Planning phase - Requirements analyzed, plan drafted'
         nearly_complete: 'Nearly complete - Most requirements met, minor gaps remain'
+    dashboard:
+        tooltip:
+            review_requirements: 'Review each requirement and mark whether it applies to your organization. Non-applicable requirements won''t count towards your compliance score.'
+            implement_requirements: 'Link requirements to existing controls or create new controls to implement them. This shows how you''re fulfilling each requirement.'
+        review_applicable: 'Review & Mark Applicable'
+        reviewed_count: '%reviewed% of %total% reviewed'
+        action:
+            review_requirements: 'Review Requirements'
+            implement_requirements: 'Implement Requirements'
+            view_gaps: 'View %count% Gaps'
+        implement_requirements: 'Implement Requirements'
+        implemented_count: '%implemented% of %total% requirements fully implemented'
+        achieve_100: 'Achieve 100% Compliance'
+        currently_at: 'Currently at %percentage%%'
+        modules_required_hint: 'This framework requires the following ISMS modules to be activated for full compliance.'
+    mapping_quality:
+        no_mappings_found: 'No compliance mappings found in the database.'
+        quick_analysis: 'Quick Analysis'
+        full_analysis: 'Full Analysis'
+        re_analysis: 'Re-Analysis'
+        re_analyze_title: 'Re-analyzes all mappings with the latest algorithm'
+        re_analyze_button: 'Re-Analysis'
+        analysis_running: 'Analysis running...'
 compliance_mapping:
     mapping_type:
         weak: 'Weak (0-49%)'
@@ -503,35 +530,6 @@ compliance_requirement:
     badge:
         overdue: Overdue
         reusable: reusable
-    framework_dashboard:
-        compliance_steps: 'Follow these steps to achieve 100% compliance'
-    dashboard:
-        tooltip:
-            review_requirements: 'Review each requirement and mark whether it applies to your organization. Non-applicable requirements won''t count towards your compliance score.'
-            implement_requirements: 'Link requirements to existing controls or create new controls to implement them. This shows how you''re fulfilling each requirement.'
-        review_applicable: 'Review & Mark Applicable'
-        reviewed_count: '%reviewed% of %total% reviewed'
-        action:
-            review_requirements: 'Review Requirements'
-            implement_requirements: 'Implement Requirements'
-            view_gaps: 'View %count% Gaps'
-        implement_requirements: 'Implement Requirements'
-        implemented_count: '%implemented% of %total% requirements fully implemented'
-        achieve_100: 'Achieve 100% Compliance'
-        currently_at: 'Currently at %percentage%%'
-        modules_required_hint: 'This framework requires the following ISMS modules to be activated for full compliance.'
-    mapping_quality:
-        no_mappings_found: 'No compliance mappings found in the database.'
-        quick_analysis: 'Quick Analysis'
-        full_analysis: 'Full Analysis'
-        re_analysis: 'Re-Analysis'
-        re_analyze_title: 'Re-analyzes all mappings with the latest algorithm'
-        re_analyze_button: 'Re-Analysis'
-        analysis_running: 'Analysis running...'
-    gaps:
-        title_description: 'Identified gaps in compliance mappings'
-        by_priority: 'By Priority'
-        change_status_instruction: 'Change the gap status in the respective mapping reviews:'
 mapping_review:
     title: 'Mapping Review'
     subtitle: 'Detailed analysis and review'

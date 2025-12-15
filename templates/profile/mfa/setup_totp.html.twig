@@ -24,10 +24,10 @@
         <div class="col-lg-8">
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">
+                    <h2 class="mb-0">
                         <i class="bi bi-qr-code" aria-hidden="true"></i>
                         {{ 'mfa.setup_totp.step1'|trans({}, 'mfa') }}
-                    </h3>
+                    </h2>
                 </div>
                 <div class="card-body">
                     <p class="lead">{{ 'mfa.setup_totp.scan_instructions'|trans({}, 'mfa') }}</p>
@@ -40,10 +40,10 @@
                     </div>
 
                     <div class="alert alert-info" data-controller="mfa-setup">
-                        <h4>
+                        <p class="fw-bold">
                             <i class="bi bi-info-circle" aria-hidden="true"></i>
                             {{ 'mfa.setup_totp.manual_entry'|trans({}, 'mfa') }}
-                        </h4>
+                        </p>
                         <p class="mb-2">{{ 'mfa.setup_totp.manual_instructions'|trans({}, 'mfa') }}</p>
                         <label for="secret-key" class="form-label">{{ 'mfa.setup.secret_key'|trans({}, 'mfa') }}</label>
                         <div class="input-group">
@@ -85,10 +85,10 @@
                  data-mfa-setup-verify-button-text-value="{{ 'mfa.setup_totp.verify_button'|trans({}, 'mfa') }}"
                  data-mfa-setup-error-text-value="{{ 'common.error'|trans({}, 'messages') }}">
                 <div class="card-header bg-success text-white">
-                    <h3 class="mb-0">
+                    <h2 class="mb-0">
                         <i class="bi bi-check-circle" aria-hidden="true"></i>
                         {{ 'mfa.setup_totp.step2'|trans({}, 'mfa') }}
-                    </h3>
+                    </h2>
                 </div>
                 <div class="card-body">
                     <p class="lead">{{ 'mfa.setup_totp.verify_instructions'|trans({}, 'mfa') }}</p>
@@ -139,10 +139,10 @@
                  data-backup-codes-codes-label-value="{{ 'mfa.backup_codes.codes'|trans({}, 'mfa') }}"
                  data-backup-codes-copied-text-value="{{ 'common.copied'|trans({}, 'messages') }}">
                 <div class="card-header bg-warning">
-                    <h3 class="mb-0">
+                    <h2 class="mb-0">
                         <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                         {{ 'mfa.backup_codes.title'|trans({}, 'mfa') }}
-                    </h3>
+                    </h2>
                 </div>
                 <div class="card-body">
                     <div class="alert alert-danger">

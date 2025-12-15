@@ -1,0 +1,546 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'analytics' %}
+
+{% block title %}{{ 'analytics.forecast.title'|trans({}, 'analytics') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="analytics-dashboard" data-controller="forecast-analytics">
+    {# Page Header #}
+    <div class="page-header">
+        <div>
+            <h1>
+                <i class="bi bi-graph-up-arrow" aria-hidden="true"></i>
+                {{ 'analytics.forecast.title'|trans({}, 'analytics') }}
+            </h1>
+            <p class="text-muted">{{ 'analytics.forecast.subtitle'|trans({}, 'analytics') }}</p>
+        </div>
+        <div class="page-header-actions">
+            <a href="{{ path('app_analytics_advanced') }}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'analytics.action.back_to_advanced'|trans({}, 'analytics') }}
+            </a>
+        </div>
+    </div>
+
+    {# Calculate current and predicted counts from data #}
+    {% set current_count = forecast.historical|last.total|default(0) %}
+    {% set predicted_count = forecast.forecast|last.total|default(current_count) %}
+    {% set net_velocity = velocity.last_30_days.net_change|default(0) %}
+
+    {# KPI Summary #}
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-primary h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">{{ 'analytics.forecast.kpi.current_risks'|trans({}, 'analytics') }}</h6>
+                            <h2 class="mb-0">{{ current_count }}</h2>
+                        </div>
+                        <i class="bi bi-exclamation-triangle display-6 text-primary"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-warning h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">{{ 'analytics.forecast.kpi.predicted'|trans({}, 'analytics') }}</h6>
+                            <h2 class="mb-0 {% if predicted_count > current_count %}text-danger{% else %}text-success{% endif %}">
+                                {{ predicted_count }}
+                            </h2>
+                        </div>
+                        <i class="bi bi-graph-up display-6 text-warning"></i>
+                    </div>
+                    <small class="text-muted">{{ 'analytics.forecast.kpi.in_months'|trans({'%months%': 6}, 'analytics') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-info h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">{{ 'analytics.forecast.kpi.risk_velocity'|trans({}, 'analytics') }}</h6>
+                            <h2 class="mb-0 {% if net_velocity > 0 %}text-danger{% elseif net_velocity < 0 %}text-success{% endif %}">
+                                {% if net_velocity > 0 %}+{% endif %}{{ net_velocity }}
+                            </h2>
+                        </div>
+                        <i class="bi bi-speedometer2 display-6 text-info"></i>
+                    </div>
+                    <small class="text-muted">{{ 'analytics.forecast.kpi.velocity_period'|trans({'%days%': 30}, 'analytics') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-success h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-muted mb-1">{{ 'analytics.forecast.kpi.appetite_compliance'|trans({}, 'analytics') }}</h6>
+                            <h2 class="mb-0 {% if appetite.compliance_score >= 80 %}text-success{% elseif appetite.compliance_score >= 50 %}text-warning{% else %}text-danger{% endif %}">
+                                {{ appetite.compliance_score }}%
+                            </h2>
+                        </div>
+                        <i class="bi bi-shield-check display-6 text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Tab Navigation #}
+    <ul class="nav nav-tabs mb-4" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#forecast-tab" type="button" role="tab">
+                <i class="bi bi-graph-up me-1"></i> {{ 'analytics.forecast.tabs.forecast'|trans({}, 'analytics') }}
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#velocity-tab" type="button" role="tab">
+                <i class="bi bi-speedometer2 me-1"></i> {{ 'analytics.forecast.tabs.velocity'|trans({}, 'analytics') }}
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#appetite-tab" type="button" role="tab">
+                <i class="bi bi-sliders me-1"></i> {{ 'analytics.forecast.tabs.appetite'|trans({}, 'analytics') }}
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#anomalies-tab" type="button" role="tab">
+                <i class="bi bi-exclamation-diamond me-1"></i> {{ 'analytics.forecast.tabs.anomalies'|trans({}, 'analytics') }}
+                {% if anomalies.total_count > 0 %}
+                <span class="badge bg-danger">{{ anomalies.total_count }}</span>
+                {% endif %}
+            </button>
+        </li>
+    </ul>
+
+    {# Tab Content #}
+    <div class="tab-content">
+        {# Forecast Tab #}
+        <div class="tab-pane fade show active" id="forecast-tab" role="tabpanel">
+            <div class="row">
+                <div class="col-lg-8 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">{{ 'analytics.forecast.chart.risk_forecast'|trans({}, 'analytics') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div style="height: 300px; position: relative;">
+                                <canvas id="forecastChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">{{ 'analytics.forecast.predictions.title'|trans({}, 'analytics') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                                <span class="text-muted">{{ 'analytics.forecast.predictions.trend'|trans({}, 'analytics') }}</span>
+                                <span class="badge bg-{% if forecast.trend.direction == 'increasing' %}danger{% elseif forecast.trend.direction == 'decreasing' %}success{% else %}secondary{% endif %}">
+                                    {% if forecast.trend.direction == 'increasing' %}
+                                        <i class="bi bi-arrow-up"></i> {{ 'analytics.forecast.predictions.increasing'|trans({}, 'analytics') }}
+                                    {% elseif forecast.trend.direction == 'decreasing' %}
+                                        <i class="bi bi-arrow-down"></i> {{ 'analytics.forecast.predictions.decreasing'|trans({}, 'analytics') }}
+                                    {% else %}
+                                        <i class="bi bi-arrow-right"></i> {{ 'analytics.forecast.predictions.stable'|trans({}, 'analytics') }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                                <span class="text-muted">{{ 'analytics.forecast.predictions.change'|trans({}, 'analytics') }}</span>
+                                <span class="{% if forecast.trend.change > 0 %}text-danger{% elseif forecast.trend.change < 0 %}text-success{% endif %}">
+                                    {% if forecast.trend.change > 0 %}+{% endif %}{{ forecast.trend.change }} ({{ forecast.trend.change_percentage }}%)
+                                </span>
+                            </div>
+                            <hr>
+                            <h6 class="mb-3">{{ 'analytics.forecast.predictions.by_level'|trans({}, 'analytics') }}</h6>
+                            {% set last_hist = forecast.historical|last %}
+                            {% set last_forecast = forecast.forecast|last %}
+                            {% if last_hist and last_forecast %}
+                            {% for level in ['critical', 'high', 'medium', 'low'] %}
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="badge bg-{% if level == 'critical' %}danger{% elseif level == 'high' %}warning{% elseif level == 'medium' %}info{% else %}success{% endif %}">
+                                    {{ level|title }}
+                                </span>
+                                <span>{{ attribute(last_hist, level)|default(0) }} <i class="bi bi-arrow-right"></i> {{ attribute(last_forecast, level)|default(0) }}</span>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Velocity Tab #}
+        <div class="tab-pane fade" id="velocity-tab" role="tabpanel">
+            <div class="row">
+                <div class="col-lg-8 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">{{ 'analytics.forecast.velocity.chart_title'|trans({}, 'analytics') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div style="height: 300px; position: relative;">
+                                <canvas id="velocityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">{{ 'analytics.forecast.velocity.summary'|trans({}, 'analytics') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center mb-4">
+                                <div class="col-6">
+                                    <div class="bg-danger bg-opacity-10 rounded p-3">
+                                        <h3 class="text-danger mb-0">{{ velocity.last_30_days.new_risks }}</h3>
+                                        <small class="text-muted">{{ 'analytics.forecast.velocity.new_risks'|trans({}, 'analytics') }}</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="bg-success bg-opacity-10 rounded p-3">
+                                        <h3 class="text-success mb-0">{{ velocity.last_30_days.closed_risks }}</h3>
+                                        <small class="text-muted">{{ 'analytics.forecast.velocity.closed_risks'|trans({}, 'analytics') }}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-muted">{{ 'analytics.forecast.velocity.net_change'|trans({}, 'analytics') }}</span>
+                                <h4 class="mb-0 {% if velocity.last_30_days.net_change > 0 %}text-danger{% elseif velocity.last_30_days.net_change < 0 %}text-success{% endif %}">
+                                    {% if velocity.last_30_days.net_change > 0 %}+{% endif %}{{ velocity.last_30_days.net_change }}
+                                </h4>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-muted">{{ 'analytics.forecast.velocity.avg_per_month'|trans({}, 'analytics') }}</span>
+                                <span>{{ velocity.last_90_days.monthly_average }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted">{{ 'analytics.forecast.velocity.period'|trans({}, 'analytics') }}</span>
+                                <span>30 {{ 'common.days'|trans({}, 'messages') }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# 90-Day Summary Card #}
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ 'analytics.forecast.velocity.monthly_breakdown'|trans({}, 'analytics') }} (90 {{ 'common.days'|trans({}, 'messages') }})</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="p-3 bg-light rounded">
+                                <h4 class="text-danger mb-1">+{{ velocity.last_90_days.new_risks }}</h4>
+                                <small class="text-muted">{{ 'analytics.forecast.velocity.new_risks'|trans({}, 'analytics') }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3 bg-light rounded">
+                                <h4 class="text-success mb-1">-{{ velocity.last_90_days.closed_risks }}</h4>
+                                <small class="text-muted">{{ 'analytics.forecast.velocity.closed_risks'|trans({}, 'analytics') }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3 bg-light rounded">
+                                <h4 class="{% if velocity.last_90_days.net_change > 0 %}text-danger{% elseif velocity.last_90_days.net_change < 0 %}text-success{% else %}text-secondary{% endif %} mb-1">
+                                    {% if velocity.last_90_days.net_change > 0 %}+{% endif %}{{ velocity.last_90_days.net_change }}
+                                </h4>
+                                <small class="text-muted">{{ 'analytics.forecast.velocity.net_change'|trans({}, 'analytics') }}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="p-3 bg-light rounded">
+                                <h4 class="text-info mb-1">{{ velocity.last_90_days.monthly_average }}</h4>
+                                <small class="text-muted">{{ 'analytics.forecast.velocity.avg_per_month'|trans({}, 'analytics') }}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Risk Appetite Tab #}
+        <div class="tab-pane fade" id="appetite-tab" role="tabpanel">
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">{{ 'analytics.forecast.appetite.compliance_score'|trans({}, 'analytics') }}</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="display-1 mb-3 {% if appetite.compliance_score >= 80 %}text-success{% elseif appetite.compliance_score >= 50 %}text-warning{% else %}text-danger{% endif %}">
+                                {{ appetite.compliance_score }}%
+                            </div>
+                            <p class="text-muted">{{ 'analytics.forecast.appetite.score_description'|trans({}, 'analytics') }}</p>
+                            <div style="height: 150px; position: relative;">
+                                <canvas id="appetiteGauge"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h5 class="mb-0">{{ 'analytics.forecast.appetite.by_level'|trans({}, 'analytics') }}</h5>
+                        </div>
+                        <div class="card-body">
+                            {% for level in ['critical', 'high', 'medium', 'low'] %}
+                            {% set actual_val = attribute(appetite.actual, level)|default(0) %}
+                            {% set threshold_val = attribute(appetite.appetite, level ~ '_max')|default(10) %}
+                            {% set is_compliant = actual_val <= threshold_val %}
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="badge bg-{% if level == 'critical' %}danger{% elseif level == 'high' %}warning{% elseif level == 'medium' %}info{% else %}success{% endif %}">
+                                        {{ level|title }}
+                                    </span>
+                                    <span>{{ actual_val }} / {{ threshold_val }} {{ 'analytics.forecast.appetite.threshold'|trans({}, 'analytics') }}</span>
+                                </div>
+                                <div class="progress" style="height: 25px;">
+                                    {% set progress_pct = threshold_val > 0 ? (actual_val / threshold_val) * 100 : 0 %}
+                                    <div class="progress-bar bg-{% if is_compliant %}success{% else %}danger{% endif %}"
+                                         style="width: {{ progress_pct > 100 ? 100 : progress_pct }}%">
+                                        {{ actual_val }}
+                                    </div>
+                                </div>
+                                <small class="{% if is_compliant %}text-success{% else %}text-danger{% endif %}">
+                                    {% if is_compliant %}
+                                        <i class="bi bi-check-circle"></i> {{ 'analytics.forecast.appetite.within_threshold'|trans({}, 'analytics') }}
+                                    {% else %}
+                                        <i class="bi bi-exclamation-triangle"></i> {{ 'analytics.forecast.appetite.exceeds_threshold'|trans({'%excess%': actual_val - threshold_val}, 'analytics') }}
+                                    {% endif %}
+                                </small>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if appetite.breaches|length > 0 %}
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        {{ 'analytics.forecast.appetite.recommendations'|trans({}, 'analytics') }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for breach in appetite.breaches %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">
+                                    <i class="bi bi-exclamation-diamond text-danger me-2"></i>
+                                    {{ breach.level|title }} Risk Threshold Exceeded
+                                </h6>
+                                <span class="badge bg-{{ breach.severity == 'high' ? 'danger' : 'warning' }}">
+                                    {{ breach.severity|title }}
+                                </span>
+                            </div>
+                            <p class="mb-0 text-muted">
+                                Current: {{ breach.actual }} | Threshold: {{ breach.threshold }} | Excess: {{ breach.excess }}
+                            </p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        {# Anomalies Tab #}
+        <div class="tab-pane fade" id="anomalies-tab" role="tabpanel">
+            {% if anomalies.anomalies|length > 0 %}
+            <div class="row">
+                {% for anomaly in anomalies.anomalies %}
+                <div class="col-md-6 mb-4">
+                    <div class="card border-{{ anomaly.severity == 'critical' ? 'danger' : (anomaly.severity == 'warning' ? 'warning' : 'info') }}">
+                        <div class="card-header bg-{{ anomaly.severity == 'critical' ? 'danger' : (anomaly.severity == 'warning' ? 'warning' : 'info') }} text-{{ anomaly.severity == 'warning' ? 'dark' : 'white' }}">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-exclamation-diamond me-2"></i>
+                                    {{ anomaly.type|replace({'_': ' '})|title }}
+                                </h5>
+                                <span class="badge bg-light text-dark">{{ anomaly.severity|title }}</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p>{{ anomaly.message }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="bi bi-bar-chart me-1"></i>
+                                    Score: {{ anomaly.severity_score|round }}
+                                </small>
+                                {% if anomaly.week is defined %}
+                                <span class="badge bg-secondary">{{ anomaly.week }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <i class="bi bi-check-circle display-1 text-success"></i>
+                    <h4 class="mt-3">{{ 'analytics.forecast.anomalies.none_detected'|trans({}, 'analytics') }}</h4>
+                    <p class="text-muted">{{ 'analytics.forecast.anomalies.all_normal'|trans({}, 'analytics') }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            {# Anomaly Type Breakdown #}
+            {% if anomalies.total_count > 0 %}
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">{{ 'analytics.forecast.anomalies.historical_patterns'|trans({}, 'analytics') }}</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <div class="p-3 bg-light rounded">
+                                <h4 class="mb-1">{{ anomalies.by_type.risk_spikes|default(0) }}</h4>
+                                <small class="text-muted">Risk Spikes</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 bg-light rounded">
+                                <h4 class="mb-1">{{ anomalies.by_type.incident_patterns|default(0) }}</h4>
+                                <small class="text-muted">Incident Patterns</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3 bg-light rounded">
+                                <h4 class="mb-1">{{ anomalies.by_type.control_drift|default(0) }}</h4>
+                                <small class="text-muted">Control Drift</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        document.addEventListener('turbo:load', function() {
+            // Forecast Chart
+            const forecastCtx = document.getElementById('forecastChart');
+            if (forecastCtx) {
+                const forecastData = {{ forecast|json_encode|raw }};
+                const historical = forecastData.historical || [];
+                const predicted = forecastData.forecast || [];
+
+                new Chart(forecastCtx, {
+                    type: 'line',
+                    data: {
+                        labels: [...historical.map(h => h.label), ...predicted.map(p => p.label)],
+                        datasets: [{
+                            label: '{{ 'analytics.forecast.chart.historical'|trans({}, 'analytics') }}',
+                            data: [...historical.map(h => h.total), ...Array(predicted.length).fill(null)],
+                            borderColor: '#0d6efd',
+                            backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                            fill: true
+                        }, {
+                            label: '{{ 'analytics.forecast.chart.predicted'|trans({}, 'analytics') }}',
+                            data: [...Array(historical.length - 1).fill(null), historical.length > 0 ? historical[historical.length - 1].total : 0, ...predicted.map(p => p.total)],
+                            borderColor: '#ffc107',
+                            borderDash: [5, 5],
+                            backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
+
+            // Velocity Chart - showing historical data as bar chart
+            const velocityCtx = document.getElementById('velocityChart');
+            if (velocityCtx) {
+                const forecastData = {{ forecast|json_encode|raw }};
+                const historical = forecastData.historical || [];
+
+                // Calculate velocity from historical data (changes between months)
+                const labels = historical.map(h => h.label);
+                const totals = historical.map(h => h.total);
+                const changes = [];
+                for (let i = 1; i < totals.length; i++) {
+                    changes.push(totals[i] - totals[i-1]);
+                }
+                changes.unshift(0); // First month has no change
+
+                new Chart(velocityCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '{{ 'analytics.forecast.velocity.net_change'|trans({}, 'analytics') }}',
+                            data: changes,
+                            backgroundColor: changes.map(c => c > 0 ? '#dc3545' : '#198754')
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: false }
+                        }
+                    }
+                });
+            }
+
+            // Appetite Gauge
+            const appetiteCtx = document.getElementById('appetiteGauge');
+            if (appetiteCtx) {
+                const appetiteData = {{ appetite|json_encode|raw }};
+                const score = appetiteData.compliance_score || 0;
+                new Chart(appetiteCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['{{ 'analytics.forecast.chart.compliant'|trans({}, 'analytics') }}', '{{ 'analytics.forecast.chart.gap'|trans({}, 'analytics') }}'],
+                        datasets: [{
+                            data: [score, 100 - score],
+                            backgroundColor: [
+                                score >= 80 ? '#198754' : (score >= 50 ? '#ffc107' : '#dc3545'),
+                                '#e9ecef'
+                            ],
+                            circumference: 180,
+                            rotation: 270
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}

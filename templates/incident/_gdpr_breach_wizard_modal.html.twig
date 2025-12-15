@@ -35,10 +35,10 @@
                 {# Modal Header #}
                 <div class="modal-header bg-warning text-dark">
                     <div class="w-100">
-                        <h5 class="modal-title" id="gdpr-wizard-title">
+                        <div class="modal-title h5" id="gdpr-wizard-title">
                             <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
                             {{ 'data_breach.wizard.title'|trans({}, 'privacy') }}
-                        </h5>
+                        </div>
                         <p class="mb-0 small">{{ 'data_breach.wizard.subtitle'|trans({}, 'privacy') }}</p>
 
                         {# Progress Bar #}
@@ -66,10 +66,10 @@
                 <div class="modal-body">
                     {# Step 1: Personal Data Involvement Check #}
                     <div data-gdpr-breach-wizard-target="step1" class="wizard-step">
-                        <h6 class="fw-bold mb-3">
+                        <div class="fw-bold mb-3">
                             <span class="badge bg-dark me-2">1</span>
                             {{ 'data_breach.wizard.step1_title'|trans({}, 'privacy') }}
-                        </h6>
+                        </div>
                         <p class="mb-4">{{ 'data_breach.wizard.personal_data_question'|trans({}, 'privacy') }}</p>
 
                         <div class="form-check mb-3">
@@ -106,10 +106,10 @@
 
                     {# Step 2: Data Type Classification #}
                     <div data-gdpr-breach-wizard-target="step2" class="wizard-step d-none">
-                        <h6 class="fw-bold mb-3">
+                        <div class="fw-bold mb-3">
                             <span class="badge bg-dark me-2">2</span>
                             {{ 'data_breach.wizard.step2_title'|trans({}, 'privacy') }}
-                        </h6>
+                        </div>
                         <p class="mb-4">{{ 'data_breach.wizard.data_type_question'|trans({}, 'privacy') }}</p>
 
                         <div class="form-check mb-3">
@@ -180,10 +180,10 @@
 
                     {# Step 3: Scale Assessment #}
                     <div data-gdpr-breach-wizard-target="step3" class="wizard-step d-none">
-                        <h6 class="fw-bold mb-3">
+                        <div class="fw-bold mb-3">
                             <span class="badge bg-dark me-2">3</span>
                             {{ 'data_breach.wizard.step3_title'|trans({}, 'privacy') }}
-                        </h6>
+                        </div>
                         <p class="mb-4">{{ 'data_breach.wizard.affected_count_question'|trans({}, 'privacy') }}</p>
 
                         <div class="form-check mb-3">
@@ -241,15 +241,15 @@
 
                     {# Step 4: Results & Recommendation #}
                     <div data-gdpr-breach-wizard-target="step4" class="wizard-step d-none">
-                        <h6 class="fw-bold mb-3">
+                        <div class="fw-bold mb-3">
                             <span class="badge bg-dark me-2">4</span>
                             {{ 'data_breach.wizard.step4_title'|trans({}, 'privacy') }}
-                        </h6>
+                        </div>
 
                         {# Risk Level #}
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h6 class="card-subtitle mb-2 text-muted">{{ 'data_breach.wizard.risk_level_label'|trans({}, 'privacy') }}</h6>
+                                <div class="card-subtitle mb-2 text-muted fw-semibold">{{ 'data_breach.wizard.risk_level_label'|trans({}, 'privacy') }}</div>
                                 <div data-gdpr-breach-wizard-target="resultRiskLevel" class="badge bg-secondary fs-5">
                                     {{ 'data_breach.wizard.calculating'|trans({}, 'privacy') }}
                                 </div>
@@ -259,9 +259,9 @@
                         {# GDPR Art. 33 Requirement #}
                         <div class="card mb-3">
                             <div class="card-body">
-                                <h6 class="card-subtitle mb-2 text-muted">
+                                <div class="card-subtitle mb-2 text-muted fw-semibold">
                                     {{ 'data_breach.wizard.gdpr_article_33_requirement'|trans({}, 'privacy') }}
-                                </h6>
+                                </div>
                                 <div data-gdpr-breach-wizard-target="resultReportable" class="badge bg-secondary fs-6">
                                     {{ 'data_breach.wizard.calculating'|trans({}, 'privacy') }}
                                 </div>

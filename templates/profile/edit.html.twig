@@ -19,7 +19,7 @@
         <div class="col-md-8 offset-md-2">
             <div class="card">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">{{ 'user.profile.title'|trans({}, 'user') }}</h3>
+                    <h2 class="mb-0">{{ 'user.profile.title'|trans({}, 'user') }}</h2>
                 </div>
                 <div class="card-body">
                     {{ form_start(form) }}
@@ -76,7 +76,7 @@
             {% if user.profilePicture %}
                 <div class="card mt-4">
                     <div class="card-header">
-                        <h5 class="mb-0">{{ 'user.profile.section.current_avatar'|trans({}, 'user') }}</h5>
+                        <h2 class="mb-0">{{ 'user.profile.section.current_avatar'|trans({}, 'user') }}</h2>
                     </div>
                     <div class="card-body text-center">
                         <img src="{{ asset(user.profilePicture) }}"

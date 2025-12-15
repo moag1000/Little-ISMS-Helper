@@ -11,6 +11,7 @@ use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
 use App\Service\DashboardStatisticsService;
+use App\Service\ModuleConfigurationService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -22,6 +23,7 @@ class DashboardStatisticsServiceTest extends TestCase
     private MockObject $incidentRepository;
     private MockObject $controlRepository;
     private MockObject $security;
+    private MockObject $moduleConfigurationService;
     private DashboardStatisticsService $service;
 
     protected function setUp(): void
@@ -31,13 +33,18 @@ class DashboardStatisticsServiceTest extends TestCase
         $this->incidentRepository = $this->createMock(IncidentRepository::class);
         $this->controlRepository = $this->createMock(ControlRepository::class);
         $this->security = $this->createMock(Security::class);
+        $this->moduleConfigurationService = $this->createMock(ModuleConfigurationService::class);
+
+        // Default: return empty active modules
+        $this->moduleConfigurationService->method('getActiveModules')->willReturn([]);
 
         $this->service = new DashboardStatisticsService(
             $this->assetRepository,
             $this->riskRepository,
             $this->incidentRepository,
             $this->controlRepository,
-            $this->security
+            $this->security,
+            $this->moduleConfigurationService
         );
     }
 

@@ -98,7 +98,7 @@ class AdminUserType extends AbstractType
             'csrf_protection' => true,
             'csrf_field_name' => '_token',
             'csrf_token_id' => 'admin_user',
-            'translation_domain' => 'admin',
+            'translation_domain' => 'setup',
         ]);
     }
 }

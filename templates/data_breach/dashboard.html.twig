@@ -62,7 +62,7 @@
     {# CRITICAL: Action Items #}
     {% if action_items|length > 0 %}
         <div class="card mb-4">
-            <div class="card-header"><h5 class="mb-0"><i class="bi bi-exclamation-triangle-fill"></i> Action Items</h5>
+            <div class="card-header"><h2 class="mb-0"><i class="bi bi-exclamation-triangle-fill"></i> Action Items</h2>
             </div>
             <div class="card-body">
                 <div class="list-group">
@@ -74,7 +74,7 @@
                            {% elseif item.priority == 'medium' %}list-group-item-info
                            {% endif %}">
                             <div class="d-flex w-100 justify-content-between">
-                                <h6 class="mb-1">
+                                <div class="fw-bold mb-1">
                                     {% if item.priority == 'critical' %}
                                         <i class="bi bi-exclamation-triangle-fill text-danger"></i>
                                     {% elseif item.priority == 'high' %}
@@ -85,7 +85,7 @@
                                         <i class="bi bi-circle text-secondary"></i>
                                     {% endif %}
                                     {{ item.title }}
-                                </h6>
+                                </div>
                                 <small>{{ item.reference_number }}</small>
                             </div>
                             <p class="mb-1">
@@ -118,29 +118,29 @@
     <div class="row mb-4">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header"><h5 class="mb-0"><i class="bi bi-bar-chart"></i> Breach Statistics by Status</h5>
+                <div class="card-header"><h2 class="mb-0"><i class="bi bi-bar-chart"></i> Breach Statistics by Status</h2>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-2">
-                            <h6 class="text-muted">Draft</h6>
-                            <h2>{{ statistics.draft }}</h2>
+                            <div class="text-muted small">Draft</div>
+                            <div class="h2">{{ statistics.draft }}</div>
                         </div>
                         <div class="col-md-3">
-                            <h6 class="text-muted">Under Assessment</h6>
-                            <h3>{{ statistics.under_assessment }}</h3>
+                            <div class="text-muted small">Under Assessment</div>
+                            <div class="h3">{{ statistics.under_assessment }}</div>
                         </div>
                         <div class="col-md-3">
-                            <h6 class="text-muted">{{ 'data_breach.stats.authority_notified'|trans({}, 'privacy') }}</h6>
-                            <h3 class="text-success">{{ statistics.authority_notified }}</h3>
+                            <div class="text-muted small">{{ 'data_breach.stats.authority_notified'|trans({}, 'privacy') }}</div>
+                            <div class="h3 text-success">{{ statistics.authority_notified }}</div>
                         </div>
                         <div class="col-md-2">
-                            <h6 class="text-muted">{{ 'data_breach.stats.subjects_notified'|trans({}, 'privacy') }}</h6>
-                            <h3 class="text-success">{{ statistics.subjects_notified }}</h3>
+                            <div class="text-muted small">{{ 'data_breach.stats.subjects_notified'|trans({}, 'privacy') }}</div>
+                            <div class="h3 text-success">{{ statistics.subjects_notified }}</div>
                         </div>
                         <div class="col-md-2">
-                            <h6 class="text-muted">{{ 'data_breach.stats.closed'|trans({}, 'privacy') }}</h6>
-                            <h3>{{ statistics.closed }}</h3>
+                            <div class="text-muted small">{{ 'data_breach.stats.closed'|trans({}, 'privacy') }}</div>
+                            <div class="h3">{{ statistics.closed }}</div>
                         </div>
                     </div>
                 </div>
@@ -152,25 +152,25 @@
     <div class="row mb-4">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header"><h5 class="mb-0"><i class="bi bi-shield-exclamation"></i> By Risk Level</h5>
+                <div class="card-header"><h2 class="mb-0"><i class="bi bi-shield-exclamation"></i> By Risk Level</h2>
                 </div>
                 <div class="card-body">
                     <div class="row text-center">
                         <div class="col-3">
-                            <h6 class="text-muted">Low</h6>
-                            <h3 class="text-success">{{ statistics.low_risk }}</h3>
+                            <div class="text-muted small">Low</div>
+                            <div class="h3 text-success">{{ statistics.low_risk }}</div>
                         </div>
                         <div class="col-3">
-                            <h6 class="text-muted">Medium</h6>
-                            <h3 class="text-info">{{ statistics.medium_risk }}</h3>
+                            <div class="text-muted small">Medium</div>
+                            <div class="h3 text-info">{{ statistics.medium_risk }}</div>
                         </div>
                         <div class="col-3">
-                            <h6 class="text-muted">High</h6>
-                            <h3 class="text-warning">{{ statistics.high_risk }}</h3>
+                            <div class="text-muted small">High</div>
+                            <div class="h3 text-warning">{{ statistics.high_risk }}</div>
                         </div>
                         <div class="col-3">
-                            <h6 class="text-muted">Critical</h6>
-                            <h3 class="text-danger">{{ statistics.critical_risk }}</h3>
+                            <div class="text-muted small">Critical</div>
+                            <div class="h3 text-danger">{{ statistics.critical_risk }}</div>
                         </div>
                     </div>
                 </div>
@@ -179,7 +179,7 @@
 
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header"><h5 class="mb-0"><i class="bi bi-shield-lock"></i> Special Categories</h5>
+                <div class="card-header"><h2 class="mb-0"><i class="bi bi-shield-lock"></i> Special Categories</h2>
                 </div>
                 <div class="card-body">
                     <p><strong>Art. 9 Data (Special Categories):</strong></p>
@@ -196,7 +196,7 @@
     {# Recent Breaches #}
     {% if recent_breaches|length > 0 %}
         <div class="card mb-4">
-            <div class="card-header"><h5 class="mb-0"><i class="bi bi-clock-history"></i> Recent Breaches (Last 30 Days)</h5>
+            <div class="card-header"><h2 class="mb-0"><i class="bi bi-clock-history"></i> Recent Breaches (Last 30 Days)</h2>
             </div>
             <div class="card-body p-0">
                 {% embed '_components/_table.html.twig' with {

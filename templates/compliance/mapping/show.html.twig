@@ -30,16 +30,16 @@
             {# Mapping Overview #}
             <div class="card mb-4">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">Mapping Overview</h3>
+                    <h2 class="mb-0">Mapping Overview</h2>
                 </div>
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-5">
-                            <h6 class="text-muted">Source Requirement</h6>
+                            <p class="fw-bold text-muted">Source Requirement</p>
                             <div class="card">
                                 <div class="card-body">
                                     <span class="badge bg-secondary mb-2">{{ mapping.sourceRequirement.framework.code }}</span>
-                                    <h5>{{ mapping.sourceRequirement.requirementId }}</h5>
+                                    <p class="fw-bold fs-5">{{ mapping.sourceRequirement.requirementId }}</p>
                                     <p>{{ mapping.sourceRequirement.title }}</p>
                                     <small class="text-muted">{{ mapping.sourceRequirement.description|u.truncate(150, '...') }}</small>
                                 </div>
@@ -55,11 +55,11 @@
                             </div>
                         </div>
                         <div class="col-md-5">
-                            <h6 class="text-muted">Target Requirement</h6>
+                            <p class="fw-bold text-muted">Target Requirement</p>
                             <div class="card">
                                 <div class="card-body">
                                     <span class="badge bg-secondary mb-2">{{ mapping.targetRequirement.framework.code }}</span>
-                                    <h5>{{ mapping.targetRequirement.requirementId }}</h5>
+                                    <p class="fw-bold fs-5">{{ mapping.targetRequirement.requirementId }}</p>
                                     <p>{{ mapping.targetRequirement.title }}</p>
                                     <small class="text-muted">{{ mapping.targetRequirement.description|u.truncate(150, '...') }}</small>
                                 </div>
@@ -90,7 +90,7 @@
 
                     {% if mapping.mappingRationale %}
                         <hr>
-                        <h2>Mapping Rationale</h2>
+                        <p class="fw-bold">Mapping Rationale</p>
                         <p class="text-muted">{{ mapping.mappingRationale }}</p>
                     {% endif %}
                 </div>
@@ -100,7 +100,7 @@
             {% if mapping.isAnalyzed %}
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h3 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> Quality Analysis</h3>
+                        <h2 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> Quality Analysis</h2>
                     </div>
                     <div class="card-body">
                         <div class="row">

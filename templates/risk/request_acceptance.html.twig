@@ -26,18 +26,18 @@
     <div class="col-lg-8">
         <div class="card">
             <div class="card-header">
-                <h3 class="mb-0">
+                <h2 class="mb-0">
                     <i class="bi bi-shield-check" aria-hidden="true"></i>
                     {{ 'risk.acceptance.request'|trans({}, 'risk') }}
-                </h3>
+                </h2>
             </div>
             <div class="card-body">
                 {# Risk Summary #}
                 <div class="alert alert-info mb-4">
-                    <h5 class="alert-heading">
+                    <div class="alert-heading fw-bold">
                         <i class="bi bi-info-circle" aria-hidden="true"></i>
                         {{ risk.title }}
-                    </h5>
+                    </div>
                     <hr>
                     <div class="row">
                         <div class="col-md-6">
@@ -92,10 +92,10 @@
     {# Sidebar: Approval Level Information #}
     <div class="col-lg-4">
         <div class="card border-{{ required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') }}">
-            <div class="card-header bg-{{ required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') }}-subtle"><h5 class="mb-0">
+            <div class="card-header bg-{{ required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') }}-subtle"><h2 class="mb-0">
                     <i class="bi bi-shield-check" aria-hidden="true"></i>
                     {{ 'risk.acceptance.required_approval_level'|trans({}, 'risk') }}
-                </h5>
+                </h2>
             </div>
             <div class="card-body">
                 <div class="alert alert-{{ required_level == 'automatic' ? 'success' : (required_level == 'manager' ? 'warning' : 'danger') }} mb-3">
@@ -108,13 +108,13 @@
                     </div>
                 </div>
 
-                <h5>{{ 'risk.guidance.title'|trans({}, 'risk') }}</h5>
+                <h3>{{ 'risk.guidance.title'|trans({}, 'risk') }}</h3>
                 <div class="list-group list-group-flush">
                     {% for level, config in thresholds %}
                         <div class="list-group-item {{ required_level == level ? 'active' : '' }}">
                             <div class="d-flex align-items-center justify-content-between">
                                 <div>
-                                    <h6 class="mb-1">{{ config.label }}</h6>
+                                    <div class="mb-1 fw-bold">{{ config.label }}</div>
                                     <small class="{{ required_level == level ? 'text-white' : 'text-muted' }}">
                                         {{ config.description }}
                                     </small>
@@ -128,7 +128,7 @@
                 </div>
 
                 <div class="mt-3">
-                    <h6>{{ 'common.info'|trans({}, 'messages') }}</h6>
+                    <div class="fw-bold">{{ 'common.info'|trans({}, 'messages') }}</div>
                     <p class="small text-muted mb-0">
                         <i class="bi bi-info-circle" aria-hidden="true"></i>
                         ISO 27005:2022 Section 8.4.4 requires formal approval for risk acceptance based on residual risk level.

@@ -1,0 +1,86 @@
+# KPI Translations - English
+# Domain: kpi
+
+kpi:
+    # Core KPIs
+    control_compliance: "Control Compliance"
+    controls_implemented: "Controls Implemented"
+
+    # Risk Management KPIs
+    total_risks: "Total Risks"
+    high_risks: "High Risks"
+    critical_risks: "Critical Risks"
+    risk_treatment_rate: "Risk Treatment Rate"
+    overdue_treatments: "Overdue Treatments"
+
+    # Asset Management KPIs
+    total_assets: "Total Assets"
+    critical_assets: "Critical Assets"
+    asset_classification_rate: "Classification Rate"
+
+    # Incident Management KPIs
+    open_incidents: "Open Incidents"
+    resolved_incidents_ytd: "Resolved Incidents (YTD)"
+    mttr: "Mean Time To Resolve (MTTR)"
+    overdue_incidents: "Overdue Incidents"
+
+    # Business Continuity KPIs
+    critical_processes: "Critical Processes"
+    bia_coverage: "BIA Coverage"
+    active_bc_plans: "Active BC Plans"
+    bc_exercises_ytd: "BC Exercises (YTD)"
+
+    # Training KPIs
+    training_completion_rate: "Training Completion Rate"
+    overdue_trainings: "Overdue Trainings"
+
+    # Audit KPIs
+    audits_completed_ytd: "Audits Completed (YTD)"
+    planned_audits: "Planned Audits"
+    open_audit_findings: "Open Audit Findings"
+
+    # Supplier KPIs
+    total_suppliers: "Total Suppliers"
+    critical_suppliers: "Critical Suppliers"
+    supplier_assessment_rate: "Supplier Assessment Rate"
+    overdue_supplier_assessments: "Overdue Supplier Assessments"
+
+    # Documentation KPIs
+    total_documents: "Total Documents"
+    documents_needing_review: "Documents Needing Review"
+    documents_without_owner: "Documents Without Owner"
+
+    # DORA-specific KPIs
+    dora:
+        ict_risks: "ICT Risks"
+        ict_risks_high: "High ICT Risks"
+        major_ict_incidents: "Major ICT Incidents"
+        4h_reporting_compliance: "4h Reporting Compliance"
+        resilience_tests_ytd: "Resilience Tests (YTD)"
+        ict_third_party_providers: "ICT Third-Party Providers"
+        critical_ict_providers: "Critical ICT Providers"
+
+    # Category labels
+    category:
+        core: "Core KPIs"
+        risk_management: "Risk Management"
+        asset_management: "Asset Management"
+        incident_management: "Incident Management"
+        business_continuity: "Business Continuity"
+        training: "Training"
+        audits: "Audits"
+        supplier_management: "Supplier Management"
+        documentation: "Documentation"
+
+    # Status labels
+    status:
+        good: "Good"
+        warning: "Warning"
+        danger: "Critical"
+        info: "Info"
+
+    # Units
+    unit:
+        percent: "%"
+        hours: "hours"
+        days: "days"

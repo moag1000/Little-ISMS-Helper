@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Executive Summary Report</title>
+    <style>
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 10pt; margin: 0; padding: 20px; }
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, #06b6d4 0%, #ec4899 50%, #8b5cf6 100%) 1;
+            padding-bottom: 10px;
+        }
+        .header h1 { color: #0f172a; margin: 0; font-size: 20pt; text-transform: uppercase; letter-spacing: 0.5pt; }
+        .header .subtitle { color: #666; font-size: 10pt; margin-top: 3px; }
+        .header .date { color: #888; font-size: 9pt; margin-top: 3px; }
+
+        .stats-grid { display: table; width: 100%; margin: 15px 0; }
+        .stat-box {
+            display: table-cell;
+            width: 25%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            text-align: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+        .stat-box .number { font-size: 24pt; font-weight: bold; color: #06b6d4; }
+        .stat-box .number.danger { color: #dc2626; }
+        .stat-box .number.success { color: #16a34a; }
+        .stat-box .number.warning { color: #d97706; }
+        .stat-box .label { font-size: 8pt; color: #0f172a; text-transform: uppercase; font-weight: bold; letter-spacing: 0.3pt; }
+
+        .section { margin: 20px 0; page-break-inside: avoid; }
+        .section h2 {
+            background: linear-gradient(90deg, #0f172a 0%, #1e293b 100%);
+            color: #06b6d4;
+            padding: 8px;
+            font-size: 11pt;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.3pt;
+        }
+
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th {
+            background: #0f172a;
+            color: #06b6d4;
+            padding: 6px;
+            text-align: left;
+            font-size: 9pt;
+            text-transform: uppercase;
+        }
+        td { padding: 6px; border-bottom: 1px solid #ddd; font-size: 9pt; }
+        tr:nth-child(even) { background: #f8fafc; }
+
+        .progress-bar { background: #e5e7eb; height: 12px; border-radius: 6px; overflow: hidden; margin: 3px 0; }
+        .progress-fill { height: 100%; border-radius: 6px; }
+        .progress-fill.danger { background: #dc2626; }
+        .progress-fill.warning { background: #d97706; }
+        .progress-fill.info { background: #0ea5e9; }
+        .progress-fill.success { background: #16a34a; }
+
+        .badge { display: inline-block; padding: 2px 6px; border-radius: 3px; font-size: 8pt; font-weight: bold; }
+        .badge-danger { background: #fecaca; color: #991b1b; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-info { background: #e0f2fe; color: #0369a1; }
+        .badge-success { background: #dcfce7; color: #166534; }
+
+        .footer { position: fixed; bottom: 15px; left: 20px; right: 20px; text-align: center; font-size: 8pt; color: #888; border-top: 1px solid #ddd; padding-top: 8px; }
+        .page-break { page-break-after: always; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Executive Summary Report</h1>
+        <div class="subtitle">ISMS Management Dashboard</div>
+        <div class="date">Generated: {{ generated_at|date('d.m.Y H:i') }} | Version: {{ version }}</div>
+    </div>
+
+    {# Key Metrics #}
+    <div class="stats-grid">
+        <div class="stat-box">
+            <div class="number">{{ summary.summary.total_assets }}</div>
+            <div class="label">Assets</div>
+        </div>
+        <div class="stat-box">
+            <div class="number">{{ summary.summary.total_risks }}</div>
+            <div class="label">Risks</div>
+        </div>
+        <div class="stat-box">
+            <div class="number success">{{ summary.summary.compliance_percentage }}%</div>
+            <div class="label">Compliance</div>
+        </div>
+        <div class="stat-box">
+            <div class="number">{{ summary.summary.total_controls }}</div>
+            <div class="label">Controls</div>
+        </div>
+    </div>
+
+    {# Risk Distribution #}
+    <div class="section">
+        <h2>Risk Distribution</h2>
+        <table>
+            <tr>
+                <th>Level</th>
+                <th>Count</th>
+                <th>Distribution</th>
+            </tr>
+            <tr>
+                <td><span class="badge badge-danger">Critical (≥20)</span></td>
+                <td>{{ summary.risk_distribution.critical }}</td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill danger" style="width: {{ summary.summary.total_risks > 0 ? (summary.risk_distribution.critical / summary.summary.total_risks * 100) : 0 }}%"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-warning">High (12-19)</span></td>
+                <td>{{ summary.risk_distribution.high }}</td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill warning" style="width: {{ summary.summary.total_risks > 0 ? (summary.risk_distribution.high / summary.summary.total_risks * 100) : 0 }}%"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-info">Medium (6-11)</span></td>
+                <td>{{ summary.risk_distribution.medium }}</td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill info" style="width: {{ summary.summary.total_risks > 0 ? (summary.risk_distribution.medium / summary.summary.total_risks * 100) : 0 }}%"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-success">Low (&lt;6)</span></td>
+                <td>{{ summary.risk_distribution.low }}</td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill success" style="width: {{ summary.summary.total_risks > 0 ? (summary.risk_distribution.low / summary.summary.total_risks * 100) : 0 }}%"></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    {# Control Implementation Status #}
+    <div class="section">
+        <h2>Control Implementation Status</h2>
+        <table>
+            <tr>
+                <th>Status</th>
+                <th>Count</th>
+                <th>Progress</th>
+            </tr>
+            <tr>
+                <td><span class="badge badge-success">Implemented</span></td>
+                <td>{{ summary.control_status.implemented }}</td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill success" style="width: {{ summary.summary.total_controls > 0 ? (summary.control_status.implemented / summary.summary.total_controls * 100) : 0 }}%"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-warning">In Progress</span></td>
+                <td>{{ summary.control_status.in_progress }}</td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill warning" style="width: {{ summary.summary.total_controls > 0 ? (summary.control_status.in_progress / summary.summary.total_controls * 100) : 0 }}%"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><span class="badge badge-info">Not Started</span></td>
+                <td>{{ summary.control_status.not_started }}</td>
+                <td>
+                    <div class="progress-bar">
+                        <div class="progress-fill info" style="width: {{ summary.summary.total_controls > 0 ? (summary.control_status.not_started / summary.summary.total_controls * 100) : 0 }}%"></div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    {# Operational Metrics #}
+    <div class="section">
+        <h2>Operational Metrics</h2>
+        <table>
+            <tr>
+                <th>Metric</th>
+                <th>Value</th>
+                <th>Status</th>
+            </tr>
+            <tr>
+                <td>Open Incidents (Last 12 Months)</td>
+                <td>{{ summary.incident_summary.open }}</td>
+                <td>{% if summary.incident_summary.open > 5 %}<span class="badge badge-warning">Attention</span>{% else %}<span class="badge badge-success">Normal</span>{% endif %}</td>
+            </tr>
+            <tr>
+                <td>Total Incidents (Last 12 Months)</td>
+                <td>{{ summary.incident_summary.total_12_months }}</td>
+                <td><span class="badge badge-info">Tracked</span></td>
+            </tr>
+            <tr>
+                <td>Audits Completed This Year</td>
+                <td>{{ summary.audit_summary.completed_this_year }}</td>
+                <td>{% if summary.audit_summary.completed_this_year >= 1 %}<span class="badge badge-success">Compliant</span>{% else %}<span class="badge badge-warning">Pending</span>{% endif %}</td>
+            </tr>
+            <tr>
+                <td>Total Trainings Conducted</td>
+                <td>{{ summary.training_summary.total_trainings }}</td>
+                <td><span class="badge badge-success">Active</span></td>
+            </tr>
+        </table>
+    </div>
+
+    {# Trend Data #}
+    {% if risk_trends|length > 0 %}
+    <div class="section">
+        <h2>Risk Trends (Last 12 Months)</h2>
+        <table>
+            <tr>
+                <th>Month</th>
+                <th>New Risks</th>
+                <th>High/Critical</th>
+            </tr>
+            {% for trend in risk_trends %}
+            <tr>
+                <td>{{ trend.month_name }}</td>
+                <td>{{ trend.new_risks }}</td>
+                <td>{% if trend.high_critical > 0 %}<span class="badge badge-danger">{{ trend.high_critical }}</span>{% else %}<span class="badge badge-success">0</span>{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endif %}
+
+    <div class="footer">
+        Confidential - Executive Summary Report | Little ISMS Helper | Page 1
+    </div>
+</body>
+</html>

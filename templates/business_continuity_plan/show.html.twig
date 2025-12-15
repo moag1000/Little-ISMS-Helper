@@ -32,7 +32,7 @@
 
     <div class="card">
         <div class="card-header">
-            <h3>{{ 'bc_plans.section.details'|trans({}, 'bc_plans') }}</h3>
+            <h2>{{ 'bc_plans.section.details'|trans({}, 'bc_plans') }}</h2>
             <span class="{{ badge_status(bc_plan.status) }}">{{ bc_plan.status }}</span>
         </div>
         <div class="card-body">
@@ -58,13 +58,13 @@
 
             {% if bc_plan.description %}
             <div class="detail-section">
-                <h2>{{ 'common.description'|trans({}, 'messages') }}</h2>
+                <h3>{{ 'common.description'|trans({}, 'messages') }}</h3>
                 <p>{{ bc_plan.description }}</p>
             </div>
             {% endif %}
 
             <div class="detail-section">
-                <h2>{{ 'bcm.field.activation_criteria'|trans({}, 'bc_plans') }}</h2>
+                <h3>{{ 'bcm.field.activation_criteria'|trans({}, 'bc_plans') }}</h3>
                 <p>{{ bc_plan.activationCriteria }}</p>
             </div>
 

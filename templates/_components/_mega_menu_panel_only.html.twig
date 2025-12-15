@@ -358,6 +358,13 @@
                                 <span class="mega-menu-link-desc">{{ 'nav.mega.desc.nis2'|trans({}, 'nav') }}</span>
                             </div>
                         </a></li>
+                        <li><a href="{{ path('app_compliance_wizard_index') }}" class="{% if current_route starts with 'app_compliance_wizard_' %}active{% endif %}" data-turbo-action="advance">
+                            <i class="bi bi-magic" aria-hidden="true"></i>
+                            <div class="mega-menu-link-content">
+                                <span class="mega-menu-link-title">{{ 'nav.compliance_wizard'|trans({}, 'nav') }}</span>
+                                <span class="mega-menu-link-desc">{{ 'nav.mega.desc.compliance_wizard'|trans({}, 'nav') }}</span>
+                            </div>
+                        </a></li>
                     </ul>
                 </div>
             </div>

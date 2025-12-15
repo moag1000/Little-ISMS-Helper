@@ -10,10 +10,10 @@
     {% if alerts is not empty %}
         <div class="row mb-4">
             <div class="col-12">
-                <h3 class="h5 mb-3">
+                <h2 class="h5 mb-3">
                     <i class="bi bi-exclamation-triangle-fill text-warning" aria-hidden="true"></i>
                     {{ 'admin.dashboard.alerts.title'|trans({}, 'admin') }}
-                </h3>
+                </h2>
                 {% for alert in alerts %}
                     <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert">
                         <i class="bi {{ alert.icon }}"></i>
@@ -40,8 +40,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
-                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.users'|trans({}, 'admin') }}</h6>
-                            <h2 class="card-title mb-0">{{ stats.users.total }}</h2>
+                            <div class="text-muted small fw-semibold mb-2">{{ 'admin.dashboard.stats.users'|trans({}, 'admin') }}</div>
+                            <div class="fs-2 fw-bold">{{ stats.users.total }}</div>
                         </div>
                         <div class="bg-primary bg-opacity-10 p-3 rounded">
                             <i class="bi bi-people-fill text-primary fs-3" aria-hidden="true"></i>
@@ -70,8 +70,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
-                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.active_sessions'|trans({}, 'admin') }}</h6>
-                            <h2 class="card-title mb-0">{{ stats.sessions.active_24h }}</h2>
+                            <div class="text-muted small fw-semibold mb-2">{{ 'admin.dashboard.stats.active_sessions'|trans({}, 'admin') }}</div>
+                            <div class="fs-2 fw-bold">{{ stats.sessions.active_24h }}</div>
                         </div>
                         <div class="bg-success bg-opacity-10 p-3 rounded">
                             <i class="bi bi-clock-history text-success fs-3" aria-hidden="true"></i>
@@ -90,8 +90,8 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
-                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.database'|trans({}, 'admin') }}</h6>
-                            <h2 class="card-title mb-0">{{ stats.database.size_mb }}</h2>
+                            <div class="text-muted small fw-semibold mb-2">{{ 'admin.dashboard.stats.database'|trans({}, 'admin') }}</div>
+                            <div class="fs-2 fw-bold">{{ stats.database.size_mb }}</div>
                         </div>
                         <div class="bg-info bg-opacity-10 p-3 rounded">
                             <i class="bi bi-database-fill text-info fs-3" aria-hidden="true"></i>
@@ -110,10 +110,10 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
-                            <h6 class="card-subtitle text-muted mb-2">{{ 'admin.dashboard.stats.total_records'|trans({}, 'admin') }}</h6>
-                            <h2 class="card-title mb-0">
+                            <div class="text-muted small fw-semibold mb-2">{{ 'admin.dashboard.stats.total_records'|trans({}, 'admin') }}</div>
+                            <div class="fs-2 fw-bold">
                                 {{ stats.modules.assets.total + stats.modules.risks.total + stats.modules.controls.total + stats.modules.incidents.total }}
-                            </h2>
+                            </div>
                         </div>
                         <div class="bg-warning bg-opacity-10 p-3 rounded">
                             <i class="bi bi-layers-fill text-warning fs-3" aria-hidden="true"></i>
@@ -298,7 +298,7 @@
                                 <div class="list-group-item">
                                     <div class="d-flex w-100 justify-content-between align-items-start">
                                         <div>
-                                            <h6 class="mb-1 small">{{ log.action|trans }}</h6>
+                                            <div class="mb-1 small fw-semibold">{{ log.action|trans }}</div>
                                             <p class="mb-1 small text-muted">
                                                 {{ log.entityType }} #{{ log.entityId }}
                                                 {% if log.username %}

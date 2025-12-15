@@ -65,18 +65,18 @@
 
     {# Tab 1: Overview #}
     <div id="tab-overview" class="tab-content active" data-tabs-target="panel" data-tab="overview">
-        <h2 class="section-title">{{ 'compliance.section.framework_relationships'|trans({}, 'compliance') }}</h2>
+        <p class="fw-bold fs-5">{{ 'compliance.section.framework_relationships'|trans({}, 'compliance') }}</p>
 
         {% if framework_relationships is empty %}
             <div class="card gradient-purple">
                 <div class="icon-xlarge mb-md">🔗</div>
-                <h2 class="fs-15-white-mb">Noch keine Framework-Mappings vorhanden</h2>
+                <p class="fs-15-white-mb fw-bold">Noch keine Framework-Mappings vorhanden</p>
                 <p class="fs-11-lh-mb">
                     Die Cross-Framework Mappings zwischen Ihren Compliance-Frameworks wurden noch nicht erstellt.
                     <br>Diese Mappings zeigen, wie Anforderungen verschiedener Frameworks zusammenhängen.
                 </p>
                 <div class="info-box-white">
-                    <h4 class="h-white-no-mt-mb-sm"><i class="bi bi-lightbulb" aria-hidden="true"></i> So erstellen Sie Mappings:</h4>
+                    <p class="h-white-no-mt-mb-sm fw-bold"><i class="bi bi-lightbulb" aria-hidden="true"></i> So erstellen Sie Mappings:</p>
                     <p class="fs-095-opacity-09">
                         Mappings müssen manuell erstellt oder über ein Datenimport-Script geladen werden.
                         <br>Kontaktieren Sie Ihren Administrator für weitere Informationen.

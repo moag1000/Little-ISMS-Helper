@@ -9,6 +9,7 @@ use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
 use App\Repository\RiskTreatmentPlanRepository;
 use App\Repository\WorkflowInstanceRepository;
+use App\Service\ComplianceWizardService;
 use App\Service\ModuleConfigurationService;
 use App\Service\RiskReviewService;
 use App\Service\TenantContext;
@@ -25,6 +26,7 @@ class WelcomeController extends AbstractController
     public function __construct(
         private readonly TenantContext $tenantContext,
         private readonly ModuleConfigurationService $moduleConfigurationService,
+        private readonly ComplianceWizardService $complianceWizardService,
         private readonly AssetRepository $assetRepository,
         private readonly RiskRepository $riskRepository,
         private readonly ControlRepository $controlRepository,
@@ -52,6 +54,10 @@ class WelcomeController extends AbstractController
         // Check if user prefers to skip welcome page
         $skipWelcome = $request->getSession()->get('skip_welcome_page', false);
 
+        // Get compliance wizard status for incomplete wizards
+        $complianceWizards = $this->complianceWizardService->getQuickStatus($tenant);
+        $incompleteWizards = array_filter($complianceWizards, fn($w) => $w['score'] < 100);
+
         return $this->render('home/welcome.html.twig', [
             'active_modules' => $activeModules,
             'urgent_tasks' => $urgentTasks,
@@ -59,6 +65,7 @@ class WelcomeController extends AbstractController
             'total_urgent_count' => $this->countUrgentTasks($urgentTasks),
             'skip_welcome' => $skipWelcome,
             'tenant' => $tenant,
+            'compliance_wizards' => $incompleteWizards,
         ]);
     }
 

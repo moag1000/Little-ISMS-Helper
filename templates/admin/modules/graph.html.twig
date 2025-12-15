@@ -2,6 +2,17 @@
 
 {% block title %}{{ 'admin.modules.dependency_graph'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
 
+{% block admin_title %}
+    <i class="bi bi-diagram-3 me-2"></i>
+    Modul-Abhängigkeiten
+{% endblock %}
+
+{% block admin_subtitle %}
+    <p class="lead text-muted">
+        Visualisierung der Modul-Abhängigkeiten
+    </p>
+{% endblock %}
+
 {% block admin_content %}
 <div class="container-fluid mt-4">
     <div class="row mb-4">
@@ -10,14 +21,6 @@
                 <i class="bi bi-arrow-left me-2"></i>
                 {{ 'common.back_to_overview'|trans({}, 'messages') }}
             </a>
-
-            <h1>
-                <i class="bi bi-diagram-3 me-2"></i>
-                Modul-Abhängigkeiten
-            </h1>
-            <p class="lead text-muted">
-                Visualisierung der Modul-Abhängigkeiten
-            </p>
         </div>
     </div>
 
@@ -25,7 +28,7 @@
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="mb-0">Abhängigkeits-Graph</h3>
+                    <h2 class="mb-0">Abhängigkeits-Graph</h2>
                 </div>
                 <div class="card-body">
                     {% embed '_components/_table.html.twig' with {
@@ -90,7 +93,8 @@
 
         <div class="col-lg-4">
             <div class="card mb-3">
-                <div class="card-header bg-primary text-white"><h5 class="mb-0">Legende</h5>
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Legende</h2>
                 </div>
                 <div class="card-body">
                     <dl class="mb-0">
@@ -116,10 +120,11 @@
             </div>
 
             <div class="card border-info">
-                <div class="card-header bg-info text-white"><h5 class="mb-0">
+                <div class="card-header bg-info text-white">
+                    <h2 class="mb-0">
                         <i class="bi bi-lightbulb me-2"></i>
                         Hinweise
-                    </h5>
+                    </h2>
                 </div>
                 <div class="card-body">
                     <ul class="mb-0 small">

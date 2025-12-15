@@ -350,7 +350,44 @@ data_management:
         large_exports_warning: 'Hinweis: Große Datenmengen können einige Zeit zum Export benötigen.'
         relationships_warning: 'Info: Beziehungen zwischen Entitäten werden als IDs exportiert.'
 setup:
+    # Database configuration choices
+    database:
+        type:
+            mysql: MySQL
+            mariadb: MariaDB
+            postgresql: PostgreSQL
+            sqlite: SQLite
+
+    # Organisation form choices
     organisation:
+        # Industries
+        industry:
+            automotive: Automobilindustrie
+            financial_services: Finanzdienstleistungen
+            healthcare: Gesundheitswesen
+            pharmaceutical: Pharmaindustrie
+            digital_health: Digital Health / DiGA
+            manufacturing: Fertigung / Produktion
+            it_services: IT-Dienstleistungen
+            cloud_services: Cloud-Dienste
+            energy: Energieversorgung
+            telecommunications: Telekommunikation
+            critical_infrastructure: Kritische Infrastruktur
+            retail: Einzelhandel / E-Commerce
+            public_sector: Öffentlicher Sektor
+            education: Bildung / Forschung
+            other: Andere Branche
+
+        # Employee counts
+        employee_count:
+            '1_10': '1-10 Mitarbeiter'
+            '11_50': '11-50 Mitarbeiter'
+            '51_250': '51-250 Mitarbeiter'
+            '251_1000': '251-1.000 Mitarbeiter'
+            '1001_plus': 'Über 1.000 Mitarbeiter'
+            select: 'Bitte wählen...'
+
+        # Countries
         country:
             de: Deutschland
             at: Österreich
@@ -368,5 +405,17 @@ setup:
             cz: Tschechien
             eu_other: 'Andere EU'
             non_eu: 'Außerhalb EU'
+
+    # Email configuration choices
+    email:
+        transport:
+            smtp: 'SMTP-Server'
+            sendmail: 'Sendmail (lokal)'
+            native: 'System-Mail (PHP mail())'
+        encryption:
+            none: 'Keine Verschlüsselung'
+            tls: 'TLS (empfohlen)'
+            ssl: SSL
+
     section:
         overview: Übersicht
