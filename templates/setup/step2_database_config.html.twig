@@ -126,11 +126,44 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.serverVersion,
-                                    'label': 'setup.database.server_version'|trans({}, 'setup')
-                                } %}
+                            <div class="col-md-6" id="server-version-field">
+                                <label class="form-label" for="{{ form.serverVersion.vars.id }}">
+                                    {{ 'setup.database.server_version'|trans({}, 'setup') }}
+                                </label>
+                                <div class="input-group">
+                                    {{ form_widget(form.serverVersion, {'attr': {'class': 'form-control', 'id': 'serverVersionInput', 'readonly': false}}) }}
+                                    <select class="form-select" id="serverVersionSelect" style="max-width: 200px; display: none;">
+                                        <optgroup label="MariaDB" id="mariadb-versions">
+                                            <option value="mariadb-11.4.0">MariaDB 11.4</option>
+                                            <option value="mariadb-11.2.0">MariaDB 11.2</option>
+                                            <option value="mariadb-10.11.0">MariaDB 10.11 (LTS)</option>
+                                            <option value="mariadb-10.6.0">MariaDB 10.6 (LTS)</option>
+                                            <option value="mariadb-10.5.0">MariaDB 10.5</option>
+                                        </optgroup>
+                                        <optgroup label="MySQL" id="mysql-versions">
+                                            <option value="8.4">MySQL 8.4 (LTS)</option>
+                                            <option value="8.0">MySQL 8.0</option>
+                                            <option value="5.7">MySQL 5.7</option>
+                                        </optgroup>
+                                        <optgroup label="PostgreSQL" id="postgresql-versions">
+                                            <option value="17">PostgreSQL 17</option>
+                                            <option value="16">PostgreSQL 16</option>
+                                            <option value="15">PostgreSQL 15</option>
+                                            <option value="14">PostgreSQL 14</option>
+                                            <option value="13">PostgreSQL 13</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                {% if test_result.detected_version is defined and test_result.detected_version %}
+                                    <div class="form-text text-success" id="detected-version-info">
+                                        <i class="bi bi-check-circle me-1" aria-hidden="true"></i>
+                                        {{ 'setup.database.version_detected'|trans({'%version%': test_result.detected_version.raw}, 'setup') }}
+                                    </div>
+                                {% else %}
+                                    <div class="form-text">
+                                        {{ 'setup.database.server_version_help'|trans({}, 'setup') }}
+                                    </div>
+                                {% endif %}
                             </div>
                             <div class="col-md-6" id="unix-socket-field">
                                 {% include '_components/_form_field.html.twig' with {
@@ -205,6 +238,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const typeSelect = document.querySelector('select[name*="[type]"]');
     const serverFields = document.getElementById('server-fields');
     const unixSocketField = document.getElementById('unix-socket-field');
+    const serverVersionField = document.getElementById('server-version-field');
+    const serverVersionInput = document.getElementById('serverVersionInput');
+    const serverVersionSelect = document.getElementById('serverVersionSelect');
+
+    // Version options grouped by database type
+    const versionGroups = {
+        'mariadb': 'mariadb-versions',
+        'mysql': 'mysql-versions',
+        'postgresql': 'postgresql-versions'
+    };
 
     function toggleServerFields() {
         const dbType = typeSelect.value;
@@ -218,12 +261,89 @@ document.addEventListener('DOMContentLoaded', function() {
         if (unixSocketField) {
             unixSocketField.style.display = isMysqlOrMariadb ? 'block' : 'none';
         }
+
+        // Show/hide server version field (not needed for SQLite)
+        if (serverVersionField) {
+            serverVersionField.style.display = isSqlite ? 'none' : 'block';
+        }
+
+        // Update version dropdown to show relevant options
+        updateVersionDropdown(dbType);
+    }
+
+    function updateVersionDropdown(dbType) {
+        if (!serverVersionSelect) return;
+
+        // Hide all optgroups first
+        const optgroups = serverVersionSelect.querySelectorAll('optgroup');
+        optgroups.forEach(og => og.style.display = 'none');
+
+        // Show only the relevant optgroup
+        const relevantGroup = versionGroups[dbType];
+        if (relevantGroup) {
+            const group = document.getElementById(relevantGroup);
+            if (group) {
+                group.style.display = 'block';
+                // Select first option of this group if input is empty or has invalid value
+                const currentValue = serverVersionInput.value;
+                const validOptions = Array.from(group.querySelectorAll('option')).map(o => o.value);
+
+                // Check if current value matches the expected format for this db type
+                let isValidFormat = false;
+                if (dbType === 'mariadb') {
+                    isValidFormat = currentValue.startsWith('mariadb-');
+                } else if (dbType === 'mysql') {
+                    isValidFormat = /^\d+\.\d+$/.test(currentValue);
+                } else if (dbType === 'postgresql') {
+                    isValidFormat = /^\d+$/.test(currentValue);
+                }
+
+                if (!isValidFormat && group.querySelector('option')) {
+                    // Set default version for this database type
+                    const defaultOption = group.querySelector('option');
+                    serverVersionInput.value = defaultOption.value;
+                    serverVersionSelect.value = defaultOption.value;
+                }
+            }
+            serverVersionSelect.style.display = 'block';
+        } else {
+            serverVersionSelect.style.display = 'none';
+        }
+    }
+
+    // Sync dropdown selection with input
+    if (serverVersionSelect && serverVersionInput) {
+        serverVersionSelect.addEventListener('change', function() {
+            serverVersionInput.value = this.value;
+        });
+
+        // Set dropdown to match input value on load
+        if (serverVersionInput.value) {
+            serverVersionSelect.value = serverVersionInput.value;
+        }
     }
 
     if (typeSelect) {
         typeSelect.addEventListener('change', toggleServerFields);
         toggleServerFields(); // Initial state
     }
+
+    // Handle detected version from test result
+    {% if test_result.detected_version.symfony_version is defined %}
+    if (serverVersionInput) {
+        serverVersionInput.value = '{{ test_result.detected_version.symfony_version }}';
+        if (serverVersionSelect) {
+            serverVersionSelect.value = '{{ test_result.detected_version.symfony_version }}';
+        }
+    }
+    // Also update the database type if detected as MariaDB
+    {% if test_result.detected_version.type == 'mariadb' %}
+    if (typeSelect && typeSelect.value === 'mysql') {
+        typeSelect.value = 'mariadb';
+        toggleServerFields();
+    }
+    {% endif %}
+    {% endif %}
 });
 </script>
 {% endblock %}

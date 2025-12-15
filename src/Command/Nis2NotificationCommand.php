@@ -54,8 +54,6 @@ class Nis2NotificationCommand
     public function __invoke(#[Option(name: 'dry-run', description: 'Simulate notifications without sending')]
     bool $dryRun = false, ?SymfonyStyle $symfonyStyle = null): int
     {
-        $dryRun = $dry_run;
-
         if ($dryRun) {
             $symfonyStyle->warning('DRY RUN MODE - No notifications will be sent');
         }

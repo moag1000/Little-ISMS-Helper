@@ -81,7 +81,6 @@ class RiskTreatmentPlanMonitorCommand
         $symfonyStyle->title('Risk Treatment Plan Monitoring (ISO 27001:2022 Clause 6.1.3)');
         // Get options
         $tenantId = $tenant;
-        $sendNotifications = $send_notifications;
         if (!$sendNotifications) {
             $symfonyStyle->note('Running in DRY-RUN mode. Use --send-notifications to actually send emails.');
         }

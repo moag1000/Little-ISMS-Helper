@@ -136,18 +136,38 @@ class DatabaseTestService
             // Test a simple query
             $pdo->query('SELECT 1');
 
+            // Detect server version
+            $detectedVersion = $this->detectMysqlVersion($pdo);
+
             return [
                 'success' => true,
                 'message' => $useUnixSocket ? 'MySQL/MariaDB connection successful (via Unix socket)' : 'MySQL connection successful',
+                'detected_version' => $detectedVersion,
             ];
         } catch (PDOException $e) {
-            // If database doesn't exist, that's okay - we can create it
+            // If database doesn't exist, try connecting without database to detect version
             if (str_contains($e->getMessage(), 'Unknown database')) {
-                return [
-                    'success' => true,
-                    'message' => 'Connection successful (database will be created)',
-                    'create_needed' => true,
-                ];
+                try {
+                    if ($useUnixSocket) {
+                        $dsn = "mysql:unix_socket={$unixSocket};charset=utf8mb4";
+                    } else {
+                        $dsn = "mysql:host={$host};port={$port};charset=utf8mb4";
+                    }
+                    $pdo = new PDO($dsn, $user, $password, [
+                        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                        PDO::ATTR_TIMEOUT => 5,
+                    ]);
+                    $detectedVersion = $this->detectMysqlVersion($pdo);
+
+                    return [
+                        'success' => true,
+                        'message' => 'Connection successful (database will be created)',
+                        'create_needed' => true,
+                        'detected_version' => $detectedVersion,
+                    ];
+                } catch (PDOException) {
+                    // Fall through to original error
+                }
             }
 
             return [
@@ -155,6 +175,42 @@ class DatabaseTestService
                 'message' => 'MySQL connection failed: ' . $this->sanitizeErrorMessage($e->getMessage()),
             ];
         }
+    }
+
+    /**
+     * Detect MySQL/MariaDB server version and return Symfony-compatible version string.
+     *
+     * @return array{type: string, version: string, symfony_version: string, raw: string}
+     */
+    private function detectMysqlVersion(PDO $pdo): array
+    {
+        $stmt = $pdo->query('SELECT VERSION()');
+        $rawVersion = $stmt->fetchColumn();
+
+        // Check if it's MariaDB (version string contains 'MariaDB')
+        $isMariaDb = stripos($rawVersion, 'mariadb') !== false;
+
+        // Extract version number (e.g., "10.11.6" from "10.11.6-MariaDB-1:10.11.6+maria~ubu2204")
+        preg_match('/^(\d+\.\d+\.\d+)/', $rawVersion, $matches);
+        $versionNumber = $matches[1] ?? '10.6.0';
+
+        // For Symfony DATABASE_URL, MariaDB needs "mariadb-X.X.X" format
+        if ($isMariaDb) {
+            return [
+                'type' => 'mariadb',
+                'version' => $versionNumber,
+                'symfony_version' => 'mariadb-' . $versionNumber,
+                'raw' => $rawVersion,
+            ];
+        }
+
+        // For MySQL, just use the version number
+        return [
+            'type' => 'mysql',
+            'version' => $versionNumber,
+            'symfony_version' => $versionNumber,
+            'raw' => $rawVersion,
+        ];
     }
 
     /**
@@ -178,18 +234,34 @@ class DatabaseTestService
             // Test a simple query
             $pdo->query('SELECT 1');
 
+            // Detect server version
+            $detectedVersion = $this->detectPostgresqlVersion($pdo);
+
             return [
                 'success' => true,
                 'message' => 'PostgreSQL connection successful',
+                'detected_version' => $detectedVersion,
             ];
         } catch (PDOException $e) {
-            // If database doesn't exist, that's okay - we can create it
+            // If database doesn't exist, try connecting to postgres database to detect version
             if (str_contains($e->getMessage(), 'does not exist')) {
-                return [
-                    'success' => true,
-                    'message' => 'Connection successful (database will be created)',
-                    'create_needed' => true,
-                ];
+                try {
+                    $dsn = "pgsql:host={$host};port={$port};dbname=postgres";
+                    $pdo = new PDO($dsn, $user, $password, [
+                        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                        PDO::ATTR_TIMEOUT => 5,
+                    ]);
+                    $detectedVersion = $this->detectPostgresqlVersion($pdo);
+
+                    return [
+                        'success' => true,
+                        'message' => 'Connection successful (database will be created)',
+                        'create_needed' => true,
+                        'detected_version' => $detectedVersion,
+                    ];
+                } catch (PDOException) {
+                    // Fall through to original error
+                }
             }
 
             return [
@@ -197,6 +269,31 @@ class DatabaseTestService
                 'message' => 'PostgreSQL connection failed: ' . $this->sanitizeErrorMessage($e->getMessage()),
             ];
         }
+    }
+
+    /**
+     * Detect PostgreSQL server version and return Symfony-compatible version string.
+     *
+     * @return array{type: string, version: string, symfony_version: string, raw: string}
+     */
+    private function detectPostgresqlVersion(PDO $pdo): array
+    {
+        $stmt = $pdo->query('SELECT version()');
+        $rawVersion = $stmt->fetchColumn();
+
+        // Extract version number (e.g., "14.5" from "PostgreSQL 14.5 (Ubuntu 14.5-1.pgdg22.04+1)")
+        preg_match('/PostgreSQL\s+(\d+(?:\.\d+)?)/', $rawVersion, $matches);
+        $versionNumber = $matches[1] ?? '14';
+
+        // For Symfony, PostgreSQL just needs the major version (e.g., "14" or "15")
+        $majorVersion = explode('.', $versionNumber)[0];
+
+        return [
+            'type' => 'postgresql',
+            'version' => $versionNumber,
+            'symfony_version' => $majorVersion,
+            'raw' => $rawVersion,
+        ];
     }
 
     /**

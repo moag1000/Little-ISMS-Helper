@@ -734,6 +734,7 @@ class ComplianceController extends AbstractController
             $severityCounts[$priority]++;
 
             // Get tenant-specific fulfillment for this gap (only if tenant exists)
+            $fulfillment = null;
             if ($tenant instanceof Tenant) {
                 $fulfillment = $this->complianceRequirementFulfillmentService->getOrCreateFulfillment($tenant, $gap);
                 $gapFulfillments[$gap->getId()] = $fulfillment;

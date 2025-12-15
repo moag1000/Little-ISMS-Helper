@@ -48,8 +48,6 @@ class SendNotificationsCommand
         ?SymfonyStyle $symfonyStyle = null
     ): int
     {
-        $daysAhead = (int) $days_ahead;
-        $dryRun = $dry_run;
         $symfonyStyle->title('ISMS Notification Service');
         if ($dryRun) {
             $symfonyStyle->warning('DRY RUN MODE - No emails will be sent');
