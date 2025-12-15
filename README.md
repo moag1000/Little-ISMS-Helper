@@ -6,7 +6,7 @@
 
 **Moderne, webbasierte ISMS-Lösung für KMUs – ISO 27001:2022 konform**
 
-[![Version 2.5](https://img.shields.io/badge/Version-2.5.0-success?logo=semver&logoColor=white)](CHANGELOG.md)
+[![Version 2.5](https://img.shields.io/badge/Version-2.5.1-success?logo=semver&logoColor=white)](CHANGELOG.md)
 [![PHP 8.4+](https://img.shields.io/badge/PHP-8.4%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
 [![Symfony 7.4](https://img.shields.io/badge/Symfony-7.4-000000?logo=symfony&logoColor=white)](https://symfony.com/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)

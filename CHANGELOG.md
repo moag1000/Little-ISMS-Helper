@@ -15,6 +15,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [2.5.1] - 2025-12-15
+
+### 🐛 Bug Fixes
+
+#### Form DateTime Handling
+- **Fixed DateTime/DateTimeImmutable type mismatch** in forms with DATETIME_IMMUTABLE columns
+- Affected forms: RiskAppetiteType, ConsentType, CrisisTeamType, MfaTokenType, WorkflowInstanceType
+- Added `'input' => 'datetime_immutable'` option to DateTimeType fields
+
+#### Console Commands (PHPStan Fixes)
+- **SendNotificationsCommand** - Removed redundant variable assignments
+- **RiskTreatmentPlanMonitorCommand** - Fixed undefined variable error
+- **Nis2NotificationCommand** - Fixed undefined variable error
+- **SendReviewRemindersCommand** - Added early return for breachesOnly mode
+- **AnalyzeMappingQualityCommand** - Fixed `$lowQuality` variable name
+- **GenerateIsoProceduresCommand** - Removed redundant assignment
+
+#### Controller Fixes
+- **ComplianceController** - Initialize `$fulfillment` variable before conditional block
+
+---
+
 ## [2.5.0] - 2025-12-15
 
 ### 🚀 Phase 7: Management Dashboard & Compliance Wizard
