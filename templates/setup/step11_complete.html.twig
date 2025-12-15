@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Setup abgeschlossen - Deployment Wizard{% endblock %}
+{% block title %}{{ 'setup.complete.title'|trans({}, 'setup') }} - Deployment Wizard{% endblock %}
 
 {% block body %}
 <div class="container mt-5">
@@ -10,8 +10,8 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h4 class="mb-0">{{ 'setup.complete.progress_title'|trans({}, 'messages') }}</h4>
-                        <small class="text-muted">{{ 'setup.complete.step_of'|trans({'%current%': 11, '%total%': 11}, 'messages') }}</small>
+                        <h4 class="mb-0">{{ 'setup.complete.progress_title'|trans({}, 'setup') }}</h4>
+                        <small class="text-muted">{{ 'setup.complete.step_of'|trans({'%current%': 11, '%total%': 11}, 'setup') }}</small>
                     </div>
                     <div class="progress" style="height: 10px;">
                         <div class="progress-bar bg-success" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
@@ -21,20 +21,20 @@
 
             <div class="card shadow-lg border-success">
                 <div class="card-header bg-success text-white">
-                    <h3 class="mb-0">
+                    <h1 class="h3 mb-0">
                         <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
-                        {{ 'setup.complete.title'|trans({}, 'messages') }}
-                    </h3>
+                        {{ 'setup.complete.title'|trans({}, 'setup') }}
+                    </h1>
                 </div>
                 <div class="card-body p-5 text-center">
                     <div class="mb-4">
                         <i class="bi bi-check-circle text-success" style="font-size: 5rem;"></i>
                     </div>
 
-                    <h3 class="mb-4">{{ 'setup.complete.system_ready'|trans({}, 'messages') }}</h3>
+                    <h2 class="h3 mb-4">{{ 'setup.complete.system_ready'|trans({}, 'setup') }}</h2>
 
                     <p class="lead text-muted mb-4">
-                        {{ 'setup.complete.all_components_ready'|trans({}, 'messages') }}
+                        {{ 'setup.complete.all_components_ready'|trans({}, 'setup') }}
                     </p>
 
                     {# Statistics #}
@@ -42,32 +42,32 @@
                         <div class="col-md-3">
                             <div class="card bg-light">
                                 <div class="card-body">
-                                    <h2 class="mb-0 text-primary">{{ statistics.active_modules }}</h2>
-                                    <small class="text-muted">{{ 'setup.complete.stats.active_modules'|trans({}, 'messages') }}</small>
+                                    <p class="h2 mb-0 text-primary">{{ statistics.active_modules }}</p>
+                                    <small class="text-muted">{{ 'setup.complete.stats.active_modules'|trans({}, 'setup') }}</small>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="card bg-light">
                                 <div class="card-body">
-                                    <h2 class="mb-0 text-success">{{ statistics.total_modules }}</h2>
-                                    <small class="text-muted">{{ 'setup.complete.stats.available_modules'|trans({}, 'messages') }}</small>
+                                    <p class="h2 mb-0 text-success">{{ statistics.total_modules }}</p>
+                                    <small class="text-muted">{{ 'setup.complete.stats.available_modules'|trans({}, 'setup') }}</small>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="card bg-light">
                                 <div class="card-body">
-                                    <h2 class="mb-0 text-info">{{ statistics.required_modules }}</h2>
-                                    <small class="text-muted">{{ 'setup.complete.stats.core_modules'|trans({}, 'messages') }}</small>
+                                    <p class="h2 mb-0 text-info">{{ statistics.required_modules }}</p>
+                                    <small class="text-muted">{{ 'setup.complete.stats.core_modules'|trans({}, 'setup') }}</small>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="card bg-light">
                                 <div class="card-body">
-                                    <h2 class="mb-0 text-warning">{{ statistics.optional_modules }}</h2>
-                                    <small class="text-muted">{{ 'setup.complete.stats.optional_modules'|trans({}, 'messages') }}</small>
+                                    <p class="h2 mb-0 text-warning">{{ statistics.optional_modules }}</p>
+                                    <small class="text-muted">{{ 'setup.complete.stats.optional_modules'|trans({}, 'setup') }}</small>
                                 </div>
                             </div>
                         </div>
@@ -76,10 +76,10 @@
                     {# Active Modules #}
                     <div class="card bg-light mb-4 text-start">
                         <div class="card-body">
-                            <h5 class="mb-3">
+                            <h3 class="h5 mb-3">
                                 <i class="bi bi-puzzle me-2" aria-hidden="true"></i>
-                                {{ 'setup.complete.activated_modules'|trans({}, 'messages') }}
-                            </h5>
+                                {{ 'setup.complete.activated_modules'|trans({}, 'setup') }}
+                            </h3>
                             <div class="row g-2">
                                 {% for moduleKey in selected_modules %}
                                     <div class="col-md-4">
@@ -93,37 +93,37 @@
                     {# Next Steps #}
                     <div class="card bg-info bg-opacity-10 border-info mb-4 text-start">
                         <div class="card-body">
-                            <h5 class="mb-3">
+                            <h3 class="h5 mb-3">
                                 <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
-                                {{ 'setup.complete.next_steps.title'|trans({}, 'messages') }}
-                            </h5>
+                                {{ 'setup.complete.next_steps.title'|trans({}, 'setup') }}
+                            </h3>
                             <ol class="mb-0">
-                                <li class="mb-2">{{ 'setup.complete.next_steps.explore_dashboard'|trans({}, 'messages') }}</li>
-                                <li class="mb-2">{{ 'setup.complete.next_steps.define_context'|trans({}, 'messages') }}</li>
-                                <li class="mb-2">{{ 'setup.complete.next_steps.capture_assets'|trans({}, 'messages') }}</li>
-                                <li class="mb-2">{{ 'setup.complete.next_steps.use_compliance'|trans({}, 'messages') }}</li>
-                                <li class="mb-2">{{ 'setup.complete.next_steps.add_modules'|trans({}, 'messages') }}</li>
+                                <li class="mb-2">{{ 'setup.complete.next_steps.explore_dashboard'|trans({}, 'setup') }}</li>
+                                <li class="mb-2">{{ 'setup.complete.next_steps.define_context'|trans({}, 'setup') }}</li>
+                                <li class="mb-2">{{ 'setup.complete.next_steps.capture_assets'|trans({}, 'setup') }}</li>
+                                <li class="mb-2">{{ 'setup.complete.next_steps.use_compliance'|trans({}, 'setup') }}</li>
+                                <li class="mb-2">{{ 'setup.complete.next_steps.add_modules'|trans({}, 'setup') }}</li>
                             </ol>
                         </div>
                     </div>
 
                     {# Actions #}
                     <div class="d-grid gap-3">
-                        <a href="{{ path('app_dashboard', {'_locale': app.request.locale}) }}" class="btn btn-lg btn-success">
-                            <i class="bi bi-house me-2" aria-hidden="true"></i>
-                            {{ 'setup.go_to_dashboard'|trans({}, 'messages') }}
+                        <a href="{{ path('app_welcome', {'_locale': app.request.locale}) }}" class="btn btn-lg btn-success">
+                            <i class="bi bi-rocket-takeoff me-2" aria-hidden="true"></i>
+                            {{ 'setup.complete.start_using'|trans({}, 'setup') }}
                         </a>
                         <div class="row g-2">
                             <div class="col-md-6">
                                 <a href="{{ path('module_management_index', {'_locale': app.request.locale}) }}" class="btn btn-outline-primary w-100">
                                     <i class="bi bi-puzzle me-2" aria-hidden="true"></i>
-                                    {{ 'setup.manage_modules'|trans({}, 'messages') }}
+                                    {{ 'setup.manage_modules'|trans({}, 'setup') }}
                                 </a>
                             </div>
                             <div class="col-md-6">
                                 <a href="{{ path('app_context_index', {'_locale': app.request.locale}) }}" class="btn btn-outline-primary w-100">
                                     <i class="bi bi-gear me-2" aria-hidden="true"></i>
-                                    {{ 'setup.complete.configure_context'|trans({}, 'messages') }}
+                                    {{ 'setup.complete.configure_context'|trans({}, 'setup') }}
                                 </a>
                             </div>
                         </div>
@@ -131,12 +131,12 @@
 
                     {# Support Info #}
                     <div class="alert alert-light mt-4 text-start" role="alert">
-                        <h4 class="alert-heading">
+                        <p class="h5 mb-2">
                             <i class="bi bi-question-circle me-2" aria-hidden="true"></i>
-                            {{ 'setup.complete.help_documentation.title'|trans({}, 'messages') }}
-                        </h4>
+                            {{ 'setup.complete.help_documentation.title'|trans({}, 'setup') }}
+                        </p>
                         <p class="mb-0 small">
-                            {{ 'setup.complete.help_documentation.description'|trans({}, 'messages') }}
+                            {{ 'setup.complete.help_documentation.description'|trans({}, 'setup') }}
                         </p>
                     </div>
                 </div>
