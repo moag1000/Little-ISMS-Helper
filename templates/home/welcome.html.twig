@@ -12,9 +12,9 @@
                     <img src="{{ asset('logo.svg') }}"
                          alt="Little ISMS Helper Logo"
                          class="img-fluid"
-                         style="max-height: 120px;">
+                         style="max-height: 200px;">
                 </div>
-                <h1 class="display-5 fw-bold mb-3">{{ 'welcome.headline'|trans({}, 'welcome') }}</h1>
+                <h1 class="h3 text-muted mb-3">{{ 'welcome.headline'|trans({}, 'welcome') }}</h1>
                 <p class="lead text-muted mb-4">
                     {{ 'welcome.tagline'|trans({}, 'welcome') }}
                 </p>
@@ -79,6 +79,58 @@
         </div>
     {% endif %}
 
+    {# Compliance Wizards Section (only if incomplete) #}
+    {% if compliance_wizards|length > 0 %}
+        <div class="row justify-content-center mb-5" id="compliance-wizards">
+            <div class="col-lg-10 col-xl-8">
+                <div class="card border-info shadow-sm">
+                    <div class="card-header bg-info-subtle d-flex align-items-center">
+                        <i class="bi bi-magic text-info me-2" aria-hidden="true"></i>
+                        <h2 class="h5 mb-0">{{ 'welcome.wizards.title'|trans({}, 'welcome') }}</h2>
+                        <a href="{{ path('app_compliance_wizard_index') }}" class="btn btn-sm btn-outline-info ms-auto">
+                            {{ 'welcome.wizards.view_all'|trans({}, 'welcome') }}
+                        </a>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted mb-3">{{ 'welcome.wizards.description'|trans({}, 'welcome') }}</p>
+                        <div class="row g-3">
+                            {% for wizard in compliance_wizards %}
+                                <div class="col-md-6 col-lg-4">
+                                    <a href="{{ path(wizard.route, wizard.route_params) }}" class="text-decoration-none">
+                                        <div class="card h-100 hover-lift border-{{ wizard.color }}">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <i class="bi {{ wizard.icon }} text-{{ wizard.color }} me-2" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                                                    <h3 class="h6 mb-0 text-dark">{{ wizard.code }}</h3>
+                                                </div>
+                                                <div class="progress mb-2" style="height: 8px;">
+                                                    <div class="progress-bar bg-{{ wizard.color }}"
+                                                         role="progressbar"
+                                                         style="width: {{ wizard.score }}%"
+                                                         aria-valuenow="{{ wizard.score }}"
+                                                         aria-valuemin="0"
+                                                         aria-valuemax="100"></div>
+                                                </div>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <small class="text-muted">{{ wizard.score }}% {{ 'welcome.wizards.complete'|trans({}, 'welcome') }}</small>
+                                                    {% if wizard.critical_gaps > 0 %}
+                                                        <span class="badge bg-danger-subtle text-danger">
+                                                            <i class="bi bi-exclamation-circle" aria-hidden="true"></i> {{ wizard.critical_gaps }}
+                                                        </span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
     {# Active Modules Section #}
     <div class="row justify-content-center mb-5">
         <div class="col-lg-10 col-xl-8">
@@ -110,41 +162,60 @@
         </div>
     </div>
 
-    {# Quick Actions Section #}
+    {# Quick Actions Section - Only show actions for active modules #}
+    {% set quick_actions = [] %}
+    {% for module in active_modules %}
+        {% if module.key == 'assets' %}
+            {% set quick_actions = quick_actions|merge([{
+                'route': 'app_asset_new',
+                'icon': 'bi-plus-circle',
+                'color': 'primary',
+                'label': 'welcome.quick_actions.new_asset'
+            }]) %}
+        {% elseif module.key == 'risks' %}
+            {% set quick_actions = quick_actions|merge([{
+                'route': 'app_risk_new',
+                'icon': 'bi-exclamation-triangle',
+                'color': 'warning',
+                'label': 'welcome.quick_actions.new_risk'
+            }]) %}
+        {% elseif module.key == 'incidents' %}
+            {% set quick_actions = quick_actions|merge([{
+                'route': 'app_incident_new',
+                'icon': 'bi-exclamation-circle',
+                'color': 'danger',
+                'label': 'welcome.quick_actions.report_incident'
+            }]) %}
+        {% endif %}
+    {% endfor %}
+    {# Documents are always available (core module) #}
+    {% set quick_actions = quick_actions|merge([{
+        'route': 'app_document_index',
+        'icon': 'bi-file-earmark-text',
+        'color': 'secondary',
+        'label': 'welcome.quick_actions.documents'
+    }]) %}
+
+    {% if quick_actions|length > 0 %}
     <div class="row justify-content-center mb-5">
         <div class="col-lg-10 col-xl-8">
             <h2 class="h4 mb-4 text-center">
                 <i class="bi bi-lightning me-2" aria-hidden="true"></i>
                 {{ 'welcome.quick_actions.title'|trans({}, 'welcome') }}
             </h2>
-            <div class="row g-3">
+            <div class="row g-3 justify-content-center">
+                {% for action in quick_actions %}
                 <div class="col-6 col-md-3">
-                    <a href="{{ path('app_asset_new') }}" class="btn btn-outline-primary w-100 py-3">
-                        <i class="bi bi-plus-circle d-block mb-2" style="font-size: 1.5rem;" aria-hidden="true"></i>
-                        {{ 'welcome.quick_actions.new_asset'|trans({}, 'welcome') }}
+                    <a href="{{ path(action.route) }}" class="btn btn-outline-{{ action.color }} w-100 py-3">
+                        <i class="{{ action.icon }} d-block mb-2" style="font-size: 1.5rem;" aria-hidden="true"></i>
+                        {{ action.label|trans({}, 'welcome') }}
                     </a>
                 </div>
-                <div class="col-6 col-md-3">
-                    <a href="{{ path('app_risk_new') }}" class="btn btn-outline-warning w-100 py-3">
-                        <i class="bi bi-exclamation-triangle d-block mb-2" style="font-size: 1.5rem;" aria-hidden="true"></i>
-                        {{ 'welcome.quick_actions.new_risk'|trans({}, 'welcome') }}
-                    </a>
-                </div>
-                <div class="col-6 col-md-3">
-                    <a href="{{ path('app_incident_new') }}" class="btn btn-outline-danger w-100 py-3">
-                        <i class="bi bi-exclamation-circle d-block mb-2" style="font-size: 1.5rem;" aria-hidden="true"></i>
-                        {{ 'welcome.quick_actions.report_incident'|trans({}, 'welcome') }}
-                    </a>
-                </div>
-                <div class="col-6 col-md-3">
-                    <a href="{{ path('app_document_index') }}" class="btn btn-outline-secondary w-100 py-3">
-                        <i class="bi bi-file-earmark-text d-block mb-2" style="font-size: 1.5rem;" aria-hidden="true"></i>
-                        {{ 'welcome.quick_actions.documents'|trans({}, 'welcome') }}
-                    </a>
-                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
+    {% endif %}
 
     {# Skip Welcome Preference #}
     <div class="row justify-content-center mb-4">
@@ -242,11 +313,11 @@
         }
 
         .welcome-logo img {
-            max-height: 80px !important;
+            max-height: 140px !important;
         }
 
-        .display-5 {
-            font-size: 1.75rem;
+        .h3 {
+            font-size: 1.25rem;
         }
     }
 </style>

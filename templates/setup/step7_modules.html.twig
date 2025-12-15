@@ -22,10 +22,10 @@
 
             <div class="card shadow-lg">
                 <div class="card-header bg-primary text-white">
-                    <h3 class="mb-0">
+                    <h1 class="h3 mb-0">
                         <i class="bi bi-puzzle me-2" aria-hidden="true"></i>
                         {{ 'setup.step7.header'|trans({}, 'setup') }}
-                    </h3>
+                    </h1>
                 </div>
                 <div class="card-body p-4">
                     <p class="lead mb-4">
@@ -34,10 +34,10 @@
 
                     {% if recommended_modules is defined and recommended_modules|length > 0 %}
                     <div class="alert alert-info mb-4">
-                        <h4 class="alert-heading">
+                        <p class="h5 mb-2">
                             <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
                             {{ 'setup.step7.recommendations.title'|trans({}, 'setup') }}
-                        </h4>
+                        </p>
                         <p class="mb-0">
                             {{ 'setup.step7.recommendations.description'|trans({}, 'setup')|raw }}
                         </p>
@@ -48,10 +48,10 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('setup_modules') }}">
 
                         {# Required Modules #}
-                        <h5 class="mb-3">
+                        <h2 class="h5 mb-3">
                             <i class="bi bi-star text-warning me-2" aria-hidden="true"></i>
                             {{ 'setup.step7.required_modules'|trans({}, 'setup') }}
-                        </h5>
+                        </h2>
 
                         {% for key, module in all_modules %}
                             {% if module.required %}
@@ -63,11 +63,11 @@
                                         <label class="form-check-label w-100" for="module_{{ key }}">
                                             <div class="d-flex justify-content-between align-items-start">
                                                 <div>
-                                                    <h4 class="mb-1">
+                                                    <p class="h6 mb-1">
                                                         <i class="bi bi-{{ module.icon }} me-2" aria-hidden="true"></i>
                                                         {{ module.name }}
                                                         <span class="badge bg-warning text-dark ms-2">{{ 'setup.step7.badge.required'|trans({}, 'setup') }}</span>
-                                                    </h4>
+                                                    </p>
                                                     <p class="text-muted mb-1">{{ module.description }}</p>
                                                     <small class="text-muted">
                                                         <strong>{{ 'setup.step7.entities'|trans({}, 'setup') }}</strong>
@@ -85,10 +85,10 @@
                         {% endfor %}
 
                         {# Optional Modules #}
-                        <h5 class="mb-3 mt-4">
+                        <h2 class="h5 mb-3 mt-4">
                             <i class="bi bi-toggle-on text-info me-2" aria-hidden="true"></i>
                             {{ 'setup.step7.optional_modules'|trans({}, 'setup') }}
-                        </h5>
+                        </h2>
 
                         <div id="optional-modules">
                             {% for key, module in optional_modules %}
@@ -100,13 +100,13 @@
                                             <label class="form-check-label w-100" for="module_{{ key }}">
                                                 <div class="d-flex justify-content-between align-items-start">
                                                     <div class="flex-grow-1">
-                                                        <h4 class="mb-1">
+                                                        <p class="h6 mb-1">
                                                             <i class="bi bi-{{ module.icon }} me-2" aria-hidden="true"></i>
                                                             {{ module.name }}
                                                             {% if recommended_modules is defined and key in recommended_modules %}
                                                                 <span class="badge bg-info ms-2">{{ 'setup.step7.badge.recommended'|trans({}, 'setup') }}</span>
                                                             {% endif %}
-                                                        </h4>
+                                                        </p>
                                                         <p class="text-muted mb-1">{{ module.description }}</p>
                                                         <small class="text-muted">
                                                             <strong>{{ 'setup.step7.entities'|trans({}, 'setup') }}</strong>
@@ -148,10 +148,10 @@
                         {# Summary #}
                         <div class="card bg-light mt-4 mb-4">
                             <div class="card-body">
-                                <h4 class="mb-2">
+                                <p class="h5 mb-2">
                                     <i class="bi bi-pie-chart me-2" aria-hidden="true"></i>
                                     {{ 'setup.step7.summary.title'|trans({}, 'setup') }}
-                                </h4>
+                                </p>
                                 <div id="module-summary">
                                     <p class="mb-0">
                                         {{ 'setup.step7.summary.selected'|trans({'%selected%': '<span id="selected-count">0</span>', '%total%': all_modules|length}, 'setup')|raw }}
@@ -164,10 +164,10 @@
                         <div class="d-flex justify-content-between">
                             <a href="{{ path('setup_step6_organisation_info') }}" class="btn btn-outline-secondary">
                                 <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
-                                {{ 'common.back'|trans({}, 'messages') }}
+                                {{ 'setup.common.back'|trans({}, 'setup') }}
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                {{ 'setup.next_step'|trans({'%step%': 8, '%name%': 'setup.steps.compliance_frameworks'|trans({}, 'messages')}, 'messages') }}
+                                {{ 'setup.next_step'|trans({'%step%': 8, '%name%': 'setup.steps.compliance_frameworks'|trans({}, 'setup')}, 'messages') }}
                                 <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
                             </button>
                         </div>
@@ -179,21 +179,103 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const checkboxes = document.querySelectorAll('.module-checkbox');
-    const selectedCount = document.getElementById('selected-count');
+(function() {
+    // Run on both DOMContentLoaded and turbo:load for Turbo compatibility
+    function initModuleSelection() {
+        const checkboxes = document.querySelectorAll('.module-checkbox');
+        const selectedCount = document.getElementById('selected-count');
+        if (!selectedCount) return; // Not on this page
 
-    function updateCount() {
-        const checked = document.querySelectorAll('.module-checkbox:checked').length;
-        const required = {{ required_modules|length }};
-        selectedCount.textContent = checked + required;
+        const requiredCount = {{ required_modules|length }};
+
+        // Build dependency map from data attributes
+        const dependencyMap = {};
+        const dependentsMap = {};
+
+        document.querySelectorAll('.module-card').forEach(card => {
+            const moduleKey = card.dataset.module;
+            const deps = JSON.parse(card.dataset.dependencies || '[]');
+            dependencyMap[moduleKey] = deps;
+
+            // Build reverse map (who depends on this module)
+            deps.forEach(dep => {
+                if (!dependentsMap[dep]) {
+                    dependentsMap[dep] = [];
+                }
+                dependentsMap[dep].push(moduleKey);
+            });
+        });
+
+        function updateCount() {
+            const checked = document.querySelectorAll('.module-checkbox:checked').length;
+            selectedCount.textContent = checked + requiredCount;
+        }
+
+        function selectDependencies(moduleKey) {
+            const deps = dependencyMap[moduleKey] || [];
+            deps.forEach(dep => {
+                const depCheckbox = document.getElementById('module_' + dep);
+                if (depCheckbox && !depCheckbox.checked) {
+                    depCheckbox.checked = true;
+                    // Recursively select dependencies of dependencies
+                    selectDependencies(dep);
+                    // Visual feedback
+                    const card = depCheckbox.closest('.module-card');
+                    if (card) {
+                        card.classList.add('border-success');
+                        setTimeout(() => card.classList.remove('border-success'), 1000);
+                    }
+                }
+            });
+        }
+
+        function deselectDependents(moduleKey) {
+            const dependents = dependentsMap[moduleKey] || [];
+            dependents.forEach(dep => {
+                const depCheckbox = document.getElementById('module_' + dep);
+                if (depCheckbox && depCheckbox.checked) {
+                    depCheckbox.checked = false;
+                    // Recursively deselect modules that depend on this one
+                    deselectDependents(dep);
+                    // Visual feedback
+                    const card = depCheckbox.closest('.module-card');
+                    if (card) {
+                        card.classList.add('border-warning');
+                        setTimeout(() => card.classList.remove('border-warning'), 1000);
+                    }
+                }
+            });
+        }
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const moduleKey = this.value;
+
+                if (this.checked) {
+                    // When checking a module, also check its dependencies
+                    selectDependencies(moduleKey);
+                } else {
+                    // When unchecking a module, also uncheck modules that depend on it
+                    deselectDependents(moduleKey);
+                }
+
+                updateCount();
+            });
+        });
+
+        // Initial count
+        updateCount();
     }
 
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', updateCount);
-    });
+    // Run on DOMContentLoaded
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initModuleSelection);
+    } else {
+        initModuleSelection();
+    }
 
-    updateCount();
-});
+    // Also run on Turbo navigation
+    document.addEventListener('turbo:load', initModuleSelection);
+})();
 </script>
 {% endblock %}

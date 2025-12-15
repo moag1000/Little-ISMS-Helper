@@ -1,8 +1,98 @@
 setup:
+    # Common keys used across setup templates
+    common:
+        close: 'Close'
+        back: 'Back'
+        next: 'Next'
+        skip: 'Skip'
+        note: 'Note'
+        actions: 'Actions'
+        save: 'Save'
+        cancel: 'Cancel'
+        import: 'Import'
+
+    # Index/Landing Page
+    already_complete:
+        title: 'Setup Already Complete'
+        description: 'The Little ISMS Helper setup has already been completed successfully. You can now start working with the application.'
+    go_to_dashboard: 'Go to Dashboard'
+    manage_modules: 'Manage Modules'
+    reset_development: 'Reset Setup (Development Only)'
+    welcome_title: 'Welcome to Little ISMS Helper'
+    welcome_subtitle: 'Set up your Information Security Management System in just a few steps.'
+    what_will_be_setup: 'What will be configured?'
+    checklist:
+        check_requirements: 'Check system requirements'
+        select_modules: 'Select modules'
+        init_database: 'Initialize database'
+        import_base_data: 'Import base data'
+        load_sample_data: 'Load sample data (optional)'
+    duration_requirements:
+        title: 'Duration & Requirements'
+        duration: 'Approx. 5-10 minutes'
+        database_access: 'Have database credentials ready'
+        php_extensions: 'PHP 8.2+ with extensions'
+        write_permissions: 'Write permissions for var/ directory'
+    available_modules: 'Available Modules'
+    modules_selection_hint: 'You can enable or disable modules at any time.'
+    module_core_isms: 'ISMS Core (Required)'
+    module_asset_management: 'Asset Management'
+    module_risk_management: 'Risk Management'
+    module_controls: 'Controls & Measures'
+    module_incident: 'Incident Management'
+    module_audit: 'Audit & Reviews'
+    module_bcm: 'Business Continuity'
+    module_compliance: 'Compliance Frameworks'
+    module_training: 'Training & Awareness'
+    start_setup: 'Start Setup'
+
     # Progress Bar
     progress:
         title: 'Setup Progress'
+        step: 'Step %step%'
         step_of: 'Step %current% of %total%'
+
+    # Navigation
+    navigation:
+        back: 'Back'
+        next: 'Next'
+    next_step: 'Next Step'
+    fix_errors_first: 'Please fix the critical errors first.'
+
+    # Steps Navigation
+    steps:
+        complete: 'Complete'
+        compliance_frameworks: 'Compliance Frameworks'
+        database: 'Database'
+
+    # Step 0: Welcome
+    welcome:
+        title: 'Welcome - Deployment Wizard'
+        header: 'Welcome to the Deployment Wizard'
+        greeting: 'Welcome!'
+        description: 'This wizard will guide you through setting up your Little ISMS Helper.'
+        start_button: 'Start Setup'
+        info:
+            title: 'About This Wizard'
+            description: 'The setup wizard automatically configures your environment and imports all necessary base data.'
+            point1: 'Your data is stored locally and not shared with third parties.'
+            point2: 'All settings can be changed later.'
+            point3: 'Setup only takes a few minutes.'
+        requirements:
+            title: 'Prerequisites'
+            php: 'PHP 8.2 or higher'
+            database: 'MySQL/MariaDB or PostgreSQL'
+            permissions: 'Write permissions on var/ directory'
+            duration: 'Approx. 5-10 minutes'
+        steps:
+            title: 'Setup Steps'
+            requirements: 'Check system requirements'
+            database: 'Configure database'
+            migrations: 'Run migrations'
+            admin: 'Create administrator'
+            modules: 'Select modules'
+            base_data: 'Import base data'
+            sample_data: 'Sample data (optional)'
 
     # Step 1: System Requirements
     step1:
@@ -32,6 +122,35 @@ setup:
             recommended: 'Recommended: %value%s'
         symfony:
             title: 'Symfony Version'
+
+    # Step 2: Database Configuration
+    database:
+        title: 'Step 2: Database - Deployment Wizard'
+        header: 'Step 2: Configure Database'
+        description: 'Enter your database connection details.'
+        schema_created: 'Database schema created successfully'
+        type: 'Database Type'
+        host: 'Host'
+        port: 'Port'
+        name: 'Database Name'
+        user: 'Username'
+        password: 'Password'
+        unix_socket: 'Unix Socket (optional)'
+        server_version: 'Server Version'
+        test_button: 'Test Connection'
+        test:
+            success: 'Connection successful!'
+            failed: 'Connection failed:'
+            create_needed: 'Database does not exist and will be created.'
+        info:
+            title: 'Database Notes'
+            mysql: 'MySQL: Port 3306, Server version e.g. 8.0'
+            postgresql: 'PostgreSQL: Port 5432'
+            sqlite: 'SQLite: No server required'
+            special_chars: 'Special characters in password will be automatically URL-encoded.'
+        docker_password_title: 'Docker Installation Detected'
+        docker_password_info: 'The database password was automatically generated on first start.'
+        docker_password_location: 'You can find it in the .env.local file in the application directory.'
 
     # Step 3: Restore Backup
     step3:
@@ -82,6 +201,93 @@ setup:
             file_formats: 'Allowed formats: .json, .json.gz'
             clear_before: 'Delete all existing data before restoration (recommended)'
 
+    # Step 3 alternate: Restore options
+    restore:
+        option_new_install: 'Option 2: New Installation'
+        new_install_description: 'Start with a fresh installation and go through all setup steps.'
+        skip_new_install: 'Skip - New Installation'
+        upload_and_restore: 'Upload and Restore Backup'
+        set_admin_password: 'Set Administrator Password'
+        password_placeholder: 'Enter new password'
+        password_hint: 'Password must be at least 8 characters long.'
+
+    # Step 4: Admin User
+    admin:
+        title: 'Step 4: Administrator - Deployment Wizard'
+        header: 'Step 4: Create Administrator Account'
+        description: 'Create the first administrator account for your ISMS installation.'
+        first_name: 'First Name'
+        last_name: 'Last Name'
+        email: 'Email Address'
+        email_help: 'This email will be used for login and notifications.'
+        password: 'Password'
+        password_confirm: 'Confirm Password'
+        password_requirements:
+            title: 'Password Requirements:'
+            length: 'At least 8 characters'
+            uppercase: 'At least one uppercase letter'
+            lowercase: 'At least one lowercase letter'
+            number: 'At least one number'
+        security_note:
+            title: 'Security Note'
+            message: 'Keep your credentials safe. You can create additional users later.'
+        next_steps:
+            title: 'Next Steps'
+            description: 'After creating the administrator account, you can select modules and import base data.'
+        creation_failed: 'User could not be created'
+        migration_failed: 'Database migration failed'
+        user_created: 'Administrator account created successfully'
+
+    # Step 5: Email Configuration
+    email:
+        title: 'Step 5: Email - Deployment Wizard'
+        header: 'Step 5: Email Configuration (Optional)'
+        transport: 'Email Transport'
+        host: 'SMTP Server'
+        port: 'SMTP Port'
+        username: 'Username'
+        password: 'Password'
+        encryption: 'Encryption'
+        from_address: 'Sender Email'
+        from_name: 'Sender Name'
+        sender_info: 'These details will be used for outgoing emails.'
+        skip_button: 'Skip'
+        optional:
+            title: 'Optional Configuration'
+            message: 'Email sending is optional. You can skip this step and configure it later.'
+        info:
+            title: 'What is Email needed for?'
+            description: 'Little ISMS Helper can send emails for:'
+            notifications: 'Incident notifications'
+            reminders: 'Reminders for pending tasks'
+            reports: 'Automatic reports'
+
+    # Step 6: Organisation Info
+    organisation:
+        title: 'Step 6: Organization - Deployment Wizard'
+        header: 'Step 6: Organization Information'
+        description: 'This information helps configure your ISMS.'
+        name: 'Organization Name'
+        country: 'Country'
+        industries: 'Industries'
+        industries_help: 'Select all applicable industries.'
+        employee_count: 'Employee Count'
+        employee_count_help: 'Company size determines regulatory requirements (e.g. NIS2)'
+        employee_count_required: 'Please select the employee count'
+        employee_count.select: '-- Select Employee Count --'
+        country_help: 'Select the country where your organization is based'
+        country.select: '-- Select Country --'
+        industries.select: '-- Select Industries --'
+        usage:
+            title: 'Data Usage'
+            message: 'This information is used to suggest relevant compliance frameworks and modules.'
+        compliance_info:
+            title: 'Compliance Relevance'
+            description: 'Based on your input, suitable frameworks will be recommended.'
+            scope: 'The ISMS scope will be adjusted accordingly.'
+            reporting: 'Reports will be personalized with your organization data.'
+            recommendations: 'You will receive industry-specific recommendations.'
+
     # Step 7: Modules
     step7:
         title: 'Step 7: Select Modules - Deployment Wizard'
@@ -101,3 +307,85 @@ setup:
         summary:
             title: 'Summary'
             selected: '%selected% of %total% modules selected'
+
+    # Step 8: Compliance Frameworks
+    compliance:
+        title: 'Step 8: Compliance Frameworks - Deployment Wizard'
+        header: 'Step 8: Select Compliance Frameworks'
+        description: 'Select the compliance frameworks relevant to your organization.'
+        select_frameworks: 'Select Frameworks'
+        mandatory_badge: 'Mandatory'
+        recommended_badge: 'Recommended'
+        mandatory:
+            title: 'Mandatory Frameworks'
+            message: 'These frameworks are legally required based on your industry and size.'
+        recommended:
+            title: 'Recommended Frameworks'
+            description: 'These frameworks are recommended based on your organization data.'
+        critical_infrastructure:
+            title: 'Critical Infrastructure'
+            message: 'As a critical infrastructure operator, additional requirements apply.'
+        note:
+            title: 'Note'
+            message: 'You can enable or disable frameworks at any time later.'
+        details:
+            title: 'Framework Details'
+
+    # Step 9: Base Data
+    step9:
+        title: 'Step 9: Base Data - Deployment Wizard'
+        header: 'Step 9: Import Base Data'
+        description: 'The following base data is required for operation and will be imported automatically.'
+        data_to_import: 'Data to Import'
+        note:
+            title: 'Note'
+            message: 'This data is essential for operation and is based on official standards (ISO 27001:2022). The import may take a few minutes.'
+        import_button: 'Import Base Data'
+        command: 'Command'
+        modules: 'Modules'
+    can_delete_later: 'Data can be deleted later.'
+
+    # Step 10: Sample Data
+    step10:
+        title: 'Step 10: Sample Data - Deployment Wizard'
+        header: 'Step 10: Sample Data (Optional)'
+        description: 'Would you like to import sample data? This helps you get familiar with the system.'
+        warning:
+            title: 'Note about Sample Data'
+            optional: 'Sample data is optional and for demonstration purposes only'
+            selection: 'Select only the sample data you want to test'
+        available_title: 'Available Sample Data'
+        import_title: 'Import Sample Data'
+        command: 'Command'
+        file: 'File'
+        modules: 'Modules'
+        next_button: 'Continue to Completion'
+    sample_data:
+        import_selected: 'Import Selected Data'
+        no_data_available: 'No sample data available.'
+
+    # Step 11: Complete
+    complete:
+        title: 'Setup Complete - Deployment Wizard'
+        system_ready: 'Your Little ISMS Helper is ready to use!'
+        all_components_ready: 'All components have been successfully configured.'
+        progress_title: 'Setup Progress'
+        step_of: 'Step %current% of %total%'
+        configure_context: 'Configure Context'
+        start_using: 'Start Little ISMS Helper'
+        stats:
+            active_modules: 'Active Modules'
+            available_modules: 'Available Modules'
+            core_modules: 'Core Modules'
+            optional_modules: 'Optional Modules'
+        activated_modules: 'Activated Modules'
+        next_steps:
+            title: 'Next Steps'
+            explore_dashboard: 'Explore Dashboard'
+            define_context: 'Define ISMS Context'
+            capture_assets: 'Capture Assets'
+            use_compliance: 'Check Compliance Status'
+            add_modules: 'Activate More Modules'
+        help_documentation:
+            title: 'Help & Documentation'
+            description: 'Detailed documentation is available in the Help section.'
