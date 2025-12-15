@@ -107,6 +107,7 @@ class WorkflowInstanceType extends AbstractType
             ->add('dueDate', DateTimeType::class, [
                 'label' => 'workflow_instance.field.due_date',
                 'widget' => 'single_text',
+                'input' => 'datetime_immutable',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control',

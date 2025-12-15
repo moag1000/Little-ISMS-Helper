@@ -86,6 +86,7 @@ class RiskAppetiteType extends AbstractType
             ->add('approvedAt', DateTimeType::class, [
                 'label' => 'risk_appetite.field.approved_at',
                 'widget' => 'single_text',
+                'input' => 'datetime_immutable',
                 'required' => false,
                 'attr' => [
                     'class' => 'form-control'

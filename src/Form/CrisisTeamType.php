@@ -159,11 +159,13 @@ class CrisisTeamType extends AbstractType
                 'label' => 'crisis_team.field.last_training_at',
                 'required' => false,
                 'widget' => 'single_text',
+                'input' => 'datetime_immutable',
             ])
             ->add('nextTrainingAt', DateTimeType::class, [
                 'label' => 'crisis_team.field.next_training_at',
                 'required' => false,
                 'widget' => 'single_text',
+                'input' => 'datetime_immutable',
                 'help' => 'crisis_team.help.next_training_at',
             ])
             ->add('businessContinuityPlans', EntityType::class, [
