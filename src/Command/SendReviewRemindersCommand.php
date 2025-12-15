@@ -189,6 +189,8 @@ class SendReviewRemindersCommand
             $symfonyStyle->success([
                 sprintf('Processed %d urgent data breach notifications', count($urgentBreaches)),
             ]);
+
+            return Command::SUCCESS;
         } else {
             $results = $this->reviewReminderService->sendReminderNotifications($includeUpcoming);
 

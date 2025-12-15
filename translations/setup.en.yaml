@@ -138,6 +138,8 @@ setup:
         password: 'Password'
         unix_socket: 'Unix Socket (optional)'
         server_version: 'Server Version'
+        server_version_help: 'Click "Test Connection" to auto-detect the version, or select from the dropdown.'
+        version_detected: 'Detected: %version%'
         test_button: 'Test Connection'
         test:
             success: 'Connection successful!'
