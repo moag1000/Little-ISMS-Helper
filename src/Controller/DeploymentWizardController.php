@@ -170,6 +170,12 @@ class DeploymentWizardController extends AbstractController
                     $password = $_ENV['MYSQL_PASSWORD'] ?? $this->getDockerMysqlPassword();
                 }
 
+                // For Docker standalone: Default to Unix socket if not specified
+                $unixSocket = $envVars['DB_SOCKET'] ?? null;
+                if (empty($unixSocket) && $isDockerStandalone) {
+                    $unixSocket = '/run/mysqld/mysqld.sock';
+                }
+
                 $defaultData = [
                     'type' => $envVars['DB_TYPE'] ?? 'mysql',
                     'host' => $envVars['DB_HOST'] ?? 'localhost',
@@ -178,7 +184,7 @@ class DeploymentWizardController extends AbstractController
                     'user' => $envVars['DB_USER'] ?? 'root',
                     'password' => $password,
                     'serverVersion' => $envVars['DB_SERVER_VERSION'] ?? 'mariadb-11.4.0',
-                    'unixSocket' => $envVars['DB_SOCKET'] ?? null,
+                    'unixSocket' => $unixSocket,
                 ];
                 $this->addFlash('info', $this->translator->trans('setup.database.config_loaded'));
             }
@@ -187,6 +193,7 @@ class DeploymentWizardController extends AbstractController
         // If no .env.local, check for Docker standalone deployment and pre-fill
         if (empty($defaultData) && $isDockerStandalone) {
             // Pre-fill with Docker internal MySQL configuration
+            // Use Unix socket for better performance and reliability in Docker
             $defaultData = [
                 'type' => 'mysql',
                 'host' => 'localhost',
@@ -195,6 +202,7 @@ class DeploymentWizardController extends AbstractController
                 'user' => $_ENV['MYSQL_USER'] ?? 'isms',
                 'password' => $_ENV['MYSQL_PASSWORD'] ?? $this->getDockerMysqlPassword(),
                 'serverVersion' => 'mariadb-11.4.0',
+                'unixSocket' => '/run/mysqld/mysqld.sock',
             ];
 
             $this->addFlash('info', $this->translator->trans('setup.database.docker_detected'));
@@ -218,6 +226,11 @@ class DeploymentWizardController extends AbstractController
             // For Docker standalone: If password is empty, use the auto-generated one
             if ($isDockerStandalone && empty($config['password'])) {
                 $config['password'] = $this->getDockerMysqlPassword();
+            }
+
+            // For Docker standalone: Default to Unix socket if not explicitly set
+            if ($isDockerStandalone && empty($config['unixSocket'])) {
+                $config['unixSocket'] = '/run/mysqld/mysqld.sock';
             }
 
             // Test database connection
@@ -738,15 +751,31 @@ class DeploymentWizardController extends AbstractController
                 // Ensure DATABASE_URL is written to .env.local before running migrations
                 // This is critical because migrations use Doctrine which reads from .env.local
                 $session->set('debug_processing', 'Step 2d: Writing DATABASE_URL to .env.local');
-                $this->environmentWriter->writeDatabaseConfig([
-                    'type' => $dbConfig['type'],
-                    'host' => $dbConfig['host'],
-                    'port' => $dbConfig['port'],
-                    'name' => $dbConfig['name'],
-                    'user' => $dbConfig['user'],
-                    'password' => $dbConfig['password'],
-                    'unix_socket' => $dbConfig['unixSocket'] ?? null,
-                ]);
+
+                // In Docker standalone: Check if DATABASE_URL is already properly configured
+                // by init-mysql.sh with literal values (not ${VAR} references)
+                $skipDatabaseWrite = false;
+                if ($isDockerStandalone && file_exists($this->environmentWriter->getEnvLocalPath())) {
+                    $existingVars = $this->environmentWriter->readEnvLocal();
+                    $existingUrl = $existingVars['DATABASE_URL'] ?? '';
+                    // If DATABASE_URL has literal values (contains unix_socket and doesn't use ${})
+                    if (str_contains($existingUrl, 'unix_socket=') && !str_contains($existingUrl, '${')) {
+                        $skipDatabaseWrite = true;
+                        $session->set('debug_processing', 'Step 2d: Skipping DATABASE_URL write - already configured by init-mysql.sh');
+                    }
+                }
+
+                if (!$skipDatabaseWrite) {
+                    $this->environmentWriter->writeDatabaseConfig([
+                        'type' => $dbConfig['type'],
+                        'host' => $dbConfig['host'],
+                        'port' => $dbConfig['port'],
+                        'name' => $dbConfig['name'],
+                        'user' => $dbConfig['user'],
+                        'password' => $dbConfig['password'],
+                        'unixSocket' => $dbConfig['unixSocket'] ?? null,
+                    ]);
+                }
 
                 // First run migrations to create database structure
                 $session->set('debug_processing', 'Step 2e: Running migrations');
@@ -874,6 +903,8 @@ class DeploymentWizardController extends AbstractController
                 return $this->redirectToRoute('setup_step6_organisation_info');
             } catch (Exception $e) {
                 $this->addFlash('error', $this->translator->trans('setup.email.config_failed') . ': ' . $e->getMessage());
+                // Turbo requires redirect after POST
+                return $this->redirectToRoute('setup_step5_email_config');
             }
         }
 
@@ -948,6 +979,8 @@ class DeploymentWizardController extends AbstractController
                 return $this->redirectToRoute('setup_step7_modules');
             } catch (Exception $e) {
                 $this->addFlash('error', $this->translator->trans('setup.organisation.info_failed') . ': ' . $e->getMessage());
+                // Turbo requires redirect after POST
+                return $this->redirectToRoute('setup_step6_organisation_info');
             }
         }
 

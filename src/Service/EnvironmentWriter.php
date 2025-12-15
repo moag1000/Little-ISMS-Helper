@@ -258,11 +258,13 @@ class EnvironmentWriter
             $dbname = $matches[6];
             $queryString = $matches[7] ?? '';
 
-            // Extract serverVersion from query string
+            // Extract serverVersion and unix_socket from query string
             $serverVersion = null;
+            $unixSocket = null;
             if ($queryString !== '' && $queryString !== '0') {
                 parse_str($queryString, $queryParams);
                 $serverVersion = $queryParams['serverVersion'] ?? null;
+                $unixSocket = $queryParams['unix_socket'] ?? null;
             }
 
             // Determine DB_TYPE from scheme
@@ -299,6 +301,10 @@ class EnvironmentWriter
 
             if (empty($envVars['DB_SERVER_VERSION']) && $serverVersion) {
                 $envVars['DB_SERVER_VERSION'] = $serverVersion;
+            }
+
+            if (empty($envVars['DB_SOCKET']) && $unixSocket) {
+                $envVars['DB_SOCKET'] = $unixSocket;
             }
         }
 
