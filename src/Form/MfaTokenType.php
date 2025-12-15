@@ -81,6 +81,7 @@ class MfaTokenType extends AbstractType
                 'label' => 'mfa_token.field.expires_at',
                 'required' => false,
                 'widget' => 'single_text',
+                'input' => 'datetime_immutable',
                 'help' => 'mfa_token.help.expires_at',
             ])
         ;

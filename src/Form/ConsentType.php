@@ -80,6 +80,7 @@ class ConsentType extends AbstractType
             ->add('grantedAt', DateTimeType::class, [
                 'label' => 'consent.form.granted_at',
                 'widget' => 'single_text',
+                'input' => 'datetime_immutable',
                 'attr' => ['class' => 'form-control'],
                 'help' => 'consent.form.granted_at_help',
             ])
@@ -136,6 +137,7 @@ class ConsentType extends AbstractType
             ->add('expiresAt', DateTimeType::class, [
                 'label' => 'consent.form.expires_at',
                 'widget' => 'single_text',
+                'input' => 'datetime_immutable',
                 'required' => false,
                 'attr' => ['class' => 'form-control'],
                 'help' => 'consent.form.expires_at_help',
