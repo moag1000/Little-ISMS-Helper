@@ -6,13 +6,15 @@
 
 **Moderne, webbasierte ISMS-Lösung für KMUs – ISO 27001:2022 konform**
 
-[![Version 2.5](https://img.shields.io/badge/Version-2.5.1-success?logo=semver&logoColor=white)](CHANGELOG.md)
+[![CI/CD](https://github.com/moag1000/Little-ISMS-Helper/actions/workflows/ci.yml/badge.svg)](https://github.com/moag1000/Little-ISMS-Helper/actions/workflows/ci.yml)
+[![License Compliance](https://github.com/moag1000/Little-ISMS-Helper/actions/workflows/license-compliance.yml/badge.svg)](https://github.com/moag1000/Little-ISMS-Helper/actions/workflows/license-compliance.yml)
+[![GitHub release](https://img.shields.io/github/v/release/moag1000/Little-ISMS-Helper?logo=github)](https://github.com/moag1000/Little-ISMS-Helper/releases)
+[![GitHub stars](https://img.shields.io/github/stars/moag1000/Little-ISMS-Helper?style=flat&logo=github)](https://github.com/moag1000/Little-ISMS-Helper/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/moag1000/Little-ISMS-Helper)](https://github.com/moag1000/Little-ISMS-Helper/issues)
 [![PHP 8.4+](https://img.shields.io/badge/PHP-8.4%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
 [![Symfony 7.4](https://img.shields.io/badge/Symfony-7.4-000000?logo=symfony&logoColor=white)](https://symfony.com/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](LICENSE)
 [![ISO 27001:2022](https://img.shields.io/badge/ISO-27001%3A2022-blue)](https://www.iso.org/standard/27001)
-[![Tests](https://img.shields.io/badge/Tests-2528%20total-blue)](tests/)
 [![WCAG 2.1 AA](https://img.shields.io/badge/WCAG-2.1%20AA-green)](https://www.w3.org/WAI/WCAG21/quickref/)
 
 [Features](#-funktionen) • [Quick Start](#-quick-start-mit-docker) • [Dokumentation](#-dokumentation) • [Roadmap](#-roadmap) • [Contributing](#-beitragen)
