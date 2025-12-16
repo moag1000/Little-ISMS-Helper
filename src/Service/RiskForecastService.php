@@ -420,15 +420,21 @@ class RiskForecastService
 
         // Factor 4: Recent incident recency (0-10 points)
         if (!empty($incidents)) {
-            $latestIncident = max(array_map(fn($i) => $i->getOccurredAt()->getTimestamp(), $incidents));
-            $daysSince = (time() - $latestIncident) / 86400;
-            $recencyScore = match (true) {
-                $daysSince <= 30 => 10,
-                $daysSince <= 90 => 7,
-                $daysSince <= 180 => 4,
-                default => 1,
-            };
-            $score += $recencyScore;
+            $timestamps = array_filter(
+                array_map(fn($i) => $i->getOccurredAt()?->getTimestamp(), $incidents),
+                fn($ts) => $ts !== null
+            );
+            if (!empty($timestamps)) {
+                $latestIncident = max($timestamps);
+                $daysSince = (time() - $latestIncident) / 86400;
+                $recencyScore = match (true) {
+                    $daysSince <= 30 => 10,
+                    $daysSince <= 90 => 7,
+                    $daysSince <= 180 => 4,
+                    default => 1,
+                };
+                $score += $recencyScore;
+            }
         }
 
         return min(100, $score);

@@ -39,7 +39,12 @@ class ComplianceAnalyticsService
         $comparison = [];
 
         foreach ($frameworks as $framework) {
-            $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
+            // Skip framework statistics if no tenant context (e.g., admin without tenant)
+            if ($tenant === null) {
+                $stats = ['total' => 0, 'applicable' => 0, 'fulfilled' => 0, 'in_progress' => 0];
+            } else {
+                $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
+            }
 
             $comparison[] = [
                 'id' => $framework->id,
@@ -374,7 +379,12 @@ class ComplianceAnalyticsService
         $roadmap = [];
 
         foreach ($frameworks as $framework) {
-            $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
+            // Skip framework statistics if no tenant context
+            if ($tenant === null) {
+                $stats = ['total' => 0, 'applicable' => 0, 'fulfilled' => 0];
+            } else {
+                $stats = $this->requirementRepository->getFrameworkStatisticsForTenant($framework, $tenant);
+            }
             $compliance = $stats['applicable'] > 0
                 ? round(($stats['fulfilled'] / $stats['applicable']) * 100, 1)
                 : 0;
