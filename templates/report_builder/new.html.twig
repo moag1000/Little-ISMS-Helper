@@ -1,0 +1,149 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'report_builder' %}
+
+{% block title %}{{ 'new.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.reports'|trans({}, 'nav'), path: path('app_reports_overview') },
+            { label: 'page.title'|trans, path: path('report_builder_index') },
+            { label: 'new.title'|trans }
+        ]
+    } %}
+
+    <h1 class="h2 mb-4">
+        <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'new.title'|trans }}
+    </h1>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="h5 mb-0">{{ 'new.subtitle'|trans }}</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{{ path('report_builder_new') }}">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">{{ 'form.name'|trans }} <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" required
+                                   placeholder="{{ 'form.name_placeholder'|trans }}">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">{{ 'form.description'|trans }}</label>
+                            <textarea class="form-control" id="description" name="description" rows="3"
+                                      placeholder="{{ 'form.description_placeholder'|trans }}"></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="category" class="form-label">{{ 'form.category'|trans }}</label>
+                                <select class="form-select" id="category" name="category">
+                                    {% for key, label in categories %}
+                                    <option value="{{ key }}">{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="layout" class="form-label">{{ 'form.layout'|trans }}</label>
+                                <select class="form-select" id="layout" name="layout">
+                                    {% for key, label in layouts %}
+                                    <option value="{{ key }}" {% if key == 'dashboard' %}selected{% endif %}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h3 class="h6">{{ 'form.layout_preview'|trans }}</h3>
+                            <div class="row g-2" id="layout-preview">
+                                <div class="col-md-4">
+                                    <div class="card text-center layout-option" data-layout="single">
+                                        <div class="card-body p-3">
+                                            <div class="border rounded p-2 mb-2" style="height: 80px; background: #f8f9fa;">
+                                                <div class="bg-primary opacity-25 h-100 rounded"></div>
+                                            </div>
+                                            <small>{{ 'layout.single'|trans }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card text-center layout-option" data-layout="two_column">
+                                        <div class="card-body p-3">
+                                            <div class="border rounded p-2 mb-2 d-flex gap-1" style="height: 80px; background: #f8f9fa;">
+                                                <div class="bg-primary opacity-25 flex-grow-1 rounded"></div>
+                                                <div class="bg-primary opacity-25 flex-grow-1 rounded"></div>
+                                            </div>
+                                            <small>{{ 'layout.two_column'|trans }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card text-center layout-option active" data-layout="dashboard">
+                                        <div class="card-body p-3">
+                                            <div class="border rounded p-2 mb-2" style="height: 80px; background: #f8f9fa;">
+                                                <div class="row g-1 h-100">
+                                                    <div class="col-6"><div class="bg-primary opacity-25 h-100 rounded"></div></div>
+                                                    <div class="col-6"><div class="bg-primary opacity-25 h-100 rounded"></div></div>
+                                                </div>
+                                            </div>
+                                            <small>{{ 'layout.dashboard'|trans }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'action.create_and_design'|trans }}
+                            </button>
+                            <a href="{{ path('report_builder_index') }}" class="btn btn-outline-secondary">
+                                {{ 'action.cancel'|trans }}
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const layoutSelect = document.getElementById('layout');
+    const layoutOptions = document.querySelectorAll('.layout-option');
+
+    layoutOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            layoutOptions.forEach(o => o.classList.remove('active', 'border-primary'));
+            this.classList.add('active', 'border-primary');
+            layoutSelect.value = this.dataset.layout;
+        });
+    });
+
+    layoutSelect.addEventListener('change', function() {
+        layoutOptions.forEach(o => {
+            o.classList.remove('active', 'border-primary');
+            if (o.dataset.layout === this.value) {
+                o.classList.add('active', 'border-primary');
+            }
+        });
+    });
+});
+</script>
+
+<style>
+    .layout-option {
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .layout-option:hover, .layout-option.active {
+        border-color: var(--bs-primary) !important;
+        box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+    }
+</style>
+{% endblock %}

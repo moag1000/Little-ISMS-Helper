@@ -1,0 +1,281 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'report_builder' %}
+
+{% block title %}{{ report.name }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.reports'|trans({}, 'nav'), path: path('app_reports_overview') },
+            { label: 'page.title'|trans, path: path('report_builder_index') },
+            { label: report.name }
+        ]
+    } %}
+
+    {# Report Actions #}
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">
+            <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ report.name }}
+        </h1>
+        <div class="btn-group">
+            <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="btn btn-outline-primary">
+                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'action.edit'|trans }}
+            </a>
+            <a href="{{ path('report_builder_export_pdf', {id: report.id}) }}" class="btn btn-danger">
+                <i class="bi bi-file-pdf" aria-hidden="true"></i> {{ 'action.export_pdf'|trans }}
+            </a>
+        </div>
+    </div>
+
+    {# Report Metadata #}
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex gap-3 text-muted small">
+                <span><i class="bi bi-folder" aria-hidden="true"></i> {{ report.category }}</span>
+                <span><i class="bi bi-calendar" aria-hidden="true"></i> {{ report_data.report.generated_at|date('d.m.Y H:i') }}</span>
+                <span><i class="bi bi-person" aria-hidden="true"></i> {{ report.owner.fullName }}</span>
+            </div>
+        </div>
+    </div>
+
+    {% if report.description %}
+    <p class="lead text-muted mb-4">{{ report.description }}</p>
+    {% endif %}
+
+    {# Widget Grid #}
+    <div class="report-preview-grid" data-layout="{{ report.layout }}">
+        {% for widgetId, widgetData in report_data.widgets %}
+        {% set meta = widgetData.meta %}
+        {% set data = widgetData.data %}
+
+        <div class="widget-preview-container">
+            {% if meta.title is defined and meta.title %}
+            <h3 class="h6 mb-3">{{ meta.title }}</h3>
+            {% endif %}
+
+            {% set widgetType = meta.type|default('unknown') %}
+
+            {# KPI Widgets #}
+            {% if widgetType starts with 'kpi_' %}
+            <div class="kpi-widget text-center p-4 rounded bg-{{ data.color|default('primary') }} bg-opacity-10">
+                <div class="display-4 fw-bold text-{{ data.color|default('primary') }}">{{ data.value }}</div>
+                <div class="text-muted">{{ data.label }}</div>
+                {% if data.details is defined %}
+                <small class="text-muted">
+                    {% for key, val in data.details %}
+                    {{ key }}: {{ val }}{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </small>
+                {% endif %}
+            </div>
+
+            {# Chart Widgets #}
+            {% elseif widgetType starts with 'chart_' %}
+            <div class="chart-widget">
+                {% if data.type == 'heatmap' %}
+                {# Risk Matrix Heatmap #}
+                <div class="risk-matrix-preview">
+                    <table class="table table-bordered table-sm text-center">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                {% for label in data.labels.x %}
+                                <th class="small">{{ label }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for y in 5..1 %}
+                            <tr>
+                                <th class="small">{{ data.labels.y[y - 1] }}</th>
+                                {% for x in 1..5 %}
+                                {% set count = data.matrix[y][x]|default(0) %}
+                                {% set score = y * x %}
+                                {% set bgClass = score >= 15 ? 'bg-danger' : (score >= 8 ? 'bg-warning' : (score >= 4 ? 'bg-info' : 'bg-success')) %}
+                                <td class="{{ bgClass }} text-white">{{ count > 0 ? count : '' }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% elseif data.type in ['pie', 'doughnut'] %}
+                {# Pie/Doughnut Chart #}
+                <canvas class="chart-canvas" data-chart-type="{{ data.type }}" data-chart-labels="{{ data.labels|json_encode }}" data-chart-data="{{ data.data|json_encode }}" data-chart-colors="{{ data.colors|default(['#0d6efd', '#6c757d', '#198754', '#dc3545', '#ffc107'])|json_encode }}" height="200"></canvas>
+                {% elseif data.type == 'radar' %}
+                {# Radar Chart #}
+                <canvas class="chart-canvas" data-chart-type="radar" data-chart-labels="{{ data.labels|json_encode }}" data-chart-datasets="{{ data.datasets|json_encode }}" height="250"></canvas>
+                {% elseif data.type in ['bar', 'horizontalBar'] %}
+                {# Bar Chart #}
+                <canvas class="chart-canvas" data-chart-type="bar" data-chart-labels="{{ data.labels|json_encode }}" data-chart-data="{{ data.data|json_encode }}" data-chart-colors="{{ data.colors|default(['#0d6efd'])|json_encode }}" height="200"></canvas>
+                {% elseif data.type == 'line' %}
+                {# Line Chart #}
+                <canvas class="chart-canvas" data-chart-type="line" data-chart-labels="{{ data.labels|json_encode }}" data-chart-datasets="{{ data.datasets|json_encode }}" height="200"></canvas>
+                {% else %}
+                <div class="alert alert-secondary">{{ 'preview.chart_placeholder'|trans({'%type%': data.type}) }}</div>
+                {% endif %}
+            </div>
+
+            {# Table Widgets #}
+            {% elseif widgetType starts with 'table_' %}
+            <div class="table-widget">
+                {% if data.rows|length > 0 %}
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                {% for col in data.columns %}
+                                <th>{{ col }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in data.rows %}
+                            <tr>
+                                {% for key, value in row|filter((v, k) => k != 'id') %}
+                                <td>{{ value }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p class="text-muted text-center py-3">{{ 'preview.no_data'|trans }}</p>
+                {% endif %}
+            </div>
+
+            {# Status Widgets #}
+            {% elseif widgetType == 'status_rag' %}
+            <div class="status-widget text-center p-4">
+                {% set statusColor = data.status == 'green' ? 'success' : (data.status == 'amber' ? 'warning' : 'danger') %}
+                <div class="display-1">
+                    <i class="bi bi-circle-fill text-{{ statusColor }}" aria-hidden="true"></i>
+                </div>
+                <div class="h5 mt-2">{{ data.label }}</div>
+                {% if data.factors is defined %}
+                <small class="text-muted">
+                    {% for key, val in data.factors %}
+                    {{ key }}: {{ val }}{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </small>
+                {% endif %}
+            </div>
+
+            {# Text Widgets #}
+            {% elseif widgetType starts with 'text_' %}
+            <div class="text-widget">
+                {% if widgetType == 'text_header' %}
+                <h2>{{ data.text|default(meta.config.text|default('Header')) }}</h2>
+                {% elseif widgetType == 'text_summary' %}
+                <p class="lead">{{ data.text }}</p>
+                {% else %}
+                <div>{{ data.text|default(meta.config.text|default(''))|raw }}</div>
+                {% endif %}
+            </div>
+
+            {% else %}
+            <div class="alert alert-secondary">{{ 'preview.unknown_widget'|trans({'%type%': widgetType}) }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    {# Report Footer #}
+    <div class="report-footer mt-5 pt-4 border-top text-muted small">
+        <div class="d-flex justify-content-between">
+            <span>{{ 'preview.generated_by'|trans }} {{ app.user.fullName }}</span>
+            <span>{{ report_data.report.generated_at|date('d.m.Y H:i') }}</span>
+        </div>
+    </div>
+</div>
+
+<style>
+    .report-preview-grid {
+        display: grid;
+        gap: 1.5rem;
+    }
+
+    .report-preview-grid[data-layout="single"] {
+        grid-template-columns: 1fr;
+    }
+
+    .report-preview-grid[data-layout="two_column"] {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .report-preview-grid[data-layout="dashboard"] {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    .report-preview-grid[data-layout="wide_narrow"] {
+        grid-template-columns: 2fr 1fr;
+    }
+
+    .report-preview-grid[data-layout="narrow_wide"] {
+        grid-template-columns: 1fr 2fr;
+    }
+
+    .widget-preview-container {
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+        padding: 1rem;
+    }
+
+    .risk-matrix-preview table {
+        font-size: 0.75rem;
+    }
+
+    .risk-matrix-preview td {
+        width: 40px;
+        height: 40px;
+    }
+
+    @media print {
+        .btn-group, .breadcrumb {
+            display: none !important;
+        }
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize charts if Chart.js is available
+    if (typeof Chart !== 'undefined') {
+        document.querySelectorAll('.chart-canvas').forEach(canvas => {
+            const type = canvas.dataset.chartType;
+            const labels = JSON.parse(canvas.dataset.chartLabels || '[]');
+            const data = JSON.parse(canvas.dataset.chartData || '[]');
+            const colors = JSON.parse(canvas.dataset.chartColors || '[]');
+            const datasets = JSON.parse(canvas.dataset.chartDatasets || '[]');
+
+            const config = {
+                type: type,
+                data: {
+                    labels: labels,
+                    datasets: datasets.length > 0 ? datasets : [{
+                        data: data,
+                        backgroundColor: colors,
+                        borderColor: colors,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: type === 'radar' ? 'top' : 'bottom'
+                        }
+                    }
+                }
+            };
+
+            new Chart(canvas, config);
+        });
+    }
+});
+</script>
+{% endblock %}

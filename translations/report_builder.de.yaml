@@ -1,0 +1,232 @@
+# Report Builder Übersetzungen (Deutsch)
+# Phase 7C: Benutzerdefinierter Report-Builder mit Drag & Drop Designer
+
+# Seitentitel
+page:
+    title: 'Report-Builder'
+    subtitle: 'Erstellen Sie benutzerdefinierte Reports mit Drag & Drop Widgets'
+
+# Neuer Report
+new:
+    title: 'Neuen Report erstellen'
+    subtitle: 'Konfigurieren Sie Ihre Report-Einstellungen'
+
+# Designer
+designer:
+    title: 'Bearbeiten: %name%'
+    widgets: 'Widgets'
+    settings: 'Einstellungen'
+    drop_hint: 'Ziehen Sie Widgets hierher, um Ihren Report zu erstellen'
+    loading: 'Laden...'
+    no_description: 'Keine Beschreibung'
+
+# Abschnitte
+section:
+    quick_start: 'Schnellstart - Vorlagen'
+    favorites: 'Favoriten'
+    my_reports: 'Meine Reports'
+    recently_used: 'Zuletzt verwendet'
+    shared_templates: 'Geteilte Vorlagen'
+
+# Tabellenüberschriften
+table:
+    name: 'Name'
+    category: 'Kategorie'
+    layout: 'Layout'
+    updated: 'Aktualisiert'
+    actions: 'Aktionen'
+
+# Formularbeschriftungen
+form:
+    name: 'Report-Name'
+    name_placeholder: 'Report-Namen eingeben'
+    description: 'Beschreibung'
+    description_placeholder: 'Kurze Beschreibung dieses Reports'
+    category: 'Kategorie'
+    layout: 'Layout'
+    layout_preview: 'Layout-Vorschau'
+
+# Layout-Namen
+layout:
+    single: 'Einzelne Spalte'
+    two_column: 'Zwei Spalten'
+    dashboard: 'Dashboard-Raster'
+    wide_narrow: 'Breit + Schmal'
+    narrow_wide: 'Schmal + Breit'
+
+# Aktionen
+action:
+    create: 'Report erstellen'
+    create_first: 'Ersten Report erstellen'
+    create_and_design: 'Erstellen & Designer öffnen'
+    edit: 'Bearbeiten'
+    preview: 'Vorschau'
+    export_pdf: 'PDF exportieren'
+    save: 'Speichern'
+    share: 'Teilen'
+    delete: 'Löschen'
+    cancel: 'Abbrechen'
+    use_template: 'Vorlage verwenden'
+    apply: 'Anwenden'
+
+# Einstellungen
+settings:
+    report: 'Report-Einstellungen'
+    filters: 'Filter'
+    styles: 'Stil-Einstellungen'
+
+# Filter
+filter:
+    date_range: 'Zeitraum'
+    last_30_days: 'Letzte 30 Tage'
+    last_quarter: 'Letztes Quartal'
+    last_year: 'Letztes Jahr'
+    custom: 'Benutzerdefiniert'
+
+# Stile
+style:
+    primary_color: 'Primärfarbe'
+    show_logo: 'Logo in Kopfzeile anzeigen'
+    show_date: 'Erstellungsdatum anzeigen'
+    orientation: 'Seitenausrichtung'
+    portrait: 'Hochformat'
+    landscape: 'Querformat'
+
+# Widget-Kategorien
+widget:
+    category:
+        kpi: 'KPIs'
+        chart: 'Diagramme'
+        table: 'Tabellen'
+        status: 'Status'
+        text: 'Text'
+
+# Widget-Bezeichnungen
+widget.kpi_risk_count: 'Gesamte Risiken'
+widget.kpi_risk_count.description: 'Zeigt die Gesamtzahl der Risiken'
+widget.kpi_high_risks: 'Hohe Risiken'
+widget.kpi_high_risks.description: 'Anzahl der hohen/kritischen Risiken'
+widget.kpi_control_count: 'Gesamte Maßnahmen'
+widget.kpi_control_count.description: 'Zeigt die Gesamtzahl der Maßnahmen'
+widget.kpi_control_implementation: 'Umsetzungsrate'
+widget.kpi_control_implementation.description: 'Prozentsatz umgesetzter Maßnahmen'
+widget.kpi_asset_count: 'Gesamte Assets'
+widget.kpi_asset_count.description: 'Zeigt die Gesamtzahl der Assets'
+widget.kpi_incident_count: 'Gesamte Vorfälle'
+widget.kpi_incident_count.description: 'Zeigt die Gesamtzahl der Vorfälle'
+widget.kpi_open_incidents: 'Offene Vorfälle'
+widget.kpi_open_incidents.description: 'Anzahl ungelöster Vorfälle'
+widget.kpi_compliance_score: 'Compliance-Score'
+widget.kpi_compliance_score.description: 'Gesamter Compliance-Prozentsatz'
+widget.kpi_overdue_treatments: 'Überfällige Behandlungen'
+widget.kpi_overdue_treatments.description: 'Risiken mit überfälligen Behandlungsplänen'
+widget.kpi_bcm_coverage: 'BCM-Abdeckung'
+widget.kpi_bcm_coverage.description: 'BC-Plan-Abdeckung für kritische Prozesse'
+
+widget.chart_risk_matrix: 'Risikomatrix'
+widget.chart_risk_matrix.description: '5x5 Risiko-Heatmap'
+widget.chart_risk_by_category: 'Risiken nach Kategorie'
+widget.chart_risk_by_category.description: 'Risikoverteilung als Kreisdiagramm'
+widget.chart_risk_trend: 'Risikotrend'
+widget.chart_risk_trend.description: 'Risikoanzahl im Zeitverlauf'
+widget.chart_control_status: 'Maßnahmen-Status'
+widget.chart_control_status.description: 'Umsetzungsstatus-Aufschlüsselung'
+widget.chart_compliance_radar: 'Compliance-Radar'
+widget.chart_compliance_radar.description: 'Multi-Framework-Compliance'
+widget.chart_incident_trend: 'Vorfallstrend'
+widget.chart_incident_trend.description: 'Vorfälle im Zeitverlauf'
+widget.chart_asset_criticality: 'Asset-Kritikalität'
+widget.chart_asset_criticality.description: 'Assets nach Kritikalitätsstufe'
+widget.chart_framework_comparison: 'Framework-Vergleich'
+widget.chart_framework_comparison.description: 'Compliance-Vergleich über Frameworks'
+
+widget.table_top_risks: 'Top-Risiken'
+widget.table_top_risks.description: 'Höchstbewertete Risiken'
+widget.table_recent_incidents: 'Aktuelle Vorfälle'
+widget.table_recent_incidents.description: 'Neueste Sicherheitsvorfälle'
+widget.table_overdue_controls: 'Überfällige Maßnahmen'
+widget.table_overdue_controls.description: 'Maßnahmen, die überprüft werden müssen'
+widget.table_critical_assets: 'Kritische Assets'
+widget.table_critical_assets.description: 'Assets mit höchsten CIA-Werten'
+widget.table_audit_findings: 'Audit-Feststellungen'
+widget.table_audit_findings.description: 'Aktuelle Audit-Feststellungen'
+widget.table_bc_plans: 'BC-Pläne'
+widget.table_bc_plans.description: 'Business-Continuity-Pläne'
+
+widget.status_rag: 'RAG-Status'
+widget.status_rag.description: 'Rot/Gelb/Grün Gesamtstatus'
+
+widget.text_header: 'Abschnittsüberschrift'
+widget.text_header.description: 'Fügen Sie eine Überschrift hinzu'
+widget.text_summary: 'Auto-Zusammenfassung'
+widget.text_summary.description: 'Generierter Zusammenfassungstext'
+widget.text_summary.content: 'Ihre Organisation hat derzeit %s identifizierte Risiken, mit %s implementierten Maßnahmen. Es gibt %s offene Vorfälle, die Aufmerksamkeit erfordern.'
+widget.text_custom: 'Benutzerdefinierter Text'
+widget.text_custom.description: 'Fügen Sie eigenen Textinhalt hinzu'
+
+# Status-Bezeichnungen
+status:
+    good: 'Gut'
+    attention: 'Aufmerksamkeit erforderlich'
+    critical: 'Kritisch'
+
+# Vorlagen
+template:
+    executive_summary: 'Management-Zusammenfassung'
+    executive_summary.description: 'Übersicht auf höchster Ebene für das Management'
+    risk_report: 'Risikobericht'
+    risk_report.description: 'Umfassende Risikoanalyse'
+    compliance_dashboard: 'Compliance-Dashboard'
+    compliance_dashboard.description: 'Multi-Framework-Compliance-Status'
+    incident_report: 'Vorfallsbericht'
+    incident_report.description: 'Übersicht der Sicherheitsvorfälle'
+    bcm_status: 'BCM-Statusbericht'
+    bcm_status.description: 'Business-Continuity-Status'
+    asset_overview: 'Asset-Übersicht'
+    asset_overview.description: 'Asset-Inventar und Kritikalität'
+
+# Leere Zustände
+empty:
+    no_reports: 'Sie haben noch keine benutzerdefinierten Reports'
+
+# Bestätigung
+confirm:
+    delete: 'Möchten Sie diesen Report wirklich löschen?'
+
+# Modal-Titel
+modal:
+    share:
+        title: 'Report teilen'
+        description: 'Wählen Sie Benutzer aus, mit denen dieser Report geteilt werden soll'
+    widget_config:
+        title: 'Widget konfigurieren'
+
+# Flash-Nachrichten
+report_builder:
+    created: 'Report erfolgreich erstellt'
+    created_from_template: 'Report aus Vorlage erstellt'
+    cloned: 'Report erfolgreich geklont'
+    saved: 'Report erfolgreich gespeichert'
+    deleted: 'Report erfolgreich gelöscht'
+    template_created: 'Vorlage erfolgreich erstellt'
+    template_not_found: 'Vorlage nicht gefunden'
+
+# Vorschau
+preview:
+    generated_by: 'Erstellt von'
+    chart_placeholder: 'Diagramm: %type%'
+    no_data: 'Keine Daten verfügbar'
+    unknown_widget: 'Unbekanntes Widget: %type%'
+
+# PDF-Export
+pdf:
+    generated_at: 'Erstellt am'
+    category: 'Kategorie'
+    generated_by: 'Erstellt von'
+    chart_data: 'Diagrammdaten'
+    no_data: 'Keine Daten verfügbar'
+    unknown_widget: 'Unbekanntes Widget: %type%'
+
+# Verschiedenes
+uses: 'Verwendungen'
+loading: 'Laden...'
