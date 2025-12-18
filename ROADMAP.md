@@ -702,21 +702,86 @@ Step 3: Zusammenfassung
 
 ---
 
-## 📅 Zukünftige Phasen (Backlog)
+---
 
-### Phase 8: Enterprise Features (Vision)
-- 🔄 Mobile PWA (Progressive Web App)
-- 🔄 Kubernetes Deployment
-- 🔄 Advanced API Features (GraphQL, Webhooks)
-- 🔄 Integration Marketplace (Slack, Teams, JIRA)
-- 🔄 White-Label Support
-- 🔄 AI-gestützte Features (Risk Scoring, Auto-Classification)
+## 🚀 Phase 8: Enterprise Features (In Entwicklung)
+
+**Zeitraum:** Dez 2025 - ...
+**Status:** 🚧 In Entwicklung
+**Priorität:** HOCH
+
+### ✅ Phase 8A: Mobile PWA (Progressive Web App)
+
+**Status:** ✅ Abgeschlossen (Dez 2025)
+**Effort:** ~8 Stunden
+
+#### Implementierte Features
+
+**1. Web App Manifest**
+- App-Name, Icons, Theme-Farben
+- Shortcuts für Dashboard, Risks, Controls, Incidents
+- Standalone Display Mode
+- Kategorien: Business, Productivity, Security
+
+**2. Service Worker**
+- Cache-First für statische Assets (CSS, JS, Images)
+- Network-First für API-Aufrufe
+- Offline Fallback Page
+- Background Sync vorbereitet
+- Push Notifications vorbereitet
+- Automatische Cache-Updates
+
+**3. PWA Icons**
+- 8 Icon-Größen (72x72 bis 512x512)
+- Maskable Icons für Android
+- Apple Touch Icons für iOS
+
+**4. Offline Support**
+- Stylische Offline-Seite (Cyberpunk Theme)
+- Anzeige gecachter Seiten
+- Automatische Reconnect-Erkennung
+- Offline-Indikator in Header
+
+**5. Install Prompt (A2HS)**
+- "App installieren" Button im Header
+- beforeinstallprompt Event Handling
+- Responsive (Icon-only auf Mobile)
+
+#### Deliverables
+- [x] `public/manifest.json` - Web App Manifest
+- [x] `public/sw.js` - Service Worker (250+ LOC)
+- [x] `public/offline.html` - Offline Fallback Page
+- [x] `public/icons/` - PWA Icons (8 Größen)
+- [x] `templates/base.html.twig` - PWA Meta Tags & SW Registration
+- [x] `translations/messages.*.yaml` - PWA Translations (DE/EN)
+
+#### Acceptance Criteria
+- [x] ✅ App installierbar (Chrome, Edge, Safari)
+- [x] ✅ Offline-Seite wird angezeigt
+- [x] ✅ Statische Assets werden gecacht
+- [x] ✅ Install-Button erscheint wenn verfügbar
+- [x] ✅ Offline-Indikator funktioniert
+- [x] ✅ Apple-Geräte unterstützt (Touch Icons)
+
+---
+
+### 📅 Phase 8B-8F: Geplante Features
+
+| Phase | Feature | Status | Beschreibung |
+|-------|---------|--------|--------------|
+| 8B | Kubernetes Deployment | 📅 | Cloud-native Container-Orchestrierung |
+| 8C | Advanced API (GraphQL) | 📅 | GraphQL API, Webhooks |
+| 8D | Integration Marketplace | 📅 | Slack, Teams, JIRA Anbindungen |
+| 8E | White-Label Support | 📅 | Eigenes Branding für Kunden |
+| 8F | AI-Features | 📅 | Risk Scoring, Auto-Classification |
+
+---
+
+## 📅 Zukünftige Phasen (Backlog)
 
 ### Phase 9: Global Expansion (Vision)
 - 🔄 Real-time Collaboration (WebSocket)
 - 🔄 Advanced Workflow Automation
-- 🔄 Blockchain-based Audit Trail
-- 🔄 Quantum-Safe Cryptography
 - 🔄 Multi-Cloud Deployment (AWS, Azure, GCP)
 
 ---
@@ -784,6 +849,6 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 ---
 
 **Stand:** 2025-12-18
-**Version:** 2.1
-**Letzte Änderung:** Phase 7 vollständig abgeschlossen (7A-7E: Management Reporting, Analytics, Report Builder, Role Dashboards, Compliance Wizards)
-**Nächste Aktualisierung:** Nach Abschluss Phase 8 (Enterprise Features)
+**Version:** 2.2
+**Letzte Änderung:** Phase 8A abgeschlossen (Mobile PWA: Service Worker, Offline Support, Install Prompt)
+**Nächste Aktualisierung:** Nach Abschluss Phase 8B (Kubernetes Deployment)
