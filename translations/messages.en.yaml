@@ -1498,3 +1498,11 @@ yes: Yes
 no: No
 notifications:
     title: Notifications
+
+# PWA (Progressive Web App) - Phase 8A
+pwa:
+    install: 'Install App'
+    install_prompt: 'Install ISMS Helper as an app?'
+    install_description: 'Install the app for faster access and offline use.'
+    offline: 'You are offline'
+    online: 'Connection restored'
