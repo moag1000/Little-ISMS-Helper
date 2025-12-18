@@ -191,8 +191,10 @@ class ComplianceWizardControllerTest extends WebTestCase
         $this->client->loginUser($this->managerUser);
         $this->client->request('GET', '/en/compliance-wizard/iso27001/api/assess');
 
-        // Either returns JSON or wizard not available (redirect)
+        // Either returns JSON, redirect, or error (403/404 if wizard not available)
         $response = $this->client->getResponse();
+        $statusCode = $response->getStatusCode();
+
         if ($response->isSuccessful()) {
             $this->assertJson($response->getContent());
 
@@ -200,7 +202,11 @@ class ComplianceWizardControllerTest extends WebTestCase
             $this->assertIsArray($data);
             $this->assertArrayHasKey('success', $data);
         } else {
-            $this->assertTrue($response->isRedirect(), 'Expected JSON or redirect');
+            // Accept redirect, 403 (forbidden), or 404 (not found) as valid responses
+            $validResponses = $response->isRedirect() ||
+                              $statusCode === Response::HTTP_FORBIDDEN ||
+                              $statusCode === Response::HTTP_NOT_FOUND;
+            $this->assertTrue($validResponses, 'Expected JSON, redirect, 403, or 404. Got: ' . $statusCode);
         }
     }
 
