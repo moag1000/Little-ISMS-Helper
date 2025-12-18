@@ -116,21 +116,21 @@ class DoraComplianceControllerTest extends WebTestCase
 
     public function testDashboardRequiresAuthentication(): void
     {
-        $this->client->request('GET', '/dora-compliance');
+        $this->client->request('GET', '/en/dora-compliance');
         $this->assertResponseRedirects();
     }
 
     public function testDashboardRequiresManagerRole(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->request('GET', '/dora-compliance');
+        $this->client->request('GET', '/en/dora-compliance');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     public function testDashboardDisplaysForManager(): void
     {
         $this->client->loginUser($this->managerUser);
-        $this->client->request('GET', '/dora-compliance');
+        $this->client->request('GET', '/en/dora-compliance');
         // DORA dashboard redirects to compliance if DORA framework not loaded
         $response = $this->client->getResponse();
         $this->assertTrue($response->isSuccessful() || $response->isRedirect());
@@ -139,7 +139,7 @@ class DoraComplianceControllerTest extends WebTestCase
     public function testDashboardRedirectsWhenDoraNotInstalled(): void
     {
         $this->client->loginUser($this->managerUser);
-        $this->client->request('GET', '/dora-compliance');
+        $this->client->request('GET', '/en/dora-compliance');
         $response = $this->client->getResponse();
 
         // Either shows dashboard (DORA installed) or redirects (DORA not installed)
