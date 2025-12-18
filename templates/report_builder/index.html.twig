@@ -1,0 +1,198 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'report_builder' %}
+
+{% block title %}{{ 'page.title'|trans }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="container-fluid py-4">
+    {% include '_components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'nav.reports'|trans({}, 'nav'), path: path('app_reports_overview') },
+            { label: 'page.title'|trans }
+        ]
+    } %}
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2 mb-0">
+            <i class="bi bi-palette" aria-hidden="true"></i> {{ 'page.title'|trans }}
+        </h1>
+        <a href="{{ path('report_builder_new') }}" class="btn btn-primary">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i> {{ 'action.create'|trans }}
+        </a>
+    </div>
+
+    <p class="text-muted mb-4">{{ 'page.subtitle'|trans }}</p>
+
+    {# Quick Actions #}
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="h5 mb-0"><i class="bi bi-lightning" aria-hidden="true"></i> {{ 'section.quick_start'|trans }}</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% for key, template in predefined_templates %}
+                        <div class="col-md-4 col-lg-2">
+                            <a href="{{ path('report_builder_from_template', {templateKey: key}) }}" class="card h-100 text-decoration-none text-center hover-lift">
+                                <div class="card-body p-3">
+                                    <i class="bi bi-file-earmark-richtext fs-1 text-primary" aria-hidden="true"></i>
+                                    <h3 class="h6 mt-2 mb-0">{{ template.name }}</h3>
+                                </div>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {# Main Content - User's Reports #}
+        <div class="col-lg-8">
+            {# Favorites #}
+            {% if favorites|length > 0 %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="h5 mb-0"><i class="bi bi-star-fill text-warning" aria-hidden="true"></i> {{ 'section.favorites'|trans }}</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        {% for report in favorites %}
+                        <div class="col-md-6">
+                            {% include 'report_builder/_report_card.html.twig' with {report: report} %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {# All Reports #}
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h2 class="h5 mb-0"><i class="bi bi-collection" aria-hidden="true"></i> {{ 'section.my_reports'|trans }}</h2>
+                    <span class="badge bg-secondary">{{ reports|length }}</span>
+                </div>
+                <div class="card-body">
+                    {% if reports|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>{{ 'table.name'|trans }}</th>
+                                    <th>{{ 'table.category'|trans }}</th>
+                                    <th>{{ 'table.layout'|trans }}</th>
+                                    <th>{{ 'table.updated'|trans }}</th>
+                                    <th class="text-end">{{ 'table.actions'|trans }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for report in reports %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="text-decoration-none fw-bold">
+                                            {% if report.isFavorite %}<i class="bi bi-star-fill text-warning me-1" aria-hidden="true"></i>{% endif %}
+                                            {{ report.name }}
+                                        </a>
+                                        {% if report.description %}
+                                        <br><small class="text-muted">{{ report.description|slice(0, 50) }}{% if report.description|length > 50 %}...{% endif %}</small>
+                                        {% endif %}
+                                    </td>
+                                    <td><span class="badge bg-secondary">{{ categories[report.category]|default(report.category) }}</span></td>
+                                    <td>{{ report.layout }}</td>
+                                    <td>{{ report.updatedAt ? report.updatedAt|date('d.m.Y H:i') : report.createdAt|date('d.m.Y H:i') }}</td>
+                                    <td class="text-end">
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="btn btn-outline-primary" title="{{ 'action.edit'|trans }}">
+                                                <i class="bi bi-pencil" aria-hidden="true"></i>
+                                            </a>
+                                            <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="btn btn-outline-secondary" title="{{ 'action.preview'|trans }}">
+                                                <i class="bi bi-eye" aria-hidden="true"></i>
+                                            </a>
+                                            <a href="{{ path('report_builder_export_pdf', {id: report.id}) }}" class="btn btn-outline-danger" title="{{ 'action.export_pdf'|trans }}">
+                                                <i class="bi bi-file-pdf" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-file-earmark-plus display-1 text-muted" aria-hidden="true"></i>
+                        <p class="mt-3 text-muted">{{ 'empty.no_reports'|trans }}</p>
+                        <a href="{{ path('report_builder_new') }}" class="btn btn-primary">
+                            <i class="bi bi-plus-lg" aria-hidden="true"></i> {{ 'action.create_first'|trans }}
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Sidebar #}
+        <div class="col-lg-4">
+            {# Recently Used #}
+            {% if recently_used|length > 0 %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h2 class="h5 mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'section.recently_used'|trans }}</h2>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for report in recently_used %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="text-decoration-none">
+                            {{ report.name }}
+                        </a>
+                        <small class="text-muted">{{ report.lastUsedAt|date('d.m.') }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {# Shared Templates #}
+            {% if templates|length > 0 %}
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="h5 mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ 'section.shared_templates'|trans }}</h2>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for template in templates %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <strong>{{ template.name }}</strong>
+                                <br><small class="text-muted">{{ template.description|default('')|slice(0, 40) }}{% if template.description|default('')|length > 40 %}...{% endif %}</small>
+                            </div>
+                            <form method="post" action="{{ path('report_builder_clone', {id: template.id}) }}" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('clone' ~ template.id) }}">
+                                <button type="submit" class="btn btn-sm btn-outline-primary" title="{{ 'action.use_template'|trans }}">
+                                    <i class="bi bi-copy" aria-hidden="true"></i>
+                                </button>
+                            </form>
+                        </div>
+                        <small class="text-muted"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ template.usageCount }} {{ 'uses'|trans }}</small>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-lift {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .hover-lift:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+</style>
+{% endblock %}

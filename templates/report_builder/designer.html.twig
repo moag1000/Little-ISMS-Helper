@@ -1,0 +1,347 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'report_builder' %}
+
+{% block title %}{{ 'designer.title'|trans({'%name%': report.name}) }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="report-designer" data-controller="report-designer" data-report-designer-report-id-value="{{ report.id }}" data-report-designer-save-url-value="{{ path('report_builder_save', {id: report.id}) }}">
+    {# Designer Header #}
+    <div class="designer-header bg-dark text-white py-2 px-3 d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+            <a href="{{ path('report_builder_index') }}" class="btn btn-sm btn-outline-light">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+            </a>
+            <div>
+                <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary"
+                       value="{{ report.name }}" data-report-designer-target="nameInput" style="max-width: 300px;">
+            </div>
+            <span class="badge bg-secondary">v{{ report.version }}</span>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <button type="button" class="btn btn-sm btn-outline-light" data-action="click->report-designer#save">
+                <i class="bi bi-save" aria-hidden="true"></i> {{ 'action.save'|trans }}
+            </button>
+            <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="btn btn-sm btn-outline-info" target="_blank">
+                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'action.preview'|trans }}
+            </a>
+            <a href="{{ path('report_builder_export_pdf', {id: report.id}) }}" class="btn btn-sm btn-danger">
+                <i class="bi bi-file-pdf" aria-hidden="true"></i> PDF
+            </a>
+        </div>
+    </div>
+
+    <div class="designer-content d-flex" style="height: calc(100vh - 120px);">
+        {# Widget Library Sidebar #}
+        <div class="widget-library bg-light border-end" style="width: 280px; overflow-y: auto;">
+            <div class="p-3">
+                <h2 class="h6 mb-3"><i class="bi bi-grid-3x3-gap" aria-hidden="true"></i> {{ 'designer.widgets'|trans }}</h2>
+
+                {% for categoryKey, category in widget_library %}
+                <div class="mb-3">
+                    <h3 class="small text-muted text-uppercase mb-2">
+                        <i class="bi {{ category.icon }}" aria-hidden="true"></i> {{ category.label }}
+                    </h3>
+                    <div class="widget-list">
+                        {% for widgetKey, widget in category.widgets %}
+                        <div class="widget-item card mb-2 cursor-grab"
+                             draggable="true"
+                             data-widget-type="{{ widgetKey }}"
+                             data-action="dragstart->report-designer#dragStart">
+                            <div class="card-body p-2">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi {{ widget.icon }} me-2 text-primary" aria-hidden="true"></i>
+                                    <div>
+                                        <div class="small fw-bold">{{ widget.label }}</div>
+                                        <div class="text-muted" style="font-size: 0.7rem;">{{ widget.description|default('')|slice(0, 40) }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {# Canvas Area #}
+        <div class="designer-canvas flex-grow-1 p-4 overflow-auto" style="background: #e9ecef;">
+            <div class="canvas-container mx-auto bg-white shadow rounded p-4" style="max-width: 1200px; min-height: 800px;">
+                {# Report Header #}
+                <div class="report-header mb-4 pb-3 border-bottom">
+                    <h1 class="h3" data-report-designer-target="reportTitle">{{ report.name }}</h1>
+                    <p class="text-muted mb-0">{{ report.description|default('designer.no_description'|trans) }}</p>
+                </div>
+
+                {# Widget Grid #}
+                <div class="widget-grid"
+                     data-report-designer-target="canvas"
+                     data-layout="{{ report.layout }}"
+                     data-action="dragover->report-designer#dragOver drop->report-designer#drop">
+
+                    {# Existing Widgets #}
+                    {% for widget in report.widgets %}
+                    <div class="widget-container"
+                         data-widget-id="{{ widget.id }}"
+                         data-widget-type="{{ widget.type }}"
+                         data-widget-config="{{ widget.config|default({})|json_encode }}">
+                        <div class="widget-header d-flex justify-content-between align-items-center mb-2">
+                            <span class="widget-title small text-muted">{{ widget.title|default(widget.type) }}</span>
+                            <div class="widget-actions">
+                                <button type="button" class="btn btn-sm btn-link p-0 text-muted"
+                                        data-action="click->report-designer#configureWidget">
+                                    <i class="bi bi-gear" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm btn-link p-0 text-danger"
+                                        data-action="click->report-designer#removeWidget">
+                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="widget-content" data-report-designer-target="widgetContent">
+                            <div class="text-center py-4 text-muted">
+                                <i class="bi bi-hourglass-split" aria-hidden="true"></i> {{ 'designer.loading'|trans }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    {# Drop Zone Placeholder #}
+                    {% if report.widgets|length == 0 %}
+                    <div class="drop-placeholder text-center py-5" data-report-designer-target="placeholder">
+                        <i class="bi bi-plus-circle display-4 text-muted" aria-hidden="true"></i>
+                        <p class="mt-3 text-muted">{{ 'designer.drop_hint'|trans }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Settings Sidebar #}
+        <div class="designer-settings bg-white border-start" style="width: 300px; overflow-y: auto;">
+            <div class="p-3">
+                <h2 class="h6 mb-3"><i class="bi bi-sliders" aria-hidden="true"></i> {{ 'designer.settings'|trans }}</h2>
+
+                {# Report Settings #}
+                <div class="mb-4">
+                    <h3 class="small text-muted text-uppercase mb-2">{{ 'settings.report'|trans }}</h3>
+
+                    <div class="mb-3">
+                        <label class="form-label small">{{ 'form.category'|trans }}</label>
+                        <select class="form-select form-select-sm" data-report-designer-target="categorySelect">
+                            {% for key, label in categories %}
+                            <option value="{{ key }}" {% if report.category == key %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small">{{ 'form.layout'|trans }}</label>
+                        <select class="form-select form-select-sm" data-report-designer-target="layoutSelect" data-action="change->report-designer#changeLayout">
+                            {% for key, label in layouts %}
+                            <option value="{{ key }}" {% if report.layout == key %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                {# Date Range Filter #}
+                <div class="mb-4">
+                    <h3 class="small text-muted text-uppercase mb-2">{{ 'settings.filters'|trans }}</h3>
+
+                    <div class="mb-3">
+                        <label class="form-label small">{{ 'filter.date_range'|trans }}</label>
+                        <select class="form-select form-select-sm" data-report-designer-target="dateRangeSelect">
+                            <option value="last_30_days">{{ 'filter.last_30_days'|trans }}</option>
+                            <option value="last_quarter">{{ 'filter.last_quarter'|trans }}</option>
+                            <option value="last_year">{{ 'filter.last_year'|trans }}</option>
+                            <option value="custom">{{ 'filter.custom'|trans }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                {# Style Settings #}
+                <div class="mb-4">
+                    <h3 class="small text-muted text-uppercase mb-2">{{ 'settings.styles'|trans }}</h3>
+
+                    <div class="mb-3">
+                        <label class="form-label small">{{ 'style.primary_color'|trans }}</label>
+                        <input type="color" class="form-control form-control-sm form-control-color"
+                               value="{{ report.styles.primaryColor|default('#0d6efd') }}"
+                               data-report-designer-target="primaryColor">
+                    </div>
+
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="showLogo"
+                               {% if report.styles.headerLogo|default(true) %}checked{% endif %}
+                               data-report-designer-target="showLogo">
+                        <label class="form-check-label small" for="showLogo">{{ 'style.show_logo'|trans }}</label>
+                    </div>
+
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="showDate"
+                               {% if report.styles.showGeneratedDate|default(true) %}checked{% endif %}
+                               data-report-designer-target="showDate">
+                        <label class="form-check-label small" for="showDate">{{ 'style.show_date'|trans }}</label>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small">{{ 'style.orientation'|trans }}</label>
+                        <select class="form-select form-select-sm" data-report-designer-target="orientation">
+                            <option value="portrait" {% if report.styles.pageOrientation|default('portrait') == 'portrait' %}selected{% endif %}>{{ 'style.portrait'|trans }}</option>
+                            <option value="landscape" {% if report.styles.pageOrientation|default('portrait') == 'landscape' %}selected{% endif %}>{{ 'style.landscape'|trans }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                {# Actions #}
+                <div class="border-top pt-3">
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-primary" data-action="click->report-designer#save">
+                            <i class="bi bi-save" aria-hidden="true"></i> {{ 'action.save'|trans }}
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#shareModal">
+                            <i class="bi bi-share" aria-hidden="true"></i> {{ 'action.share'|trans }}
+                        </button>
+                        <form method="post" action="{{ path('report_builder_delete', {id: report.id}) }}" onsubmit="return confirm('{{ 'confirm.delete'|trans|e('js') }}');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ report.id) }}">
+                            <button type="submit" class="btn btn-outline-danger w-100">
+                                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'action.delete'|trans }}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Share Modal #}
+<div class="modal fade" id="shareModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ 'modal.share.title'|trans }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-muted">{{ 'modal.share.description'|trans }}</p>
+                <div id="share-users-list">
+                    <div class="text-center py-3">
+                        <div class="spinner-border spinner-border-sm" role="status">
+                            <span class="visually-hidden">{{ 'loading'|trans }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'action.cancel'|trans }}</button>
+                <button type="button" class="btn btn-primary" data-action="click->report-designer#saveSharing">{{ 'action.save'|trans }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Widget Config Modal #}
+<div class="modal fade" id="widgetConfigModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ 'modal.widget_config.title'|trans }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="widget-config-form">
+                {# Dynamic content #}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ 'action.cancel'|trans }}</button>
+                <button type="button" class="btn btn-primary" data-action="click->report-designer#applyWidgetConfig">{{ 'action.apply'|trans }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .report-designer {
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .cursor-grab {
+        cursor: grab;
+    }
+
+    .cursor-grab:active {
+        cursor: grabbing;
+    }
+
+    .widget-item {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .widget-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .widget-item.dragging {
+        opacity: 0.5;
+    }
+
+    .widget-grid {
+        display: grid;
+        gap: 1rem;
+        min-height: 400px;
+    }
+
+    .widget-grid[data-layout="single"] {
+        grid-template-columns: 1fr;
+    }
+
+    .widget-grid[data-layout="two_column"] {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .widget-grid[data-layout="dashboard"] {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .widget-grid[data-layout="wide_narrow"] {
+        grid-template-columns: 2fr 1fr;
+    }
+
+    .widget-grid[data-layout="narrow_wide"] {
+        grid-template-columns: 1fr 2fr;
+    }
+
+    .widget-container {
+        background: #fff;
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        min-height: 150px;
+    }
+
+    .widget-container:hover {
+        border-color: var(--bs-primary);
+        box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.1);
+    }
+
+    .widget-container.drag-over {
+        border-style: dashed;
+        border-color: var(--bs-primary);
+        background: rgba(13, 110, 253, 0.05);
+    }
+
+    .drop-placeholder {
+        grid-column: 1 / -1;
+        border: 2px dashed #dee2e6;
+        border-radius: 0.5rem;
+    }
+
+    .widget-grid.drag-over .drop-placeholder {
+        border-color: var(--bs-primary);
+        background: rgba(13, 110, 253, 0.05);
+    }
+</style>
+{% endblock %}

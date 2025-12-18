@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ report.name }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-size: 10pt;
+            line-height: 1.4;
+            color: #333;
+        }
+
+        .report-header {
+            border-bottom: 2px solid {{ report.styles.primaryColor|default('#0d6efd') }};
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .report-header h1 {
+            font-size: 18pt;
+            color: {{ report.styles.primaryColor|default('#0d6efd') }};
+            margin-bottom: 5px;
+        }
+
+        .report-meta {
+            font-size: 9pt;
+            color: #666;
+        }
+
+        .widget-grid {
+            width: 100%;
+        }
+
+        .widget-container {
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 15px;
+            page-break-inside: avoid;
+        }
+
+        .widget-title {
+            font-size: 11pt;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: {{ report.styles.primaryColor|default('#0d6efd') }};
+        }
+
+        /* KPI Widgets */
+        .kpi-widget {
+            text-align: center;
+            padding: 15px;
+        }
+
+        .kpi-value {
+            font-size: 24pt;
+            font-weight: bold;
+        }
+
+        .kpi-label {
+            font-size: 10pt;
+            color: #666;
+        }
+
+        .kpi-success .kpi-value { color: #198754; }
+        .kpi-warning .kpi-value { color: #ffc107; }
+        .kpi-danger .kpi-value { color: #dc3545; }
+        .kpi-primary .kpi-value { color: #0d6efd; }
+        .kpi-info .kpi-value { color: #0dcaf0; }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 9pt;
+        }
+
+        .data-table th,
+        .data-table td {
+            border: 1px solid #dee2e6;
+            padding: 6px 8px;
+            text-align: left;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .data-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        /* Risk Matrix */
+        .risk-matrix {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        .risk-matrix th,
+        .risk-matrix td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            width: 50px;
+            height: 40px;
+        }
+
+        .risk-matrix th {
+            background: #f8f9fa;
+            font-size: 8pt;
+        }
+
+        .risk-low { background: #198754; color: white; }
+        .risk-medium { background: #0dcaf0; color: white; }
+        .risk-high { background: #ffc107; color: #333; }
+        .risk-critical { background: #dc3545; color: white; }
+
+        /* Status Widget */
+        .status-widget {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+
+        .status-green { background: #198754; }
+        .status-amber { background: #ffc107; }
+        .status-red { background: #dc3545; }
+
+        .status-label {
+            font-size: 12pt;
+            font-weight: bold;
+        }
+
+        /* Text Widgets */
+        .text-header {
+            font-size: 14pt;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .text-summary {
+            font-size: 11pt;
+            color: #666;
+            font-style: italic;
+        }
+
+        /* Footer */
+        .report-footer {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #dee2e6;
+            font-size: 8pt;
+            color: #666;
+        }
+
+        .footer-left {
+            float: left;
+        }
+
+        .footer-right {
+            float: right;
+        }
+
+        /* Page breaks */
+        .page-break {
+            page-break-before: always;
+        }
+
+        /* Two column layout */
+        .two-column {
+            width: 100%;
+        }
+
+        .two-column .column {
+            width: 48%;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .two-column .column:first-child {
+            margin-right: 4%;
+        }
+    </style>
+</head>
+<body>
+    {# Report Header #}
+    <div class="report-header">
+        <h1>{{ report.name }}</h1>
+        {% if report.description %}
+        <p style="color: #666; margin-top: 5px;">{{ report.description }}</p>
+        {% endif %}
+        <div class="report-meta">
+            {% if report.styles.showGeneratedDate|default(true) %}
+            {{ 'pdf.generated_at'|trans({}, 'report_builder') }}: {{ report_data.report.generated_at|date('d.m.Y H:i') }}
+            {% endif %}
+            | {{ 'pdf.category'|trans({}, 'report_builder') }}: {{ report.category }}
+        </div>
+    </div>
+
+    {# Widget Grid #}
+    <div class="widget-grid">
+        {% for widgetId, widgetData in report_data.widgets %}
+        {% set meta = widgetData.meta %}
+        {% set data = widgetData.data %}
+        {% set widgetType = meta.type|default('unknown') %}
+
+        <div class="widget-container">
+            {% if meta.title is defined and meta.title %}
+            <div class="widget-title">{{ meta.title }}</div>
+            {% endif %}
+
+            {# KPI Widgets #}
+            {% if widgetType starts with 'kpi_' %}
+            <div class="kpi-widget kpi-{{ data.color|default('primary') }}">
+                <div class="kpi-value">{{ data.value }}</div>
+                <div class="kpi-label">{{ data.label }}</div>
+                {% if data.details is defined %}
+                <div style="font-size: 8pt; color: #999; margin-top: 5px;">
+                    {% for key, val in data.details %}
+                    {{ key }}: {{ val }}{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            {# Risk Matrix #}
+            {% elseif widgetType == 'chart_risk_matrix' %}
+            <div class="widget-title">{{ 'widget.chart_risk_matrix'|trans({}, 'report_builder') }}</div>
+            <table class="risk-matrix">
+                <thead>
+                    <tr>
+                        <th></th>
+                        {% for label in data.labels.x %}
+                        <th>{{ label }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for y in 5..1 %}
+                    <tr>
+                        <th>{{ data.labels.y[y - 1] }}</th>
+                        {% for x in 1..5 %}
+                        {% set count = data.matrix[y][x]|default(0) %}
+                        {% set score = y * x %}
+                        {% set riskClass = score >= 15 ? 'risk-critical' : (score >= 8 ? 'risk-high' : (score >= 4 ? 'risk-medium' : 'risk-low')) %}
+                        <td class="{{ riskClass }}">{{ count > 0 ? count : '' }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {# Chart Placeholder (charts need JavaScript) #}
+            {% elseif widgetType starts with 'chart_' %}
+            <div class="widget-title">{{ ('widget.' ~ widgetType)|trans({}, 'report_builder') }}</div>
+            <div style="text-align: center; padding: 30px; color: #666; background: #f8f9fa; border-radius: 4px;">
+                {{ 'pdf.chart_data'|trans({}, 'report_builder') }}:
+                {% if data.labels is defined %}
+                <br><strong>{{ data.labels|join(', ') }}</strong>
+                {% endif %}
+                {% if data.data is defined %}
+                <br>{{ data.data|join(', ') }}
+                {% endif %}
+            </div>
+
+            {# Table Widgets #}
+            {% elseif widgetType starts with 'table_' %}
+            <div class="widget-title">{{ ('widget.' ~ widgetType)|trans({}, 'report_builder') }}</div>
+            {% if data.rows|length > 0 %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        {% for col in data.columns %}
+                        <th>{{ col }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data.rows %}
+                    <tr>
+                        {% for key, value in row|filter((v, k) => k != 'id') %}
+                        <td>{{ value }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p style="text-align: center; color: #666;">{{ 'pdf.no_data'|trans({}, 'report_builder') }}</p>
+            {% endif %}
+
+            {# Status Widget #}
+            {% elseif widgetType == 'status_rag' %}
+            <div class="status-widget">
+                <div class="status-indicator status-{{ data.status }}"></div>
+                <div class="status-label">{{ data.label }}</div>
+                {% if data.factors is defined %}
+                <div style="font-size: 8pt; color: #999; margin-top: 5px;">
+                    {% for key, val in data.factors %}
+                    {{ key }}: {{ val }}{% if not loop.last %} | {% endif %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            {# Text Widgets #}
+            {% elseif widgetType == 'text_header' %}
+            <div class="text-header">{{ data.text|default(meta.config.text|default('Header')) }}</div>
+
+            {% elseif widgetType == 'text_summary' %}
+            <div class="text-summary">{{ data.text }}</div>
+
+            {% elseif widgetType == 'text_custom' %}
+            <div>{{ data.text|default(meta.config.text|default(''))|raw }}</div>
+
+            {% else %}
+            <div style="color: #666; text-align: center; padding: 20px;">
+                {{ 'pdf.unknown_widget'|trans({'%type%': widgetType}, 'report_builder') }}
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+
+    {# Report Footer #}
+    {% if report.styles.showFooter|default(true) %}
+    <div class="report-footer">
+        <div class="footer-left">
+            {{ 'pdf.generated_by'|trans({}, 'report_builder') }}: {{ app.user.fullName }}
+        </div>
+        <div class="footer-right">
+            {{ report_data.report.generated_at|date('d.m.Y H:i') }}
+        </div>
+        <div style="clear: both;"></div>
+    </div>
+    {% endif %}
+</body>
+</html>

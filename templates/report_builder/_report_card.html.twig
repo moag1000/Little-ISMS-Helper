@@ -1,0 +1,29 @@
+{% trans_default_domain 'report_builder' %}
+
+<div class="card h-100 hover-lift">
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+            <h3 class="h6 mb-0">
+                {% if report.isFavorite %}<i class="bi bi-star-fill text-warning" aria-hidden="true"></i>{% endif %}
+                {{ report.name }}
+            </h3>
+            <span class="badge bg-secondary">{{ report.category }}</span>
+        </div>
+        {% if report.description %}
+        <p class="text-muted small mb-2">{{ report.description|slice(0, 80) }}{% if report.description|length > 80 %}...{% endif %}</p>
+        {% endif %}
+        <div class="d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+                <i class="bi bi-clock" aria-hidden="true"></i> {{ report.updatedAt ? report.updatedAt|date('d.m.Y') : report.createdAt|date('d.m.Y') }}
+            </small>
+            <div class="btn-group btn-group-sm">
+                <a href="{{ path('report_builder_edit', {id: report.id}) }}" class="btn btn-outline-primary btn-sm" title="{{ 'action.edit'|trans }}">
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                </a>
+                <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="btn btn-outline-secondary btn-sm" title="{{ 'action.preview'|trans }}">
+                    <i class="bi bi-eye" aria-hidden="true"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
