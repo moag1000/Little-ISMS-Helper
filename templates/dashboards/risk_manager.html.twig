@@ -1,0 +1,299 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'dashboards' %}
+
+{% block title %}{{ 'risk_manager.title'|trans({}, 'dashboards') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="role-dashboard risk-manager-dashboard">
+    {# Page Header #}
+    <div class="page-header mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1>
+                    <i class="bi bi-bar-chart-line text-warning" aria-hidden="true"></i>
+                    {{ 'risk_manager.title'|trans({}, 'dashboards') }}
+                </h1>
+                <p class="text-muted mb-0">{{ 'risk_manager.subtitle'|trans({}, 'dashboards') }}</p>
+            </div>
+            <div class="btn-group">
+                <a href="{{ path('app_dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-house"></i> {{ 'action.standard_dashboard'|trans({}, 'dashboards') }}
+                </a>
+                <a href="{{ path('app_risk_index') }}" class="btn btn-outline-warning">
+                    <i class="bi bi-list"></i> {{ 'action.risk_register'|trans({}, 'dashboards') }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# Summary Cards #}
+    <div class="row g-3 mb-4">
+        <div class="col-md-2">
+            <div class="card h-100 border-primary">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">{{ dashboard.summary.total_risks }}</h3>
+                    <small class="text-muted">{{ 'risk_manager.kpi.total_risks'|trans({}, 'dashboards') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card h-100 border-danger">
+                <div class="card-body text-center">
+                    <h3 class="mb-0 text-danger">{{ dashboard.summary.high_critical }}</h3>
+                    <small class="text-muted">{{ 'risk_manager.kpi.high_critical'|trans({}, 'dashboards') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card h-100 border-success">
+                <div class="card-body text-center">
+                    <h3 class="mb-0 text-success">{{ dashboard.summary.treated_percentage }}%</h3>
+                    <small class="text-muted">{{ 'risk_manager.kpi.treated'|trans({}, 'dashboards') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card h-100 border-warning">
+                <div class="card-body text-center">
+                    <h3 class="mb-0 {% if dashboard.summary.overdue_treatments > 0 %}text-warning{% endif %}">{{ dashboard.summary.overdue_treatments }}</h3>
+                    <small class="text-muted">{{ 'risk_manager.kpi.overdue'|trans({}, 'dashboards') }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 {% if dashboard.summary.appetite_status == 'compliant' %}border-success{% else %}border-danger{% endif %}">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">
+                        {% if dashboard.summary.appetite_status == 'compliant' %}
+                            <span class="text-success"><i class="bi bi-check-circle"></i> {{ 'status.compliant'|trans({}, 'dashboards') }}</span>
+                        {% else %}
+                            <span class="text-danger"><i class="bi bi-x-circle"></i> {{ 'status.breach'|trans({}, 'dashboards') }}</span>
+                        {% endif %}
+                    </h3>
+                    <small class="text-muted">{{ 'risk_manager.kpi.appetite_status'|trans({}, 'dashboards') }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {# Treatment Pipeline #}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-funnel me-2"></i>
+                        {{ 'risk_manager.section.treatment_pipeline'|trans({}, 'dashboards') }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center mb-3">
+                        <div class="col">
+                            <div class="p-2 bg-light rounded">
+                                <h4 class="mb-0">{{ dashboard.treatment_pipeline.total }}</h4>
+                                <small>{{ 'risk_manager.pipeline.total'|trans({}, 'dashboards') }}</small>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="p-2 bg-success bg-opacity-10 rounded">
+                                <h4 class="mb-0 text-success">{{ dashboard.treatment_pipeline.treated }}</h4>
+                                <small>{{ 'risk_manager.pipeline.treated'|trans({}, 'dashboards') }}</small>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="p-2 bg-warning bg-opacity-10 rounded">
+                                <h4 class="mb-0 text-warning">{{ dashboard.treatment_pipeline.untreated }}</h4>
+                                <small>{{ 'risk_manager.pipeline.untreated'|trans({}, 'dashboards') }}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <h6 class="text-muted">{{ 'risk_manager.by_strategy'|trans({}, 'dashboards') }}</h6>
+                    {% for strategy, count in dashboard.treatment_pipeline.by_strategy %}
+                        {% if strategy != 'untreated' %}
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>{{ ('risk.treatment.' ~ strategy)|trans({}, 'risk') }}</span>
+                            <span class="badge bg-secondary">{{ count }}</span>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        {# Risk Appetite #}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-speedometer2 me-2"></i>
+                        {{ 'risk_manager.section.risk_appetite'|trans({}, 'dashboards') }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div class="display-5 {% if dashboard.risk_appetite.compliance_score >= 80 %}text-success{% elseif dashboard.risk_appetite.compliance_score >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                            {{ dashboard.risk_appetite.compliance_score }}%
+                        </div>
+                        <small class="text-muted">{{ 'risk_manager.appetite_score'|trans({}, 'dashboards') }}</small>
+                    </div>
+                    <div class="row text-center">
+                        {% for level, data in dashboard.risk_appetite.actual %}
+                        <div class="col-3">
+                            <small class="d-block text-muted text-capitalize">{{ level }}</small>
+                            <span class="fw-bold {% if data > (dashboard.risk_appetite.appetite[level ~ '_max'] ?? 999) %}text-danger{% endif %}">
+                                {{ data }}/{{ dashboard.risk_appetite.appetite[level ~ '_max'] ?? '-' }}
+                            </span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        {# Risks by Category #}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-tags me-2"></i>
+                        {{ 'risk_manager.section.by_category'|trans({}, 'dashboards') }}
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ 'risk_manager.table.category'|trans({}, 'dashboards') }}</th>
+                                    <th class="text-center">{{ 'risk_manager.table.total'|trans({}, 'dashboards') }}</th>
+                                    <th class="text-center">{{ 'risk_manager.table.high'|trans({}, 'dashboards') }}</th>
+                                    <th class="text-center">{{ 'risk_manager.table.critical'|trans({}, 'dashboards') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for category, data in dashboard.risks_by_category %}
+                                <tr>
+                                    <td>{{ category }}</td>
+                                    <td class="text-center">{{ data.total }}</td>
+                                    <td class="text-center"><span class="badge bg-warning">{{ data.high }}</span></td>
+                                    <td class="text-center"><span class="badge bg-danger">{{ data.critical }}</span></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Risk Forecast #}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-graph-up-arrow me-2"></i>
+                        {{ 'risk_manager.section.forecast'|trans({}, 'dashboards') }}
+                    </h5>
+                    <a href="{{ path('app_analytics_risk_forecast') }}" class="btn btn-sm btn-outline-primary">
+                        {{ 'action.view_details'|trans({}, 'dashboards') }}
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>{{ 'risk_manager.velocity.label'|trans({}, 'dashboards') }}:</strong>
+                        {% if dashboard.risk_velocity.trend == 'increasing' %}
+                            <span class="text-danger"><i class="bi bi-arrow-up"></i> +{{ dashboard.risk_velocity.last_30_days.net_change }}</span>
+                        {% elseif dashboard.risk_velocity.trend == 'decreasing' %}
+                            <span class="text-success"><i class="bi bi-arrow-down"></i> {{ dashboard.risk_velocity.last_30_days.net_change }}</span>
+                        {% else %}
+                            <span class="text-secondary"><i class="bi bi-arrow-right"></i> {{ 'trend.stable'|trans({}, 'dashboards') }}</span>
+                        {% endif %}
+                        <small class="text-muted">({{ 'risk_manager.last_30_days'|trans({}, 'dashboards') }})</small>
+                    </div>
+                    <h6>{{ 'risk_manager.next_3_months'|trans({}, 'dashboards') }}</h6>
+                    {% for month in dashboard.risk_forecast.next_3_months %}
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>{{ month.label }}</span>
+                        <span class="badge bg-secondary">~{{ month.total }} {{ 'risks'|trans({}, 'dashboards') }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        {# Untreated Risks #}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-exclamation-diamond text-warning me-2"></i>
+                        {{ 'risk_manager.section.untreated_risks'|trans({}, 'dashboards') }}
+                    </h5>
+                    <span class="badge bg-warning">{{ dashboard.untreated_risks|length }}</span>
+                </div>
+                <div class="card-body p-0">
+                    {% if dashboard.untreated_risks|length > 0 %}
+                    <div class="list-group list-group-flush">
+                        {% for risk in dashboard.untreated_risks %}
+                        <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="list-group-item list-group-item-action">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">{{ risk.title }}</h6>
+                                    <small class="text-muted">{{ risk.category }}</small>
+                                </div>
+                                <span class="badge bg-{% if risk.level >= 16 %}danger{% elseif risk.level >= 12 %}warning{% else %}secondary{% endif %}">
+                                    {{ risk.level }}
+                                </span>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-success text-center py-4 mb-0">
+                        <i class="bi bi-check-circle me-2"></i>{{ 'risk_manager.all_treated'|trans({}, 'dashboards') }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Overdue Treatments #}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clock-history text-danger me-2"></i>
+                        {{ 'risk_manager.section.overdue_treatments'|trans({}, 'dashboards') }}
+                    </h5>
+                    <span class="badge bg-danger">{{ dashboard.overdue_treatments|length }}</span>
+                </div>
+                <div class="card-body p-0">
+                    {% if dashboard.overdue_treatments|length > 0 %}
+                    <div class="list-group list-group-flush">
+                        {% for treatment in dashboard.overdue_treatments %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-1">{{ treatment.risk_title }}</h6>
+                                    <small class="text-muted">{{ 'risk_manager.target_date'|trans({}, 'dashboards') }}: {{ treatment.target_date|date('d.m.Y') }}</small>
+                                </div>
+                                <span class="badge bg-danger">{{ treatment.days_overdue }} {{ 'days'|trans({}, 'dashboards') }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-success text-center py-4 mb-0">
+                        <i class="bi bi-check-circle me-2"></i>{{ 'risk_manager.no_overdue'|trans({}, 'dashboards') }}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

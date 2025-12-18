@@ -1,0 +1,174 @@
+# Role-Based Dashboards Translations (English)
+# Phase 7D: Role-specific dashboards for CISO, Risk Manager, Auditor, and Board
+
+# Common Actions
+action:
+    standard_dashboard: 'Standard Dashboard'
+    board_view: 'Board View'
+    ciso_view: 'CISO View'
+    risk_register: 'Risk Register'
+    audit_plan: 'Audit Plan'
+    view_all: 'View All'
+    view_details: 'View Details'
+
+# Common Status
+status:
+    compliant: 'Compliant'
+    breach: 'Breach'
+
+# Common Trends
+trend:
+    increasing: 'Increasing'
+    decreasing: 'Decreasing'
+    stable: 'Stable'
+
+# Common Labels
+risks: 'Risks'
+days: 'days'
+over_limit: 'over limit'
+untreated: 'Untreated'
+
+# Risk Labels
+risk:
+    level: 'Risk Level'
+
+# CISO Dashboard
+ciso:
+    title: 'CISO Dashboard'
+    subtitle: 'Strategic Information Security Overview'
+    kpi:
+        overall_compliance: 'Overall Compliance'
+        control_implementation: 'Control Implementation'
+        high_risks: 'High Risks'
+        risk_trend: 'Risk Trend'
+    section:
+        framework_compliance: 'Framework Compliance'
+        risk_appetite: 'Risk Appetite Status'
+        critical_risks: 'Critical Risks'
+        pending_approvals: 'Pending Approvals'
+        control_effectiveness: 'Control Effectiveness'
+    no_frameworks: 'No frameworks configured'
+    appetite_compliance_score: 'Risk Appetite Compliance Score'
+    breaches: 'Breaches'
+    no_critical_risks: 'No critical risks identified'
+    no_pending_approvals: 'No pending approvals'
+    controls:
+        total: 'Total Controls'
+        implemented: 'Implemented'
+        effectiveness: 'Average Effectiveness'
+        overdue_reviews: 'Overdue Reviews'
+
+# Risk Manager Dashboard
+risk_manager:
+    title: 'Risk Manager Dashboard'
+    subtitle: 'Operational Risk Overview and Treatment Status'
+    kpi:
+        total_risks: 'Total Risks'
+        high_critical: 'High/Critical'
+        treated: 'Treated'
+        overdue: 'Overdue'
+        appetite_status: 'Appetite Status'
+    section:
+        treatment_pipeline: 'Treatment Pipeline'
+        risk_appetite: 'Risk Appetite'
+        by_category: 'By Category'
+        forecast: 'Risk Forecast'
+        untreated_risks: 'Untreated Risks'
+        overdue_treatments: 'Overdue Treatments'
+    pipeline:
+        total: 'Total'
+        treated: 'Treated'
+        untreated: 'Untreated'
+    by_strategy: 'By Treatment Strategy'
+    appetite_score: 'Risk Appetite Compliance'
+    table:
+        category: 'Category'
+        total: 'Total'
+        high: 'High'
+        critical: 'Critical'
+    velocity:
+        label: 'Risk Velocity'
+    last_30_days: 'Last 30 days'
+    next_3_months: 'Next 3 Months'
+    all_treated: 'All risks are treated'
+    no_overdue: 'No overdue treatments'
+    target_date: 'Target Date'
+
+# Auditor Dashboard
+auditor:
+    title: 'Auditor Dashboard'
+    subtitle: 'Audit Planning and Evidence Collection'
+    kpi:
+        audits_ytd: 'Audits (YTD)'
+        upcoming: 'Upcoming'
+        open_findings: 'Open Findings'
+        overdue_actions: 'Overdue Actions'
+        evidence_coverage: 'Evidence Coverage'
+    section:
+        audit_schedule: 'Audit Schedule'
+        evidence_status: 'Evidence Status'
+        compliance_gaps: 'Compliance Gaps'
+        control_status: 'Control Status'
+        non_conformities: 'Non-Conformities'
+        corrective_actions: 'Corrective Actions'
+    no_upcoming_audits: 'No upcoming audits scheduled'
+    evidence_coverage_label: 'Controls with Evidence'
+    with_evidence: 'With Evidence'
+    needs_evidence: 'Needs Evidence'
+    gaps:
+        critical: 'Critical'
+        high: 'High'
+        total: 'Total'
+    controls:
+        implemented: 'Implemented'
+        partially: 'Partially'
+        not_implemented: 'Not Implemented'
+    nc:
+        major: 'Major'
+        minor: 'Minor'
+        observations: 'Observations'
+    ca:
+        total: 'Total'
+        open: 'Open'
+        overdue: 'Overdue'
+
+# Board Dashboard
+board:
+    title: 'Board Dashboard'
+    subtitle: 'Executive Information Security Overview'
+    rag:
+        security: 'Security'
+        compliance: 'Compliance'
+        risk: 'Risk'
+        operations: 'Operations'
+    metric:
+        compliance: 'Compliance'
+        risks: 'Risks'
+        critical: 'Critical'
+        incidents: 'Incidents (YTD)'
+        controls: 'Controls'
+        audits: 'Audits'
+    of_planned: 'of %count% planned'
+    section:
+        executive_summary: 'Executive Summary'
+        milestones: 'Upcoming Milestones'
+        attention_required: 'Requires Attention'
+        resources: 'Resources & Budget'
+        quarterly_comparison: 'Quarterly Comparison'
+    summary:
+        security_posture: 'Security Posture'
+        key_achievements: 'Key Achievements'
+        key_concerns: 'Key Concerns'
+    no_achievements: 'No notable achievements this period'
+    no_concerns: 'No critical concerns'
+    no_milestones: 'No upcoming milestones'
+    no_attention_items: 'No items require attention'
+    no_initiatives: 'No active initiatives'
+    resource:
+        fte_security: 'FTE Security'
+        open_positions: 'Open Positions'
+        initiatives: 'Security Initiatives'
+    table:
+        metric: 'Metric'
+        change: 'Change'
+        target: 'Target'

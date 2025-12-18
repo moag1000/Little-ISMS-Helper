@@ -1,0 +1,174 @@
+# Role-Based Dashboards Translations (German)
+# Phase 7D: Role-specific dashboards for CISO, Risk Manager, Auditor, and Board
+
+# Common Actions
+action:
+    standard_dashboard: 'Standard-Dashboard'
+    board_view: 'Vorstandsansicht'
+    ciso_view: 'CISO-Ansicht'
+    risk_register: 'Risikoregister'
+    audit_plan: 'Auditplan'
+    view_all: 'Alle anzeigen'
+    view_details: 'Details anzeigen'
+
+# Common Status
+status:
+    compliant: 'Konform'
+    breach: 'Verletzung'
+
+# Common Trends
+trend:
+    increasing: 'Steigend'
+    decreasing: 'Fallend'
+    stable: 'Stabil'
+
+# Common Labels
+risks: 'Risiken'
+days: 'Tage'
+over_limit: 'über Limit'
+untreated: 'Unbehandelt'
+
+# Risk Labels
+risk:
+    level: 'Risikostufe'
+
+# CISO Dashboard
+ciso:
+    title: 'CISO-Dashboard'
+    subtitle: 'Strategische Übersicht zur Informationssicherheit'
+    kpi:
+        overall_compliance: 'Gesamtkonformität'
+        control_implementation: 'Maßnahmenimplementierung'
+        high_risks: 'Hohe Risiken'
+        risk_trend: 'Risikotrend'
+    section:
+        framework_compliance: 'Framework-Konformität'
+        risk_appetite: 'Risikoappetit-Status'
+        critical_risks: 'Kritische Risiken'
+        pending_approvals: 'Ausstehende Genehmigungen'
+        control_effectiveness: 'Wirksamkeit der Maßnahmen'
+    no_frameworks: 'Keine Frameworks konfiguriert'
+    appetite_compliance_score: 'Risikoappetit-Konformitätswert'
+    breaches: 'Überschreitungen'
+    no_critical_risks: 'Keine kritischen Risiken vorhanden'
+    no_pending_approvals: 'Keine ausstehenden Genehmigungen'
+    controls:
+        total: 'Gesamte Maßnahmen'
+        implemented: 'Implementiert'
+        effectiveness: 'Durchschnittliche Wirksamkeit'
+        overdue_reviews: 'Überfällige Überprüfungen'
+
+# Risk Manager Dashboard
+risk_manager:
+    title: 'Risikomanager-Dashboard'
+    subtitle: 'Operative Risikoübersicht und Behandlungsstatus'
+    kpi:
+        total_risks: 'Gesamtrisiken'
+        high_critical: 'Hoch/Kritisch'
+        treated: 'Behandelt'
+        overdue: 'Überfällig'
+        appetite_status: 'Appetit-Status'
+    section:
+        treatment_pipeline: 'Behandlungs-Pipeline'
+        risk_appetite: 'Risikoappetit'
+        by_category: 'Nach Kategorie'
+        forecast: 'Risikovorhersage'
+        untreated_risks: 'Unbehandelte Risiken'
+        overdue_treatments: 'Überfällige Behandlungen'
+    pipeline:
+        total: 'Gesamt'
+        treated: 'Behandelt'
+        untreated: 'Unbehandelt'
+    by_strategy: 'Nach Behandlungsstrategie'
+    appetite_score: 'Risikoappetit-Konformität'
+    table:
+        category: 'Kategorie'
+        total: 'Gesamt'
+        high: 'Hoch'
+        critical: 'Kritisch'
+    velocity:
+        label: 'Risikoveränderung'
+    last_30_days: 'Letzte 30 Tage'
+    next_3_months: 'Nächste 3 Monate'
+    all_treated: 'Alle Risiken sind behandelt'
+    no_overdue: 'Keine überfälligen Behandlungen'
+    target_date: 'Zieldatum'
+
+# Auditor Dashboard
+auditor:
+    title: 'Auditor-Dashboard'
+    subtitle: 'Audit-Planung und Nachweissammlung'
+    kpi:
+        audits_ytd: 'Audits (YTD)'
+        upcoming: 'Bevorstehend'
+        open_findings: 'Offene Findings'
+        overdue_actions: 'Überfällige Maßnahmen'
+        evidence_coverage: 'Nachweisabdeckung'
+    section:
+        audit_schedule: 'Audit-Zeitplan'
+        evidence_status: 'Nachweis-Status'
+        compliance_gaps: 'Konformitätslücken'
+        control_status: 'Maßnahmen-Status'
+        non_conformities: 'Nichtkonformitäten'
+        corrective_actions: 'Korrekturmaßnahmen'
+    no_upcoming_audits: 'Keine bevorstehenden Audits geplant'
+    evidence_coverage_label: 'Maßnahmen mit Nachweisen'
+    with_evidence: 'Mit Nachweisen'
+    needs_evidence: 'Nachweise erforderlich'
+    gaps:
+        critical: 'Kritisch'
+        high: 'Hoch'
+        total: 'Gesamt'
+    controls:
+        implemented: 'Implementiert'
+        partially: 'Teilweise'
+        not_implemented: 'Nicht implementiert'
+    nc:
+        major: 'Schwer'
+        minor: 'Leicht'
+        observations: 'Beobachtungen'
+    ca:
+        total: 'Gesamt'
+        open: 'Offen'
+        overdue: 'Überfällig'
+
+# Board Dashboard
+board:
+    title: 'Vorstands-Dashboard'
+    subtitle: 'Führungsübersicht zur Informationssicherheit'
+    rag:
+        security: 'Sicherheit'
+        compliance: 'Compliance'
+        risk: 'Risiko'
+        operations: 'Betrieb'
+    metric:
+        compliance: 'Konformität'
+        risks: 'Risiken'
+        critical: 'Kritisch'
+        incidents: 'Vorfälle (YTD)'
+        controls: 'Maßnahmen'
+        audits: 'Audits'
+    of_planned: 'von %count% geplant'
+    section:
+        executive_summary: 'Zusammenfassung'
+        milestones: 'Anstehende Meilensteine'
+        attention_required: 'Erfordert Aufmerksamkeit'
+        resources: 'Ressourcen & Budget'
+        quarterly_comparison: 'Quartalsvergleich'
+    summary:
+        security_posture: 'Sicherheitslage'
+        key_achievements: 'Wichtige Errungenschaften'
+        key_concerns: 'Wichtige Bedenken'
+    no_achievements: 'Keine besonderen Errungenschaften in diesem Zeitraum'
+    no_concerns: 'Keine kritischen Bedenken'
+    no_milestones: 'Keine anstehenden Meilensteine'
+    no_attention_items: 'Keine Punkte erfordern Aufmerksamkeit'
+    no_initiatives: 'Keine aktiven Initiativen'
+    resource:
+        fte_security: 'FTE Sicherheit'
+        open_positions: 'Offene Stellen'
+        initiatives: 'Sicherheitsinitiativen'
+    table:
+        metric: 'Metrik'
+        change: 'Änderung'
+        target: 'Ziel'
