@@ -44,7 +44,7 @@ final class Version20251216100000_wizard_session extends AbstractMigration
             PRIMARY KEY(id)
         ) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
 
-        $this->addSql('ALTER TABLE wizard_session ADD CONSTRAINT FK_wizard_session_tenant FOREIGN KEY (tenant_id) REFERENCES tenants (id) ON DELETE CASCADE');
+        $this->addSql('ALTER TABLE wizard_session ADD CONSTRAINT FK_wizard_session_tenant FOREIGN KEY (tenant_id) REFERENCES tenant (id) ON DELETE CASCADE');
         $this->addSql('ALTER TABLE wizard_session ADD CONSTRAINT FK_wizard_session_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE');
     }
 
