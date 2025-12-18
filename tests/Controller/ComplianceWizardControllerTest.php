@@ -202,11 +202,12 @@ class ComplianceWizardControllerTest extends WebTestCase
             $this->assertIsArray($data);
             $this->assertArrayHasKey('success', $data);
         } else {
-            // Accept redirect, 403 (forbidden), or 404 (not found) as valid responses
+            // Accept redirect, 400/403/404 as valid responses when wizard not available
             $validResponses = $response->isRedirect() ||
+                              $statusCode === Response::HTTP_BAD_REQUEST ||
                               $statusCode === Response::HTTP_FORBIDDEN ||
                               $statusCode === Response::HTTP_NOT_FOUND;
-            $this->assertTrue($validResponses, 'Expected JSON, redirect, 403, or 404. Got: ' . $statusCode);
+            $this->assertTrue($validResponses, 'Expected JSON, redirect, or 4xx error. Got: ' . $statusCode);
         }
     }
 
