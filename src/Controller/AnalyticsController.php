@@ -10,6 +10,7 @@ use App\Repository\AssetRepository;
 use App\Repository\ControlRepository;
 use App\Repository\IncidentRepository;
 use App\Repository\RiskRepository;
+use App\Service\AssetCriticalityService;
 use App\Service\ComplianceAnalyticsService;
 use App\Service\ControlEffectivenessService;
 use App\Service\RiskForecastService;
@@ -37,6 +38,7 @@ class AnalyticsController extends AbstractController
         private readonly ComplianceAnalyticsService $complianceAnalyticsService,
         private readonly ControlEffectivenessService $controlEffectivenessService,
         private readonly RiskForecastService $riskForecastService,
+        private readonly AssetCriticalityService $assetCriticalityService,
     ) {}
     #[Route('', name: 'app_analytics_dashboard')]
     public function dashboard(): Response
@@ -109,7 +111,10 @@ class AnalyticsController extends AbstractController
     public function assetCriticality(): Response
     {
         return $this->render('analytics/asset_criticality.html.twig', [
-            'incident_probability' => $this->riskForecastService->getAssetIncidentProbability(),
+            'incident_probability' => $this->assetCriticalityService->getAssetIncidentProbability(),
+            'dashboard' => $this->assetCriticalityService->getCriticalityDashboard(),
+            'vulnerability_matrix' => $this->assetCriticalityService->getVulnerabilityMatrix(),
+            'type_analysis' => $this->assetCriticalityService->getTypeAnalysis(),
         ]);
     }
 
@@ -543,7 +548,43 @@ class AnalyticsController extends AbstractController
     #[Route('/api/assets/incident-probability', name: 'app_analytics_api_asset_probability')]
     public function getAssetProbabilityData(): JsonResponse
     {
-        return new JsonResponse($this->riskForecastService->getAssetIncidentProbability());
+        return new JsonResponse($this->assetCriticalityService->getAssetIncidentProbability());
+    }
+
+    /**
+     * API: Asset Criticality Dashboard
+     */
+    #[Route('/api/assets/criticality', name: 'app_analytics_api_asset_criticality')]
+    public function getAssetCriticalityData(): JsonResponse
+    {
+        return new JsonResponse($this->assetCriticalityService->getCriticalityDashboard());
+    }
+
+    /**
+     * API: Asset Vulnerability Matrix
+     */
+    #[Route('/api/assets/vulnerability-matrix', name: 'app_analytics_api_vulnerability_matrix')]
+    public function getVulnerabilityMatrixData(): JsonResponse
+    {
+        return new JsonResponse($this->assetCriticalityService->getVulnerabilityMatrix());
+    }
+
+    /**
+     * API: Asset Type Analysis
+     */
+    #[Route('/api/assets/type-analysis', name: 'app_analytics_api_type_analysis')]
+    public function getTypeAnalysisData(): JsonResponse
+    {
+        return new JsonResponse($this->assetCriticalityService->getTypeAnalysis());
+    }
+
+    /**
+     * API: Supply Chain Risk
+     */
+    #[Route('/api/assets/supply-chain', name: 'app_analytics_api_supply_chain')]
+    public function getSupplyChainRiskData(): JsonResponse
+    {
+        return new JsonResponse($this->assetCriticalityService->getSupplyChainRisk());
     }
 
     /**

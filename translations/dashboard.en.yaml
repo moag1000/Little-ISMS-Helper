@@ -3,6 +3,12 @@ dashboard:
     subtitle: 'Overview of your Information Security Management System'
     action:
         customize: 'Customize'
+        role_dashboards: 'Role Dashboards'
+    role:
+        ciso: 'CISO Dashboard'
+        risk_manager: 'Risk Manager'
+        auditor: 'Auditor'
+        board: 'Board'
     stats:
         registered_assets: 'Registered Assets'
         critical: 'critical'
