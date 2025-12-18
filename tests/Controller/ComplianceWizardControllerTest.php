@@ -175,21 +175,21 @@ class ComplianceWizardControllerTest extends WebTestCase
 
     public function testApiAssessRequiresAuthentication(): void
     {
-        $this->client->request('POST', '/en/compliance-wizard/iso27001/api/assess');
+        $this->client->request('GET', '/en/compliance-wizard/iso27001/api/assess');
         $this->assertResponseRedirects();
     }
 
     public function testApiAssessRequiresManagerRole(): void
     {
         $this->client->loginUser($this->testUser);
-        $this->client->request('POST', '/en/compliance-wizard/iso27001/api/assess');
+        $this->client->request('GET', '/en/compliance-wizard/iso27001/api/assess');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }
 
     public function testApiAssessReturnsJson(): void
     {
         $this->client->loginUser($this->managerUser);
-        $this->client->request('POST', '/en/compliance-wizard/iso27001/api/assess');
+        $this->client->request('GET', '/en/compliance-wizard/iso27001/api/assess');
 
         // Either returns JSON or wizard not available (redirect)
         $response = $this->client->getResponse();
