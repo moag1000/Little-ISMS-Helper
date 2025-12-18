@@ -1,0 +1,411 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'dashboards' %}
+
+{% block title %}{{ 'board.title'|trans({}, 'dashboards') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="role-dashboard board-dashboard">
+    {# Page Header #}
+    <div class="page-header mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1>
+                    <i class="bi bi-briefcase text-dark" aria-hidden="true"></i>
+                    {{ 'board.title'|trans({}, 'dashboards') }}
+                </h1>
+                <p class="text-muted mb-0">{{ 'board.subtitle'|trans({}, 'dashboards') }}</p>
+            </div>
+            <div class="btn-group">
+                <a href="{{ path('app_dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-house"></i> {{ 'action.standard_dashboard'|trans({}, 'dashboards') }}
+                </a>
+                <a href="{{ path('app_dashboard_ciso') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-shield-lock"></i> {{ 'action.ciso_view'|trans({}, 'dashboards') }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# Executive RAG Status Overview #}
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card h-100 {% if dashboard.rag_status.security == 'green' %}border-success{% elseif dashboard.rag_status.security == 'amber' %}border-warning{% else %}border-danger{% endif %}">
+                <div class="card-body text-center">
+                    <div class="mb-2">
+                        <span class="badge rounded-pill {% if dashboard.rag_status.security == 'green' %}bg-success{% elseif dashboard.rag_status.security == 'amber' %}bg-warning{% else %}bg-danger{% endif %} fs-5 px-3 py-2">
+                            {% if dashboard.rag_status.security == 'green' %}
+                                <i class="bi bi-check-circle"></i>
+                            {% elseif dashboard.rag_status.security == 'amber' %}
+                                <i class="bi bi-exclamation-triangle"></i>
+                            {% else %}
+                                <i class="bi bi-x-circle"></i>
+                            {% endif %}
+                        </span>
+                    </div>
+                    <h5 class="mb-1">{{ 'board.rag.security'|trans({}, 'dashboards') }}</h5>
+                    <small class="text-muted">{{ dashboard.rag_details.security }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 {% if dashboard.rag_status.compliance == 'green' %}border-success{% elseif dashboard.rag_status.compliance == 'amber' %}border-warning{% else %}border-danger{% endif %}">
+                <div class="card-body text-center">
+                    <div class="mb-2">
+                        <span class="badge rounded-pill {% if dashboard.rag_status.compliance == 'green' %}bg-success{% elseif dashboard.rag_status.compliance == 'amber' %}bg-warning{% else %}bg-danger{% endif %} fs-5 px-3 py-2">
+                            {% if dashboard.rag_status.compliance == 'green' %}
+                                <i class="bi bi-check-circle"></i>
+                            {% elseif dashboard.rag_status.compliance == 'amber' %}
+                                <i class="bi bi-exclamation-triangle"></i>
+                            {% else %}
+                                <i class="bi bi-x-circle"></i>
+                            {% endif %}
+                        </span>
+                    </div>
+                    <h5 class="mb-1">{{ 'board.rag.compliance'|trans({}, 'dashboards') }}</h5>
+                    <small class="text-muted">{{ dashboard.rag_details.compliance }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 {% if dashboard.rag_status.risk == 'green' %}border-success{% elseif dashboard.rag_status.risk == 'amber' %}border-warning{% else %}border-danger{% endif %}">
+                <div class="card-body text-center">
+                    <div class="mb-2">
+                        <span class="badge rounded-pill {% if dashboard.rag_status.risk == 'green' %}bg-success{% elseif dashboard.rag_status.risk == 'amber' %}bg-warning{% else %}bg-danger{% endif %} fs-5 px-3 py-2">
+                            {% if dashboard.rag_status.risk == 'green' %}
+                                <i class="bi bi-check-circle"></i>
+                            {% elseif dashboard.rag_status.risk == 'amber' %}
+                                <i class="bi bi-exclamation-triangle"></i>
+                            {% else %}
+                                <i class="bi bi-x-circle"></i>
+                            {% endif %}
+                        </span>
+                    </div>
+                    <h5 class="mb-1">{{ 'board.rag.risk'|trans({}, 'dashboards') }}</h5>
+                    <small class="text-muted">{{ dashboard.rag_details.risk }}</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 {% if dashboard.rag_status.operations == 'green' %}border-success{% elseif dashboard.rag_status.operations == 'amber' %}border-warning{% else %}border-danger{% endif %}">
+                <div class="card-body text-center">
+                    <div class="mb-2">
+                        <span class="badge rounded-pill {% if dashboard.rag_status.operations == 'green' %}bg-success{% elseif dashboard.rag_status.operations == 'amber' %}bg-warning{% else %}bg-danger{% endif %} fs-5 px-3 py-2">
+                            {% if dashboard.rag_status.operations == 'green' %}
+                                <i class="bi bi-check-circle"></i>
+                            {% elseif dashboard.rag_status.operations == 'amber' %}
+                                <i class="bi bi-exclamation-triangle"></i>
+                            {% else %}
+                                <i class="bi bi-x-circle"></i>
+                            {% endif %}
+                        </span>
+                    </div>
+                    <h5 class="mb-1">{{ 'board.rag.operations'|trans({}, 'dashboards') }}</h5>
+                    <small class="text-muted">{{ dashboard.rag_details.operations }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Key Metrics with Trends #}
+    <div class="row g-3 mb-4">
+        <div class="col-md-2">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">{{ dashboard.metrics.overall_compliance }}%</h3>
+                    <small class="text-muted d-block">{{ 'board.metric.compliance'|trans({}, 'dashboards') }}</small>
+                    {% if dashboard.trends.compliance > 0 %}
+                        <small class="text-success"><i class="bi bi-arrow-up"></i> +{{ dashboard.trends.compliance }}%</small>
+                    {% elseif dashboard.trends.compliance < 0 %}
+                        <small class="text-danger"><i class="bi bi-arrow-down"></i> {{ dashboard.trends.compliance }}%</small>
+                    {% else %}
+                        <small class="text-muted"><i class="bi bi-arrow-right"></i> 0%</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">{{ dashboard.metrics.total_risks }}</h3>
+                    <small class="text-muted d-block">{{ 'board.metric.risks'|trans({}, 'dashboards') }}</small>
+                    {% if dashboard.trends.risks > 0 %}
+                        <small class="text-danger"><i class="bi bi-arrow-up"></i> +{{ dashboard.trends.risks }}</small>
+                    {% elseif dashboard.trends.risks < 0 %}
+                        <small class="text-success"><i class="bi bi-arrow-down"></i> {{ dashboard.trends.risks }}</small>
+                    {% else %}
+                        <small class="text-muted"><i class="bi bi-arrow-right"></i> 0</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h3 class="mb-0 {% if dashboard.metrics.critical_risks > 0 %}text-danger{% endif %}">{{ dashboard.metrics.critical_risks }}</h3>
+                    <small class="text-muted d-block">{{ 'board.metric.critical'|trans({}, 'dashboards') }}</small>
+                    {% if dashboard.trends.critical > 0 %}
+                        <small class="text-danger"><i class="bi bi-arrow-up"></i> +{{ dashboard.trends.critical }}</small>
+                    {% elseif dashboard.trends.critical < 0 %}
+                        <small class="text-success"><i class="bi bi-arrow-down"></i> {{ dashboard.trends.critical }}</small>
+                    {% else %}
+                        <small class="text-muted"><i class="bi bi-arrow-right"></i> 0</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">{{ dashboard.metrics.incidents_ytd }}</h3>
+                    <small class="text-muted d-block">{{ 'board.metric.incidents'|trans({}, 'dashboards') }}</small>
+                    {% if dashboard.trends.incidents > 0 %}
+                        <small class="text-danger"><i class="bi bi-arrow-up"></i> +{{ dashboard.trends.incidents }}</small>
+                    {% elseif dashboard.trends.incidents < 0 %}
+                        <small class="text-success"><i class="bi bi-arrow-down"></i> {{ dashboard.trends.incidents }}</small>
+                    {% else %}
+                        <small class="text-muted"><i class="bi bi-arrow-right"></i> 0</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">{{ dashboard.metrics.controls_implemented }}%</h3>
+                    <small class="text-muted d-block">{{ 'board.metric.controls'|trans({}, 'dashboards') }}</small>
+                    {% if dashboard.trends.controls > 0 %}
+                        <small class="text-success"><i class="bi bi-arrow-up"></i> +{{ dashboard.trends.controls }}%</small>
+                    {% elseif dashboard.trends.controls < 0 %}
+                        <small class="text-danger"><i class="bi bi-arrow-down"></i> {{ dashboard.trends.controls }}%</small>
+                    {% else %}
+                        <small class="text-muted"><i class="bi bi-arrow-right"></i> 0%</small>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <h3 class="mb-0">{{ dashboard.metrics.audits_completed }}</h3>
+                    <small class="text-muted d-block">{{ 'board.metric.audits'|trans({}, 'dashboards') }}</small>
+                    <small class="text-muted">{{ 'board.of_planned'|trans({'%count%': dashboard.metrics.audits_planned}, 'dashboards') }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {# Executive Summary #}
+        <div class="col-lg-8">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-file-text me-2"></i>
+                        {{ 'board.section.executive_summary'|trans({}, 'dashboards') }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-2">{{ 'board.summary.security_posture'|trans({}, 'dashboards') }}</h6>
+                        <p class="mb-0">{{ dashboard.executive_summary.security_posture }}</p>
+                    </div>
+                    <div class="mb-4">
+                        <h6 class="text-muted mb-2">{{ 'board.summary.key_achievements'|trans({}, 'dashboards') }}</h6>
+                        {% if dashboard.executive_summary.achievements|length > 0 %}
+                            <ul class="mb-0">
+                                {% for achievement in dashboard.executive_summary.achievements %}
+                                    <li>{{ achievement }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-muted mb-0">{{ 'board.no_achievements'|trans({}, 'dashboards') }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-2">{{ 'board.summary.key_concerns'|trans({}, 'dashboards') }}</h6>
+                        {% if dashboard.executive_summary.concerns|length > 0 %}
+                            <ul class="mb-0">
+                                {% for concern in dashboard.executive_summary.concerns %}
+                                    <li class="text-warning">{{ concern }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p class="text-success mb-0"><i class="bi bi-check-circle me-1"></i>{{ 'board.no_concerns'|trans({}, 'dashboards') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Upcoming Milestones #}
+        <div class="col-lg-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-flag me-2"></i>
+                        {{ 'board.section.milestones'|trans({}, 'dashboards') }}
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    {% if dashboard.milestones|length > 0 %}
+                        <div class="list-group list-group-flush">
+                            {% for milestone in dashboard.milestones %}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">{{ milestone.title }}</h6>
+                                        <small class="text-muted">{{ milestone.type }}</small>
+                                    </div>
+                                    <span class="badge bg-{% if milestone.status == 'on_track' %}success{% elseif milestone.status == 'at_risk' %}warning{% else %}danger{% endif %}">
+                                        {{ milestone.date|date('d.m.Y') }}
+                                    </span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-4 mb-0">{{ 'board.no_milestones'|trans({}, 'dashboards') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        {# Items Requiring Board Attention #}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-exclamation-circle text-danger me-2"></i>
+                        {{ 'board.section.attention_required'|trans({}, 'dashboards') }}
+                    </h5>
+                    <span class="badge bg-danger">{{ dashboard.attention_items|length }}</span>
+                </div>
+                <div class="card-body p-0">
+                    {% if dashboard.attention_items|length > 0 %}
+                        <div class="list-group list-group-flush">
+                            {% for item in dashboard.attention_items %}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <span class="badge bg-{% if item.priority == 'critical' %}danger{% elseif item.priority == 'high' %}warning{% else %}secondary{% endif %} me-2">
+                                            {{ item.priority|upper }}
+                                        </span>
+                                        <strong>{{ item.title }}</strong>
+                                        <p class="mb-0 mt-1 text-muted small">{{ item.description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-success text-center py-4 mb-0">
+                            <i class="bi bi-check-circle me-2"></i>{{ 'board.no_attention_items'|trans({}, 'dashboards') }}
+                        </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Budget & Resource Overview #}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-currency-euro me-2"></i>
+                        {{ 'board.section.resources'|trans({}, 'dashboards') }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center mb-4">
+                        <div class="col-6">
+                            <h4 class="mb-0">{{ dashboard.resources.fte_security }}</h4>
+                            <small class="text-muted">{{ 'board.resource.fte_security'|trans({}, 'dashboards') }}</small>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="mb-0">{{ dashboard.resources.open_positions }}</h4>
+                            <small class="text-muted">{{ 'board.resource.open_positions'|trans({}, 'dashboards') }}</small>
+                        </div>
+                    </div>
+                    <h6 class="text-muted mb-2">{{ 'board.resource.initiatives'|trans({}, 'dashboards') }}</h6>
+                    {% if dashboard.resources.initiatives|length > 0 %}
+                        {% for initiative in dashboard.resources.initiatives %}
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>{{ initiative.name }}</span>
+                            <span class="badge bg-{% if initiative.status == 'on_track' %}success{% elseif initiative.status == 'at_risk' %}warning{% else %}danger{% endif %}">
+                                {{ initiative.progress }}%
+                            </span>
+                        </div>
+                        <div class="progress mb-3" style="height: 6px;">
+                            <div class="progress-bar bg-{% if initiative.status == 'on_track' %}success{% elseif initiative.status == 'at_risk' %}warning{% else %}danger{% endif %}"
+                                 style="width: {{ initiative.progress }}%"></div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted mb-0">{{ 'board.no_initiatives'|trans({}, 'dashboards') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Quarterly Comparison #}
+    <div class="row g-4 mt-2">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="bi bi-graph-up me-2"></i>
+                        {{ 'board.section.quarterly_comparison'|trans({}, 'dashboards') }}
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{{ 'board.table.metric'|trans({}, 'dashboards') }}</th>
+                                    <th class="text-center">Q{{ dashboard.quarterly.previous_quarter }}</th>
+                                    <th class="text-center">Q{{ dashboard.quarterly.current_quarter }}</th>
+                                    <th class="text-center">{{ 'board.table.change'|trans({}, 'dashboards') }}</th>
+                                    <th class="text-center">{{ 'board.table.target'|trans({}, 'dashboards') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for metric in dashboard.quarterly.metrics %}
+                                <tr>
+                                    <td>{{ metric.name }}</td>
+                                    <td class="text-center">{{ metric.previous }}{{ metric.unit }}</td>
+                                    <td class="text-center">{{ metric.current }}{{ metric.unit }}</td>
+                                    <td class="text-center">
+                                        {% if metric.change > 0 %}
+                                            <span class="{% if metric.positive_is_good %}text-success{% else %}text-danger{% endif %}">
+                                                <i class="bi bi-arrow-up"></i> +{{ metric.change }}{{ metric.unit }}
+                                            </span>
+                                        {% elseif metric.change < 0 %}
+                                            <span class="{% if metric.positive_is_good %}text-danger{% else %}text-success{% endif %}">
+                                                <i class="bi bi-arrow-down"></i> {{ metric.change }}{{ metric.unit }}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-muted"><i class="bi bi-arrow-right"></i> 0{{ metric.unit }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if metric.on_target %}
+                                            <span class="badge bg-success">{{ metric.target }}{{ metric.unit }}</span>
+                                        {% else %}
+                                            <span class="badge bg-warning">{{ metric.target }}{{ metric.unit }}</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,288 @@
+{% extends 'base.html.twig' %}
+{% trans_default_domain 'dashboards' %}
+
+{% block title %}{{ 'ciso.title'|trans({}, 'dashboards') }} - {{ 'app.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="role-dashboard ciso-dashboard">
+    {# Page Header #}
+    <div class="page-header mb-4">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1>
+                    <i class="bi bi-shield-lock text-primary" aria-hidden="true"></i>
+                    {{ 'ciso.title'|trans({}, 'dashboards') }}
+                </h1>
+                <p class="text-muted mb-0">{{ 'ciso.subtitle'|trans({}, 'dashboards') }}</p>
+            </div>
+            <div class="btn-group">
+                <a href="{{ path('app_dashboard') }}" class="btn btn-outline-secondary">
+                    <i class="bi bi-house"></i> {{ 'action.standard_dashboard'|trans({}, 'dashboards') }}
+                </a>
+                <a href="{{ path('app_dashboard_board') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-briefcase"></i> {{ 'action.board_view'|trans({}, 'dashboards') }}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# Executive Summary Cards #}
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card h-100 border-primary">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="text-muted mb-1">{{ 'ciso.kpi.overall_compliance'|trans({}, 'dashboards') }}</h6>
+                            <h2 class="mb-0 {% if dashboard.summary.overall_compliance >= 80 %}text-success{% elseif dashboard.summary.overall_compliance >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                                {{ dashboard.summary.overall_compliance }}%
+                            </h2>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 rounded-circle p-2">
+                            <i class="bi bi-shield-check fs-4 text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-success">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="text-muted mb-1">{{ 'ciso.kpi.control_implementation'|trans({}, 'dashboards') }}</h6>
+                            <h2 class="mb-0">{{ dashboard.summary.control_implementation }}%</h2>
+                        </div>
+                        <div class="bg-success bg-opacity-10 rounded-circle p-2">
+                            <i class="bi bi-toggles fs-4 text-success"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-danger">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="text-muted mb-1">{{ 'ciso.kpi.high_risks'|trans({}, 'dashboards') }}</h6>
+                            <h2 class="mb-0 {% if dashboard.summary.high_risks > 10 %}text-danger{% elseif dashboard.summary.high_risks > 5 %}text-warning{% else %}text-success{% endif %}">
+                                {{ dashboard.summary.high_risks }}
+                            </h2>
+                        </div>
+                        <div class="bg-danger bg-opacity-10 rounded-circle p-2">
+                            <i class="bi bi-exclamation-triangle fs-4 text-danger"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card h-100 border-warning">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h6 class="text-muted mb-1">{{ 'ciso.kpi.risk_trend'|trans({}, 'dashboards') }}</h6>
+                            <h2 class="mb-0">
+                                {% if dashboard.summary.risk_trend == 'increasing' %}
+                                    <span class="text-danger"><i class="bi bi-arrow-up"></i> {{ 'trend.increasing'|trans({}, 'dashboards') }}</span>
+                                {% elseif dashboard.summary.risk_trend == 'decreasing' %}
+                                    <span class="text-success"><i class="bi bi-arrow-down"></i> {{ 'trend.decreasing'|trans({}, 'dashboards') }}</span>
+                                {% else %}
+                                    <span class="text-secondary"><i class="bi bi-arrow-right"></i> {{ 'trend.stable'|trans({}, 'dashboards') }}</span>
+                                {% endif %}
+                            </h2>
+                        </div>
+                        <div class="bg-warning bg-opacity-10 rounded-circle p-2">
+                            <i class="bi bi-graph-up fs-4 text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {# Framework Compliance #}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-diagram-3 me-2"></i>
+                        {{ 'ciso.section.framework_compliance'|trans({}, 'dashboards') }}
+                    </h5>
+                    <a href="{{ path('app_analytics_compliance_frameworks') }}" class="btn btn-sm btn-outline-primary">
+                        {{ 'action.view_details'|trans({}, 'dashboards') }}
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if dashboard.compliance.frameworks|length > 0 %}
+                        {% for framework in dashboard.compliance.frameworks %}
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span>{{ framework.name }}</span>
+                                <span class="fw-bold {% if framework.compliance_percentage >= 80 %}text-success{% elseif framework.compliance_percentage >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                                    {{ framework.compliance_percentage }}%
+                                </span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-{% if framework.compliance_percentage >= 80 %}success{% elseif framework.compliance_percentage >= 60 %}warning{% else %}danger{% endif %}"
+                                     style="width: {{ framework.compliance_percentage }}%"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center py-3">{{ 'ciso.no_frameworks'|trans({}, 'dashboards') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Risk Appetite Status #}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-speedometer2 me-2"></i>
+                        {{ 'ciso.section.risk_appetite'|trans({}, 'dashboards') }}
+                    </h5>
+                    <span class="badge bg-{% if dashboard.risk_posture.appetite_compliant %}success{% else %}danger{% endif %}">
+                        {% if dashboard.risk_posture.appetite_compliant %}
+                            {{ 'status.compliant'|trans({}, 'dashboards') }}
+                        {% else %}
+                            {{ 'status.breach'|trans({}, 'dashboards') }}
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        <div class="display-4 {% if dashboard.risk_posture.compliance_score >= 80 %}text-success{% elseif dashboard.risk_posture.compliance_score >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                            {{ dashboard.risk_posture.compliance_score }}%
+                        </div>
+                        <small class="text-muted">{{ 'ciso.appetite_compliance_score'|trans({}, 'dashboards') }}</small>
+                    </div>
+                    {% if dashboard.risk_posture.breaches|length > 0 %}
+                        <div class="alert alert-danger mb-0">
+                            <strong>{{ 'ciso.breaches'|trans({}, 'dashboards') }}:</strong>
+                            <ul class="mb-0 mt-2">
+                                {% for breach in dashboard.risk_posture.breaches %}
+                                    <li>{{ breach.level|title }}: {{ breach.actual }}/{{ breach.threshold }} ({{ breach.excess }} {{ 'over_limit'|trans({}, 'dashboards') }})</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        {# Critical Risks #}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-exclamation-octagon text-danger me-2"></i>
+                        {{ 'ciso.section.critical_risks'|trans({}, 'dashboards') }}
+                    </h5>
+                    <a href="{{ path('app_risk_index') }}" class="btn btn-sm btn-outline-danger">
+                        {{ 'action.view_all'|trans({}, 'dashboards') }}
+                    </a>
+                </div>
+                <div class="card-body p-0">
+                    {% if dashboard.critical_risks|length > 0 %}
+                        <div class="list-group list-group-flush">
+                            {% for risk in dashboard.critical_risks %}
+                            <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ risk.title }}</h6>
+                                        <small class="text-muted">{{ 'risk.level'|trans({}, 'dashboards') }}: {{ risk.level }}</small>
+                                    </div>
+                                    <span class="badge bg-{% if risk.treatment %}success{% else %}warning{% endif %}">
+                                        {{ risk.treatment ?: 'untreated'|trans({}, 'dashboards') }}
+                                    </span>
+                                </div>
+                            </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-4 mb-0">{{ 'ciso.no_critical_risks'|trans({}, 'dashboards') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        {# Pending Approvals #}
+        <div class="col-lg-6">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-clipboard-check me-2"></i>
+                        {{ 'ciso.section.pending_approvals'|trans({}, 'dashboards') }}
+                    </h5>
+                    <span class="badge bg-primary">{{ dashboard.pending_approvals|length }}</span>
+                </div>
+                <div class="card-body p-0">
+                    {% if dashboard.pending_approvals|length > 0 %}
+                        <div class="list-group list-group-flush">
+                            {% for approval in dashboard.pending_approvals %}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">{{ approval.title }}</h6>
+                                        <small class="text-muted">{{ approval.entity_type }}</small>
+                                    </div>
+                                    <small class="text-muted">{{ approval.created_at|date('d.m.Y') }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center py-4 mb-0">{{ 'ciso.no_pending_approvals'|trans({}, 'dashboards') }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Control Effectiveness Summary #}
+    <div class="row g-4 mt-2">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="bi bi-toggles me-2"></i>
+                        {{ 'ciso.section.control_effectiveness'|trans({}, 'dashboards') }}
+                    </h5>
+                    <a href="{{ path('app_analytics_control_effectiveness') }}" class="btn btn-sm btn-outline-primary">
+                        {{ 'action.view_details'|trans({}, 'dashboards') }}
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <h3>{{ dashboard.controls.total }}</h3>
+                            <small class="text-muted">{{ 'ciso.controls.total'|trans({}, 'dashboards') }}</small>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="text-success">{{ dashboard.controls.implemented }}</h3>
+                            <small class="text-muted">{{ 'ciso.controls.implemented'|trans({}, 'dashboards') }}</small>
+                        </div>
+                        <div class="col-md-3">
+                            <h3>{{ dashboard.controls.effectiveness }}%</h3>
+                            <small class="text-muted">{{ 'ciso.controls.effectiveness'|trans({}, 'dashboards') }}</small>
+                        </div>
+                        <div class="col-md-3">
+                            <h3 class="{% if dashboard.controls.overdue_reviews > 0 %}text-warning{% else %}text-success{% endif %}">
+                                {{ dashboard.controls.overdue_reviews }}
+                            </h3>
+                            <small class="text-muted">{{ 'ciso.controls.overdue_reviews'|trans({}, 'dashboards') }}</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
