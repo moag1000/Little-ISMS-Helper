@@ -11,7 +11,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - JWT Authentication for REST API
 - Advanced API filters and search
 - Real-time notifications via WebSocket
-- Mobile Progressive Web App (PWA)
+
+---
+
+## [2.5.2] - 2025-12-19
+
+### ✨ Added
+
+#### Role Documentation & UX Improvements
+- **Role Help Component** (`_role_help.html.twig`) with comprehensive role explanations
+  - Visual role hierarchy chain: User → Auditor → Manager → Admin → Super Admin
+  - Side-by-side comparison of system roles vs custom roles
+  - Collapsible help section explaining role differences
+  - Warning about same-name roles (system vs custom) being different entities
+- **Role Tooltips** on user form checkboxes with role descriptions
+  - Hover over any role checkbox to see what that role can do
+  - Translated descriptions in German and English
+- **Improved User Management Forms**
+  - Role help component integrated into create/edit user pages
+  - Enhanced help text explaining role inheritance
+
+#### Progressive Web App (Phase 8A)
+- **Web App Manifest** for installable PWA
+- **Service Worker** with offline support
+- **PWA Icons** (72px to 512px)
+- **Offline Page** with cached page list
+
+#### Translations
+- Complete role descriptions for all 5 system roles (DE/EN)
+- Role hierarchy explanations
+- System vs custom role feature comparisons
+- Common UI translations (show/hide details)
+
+### 🐛 Fixed
+- Various CI test improvements for compliance wizard tests
 
 ---
 
