@@ -32,6 +32,9 @@
 
     <div class="row">
         <div class="col-md-8 offset-md-2">
+            {# Role Help Component - explains system vs custom roles #}
+            {{ include('_components/_role_help.html.twig') }}
+
             <div class="card">
                 <div class="card-header bg-primary text-white">
                     <h2 class="mb-0">{{ user.fullName }} {{ 'user.edit_suffix'|trans({}, 'user') }}</h2>
@@ -124,3 +127,16 @@
     </div>
 </div>
 {% endblock admin_content %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    // Initialize Bootstrap tooltips for role checkboxes
+    document.addEventListener('DOMContentLoaded', function() {
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        tooltipTriggerList.forEach(function(el) {
+            new bootstrap.Tooltip(el);
+        });
+    });
+</script>
+{% endblock %}

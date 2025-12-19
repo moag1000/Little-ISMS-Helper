@@ -17,6 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * User Form Type
@@ -26,6 +27,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class UserType extends AbstractType
 {
+    public function __construct(
+        private readonly TranslatorInterface $translator
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $isEdit = $options['is_edit'];
@@ -111,6 +117,15 @@ class UserType extends AbstractType
 
         // Only add admin fields if not in profile edit mode
         if (!$isProfileEdit) {
+            // Role descriptions for tooltips (translated)
+            $roleDescriptions = [
+                'ROLE_USER' => $this->translator->trans('user.role_description.user', [], 'user'),
+                'ROLE_AUDITOR' => $this->translator->trans('user.role_description.auditor', [], 'user'),
+                'ROLE_MANAGER' => $this->translator->trans('user.role_description.manager', [], 'user'),
+                'ROLE_ADMIN' => $this->translator->trans('user.role_description.admin', [], 'user'),
+                'ROLE_SUPER_ADMIN' => $this->translator->trans('user.role_description.super_admin', [], 'user'),
+            ];
+
             $builder
                 // Roles & Permissions
                 ->add('roles', ChoiceType::class, [
@@ -127,7 +142,16 @@ class UserType extends AbstractType
                 'required' => false,
                 'data' => $isEdit ? null : ['ROLE_USER'], // Default only for new users
                 'choice_translation_domain' => 'user',
-                'help' => 'Systemrollen definieren grundlegende Zugriffsrechte',
+                'help' => 'user.roles_info.system_note',
+                'help_translation_parameters' => [],
+                'choice_attr' => function (string $choice) use ($roleDescriptions): array {
+                    return [
+                        'data-bs-toggle' => 'tooltip',
+                        'data-bs-placement' => 'right',
+                        'title' => $roleDescriptions[$choice] ?? '',
+                        'class' => 'form-check-input role-checkbox',
+                    ];
+                },
             ])
             ->add('customRoles', EntityType::class, [
                 'label' => 'user.field.custom_roles',
