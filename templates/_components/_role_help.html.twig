@@ -1,0 +1,161 @@
+{#
+ # Role Help Component
+ # Provides comprehensive explanation of system vs custom roles
+ #
+ # Usage: {{ include('_components/_role_help.html.twig') }}
+ #}
+
+<div class="card border-info mb-4" id="role-help-card">
+    <div class="card-header bg-info bg-opacity-10 d-flex justify-content-between align-items-center">
+        <h6 class="mb-0">
+            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+            {{ 'user.roles_info.title'|trans({}, 'user') }}
+        </h6>
+        <button class="btn btn-sm btn-link text-decoration-none p-0"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#roleHelpContent"
+                aria-expanded="false"
+                aria-controls="roleHelpContent">
+            <span class="expand-text">{{ 'ui.common.show_details'|trans({}, 'ui') }}</span>
+            <span class="collapse-text d-none">{{ 'ui.common.hide_details'|trans({}, 'ui') }}</span>
+            <i class="bi bi-chevron-down ms-1" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="collapse" id="roleHelpContent">
+        <div class="card-body">
+            {# Role Hierarchy Visualization #}
+            <div class="mb-4">
+                <h6 class="text-muted small text-uppercase mb-2">
+                    {{ 'user.role_hierarchy.title'|trans({}, 'user') }}
+                </h6>
+                <div class="role-hierarchy-chain d-flex flex-wrap align-items-center gap-2 p-3 bg-light rounded">
+                    <span class="badge bg-secondary">
+                        <i class="bi bi-person me-1" aria-hidden="true"></i>
+                        {{ 'user.role.user'|trans({}, 'user') }}
+                    </span>
+                    <i class="bi bi-arrow-right text-muted" aria-hidden="true"></i>
+                    <span class="badge bg-info">
+                        <i class="bi bi-search me-1" aria-hidden="true"></i>
+                        {{ 'user.role.auditor'|trans({}, 'user') }}
+                    </span>
+                    <i class="bi bi-arrow-right text-muted" aria-hidden="true"></i>
+                    <span class="badge bg-primary">
+                        <i class="bi bi-briefcase me-1" aria-hidden="true"></i>
+                        {{ 'user.role.manager'|trans({}, 'user') }}
+                    </span>
+                    <i class="bi bi-arrow-right text-muted" aria-hidden="true"></i>
+                    <span class="badge bg-warning text-dark">
+                        <i class="bi bi-gear me-1" aria-hidden="true"></i>
+                        {{ 'user.role.admin'|trans({}, 'user') }}
+                    </span>
+                    <i class="bi bi-arrow-right text-muted" aria-hidden="true"></i>
+                    <span class="badge bg-danger">
+                        <i class="bi bi-shield-lock me-1" aria-hidden="true"></i>
+                        {{ 'user.role.super_admin'|trans({}, 'user') }}
+                    </span>
+                </div>
+                <small class="text-muted d-block mt-2">
+                    <i class="bi bi-lightbulb me-1" aria-hidden="true"></i>
+                    {{ 'user.role_hierarchy.description'|trans({}, 'user') }}
+                </small>
+            </div>
+
+            <div class="row">
+                {# System Roles Explanation #}
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <div class="card h-100 border-primary">
+                        <div class="card-header bg-primary bg-opacity-10">
+                            <h6 class="mb-0">
+                                <i class="bi bi-shield-check me-2" aria-hidden="true"></i>
+                                {{ 'user.roles_info.system_title'|trans({}, 'user') }}
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="small mb-3">{{ 'user.roles_info.system_description'|trans({}, 'user') }}</p>
+
+                            <ul class="list-unstyled small mb-0">
+                                <li class="mb-2">
+                                    <i class="bi bi-check-circle text-success me-1" aria-hidden="true"></i>
+                                    {{ 'user.roles_info.system_feature_1'|trans({}, 'user') }}
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-check-circle text-success me-1" aria-hidden="true"></i>
+                                    {{ 'user.roles_info.system_feature_2'|trans({}, 'user') }}
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle text-success me-1" aria-hidden="true"></i>
+                                    {{ 'user.roles_info.system_feature_3'|trans({}, 'user') }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                {# Custom Roles Explanation #}
+                <div class="col-md-6">
+                    <div class="card h-100 border-secondary">
+                        <div class="card-header bg-secondary bg-opacity-10">
+                            <h6 class="mb-0">
+                                <i class="bi bi-person-gear me-2" aria-hidden="true"></i>
+                                {{ 'user.roles_info.custom_title'|trans({}, 'user') }}
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <p class="small mb-3">{{ 'user.roles_info.custom_description'|trans({}, 'user') }}</p>
+
+                            <ul class="list-unstyled small mb-0">
+                                <li class="mb-2">
+                                    <i class="bi bi-check-circle text-success me-1" aria-hidden="true"></i>
+                                    {{ 'user.roles_info.custom_feature_1'|trans({}, 'user') }}
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-check-circle text-success me-1" aria-hidden="true"></i>
+                                    {{ 'user.roles_info.custom_feature_2'|trans({}, 'user') }}
+                                </li>
+                                <li>
+                                    <i class="bi bi-check-circle text-success me-1" aria-hidden="true"></i>
+                                    {{ 'user.roles_info.custom_feature_3'|trans({}, 'user') }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Important Note about Same Names #}
+            <div class="alert alert-warning mt-3 mb-0 small" role="alert">
+                <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+                <strong>{{ 'user.roles_info.difference_title'|trans({}, 'user') }}:</strong>
+                {{ 'user.roles_info.difference_same_name'|trans({}, 'user') }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #role-help-card .collapse-text { display: none; }
+    #role-help-card .show .expand-text { display: none; }
+    #role-help-card .show .collapse-text { display: inline; }
+    #role-help-card .bi-chevron-down { transition: transform 0.2s; }
+    #role-help-card [aria-expanded="true"] .bi-chevron-down { transform: rotate(180deg); }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const collapseEl = document.getElementById('roleHelpContent');
+        if (collapseEl) {
+            collapseEl.addEventListener('show.bs.collapse', function() {
+                const btn = document.querySelector('[data-bs-target="#roleHelpContent"]');
+                if (btn) btn.querySelector('.expand-text').classList.add('d-none');
+                if (btn) btn.querySelector('.collapse-text').classList.remove('d-none');
+            });
+            collapseEl.addEventListener('hide.bs.collapse', function() {
+                const btn = document.querySelector('[data-bs-target="#roleHelpContent"]');
+                if (btn) btn.querySelector('.expand-text').classList.remove('d-none');
+                if (btn) btn.querySelector('.collapse-text').classList.add('d-none');
+            });
+        }
+    });
+</script>

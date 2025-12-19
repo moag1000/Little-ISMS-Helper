@@ -89,3 +89,10 @@ ui:
         error_title: 'Fehler beim Laden der Vorschau'
         error_subtitle: 'Bitte versuchen Sie es erneut'
         close: 'Schließen'
+    common:
+        show_details: 'Details anzeigen'
+        hide_details: 'Details ausblenden'
+        expand: 'Erweitern'
+        collapse: 'Einklappen'
+        more_info: 'Mehr Informationen'
+        less_info: 'Weniger Informationen'

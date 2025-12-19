@@ -89,3 +89,10 @@ ui:
         error_title: 'Error loading preview'
         error_subtitle: 'Please try again'
         close: 'Close'
+    common:
+        show_details: 'Show details'
+        hide_details: 'Hide details'
+        expand: 'Expand'
+        collapse: 'Collapse'
+        more_info: 'More information'
+        less_info: 'Less information'

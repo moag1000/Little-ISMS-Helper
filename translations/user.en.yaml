@@ -155,6 +155,41 @@ user:
         delete_warning: 'Warning: This action cannot be undone.'
     confirm:
         delete: 'Do you really want to delete user %name%?'
+    role:
+        user: 'User'
+        auditor: 'Auditor'
+        manager: 'Manager'
+        admin: 'Administrator'
+        super_admin: 'Super Administrator'
+    role_description:
+        user: 'Basic access to ISMS modules. Can view data and edit own tasks.'
+        auditor: 'Extended read permissions for audits and reviews. Can document audit findings and verify compliance.'
+        manager: 'Full access to ISMS data. Can create reports, approve workflows, and use compliance wizards. NO access to user management.'
+        admin: 'Tenant administrator. Manages users, roles, and tenant settings. Full access to all ISMS features within their tenant.'
+        super_admin: 'System administrator. Cross-tenant access, can impersonate users and manage global settings.'
+    role_hierarchy:
+        title: 'Role Hierarchy'
+        description: 'Each role automatically inherits the permissions of all lower roles.'
+        chain: 'User → Auditor → Manager → Administrator → Super Administrator'
+    roles_info:
+        title: 'Understanding Roles'
+        system_title: 'System Roles (Symfony Security)'
+        system_description: 'System roles define basic access levels and are hardcoded in the application. They control access to areas like /admin and determine the role hierarchy.'
+        system_note: 'Every user must have at least ROLE_USER. Higher roles automatically inherit all rights from lower roles.'
+        system_feature_1: 'Control access to application areas (URLs, Controllers)'
+        system_feature_2: 'Hierarchical: Higher roles inherit all rights from lower roles'
+        system_feature_3: 'Hardcoded in the application (ROLE_USER, ROLE_ADMIN, etc.)'
+        custom_title: 'Custom Roles (Database)'
+        custom_description: 'Custom roles enable fine-grained permissions for specific resources (e.g., "Edit risks only", "View own department only").'
+        custom_note: 'These roles are stored in the database and can be created and customized by the administrator.'
+        custom_feature_1: 'Control permissions at resource level (read/write/delete)'
+        custom_feature_2: 'Flexible: Can be created and customized by administrators'
+        custom_feature_3: 'Fine-grained: Specific permissions per module/entity'
+        difference_title: 'Important Note'
+        difference_same_name: 'A custom role can have the same name as a system role (e.g., "Manager"), but they are NOT identical! System roles always start with ROLE_ and control application access. Custom roles control detailed resource permissions.'
+        difference_system: 'System role ROLE_MANAGER: Checked by Symfony Security, controls access to URLs and controllers.'
+        difference_custom: 'Custom role "Manager": Controls specific permissions at resource level (read/write/delete).'
+        recommendation: 'Recommendation: Use different names for custom roles (e.g., "Risk Manager", "ISMS Officer") to avoid confusion.'
     profile:
         title: 'My Profile'
         action:
