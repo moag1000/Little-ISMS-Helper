@@ -16,5 +16,9 @@ import './csrf_protection.js';
 import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap;
 
+// Import tooltip initialization (must come after bootstrap is available)
+// This enables the module-level event handlers for tooltip auto-initialization
+import './controllers/tooltip_controller.js';
+
 // NOTE: CSS is loaded separately via assets/styles.css (see importmap.php)
 // This avoids AssetMapper issues with CSS imports from JavaScript at APP_DEBUG=0
