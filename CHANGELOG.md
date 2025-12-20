@@ -11,6 +11,53 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - JWT Authentication for REST API
 - Advanced API filters and search
 - Real-time notifications via WebSocket
+- Phase 8B: Dashboards & Analytics
+
+---
+
+## [2.6.0] - 2025-12-20
+
+### ✨ Added
+
+#### PWA Advanced Features (Phase 8A Complete)
+- **Push Notifications**
+  - PushSubscription entity for storing web push subscriptions
+  - WebPushService for sending notifications with VAPID authentication
+  - API endpoints for subscribe/unsubscribe/test notifications
+  - Automatic VAPID key generation and storage
+  - Device detection and naming from User-Agent
+  - Failure tracking with auto-disable after 3 failures
+
+- **Background Sync**
+  - IndexedDB storage for offline requests
+  - Automatic sync when connection is restored
+  - Support for incidents, risks, and general form submissions
+  - Client notification on successful sync
+  - Periodic sync for dashboard data prefetching
+
+- **Share Target API**
+  - Web Share Target for receiving shared content
+  - Smart content analysis for suggested actions
+  - File handler for JSON and CSV imports
+  - Protocol handler for web+isms:// links
+  - Multi-action support (create incident, risk, document, or note)
+
+- **Translations**
+  - Push notification translations (DE/EN)
+  - Background sync translations (DE/EN)
+  - Share target translations (DE/EN)
+
+### 🔧 Changed
+- Updated Service Worker with:
+  - Enhanced push notification handling
+  - IndexedDB-based offline request queue
+  - Message passing for client-service worker communication
+  - Periodic background sync support
+
+- Updated manifest.json with:
+  - Share target configuration
+  - File handlers for ISMS imports
+  - Protocol handlers for deep linking
 
 ---
 

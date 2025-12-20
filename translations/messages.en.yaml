@@ -1506,3 +1506,37 @@ pwa:
     install_description: 'Install the app for faster access and offline use.'
     offline: 'You are offline'
     online: 'Connection restored'
+    notifications:
+        enabled: 'Push notifications enabled'
+        disabled: 'Push notifications disabled'
+        permission_denied: 'Notifications blocked'
+        subscribe: 'Enable notifications'
+        unsubscribe: 'Disable notifications'
+        test: 'Send test notification'
+    sync:
+        pending: '%count% pending syncs'
+        syncing: 'Syncing...'
+        success: 'Successfully synced'
+        error: 'Sync failed'
+
+# Share Target API - Phase 8A
+share:
+    title: 'Share Content'
+    content_preview: 'Shared Content'
+    select_action: 'What would you like to do?'
+    no_content: 'No content shared'
+    suggested: 'Suggested'
+    field:
+        title: 'Title'
+        text: 'Text'
+        url: 'URL'
+        files: 'Files'
+    action:
+        save_note: 'Save as Note'
+        note_desc: 'Quick save for later'
+        create_incident: 'Create Incident'
+        incident_desc: 'Report as security incident'
+        create_risk: 'Create Risk'
+        risk_desc: 'Record as new risk'
+        create_document: 'Create Document'
+        document_desc: 'Save as document'
