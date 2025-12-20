@@ -14,9 +14,9 @@ business_process:
         process_owner: 'Process Owner'
         description: Description
         criticality: Criticality
-        rto: Rto
-        rpo: Rpo
-        mtpd: Mtpd
+        rto: 'RTO - Recovery Time (in hours)'
+        rpo: 'RPO - Data Loss Tolerance (in hours)'
+        mtpd: 'MTPD - Max. Disruption Period (in hours)'
         financial_impact_per_hour: 'Financial Impact Per Hour'
         financial_impact_per_day: 'Financial Impact Per Day'
         reputational_impact: 'Reputational Impact'
@@ -47,16 +47,16 @@ business_process:
         identified_risks: 'Which risks affect this process?'
     tooltip:
         criticality: '<strong>Business Criticality (ISO 22301)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>Low</strong></td><td>Outage &lt; 72h tolerable</td></tr><tr><td><strong>Medium</strong></td><td>Outage 24-72h tolerable</td></tr><tr><td><strong>High</strong></td><td>Outage 4-24h tolerable</td></tr><tr><td><strong>Critical</strong></td><td>Outage &lt; 4h critical</td></tr></table>'
-        rto: '<strong>RTO - Recovery Time Objective</strong><br>Maximum time to restore the process per ISO 22301<br><br><em>Examples:</em><br>• Email: 4h<br>• ERP system: 8h<br>• Archive: 72h'
-        rpo: '<strong>RPO - Recovery Point Objective</strong><br>Maximum acceptable data loss in hours<br><br><em>Examples:</em><br>• Financial data: 0h (real-time)<br>• ERP: 1h<br>• Archive: 24h'
-        mtpd: '<strong>MTPD - Maximum Tolerable Period of Disruption</strong><br>Maximum duration of disruption before irreversible damage occurs<br><br><em>Note:</em> MTPD &gt; RTO required!'
+        rto: '<strong>RTO - Recovery Time Objective</strong><br>⏱️ <em>Enter in hours</em><br><br>Maximum time to restore the process (ISO 22301)<br><br><em>Examples:</em><br>• Email: 4h<br>• ERP system: 8h<br>• Archive: 72h'
+        rpo: '<strong>RPO - Recovery Point Objective</strong><br>⏱️ <em>Enter in hours</em><br><br>Maximum acceptable data loss<br><br><em>Examples:</em><br>• Financial data: 0 (real-time)<br>• ERP: 1<br>• Archive: 24'
+        mtpd: '<strong>MTPD - Maximum Tolerable Period of Disruption</strong><br>⏱️ <em>Enter in hours</em><br><br>Maximum disruption before irreversible damage occurs<br><br><em>Note:</em> MTPD must be &gt; RTO!'
         reputational_impact: '<strong>Reputational Impact (BIA)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>No external impact</td></tr><tr><td><strong>2</strong></td><td>Known internally</td></tr><tr><td><strong>3</strong></td><td>Local media coverage</td></tr><tr><td><strong>4</strong></td><td>National media coverage</td></tr><tr><td><strong>5</strong></td><td>International attention</td></tr></table>'
         regulatory_impact: '<strong>Regulatory Impact (BIA)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>No regulatory concern</td></tr><tr><td><strong>2</strong></td><td>Advisory/Recommendation</td></tr><tr><td><strong>3</strong></td><td>Formal deficiency notice</td></tr><tr><td><strong>4</strong></td><td>Fine/Sanction</td></tr><tr><td><strong>5</strong></td><td>License revocation possible</td></tr></table>'
         operational_impact: '<strong>Operational Impact (BIA)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>No other processes affected</td></tr><tr><td><strong>2</strong></td><td>1-2 processes impaired</td></tr><tr><td><strong>3</strong></td><td>Department impaired</td></tr><tr><td><strong>4</strong></td><td>Multiple departments affected</td></tr><tr><td><strong>5</strong></td><td>Entire operation at risk</td></tr></table>'
     placeholder:
-        rto: 'e.g. 4'
-        rpo: 'e.g. 2'
-        mtpd: 'e.g. 24'
+        rto: 'e.g. 4 (hours)'
+        rpo: 'e.g. 2 (hours)'
+        mtpd: 'e.g. 24 (hours)'
     empty:
         title: 'No business processes yet'
         description: 'Create your first business process to start with the business impact analysis.'
