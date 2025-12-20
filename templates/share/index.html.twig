@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'share.title'|trans({}, 'messages') }}{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h1 class="h5 mb-0">
+                        <i class="bi bi-share me-2" aria-hidden="true"></i>
+                        {{ 'share.title'|trans({}, 'messages') }}
+                    </h1>
+                </div>
+                <div class="card-body">
+                    {# Shared Content Preview #}
+                    <div class="mb-4">
+                        <h2 class="h6 text-muted mb-3">{{ 'share.content_preview'|trans({}, 'messages') }}</h2>
+
+                        {% if title %}
+                        <div class="mb-2">
+                            <strong>{{ 'share.field.title'|trans({}, 'messages') }}:</strong>
+                            <p class="mb-0">{{ title }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if text %}
+                        <div class="mb-2">
+                            <strong>{{ 'share.field.text'|trans({}, 'messages') }}:</strong>
+                            <p class="mb-0 text-break">{{ text|nl2br }}</p>
+                        </div>
+                        {% endif %}
+
+                        {% if url %}
+                        <div class="mb-2">
+                            <strong>{{ 'share.field.url'|trans({}, 'messages') }}:</strong>
+                            <p class="mb-0">
+                                <a href="{{ url }}" target="_blank" rel="noopener" class="text-break">
+                                    {{ url }}
+                                    <i class="bi bi-box-arrow-up-right ms-1" aria-hidden="true"></i>
+                                </a>
+                            </p>
+                        </div>
+                        {% endif %}
+
+                        {% if files|length > 0 %}
+                        <div class="mb-2">
+                            <strong>{{ 'share.field.files'|trans({}, 'messages') }}:</strong>
+                            <ul class="list-unstyled mb-0">
+                                {% for file in files %}
+                                <li>
+                                    <i class="bi bi-file-earmark me-1" aria-hidden="true"></i>
+                                    {{ file.name }}
+                                    <small class="text-muted">({{ (file.size / 1024)|number_format(1) }} KB)</small>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+
+                        {% if not title and not text and not url and files|length == 0 %}
+                        <div class="alert alert-info" role="alert">
+                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                            {{ 'share.no_content'|trans({}, 'messages') }}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <hr>
+
+                    {# Action Selection #}
+                    <h2 class="h6 text-muted mb-3">{{ 'share.select_action'|trans({}, 'messages') }}</h2>
+
+                    <form action="{{ path('app_share_process') }}" method="post">
+                        <input type="hidden" name="title" value="{{ title }}">
+                        <input type="hidden" name="text" value="{{ text }}">
+                        <input type="hidden" name="url" value="{{ url }}">
+                        {% for file in files %}
+                        <input type="hidden" name="file_ids[]" value="{{ file.path }}">
+                        {% endfor %}
+
+                        <div class="d-grid gap-2">
+                            {% for action in shareContext.actions %}
+                            <button type="submit"
+                                    name="action"
+                                    value="{{ action.id }}"
+                                    class="btn btn-{{ action.highlight|default(false) ? 'primary' : 'outline-secondary' }} btn-lg text-start">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi {{ action.icon }} fs-4 me-3" aria-hidden="true"></i>
+                                    <div>
+                                        <strong>{{ action.label|trans({}, 'messages') }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ action.description|trans({}, 'messages') }}</small>
+                                    </div>
+                                    {% if action.id == shareContext.suggestedAction %}
+                                    <span class="badge bg-success ms-auto">{{ 'share.suggested'|trans({}, 'messages') }}</span>
+                                    {% endif %}
+                                </div>
+                            </button>
+                            {% endfor %}
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ path('app_dashboard', {'_locale': app.request.locale}) }}" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-circle me-1" aria-hidden="true"></i>
+                        {{ 'common.cancel'|trans({}, 'messages') }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

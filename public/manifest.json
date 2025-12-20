@@ -108,5 +108,46 @@
     }
   ],
   "related_applications": [],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "share_target": {
+    "action": "/share",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [
+        {
+          "name": "files",
+          "accept": [
+            "image/*",
+            "application/pdf",
+            ".doc",
+            ".docx",
+            ".xls",
+            ".xlsx",
+            ".csv",
+            ".txt"
+          ]
+        }
+      ]
+    }
+  },
+  "protocol_handlers": [
+    {
+      "protocol": "web+isms",
+      "url": "/protocol?data=%s"
+    }
+  ],
+  "file_handlers": [
+    {
+      "action": "/import",
+      "name": "ISMS Import",
+      "accept": {
+        "application/json": [".json"],
+        "text/csv": [".csv"]
+      }
+    }
+  ]
 }

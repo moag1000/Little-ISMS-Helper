@@ -1565,3 +1565,37 @@ pwa:
     install_description: 'Installieren Sie die App für schnelleren Zugriff und Offline-Nutzung.'
     offline: 'Sie sind offline'
     online: 'Verbindung wiederhergestellt'
+    notifications:
+        enabled: 'Push-Benachrichtigungen aktiviert'
+        disabled: 'Push-Benachrichtigungen deaktiviert'
+        permission_denied: 'Benachrichtigungen wurden blockiert'
+        subscribe: 'Benachrichtigungen aktivieren'
+        unsubscribe: 'Benachrichtigungen deaktivieren'
+        test: 'Testbenachrichtigung senden'
+    sync:
+        pending: '%count% ausstehende Synchronisierungen'
+        syncing: 'Synchronisiere...'
+        success: 'Erfolgreich synchronisiert'
+        error: 'Synchronisierung fehlgeschlagen'
+
+# Share Target API - Phase 8A
+share:
+    title: 'Inhalt teilen'
+    content_preview: 'Geteilter Inhalt'
+    select_action: 'Was möchten Sie tun?'
+    no_content: 'Kein Inhalt geteilt'
+    suggested: 'Empfohlen'
+    field:
+        title: 'Titel'
+        text: 'Text'
+        url: 'URL'
+        files: 'Dateien'
+    action:
+        save_note: 'Als Notiz speichern'
+        note_desc: 'Schnell speichern für später'
+        create_incident: 'Vorfall erstellen'
+        incident_desc: 'Als Sicherheitsvorfall melden'
+        create_risk: 'Risiko erstellen'
+        risk_desc: 'Als neues Risiko erfassen'
+        create_document: 'Dokument erstellen'
+        document_desc: 'Als Dokument ablegen'

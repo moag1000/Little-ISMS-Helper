@@ -321,6 +321,10 @@ self.addEventListener('notificationclick', (event) => {
 self.addEventListener('sync', (event) => {
     console.log('[SW] Background sync:', event.tag);
 
+    if (event.tag === 'sync-offline-requests') {
+        event.waitUntil(syncOfflineRequests());
+    }
+
     if (event.tag === 'sync-incidents') {
         event.waitUntil(syncIncidents());
     }
@@ -331,19 +335,249 @@ self.addEventListener('sync', (event) => {
 });
 
 /**
- * Sync pending incidents (placeholder for future implementation)
+ * IndexedDB helper for offline request storage
  */
-async function syncIncidents() {
-    // TODO: Implement offline incident sync
-    console.log('[SW] Syncing incidents...');
+const DB_NAME = 'isms-offline-db';
+const DB_VERSION = 1;
+const STORE_NAME = 'offline-requests';
+
+function openDatabase() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve(request.result);
+
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                const store = db.createObjectStore(STORE_NAME, {
+                    keyPath: 'id',
+                    autoIncrement: true
+                });
+                store.createIndex('timestamp', 'timestamp');
+                store.createIndex('type', 'type');
+            }
+        };
+    });
 }
 
 /**
- * Sync pending risk updates (placeholder for future implementation)
+ * Store a request for later sync
  */
-async function syncRiskUpdates() {
-    // TODO: Implement offline risk update sync
-    console.log('[SW] Syncing risk updates...');
+async function storeOfflineRequest(requestData) {
+    const db = await openDatabase();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+
+        const request = store.add({
+            ...requestData,
+            timestamp: Date.now(),
+            retries: 0
+        });
+
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
 }
 
-console.log('[SW] Service Worker loaded');
+/**
+ * Get all pending offline requests
+ */
+async function getOfflineRequests() {
+    const db = await openDatabase();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const store = tx.objectStore(STORE_NAME);
+        const request = store.getAll();
+
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+    });
+}
+
+/**
+ * Delete a synced request
+ */
+async function deleteOfflineRequest(id) {
+    const db = await openDatabase();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        const request = store.delete(id);
+
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+/**
+ * Sync all pending offline requests
+ */
+async function syncOfflineRequests() {
+    console.log('[SW] Syncing offline requests...');
+
+    const requests = await getOfflineRequests();
+    console.log(`[SW] Found ${requests.length} pending requests`);
+
+    for (const req of requests) {
+        try {
+            const response = await fetch(req.url, {
+                method: req.method,
+                headers: req.headers,
+                body: req.body
+            });
+
+            if (response.ok) {
+                await deleteOfflineRequest(req.id);
+                console.log(`[SW] Synced request ${req.id}`);
+
+                // Notify clients of successful sync
+                const clients = await self.clients.matchAll();
+                clients.forEach(client => {
+                    client.postMessage({
+                        type: 'SYNC_SUCCESS',
+                        requestId: req.id,
+                        requestType: req.type
+                    });
+                });
+            } else if (response.status >= 400 && response.status < 500) {
+                // Client error - don't retry
+                await deleteOfflineRequest(req.id);
+                console.log(`[SW] Request ${req.id} failed with client error, removing`);
+            }
+        } catch (error) {
+            console.error(`[SW] Failed to sync request ${req.id}:`, error);
+            // Will retry on next sync
+        }
+    }
+}
+
+/**
+ * Sync pending incidents
+ */
+async function syncIncidents() {
+    console.log('[SW] Syncing incidents...');
+    const requests = await getOfflineRequests();
+    const incidentRequests = requests.filter(r => r.type === 'incident');
+
+    for (const req of incidentRequests) {
+        try {
+            const response = await fetch(req.url, {
+                method: req.method,
+                headers: req.headers,
+                body: req.body
+            });
+
+            if (response.ok) {
+                await deleteOfflineRequest(req.id);
+
+                // Show success notification
+                self.registration.showNotification('Incident Synced', {
+                    body: 'Your offline incident report has been submitted.',
+                    icon: '/icons/icon-192x192.png',
+                    badge: '/icons/icon-72x72.png',
+                    tag: 'sync-incident'
+                });
+            }
+        } catch (error) {
+            console.error('[SW] Failed to sync incident:', error);
+        }
+    }
+}
+
+/**
+ * Sync pending risk updates
+ */
+async function syncRiskUpdates() {
+    console.log('[SW] Syncing risk updates...');
+    const requests = await getOfflineRequests();
+    const riskRequests = requests.filter(r => r.type === 'risk');
+
+    for (const req of riskRequests) {
+        try {
+            const response = await fetch(req.url, {
+                method: req.method,
+                headers: req.headers,
+                body: req.body
+            });
+
+            if (response.ok) {
+                await deleteOfflineRequest(req.id);
+            }
+        } catch (error) {
+            console.error('[SW] Failed to sync risk update:', error);
+        }
+    }
+}
+
+/**
+ * Handle messages from clients
+ */
+self.addEventListener('message', (event) => {
+    console.log('[SW] Message received:', event.data);
+
+    if (event.data.type === 'STORE_OFFLINE_REQUEST') {
+        storeOfflineRequest(event.data.request)
+            .then(id => {
+                event.ports[0].postMessage({ success: true, id });
+            })
+            .catch(error => {
+                event.ports[0].postMessage({ success: false, error: error.message });
+            });
+    }
+
+    if (event.data.type === 'GET_OFFLINE_COUNT') {
+        getOfflineRequests()
+            .then(requests => {
+                event.ports[0].postMessage({ count: requests.length });
+            })
+            .catch(() => {
+                event.ports[0].postMessage({ count: 0 });
+            });
+    }
+
+    if (event.data.type === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
+});
+
+/**
+ * Periodic Background Sync (if supported)
+ */
+self.addEventListener('periodicsync', (event) => {
+    console.log('[SW] Periodic sync:', event.tag);
+
+    if (event.tag === 'sync-dashboard-data') {
+        event.waitUntil(prefetchDashboardData());
+    }
+});
+
+/**
+ * Prefetch dashboard data for offline access
+ */
+async function prefetchDashboardData() {
+    console.log('[SW] Prefetching dashboard data...');
+
+    const endpoints = [
+        '/api/dashboard/stats',
+        '/api/risks/summary',
+        '/api/incidents/recent'
+    ];
+
+    const cache = await caches.open(API_CACHE);
+
+    for (const endpoint of endpoints) {
+        try {
+            const response = await fetch(endpoint);
+            if (response.ok) {
+                cache.put(endpoint, response);
+            }
+        } catch (error) {
+            console.error(`[SW] Failed to prefetch ${endpoint}:`, error);
+        }
+    }
+}
+
+console.log('[SW] Service Worker loaded with Background Sync support');
