@@ -10,7 +10,9 @@
 {% set trans_domain = translation_domain|default('messages') %}
 {% set label_text = label_key is defined ? (label_key|trans({}, trans_domain)) : (label|default('')) %}
 {% set help_text = help_key is defined ? (help_key|trans({}, trans_domain)) : (help|default(null)) %}
-{% set tooltip_text = tooltip_key is defined ? (tooltip_key|trans({}, trans_domain)) : (tooltip|default(null)) %}
+{% set explicit_tooltip = tooltip_key is defined ? (tooltip_key|trans({}, trans_domain)) : (tooltip|default(null)) %}
+{# Use explicit tooltip if defined, otherwise fall back to help text as tooltip #}
+{% set tooltip_text = explicit_tooltip ? explicit_tooltip : help_text %}
 
 {# Floating labels work for: text, email, password, number, textarea, select #}
 {# BUT NOT for expanded choice fields (radio/checkbox) #}
