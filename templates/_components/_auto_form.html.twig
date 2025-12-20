@@ -46,6 +46,7 @@
 {% set help_texts = help_texts|default({}) %}
 {% set tooltips = tooltips|default({}) %}
 {% set default_col_width = 12 %}
+{% set passed_translation_domain = translation_domain|default(null) %}
 
 {% for section_key, section in sections %}
     <fieldset class="mb-4">
@@ -101,14 +102,14 @@
                         <div class="col-md-{{ col_width }}">
                             {% set help_key = help_texts[field_name]|default(null) %}
                             {% set tooltip_key = tooltips[field_name]|default(null) %}
-                            {# Get translation domain from form or use default #}
-                            {% set translation_domain = field.vars.translation_domain|default('messages') %}
+                            {# Use passed translation_domain for tooltips, fallback to field's domain #}
+                            {% set trans_domain = passed_translation_domain ? passed_translation_domain : field.vars.translation_domain|default('messages') %}
                             {% include '_components/_form_field.html.twig' with {
                                 'field': field,
                                 'label_key': field.vars.label,
                                 'help_key': help_key,
                                 'tooltip_key': tooltip_key,
-                                'translation_domain': translation_domain,
+                                'translation_domain': trans_domain,
                                 'required': field.vars.required
                             } %}
                         </div>
