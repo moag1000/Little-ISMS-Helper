@@ -198,7 +198,113 @@
             {% if analysis %}
                 <div class="detail-section">
                     <h3>{{ 'asset.section.protection_analysis'|trans({}, 'asset') }}</h3>
-                    <p>{{ analysis.availability.recommendation }}</p>
+                    <div class="protection-analysis">
+                        {% set levelColors = {'very_high': 'danger', 'high': 'warning', 'normal': 'info', 'low': 'secondary'} %}
+
+                        <div class="row mb-3">
+                            {# Confidentiality #}
+                            <div class="col-md-4">
+                                <div class="protection-card">
+                                    <div class="protection-header">
+                                        <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                                        {{ 'asset.label.confidentiality'|trans({}, 'asset') }}
+                                    </div>
+                                    <div class="protection-level">
+                                        <span class="badge bg-{{ levelColors[analysis.confidentiality.level]|default('secondary') }}">
+                                            {{ ('bcm.level.' ~ analysis.confidentiality.level)|trans({}, 'bcm') }}
+                                        </span>
+                                        <span class="value-display">{{ analysis.confidentiality.value }}/5</span>
+                                    </div>
+                                    {% if analysis.confidentiality.recommendation %}
+                                        <div class="protection-recommendation">
+                                            <i class="bi bi-arrow-up text-warning" aria-hidden="true"></i>
+                                            {{ 'asset.protection.recommended'|trans({}, 'asset') }}: {{ analysis.confidentiality.recommendation }}/5
+                                        </div>
+                                    {% endif %}
+                                    <div class="protection-source">
+                                        <small class="text-muted">
+                                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                            {{ analysis.confidentiality.reasoning }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# Integrity #}
+                            <div class="col-md-4">
+                                <div class="protection-card">
+                                    <div class="protection-header">
+                                        <i class="bi bi-check2-circle" aria-hidden="true"></i>
+                                        {{ 'asset.label.integrity'|trans({}, 'asset') }}
+                                    </div>
+                                    <div class="protection-level">
+                                        <span class="badge bg-{{ levelColors[analysis.integrity.level]|default('secondary') }}">
+                                            {{ ('bcm.level.' ~ analysis.integrity.level)|trans({}, 'bcm') }}
+                                        </span>
+                                        <span class="value-display">{{ analysis.integrity.value }}/5</span>
+                                    </div>
+                                    {% if analysis.integrity.recommendation %}
+                                        <div class="protection-recommendation">
+                                            <i class="bi bi-arrow-up text-warning" aria-hidden="true"></i>
+                                            {{ 'asset.protection.recommended'|trans({}, 'asset') }}: {{ analysis.integrity.recommendation }}/5
+                                        </div>
+                                    {% endif %}
+                                    <div class="protection-source">
+                                        <small class="text-muted">
+                                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                            {{ analysis.integrity.reasoning }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# Availability #}
+                            <div class="col-md-4">
+                                <div class="protection-card">
+                                    <div class="protection-header">
+                                        <i class="bi bi-lightning-charge" aria-hidden="true"></i>
+                                        {{ 'asset.label.availability'|trans({}, 'asset') }}
+                                    </div>
+                                    <div class="protection-level">
+                                        <span class="badge bg-{{ levelColors[analysis.availability.level]|default('secondary') }}">
+                                            {{ ('bcm.level.' ~ analysis.availability.level)|trans({}, 'bcm') }}
+                                        </span>
+                                        <span class="value-display">{{ analysis.availability.value }}/5</span>
+                                    </div>
+                                    {% if analysis.availability.recommendation %}
+                                        <div class="protection-recommendation">
+                                            <i class="bi bi-arrow-up text-warning" aria-hidden="true"></i>
+                                            {{ 'asset.protection.recommended'|trans({}, 'asset') }}: {{ analysis.availability.recommendation }}/5
+                                        </div>
+                                    {% endif %}
+                                    <div class="protection-source">
+                                        <small class="text-muted">
+                                            <i class="bi bi-info-circle" aria-hidden="true"></i>
+                                            {{ analysis.availability.reasoning }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Overall Level #}
+                        {% if analysis.overallLevel is defined %}
+                            <div class="overall-protection">
+                                <strong>{{ 'asset.protection.overall_level'|trans({}, 'asset') }}:</strong>
+                                <span class="badge bg-{{ levelColors[analysis.overallLevel]|default('secondary') }} ms-2">
+                                    {{ ('bcm.level.' ~ analysis.overallLevel)|trans({}, 'bcm') }}
+                                </span>
+                            </div>
+                        {% endif %}
+
+                        {# Data Reuse Info #}
+                        <div class="data-reuse-info mt-3">
+                            <small class="text-muted">
+                                <i class="bi bi-recycle" aria-hidden="true"></i>
+                                {{ 'asset.protection.data_reuse_info'|trans({}, 'asset') }}
+                            </small>
+                        </div>
+                    </div>
                 </div>
             {% endif %}
 
@@ -308,12 +414,13 @@
 .cia-values { display: flex; flex-direction: column; gap: 1rem; }
 .cia-item { display: flex; align-items: center; gap: 1rem; }
 .cia-item .label { width: 150px; font-weight: bold; }
-.value-bar { flex: 1; height: 24px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+.value-bar { flex: 1; height: 24px; background: var(--bs-secondary-bg); border-radius: 4px; overflow: hidden; }
 .value-bar .bar { height: 100%; background: linear-gradient(90deg, #10b981, #059669); }
 .cia-item .value { width: 50px; text-align: right; }
 .instruction-box, .policy-box {
     padding: 1rem;
-    background: #f9fafb;
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-body-color);
     border-left: 3px solid #3b82f6;
     border-radius: 4px;
     white-space: pre-wrap;
@@ -326,7 +433,8 @@
 .controls-list, .risks-list, .incidents-list { display: flex; flex-direction: column; gap: 0.5rem; }
 .control-item, .risk-item, .incident-item {
     padding: 0.75rem;
-    background: #f9fafb;
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-body-color);
     border-left: 3px solid #3b82f6;
     border-radius: 4px;
     display: flex;
@@ -338,7 +446,8 @@
 .audit-log-list { display: flex; flex-direction: column; gap: 0.75rem; }
 .audit-log-item {
     padding: 1rem;
-    background: #f9fafb;
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-body-color);
     border-left: 3px solid #6366f1;
     border-radius: 4px;
 }
@@ -360,7 +469,7 @@
     gap: 0.5rem;
     margin: 0.25rem 0;
 }
-.field-name { font-weight: bold; color: #6b7280; }
+.field-name { font-weight: bold; color: var(--bs-secondary-color); }
 .old-value {
     text-decoration: line-through;
     color: #ef4444;

@@ -79,6 +79,10 @@ asset:
         return_date: 'Date of planned return (for temporarily assigned assets)'
         status: 'Current usage status of the asset'
     cia_help: 'Assess protection needs for confidentiality, integrity and availability (1=very low, 5=very high)'
+    tooltip:
+        acquisition_value: '<strong>Acquisition Value:</strong><br>The original purchase price when the asset was acquired.<br><em>Example: Server purchased for €10,000</em>'
+        current_value: '<strong>Current Value:</strong><br>Today''s book value after depreciation.<br><em>Example: Worth €3,000 after 3 years</em>'
+        monetary_value: '<strong>Monetary Value (for Risk Assessment):</strong><br>The estimated damage value in case of a security incident. This is the most important value for the ISMS!<br><em>Example: Outage causes €50,000 production loss</em>'
     label:
         type: Type
         owner: Owner

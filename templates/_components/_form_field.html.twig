@@ -10,6 +10,7 @@
 {% set trans_domain = translation_domain|default('messages') %}
 {% set label_text = label_key is defined ? (label_key|trans({}, trans_domain)) : (label|default('')) %}
 {% set help_text = help_key is defined ? (help_key|trans({}, trans_domain)) : (help|default(null)) %}
+{% set tooltip_text = tooltip_key is defined ? (tooltip_key|trans({}, trans_domain)) : (tooltip|default(null)) %}
 
 {# Floating labels work for: text, email, password, number, textarea, select #}
 {# BUT NOT for expanded choice fields (radio/checkbox) #}
@@ -43,6 +44,15 @@
                 {% if is_required %}
                     <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
                 {% endif %}
+                {% if tooltip_text %}
+                    <i class="bi bi-question-circle-fill text-muted ms-1"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="top"
+                       data-bs-html="true"
+                       title="{{ tooltip_text }}"
+                       aria-label="{{ tooltip_text }}"
+                       style="cursor: help; font-size: 0.85em;"></i>
+                {% endif %}
             </label>
         </div>
     {% else %}
@@ -51,6 +61,15 @@
             {{ label_text }}
             {% if is_required %}
                 <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
+            {% endif %}
+            {% if tooltip_text %}
+                <i class="bi bi-question-circle-fill text-muted ms-1"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="top"
+                   data-bs-html="true"
+                   title="{{ tooltip_text }}"
+                   aria-label="{{ tooltip_text }}"
+                   style="cursor: help; font-size: 0.85em;"></i>
             {% endif %}
         </label>
 
