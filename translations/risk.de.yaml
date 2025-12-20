@@ -205,6 +205,13 @@ risk:
         acceptance_approved_at: 'Datum der formalen Risikoakzeptanz durch die verantwortliche Person'
         acceptance_justification: 'Begründung, warum das Restrisiko akzeptiert wird'
         review_date: 'Datum der nächsten geplanten Risikoüberprüfung'
+    tooltip:
+        probability: '<strong>Eintrittswahrscheinlichkeit (ISO 27005)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>Sehr unwahrscheinlich - max. 1× in 10 Jahren</td></tr><tr><td><strong>2</strong></td><td>Unwahrscheinlich - ca. 1× in 5 Jahren</td></tr><tr><td><strong>3</strong></td><td>Möglich - ca. 1× pro Jahr</td></tr><tr><td><strong>4</strong></td><td>Wahrscheinlich - mehrmals pro Jahr</td></tr><tr><td><strong>5</strong></td><td>Fast sicher - häufig/regelmäßig</td></tr></table>'
+        impact: '<strong>Schadensauswirkung (ISO 27005)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>Vernachlässigbar - Minimale Auswirkung</td></tr><tr><td><strong>2</strong></td><td>Gering - Begrenzte Folgen</td></tr><tr><td><strong>3</strong></td><td>Mittel - Spürbare Auswirkung</td></tr><tr><td><strong>4</strong></td><td>Hoch - Schwerwiegende Folgen</td></tr><tr><td><strong>5</strong></td><td>Katastrophal - Existenzbedrohend</td></tr></table>'
+        residual_probability: '<strong>Restrisiko-Wahrscheinlichkeit</strong><br>Die verbleibende Eintrittswahrscheinlichkeit <em>nach</em> Umsetzung der Maßnahmen.<br><br>Gleiche Skala wie inhärente Wahrscheinlichkeit (1-5).'
+        residual_impact: '<strong>Restrisiko-Auswirkung</strong><br>Die verbleibende Schadensauswirkung <em>nach</em> Umsetzung der Maßnahmen.<br><br>Gleiche Skala wie inhärente Auswirkung (1-5).'
+        treatment_strategy: '<strong>Behandlungsstrategie (ISO 27005)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>Vermeiden</strong></td><td>Risikoquelle eliminieren</td></tr><tr><td><strong>Reduzieren</strong></td><td>Maßnahmen implementieren</td></tr><tr><td><strong>Übertragen</strong></td><td>Versicherung/Outsourcing</td></tr><tr><td><strong>Akzeptieren</strong></td><td>Bewusst tolerieren</td></tr></table>'
+        category: '<strong>Risikokategorien</strong><br><em>Technisch:</em> IT-Systeme, Software<br><em>Organisatorisch:</em> Prozesse, Personal<br><em>Physisch:</em> Gebäude, Hardware<br><em>Compliance:</em> Regulatorik, Gesetze'
     delete:
         confirm_message: 'Möchten Sie dieses Risiko wirklich unwiderruflich löschen?'
     not_reviewed: 'Noch nicht überprüft'

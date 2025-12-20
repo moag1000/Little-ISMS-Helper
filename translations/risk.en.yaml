@@ -132,35 +132,35 @@ risk:
     new: New
     create: Create
     guidance:
-        scale: Scale
-        description: Description
+        scale: 'Rating Scale'
+        description: 'Description'
         probability:
-            very_unlikely: 'Very Unlikely'
-            very_unlikely_desc: 'Very Unlikely Desc'
-            unlikely: Unlikely
-            unlikely_desc: 'Unlikely Desc'
-            possible: Possible
-            possible_desc: 'Possible Desc'
-            likely: Likely
-            likely_desc: 'Likely Desc'
-            very_likely: 'Very Likely'
-            very_likely_desc: 'Very Likely Desc'
+            very_unlikely: 'Very Unlikely (1)'
+            very_unlikely_desc: 'Occurs at most once in 10 years'
+            unlikely: 'Unlikely (2)'
+            unlikely_desc: 'Occurs approximately once in 5 years'
+            possible: 'Possible (3)'
+            possible_desc: 'Occurs approximately once per year'
+            likely: 'Likely (4)'
+            likely_desc: 'Occurs multiple times per year'
+            very_likely: 'Very Likely (5)'
+            very_likely_desc: 'Occurs frequently or almost certainly'
         impact:
-            negligible: Negligible
-            negligible_desc: 'Negligible Desc'
-            minor: Minor
-            minor_desc: 'Minor Desc'
-            moderate: Moderate
-            moderate_desc: 'Moderate Desc'
-            major: Major
-            major_desc: 'Major Desc'
-            catastrophic: Catastrophic
-            catastrophic_desc: 'Catastrophic Desc'
-        title: Title
-        intro: Intro
-        probability_title: 'Probability Title'
-        impact_title: 'Impact Title'
-        tip: Tip
+            negligible: 'Negligible (1)'
+            negligible_desc: 'Minimal impact, no significant consequences'
+            minor: 'Minor (2)'
+            minor_desc: 'Low impact, limited consequences'
+            moderate: 'Moderate (3)'
+            moderate_desc: 'Noticeable impact, considerable consequences'
+            major: 'Major (4)'
+            major_desc: 'Severe impact, significant consequences'
+            catastrophic: 'Catastrophic (5)'
+            catastrophic_desc: 'Existential impact, catastrophic consequences'
+        title: 'Assessment Guidance'
+        intro: 'Use these guidelines for consistent risk assessment according to ISO 27005'
+        probability_title: 'Probability of Occurrence (1-5)'
+        impact_title: 'Impact Severity (1-5)'
+        tip: 'Tip: Inherent risk is calculated as Probability × Impact'
     section:
         assessment: 'Risk Assessment'
         basic_info: 'Basic Information'
@@ -208,6 +208,13 @@ risk:
         acceptance_approved_at: 'Date of formal risk acceptance by the responsible person'
         acceptance_justification: 'Justification for why the residual risk is accepted'
         review_date: 'Date of the next planned risk review'
+    tooltip:
+        probability: '<strong>Probability of Occurrence (ISO 27005)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>Very unlikely - max 1× in 10 years</td></tr><tr><td><strong>2</strong></td><td>Unlikely - approx. 1× in 5 years</td></tr><tr><td><strong>3</strong></td><td>Possible - approx. 1× per year</td></tr><tr><td><strong>4</strong></td><td>Likely - multiple times per year</td></tr><tr><td><strong>5</strong></td><td>Almost certain - frequently</td></tr></table>'
+        impact: '<strong>Impact Severity (ISO 27005)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>Negligible - Minimal impact</td></tr><tr><td><strong>2</strong></td><td>Minor - Limited consequences</td></tr><tr><td><strong>3</strong></td><td>Moderate - Noticeable impact</td></tr><tr><td><strong>4</strong></td><td>Major - Severe consequences</td></tr><tr><td><strong>5</strong></td><td>Catastrophic - Existential threat</td></tr></table>'
+        residual_probability: '<strong>Residual Risk Probability</strong><br>The remaining probability of occurrence <em>after</em> implementing treatment measures.<br><br>Same scale as inherent probability (1-5).'
+        residual_impact: '<strong>Residual Risk Impact</strong><br>The remaining impact severity <em>after</em> implementing treatment measures.<br><br>Same scale as inherent impact (1-5).'
+        treatment_strategy: '<strong>Treatment Strategy (ISO 27005)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>Avoid</strong></td><td>Eliminate the risk source</td></tr><tr><td><strong>Mitigate</strong></td><td>Implement controls</td></tr><tr><td><strong>Transfer</strong></td><td>Insurance/Outsourcing</td></tr><tr><td><strong>Accept</strong></td><td>Consciously tolerate</td></tr></table>'
+        category: '<strong>Risk Categories</strong><br><em>Technical:</em> IT systems, software<br><em>Organizational:</em> Processes, personnel<br><em>Physical:</em> Buildings, hardware<br><em>Compliance:</em> Regulations, laws'
     delete:
         confirm_message: 'Confirm Message'
     not_reviewed: 'Not Reviewed'

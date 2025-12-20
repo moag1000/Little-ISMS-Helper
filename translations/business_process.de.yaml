@@ -49,6 +49,14 @@ business_process:
         recovery_strategy: 'Strategie zur Wiederherstellung nach ISO 22301:2019 (z.B. Backup-Site, manuelle Prozesse, alternative Lieferanten)'
         supporting_assets: 'Verknüpfte IT-Assets, Infrastruktur und Ressourcen, die den Prozess unterstützen'
         identified_risks: 'Verknüpfte Risiken, die diesen Prozess gefährden könnten'
+    tooltip:
+        criticality: '<strong>Geschäftskritikalität (ISO 22301)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>Niedrig</strong></td><td>Ausfall &lt; 72h tolerierbar</td></tr><tr><td><strong>Mittel</strong></td><td>Ausfall 24-72h tolerierbar</td></tr><tr><td><strong>Hoch</strong></td><td>Ausfall 4-24h tolerierbar</td></tr><tr><td><strong>Kritisch</strong></td><td>Ausfall &lt; 4h kritisch</td></tr></table>'
+        rto: '<strong>RTO - Recovery Time Objective</strong><br>Maximale Zeit bis zur Wiederherstellung nach ISO 22301<br><br><em>Beispiele:</em><br>• E-Mail: 4h<br>• ERP-System: 8h<br>• Archiv: 72h'
+        rpo: '<strong>RPO - Recovery Point Objective</strong><br>Maximaler akzeptabler Datenverlust in Stunden<br><br><em>Beispiele:</em><br>• Finanzdaten: 0h (Echtzeit)<br>• ERP: 1h<br>• Archiv: 24h'
+        mtpd: '<strong>MTPD - Maximum Tolerable Period of Disruption</strong><br>Maximale Dauer einer Unterbrechung bevor irreversible Schäden entstehen<br><br><em>Hinweis:</em> MTPD &gt; RTO erforderlich!'
+        reputational_impact: '<strong>Reputationsauswirkung (BIA)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>Keine Außenwirkung</td></tr><tr><td><strong>2</strong></td><td>Intern bekannt</td></tr><tr><td><strong>3</strong></td><td>Lokale Medien</td></tr><tr><td><strong>4</strong></td><td>Nationale Medien</td></tr><tr><td><strong>5</strong></td><td>Internationale Aufmerksamkeit</td></tr></table>'
+        regulatory_impact: '<strong>Regulatorische Auswirkung (BIA)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>Keine Aufsicht</td></tr><tr><td><strong>2</strong></td><td>Hinweis/Empfehlung</td></tr><tr><td><strong>3</strong></td><td>Formelle Mängelanzeige</td></tr><tr><td><strong>4</strong></td><td>Bußgeld/Sanktion</td></tr><tr><td><strong>5</strong></td><td>Lizenzentzug möglich</td></tr></table>'
+        operational_impact: '<strong>Operative Auswirkung (BIA)</strong><br><table class="table table-sm table-borderless mb-0 mt-1"><tr><td><strong>1</strong></td><td>Keine anderen Prozesse betroffen</td></tr><tr><td><strong>2</strong></td><td>1-2 Prozesse eingeschränkt</td></tr><tr><td><strong>3</strong></td><td>Abteilung eingeschränkt</td></tr><tr><td><strong>4</strong></td><td>Mehrere Abteilungen betroffen</td></tr><tr><td><strong>5</strong></td><td>Gesamtbetrieb gefährdet</td></tr></table>'
     placeholder:
         rto: 'z.B. 4'
         rpo: 'z.B. 2'
