@@ -97,6 +97,11 @@ services:
         arguments:
             $projectDir: '%kernel.project_dir%'
 
+    # Configure Web Push Service
+    App\Service\WebPushService:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
+
     # Configure Restore Service
     App\Service\RestoreService: ~
 

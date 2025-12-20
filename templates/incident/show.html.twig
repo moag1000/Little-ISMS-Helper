@@ -681,9 +681,9 @@
     display: flex;
     gap: 1rem;
     padding: 1rem;
-    background: white;
+    background: var(--bs-body-bg);
     border-radius: 8px;
-    border: 2px solid #e5e7eb;
+    border: 2px solid var(--bs-border-color);
     transition: all 0.3s ease;
 }
 
@@ -722,7 +722,7 @@
 
 .timeline-deadline {
     font-size: 0.9rem;
-    color: #6b7280;
+    color: var(--bs-secondary-color);
     margin: 0.5rem 0;
 }
 
@@ -758,7 +758,7 @@
     gap: 1rem;
     margin-top: 1.5rem;
     padding-top: 1.5rem;
-    border-top: 2px solid #e5e7eb;
+    border-top: 2px solid var(--bs-border-color);
 }
 
 .impact-item {
@@ -769,21 +769,21 @@
 
 .impact-item .label {
     font-size: 0.85rem;
-    color: #6b7280;
+    color: var(--bs-secondary-color);
     font-weight: 500;
 }
 
 .impact-item .value {
     font-size: 1rem;
-    color: #1f2937;
+    color: var(--bs-body-color);
 }
 
 .impact-item code {
-    background: #f3f4f6;
+    background: var(--bs-tertiary-bg);
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     font-family: 'Courier New', monospace;
-    color: #1f2937;
+    color: var(--bs-body-color);
 }
 
 /* Data Reuse Sections */
@@ -795,7 +795,8 @@
 }
 .data-reuse-item {
     padding: 0.75rem;
-    background: #f9fafb;
+    background: var(--bs-tertiary-bg);
+    color: var(--bs-body-color);
     border-left: 3px solid #3b82f6;
     border-radius: 4px;
     display: flex;
@@ -838,11 +839,11 @@
 }
 
 .audit-log-entry {
-    border-left: 3px solid #e5e7eb;
+    border-left: 3px solid var(--bs-border-color);
     padding-left: 1rem;
     margin-bottom: 1rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #f3f4f6;
+    border-bottom: 1px solid var(--bs-border-color);
 }
 
 .audit-log-entry:last-child {

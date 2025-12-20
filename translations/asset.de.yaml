@@ -79,6 +79,10 @@ asset:
         return_date: 'Datum der geplanten Rückgabe (bei temporär zugewiesenen Assets)'
         status: 'Aktueller Nutzungsstatus des Assets'
     cia_help: 'Bewerten Sie den Schutzbedarf nach Vertraulichkeit, Integrität und Verfügbarkeit (1=sehr niedrig, 5=sehr hoch)'
+    tooltip:
+        acquisition_value: '<strong>Anschaffungswert:</strong><br>Der ursprüngliche Kaufpreis bei Erwerb des Assets.<br><em>Beispiel: Server für 10.000€ gekauft</em>'
+        current_value: '<strong>Aktueller Wert:</strong><br>Der heutige Buchwert nach Abschreibung/Wertverlust.<br><em>Beispiel: Nach 3 Jahren noch 3.000€ wert</em>'
+        monetary_value: '<strong>Geldwert (für Risikobewertung):</strong><br>Der geschätzte Schadenswert bei einem Sicherheitsvorfall. Dies ist der wichtigste Wert für das ISMS!<br><em>Beispiel: Ausfall verursacht 50.000€ Produktionsverlust</em>'
     label:
         type: Typ
         owner: Eigentümer

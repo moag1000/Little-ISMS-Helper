@@ -88,21 +88,33 @@
     </legend>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.acquisitionValue,
                 'label_key': 'asset.field.acquisition_value',
                 'help_key': 'asset.help.acquisition_value',
-                'translation_domain': 'assets'
+                'tooltip_key': 'asset.tooltip.acquisition_value',
+                'translation_domain': 'asset'
             } %}
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-4">
             {% include '_components/_form_field.html.twig' with {
                 'field': form.currentValue,
                 'label_key': 'asset.field.current_value',
                 'help_key': 'asset.help.current_value',
-                'translation_domain': 'assets'
+                'tooltip_key': 'asset.tooltip.current_value',
+                'translation_domain': 'asset'
+            } %}
+        </div>
+
+        <div class="col-md-4">
+            {% include '_components/_form_field.html.twig' with {
+                'field': form.monetaryValue,
+                'label_key': 'asset.field.monetary_value',
+                'help_key': 'asset.help.monetary_value',
+                'tooltip_key': 'asset.tooltip.monetary_value',
+                'translation_domain': 'asset'
             } %}
         </div>
     </div>

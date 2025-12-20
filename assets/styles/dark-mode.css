@@ -1626,3 +1626,56 @@ button {
 [data-bs-theme="dark"] .card-header h6 {
     color: inherit !important;
 }
+
+/* ===============================
+   Light Mode Readability Fixes
+   Remove dark glows/shadows that look bad on light backgrounds
+   =============================== */
+
+/* Light Mode: Remove heavy text-shadows from buttons */
+:root:not([data-theme="dark"]):not([data-bs-theme="dark"]) .btn,
+:root:not([data-theme="dark"]):not([data-bs-theme="dark"]) .btn-primary,
+:root:not([data-theme="dark"]):not([data-bs-theme="dark"]) .btn-success,
+:root:not([data-theme="dark"]):not([data-bs-theme="dark"]) .btn-danger,
+:root:not([data-theme="dark"]):not([data-bs-theme="dark"]) .btn-warning,
+:root:not([data-theme="dark"]):not([data-bs-theme="dark"]) .btn-info {
+    text-shadow: none !important;
+}
+
+/* Light Mode: Simplify button box-shadows */
+:root:not([data-theme="dark"]):not([data-bs-theme="dark"]) .btn:hover {
+    box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25) !important;
+    text-shadow: none !important;
+}
+
+:root:not([data-theme="dark"]):not([data-bs-theme="dark"]) .btn-success:hover {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25) !important;
+}
+
+:root:not([data-theme="dark"]):not([data-bs-theme="dark"]) .btn-danger:hover {
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25) !important;
+}
+
+/* Light Mode: Fix labels and badges readability */
+:root:not([data-theme="dark"]):not([data-bs-theme="dark"]) .badge,
+:root:not([data-theme="dark"]):not([data-bs-theme="dark"]) .label {
+    text-shadow: none !important;
+}
+
+/* Light Mode: Fix card headers and stat-card titles */
+:root:not([data-theme="dark"]):not([data-bs-theme="dark"]) .stat-card-title,
+:root:not([data-theme="dark"]):not([data-bs-theme="dark"]) .widget-title,
+:root:not([data-theme="dark"]):not([data-bs-theme="dark"]) .card-header {
+    text-shadow: none !important;
+}
+
+/* Light Mode: Reduce glow intensity on icons */
+:root:not([data-theme="dark"]):not([data-bs-theme="dark"]) .stat-card-icon {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Light Mode: Clean form labels */
+:root:not([data-theme="dark"]):not([data-bs-theme="dark"]) .form-label,
+:root:not([data-theme="dark"]):not([data-bs-theme="dark"]) label {
+    text-shadow: none !important;
+}
