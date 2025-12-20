@@ -3,6 +3,11 @@ bcm:
         asset_insights: Asset-Einblicke
         bcm_insights: BCM-Einblicke
         critical: 'Kritische Geschäftskontinuität'
+    level:
+        very_high: 'Sehr hoch'
+        high: 'Hoch'
+        normal: 'Normal'
+        low: 'Niedrig'
     description:
         critical: 'Übersicht über kritische Assets und Prozesse inklusive RTO/RPO und Handlungsbedarf'
         critical_level: 'Sofortiger Geschäftsausfall bei Verlust oder Ausfall. Höchste Priorität für Notfallmaßnahmen.'
@@ -139,6 +144,7 @@ business_process:
         critical: Kritisch
         high: Hoch
         medium: Mittel
+        low: Niedrig
     impact:
         critical: Kritisch
         high: Hoch
