@@ -43,7 +43,7 @@ class BusinessProcessType extends AbstractType
                     'bcm.criticality.critical' => 'critical',
                     'bcm.criticality.high' => 'high',
                     'bcm.criticality.medium' => 'medium',
-                    'bcm.impact.low' => 'low',
+                    'bcm.criticality.low' => 'low',
                 ],
                 'choice_translation_domain' => 'bcm',
                 'attr' => ['class' => 'form-select'],
