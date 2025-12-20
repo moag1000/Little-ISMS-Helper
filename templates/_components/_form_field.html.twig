@@ -21,40 +21,43 @@
 
 <div class="mb-3">
     {% if supports_floating %}
-        {# Bootstrap Floating Label wrapper #}
-        <div class="form-floating">
-            {# Input MUST come before label for floating effect #}
-            {# Use label_text (translated) as placeholder, override any existing placeholder #}
-            {% set placeholder_text = label_text %}
-            {% set merged_attrs = field.vars.attr|merge({
-                'class': (field.vars.attr.class|default('') ~ (has_errors ? ' is-invalid' : ''))|trim,
-                'placeholder': placeholder_text,
-                'aria-invalid': has_errors ? 'true' : 'false',
-                'aria-describedby': has_errors ? field_id ~ '_error' : null,
-                'aria-required': is_required ? 'true' : 'false'
-            }) %}
-            {{ form_widget(field, {
-                'attr': merged_attrs
-            }) }}
+        {# Bootstrap Floating Label wrapper with tooltip outside #}
+        <div class="d-flex align-items-start gap-2">
+            <div class="form-floating flex-grow-1">
+                {# Input MUST come before label for floating effect #}
+                {# Use label_text (translated) as placeholder, override any existing placeholder #}
+                {% set placeholder_text = label_text %}
+                {% set merged_attrs = field.vars.attr|merge({
+                    'class': (field.vars.attr.class|default('') ~ (has_errors ? ' is-invalid' : ''))|trim,
+                    'placeholder': placeholder_text,
+                    'aria-invalid': has_errors ? 'true' : 'false',
+                    'aria-describedby': has_errors ? field_id ~ '_error' : null,
+                    'aria-required': is_required ? 'true' : 'false'
+                }) %}
+                {{ form_widget(field, {
+                    'attr': merged_attrs
+                }) }}
 
-            {# Label comes AFTER input for floating labels #}
-            <label for="{{ field_id }}">
-                {{ label_text }}
-                {% if is_required %}
-                    <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
-                {% endif %}
-                {% if tooltip_text %}
-                    <i class="bi bi-question-circle-fill text-muted ms-1"
-                       data-bs-toggle="tooltip"
-                       data-bs-placement="top"
-                       data-bs-html="true"
-                       data-bs-title="{{ tooltip_text }}"
-                       role="button"
-                       tabindex="0"
-                       aria-label="{{ 'common.help'|trans({}, 'messages') }}"
-                       style="cursor: help; font-size: 0.85em;"></i>
-                {% endif %}
-            </label>
+                {# Label comes AFTER input for floating labels #}
+                <label for="{{ field_id }}">
+                    {{ label_text }}
+                    {% if is_required %}
+                        <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
+                    {% endif %}
+                </label>
+            </div>
+            {# Tooltip icon OUTSIDE floating label for better accessibility #}
+            {% if tooltip_text %}
+                <i class="bi bi-question-circle-fill text-primary mt-3"
+                   data-bs-toggle="tooltip"
+                   data-bs-placement="right"
+                   data-bs-html="true"
+                   data-bs-title="{{ tooltip_text }}"
+                   role="button"
+                   tabindex="0"
+                   aria-label="{{ 'common.help'|trans({}, 'messages') }}"
+                   style="cursor: help; font-size: 1.1em;"></i>
+            {% endif %}
         </div>
     {% else %}
         {# Fallback for non-floating fields (checkbox, radio, file, hidden) #}

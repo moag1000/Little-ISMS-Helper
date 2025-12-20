@@ -16,9 +16,29 @@ import './csrf_protection.js';
 import * as bootstrap from 'bootstrap';
 window.bootstrap = bootstrap;
 
-// Import tooltip initialization (must come after bootstrap is available)
-// This enables the module-level event handlers for tooltip auto-initialization
-import './controllers/tooltip_controller.js';
+// Initialize Bootstrap tooltips on page load and Turbo navigation
+function initTooltips() {
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+
+    tooltipTriggerList.forEach((el) => {
+        // Dispose existing tooltip if any
+        const existing = bootstrap.Tooltip.getInstance(el);
+        if (existing) existing.dispose();
+
+        // Create new tooltip
+        new bootstrap.Tooltip(el, {
+            trigger: 'hover focus',
+            html: true,
+            container: 'body'
+        });
+    });
+}
+
+// Run on Turbo navigation (primary for SPA-like behavior)
+document.addEventListener('turbo:load', initTooltips);
+
+// Fallback for initial page load without Turbo
+document.addEventListener('DOMContentLoaded', initTooltips);
 
 // NOTE: CSS is loaded separately via assets/styles.css (see importmap.php)
 // This avoids AssetMapper issues with CSS imports from JavaScript at APP_DEBUG=0
