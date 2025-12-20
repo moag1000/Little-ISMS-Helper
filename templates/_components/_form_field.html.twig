@@ -28,10 +28,7 @@
                 'class': (field.vars.attr.class|default('') ~ (has_errors ? ' is-invalid' : ''))|trim,
                 'placeholder': placeholder_text,
                 'aria-invalid': has_errors ? 'true' : 'false',
-                'aria-describedby': [
-                    help_text ? field_id ~ '_help',
-                    has_errors ? field_id ~ '_error'
-                ]|filter(v => v)|join(' ')|default(null),
+                'aria-describedby': has_errors ? field_id ~ '_error' : null,
                 'aria-required': is_required ? 'true' : 'false'
             }) %}
             {{ form_widget(field, {
@@ -81,21 +78,10 @@
             'attr': {
                 'class': (field.vars.attr.class|default('') ~ (has_errors ? ' is-invalid' : ''))|trim,
                 'aria-invalid': has_errors ? 'true' : 'false',
-                'aria-describedby': [
-                    help is defined and help ? field_id ~ '_help',
-                    has_errors ? field_id ~ '_error'
-                ]|filter(v => v)|join(' ')|default(null),
+                'aria-describedby': has_errors ? field_id ~ '_error' : null,
                 'aria-required': is_required ? 'true' : 'false'
             }
         }) }}
-    {% endif %}
-
-    {# Help text (positioned below input) - only show if no tooltip is present #}
-    {% if help_text and not tooltip_text %}
-        <div id="{{ field_id }}_help" class="form-text">
-            <i class="bi bi-info-circle" aria-hidden="true"></i>
-            {{ help_text }}
-        </div>
     {% endif %}
 
     {# Error messages with ARIA live region #}
