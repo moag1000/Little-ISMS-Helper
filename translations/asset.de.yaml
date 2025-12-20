@@ -78,6 +78,10 @@ asset:
         handling_instructions: 'Besondere Anweisungen für den Umgang mit diesem Asset'
         return_date: 'Datum der geplanten Rückgabe (bei temporär zugewiesenen Assets)'
         status: 'Aktueller Nutzungsstatus des Assets'
+    protection:
+        recommended: 'Empfohlen'
+        overall_level: 'Gesamtschutzbedarf'
+        data_reuse_info: 'Diese Analyse verwendet Daten aus BCM, Risiken und Incidents für automatisierte Schutzbedarfsempfehlungen.'
     cia_help: 'Bewerten Sie den Schutzbedarf nach Vertraulichkeit, Integrität und Verfügbarkeit (1=sehr niedrig, 5=sehr hoch)'
     tooltip:
         acquisition_value: '<strong>Anschaffungswert:</strong><br>Der ursprüngliche Kaufpreis bei Erwerb des Assets.<br><em>Beispiel: Server für 10.000€ gekauft</em>'

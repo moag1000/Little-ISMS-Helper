@@ -78,6 +78,10 @@ asset:
         handling_instructions: 'Special instructions for handling this asset'
         return_date: 'Date of planned return (for temporarily assigned assets)'
         status: 'Current usage status of the asset'
+    protection:
+        recommended: 'Recommended'
+        overall_level: 'Overall Protection Level'
+        data_reuse_info: 'This analysis uses data from BCM, risks and incidents for automated protection requirement recommendations.'
     cia_help: 'Assess protection needs for confidentiality, integrity and availability (1=very low, 5=very high)'
     tooltip:
         acquisition_value: '<strong>Acquisition Value:</strong><br>The original purchase price when the asset was acquired.<br><em>Example: Server purchased for €10,000</em>'

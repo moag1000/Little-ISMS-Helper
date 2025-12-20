@@ -179,13 +179,46 @@ class ProtectionRequirementService
      */
     public function getCompleteProtectionRequirementAnalysis(Asset $asset): array
     {
+        $confidentiality = $this->calculateConfidentialityRequirement($asset);
+        $integrity = $this->calculateIntegrityRequirement($asset);
+        $availability = $this->calculateAvailabilityRequirement($asset);
+
+        // Add level field to each dimension
+        $confidentiality['level'] = $this->valueToLevel($confidentiality['value']);
+        $integrity['level'] = $this->valueToLevel($integrity['value']);
+        $availability['level'] = $this->valueToLevel($availability['value']);
+
+        // Calculate overall level (max of all dimensions)
+        $maxValue = max($confidentiality['value'], $integrity['value'], $availability['value']);
+        $overallLevel = $this->valueToLevel($maxValue);
+
         return [
             'asset' => $asset,
-            'confidentiality' => $this->calculateConfidentialityRequirement($asset),
-            'integrity' => $this->calculateIntegrityRequirement($asset),
-            'availability' => $this->calculateAvailabilityRequirement($asset),
+            'confidentiality' => $confidentiality,
+            'integrity' => $integrity,
+            'availability' => $availability,
+            'overallLevel' => $overallLevel,
             'timestamp' => new DateTime()
         ];
+    }
+
+    /**
+     * Konvertiert numerischen Schutzbedarf (1-5) in Stufe
+     *
+     * Mapping gemäß ISO 27001 / BSI Grundschutz:
+     * - 5: Sehr hoch (very_high)
+     * - 4: Hoch (high)
+     * - 3: Normal (normal)
+     * - 1-2: Niedrig (low)
+     */
+    private function valueToLevel(int $value): string
+    {
+        return match (true) {
+            $value >= 5 => 'very_high',
+            $value === 4 => 'high',
+            $value === 3 => 'normal',
+            default => 'low',
+        };
     }
 
     /**
