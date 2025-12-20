@@ -90,8 +90,8 @@
         }) }}
     {% endif %}
 
-    {# Help text (positioned below input) #}
-    {% if help_text %}
+    {# Help text (positioned below input) - only show if no tooltip is present #}
+    {% if help_text and not tooltip_text %}
         <div id="{{ field_id }}_help" class="form-text">
             <i class="bi bi-info-circle" aria-hidden="true"></i>
             {{ help_text }}
