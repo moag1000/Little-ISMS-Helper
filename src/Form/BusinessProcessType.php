@@ -40,12 +40,12 @@ class BusinessProcessType extends AbstractType
             ->add('criticality', ChoiceType::class, [
                 'label' => 'business_process.field.criticality',
                 'choices' => [
-                    'bcm.criticality.critical' => 'critical',
-                    'bcm.criticality.high' => 'high',
-                    'bcm.criticality.medium' => 'medium',
-                    'bcm.criticality.low' => 'low',
+                    'business_process.criticality.critical' => 'critical',
+                    'business_process.criticality.high' => 'high',
+                    'business_process.criticality.medium' => 'medium',
+                    'business_process.criticality.low' => 'low',
                 ],
-                'choice_translation_domain' => 'bcm',
+                'choice_translation_domain' => 'business_process',
                 'attr' => ['class' => 'form-select'],
                 'constraints' => [new NotBlank()],
             ])
