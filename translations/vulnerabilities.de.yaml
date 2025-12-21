@@ -82,3 +82,6 @@ vulnerability:
         poc: 'Proof of Concept verfügbar'
         public: 'Öffentlicher Exploit'
         weaponized: 'Weaponized Exploit'
+    tooltip:
+        cvss_score: '<strong>📊 CVSS Score (0-10)</strong><br><em>Common Vulnerability Scoring System</em><br><br><strong>0.0</strong> = Keine Auswirkung<br><strong>0.1-3.9</strong> = Niedrig<br><strong>4.0-6.9</strong> = Mittel<br><strong>7.0-8.9</strong> = Hoch<br><strong>9.0-10.0</strong> = Kritisch<br><br><em>Tipp: Den CVSS-Score finden Sie in der CVE-Datenbank (nvd.nist.gov)</em>'
+        severity: '<strong>⚠️ Schweregrad</strong><br><em>Frage: Wie kritisch ist diese Schwachstelle für Ihr System?</em><br><br><strong>Kritisch</strong> = Sofortige Maßnahme erforderlich<br><strong>Hoch</strong> = Innerhalb 7 Tagen beheben<br><strong>Mittel</strong> = Im nächsten Wartungsfenster<br><strong>Niedrig</strong> = Bei Gelegenheit<br><strong>Info</strong> = Zur Kenntnis nehmen'

@@ -40,3 +40,6 @@ vulnerability:
         resolved: Resolved
         closed: Closed
     edit: Edit
+    tooltip:
+        cvss_score: '<strong>📊 CVSS Score (0-10)</strong><br><em>Common Vulnerability Scoring System</em><br><br><strong>0.0</strong> = No impact<br><strong>0.1-3.9</strong> = Low<br><strong>4.0-6.9</strong> = Medium<br><strong>7.0-8.9</strong> = High<br><strong>9.0-10.0</strong> = Critical<br><br><em>Tip: Find the CVSS score in the CVE database (nvd.nist.gov)</em>'
+        severity: '<strong>⚠️ Severity</strong><br><em>Question: How critical is this vulnerability for your system?</em><br><br><strong>Critical</strong> = Immediate action required<br><strong>High</strong> = Fix within 7 days<br><strong>Medium</strong> = Next maintenance window<br><strong>Low</strong> = When convenient<br><strong>Info</strong> = Acknowledge only'

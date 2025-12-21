@@ -613,6 +613,10 @@ data_breach:
         medium: 'Mittel'
         high: 'Hoch'
         critical: 'Kritisch'
+    tooltip:
+        affected_data_subjects: '<strong>👥 Anzahl betroffener Personen</strong><br><em>Frage: Wie viele Personen sind von der Datenschutzverletzung betroffen?</em><br><br>Schätzen Sie die Anzahl der betroffenen Personen:<br>• Genau, wenn bekannt<br>• Obergrenze bei Unsicherheit<br><br><em>Wichtig für Art. 33 DSGVO: Ab ~1.000 Personen wird die Aufsichtsbehörde genauer hinschauen!</em>'
+        severity: '<strong>⚠️ Schweregrad der Verletzung</strong><br><em>Frage: Wie schwerwiegend ist diese Datenschutzverletzung?</em><br><br><strong>Niedrig</strong> = Geringe Auswirkung auf Betroffene<br><strong>Mittel</strong> = Mögliche Unannehmlichkeiten<br><strong>Hoch</strong> = Erhebliche Schäden möglich<br><strong>Kritisch</strong> = Schwerwiegende Schäden zu erwarten<br><br><em>Tipp: Bei besonderen Kategorien (Gesundheit, Religion) mindestens "Hoch"</em>'
+        risk_level: '<strong>🎯 Risikostufe für Betroffene</strong><br><em>Frage: Welches Risiko besteht für die Rechte und Freiheiten der Betroffenen?</em><br><br>Bewerten Sie das Risiko basierend auf:<br>• Art der Daten (sensibel?)<br>• Menge der Betroffenen<br>• Mögliche Folgen (Identitätsdiebstahl?)<br><br><em>Ab "Hoch" → Meldung an Aufsichtsbehörde erforderlich (Art. 33)</em>'
     data_categories:
         personal_identification: 'Personenidentifikation (Name, ID-Nr.)'
         contact_information: 'Kontaktdaten (Adresse, E-Mail, Telefon)'
