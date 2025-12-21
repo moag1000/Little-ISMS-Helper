@@ -479,6 +479,10 @@ data_breach:
         medium: 'Medium'
         high: 'High'
         critical: 'Critical'
+    tooltip:
+        affected_data_subjects: '<strong>👥 Number of Affected Persons</strong><br><em>Question: How many people are affected by this data breach?</em><br><br>Estimate the number of affected persons:<br>• Exact count if known<br>• Upper limit if uncertain<br><br><em>Important for Art. 33 GDPR: Above ~1,000 persons, supervisory authorities will look more closely!</em>'
+        severity: '<strong>⚠️ Breach Severity</strong><br><em>Question: How severe is this data breach?</em><br><br><strong>Low</strong> = Minor impact on data subjects<br><strong>Medium</strong> = Possible inconvenience<br><strong>High</strong> = Significant harm possible<br><strong>Critical</strong> = Severe harm expected<br><br><em>Tip: For special categories (health, religion) use at least "High"</em>'
+        risk_level: '<strong>🎯 Risk Level for Data Subjects</strong><br><em>Question: What risk exists for the rights and freedoms of data subjects?</em><br><br>Assess risk based on:<br>• Type of data (sensitive?)<br>• Number of affected persons<br>• Possible consequences (identity theft?)<br><br><em>From "High" → Authority notification required (Art. 33)</em>'
     pdf:
         art_33_3a_nature: 'Art. 33(3)(a) GDPR - Nature of the Breach'
         categories_personal_data: 'Categories of Personal Data'
