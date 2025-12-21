@@ -64,6 +64,9 @@ interested_party:
         add_first: 'Add first party'
     confirm:
         delete: 'Are you sure you want to delete this interested party?'
+    tooltip:
+        satisfaction_level: '<strong>😊 Satisfaction Level (1-5)</strong><br><em>Question: How satisfied is this interested party with the collaboration?</em><br><br><strong>1</strong> = Very dissatisfied<br><strong>2</strong> = Dissatisfied<br><strong>3</strong> = Neutral<br><strong>4</strong> = Satisfied<br><strong>5</strong> = Very satisfied<br><br><em>Tip: Based on last feedback/conversation</em>'
+        importance: '<strong>⭐ Party Importance</strong><br><em>Question: How important is this party for the ISMS?</em><br><br><strong>Critical</strong> = Regulators, authorities<br><strong>High</strong> = Key customers, certifiers<br><strong>Medium</strong> = Suppliers, partners<br><strong>Low</strong> = General public<br><br><em>Per ISO 27001 Context of the Organization</em>'
 Customer: Customer
 Shareholder: Shareholder
 Employee: Employee

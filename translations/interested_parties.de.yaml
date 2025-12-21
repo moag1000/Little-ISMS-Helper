@@ -88,3 +88,6 @@ interested_party:
         quarterly: Quartalsweise
         annually: Jährlich
         as_needed: 'Nach Bedarf'
+    tooltip:
+        satisfaction_level: '<strong>😊 Zufriedenheitsstufe (1-5)</strong><br><em>Frage: Wie zufrieden ist diese interessierte Partei mit der Zusammenarbeit?</em><br><br><strong>1</strong> = Sehr unzufrieden<br><strong>2</strong> = Unzufrieden<br><strong>3</strong> = Neutral<br><strong>4</strong> = Zufrieden<br><strong>5</strong> = Sehr zufrieden<br><br><em>Tipp: Basiert auf letztem Feedback/Gespräch</em>'
+        importance: '<strong>⭐ Wichtigkeit der Partei</strong><br><em>Frage: Wie wichtig ist diese Partei für das ISMS?</em><br><br><strong>Kritisch</strong> = Gesetzgeber, Aufsichtsbehörden<br><strong>Hoch</strong> = Wichtige Kunden, Zertifizierer<br><strong>Mittel</strong> = Lieferanten, Partner<br><strong>Niedrig</strong> = Allgemeine Öffentlichkeit<br><br><em>Gemäß ISO 27001 Kontext der Organisation</em>'
