@@ -127,3 +127,6 @@ corporate:
         subsidiaries: Töchter
         breakdown: 'Eigene: %own% | Geerbt: %inherited% | Töchter: %subsidiaries%'
         groups: Konzerngruppen
+    tooltip:
+        security_score: '<strong>🔒 Sicherheitsbewertung (0-100)</strong><br><em>Frage: Wie gut ist die Informationssicherheit des Lieferanten?</em><br><br><strong>90-100</strong> = Exzellent (ISO 27001 zertifiziert)<br><strong>70-89</strong> = Gut (solide Sicherheitsmaßnahmen)<br><strong>50-69</strong> = Ausreichend (Verbesserungen nötig)<br><strong>30-49</strong> = Mangelhaft (erhöhtes Risiko)<br><strong>0-29</strong> = Kritisch (sofortige Maßnahmen!)<br><br><em>Tipp: Basiert auf letztem Sicherheitsaudit</em>'
+        criticality: '<strong>⚡ Kritikalität des Lieferanten</strong><br><em>Frage: Wie wichtig ist dieser Lieferant für Ihr Unternehmen?</em><br><br><strong>Kritisch</strong> = Geschäftsunterbrechung bei Ausfall<br><strong>Hoch</strong> = Erhebliche Beeinträchtigung<br><strong>Mittel</strong> = Spürbare Auswirkungen<br><strong>Niedrig</strong> = Leicht ersetzbar<br><br><em>Tipp: Cloud-Provider, ERP-Anbieter sind meist kritisch</em>'
