@@ -405,14 +405,22 @@ body {
     font-size: 0.65rem;
 }
 
-/* Tooltip for magic explanation */
+/* Tooltip for magic explanation - used for auto-filled fields */
 .fairy-tooltip {
     position: relative;
     cursor: help;
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-accent-pink);
+    transition: color 0.2s ease;
+}
+
+.fairy-tooltip:hover {
+    color: var(--color-accent-purple);
 }
 
 .fairy-tooltip::after {
-    content: attr(data-fairy-tip);
+    content: "✦ " attr(data-fairy-tip);
     position: absolute;
     bottom: 100%;
     left: 50%;
@@ -420,33 +428,67 @@ body {
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     color: #f8fafc;
     padding: 0.5rem 0.75rem;
+    padding-top: 0.625rem;
     border-radius: 6px;
     font-size: 0.75rem;
     white-space: nowrap;
+    max-width: 280px;
+    white-space: normal;
+    text-align: center;
     opacity: 0;
     visibility: hidden;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(236, 72, 153, 0.2);
     z-index: 100;
 }
 
+/* Pink accent line at top */
 .fairy-tooltip::before {
     content: "";
+    position: absolute;
+    bottom: calc(100% + 2px);
+    left: 50%;
+    width: 60%;
+    max-width: 100px;
+    height: 2px;
+    transform: translateX(-50%);
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--color-accent-pink) 20%,
+        var(--color-accent-purple) 80%,
+        transparent 100%
+    );
+    border-radius: 1px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+}
+
+/* Arrow (separate element needed) */
+.fairy-tooltip-arrow {
     position: absolute;
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
     border: 6px solid transparent;
     border-top-color: #1e293b;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.2s ease;
 }
 
 .fairy-tooltip:hover::after,
 .fairy-tooltip:hover::before {
     opacity: 1;
     visibility: visible;
+}
+
+/* Dark mode enhancement */
+[data-theme="dark"] .fairy-tooltip::after {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(236, 72, 153, 0.3);
 }
 
 /* Alert/Notification with fairy touch */
