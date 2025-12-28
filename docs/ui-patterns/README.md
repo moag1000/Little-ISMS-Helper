@@ -37,6 +37,7 @@ This pattern library provides comprehensive guidelines for implementing UI compo
 | Guide | Status | Description |
 |-------|--------|-------------|
 | [ACCESSIBILITY.md](ACCESSIBILITY.md) | ✅ Complete | WCAG 2.1 AA guidelines, testing |
+| [FAIRY_PATTERNS.md](FAIRY_PATTERNS.md) | ✅ Complete | Cyberpunk Fairy - automation indicators |
 | CARD_PATTERNS.md | 🔄 Planned | Card component standardization |
 | NAVIGATION_PATTERNS.md | 🔄 Planned | Navigation consistency |
 

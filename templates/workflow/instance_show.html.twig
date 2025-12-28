@@ -204,7 +204,14 @@
                     </td>
                     <td>
                         {% set actionColor = entry.action == 'approved' ? 'success' : (entry.action == 'rejected' ? 'danger' : 'info') %}
-                        <span class="badge bg-{{ actionColor }}">{{ entry.action|capitalize }}</span>
+                        {% set isAutoApproved = entry.action == 'auto_approved' or (entry.auto_progression is defined and entry.auto_progression) %}
+                        <span class="badge bg-{{ isAutoApproved ? 'success' : actionColor }}{% if isAutoApproved %} fairy-workflow-magic{% endif %}">
+                            {% if isAutoApproved %}
+                                <i class="bi bi-stars me-1" aria-hidden="true"></i>{{ 'workflow.action.auto_approved'|trans({}, 'workflows') }}
+                            {% else %}
+                                {{ entry.action|capitalize }}
+                            {% endif %}
+                        </span>
                         {% if entry.step_name is defined %}
                             <small class="text-muted ms-1">({{ entry.step_name }})</small>
                         {% endif %}

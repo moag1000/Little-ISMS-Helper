@@ -33,6 +33,7 @@ workflow:
         back: Zurück
         pending: Ausstehend
         view_full_workflow: 'Vollständigen Workflow anzeigen'
+        auto_approved: 'Automatisch'
     stats:
         total: Gesamt‑Workflows
         active: Aktiv
