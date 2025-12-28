@@ -110,7 +110,9 @@ export default class extends Controller {
 
     createToast(message, type) {
         const toast = document.createElement('div');
-        toast.className = `toast toast-${type}`;
+        // Add fairy styling to success toasts for subtle magic effect
+        const fairyClass = type === 'success' ? ' fairy-toast' : '';
+        toast.className = `toast toast-${type}${fairyClass}`;
         toast.setAttribute('role', 'alert');
         toast.setAttribute('aria-live', 'polite');
 

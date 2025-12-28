@@ -203,6 +203,89 @@ inputField.insertAdjacentHTML('afterend',
 
 ---
 
+## Ambient Patterns
+
+These patterns provide ambient feedback without requiring explicit triggers.
+
+### 7. Empty States - Ghost-Writer Fee
+
+Automatic styling for `.empty-state` components:
+
+```twig
+{# Standard empty state gets subtle fairy magic automatically #}
+{% include '_components/_empty_state.html.twig' with {
+    icon: 'bi-inbox',
+    title: 'Noch keine Assets',
+    description: 'Legen Sie Ihr erstes Asset an.',
+    action: { label: 'Asset erstellen', url: path('app_asset_new') }
+} %}
+```
+
+**CSS Features:**
+- Transparent star (`✦`) watermark in background (3.5% opacity)
+- Icon color transition to pink on hover
+- All child elements properly z-indexed
+
+### 8. Filter Hint - Smart Reset Nudge
+
+Highlight reset button when many filters are active:
+
+```html
+{# Apply when filter count > 3 #}
+<button class="btn btn-outline-secondary fairy-filter-hint">
+    Filter zurücksetzen
+</button>
+```
+
+**CSS Features:**
+- Subtle pulsing box-shadow
+- Sparkle (`✦`) indicator after text
+- Draws attention without being intrusive
+
+### 9. Upload Success - Glow-up
+
+Applied automatically after successful file upload:
+
+```javascript
+// In file_upload_controller.js
+fileItem.classList.add('fairy-upload-success');
+```
+
+**CSS Features:**
+- 2.5s pink glow animation
+- Fades from visible to transparent
+- Applied to file list items
+
+### 10. Transition Success - One-time Flash
+
+Utility class for one-time magic sweep:
+
+```javascript
+// Apply for instant feedback
+element.classList.add('fairy-transition-success');
+// Automatically removes effect after animation
+```
+
+**CSS Features:**
+- Horizontal shimmer sweep
+- 0.8s duration, runs once
+
+### 11. Toast Notifications
+
+Success toasts automatically receive fairy styling:
+
+```javascript
+// toast_controller.js adds 'fairy-toast' to success type
+this.show('Erfolgreich gespeichert', 'success');
+```
+
+**CSS Features:**
+- Pink left border accent
+- Animated gradient shimmer at top
+- Subtle enhancement, not distracting
+
+---
+
 ## Color Palette
 
 The Fairy Magic system uses the Cyberpunk color palette:

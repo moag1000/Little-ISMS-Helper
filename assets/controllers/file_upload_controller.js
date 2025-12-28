@@ -335,13 +335,22 @@ export default class extends Controller {
     }
 
     showSuccess(message) {
+        // Add fairy glow to file items before showing toast
+        if (this.hasFileListTarget) {
+            const fileItems = this.fileListTarget.querySelectorAll('.file-item');
+            fileItems.forEach(item => {
+                item.classList.add('fairy-upload-success');
+            });
+        }
+
         const toast = document.createElement('div');
-        toast.className = 'alert alert-success alert-dismissible fade show';
+        toast.className = 'alert alert-success alert-dismissible fade show fairy-toast';
         toast.style.position = 'fixed';
         toast.style.top = '20px';
         toast.style.right = '20px';
         toast.style.zIndex = '9999';
         toast.innerHTML = `
+            <i class="bi bi-stars me-2" aria-hidden="true"></i>
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;

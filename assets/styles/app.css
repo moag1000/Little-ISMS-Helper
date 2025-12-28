@@ -805,6 +805,180 @@ body {
     );
 }
 
+/* 7. Empty States - Ghost-Writer Fee */
+/* Applied to existing .empty-state component for subtle magic */
+.empty-state {
+    position: relative;
+}
+
+.empty-state::before {
+    content: "\2726"; /* ✦ Unicode star */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 8rem;
+    opacity: 0.035;
+    color: var(--color-accent-pink);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.empty-state-icon,
+.empty-state .empty-state-icon {
+    position: relative;
+    z-index: 1;
+}
+
+.empty-state-icon i {
+    color: var(--color-text-muted);
+    opacity: 0.5;
+    transition: color 0.3s ease, opacity 0.3s ease;
+}
+
+.empty-state:hover .empty-state-icon i {
+    color: var(--color-accent-pink);
+    opacity: 0.7;
+}
+
+.empty-state-title {
+    position: relative;
+    z-index: 1;
+}
+
+.empty-state-description {
+    position: relative;
+    z-index: 1;
+}
+
+/* Explicit fairy class for more prominent styling */
+.fairy-empty-state {
+    position: relative;
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--color-text-muted);
+}
+
+.fairy-empty-state::before {
+    opacity: 0.05;
+}
+
+/* 8. Filter Hint - Smart Reset Nudge */
+.fairy-filter-hint {
+    animation: fairy-filter-pulse 2s ease-in-out infinite;
+}
+
+@keyframes fairy-filter-pulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(236, 72, 153, 0);
+    }
+    50% {
+        box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.15);
+    }
+}
+
+.fairy-filter-hint::after {
+    content: "✦";
+    margin-left: 0.375rem;
+    font-size: 0.8em;
+    color: var(--color-accent-pink);
+    animation: fairy-sparkle 1.5s ease-in-out infinite;
+}
+
+@keyframes fairy-sparkle {
+    0%, 100% { opacity: 0.5; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* 9. Upload Success - Glow-up Animation */
+.fairy-upload-success {
+    animation: fairy-upload-glow 2.5s ease-out forwards;
+}
+
+@keyframes fairy-upload-glow {
+    0% {
+        background-color: rgba(236, 72, 153, 0.15);
+        box-shadow: 0 0 20px rgba(236, 72, 153, 0.2);
+    }
+    70% {
+        background-color: rgba(236, 72, 153, 0.08);
+        box-shadow: 0 0 10px rgba(236, 72, 153, 0.1);
+    }
+    100% {
+        background-color: transparent;
+        box-shadow: none;
+    }
+}
+
+/* 10. Transition Success - One-time magic flash */
+.fairy-transition-success {
+    animation: fairy-magic-sweep 0.8s ease-out forwards;
+}
+
+@keyframes fairy-magic-sweep {
+    0% {
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(236, 72, 153, 0.2) 50%,
+            transparent 100%
+        );
+        background-size: 200% 100%;
+        background-position: -100% 0;
+    }
+    50% {
+        background-position: 100% 0;
+    }
+    100% {
+        background: transparent;
+    }
+}
+
+/* 11. Toast/Notification - Fairy accent */
+.fairy-toast {
+    border-left: 3px solid var(--color-accent-pink);
+    position: relative;
+    overflow: hidden;
+}
+
+.fairy-toast::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+        90deg,
+        var(--color-accent-pink),
+        var(--color-accent-purple),
+        var(--color-accent-pink)
+    );
+    background-size: 200% 100%;
+    animation: fairy-toast-shimmer 2s linear infinite;
+}
+
+@keyframes fairy-toast-shimmer {
+    0% { background-position: 0% 0; }
+    100% { background-position: 200% 0; }
+}
+
+/* Reduced motion - disable all fairy animations */
+@media (prefers-reduced-motion: reduce) {
+    .fairy-empty-state::before,
+    .fairy-filter-hint,
+    .fairy-filter-hint::after,
+    .fairy-upload-success,
+    .fairy-transition-success,
+    .fairy-toast::before {
+        animation: none;
+    }
+
+    .fairy-filter-hint::after {
+        display: none;
+    }
+}
+
 .header h1 {
     font-size: 1.5rem;
     font-weight: 600;
