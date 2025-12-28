@@ -98,6 +98,13 @@
     --color-text: #f1f5f9;       /* 15.5:1 contrast ratio */
     --color-text-light: #cbd5e1; /* 9.7:1 contrast ratio */
     --color-text-muted: #94a3b8; /* 6.0:1 contrast ratio */
+    --color-text-secondary: #cbd5e1; /* Alias for consistency */
+
+    /* Semantic Light Variants - Dark Mode (more vibrant for visibility) */
+    --color-success-light: rgba(16, 185, 129, 0.2);
+    --color-warning-light: rgba(245, 158, 11, 0.2);
+    --color-danger-light: rgba(239, 68, 68, 0.2);
+    --color-info-light: rgba(6, 182, 212, 0.2);
 
     /* Dark Borders with Neon Accent */
     --border-color: #334155;
