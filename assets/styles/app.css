@@ -289,13 +289,258 @@ body {
     animation: fairy-sparkle 2s ease-in-out infinite;
 }
 
+/* ============================================
+   Cyberpunk Fairy - Automation Magic Effects
+   Subtle, professional with a wink 😉
+   ============================================ */
+
+/* Container glow - subtle shimmer effect */
+.fairy-magic-glow {
+    position: relative;
+    box-shadow:
+        inset 0 0 0 1px rgba(236, 72, 153, 0.2),
+        0 0 20px rgba(236, 72, 153, 0.15);
+    border-radius: var(--border-radius, 8px);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.fairy-magic-glow::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: linear-gradient(
+        135deg,
+        transparent 40%,
+        rgba(236, 72, 153, 0.1) 50%,
+        transparent 60%
+    );
+    background-size: 200% 200%;
+    animation: fairy-shimmer 3s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.fairy-magic-glow:hover {
+    box-shadow:
+        inset 0 0 0 1px rgba(236, 72, 153, 0.3),
+        0 0 30px rgba(236, 72, 153, 0.25),
+        0 0 10px rgba(6, 182, 212, 0.15);
+    transform: translateY(-1px);
+}
+
+/* Icon sparkle - elegant pulse, not hyperactive */
+.fairy-icon-sparkle {
+    color: var(--color-accent-pink);
+    display: inline-block;
+    animation: fairy-pulse 2.5s ease-in-out infinite;
+}
+
+.fairy-icon-sparkle::after {
+    content: " ✨";
+    font-size: 0.7em;
+    opacity: 0.8;
+}
+
+/* Badge - refined, not too flashy */
+.fairy-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    background: linear-gradient(135deg,
+        rgba(236, 72, 153, 0.9) 0%,
+        rgba(139, 92, 246, 0.85) 100%);
+    color: white;
+    border-radius: 100px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.25);
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.fairy-badge:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.35);
+}
+
+.fairy-badge::before {
+    content: "✦";
+    font-size: 0.9em;
+}
+
+/* Automatic field indicator - subtle left border accent */
+.fairy-field-automatic {
+    position: relative;
+    border-left: 3px solid var(--color-accent-pink) !important;
+    background: linear-gradient(
+        90deg,
+        rgba(236, 72, 153, 0.04) 0%,
+        transparent 30%
+    ) !important;
+    transition: all 0.2s ease;
+}
+
+.fairy-field-automatic:focus {
+    border-left-color: var(--color-accent-purple) !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+}
+
+/* Helper text for automatic fields */
+.fairy-helper {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    color: var(--color-accent-pink);
+    margin-top: 0.25rem;
+    opacity: 0.85;
+}
+
+.fairy-helper::before {
+    content: "✦";
+    font-size: 0.65rem;
+}
+
+/* Tooltip for magic explanation */
+.fairy-tooltip {
+    position: relative;
+    cursor: help;
+}
+
+.fairy-tooltip::after {
+    content: attr(data-fairy-tip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #f8fafc;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+}
+
+.fairy-tooltip::before {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #1e293b;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+}
+
+.fairy-tooltip:hover::after,
+.fairy-tooltip:hover::before {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Alert/Notification with fairy touch */
+.fairy-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(
+        135deg,
+        rgba(236, 72, 153, 0.08) 0%,
+        rgba(139, 92, 246, 0.05) 100%
+    );
+    border: 1px solid rgba(236, 72, 153, 0.2);
+    border-radius: var(--border-radius, 8px);
+    color: var(--color-text);
+}
+
+.fairy-alert-icon {
+    font-size: 1.25rem;
+    color: var(--color-accent-pink);
+    animation: fairy-pulse 2.5s ease-in-out infinite;
+}
+
+.fairy-alert-content {
+    flex: 1;
+}
+
+.fairy-alert-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: var(--color-accent-pink);
+}
+
+/* Dark Mode - Enhanced visibility */
+[data-theme="dark"] .fairy-field-automatic {
+    background: linear-gradient(
+        90deg,
+        rgba(236, 72, 153, 0.08) 0%,
+        transparent 30%
+    ) !important;
+}
+
+[data-theme="dark"] .fairy-magic-glow {
+    box-shadow:
+        inset 0 0 0 1px rgba(236, 72, 153, 0.25),
+        0 0 25px rgba(236, 72, 153, 0.2);
+}
+
+[data-theme="dark"] .fairy-alert {
+    background: linear-gradient(
+        135deg,
+        rgba(236, 72, 153, 0.12) 0%,
+        rgba(139, 92, 246, 0.08) 100%
+    );
+    border-color: rgba(236, 72, 153, 0.3);
+}
+
+/* Animations - Smooth and subtle */
+@keyframes fairy-shimmer {
+    0% { background-position: 200% 200%; }
+    100% { background-position: -200% -200%; }
+}
+
+@keyframes fairy-pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.05);
+    }
+}
+
 @keyframes fairy-sparkle {
-    0%, 100% { filter: drop-shadow(0 0 25px rgba(6, 182, 212, 0.8))
-                       drop-shadow(0 0 15px rgba(236, 72, 153, 0.4))
-                       drop-shadow(0 0 10px rgba(139, 92, 246, 0.3)); }
-    50% { filter: drop-shadow(0 0 30px rgba(6, 182, 212, 1))
-                  drop-shadow(0 0 20px rgba(236, 72, 153, 0.6))
-                  drop-shadow(0 0 15px rgba(139, 92, 246, 0.5)); }
+    0%, 100% {
+        filter: drop-shadow(0 0 8px rgba(236, 72, 153, 0.6));
+        opacity: 1;
+    }
+    50% {
+        filter: drop-shadow(0 0 12px rgba(236, 72, 153, 0.8))
+                drop-shadow(0 0 4px rgba(6, 182, 212, 0.4));
+        opacity: 0.85;
+    }
+}
+
+/* Reduced motion - Respect user preferences */
+@media (prefers-reduced-motion: reduce) {
+    .fairy-magic-glow::before,
+    .fairy-icon-sparkle,
+    .fairy-alert-icon {
+        animation: none;
+    }
 }
 
 .header h1 {
@@ -2518,21 +2763,21 @@ input.is-valid:focus {
         -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
         max-width: 100%;
     }
-    
+
     /* Ensure table headers stay visible during scroll */
     table:not(.no-mobile-scroll) thead {
         position: sticky;
         left: 0;
         z-index: 1;
     }
-    
+
     /* Minimum column width on mobile */
     table:not(.no-mobile-scroll) td,
     table:not(.no-mobile-scroll) th {
         min-width: 100px;
         white-space: nowrap;
     }
-    
+
     /* Allow text wrapping for specific columns */
     table:not(.no-mobile-scroll) td.wrap,
     table:not(.no-mobile-scroll) th.wrap {
@@ -2957,9 +3202,9 @@ table.table-borderless td {
 /* ============================================
    Badge Semantic Standards
    ============================================
-   
+
    Use consistent badge colors for semantic meaning:
-   
+
    STATUS BADGES:
    - bg-success: Active, Completed, Approved, Implemented
    - bg-danger: Inactive, Failed, Rejected, Critical
@@ -2967,7 +3212,7 @@ table.table-borderless td {
    - bg-info: Information, Count, New
    - bg-secondary: Unknown, N/A, Default fallback
    - bg-primary: Role, Category, Type label
-   
+
    PRIORITY BADGES:
    - badge-critical: Critical priority (custom gradient)
    - badge-high: High priority (custom gradient)

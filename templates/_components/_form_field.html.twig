@@ -12,7 +12,11 @@
 {% set help_text = help_key is defined ? (help_key|trans({}, trans_domain)) : (help|default(null)) %}
 {% set explicit_tooltip = tooltip_key is defined ? (tooltip_key|trans({}, trans_domain)) : (tooltip|default(null)) %}
 {# Use explicit tooltip if defined, otherwise fall back to help text as tooltip #}
+{% set is_automatic = automatic|default(false) %}
 {% set tooltip_text = explicit_tooltip ? explicit_tooltip : help_text %}
+{% if is_automatic and not explicit_tooltip %}
+    {% set tooltip_text = 'form.automatic_value'|trans({}, 'messages') %}
+{% endif %}
 
 {# Floating labels work for: text, email, password, number, textarea, select #}
 {# BUT NOT for expanded choice fields (radio/checkbox) #}
@@ -28,7 +32,7 @@
                 {# Use label_text (translated) as placeholder, override any existing placeholder #}
                 {% set placeholder_text = label_text %}
                 {% set merged_attrs = field.vars.attr|merge({
-                    'class': (field.vars.attr.class|default('') ~ (has_errors ? ' is-invalid' : ''))|trim,
+                    'class': (field.vars.attr.class|default('') ~ (has_errors ? ' is-invalid' : '') ~ (is_automatic ? ' fairy-field-automatic' : ''))|trim,
                     'placeholder': placeholder_text,
                     'aria-invalid': has_errors ? 'true' : 'false',
                     'aria-describedby': has_errors ? field_id ~ '_error' : null,
@@ -47,15 +51,15 @@
                 </label>
             </div>
             {# Tooltip icon OUTSIDE floating label for better accessibility #}
-            {% if tooltip_text %}
-                <i class="bi bi-question-circle-fill text-primary mt-3"
+            {% if tooltip_text or is_automatic %}
+                <i class="bi {{ is_automatic ? 'bi-stars fairy-icon-sparkle' : 'bi-question-circle-fill text-primary' }} mt-3"
                    data-bs-toggle="tooltip"
                    data-bs-placement="right"
                    data-bs-html="true"
                    data-bs-title="{{ tooltip_text }}"
                    role="button"
                    tabindex="0"
-                   aria-label="{{ 'common.help'|trans({}, 'messages') }}"
+                   aria-label="{{ is_automatic ? 'Automatisch ausgefüllt' : 'common.help'|trans({}, 'messages') }}"
                    style="cursor: help; font-size: 1.1em;"></i>
             {% endif %}
         </div>
@@ -66,15 +70,15 @@
             {% if is_required %}
                 <span class="required" aria-label="{{ 'form.required'|trans({}, 'messages') }}">*</span>
             {% endif %}
-            {% if tooltip_text %}
-                <i class="bi bi-question-circle-fill text-muted ms-1"
+            {% if tooltip_text or is_automatic %}
+                <i class="bi {{ is_automatic ? 'bi-stars fairy-icon-sparkle' : 'bi-question-circle-fill text-muted' }} ms-1"
                    data-bs-toggle="tooltip"
                    data-bs-placement="top"
                    data-bs-html="true"
                    data-bs-title="{{ tooltip_text }}"
                    role="button"
                    tabindex="0"
-                   aria-label="{{ 'common.help'|trans({}, 'messages') }}"
+                   aria-label="{{ is_automatic ? 'Automatisch ausgefüllt' : 'common.help'|trans({}, 'messages') }}"
                    style="cursor: help; font-size: 0.85em;"></i>
             {% endif %}
         </label>
