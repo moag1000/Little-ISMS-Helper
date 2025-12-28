@@ -144,3 +144,6 @@ nav:
     crisis_teams: 'Crisis Teams'
     mfa: 'Two-Factor Authentication'
     reports: Reports
+    user_menu: 'User Menu'
+    security: Security
+    logout: 'Sign Out'

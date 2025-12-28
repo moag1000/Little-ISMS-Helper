@@ -173,9 +173,15 @@
                 {% endblock %}
                 {% block table_body %}
                     {% for log in auditLogs %}
-                    <tr>
+                    {# Calculate age for fairy styling #}
+                    {% set ageMinutes = (date().timestamp - log.createdAt.timestamp) / 60 %}
+                    {% set isFresh = ageMinutes < 5 %}
+                    {% set isRecent = ageMinutes >= 5 and ageMinutes < 30 %}
+                    <tr{% if isFresh %} class="fairy-fresh-entry"{% endif %}>
                         <td class="table-cell small">
-                            {{ log.createdAt|date('d.m.Y H:i:s') }}
+                            <span{% if isFresh %} class="fairy-timestamp-fresh"{% elseif isRecent %} class="fairy-timestamp-recent"{% endif %}>
+                                {{ log.createdAt|date('d.m.Y H:i:s') }}
+                            </span>
                         </td>
                         <td class="table-cell">
                             <span class="badge badge-{{ log.action }}">{{ log.action|capitalize }}</span>

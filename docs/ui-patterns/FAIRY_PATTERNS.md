@@ -399,6 +399,37 @@ showNotification(`
 
 ---
 
+## Future Ideas (Roadmap)
+
+Ideas for future fairy magic enhancements, pending evaluation and implementation:
+
+### Fairy-Shortcuts (Interactive Help)
+
+**Concept:** Sparkle-highlighted keywords within help texts that trigger actions.
+
+```html
+<!-- Example concept -->
+<p>
+    Erstellen Sie zuerst ein
+    <span class="fairy-shortcut" data-action="scroll-to" data-target="#asset-form">
+        Asset
+    </span>
+    und verknüpfen Sie es dann mit einem Risiko.
+</p>
+```
+
+**Potential features:**
+- Scroll to relevant form fields
+- Open example modals
+- Highlight related UI elements
+- Step-by-step guided tours
+
+**Status:** 🔄 Evaluation pending
+**Complexity:** High (requires significant JS infrastructure)
+**Priority:** Low - nice-to-have enhancement
+
+---
+
 **Last Updated:** 2025-12-28
 **Maintained by:** Little ISMS Helper Team
 **CSS Location:** `assets/styles/app.css`

@@ -144,3 +144,6 @@ nav:
     crisis_teams: Krisenteams
     mfa: 'Zwei-Faktor-Authentifizierung'
     reports: Berichte
+    user_menu: Benutzermenü
+    security: Sicherheit
+    logout: Abmelden

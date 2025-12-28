@@ -135,7 +135,9 @@
     {% endblock %}
 </head>
 {% set is_setup_route = app.request.attributes.get('_route') starts with 'setup_' %}
-<body data-turbo="true" data-controller="modal-manager{{ is_setup_route ? '' : ' sidebar-toggle mega-menu' }}">
+<body data-turbo="true" data-controller="modal-manager{{ is_setup_route ? '' : ' sidebar-toggle mega-menu session-reminder' }}"
+      data-session-reminder-warning-value="3300000"
+      data-session-reminder-timeout-value="3600000">
     {# Skip Links for Accessibility - WCAG 2.4.1 #}
     <a href="#main-content" class="skip-link">{{ 'accessibility.skip_to_content'|trans({}, 'messages') }}</a>
     <a href="#main-navigation" class="skip-link">{{ 'accessibility.skip_to_navigation'|trans({}, 'messages') }}</a>
@@ -185,18 +187,43 @@
                 </div>
                 {% endif %}
 
-                {# User Avatar #}
+                {# User Menu with Dropdown #}
                 {% if app.user %}
-                <div class="user-avatar-container">
+                <div class="user-menu">
                     {% set firstName = app.user.firstName|default('') %}
                     {% set lastName = app.user.lastName|default('') %}
                     {% set initials = (firstName|length > 0 ? firstName|slice(0, 1) : '') ~ (lastName|length > 0 ? lastName|slice(0, 1) : '') %}
                     {% if initials|length == 0 %}
                         {% set initials = app.user.fullName|slice(0, 2) %}
                     {% endif %}
-                    <a href="{{ path('app_profile') }}" class="user-avatar" title="{{ app.user.fullName }}" aria-label="{{ 'nav.my_profile'|trans({}, 'nav') }}">
+                    <button class="user-avatar"
+                            title="{{ app.user.fullName }}"
+                            aria-label="{{ 'nav.user_menu'|trans({}, 'nav') }}"
+                            aria-haspopup="true"
+                            aria-expanded="false">
                         {{ initials|upper }}
-                    </a>
+                    </button>
+                    <div class="user-dropdown" role="menu">
+                        <div class="user-dropdown-header">
+                            <span class="user-dropdown-name">{{ app.user.fullName }}</span>
+                            <span class="user-dropdown-email">{{ app.user.email }}</span>
+                        </div>
+                        <div class="user-dropdown-divider"></div>
+                        <a href="{{ path('app_profile') }}" class="user-dropdown-item" role="menuitem">
+                            <i class="bi bi-person"></i>
+                            {{ 'nav.my_profile'|trans({}, 'nav') }}
+                        </a>
+                        <a href="{{ path('app_profile_mfa_index') }}" class="user-dropdown-item" role="menuitem">
+                            <i class="bi bi-shield-lock"></i>
+                            {{ 'nav.security'|trans({}, 'nav') }}
+                        </a>
+                        <div class="user-dropdown-divider"></div>
+                        <a href="{{ path('app_logout') }}" class="user-dropdown-item user-dropdown-logout fairy-logout" role="menuitem">
+                            <i class="bi bi-box-arrow-right"></i>
+                            <span>{{ 'nav.logout'|trans({}, 'nav') }}</span>
+                            <span class="fairy-logout-sparkle">✦</span>
+                        </a>
+                    </div>
                 </div>
                 {% endif %}
             </div>
