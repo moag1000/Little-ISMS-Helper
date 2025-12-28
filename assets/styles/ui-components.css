@@ -25,12 +25,12 @@
 }
 
 .risk-level-medium .risk-score {
-    background-color: var(--color-info, #facc15);
-    color: #000;
+    background-color: var(--color-warning, #facc15);
+    color: var(--text-inverse, #000);  /* Uses theme-aware inverse text */
 }
 
 .risk-level-low .risk-score {
-    background-color: var(--color-success, #3b82f6);
+    background-color: var(--color-success, #10b981);  /* Semantic green for low risk */
     color: white;
 }
 
@@ -612,13 +612,14 @@
     color: var(--color-info);
 }
 
-/* Link utilities */
+/* Link utilities - using theme colors */
 .link-primary {
-    color: #007bff;
+    color: var(--color-secondary, #06b6d4);  /* Cyberpunk cyan */
     text-decoration: none;
 }
 
 .link-primary:hover {
+    color: var(--color-secondary-hover, #0891b2);
     text-decoration: underline;
 }
 
@@ -1092,71 +1093,71 @@
 /* ====================
    Audit Status Utilities
    ==================== */
-/* Status card backgrounds */
+/* Status card backgrounds - using theme-aware light variants */
 .bg-audit-planned {
-    background: rgba(52, 152, 219, 0.1);
+    background: var(--color-info-light, rgba(6, 182, 212, 0.1));
     border-radius: var(--border-radius);
 }
 
 .bg-audit-in-progress {
-    background: rgba(243, 156, 18, 0.1);
+    background: var(--color-warning-light, rgba(245, 158, 11, 0.1));
     border-radius: var(--border-radius);
 }
 
 .bg-audit-completed {
-    background: rgba(39, 174, 96, 0.1);
+    background: var(--color-success-light, rgba(16, 185, 129, 0.1));
     border-radius: var(--border-radius);
 }
 
 .bg-audit-cancelled {
-    background: rgba(149, 165, 166, 0.1);
+    background: rgba(148, 163, 184, 0.1);  /* slate-400 */
     border-radius: var(--border-radius);
 }
 
-/* Status icon styles */
+/* Status icon styles - using theme colors */
 .audit-icon-planned {
     font-size: 2rem;
-    color: #3498db;
+    color: var(--color-info, #06b6d4);
 }
 
 .audit-icon-in-progress {
     font-size: 2rem;
-    color: #f39c12;
+    color: var(--color-warning, #f59e0b);
 }
 
 .audit-icon-completed {
     font-size: 2rem;
-    color: #27ae60;
+    color: var(--color-success, #10b981);
 }
 
 .audit-icon-cancelled {
     font-size: 2rem;
-    color: #95a5a6;
+    color: var(--color-text-muted, #94a3b8);
 }
 
-/* Status count styles */
+/* Status count styles - using theme colors */
 .audit-count-planned {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #3498db;
+    color: var(--color-info, #06b6d4);
 }
 
 .audit-count-in-progress {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #f39c12;
+    color: var(--color-warning, #f59e0b);
 }
 
 .audit-count-completed {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #27ae60;
+    color: var(--color-success, #10b981);
 }
 
 .audit-count-cancelled {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #95a5a6;
+    color: var(--color-text-muted, #94a3b8);
 }
 
 /* ====================
@@ -1617,7 +1618,7 @@
 }
 
 .chart-legend-label {
-    color: #1e293b;
+    color: var(--text-primary, #1e293b);
     font-size: 0.875rem;
     font-weight: 500;
 }
@@ -1681,7 +1682,7 @@
 /* SOA Index Utilities */
 .badge-neutral {
     background: var(--bg-secondary);
-    color: #666;
+    color: var(--color-text-muted, #64748b);
 }
 
 /* Dark Mode - Badge Neutral */
@@ -1693,7 +1694,7 @@
 .text-center-block-light {
     text-align: center;
     display: block;
-    color: #999;
+    color: var(--color-text-muted, #94a3b8);
 }
 
 .justify-end {
@@ -1715,12 +1716,12 @@
 }
 
 .bg-light {
-    background: var(--color-bg-light);
+    background: var(--color-bg-alt);
 }
 
 .badge-neutral-lg {
     background: var(--bg-secondary);
-    color: #666;
+    color: var(--color-text-muted, #64748b);
     font-size: 1.2rem;
 }
 
@@ -1749,40 +1750,40 @@
     line-height: 1.6;
 }
 
-/* Document Index Modern Utilities */
+/* Document Index Modern Utilities - using theme colors */
 .color-pdf {
-    color: #e74c3c;
+    color: var(--color-danger, #ef4444);
 }
 
 .color-image {
-    color: #3498db;
+    color: var(--color-info, #06b6d4);
 }
 
 .color-excel {
-    color: #27ae60;
+    color: var(--color-success, #10b981);
 }
 
 .color-other {
-    color: #95a5a6;
+    color: var(--color-text-muted, #94a3b8);
 }
 
 .bg-pdf-light {
-    background: rgba(231, 76, 60, 0.1);
+    background: var(--color-danger-light, rgba(239, 68, 68, 0.1));
     border-radius: var(--border-radius);
 }
 
 .bg-image-light {
-    background: rgba(52, 152, 219, 0.1);
+    background: var(--color-info-light, rgba(6, 182, 212, 0.1));
     border-radius: var(--border-radius);
 }
 
 .bg-excel-light {
-    background: rgba(39, 174, 96, 0.1);
+    background: var(--color-success-light, rgba(16, 185, 129, 0.1));
     border-radius: var(--border-radius);
 }
 
 .bg-other-light {
-    background: rgba(149, 165, 166, 0.1);
+    background: rgba(148, 163, 184, 0.1);  /* slate-400 */
     border-radius: var(--border-radius);
 }
 
@@ -1820,9 +1821,9 @@
 }
 
 /* Compliance Transitive Utilities */
-/* Gradient backgrounds for empty states */
+/* Gradient backgrounds for empty states - Cyberpunk Fairy Theme */
 .gradient-purple {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--gradient-purple, linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%));
     color: white;
     text-align: center;
     padding: 3rem;
@@ -1830,7 +1831,7 @@
 }
 
 .gradient-pink {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    background: var(--gradient-pink, linear-gradient(135deg, #ec4899 0%, #db2777 100%));
     color: white;
     text-align: center;
     padding: 3rem;
@@ -1882,7 +1883,7 @@
 }
 
 .btn-light-primary-flex {
-    color: #667eea;
+    color: var(--color-accent-purple, #8b5cf6);  /* Mystical purple aura */
     font-weight: 600;
     display: flex;
     align-items: center;
@@ -1984,9 +1985,9 @@
     font-size: 1rem;
     font-weight: 700;
     background: var(--bg-secondary);
-    color: #6b7280;
+    color: var(--color-text-muted, #64748b);
     border-radius: 4px;
-    border: 2px dashed #d1d5db;
+    border: 2px dashed var(--color-border, #e2e8f0);
 }
 
 .progress-bar-container {
@@ -2168,9 +2169,9 @@
     margin-bottom: var(--spacing-sm);
 }
 
-/* Compliance Index Utilities */
+/* Compliance Index Utilities - Cyberpunk Fairy Emerald Gradient */
 .alert-gradient-success {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);  /* Emerald fairy dust */
     color: white;
     border: none;
     margin-bottom: var(--spacing-lg);
@@ -2224,13 +2225,13 @@
     width: 40px;
 }
 
-/* Dashboard Status Colors */
+/* Dashboard Status Colors - using theme colors */
 .status-in-progress {
-    color: #e67e22;
+    color: var(--color-warning, #f59e0b);
 }
 
 .status-not-started {
-    color: #95a5a6;
+    color: var(--color-text-muted, #94a3b8);
 }
 
 /* Training Index Utilities */
@@ -2319,7 +2320,7 @@
 }
 
 .bg-light {
-    background: var(--color-bg-light);
+    background: var(--color-bg-alt);
 }
 
 .d-inline {
@@ -2417,35 +2418,35 @@
 }
 
 /* ====================
-   Audit Log Badges
+   Audit Log Badges - Cyberpunk Fairy Theme
    ==================== */
 .badge-create {
-    background: var(--color-success, #28a745);
+    background: var(--color-success, #10b981);  /* Emerald fairy dust */
     color: white;
 }
 
 .badge-update {
-    background: var(--color-warning, #ffc107);
-    color: #000;
+    background: var(--color-warning, #f59e0b);  /* Amber caution sparkles */
+    color: var(--text-inverse, #000);  /* Theme-aware dark text on amber */
 }
 
 .badge-delete {
-    background: var(--color-danger, #dc3545);
+    background: var(--color-danger, #ef4444);  /* Alert flames */
     color: white;
 }
 
 .badge-view {
-    background: var(--color-info, #17a2b8);
+    background: var(--color-info, #06b6d4);  /* Cyberpunk cyan glow */
     color: white;
 }
 
 .badge-export {
-    background: var(--color-secondary, #6c757d);
+    background: var(--color-secondary, #64748b);  /* Slate secondary */
     color: white;
 }
 
 .badge-import {
-    background: var(--color-purple, #6f42c1);
+    background: var(--color-accent-purple, #8b5cf6);  /* Mystical purple aura */
     color: white;
 }
 
@@ -2481,7 +2482,7 @@
 }
 
 [data-theme="dark"] .badge-import {
-    background: var(--color-purple, #8b5cf6);
+    background: var(--color-accent-purple, #8b5cf6);  /* Mystical purple aura */
     color: white;
     box-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
 }
