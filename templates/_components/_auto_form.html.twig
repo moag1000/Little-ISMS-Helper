@@ -45,6 +45,7 @@
 {% set exclude_fields = exclude|default([]) %}
 {% set help_texts = help_texts|default({}) %}
 {% set tooltips = tooltips|default({}) %}
+{% set automatic_fields = automatic_fields|default([]) %}
 {% set default_col_width = 12 %}
 {% set passed_translation_domain = translation_domain|default(null) %}
 
@@ -110,7 +111,8 @@
                                 'help_key': help_key,
                                 'tooltip_key': tooltip_key,
                                 'translation_domain': trans_domain,
-                                'required': field.vars.required
+                                'required': field.vars.required,
+                                'automatic': field_name in automatic_fields
                             } %}
                         </div>
                     {% endset %}

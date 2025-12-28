@@ -104,6 +104,9 @@ details: Details
 close: Close
 confirm: Confirm
 back: Back
+form:
+    automatic_value: 'This field was automatically filled by the Cyberpunk Fairy.'
+    required: 'Required field'
 common:
     next: Next
     yes: 'Yes'

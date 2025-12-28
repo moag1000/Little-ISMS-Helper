@@ -63,9 +63,10 @@ export default class extends Controller {
                             '</ul>';
                     }
                     resultContainer.innerHTML = `
-                        <div class="alert alert-success fix-result">
-                            <i class="bi bi-check-circle" aria-hidden="true"></i> ${result.message}
+                        <div class="alert alert-success fix-result fairy-magic-glow">
+                            <i class="bi bi-stars fairy-icon-sparkle" aria-hidden="true"></i> ${result.message}
                             ${detailsHtml}
+                            <div class="mt-1 small text-muted opacity-75">Die Cyberpunk Fee hat das für dich erledigt!</div>
                         </div>
                     `;
                 }

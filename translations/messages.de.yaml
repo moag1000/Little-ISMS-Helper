@@ -104,6 +104,9 @@ details: Details
 close: Schließen
 confirm: Bestätigen
 back: Zurück
+form:
+    automatic_value: 'Dieses Feld wurde automatisch von der Cyberpunk Fee ausgefüllt.'
+    required: Pflichtfeld
 common:
     next: Weiter
     yes: 'Ja'
