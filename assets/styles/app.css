@@ -491,6 +491,27 @@ body {
         0 0 0 1px rgba(236, 72, 153, 0.3);
 }
 
+/* Bootstrap Tooltip - Subtle fairy shimmer on appear */
+.tooltip.show .tooltip-inner {
+    animation: fairy-tooltip-appear 0.6s ease-out;
+}
+
+@keyframes fairy-tooltip-appear {
+    0% {
+        box-shadow: 0 0 12px rgba(236, 72, 153, 0.4);
+    }
+    100% {
+        box-shadow: none;
+    }
+}
+
+/* Reduced motion - no shimmer */
+@media (prefers-reduced-motion: reduce) {
+    .tooltip.show .tooltip-inner {
+        animation: none;
+    }
+}
+
 /* Alert/Notification with fairy touch */
 .fairy-alert {
     display: flex;
