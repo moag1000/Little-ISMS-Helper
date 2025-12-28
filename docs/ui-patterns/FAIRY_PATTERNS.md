@@ -31,7 +31,7 @@ Die "Cyberpunk Fee" kennzeichnet automatisierte Prozesse und Datenübernahmen vi
 | `.fairy-badge` | Gradient-Badge mit Prefix |
 | `.fairy-field-automatic` | Formularfeld mit pinkem Left-Border |
 | `.fairy-helper` | Hilfetext unter automatischen Feldern |
-| `.fairy-tooltip` | Tooltip via `data-fairy-tip` Attribut |
+| `.fairy-tooltip` | Styled tooltip for auto-field explanations |
 | `.fairy-alert` | Notification-Box mit Fairy-Styling |
 
 ### Usage in Twig Templates
@@ -46,10 +46,11 @@ Die "Cyberpunk Fee" kennzeichnet automatisierte Prozesse und Datenübernahmen vi
 {# Badge für automatische Werte #}
 <span class="fairy-badge">Automatisch</span>
 
-{# Tooltip für Erklärung #}
-<span class="fairy-tooltip" data-fairy-tip="Die Fee hat das für dich erledigt">
+{# Tooltip für Erklärung automatischer Felder #}
+<span class="fairy-tooltip" data-fairy-tip="Automatisch aus Asset-Daten übernommen">
     <i class="bi bi-info-circle"></i>
 </span>
+{# Tooltip zeigt: "✦ Automatisch aus Asset-Daten übernommen" mit Pink-Akzent #}
 
 {# Glow-Container für Bereiche mit Automatisierung #}
 <div class="card fairy-magic-glow">
