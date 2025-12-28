@@ -310,15 +310,37 @@
     }
 }
 
-/* Mobile - Keep sidebar vertical, just adjust panel */
+/* Mobile - Panel overlays sidebar as fullscreen */
 @media (max-width: 767px) {
     .mega-menu-secondary {
-        left: 260px;
-        width: calc(100vw - 260px);
+        left: 0 !important;
+        width: 100vw !important;
+        border-left: none;
+        box-shadow: none;
+    }
+
+    .mega-menu-secondary.panel-visible {
+        left: 0 !important;  /* Override the 260px positioning */
     }
 
     .mega-menu-panel {
         padding: 1rem;
+        padding-top: 3.5rem;  /* Space for back button */
+    }
+
+    /* Mobile back button for panel navigation */
+    .mega-menu-panel::before {
+        content: "← Zurück";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 1rem;
+        background: var(--color-bg-alt);
+        border-bottom: 1px solid var(--color-border);
+        font-weight: 600;
+        color: var(--color-secondary);
+        z-index: 1;
     }
 
     .mega-menu-section-title {
@@ -326,7 +348,18 @@
     }
 
     .mega-menu-links a {
-        padding: 0.625rem;
+        padding: 0.875rem;  /* Increased for touch targets */
+        min-height: 44px;   /* Apple/Google recommended touch target */
+    }
+}
+
+/* Dark mode mobile panel */
+@media (max-width: 767px) {
+    [data-theme="dark"] .mega-menu-panel::before,
+    [data-bs-theme="dark"] .mega-menu-panel::before {
+        background: var(--bg-secondary);
+        border-bottom-color: var(--border-color);
+        color: #22d3ee;
     }
 }
 

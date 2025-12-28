@@ -2486,3 +2486,239 @@
     color: white;
     box-shadow: 0 0 8px rgba(139, 92, 246, 0.3);
 }
+
+/* ============================================
+   Mobile Responsiveness Enhancements
+   ============================================ */
+
+/* ====================
+   Responsive Stacked Tables
+   Converts tables to card-like layout on mobile
+   ==================== */
+@media (max-width: 767px) {
+    /* Stacked table pattern - opt-in via .table-stacked class */
+    .table-stacked thead {
+        display: none;  /* Hide table headers on mobile */
+    }
+
+    .table-stacked tbody tr {
+        display: block;
+        margin-bottom: 1rem;
+        background: var(--color-white, #fff);
+        border: 1px solid var(--color-border, #e2e8f0);
+        border-radius: var(--border-radius, 8px);
+        padding: 0.75rem;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .table-stacked tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 0.5rem 0;
+        border: none;
+        border-bottom: 1px solid var(--color-border-light, #f1f5f9);
+    }
+
+    .table-stacked tbody td:last-child {
+        border-bottom: none;
+    }
+
+    /* Show data-label as pseudo-element */
+    .table-stacked tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--color-text-muted, #64748b);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        flex-shrink: 0;
+        margin-right: 1rem;
+        min-width: 100px;
+    }
+
+    /* Action buttons in stacked table */
+    .table-stacked tbody td:has(.btn-group),
+    .table-stacked tbody td:has([data-label="Aktionen"]) {
+        justify-content: flex-end;
+        padding-top: 0.75rem;
+    }
+
+    .table-stacked tbody td:has(.btn-group)::before,
+    .table-stacked tbody td[data-label="Aktionen"]::before {
+        display: none;
+    }
+
+    /* Dark mode stacked tables */
+    [data-theme="dark"] .table-stacked tbody tr {
+        background: var(--bg-secondary);
+        border-color: var(--border-color);
+    }
+
+    [data-theme="dark"] .table-stacked tbody td {
+        border-bottom-color: var(--border-color-light);
+    }
+}
+
+/* ====================
+   Touch Target Improvements (44x44px minimum)
+   ==================== */
+@media (max-width: 767px) {
+    /* Buttons - ensure minimum touch target */
+    .btn {
+        min-height: 44px;
+        padding-top: 0.625rem;
+        padding-bottom: 0.625rem;
+    }
+
+    .btn-sm {
+        min-height: 44px;
+        padding: 0.5rem 0.75rem;
+    }
+
+    /* Navigation links */
+    .nav-link,
+    .dropdown-item {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Sidebar navigation */
+    .app-sidebar .nav-link {
+        min-height: 44px;
+        padding: 0.75rem 1rem;
+    }
+
+    /* Table action buttons - larger touch targets */
+    .btn-group .btn,
+    .table .btn,
+    .action-buttons .btn {
+        min-width: 44px;
+        min-height: 44px;
+        padding: 0.5rem;
+    }
+
+    /* Form controls */
+    .form-control,
+    .form-select {
+        min-height: 44px;
+    }
+
+    /* Checkbox and radio - larger clickable area */
+    .form-check {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-check-input {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+
+    /* Pagination */
+    .page-link {
+        min-width: 44px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* ====================
+   Sticky Action Bar for Mobile Forms
+   ==================== */
+@media (max-width: 767px) {
+    /* Sticky bottom bar for form actions */
+    .form-actions-sticky {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--color-white, #fff);
+        border-top: 1px solid var(--color-border, #e2e8f0);
+        padding: 1rem;
+        z-index: var(--z-sticky, 100);
+        display: flex;
+        gap: 0.75rem;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-actions-sticky .btn {
+        flex: 1;
+    }
+
+    .form-actions-sticky .btn-primary {
+        order: 1;  /* Primary action on the right */
+    }
+
+    .form-actions-sticky .btn-secondary,
+    .form-actions-sticky .btn-outline-secondary {
+        order: 0;  /* Secondary action on the left */
+    }
+
+    /* Dark mode sticky bar */
+    [data-theme="dark"] .form-actions-sticky {
+        background: var(--bg-secondary);
+        border-top-color: var(--border-color);
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Add padding to form content to prevent overlap with sticky bar */
+    .form-with-sticky-actions {
+        padding-bottom: 80px;
+    }
+}
+
+/* ====================
+   Mobile Card Layout Improvements
+   ==================== */
+@media (max-width: 767px) {
+    /* Cards should use full width on mobile */
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    /* KPI cards - stack properly */
+    .kpi-card,
+    .stat-card {
+        margin-bottom: 0.75rem;
+    }
+
+    /* Dashboard grids - single column on small phones */
+    .grid-responsive-250,
+    .grid-responsive-200 {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Charts container - prevent overflow */
+    .chart-container {
+        max-width: 100%;
+        overflow-x: auto;
+    }
+}
+
+/* ====================
+   Mobile Typography Adjustments
+   ==================== */
+@media (max-width: 767px) {
+    /* Slightly smaller headings on mobile */
+    h1, .h1 { font-size: 1.75rem; }
+    h2, .h2 { font-size: 1.5rem; }
+    h3, .h3 { font-size: 1.25rem; }
+
+    /* Page titles */
+    .page-title {
+        font-size: 1.5rem;
+    }
+
+    /* Truncate long text in tables */
+    .text-truncate-mobile {
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
