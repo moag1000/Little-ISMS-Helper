@@ -167,13 +167,17 @@ export default class extends Controller {
                 .replace('%entity%', entityLabel);
             this.showToast(successMsg, 'success');
 
-            // Remove rows from DOM with animation
+            // Remove rows from DOM with fairy magic animation
             this.getSelectedItems().forEach(item => {
                 const row = item.closest('tr');
                 if (row) {
-                    row.style.opacity = '0';
-                    row.style.transition = 'opacity 0.2s ease-out';
-                    setTimeout(() => row.remove(), 200);
+                    // Add fairy completion flash before fading out
+                    row.classList.add('fairy-bulk-complete');
+                    setTimeout(() => {
+                        row.style.opacity = '0';
+                        row.style.transition = 'opacity 0.3s ease-out';
+                        setTimeout(() => row.remove(), 300);
+                    }, 400);
                 }
             });
 

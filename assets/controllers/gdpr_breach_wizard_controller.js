@@ -370,6 +370,7 @@ export default class extends Controller {
             };
             severityField.value = severityMap[assessment.risk_level] || 'medium';
             severityField.dispatchEvent(new Event('change'));
+            this.markFieldAsAutoFilled(severityField);
         }
 
         // Set category to data_breach
@@ -377,6 +378,7 @@ export default class extends Controller {
         if (categoryField) {
             categoryField.value = 'data_breach';
             categoryField.dispatchEvent(new Event('change'));
+            this.markFieldAsAutoFilled(categoryField);
         }
 
         // Set affected users count
@@ -389,6 +391,7 @@ export default class extends Controller {
                 'over_10000': 15000
             };
             affectedUsersField.value = scaleMap[this.wizardData.scale] || 0;
+            this.markFieldAsAutoFilled(affectedUsersField);
         }
 
         // Add note to description
@@ -397,18 +400,41 @@ export default class extends Controller {
             const riskText = this.getRiskLevelTranslation(assessment.risk_level);
             const reportableText = assessment.is_reportable ? 'REPORTABLE under GDPR Art. 33' : 'Not reportable';
             descriptionField.value = `GDPR Breach Assessment:\n- Risk Level: ${riskText}\n- ${reportableText}\n- Score: ${assessment.score}\n\n`;
+            this.markFieldAsAutoFilled(descriptionField);
         }
     }
 
     /**
-     * Show success message
+     * Mark a field as auto-filled with fairy styling
+     */
+    markFieldAsAutoFilled(field) {
+        if (!field) return;
+
+        // Add fairy styling class
+        field.classList.add('fairy-field-automatic');
+
+        // Add helper text below the field
+        const existingHelper = field.parentElement?.querySelector('.fairy-helper');
+        if (!existingHelper) {
+            const helper = document.createElement('small');
+            helper.className = 'fairy-helper';
+            helper.textContent = this.translations.auto_filled_hint || 'Auto-filled from GDPR Assessment';
+            field.parentElement?.appendChild(helper);
+        }
+    }
+
+    /**
+     * Show success message with fairy styling
      */
     showSuccessMessage() {
         const message = document.createElement('div');
-        message.className = 'alert alert-success alert-dismissible fade show';
+        message.className = 'alert alert-success alert-dismissible fade show fairy-magic-glow';
         message.setAttribute('role', 'alert');
+        const successTitle = this.translations.success_title || 'GDPR Assessment Complete!';
+        const successText = this.translations.success_text || 'Incident form has been pre-filled with assessment results.';
         message.innerHTML = `
-            <strong>GDPR Assessment Complete!</strong> Incident form has been pre-filled with assessment results.
+            <i class="bi bi-stars fairy-icon-sparkle me-2" aria-hidden="true"></i>
+            <strong>${successTitle}</strong> ${successText}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         `;
 

@@ -543,6 +543,268 @@ body {
     }
 }
 
+/* ============================================
+   Fairy Magic - Contextual Patterns
+   For specific use cases in the application
+   ============================================ */
+
+/* 1. Smart Insights - Suggestion indicator */
+.fairy-suggestion {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.875rem;
+    background: linear-gradient(
+        135deg,
+        rgba(236, 72, 153, 0.08) 0%,
+        rgba(6, 182, 212, 0.05) 100%
+    );
+    border: 1px dashed rgba(236, 72, 153, 0.3);
+    border-radius: var(--border-radius, 8px);
+    font-size: 0.8125rem;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.fairy-suggestion:hover {
+    background: linear-gradient(
+        135deg,
+        rgba(236, 72, 153, 0.12) 0%,
+        rgba(6, 182, 212, 0.08) 100%
+    );
+    border-color: rgba(236, 72, 153, 0.5);
+    transform: translateY(-1px);
+}
+
+.fairy-suggestion-icon {
+    color: var(--color-accent-pink);
+    animation: fairy-pulse 2.5s ease-in-out infinite;
+}
+
+.fairy-suggestion-text {
+    flex: 1;
+}
+
+.fairy-suggestion-action {
+    color: var(--color-accent-pink);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+/* 2. Workflow Magic - Auto-transition effect */
+.fairy-workflow-magic {
+    position: relative;
+    overflow: hidden;
+}
+
+.fairy-workflow-magic::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(236, 72, 153, 0.2),
+        rgba(6, 182, 212, 0.2),
+        transparent
+    );
+    animation: fairy-workflow-sweep 1.5s ease-out forwards;
+}
+
+@keyframes fairy-workflow-sweep {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.fairy-workflow-complete {
+    animation: fairy-workflow-pulse 0.6s ease-out;
+}
+
+@keyframes fairy-workflow-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(236, 72, 153, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); }
+}
+
+/* 3. Bulk Actions - Completion feedback */
+.fairy-bulk-complete {
+    animation: fairy-bulk-flash 0.8s ease-out;
+}
+
+@keyframes fairy-bulk-flash {
+    0% { background-color: rgba(236, 72, 153, 0.15); }
+    100% { background-color: transparent; }
+}
+
+.fairy-bulk-bar {
+    background: linear-gradient(
+        90deg,
+        var(--bg-secondary) 0%,
+        rgba(236, 72, 153, 0.1) 50%,
+        var(--bg-secondary) 100%
+    );
+    border: 1px solid rgba(236, 72, 153, 0.2);
+}
+
+.fairy-bulk-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 1rem;
+    background: var(--gradient-pink);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.fairy-bulk-action:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.3);
+}
+
+.fairy-bulk-action::before {
+    content: "✦";
+    font-size: 0.9em;
+}
+
+/* 4. Search/Command Palette - Priority highlighting */
+.fairy-search-priority {
+    position: relative;
+    border-left: 2px solid var(--color-accent-pink);
+    background: linear-gradient(
+        90deg,
+        rgba(236, 72, 153, 0.06) 0%,
+        transparent 50%
+    );
+}
+
+.fairy-search-priority::after {
+    content: "✦ Priorisiert";
+    position: absolute;
+    right: 0.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.65rem;
+    color: var(--color-accent-pink);
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* 5. Onboarding - Guided highlights */
+.fairy-onboarding-highlight {
+    position: relative;
+    z-index: 10;
+    animation: fairy-onboarding-glow 2s ease-in-out infinite;
+}
+
+@keyframes fairy-onboarding-glow {
+    0%, 100% {
+        box-shadow:
+            0 0 0 4px rgba(236, 72, 153, 0.2),
+            0 0 20px rgba(236, 72, 153, 0.15);
+    }
+    50% {
+        box-shadow:
+            0 0 0 6px rgba(236, 72, 153, 0.3),
+            0 0 30px rgba(236, 72, 153, 0.2);
+    }
+}
+
+.fairy-onboarding-step {
+    position: absolute;
+    bottom: -2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.375rem 0.75rem;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: var(--color-accent-pink);
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 100px;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.fairy-onboarding-step::before {
+    content: "✦";
+}
+
+/* 6. Auto-Correct - Field correction feedback */
+.fairy-auto-correct {
+    animation: fairy-correct-flash 0.5s ease-out;
+}
+
+@keyframes fairy-correct-flash {
+    0% {
+        background-color: rgba(236, 72, 153, 0.15);
+        border-color: var(--color-accent-pink);
+    }
+    100% {
+        background-color: transparent;
+    }
+}
+
+.fairy-corrected-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.7rem;
+    color: var(--color-accent-pink);
+    margin-left: 0.5rem;
+    opacity: 0;
+    animation: fairy-fade-in 0.3s ease-out forwards;
+}
+
+@keyframes fairy-fade-in {
+    0% { opacity: 0; transform: translateY(-5px); }
+    100% { opacity: 0.85; transform: translateY(0); }
+}
+
+.fairy-corrected-indicator::before {
+    content: "✦";
+    font-size: 0.6rem;
+}
+
+/* Dark Mode - Contextual patterns */
+[data-theme="dark"] .fairy-suggestion {
+    background: linear-gradient(
+        135deg,
+        rgba(236, 72, 153, 0.12) 0%,
+        rgba(6, 182, 212, 0.08) 100%
+    );
+}
+
+[data-theme="dark"] .fairy-search-priority {
+    background: linear-gradient(
+        90deg,
+        rgba(236, 72, 153, 0.1) 0%,
+        transparent 50%
+    );
+}
+
+[data-theme="dark"] .fairy-bulk-bar {
+    background: linear-gradient(
+        90deg,
+        var(--bg-tertiary) 0%,
+        rgba(236, 72, 153, 0.15) 50%,
+        var(--bg-tertiary) 100%
+    );
+}
+
 .header h1 {
     font-size: 1.5rem;
     font-weight: 600;
