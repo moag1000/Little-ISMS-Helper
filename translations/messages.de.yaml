@@ -104,9 +104,6 @@ details: Details
 close: Schließen
 confirm: Bestätigen
 back: Zurück
-form:
-    automatic_value: 'Dieses Feld wurde automatisch von der Cyberpunk Fee ausgefüllt.'
-    required: Pflichtfeld
 common:
     next: Weiter
     yes: 'Ja'
@@ -969,6 +966,7 @@ action:
     view_all: 'Alle anzeigen'
     view: Anzeigen
 form:
+    automatic_value: 'Dieses Feld wurde automatisch von der Cyberpunk Fee ausgefüllt.'
     complete_asset_inventory: 'Asset-Inventar vervollständigen'
     conduct_risk_analysis: 'Risikoanalyse durchführen'
     document_policies: 'Richtlinien dokumentieren'

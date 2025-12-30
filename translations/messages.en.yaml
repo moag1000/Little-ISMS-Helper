@@ -104,9 +104,6 @@ details: Details
 close: Close
 confirm: Confirm
 back: Back
-form:
-    automatic_value: 'This field was automatically filled by the Cyberpunk Fairy.'
-    required: 'Required field'
 common:
     next: Next
     yes: 'Yes'
@@ -955,6 +952,7 @@ action:
     back_to_list: ''
     view_all: ''
 form:
+    automatic_value: 'This field was automatically filled by the Cyberpunk Fairy.'
     complete_asset_inventory: 'Complete asset inventory'
     conduct_risk_analysis: 'Conduct risk analysis'
     document_policies: 'Document policies'
