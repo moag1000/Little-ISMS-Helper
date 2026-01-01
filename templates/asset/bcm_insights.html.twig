@@ -33,52 +33,60 @@
 
     {# Protection Requirement Analysis #}
     {% if analysis %}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="mb-0">{{ 'bcm.section.protection_analysis'|trans({}, 'bcm') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="mb-0">{{ 'bcm.section.protection_analysis'|trans({}, 'bcm') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row">
                 {% if analysis.confidentiality is defined %}
                 <div class="col-md-4 mb-3">
-                    <div class="card h-100">
-                        <div class="card-body text-center">
-                            <div class="fw-bold fs-6 mb-2">{{ 'bcm.field.confidentiality'|trans({}, 'bcm') }}</div>
-                            {% set confLevel = analysis.confidentiality.level|default('normal') %}
-                            {% set levelColors = {'very_high': 'danger', 'high': 'warning', 'normal': 'info', 'low': 'secondary'} %}
-                            <span class="badge bg-{{ levelColors[confLevel]|default('secondary') }} fs-5">
-                                {{ ('bcm.level.' ~ confLevel)|trans({}, 'bcm') }}
-                            </span>
-                        </div>
-                    </div>
+                    {% embed '_components/_card.html.twig' with {class: 'h-100'} %}
+                        {% block card_body %}
+                            <div class="text-center">
+                                <div class="fw-bold fs-6 mb-2">{{ 'bcm.field.confidentiality'|trans({}, 'bcm') }}</div>
+                                {% set confLevel = analysis.confidentiality.level|default('normal') %}
+                                {% set levelColors = {'very_high': 'danger', 'high': 'warning', 'normal': 'info', 'low': 'secondary'} %}
+                                <span class="badge bg-{{ levelColors[confLevel]|default('secondary') }} fs-5">
+                                    {{ ('bcm.level.' ~ confLevel)|trans({}, 'bcm') }}
+                                </span>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 {% endif %}
 
                 {% if analysis.integrity is defined %}
                 <div class="col-md-4 mb-3">
-                    <div class="card h-100">
-                        <div class="card-body text-center">
-                            <div class="fw-bold fs-6 mb-2">{{ 'bcm.field.integrity'|trans({}, 'bcm') }}</div>
-                            {% set intLevel = analysis.integrity.level|default('normal') %}
-                            <span class="badge bg-{{ levelColors[intLevel]|default('secondary') }} fs-5">
-                                {{ ('bcm.level.' ~ intLevel)|trans({}, 'bcm') }}
-                            </span>
-                        </div>
-                    </div>
+                    {% embed '_components/_card.html.twig' with {class: 'h-100'} %}
+                        {% block card_body %}
+                            <div class="text-center">
+                                <div class="fw-bold fs-6 mb-2">{{ 'bcm.field.integrity'|trans({}, 'bcm') }}</div>
+                                {% set intLevel = analysis.integrity.level|default('normal') %}
+                                <span class="badge bg-{{ levelColors[intLevel]|default('secondary') }} fs-5">
+                                    {{ ('bcm.level.' ~ intLevel)|trans({}, 'bcm') }}
+                                </span>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 {% endif %}
 
                 {% if analysis.availability is defined %}
                 <div class="col-md-4 mb-3">
-                    <div class="card h-100">
-                        <div class="card-body text-center">
-                            <div class="fw-bold fs-6 mb-2">{{ 'bcm.field.availability'|trans({}, 'bcm') }}</div>
-                            {% set availLevel = analysis.availability.level|default('normal') %}
-                            <span class="badge bg-{{ levelColors[availLevel]|default('secondary') }} fs-5">
-                                {{ ('bcm.level.' ~ availLevel)|trans({}, 'bcm') }}
-                            </span>
-                        </div>
-                    </div>
+                    {% embed '_components/_card.html.twig' with {class: 'h-100'} %}
+                        {% block card_body %}
+                            <div class="text-center">
+                                <div class="fw-bold fs-6 mb-2">{{ 'bcm.field.availability'|trans({}, 'bcm') }}</div>
+                                {% set availLevel = analysis.availability.level|default('normal') %}
+                                <span class="badge bg-{{ levelColors[availLevel]|default('secondary') }} fs-5">
+                                    {{ ('bcm.level.' ~ availLevel)|trans({}, 'bcm') }}
+                                </span>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 {% endif %}
             </div>
@@ -89,16 +97,18 @@
                 {{ ('bcm.level.' ~ analysis.overallLevel)|trans({}, 'bcm') }}
             </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Associated Business Processes #}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="mb-0">{{ 'bcm.section.business_processes'|trans({}, 'bcm') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="mb-0">{{ 'bcm.section.business_processes'|trans({}, 'bcm') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if processes|length > 0 %}
             <div class="table-responsive">
             <table class="table table-hover">
@@ -147,15 +157,17 @@
                 </a>
             </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Asset Details #}
-    <div class="card">
-        <div class="card-header">
-            <h2 class="mb-0">{{ 'bcm.section.asset_details'|trans({}, 'bcm') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="mb-0">{{ 'bcm.section.asset_details'|trans({}, 'bcm') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row">
                 <div class="col-md-6">
                     <dl class="row">
@@ -195,7 +207,7 @@
                 {{ 'asset.message.inherited_asset'|trans({}, 'asset') }}
             </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}
