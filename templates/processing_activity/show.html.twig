@@ -41,51 +41,59 @@
     {# Quick Stats #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <div class="text-muted mb-2 fw-bold">Completeness</div>
-                    {% set completeness = compliance_report.completeness_percentage %}
-                    <div class="fs-2 fw-bold mb-0 {{ completeness == 100 ? 'text-success' : 'text-warning' }}">{{ completeness }}%</div>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="text-muted mb-2 fw-bold">Completeness</div>
+                        {% set completeness = compliance_report.completeness_percentage %}
+                        <div class="fs-2 fw-bold mb-0 {{ completeness == 100 ? 'text-success' : 'text-warning' }}">{{ completeness }}%</div>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <div class="text-muted mb-2 fw-bold">Status</div>
-                    <div class="fs-4 fw-bold mb-0"><span class="{{ badge_status(processing_activity.status) }}">{{ processing_activity.status|upper }}</span></div>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="text-muted mb-2 fw-bold">Status</div>
+                        <div class="fs-4 fw-bold mb-0"><span class="{{ badge_status(processing_activity.status) }}">{{ processing_activity.status|upper }}</span></div>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <div class="text-muted mb-2 fw-bold">Risk Level</div>
-                    {% if processing_activity.riskLevel %}
-                        <div class="fs-4 fw-bold mb-0"><span class="{{ badge_risk(processing_activity.riskLevel) }}">{{ processing_activity.riskLevel|upper }}</span></div>
-                    {% else %}
-                        <div class="fs-4 fw-bold mb-0 text-muted">—</div>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <div class="text-muted mb-2 fw-bold">DPIA Status</div>
-                    {% if processing_activity.requiresDPIA %}
-                        {% if processing_activity.dpiaCompleted %}
-                            <div class="fs-4 fw-bold mb-0 text-success"><i class="bi bi-check-circle-fill" aria-hidden="true"></i></div>
-                            <small class="text-muted">{{ processing_activity.dpiaDate|date('Y-m-d') }}</small>
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="text-muted mb-2 fw-bold">Risk Level</div>
+                        {% if processing_activity.riskLevel %}
+                            <div class="fs-4 fw-bold mb-0"><span class="{{ badge_risk(processing_activity.riskLevel) }}">{{ processing_activity.riskLevel|upper }}</span></div>
                         {% else %}
-                            <div class="fs-4 fw-bold mb-0 text-danger"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i></div>
-                            <small class="text-danger">Required</small>
+                            <div class="fs-4 fw-bold mb-0 text-muted">—</div>
                         {% endif %}
-                    {% else %}
-                        <div class="fs-4 fw-bold mb-0 text-muted">Not Required</div>
-                    {% endif %}
-                </div>
-            </div>
+                    </div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+        <div class="col-md-3">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="text-muted mb-2 fw-bold">DPIA Status</div>
+                        {% if processing_activity.requiresDPIA %}
+                            {% if processing_activity.dpiaCompleted %}
+                                <div class="fs-4 fw-bold mb-0 text-success"><i class="bi bi-check-circle-fill" aria-hidden="true"></i></div>
+                                <small class="text-muted">{{ processing_activity.dpiaDate|date('Y-m-d') }}</small>
+                            {% else %}
+                                <div class="fs-4 fw-bold mb-0 text-danger"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i></div>
+                                <small class="text-danger">Required</small>
+                            {% endif %}
+                        {% else %}
+                            <div class="fs-4 fw-bold mb-0 text-muted">Not Required</div>
+                        {% endif %}
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
@@ -111,8 +119,8 @@
     <div class="tab-content" id="processingActivityTabsContent">
         {# Overview Tab #}
         <div class="tab-pane fade show active" id="overview" role="tabpanel">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <h2 class="h5">Basic Information</h2>
                     <dl class="row">
                         <dt class="col-sm-3">Name:</dt>
@@ -145,14 +153,14 @@
                         <dt class="col-sm-3">DPO:</dt>
                         <dd class="col-sm-9">{{ processing_activity.dataProtectionOfficer ? processing_activity.dataProtectionOfficer.userIdentifier : '—' }}</dd>
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Data Details Tab #}
         <div class="tab-pane fade" id="data" role="tabpanel">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <h2 class="h5">Data Subjects (Art. 30(1)(b))</h2>
                     <dl class="row">
                         <dt class="col-sm-3">Categories:</dt>
@@ -210,14 +218,14 @@
                             <dd class="col-sm-9">{{ processing_activity.retentionLegalBasis }}</dd>
                         {% endif %}
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Compliance Tab #}
         <div class="tab-pane fade" id="compliance" role="tabpanel">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <h2 class="h5">Compliance Checks (Art. 30)</h2>
                     {% embed '_components/_table.html.twig' with {
                         'noMargin': true
@@ -255,8 +263,8 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
