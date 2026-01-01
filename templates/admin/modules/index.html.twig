@@ -22,51 +22,61 @@
     {# Statistics #}
     <div class="row g-3 mb-4">
         <div class="col-md-3">
-            <div class="card border-primary">
-                <div class="card-body text-center">
-                    <h2 class="text-muted mb-1 fs-6">{{ 'admin.modules.stats.total'|trans({}, 'admin') }}</h2>
-                    <div class="fs-2 fw-bold mb-0">{{ statistics.total_modules }}</div>
-                    <i class="bi bi-box fs-3 text-primary opacity-25" aria-hidden="true"></i>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with {borderColor: 'primary'} %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="text-muted mb-1 fs-6">{{ 'admin.modules.stats.total'|trans({}, 'admin') }}</h2>
+                        <div class="fs-2 fw-bold mb-0">{{ statistics.total_modules }}</div>
+                        <i class="bi bi-box fs-3 text-primary opacity-25" aria-hidden="true"></i>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-success">
-                <div class="card-body text-center">
-                    <h2 class="text-muted mb-1 fs-6">{{ 'admin.modules.stats.active'|trans({}, 'admin') }}</h2>
-                    <div class="fs-2 fw-bold mb-0 text-success">{{ statistics.active_modules }}</div>
-                    <i class="bi bi-check-circle fs-3 text-success opacity-25" aria-hidden="true"></i>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with {borderColor: 'success'} %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="text-muted mb-1 fs-6">{{ 'admin.modules.stats.active'|trans({}, 'admin') }}</h2>
+                        <div class="fs-2 fw-bold mb-0 text-success">{{ statistics.active_modules }}</div>
+                        <i class="bi bi-check-circle fs-3 text-success opacity-25" aria-hidden="true"></i>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-secondary">
-                <div class="card-body text-center">
-                    <h2 class="text-muted mb-1 fs-6">{{ 'admin.modules.stats.inactive'|trans({}, 'admin') }}</h2>
-                    <div class="fs-2 fw-bold mb-0 text-secondary">{{ statistics.inactive_modules }}</div>
-                    <i class="bi bi-x-circle fs-3 text-secondary opacity-25" aria-hidden="true"></i>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with {borderColor: 'secondary'} %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="text-muted mb-1 fs-6">{{ 'admin.modules.stats.inactive'|trans({}, 'admin') }}</h2>
+                        <div class="fs-2 fw-bold mb-0 text-secondary">{{ statistics.inactive_modules }}</div>
+                        <i class="bi bi-x-circle fs-3 text-secondary opacity-25" aria-hidden="true"></i>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-warning">
-                <div class="card-body text-center">
-                    <h2 class="text-muted mb-1 fs-6">{{ 'admin.modules.stats.required'|trans({}, 'admin') }}</h2>
-                    <div class="fs-2 fw-bold mb-0 text-warning">{{ statistics.required_modules }}</div>
-                    <i class="bi bi-star fs-3 text-warning opacity-25" aria-hidden="true"></i>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with {borderColor: 'warning'} %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="text-muted mb-1 fs-6">{{ 'admin.modules.stats.required'|trans({}, 'admin') }}</h2>
+                        <div class="fs-2 fw-bold mb-0 text-warning">{{ statistics.required_modules }}</div>
+                        <i class="bi bi-star fs-3 text-warning opacity-25" aria-hidden="true"></i>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Active Modules #}
-    <div class="card mb-4">
-        <div class="card-header bg-success text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.modules.active_modules'|trans({}, 'admin') }} ({{ active_modules|length }})
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+        {% block card_header %}
+            <div class="card-header bg-success text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.modules.active_modules'|trans({}, 'admin') }} ({{ active_modules|length }})
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if active_modules|length > 0 %}
                 <div class="row g-3">
                     {% for key, module in all_modules %}
@@ -135,8 +145,8 @@
             {% else %}
                 <p class="text-muted text-center py-4">{{ 'admin.modules.no_active'|trans({}, 'admin') }}</p>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Inactive Modules #}
     {% set inactive_modules = [] %}
@@ -147,13 +157,15 @@
     {% endfor %}
 
     {% if inactive_modules|length > 0 %}
-        <div class="card">
-            <div class="card-header bg-secondary text-white">
-                <h2 class="mb-0">
-                    <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'admin.modules.inactive_modules'|trans({}, 'admin') }} ({{ inactive_modules|length }})
-                </h2>
-            </div>
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' %}
+            {% block card_header %}
+                <div class="card-header bg-secondary text-white">
+                    <h2 class="mb-0">
+                        <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'admin.modules.inactive_modules'|trans({}, 'admin') }} ({{ inactive_modules|length }})
+                    </h2>
+                </div>
+            {% endblock %}
+            {% block card_body %}
                 <div class="row g-3">
                     {% for item in inactive_modules %}
                         {% set key = item.key %}
@@ -197,8 +209,8 @@
                         </div>
                     {% endfor %}
                 </div>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 </div>
 {% endblock admin_content %}
