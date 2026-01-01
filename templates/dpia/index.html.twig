@@ -22,8 +22,8 @@
     } %}
 
     {# Overall Compliance Score #}
-    <div class="card mb-4 text-center">
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4 text-center'} %}
+        {% block card_body %}
             <div class="text-muted mb-2 fw-semibold">{{ 'dpia.index.compliance_score'|trans({}, 'privacy') }}</div>
             {% set score = compliance_score.overall_score %}
             <div class="display-1 mb-0
@@ -38,62 +38,63 @@
                     · {{ compliance_score.due_for_review }} {{ 'dpia.index.due_for_review'|trans({}, 'privacy') }}
                 {% endif %}
             </p>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Key Metrics #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <div class="text-muted fw-semibold">{{ 'dpia.index.total_dpias'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold">{{ statistics.total }}</div>
                     <div class="mt-2">
                         <small class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ statistics.approved }} {{ 'dpia.index.approved'|trans({}, 'privacy') }}</small>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <div class="text-muted fw-semibold">{{ 'dpia.index.in_review'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold text-info">{{ statistics.in_review }}</div>
                     <div class="mt-2">
                         <small class="text-muted"><i class="bi bi-clock" aria-hidden="true"></i> {{ 'dpia.index.awaiting_approval'|trans({}, 'privacy') }}</small>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <div class="text-muted fw-semibold">{{ 'dpia.index.high_risk'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold text-danger">{{ statistics.high_risk }}</div>
                     <div class="mt-2">
                         <small class="text-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dpia.index.requires_attention'|trans({}, 'privacy') }}</small>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <div class="text-muted fw-semibold">{{ 'dpia.index.completeness'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold">{{ statistics.completeness_rate }}%</div>
                     <div class="progress mt-2" style="height: 10px;">
                         <div class="progress-bar bg-success" style="width: {{ statistics.completeness_rate }}%"></div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Filters #}
-    <div class="card mb-4">
-        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-filter" aria-hidden="true"></i> {{ 'dpia.index.filter_dpias'|trans({}, 'privacy') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+        {% block card_header %}
+            <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-filter" aria-hidden="true"></i> {{ 'dpia.index.filter_dpias'|trans({}, 'privacy') }}</h2></div>
+        {% endblock %}
+        {% block card_body %}
             <div class="btn-group flex-wrap" role="group">
                 <a href="{{ path('app_dpia_index') }}"
                    class="btn btn-outline-primary {{ current_filter == 'all' ? 'active' : '' }}">
@@ -128,14 +129,15 @@
                     {{ 'dpia.index.requires_supervisory'|trans({}, 'privacy') }} ({{ statistics.requires_supervisory_consultation }})
                 </a>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# DPIA Table #}
-    <div class="card">
-        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'dpia.index.dpias_list'|trans({}, 'privacy') }} ({{ dpias|length }})</h2>
-        </div>
-        <div class="card-body p-0">
+    {% embed '_components/_card.html.twig' with {noPadding: true} %}
+        {% block card_header %}
+            <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'dpia.index.dpias_list'|trans({}, 'privacy') }} ({{ dpias|length }})</h2></div>
+        {% endblock %}
+        {% block card_body %}
             {% if dpias|length > 0 %}
                 {% embed '_components/_table.html.twig' with {
                     'noMargin': true
@@ -251,7 +253,7 @@
                     <a href="{{ path('app_dpia_new') }}" class="alert-link">{{ 'dpia.index.create_first_dpia'|trans({}, 'privacy') }}</a>.
                 </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

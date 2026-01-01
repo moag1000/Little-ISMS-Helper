@@ -25,8 +25,8 @@
     } %}
 
     {# Overall Compliance Score #}
-    <div class="card mb-4 text-center">
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4 text-center'} %}
+        {% block card_body %}
             <div class="text-muted mb-2 fw-semibold">Overall DPIA Compliance Score</div>
             {% set score = compliance_score.overall_score %}
             <div class="display-1 mb-0
@@ -55,8 +55,8 @@
                     <div class="fs-4 fw-bold mb-0">{{ compliance_score.review_compliance_score }}%</div>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Key Metrics #}
     <div class="row mb-4">
@@ -77,10 +77,11 @@
     <div class="row">
         {# Action Items #}
         <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header bg-warning text-dark"><h2 class="h5 mb-0"><i class="bi bi-exclamation-circle" aria-hidden="true"></i> Action Items</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+                {% block card_header %}
+                    <div class="card-header bg-warning text-dark"><h2 class="h5 mb-0"><i class="bi bi-exclamation-circle" aria-hidden="true"></i> Action Items</h2></div>
+                {% endblock %}
+                {% block card_body %}
                     {% if incomplete|length > 0 %}
                         <h3 class="h6">Incomplete DPIAs ({{ incomplete|length }})</h3>
                         <ul class="list-unstyled">
@@ -132,16 +133,17 @@
                     {% if incomplete|length == 0 and awaiting_dpo|length == 0 and requires_supervisory|length == 0 and due_for_review|length == 0 %}
                         <p class="text-success mb-0"><i class="bi bi-check-circle" aria-hidden="true"></i> No action items - all compliant!</p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Statistics Charts #}
         <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> Statistics</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+                {% block card_header %}
+                    <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> Statistics</h2></div>
+                {% endblock %}
+                {% block card_body %}
                     <h3 class="h6">{{ 'privacy.chart.by_status'|trans({}, 'privacy') }}</h3>
                     <ul class="list-unstyled">
                         <li class="mb-2">
@@ -209,15 +211,16 @@
                             Requires Supervisory (Art. 36)
                         </li>
                     </ul>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# High Risk DPIAs #}
             {% if high_risk|length > 0 %}
-                <div class="card mb-4">
-                    <div class="card-header bg-danger text-white"><h2 class="h5 mb-0"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> High Risk DPIAs</h2>
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+                    {% block card_header %}
+                        <div class="card-header bg-danger text-white"><h2 class="h5 mb-0"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> High Risk DPIAs</h2></div>
+                    {% endblock %}
+                    {% block card_body %}
                         <ul class="list-unstyled">
                             {% for dpia in high_risk|slice(0, 5) %}
                                 <li class="mb-2">
@@ -230,8 +233,8 @@
                                 </li>
                             {% endfor %}
                         </ul>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         </div>
     </div>
