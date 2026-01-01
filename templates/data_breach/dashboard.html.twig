@@ -23,8 +23,8 @@
     } %}
 
     {# Overall Compliance Score #}
-    <div class="card mb-4 text-center">
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4 text-center'} %}
+        {% block card_body %}
             <h6 class="text-muted mb-2">Overall GDPR Art. 33/34 Compliance Score</h6>
             {% set score = compliance_score.overall_score %}
             <h1 class="display-1 mb-0
@@ -56,15 +56,16 @@
                 {{ statistics.total }} total breach{{ statistics.total != 1 ? 'es' : '' }} ·
                 {{ compliance_score.total_affected_subjects|number_format }} affected data subjects
             </p>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# CRITICAL: Action Items #}
     {% if action_items|length > 0 %}
-        <div class="card mb-4">
-            <div class="card-header"><h2 class="mb-0"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> Action Items</h2>
-            </div>
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+            {% block card_header %}
+                <div class="card-header"><h2 class="mb-0"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> Action Items</h2></div>
+            {% endblock %}
+            {% block card_body %}
                 <div class="list-group">
                     {% for item in action_items %}
                         <a href="{{ path('app_data_breach_show', {id: item.breach_id}) }}"
@@ -106,8 +107,8 @@
                         </a>
                     {% endfor %}
                 </div>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% else %}
         <div class="alert alert-success" role="alert">
             <i class="bi bi-check-circle" aria-hidden="true"></i> <strong>All action items completed!</strong> No pending notifications or overdue deadlines.
@@ -117,10 +118,11 @@
     {# Statistics by Status #}
     <div class="row mb-4">
         <div class="col-md-12">
-            <div class="card">
-                <div class="card-header"><h2 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> Breach Statistics by Status</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header"><h2 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> Breach Statistics by Status</h2></div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row">
                         <div class="col-md-2">
                             <div class="text-muted small">Draft</div>
@@ -143,18 +145,19 @@
                             <div class="h3">{{ statistics.closed }}</div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Statistics by Risk Level #}
     <div class="row mb-4">
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header"><h2 class="mb-0"><i class="bi bi-shield-exclamation" aria-hidden="true"></i> By Risk Level</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header"><h2 class="mb-0"><i class="bi bi-shield-exclamation" aria-hidden="true"></i> By Risk Level</h2></div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row text-center">
                         <div class="col-3">
                             <div class="text-muted small">Low</div>
@@ -173,32 +176,34 @@
                             <div class="h3 text-danger">{{ statistics.critical_risk }}</div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header"><h2 class="mb-0"><i class="bi bi-shield-lock" aria-hidden="true"></i> Special Categories</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header"><h2 class="mb-0"><i class="bi bi-shield-lock" aria-hidden="true"></i> Special Categories</h2></div>
+                {% endblock %}
+                {% block card_body %}
                     <p><strong>Art. 9 Data (Special Categories):</strong></p>
                     <h2 class="text-info">{{ statistics.special_categories_affected }}</h2>
                     <small class="text-muted">
                         Breaches involving racial/ethnic origin, political opinions, religious beliefs,
                         health data, sexual orientation, biometric/genetic data
                     </small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Recent Breaches #}
     {% if recent_breaches|length > 0 %}
-        <div class="card mb-4">
-            <div class="card-header"><h2 class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> Recent Breaches (Last 30 Days)</h2>
-            </div>
-            <div class="card-body p-0">
+        {% embed '_components/_card.html.twig' with {class: 'mb-4', noPadding: true} %}
+            {% block card_header %}
+                <div class="card-header"><h2 class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> Recent Breaches (Last 30 Days)</h2></div>
+            {% endblock %}
+            {% block card_body %}
                 {% embed '_components/_table.html.twig' with {
                     'class': 'table-hover mb-0',
                     'noMargin': true,
@@ -247,8 +252,8 @@
                         {% endfor %}
                     {% endblock %}
                 {% endembed %}
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 </div>
 {% endblock %}
