@@ -57,14 +57,16 @@
     {# ISO 27001 compliant thresholds: 20/12/6 #}
     {% set riskClass = risk.inherentRiskLevel >= 20 ? 'critical' : (risk.inherentRiskLevel >= 12 ? 'high' : (risk.inherentRiskLevel >= 6 ? 'medium' : 'low')) %}
 
-    <div class="card">
-        <div class="card-header">
-            <h2>{{ 'risk.section.details'|trans({}, 'risk') }}</h2>
-            <span class="{{ badge_risk(riskClass) }}">
-                {{ riskClass|upper }} ({{ risk.inherentRiskLevel }})
-            </span>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2>{{ 'risk.section.details'|trans({}, 'risk') }}</h2>
+                <span class="{{ badge_risk(riskClass) }}">
+                    {{ riskClass|upper }} ({{ risk.inherentRiskLevel }})
+                </span>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="detail-grid">
                 <div class="detail-item">
                     <span class="label">{{ 'risk.field.status'|trans({}, 'risk') }}:</span>
@@ -326,8 +328,8 @@
                     {% endif %}
                 </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 <style>
