@@ -26,11 +26,13 @@
     {# Quick Actions #}
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="h5 mb-0"><i class="bi bi-lightning" aria-hidden="true"></i> {{ 'section.quick_start'|trans }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h5 mb-0"><i class="bi bi-lightning" aria-hidden="true"></i> {{ 'section.quick_start'|trans }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row g-3">
                         {% for key, template in predefined_templates %}
                         <div class="col-md-4 col-lg-2">
@@ -43,8 +45,8 @@
                         </div>
                         {% endfor %}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
@@ -53,11 +55,13 @@
         <div class="col-lg-8">
             {# Favorites #}
             {% if favorites|length > 0 %}
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h2 class="h5 mb-0"><i class="bi bi-star-fill text-warning" aria-hidden="true"></i> {{ 'section.favorites'|trans }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h5 mb-0"><i class="bi bi-star-fill text-warning" aria-hidden="true"></i> {{ 'section.favorites'|trans }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row g-3">
                         {% for report in favorites %}
                         <div class="col-md-6">
@@ -65,17 +69,19 @@
                         </div>
                         {% endfor %}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
 
             {# All Reports #}
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h2 class="h5 mb-0"><i class="bi bi-collection" aria-hidden="true"></i> {{ 'section.my_reports'|trans }}</h2>
-                    <span class="badge bg-secondary">{{ reports|length }}</span>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="h5 mb-0"><i class="bi bi-collection" aria-hidden="true"></i> {{ 'section.my_reports'|trans }}</h2>
+                        <span class="badge bg-secondary">{{ reports|length }}</span>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if reports|length > 0 %}
                     <div class="table-responsive">
                         <table class="table table-hover align-middle">
@@ -130,57 +136,65 @@
                         </a>
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Sidebar #}
         <div class="col-lg-4">
             {# Recently Used #}
             {% if recently_used|length > 0 %}
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h2 class="h5 mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'section.recently_used'|trans }}</h2>
-                </div>
-                <ul class="list-group list-group-flush">
-                    {% for report in recently_used %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="text-decoration-none">
-                            {{ report.name }}
-                        </a>
-                        <small class="text-muted">{{ report.lastUsedAt|date('d.m.') }}</small>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
+            {% embed '_components/_card.html.twig' with {class: 'mb-4', noPadding: true} %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h5 mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'section.recently_used'|trans }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <ul class="list-group list-group-flush">
+                        {% for report in recently_used %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a href="{{ path('report_builder_preview', {id: report.id}) }}" class="text-decoration-none">
+                                {{ report.name }}
+                            </a>
+                            <small class="text-muted">{{ report.lastUsedAt|date('d.m.') }}</small>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
 
             {# Shared Templates #}
             {% if templates|length > 0 %}
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="h5 mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ 'section.shared_templates'|trans }}</h2>
-                </div>
-                <ul class="list-group list-group-flush">
-                    {% for template in templates %}
-                    <li class="list-group-item">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <strong>{{ template.name }}</strong>
-                                <br><small class="text-muted">{{ template.description|default('')|slice(0, 40) }}{% if template.description|default('')|length > 40 %}...{% endif %}</small>
+            {% embed '_components/_card.html.twig' with {noPadding: true} %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h5 mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ 'section.shared_templates'|trans }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <ul class="list-group list-group-flush">
+                        {% for template in templates %}
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong>{{ template.name }}</strong>
+                                    <br><small class="text-muted">{{ template.description|default('')|slice(0, 40) }}{% if template.description|default('')|length > 40 %}...{% endif %}</small>
+                                </div>
+                                <form method="post" action="{{ path('report_builder_clone', {id: template.id}) }}" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('clone' ~ template.id) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-primary" title="{{ 'action.use_template'|trans }}">
+                                        <i class="bi bi-copy" aria-hidden="true"></i>
+                                    </button>
+                                </form>
                             </div>
-                            <form method="post" action="{{ path('report_builder_clone', {id: template.id}) }}" class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token('clone' ~ template.id) }}">
-                                <button type="submit" class="btn btn-sm btn-outline-primary" title="{{ 'action.use_template'|trans }}">
-                                    <i class="bi bi-copy" aria-hidden="true"></i>
-                                </button>
-                            </form>
-                        </div>
-                        <small class="text-muted"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ template.usageCount }} {{ 'uses'|trans }}</small>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
+                            <small class="text-muted"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ template.usageCount }} {{ 'uses'|trans }}</small>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
         </div>
     </div>
