@@ -22,8 +22,8 @@
     ]
 } %}
 
-<div class="card">
-    <div class="card-body">
+{% embed '_components/_card.html.twig' %}
+    {% block card_body %}
         {{ form_start(form) }}
             {% include '_components/_auto_form.html.twig' with {
                 'form': form,
@@ -93,22 +93,24 @@
                 </button>
             </div>
         {{ form_end(form) }}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Delete Danger Zone (only for edit) #}
-<div class="card border-danger mt-4">
-    <div class="card-header bg-danger text-white">
-        <h2 class="h5 mb-0">
-            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-            {{ 'common.danger_zone'|trans({}, 'messages') }}
-        </h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with {borderColor: 'danger', class: 'mt-4'} %}
+    {% block card_header %}
+        <div class="card-header bg-danger text-white">
+            <h2 class="h5 mb-0">
+                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                {{ 'common.danger_zone'|trans({}, 'messages') }}
+            </h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         <p class="text-muted">
             {{ 'asset.warning.delete_irreversible'|trans({}, 'asset') }}
         </p>
         {{ include('asset/_delete_form.html.twig') }}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endblock %}

@@ -22,8 +22,8 @@
     ]
 } %}
 
-<div class="card">
-    <div class="card-body">
+{% embed '_components/_card.html.twig' %}
+    {% block card_body %}
         <div class="alert alert-info" role="status">
             <i class="bi bi-info-circle" aria-hidden="true"></i>
             {{ 'document.help.edit_file'|trans({}, 'document') }}
@@ -61,22 +61,24 @@
                 </button>
             </div>
         {{ form_end(form) }}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Delete Danger Zone #}
-<div class="card border-danger mt-4">
-    <div class="card-header bg-danger text-white">
-        <h2 class="mb-0">
-            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-            {{ 'common.danger_zone'|trans({}, 'messages') }}
-        </h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with {borderColor: 'danger', class: 'mt-4'} %}
+    {% block card_header %}
+        <div class="card-header bg-danger text-white">
+            <h2 class="mb-0">
+                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                {{ 'common.danger_zone'|trans({}, 'messages') }}
+            </h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         <p class="text-muted">
             {{ 'document.delete_warning'|trans({}, 'document') }}
         </p>
         {{ include('document/_delete_form.html.twig') }}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endblock %}
