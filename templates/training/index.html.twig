@@ -60,8 +60,8 @@
     <turbo-frame id="training-stats">
         <div class="row mb-4">
             <div class="col-md-3 mb-3">
-                <div class="card border-primary">
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with {borderColor: 'primary'} %}
+                    {% block card_body %}
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <i class="bi bi-collection text-primary icon-2rem" aria-hidden="true"></i>
@@ -78,13 +78,13 @@
                                 {% endif %}
                             </div>
                         </div>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
 
             <div class="col-md-3 mb-3">
-                <div class="card border-info">
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with {borderColor: 'info'} %}
+                    {% block card_body %}
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <i class="bi bi-calendar-check text-info icon-2rem" aria-hidden="true"></i>
@@ -96,13 +96,13 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
 
             <div class="col-md-3 mb-3">
-                <div class="card border-success">
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with {borderColor: 'success'} %}
+                    {% block card_body %}
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <i class="bi bi-check-circle text-success icon-2rem" aria-hidden="true"></i>
@@ -114,13 +114,13 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
 
             <div class="col-md-3 mb-3">
-                <div class="card border-warning">
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with {borderColor: 'warning'} %}
+                    {% block card_body %}
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <i class="bi bi-exclamation-triangle text-warning icon-2rem" aria-hidden="true"></i>
@@ -132,19 +132,21 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
         </div>
     </turbo-frame>
 
     {# Upcoming Trainings Section #}
     {% if upcoming|length > 0 %}
-    <div class="card mb-4 border-info">
-        <div class="card-header bg-info text-white">
-            <h2 class="mb-0"><i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'training.upcoming_trainings'|trans({}, 'training') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4', borderColor: 'info'} %}
+        {% block card_header %}
+            <div class="card-header bg-info text-white">
+                <h2 class="mb-0"><i class="bi bi-calendar-event" aria-hidden="true"></i> {{ 'training.upcoming_trainings'|trans({}, 'training') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% embed '_components/_table.html.twig' with {
                 'noMargin': false
             } %}
@@ -199,16 +201,19 @@
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# All Trainings Section #}
-    <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/training">
-        <div class="card-header bg-primary text-white">
-            <h2 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'training.all_trainings'|trans({}, 'training') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/training"{% endblock %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'training.all_trainings'|trans({}, 'training') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if trainings|length == 0 %}
             <div class="alert alert-info" role="alert">
                 <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'training.no_trainings'|trans({}, 'training') }}
@@ -308,15 +313,16 @@
                 {% endblock %}
             {% endembed %}
             {% endif %}
-        </div>
-
-        {# Bulk Action Bar #}
-        {% if trainings|length > 0 %}
-        {% include '_components/_bulk_action_bar.html.twig' with {
-            actions: ['export', 'assign', 'delete']
-        } %}
-        {% endif %}
-    </div>
+        {% endblock %}
+        {% block card_footer %}
+            {# Bulk Action Bar #}
+            {% if trainings|length > 0 %}
+            {% include '_components/_bulk_action_bar.html.twig' with {
+                actions: ['export', 'assign', 'delete']
+            } %}
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
 </div>
 
 {# Delete Modals #}
