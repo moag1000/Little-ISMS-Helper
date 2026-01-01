@@ -82,11 +82,13 @@
 
     {# Process List with Turbo Frame #}
     <turbo-frame id="business-processes-list">
-        <div class="card">
-            <div class="card-header">
-                <h2 class="mb-0">{{ 'business_process.index.table.title'|trans }}</h2>
-            </div>
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' %}
+            {% block card_header %}
+                <div class="card-header">
+                    <h2 class="mb-0">{{ 'business_process.index.table.title'|trans }}</h2>
+                </div>
+            {% endblock %}
+            {% block card_body %}
                 {% if business_processes|length > 0 %}
                     {% embed '_components/_table.html.twig' %}
                         {% import '_macros/inheritance_badge.html.twig' as inheritance %}
@@ -162,8 +164,8 @@
                         action: { label: 'business_process.action.create'|trans({}, 'business_process'), url: path('app_business_process_new'), icon: 'bi-plus-circle' }
                     } %}
                 {% endif %}
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     </turbo-frame>
 </div>
 

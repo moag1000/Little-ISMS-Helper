@@ -52,12 +52,14 @@
 <a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans({}, 'messages') }}</a>
 
 {# Filter Section #}
-<div class="card mb-4">
-    <div class="card-header">
-        <h2><i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans({}, 'messages') }}</h2>
-    </div>
-    <div class="card-body" id="filter-section" tabindex="-1">
-        <form method="get" action="{{ path('app_risk_treatment_plan_index') }}" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}">
+{% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2><i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans({}, 'messages') }}</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
+        <form method="get" action="{{ path('app_risk_treatment_plan_index') }}" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}" id="filter-section" tabindex="-1">
             <div class="col-md-3">
                 <label for="filter-status" class="form-label">{{ 'risk_treatment_plan.field.status'|trans({}, 'risk_treatment_plan') }}</label>
                 <select class="form-select" id="filter-status" name="status" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
@@ -101,14 +103,17 @@
                 </a>
             </div>
         </form>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Treatment Plans Table #}
-<div class="card">
-    <div class="card-header">
-        <h2><i class="bi bi-list" aria-hidden="true"></i> {{ 'risk_treatment_plan.list.title'|trans({}, 'risk_treatment_plan') }} ({{ plans|length }})</h2>
-    </div>
+{% embed '_components/_card.html.twig' %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2><i class="bi bi-list" aria-hidden="true"></i> {{ 'risk_treatment_plan.list.title'|trans({}, 'risk_treatment_plan') }} ({{ plans|length }})</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
     {% embed '_components/_table.html.twig' with {
         'noMargin': true
     } %}
@@ -210,5 +215,6 @@
             {% endfor %}
         {% endblock %}
     {% endembed %}
-</div>
+    {% endblock %}
+{% endembed %}
 {% endblock %}
