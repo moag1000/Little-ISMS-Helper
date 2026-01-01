@@ -44,86 +44,103 @@
 </div>
 
 {# Person Details #}
-<div class="card mb-4">
-    <h2>{{ 'person.section.details'|trans({}, 'messages') }}</h2>
-
-    <div class="stats-grid mt-3 grid-responsive-250">
-        <div class="stat-item">
-            <strong>{{ person.fullName }}</strong>
-            <span>{{ 'person.field.name'|trans({}, 'messages') }}</span>
+{% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2>{{ 'person.section.details'|trans({}, 'messages') }}</h2>
         </div>
+    {% endblock %}
+    {% block card_body %}
+        <div class="stats-grid grid-responsive-250">
+            <div class="stat-item">
+                <strong>{{ person.fullName }}</strong>
+                <span>{{ 'person.field.name'|trans({}, 'messages') }}</span>
+            </div>
 
-        <div class="stat-item">
-            <strong>{{ ('person.type.' ~ person.personType)|trans({}, 'people') }}</strong>
-            <span>{{ 'person.field.type'|trans({}, 'messages') }}</span>
-        </div>
+            <div class="stat-item">
+                <strong>{{ ('person.type.' ~ person.personType)|trans({}, 'people') }}</strong>
+                <span>{{ 'person.field.type'|trans({}, 'messages') }}</span>
+            </div>
 
-        {% if person.badgeId %}
-        <div class="stat-item">
-            <strong><code>{{ person.badgeId }}</code></strong>
-            <span>{{ 'person.field.badge_id'|trans({}, 'messages') }}</span>
-        </div>
-        {% endif %}
+            {% if person.badgeId %}
+            <div class="stat-item">
+                <strong><code>{{ person.badgeId }}</code></strong>
+                <span>{{ 'person.field.badge_id'|trans({}, 'messages') }}</span>
+            </div>
+            {% endif %}
 
-        {% if person.company %}
-        <div class="stat-item">
-            <strong>{{ person.company }}</strong>
-            <span>{{ 'person.field.company'|trans({}, 'messages') }}</span>
-        </div>
-        {% endif %}
+            {% if person.company %}
+            <div class="stat-item">
+                <strong>{{ person.company }}</strong>
+                <span>{{ 'person.field.company'|trans({}, 'messages') }}</span>
+            </div>
+            {% endif %}
 
-        {% if person.department %}
-        <div class="stat-item">
-            <strong>{{ person.department }}</strong>
-            <span>{{ 'person.field.department'|trans({}, 'messages') }}</span>
-        </div>
-        {% endif %}
+            {% if person.department %}
+            <div class="stat-item">
+                <strong>{{ person.department }}</strong>
+                <span>{{ 'person.field.department'|trans({}, 'messages') }}</span>
+            </div>
+            {% endif %}
 
-        {% if person.jobTitle %}
-        <div class="stat-item">
-            <strong>{{ person.jobTitle }}</strong>
-            <span>{{ 'person.field.job_title'|trans({}, 'messages') }}</span>
+            {% if person.jobTitle %}
+            <div class="stat-item">
+                <strong>{{ person.jobTitle }}</strong>
+                <span>{{ 'person.field.job_title'|trans({}, 'messages') }}</span>
+            </div>
+            {% endif %}
         </div>
-        {% endif %}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Contact Information #}
-<div class="card mb-4">
-    <h2>{{ 'person.section.contact'|trans({}, 'messages') }}</h2>
-    <div class="stats-grid mt-3 grid-responsive-250">
-        <div class="stat-item">
-            <strong>
-                {% if person.email %}
-                    <a href="mailto:{{ person.email }}">{{ person.email }}</a>
-                {% else %}
-                    <span class="text-muted-color">-</span>
-                {% endif %}
-            </strong>
-            <span>{{ 'person.field.email'|trans({}, 'messages') }}</span>
+{% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2>{{ 'person.section.contact'|trans({}, 'messages') }}</h2>
         </div>
+    {% endblock %}
+    {% block card_body %}
+        <div class="stats-grid grid-responsive-250">
+            <div class="stat-item">
+                <strong>
+                    {% if person.email %}
+                        <a href="mailto:{{ person.email }}">{{ person.email }}</a>
+                    {% else %}
+                        <span class="text-muted-color">-</span>
+                    {% endif %}
+                </strong>
+                <span>{{ 'person.field.email'|trans({}, 'messages') }}</span>
+            </div>
 
-        <div class="stat-item">
-            <strong>
-                {% if person.phone %}
-                    <a href="tel:{{ person.phone }}">{{ person.phone }}</a>
-                {% else %}
-                    <span class="text-muted-color">-</span>
-                {% endif %}
-            </strong>
-            <span>{{ 'person.field.phone'|trans({}, 'messages') }}</span>
+            <div class="stat-item">
+                <strong>
+                    {% if person.phone %}
+                        <a href="tel:{{ person.phone }}">{{ person.phone }}</a>
+                    {% else %}
+                        <span class="text-muted-color">-</span>
+                    {% endif %}
+                </strong>
+                <span>{{ 'person.field.phone'|trans({}, 'messages') }}</span>
+            </div>
         </div>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Additional Information #}
 {% if person.notes %}
-<div class="card mb-4">
-    <h2>{{ 'person.section.notes'|trans({}, 'messages') }}</h2>
-    <div class="info-box mt-2 bg-light">
-        <p class="pre-wrap">{{ person.notes }}</p>
-    </div>
-</div>
+{% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2>{{ 'person.section.notes'|trans({}, 'messages') }}</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
+        <div class="info-box bg-light">
+            <p class="pre-wrap">{{ person.notes }}</p>
+        </div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Action Buttons #}
