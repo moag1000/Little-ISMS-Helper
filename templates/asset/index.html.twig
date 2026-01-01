@@ -101,11 +101,13 @@
 
 {# Type Distribution Chart #}
 {% if typeStats|length > 0 %}
-<div class="card mb-4">
-    <div class="card-header">
-        <h2><i class="bi bi-pie-chart" aria-hidden="true"></i> {{ 'asset.modern.chart.type_distribution'|trans({}, 'asset')}}</h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2><i class="bi bi-pie-chart" aria-hidden="true"></i> {{ 'asset.modern.chart.type_distribution'|trans({}, 'asset')}}</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         <div class="row">
             {% for stat in typeStats %}
             <div class="col-md-3 mb-3">
@@ -122,8 +124,8 @@
             </div>
             {% endfor %}
         </div>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Filter Section #}
@@ -194,18 +196,22 @@
         action: { label: 'asset.action.create'|trans({}, 'asset'), url: path('app_asset_new'), icon: 'bi-plus-circle' }
     } %}
 {% else %}
-<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset" data-bulk-actions-entity-label="{{ 'asset.modern.header.title'|trans({}, 'asset')}}">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h2 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'asset.modern.table.title_all'|trans({}, 'asset')}} ({{ assets|length }})</h2>
-        <div>
-            <label for="asset-search" class="visually-hidden">{{ 'asset.modern.header.title'|trans({}, 'asset')}} durchsuchen</label>
-            <input type="search"
-                   class="form-control form-control-sm w-200px"
-                   placeholder="{{ 'asset.modern.table.search_placeholder'|trans({}, 'asset')}}"
-                   id="asset-search"
-                   aria-label="{{ 'asset.modern.header.title'|trans({}, 'asset')}} durchsuchen">
+{% embed '_components/_card.html.twig' %}
+    {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/asset" data-bulk-actions-entity-label="{{ 'asset.modern.header.title'|trans({}, 'asset')}}"{% endblock %}
+    {% block card_header %}
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'asset.modern.table.title_all'|trans({}, 'asset')}} ({{ assets|length }})</h2>
+            <div>
+                <label for="asset-search" class="visually-hidden">{{ 'asset.modern.header.title'|trans({}, 'asset')}} durchsuchen</label>
+                <input type="search"
+                       class="form-control form-control-sm w-200px"
+                       placeholder="{{ 'asset.modern.table.search_placeholder'|trans({}, 'asset')}}"
+                       id="asset-search"
+                       aria-label="{{ 'asset.modern.header.title'|trans({}, 'asset')}} durchsuchen">
+            </div>
         </div>
-    </div>
+    {% endblock %}
+    {% block card_body %}
     {% embed '_components/_table.html.twig' with {
         'class': 'table-hover mb-0',
         'caption': 'asset.modern.table.caption'|trans({}, 'asset'),
@@ -320,7 +326,8 @@
     {% include '_components/_bulk_action_bar.html.twig' with {
         actions: ['export', 'assign', 'delete']
     } %}
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Search functionality #}
