@@ -21,8 +21,8 @@
     ]
 } %}
 
-<div class="card">
-    <div class="card-body">
+{% embed '_components/_card.html.twig' %}
+    {% block card_body %}
         {{ form_start(form) }}
 
         {% include '_components/_auto_form.html.twig' with {
@@ -227,6 +227,6 @@
         </div>
 
         {{ form_end(form) }}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endblock %}
