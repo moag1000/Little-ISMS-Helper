@@ -126,14 +126,16 @@
     {# Organization & Scope Section #}
     <div class="row mb-4">
         <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h2 class="mb-0">
-                        <i class="bi bi-building" aria-hidden="true"></i>
-                        {{ 'context.section.organization'|trans({}, 'context') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with {class: 'h-100'} %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0">
+                            <i class="bi bi-building" aria-hidden="true"></i>
+                            {{ 'context.section.organization'|trans({}, 'context') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="mb-3">
                         <label class="text-muted small">{{ 'context.field.organization_name'|trans({}, 'context') }}</label>
                         <div class="h4 mb-0">{{ context.organizationName }}</div>
@@ -175,19 +177,21 @@
                         {% endif %}
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h2 class="mb-0">
-                        <i class="bi bi-diagram-3" aria-hidden="true"></i>
-                        {{ 'context.section.context_analysis'|trans({}, 'context') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with {class: 'h-100'} %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0">
+                            <i class="bi bi-diagram-3" aria-hidden="true"></i>
+                            {{ 'context.section.context_analysis'|trans({}, 'context') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if context.externalIssues %}
                     <div class="mb-3">
                         <label class="text-muted small">
@@ -214,20 +218,22 @@
                         <p class="small mt-2 mb-0">{{ 'context.message.no_context_topics'|trans({}, 'context') }}</p>
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Interested Parties Section #}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="mb-0">
-                <i class="bi bi-people" aria-hidden="true"></i>
-                {{ 'context.section.interested_parties_and_requirements'|trans({}, 'context') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="mb-0">
+                    <i class="bi bi-people" aria-hidden="true"></i>
+                    {{ 'context.section.interested_parties_and_requirements'|trans({}, 'context') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row">
                 <div class="col-md-6">
                     {% if context.interestedParties %}
@@ -258,18 +264,20 @@
                     {% endif %}
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Requirements Section #}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="mb-0">
-                <i class="bi bi-shield-check" aria-hidden="true"></i>
-                {{ 'context.section.compliance'|trans({}, 'context') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="mb-0">
+                    <i class="bi bi-shield-check" aria-hidden="true"></i>
+                    {{ 'context.section.compliance'|trans({}, 'context') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row">
                 <div class="col-md-4">
                     <div class="requirement-box">
@@ -311,20 +319,22 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# ISMS Policy & Roles Section #}
     <div class="row mb-4">
         <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h2 class="mb-0">
-                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
-                        {{ 'context.field.isms_policy'|trans({}, 'context') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with {class: 'h-100'} %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0">
+                            <i class="bi bi-file-earmark-text" aria-hidden="true"></i>
+                            {{ 'context.field.isms_policy'|trans({}, 'context') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if context.ismsPolicy %}
                     <p class="mb-0">{{ context.ismsPolicy|nl2br }}</p>
                     {% else %}
@@ -333,19 +343,21 @@
                         <p class="small mt-2 mb-0">{{ 'context.message.no_requirements'|trans({}, 'context') }}</p>
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-md-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h2 class="mb-0">
-                        <i class="bi bi-person-badge" aria-hidden="true"></i>
-                        {{ 'context.field.roles_and_responsibilities'|trans({}, 'context') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with {class: 'h-100'} %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0">
+                            <i class="bi bi-person-badge" aria-hidden="true"></i>
+                            {{ 'context.field.roles_and_responsibilities'|trans({}, 'context') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if context.rolesAndResponsibilities %}
                     <p class="mb-0">{{ context.rolesAndResponsibilities|nl2br }}</p>
                     {% else %}
@@ -354,25 +366,27 @@
                         <p class="small mt-2 mb-0">{{ 'context.message.no_requirements'|trans({}, 'context') }}</p>
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# ISMS Objectives Section #}
     {% if objectives|length > 0 %}
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h2 class="mb-0">
-                <i class="bi bi-target" aria-hidden="true"></i>
-                {{ 'context.section.objectives'|trans({}, 'context') }}
-            </h2>
-            <a href="{{ path('app_objective_index') }}" class="btn btn-sm btn-outline-primary">
-                {{ 'context.action.manage_objectives'|trans({}, 'context') }}
-                <i class="bi bi-arrow-right" aria-hidden="true"></i>
-            </a>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">
+                    <i class="bi bi-target" aria-hidden="true"></i>
+                    {{ 'context.section.objectives'|trans({}, 'context') }}
+                </h2>
+                <a href="{{ path('app_objective_index') }}" class="btn btn-sm btn-outline-primary">
+                    {{ 'context.action.manage_objectives'|trans({}, 'context') }}
+                    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+                </a>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover mb-0',
                 'responsive': true,
@@ -430,17 +444,19 @@
                 </a>
             </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% else %}
-    <div class="card">
-        <div class="card-header">
-            <h2 class="mb-0">
-                <i class="bi bi-target" aria-hidden="true"></i>
-                {{ 'context.section.objectives'|trans({}, 'context') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="mb-0">
+                    <i class="bi bi-target" aria-hidden="true"></i>
+                    {{ 'context.section.objectives'|trans({}, 'context') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="alert alert-info mb-0">
                 <i class="bi bi-info-circle" aria-hidden="true"></i>
                 {{ 'context.message.no_objectives'|trans({}, 'context') }}
@@ -448,8 +464,8 @@
                     {{ 'context.action.manage_objectives'|trans({}, 'context') }}
                 </a>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {% else %}
@@ -466,14 +482,16 @@
     } %}
 
     {# Information Box #}
-    <div class="card mt-4">
-        <div class="card-header bg-light">
-            <h2 class="mb-0">
-                <i class="bi bi-lightbulb" aria-hidden="true"></i>
-                {{ 'context.info.box_title'|trans({}, 'context') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mt-4'} %}
+        {% block card_header %}
+            <div class="card-header bg-light">
+                <h2 class="mb-0">
+                    <i class="bi bi-lightbulb" aria-hidden="true"></i>
+                    {{ 'context.info.box_title'|trans({}, 'context') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row">
                 <div class="col-md-6">
                     <h3><i class="bi bi-1-circle text-primary" aria-hidden="true"></i> {{ 'context.info.clause41_title'|trans({}, 'context') }}</h3>
@@ -512,8 +530,8 @@
                     </ul>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 </div>
 

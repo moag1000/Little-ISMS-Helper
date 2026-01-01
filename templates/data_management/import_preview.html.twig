@@ -14,45 +14,53 @@
     {# Statistics #}
     <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card border-primary">
-                <div class="card-body text-center">
-                    <div class="card-title text-muted fw-bold">Total Entities</div>
-                    <p class="display-6 text-primary">{{ stats|length }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with {borderColor: 'primary'} %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="card-title text-muted fw-bold">Total Entities</div>
+                        <p class="display-6 text-primary">{{ stats|length }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4">
-            <div class="card border-success">
-                <div class="card-body text-center">
-                    <div class="card-title text-muted fw-bold">Total Records</div>
-                    <p class="display-6 text-success">
-                        {% set total = 0 %}
-                        {% for entity, count in stats %}
-                            {% set total = total + count %}
-                        {% endfor %}
-                        {{ total }}
-                    </p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with {borderColor: 'success'} %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="card-title text-muted fw-bold">Total Records</div>
+                        <p class="display-6 text-success">
+                            {% set total = 0 %}
+                            {% for entity, count in stats %}
+                                {% set total = total + count %}
+                            {% endfor %}
+                            {{ total }}
+                        </p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4">
-            <div class="card border-info">
-                <div class="card-body text-center">
-                    <div class="card-title text-muted fw-bold">Status</div>
-                    <p class="display-6 text-info small">Preview</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with {borderColor: 'info'} %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="card-title text-muted fw-bold">Status</div>
+                        <p class="display-6 text-info small">Preview</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Entity Breakdown #}
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-list-ul" aria-hidden="true"></i> Import Summary
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-list-ul" aria-hidden="true"></i> Import Summary
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover',
                 'noMargin': true,
@@ -78,18 +86,20 @@
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Preview Data (first few records) #}
     {% for entity, records in data %}
         {% if records|length > 0 %}
-            <div class="card mb-4">
-                <div class="card-header bg-secondary text-white"><h3 class="mb-0 h5">
-                        <i class="bi bi-table" aria-hidden="true"></i> {{ entity }} - Preview (showing first {{ records|slice(0, 3)|length }} of {{ records|length }})
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+                {% block card_header %}
+                    <div class="card-header bg-secondary text-white"><h3 class="mb-0 h5">
+                            <i class="bi bi-table" aria-hidden="true"></i> {{ entity }} - Preview (showing first {{ records|slice(0, 3)|length }} of {{ records|length }})
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% embed '_components/_table.html.twig' with {
                         'class': 'table-sm table-bordered',
                         'theadClass': 'table-light',
@@ -118,14 +128,14 @@
                     {% if records|length > 3 %}
                         <small class="text-muted">... and {{ records|length - 3 }} more records</small>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         {% endif %}
     {% endfor %}
 
     {# Action Buttons #}
-    <div class="card">
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_body %}
             <div class="alert alert-warning mb-3">
                 <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                 <strong>Import functionality is currently in preview mode.</strong>
@@ -144,7 +154,7 @@
                     </a>
                 </div>
             </form>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}
