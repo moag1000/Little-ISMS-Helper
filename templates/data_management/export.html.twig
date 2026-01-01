@@ -19,13 +19,15 @@
     </div>
 
     {# Export Form #}
-    <div class="card">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0">
-                <i class="bi bi-file-earmark-arrow-up" aria-hidden="true"></i> {{ 'admin.data_export.configure_title'|trans }}
-            </h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">
+                    <i class="bi bi-file-earmark-arrow-up" aria-hidden="true"></i> {{ 'admin.data_export.configure_title'|trans }}
+                </h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <form method="post" action="{{ path('data_export_execute') }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('data_export') }}">
 
@@ -87,8 +89,8 @@
                     </button>
                 </div>
             </form>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Warning Box #}
     <div class="alert alert-warning mt-4">
