@@ -30,11 +30,13 @@
         </div>
     {% endif %}
 
-    <div class="card">
-        <div class="card-header">
-            <h2 class="h5 mb-0"><i class="bi bi-clipboard-check" aria-hidden="true"></i> DPIA Form</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="h5 mb-0"><i class="bi bi-clipboard-check" aria-hidden="true"></i> DPIA Form</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {{ form_start(form) }}
                 {% include '_components/_auto_form.html.twig' with {
                     'form': form,
@@ -121,7 +123,7 @@
                     </a>
                 </div>
             {{ form_end(form) }}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}
