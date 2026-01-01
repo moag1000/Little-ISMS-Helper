@@ -23,8 +23,8 @@
         ]
     } %}
 
-    <div class="card">
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_body %}
             {{ form_start(form) }}
 
             {% include '_components/_auto_form.html.twig' with {
@@ -128,13 +128,13 @@
             </div>
 
             {{ form_end(form) }}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Delete Danger Zone #}
     {% if is_granted('ROLE_MANAGER') %}
-        <div class="card mt-4 border-danger">
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' with {borderColor: 'danger', class: 'mt-4'} %}
+            {% block card_body %}
                 <h2 class="h5 text-danger">
                     <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
                     {{ 'common.danger_zone'|trans({}, 'messages') }}
@@ -149,8 +149,8 @@
                         <i class="bi bi-trash" aria-hidden="true"></i> {{ 'processing_activity.action.delete'|trans({}, 'privacy') }}
                     </button>
                 </form>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 </div>
 {% endblock %}
