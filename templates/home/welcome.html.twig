@@ -40,13 +40,15 @@
     {% if urgent_tasks|length > 0 %}
         <div class="row justify-content-center mb-5" id="urgent-tasks">
             <div class="col-lg-10 col-xl-8">
-                <div class="card border-warning shadow-sm">
-                    <div class="card-header bg-warning-subtle d-flex align-items-center">
-                        <i class="bi bi-bell-fill text-warning me-2" aria-hidden="true"></i>
-                        <h2 class="h5 mb-0">{{ 'welcome.urgent_tasks.title'|trans({}, 'welcome') }}</h2>
-                        <span class="badge bg-warning text-dark ms-auto">{{ total_urgent_count }}</span>
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with {borderColor: 'warning', class: 'shadow-sm'} %}
+                    {% block card_header %}
+                        <div class="card-header bg-warning-subtle d-flex align-items-center">
+                            <i class="bi bi-bell-fill text-warning me-2" aria-hidden="true"></i>
+                            <h2 class="h5 mb-0">{{ 'welcome.urgent_tasks.title'|trans({}, 'welcome') }}</h2>
+                            <span class="badge bg-warning text-dark ms-auto">{{ total_urgent_count }}</span>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         <div class="row g-3">
                             {% for task in urgent_tasks %}
                                 <div class="col-md-6">
@@ -73,8 +75,8 @@
                                 </div>
                             {% endfor %}
                         </div>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
         </div>
     {% endif %}
@@ -83,15 +85,17 @@
     {% if compliance_wizards|length > 0 %}
         <div class="row justify-content-center mb-5" id="compliance-wizards">
             <div class="col-lg-10 col-xl-8">
-                <div class="card border-info shadow-sm">
-                    <div class="card-header bg-info-subtle d-flex align-items-center">
-                        <i class="bi bi-magic text-info me-2" aria-hidden="true"></i>
-                        <h2 class="h5 mb-0">{{ 'welcome.wizards.title'|trans({}, 'welcome') }}</h2>
-                        <a href="{{ path('app_compliance_wizard_index') }}" class="btn btn-sm btn-outline-info ms-auto">
-                            {{ 'welcome.wizards.view_all'|trans({}, 'welcome') }}
-                        </a>
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with {borderColor: 'info', class: 'shadow-sm'} %}
+                    {% block card_header %}
+                        <div class="card-header bg-info-subtle d-flex align-items-center">
+                            <i class="bi bi-magic text-info me-2" aria-hidden="true"></i>
+                            <h2 class="h5 mb-0">{{ 'welcome.wizards.title'|trans({}, 'welcome') }}</h2>
+                            <a href="{{ path('app_compliance_wizard_index') }}" class="btn btn-sm btn-outline-info ms-auto">
+                                {{ 'welcome.wizards.view_all'|trans({}, 'welcome') }}
+                            </a>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         <p class="text-muted mb-3">{{ 'welcome.wizards.description'|trans({}, 'welcome') }}</p>
                         <div class="row g-3">
                             {% for wizard in compliance_wizards %}
@@ -125,8 +129,8 @@
                                 </div>
                             {% endfor %}
                         </div>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
         </div>
     {% endif %}
@@ -220,9 +224,9 @@
     {# Skip Welcome Preference #}
     <div class="row justify-content-center mb-4">
         <div class="col-lg-10 col-xl-8">
-            <div class="card bg-light border-0">
-                <div class="card-body py-3">
-                    <form action="{{ path('app_welcome_preference') }}" method="post" class="d-flex align-items-center justify-content-center gap-3 flex-wrap">
+            {% embed '_components/_card.html.twig' with {variant: 'light', class: 'border-0'} %}
+                {% block card_body %}
+                    <form action="{{ path('app_welcome_preference') }}" method="post" class="d-flex align-items-center justify-content-center gap-3 flex-wrap py-1">
                         <input type="hidden" name="_token" value="{{ csrf_token('welcome_preference') }}">
                         <div class="form-check">
                             <input class="form-check-input"
@@ -241,8 +245,8 @@
                             {{ 'welcome.preference.hint'|trans({}, 'welcome') }}
                         </small>
                     </form>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
