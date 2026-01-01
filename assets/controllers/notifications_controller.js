@@ -28,6 +28,8 @@ export default class extends Controller {
         emptyMessage: { type: String, default: 'You have read all notifications' }
     };
 
+    previouslyFocusedElement = null;
+
     connect() {
         // Load notifications from localStorage
         this.loadNotifications();
@@ -50,9 +52,43 @@ export default class extends Controller {
     }
 
     handleKeydown(event) {
-        if (event.key === 'Escape' && this.hasPanelTarget && this.panelTarget.classList.contains('show')) {
-            this.close();
+        if (!this.hasPanelTarget || !this.panelTarget.classList.contains('show')) {
+            return;
         }
+
+        if (event.key === 'Escape') {
+            this.close();
+        } else if (event.key === 'Tab') {
+            // Focus trap
+            this.handleTabKey(event);
+        }
+    }
+
+    handleTabKey(event) {
+        const focusableElements = this.getFocusableElements();
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (event.shiftKey) {
+            if (document.activeElement === firstElement) {
+                event.preventDefault();
+                lastElement.focus();
+            }
+        } else {
+            if (document.activeElement === lastElement) {
+                event.preventDefault();
+                firstElement.focus();
+            }
+        }
+    }
+
+    getFocusableElements() {
+        const selector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+        return Array.from(this.panelTarget.querySelectorAll(selector)).filter(
+            el => !el.disabled && el.offsetParent !== null
+        );
     }
 
     loadNotifications() {
@@ -95,6 +131,9 @@ export default class extends Controller {
 
     open() {
         if (this.hasPanelTarget) {
+            // Save currently focused element to restore on close
+            this.previouslyFocusedElement = document.activeElement;
+
             // Remove inline style that modal manager might have set
             this.panelTarget.style.display = '';
 
@@ -103,6 +142,14 @@ export default class extends Controller {
 
             // Mark notifications as seen (not necessarily read)
             this.markAllAsSeen();
+
+            // Focus first focusable element
+            requestAnimationFrame(() => {
+                const focusable = this.getFocusableElements();
+                if (focusable.length > 0) {
+                    focusable[0].focus();
+                }
+            });
         }
     }
 
@@ -112,6 +159,12 @@ export default class extends Controller {
             setTimeout(() => {
                 this.panelTarget.classList.add('d-none');
             }, 300);
+
+            // Restore focus to previously focused element
+            if (this.previouslyFocusedElement && typeof this.previouslyFocusedElement.focus === 'function') {
+                this.previouslyFocusedElement.focus();
+            }
+            this.previouslyFocusedElement = null;
         }
     }
 

@@ -29,6 +29,7 @@ export default class extends Controller {
 
     filteredCommands = [];
     selectedIndex = 0;
+    previouslyFocusedElement = null;
 
     connect() {
         // Global keyboard shortcut: Cmd/Ctrl + P
@@ -67,6 +68,9 @@ export default class extends Controller {
     handleModalKeydown(event) {
         if (event.key === 'Escape') {
             this.close();
+        } else if (event.key === 'Tab') {
+            // Focus trap - keep focus within command palette
+            this.handleTabKey(event);
         } else if (event.key === 'ArrowDown') {
             event.preventDefault();
             this.selectNext();
@@ -77,6 +81,35 @@ export default class extends Controller {
             event.preventDefault();
             this.executeSelected();
         }
+    }
+
+    handleTabKey(event) {
+        const focusableElements = this.getFocusableElements();
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (event.shiftKey) {
+            // Shift+Tab: if on first element, go to last
+            if (document.activeElement === firstElement) {
+                event.preventDefault();
+                lastElement.focus();
+            }
+        } else {
+            // Tab: if on last element, go to first
+            if (document.activeElement === lastElement) {
+                event.preventDefault();
+                firstElement.focus();
+            }
+        }
+    }
+
+    getFocusableElements() {
+        const selector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+        return Array.from(this.modalTarget.querySelectorAll(selector)).filter(
+            el => !el.disabled && el.offsetParent !== null
+        );
     }
 
     handleBackdropClick(event) {
@@ -95,6 +128,9 @@ export default class extends Controller {
     }
 
     open() {
+        // Save currently focused element to restore on close
+        this.previouslyFocusedElement = document.activeElement;
+
         // Remove inline style that modal manager might have set
         this.modalTarget.style.display = '';
         this.modalTarget.classList.remove('d-none');
@@ -109,6 +145,12 @@ export default class extends Controller {
 
     close() {
         this.modalTarget.classList.remove('command-palette-open');
+
+        // Restore focus to previously focused element
+        if (this.previouslyFocusedElement && typeof this.previouslyFocusedElement.focus === 'function') {
+            this.previouslyFocusedElement.focus();
+        }
+        this.previouslyFocusedElement = null;
     }
 
     search(event) {
