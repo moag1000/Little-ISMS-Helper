@@ -78,14 +78,16 @@
     </div>
 
     {# Status Overview Section #}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="mb-0">
-                <i class="bi bi-pie-chart" aria-hidden="true"></i>
-                {{ 'audit.status_overview'|trans({}, 'audit')}}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="mb-0">
+                    <i class="bi bi-pie-chart" aria-hidden="true"></i>
+                    {{ 'audit.status_overview'|trans({}, 'audit')}}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row g-4">
                 {# Planned #}
                 <div class="col-md-3">
@@ -139,8 +141,8 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Upcoming Audits Highlight #}
     {% if upcoming|length > 0 %}
@@ -156,32 +158,33 @@
     {% endif %}
 
     {# Audit List #}
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h2 class="mb-0">
-                <i class="bi bi-list-ul" aria-hidden="true"></i>
-                {{ 'audit.list.all'|trans({}, 'audit')}}
-            </h2>
+    {% embed '_components/_card.html.twig' with {noPadding: true} %}
+        {% block card_header %}
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">
+                    <i class="bi bi-list-ul" aria-hidden="true"></i>
+                    {{ 'audit.list.all'|trans({}, 'audit')}}
+                </h2>
 
-            {# Filter Controls #}
-            <div class="d-flex gap-2">
-                <select class="form-select form-select-sm" id="statusFilter" class="w-auto">
-                    <option value="">{{ 'audit.filter.all_status'|trans({}, 'audit')}}</option>
-                    <option value="planned">{{ 'audit.status.planned'|trans({}, 'audit') }}</option>
-                    <option value="in_progress">{{ 'audit.status.in_progress'|trans({}, 'audit') }}</option>
-                    <option value="completed">{{ 'audit.status.completed'|trans({}, 'audit') }}</option>
-                    <option value="reported">{{ 'audit.status.reported'|trans({}, 'audit') }}</option>
-                </select>
+                {# Filter Controls #}
+                <div class="d-flex gap-2">
+                    <select class="form-select form-select-sm" id="statusFilter" class="w-auto">
+                        <option value="">{{ 'audit.filter.all_status'|trans({}, 'audit')}}</option>
+                        <option value="planned">{{ 'audit.status.planned'|trans({}, 'audit') }}</option>
+                        <option value="in_progress">{{ 'audit.status.in_progress'|trans({}, 'audit') }}</option>
+                        <option value="completed">{{ 'audit.status.completed'|trans({}, 'audit') }}</option>
+                        <option value="reported">{{ 'audit.status.reported'|trans({}, 'audit') }}</option>
+                    </select>
 
-                <label for="auditSearch" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
-                <input type="search"
-                       class="form-control form-control-sm w-250px"
-                       id="auditSearch"
-                       placeholder="{{ 'audit.filter.search_placeholder'|trans({}, 'audit')}}">
+                    <label for="auditSearch" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
+                    <input type="search"
+                           class="form-control form-control-sm w-250px"
+                           id="auditSearch"
+                           placeholder="{{ 'audit.filter.search_placeholder'|trans({}, 'audit')}}">
+                </div>
             </div>
-        </div>
-
-        <div class="card-body p-0">
+        {% endblock %}
+        {% block card_body %}
             {% if audits|length > 0 %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover mb-0',
@@ -298,8 +301,8 @@
                 }
             } %}
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 <style>
