@@ -28,9 +28,9 @@
 
 {# View Filter #}
 {% if currentTenant %}
-<div class="card mb-3">
-    <div class="card-body py-2">
-        <form method="get" action="{{ path('app_risk_index') }}" class="d-flex align-items-center gap-2">
+{% embed '_components/_card.html.twig' with {class: 'mb-3'} %}
+    {% block card_body %}
+        <form method="get" action="{{ path('app_risk_index') }}" class="d-flex align-items-center gap-2 py-0">
             <label for="view-filter" class="mb-0 fw-bold">
                 <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
             </label>
@@ -53,8 +53,8 @@
                 <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
             </noscript>
         </form>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# KPI Cards Grid #}
@@ -243,25 +243,29 @@
         action: { label: 'risk.index.empty.action'|trans({}, 'risk'), url: path('app_risk_new'), icon: 'bi-plus-circle' }
     } %}
 {% else %}
-<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/risk">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h2 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'risk.index.all_risks'|trans({}, 'risk') }} ({{ risks|length }})</h2>
-        <div class="d-flex gap-2">
-            <select class="form-select form-select-sm w-150px" id="risk-filter" aria-label="{{ 'risk.filter.level_label'|trans({}, 'risk') }}">
-                <option value="">{{ 'risk.filter.all_risks'|trans({}, 'risk') }}</option>
-                <option value="critical">{{ 'risk.modern.kpi.critical'|trans({}, 'risk') }}</option>
-                <option value="high">{{ 'risk.modern.kpi.high'|trans({}, 'risk') }}</option>
-                <option value="medium">{{ 'risk.index.risk_level.medium'|trans({}, 'risk') }}</option>
-                <option value="low">{{ 'risk.index.risk_level.low'|trans({}, 'risk') }}</option>
-            </select>
-            <label for="risk-search" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
-            <input type="search"
-                   class="form-control form-control-sm w-200px"
-                   placeholder="{{ 'common.search'|trans({}, 'messages') }}..."
-                   id="risk-search"
-                   aria-label="{{ 'common.search'|trans({}, 'messages') }}">
+{% embed '_components/_card.html.twig' %}
+    {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/risk"{% endblock %}
+    {% block card_header %}
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'risk.index.all_risks'|trans({}, 'risk') }} ({{ risks|length }})</h2>
+            <div class="d-flex gap-2">
+                <select class="form-select form-select-sm w-150px" id="risk-filter" aria-label="{{ 'risk.filter.level_label'|trans({}, 'risk') }}">
+                    <option value="">{{ 'risk.filter.all_risks'|trans({}, 'risk') }}</option>
+                    <option value="critical">{{ 'risk.modern.kpi.critical'|trans({}, 'risk') }}</option>
+                    <option value="high">{{ 'risk.modern.kpi.high'|trans({}, 'risk') }}</option>
+                    <option value="medium">{{ 'risk.index.risk_level.medium'|trans({}, 'risk') }}</option>
+                    <option value="low">{{ 'risk.index.risk_level.low'|trans({}, 'risk') }}</option>
+                </select>
+                <label for="risk-search" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
+                <input type="search"
+                       class="form-control form-control-sm w-200px"
+                       placeholder="{{ 'common.search'|trans({}, 'messages') }}..."
+                       id="risk-search"
+                       aria-label="{{ 'common.search'|trans({}, 'messages') }}">
+            </div>
         </div>
-    </div>
+    {% endblock %}
+    {% block card_body %}
     {% embed '_components/_table.html.twig' with {
         'class': 'table-hover mb-0',
         'noMargin': true,
@@ -391,7 +395,8 @@
     {% include '_components/_bulk_action_bar.html.twig' with {
         actions: ['export', 'assign', 'delete']
     } %}
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 <style>
