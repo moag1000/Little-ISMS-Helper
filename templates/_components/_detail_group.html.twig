@@ -1,0 +1,52 @@
+{#
+ # Detail Group Component
+ # Displays structured label-value pairs in a responsive grid
+ #
+ # Usage:
+ # {% include '_components/_detail_group.html.twig' with {
+ #     items: [
+ #         { label: 'asset.label.type'|trans({}, 'asset'), value: asset.type },
+ #         { label: 'asset.label.owner'|trans({}, 'asset'), value: asset.owner, dataReuse: true },
+ #         { label: 'common.status'|trans, value: statusBadge, raw: true }
+ #     ],
+ #     title: 'Section Title (optional)',
+ #     columns: 2 (optional, default: auto-fit)
+ # } %}
+ #
+ # Parameters:
+ # - items: Array of { label, value, dataReuse?, raw? }
+ #   - label: The field label (already translated)
+ #   - value: The value to display
+ #   - dataReuse: (optional) Boolean - shows fairy sparkle indicator for auto-populated data
+ #   - raw: (optional) Boolean - if true, value is rendered as raw HTML
+ # - title: (optional) Section title
+ # - columns: (optional) Fixed number of columns (default: responsive auto-fit)
+ # - class: (optional) Additional CSS classes for the grid
+ #}
+
+{% if title is defined and title %}
+<div class="detail-section">
+    <h3>{{ title }}</h3>
+{% endif %}
+
+<div class="detail-grid{% if class is defined %} {{ class }}{% endif %}"
+     {% if columns is defined %}style="grid-template-columns: repeat({{ columns }}, 1fr);"{% endif %}>
+    {% for item in items %}
+    <div class="detail-item{% if item.dataReuse is defined and item.dataReuse %} fairy-data-reuse{% endif %}">
+        <span class="label">{{ item.label }}</span>
+        <span class="value">
+            {% if item.raw is defined and item.raw %}
+                {{ item.value|raw }}
+            {% elseif item.value is same as(null) or item.value is same as('') %}
+                {# Empty value - CSS will show dash #}
+            {% else %}
+                {{ item.value }}
+            {% endif %}
+        </span>
+    </div>
+    {% endfor %}
+</div>
+
+{% if title is defined and title %}
+</div>
+{% endif %}
