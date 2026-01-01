@@ -12,7 +12,7 @@
             data-action="click->notifications#toggle"
             title="{{ 'notifications.title'|trans({}, 'messages') }}"
             aria-label="{{ 'notifications.title'|trans({}, 'messages') }}">
-        <i class="bi bi-bell"></i>
+        <i class="bi bi-bell" aria-hidden="true"></i>
         <span class="notification-badge d-none"
               data-notifications-target="badge">0</span>
     </button>

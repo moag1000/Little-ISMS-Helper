@@ -3,7 +3,7 @@
 {% block title %}{{ 'admin.modules.dependency_graph'|trans({}, 'admin') }} - {{ 'admin.panel.title'|trans({}, 'admin') }}{% endblock %}
 
 {% block admin_title %}
-    <i class="bi bi-diagram-3 me-2"></i>
+    <i class="bi bi-diagram-3 me-2" aria-hidden="true"></i>
     Modul-Abhängigkeiten
 {% endblock %}
 
@@ -18,7 +18,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <a href="{{ path('admin_modules_index') }}" class="btn btn-outline-secondary mb-3">
-                <i class="bi bi-arrow-left me-2"></i>
+                <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
                 {{ 'common.back_to_overview'|trans({}, 'messages') }}
             </a>
         </div>
@@ -122,7 +122,7 @@
             <div class="card border-info">
                 <div class="card-header bg-info text-white">
                     <h2 class="mb-0">
-                        <i class="bi bi-lightbulb me-2"></i>
+                        <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
                         Hinweise
                     </h2>
                 </div>

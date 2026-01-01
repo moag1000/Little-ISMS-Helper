@@ -112,7 +112,7 @@
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">
-                <i class="bi bi-exclamation-triangle text-danger me-2"></i>
+                <i class="bi bi-exclamation-triangle text-danger me-2" aria-hidden="true"></i>
                 {{ 'analytics.assets.high_risk.title'|trans({}, 'analytics') }}
             </h5>
             <span class="badge bg-danger">{{ incident_probability.high_risk_assets|length }} {{ 'analytics.assets.high_risk.count'|trans({}, 'analytics') }}</span>
@@ -164,7 +164,7 @@
             </div>
             {% else %}
             <div class="text-center py-4">
-                <i class="bi bi-check-circle display-4 text-success"></i>
+                <i class="bi bi-check-circle display-4 text-success" aria-hidden="true"></i>
                 <p class="mt-2 text-muted">{{ 'analytics.assets.high_risk.none'|trans({}, 'analytics') }}</p>
             </div>
             {% endif %}
@@ -249,11 +249,11 @@
             </div>
             {% else %}
             <div class="text-center py-5">
-                <i class="bi bi-server display-1 text-muted"></i>
+                <i class="bi bi-server display-1 text-muted" aria-hidden="true"></i>
                 <h4 class="mt-3">{{ 'analytics.assets.no_assets'|trans({}, 'analytics') }}</h4>
                 <p class="text-muted">{{ 'analytics.assets.add_assets_hint'|trans({}, 'analytics') }}</p>
                 <a href="{{ path('app_asset_index') }}" class="btn btn-primary">
-                    <i class="bi bi-plus-lg me-1"></i> {{ 'analytics.action.add_assets'|trans({}, 'analytics') }}
+                    <i class="bi bi-plus-lg me-1" aria-hidden="true"></i> {{ 'analytics.action.add_assets'|trans({}, 'analytics') }}
                 </a>
             </div>
             {% endif %}

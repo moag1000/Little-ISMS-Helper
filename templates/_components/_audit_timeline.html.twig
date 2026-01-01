@@ -19,7 +19,7 @@
         {% for dateKey, logs in groupedLogs %}
         <div class="timeline-date-group">
             <div class="timeline-date-header">
-                <i class="bi bi-calendar3"></i>
+                <i class="bi bi-calendar3" aria-hidden="true"></i>
                 {{ logs[0].createdAt|date('d. M Y') }}
             </div>
 
@@ -27,19 +27,19 @@
             <div class="timeline-item">
                 <div class="timeline-marker marker-{{ log.action }}">
                     {% if log.action == 'create' %}
-                        <i class="bi bi-plus-circle"></i>
+                        <i class="bi bi-plus-circle" aria-hidden="true"></i>
                     {% elseif log.action == 'update' %}
-                        <i class="bi bi-pencil"></i>
+                        <i class="bi bi-pencil" aria-hidden="true"></i>
                     {% elseif log.action == 'delete' %}
-                        <i class="bi bi-trash"></i>
+                        <i class="bi bi-trash" aria-hidden="true"></i>
                     {% elseif log.action == 'view' %}
-                        <i class="bi bi-eye"></i>
+                        <i class="bi bi-eye" aria-hidden="true"></i>
                     {% elseif log.action == 'export' %}
-                        <i class="bi bi-download"></i>
+                        <i class="bi bi-download" aria-hidden="true"></i>
                     {% elseif log.action == 'import' %}
-                        <i class="bi bi-upload"></i>
+                        <i class="bi bi-upload" aria-hidden="true"></i>
                     {% else %}
-                        <i class="bi bi-circle"></i>
+                        <i class="bi bi-circle" aria-hidden="true"></i>
                     {% endif %}
                 </div>
                 <div class="timeline-content">
@@ -48,7 +48,7 @@
                             {{ log.action|capitalize }}
                         </span>
                         <span class="timeline-time">
-                            <i class="bi bi-clock"></i> {{ log.createdAt|date('H:i:s') }}
+                            <i class="bi bi-clock" aria-hidden="true"></i> {{ log.createdAt|date('H:i:s') }}
                         </span>
                     </div>
                     <div class="timeline-title">
@@ -65,14 +65,14 @@
                     </div>
                     <div class="timeline-footer">
                         <span class="timeline-user">
-                            <i class="bi bi-person"></i>
+                            <i class="bi bi-person" aria-hidden="true"></i>
                             <a href="{{ path('app_audit_log_user', {userName: log.userName}) }}">
                                 {{ log.userName }}
                             </a>
                         </span>
                         <a href="{{ path('app_audit_log_detail', {id: log.id}) }}"
                            class="timeline-detail-link">
-                            <i class="bi bi-info-circle"></i> Details
+                            <i class="bi bi-info-circle" aria-hidden="true"></i> Details
                         </a>
                     </div>
                 </div>

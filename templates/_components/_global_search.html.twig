@@ -18,7 +18,7 @@
             class="btn btn-outline-secondary btn-sm global-search-trigger"
             data-action="click->search#open"
             title="{{ 'ui.global_search.trigger_title'|trans({}, 'ui') }}">
-        <i class="bi bi-search"></i>
+        <i class="bi bi-search" aria-hidden="true"></i>
         <span class="d-none d-md-inline ms-2">{{ 'ui.global_search.label'|trans({}, 'ui') }}</span>
         <span class="d-none d-lg-inline ms-2">
             <kbd class="bg-light">⌘K</kbd>
@@ -33,7 +33,7 @@
         <div class="global-search-container">
             {# Search Header #}
             <div class="global-search-header">
-                <i class="bi bi-search text-muted"></i>
+                <i class="bi bi-search text-muted" aria-hidden="true"></i>
                 <label>
                     <input type="text"
                            class="global-search-input"
@@ -58,7 +58,7 @@
             {# Search Footer #}
             <div class="global-search-footer">
                 <div class="text-muted small">
-                    <i class="bi bi-lightning"></i>
+                    <i class="bi bi-lightning" aria-hidden="true"></i>
                     {{ 'ui.global_search.tip'|trans({}, 'ui')|raw }}
                 </div>
             </div>

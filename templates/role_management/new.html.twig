@@ -20,7 +20,7 @@
     </div>
     <div class="button-group">
         <a href="{{ path('role_management_index') }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back_to_list'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
@@ -46,10 +46,10 @@
 
             <div class="d-flex gap-2 mt-4">
                 <button type="submit" class="btn btn-success">
-                    <i class="bi bi-check-lg"></i> {{ 'common.create'|trans({}, 'messages') }}
+                    <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'common.create'|trans({}, 'messages') }}
                 </button>
                 <a href="{{ path('role_management_index') }}" class="btn btn-secondary">
-                    <i class="bi bi-x-lg"></i> {{ 'common.cancel'|trans({}, 'messages') }}
+                    <i class="bi bi-x-lg" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                 </a>
             </div>
 

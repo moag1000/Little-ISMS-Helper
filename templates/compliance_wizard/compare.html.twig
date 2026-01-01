@@ -19,7 +19,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="h2 mb-1">
-                <i class="bi bi-columns-gap me-2"></i>{{ 'wizard.compare_title'|trans }}
+                <i class="bi bi-columns-gap me-2" aria-hidden="true"></i>{{ 'wizard.compare_title'|trans }}
             </h1>
             <p class="text-muted">{{ 'wizard.compare_subtitle'|trans }}</p>
         </div>
@@ -49,7 +49,7 @@
                 {% endfor %}
                 <div class="col-auto">
                     <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-arrow-repeat me-1"></i>{{ 'wizard.update_comparison'|trans }}
+                        <i class="bi bi-arrow-repeat me-1" aria-hidden="true"></i>{{ 'wizard.update_comparison'|trans }}
                     </button>
                 </div>
             </form>
@@ -84,7 +84,7 @@
                     </span>
                     <div class="mt-3">
                         <small class="text-muted">
-                            <i class="bi bi-flag text-danger me-1"></i>
+                            <i class="bi bi-flag text-danger me-1" aria-hidden="true"></i>
                             {{ result.critical_gap_count }} {{ 'wizard.critical_gaps'|trans }}
                         </small>
                     </div>
@@ -186,7 +186,7 @@
     <div class="card mt-4">
         <div class="card-header">
             <h2 class="card-title h5 mb-0">
-                <i class="bi bi-lightbulb me-2"></i>{{ 'wizard.insights'|trans }}
+                <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>{{ 'wizard.insights'|trans }}
             </h2>
         </div>
         <div class="card-body">
@@ -242,14 +242,14 @@
     </div>
     {% else %}
     <div class="alert alert-info">
-        <i class="bi bi-info-circle me-2"></i>{{ 'wizard.select_frameworks_hint'|trans }}
+        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>{{ 'wizard.select_frameworks_hint'|trans }}
     </div>
     {% endif %}
 
     {# Navigation #}
     <div class="d-flex justify-content-between mt-4">
         <a href="{{ path('app_compliance_wizard_index') }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i>{{ 'wizard.back_to_wizards'|trans }}
+            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>{{ 'wizard.back_to_wizards'|trans }}
         </a>
     </div>
 </div>

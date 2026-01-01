@@ -36,7 +36,7 @@
                             <h6 class="text-muted mb-1">{{ 'analytics.forecast.kpi.current_risks'|trans({}, 'analytics') }}</h6>
                             <h2 class="mb-0">{{ current_count }}</h2>
                         </div>
-                        <i class="bi bi-exclamation-triangle display-6 text-primary"></i>
+                        <i class="bi bi-exclamation-triangle display-6 text-primary" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
@@ -51,7 +51,7 @@
                                 {{ predicted_count }}
                             </h2>
                         </div>
-                        <i class="bi bi-graph-up display-6 text-warning"></i>
+                        <i class="bi bi-graph-up display-6 text-warning" aria-hidden="true"></i>
                     </div>
                     <small class="text-muted">{{ 'analytics.forecast.kpi.in_months'|trans({'%months%': 6}, 'analytics') }}</small>
                 </div>
@@ -67,7 +67,7 @@
                                 {% if net_velocity > 0 %}+{% endif %}{{ net_velocity }}
                             </h2>
                         </div>
-                        <i class="bi bi-speedometer2 display-6 text-info"></i>
+                        <i class="bi bi-speedometer2 display-6 text-info" aria-hidden="true"></i>
                     </div>
                     <small class="text-muted">{{ 'analytics.forecast.kpi.velocity_period'|trans({'%days%': 30}, 'analytics') }}</small>
                 </div>
@@ -83,7 +83,7 @@
                                 {{ appetite.compliance_score }}%
                             </h2>
                         </div>
-                        <i class="bi bi-shield-check display-6 text-success"></i>
+                        <i class="bi bi-shield-check display-6 text-success" aria-hidden="true"></i>
                     </div>
                 </div>
             </div>
@@ -94,22 +94,22 @@
     <ul class="nav nav-tabs mb-4" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#forecast-tab" type="button" role="tab">
-                <i class="bi bi-graph-up me-1"></i> {{ 'analytics.forecast.tabs.forecast'|trans({}, 'analytics') }}
+                <i class="bi bi-graph-up me-1" aria-hidden="true"></i> {{ 'analytics.forecast.tabs.forecast'|trans({}, 'analytics') }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#velocity-tab" type="button" role="tab">
-                <i class="bi bi-speedometer2 me-1"></i> {{ 'analytics.forecast.tabs.velocity'|trans({}, 'analytics') }}
+                <i class="bi bi-speedometer2 me-1" aria-hidden="true"></i> {{ 'analytics.forecast.tabs.velocity'|trans({}, 'analytics') }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#appetite-tab" type="button" role="tab">
-                <i class="bi bi-sliders me-1"></i> {{ 'analytics.forecast.tabs.appetite'|trans({}, 'analytics') }}
+                <i class="bi bi-sliders me-1" aria-hidden="true"></i> {{ 'analytics.forecast.tabs.appetite'|trans({}, 'analytics') }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#anomalies-tab" type="button" role="tab">
-                <i class="bi bi-exclamation-diamond me-1"></i> {{ 'analytics.forecast.tabs.anomalies'|trans({}, 'analytics') }}
+                <i class="bi bi-exclamation-diamond me-1" aria-hidden="true"></i> {{ 'analytics.forecast.tabs.anomalies'|trans({}, 'analytics') }}
                 {% if anomalies.total_count > 0 %}
                 <span class="badge bg-danger">{{ anomalies.total_count }}</span>
                 {% endif %}
@@ -144,11 +144,11 @@
                                 <span class="text-muted">{{ 'analytics.forecast.predictions.trend'|trans({}, 'analytics') }}</span>
                                 <span class="badge bg-{% if forecast.trend.direction == 'increasing' %}danger{% elseif forecast.trend.direction == 'decreasing' %}success{% else %}secondary{% endif %}">
                                     {% if forecast.trend.direction == 'increasing' %}
-                                        <i class="bi bi-arrow-up"></i> {{ 'analytics.forecast.predictions.increasing'|trans({}, 'analytics') }}
+                                        <i class="bi bi-arrow-up" aria-hidden="true"></i> {{ 'analytics.forecast.predictions.increasing'|trans({}, 'analytics') }}
                                     {% elseif forecast.trend.direction == 'decreasing' %}
-                                        <i class="bi bi-arrow-down"></i> {{ 'analytics.forecast.predictions.decreasing'|trans({}, 'analytics') }}
+                                        <i class="bi bi-arrow-down" aria-hidden="true"></i> {{ 'analytics.forecast.predictions.decreasing'|trans({}, 'analytics') }}
                                     {% else %}
-                                        <i class="bi bi-arrow-right"></i> {{ 'analytics.forecast.predictions.stable'|trans({}, 'analytics') }}
+                                        <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'analytics.forecast.predictions.stable'|trans({}, 'analytics') }}
                                     {% endif %}
                                 </span>
                             </div>
@@ -168,7 +168,7 @@
                                 <span class="badge bg-{% if level == 'critical' %}danger{% elseif level == 'high' %}warning{% elseif level == 'medium' %}info{% else %}success{% endif %}">
                                     {{ level|title }}
                                 </span>
-                                <span>{{ attribute(last_hist, level)|default(0) }} <i class="bi bi-arrow-right"></i> {{ attribute(last_forecast, level)|default(0) }}</span>
+                                <span>{{ attribute(last_hist, level)|default(0) }} <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ attribute(last_forecast, level)|default(0) }}</span>
                             </div>
                             {% endfor %}
                             {% endif %}
@@ -316,9 +316,9 @@
                                 </div>
                                 <small class="{% if is_compliant %}text-success{% else %}text-danger{% endif %}">
                                     {% if is_compliant %}
-                                        <i class="bi bi-check-circle"></i> {{ 'analytics.forecast.appetite.within_threshold'|trans({}, 'analytics') }}
+                                        <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'analytics.forecast.appetite.within_threshold'|trans({}, 'analytics') }}
                                     {% else %}
-                                        <i class="bi bi-exclamation-triangle"></i> {{ 'analytics.forecast.appetite.exceeds_threshold'|trans({'%excess%': actual_val - threshold_val}, 'analytics') }}
+                                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'analytics.forecast.appetite.exceeds_threshold'|trans({'%excess%': actual_val - threshold_val}, 'analytics') }}
                                     {% endif %}
                                 </small>
                             </div>
@@ -332,7 +332,7 @@
             <div class="card">
                 <div class="card-header bg-danger text-white">
                     <h5 class="mb-0">
-                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
                         {{ 'analytics.forecast.appetite.recommendations'|trans({}, 'analytics') }}
                     </h5>
                 </div>
@@ -342,7 +342,7 @@
                         <div class="list-group-item">
                             <div class="d-flex w-100 justify-content-between">
                                 <h6 class="mb-1">
-                                    <i class="bi bi-exclamation-diamond text-danger me-2"></i>
+                                    <i class="bi bi-exclamation-diamond text-danger me-2" aria-hidden="true"></i>
                                     {{ breach.level|title }} Risk Threshold Exceeded
                                 </h6>
                                 <span class="badge bg-{{ breach.severity == 'high' ? 'danger' : 'warning' }}">
@@ -370,7 +370,7 @@
                         <div class="card-header bg-{{ anomaly.severity == 'critical' ? 'danger' : (anomaly.severity == 'warning' ? 'warning' : 'info') }} text-{{ anomaly.severity == 'warning' ? 'dark' : 'white' }}">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">
-                                    <i class="bi bi-exclamation-diamond me-2"></i>
+                                    <i class="bi bi-exclamation-diamond me-2" aria-hidden="true"></i>
                                     {{ anomaly.type|replace({'_': ' '})|title }}
                                 </h5>
                                 <span class="badge bg-light text-dark">{{ anomaly.severity|title }}</span>
@@ -380,7 +380,7 @@
                             <p>{{ anomaly.message }}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <small class="text-muted">
-                                    <i class="bi bi-bar-chart me-1"></i>
+                                    <i class="bi bi-bar-chart me-1" aria-hidden="true"></i>
                                     Score: {{ anomaly.severity_score|round }}
                                 </small>
                                 {% if anomaly.week is defined %}
@@ -395,7 +395,7 @@
             {% else %}
             <div class="card">
                 <div class="card-body text-center py-5">
-                    <i class="bi bi-check-circle display-1 text-success"></i>
+                    <i class="bi bi-check-circle display-1 text-success" aria-hidden="true"></i>
                     <h4 class="mt-3">{{ 'analytics.forecast.anomalies.none_detected'|trans({}, 'analytics') }}</h4>
                     <p class="text-muted">{{ 'analytics.forecast.anomalies.all_normal'|trans({}, 'analytics') }}</p>
                 </div>

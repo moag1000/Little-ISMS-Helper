@@ -11,13 +11,13 @@
             <div class="d-flex justify-content-between align-items-start">
                 <div>
                     <h1 class="mb-2">
-                        <i class="bi bi-bank me-2"></i>{{ 'dora.dashboard.title'|trans }}
+                        <i class="bi bi-bank me-2" aria-hidden="true"></i>{{ 'dora.dashboard.title'|trans }}
                     </h1>
                     <p class="text-muted mb-0">{{ 'dora.dashboard.subtitle'|trans }}</p>
                 </div>
                 <div>
                     <a href="{{ path('app_compliance_wizard_assess', {wizard: 'dora'}) }}" class="btn btn-outline-info">
-                        <i class="bi bi-clipboard-check me-1"></i>{{ 'dora.run_wizard'|trans }}
+                        <i class="bi bi-clipboard-check me-1" aria-hidden="true"></i>{{ 'dora.run_wizard'|trans }}
                     </a>
                 </div>
             </div>
@@ -60,13 +60,13 @@
                 <div class="card-body text-center">
                     <div class="h6 text-muted mb-2">
                         {% if pillar == 'ict_risk' %}
-                            <i class="bi bi-shield-exclamation"></i> {{ 'dora.pillar.ict_risk'|trans }}
+                            <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'dora.pillar.ict_risk'|trans }}
                         {% elseif pillar == 'incidents' %}
-                            <i class="bi bi-exclamation-triangle"></i> {{ 'dora.pillar.incidents'|trans }}
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dora.pillar.incidents'|trans }}
                         {% elseif pillar == 'testing' %}
-                            <i class="bi bi-clipboard-check"></i> {{ 'dora.pillar.testing'|trans }}
+                            <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'dora.pillar.testing'|trans }}
                         {% elseif pillar == 'third_party' %}
-                            <i class="bi bi-building"></i> {{ 'dora.pillar.third_party'|trans }}
+                            <i class="bi bi-building" aria-hidden="true"></i> {{ 'dora.pillar.third_party'|trans }}
                         {% endif %}
                     </div>
                     <div class="display-5 fw-bold text-{{ score >= 80 ? 'success' : (score >= 60 ? 'warning' : 'danger') }}">
@@ -85,7 +85,7 @@
             <div class="card h-100">
                 <div class="card-header bg-primary bg-opacity-10">
                     <h3 class="card-title h5 mb-0">
-                        <i class="bi bi-shield-exclamation me-2"></i>{{ 'dora.pillar.ict_risk'|trans }}
+                        <i class="bi bi-shield-exclamation me-2" aria-hidden="true"></i>{{ 'dora.pillar.ict_risk'|trans }}
                     </h3>
                     <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '5-16'}) }}</small>
                 </div>
@@ -146,7 +146,7 @@
             <div class="card h-100">
                 <div class="card-header bg-warning bg-opacity-10">
                     <h3 class="card-title h5 mb-0">
-                        <i class="bi bi-exclamation-triangle me-2"></i>{{ 'dora.pillar.incidents'|trans }}
+                        <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ 'dora.pillar.incidents'|trans }}
                     </h3>
                     <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '17-23'}) }}</small>
                 </div>
@@ -197,7 +197,7 @@
             <div class="card h-100">
                 <div class="card-header bg-info bg-opacity-10">
                     <h3 class="card-title h5 mb-0">
-                        <i class="bi bi-clipboard-check me-2"></i>{{ 'dora.pillar.testing'|trans }}
+                        <i class="bi bi-clipboard-check me-2" aria-hidden="true"></i>{{ 'dora.pillar.testing'|trans }}
                     </h3>
                     <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '24-27'}) }}</small>
                 </div>
@@ -232,7 +232,7 @@
                     </div>
                     <hr>
                     <div class="alert alert-{{ testing.exercise_compliance >= 100 ? 'success' : 'warning' }} mb-0 py-2">
-                        <i class="bi bi-info-circle me-1"></i>
+                        <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
                         {{ 'dora.testing_requirement'|trans }}
                     </div>
                 </div>
@@ -244,7 +244,7 @@
             <div class="card h-100">
                 <div class="card-header bg-secondary bg-opacity-10">
                     <h3 class="card-title h5 mb-0">
-                        <i class="bi bi-building me-2"></i>{{ 'dora.pillar.third_party'|trans }}
+                        <i class="bi bi-building me-2" aria-hidden="true"></i>{{ 'dora.pillar.third_party'|trans }}
                     </h3>
                     <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '28-44'}) }}</small>
                 </div>
@@ -309,7 +309,7 @@
             <div class="card">
                 <div class="card-header bg-success bg-opacity-10">
                     <h3 class="card-title h5 mb-0">
-                        <i class="bi bi-share me-2"></i>{{ 'dora.pillar.information_sharing'|trans }}
+                        <i class="bi bi-share me-2" aria-hidden="true"></i>{{ 'dora.pillar.information_sharing'|trans }}
                     </h3>
                     <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '45'}) }}</small>
                 </div>
@@ -345,29 +345,29 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title h5 mb-0">
-                        <i class="bi bi-lightning me-2"></i>{{ 'dora.quick_actions'|trans }}
+                        <i class="bi bi-lightning me-2" aria-hidden="true"></i>{{ 'dora.quick_actions'|trans }}
                     </h3>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-3">
                             <a href="{{ path('app_risk_index') }}" class="btn btn-outline-primary w-100">
-                                <i class="bi bi-shield-exclamation me-1"></i>{{ 'dora.action.manage_risks'|trans }}
+                                <i class="bi bi-shield-exclamation me-1" aria-hidden="true"></i>{{ 'dora.action.manage_risks'|trans }}
                             </a>
                         </div>
                         <div class="col-md-3">
                             <a href="{{ path('app_incident_index') }}" class="btn btn-outline-warning w-100">
-                                <i class="bi bi-exclamation-triangle me-1"></i>{{ 'dora.action.manage_incidents'|trans }}
+                                <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>{{ 'dora.action.manage_incidents'|trans }}
                             </a>
                         </div>
                         <div class="col-md-3">
                             <a href="{{ path('app_bc_exercise_index') }}" class="btn btn-outline-info w-100">
-                                <i class="bi bi-clipboard-check me-1"></i>{{ 'dora.action.plan_exercises'|trans }}
+                                <i class="bi bi-clipboard-check me-1" aria-hidden="true"></i>{{ 'dora.action.plan_exercises'|trans }}
                             </a>
                         </div>
                         <div class="col-md-3">
                             <a href="{{ path('app_supplier_index') }}" class="btn btn-outline-secondary w-100">
-                                <i class="bi bi-building me-1"></i>{{ 'dora.action.manage_suppliers'|trans }}
+                                <i class="bi bi-building me-1" aria-hidden="true"></i>{{ 'dora.action.manage_suppliers'|trans }}
                             </a>
                         </div>
                     </div>

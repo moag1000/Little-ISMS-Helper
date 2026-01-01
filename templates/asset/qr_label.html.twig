@@ -183,11 +183,11 @@
 <body>
     <div class="print-actions">
         <button class="btn btn-primary" data-controller="ui-actions" data-action="click->ui-actions#print">
-            <i class="bi bi-printer"></i>
+            <i class="bi bi-printer" aria-hidden="true"></i>
             {% trans from 'asset' %}qr.button.print{% endtrans %}
         </button>
         <a href="{{ path('app_asset_show', {id: label.asset.id}) }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i>
+            <i class="bi bi-arrow-left" aria-hidden="true"></i>
             {% trans from 'asset' %}qr.button.back{% endtrans %}
         </a>
     </div>
@@ -197,17 +197,17 @@
             <h1>{{ label.asset.name }}</h1>
             <div class="asset-type">
                 {% if label.asset.assetType == 'hardware' %}
-                    <i class="bi bi-pc-display"></i>
+                    <i class="bi bi-pc-display" aria-hidden="true"></i>
                 {% elseif label.asset.assetType == 'software' %}
-                    <i class="bi bi-code-square"></i>
+                    <i class="bi bi-code-square" aria-hidden="true"></i>
                 {% elseif label.asset.assetType == 'data' %}
-                    <i class="bi bi-database"></i>
+                    <i class="bi bi-database" aria-hidden="true"></i>
                 {% elseif label.asset.assetType == 'service' %}
-                    <i class="bi bi-cloud"></i>
+                    <i class="bi bi-cloud" aria-hidden="true"></i>
                 {% elseif label.asset.assetType == 'personnel' %}
-                    <i class="bi bi-person"></i>
+                    <i class="bi bi-person" aria-hidden="true"></i>
                 {% else %}
-                    <i class="bi bi-hdd-network"></i>
+                    <i class="bi bi-hdd-network" aria-hidden="true"></i>
                 {% endif %}
                 {{ ('asset.type.' ~ label.asset.assetType)|trans({}, 'asset') }}
             </div>

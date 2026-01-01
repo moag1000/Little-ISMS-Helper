@@ -165,7 +165,7 @@
             <div class="header-actions">
                 {# PWA Install Button - Hidden by default, shown when installable #}
                 <button id="pwa-install-btn" class="pwa-install-btn d-none" title="{{ 'pwa.install'|trans({}, 'messages') }}">
-                    <i class="bi bi-download"></i>
+                    <i class="bi bi-download" aria-hidden="true"></i>
                     <span class="d-none d-md-inline">{{ 'pwa.install'|trans({}, 'messages') }}</span>
                 </button>
 
@@ -210,16 +210,16 @@
                         </div>
                         <div class="user-dropdown-divider"></div>
                         <a href="{{ path('app_profile') }}" class="user-dropdown-item" role="menuitem">
-                            <i class="bi bi-person"></i>
+                            <i class="bi bi-person" aria-hidden="true"></i>
                             {{ 'nav.my_profile'|trans({}, 'nav') }}
                         </a>
                         <a href="{{ path('app_profile_mfa_index') }}" class="user-dropdown-item" role="menuitem">
-                            <i class="bi bi-shield-lock"></i>
+                            <i class="bi bi-shield-lock" aria-hidden="true"></i>
                             {{ 'nav.security'|trans({}, 'nav') }}
                         </a>
                         <div class="user-dropdown-divider"></div>
                         <a href="{{ path('app_logout') }}" class="user-dropdown-item user-dropdown-logout fairy-logout" role="menuitem">
-                            <i class="bi bi-box-arrow-right"></i>
+                            <i class="bi bi-box-arrow-right" aria-hidden="true"></i>
                             <span>{{ 'nav.logout'|trans({}, 'nav') }}</span>
                             <span class="fairy-logout-sparkle">✦</span>
                         </a>

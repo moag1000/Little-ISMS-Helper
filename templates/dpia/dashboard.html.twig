@@ -78,7 +78,7 @@
         {# Action Items #}
         <div class="col-md-6">
             <div class="card mb-4">
-                <div class="card-header bg-warning text-dark"><h2 class="h5 mb-0"><i class="bi bi-exclamation-circle"></i> Action Items</h2>
+                <div class="card-header bg-warning text-dark"><h2 class="h5 mb-0"><i class="bi bi-exclamation-circle" aria-hidden="true"></i> Action Items</h2>
                 </div>
                 <div class="card-body">
                     {% if incomplete|length > 0 %}
@@ -130,7 +130,7 @@
                     {% endif %}
 
                     {% if incomplete|length == 0 and awaiting_dpo|length == 0 and requires_supervisory|length == 0 and due_for_review|length == 0 %}
-                        <p class="text-success mb-0"><i class="bi bi-check-circle"></i> No action items - all compliant!</p>
+                        <p class="text-success mb-0"><i class="bi bi-check-circle" aria-hidden="true"></i> No action items - all compliant!</p>
                     {% endif %}
                 </div>
             </div>
@@ -139,7 +139,7 @@
         {# Statistics Charts #}
         <div class="col-md-6">
             <div class="card mb-4">
-                <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-bar-chart"></i> Statistics</h2>
+                <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> Statistics</h2>
                 </div>
                 <div class="card-body">
                     <h3 class="h6">{{ 'privacy.chart.by_status'|trans({}, 'privacy') }}</h3>
@@ -215,7 +215,7 @@
             {# High Risk DPIAs #}
             {% if high_risk|length > 0 %}
                 <div class="card mb-4">
-                    <div class="card-header bg-danger text-white"><h2 class="h5 mb-0"><i class="bi bi-exclamation-triangle-fill"></i> High Risk DPIAs</h2>
+                    <div class="card-header bg-danger text-white"><h2 class="h5 mb-0"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> High Risk DPIAs</h2>
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled">

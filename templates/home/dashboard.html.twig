@@ -32,24 +32,24 @@
                     {% if is_granted('ROLE_MANAGER') %}
                     <li>
                         <a class="dropdown-item" href="{{ path('app_dashboard_ciso') }}">
-                            <i class="bi bi-shield-lock text-primary me-2"></i>{{ 'dashboard.role.ciso'|trans({}, 'dashboard') }}
+                            <i class="bi bi-shield-lock text-primary me-2" aria-hidden="true"></i>{{ 'dashboard.role.ciso'|trans({}, 'dashboard') }}
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item" href="{{ path('app_dashboard_risk_manager') }}">
-                            <i class="bi bi-bar-chart-line text-warning me-2"></i>{{ 'dashboard.role.risk_manager'|trans({}, 'dashboard') }}
+                            <i class="bi bi-bar-chart-line text-warning me-2" aria-hidden="true"></i>{{ 'dashboard.role.risk_manager'|trans({}, 'dashboard') }}
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item" href="{{ path('app_dashboard_board') }}">
-                            <i class="bi bi-briefcase text-dark me-2"></i>{{ 'dashboard.role.board'|trans({}, 'dashboard') }}
+                            <i class="bi bi-briefcase text-dark me-2" aria-hidden="true"></i>{{ 'dashboard.role.board'|trans({}, 'dashboard') }}
                         </a>
                     </li>
                     {% endif %}
                     {% if is_granted('ROLE_AUDITOR') %}
                     <li>
                         <a class="dropdown-item" href="{{ path('app_dashboard_auditor') }}">
-                            <i class="bi bi-clipboard-check text-info me-2"></i>{{ 'dashboard.role.auditor'|trans({}, 'dashboard') }}
+                            <i class="bi bi-clipboard-check text-info me-2" aria-hidden="true"></i>{{ 'dashboard.role.auditor'|trans({}, 'dashboard') }}
                         </a>
                     </li>
                     {% endif %}

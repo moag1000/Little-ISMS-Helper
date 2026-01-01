@@ -116,13 +116,13 @@
 
         <div class="d-flex gap-1">
             <button type="submit" class="btn btn-primary">
-                <i class="bi bi-funnel"></i> {{ 'audit_log.filter.apply'|trans({}, 'audit_log') }}
+                <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'audit_log.filter.apply'|trans({}, 'audit_log') }}
             </button>
             <a href="{{ path('app_audit_log_index') }}" class="btn btn-secondary">
-                <i class="bi bi-x-circle"></i> {{ 'audit_log.filter.reset'|trans({}, 'audit_log') }}
+                <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'audit_log.filter.reset'|trans({}, 'audit_log') }}
             </a>
             <a href="{{ path('app_audit_log_statistics') }}" class="btn btn-outline-primary">
-                <i class="bi bi-graph-up"></i> {{ 'audit_log.filter.statistics'|trans({}, 'audit_log') }}
+                <i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'audit_log.filter.statistics'|trans({}, 'audit_log') }}
             </a>
         </div>
     </form>
@@ -140,7 +140,7 @@
                     data-bs-target="#table-view"
                     type="button"
                     role="tab">
-                <i class="bi bi-table"></i> {{ 'audit_log.section.table'|trans({}, 'audit_log') }}
+                <i class="bi bi-table" aria-hidden="true"></i> {{ 'audit_log.section.table'|trans({}, 'audit_log') }}
             </button>
         </li>
         <li class="nav-item" role="presentation">
@@ -149,7 +149,7 @@
                     data-bs-target="#timeline-view"
                     type="button"
                     role="tab">
-                <i class="bi bi-clock-history"></i> {{ 'audit_log.section.timeline'|trans({}, 'audit_log') }}
+                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'audit_log.section.timeline'|trans({}, 'audit_log') }}
             </button>
         </li>
     </ul>

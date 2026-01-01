@@ -26,7 +26,7 @@
         <div class="col-md-3">
             <div class="card text-center h-100 bg-primary text-white">
                 <div class="card-body">
-                    <i class="bi bi-calendar-event fs-1"></i>
+                    <i class="bi bi-calendar-event fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ statistics.total }}</h3>
                     <small>{{ 'scheduled_report.stats.total'|trans({}, 'scheduled_reports') }}</small>
                 </div>
@@ -35,7 +35,7 @@
         <div class="col-md-3">
             <div class="card text-center h-100 bg-success text-white">
                 <div class="card-body">
-                    <i class="bi bi-check-circle fs-1"></i>
+                    <i class="bi bi-check-circle fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ statistics.active }}</h3>
                     <small>{{ 'scheduled_report.stats.active'|trans({}, 'scheduled_reports') }}</small>
                 </div>
@@ -44,7 +44,7 @@
         <div class="col-md-3">
             <div class="card text-center h-100 bg-secondary text-white">
                 <div class="card-body">
-                    <i class="bi bi-pause-circle fs-1"></i>
+                    <i class="bi bi-pause-circle fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ statistics.inactive }}</h3>
                     <small>{{ 'scheduled_report.stats.inactive'|trans({}, 'scheduled_reports') }}</small>
                 </div>
@@ -53,7 +53,7 @@
         <div class="col-md-3">
             <div class="card text-center h-100 bg-warning text-dark">
                 <div class="card-body">
-                    <i class="bi bi-hourglass-split fs-1"></i>
+                    <i class="bi bi-hourglass-split fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ due_reports|length }}</h3>
                     <small>{{ 'scheduled_report.stats.due'|trans({}, 'scheduled_reports') }}</small>
                 </div>
@@ -109,9 +109,9 @@
                             <td>{{ ('scheduled_report.schedule.' ~ report.schedule)|trans({}, 'scheduled_reports') }}</td>
                             <td>
                                 {% if report.format == 'pdf' %}
-                                <span class="badge bg-danger"><i class="bi bi-file-pdf"></i> PDF</span>
+                                <span class="badge bg-danger"><i class="bi bi-file-pdf" aria-hidden="true"></i> PDF</span>
                                 {% else %}
-                                <span class="badge bg-success"><i class="bi bi-file-excel"></i> Excel</span>
+                                <span class="badge bg-success"><i class="bi bi-file-excel" aria-hidden="true"></i> Excel</span>
                                 {% endif %}
                             </td>
                             <td>
@@ -137,10 +137,10 @@
                             <td>
                                 <div class="btn-group btn-group-sm">
                                     <a href="{{ path('app_scheduled_report_show', {id: report.id}) }}" class="btn btn-outline-primary" title="{{ 'scheduled_report.action.view'|trans({}, 'scheduled_reports') }}">
-                                        <i class="bi bi-eye"></i>
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
                                     </a>
                                     <a href="{{ path('app_scheduled_report_edit', {id: report.id}) }}" class="btn btn-outline-secondary" title="{{ 'scheduled_report.action.edit'|trans({}, 'scheduled_reports') }}">
-                                        <i class="bi bi-pencil"></i>
+                                        <i class="bi bi-pencil" aria-hidden="true"></i>
                                     </a>
                                 </div>
                             </td>
@@ -154,11 +154,11 @@
     {% else %}
     <div class="card shadow-sm">
         <div class="card-body text-center py-5">
-            <i class="bi bi-calendar-x display-1 text-muted"></i>
+            <i class="bi bi-calendar-x display-1 text-muted" aria-hidden="true"></i>
             <h3 class="mt-3">{{ 'scheduled_report.empty.title'|trans({}, 'scheduled_reports') }}</h3>
             <p class="text-muted">{{ 'scheduled_report.empty.text'|trans({}, 'scheduled_reports') }}</p>
             <a href="{{ path('app_scheduled_report_new') }}" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> {{ 'scheduled_report.action.new'|trans({}, 'scheduled_reports') }}
+                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'scheduled_report.action.new'|trans({}, 'scheduled_reports') }}
             </a>
         </div>
     </div>

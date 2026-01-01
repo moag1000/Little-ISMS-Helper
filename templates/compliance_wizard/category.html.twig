@@ -58,11 +58,11 @@
                     <h2 class="h6 mb-3">{{ 'wizard.category_summary'|trans }}</h2>
                     <ul class="list-unstyled mb-0">
                         <li class="mb-2">
-                            <i class="bi bi-list-check text-muted me-2"></i>
+                            <i class="bi bi-list-check text-muted me-2" aria-hidden="true"></i>
                             {{ category.items|length }} {{ 'wizard.total_checks'|trans }}
                         </li>
                         <li class="mb-2">
-                            <i class="bi bi-flag text-danger me-2"></i>
+                            <i class="bi bi-flag text-danger me-2" aria-hidden="true"></i>
                             {{ category.gap_count }} {{ 'wizard.gaps_identified'|trans }}
                         </li>
                     </ul>
@@ -92,13 +92,13 @@
                         <tr>
                             <td class="text-center">
                                 {% if item.score >= 100 %}
-                                    <i class="bi bi-check-circle-fill text-success fs-5" title="{{ 'wizard.status.compliant'|trans }}"></i>
+                                    <i class="bi bi-check-circle-fill text-success fs-5" aria-hidden="true" title="{{ 'wizard.status.compliant'|trans }}"></i>
                                 {% elseif item.score >= 50 %}
-                                    <i class="bi bi-exclamation-circle-fill text-warning fs-5" title="{{ 'wizard.status.partial'|trans }}"></i>
+                                    <i class="bi bi-exclamation-circle-fill text-warning fs-5" aria-hidden="true" title="{{ 'wizard.status.partial'|trans }}"></i>
                                 {% elseif item.score > 0 %}
-                                    <i class="bi bi-dash-circle-fill text-info fs-5" title="{{ 'wizard.status.in_progress'|trans }}"></i>
+                                    <i class="bi bi-dash-circle-fill text-info fs-5" aria-hidden="true" title="{{ 'wizard.status.in_progress'|trans }}"></i>
                                 {% else %}
-                                    <i class="bi bi-x-circle-fill text-danger fs-5" title="{{ 'wizard.status.not_started'|trans }}"></i>
+                                    <i class="bi bi-x-circle-fill text-danger fs-5" aria-hidden="true" title="{{ 'wizard.status.not_started'|trans }}"></i>
                                 {% endif %}
                             </td>
                             <td>
@@ -108,7 +108,7 @@
                                 {% endif %}
                                 {% if item.gap %}
                                     <div class="alert alert-danger py-1 px-2 mt-2 mb-0 small">
-                                        <i class="bi bi-flag me-1"></i>
+                                        <i class="bi bi-flag me-1" aria-hidden="true"></i>
                                         <strong>{{ item.gap.title|trans({}, 'wizard') }}</strong>
                                         {% if item.gap.description is defined %}
                                             <br>{{ item.gap.description|trans({}, 'wizard') }}
@@ -120,7 +120,7 @@
                                 {% if item.details|default({})|length > 0 %}
                                 <details class="mt-2">
                                     <summary class="small text-muted" style="cursor: pointer;">
-                                        <i class="bi bi-info-circle me-1"></i>{{ 'wizard.view_details'|trans }}
+                                        <i class="bi bi-info-circle me-1" aria-hidden="true"></i>{{ 'wizard.view_details'|trans }}
                                     </summary>
                                     <div class="small bg-light p-2 rounded mt-1">
                                         {% for detailKey, detailValue in item.details %}
@@ -148,11 +148,11 @@
                             <td>
                                 {% if item.route is defined and item.route %}
                                     <a href="{{ path(item.route) }}" class="btn btn-sm btn-outline-primary">
-                                        <i class="bi bi-arrow-right me-1"></i>{{ 'wizard.go_to_module'|trans }}
+                                        <i class="bi bi-arrow-right me-1" aria-hidden="true"></i>{{ 'wizard.go_to_module'|trans }}
                                     </a>
                                 {% elseif item.gap and item.gap.route is defined and item.gap.route %}
                                     <a href="{{ path(item.gap.route) }}" class="btn btn-sm btn-outline-warning">
-                                        <i class="bi bi-flag me-1"></i>{{ 'wizard.fix_gap'|trans({}, 'wizard') }}
+                                        <i class="bi bi-flag me-1" aria-hidden="true"></i>{{ 'wizard.fix_gap'|trans({}, 'wizard') }}
                                     </a>
                                 {% endif %}
                             </td>
@@ -169,7 +169,7 @@
     <div class="card mt-4">
         <div class="card-header bg-danger bg-opacity-10">
             <h2 class="card-title h5 mb-0 text-danger">
-                <i class="bi bi-flag me-2"></i>{{ 'wizard.gaps_to_address'|trans }}
+                <i class="bi bi-flag me-2" aria-hidden="true"></i>{{ 'wizard.gaps_to_address'|trans }}
             </h2>
         </div>
         <div class="card-body">
@@ -191,13 +191,13 @@
                         {% endif %}
                         {% if gap.action is defined %}
                             <p class="small mb-2">
-                                <i class="bi bi-lightbulb text-warning me-1"></i>
+                                <i class="bi bi-lightbulb text-warning me-1" aria-hidden="true"></i>
                                 <strong>{{ 'wizard.recommended_action'|trans }}:</strong> {{ gap.action|trans({}, 'wizard') }}
                             </p>
                         {% endif %}
                         {% if gap.route is defined and gap.route %}
                             <a href="{{ path(gap.route) }}" class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-arrow-right me-1"></i>{{ 'wizard.take_action'|trans({}, 'wizard') }}
+                                <i class="bi bi-arrow-right me-1" aria-hidden="true"></i>{{ 'wizard.take_action'|trans({}, 'wizard') }}
                             </a>
                         {% endif %}
                     </div>
@@ -211,7 +211,7 @@
     {# Navigation #}
     <div class="d-flex justify-content-between mt-4">
         <a href="{{ path('app_compliance_wizard_assess', {wizard: wizard}) }}" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-1"></i>{{ 'wizard.back_to_results'|trans }}
+            <i class="bi bi-arrow-left me-1" aria-hidden="true"></i>{{ 'wizard.back_to_results'|trans }}
         </a>
     </div>
 </div>
