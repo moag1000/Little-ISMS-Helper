@@ -13,8 +13,8 @@
     {# Statistics Cards #}
     <div class="row g-3 mb-4">
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <div class="d-flex align-items-center">
                         <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
                             <i class="bi bi-building text-primary fs-3" aria-hidden="true"></i>
@@ -24,12 +24,12 @@
                             <h2 class="mb-0 h3">{{ totalCount }}</h2>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <div class="d-flex align-items-center">
                         <div class="bg-success bg-opacity-10 p-3 rounded me-3">
                             <i class="bi bi-check-circle text-success fs-3" aria-hidden="true"></i>
@@ -39,12 +39,12 @@
                             <h2 class="mb-0 h3">{{ activeCount }}</h2>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <div class="d-flex align-items-center">
                         <div class="bg-secondary bg-opacity-10 p-3 rounded me-3">
                             <i class="bi bi-x-circle text-secondary fs-3" aria-hidden="true"></i>
@@ -54,14 +54,14 @@
                             <h2 class="mb-0 h3">{{ inactiveCount }}</h2>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Toolbar #}
-    <div class="card mb-4">
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+        {% block card_body %}
             <div class="d-flex justify-content-between align-items-center">
                 {# Filters #}
                 <div class="btn-group btn-group-sm" role="group">
@@ -84,12 +84,12 @@
                     <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'tenant.action.create'|trans({}, 'tenant') }}
                 </a>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Tenant Table #}
-    <div class="card">
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_body %}
             {% if tenants is empty %}
                 <div class="text-center py-5">
                     <i class="bi bi-building text-muted" style="font-size: 4rem;" aria-hidden="true"></i>
@@ -197,8 +197,8 @@
                     {% endblock %}
                 {% endembed %}
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Info Box #}
     <div class="alert alert-info mt-4">
