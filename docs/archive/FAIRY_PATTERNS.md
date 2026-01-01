@@ -1,8 +1,11 @@
 # Cyberpunk Fairy Magic - UI Patterns
 
-**Version:** 1.0
-**Date:** 2025-12-28
+> **Archived:** 2026-01-01 - All patterns implemented. Roadmap items moved to main [ROADMAP.md](../../ROADMAP.md) Phase 8G.
+
+**Version:** 1.1
+**Date:** 2026-01-01
 **Purpose:** Visual indicators for automation, smart suggestions, and system intelligence
+**Status:** ✅ Implementierung abgeschlossen
 
 ---
 
@@ -399,11 +402,11 @@ showNotification(`
 
 ---
 
-## Future Ideas (Roadmap)
+## Future Ideas
 
-Ideas for future fairy magic enhancements, pending evaluation and implementation:
+> **Moved to main roadmap:** See [ROADMAP.md](../../ROADMAP.md) Phase 8G: Interactive Help & Onboarding
 
-### Fairy-Shortcuts (Interactive Help)
+### Fairy-Shortcuts (Interactive Help) → Phase 8G
 
 **Concept:** Sparkle-highlighted keywords within help texts that trigger actions.
 
@@ -424,12 +427,8 @@ Ideas for future fairy magic enhancements, pending evaluation and implementation
 - Highlight related UI elements
 - Step-by-step guided tours
 
-**Status:** 🔄 Evaluation pending
-**Complexity:** High (requires significant JS infrastructure)
-**Priority:** Low - nice-to-have enhancement
-
 ---
 
-**Last Updated:** 2025-12-28
+**Last Updated:** 2026-01-01
 **Maintained by:** Little ISMS Helper Team
 **CSS Location:** `assets/styles/app.css`

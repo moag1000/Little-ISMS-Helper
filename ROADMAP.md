@@ -765,7 +765,7 @@ Step 3: Zusammenfassung
 
 ---
 
-### 📅 Phase 8B-8F: Geplante Features
+### 📅 Phase 8B-8G: Geplante Features
 
 | Phase | Feature | Status | Beschreibung |
 |-------|---------|--------|--------------|
@@ -774,6 +774,7 @@ Step 3: Zusammenfassung
 | 8D | Integration Marketplace | 📅 | Slack, Teams, JIRA Anbindungen |
 | 8E | White-Label Support | 📅 | Eigenes Branding für Kunden |
 | 8F | AI-Features | 📅 | Risk Scoring, Auto-Classification |
+| 8G | Interactive Help & Onboarding | 📅 | Fairy-Shortcuts, Guided Tours, Contextual Help |
 
 ---
 
@@ -848,7 +849,7 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 
 ---
 
-**Stand:** 2025-12-18
-**Version:** 2.2
-**Letzte Änderung:** Phase 8A abgeschlossen (Mobile PWA: Service Worker, Offline Support, Install Prompt)
+**Stand:** 2026-01-01
+**Version:** 2.3
+**Letzte Änderung:** Cyberpunk Fairy UX Patterns implementiert, Phase 8G (Interactive Help) zur Roadmap hinzugefügt
 **Nächste Aktualisierung:** Nach Abschluss Phase 8B (Kubernetes Deployment)
