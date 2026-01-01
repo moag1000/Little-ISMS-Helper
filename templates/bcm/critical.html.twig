@@ -45,11 +45,13 @@
 </div>
 
 {# Critical Processes Table #}
-<div class="card">
-    <div class="card-header">
-        <h2 class="mb-0">{{ 'bcm.section.critical_processes'|trans({}, 'bcm') }}</h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2 class="mb-0">{{ 'bcm.section.critical_processes'|trans({}, 'bcm') }}</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         {% if processes|length > 0 %}
         <div class="table-responsive">
         <table class="table table-hover">
@@ -109,15 +111,17 @@
             <p>{{ 'bcm.message.no_critical_processes_desc'|trans({}, 'bcm') }}</p>
         </div>
         {% endif %}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# RTO Priority Legend #}
-<div class="card mt-4">
-    <div class="card-header">
-        <h2 class="mb-0">{{ 'bcm.section.rto_legend'|trans({}, 'bcm') }}</h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with {class: 'mt-4'} %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2 class="mb-0">{{ 'bcm.section.rto_legend'|trans({}, 'bcm') }}</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         <div class="row">
             <div class="col-md-3">
                 <div class="d-flex align-items-center">
@@ -144,6 +148,6 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endblock %}
