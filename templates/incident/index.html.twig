@@ -59,11 +59,13 @@
 </div>
 
 {# Status Overview #}
-<div class="card mb-4">
-    <div class="card-header">
-        <h3 class="mb-0"><i class="bi bi-kanban" aria-hidden="true"></i> {{ 'incident_management.title'|trans({}, 'incident') }}</h3>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+    {% block card_header %}
+        <div class="card-header">
+            <h3 class="mb-0"><i class="bi bi-kanban" aria-hidden="true"></i> {{ 'incident_management.title'|trans({}, 'incident') }}</h3>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         <div class="row">
             {% set statuses = {
                 'open': { label: 'incident.status.open'|trans({}, 'incident'), icon: 'bi-circle', color: 'danger' },
@@ -92,15 +94,17 @@
                 </div>
             {% endfor %}
         </div>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Severity Distribution #}
-<div class="card mb-4">
-    <div class="card-header">
-        <h3 class="mb-0"><i class="bi bi-speedometer" aria-hidden="true"></i> {{ 'incident.severity_distribution.title'|trans({}, 'incident') }}</h3>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+    {% block card_header %}
+        <div class="card-header">
+            <h3 class="mb-0"><i class="bi bi-speedometer" aria-hidden="true"></i> {{ 'incident.severity_distribution.title'|trans({}, 'incident') }}</h3>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         <div class="row">
             {% set severities = {
                 'critical': { label: 'incident.severity.critical'|trans({}, 'incident'), icon: '<i class="bi bi-exclamation-circle" aria-hidden="true"></i>', color: 'danger' },
@@ -119,8 +123,8 @@
                 </div>
             {% endfor %}
         </div>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Incidents Table or Empty State #}
 {% if allIncidents|length == 0 %}
@@ -131,32 +135,36 @@
         action: { label: 'incident.header.action.report'|trans({}, 'incident'), url: path('app_incident_new'), icon: 'bi-exclamation-circle' }
     } %}
 {% else %}
-<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/incident">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'incident.list.all_incidents'|trans({'%count%': allIncidents|length}, 'incident') }}</h3>
-        <div class="d-flex gap-2">
-            <select class="form-select form-select-sm w-150px" id="incident-status-filter">
-                <option value="">{{ 'incident.filter.all_status'|trans({}, 'incident') }}</option>
-                <option value="reported">{{ 'incident.status.reported'|trans({}, 'incident') }}</option>
-                <option value="in_investigation">{{ 'incident.status.in_investigation'|trans({}, 'incident') }}</option>
-                <option value="in_resolution">{{ 'incident.status.in_resolution'|trans({}, 'incident') }}</option>
-                <option value="resolved">{{ 'incident.status.resolved'|trans({}, 'incident') }}</option>
-                <option value="closed">{{ 'incident.status.closed'|trans({}, 'incident') }}</option>
-            </select>
-            <select class="form-select form-select-sm w-150px" id="incident-severity-filter">
-                <option value="">{{ 'incident.filter.all_severity'|trans({}, 'incident') }}</option>
-                <option value="critical">{{ 'incident.severity.critical'|trans({}, 'incident') }}</option>
-                <option value="high">{{ 'incident.severity.high'|trans({}, 'incident') }}</option>
-                <option value="medium">{{ 'incident.severity.medium'|trans({}, 'incident') }}</option>
-                <option value="low">{{ 'incident.severity.low'|trans({}, 'incident') }}</option>
-            </select>
-            <label for="incident-search" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
-            <input type="search"
-                   class="form-control form-control-sm w-200px"
-                   id="incident-search"
-                   placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
+{% embed '_components/_card.html.twig' %}
+    {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/incident"{% endblock %}
+    {% block card_header %}
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'incident.list.all_incidents'|trans({'%count%': allIncidents|length}, 'incident') }}</h3>
+            <div class="d-flex gap-2">
+                <select class="form-select form-select-sm w-150px" id="incident-status-filter">
+                    <option value="">{{ 'incident.filter.all_status'|trans({}, 'incident') }}</option>
+                    <option value="reported">{{ 'incident.status.reported'|trans({}, 'incident') }}</option>
+                    <option value="in_investigation">{{ 'incident.status.in_investigation'|trans({}, 'incident') }}</option>
+                    <option value="in_resolution">{{ 'incident.status.in_resolution'|trans({}, 'incident') }}</option>
+                    <option value="resolved">{{ 'incident.status.resolved'|trans({}, 'incident') }}</option>
+                    <option value="closed">{{ 'incident.status.closed'|trans({}, 'incident') }}</option>
+                </select>
+                <select class="form-select form-select-sm w-150px" id="incident-severity-filter">
+                    <option value="">{{ 'incident.filter.all_severity'|trans({}, 'incident') }}</option>
+                    <option value="critical">{{ 'incident.severity.critical'|trans({}, 'incident') }}</option>
+                    <option value="high">{{ 'incident.severity.high'|trans({}, 'incident') }}</option>
+                    <option value="medium">{{ 'incident.severity.medium'|trans({}, 'incident') }}</option>
+                    <option value="low">{{ 'incident.severity.low'|trans({}, 'incident') }}</option>
+                </select>
+                <label for="incident-search" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
+                <input type="search"
+                       class="form-control form-control-sm w-200px"
+                       id="incident-search"
+                       placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
+            </div>
         </div>
-    </div>
+    {% endblock %}
+    {% block card_body %}
     {% embed '_components/_table.html.twig' with {
         'class': 'table-hover mb-0',
         'noMargin': true,
@@ -289,7 +297,8 @@
     {% include '_components/_bulk_action_bar.html.twig' with {
         actions: ['export', 'delete']
     } %}
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 <style>
