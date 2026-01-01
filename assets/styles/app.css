@@ -2897,6 +2897,63 @@ textarea.form-control {
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
 }
 
+/* Detail Grid - Structured Label-Value Display */
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.detail-item .label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.detail-item .value {
+    font-size: 1rem;
+    color: var(--text-primary);
+    word-break: break-word;
+}
+
+.detail-item .value:empty::after {
+    content: '—';
+    color: var(--text-muted);
+}
+
+.detail-section {
+    margin-top: var(--spacing-lg);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid rgba(6, 182, 212, 0.15);
+}
+
+.detail-section h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+/* Detail Item with Data Reuse indicator */
+.detail-item.fairy-data-reuse .label::after {
+    content: ' ✦';
+    color: var(--color-accent-pink);
+    font-size: 0.75rem;
+}
+
+.detail-item.fairy-data-reuse .value {
+    position: relative;
+}
+
 /* User Menu Dropdown - Cyberpunk Style */
 .user-menu {
     position: relative;

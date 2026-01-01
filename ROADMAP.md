@@ -765,6 +765,58 @@ Step 3: Zusammenfassung
 
 ---
 
+### 🚧 Phase 8H: UX Consolidation & Accessibility (PRIORITÄT)
+
+**Status:** 🚧 In Entwicklung
+**Priorität:** HOCH (Technische Schulden + Compliance)
+**Effort:** ~20-30 Stunden
+
+#### Überblick
+
+Basierend auf dem UX-Audit vom 01.01.2026: Konsolidierung der UI-Komponenten, CSS-Bereinigung und Accessibility-Verbesserungen.
+
+#### 🟢 Phase 8H.1: Detail-Group Komponente (Quick Win)
+
+**Status:** 🔄 Geplant
+**Effort:** 2-4 Stunden
+
+- [ ] `_components/_detail_group.html.twig` erstellen
+- [ ] Standardisierte Label-Wert-Paare für alle Detail-Ansichten
+- [ ] Migration der Hauptmodule (Asset, Risk, Control, Incident)
+- [ ] Einheitliche Darstellung von "Data Reuse" Quellen
+
+#### 🟢 Phase 8H.2: Accessibility Deep Clean
+
+**Status:** 🔄 Geplant
+**Effort:** 4-6 Stunden
+
+- [ ] `aria-describedby` für alle Formularfelder mit Hilfetext
+- [ ] Icons mit `aria-hidden="true"` oder beschreibendem Label
+- [ ] Focus-Management bei Modalen verbessern
+- [ ] Keyboard-Navigation für Custom Components
+- [ ] WCAG 2.1 AA Konformität sicherstellen
+
+#### 🟡 Phase 8H.3: CSS Refactoring
+
+**Status:** 📅 Geplant
+**Effort:** 8-12 Stunden
+
+- [ ] Migration der 151 manuellen margin/padding zu Bootstrap Utilities
+- [ ] Entfernung redundanter Flex-Box Definitionen
+- [ ] Reduktion der app.css um ~20-30%
+- [ ] Dokumentation der verbleibenden Custom-Styles
+
+#### 📅 Phase 8H.4: Card-Konsolidierung (Langfristig)
+
+**Status:** 📅 Backlog
+**Effort:** 15-20 Stunden (schrittweise)
+
+- [ ] Neue Templates nutzen `_card.html.twig`
+- [ ] Legacy-Migration bei anderen Änderungen
+- [ ] Ziel: 100% Konsistenz (aktuell ~2500 manuelle Cards)
+
+---
+
 ### 📅 Phase 8B-8G: Geplante Features
 
 | Phase | Feature | Status | Beschreibung |
@@ -850,6 +902,6 @@ Diese Ziele sind nicht phasengebunden, sondern kontinuierliche Qualitätsmetrike
 ---
 
 **Stand:** 2026-01-01
-**Version:** 2.3
-**Letzte Änderung:** Cyberpunk Fairy UX Patterns implementiert, Phase 8G (Interactive Help) zur Roadmap hinzugefügt
-**Nächste Aktualisierung:** Nach Abschluss Phase 8B (Kubernetes Deployment)
+**Version:** 2.4
+**Letzte Änderung:** Phase 8H (UX Consolidation & Accessibility) als Priorität hinzugefügt
+**Nächste Aktualisierung:** Nach Abschluss Phase 8H.1-8H.2
