@@ -34,7 +34,8 @@
 </div>
 
 {# Location Details #}
-<div class="card mb-4">
+{% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+    {% block card_body %}
     <h2>{{ 'location.section.details'|trans({}, 'locations') }}</h2>
 
     {% if location.description %}
@@ -88,11 +89,13 @@
             <span>{{ 'location.field.badge_access'|trans({}, 'locations') }}</span>
         </div>
     </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Address Information #}
 {% if location.address or location.city or location.country %}
-<div class="card mb-4">
+{% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+    {% block card_body %}
     <h2>{{ 'location.section.address'|trans({}, 'locations') }}</h2>
     <div class="info-box mt-2 bg-light">
         {% if location.address %}
@@ -108,12 +111,14 @@
             <p><strong>{{ location.country }}</strong></p>
         {% endif %}
     </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Child Locations #}
 {% if location.childLocations|length > 0 %}
-<div class="card mb-4">
+{% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+    {% block card_body %}
     <h2>{{ 'location.section.child_locations'|trans({}, 'locations') }} ({{ location.childLocations|length }})</h2>
     <div class="mt-2">
     {% embed '_components/_table.html.twig' with {
@@ -155,11 +160,13 @@
         {% endblock %}
     {% endembed %}
     </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Additional Features #}
-<div class="card">
+{% embed '_components/_card.html.twig' %}
+    {% block card_body %}
     <h2>{{ 'location.section.features'|trans({}, 'locations') }}</h2>
     <div class="stats-grid mt-2 grid-responsive-250">
         <div class="stat-item">
@@ -184,7 +191,8 @@
             <span>{{ 'location.field.access_control'|trans({}, 'locations') }}</span>
         </div>
     </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Action Buttons #}
 <div class="button-group mt-xl">
