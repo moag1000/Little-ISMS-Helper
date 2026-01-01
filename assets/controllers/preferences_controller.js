@@ -22,6 +22,8 @@ export default class extends Controller {
         storageKey: { type: String, default: 'user-preferences' }
     };
 
+    previouslyFocusedElement = null;
+
     connect() {
         // Load saved preferences
         this.loadPreferences();
@@ -39,18 +41,65 @@ export default class extends Controller {
     }
 
     handleKeydown(event) {
-        if (event.key === 'Escape' && this.hasModalTarget && !this.modalTarget.classList.contains('d-none')) {
-            this.close();
+        if (!this.hasModalTarget || this.modalTarget.classList.contains('d-none')) {
+            return;
         }
+
+        if (event.key === 'Escape') {
+            this.close();
+        } else if (event.key === 'Tab') {
+            // Focus trap - keep focus within modal
+            this.handleTabKey(event);
+        }
+    }
+
+    handleTabKey(event) {
+        const focusableElements = this.getFocusableElements();
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (event.shiftKey) {
+            // Shift+Tab: if on first element, go to last
+            if (document.activeElement === firstElement) {
+                event.preventDefault();
+                lastElement.focus();
+            }
+        } else {
+            // Tab: if on last element, go to first
+            if (document.activeElement === lastElement) {
+                event.preventDefault();
+                firstElement.focus();
+            }
+        }
+    }
+
+    getFocusableElements() {
+        const selector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+        return Array.from(this.modalTarget.querySelectorAll(selector)).filter(
+            el => !el.disabled && el.offsetParent !== null
+        );
     }
 
     open() {
         if (this.hasModalTarget) {
+            // Save currently focused element to restore on close
+            this.previouslyFocusedElement = document.activeElement;
+
             // Remove inline style that modal manager might have set
             this.modalTarget.style.display = '';
             this.modalTarget.classList.remove('d-none');
             this.modalTarget.classList.add('show');
             document.body.style.overflow = 'hidden';
+
+            // Focus first focusable element
+            requestAnimationFrame(() => {
+                const focusable = this.getFocusableElements();
+                if (focusable.length > 0) {
+                    focusable[0].focus();
+                }
+            });
         }
     }
 
@@ -59,6 +108,12 @@ export default class extends Controller {
             this.modalTarget.classList.add('d-none');
             this.modalTarget.classList.remove('show');
             document.body.style.overflow = '';
+
+            // Restore focus to previously focused element
+            if (this.previouslyFocusedElement && typeof this.previouslyFocusedElement.focus === 'function') {
+                this.previouslyFocusedElement.focus();
+            }
+            this.previouslyFocusedElement = null;
         }
     }
 

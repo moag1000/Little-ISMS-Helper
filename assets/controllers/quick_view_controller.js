@@ -28,6 +28,8 @@ export default class extends Controller {
         closeText: { type: String, default: 'Close' }
     };
 
+    previouslyFocusedElement = null;
+
     connect() {
         // Register space key handler
         this.boundHandleKeydown = this.handleKeydown.bind(this);
@@ -61,6 +63,9 @@ export default class extends Controller {
             event.preventDefault();
         }
 
+        // Save currently focused element to restore on close
+        this.previouslyFocusedElement = document.activeElement;
+
         // Remove inline style that modal manager might have set
         this.modalTarget.style.display = '';
 
@@ -82,6 +87,14 @@ export default class extends Controller {
 
             const html = await response.text();
             this.displayContent(html);
+
+            // Focus first focusable element after content loads
+            requestAnimationFrame(() => {
+                const focusable = this.getFocusableElements();
+                if (focusable.length > 0) {
+                    focusable[0].focus();
+                }
+            });
         } catch (error) {
             this.displayError();
         }
@@ -95,6 +108,12 @@ export default class extends Controller {
         this.modalTarget.classList.add('d-none');
         this.modalTarget.classList.remove('show');
         document.body.style.overflow = '';
+
+        // Restore focus to previously focused element
+        if (this.previouslyFocusedElement && typeof this.previouslyFocusedElement.focus === 'function') {
+            this.previouslyFocusedElement.focus();
+        }
+        this.previouslyFocusedElement = null;
     }
 
     handleBackdropClick(event) {
@@ -104,10 +123,44 @@ export default class extends Controller {
     }
 
     handleModalKeydown(event) {
-        if (event.key === 'Escape' && this.hasModalTarget && !this.modalTarget.classList.contains('d-none')) {
+        if (!this.hasModalTarget || this.modalTarget.classList.contains('d-none')) {
+            return;
+        }
+
+        if (event.key === 'Escape') {
             event.preventDefault();
             this.close();
+        } else if (event.key === 'Tab') {
+            // Focus trap
+            this.handleTabKey(event);
         }
+    }
+
+    handleTabKey(event) {
+        const focusableElements = this.getFocusableElements();
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (event.shiftKey) {
+            if (document.activeElement === firstElement) {
+                event.preventDefault();
+                lastElement.focus();
+            }
+        } else {
+            if (document.activeElement === lastElement) {
+                event.preventDefault();
+                firstElement.focus();
+            }
+        }
+    }
+
+    getFocusableElements() {
+        const selector = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+        return Array.from(this.modalTarget.querySelectorAll(selector)).filter(
+            el => !el.disabled && el.offsetParent !== null
+        );
     }
 
     showLoading() {
