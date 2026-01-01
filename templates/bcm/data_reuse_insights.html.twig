@@ -35,11 +35,13 @@
     </div>
 
     {# Explanation Card #}
-    <div class="card mb-lg">
-        <div class="card-header">
-            <h2>How Data Reuse Works</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-lg'} %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2>How Data Reuse Works</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <p>
                 <strong>The BCM module performs Business Impact Analysis (BIA)</strong> to determine how quickly business processes need to be recovered after a disruption (RTO - Recovery Time Objective).
             </p>
@@ -65,15 +67,17 @@
                     <p>Suggests Availability: <span class="badge bg-success">2 - Low</span></p>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Insights Table #}
-    <div class="card">
-        <div class="card-header">
-            <h2>{{ 'bcm.data_reuse.asset_recommendations_title'|trans({}, 'bcm') }}</h2>
-        </div>
-
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2>{{ 'bcm.data_reuse.asset_recommendations_title'|trans({}, 'bcm') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
         {% embed '_components/_table.html.twig' with {
             'noMargin': true,
             'responsive': true
@@ -177,14 +181,17 @@
                 {% endfor %}
             {% endblock %}
         {% endembed %}
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Benefits Section #}
-    <div class="card mt-lg">
-        <div class="card-header">
-            <h2>{{ 'bcm.data_reuse.benefits_title'|trans({}, 'bcm') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mt-lg'} %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2>{{ 'bcm.data_reuse.benefits_title'|trans({}, 'bcm') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="benefits-grid">
                 <div class="benefit-item">
                     <div class="benefit-icon"><i class="bi bi-clock" aria-hidden="true"></i></div>
@@ -207,8 +214,8 @@
                     <p>{{ 'bcm.data_reuse.benefit_quality'|trans({}, 'bcm') }}</p>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 <style>

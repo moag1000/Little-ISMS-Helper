@@ -82,9 +82,13 @@
     {% set cardClasses = cardClasses|merge([class]) %}
 {% endif %}
 
-<div class="{{ cardClasses|join(' ') }}">
-    {# Card Header #}
-    {% if header is defined or title is defined or actions is defined %}
+{# Allow custom attributes on card div via block #}
+<div class="{{ cardClasses|join(' ') }}" {% block card_attrs %}{% endblock %}>
+    {# Card Header - block takes precedence over parameters #}
+    {% set headerBlockContent %}{% block card_header %}{% endblock %}{% endset %}
+    {% if headerBlockContent|trim %}
+        {{ headerBlockContent|raw }}
+    {% elseif header is defined or title is defined or actions is defined %}
     <div class="card-header">
         {% if header is defined %}
             {{ header|raw }}
@@ -114,8 +118,11 @@
         {% endif %}
     </div>
 
-    {# Card Footer #}
-    {% if footer is defined %}
+    {# Card Footer - block takes precedence over parameter #}
+    {% set footerBlockContent %}{% block card_footer %}{% endblock %}{% endset %}
+    {% if footerBlockContent|trim %}
+        {{ footerBlockContent|raw }}
+    {% elseif footer is defined %}
     <div class="card-footer">
         {{ footer|raw }}
     </div>

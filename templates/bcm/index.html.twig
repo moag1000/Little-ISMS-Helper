@@ -48,29 +48,29 @@
     </div>
 
     {# Business Processes Table #}
-    <div class="card"
-         data-controller="filter"
-         data-filter-filterable-columns-value="{{ ['name', 'description', 'criticality']|json_encode }}">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_attrs %}data-controller="filter" data-filter-filterable-columns-value="{{ ['name', 'description', 'criticality']|json_encode }}"{% endblock %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2>Business Processes</h2>
+                <div class="filter-panel">
+                    <input type="text"
+                           class="search-input"
+                           placeholder="{{ 'common.search_processes'|trans({}, 'messages') }}"
+                           data-filter-target="searchInput"
+                           data-action="input->filter#filterRows">
 
-        <div class="card-header">
-            <h2>Business Processes</h2>
-            <div class="filter-panel">
-                <input type="text"
-                       class="search-input"
-                       placeholder="{{ 'common.search_processes'|trans({}, 'messages') }}"
-                       data-filter-target="searchInput"
-                       data-action="input->filter#filterRows">
-
-                <select class="filter-select" data-action="change->filter#filterByCategory">
-                    <option value="">All Criticality Levels</option>
-                    <option value="critical">Critical</option>
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
-                </select>
+                    <select class="filter-select" data-action="change->filter#filterByCategory">
+                        <option value="">All Criticality Levels</option>
+                        <option value="critical">Critical</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                    </select>
+                </div>
             </div>
-        </div>
-
+        {% endblock %}
+        {% block card_body %}
         {% embed '_components/_table.html.twig' with {
             'noMargin': true,
             'responsive': true
@@ -153,14 +153,17 @@
         <div data-filter-target="noResults" class="no-results d-none">
             <p>{{ 'bcm.message.no_matching_processes'|trans({}, 'bcm') }}</p>
         </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Help Section #}
-    <div class="card mt-lg">
-        <div class="card-header">
-            <h2>Understanding BCM & BIA</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mt-lg'} %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2>Understanding BCM & BIA</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="info-grid">
                 <div class="info-item">
                     <strong>RTO (Recovery Time Objective)</strong>
@@ -179,8 +182,8 @@
                     <p>{{ 'bcm.message.bcm_influences_asset_ratings'|trans({}, 'bcm') }}</p>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 <style>
