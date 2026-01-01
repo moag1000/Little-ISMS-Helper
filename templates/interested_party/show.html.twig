@@ -29,15 +29,17 @@
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h2>{{ 'interested_party.page.show_title'|trans({}, 'interested_parties') }}</h2>
-            <div>
-                <span class="badge badge-{{ interested_party.partyType }}">{{ interested_party.partyType }}</span>
-                <span class="badge badge-{{ interested_party.importance }}">{{ interested_party.importance|upper }}</span>
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2>{{ 'interested_party.page.show_title'|trans({}, 'interested_parties') }}</h2>
+                <div>
+                    <span class="badge badge-{{ interested_party.partyType }}">{{ interested_party.partyType }}</span>
+                    <span class="badge badge-{{ interested_party.importance }}">{{ interested_party.importance|upper }}</span>
+                </div>
             </div>
-        </div>
-        <div class="card-body">
+        {% endblock %}
+        {% block card_body %}
             <div class="alert alert-info">
                 <strong>{{ 'interested_party.engagement_score'|trans({}, 'interested_parties') }}: {{ interested_party.getEngagementScore() }}</strong>
             </div>
@@ -131,8 +133,8 @@
                     {% if interested_party.updatedAt %}| {{ 'common.updated_at'|trans({}, 'messages') }}: {{ interested_party.updatedAt|date('Y-m-d H:i') }}{% endif %}
                 </p>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 <style>
