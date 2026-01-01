@@ -38,8 +38,8 @@
     {% endif %}
 
     {# Overall Compliance Score #}
-    <div class="card mb-4 text-center">
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4 text-center'} %}
+        {% block card_body %}
             <h6 class="text-muted mb-2">{{ 'privacy.data_breach.score.heading'|trans({}, 'privacy') }}</h6>
             {% set score = compliance_score.overall_score %}
             <h1 class="display-1 mb-0
@@ -67,62 +67,63 @@
             <p class="text-muted mt-3">
                 {{ 'privacy.data_breach.score.summary'|trans({'%total%': statistics.total, '%subjects%': compliance_score.total_affected_subjects}, 'privacy') }}
             </p>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Key Metrics #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <div class="text-muted small">{{ 'privacy.data_breach.kpi.total_breaches'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold">{{ statistics.total }}</div>
                     <div class="mt-2">
                         <small class="text-danger"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ statistics.high_risk + statistics.critical_risk }} {{ 'privacy.data_breach.kpi.high_critical_risk'|trans({}, 'privacy') }}</small>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-warning">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with {variant: 'bordered', borderColor: 'warning'} %}
+                {% block card_body %}
                     <div class="text-muted small">{{ 'privacy.data_breach.kpi.pending_authority'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold text-warning">{{ statistics.requires_authority_notification - statistics.authority_notified }}</div>
                     <div class="mt-2">
                         <small class="text-muted"><i class="bi bi-clock" aria-hidden="true"></i> {{ 'privacy.data_breach.kpi.deadline_72h'|trans({}, 'privacy') }}</small>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <div class="text-muted small">{{ 'privacy.data_breach.kpi.special_categories'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold text-info">{{ statistics.special_categories_affected }}</div>
                     <div class="mt-2">
                         <small class="text-muted"><i class="bi bi-shield-lock" aria-hidden="true"></i> {{ 'privacy.data_breach.kpi.art9_data'|trans({}, 'privacy') }}</small>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <div class="text-muted small">Affected Subjects</div>
                     <div class="fs-2 fw-bold">{{ compliance_score.total_affected_subjects }}</div>
                     <div class="mt-2">
                         <small class="text-muted"><i class="bi bi-people" aria-hidden="true"></i> Total count</small>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Filters #}
-    <div class="card mb-4">
-        <div class="card-header"><h2 class="mb-0"><i class="bi bi-filter" aria-hidden="true"></i> Filter Data Breaches</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+        {% block card_header %}
+            <div class="card-header"><h2 class="mb-0"><i class="bi bi-filter" aria-hidden="true"></i> Filter Data Breaches</h2></div>
+        {% endblock %}
+        {% block card_body %}
             <div class="btn-group flex-wrap" role="group">
                 <a href="{{ path('app_data_breach_index') }}"
                    class="btn btn-outline-primary {{ current_filter == 'all' ? 'active' : '' }}">
@@ -157,14 +158,15 @@
                     Closed ({{ statistics.closed }})
                 </a>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Breaches Table #}
-    <div class="card">
-        <div class="card-header"><h2 class="mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> Data Breaches ({{ breaches|length }})</h2>
-        </div>
-        <div class="card-body p-0">
+    {% embed '_components/_card.html.twig' with {noPadding: true} %}
+        {% block card_header %}
+            <div class="card-header"><h2 class="mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> Data Breaches ({{ breaches|length }})</h2></div>
+        {% endblock %}
+        {% block card_body %}
             {% if breaches|length > 0 %}
                 {% embed '_components/_table.html.twig' with {
                     'noMargin': true
@@ -298,7 +300,7 @@
                     {% endif %}
                 </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

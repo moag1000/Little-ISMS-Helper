@@ -59,10 +59,11 @@
     {% endif %}
 
     {# Status & Workflow Actions #}
-    <div class="card mb-4">
-        <div class="card-header"><h2 class="mb-0"><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'privacy.data_breach.section.status_workflow'|trans({}, 'privacy') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+        {% block card_header %}
+            <div class="card-header"><h2 class="mb-0"><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'privacy.data_breach.section.status_workflow'|trans({}, 'privacy') }}</h2></div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row">
                 <div class="col-md-6">
                     <p><strong>{{ 'privacy.data_breach.field.status'|trans({}, 'privacy') }}:</strong>
@@ -156,14 +157,15 @@
                     </form>
                 {% endif %}
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Detection & Links #}
-    <div class="card mb-4">
-        <div class="card-header"><h2 class="mb-0"><i class="bi bi-link-45deg" aria-hidden="true"></i> {{ 'privacy.data_breach.section.detection_links'|trans({}, 'privacy') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+        {% block card_header %}
+            <div class="card-header"><h2 class="mb-0"><i class="bi bi-link-45deg" aria-hidden="true"></i> {{ 'privacy.data_breach.section.detection_links'|trans({}, 'privacy') }}</h2></div>
+        {% endblock %}
+        {% block card_body %}
             <p><strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.detectedAt|date('Y-m-d H:i') }}</p>
             <p><strong>{{ 'privacy.data_breach.field.severity'|trans({}, 'privacy') }}:</strong>
                 {% set sev_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.severity] %}
@@ -189,16 +191,17 @@
                     </a>
                 </p>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Art. 33/34 Notifications #}
     <div class="row mb-4">
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header"><h2 class="mb-0"><i class="bi bi-building" aria-hidden="true"></i> {{ 'privacy.data_breach.section.authority'|trans({}, 'privacy') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header"><h2 class="mb-0"><i class="bi bi-building" aria-hidden="true"></i> {{ 'privacy.data_breach.section.authority'|trans({}, 'privacy') }}</h2></div>
+                {% endblock %}
+                {% block card_body %}
                     <p><strong>{{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }}:</strong>
                         {% if breach.requiresAuthorityNotification %}
                             <span class="text-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'privacy.data_breach.field.yes'|trans({}, 'privacy') }}</span>
@@ -237,15 +240,16 @@
                             {% endif %}
                         </p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header"><h2 class="mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ 'privacy.data_breach.section.subjects'|trans({}, 'privacy') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header"><h2 class="mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ 'privacy.data_breach.section.subjects'|trans({}, 'privacy') }}</h2></div>
+                {% endblock %}
+                {% block card_body %}
                     <p><strong>{{ 'privacy.data_breach.field.notification_required'|trans({}, 'privacy') }}:</strong>
                         {% if breach.requiresSubjectNotification %}
                             <span class="text-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'privacy.data_breach.field.high_risk'|trans({}, 'privacy') }}</span>
@@ -265,16 +269,17 @@
                     {% elseif breach.requiresSubjectNotification %}
                         <p class="text-warning"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'privacy.data_breach.field.not_yet_notified'|trans({}, 'privacy') }}</p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Breach Details - Art. 33(3) Content #}
-    <div class="card mb-4">
-        <div class="card-header"><h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'privacy.data_breach.section.nature'|trans({}, 'privacy') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+        {% block card_header %}
+            <div class="card-header"><h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'privacy.data_breach.section.nature'|trans({}, 'privacy') }}</h2></div>
+        {% endblock %}
+        {% block card_body %}
             {% if breach.breachNature %}
                 <h3>{{ 'privacy.data_breach.section.nature'|trans({}, 'privacy') }} (Art. 33(3)(a)):</h3>
                 <p>{{ breach.breachNature|nl2br }}</p>
@@ -297,14 +302,15 @@
                     <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> <strong>{{ 'privacy.data_breach.field.criminal_data_affected'|trans({}, 'privacy') }}</strong>
                 </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Consequences & Measures #}
-    <div class="card mb-4">
-        <div class="card-header"><h2 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'privacy.data_breach.section.consequences'|trans({}, 'privacy') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+        {% block card_header %}
+            <div class="card-header"><h2 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'privacy.data_breach.section.consequences'|trans({}, 'privacy') }}</h2></div>
+        {% endblock %}
+        {% block card_body %}
             {% if breach.likelyConsequences %}
                 <h3>{{ 'privacy.data_breach.field.likely_consequences'|trans({}, 'privacy') }}:</h3>
                 <p>{{ breach.likelyConsequences|nl2br }}</p>
@@ -317,15 +323,16 @@
                 <h3>{{ 'privacy.data_breach.field.measures_planned'|trans({}, 'privacy') }}:</h3>
                 <p>{{ breach.mitigationMeasures|nl2br }}</p>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Investigation & Follow-up #}
     {% if breach.rootCause or breach.lessonsLearned or breach.followUpActions|length > 0 %}
-        <div class="card mb-4">
-            <div class="card-header"><h2 class="mb-0"><i class="bi bi-search" aria-hidden="true"></i> {{ 'privacy.data_breach.investigation_followup'|trans({}, 'privacy') }}</h2>
-            </div>
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+            {% block card_header %}
+                <div class="card-header"><h2 class="mb-0"><i class="bi bi-search" aria-hidden="true"></i> {{ 'privacy.data_breach.investigation_followup'|trans({}, 'privacy') }}</h2></div>
+            {% endblock %}
+            {% block card_body %}
                 {% if breach.rootCause %}
                     <h3>{{ 'privacy.data_breach.root_cause'|trans({}, 'privacy') }}:</h3>
                     <p>{{ breach.rootCause|nl2br }}</p>
@@ -342,8 +349,8 @@
                         {% endfor %}
                     </ul>
                 {% endif %}
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 </div>
 
