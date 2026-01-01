@@ -54,15 +54,17 @@
         </div>
     {% endif %}
 
-    <div class="card">
-        <div class="card-header">
-            <h2>{{ 'supplier.section.details'|trans({}, 'suppliers') }}</h2>
-            <div>
-                <span class="badge badge-{{ supplier.criticality }}">{{ supplier.criticality|upper }}</span>
-                <span class="{{ badge_status(supplier.status) }}">{{ supplier.status }}</span>
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2>{{ 'supplier.section.details'|trans({}, 'suppliers') }}</h2>
+                <div>
+                    <span class="badge badge-{{ supplier.criticality }}">{{ supplier.criticality|upper }}</span>
+                    <span class="{{ badge_status(supplier.status) }}">{{ supplier.status }}</span>
+                </div>
             </div>
-        </div>
-        <div class="card-body">
+        {% endblock %}
+        {% block card_body %}
             {% set riskScore = supplier.calculateRiskScore() %}
             <div class="alert {{ riskScore > 70 ? 'alert-danger' : (riskScore > 50 ? 'alert-warning' : 'alert-info') }}">
                 <strong>{{ 'supplier.risk_score'|trans({}, 'suppliers') }}: {{ riskScore }}</strong>
@@ -230,8 +232,8 @@
                     {% endif %}
                 </p>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 <style>
