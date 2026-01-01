@@ -35,11 +35,13 @@
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0">{{ 'change_request.edit'|trans({}, 'change_requests') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="mb-0">{{ 'change_request.edit'|trans({}, 'change_requests') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
 
                     {% include '_components/_auto_form.html.twig' with {
@@ -111,8 +113,8 @@
                     </div>
 
                     {{ form_end(form) }}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>
