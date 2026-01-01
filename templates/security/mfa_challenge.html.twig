@@ -6,14 +6,16 @@
 <div class="container">
     <div class="row justify-content-center mt-5">
         <div class="col-md-5">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h1 class="mb-0">
-                        <i class="bi bi-shield-lock" aria-hidden="true"></i>
-                        {{ 'mfa.challenge.title'|trans({}, 'mfa') }}
-                    </h1>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="mb-0">
+                            <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                            {{ 'mfa.challenge.title'|trans({}, 'mfa') }}
+                        </h1>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if error %}
                         <div class="alert alert-danger">
                             <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
@@ -107,12 +109,14 @@
                             {{ 'mfa.challenge.cancel'|trans({}, 'mfa') }}
                         </a>
                     </div>
-                </div>
-                <div class="card-footer text-muted small text-center">
-                    <i class="bi bi-shield-check" aria-hidden="true"></i>
-                    {{ 'mfa.challenge.nis2_compliance'|trans({}, 'mfa') }}
-                </div>
-            </div>
+                {% endblock %}
+                {% block card_footer %}
+                    <div class="card-footer text-muted small text-center">
+                        <i class="bi bi-shield-check" aria-hidden="true"></i>
+                        {{ 'mfa.challenge.nis2_compliance'|trans({}, 'mfa') }}
+                    </div>
+                {% endblock %}
+            {% endembed %}
 
             <div class="alert alert-info mt-3">
                 <i class="bi bi-info-circle" aria-hidden="true"></i>

@@ -10,14 +10,16 @@
 {% block admin_content %}
     <div class="row">
         <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header bg-white">
-                    <h2 class="card-title mb-0">
-                        <i class="bi bi-gear-fill text-primary" aria-hidden="true"></i>
-                        {{ 'admin.settings.application.title'|trans({}, 'admin') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-white">
+                        <h2 class="card-title mb-0">
+                            <i class="bi bi-gear-fill text-primary" aria-hidden="true"></i>
+                            {{ 'admin.settings.application.title'|trans({}, 'admin') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {{ form_start(form) }}
                         {% include '_components/_auto_form.html.twig' with {
                             'form': form,
@@ -51,19 +53,21 @@
                             </button>
                         </div>
                     {{ form_end(form) }}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-lg-4">
-            <div class="card">
-                <div class="card-header bg-white">
-                    <h2 class="card-title mb-0">{{ 'admin.settings.help'|trans({}, 'admin') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-white">
+                        <h2 class="card-title mb-0">{{ 'admin.settings.help'|trans({}, 'admin') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p class="small">{{ 'admin.settings.application.help_text'|trans({}, 'admin') }}</p>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 {% endblock %}
