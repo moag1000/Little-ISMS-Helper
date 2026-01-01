@@ -36,8 +36,8 @@
     {# KPI Cards with Data Reuse #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <div class="h6 mb-2 text-muted">Kritikalität</div>
                     <p class="h3">
                         {% set criticality_badge = {
@@ -50,21 +50,21 @@
                             {{ business_process.criticality|capitalize }}
                         </span>
                     </p>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <div class="h6 mb-2 text-muted">Business Impact Score</div>
                     <p class="h3">{{ metrics.business_impact_score }}/5</p>
                     <small class="text-muted">Automatisch berechnet</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <div class="h6 mb-2 text-muted">Prozess-Risikolevel</div>
                     <p class="h3">
                         {% set risk_badge = {
@@ -79,12 +79,12 @@
                         </span>
                     </p>
                     <small class="text-muted">{{ metrics.active_risks }} aktive Risiken</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card {% if not metrics.criticality_aligned %}border-warning{% endif %}">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with {borderColor: (not metrics.criticality_aligned) ? 'warning' : ''} %}
+                {% block card_body %}
                     <div class="h6 mb-2 text-muted">Alignment-Status</div>
                     <p class="h3">
                         {% if metrics.criticality_aligned %}
@@ -100,14 +100,15 @@
                             Überprüfung erforderlich
                         {% endif %}
                     </small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Main Content in Tabs with Turbo Frame #}
-    <div class="card" data-controller="toggle">
-        <div class="card-header">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+        <div class="card-header" data-controller="toggle">
             <ul class="nav nav-tabs card-header-tabs">
                 <li class="nav-item">
                     <a class="nav-link active" data-action="click->toggle#switchTab" data-tab="general" href="#">Allgemein</a>
@@ -123,7 +124,8 @@
                 </li>
             </ul>
         </div>
-        <div class="card-body">
+        {% endblock %}
+        {% block card_body %}
             {# General Tab #}
             <div class="tab-content active" data-tab-content="general">
                 {% embed '_components/_table.html.twig' with {
@@ -299,8 +301,8 @@
                     </div>
                 {% endif %}
             </turbo-frame>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 <style>

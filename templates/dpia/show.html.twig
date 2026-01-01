@@ -24,10 +24,12 @@
     } %}
 
     {# Status & Workflow Actions #}
-    <div class="card mb-4">
-        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'dpia.show.section.status_workflow'|trans({}, 'privacy') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+        {% block card_header %}
+            <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'dpia.show.section.status_workflow'|trans({}, 'privacy') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row">
                 <div class="col-md-6">
                     <p><strong>{{ 'dpia.index.status'|trans({}, 'privacy') }}:</strong>
@@ -113,16 +115,18 @@
                     </form>
                 {% endif %}
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Risk Assessment #}
     <div class="row mb-4">
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dpia.show.section.risk_assessment'|trans({}, 'privacy') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dpia.show.section.risk_assessment'|trans({}, 'privacy') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if dpia.riskLevel %}
                         <p><strong>{{ 'dpia.show.field.initial_risk'|trans({}, 'privacy') }}:</strong>
                             {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[dpia.riskLevel] %}
@@ -140,15 +144,17 @@
                             <p class="text-danger"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dpia.show.risk.requires_consultation'|trans({}, 'privacy') }}</p>
                         {% endif %}
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ 'dpia.show.section.consultations'|trans({}, 'privacy') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ 'dpia.show.section.consultations'|trans({}, 'privacy') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p><strong>{{ 'dpia.show.field.dpo_consultation'|trans({}, 'privacy') }}:</strong>
                         {% if dpia.dpoConsultationDate %}
                             <span class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ dpia.dpoConsultationDate|date('d.m.Y') }}</span>
@@ -167,16 +173,18 @@
                             <span class="text-muted">{{ 'dpia.show.not_required'|trans({}, 'privacy') }}</span>
                         {% endif %}
                     </p>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Processing Description #}
-    <div class="card mb-4">
-        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'dpia.new.section_processing_operations'|trans({}, 'privacy') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+        {% block card_header %}
+            <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'dpia.new.section_processing_operations'|trans({}, 'privacy') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if dpia.processingDescription %}
                 <h3 class="h6">{{ 'dpia.form.processing_description'|trans({}, 'privacy') }}:</h3>
                 <p>{{ dpia.processingDescription|nl2br }}</p>
@@ -189,14 +197,16 @@
                 <h3 class="h6">{{ 'dpia.form.data_categories'|trans({}, 'privacy') }}:</h3>
                 <p>{{ dpia.dataCategories|join(', ') }}</p>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Measures #}
-    <div class="card mb-4">
-        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'dpia.new.section_measures'|trans({}, 'privacy') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+        {% block card_header %}
+            <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'dpia.new.section_measures'|trans({}, 'privacy') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if dpia.technicalMeasures %}
                 <h3 class="h6">{{ 'dpia.form.technical_measures'|trans({}, 'privacy') }}:</h3>
                 <p>{{ dpia.technicalMeasures|nl2br }}</p>
@@ -205,8 +215,8 @@
                 <h3 class="h6">{{ 'dpia.form.organizational_measures'|trans({}, 'privacy') }}:</h3>
                 <p>{{ dpia.organizationalMeasures|nl2br }}</p>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 {# Approve Modal #}
