@@ -23,24 +23,28 @@
     <div class="row">
         <div class="col-lg-3 mb-4">
             {# Navigation Sidebar #}
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="h5 mb-0">
-                        <i class="bi bi-list-ul me-2" aria-hidden="true"></i>Navigation
-                    </h2>
-                </div>
-                <div class="list-group list-group-flush">
-                    <a href="{{ path('app_licenses') }}" class="list-group-item list-group-item-action">
-                        <i class="bi bi-file-earmark-text me-2" aria-hidden="true"></i>NOTICE
-                    </a>
-                    <a href="{{ path('app_licenses_report') }}" class="list-group-item list-group-item-action">
-                        <i class="bi bi-file-earmark-bar-graph me-2" aria-hidden="true"></i>Detaillierter Bericht
-                    </a>
-                    <a href="{{ path('app_licenses_summary') }}" class="list-group-item list-group-item-action active">
-                        <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>Zusammenfassung
-                    </a>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="h5 mb-0">
+                            <i class="bi bi-list-ul me-2" aria-hidden="true"></i>Navigation
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <div class="list-group list-group-flush">
+                        <a href="{{ path('app_licenses') }}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-file-earmark-text me-2" aria-hidden="true"></i>NOTICE
+                        </a>
+                        <a href="{{ path('app_licenses_report') }}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-file-earmark-bar-graph me-2" aria-hidden="true"></i>Detaillierter Bericht
+                        </a>
+                        <a href="{{ path('app_licenses_summary') }}" class="list-group-item list-group-item-action active">
+                            <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>Zusammenfassung
+                        </a>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-lg-9">
@@ -101,52 +105,60 @@
                 {# Statistics Cards #}
                 <div class="row mb-4">
                     <div class="col-md-4 mb-3">
-                        <div class="card h-100">
-                            <div class="card-body text-center">
-                                <div class="display-4 mb-2 text-primary">{{ stats.total }}</div>
-                                <div class="h6 mb-0 fw-semibold">Pakete Gesamt</div>
-                                <small class="text-muted">
-                                    {% if stats.generated_at %}
-                                        Stand: {{ stats.generated_at }}
-                                    {% endif %}
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <div class="card h-100 border-success">
-                            <div class="card-body text-center">
-                                <div class="display-4 mb-2 text-success">{{ stats.allowed }}</div>
-                                <div class="h6 mb-0 fw-semibold">Erlaubt</div>
-                                <small class="text-muted">{{ (stats.allowed / stats.total * 100)|round(1) }}%</small>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <div class="card h-100 {% if stats.unknown > 0 or stats.not_allowed > 0 %}border-warning{% endif %}">
-                            <div class="card-body text-center">
-                                <div class="display-4 mb-2 {% if stats.unknown > 0 or stats.not_allowed > 0 %}text-warning{% else %}text-muted{% endif %}">
-                                    {{ stats.restricted + stats.copyleft + stats.not_allowed + stats.unknown }}
+                        {% embed '_components/_card.html.twig' with {class: 'h-100'} %}
+                            {% block card_body %}
+                                <div class="text-center">
+                                    <div class="display-4 mb-2 text-primary">{{ stats.total }}</div>
+                                    <div class="h6 mb-0 fw-semibold">Pakete Gesamt</div>
+                                    <small class="text-muted">
+                                        {% if stats.generated_at %}
+                                            Stand: {{ stats.generated_at }}
+                                        {% endif %}
+                                    </small>
                                 </div>
-                                <div class="h6 mb-0 fw-semibold">Prüfung erforderlich</div>
-                                <small class="text-muted">
-                                    {{ ((stats.restricted + stats.copyleft + stats.not_allowed + stats.unknown) / stats.total * 100)|round(1) }}%
-                                </small>
-                            </div>
-                        </div>
+                            {% endblock %}
+                        {% endembed %}
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        {% embed '_components/_card.html.twig' with {class: 'h-100', borderColor: 'success'} %}
+                            {% block card_body %}
+                                <div class="text-center">
+                                    <div class="display-4 mb-2 text-success">{{ stats.allowed }}</div>
+                                    <div class="h6 mb-0 fw-semibold">Erlaubt</div>
+                                    <small class="text-muted">{{ (stats.allowed / stats.total * 100)|round(1) }}%</small>
+                                </div>
+                            {% endblock %}
+                        {% endembed %}
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        {% embed '_components/_card.html.twig' with {class: 'h-100', borderColor: (stats.unknown > 0 or stats.not_allowed > 0) ? 'warning' : ''} %}
+                            {% block card_body %}
+                                <div class="text-center">
+                                    <div class="display-4 mb-2 {% if stats.unknown > 0 or stats.not_allowed > 0 %}text-warning{% else %}text-muted{% endif %}">
+                                        {{ stats.restricted + stats.copyleft + stats.not_allowed + stats.unknown }}
+                                    </div>
+                                    <div class="h6 mb-0 fw-semibold">Prüfung erforderlich</div>
+                                    <small class="text-muted">
+                                        {{ ((stats.restricted + stats.copyleft + stats.not_allowed + stats.unknown) / stats.total * 100)|round(1) }}%
+                                    </small>
+                                </div>
+                            {% endblock %}
+                        {% endembed %}
                     </div>
                 </div>
 
                 {# Detailed Breakdown #}
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h2 class="h5 mb-0">
-                            <i class="bi bi-pie-chart me-2" aria-hidden="true"></i>Lizenzverteilung
-                        </h2>
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="h5 mb-0">
+                                <i class="bi bi-pie-chart me-2" aria-hidden="true"></i>Lizenzverteilung
+                            </h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         {% embed '_components/_table.html.twig' with {
                             'class': 'table-sm',
                             'responsive': true,
@@ -234,18 +246,20 @@
                                 </tr>
                             {% endblock %}
                         {% endembed %}
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
 
                 {# Actions Required #}
                 {% if stats.unknown > 0 or stats.not_allowed > 0 %}
-                    <div class="card border-warning mb-4">
-                        <div class="card-header bg-warning text-dark">
-                            <h2 class="h5 mb-0">
-                                <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>Handlungsbedarf
-                            </h2>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with {class: 'mb-4', borderColor: 'warning'} %}
+                        {% block card_header %}
+                            <div class="card-header bg-warning text-dark">
+                                <h2 class="h5 mb-0">
+                                    <i class="bi bi-exclamation-triangle-fill me-2" aria-hidden="true"></i>Handlungsbedarf
+                                </h2>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <ul class="mb-0">
                                 {% if stats.unknown > 0 %}
                                     <li><strong>{{ stats.unknown }}</strong> Pakete mit unbekannter Lizenz müssen manuell geprüft werden</li>
@@ -262,18 +276,20 @@
                                     <i class="bi bi-file-earmark-bar-graph me-1" aria-hidden="true"></i>Detailbericht anzeigen
                                 </a>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 {% endif %}
 
                 {# Next Steps #}
-                <div class="card">
-                    <div class="card-header">
-                        <h2 class="h5 mb-0">
-                            <i class="bi bi-list-check me-2" aria-hidden="true"></i>Nächste Schritte
-                        </h2>
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="h5 mb-0">
+                                <i class="bi bi-list-check me-2" aria-hidden="true"></i>Nächste Schritte
+                            </h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         <ol class="mb-0">
                             <li>Vollständigen Bericht prüfen: <a href="{{ path('app_licenses_report') }}">Detailbericht öffnen</a></li>
                             <li>Problematische Lizenzen identifizieren und dokumentieren</li>
@@ -281,8 +297,8 @@
                             <li>{{ 'admin.licensing.attributions_provided'|trans({}, 'admin') }}</li>
                             <li>Regelmäßig aktualisieren: <code>./license-report.sh</code> ausführen</li>
                         </ol>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
 
             {% else %}
                 {# No Report Found #}
