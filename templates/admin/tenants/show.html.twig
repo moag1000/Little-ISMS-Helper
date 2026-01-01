@@ -63,8 +63,8 @@
     {# Statistics Cards #}
     <div class="row g-3 mb-4">
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <div class="d-flex align-items-center">
                         <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
                             <i class="bi bi-people text-primary fs-3" aria-hidden="true"></i>
@@ -74,12 +74,12 @@
                             <div class="fs-2 fw-bold">{{ userCount }}</div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <div class="d-flex align-items-center">
                         <div class="bg-success bg-opacity-10 p-3 rounded me-3">
                             <i class="bi bi-person-check text-success fs-3" aria-hidden="true"></i>
@@ -89,12 +89,12 @@
                             <div class="fs-2 fw-bold">{{ activeUsers }}</div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     <div class="d-flex align-items-center">
                         <div class="bg-secondary bg-opacity-10 p-3 rounded me-3">
                             <i class="bi bi-person-x text-secondary fs-3" aria-hidden="true"></i>
@@ -104,8 +104,8 @@
                             <div class="fs-2 fw-bold">{{ inactiveUsers }}</div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
@@ -136,14 +136,16 @@
     <div class="row">
         {# Tenant Information #}
         <div class="col-lg-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header bg-white">
-                    <h2 class="card-title mb-0 h5">
-                        <i class="bi bi-info-circle text-primary" aria-hidden="true"></i>
-                        {{ 'tenant.section.information'|trans({}, 'tenant') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with {class: 'h-100'} %}
+                {% block card_header %}
+                    <div class="card-header bg-white">
+                        <h2 class="card-title mb-0 h5">
+                            <i class="bi bi-info-circle text-primary" aria-hidden="true"></i>
+                            {{ 'tenant.section.information'|trans({}, 'tenant') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% embed '_components/_table.html.twig' with {
                         'class': 'table-sm',
                         'noMargin': true
@@ -377,8 +379,8 @@
                         <h3 class="text-muted mb-2 h6">{{ 'tenant.field.settings'|trans({}, 'tenant') }}</h3>
                         <pre class="bg-light p-3 rounded small"><code>{{ tenant.settings|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_UNICODE')) }}</code></pre>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
         {# End Details Tab #}
@@ -401,20 +403,22 @@
     <div class="row">
         {# Users List #}
         <div class="col-lg-12 mb-4">
-            <div class="card h-100">
-                <div class="card-header bg-white">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="card-title mb-0 h5">
-                            <i class="bi bi-people text-primary" aria-hidden="true"></i>
-                            {{ 'tenant.section.users'|trans({}, 'tenant') }}
-                            <span class="badge bg-primary ms-2">{{ userCount }}</span>
-                        </h2>
-                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#manageUsersModal">
-                            <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'tenant.users.manage'|trans({}, 'tenant') }}
-                        </button>
+            {% embed '_components/_card.html.twig' with {class: 'h-100'} %}
+                {% block card_header %}
+                    <div class="card-header bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h2 class="card-title mb-0 h5">
+                                <i class="bi bi-people text-primary" aria-hidden="true"></i>
+                                {{ 'tenant.section.users'|trans({}, 'tenant') }}
+                                <span class="badge bg-primary ms-2">{{ userCount }}</span>
+                            </h2>
+                            <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#manageUsersModal">
+                                <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'tenant.users.manage'|trans({}, 'tenant') }}
+                            </button>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body">
+                {% endblock %}
+                {% block card_body %}
                     {% if userCount == 0 %}
                         <div class="text-center text-muted py-4">
                             <i class="bi bi-people" style="font-size: 3rem;" aria-hidden="true"></i>
@@ -451,8 +455,8 @@
                             </div>
                         {% endif %}
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
         </div>
@@ -461,14 +465,16 @@
 
     {# Danger Zone - Outside tabs, always visible #}
     {% if userCount == 0 %}
-        <div class="card border-danger mt-4">
-            <div class="card-header bg-danger text-white">
-                <h2 class="card-title mb-0 h5">
-                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                    {{ 'tenant.section.danger_zone'|trans({}, 'tenant') }}
-                </h2>
-            </div>
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' with {borderColor: 'danger', class: 'mt-4'} %}
+            {% block card_header %}
+                <div class="card-header bg-danger text-white">
+                    <h2 class="card-title mb-0 h5">
+                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                        {{ 'tenant.section.danger_zone'|trans({}, 'tenant') }}
+                    </h2>
+                </div>
+            {% endblock %}
+            {% block card_body %}
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h3 class="mb-1 h6">{{ 'tenant.action.delete'|trans({}, 'tenant') }}</h3>
@@ -484,8 +490,8 @@
                         </button>
                     </form>
                 </div>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 
     {# Manage Users Modal #}
