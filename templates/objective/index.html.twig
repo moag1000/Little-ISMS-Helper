@@ -36,9 +36,11 @@
         </div>
     </turbo-frame>
 
-    <div class="card">
-        <div class="card-header bg-primary text-white"><h2 class="mb-0">{{ 'objective.list.title'|trans({'%count%': objectives|length}, 'objective') }}</h2></div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white"><h2 class="mb-0">{{ 'objective.list.title'|trans({'%count%': objectives|length}, 'objective') }}</h2></div>
+        {% endblock %}
+        {% block card_body %}
             {% if objectives|length == 0 %}
             <div class="alert alert-info">{{ 'objective.message.no_objectives'|trans({}, 'objective') }}</div>
             {% else %}
@@ -79,7 +81,7 @@
                 {% endblock %}
             {% endembed %}
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

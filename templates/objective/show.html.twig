@@ -14,11 +14,13 @@
 
     <div class="row">
         <div class="col-lg-8">
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white d-flex justify-content-between"><h1 class="mb-0 h2">{{ objective.title }}</h1>
-                    <span class="badge bg-{{ objective.status == 'achieved' ? 'success' : 'info' }} fs-6">{{ ('objective.status.' ~ objective.status)|trans({}, 'objective') }}</span>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white d-flex justify-content-between"><h1 class="mb-0 h2">{{ objective.title }}</h1>
+                        <span class="badge bg-{{ objective.status == 'achieved' ? 'success' : 'info' }} fs-6">{{ ('objective.status.' ~ objective.status)|trans({}, 'objective') }}</span>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p class="lead">{{ objective.description }}</p>
 
                     <div class="row mb-3">
@@ -49,33 +51,37 @@
                     <div class="fw-bold text-muted small text-uppercase mb-2 mt-3">{{ 'objective.field.progress_notes'|trans({}, 'objective') }}</div>
                     <div class="alert alert-info">{{ objective.progressNotes|nl2br }}</div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-lg-4">
-            <div class="card mb-4">
-                <div class="card-header bg-light"><h2 class="mb-0">{{ 'common.actions'|trans({}, 'messages') }}</h2></div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with {class: 'mb-4'} %}
+                {% block card_header %}
+                    <div class="card-header bg-light"><h2 class="mb-0">{{ 'common.actions'|trans({}, 'messages') }}</h2></div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="d-grid gap-2">
                         {% if is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('app_objective_edit', {id: objective.id}) }}" class="btn btn-primary"><i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}</a>
                         {% endif %}
                         <a href="{{ path('app_objective_index') }}" class="btn btn-outline-secondary">{{ 'common.back_to_list'|trans({}, 'messages') }}</a>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
-            <div class="card">
-                <div class="card-header bg-light"><h2 class="mb-0">{{ 'common.metadata'|trans({}, 'messages') }}</h2></div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-light"><h2 class="mb-0">{{ 'common.metadata'|trans({}, 'messages') }}</h2></div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="row mb-0 small">
                         <dt class="col-sm-5">{{ 'common.created_at'|trans({}, 'messages') }}</dt><dd class="col-sm-7">{{ objective.createdAt|date('d.m.Y H:i') }}</dd>
                         <dt class="col-sm-5">{{ 'common.updated_at'|trans({}, 'messages') }}</dt><dd class="col-sm-7">{{ objective.updatedAt ? objective.updatedAt|date('d.m.Y H:i') : '-' }}</dd>
                         <dt class="col-sm-5">{{ 'common.id'|trans({}, 'messages') }}</dt><dd class="col-sm-7"><code>{{ objective.id }}</code></dd>
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>
