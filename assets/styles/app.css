@@ -203,7 +203,7 @@ body {
     left: 0;
     background: #1e40af; /* High contrast blue - WCAG AAA compliant */
     color: #ffffff;
-    padding: 10px 20px;
+    padding: var(--spacing-sm) var(--spacing-lg);
     text-decoration: none;
     font-weight: 700;
     font-size: 0.95rem;
@@ -2345,7 +2345,7 @@ tbody td {
     color: var(--bs-light);
     font-weight: 600;
     border-bottom: 2px solid var(--bs-border-color);
-    padding: 12px 8px;
+    padding: 0.75rem var(--spacing-sm);
     white-space: nowrap;
 }
 
