@@ -25,18 +25,18 @@
             <div class="card">
                 <div class="card-header">
                     <h2 class="h5 mb-0">
-                        <i class="bi bi-list-ul me-2"></i>Navigation
+                        <i class="bi bi-list-ul me-2" aria-hidden="true"></i>Navigation
                     </h2>
                 </div>
                 <div class="list-group list-group-flush">
                     <a href="{{ path('app_licenses') }}" class="list-group-item list-group-item-action active">
-                        <i class="bi bi-file-earmark-text me-2"></i>NOTICE
+                        <i class="bi bi-file-earmark-text me-2" aria-hidden="true"></i>NOTICE
                     </a>
                     <a href="{{ path('app_licenses_report') }}" class="list-group-item list-group-item-action">
-                        <i class="bi bi-file-earmark-bar-graph me-2"></i>Detaillierter Bericht
+                        <i class="bi bi-file-earmark-bar-graph me-2" aria-hidden="true"></i>Detaillierter Bericht
                     </a>
                     <a href="{{ path('app_licenses_summary') }}" class="list-group-item list-group-item-action">
-                        <i class="bi bi-bar-chart me-2"></i>Zusammenfassung
+                        <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>Zusammenfassung
                     </a>
                 </div>
                 <div class="card-body">
@@ -50,16 +50,16 @@
             <div class="card mt-3">
                 <div class="card-header">
                     <h2 class="h5 mb-0">
-                        <i class="bi bi-tools me-2"></i>Aktionen
+                        <i class="bi bi-tools me-2" aria-hidden="true"></i>Aktionen
                     </h2>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         <button data-controller="ui-actions" data-action="ui-actions#print" class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-printer me-1"></i>Drucken
+                            <i class="bi bi-printer me-1" aria-hidden="true"></i>Drucken
                         </button>
                         <a href="{{ asset('NOTICE.md') }}" download class="btn btn-outline-secondary btn-sm">
-                            <i class="bi bi-download me-1"></i>NOTICE.md
+                            <i class="bi bi-download me-1" aria-hidden="true"></i>NOTICE.md
                         </a>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
             <div class="alert alert-success mb-4" role="alert">
                 <div class="d-flex align-items-center">
                     <div class="flex-shrink-0">
-                        <i class="bi bi-check-circle-fill fs-3 me-3"></i>
+                        <i class="bi bi-check-circle-fill fs-3 me-3" aria-hidden="true"></i>
                     </div>
                     <div>
                         <strong class="d-block mb-1"><i class="bi bi-check-circle text-success" aria-hidden="true"></i> Lizenzkonform für kommerzielle Nutzung</strong>
@@ -88,7 +88,7 @@
                 <div class="card-header bg-light">
                     <div class="d-flex justify-content-between align-items-center">
                         <h2 class="h5 mb-0">
-                            <i class="bi bi-file-earmark-text me-2"></i>NOTICE - Third-Party Software Attributions
+                            <i class="bi bi-file-earmark-text me-2" aria-hidden="true"></i>NOTICE - Third-Party Software Attributions
                         </h2>
                         <div class="btn-group btn-group-sm" role="group" data-controller="ui-actions">
                             <button type="button" class="btn btn-outline-secondary" data-action="ui-actions#setFontSize" data-ui-actions-size-param="14px" data-ui-actions-target-param="#license-content">

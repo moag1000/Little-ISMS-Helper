@@ -15,7 +15,7 @@
     <div class="page-header">
         <h1>{{ 'bc_plans.page.header'|trans({}, 'bc_plans') }}</h1>
         <a href="{{ path('app_bc_plan_new') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> {{ 'bc_plans.action.add_new'|trans({}, 'bc_plans') }}
+            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'bc_plans.action.add_new'|trans({}, 'bc_plans') }}
         </a>
     </div>
 
@@ -89,10 +89,10 @@
                         <td>
                             <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                                 <a href="{{ path('app_bc_plan_show', {id: plan.id}) }}" class="btn btn-outline-primary" title="{{ 'action.view'|trans({}, 'messages') }}">
-                                    <i class="bi bi-eye"></i>
+                                    <i class="bi bi-eye" aria-hidden="true"></i>
                                 </a>
                                 <a href="{{ path('app_bc_plan_edit', {id: plan.id}) }}" class="btn btn-outline-secondary" title="{{ 'action.edit'|trans({}, 'messages') }}">
-                                    <i class="bi bi-pencil"></i>
+                                    <i class="bi bi-pencil" aria-hidden="true"></i>
                                 </a>
                             </div>
                         </td>

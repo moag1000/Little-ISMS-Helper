@@ -21,7 +21,7 @@
     </div>
     <div class="button-group">
         <a href="{{ path('role_management_show', {id: role.id}) }}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> {{ 'common.back'|trans({}, 'messages') }}
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ 'common.back'|trans({}, 'messages') }}
         </a>
     </div>
 </div>
@@ -32,7 +32,7 @@
 
             {% if role.systemRole %}
             <div class="alert alert-warning mb-4">
-                <i class="bi bi-exclamation-triangle"></i>
+                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                 <strong>{{ 'role_management.warning.system_role'|trans({}, 'role_management')}}</strong>
                 <p class="mb-0 mt-1">{{ 'role_management.warning.system_role_desc'|trans({}, 'role_management')}}</p>
             </div>
@@ -55,10 +55,10 @@
 
             <div class="d-flex gap-2 mt-4">
                 <button type="submit" class="btn btn-success">
-                    <i class="bi bi-check-lg"></i> {{ 'common.save'|trans({}, 'messages') }}
+                    <i class="bi bi-check-lg" aria-hidden="true"></i> {{ 'common.save'|trans({}, 'messages') }}
                 </button>
                 <a href="{{ path('role_management_show', {id: role.id}) }}" class="btn btn-secondary">
-                    <i class="bi bi-x-lg"></i> {{ 'common.cancel'|trans({}, 'messages') }}
+                    <i class="bi bi-x-lg" aria-hidden="true"></i> {{ 'common.cancel'|trans({}, 'messages') }}
                 </a>
             </div>
 

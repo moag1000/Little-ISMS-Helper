@@ -17,10 +17,10 @@
             </div>
             <div class="btn-group">
                 <a href="{{ path('app_dashboard') }}" class="btn btn-outline-secondary">
-                    <i class="bi bi-house"></i> {{ 'action.standard_dashboard'|trans({}, 'dashboards') }}
+                    <i class="bi bi-house" aria-hidden="true"></i> {{ 'action.standard_dashboard'|trans({}, 'dashboards') }}
                 </a>
                 <a href="{{ path('app_dashboard_ciso') }}" class="btn btn-outline-primary">
-                    <i class="bi bi-shield-lock"></i> {{ 'action.ciso_view'|trans({}, 'dashboards') }}
+                    <i class="bi bi-shield-lock" aria-hidden="true"></i> {{ 'action.ciso_view'|trans({}, 'dashboards') }}
                 </a>
             </div>
         </div>
@@ -34,11 +34,11 @@
                     <div class="mb-2">
                         <span class="badge rounded-pill {% if dashboard.rag_status.security == 'green' %}bg-success{% elseif dashboard.rag_status.security == 'amber' %}bg-warning{% else %}bg-danger{% endif %} fs-5 px-3 py-2">
                             {% if dashboard.rag_status.security == 'green' %}
-                                <i class="bi bi-check-circle"></i>
+                                <i class="bi bi-check-circle" aria-hidden="true"></i>
                             {% elseif dashboard.rag_status.security == 'amber' %}
-                                <i class="bi bi-exclamation-triangle"></i>
+                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                             {% else %}
-                                <i class="bi bi-x-circle"></i>
+                                <i class="bi bi-x-circle" aria-hidden="true"></i>
                             {% endif %}
                         </span>
                     </div>
@@ -53,11 +53,11 @@
                     <div class="mb-2">
                         <span class="badge rounded-pill {% if dashboard.rag_status.compliance == 'green' %}bg-success{% elseif dashboard.rag_status.compliance == 'amber' %}bg-warning{% else %}bg-danger{% endif %} fs-5 px-3 py-2">
                             {% if dashboard.rag_status.compliance == 'green' %}
-                                <i class="bi bi-check-circle"></i>
+                                <i class="bi bi-check-circle" aria-hidden="true"></i>
                             {% elseif dashboard.rag_status.compliance == 'amber' %}
-                                <i class="bi bi-exclamation-triangle"></i>
+                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                             {% else %}
-                                <i class="bi bi-x-circle"></i>
+                                <i class="bi bi-x-circle" aria-hidden="true"></i>
                             {% endif %}
                         </span>
                     </div>
@@ -72,11 +72,11 @@
                     <div class="mb-2">
                         <span class="badge rounded-pill {% if dashboard.rag_status.risk == 'green' %}bg-success{% elseif dashboard.rag_status.risk == 'amber' %}bg-warning{% else %}bg-danger{% endif %} fs-5 px-3 py-2">
                             {% if dashboard.rag_status.risk == 'green' %}
-                                <i class="bi bi-check-circle"></i>
+                                <i class="bi bi-check-circle" aria-hidden="true"></i>
                             {% elseif dashboard.rag_status.risk == 'amber' %}
-                                <i class="bi bi-exclamation-triangle"></i>
+                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                             {% else %}
-                                <i class="bi bi-x-circle"></i>
+                                <i class="bi bi-x-circle" aria-hidden="true"></i>
                             {% endif %}
                         </span>
                     </div>
@@ -91,11 +91,11 @@
                     <div class="mb-2">
                         <span class="badge rounded-pill {% if dashboard.rag_status.operations == 'green' %}bg-success{% elseif dashboard.rag_status.operations == 'amber' %}bg-warning{% else %}bg-danger{% endif %} fs-5 px-3 py-2">
                             {% if dashboard.rag_status.operations == 'green' %}
-                                <i class="bi bi-check-circle"></i>
+                                <i class="bi bi-check-circle" aria-hidden="true"></i>
                             {% elseif dashboard.rag_status.operations == 'amber' %}
-                                <i class="bi bi-exclamation-triangle"></i>
+                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                             {% else %}
-                                <i class="bi bi-x-circle"></i>
+                                <i class="bi bi-x-circle" aria-hidden="true"></i>
                             {% endif %}
                         </span>
                     </div>
@@ -114,11 +114,11 @@
                     <h3 class="mb-0">{{ dashboard.metrics.overall_compliance }}%</h3>
                     <small class="text-muted d-block">{{ 'board.metric.compliance'|trans({}, 'dashboards') }}</small>
                     {% if dashboard.trends.compliance > 0 %}
-                        <small class="text-success"><i class="bi bi-arrow-up"></i> +{{ dashboard.trends.compliance }}%</small>
+                        <small class="text-success"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.compliance }}%</small>
                     {% elseif dashboard.trends.compliance < 0 %}
-                        <small class="text-danger"><i class="bi bi-arrow-down"></i> {{ dashboard.trends.compliance }}%</small>
+                        <small class="text-danger"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.compliance }}%</small>
                     {% else %}
-                        <small class="text-muted"><i class="bi bi-arrow-right"></i> 0%</small>
+                        <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0%</small>
                     {% endif %}
                 </div>
             </div>
@@ -129,11 +129,11 @@
                     <h3 class="mb-0">{{ dashboard.metrics.total_risks }}</h3>
                     <small class="text-muted d-block">{{ 'board.metric.risks'|trans({}, 'dashboards') }}</small>
                     {% if dashboard.trends.risks > 0 %}
-                        <small class="text-danger"><i class="bi bi-arrow-up"></i> +{{ dashboard.trends.risks }}</small>
+                        <small class="text-danger"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.risks }}</small>
                     {% elseif dashboard.trends.risks < 0 %}
-                        <small class="text-success"><i class="bi bi-arrow-down"></i> {{ dashboard.trends.risks }}</small>
+                        <small class="text-success"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.risks }}</small>
                     {% else %}
-                        <small class="text-muted"><i class="bi bi-arrow-right"></i> 0</small>
+                        <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0</small>
                     {% endif %}
                 </div>
             </div>
@@ -144,11 +144,11 @@
                     <h3 class="mb-0 {% if dashboard.metrics.critical_risks > 0 %}text-danger{% endif %}">{{ dashboard.metrics.critical_risks }}</h3>
                     <small class="text-muted d-block">{{ 'board.metric.critical'|trans({}, 'dashboards') }}</small>
                     {% if dashboard.trends.critical > 0 %}
-                        <small class="text-danger"><i class="bi bi-arrow-up"></i> +{{ dashboard.trends.critical }}</small>
+                        <small class="text-danger"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.critical }}</small>
                     {% elseif dashboard.trends.critical < 0 %}
-                        <small class="text-success"><i class="bi bi-arrow-down"></i> {{ dashboard.trends.critical }}</small>
+                        <small class="text-success"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.critical }}</small>
                     {% else %}
-                        <small class="text-muted"><i class="bi bi-arrow-right"></i> 0</small>
+                        <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0</small>
                     {% endif %}
                 </div>
             </div>
@@ -159,11 +159,11 @@
                     <h3 class="mb-0">{{ dashboard.metrics.incidents_ytd }}</h3>
                     <small class="text-muted d-block">{{ 'board.metric.incidents'|trans({}, 'dashboards') }}</small>
                     {% if dashboard.trends.incidents > 0 %}
-                        <small class="text-danger"><i class="bi bi-arrow-up"></i> +{{ dashboard.trends.incidents }}</small>
+                        <small class="text-danger"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.incidents }}</small>
                     {% elseif dashboard.trends.incidents < 0 %}
-                        <small class="text-success"><i class="bi bi-arrow-down"></i> {{ dashboard.trends.incidents }}</small>
+                        <small class="text-success"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.incidents }}</small>
                     {% else %}
-                        <small class="text-muted"><i class="bi bi-arrow-right"></i> 0</small>
+                        <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0</small>
                     {% endif %}
                 </div>
             </div>
@@ -174,11 +174,11 @@
                     <h3 class="mb-0">{{ dashboard.metrics.controls_implemented }}%</h3>
                     <small class="text-muted d-block">{{ 'board.metric.controls'|trans({}, 'dashboards') }}</small>
                     {% if dashboard.trends.controls > 0 %}
-                        <small class="text-success"><i class="bi bi-arrow-up"></i> +{{ dashboard.trends.controls }}%</small>
+                        <small class="text-success"><i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ dashboard.trends.controls }}%</small>
                     {% elseif dashboard.trends.controls < 0 %}
-                        <small class="text-danger"><i class="bi bi-arrow-down"></i> {{ dashboard.trends.controls }}%</small>
+                        <small class="text-danger"><i class="bi bi-arrow-down" aria-hidden="true"></i> {{ dashboard.trends.controls }}%</small>
                     {% else %}
-                        <small class="text-muted"><i class="bi bi-arrow-right"></i> 0%</small>
+                        <small class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0%</small>
                     {% endif %}
                 </div>
             </div>
@@ -200,7 +200,7 @@
             <div class="card h-100">
                 <div class="card-header">
                     <h5 class="mb-0">
-                        <i class="bi bi-file-text me-2"></i>
+                        <i class="bi bi-file-text me-2" aria-hidden="true"></i>
                         {{ 'board.section.executive_summary'|trans({}, 'dashboards') }}
                     </h5>
                 </div>
@@ -230,7 +230,7 @@
                                 {% endfor %}
                             </ul>
                         {% else %}
-                            <p class="text-success mb-0"><i class="bi bi-check-circle me-1"></i>{{ 'board.no_concerns'|trans({}, 'dashboards') }}</p>
+                            <p class="text-success mb-0"><i class="bi bi-check-circle me-1" aria-hidden="true"></i>{{ 'board.no_concerns'|trans({}, 'dashboards') }}</p>
                         {% endif %}
                     </div>
                 </div>
@@ -242,7 +242,7 @@
             <div class="card h-100">
                 <div class="card-header">
                     <h5 class="mb-0">
-                        <i class="bi bi-flag me-2"></i>
+                        <i class="bi bi-flag me-2" aria-hidden="true"></i>
                         {{ 'board.section.milestones'|trans({}, 'dashboards') }}
                     </h5>
                 </div>
@@ -277,7 +277,7 @@
             <div class="card h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">
-                        <i class="bi bi-exclamation-circle text-danger me-2"></i>
+                        <i class="bi bi-exclamation-circle text-danger me-2" aria-hidden="true"></i>
                         {{ 'board.section.attention_required'|trans({}, 'dashboards') }}
                     </h5>
                     <span class="badge bg-danger">{{ dashboard.attention_items|length }}</span>
@@ -301,7 +301,7 @@
                         </div>
                     {% else %}
                         <p class="text-success text-center py-4 mb-0">
-                            <i class="bi bi-check-circle me-2"></i>{{ 'board.no_attention_items'|trans({}, 'dashboards') }}
+                            <i class="bi bi-check-circle me-2" aria-hidden="true"></i>{{ 'board.no_attention_items'|trans({}, 'dashboards') }}
                         </p>
                     {% endif %}
                 </div>
@@ -313,7 +313,7 @@
             <div class="card h-100">
                 <div class="card-header">
                     <h5 class="mb-0">
-                        <i class="bi bi-currency-euro me-2"></i>
+                        <i class="bi bi-currency-euro me-2" aria-hidden="true"></i>
                         {{ 'board.section.resources'|trans({}, 'dashboards') }}
                     </h5>
                 </div>
@@ -356,7 +356,7 @@
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0">
-                        <i class="bi bi-graph-up me-2"></i>
+                        <i class="bi bi-graph-up me-2" aria-hidden="true"></i>
                         {{ 'board.section.quarterly_comparison'|trans({}, 'dashboards') }}
                     </h5>
                 </div>
@@ -381,14 +381,14 @@
                                     <td class="text-center">
                                         {% if metric.change > 0 %}
                                             <span class="{% if metric.positive_is_good %}text-success{% else %}text-danger{% endif %}">
-                                                <i class="bi bi-arrow-up"></i> +{{ metric.change }}{{ metric.unit }}
+                                                <i class="bi bi-arrow-up" aria-hidden="true"></i> +{{ metric.change }}{{ metric.unit }}
                                             </span>
                                         {% elseif metric.change < 0 %}
                                             <span class="{% if metric.positive_is_good %}text-danger{% else %}text-success{% endif %}">
-                                                <i class="bi bi-arrow-down"></i> {{ metric.change }}{{ metric.unit }}
+                                                <i class="bi bi-arrow-down" aria-hidden="true"></i> {{ metric.change }}{{ metric.unit }}
                                             </span>
                                         {% else %}
-                                            <span class="text-muted"><i class="bi bi-arrow-right"></i> 0{{ metric.unit }}</span>
+                                            <span class="text-muted"><i class="bi bi-arrow-right" aria-hidden="true"></i> 0{{ metric.unit }}</span>
                                         {% endif %}
                                     </td>
                                     <td class="text-center">

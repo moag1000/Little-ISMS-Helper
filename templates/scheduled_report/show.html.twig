@@ -19,10 +19,10 @@
         </h1>
         <div class="btn-group">
             <a href="{{ path('app_scheduled_report_edit', {id: report.id}) }}" class="btn btn-outline-primary">
-                <i class="bi bi-pencil"></i> {{ 'scheduled_report.action.edit'|trans({}, 'scheduled_reports') }}
+                <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'scheduled_report.action.edit'|trans({}, 'scheduled_reports') }}
             </a>
             <a href="{{ path('app_scheduled_report_preview', {id: report.id}) }}" class="btn btn-outline-info">
-                <i class="bi bi-eye"></i> {{ 'scheduled_report.action.preview'|trans({}, 'scheduled_reports') }}
+                <i class="bi bi-eye" aria-hidden="true"></i> {{ 'scheduled_report.action.preview'|trans({}, 'scheduled_reports') }}
             </a>
         </div>
     </div>
@@ -33,7 +33,7 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-header">
                     <h3 class="h5 mb-0">
-                        <i class="bi bi-info-circle"></i> {{ 'scheduled_report.details.title'|trans({}, 'scheduled_reports') }}
+                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'scheduled_report.details.title'|trans({}, 'scheduled_reports') }}
                     </h3>
                 </div>
                 <div class="card-body">
@@ -49,9 +49,9 @@
                         <div class="col-md-6 mb-3">
                             <strong>{{ 'scheduled_report.form.format'|trans({}, 'scheduled_reports') }}:</strong><br>
                             {% if report.format == 'pdf' %}
-                            <span class="badge bg-danger"><i class="bi bi-file-pdf"></i> PDF</span>
+                            <span class="badge bg-danger"><i class="bi bi-file-pdf" aria-hidden="true"></i> PDF</span>
                             {% else %}
-                            <span class="badge bg-success"><i class="bi bi-file-excel"></i> Excel</span>
+                            <span class="badge bg-success"><i class="bi bi-file-excel" aria-hidden="true"></i> Excel</span>
                             {% endif %}
                         </div>
                         <div class="col-md-6 mb-3">
@@ -89,7 +89,7 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-header">
                     <h3 class="h5 mb-0">
-                        <i class="bi bi-envelope"></i> {{ 'scheduled_report.recipients.title'|trans({}, 'scheduled_reports') }}
+                        <i class="bi bi-envelope" aria-hidden="true"></i> {{ 'scheduled_report.recipients.title'|trans({}, 'scheduled_reports') }}
                     </h3>
                 </div>
                 <div class="card-body">
@@ -97,7 +97,7 @@
                     <ul class="list-group list-group-flush">
                         {% for email in report.recipients %}
                         <li class="list-group-item">
-                            <i class="bi bi-person"></i> {{ email }}
+                            <i class="bi bi-person" aria-hidden="true"></i> {{ email }}
                         </li>
                         {% endfor %}
                     </ul>
@@ -112,7 +112,7 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-header">
                     <h3 class="h5 mb-0">
-                        <i class="bi bi-clock-history"></i> {{ 'scheduled_report.last_run.title'|trans({}, 'scheduled_reports') }}
+                        <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'scheduled_report.last_run.title'|trans({}, 'scheduled_reports') }}
                     </h3>
                 </div>
                 <div class="card-body">
@@ -145,7 +145,7 @@
             <div class="card shadow-sm mb-4 {% if report.active %}border-success{% else %}border-secondary{% endif %}">
                 <div class="card-header {% if report.active %}bg-success text-white{% else %}bg-secondary text-white{% endif %}">
                     <h3 class="h5 mb-0">
-                        <i class="bi bi-{% if report.active %}check-circle{% else %}pause-circle{% endif %}"></i>
+                        <i class="bi bi-{% if report.active %}check-circle{% else %}pause-circle{% endif %}" aria-hidden="true"></i>
                         {{ 'scheduled_report.status.label'|trans({}, 'scheduled_reports') }}
                     </h3>
                 </div>
@@ -174,9 +174,9 @@
                         <input type="hidden" name="_token" value="{{ csrf_token('toggle' ~ report.id) }}">
                         <button type="submit" class="btn {% if report.active %}btn-outline-danger{% else %}btn-success{% endif %}">
                             {% if report.active %}
-                            <i class="bi bi-pause-circle"></i> {{ 'scheduled_report.action.deactivate'|trans({}, 'scheduled_reports') }}
+                            <i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'scheduled_report.action.deactivate'|trans({}, 'scheduled_reports') }}
                             {% else %}
-                            <i class="bi bi-play-circle"></i> {{ 'scheduled_report.action.activate'|trans({}, 'scheduled_reports') }}
+                            <i class="bi bi-play-circle" aria-hidden="true"></i> {{ 'scheduled_report.action.activate'|trans({}, 'scheduled_reports') }}
                             {% endif %}
                         </button>
                     </form>
@@ -187,20 +187,20 @@
             <div class="card shadow-sm mb-4">
                 <div class="card-header">
                     <h3 class="h5 mb-0">
-                        <i class="bi bi-lightning"></i> {{ 'scheduled_report.actions.title'|trans({}, 'scheduled_reports') }}
+                        <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'scheduled_report.actions.title'|trans({}, 'scheduled_reports') }}
                     </h3>
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
                         <a href="{{ path('app_scheduled_report_preview', {id: report.id}) }}" class="btn btn-outline-info">
-                            <i class="bi bi-download"></i> {{ 'scheduled_report.action.preview'|trans({}, 'scheduled_reports') }}
+                            <i class="bi bi-download" aria-hidden="true"></i> {{ 'scheduled_report.action.preview'|trans({}, 'scheduled_reports') }}
                         </a>
 
                         {% if is_granted('ROLE_ADMIN') %}
                         <form action="{{ path('app_scheduled_report_trigger', {id: report.id}) }}" method="post">
                             <input type="hidden" name="_token" value="{{ csrf_token('trigger' ~ report.id) }}">
                             <button type="submit" class="btn btn-outline-warning w-100" onclick="return confirm('{{ 'scheduled_report.confirm.trigger'|trans({}, 'scheduled_reports') }}')">
-                                <i class="bi bi-send"></i> {{ 'scheduled_report.action.trigger'|trans({}, 'scheduled_reports') }}
+                                <i class="bi bi-send" aria-hidden="true"></i> {{ 'scheduled_report.action.trigger'|trans({}, 'scheduled_reports') }}
                             </button>
                         </form>
                         {% endif %}
@@ -210,7 +210,7 @@
                         <form action="{{ path('app_scheduled_report_delete', {id: report.id}) }}" method="post">
                             <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ report.id) }}">
                             <button type="submit" class="btn btn-outline-danger w-100" onclick="return confirm('{{ 'scheduled_report.confirm.delete'|trans({}, 'scheduled_reports') }}')">
-                                <i class="bi bi-trash"></i> {{ 'scheduled_report.action.delete'|trans({}, 'scheduled_reports') }}
+                                <i class="bi bi-trash" aria-hidden="true"></i> {{ 'scheduled_report.action.delete'|trans({}, 'scheduled_reports') }}
                             </button>
                         </form>
                     </div>
@@ -221,7 +221,7 @@
             <div class="card shadow-sm">
                 <div class="card-header">
                     <h3 class="h5 mb-0">
-                        <i class="bi bi-clock"></i> {{ 'scheduled_report.metadata.title'|trans({}, 'scheduled_reports') }}
+                        <i class="bi bi-clock" aria-hidden="true"></i> {{ 'scheduled_report.metadata.title'|trans({}, 'scheduled_reports') }}
                     </h3>
                 </div>
                 <div class="card-body">

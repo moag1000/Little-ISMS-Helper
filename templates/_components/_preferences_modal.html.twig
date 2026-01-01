@@ -17,7 +17,7 @@
         {# Modal Header #}
         <div class="preferences-header">
             <h5 class="preferences-title">
-                <i class="bi bi-gear"></i>
+                <i class="bi bi-gear" aria-hidden="true"></i>
                 Einstellungen
             </h5>
             <button type="button"
@@ -31,7 +31,7 @@
             {# View Density #}
             <div class="preference-section">
                 <h6 class="preference-section-title">
-                    <i class="bi bi-layout-three-columns"></i>
+                    <i class="bi bi-layout-three-columns" aria-hidden="true"></i>
                     Ansichtsdichte
                 </h6>
                 <label>
@@ -48,7 +48,7 @@
             {# Animations #}
             <div class="preference-section">
                 <h6 class="preference-section-title">
-                    <i class="bi bi-stars"></i>
+                    <i class="bi bi-stars" aria-hidden="true"></i>
                     Animationen
                 </h6>
                 <div class="form-check form-switch">
@@ -67,7 +67,7 @@
             {# Keyboard Shortcuts #}
             <div class="preference-section">
                 <h6 class="preference-section-title">
-                    <i class="bi bi-keyboard"></i>
+                    <i class="bi bi-keyboard" aria-hidden="true"></i>
                     Tastaturkürzel
                 </h6>
                 <div class="form-check form-switch">
@@ -86,7 +86,7 @@
             {# Language Preference #}
             <div class="preference-section">
                 <h6 class="preference-section-title">
-                    <i class="bi bi-translate"></i>
+                    <i class="bi bi-translate" aria-hidden="true"></i>
                     Sprache
                 </h6>
                 <select class="form-select"
@@ -100,17 +100,17 @@
             {# Export/Import #}
             <div class="preference-section">
                 <h6 class="preference-section-title">
-                    <i class="bi bi-download"></i>
+                    <i class="bi bi-download" aria-hidden="true"></i>
                     Einstellungen sichern
                 </h6>
                 <div class="d-flex gap-2">
                     <button type="button"
                             class="btn btn-sm btn-outline-primary"
                             data-action="click->preferences#exportPreferences">
-                        <i class="bi bi-download"></i> Exportieren
+                        <i class="bi bi-download" aria-hidden="true"></i> Exportieren
                     </button>
                     <label class="btn btn-sm btn-outline-secondary">
-                        <i class="bi bi-upload"></i> Importieren
+                        <i class="bi bi-upload" aria-hidden="true"></i> Importieren
                         <input type="file"
                                accept=".json"
                                class="d-none"
@@ -125,7 +125,7 @@
             <button type="button"
                     class="btn btn-sm btn-outline-danger"
                     data-action="click->preferences#resetToDefaults">
-                <i class="bi bi-arrow-counterclockwise"></i>
+                <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
                 {{ 'common.reset'|trans({}, 'messages') }}
             </button>
             <button type="button"

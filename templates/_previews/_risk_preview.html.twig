@@ -2,7 +2,7 @@
 <div class="preview-content">
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi bi-exclamation-triangle text-warning"></i>
+            <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>
             {{ 'risk.preview.title'|trans({}, 'risk') }}
         </h6>
         <dl class="row mb-0">
@@ -34,7 +34,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi bi-bar-chart"></i>
+            <i class="bi bi-bar-chart" aria-hidden="true"></i>
             {{ 'risk.section.assessment'|trans({}, 'risk') }}
         </h6>
         <div class="row g-3">
@@ -64,7 +64,7 @@
         {% if risk.riskReduction > 0 %}
         <div class="mt-2">
             <small class="text-success">
-                <i class="bi bi-arrow-down"></i>
+                <i class="bi bi-arrow-down" aria-hidden="true"></i>
                 {{ 'risk.field.risk_reduction'|trans({}, 'risk') }}: {{ risk.riskReduction }}%
             </small>
         </div>
@@ -73,7 +73,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi bi-file-text"></i>
+            <i class="bi bi-file-text" aria-hidden="true"></i>
             {{ 'risk.field.description'|trans({}, 'risk') }}
         </h6>
         <p class="mb-0">{{ risk.description }}</p>
@@ -81,7 +81,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi bi-shield"></i>
+            <i class="bi bi-shield" aria-hidden="true"></i>
             {{ 'risk.section.treatment'|trans({}, 'risk') }}
         </h6>
         <div class="mb-2">
@@ -94,7 +94,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi bi-graph-up"></i>
+            <i class="bi bi-graph-up" aria-hidden="true"></i>
             {{ 'control.title.plural'|trans({}, 'control') }}
         </h6>
         <div class="stat-mini">
@@ -105,10 +105,10 @@
 
     <div class="preview-actions">
         <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-primary btn-sm">
-            <i class="bi bi-arrow-right"></i> {{ 'common.view_details'|trans({}, 'messages') }}
+            <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'common.view_details'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_risk_edit', {id: risk.id}) }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-pencil"></i> {{ 'common.edit'|trans({}, 'messages') }}
+            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
         </a>
     </div>
 </div>

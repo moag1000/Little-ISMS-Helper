@@ -25,14 +25,14 @@
 
     {% if dpia.status == 'requires_revision' and dpia.rejectionReason %}
         <div class="alert alert-warning">
-            <div class="fw-bold"><i class="bi bi-exclamation-triangle"></i> Revision Required</div>
+            <div class="fw-bold"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Revision Required</div>
             <p class="mb-0">{{ dpia.rejectionReason }}</p>
         </div>
     {% endif %}
 
     <div class="card">
         <div class="card-header">
-            <h2 class="h5 mb-0"><i class="bi bi-clipboard-check"></i> DPIA Form</h2>
+            <h2 class="h5 mb-0"><i class="bi bi-clipboard-check" aria-hidden="true"></i> DPIA Form</h2>
         </div>
         <div class="card-body">
             {{ form_start(form) }}
@@ -114,10 +114,10 @@
 
                 <div class="mt-4">
                     <button type="submit" class="btn btn-success">
-                        <i class="bi bi-save"></i> Save Changes
+                        <i class="bi bi-save" aria-hidden="true"></i> Save Changes
                     </button>
                     <a href="{{ path('app_dpia_show', {id: dpia.id}) }}" class="btn btn-secondary">
-                        <i class="bi bi-x-lg"></i> Cancel
+                        <i class="bi bi-x-lg" aria-hidden="true"></i> Cancel
                     </a>
                 </div>
             {{ form_end(form) }}

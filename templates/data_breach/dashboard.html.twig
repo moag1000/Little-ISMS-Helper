@@ -62,7 +62,7 @@
     {# CRITICAL: Action Items #}
     {% if action_items|length > 0 %}
         <div class="card mb-4">
-            <div class="card-header"><h2 class="mb-0"><i class="bi bi-exclamation-triangle-fill"></i> Action Items</h2>
+            <div class="card-header"><h2 class="mb-0"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> Action Items</h2>
             </div>
             <div class="card-body">
                 <div class="list-group">
@@ -76,13 +76,13 @@
                             <div class="d-flex w-100 justify-content-between">
                                 <div class="fw-bold mb-1">
                                     {% if item.priority == 'critical' %}
-                                        <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                                        <i class="bi bi-exclamation-triangle-fill text-danger" aria-hidden="true"></i>
                                     {% elseif item.priority == 'high' %}
-                                        <i class="bi bi-exclamation-triangle text-warning"></i>
+                                        <i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i>
                                     {% elseif item.priority == 'medium' %}
-                                        <i class="bi bi-info-circle text-info"></i>
+                                        <i class="bi bi-info-circle text-info" aria-hidden="true"></i>
                                     {% else %}
-                                        <i class="bi bi-circle text-secondary"></i>
+                                        <i class="bi bi-circle text-secondary" aria-hidden="true"></i>
                                     {% endif %}
                                     {{ item.title }}
                                 </div>
@@ -110,7 +110,7 @@
         </div>
     {% else %}
         <div class="alert alert-success" role="alert">
-            <i class="bi bi-check-circle"></i> <strong>All action items completed!</strong> No pending notifications or overdue deadlines.
+            <i class="bi bi-check-circle" aria-hidden="true"></i> <strong>All action items completed!</strong> No pending notifications or overdue deadlines.
         </div>
     {% endif %}
 
@@ -118,7 +118,7 @@
     <div class="row mb-4">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header"><h2 class="mb-0"><i class="bi bi-bar-chart"></i> Breach Statistics by Status</h2>
+                <div class="card-header"><h2 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> Breach Statistics by Status</h2>
                 </div>
                 <div class="card-body">
                     <div class="row">
@@ -152,7 +152,7 @@
     <div class="row mb-4">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header"><h2 class="mb-0"><i class="bi bi-shield-exclamation"></i> By Risk Level</h2>
+                <div class="card-header"><h2 class="mb-0"><i class="bi bi-shield-exclamation" aria-hidden="true"></i> By Risk Level</h2>
                 </div>
                 <div class="card-body">
                     <div class="row text-center">
@@ -179,7 +179,7 @@
 
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header"><h2 class="mb-0"><i class="bi bi-shield-lock"></i> Special Categories</h2>
+                <div class="card-header"><h2 class="mb-0"><i class="bi bi-shield-lock" aria-hidden="true"></i> Special Categories</h2>
                 </div>
                 <div class="card-body">
                     <p><strong>Art. 9 Data (Special Categories):</strong></p>
@@ -196,7 +196,7 @@
     {# Recent Breaches #}
     {% if recent_breaches|length > 0 %}
         <div class="card mb-4">
-            <div class="card-header"><h2 class="mb-0"><i class="bi bi-clock-history"></i> Recent Breaches (Last 30 Days)</h2>
+            <div class="card-header"><h2 class="mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> Recent Breaches (Last 30 Days)</h2>
             </div>
             <div class="card-body p-0">
                 {% embed '_components/_table.html.twig' with {

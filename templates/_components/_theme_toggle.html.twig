@@ -12,6 +12,6 @@
             class="theme-toggle-btn"
             data-action="click->theme#toggle"
             title="{{ 'ui.theme.toggle_title'|trans({'%current%': app.request.cookies.get('theme', 'light')|default('light')}, 'ui') }}">
-        <i class="bi bi-moon-fill"></i>
+        <i class="bi bi-moon-fill" aria-hidden="true"></i>
     </button>
 </div>

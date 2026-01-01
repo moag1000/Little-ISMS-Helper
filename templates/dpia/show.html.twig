@@ -25,7 +25,7 @@
 
     {# Status & Workflow Actions #}
     <div class="card mb-4">
-        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-diagram-3"></i> {{ 'dpia.show.section.status_workflow'|trans({}, 'privacy') }}</h2>
+        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ 'dpia.show.section.status_workflow'|trans({}, 'privacy') }}</h2>
         </div>
         <div class="card-body">
             <div class="row">
@@ -62,26 +62,26 @@
                     <form action="{{ path('app_dpia_submit_for_review', {id: dpia.id}) }}" method="post" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('submit' ~ dpia.id) }}">
                         <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-send"></i> {{ 'dpia.action.submit_for_review'|trans({}, 'privacy') }}
+                            <i class="bi bi-send" aria-hidden="true"></i> {{ 'dpia.action.submit_for_review'|trans({}, 'privacy') }}
                         </button>
                     </form>
                 {% endif %}
 
                 {% if dpia.status in ['draft', 'requires_revision'] %}
                     <a href="{{ path('app_dpia_edit', {id: dpia.id}) }}" class="btn btn-secondary">
-                        <i class="bi bi-pencil"></i> {{ 'dpia.action.edit'|trans({}, 'privacy') }}
+                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'dpia.action.edit'|trans({}, 'privacy') }}
                     </a>
                 {% endif %}
 
                 {% if is_granted('ROLE_AUDITOR') and dpia.status == 'in_review' %}
                     <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#approveModal">
-                        <i class="bi bi-check-circle"></i> {{ 'dpia.action.approve'|trans({}, 'privacy') }}
+                        <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'dpia.action.approve'|trans({}, 'privacy') }}
                     </button>
                     <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
-                        <i class="bi bi-x-circle"></i> {{ 'dpia.action.reject'|trans({}, 'privacy') }}
+                        <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'dpia.action.reject'|trans({}, 'privacy') }}
                     </button>
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#revisionModal">
-                        <i class="bi bi-arrow-clockwise"></i> {{ 'dpia.action.request_revision'|trans({}, 'privacy') }}
+                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'dpia.action.request_revision'|trans({}, 'privacy') }}
                     </button>
                 {% endif %}
 
@@ -89,7 +89,7 @@
                     <form action="{{ path('app_dpia_reopen', {id: dpia.id}) }}" method="post" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token('reopen' ~ dpia.id) }}">
                         <button type="submit" class="btn btn-info">
-                            <i class="bi bi-folder2-open"></i> {{ 'dpia.action.reopen'|trans({}, 'privacy') }}
+                            <i class="bi bi-folder2-open" aria-hidden="true"></i> {{ 'dpia.action.reopen'|trans({}, 'privacy') }}
                         </button>
                     </form>
                 {% endif %}
@@ -97,7 +97,7 @@
                 <form action="{{ path('app_dpia_clone', {id: dpia.id}) }}" method="post" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token('clone' ~ dpia.id) }}">
                     <button type="submit" class="btn btn-outline-secondary">
-                        <i class="bi bi-files"></i> {{ 'dpia.action.clone'|trans({}, 'privacy') }}
+                        <i class="bi bi-files" aria-hidden="true"></i> {{ 'dpia.action.clone'|trans({}, 'privacy') }}
                     </button>
                 </form>
 
@@ -120,7 +120,7 @@
     <div class="row mb-4">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-exclamation-triangle"></i> {{ 'dpia.show.section.risk_assessment'|trans({}, 'privacy') }}</h2>
+                <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dpia.show.section.risk_assessment'|trans({}, 'privacy') }}</h2>
                 </div>
                 <div class="card-body">
                     {% if dpia.riskLevel %}
@@ -135,9 +135,9 @@
                             <span class="badge bg-{{ risk_class }}">{{ ('dpia.risk_level.' ~ dpia.residualRiskLevel)|trans({}, 'privacy') }}</span>
                         </p>
                         {% if dpia.isResidualRiskAcceptable %}
-                            <p class="text-success"><i class="bi bi-check-circle"></i> {{ 'dpia.show.risk.acceptable'|trans({}, 'privacy') }}</p>
+                            <p class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'dpia.show.risk.acceptable'|trans({}, 'privacy') }}</p>
                         {% else %}
-                            <p class="text-danger"><i class="bi bi-exclamation-triangle"></i> {{ 'dpia.show.risk.requires_consultation'|trans({}, 'privacy') }}</p>
+                            <p class="text-danger"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dpia.show.risk.requires_consultation'|trans({}, 'privacy') }}</p>
                         {% endif %}
                     {% endif %}
                 </div>
@@ -146,12 +146,12 @@
 
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-people"></i> {{ 'dpia.show.section.consultations'|trans({}, 'privacy') }}</h2>
+                <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ 'dpia.show.section.consultations'|trans({}, 'privacy') }}</h2>
                 </div>
                 <div class="card-body">
                     <p><strong>{{ 'dpia.show.field.dpo_consultation'|trans({}, 'privacy') }}:</strong>
                         {% if dpia.dpoConsultationDate %}
-                            <span class="text-success"><i class="bi bi-check-circle"></i> {{ dpia.dpoConsultationDate|date('d.m.Y') }}</span>
+                            <span class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ dpia.dpoConsultationDate|date('d.m.Y') }}</span>
                         {% else %}
                             <span class="text-muted">{{ 'dpia.show.not_yet_consulted'|trans({}, 'privacy') }}</span>
                         {% endif %}
@@ -159,9 +159,9 @@
                     <p><strong>{{ 'dpia.show.field.supervisory_consultation'|trans({}, 'privacy') }}:</strong>
                         {% if dpia.requiresSupervisoryConsultation %}
                             {% if dpia.supervisoryConsultationDate %}
-                                <span class="text-success"><i class="bi bi-check-circle"></i> {{ dpia.supervisoryConsultationDate|date('d.m.Y') }}</span>
+                                <span class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ dpia.supervisoryConsultationDate|date('d.m.Y') }}</span>
                             {% else %}
-                                <span class="text-warning"><i class="bi bi-exclamation-triangle"></i> {{ 'dpia.show.required_not_completed'|trans({}, 'privacy') }}</span>
+                                <span class="text-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dpia.show.required_not_completed'|trans({}, 'privacy') }}</span>
                             {% endif %}
                         {% else %}
                             <span class="text-muted">{{ 'dpia.show.not_required'|trans({}, 'privacy') }}</span>
@@ -174,7 +174,7 @@
 
     {# Processing Description #}
     <div class="card mb-4">
-        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-info-circle"></i> {{ 'dpia.new.section_processing_operations'|trans({}, 'privacy') }}</h2>
+        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'dpia.new.section_processing_operations'|trans({}, 'privacy') }}</h2>
         </div>
         <div class="card-body">
             {% if dpia.processingDescription %}
@@ -194,7 +194,7 @@
 
     {# Measures #}
     <div class="card mb-4">
-        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-shield-check"></i> {{ 'dpia.new.section_measures'|trans({}, 'privacy') }}</h2>
+        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'dpia.new.section_measures'|trans({}, 'privacy') }}</h2>
         </div>
         <div class="card-body">
             {% if dpia.technicalMeasures %}

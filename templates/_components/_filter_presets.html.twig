@@ -42,7 +42,7 @@
 {% if activePresets|length > 0 %}
 <div class="filter-presets">
     <div class="filter-presets-header">
-        <i class="bi bi-funnel"></i>
+        <i class="bi bi-funnel" aria-hidden="true"></i>
         <span>Schnellfilter:</span>
     </div>
     <div class="filter-presets-items">
@@ -60,7 +60,7 @@
                 class="filter-preset-btn filter-preset-clear"
                 data-action="click->filter#clear"
                 title="{{ 'common.reset_all_filters'|trans({}, 'messages') }}">
-            <i class="bi bi-x-circle"></i>
+            <i class="bi bi-x-circle" aria-hidden="true"></i>
             <span>{{ 'common.reset'|trans({}, 'messages') }}</span>
         </button>
     </div>

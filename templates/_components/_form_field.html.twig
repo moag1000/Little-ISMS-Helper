@@ -18,6 +18,16 @@
     {% set tooltip_text = 'form.automatic_value'|trans({}, 'messages') %}
 {% endif %}
 
+{# Build aria-describedby: combine help text ID and error ID when applicable #}
+{% set describedby_parts = [] %}
+{% if help_text %}
+    {% set describedby_parts = describedby_parts|merge([field_id ~ '_help']) %}
+{% endif %}
+{% if has_errors %}
+    {% set describedby_parts = describedby_parts|merge([field_id ~ '_error']) %}
+{% endif %}
+{% set aria_describedby = describedby_parts|length > 0 ? describedby_parts|join(' ') : null %}
+
 {# Floating labels work for: text, email, password, number, textarea, select #}
 {# BUT NOT for expanded choice fields (radio/checkbox) #}
 {% set is_expanded = field.vars.expanded|default(false) %}
@@ -35,7 +45,7 @@
                     'class': (field.vars.attr.class|default('') ~ (has_errors ? ' is-invalid' : '') ~ (is_automatic ? ' fairy-field-automatic' : ''))|trim,
                     'placeholder': placeholder_text,
                     'aria-invalid': has_errors ? 'true' : 'false',
-                    'aria-describedby': has_errors ? field_id ~ '_error' : null,
+                    'aria-describedby': aria_describedby,
                     'aria-required': is_required ? 'true' : 'false'
                 }) %}
                 {{ form_widget(field, {
@@ -87,10 +97,17 @@
             'attr': {
                 'class': (field.vars.attr.class|default('') ~ (has_errors ? ' is-invalid' : ''))|trim,
                 'aria-invalid': has_errors ? 'true' : 'false',
-                'aria-describedby': has_errors ? field_id ~ '_error' : null,
+                'aria-describedby': aria_describedby,
                 'aria-required': is_required ? 'true' : 'false'
             }
         }) }}
+    {% endif %}
+
+    {# Help text for screen readers (visually hidden, referenced by aria-describedby) #}
+    {% if help_text %}
+        <div id="{{ field_id }}_help" class="form-text visually-hidden">
+            {{ help_text }}
+        </div>
     {% endif %}
 
     {# Error messages with ARIA live region #}

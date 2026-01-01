@@ -2,7 +2,7 @@
 <div class="preview-content">
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi bi-server text-primary"></i>
+            <i class="bi bi-server text-primary" aria-hidden="true"></i>
             {{ 'asset.preview.title'|trans({}, 'asset') }}
         </h6>
         <dl class="row mb-0">
@@ -34,7 +34,7 @@
     {% if asset.description %}
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi bi-file-text"></i>
+            <i class="bi bi-file-text" aria-hidden="true"></i>
             {{ 'asset.field.description'|trans({}, 'asset') }}
         </h6>
         <p class="mb-0">{{ asset.description }}</p>
@@ -43,7 +43,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi bi-shield-check"></i>
+            <i class="bi bi-shield-check" aria-hidden="true"></i>
             {{ 'asset.section.cia_values'|trans({}, 'asset') }}
         </h6>
         <div class="row">
@@ -70,7 +70,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi bi-graph-up"></i>
+            <i class="bi bi-graph-up" aria-hidden="true"></i>
             {{ 'common.statistics'|trans({}, 'messages') }}
         </h6>
         <div class="row g-2">
@@ -91,10 +91,10 @@
 
     <div class="preview-actions">
         <a href="{{ path('app_asset_show', {id: asset.id}) }}" class="btn btn-primary btn-sm">
-            <i class="bi bi-arrow-right"></i> {{ 'common.view_details'|trans({}, 'messages') }}
+            <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'common.view_details'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_asset_edit', {id: asset.id}) }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-pencil"></i> {{ 'common.edit'|trans({}, 'messages') }}
+            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
         </a>
     </div>
 </div>

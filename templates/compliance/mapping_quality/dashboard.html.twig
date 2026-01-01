@@ -150,19 +150,19 @@
                                     data-action="click->batch-analysis#start"
                                     data-batch-analysis-count-param="10"
                                     data-batch-analysis-force-param="false">
-                                <i class="bi bi-play-circle"></i> 10 analysieren
+                                <i class="bi bi-play-circle" aria-hidden="true"></i> 10 analysieren
                             </button>
                             <button type="button" class="btn btn-outline-primary"
                                     data-action="click->batch-analysis#start"
                                     data-batch-analysis-count-param="25"
                                     data-batch-analysis-force-param="false">
-                                <i class="bi bi-play-circle"></i> 25 analysieren
+                                <i class="bi bi-play-circle" aria-hidden="true"></i> 25 analysieren
                             </button>
                             <button type="button" class="btn btn-outline-primary"
                                     data-action="click->batch-analysis#start"
                                     data-batch-analysis-count-param="50"
                                     data-batch-analysis-force-param="false">
-                                <i class="bi bi-play-circle"></i> 50 analysieren
+                                <i class="bi bi-play-circle" aria-hidden="true"></i> 50 analysieren
                             </button>
                         </div>
                         <div class="btn-group me-2" role="group" aria-label="{{ 'compliance.mapping_quality.full_analysis'|trans({}, 'compliance') }}">
@@ -170,7 +170,7 @@
                                     data-action="click->batch-analysis#start"
                                     data-batch-analysis-count-param="all"
                                     data-batch-analysis-force-param="false">
-                                <i class="bi bi-lightning-charge"></i> Alle analysieren
+                                <i class="bi bi-lightning-charge" aria-hidden="true"></i> Alle analysieren
                             </button>
                         </div>
                         {% if quality_stats.analyzed_mappings > 0 %}
@@ -180,7 +180,7 @@
                                     data-batch-analysis-count-param="all"
                                     data-batch-analysis-force-param="true"
                                     title="{{ 'compliance.mapping_quality.re_analyze_title'|trans({}, 'compliance') }}">
-                                <i class="bi bi-arrow-clockwise"></i> {{ 'compliance.mapping_quality.re_analyze_button'|trans({}, 'compliance') }}
+                                <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'compliance.mapping_quality.re_analyze_button'|trans({}, 'compliance') }}
                             </button>
                         </div>
                         {% endif %}

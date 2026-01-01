@@ -49,7 +49,7 @@
                     <div class="text-muted fw-semibold">{{ 'dpia.index.total_dpias'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold">{{ statistics.total }}</div>
                     <div class="mt-2">
-                        <small class="text-success"><i class="bi bi-check-circle"></i> {{ statistics.approved }} {{ 'dpia.index.approved'|trans({}, 'privacy') }}</small>
+                        <small class="text-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ statistics.approved }} {{ 'dpia.index.approved'|trans({}, 'privacy') }}</small>
                     </div>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                     <div class="text-muted fw-semibold">{{ 'dpia.index.in_review'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold text-info">{{ statistics.in_review }}</div>
                     <div class="mt-2">
-                        <small class="text-muted"><i class="bi bi-clock"></i> {{ 'dpia.index.awaiting_approval'|trans({}, 'privacy') }}</small>
+                        <small class="text-muted"><i class="bi bi-clock" aria-hidden="true"></i> {{ 'dpia.index.awaiting_approval'|trans({}, 'privacy') }}</small>
                     </div>
                 </div>
             </div>
@@ -71,7 +71,7 @@
                     <div class="text-muted fw-semibold">{{ 'dpia.index.high_risk'|trans({}, 'privacy') }}</div>
                     <div class="fs-2 fw-bold text-danger">{{ statistics.high_risk }}</div>
                     <div class="mt-2">
-                        <small class="text-warning"><i class="bi bi-exclamation-triangle"></i> {{ 'dpia.index.requires_attention'|trans({}, 'privacy') }}</small>
+                        <small class="text-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dpia.index.requires_attention'|trans({}, 'privacy') }}</small>
                     </div>
                 </div>
             </div>
@@ -91,7 +91,7 @@
 
     {# Filters #}
     <div class="card mb-4">
-        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-filter"></i> {{ 'dpia.index.filter_dpias'|trans({}, 'privacy') }}</h2>
+        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-filter" aria-hidden="true"></i> {{ 'dpia.index.filter_dpias'|trans({}, 'privacy') }}</h2>
         </div>
         <div class="card-body">
             <div class="btn-group flex-wrap" role="group">
@@ -133,7 +133,7 @@
 
     {# DPIA Table #}
     <div class="card">
-        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-list-check"></i> {{ 'dpia.index.dpias_list'|trans({}, 'privacy') }} ({{ dpias|length }})</h2>
+        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> {{ 'dpia.index.dpias_list'|trans({}, 'privacy') }} ({{ dpias|length }})</h2>
         </div>
         <div class="card-body p-0">
             {% if dpias|length > 0 %}
@@ -247,7 +247,7 @@
                 {% endembed %}
             {% else %}
                 <div class="alert alert-info mb-0">
-                    <i class="bi bi-info-circle"></i> {{ 'dpia.index.no_dpias_found'|trans({}, 'privacy') }}
+                    <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'dpia.index.no_dpias_found'|trans({}, 'privacy') }}
                     <a href="{{ path('app_dpia_new') }}" class="alert-link">{{ 'dpia.index.create_first_dpia'|trans({}, 'privacy') }}</a>.
                 </div>
             {% endif %}

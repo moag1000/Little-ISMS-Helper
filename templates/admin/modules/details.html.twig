@@ -3,7 +3,7 @@
 {% block title %}{{ module.name }} - {{ 'admin.modules.details'|trans({}, 'admin') }}{% endblock %}
 
 {% block admin_title %}
-    <i class="bi bi-{{ module.icon }} me-2"></i>
+    <i class="bi bi-{{ module.icon }} me-2" aria-hidden="true"></i>
     {{ module.name }}
 {% endblock %}
 
@@ -12,7 +12,7 @@
     <div class="row mb-4">
         <div class="col-12">
             <a href="{{ path('admin_modules_index') }}" class="btn btn-outline-secondary mb-3">
-                <i class="bi bi-arrow-left me-2"></i>
+                <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
                 {{ 'common.back_to_overview'|trans({}, 'messages') }}
             </a>
 
@@ -34,7 +34,7 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <h2 class="mb-0">
-                        <i class="bi bi-info-circle me-2"></i>
+                        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
                         Modul-Informationen
                     </h2>
                 </div>
@@ -79,14 +79,14 @@
                 <div class="card mb-4">
                     <div class="card-header">
                         <h2 class="mb-0">
-                            <i class="bi bi-diagram-3 me-2"></i>
+                            <i class="bi bi-diagram-3 me-2" aria-hidden="true"></i>
                             Abhängigkeiten
                         </h2>
                     </div>
                     <div class="card-body">
                         {% if graph.dependencies|length > 0 %}
                             <h3 class="mb-2">
-                                <i class="bi bi-link text-warning me-2"></i>
+                                <i class="bi bi-link text-warning me-2" aria-hidden="true"></i>
                                 Benötigt folgende Module:
                             </h3>
                             <div class="mb-4">
@@ -98,7 +98,7 @@
 
                         {% if graph.dependents|length > 0 %}
                             <h3 class="mb-2">
-                                <i class="bi bi-arrow-right text-info me-2"></i>
+                                <i class="bi bi-arrow-right text-info me-2" aria-hidden="true"></i>
                                 Wird benötigt von:
                             </h3>
                             <div>
@@ -110,7 +110,7 @@
 
                         {% if graph.dependencies|length == 0 and graph.dependents|length == 0 %}
                             <p class="text-muted mb-0">
-                                <i class="bi bi-check-circle text-success me-2"></i>
+                                <i class="bi bi-check-circle text-success me-2" aria-hidden="true"></i>
                                 Dieses Modul hat keine Abhängigkeiten.
                             </p>
                         {% endif %}
@@ -123,7 +123,7 @@
                 <div class="card mb-4">
                     <div class="card-header">
                         <h2 class="mb-0">
-                            <i class="bi bi-file-earmark-code me-2"></i>
+                            <i class="bi bi-file-earmark-code me-2" aria-hidden="true"></i>
                             Verfügbare Beispiel-Daten
                         </h2>
                     </div>
@@ -140,7 +140,7 @@
                                 </div>
                             {% endfor %}
                             <button type="submit" class="btn btn-primary mt-3">
-                                <i class="bi bi-download me-2"></i>
+                                <i class="bi bi-download me-2" aria-hidden="true"></i>
                                 Ausgewählte Daten importieren
                             </button>
                         </form>
@@ -154,7 +154,7 @@
             <div class="card mb-4 border-primary">
                 <div class="card-header bg-primary text-white">
                     <h2 class="mb-0">
-                        <i class="bi bi-gears me-2"></i>
+                        <i class="bi bi-gears me-2" aria-hidden="true"></i>
                         Aktionen
                     </h2>
                 </div>
@@ -167,32 +167,32 @@
                                       data-action="submit->ui-actions#confirm"
                                       data-ui-actions-message-param="Modul {{ module.name }} wirklich deaktivieren?">
                                     <button type="submit" class="btn btn-danger w-100">
-                                        <i class="bi bi-x me-2"></i>
+                                        <i class="bi bi-x me-2" aria-hidden="true"></i>
                                         Modul deaktivieren
                                     </button>
                                 </form>
                             {% else %}
                                 <button type="button" class="btn btn-secondary" disabled>
-                                    <i class="bi bi-lock me-2"></i>
+                                    <i class="bi bi-lock me-2" aria-hidden="true"></i>
                                     Modul ist erforderlich
                                 </button>
                             {% endif %}
 
                             <a href="{{ path('admin_modules_export', {moduleKey: module_key}) }}" class="btn btn-outline-primary">
-                                <i class="bi bi-file-earmark-export me-2"></i>
+                                <i class="bi bi-file-earmark-export me-2" aria-hidden="true"></i>
                                 Daten exportieren
                             </a>
                         {% else %}
                             <form method="post" action="{{ path('admin_modules_activate', {moduleKey: module_key}) }}">
                                 <button type="submit" class="btn btn-success w-100">
-                                    <i class="bi bi-check me-2"></i>
+                                    <i class="bi bi-check me-2" aria-hidden="true"></i>
                                     Modul aktivieren
                                 </button>
                             </form>
                         {% endif %}
 
                         <a href="{{ path('admin_modules_graph') }}" class="btn btn-outline-info">
-                            <i class="bi bi-diagram-3 me-2"></i>
+                            <i class="bi bi-diagram-3 me-2" aria-hidden="true"></i>
                             Dependency-Graph
                         </a>
                     </div>
@@ -203,7 +203,7 @@
             <div class="card border-info">
                 <div class="card-header bg-info text-white">
                     <h2 class="mb-0">
-                        <i class="bi bi-lightbulb me-2"></i>
+                        <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
                         Hinweise
                     </h2>
                 </div>

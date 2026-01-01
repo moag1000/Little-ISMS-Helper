@@ -2,7 +2,7 @@
 <div class="preview-content">
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi bi-exclamation-circle text-danger"></i>
+            <i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i>
             {{ 'incident.preview.title'|trans({}, 'incident') }}
         </h6>
         <dl class="row mb-0">
@@ -34,7 +34,7 @@
 
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi bi-file-text"></i>
+            <i class="bi bi-file-text" aria-hidden="true"></i>
             {{ 'incident.field.description'|trans({}, 'incident') }}
         </h6>
         <p class="mb-0">{{ incident.description }}</p>
@@ -43,14 +43,14 @@
     {% if incident.affectedAssets|length > 0 %}
     <div class="preview-section">
         <h6 class="preview-section-title">
-            <i class="bi bi-server"></i>
+            <i class="bi bi-server" aria-hidden="true"></i>
             {{ 'incident.preview.affected_assets'|trans({'%count%': incident.affectedAssets|length}, 'incident') }}
         </h6>
         <ul class="list-unstyled mb-0">
             {% for asset in incident.affectedAssets|slice(0, 3) %}
             <li class="mb-1">
                 <a href="{{ path('app_asset_show', {id: asset.id}) }}">
-                    <i class="bi bi-server text-primary"></i> {{ asset.name }}
+                    <i class="bi bi-server text-primary" aria-hidden="true"></i> {{ asset.name }}
                 </a>
             </li>
             {% endfor %}
@@ -63,10 +63,10 @@
 
     <div class="preview-actions">
         <a href="{{ path('app_incident_show', {id: incident.id}) }}" class="btn btn-primary btn-sm">
-            <i class="bi bi-arrow-right"></i> {{ 'common.view_details'|trans({}, 'messages') }}
+            <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'common.view_details'|trans({}, 'messages') }}
         </a>
         <a href="{{ path('app_incident_edit', {id: incident.id}) }}" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-pencil"></i> {{ 'common.edit'|trans({}, 'messages') }}
+            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
         </a>
     </div>
 </div>

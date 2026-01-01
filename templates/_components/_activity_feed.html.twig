@@ -27,12 +27,12 @@
                 <div class="activity-meta">
                     {% if activity.time is defined %}
                     <span class="activity-time">
-                        <i class="bi bi-clock"></i> {{ activity.time }}
+                        <i class="bi bi-clock" aria-hidden="true"></i> {{ activity.time }}
                     </span>
                     {% endif %}
                     {% if activity.user is defined %}
                     <span class="activity-user">
-                        <i class="bi bi-person"></i> {{ activity.user }}
+                        <i class="bi bi-person" aria-hidden="true"></i> {{ activity.user }}
                     </span>
                     {% endif %}
                 </div>

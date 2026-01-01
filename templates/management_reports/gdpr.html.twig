@@ -29,7 +29,7 @@
         <div class="col-md-3">
             <div class="card text-center h-100 bg-dark text-white">
                 <div class="card-body">
-                    <i class="bi bi-shield-exclamation fs-1"></i>
+                    <i class="bi bi-shield-exclamation fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ report.total_breaches }}</h3>
                     <small>{{ 'management_reports.gdpr.total_breaches'|trans({}, 'management_reports') }}</small>
                 </div>
@@ -38,7 +38,7 @@
         <div class="col-md-3">
             <div class="card text-center h-100 bg-primary text-white">
                 <div class="card-body">
-                    <i class="bi bi-calendar fs-1"></i>
+                    <i class="bi bi-calendar fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ report.this_year }}</h3>
                     <small>{{ 'management_reports.gdpr.this_year'|trans({}, 'management_reports') }}</small>
                 </div>
@@ -47,7 +47,7 @@
         <div class="col-md-3">
             <div class="card text-center h-100 bg-success text-white">
                 <div class="card-body">
-                    <i class="bi bi-check-circle fs-1"></i>
+                    <i class="bi bi-check-circle fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ report.notification_status.notified }}</h3>
                     <small>{{ 'management_reports.gdpr.notified'|trans({}, 'management_reports') }}</small>
                 </div>
@@ -56,7 +56,7 @@
         <div class="col-md-3">
             <div class="card text-center h-100 bg-warning text-dark">
                 <div class="card-body">
-                    <i class="bi bi-hourglass-split fs-1"></i>
+                    <i class="bi bi-hourglass-split fs-1" aria-hidden="true"></i>
                     <h3 class="display-5">{{ report.notification_status.pending }}</h3>
                     <small>{{ 'management_reports.gdpr.pending_notification'|trans({}, 'management_reports') }}</small>
                 </div>
