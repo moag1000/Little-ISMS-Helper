@@ -64,24 +64,24 @@
             </td>
             <td class="text-center">
                 {% if control.applicable %}
-                    <span class="badge bg-success"><i class="bi bi-check" aria-hidden="true"></i> {{ 'soa.value.yes'|trans({}, 'soa') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check', content: 'soa.value.yes'|trans({}, 'soa') } %}
                 {% else %}
-                    <span class="badge badge-neutral"><i class="bi bi-x" aria-hidden="true"></i> {{ 'soa.value.no'|trans({}, 'soa') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'neutral', icon: 'bi-x', content: 'soa.value.no'|trans({}, 'soa') } %}
                 {% endif %}
             </td>
             <td>
                 {% if control.applicable %}
                     {% if control.implementationStatus == 'implemented' %}
-                        <span class="badge bg-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'soa.status.implemented'|trans({}, 'soa') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'soa.status.implemented'|trans({}, 'soa') } %}
                     {% elseif control.implementationStatus == 'in_progress' %}
-                        <span class="badge bg-warning">{{ 'soa.in_progress_badge_emoji'|trans({}, 'soa') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'soa.in_progress_badge_emoji'|trans({}, 'soa') } %}
                     {% elseif control.implementationStatus == 'not_started' %}
-                        <span class="badge bg-danger"><i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'soa.status.not_started'|trans({}, 'soa') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-pause-circle', content: 'soa.status.not_started'|trans({}, 'soa') } %}
                     {% else %}
-                        <span class="badge badge-neutral">{{ 'soa.value.na'|trans({}, 'soa') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'neutral', content: 'soa.value.na'|trans({}, 'soa') } %}
                     {% endif %}
                 {% else %}
-                    <span class="badge badge-neutral">{{ 'soa.status.not_applicable'|trans({}, 'soa') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'neutral', content: 'soa.status.not_applicable'|trans({}, 'soa') } %}
                 {% endif %}
             </td>
             <td>

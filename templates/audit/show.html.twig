@@ -21,16 +21,18 @@
     <div class="row">
         <div class="col-lg-8">
             {# Main Audit Information #}
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0">
-                        <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ audit.title }}
-                    </h2>
-                    <span class="{{ badge_status(audit.status) }} fs-6">
-                        {{ ('audit.status.' ~ audit.status)|trans({}, 'audit') }}
-                    </span>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h2 class="mb-0">
+                            <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ audit.title }}
+                        </h2>
+                        <span class="{{ badge_status(audit.status) }} fs-6">
+                            {{ ('audit.status.' ~ audit.status)|trans({}, 'audit') }}
+                        </span>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {# Audit Number #}
                     <div class="mb-3">
                         <span class="badge bg-dark fs-6">{{ audit.auditNumber }}</span>
@@ -147,18 +149,20 @@
                         <p>{{ audit.objectives|nl2br }}</p>
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Findings Section #}
             {% if audit.findings or audit.nonConformities or audit.observations %}
-            <div class="card mb-4 border-warning">
-                <div class="card-header bg-warning">
-                    <h2 class="mb-0">
-                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'audit.section.findings'|trans({}, 'audit') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-warning' } %}
+                {% block card_header %}
+                    <div class="card-header bg-warning">
+                        <h2 class="mb-0">
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'audit.section.findings'|trans({}, 'audit') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if audit.findings %}
                     <div class="mb-3">
                         <h3 class="h6 text-muted">{{ 'audit.findings'|trans({}, 'audit') }}</h3>
@@ -179,19 +183,21 @@
                         <p class="mb-0">{{ audit.observations|nl2br }}</p>
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
 
             {# Recommendations & Conclusion #}
             {% if audit.recommendations or audit.conclusion %}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h2 class="mb-0">
-                        <i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'audit.section.recommendations'|trans({}, 'audit') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="mb-0">
+                            <i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'audit.section.recommendations'|trans({}, 'audit') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if audit.recommendations %}
                     <div class="mb-3">
                         <h3 class="h6 text-muted">{{ 'audit.recommendations'|trans({}, 'audit') }}</h3>
@@ -205,18 +211,20 @@
                         <p>{{ audit.conclusion|nl2br }}</p>
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
         </div>
 
         <div class="col-lg-4">
             {# Action Buttons #}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h2 class="h6 mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="h6 mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="d-grid gap-2">
                         {% if is_granted('ROLE_USER') %}
                         <a href="{{ path('app_audit_edit', {id: audit.id}) }}"
@@ -248,15 +256,17 @@
                         </button>
                         {% endif %}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Quick Stats #}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h2 class="h6 mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'audit.quick_stats'|trans({}, 'audit') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="h6 mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'audit.quick_stats'|trans({}, 'audit') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="row mb-0 small">
                         <dt class="col-sm-6 text-muted">{{ 'audit.field.scoped_framework'|trans({}, 'audit') }}</dt>
                         <dd class="col-sm-6 text-end">
@@ -277,15 +287,17 @@
                         <dd class="col-sm-6 text-end">{{ audit.reportDate|date('d.m.Y') }}</dd>
                         {% endif %}
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Metadata #}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h2 class="h6 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="h6 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="row mb-0 small">
                         <dt class="col-sm-5 text-muted">{{ 'common.created_at'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-7">{{ audit.createdAt|date('d.m.Y H:i') }}</dd>
@@ -298,8 +310,8 @@
                         <dt class="col-sm-5 text-muted">{{ 'common.id'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-7"><code>{{ audit.id }}</code></dd>
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>
@@ -307,14 +319,16 @@
 {# Audit Log History #}
 {% if auditLogs is defined and auditLogs|length > 0 %}
 <div class="container-fluid py-4">
-    <div class="card mb-4">
-        <div class="card-header bg-light">
-            <h2 class="mb-0">
-                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'audit.section.history'|trans({}, 'audit') }}
-                ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-light">
+                <h2 class="mb-0">
+                    <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'audit.section.history'|trans({}, 'audit') }}
+                    ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="audit-log-list">
                 {% for log in auditLogs %}
                 <div class="audit-log-entry">
@@ -359,8 +373,8 @@
                 </small>
             </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 <style>

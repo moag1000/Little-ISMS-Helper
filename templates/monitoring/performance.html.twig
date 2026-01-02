@@ -50,7 +50,7 @@
                                         <code>{{ action }}</code>
                                     </span>
                                     <span>
-                                        <span class="badge bg-primary rounded-pill">{{ count }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'primary', pill: true, content: count } %}
                                         <small class="text-muted ms-2">
                                             ({{ (count / total_requests * 100)|number_format(1) }}%)
                                         </small>
@@ -85,7 +85,7 @@
                                         {{ entity }}
                                     </span>
                                     <span>
-                                        <span class="badge bg-success rounded-pill">{{ count }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'success', pill: true, content: count } %}
                                         <small class="text-muted ms-2">
                                             ({{ (count / total_requests * 100)|number_format(1) }}%)
                                         </small>

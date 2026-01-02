@@ -39,7 +39,7 @@
                         <i class="{{ wizard.icon }} fs-3 text-{{ wizard.color }} me-3"></i>
                         <div>
                             <h3 class="card-title h5 mb-0">{{ wizard.name }}</h3>
-                            <span class="badge bg-{{ wizard.color }}">{{ wizard.code }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: wizard.color, content: wizard.code } %}
                         </div>
                     </div>
                 </div>
@@ -49,9 +49,7 @@
                     <div class="mb-3">
                         <small class="text-muted d-block mb-1">{{ 'wizard.required_modules'|trans }}:</small>
                         {% for mod in wizard.required_modules %}
-                            <span class="badge bg-success me-1">
-                                <i class="bi bi-check-circle me-1" aria-hidden="true"></i>{{ mod }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', class: 'me-1', content: mod } %}
                         {% endfor %}
                     </div>
 
@@ -60,13 +58,9 @@
                         <small class="text-muted d-block mb-1">{{ 'wizard.recommended_modules'|trans }}:</small>
                         {% for mod in wizard.recommended_modules %}
                             {% if mod in active_modules %}
-                                <span class="badge bg-success me-1">
-                                    <i class="bi bi-check-circle me-1" aria-hidden="true"></i>{{ mod }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', class: 'me-1', content: mod } %}
                             {% else %}
-                                <span class="badge bg-warning text-dark me-1">
-                                    <i class="bi bi-exclamation-triangle me-1" aria-hidden="true"></i>{{ mod }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', class: 'me-1', content: mod } %}
                             {% endif %}
                         {% endfor %}
                     </div>
@@ -105,7 +99,7 @@
                         <i class="{{ wizard.icon }} fs-3 text-secondary me-3"></i>
                         <div>
                             <h3 class="card-title h5 mb-0 text-muted">{{ wizard.name }}</h3>
-                            <span class="badge bg-secondary">{{ wizard.code }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: wizard.code } %}
                         </div>
                     </div>
                 </div>

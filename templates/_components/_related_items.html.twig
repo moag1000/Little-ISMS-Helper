@@ -30,7 +30,7 @@
                 <h4 class="related-section-title">
                     <i class="bi {{ section.icon }}"></i>
                     {{ section.title }}
-                    <span class="badge bg-secondary">{{ section.items|length }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: section.items|length } %}
                 </h4>
 
                 {% if section.items|length > 0 %}
