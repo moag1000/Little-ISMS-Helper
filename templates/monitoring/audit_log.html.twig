@@ -29,7 +29,7 @@
                     <div class="card-title text-muted fw-bold">{{ 'audit_log.stats.top_actions'|trans({}, 'audit_log') }}</div>
                     {% for stat in statistics.action_stats|slice(0, 5) %}
                         <div class="d-flex justify-content-between">
-                            <span class="badge bg-primary">{{ stat.action }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'primary', content: stat.action } %}
                             <span>{{ stat.count }}</span>
                         </div>
                     {% endfor %}
@@ -43,7 +43,7 @@
                     {% for stat in statistics.entity_stats|slice(0, 5) %}
                         <div class="d-flex justify-content-between">
                             <span>{{ stat.entityType }}</span>
-                            <span class="badge bg-info">{{ stat.count }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'info', content: stat.count } %}
                         </div>
                     {% endfor %}
                 </div>
@@ -116,9 +116,7 @@
                                     {{ log.userName }}
                                 </td>
                                 <td>
-                                    <span class="badge bg-{{ log.action in ['delete', 'destroy', 'remove'] ? 'danger' : (log.action in ['create', 'add'] ? 'success' : 'primary') }}">
-                                        {{ log.action }}
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: log.action in ['delete', 'destroy', 'remove'] ? 'danger' : (log.action in ['create', 'add'] ? 'success' : 'primary'), content: log.action } %}
                                 </td>
                                 <td>
                                     {% if log.entityType %}
@@ -166,7 +164,7 @@
 
                                                     <dt class="col-sm-3">{{ 'audit_log.table.action'|trans({}, 'audit_log') }}:</dt>
                                                     <dd class="col-sm-9">
-                                                        <span class="badge bg-primary">{{ log.action }}</span>
+                                                        {% include '_components/_badge.html.twig' with { variant: 'primary', content: log.action } %}
                                                     </dd>
 
                                                     {% if log.description %}

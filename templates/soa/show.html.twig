@@ -17,7 +17,7 @@
     <div>
         <h1>{{ control.controlId }}: {{ control.name }}</h1>
         <div class="mt-2">
-            <span class="badge bg-info">{{ ('soa.category.' ~ control.category)|trans({}, 'soa') }}</span>
+            {% include '_components/_badge.html.twig' with { variant: 'info', content: ('soa.category.' ~ control.category)|trans({}, 'soa') } %}
         </div>
     </div>
     <div class="button-group">
@@ -160,7 +160,7 @@
         {% for asset in control.protectedAssets %}
             <div class="data-reuse-item">
                 <strong>{{ asset.name }}</strong>
-                <span class="badge bg-info">{{ asset.assetType }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: asset.assetType } %}
                 <small>{{ 'soa.field.cia'|trans({}, 'soa') }}: {{ asset.confidentialityValue }}/{{ asset.integrityValue }}/{{ asset.availabilityValue }}</small>
             </div>
         {% endfor %}

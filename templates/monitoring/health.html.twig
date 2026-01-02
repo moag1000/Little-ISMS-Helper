@@ -140,9 +140,9 @@
 
                     <dt class="col-sm-5">Extensions:</dt>
                     <dd class="col-sm-7">
-                        <span class="badge bg-success">{{ health_checks.php.loaded_extensions|length }} loaded</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'success', content: health_checks.php.loaded_extensions|length ~ ' loaded' } %}
                         {% if health_checks.php.missing_extensions|length > 0 %}
-                            <span class="badge bg-danger">{{ health_checks.php.missing_extensions|length }} missing</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: health_checks.php.missing_extensions|length ~ ' missing' } %}
                         {% endif %}
                     </dd>
 
@@ -170,16 +170,12 @@
 
                     <dt class="col-sm-5">Environment:</dt>
                     <dd class="col-sm-7">
-                        <span class="{{ health_checks.symfony.environment == 'prod' ? 'badge bg-success' : 'badge bg-warning' }}">
-                            {{ health_checks.symfony.environment|upper }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: health_checks.symfony.environment == 'prod' ? 'success' : 'warning', content: health_checks.symfony.environment|upper } %}
                     </dd>
 
                     <dt class="col-sm-5">Debug Mode:</dt>
                     <dd class="col-sm-7">
-                        <span class="{{ health_checks.symfony.debug ? 'badge bg-warning' : 'badge bg-success' }}">
-                            {{ health_checks.symfony.debug ? 'ON' : 'OFF' }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: health_checks.symfony.debug ? 'warning' : 'success', content: health_checks.symfony.debug ? 'ON' : 'OFF' } %}
                     </dd>
                 </dl>
             {% endset %}
@@ -327,7 +323,7 @@
                         <dt class="col-sm-5">Issues:</dt>
                         <dd class="col-sm-7">
                             {% for issue in health_checks.permissions.issues %}
-                                <span class="badge bg-danger">{{ issue }}</span><br>
+                                {% include '_components/_badge.html.twig' with { variant: 'danger', content: issue } %}<br>
                             {% endfor %}
                         </dd>
                     {% endif %}
@@ -487,7 +483,7 @@
                         <dt class="col-sm-5">Issues:</dt>
                         <dd class="col-sm-7">
                             {% for issue in health_checks.php_config.issues %}
-                                <span class="badge bg-warning">{{ issue }}</span><br>
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: issue } %}<br>
                             {% endfor %}
                         </dd>
                     {% endif %}

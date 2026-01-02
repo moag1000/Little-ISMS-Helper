@@ -43,9 +43,7 @@
                         </div>
                     </div>
                     <p class="mt-3 mb-0">
-                        <span class="badge bg-{{ overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : (overall_score.status == 'in_progress' ? 'info' : 'danger')) }} fs-6">
-                            {{ ('dora.status.' ~ overall_score.status)|trans }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : (overall_score.status == 'in_progress' ? 'info' : 'danger')), class: 'fs-6', content: ('dora.status.' ~ overall_score.status)|trans } %}
                     </p>
                 </div>
             </div>

@@ -25,22 +25,24 @@
     <div class="row">
         <div class="col-lg-8">
             {# Main Review Information #}
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h2 class="h5 mb-0">
-                        <i class="bi bi-clipboard2-check" aria-hidden="true"></i> {{ 'management_review.field.basic_info'|trans({}, 'management_review') }}
-                    </h2>
-                    {% set statusClass = {
-                        'planned': 'warning',
-                        'in_progress': 'info',
-                        'completed': 'success',
-                        'cancelled': 'danger'
-                    } %}
-                    <span class="badge bg-{{ statusClass[review.status] ?? 'secondary' }} fs-6">
-                        {{ ('management_review.status.' ~ review.status)|trans({}, 'management_review') }}
-                    </span>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h2 class="h5 mb-0">
+                            <i class="bi bi-clipboard2-check" aria-hidden="true"></i> {{ 'management_review.field.basic_info'|trans({}, 'management_review') }}
+                        </h2>
+                        {% set statusClass = {
+                            'planned': 'warning',
+                            'in_progress': 'info',
+                            'completed': 'success',
+                            'cancelled': 'danger'
+                        } %}
+                        <span class="badge bg-{{ statusClass[review.status] ?? 'secondary' }} fs-6">
+                            {{ ('management_review.status.' ~ review.status)|trans({}, 'management_review') }}
+                        </span>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <div class="text-muted small mb-2">
@@ -64,17 +66,19 @@
                             {% endif %}
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Inputs to the Review #}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h2 class="h5 mb-0">
-                        <i class="bi bi-inbox" aria-hidden="true"></i> {{ 'management_review.section.inputs'|trans({}, 'management_review') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="h5 mb-0">
+                            <i class="bi bi-inbox" aria-hidden="true"></i> {{ 'management_review.section.inputs'|trans({}, 'management_review') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if review.changesRelevantToISMS %}
                     <div class="mb-3">
                         <div class="text-muted small fw-bold">{{ 'management_review.changes_relevant_to_isms'|trans({}, 'management_review') }}</div>
@@ -102,17 +106,19 @@
                         <p>{{ review.performanceEvaluation|nl2br }}</p>
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Status of Previous Actions #}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h2 class="h5 mb-0">
-                        <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'management_review.section.followup'|trans({}, 'management_review') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="h5 mb-0">
+                            <i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ 'management_review.section.followup'|trans({}, 'management_review') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if review.previousReviewActions %}
                     <div class="mb-3">
                         <div class="text-muted small fw-bold">{{ 'management_review.previous_review_actions'|trans({}, 'management_review') }}</div>
@@ -133,17 +139,19 @@
                         <p>{{ review.correctiveActionsStatus|nl2br }}</p>
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Outputs from the Review #}
-            <div class="card mb-4 border-success">
-                <div class="card-header bg-success text-white">
-                    <h2 class="h5 mb-0">
-                        <i class="bi bi-send" aria-hidden="true"></i> {{ 'management_review.section.outputs'|trans({}, 'management_review') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-success' } %}
+                {% block card_header %}
+                    <div class="card-header bg-success text-white">
+                        <h2 class="h5 mb-0">
+                            <i class="bi bi-send" aria-hidden="true"></i> {{ 'management_review.section.outputs'|trans({}, 'management_review') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if review.opportunitiesForImprovement %}
                     <div class="mb-3">
                         <div class="text-muted small fw-bold">{{ 'management_review.opportunities_for_improvement'|trans({}, 'management_review') }}</div>
@@ -177,17 +185,19 @@
                         </div>
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-lg-4">
             {# Action Buttons #}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h2 class="h5 mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="h5 mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="d-grid gap-2">
                         {% if is_granted('ROLE_ADMIN') %}
                         <a href="{{ path('app_management_review_edit', {id: review.id}) }}"
@@ -213,15 +223,17 @@
                         </button>
                         {% endif %}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# ISO 27001 Clause Reference #}
-            <div class="card mb-4 border-info">
-                <div class="card-header bg-info text-white">
-                    <h2 class="h5 mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> ISO 27001:2022</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-info' } %}
+                {% block card_header %}
+                    <div class="card-header bg-info text-white">
+                        <h2 class="h5 mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> ISO 27001:2022</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <h3 class="h6 fw-bold">{{ 'management_review.clause_93'|trans({}, 'management_review') }}</h3>
                     <p class="small mb-2">{{ 'management_review.clause_93_description'|trans({}, 'management_review') }}</p>
 
@@ -241,15 +253,17 @@
                         <li>{{ 'management_review.output_2'|trans({}, 'management_review') }}</li>
                         <li>{{ 'management_review.output_3'|trans({}, 'management_review') }}</li>
                     </ul>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Metadata #}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h2 class="h5 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="h5 mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="row mb-0 small">
                         <dt class="col-sm-5 text-muted">{{ 'common.created_at'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-7">{{ review.createdAt|date('d.m.Y H:i') }}</dd>
@@ -260,8 +274,8 @@
                         <dt class="col-sm-5 text-muted">{{ 'common.id'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-7"><code>{{ review.id }}</code></dd>
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>
