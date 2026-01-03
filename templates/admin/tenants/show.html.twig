@@ -26,13 +26,9 @@
                 <p class="text-muted mb-2">
                     <code class="text-primary">{{ tenant.code }}</code>
                     {% if tenant.isActive %}
-                        <span class="badge bg-success ms-2">
-                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'tenant.status.active'|trans({}, 'tenant') }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', class: 'ms-2', content: 'tenant.status.active'|trans({}, 'tenant') } %}
                     {% else %}
-                        <span class="badge bg-secondary ms-2">
-                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'tenant.status.inactive'|trans({}, 'tenant') }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: 'secondary', icon: 'bi-x-circle', class: 'ms-2', content: 'tenant.status.inactive'|trans({}, 'tenant') } %}
                     {% endif %}
                 </p>
                 {% if tenant.description %}
@@ -124,7 +120,7 @@
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
                 <i class="bi bi-people" aria-hidden="true"></i> {{ 'tenant.tabs.users'|trans({}, 'tenant') }}
-                <span class="badge bg-primary ms-1">{{ userCount }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'ms-1', content: userCount } %}
             </button>
         </li>
     </ul>
@@ -186,9 +182,9 @@
                                 <th scope="row">{{ 'tenant.field.status'|trans({}, 'tenant') }}</th>
                                 <td>
                                     {% if tenant.isActive %}
-                                        <span class="badge bg-success">{{ 'tenant.status.active'|trans({}, 'tenant') }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'tenant.status.active'|trans({}, 'tenant') } %}
                                     {% else %}
-                                        <span class="badge bg-secondary">{{ 'tenant.status.inactive'|trans({}, 'tenant') }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'tenant.status.inactive'|trans({}, 'tenant') } %}
                                     {% endif %}
                                 </td>
                             </tr>
@@ -247,7 +243,7 @@
                                     <tr>
                                         <th scope="row">{{ 'corporate.field.subsidiaries'|trans({}, 'tenant') }}</th>
                                         <td>
-                                            <span class="badge bg-info">{{ tenant.subsidiaries|length }}</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'info', content: tenant.subsidiaries|length } %}
                                             {% if tenant.subsidiaries|length > 0 %}
                                                 <ul class="mt-2 mb-0">
                                                     {% for subsidiary in tenant.subsidiaries %}
@@ -410,7 +406,7 @@
                             <h2 class="card-title mb-0 h5">
                                 <i class="bi bi-people text-primary" aria-hidden="true"></i>
                                 {{ 'tenant.section.users'|trans({}, 'tenant') }}
-                                <span class="badge bg-primary ms-2">{{ userCount }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'ms-2', content: userCount } %}
                             </h2>
                             <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#manageUsersModal">
                                 <i class="bi bi-person-plus" aria-hidden="true"></i> {{ 'tenant.users.manage'|trans({}, 'tenant') }}
@@ -437,9 +433,9 @@
                                         </div>
                                         <div>
                                             {% if user.isActive %}
-                                                <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.active'|trans({}, 'messages') } %}
                                             {% else %}
-                                                <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.inactive'|trans({}, 'messages') } %}
                                             {% endif %}
                                         </div>
                                     </div>
@@ -562,9 +558,9 @@
                                             </div>
                                             <div class="d-flex align-items-center gap-2">
                                                 {% if user.isActive %}
-                                                    <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
+                                                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.active'|trans({}, 'messages') } %}
                                                 {% else %}
-                                                    <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
+                                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.inactive'|trans({}, 'messages') } %}
                                                 {% endif %}
                                                 <form method="post" action="{{ path('tenant_management_remove_user', {id: tenant.id, userId: user.id}) }}" class="d-inline"
                                                       data-controller="ui-actions"

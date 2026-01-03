@@ -433,9 +433,9 @@
                         </td>
                         <td>
                             {% if risk.asset %}
-                                <span class="badge bg-success">{{ risk.asset.name }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'success', content: risk.asset.name } %}
                             {% else %}
-                                <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans({}, 'admin') }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'admin.data_repair.no_asset'|trans({}, 'admin') } %}
                             {% endif %}
                         </td>
                         <td>
@@ -503,10 +503,10 @@
                         <td>
                             {% if incident.affectedAssets|length > 0 %}
                                 {% for asset in incident.affectedAssets %}
-                                    <span class="badge bg-success">{{ asset.name }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', content: asset.name } %}
                                 {% endfor %}
                             {% else %}
-                                <span class="badge bg-danger">{{ 'admin.data_repair.no_asset'|trans({}, 'admin') }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'admin.data_repair.no_asset'|trans({}, 'admin') } %}
                             {% endif %}
                         </td>
                         <td>
@@ -565,13 +565,11 @@
                 {% block table_body %}
                     {% for control in controlsWithoutRisks %}
                     <tr class="table-warning">
-                        <td><span class="badge bg-primary">{{ control.controlId }}</span></td>
+                        <td>{% include '_components/_badge.html.twig' with { variant: 'primary', content: control.controlId } %}</td>
                         <td>{{ control.name }}</td>
                         <td>{{ control.category }}</td>
                         <td>
-                            <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : (control.implementationStatus == 'not_started' ? 'secondary' : 'dark')) }}">
-                                {{ ('control.status.' ~ control.implementationStatus)|trans({}, 'control') }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : (control.implementationStatus == 'not_started' ? 'secondary' : 'dark')), content: ('control.status.' ~ control.implementationStatus)|trans({}, 'control') } %}
                         </td>
                         <td>
                             <form method="post" action="{{ path('admin_data_repair_assign_risk', {id: control.id}) }}" class="d-inline">
@@ -629,13 +627,11 @@
                 {% block table_body %}
                     {% for control in controlsWithoutAssets %}
                     <tr>
-                        <td><span class="badge bg-primary">{{ control.controlId }}</span></td>
+                        <td>{% include '_components/_badge.html.twig' with { variant: 'primary', content: control.controlId } %}</td>
                         <td>{{ control.name }}</td>
                         <td>{{ control.category }}</td>
                         <td>
-                            <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : (control.implementationStatus == 'not_started' ? 'secondary' : 'dark')) }}">
-                                {{ ('control.status.' ~ control.implementationStatus)|trans({}, 'control') }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : (control.implementationStatus == 'not_started' ? 'secondary' : 'dark')), content: ('control.status.' ~ control.implementationStatus)|trans({}, 'control') } %}
                         </td>
                         <td>
                             <form method="post" action="{{ path('admin_data_repair_assign_asset_to_control', {id: control.id}) }}" class="d-inline">
@@ -680,13 +676,13 @@
                 <div class="card mb-3 border-warning">
                     <div class="card-header">
                         <strong>Audit Number:</strong> {{ dup.value }}
-                        <span class="badge bg-warning">{{ dup.count }} duplicates</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: dup.count ~ ' duplicates' } %}
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled mb-0">
                         {% for audit in dup.entities %}
                             <li class="mb-2">
-                                <span class="badge bg-secondary">ID: {{ audit.id }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'ID: ' ~ audit.id } %}
                                 {{ audit.title }}
                                 <small class="text-muted">({{ audit.tenant.name }})</small>
                                 {% if audit.plannedDate %}
@@ -718,13 +714,13 @@
                 <div class="card mb-3 border-warning">
                     <div class="card-header">
                         <strong>Asset Name:</strong> {{ dup.value }}
-                        <span class="badge bg-warning">{{ dup.count }} duplicates</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: dup.count ~ ' duplicates' } %}
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled mb-0">
                         {% for asset in dup.entities %}
                             <li class="mb-2">
-                                <span class="badge bg-secondary">ID: {{ asset.id }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'ID: ' ~ asset.id } %}
                                 {{ asset.name }}
                                 <small class="text-muted">({{ asset.tenant.name }}, Type: {{ asset.assetType }})</small>
                             </li>
@@ -752,9 +748,9 @@
             <ul>
             {% for audit in inconsistentData.audits_completed_without_date %}
                 <li>
-                    <span class="badge bg-secondary">{{ audit.auditNumber }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: audit.auditNumber } %}
                     {{ audit.title }}
-                    <span class="badge bg-{{ audit.status == 'completed' ? 'success' : 'primary' }}">{{ audit.status }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: audit.status == 'completed' ? 'success' : 'primary', content: audit.status } %}
                 </li>
             {% endfor %}
             </ul>
@@ -777,9 +773,9 @@
             {% for risk in inconsistentData.risks_residual_higher_than_inherent %}
                 <li>
                     {{ risk.title }}
-                    <span class="badge bg-danger">Inherent: {{ risk.inherentRiskLevel }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'Inherent: ' ~ risk.inherentRiskLevel } %}
                     →
-                    <span class="badge bg-warning">Residual: {{ risk.residualRiskLevel }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'Residual: ' ~ risk.residualRiskLevel } %}
                 </li>
             {% endfor %}
             </ul>
@@ -815,7 +811,7 @@
                 {% block table_body %}
                     {% for ref in brokenReferences %}
                     <tr class="table-danger">
-                        <td><span class="badge bg-secondary">{{ ref.entity_type }}</span></td>
+                        <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: ref.entity_type } %}</td>
                         <td>{{ ref.entity_id }}</td>
                         <td>{{ ref.entity_name }}</td>
                         <td>{{ ref.issue }}</td>
