@@ -279,9 +279,9 @@
                             <span class="label">{{ 'incident.field.cross_border_impact'|trans({}, 'incident') }}:</span>
                             <span class="value">
                                 {% if incident.isCrossBorderImpact %}
-                                    <span class="badge bg-danger">{{ 'common.yes'|trans({}, 'messages') }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'common.yes'|trans({}, 'messages') } %}
                                 {% else %}
-                                    <span class="badge bg-secondary">{{ 'common.no'|trans({}, 'messages') }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.no'|trans({}, 'messages') } %}
                                 {% endif %}
                             </span>
                         </div>
@@ -408,7 +408,7 @@
                         {% for asset in incident.affectedAssets %}
                             <div class="data-reuse-item">
                                 <strong>{{ asset.name }}</strong>
-                                <span class="badge bg-info">{{ asset.assetType }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'info', content: asset.assetType } %}
                                 <small>CIA: {{ asset.confidentialityValue }}/{{ asset.integrityValue }}/{{ asset.availabilityValue }}</small>
                                 {% if asset.monetaryValue %}
                                     <small class="text-danger">Value: €{{ asset.monetaryValue }}</small>
@@ -431,7 +431,7 @@
                                     <div class="fs-5 fw-bold">{{ incident.affectedProcessCount }}</div>
                                     <small class="text-muted">Affected Processes</small>
                                     {% if incident.hasCriticalProcessesAffected %}
-                                        <br><span class="badge bg-danger mt-1">Critical</span>
+                                        <br>{% include '_components/_badge.html.twig' with { variant: 'danger', class: 'mt-1', content: 'Critical' } %}
                                     {% endif %}
                                 </div>
                             </div>

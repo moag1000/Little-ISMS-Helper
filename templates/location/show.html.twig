@@ -17,7 +17,7 @@
     <div>
         <h1>{{ location.name }}</h1>
         <div class="mt-2">
-            <span class="badge bg-info">{{ ('location.type.' ~ location.locationType)|trans({}, 'locations') }}</span>
+            {% include '_components/_badge.html.twig' with { variant: 'info', content: ('location.type.' ~ location.locationType)|trans({}, 'locations') } %}
             {% if location.code %}
                 <code class="ml-sm">{{ location.code }}</code>
             {% endif %}
@@ -81,9 +81,9 @@
         <div class="stat-item">
             <strong>
                 {% if location.requiresBadgeAccess %}
-                    <span class="badge bg-success">{{ 'common.yes'|trans({}, 'messages') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.yes'|trans({}, 'messages') } %}
                 {% else %}
-                    <span class="badge bg-secondary">{{ 'common.no'|trans({}, 'messages') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.no'|trans({}, 'messages') } %}
                 {% endif %}
             </strong>
             <span>{{ 'location.field.badge_access'|trans({}, 'locations') }}</span>
@@ -137,7 +137,7 @@
             {% for child in location.childLocations %}
             <tr>
                 <td>{{ child.name }}</td>
-                <td><span class="badge bg-info">{{ ('location.type.' ~ child.locationType)|trans({}, 'locations') }}</span></td>
+                <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: ('location.type.' ~ child.locationType)|trans({}, 'locations') } %}</td>
                 <td>
                     {% set securityColors = {
                         'public': 'secondary',
@@ -172,9 +172,9 @@
         <div class="stat-item">
             <strong>
                 {% if location.active %}
-                    <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.active'|trans({}, 'messages') } %}
                 {% else %}
-                    <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.inactive'|trans({}, 'messages') } %}
                 {% endif %}
             </strong>
             <span>{{ 'location.field.status'|trans({}, 'locations') }}</span>
@@ -183,7 +183,7 @@
         <div class="stat-item">
             <strong>
                 {% if location.accessControlSystem %}
-                    <span class="badge bg-info">{{ location.accessControlSystem }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'info', content: location.accessControlSystem } %}
                 {% else %}
                     <span class="text-muted-color">-</span>
                 {% endif %}
