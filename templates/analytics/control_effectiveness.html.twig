@@ -24,36 +24,44 @@
     {# KPI Summary #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card border-primary h-100">
-                <div class="card-body text-center">
-                    <h2 class="text-primary">{{ dashboard.metrics.total_controls }}</h2>
-                    <p class="text-muted mb-0">{{ 'analytics.controls.kpi.total_controls'|trans({}, 'analytics') }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'border-primary h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="text-primary">{{ dashboard.metrics.total_controls }}</h2>
+                        <p class="text-muted mb-0">{{ 'analytics.controls.kpi.total_controls'|trans({}, 'analytics') }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-success h-100">
-                <div class="card-body text-center">
-                    <h2 class="text-success">{{ dashboard.metrics.implementation_rate }}%</h2>
-                    <p class="text-muted mb-0">{{ 'analytics.controls.kpi.implementation_rate'|trans({}, 'analytics') }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'border-success h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="text-success">{{ dashboard.metrics.implementation_rate }}%</h2>
+                        <p class="text-muted mb-0">{{ 'analytics.controls.kpi.implementation_rate'|trans({}, 'analytics') }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-info h-100">
-                <div class="card-body text-center">
-                    <h2 class="text-info">{{ dashboard.metrics.average_effectiveness }}%</h2>
-                    <p class="text-muted mb-0">{{ 'analytics.controls.kpi.avg_effectiveness'|trans({}, 'analytics') }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'border-info h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="text-info">{{ dashboard.metrics.average_effectiveness }}%</h2>
+                        <p class="text-muted mb-0">{{ 'analytics.controls.kpi.avg_effectiveness'|trans({}, 'analytics') }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-warning h-100">
-                <div class="card-body text-center">
-                    <h2 class="text-warning">{{ dashboard.metrics.risk_coverage }}%</h2>
-                    <p class="text-muted mb-0">{{ 'analytics.controls.kpi.risk_coverage'|trans({}, 'analytics') }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'border-warning h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="text-warning">{{ dashboard.metrics.risk_coverage }}%</h2>
+                        <p class="text-muted mb-0">{{ 'analytics.controls.kpi.risk_coverage'|trans({}, 'analytics') }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
@@ -88,38 +96,44 @@
             <div class="row">
                 {# Implementation Status Distribution #}
                 <div class="col-lg-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h5 class="mb-0">{{ 'analytics.controls.overview.status_distribution'|trans({}, 'analytics') }}</h5>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_header %}
+                            <div class="card-header">
+                                <h5 class="mb-0">{{ 'analytics.controls.overview.status_distribution'|trans({}, 'analytics') }}</h5>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div style="height: 250px; position: relative;">
                                 <canvas id="statusDistributionChart"></canvas>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 {# Category Performance #}
                 <div class="col-lg-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h5 class="mb-0">{{ 'analytics.controls.overview.category_performance'|trans({}, 'analytics') }}</h5>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_header %}
+                            <div class="card-header">
+                                <h5 class="mb-0">{{ 'analytics.controls.overview.category_performance'|trans({}, 'analytics') }}</h5>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div style="height: 250px; position: relative;">
                                 <canvas id="categoryPerformanceChart"></canvas>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </div>
 
             {# Category Table #}
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">{{ 'analytics.controls.overview.by_category'|trans({}, 'analytics') }}</h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ 'analytics.controls.overview.by_category'|trans({}, 'analytics') }}</h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
@@ -158,8 +172,8 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Performance Tab #}
@@ -167,14 +181,16 @@
             <div class="row">
                 {# Top Performing #}
                 <div class="col-lg-6 mb-4">
-                    <div class="card h-100 border-success">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0">
-                                <i class="bi bi-trophy me-2" aria-hidden="true"></i>
-                                {{ 'analytics.controls.performance.top_performing'|trans({}, 'analytics') }}
-                            </h5>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-success' } %}
+                        {% block card_header %}
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-trophy me-2" aria-hidden="true"></i>
+                                    {{ 'analytics.controls.performance.top_performing'|trans({}, 'analytics') }}
+                                </h5>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div class="table-responsive">
                                 <table class="table table-sm">
                                     <thead>
@@ -200,19 +216,21 @@
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 {# Bottom Performing #}
                 <div class="col-lg-6 mb-4">
-                    <div class="card h-100 border-danger">
-                        <div class="card-header bg-danger text-white">
-                            <h5 class="mb-0">
-                                <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
-                                {{ 'analytics.controls.performance.needs_attention'|trans({}, 'analytics') }}
-                            </h5>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-danger' } %}
+                        {% block card_header %}
+                            <div class="card-header bg-danger text-white">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+                                    {{ 'analytics.controls.performance.needs_attention'|trans({}, 'analytics') }}
+                                </h5>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div class="table-responsive">
                                 <table class="table table-sm">
                                     <thead>
@@ -240,18 +258,20 @@
                                     </tbody>
                                 </table>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </div>
 
             {# Risk Matrix #}
             {% if risk_matrix.matrix|length > 0 %}
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">{{ 'analytics.controls.performance.risk_reduction_matrix'|trans({}, 'analytics') }}</h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ 'analytics.controls.performance.risk_reduction_matrix'|trans({}, 'analytics') }}</h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="alert alert-info">
                         <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
                         {{ 'analytics.controls.performance.matrix_info'|trans({'%controls%': risk_matrix.summary.controls_with_risks, '%reduction%': risk_matrix.summary.average_reduction}, 'analytics') }}
@@ -287,8 +307,8 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
         </div>
 
@@ -296,77 +316,93 @@
         <div class="tab-pane fade" id="aging-tab" role="tabpanel">
             <div class="row mb-4">
                 <div class="col-md-2">
-                    <div class="card bg-success bg-opacity-10 border-success h-100">
-                        <div class="card-body text-center">
-                            <h3 class="text-success">{{ dashboard.aging_analysis.distribution.current }}</h3>
-                            <small class="text-muted">{{ 'analytics.controls.aging.current'|trans({}, 'analytics') }}</small>
-                        </div>
-                    </div>
+                    {% embed '_components/_card.html.twig' with { 'class': 'bg-success bg-opacity-10 border-success h-100' } %}
+                        {% block card_body %}
+                            <div class="text-center">
+                                <h3 class="text-success">{{ dashboard.aging_analysis.distribution.current }}</h3>
+                                <small class="text-muted">{{ 'analytics.controls.aging.current'|trans({}, 'analytics') }}</small>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 <div class="col-md-2">
-                    <div class="card bg-info bg-opacity-10 border-info h-100">
-                        <div class="card-body text-center">
-                            <h3 class="text-info">{{ dashboard.aging_analysis.distribution.due_soon }}</h3>
-                            <small class="text-muted">{{ 'analytics.controls.aging.due_soon'|trans({}, 'analytics') }}</small>
-                        </div>
-                    </div>
+                    {% embed '_components/_card.html.twig' with { 'class': 'bg-info bg-opacity-10 border-info h-100' } %}
+                        {% block card_body %}
+                            <div class="text-center">
+                                <h3 class="text-info">{{ dashboard.aging_analysis.distribution.due_soon }}</h3>
+                                <small class="text-muted">{{ 'analytics.controls.aging.due_soon'|trans({}, 'analytics') }}</small>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 <div class="col-md-2">
-                    <div class="card bg-warning bg-opacity-10 border-warning h-100">
-                        <div class="card-body text-center">
-                            <h3 class="text-warning">{{ dashboard.aging_analysis.distribution.overdue }}</h3>
-                            <small class="text-muted">{{ 'analytics.controls.aging.overdue'|trans({}, 'analytics') }}</small>
-                        </div>
-                    </div>
+                    {% embed '_components/_card.html.twig' with { 'class': 'bg-warning bg-opacity-10 border-warning h-100' } %}
+                        {% block card_body %}
+                            <div class="text-center">
+                                <h3 class="text-warning">{{ dashboard.aging_analysis.distribution.overdue }}</h3>
+                                <small class="text-muted">{{ 'analytics.controls.aging.overdue'|trans({}, 'analytics') }}</small>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 <div class="col-md-2">
-                    <div class="card bg-danger bg-opacity-10 border-danger h-100">
-                        <div class="card-body text-center">
-                            <h3 class="text-danger">{{ dashboard.aging_analysis.distribution.critical }}</h3>
-                            <small class="text-muted">{{ 'analytics.controls.aging.critical'|trans({}, 'analytics') }}</small>
-                        </div>
-                    </div>
+                    {% embed '_components/_card.html.twig' with { 'class': 'bg-danger bg-opacity-10 border-danger h-100' } %}
+                        {% block card_body %}
+                            <div class="text-center">
+                                <h3 class="text-danger">{{ dashboard.aging_analysis.distribution.critical }}</h3>
+                                <small class="text-muted">{{ 'analytics.controls.aging.critical'|trans({}, 'analytics') }}</small>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 <div class="col-md-2">
-                    <div class="card bg-secondary bg-opacity-10 border-secondary h-100">
-                        <div class="card-body text-center">
-                            <h3 class="text-secondary">{{ dashboard.aging_analysis.distribution.never_reviewed }}</h3>
-                            <small class="text-muted">{{ 'analytics.controls.aging.never_reviewed'|trans({}, 'analytics') }}</small>
-                        </div>
-                    </div>
+                    {% embed '_components/_card.html.twig' with { 'class': 'bg-secondary bg-opacity-10 border-secondary h-100' } %}
+                        {% block card_body %}
+                            <div class="text-center">
+                                <h3 class="text-secondary">{{ dashboard.aging_analysis.distribution.never_reviewed }}</h3>
+                                <small class="text-muted">{{ 'analytics.controls.aging.never_reviewed'|trans({}, 'analytics') }}</small>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 <div class="col-md-2">
-                    <div class="card bg-primary bg-opacity-10 border-primary h-100">
-                        <div class="card-body text-center">
-                            <h3 class="text-primary">{{ dashboard.aging_analysis.review_compliance_rate }}%</h3>
-                            <small class="text-muted">{{ 'analytics.controls.aging.compliance_rate'|trans({}, 'analytics') }}</small>
-                        </div>
-                    </div>
+                    {% embed '_components/_card.html.twig' with { 'class': 'bg-primary bg-opacity-10 border-primary h-100' } %}
+                        {% block card_body %}
+                            <div class="text-center">
+                                <h3 class="text-primary">{{ dashboard.aging_analysis.review_compliance_rate }}%</h3>
+                                <small class="text-muted">{{ 'analytics.controls.aging.compliance_rate'|trans({}, 'analytics') }}</small>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-lg-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h5 class="mb-0">{{ 'analytics.controls.aging.distribution_chart'|trans({}, 'analytics') }}</h5>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_header %}
+                            <div class="card-header">
+                                <h5 class="mb-0">{{ 'analytics.controls.aging.distribution_chart'|trans({}, 'analytics') }}</h5>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div style="height: 250px; position: relative;">
                                 <canvas id="agingDistributionChart"></canvas>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 <div class="col-lg-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header bg-warning text-dark">
-                            <h5 class="mb-0">
-                                <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
-                                {{ 'analytics.controls.aging.overdue_controls'|trans({}, 'analytics') }}
-                            </h5>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_header %}
+                            <div class="card-header bg-warning text-dark">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+                                    {{ 'analytics.controls.aging.overdue_controls'|trans({}, 'analytics') }}
+                                </h5>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             {% if dashboard.aging_analysis.overdue_controls|length > 0 %}
                             <div class="table-responsive">
                                 <table class="table table-sm">
@@ -409,23 +445,25 @@
                                 <p class="mt-2">{{ 'analytics.controls.aging.all_current'|trans({}, 'analytics') }}</p>
                             </div>
                             {% endif %}
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </div>
         </div>
 
         {# Orphans Tab #}
         <div class="tab-pane fade" id="orphans-tab" role="tabpanel">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="bi bi-exclamation-triangle text-warning me-2" aria-hidden="true"></i>
-                        {{ 'analytics.controls.orphans.title'|trans({}, 'analytics') }}
-                    </h5>
-                    <span class="badge bg-warning">{{ dashboard.orphaned_controls.count }} {{ 'analytics.controls.orphans.found'|trans({}, 'analytics') }}</span>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-exclamation-triangle text-warning me-2" aria-hidden="true"></i>
+                            {{ 'analytics.controls.orphans.title'|trans({}, 'analytics') }}
+                        </h5>
+                        <span class="badge bg-warning">{{ dashboard.orphaned_controls.count }} {{ 'analytics.controls.orphans.found'|trans({}, 'analytics') }}</span>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if dashboard.orphaned_controls.controls|length > 0 %}
                     <div class="alert alert-warning">
                         <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
@@ -467,8 +505,8 @@
                         <p class="text-muted">{{ 'analytics.controls.orphans.all_linked'|trans({}, 'analytics') }}</p>
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

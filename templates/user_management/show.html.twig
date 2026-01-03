@@ -109,13 +109,9 @@
                                 <th scope="row" width="40%">{{ 'user.label.status'|trans({}, 'user') }}</th>
                                 <td>
                                     {% if user.isActive %}
-                                        <span class="badge bg-success">
-                                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'user.status.active'|trans({}, 'user') }}
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'user.status.active'|trans({}, 'user') } %}
                                     {% else %}
-                                        <span class="badge bg-danger">
-                                            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'user.status.inactive'|trans({}, 'user') }}
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle', content: 'user.status.inactive'|trans({}, 'user') } %}
                                     {% endif %}
                                 </td>
                             </tr>
@@ -123,13 +119,9 @@
                                 <th scope="row">{{ 'user.label.verified'|trans({}, 'user') }}</th>
                                 <td>
                                     {% if user.isVerified %}
-                                        <span class="badge bg-success">
-                                            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'user.label.yes'|trans({}, 'user') }}
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'user.label.yes'|trans({}, 'user') } %}
                                     {% else %}
-                                        <span class="badge bg-warning">
-                                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'user.label.no'|trans({}, 'user') }}
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'user.label.no'|trans({}, 'user') } %}
                                     {% endif %}
                                 </td>
                             </tr>
@@ -190,15 +182,15 @@
                                             {{ role }}
                                         </span>
                                         {% if role == 'ROLE_SUPER_ADMIN' %}
-                                            <span class="badge bg-danger">Super Admin</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'Super Admin' } %}
                                         {% elseif role == 'ROLE_ADMIN' %}
-                                            <span class="badge bg-warning">Admin</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'Admin' } %}
                                         {% elseif role == 'ROLE_MANAGER' %}
-                                            <span class="badge bg-info">Manager</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'info', content: 'Manager' } %}
                                         {% elseif role == 'ROLE_AUDITOR' %}
-                                            <span class="badge bg-primary">Auditor</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'primary', content: 'Auditor' } %}
                                         {% else %}
-                                            <span class="badge bg-secondary">User</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'User' } %}
                                         {% endif %}
                                     </div>
                                 </li>
@@ -231,7 +223,7 @@
                                                 <small class="text-muted">{{ customRole.description }}</small>
                                             {% endif %}
                                         </div>
-                                        <span class="badge bg-info">{{ 'user.label.permissions_count'|trans({'%count%': customRole.permissions|length}, 'user') }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'info', content: 'user.label.permissions_count'|trans({'%count%': customRole.permissions|length}, 'user') } %}
                                     </div>
                                 </li>
                             {% endfor %}
@@ -265,9 +257,7 @@
                         <div class="row">
                             {% for permission in allPermissions %}
                                 <div class="col-md-3 mb-2">
-                                    <span class="badge bg-secondary w-100">
-                                        <i class="bi bi-check" aria-hidden="true"></i> {{ permission.name }}
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', icon: 'bi-check', class: 'w-100', content: permission.name } %}
                                 </div>
                             {% endfor %}
                         </div>

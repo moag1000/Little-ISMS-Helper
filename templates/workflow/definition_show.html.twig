@@ -16,9 +16,9 @@
             <h1>
                 <i class="bi bi-diagram-3" aria-hidden="true"></i> {{ workflow.name }}
                 {% if workflow.isActive %}
-                    <span class="badge bg-success">{{ 'workflow.status.active'|trans({}, 'workflows') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'workflow.status.active'|trans({}, 'workflows') } %}
                 {% else %}
-                    <span class="badge bg-secondary">{{ 'workflow.status.inactive'|trans({}, 'workflows') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'workflow.status.inactive'|trans({}, 'workflows') } %}
                 {% endif %}
             </h1>
         </div>
@@ -58,15 +58,15 @@
 
                         <dt class="col-sm-3">{{ 'workflow.field.entity_type'|trans({}, 'workflows') }}</dt>
                         <dd class="col-sm-9">
-                            <span class="badge bg-info">{{ workflow.entityType }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'info', content: workflow.entityType } %}
                         </dd>
 
                         <dt class="col-sm-3">{{ 'workflow.field.status'|trans({}, 'workflows') }}</dt>
                         <dd class="col-sm-9">
                             {% if workflow.isActive %}
-                                <span class="badge bg-success">{{ 'workflow.status.active'|trans({}, 'workflows') }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'workflow.status.active'|trans({}, 'workflows') } %}
                             {% else %}
-                                <span class="badge bg-secondary">{{ 'workflow.status.inactive'|trans({}, 'workflows') }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'workflow.status.inactive'|trans({}, 'workflows') } %}
                             {% endif %}
                         </dd>
 
@@ -96,7 +96,7 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h3 class="mb-1">
-                                                <span class="badge bg-primary me-2">{{ step.stepOrder }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'primary', class: 'me-2', content: step.stepOrder } %}
                                                 {{ step.name }}
                                             </h3>
                                             {% if step.description %}
@@ -108,10 +108,10 @@
                                         </div>
                                         <div>
                                             {% if step.requiresComment %}
-                                                <span class="badge bg-warning">{{ 'workflow.step.requires_comment'|trans({}, 'workflows') }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'workflow.step.requires_comment'|trans({}, 'workflows') } %}
                                             {% endif %}
                                             {% if step.requiresFileUpload %}
-                                                <span class="badge bg-info">{{ 'workflow.step.requires_file'|trans({}, 'workflows') }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'info', content: 'workflow.step.requires_file'|trans({}, 'workflows') } %}
                                             {% endif %}
                                         </div>
                                     </div>
@@ -157,13 +157,13 @@
                                         </td>
                                         <td>
                                             {% if instance.status == 'completed' %}
-                                                <span class="badge bg-success">{{ 'workflow.status.completed'|trans({}, 'workflows') }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'workflow.status.completed'|trans({}, 'workflows') } %}
                                             {% elseif instance.status == 'rejected' %}
-                                                <span class="badge bg-danger">{{ 'workflow.status.rejected'|trans({}, 'workflows') }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'workflow.status.rejected'|trans({}, 'workflows') } %}
                                             {% elseif instance.status == 'cancelled' %}
-                                                <span class="badge bg-secondary">{{ 'workflow.status.cancelled'|trans({}, 'workflows') }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'workflow.status.cancelled'|trans({}, 'workflows') } %}
                                             {% else %}
-                                                <span class="badge bg-warning">{{ 'workflow.status.pending'|trans({}, 'workflows') }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'workflow.status.pending'|trans({}, 'workflows') } %}
                                             {% endif %}
                                         </td>
                                         <td>
