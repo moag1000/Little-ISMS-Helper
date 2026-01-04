@@ -34,37 +34,39 @@
     {% endfor %}
 
     {# Data Health Summary #}
-    <div class="card mb-4 border-{% if summary.health_score >= 90 %}success{% elseif summary.health_score >= 70 %}warning{% else %}danger{% endif %}">
-        <div class="card-header bg-{% if summary.health_score >= 90 %}success{% elseif summary.health_score >= 70 %}warning{% else %}danger{% endif %} text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-heart-pulse" aria-hidden="true"></i> Data Health Score: {{ summary.health_score }}%
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-' ~ (summary.health_score >= 90 ? 'success' : (summary.health_score >= 70 ? 'warning' : 'danger')) } %}
+        {% block card_header %}
+            <div class="card-header bg-{% if summary.health_score >= 90 %}success{% elseif summary.health_score >= 70 %}warning{% else %}danger{% endif %} text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-heart-pulse" aria-hidden="true"></i> Data Health Score: {{ summary.health_score }}%
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row g-3">
                 <div class="col-md-4">
-                    <div class="card text-center {% if summary.orphaned_count > 0 %}bg-warning{% else %}bg-success{% endif %} bg-opacity-10">
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'text-center ' ~ (summary.orphaned_count > 0 ? 'bg-warning' : 'bg-success') ~ ' bg-opacity-10' } %}
+                        {% block card_body %}
                             <h3 class="text-{% if summary.orphaned_count > 0 %}warning{% else %}success{% endif %}">{{ summary.orphaned_count }}</h3>
                             <p class="mb-0"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Orphaned Entities</p>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 <div class="col-md-4">
-                    <div class="card text-center {% if summary.broken_references_count > 0 %}bg-danger{% else %}bg-success{% endif %} bg-opacity-10">
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'text-center ' ~ (summary.broken_references_count > 0 ? 'bg-danger' : 'bg-success') ~ ' bg-opacity-10' } %}
+                        {% block card_body %}
                             <h3 class="text-{% if summary.broken_references_count > 0 %}danger{% else %}success{% endif %}">{{ summary.broken_references_count }}</h3>
                             <p class="mb-0"><i class="bi bi-link-45deg" aria-hidden="true"></i> Broken References</p>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 <div class="col-md-4">
-                    <div class="card text-center {% if summary.duplicates_count > 0 %}bg-warning{% else %}bg-success{% endif %} bg-opacity-10">
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'text-center ' ~ (summary.duplicates_count > 0 ? 'bg-warning' : 'bg-success') ~ ' bg-opacity-10' } %}
+                        {% block card_body %}
                             <h3 class="text-{% if summary.duplicates_count > 0 %}warning{% else %}success{% endif %}">{{ summary.duplicates_count }}</h3>
                             <p class="mb-0"><i class="bi bi-files" aria-hidden="true"></i> Duplicates</p>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </div>
 
@@ -78,18 +80,20 @@
                     <i class="bi bi-check-circle" aria-hidden="true"></i> <strong>All systems healthy!</strong> No data integrity issues detected.
                 </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Quick Fix Tools #}
     {% if summary.orphaned_count > 0 or summary.broken_references_count > 0 %}
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-tools" aria-hidden="true"></i> Quick Fix Tools
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-tools" aria-hidden="true"></i> Quick Fix Tools
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row g-3">
                 {% if summary.orphaned_count > 0 %}
                 <div class="col-md-6"
@@ -131,18 +135,20 @@
                 </div>
                 {% endif %}
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Orphaned Entities Section #}
-    <div class="card mb-4">
-        <div class="card-header bg-warning text-dark">
-            <h2 class="mb-0">
-                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.orphaned_entities'|trans({}, 'admin') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-warning text-dark">
+                <h2 class="mb-0">
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.orphaned_entities'|trans({}, 'admin') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if orphanedAssets|length == 0 and orphanedRisks|length == 0 and orphanedIncidents|length == 0 %}
                 <div class="alert alert-success mb-0">
                     <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'admin.data_repair.no_orphans'|trans({}, 'admin') }}
@@ -342,17 +348,19 @@
                 </div>
                 {% endif %}
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Tenant Statistics #}
-    <div class="card">
-        <div class="card-header">
-            <h2 class="mb-0">
-                <i class="bi bi-building" aria-hidden="true"></i> {{ 'admin.data_repair.tenant_statistics'|trans({}, 'admin') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="mb-0">
+                    <i class="bi bi-building" aria-hidden="true"></i> {{ 'admin.data_repair.tenant_statistics'|trans({}, 'admin') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-striped',
                 'responsive': true,
@@ -390,21 +398,23 @@
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# fixAllOrphans is now handled by data-repair Stimulus controller #}
 
     {# Asset Assignment Repair for Risks #}
     {% set risksWithoutAsset = allRisks|filter(r => r.asset is null) %}
     {% if risksWithoutAsset|length > 0 %}
-    <div class="card mt-4">
-        <div class="card-header bg-warning text-dark">
-            <h2 class="mb-0">
-                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.risk_asset_assignment'|trans({}, 'admin') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-warning text-dark">
+                <h2 class="mb-0">
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.risk_asset_assignment'|trans({}, 'admin') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="alert alert-warning">
                 <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.risk_asset_assignment_desc'|trans({}, 'admin') }}
             </div>
@@ -460,20 +470,22 @@
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Asset Assignment Repair for Incidents #}
     {% set incidentsWithoutAsset = allIncidents|filter(i => i.affectedAssets|length == 0) %}
     {% if incidentsWithoutAsset|length > 0 %}
-    <div class="card mt-4">
-        <div class="card-header bg-warning text-dark">
-            <h2 class="mb-0">
-                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.incident_asset_assignment'|trans({}, 'admin') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-warning text-dark">
+                <h2 class="mb-0">
+                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'admin.data_repair.incident_asset_assignment'|trans({}, 'admin') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="alert alert-warning">
                 <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.incident_asset_assignment_desc'|trans({}, 'admin') }}
             </div>
@@ -531,19 +543,21 @@
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Controls Without Risks #}
     {% if controlsWithoutRisks|length > 0 %}
-    <div class="card mt-4">
-        <div class="card-header bg-warning text-dark">
-            <h2 class="mb-0">
-                <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'admin.data_repair.controls_without_risks'|trans({}, 'admin') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-warning text-dark">
+                <h2 class="mb-0">
+                    <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'admin.data_repair.controls_without_risks'|trans({}, 'admin') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="alert alert-warning">
                 <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.controls_without_risks_desc'|trans({}, 'admin') }}
             </div>
@@ -593,19 +607,21 @@
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Controls Without Assets #}
     {% if controlsWithoutAssets|length > 0 %}
-    <div class="card mt-4">
-        <div class="card-header bg-info text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'admin.data_repair.controls_without_assets'|trans({}, 'admin') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-info text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'admin.data_repair.controls_without_assets'|trans({}, 'admin') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="alert alert-info">
                 <strong>{{ 'common.info'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.controls_without_assets_desc'|trans({}, 'admin') }}
             </div>
@@ -655,19 +671,21 @@
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Duplicate Entities #}
     {% if duplicates.audits is defined and duplicates.audits|length > 0 %}
-    <div class="card mt-4">
-        <div class="card-header bg-warning text-dark">
-            <h2 class="mb-0">
-                <i class="bi bi-files" aria-hidden="true"></i> Duplicate Audit Numbers
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-warning text-dark">
+                <h2 class="mb-0">
+                    <i class="bi bi-files" aria-hidden="true"></i> Duplicate Audit Numbers
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="alert alert-warning">
                 <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong>
                 Found {{ duplicates.audits|length }} audit number(s) used multiple times within the same tenant.
@@ -694,18 +712,20 @@
                     </div>
                 </div>
             {% endfor %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {% if duplicates.assets is defined and duplicates.assets|length > 0 %}
-    <div class="card mt-4">
-        <div class="card-header bg-warning text-dark">
-            <h2 class="mb-0">
-                <i class="bi bi-files" aria-hidden="true"></i> Duplicate Asset Names
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-warning text-dark">
+                <h2 class="mb-0">
+                    <i class="bi bi-files" aria-hidden="true"></i> Duplicate Asset Names
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="alert alert-warning">
                 <strong>{{ 'common.warning'|trans({}, 'messages') }}:</strong>
                 Found {{ duplicates.assets|length }} asset name(s) used multiple times within the same tenant.
@@ -729,19 +749,21 @@
                     </div>
                 </div>
             {% endfor %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Inconsistent Data #}
     {% if inconsistentData.audits_completed_without_date is defined and inconsistentData.audits_completed_without_date|length > 0 %}
-    <div class="card mt-4">
-        <div class="card-header bg-info text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-calendar-x" aria-hidden="true"></i> Completed Audits Without Completion Date
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-info text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-calendar-x" aria-hidden="true"></i> Completed Audits Without Completion Date
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="alert alert-info">
                 Found {{ inconsistentData.audits_completed_without_date|length }} audit(s) marked as completed but missing actual completion date.
             </div>
@@ -754,18 +776,20 @@
                 </li>
             {% endfor %}
             </ul>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {% if inconsistentData.risks_residual_higher_than_inherent is defined and inconsistentData.risks_residual_higher_than_inherent|length > 0 %}
-    <div class="card mt-4">
-        <div class="card-header bg-info text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-exclamation-circle" aria-hidden="true"></i> Risks with Residual > Inherent
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-info text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-exclamation-circle" aria-hidden="true"></i> Risks with Residual > Inherent
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="alert alert-info">
                 Found {{ inconsistentData.risks_residual_higher_than_inherent|length }} risk(s) where residual risk is higher than inherent risk (should never happen).
             </div>
@@ -779,19 +803,21 @@
                 </li>
             {% endfor %}
             </ul>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Broken References #}
     {% if brokenReferences|length > 0 %}
-    <div class="card mt-4">
-        <div class="card-header bg-danger text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-exclamation-octagon" aria-hidden="true"></i> {{ 'admin.data_repair.broken_references'|trans({}, 'admin') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-danger text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-exclamation-octagon" aria-hidden="true"></i> {{ 'admin.data_repair.broken_references'|trans({}, 'admin') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="alert alert-danger">
                 <strong>{{ 'common.error'|trans({}, 'messages') }}:</strong> {{ 'admin.data_repair.broken_references_desc'|trans({}, 'admin') }}
             </div>
@@ -819,8 +845,8 @@
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 </div>
 {% endblock %}

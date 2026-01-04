@@ -27,26 +27,28 @@
     {# Overall Compliance Score #}
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card border-{{ overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : 'danger') }}">
-                <div class="card-body text-center py-4">
-                    <h2 class="h4 mb-3">{{ 'dora.dashboard.overall_compliance'|trans }}</h2>
-                    <div class="display-1 fw-bold text-{{ overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : 'danger') }}">
-                        {{ overall_score.score }}%
-                    </div>
-                    <div class="progress mt-3 mx-auto" style="height: 20px; max-width: 600px;">
-                        <div class="progress-bar bg-{{ overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : 'danger') }}"
-                             role="progressbar"
-                             style="width: {{ overall_score.score }}%"
-                             aria-valuenow="{{ overall_score.score }}"
-                             aria-valuemin="0"
-                             aria-valuemax="100">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ (overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : 'danger')) } %}
+                {% block card_body %}
+                    <div class="text-center py-4">
+                        <h2 class="h4 mb-3">{{ 'dora.dashboard.overall_compliance'|trans }}</h2>
+                        <div class="display-1 fw-bold text-{{ overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : 'danger') }}">
+                            {{ overall_score.score }}%
                         </div>
+                        <div class="progress mt-3 mx-auto" style="height: 20px; max-width: 600px;">
+                            <div class="progress-bar bg-{{ overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : 'danger') }}"
+                                 role="progressbar"
+                                 style="width: {{ overall_score.score }}%"
+                                 aria-valuenow="{{ overall_score.score }}"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-0">
+                            {% include '_components/_badge.html.twig' with { variant: overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : (overall_score.status == 'in_progress' ? 'info' : 'danger')), class: 'fs-6', content: ('dora.status.' ~ overall_score.status)|trans } %}
+                        </p>
                     </div>
-                    <p class="mt-3 mb-0">
-                        {% include '_components/_badge.html.twig' with { variant: overall_score.status == 'compliant' ? 'success' : (overall_score.status == 'partial' ? 'warning' : (overall_score.status == 'in_progress' ? 'info' : 'danger')), class: 'fs-6', content: ('dora.status.' ~ overall_score.status)|trans } %}
-                    </p>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
@@ -54,24 +56,26 @@
     <div class="row g-3 mb-4">
         {% for pillar, score in overall_score.pillar_scores %}
         <div class="col-md-3">
-            <div class="card h-100 border-{{ score >= 80 ? 'success' : (score >= 60 ? 'warning' : 'danger') }}">
-                <div class="card-body text-center">
-                    <div class="h6 text-muted mb-2">
-                        {% if pillar == 'ict_risk' %}
-                            <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'dora.pillar.ict_risk'|trans }}
-                        {% elseif pillar == 'incidents' %}
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dora.pillar.incidents'|trans }}
-                        {% elseif pillar == 'testing' %}
-                            <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'dora.pillar.testing'|trans }}
-                        {% elseif pillar == 'third_party' %}
-                            <i class="bi bi-building" aria-hidden="true"></i> {{ 'dora.pillar.third_party'|trans }}
-                        {% endif %}
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-' ~ (score >= 80 ? 'success' : (score >= 60 ? 'warning' : 'danger')) } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="h6 text-muted mb-2">
+                            {% if pillar == 'ict_risk' %}
+                                <i class="bi bi-shield-exclamation" aria-hidden="true"></i> {{ 'dora.pillar.ict_risk'|trans }}
+                            {% elseif pillar == 'incidents' %}
+                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'dora.pillar.incidents'|trans }}
+                            {% elseif pillar == 'testing' %}
+                                <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'dora.pillar.testing'|trans }}
+                            {% elseif pillar == 'third_party' %}
+                                <i class="bi bi-building" aria-hidden="true"></i> {{ 'dora.pillar.third_party'|trans }}
+                            {% endif %}
+                        </div>
+                        <div class="display-5 fw-bold text-{{ score >= 80 ? 'success' : (score >= 60 ? 'warning' : 'danger') }}">
+                            {{ score }}%
+                        </div>
                     </div>
-                    <div class="display-5 fw-bold text-{{ score >= 80 ? 'success' : (score >= 60 ? 'warning' : 'danger') }}">
-                        {{ score }}%
-                    </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         {% endfor %}
     </div>
@@ -80,14 +84,16 @@
     <div class="row g-4">
         {# PILLAR 1: ICT Risk Management #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header bg-primary bg-opacity-10">
-                    <h3 class="card-title h5 mb-0">
-                        <i class="bi bi-shield-exclamation me-2" aria-hidden="true"></i>{{ 'dora.pillar.ict_risk'|trans }}
-                    </h3>
-                    <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '5-16'}) }}</small>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary bg-opacity-10">
+                        <h3 class="card-title h5 mb-0">
+                            <i class="bi bi-shield-exclamation me-2" aria-hidden="true"></i>{{ 'dora.pillar.ict_risk'|trans }}
+                        </h3>
+                        <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '5-16'}) }}</small>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row g-3">
                         <div class="col-6">
                             <div class="border rounded p-3 text-center">
@@ -135,20 +141,22 @@
                             <small>{{ ict_risk.control_implementation_rate }}%</small>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# PILLAR 2: ICT Incident Management #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header bg-warning bg-opacity-10">
-                    <h3 class="card-title h5 mb-0">
-                        <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ 'dora.pillar.incidents'|trans }}
-                    </h3>
-                    <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '17-23'}) }}</small>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header bg-warning bg-opacity-10">
+                        <h3 class="card-title h5 mb-0">
+                            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>{{ 'dora.pillar.incidents'|trans }}
+                        </h3>
+                        <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '17-23'}) }}</small>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row g-3">
                         <div class="col-6">
                             <div class="border rounded p-3 text-center">
@@ -186,20 +194,22 @@
                         <strong>{{ 'dora.metric.4h_reporting'|trans }}:</strong> {{ incidents.reporting_compliance_rate }}%
                         <small class="d-block">{{ 'dora.article_19_hint'|trans }}</small>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# PILLAR 3: Digital Operational Resilience Testing #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header bg-info bg-opacity-10">
-                    <h3 class="card-title h5 mb-0">
-                        <i class="bi bi-clipboard-check me-2" aria-hidden="true"></i>{{ 'dora.pillar.testing'|trans }}
-                    </h3>
-                    <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '24-27'}) }}</small>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header bg-info bg-opacity-10">
+                        <h3 class="card-title h5 mb-0">
+                            <i class="bi bi-clipboard-check me-2" aria-hidden="true"></i>{{ 'dora.pillar.testing'|trans }}
+                        </h3>
+                        <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '24-27'}) }}</small>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row g-3">
                         <div class="col-6">
                             <div class="border rounded p-3 text-center">
@@ -233,20 +243,22 @@
                         <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
                         {{ 'dora.testing_requirement'|trans }}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# PILLAR 4: ICT Third-Party Risk Management #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header bg-secondary bg-opacity-10">
-                    <h3 class="card-title h5 mb-0">
-                        <i class="bi bi-building me-2" aria-hidden="true"></i>{{ 'dora.pillar.third_party'|trans }}
-                    </h3>
-                    <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '28-44'}) }}</small>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header bg-secondary bg-opacity-10">
+                        <h3 class="card-title h5 mb-0">
+                            <i class="bi bi-building me-2" aria-hidden="true"></i>{{ 'dora.pillar.third_party'|trans }}
+                        </h3>
+                        <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '28-44'}) }}</small>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row g-3">
                         <div class="col-6">
                             <div class="border rounded p-3 text-center">
@@ -295,8 +307,8 @@
                             <small>{{ third_party.exit_strategy_rate }}%</small>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
@@ -304,14 +316,16 @@
     {% if information_sharing.controls_total > 0 %}
     <div class="row mt-4">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header bg-success bg-opacity-10">
-                    <h3 class="card-title h5 mb-0">
-                        <i class="bi bi-share me-2" aria-hidden="true"></i>{{ 'dora.pillar.information_sharing'|trans }}
-                    </h3>
-                    <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '45'}) }}</small>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-success bg-opacity-10">
+                        <h3 class="card-title h5 mb-0">
+                            <i class="bi bi-share me-2" aria-hidden="true"></i>{{ 'dora.pillar.information_sharing'|trans }}
+                        </h3>
+                        <small class="text-muted">{{ 'dora.articles'|trans({'%articles%': '45'}) }}</small>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row align-items-center">
                         <div class="col-md-4 text-center">
                             <div class="display-4 text-{{ information_sharing.implementation_rate >= 80 ? 'success' : 'warning' }}">
@@ -331,8 +345,8 @@
                             </small>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
     {% endif %}
@@ -340,13 +354,15 @@
     {# Quick Actions #}
     <div class="row mt-4">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title h5 mb-0">
-                        <i class="bi bi-lightning me-2" aria-hidden="true"></i>{{ 'dora.quick_actions'|trans }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="card-title h5 mb-0">
+                            <i class="bi bi-lightning me-2" aria-hidden="true"></i>{{ 'dora.quick_actions'|trans }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row g-3">
                         <div class="col-md-3">
                             <a href="{{ path('app_risk_index') }}" class="btn btn-outline-primary w-100">
@@ -369,8 +385,8 @@
                             </a>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

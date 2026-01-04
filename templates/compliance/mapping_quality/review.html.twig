@@ -26,24 +26,24 @@
     </div>
 
     {# Mapping Overview #}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'mapping_review.section.overview'|trans({}, 'compliance') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="mb-0"><i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'mapping_review.section.overview'|trans({}, 'compliance') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row">
                 <div class="col-md-5">
                     <p class="fw-bold text-muted">{{ 'mapping_review.field.source_requirement'|trans({}, 'compliance') }}</p>
-                    <p class="fw-bold"><span class="badge bg-primary">{{ mapping.sourceRequirement.framework.code }}</span> {{ mapping.sourceRequirement.requirementId }}</p>
+                    <p class="fw-bold">{% include '_components/_badge.html.twig' with { variant: 'primary', content: mapping.sourceRequirement.framework.code } %} {{ mapping.sourceRequirement.requirementId }}</p>
                     <p><strong>{{ mapping.sourceRequirement.title }}</strong></p>
                     <p class="text-muted small">{{ mapping.sourceRequirement.description|slice(0, 200) }}...</p>
                     {% if mapping.sourceRequirement.category %}
-                        <span class="badge bg-info">{{ mapping.sourceRequirement.category }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'info', content: mapping.sourceRequirement.category } %}
                     {% endif %}
                     {% if mapping.sourceRequirement.priority %}
-                        <span class="badge bg-{{ mapping.sourceRequirement.priority == 'critical' ? 'danger' : (mapping.sourceRequirement.priority == 'high' ? 'warning' : 'secondary') }}">
-                            {{ mapping.sourceRequirement.priority|upper }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: mapping.sourceRequirement.priority == 'critical' ? 'danger' : (mapping.sourceRequirement.priority == 'high' ? 'warning' : 'secondary'), content: mapping.sourceRequirement.priority|upper } %}
                     {% endif %}
                 </div>
                 <div class="col-md-2 text-center d-flex align-items-center justify-content-center">
@@ -51,61 +51,59 @@
                 </div>
                 <div class="col-md-5">
                     <p class="fw-bold text-muted">{{ 'mapping_review.field.target_requirement'|trans({}, 'compliance') }}</p>
-                    <p class="fw-bold"><span class="badge bg-success">{{ mapping.targetRequirement.framework.code }}</span> {{ mapping.targetRequirement.requirementId }}</p>
+                    <p class="fw-bold">{% include '_components/_badge.html.twig' with { variant: 'success', content: mapping.targetRequirement.framework.code } %} {{ mapping.targetRequirement.requirementId }}</p>
                     <p><strong>{{ mapping.targetRequirement.title }}</strong></p>
                     <p class="text-muted small">{{ mapping.targetRequirement.description|slice(0, 200) }}...</p>
                     {% if mapping.targetRequirement.category %}
-                        <span class="badge bg-info">{{ mapping.targetRequirement.category }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'info', content: mapping.targetRequirement.category } %}
                     {% endif %}
                     {% if mapping.targetRequirement.priority %}
-                        <span class="badge bg-{{ mapping.targetRequirement.priority == 'critical' ? 'danger' : (mapping.targetRequirement.priority == 'high' ? 'warning' : 'secondary') }}">
-                            {{ mapping.targetRequirement.priority|upper }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: mapping.targetRequirement.priority == 'critical' ? 'danger' : (mapping.targetRequirement.priority == 'high' ? 'warning' : 'secondary'), content: mapping.targetRequirement.priority|upper } %}
                     {% endif %}
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Quality Metrics #}
     <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-header"><h2 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'mapping_review.section.percentages'|trans({}, 'compliance') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header"><h2 class="mb-0"><i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'mapping_review.section.percentages'|trans({}, 'compliance') }}</h2></div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="mb-3">
                         <small class="text-muted">{{ 'mapping_review.field.original_heuristic'|trans({}, 'compliance') }}</small>
-                        <p class="fw-bold fs-4"><span class="badge bg-secondary">{{ mapping.mappingPercentage }}%</span></p>
+                        <p class="fw-bold fs-4">{% include '_components/_badge.html.twig' with { variant: 'secondary', content: mapping.mappingPercentage ~ '%' } %}</p>
                     </div>
                     {% if mapping.calculatedPercentage is not null %}
                     <div class="mb-3">
                         <small class="text-muted">{{ 'mapping_review.field.calculated_auto'|trans({}, 'compliance') }}</small>
-                        <p class="fw-bold fs-4"><span class="badge {% if mapping.calculatedPercentage >= 70 %}bg-success{% elseif mapping.calculatedPercentage >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
-                            {{ mapping.calculatedPercentage }}%
-                        </span></p>
+                        <p class="fw-bold fs-4">{% include '_components/_badge.html.twig' with { variant: mapping.calculatedPercentage >= 70 ? 'success' : (mapping.calculatedPercentage >= 50 ? 'warning' : 'danger'), content: mapping.calculatedPercentage ~ '%' } %}</p>
                     </div>
                     {% endif %}
                     {% if mapping.manualPercentage is not null %}
                     <div>
                         <small class="text-muted">{{ 'mapping_review.field.manual_override'|trans({}, 'compliance') }}</small>
-                        <p class="fw-bold fs-4"><span class="badge bg-info">{{ mapping.manualPercentage }}%</span></p>
+                        <p class="fw-bold fs-4">{% include '_components/_badge.html.twig' with { variant: 'info', content: mapping.manualPercentage ~ '%' } %}</p>
                     </div>
                     {% endif %}
                     <hr>
                     <div>
                         <strong>{{ 'mapping_review.field.final'|trans({}, 'compliance') }}:</strong>
-                        <p class="fw-bold fs-3"><span class="badge bg-primary">{{ mapping.finalPercentage }}%</span></p>
+                        <p class="fw-bold fs-3">{% include '_components/_badge.html.twig' with { variant: 'primary', content: mapping.finalPercentage ~ '%' } %}</p>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-header"><h3 class="mb-0 h5"><i class="bi bi-star" aria-hidden="true"></i> {{ 'mapping_review.section.quality_confidence'|trans({}, 'compliance') }}</h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header"><h3 class="mb-0 h5"><i class="bi bi-star" aria-hidden="true"></i> {{ 'mapping_review.section.quality_confidence'|trans({}, 'compliance') }}</h3></div>
+                {% endblock %}
+                {% block card_body %}
                     {% if mapping.qualityScore is not null %}
                     <div class="mb-3">
                         <small class="text-muted">{{ 'mapping_review.field.quality_score'|trans({}, 'compliance') }}</small>
@@ -131,22 +129,23 @@
                     <hr>
                     <div>
                         <strong>{{ 'mapping_review.field.review_status'|trans({}, 'compliance') }}:</strong>
-                        <span class="badge bg-{{ mapping.reviewStatusBadgeClass }}">{{ mapping.reviewStatus }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: mapping.reviewStatusBadgeClass, content: mapping.reviewStatus } %}
                     </div>
                     {% if mapping.requiresReview %}
                         <div class="mt-2">
-                            <span class="badge bg-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'mapping_review.field.requires_review'|trans({}, 'compliance') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'mapping_review.field.requires_review'|trans({}, 'compliance') } %}
                         </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-header"><h4 class="mb-0 h5"><i class="bi bi-activity" aria-hidden="true"></i> {{ 'mapping_review.section.similarity_scores'|trans({}, 'compliance') }}</h4>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header"><h4 class="mb-0 h5"><i class="bi bi-activity" aria-hidden="true"></i> {{ 'mapping_review.section.similarity_scores'|trans({}, 'compliance') }}</h4></div>
+                {% endblock %}
+                {% block card_body %}
                     {% if mapping.textualSimilarity is not null %}
                     <div class="mb-2">
                         <small>{{ 'mapping_review.field.textual_similarity'|trans({}, 'compliance') }}</small>
@@ -181,18 +180,20 @@
                         <hr>
                         <small class="text-muted">{{ 'mapping_review.field.algorithm_version'|trans({'%version%': mapping.analysisAlgorithmVersion}, 'compliance') }}</small>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Gap Items #}
     {% if gap_items is not empty %}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h3 class="mb-0"><i class="bi bi-search" aria-hidden="true"></i> {{ 'mapping_review.gap.count'|trans({'%count%': gap_items|length}, 'compliance') }}</h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h3 class="mb-0"><i class="bi bi-search" aria-hidden="true"></i> {{ 'mapping_review.gap.count'|trans({'%count%': gap_items|length}, 'compliance') }}</h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if gap_summary %}
                 <div class="alert alert-warning">
                     <strong>{{ 'mapping_review.gap.total_impact'|trans({}, 'compliance') }}:</strong> {{ gap_summary.total_impact }}% |
@@ -202,29 +203,31 @@
             {% endif %}
 
             {% for gap in gap_items %}
-            <div class="card mb-3 {% if gap.priority == 'critical' %}border-danger{% elseif gap.priority == 'high' %}border-warning{% endif %}">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span>
-                            <span class="badge bg-{{ gap.priorityBadgeClass }}">{{ gap.priority|upper }}</span>
-                            <strong>{{ gap.gapTypeLabel }}</strong>
-                        </span>
-                        <span>
-                            <span class="badge bg-{{ gap.statusBadgeClass }}">{{ gap.status }}</span>
-                            {% if gap.percentageImpact > 0 %}
-                                <span class="badge bg-danger">-{{ gap.percentageImpact }}%</span>
-                            {% endif %}
-                        </span>
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-3' ~ (gap.priority == 'critical' ? ' border-danger' : (gap.priority == 'high' ? ' border-warning' : '')) } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>
+                                {% include '_components/_badge.html.twig' with { variant: gap.priorityBadgeClass, content: gap.priority|upper } %}
+                                <strong>{{ gap.gapTypeLabel }}</strong>
+                            </span>
+                            <span>
+                                {% include '_components/_badge.html.twig' with { variant: gap.statusBadgeClass, content: gap.status } %}
+                                {% if gap.percentageImpact > 0 %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: '-' ~ gap.percentageImpact ~ '%' } %}
+                                {% endif %}
+                            </span>
+                        </div>
                     </div>
-                </div>
-                <div class="card-body">
+                {% endblock %}
+                {% block card_body %}
                     <p>{{ gap.description }}</p>
 
                     {% if gap.missingKeywords is not empty %}
                         <div class="mb-2">
                             <small class="text-muted">{{ 'mapping_review.gap.missing_keywords'|trans({}, 'compliance') }}:</small><br>
                             {% for keyword in gap.missingKeywords|slice(0, 10) %}
-                                <span class="badge bg-light">{{ keyword }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'light', content: keyword } %}
                             {% endfor %}
                             {% if gap.missingKeywords|length > 10 %}
                                 <span class="text-muted">{{ 'mapping_review.gap.more_keywords'|trans({'%count%': gap.missingKeywords|length - 10}, 'compliance') }}</span>
@@ -246,11 +249,11 @@
                             {{ 'mapping_review.gap.source'|trans({}, 'compliance') }}: {{ gap.identificationSource }}
                         </small>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
             {% endfor %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% else %}
         <div class="alert alert-success">
             <div class="fw-bold"><i class="bi bi-check-circle text-success" aria-hidden="true"></i> {{ 'mapping_review.gap.no_gaps'|trans({}, 'compliance') }}</div>
@@ -259,11 +262,13 @@
     {% endif %}
 
     {# Review Form #}
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h3 class="mb-0"><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ 'mapping_review.section.perform_review'|trans({}, 'compliance') }}</h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0"><i class="bi bi-pencil-square" aria-hidden="true"></i> {{ 'mapping_review.section.perform_review'|trans({}, 'compliance') }}</h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <form id="reviewForm">
                 <div class="row">
                     <div class="col-md-4">
@@ -301,15 +306,16 @@
             </form>
 
             <div id="reviewResult" class="mt-3"></div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Metadata #}
     {% if mapping.reviewedBy or mapping.verifiedBy %}
-    <div class="card">
-        <div class="card-header"><h3 class="mb-0 h5"><i class="bi bi-info-circle text-info" aria-hidden="true"></i> {{ 'mapping_review.section.metadata'|trans({}, 'compliance') }}</h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header"><h3 class="mb-0 h5"><i class="bi bi-info-circle text-info" aria-hidden="true"></i> {{ 'mapping_review.section.metadata'|trans({}, 'compliance') }}</h3></div>
+        {% endblock %}
+        {% block card_body %}
             {% if mapping.reviewedBy %}
                 <p><strong>{{ 'mapping_review.metadata.reviewed_by'|trans({}, 'compliance') }}:</strong> {{ mapping.reviewedBy }} {{ 'mapping_review.metadata.at'|trans({}, 'compliance') }} {{ mapping.reviewedAt|date('d.m.Y H:i') }}</p>
             {% endif %}
@@ -320,8 +326,8 @@
             {% if mapping.updatedAt %}
                 <p><strong>{{ 'mapping_review.metadata.updated'|trans({}, 'compliance') }}:</strong> {{ mapping.updatedAt|date('d.m.Y H:i') }}</p>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 </div>
 
