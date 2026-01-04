@@ -58,32 +58,28 @@
             'revoked': 'danger'
         }[consent.status] ?? 'secondary' %}
 
-        <span class="badge bg-{{ statusBadgeClass }} me-2" style="font-size: 1rem; padding: 0.5rem 0.75rem;">
-            {{ ('consent.status.' ~ consent.status)|trans({}, 'consent') }}
-        </span>
+        {% include '_components/_badge.html.twig' with { variant: statusBadgeClass, class: 'me-2 fs-6 px-3 py-2', content: ('consent.status.' ~ consent.status)|trans({}, 'consent') } %}
 
         {% if consent.verifiedBy %}
-        <span class="badge bg-info me-2" style="font-size: 1rem; padding: 0.5rem 0.75rem;">
-            <i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'consent.verified'|trans({}, 'consent') }}
-        </span>
+        {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'bi-check-circle', class: 'me-2 fs-6 px-3 py-2', content: 'consent.verified'|trans({}, 'consent') } %}
         {% endif %}
 
         {% if consent.revokedAt %}
-        <span class="badge bg-danger" style="font-size: 1rem; padding: 0.5rem 0.75rem;">
-            <i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'consent.revoked'|trans({}, 'consent') }}
-        </span>
+        {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle', class: 'fs-6 px-3 py-2', content: 'consent.revoked'|trans({}, 'consent') } %}
         {% endif %}
     </div>
 
     {# Data Subject Section #}
-    <div class="card mb-4">
-        <div class="card-header bg-light">
-            <h2 class="mb-0">
-                <i class="bi bi-person" aria-hidden="true"></i>
-                {{ 'consent.section.data_subject'|trans({}, 'consent') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-light">
+                <h2 class="mb-0">
+                    <i class="bi bi-person" aria-hidden="true"></i>
+                    {{ 'consent.section.data_subject'|trans({}, 'consent') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row">
                 <div class="col-md-6">
                     <div class="detail-item">
@@ -98,18 +94,20 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Processing Activity Section #}
-    <div class="card mb-4">
-        <div class="card-header bg-light">
-            <h2 class="mb-0">
-                <i class="bi bi-gear" aria-hidden="true"></i>
-                {{ 'consent.section.processing_activity'|trans({}, 'consent') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-light">
+                <h2 class="mb-0">
+                    <i class="bi bi-gear" aria-hidden="true"></i>
+                    {{ 'consent.section.processing_activity'|trans({}, 'consent') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row">
                 <div class="col-md-6">
                     <div class="detail-item">
@@ -130,18 +128,20 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Consent Grant Section #}
-    <div class="card mb-4">
-        <div class="card-header bg-light">
-            <h2 class="mb-0">
-                <i class="bi bi-check-circle" aria-hidden="true"></i>
-                {{ 'consent.section.consent_grant'|trans({}, 'consent') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-light">
+                <h2 class="mb-0">
+                    <i class="bi bi-check-circle" aria-hidden="true"></i>
+                    {{ 'consent.section.consent_grant'|trans({}, 'consent') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row">
                 <div class="col-md-4">
                     <div class="detail-item">
@@ -174,18 +174,20 @@
                 </div>
             </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Proof Documentation Section #}
-    <div class="card mb-4">
-        <div class="card-header bg-light">
-            <h2 class="mb-0">
-                <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
-                {{ 'consent.section.proof_documentation'|trans({}, 'consent') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-light">
+                <h2 class="mb-0">
+                    <i class="bi bi-file-earmark-pdf" aria-hidden="true"></i>
+                    {{ 'consent.section.proof_documentation'|trans({}, 'consent') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if consent.proofDocument %}
             <div class="detail-item">
                 <span class="label">{{ 'consent.field.proof_document'|trans({}, 'consent') }}:</span>
@@ -201,36 +203,40 @@
                 {{ 'consent.no_proof_document'|trans({}, 'consent') }}
             </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Expiry Section #}
     {% if consent.expiresAt %}
-    <div class="card mb-4">
-        <div class="card-header bg-light">
-            <h2 class="mb-0">
-                <i class="bi bi-calendar-event" aria-hidden="true"></i>
-                {{ 'consent.section.expiry'|trans({}, 'consent') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-light">
+                <h2 class="mb-0">
+                    <i class="bi bi-calendar-event" aria-hidden="true"></i>
+                    {{ 'consent.section.expiry'|trans({}, 'consent') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="detail-item">
                 <span class="label">{{ 'consent.field.expires_at'|trans({}, 'consent') }}:</span>
                 <span class="value">{{ consent.expiresAt|date('d.m.Y') }}</span>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# DPO Verification Section #}
-    <div class="card mb-4">
-        <div class="card-header bg-light">
-            <h2 class="mb-0">
-                <i class="bi bi-shield-check" aria-hidden="true"></i>
-                {{ 'consent.section.dpo_verification'|trans({}, 'consent') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-light">
+                <h2 class="mb-0">
+                    <i class="bi bi-shield-check" aria-hidden="true"></i>
+                    {{ 'consent.section.dpo_verification'|trans({}, 'consent') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if consent.verifiedBy %}
             <div class="alert alert-success mb-0">
                 <div class="d-flex align-items-center">
@@ -252,19 +258,21 @@
                 {{ 'consent.not_verified'|trans({}, 'consent') }}
             </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Revocation Section #}
     {% if consent.revokedAt %}
-    <div class="card mb-4">
-        <div class="card-header bg-light">
-            <h2 class="mb-0">
-                <i class="bi bi-x-circle" aria-hidden="true"></i>
-                {{ 'consent.section.revocation'|trans({}, 'consent') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-light">
+                <h2 class="mb-0">
+                    <i class="bi bi-x-circle" aria-hidden="true"></i>
+                    {{ 'consent.section.revocation'|trans({}, 'consent') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="alert alert-danger mb-0">
                 <strong>{{ 'consent.revoked'|trans({}, 'consent') }}</strong>
                 <br>
@@ -274,36 +282,40 @@
                 <small>{{ 'consent.revocation_reason'|trans({}, 'consent') }}: {{ consent.revocationReason }}</small>
                 {% endif %}
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Notes Section #}
     {% if consent.notes %}
-    <div class="card mb-4">
-        <div class="card-header bg-light">
-            <h2 class="mb-0">
-                <i class="bi bi-sticky" aria-hidden="true"></i>
-                {{ 'consent.section.notes'|trans({}, 'consent') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-light">
+                <h2 class="mb-0">
+                    <i class="bi bi-sticky" aria-hidden="true"></i>
+                    {{ 'consent.section.notes'|trans({}, 'consent') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="bg-light p-3 rounded">
                 {{ consent.notes }}
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Metadata Section #}
-    <div class="card mb-4">
-        <div class="card-header bg-light">
-            <h2 class="mb-0">
-                <i class="bi bi-info-circle" aria-hidden="true"></i>
-                {{ 'consent.section.metadata'|trans({}, 'consent') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-light">
+                <h2 class="mb-0">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i>
+                    {{ 'consent.section.metadata'|trans({}, 'consent') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row">
                 <div class="col-md-6">
                     <div class="detail-item">
@@ -326,8 +338,8 @@
                 </div>
                 {% endif %}
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 {# Verify Modal #}
