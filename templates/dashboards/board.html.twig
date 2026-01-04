@@ -32,15 +32,12 @@
             <div class="card h-100 {% if dashboard.rag_status.security == 'green' %}border-success{% elseif dashboard.rag_status.security == 'amber' %}border-warning{% else %}border-danger{% endif %}">
                 <div class="card-body text-center">
                     <div class="mb-2">
-                        <span class="badge rounded-pill {% if dashboard.rag_status.security == 'green' %}bg-success{% elseif dashboard.rag_status.security == 'amber' %}bg-warning{% else %}bg-danger{% endif %} fs-5 px-3 py-2">
-                            {% if dashboard.rag_status.security == 'green' %}
-                                <i class="bi bi-check-circle" aria-hidden="true"></i>
-                            {% elseif dashboard.rag_status.security == 'amber' %}
-                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                            {% else %}
-                                <i class="bi bi-x-circle" aria-hidden="true"></i>
-                            {% endif %}
-                        </span>
+                        {% include '_components/_badge.html.twig' with {
+                            variant: dashboard.rag_status.security == 'green' ? 'success' : (dashboard.rag_status.security == 'amber' ? 'warning' : 'danger'),
+                            icon: dashboard.rag_status.security == 'green' ? 'bi-check-circle' : (dashboard.rag_status.security == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle'),
+                            pill: true,
+                            class: 'fs-5 px-3 py-2'
+                        } %}
                     </div>
                     <h5 class="mb-1">{{ 'board.rag.security'|trans({}, 'dashboards') }}</h5>
                     <small class="text-muted">{{ dashboard.rag_details.security }}</small>
@@ -51,15 +48,12 @@
             <div class="card h-100 {% if dashboard.rag_status.compliance == 'green' %}border-success{% elseif dashboard.rag_status.compliance == 'amber' %}border-warning{% else %}border-danger{% endif %}">
                 <div class="card-body text-center">
                     <div class="mb-2">
-                        <span class="badge rounded-pill {% if dashboard.rag_status.compliance == 'green' %}bg-success{% elseif dashboard.rag_status.compliance == 'amber' %}bg-warning{% else %}bg-danger{% endif %} fs-5 px-3 py-2">
-                            {% if dashboard.rag_status.compliance == 'green' %}
-                                <i class="bi bi-check-circle" aria-hidden="true"></i>
-                            {% elseif dashboard.rag_status.compliance == 'amber' %}
-                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                            {% else %}
-                                <i class="bi bi-x-circle" aria-hidden="true"></i>
-                            {% endif %}
-                        </span>
+                        {% include '_components/_badge.html.twig' with {
+                            variant: dashboard.rag_status.compliance == 'green' ? 'success' : (dashboard.rag_status.compliance == 'amber' ? 'warning' : 'danger'),
+                            icon: dashboard.rag_status.compliance == 'green' ? 'bi-check-circle' : (dashboard.rag_status.compliance == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle'),
+                            pill: true,
+                            class: 'fs-5 px-3 py-2'
+                        } %}
                     </div>
                     <h5 class="mb-1">{{ 'board.rag.compliance'|trans({}, 'dashboards') }}</h5>
                     <small class="text-muted">{{ dashboard.rag_details.compliance }}</small>
@@ -70,15 +64,12 @@
             <div class="card h-100 {% if dashboard.rag_status.risk == 'green' %}border-success{% elseif dashboard.rag_status.risk == 'amber' %}border-warning{% else %}border-danger{% endif %}">
                 <div class="card-body text-center">
                     <div class="mb-2">
-                        <span class="badge rounded-pill {% if dashboard.rag_status.risk == 'green' %}bg-success{% elseif dashboard.rag_status.risk == 'amber' %}bg-warning{% else %}bg-danger{% endif %} fs-5 px-3 py-2">
-                            {% if dashboard.rag_status.risk == 'green' %}
-                                <i class="bi bi-check-circle" aria-hidden="true"></i>
-                            {% elseif dashboard.rag_status.risk == 'amber' %}
-                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                            {% else %}
-                                <i class="bi bi-x-circle" aria-hidden="true"></i>
-                            {% endif %}
-                        </span>
+                        {% include '_components/_badge.html.twig' with {
+                            variant: dashboard.rag_status.risk == 'green' ? 'success' : (dashboard.rag_status.risk == 'amber' ? 'warning' : 'danger'),
+                            icon: dashboard.rag_status.risk == 'green' ? 'bi-check-circle' : (dashboard.rag_status.risk == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle'),
+                            pill: true,
+                            class: 'fs-5 px-3 py-2'
+                        } %}
                     </div>
                     <h5 class="mb-1">{{ 'board.rag.risk'|trans({}, 'dashboards') }}</h5>
                     <small class="text-muted">{{ dashboard.rag_details.risk }}</small>
@@ -89,15 +80,12 @@
             <div class="card h-100 {% if dashboard.rag_status.operations == 'green' %}border-success{% elseif dashboard.rag_status.operations == 'amber' %}border-warning{% else %}border-danger{% endif %}">
                 <div class="card-body text-center">
                     <div class="mb-2">
-                        <span class="badge rounded-pill {% if dashboard.rag_status.operations == 'green' %}bg-success{% elseif dashboard.rag_status.operations == 'amber' %}bg-warning{% else %}bg-danger{% endif %} fs-5 px-3 py-2">
-                            {% if dashboard.rag_status.operations == 'green' %}
-                                <i class="bi bi-check-circle" aria-hidden="true"></i>
-                            {% elseif dashboard.rag_status.operations == 'amber' %}
-                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                            {% else %}
-                                <i class="bi bi-x-circle" aria-hidden="true"></i>
-                            {% endif %}
-                        </span>
+                        {% include '_components/_badge.html.twig' with {
+                            variant: dashboard.rag_status.operations == 'green' ? 'success' : (dashboard.rag_status.operations == 'amber' ? 'warning' : 'danger'),
+                            icon: dashboard.rag_status.operations == 'green' ? 'bi-check-circle' : (dashboard.rag_status.operations == 'amber' ? 'bi-exclamation-triangle' : 'bi-x-circle'),
+                            pill: true,
+                            class: 'fs-5 px-3 py-2'
+                        } %}
                     </div>
                     <h5 class="mb-1">{{ 'board.rag.operations'|trans({}, 'dashboards') }}</h5>
                     <small class="text-muted">{{ dashboard.rag_details.operations }}</small>
@@ -256,9 +244,10 @@
                                         <h6 class="mb-1">{{ milestone.title }}</h6>
                                         <small class="text-muted">{{ milestone.type }}</small>
                                     </div>
-                                    <span class="badge bg-{% if milestone.status == 'on_track' %}success{% elseif milestone.status == 'at_risk' %}warning{% else %}danger{% endif %}">
-                                        {{ milestone.date|date('d.m.Y') }}
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with {
+                                        variant: milestone.status == 'on_track' ? 'success' : (milestone.status == 'at_risk' ? 'warning' : 'danger'),
+                                        content: milestone.date|date('d.m.Y')
+                                    } %}
                                 </div>
                             </div>
                             {% endfor %}
@@ -280,7 +269,7 @@
                         <i class="bi bi-exclamation-circle text-danger me-2" aria-hidden="true"></i>
                         {{ 'board.section.attention_required'|trans({}, 'dashboards') }}
                     </h5>
-                    <span class="badge bg-danger">{{ dashboard.attention_items|length }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: dashboard.attention_items|length } %}
                 </div>
                 <div class="card-body p-0">
                     {% if dashboard.attention_items|length > 0 %}
@@ -289,9 +278,11 @@
                             <div class="list-group-item">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
-                                        <span class="badge bg-{% if item.priority == 'critical' %}danger{% elseif item.priority == 'high' %}warning{% else %}secondary{% endif %} me-2">
-                                            {{ item.priority|upper }}
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with {
+                                            variant: item.priority == 'critical' ? 'danger' : (item.priority == 'high' ? 'warning' : 'secondary'),
+                                            content: item.priority|upper,
+                                            class: 'me-2'
+                                        } %}
                                         <strong>{{ item.title }}</strong>
                                         <p class="mb-0 mt-1 text-muted small">{{ item.description }}</p>
                                     </div>
@@ -333,9 +324,10 @@
                         {% for initiative in dashboard.resources.initiatives %}
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <span>{{ initiative.name }}</span>
-                            <span class="badge bg-{% if initiative.status == 'on_track' %}success{% elseif initiative.status == 'at_risk' %}warning{% else %}danger{% endif %}">
-                                {{ initiative.progress }}%
-                            </span>
+                            {% include '_components/_badge.html.twig' with {
+                                variant: initiative.status == 'on_track' ? 'success' : (initiative.status == 'at_risk' ? 'warning' : 'danger'),
+                                content: initiative.progress ~ '%'
+                            } %}
                         </div>
                         <div class="progress mb-3" style="height: 6px;">
                             <div class="progress-bar bg-{% if initiative.status == 'on_track' %}success{% elseif initiative.status == 'at_risk' %}warning{% else %}danger{% endif %}"
@@ -392,11 +384,10 @@
                                         {% endif %}
                                     </td>
                                     <td class="text-center">
-                                        {% if metric.on_target %}
-                                            <span class="badge bg-success">{{ metric.target }}{{ metric.unit }}</span>
-                                        {% else %}
-                                            <span class="badge bg-warning">{{ metric.target }}{{ metric.unit }}</span>
-                                        {% endif %}
+                                        {% include '_components/_badge.html.twig' with {
+                                            variant: metric.on_target ? 'success' : 'warning',
+                                            content: metric.target ~ metric.unit
+                                        } %}
                                     </td>
                                 </tr>
                                 {% endfor %}

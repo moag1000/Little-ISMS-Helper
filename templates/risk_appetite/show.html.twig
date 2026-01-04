@@ -27,12 +27,12 @@
         <p class="text-muted">
             {{ 'risk_appetite.show.subtitle'|trans({}, 'risk_appetite') }}
             {% if appetite.isActive() %}
-                <span class="badge bg-success ms-2">{{ 'risk_appetite.status.active'|trans({}, 'risk_appetite') }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'risk_appetite.status.active'|trans({}, 'risk_appetite'), class: 'ms-2' } %}
             {% else %}
-                <span class="badge bg-secondary ms-2">{{ 'risk_appetite.status.inactive'|trans({}, 'risk_appetite') }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'risk_appetite.status.inactive'|trans({}, 'risk_appetite'), class: 'ms-2' } %}
             {% endif %}
             {% if appetite.isApproved() %}
-                <span class="badge bg-info ms-2">{{ 'risk_appetite.approved'|trans({}, 'risk_appetite') }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: 'risk_appetite.approved'|trans({}, 'risk_appetite'), class: 'ms-2' } %}
             {% endif %}
         </p>
     </div>
@@ -54,9 +54,11 @@
         <div class="info-card">
             <div class="info-label">{{ 'risk_appetite.field.max_acceptable_risk'|trans({}, 'risk_appetite') }}</div>
             <div class="info-value">
-                <span class="badge bg-{{ appetite.maxAcceptableRisk <= 6 ? 'success' : (appetite.maxAcceptableRisk <= 12 ? 'warning' : 'danger') }} fs-3">
-                    {{ appetite.maxAcceptableRisk }}
-                </span>
+                {% include '_components/_badge.html.twig' with {
+                    variant: appetite.maxAcceptableRisk <= 6 ? 'success' : (appetite.maxAcceptableRisk <= 12 ? 'warning' : 'danger'),
+                    content: appetite.maxAcceptableRisk,
+                    class: 'fs-3'
+                } %}
             </div>
             <small class="text-muted">{{ 'risk_appetite.scale'|trans({}, 'risk_appetite') }}: 1-25</small>
         </div>
@@ -99,7 +101,7 @@
                 <div class="detail-item">
                     <strong>{{ 'risk_appetite.field.category'|trans({}, 'risk_appetite') }}:</strong>
                     {% if appetite.isGlobal() %}
-                        <span class="badge bg-primary">{{ 'risk_appetite.category.global'|trans({}, 'risk_appetite') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'primary', content: 'risk_appetite.category.global'|trans({}, 'risk_appetite') } %}
                     {% else %}
                         {{ appetite.category }}
                     {% endif %}
@@ -168,14 +170,14 @@
                 <tr>
                     <td>{{ risk.title }}</td>
                     <td class="text-center">
-                        <span class="badge bg-danger">{{ risk.riskScore }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: risk.riskScore } %}
                     </td>
                     <td class="text-center">
                         <strong class="text-danger">+{{ risk.riskScore - appetite.maxAcceptableRisk }}</strong>
                     </td>
                     <td>
                         {% if risk.treatmentStrategy %}
-                            <span class="badge bg-secondary">{{ risk.treatmentStrategy }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: risk.treatmentStrategy } %}
                         {% else %}
                             <span class="text-muted">-</span>
                         {% endif %}
@@ -220,9 +222,10 @@
                 <tr>
                     <td>{{ risk.title }}</td>
                     <td class="text-center">
-                        <span class="badge bg-{{ risk.riskScore < 4 ? 'success' : (risk.riskScore < 8 ? 'info' : 'warning') }}">
-                            {{ risk.riskScore }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with {
+                            variant: risk.riskScore < 4 ? 'success' : (risk.riskScore < 8 ? 'info' : 'warning'),
+                            content: risk.riskScore
+                        } %}
                     </td>
                     <td class="text-center">
                         {% set percentage = appetite.getAppetitePercentage(risk.riskScore) %}
@@ -238,7 +241,7 @@
                         </div>
                     </td>
                     <td>
-                        <span class="badge bg-secondary">{{ risk.status }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: risk.status } %}
                     </td>
                     <td class="text-center">
                         <a href="{{ path('app_risk_show', {id: risk.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
@@ -271,9 +274,10 @@
             {% for log in auditLogs %}
             <div class="audit-log-entry">
                 <div class="audit-log-header">
-                    <span class="badge bg-{{ log.action == 'create' ? 'success' : (log.action == 'update' ? 'info' : 'danger') }}">
-                        {{ log.action|upper }}
-                    </span>
+                    {% include '_components/_badge.html.twig' with {
+                        variant: log.action == 'create' ? 'success' : (log.action == 'update' ? 'info' : 'danger'),
+                        content: log.action|upper
+                    } %}
                     <span class="text-muted">
                         {{ log.userName|default('System') }}
                         &bull; {{ log.createdAt|date('Y-m-d H:i:s') }}

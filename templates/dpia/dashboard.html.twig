@@ -88,7 +88,7 @@
                             {% for dpia in incomplete|slice(0, 5) %}
                                 <li class="mb-2">
                                     <a href="{{ path('app_dpia_edit', {id: dpia.id}) }}">{{ dpia.referenceNumber }} - {{ dpia.title }}</a>
-                                    <span class="badge bg-warning">{{ dpia.completenessPercentage }}%</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: dpia.completenessPercentage ~ '%' } %}
                                 </li>
                             {% endfor %}
                         </ul>
@@ -100,7 +100,7 @@
                             {% for dpia in awaiting_dpo|slice(0, 5) %}
                                 <li class="mb-2">
                                     <a href="{{ path('app_dpia_show', {id: dpia.id}) }}">{{ dpia.referenceNumber }} - {{ dpia.title }}</a>
-                                    <span class="badge bg-info">{{ dpia.status|replace({'_': ' '})|upper }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'info', content: dpia.status|replace({'_': ' '})|upper } %}
                                 </li>
                             {% endfor %}
                         </ul>
@@ -112,7 +112,7 @@
                             {% for dpia in requires_supervisory|slice(0, 5) %}
                                 <li class="mb-2">
                                     <a href="{{ path('app_dpia_show', {id: dpia.id}) }}">{{ dpia.referenceNumber }} - {{ dpia.title }}</a>
-                                    <span class="badge bg-danger">Art. 36</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'Art. 36' } %}
                                 </li>
                             {% endfor %}
                         </ul>
@@ -147,15 +147,15 @@
                     <h3 class="h6">{{ 'privacy.chart.by_status'|trans({}, 'privacy') }}</h3>
                     <ul class="list-unstyled">
                         <li class="mb-2">
-                            <span class="badge bg-secondary">{{ statistics.draft }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: statistics.draft } %}
                             {{ 'privacy.status_label.draft'|trans({}, 'privacy') }}
                         </li>
                         <li class="mb-2">
-                            <span class="badge bg-info">{{ statistics.in_review }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'info', content: statistics.in_review } %}
                             {{ 'privacy.status_label.in_review'|trans({}, 'privacy') }}
                         </li>
                         <li class="mb-2">
-                            <span class="badge bg-success">{{ statistics.approved }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'success', content: statistics.approved } %}
                             {{ 'privacy.status_label.approved'|trans({}, 'privacy') }}
                         </li>
                     </ul>
@@ -172,7 +172,7 @@
                                         'critical': 'danger'
                                     }[level] %}
                                     <li class="mb-2">
-                                        <span class="badge bg-{{ risk_color }}">{{ count }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: risk_color, content: count } %}
                                         {{ level|upper }}
                                     </li>
                                 {% endif %}
@@ -192,7 +192,7 @@
                                         'critical': 'danger'
                                     }[level] %}
                                     <li class="mb-2">
-                                        <span class="badge bg-{{ risk_color }}">{{ count }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: risk_color, content: count } %}
                                         {{ level|upper }}
                                     </li>
                                 {% endif %}
@@ -203,11 +203,11 @@
                     <h3 class="h6 mt-4">Compliance</h3>
                     <ul class="list-unstyled">
                         <li class="mb-2">
-                            <span class="badge bg-warning">{{ statistics.awaiting_dpo_consultation }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: statistics.awaiting_dpo_consultation } %}
                             Awaiting DPO (Art. 35(4))
                         </li>
                         <li class="mb-2">
-                            <span class="badge bg-danger">{{ statistics.requires_supervisory_consultation }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: statistics.requires_supervisory_consultation } %}
                             Requires Supervisory (Art. 36)
                         </li>
                     </ul>
@@ -227,9 +227,13 @@
                                     <a href="{{ path('app_dpia_show', {id: dpia.id}) }}">
                                         {{ dpia.referenceNumber }} - {{ dpia.title }}
                                     </a>
-                                    <span class="{{ badge_risk(dpia.riskLevel) }}">
-                                        {{ dpia.riskLevel|upper }}
-                                    </span>
+                                    {% set risk_variant = {
+                                        'low': 'success',
+                                        'medium': 'info',
+                                        'high': 'warning',
+                                        'critical': 'danger'
+                                    }[dpia.riskLevel]|default('secondary') %}
+                                    {% include '_components/_badge.html.twig' with { variant: risk_variant, content: dpia.riskLevel|upper } %}
                                 </li>
                             {% endfor %}
                         </ul>
