@@ -17,33 +17,35 @@
     {# Overall Compliance Score #}
     <div class="row mb-4">
         <div class="col-12">
-            <div class="card {% if overall_compliance_score >= 95 %}border-success{% elseif overall_compliance_score >= 75 %}border-warning{% else %}border-danger{% endif %}">
-                <div class="card-body text-center">
-                    <div class="h2 mb-3">{{ 'nis2.dashboard.overall_compliance'|trans({}, 'messages') }}</div>
-                    <div class="display-1 {% if overall_compliance_score >= 95 %}text-success{% elseif overall_compliance_score >= 75 %}text-warning{% else %}text-danger{% endif %}">
-                        {{ overall_compliance_score }}%
-                    </div>
-                    <div class="progress mt-3" style="height: 30px;">
-                        <div class="progress-bar {% if overall_compliance_score >= 95 %}bg-success{% elseif overall_compliance_score >= 75 %}bg-warning{% else %}bg-danger{% endif %}"
-                             role="progressbar"
-                             style="width: {{ overall_compliance_score }}%"
-                             aria-valuenow="{{ overall_compliance_score }}"
-                             aria-valuemin="0"
-                             aria-valuemax="100">
+            {% embed '_components/_card.html.twig' with { 'class': (overall_compliance_score >= 95 ? 'border-success' : (overall_compliance_score >= 75 ? 'border-warning' : 'border-danger')) } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="h2 mb-3">{{ 'nis2.dashboard.overall_compliance'|trans({}, 'messages') }}</div>
+                        <div class="display-1 {% if overall_compliance_score >= 95 %}text-success{% elseif overall_compliance_score >= 75 %}text-warning{% else %}text-danger{% endif %}">
                             {{ overall_compliance_score }}%
                         </div>
+                        <div class="progress mt-3" style="height: 30px;">
+                            <div class="progress-bar {% if overall_compliance_score >= 95 %}bg-success{% elseif overall_compliance_score >= 75 %}bg-warning{% else %}bg-danger{% endif %}"
+                                 role="progressbar"
+                                 style="width: {{ overall_compliance_score }}%"
+                                 aria-valuenow="{{ overall_compliance_score }}"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                                {{ overall_compliance_score }}%
+                            </div>
+                        </div>
+                        <p class="mt-3 mb-0">
+                            {% if overall_compliance_score >= 95 %}
+                                {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'nis2.dashboard.status.compliant'|trans({}, 'messages') } %}
+                            {% elseif overall_compliance_score >= 75 %}
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'nis2.dashboard.status.partial'|trans({}, 'messages') } %}
+                            {% else %}
+                                {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle', content: 'nis2.dashboard.status.non_compliant'|trans({}, 'messages') } %}
+                            {% endif %}
+                        </p>
                     </div>
-                    <p class="mt-3 mb-0">
-                        {% if overall_compliance_score >= 95 %}
-                            <span class="badge bg-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'nis2.dashboard.status.compliant'|trans({}, 'messages') }}</span>
-                        {% elseif overall_compliance_score >= 75 %}
-                            <span class="badge bg-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'nis2.dashboard.status.partial'|trans({}, 'messages') }}</span>
-                        {% else %}
-                            <span class="badge bg-danger"><i class="bi bi-x-circle" aria-hidden="true"></i> {{ 'nis2.dashboard.status.non_compliant'|trans({}, 'messages') }}</span>
-                        {% endif %}
-                    </p>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
@@ -51,8 +53,8 @@
     <div class="row g-3 mb-4">
         {# MFA Adoption #}
         <div class="col-md-3">
-            <div class="card h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_body %}
                     <div class="h6 card-title text-muted">
                         <i class="bi bi-shield-lock" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.mfa.title'|trans({}, 'messages') }}
@@ -64,14 +66,14 @@
                         {{ users_with_mfa }} / {{ total_users }} {{ 'nis2.dashboard.mfa.users'|trans({}, 'messages') }}
                     </p>
                     <small class="text-muted">{{ 'nis2.article'|trans({'%article%': '21.2.b'}, 'compliance') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Incident Reporting #}
         <div class="col-md-3">
-            <div class="card h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_body %}
                     <div class="h6 card-title text-muted">
                         <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.incident_reporting.title'|trans({}, 'messages') }}
@@ -84,14 +86,14 @@
                     </p>
                     {%- set articleNumber = '23' -%}
                     <small class="text-muted">{{ 'nis2.article'|trans({'%article%': articleNumber}, 'compliance') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Vulnerability Management #}
         <div class="col-md-3">
-            <div class="card h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_body %}
                     <div class="h6 card-title text-muted">
                         <i class="bi bi-bug" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.vulnerability.title'|trans({}, 'messages') }}
@@ -103,14 +105,14 @@
                         {{ 'nis2.dashboard.vulnerability.critical_high'|trans({}, 'messages') }}
                     </p>
                     <small class="text-muted">{{ 'nis2.article'|trans({'%article%': '21.2.d'}, 'compliance') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Patch Deployment #}
         <div class="col-md-3">
-            <div class="card h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_body %}
                     <div class="h6 card-title text-muted">
                         <i class="bi bi-download" aria-hidden="true"></i>
                         {{ 'nis2.dashboard.patch.title'|trans({}, 'messages') }}
@@ -122,8 +124,8 @@
                         {{ deployed_patches }} / {{ total_patches }} {{ 'nis2.dashboard.patch.patches'|trans({}, 'messages') }}
                     </p>
                     <small class="text-muted">{{ 'nis2.article'|trans({'%article%': '21.2.d'}, 'compliance') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
@@ -146,13 +148,13 @@
                                 </a>
                                 -
                                 {% if incident.isEarlyWarningOverdue %}
-                                    <span class="badge bg-danger">{{ 'nis2.dashboard.overdue.early_warning'|trans({}, 'messages') }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'nis2.dashboard.overdue.early_warning'|trans({}, 'messages') } %}
                                 {% endif %}
                                 {% if incident.isDetailedNotificationOverdue %}
-                                    <span class="badge bg-danger">{{ 'nis2.dashboard.overdue.detailed'|trans({}, 'messages') }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'nis2.dashboard.overdue.detailed'|trans({}, 'messages') } %}
                                 {% endif %}
                                 {% if incident.isFinalReportOverdue %}
-                                    <span class="badge bg-danger">{{ 'nis2.dashboard.overdue.final'|trans({}, 'messages') }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'nis2.dashboard.overdue.final'|trans({}, 'messages') } %}
                                 {% endif %}
                             </li>
                         {% endfor %}
@@ -166,11 +168,13 @@
     <div class="row g-3">
         {# Incident Reporting Details #}
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="mb-0">{{ 'nis2.dashboard.incident_details.title'|trans({}, 'messages') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0">{{ 'nis2.dashboard.incident_details.title'|trans({}, 'messages') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% embed '_components/_table.html.twig' with {
                         'class': 'table-sm',
                         'noMargin': true,
@@ -191,9 +195,7 @@
                                 <td class="text-end">{{ total_nis2_incidents }}</td>
                                 <td class="text-end">
                                     {% set rate = total_nis2_incidents > 0 ? (early_warning_compliant / total_nis2_incidents * 100)|round(1) : 100 %}
-                                    <span class="badge bg-{% if rate >= 95 %}success{% elseif rate >= 75 %}warning{% else %}danger{% endif %}">
-                                        {{ rate }}%
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: rate >= 95 ? 'success' : (rate >= 75 ? 'warning' : 'danger'), content: rate ~ '%' } %}
                                 </td>
                             </tr>
                             <tr>
@@ -202,9 +204,7 @@
                                 <td class="text-end">{{ total_nis2_incidents }}</td>
                                 <td class="text-end">
                                     {% set rate = total_nis2_incidents > 0 ? (detailed_notification_compliant / total_nis2_incidents * 100)|round(1) : 100 %}
-                                    <span class="badge bg-{% if rate >= 95 %}success{% elseif rate >= 75 %}warning{% else %}danger{% endif %}">
-                                        {{ rate }}%
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: rate >= 95 ? 'success' : (rate >= 75 ? 'warning' : 'danger'), content: rate ~ '%' } %}
                                 </td>
                             </tr>
                             <tr>
@@ -213,24 +213,24 @@
                                 <td class="text-end">{{ total_nis2_incidents }}</td>
                                 <td class="text-end">
                                     {% set rate = total_nis2_incidents > 0 ? (final_report_compliant / total_nis2_incidents * 100)|round(1) : 100 %}
-                                    <span class="badge bg-{% if rate >= 95 %}success{% elseif rate >= 75 %}warning{% else %}danger{% endif %}">
-                                        {{ rate }}%
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: rate >= 95 ? 'success' : (rate >= 75 ? 'warning' : 'danger'), content: rate ~ '%' } %}
                                 </td>
                             </tr>
                         {% endblock %}
                     {% endembed %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Quick Actions #}
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="mb-0">{{ 'nis2.dashboard.actions.title'|trans({}, 'messages') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0">{{ 'nis2.dashboard.actions.title'|trans({}, 'messages') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="d-grid gap-2">
                         <a href="{{ path('app_incident_index') }}" class="btn btn-outline-primary">
                             <i class="bi bi-list-ul" aria-hidden="true"></i>
@@ -249,8 +249,8 @@
                             {{ 'nis2.dashboard.actions.manage_mfa'|trans({}, 'messages') }}
                         </a>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>
