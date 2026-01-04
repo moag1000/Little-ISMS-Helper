@@ -45,79 +45,93 @@
     {# KPI Summary #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card border-primary h-100">
-                <div class="card-body text-center">
-                    <h2 class="text-primary">{{ incident_probability.summary.total_assets }}</h2>
-                    <p class="text-muted mb-0">{{ 'analytics.assets.kpi.total_assets'|trans({}, 'analytics') }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'border-primary h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="text-primary">{{ incident_probability.summary.total_assets }}</h2>
+                        <p class="text-muted mb-0">{{ 'analytics.assets.kpi.total_assets'|trans({}, 'analytics') }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-danger h-100">
-                <div class="card-body text-center">
-                    <h2 class="text-danger">{{ incident_probability.summary.high_risk_count }}</h2>
-                    <p class="text-muted mb-0">{{ 'analytics.assets.kpi.high_risk'|trans({}, 'analytics') }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'border-danger h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="text-danger">{{ incident_probability.summary.high_risk_count }}</h2>
+                        <p class="text-muted mb-0">{{ 'analytics.assets.kpi.high_risk'|trans({}, 'analytics') }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-warning h-100">
-                <div class="card-body text-center">
-                    <h2 class="text-warning">{{ with_incidents_count }}</h2>
-                    <p class="text-muted mb-0">{{ 'analytics.assets.kpi.with_incidents'|trans({}, 'analytics') }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'border-warning h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="text-warning">{{ with_incidents_count }}</h2>
+                        <p class="text-muted mb-0">{{ 'analytics.assets.kpi.with_incidents'|trans({}, 'analytics') }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-info h-100">
-                <div class="card-body text-center">
-                    <h2 class="text-info">{{ incident_probability.summary.average_probability }}%</h2>
-                    <p class="text-muted mb-0">{{ 'analytics.assets.kpi.avg_probability'|trans({}, 'analytics') }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'border-info h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="text-info">{{ incident_probability.summary.average_probability }}%</h2>
+                        <p class="text-muted mb-0">{{ 'analytics.assets.kpi.avg_probability'|trans({}, 'analytics') }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     <div class="row">
         {# Criticality Distribution Chart #}
         <div class="col-lg-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h5 class="mb-0">{{ 'analytics.assets.chart.criticality_distribution'|trans({}, 'analytics') }}</h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ 'analytics.assets.chart.criticality_distribution'|trans({}, 'analytics') }}</h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div style="height: 300px; position: relative;">
                         <canvas id="criticalityDistributionChart"></canvas>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Incident Probability Distribution #}
         <div class="col-lg-6 mb-4">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h5 class="mb-0">{{ 'analytics.assets.chart.probability_distribution'|trans({}, 'analytics') }}</h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ 'analytics.assets.chart.probability_distribution'|trans({}, 'analytics') }}</h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div style="height: 300px; position: relative;">
                         <canvas id="probabilityDistributionChart"></canvas>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# High Risk Assets Table #}
-    <div class="card mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">
-                <i class="bi bi-exclamation-triangle text-danger me-2" aria-hidden="true"></i>
-                {{ 'analytics.assets.high_risk.title'|trans({}, 'analytics') }}
-            </h5>
-            <span class="badge bg-danger">{{ incident_probability.high_risk_assets|length }} {{ 'analytics.assets.high_risk.count'|trans({}, 'analytics') }}</span>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-exclamation-triangle text-danger me-2" aria-hidden="true"></i>
+                    {{ 'analytics.assets.high_risk.title'|trans({}, 'analytics') }}
+                </h5>
+                {% include '_components/_badge.html.twig' with { variant: 'danger', content: incident_probability.high_risk_assets|length ~ ' ' ~ 'analytics.assets.high_risk.count'|trans({}, 'analytics') } %}
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if incident_probability.high_risk_assets|length > 0 %}
             <div class="table-responsive">
                 <table class="table table-hover">
@@ -137,11 +151,9 @@
                             <td>
                                 <strong>{{ asset.asset_name }}</strong>
                             </td>
-                            <td><span class="badge bg-secondary">{{ asset.asset_type }}</span></td>
+                            <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: asset.asset_type } %}</td>
                             <td class="text-center">
-                                <span class="badge bg-{% if asset.criticality >= 12 %}danger{% elseif asset.criticality >= 9 %}warning{% elseif asset.criticality >= 6 %}info{% else %}success{% endif %}">
-                                    {{ asset.criticality }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: asset.criticality >= 12 ? 'danger' : (asset.criticality >= 9 ? 'warning' : (asset.criticality >= 6 ? 'info' : 'success')), content: asset.criticality } %}
                             </td>
                             <td class="text-center">{{ asset.historical_incidents }}</td>
                             <td class="text-center">
@@ -153,9 +165,7 @@
                                 </div>
                             </td>
                             <td>
-                                <span class="badge bg-{% if asset.criticality_level == 'critical' %}danger{% elseif asset.criticality_level == 'high' %}warning{% elseif asset.criticality_level == 'medium' %}info{% else %}success{% endif %}">
-                                    {{ asset.criticality_level|title }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: asset.criticality_level == 'critical' ? 'danger' : (asset.criticality_level == 'high' ? 'warning' : (asset.criticality_level == 'medium' ? 'info' : 'success')), content: asset.criticality_level|title } %}
                             </td>
                         </tr>
                         {% endfor %}
@@ -168,47 +178,57 @@
                 <p class="mt-2 text-muted">{{ 'analytics.assets.high_risk.none'|trans({}, 'analytics') }}</p>
             </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# All Assets by Risk Level #}
-    <div class="card">
-        <div class="card-header">
-            <h5 class="mb-0">{{ 'analytics.assets.all_assets.title'|trans({}, 'analytics') }}</h5>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header">
+                <h5 class="mb-0">{{ 'analytics.assets.all_assets.title'|trans({}, 'analytics') }}</h5>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row mb-4">
                 <div class="col-md-3">
-                    <div class="card bg-danger bg-opacity-10 border-danger h-100">
-                        <div class="card-body text-center">
-                            <h3 class="text-danger">{{ critical_count }}</h3>
-                            <small>{{ 'analytics.assets.risk_level.critical'|trans({}, 'analytics') }}</small>
-                        </div>
-                    </div>
+                    {% embed '_components/_card.html.twig' with { 'class': 'bg-danger bg-opacity-10 border-danger h-100' } %}
+                        {% block card_body %}
+                            <div class="text-center">
+                                <h3 class="text-danger">{{ critical_count }}</h3>
+                                <small>{{ 'analytics.assets.risk_level.critical'|trans({}, 'analytics') }}</small>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 <div class="col-md-3">
-                    <div class="card bg-warning bg-opacity-10 border-warning h-100">
-                        <div class="card-body text-center">
-                            <h3 class="text-warning">{{ high_count }}</h3>
-                            <small>{{ 'analytics.assets.risk_level.high'|trans({}, 'analytics') }}</small>
-                        </div>
-                    </div>
+                    {% embed '_components/_card.html.twig' with { 'class': 'bg-warning bg-opacity-10 border-warning h-100' } %}
+                        {% block card_body %}
+                            <div class="text-center">
+                                <h3 class="text-warning">{{ high_count }}</h3>
+                                <small>{{ 'analytics.assets.risk_level.high'|trans({}, 'analytics') }}</small>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 <div class="col-md-3">
-                    <div class="card bg-info bg-opacity-10 border-info h-100">
-                        <div class="card-body text-center">
-                            <h3 class="text-info">{{ medium_count }}</h3>
-                            <small>{{ 'analytics.assets.risk_level.medium'|trans({}, 'analytics') }}</small>
-                        </div>
-                    </div>
+                    {% embed '_components/_card.html.twig' with { 'class': 'bg-info bg-opacity-10 border-info h-100' } %}
+                        {% block card_body %}
+                            <div class="text-center">
+                                <h3 class="text-info">{{ medium_count }}</h3>
+                                <small>{{ 'analytics.assets.risk_level.medium'|trans({}, 'analytics') }}</small>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 <div class="col-md-3">
-                    <div class="card bg-success bg-opacity-10 border-success h-100">
-                        <div class="card-body text-center">
-                            <h3 class="text-success">{{ low_count }}</h3>
-                            <small>{{ 'analytics.assets.risk_level.low'|trans({}, 'analytics') }}</small>
-                        </div>
-                    </div>
+                    {% embed '_components/_card.html.twig' with { 'class': 'bg-success bg-opacity-10 border-success h-100' } %}
+                        {% block card_body %}
+                            <div class="text-center">
+                                <h3 class="text-success">{{ low_count }}</h3>
+                                <small>{{ 'analytics.assets.risk_level.low'|trans({}, 'analytics') }}</small>
+                            </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </div>
 
@@ -238,9 +258,7 @@
                             <td class="text-center">{{ asset.historical_incidents }}</td>
                             <td class="text-center">{{ asset.incident_probability }}%</td>
                             <td>
-                                <span class="badge bg-{% if asset.criticality_level == 'critical' %}danger{% elseif asset.criticality_level == 'high' %}warning{% elseif asset.criticality_level == 'medium' %}info{% else %}success{% endif %}">
-                                    {{ asset.criticality_level|title }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: asset.criticality_level == 'critical' ? 'danger' : (asset.criticality_level == 'high' ? 'warning' : (asset.criticality_level == 'medium' ? 'info' : 'success')), content: asset.criticality_level|title } %}
                             </td>
                         </tr>
                         {% endfor %}
@@ -257,8 +275,8 @@
                 </a>
             </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}
 
