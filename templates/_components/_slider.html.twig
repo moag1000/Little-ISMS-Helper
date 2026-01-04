@@ -1,34 +1,64 @@
 {#
  # Generic Slider Component
  #
- # A reusable range slider with value display and optional color variants.
+ # A reusable range slider with value display, input field, and optional features.
  # For specialized risk scoring (probability × impact), use _risk_slider.html.twig instead.
  #
- # Parameters:
+ # BASIC PARAMETERS:
  # - name: Form field name (required)
  # - value: Current value (default: min)
  # - min: Minimum value (default: 0)
  # - max: Maximum value (default: 100)
  # - step: Step increment (default: 1)
+ # - decimals: Number of decimal places to display (default: 0)
+ #
+ # DISPLAY OPTIONS:
  # - label: Label text (optional)
  # - label_icon: Bootstrap icon class without 'bi-' prefix (optional)
  # - show_value: Show value display badge (default: true)
+ # - show_minmax: Show min/max labels at ends (default: false)
+ # - show_input: Show direct number input field (default: false)
+ # - show_progress: Show progress bar below slider (default: false)
+ # - show_ticks: Show tick marks at intervals (default: false)
+ # - tick_interval: Interval for tick marks (default: calculated)
  # - value_suffix: Suffix for value display, e.g., '%' (default: '')
  # - value_prefix: Prefix for value display, e.g., '€' (default: '')
+ # - min_label: Custom label for min value (optional)
+ # - max_label: Custom label for max value (optional)
+ #
+ # VARIANT & THEMING:
  # - variant: Bootstrap color variant for value badge (default: 'primary')
  # - dynamic_variant: Enable auto-coloring based on value thresholds (default: false)
  # - thresholds: Custom thresholds for dynamic_variant { danger: 25, warning: 50, success: 75 }
+ # - invert_thresholds: Invert threshold logic (lower = better) (default: false)
+ #
+ # PRESETS & ACTIONS:
+ # - show_presets: Show preset buttons (default: false)
+ # - presets: Array of preset values [{value: 25, label: 'Low'}, {value: 75, label: 'High'}]
+ # - show_reset: Show reset button (default: false)
+ # - default_value: Default value for reset (default: min)
+ #
+ # VALUE LABELS (Display labels instead of numeric values):
+ # - value_labels: Map internal values to display labels
+ #   Example: { 1: 'Low', 2: 'Medium', 3: 'High' } - shows "High" when value is 3
+ #   Supports translations: { 1: 'risk.level.low'|trans({}, 'risk'), ... }
+ # - show_current_label: Show label text below slider (default: true when value_labels set)
+ # - display_in_badge: Show label in badge instead of number (default: true when value_labels set)
+ #
+ # TECHNICAL:
  # - id: Custom element ID (default: auto-generated from name)
  # - class: Additional CSS classes for wrapper
  # - disabled: Disable the slider (default: false)
+ # - readonly: Make slider read-only (default: false)
  # - aria_label: Accessibility label (default: uses label)
  # - controller: Stimulus controller name (default: 'slider')
- # - target_value: Stimulus target for value display (default: 'value')
- # - target_input: Stimulus target for hidden input (default: 'input')
+ # - compact: Use compact layout (default: false)
  #
- # Examples:
+ # ═══════════════════════════════════════════════════════════════════════════════
+ # EXAMPLES
+ # ═══════════════════════════════════════════════════════════════════════════════
  #
- # Basic percentage slider:
+ # 1. BASIC PERCENTAGE SLIDER:
  # {% include '_components/_slider.html.twig' with {
  #     name: 'compliance_score',
  #     value: 75,
@@ -36,103 +66,409 @@
  #     value_suffix: '%'
  # } %}
  #
- # Rating slider (1-5):
+ # ───────────────────────────────────────────────────────────────────────────────
+ # 2. SLIDER WITH MIN/MAX LABELS AND INPUT FIELD:
  # {% include '_components/_slider.html.twig' with {
- #     name: 'rating',
+ #     name: 'budget',
+ #     value: 5000,
+ #     min: 0,
+ #     max: 10000,
+ #     step: 100,
+ #     value_prefix: '€',
+ #     show_minmax: true,
+ #     show_input: true
+ # } %}
+ #
+ # ───────────────────────────────────────────────────────────────────────────────
+ # 3. RATING SLIDER WITH TRANSLATED LABELS:
+ # Shows "Hoch" instead of "3" in the badge, internal value remains 3
+ # {% include '_components/_slider.html.twig' with {
+ #     name: 'priority',
  #     value: 3,
  #     min: 1,
  #     max: 5,
- #     label: 'Rating',
- #     variant: 'warning'
+ #     label: 'risk.field.priority'|trans({}, 'risk'),
+ #     value_labels: {
+ #         1: 'risk.priority.very_low'|trans({}, 'risk'),
+ #         2: 'risk.priority.low'|trans({}, 'risk'),
+ #         3: 'risk.priority.medium'|trans({}, 'risk'),
+ #         4: 'risk.priority.high'|trans({}, 'risk'),
+ #         5: 'risk.priority.critical'|trans({}, 'risk')
+ #     },
+ #     dynamic_variant: true,
+ #     thresholds: { danger: 1, warning: 2, success: 4 }
  # } %}
  #
- # Dynamic color based on value:
+ # ───────────────────────────────────────────────────────────────────────────────
+ # 4. FREQUENCY SLIDER (Display: "Jährlich", Internal: 1):
  # {% include '_components/_slider.html.twig' with {
- #     name: 'health_score',
- #     value: 80,
+ #     name: 'review_frequency',
+ #     value: 2,
+ #     min: 1,
+ #     max: 4,
+ #     label: 'control.field.review_frequency'|trans({}, 'controls'),
+ #     value_labels: {
+ #         1: 'frequency.yearly'|trans({}, 'messages'),
+ #         2: 'frequency.quarterly'|trans({}, 'messages'),
+ #         3: 'frequency.monthly'|trans({}, 'messages'),
+ #         4: 'frequency.weekly'|trans({}, 'messages')
+ #     },
+ #     show_current_label: true,
+ #     variant: 'info'
+ # } %}
+ #
+ # ───────────────────────────────────────────────────────────────────────────────
+ # 5. SLIDER WITH PRESETS AND RESET:
+ # {% include '_components/_slider.html.twig' with {
+ #     name: 'implementation_status',
+ #     value: 50,
+ #     label: 'control.field.implementation'|trans({}, 'controls'),
+ #     value_suffix: '%',
+ #     show_presets: true,
+ #     presets: [
+ #         { value: 0, label: 'soa.status.not_implemented'|trans({}, 'soa'), variant: 'danger', icon: 'x-circle' },
+ #         { value: 50, label: 'soa.status.partial'|trans({}, 'soa'), variant: 'warning', icon: 'circle-half' },
+ #         { value: 100, label: 'soa.status.implemented'|trans({}, 'soa'), variant: 'success', icon: 'check-circle' }
+ #     ],
+ #     show_reset: true,
+ #     default_value: 0,
+ #     dynamic_variant: true
+ # } %}
+ #
+ # ───────────────────────────────────────────────────────────────────────────────
+ # 6. RISK SCORE (Lower = Better, Inverted Thresholds):
+ # {% include '_components/_slider.html.twig' with {
+ #     name: 'residual_risk',
+ #     value: 8,
+ #     min: 1,
+ #     max: 25,
+ #     label: 'risk.field.residual_score'|trans({}, 'risk'),
+ #     show_minmax: true,
+ #     show_progress: true,
  #     dynamic_variant: true,
- #     thresholds: { danger: 30, warning: 60, success: 80 }
+ #     invert_thresholds: true,
+ #     thresholds: { success: 4, warning: 9, danger: 14 }
+ # } %}
+ #
+ # ───────────────────────────────────────────────────────────────────────────────
+ # 7. DECIMAL SLIDER (e.g., for monetary values):
+ # {% include '_components/_slider.html.twig' with {
+ #     name: 'hourly_rate',
+ #     value: 85.50,
+ #     min: 50,
+ #     max: 200,
+ #     step: 0.5,
+ #     decimals: 2,
+ #     value_prefix: '€',
+ #     show_input: true,
+ #     show_minmax: true
+ # } %}
+ #
+ # ───────────────────────────────────────────────────────────────────────────────
+ # 8. MATURITY LEVEL SLIDER:
+ # {% include '_components/_slider.html.twig' with {
+ #     name: 'maturity_level',
+ #     value: 2,
+ #     min: 0,
+ #     max: 5,
+ #     label: 'control.field.maturity'|trans({}, 'controls'),
+ #     value_labels: {
+ #         0: 'maturity.0.non_existent'|trans({}, 'controls'),
+ #         1: 'maturity.1.initial'|trans({}, 'controls'),
+ #         2: 'maturity.2.repeatable'|trans({}, 'controls'),
+ #         3: 'maturity.3.defined'|trans({}, 'controls'),
+ #         4: 'maturity.4.managed'|trans({}, 'controls'),
+ #         5: 'maturity.5.optimizing'|trans({}, 'controls')
+ #     },
+ #     show_ticks: true,
+ #     show_current_label: true,
+ #     dynamic_variant: true,
+ #     thresholds: { danger: 1, warning: 2, success: 4 }
  # } %}
  #}
 
+{# Set defaults #}
 {% set name = name|default('slider') %}
-{% set value = value|default(min|default(0)) %}
 {% set min = min|default(0) %}
 {% set max = max|default(100) %}
+{% set value = value|default(min) %}
 {% set step = step|default(1) %}
+{% set decimals = decimals|default(0) %}
+
+{# Display options #}
 {% set show_value = show_value is defined ? show_value : true %}
+{% set show_minmax = show_minmax|default(false) %}
+{% set show_input = show_input|default(false) %}
+{% set show_progress = show_progress|default(false) %}
+{% set show_ticks = show_ticks|default(false) %}
 {% set value_suffix = value_suffix|default('') %}
 {% set value_prefix = value_prefix|default('') %}
+
+{# Variant & theming #}
 {% set variant = variant|default('primary') %}
 {% set dynamic_variant = dynamic_variant|default(false) %}
+{% set invert_thresholds = invert_thresholds|default(false) %}
 {% set thresholds = thresholds|default({ danger: 25, warning: 50, success: 75 }) %}
+
+{# Presets & actions #}
+{% set show_presets = show_presets|default(false) %}
+{% set presets = presets|default([]) %}
+{% set show_reset = show_reset|default(false) %}
+{% set default_value = default_value|default(min) %}
+
+{# Value labels #}
+{% set value_labels = value_labels|default({}) %}
+{% set show_current_label = show_current_label|default(value_labels|length > 0) %}
+
+{# Technical #}
 {% set id = id|default(name|replace({'[': '_', ']': '_', ' ': '_'})) %}
 {% set disabled = disabled|default(false) %}
+{% set readonly = readonly|default(false) %}
 {% set controller = controller|default('slider') %}
-{% set target_value = target_value|default('value') %}
-{% set target_input = target_input|default('input') %}
+{% set compact = compact|default(false) %}
 
 {# Calculate dynamic variant based on value and thresholds #}
 {% if dynamic_variant %}
-    {% if value >= thresholds.success %}
-        {% set computed_variant = 'success' %}
-    {% elseif value >= thresholds.warning %}
-        {% set computed_variant = 'warning' %}
-    {% elseif value >= thresholds.danger %}
-        {% set computed_variant = 'info' %}
+    {% if invert_thresholds %}
+        {# Lower is better (e.g., risk scores) #}
+        {% if value <= thresholds.success %}
+            {% set computed_variant = 'success' %}
+        {% elseif value <= thresholds.warning %}
+            {% set computed_variant = 'warning' %}
+        {% elseif value <= thresholds.danger %}
+            {% set computed_variant = 'info' %}
+        {% else %}
+            {% set computed_variant = 'danger' %}
+        {% endif %}
     {% else %}
-        {% set computed_variant = 'danger' %}
+        {# Higher is better (e.g., compliance scores) #}
+        {% if value >= thresholds.success %}
+            {% set computed_variant = 'success' %}
+        {% elseif value >= thresholds.warning %}
+            {% set computed_variant = 'warning' %}
+        {% elseif value >= thresholds.danger %}
+            {% set computed_variant = 'info' %}
+        {% else %}
+            {% set computed_variant = 'danger' %}
+        {% endif %}
     {% endif %}
 {% else %}
     {% set computed_variant = variant %}
 {% endif %}
 
-<div class="slider-component {{ class|default('') }}"
-     {% if controller %}data-controller="{{ controller }}"{% endif %}
+{# Calculate progress percentage #}
+{% set progress_percent = ((value - min) / (max - min)) * 100 %}
+
+<div class="slider-component {{ compact ? 'slider-compact' : '' }} {{ class|default('') }}"
+     data-controller="{{ controller }}"
+     data-{{ controller }}-min-value="{{ min }}"
+     data-{{ controller }}-max-value="{{ max }}"
+     data-{{ controller }}-default-value="{{ default_value }}"
+     data-{{ controller }}-prefix-value="{{ value_prefix }}"
+     data-{{ controller }}-suffix-value="{{ value_suffix }}"
+     data-{{ controller }}-decimals-value="{{ decimals }}"
      {% if dynamic_variant %}
      data-{{ controller }}-thresholds-value="{{ thresholds|json_encode }}"
+     data-{{ controller }}-invert-value="{{ invert_thresholds ? 'true' : 'false' }}"
+     {% endif %}
+     {% if value_labels|length > 0 %}
+     data-{{ controller }}-labels-value="{{ value_labels|json_encode }}"
      {% endif %}>
 
+    {# Label row #}
     {% if label is defined and label %}
-    <label for="{{ id }}" class="form-label fw-semibold">
-        {% if label_icon is defined and label_icon %}
-            <i class="bi bi-{{ label_icon }} me-1" aria-hidden="true"></i>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <label for="{{ id }}" class="form-label fw-semibold mb-0">
+            {% if label_icon is defined and label_icon %}
+                <i class="bi bi-{{ label_icon }} me-1" aria-hidden="true"></i>
+            {% endif %}
+            {{ label }}
+        </label>
+
+        {# Reset button in header #}
+        {% if show_reset and not compact %}
+        <button type="button"
+                class="btn btn-sm btn-outline-secondary"
+                data-action="click->{{ controller }}#reset"
+                title="{{ 'common.reset'|trans({}, 'messages') }}">
+            <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+        </button>
         {% endif %}
-        {{ label }}
-    </label>
+    </div>
     {% endif %}
 
-    <div class="d-flex align-items-center gap-3">
-        <input type="range"
-               id="{{ id }}"
-               class="form-range flex-grow-1"
-               min="{{ min }}"
-               max="{{ max }}"
-               step="{{ step }}"
-               value="{{ value }}"
-               {% if disabled %}disabled{% endif %}
-               {% if controller %}
-               data-{{ controller }}-target="range"
-               data-action="input->{{ controller }}#update"
-               {% endif %}
-               aria-label="{{ aria_label|default(label|default(name)) }}"
-               aria-valuemin="{{ min }}"
-               aria-valuemax="{{ max }}"
-               aria-valuenow="{{ value }}">
+    {# Main slider row #}
+    <div class="d-flex align-items-center gap-2">
+        {# Min label #}
+        {% if show_minmax %}
+        <div class="slider-minmax text-muted small text-nowrap" title="{{ min_label|default('Minimum: ' ~ value_prefix ~ min ~ value_suffix) }}">
+            {{ value_prefix }}{{ min }}{{ value_suffix }}
+        </div>
+        {% endif %}
 
-        {% if show_value %}
-        <div class="slider-value text-center" style="min-width: 60px;">
+        {# Slider wrapper #}
+        <div class="flex-grow-1 position-relative">
+            <input type="range"
+                   id="{{ id }}"
+                   class="form-range"
+                   min="{{ min }}"
+                   max="{{ max }}"
+                   step="{{ step }}"
+                   value="{{ value }}"
+                   {% if disabled or readonly %}disabled{% endif %}
+                   data-{{ controller }}-target="range"
+                   data-action="input->{{ controller }}#update"
+                   aria-label="{{ aria_label|default(label|default(name)) }}"
+                   aria-valuemin="{{ min }}"
+                   aria-valuemax="{{ max }}"
+                   aria-valuenow="{{ value }}">
+
+            {# Tick marks #}
+            {% if show_ticks %}
+            {% set tick_interval = tick_interval|default(((max - min) / 4)|round) %}
+            <div class="slider-ticks d-flex justify-content-between px-1">
+                {% for tick_value in range(min, max, tick_interval) %}
+                <span class="slider-tick" title="{{ value_prefix }}{{ tick_value }}{{ value_suffix }}">|</span>
+                {% endfor %}
+                <span class="slider-tick" title="{{ value_prefix }}{{ max }}{{ value_suffix }}">|</span>
+            </div>
+            {% endif %}
+        </div>
+
+        {# Max label #}
+        {% if show_minmax %}
+        <div class="slider-minmax text-muted small text-nowrap" title="{{ max_label|default('Maximum: ' ~ value_prefix ~ max ~ value_suffix) }}">
+            {{ value_prefix }}{{ max }}{{ value_suffix }}
+        </div>
+        {% endif %}
+
+        {# Value badge #}
+        {% if show_value and not show_input %}
+        <div class="slider-value text-center" style="min-width: 65px;">
             <span class="badge bg-{{ computed_variant }} fs-6"
-                  {% if controller %}data-{{ controller }}-target="{{ target_value }}"{% endif %}>
-                {{ value_prefix }}{{ value }}{{ value_suffix }}
+                  data-{{ controller }}-target="value">
+                {{ value_prefix }}{{ decimals > 0 ? value|number_format(decimals) : value }}{{ value_suffix }}
             </span>
         </div>
         {% endif %}
+
+        {# Direct input field #}
+        {% if show_input %}
+        <div class="slider-input" style="width: 90px;">
+            <div class="input-group input-group-sm">
+                {% if value_prefix %}
+                <span class="input-group-text">{{ value_prefix }}</span>
+                {% endif %}
+                <input type="number"
+                       class="form-control form-control-sm text-center"
+                       min="{{ min }}"
+                       max="{{ max }}"
+                       step="{{ step }}"
+                       value="{{ decimals > 0 ? value|number_format(decimals) : value }}"
+                       {% if disabled or readonly %}disabled{% endif %}
+                       data-{{ controller }}-target="numberInput"
+                       data-action="input->{{ controller }}#updateFromInput blur->{{ controller }}#clamp"
+                       aria-label="{{ 'common.value'|trans({}, 'messages') }}">
+                {% if value_suffix %}
+                <span class="input-group-text">{{ value_suffix }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+        {# Compact reset button #}
+        {% if show_reset and compact %}
+        <button type="button"
+                class="btn btn-sm btn-outline-secondary"
+                data-action="click->{{ controller }}#reset"
+                title="{{ 'common.reset'|trans({}, 'messages') }}">
+            <i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i>
+        </button>
+        {% endif %}
     </div>
+
+    {# Progress bar #}
+    {% if show_progress %}
+    <div class="progress mt-2" style="height: 6px;" role="progressbar"
+         aria-valuenow="{{ progress_percent }}" aria-valuemin="0" aria-valuemax="100">
+        <div class="progress-bar bg-{{ computed_variant }}"
+             style="width: {{ progress_percent }}%"
+             data-{{ controller }}-target="progress"></div>
+    </div>
+    {% endif %}
+
+    {# Current value label #}
+    {% if show_current_label and value_labels|length > 0 %}
+    <div class="slider-label mt-1 text-center">
+        <small class="text-muted" data-{{ controller }}-target="label">
+            {{ value_labels[value]|default('') }}
+        </small>
+    </div>
+    {% endif %}
+
+    {# Preset buttons #}
+    {% if show_presets and presets|length > 0 %}
+    <div class="slider-presets mt-2">
+        <div class="btn-group btn-group-sm w-100" role="group" aria-label="{{ 'common.presets'|trans({}, 'messages') }}">
+            {% for preset in presets %}
+            <button type="button"
+                    class="btn btn-outline-{{ preset.variant|default('secondary') }} {{ value == preset.value ? 'active' : '' }}"
+                    data-action="click->{{ controller }}#setValue"
+                    data-{{ controller }}-value-param="{{ preset.value }}"
+                    title="{{ preset.description|default('') }}">
+                {% if preset.icon is defined %}
+                <i class="bi bi-{{ preset.icon }} me-1" aria-hidden="true"></i>
+                {% endif %}
+                {{ preset.label }}
+            </button>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 
     {# Hidden input for form submission #}
     <input type="hidden"
            name="{{ name }}"
            value="{{ value }}"
-           {% if controller %}data-{{ controller }}-target="{{ target_input }}"{% endif %}>
+           data-{{ controller }}-target="input">
 </div>
+
+{# Component styles #}
+<style>
+.slider-component {
+    --slider-track-height: 0.5rem;
+}
+
+.slider-compact {
+    --slider-track-height: 0.375rem;
+}
+
+.slider-component .form-range {
+    height: var(--slider-track-height);
+}
+
+.slider-ticks {
+    font-size: 0.625rem;
+    color: var(--bs-secondary);
+    margin-top: -0.25rem;
+    pointer-events: none;
+    user-select: none;
+}
+
+.slider-tick {
+    opacity: 0.5;
+}
+
+.slider-minmax {
+    min-width: 40px;
+    text-align: center;
+}
+
+.slider-presets .btn {
+    flex: 1;
+}
+
+.slider-presets .btn.active {
+    font-weight: 600;
+}
+</style>
