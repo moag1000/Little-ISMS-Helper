@@ -29,8 +29,8 @@
     {# KPI Summary #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card border-primary h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-primary h-100' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="text-muted mb-1">{{ 'analytics.forecast.kpi.current_risks'|trans({}, 'analytics') }}</h6>
@@ -38,12 +38,12 @@
                         </div>
                         <i class="bi bi-exclamation-triangle display-6 text-primary" aria-hidden="true"></i>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-warning h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-warning h-100' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="text-muted mb-1">{{ 'analytics.forecast.kpi.predicted'|trans({}, 'analytics') }}</h6>
@@ -54,12 +54,12 @@
                         <i class="bi bi-graph-up display-6 text-warning" aria-hidden="true"></i>
                     </div>
                     <small class="text-muted">{{ 'analytics.forecast.kpi.in_months'|trans({'%months%': 6}, 'analytics') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-info h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-info h-100' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="text-muted mb-1">{{ 'analytics.forecast.kpi.risk_velocity'|trans({}, 'analytics') }}</h6>
@@ -70,12 +70,12 @@
                         <i class="bi bi-speedometer2 display-6 text-info" aria-hidden="true"></i>
                     </div>
                     <small class="text-muted">{{ 'analytics.forecast.kpi.velocity_period'|trans({'%days%': 30}, 'analytics') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-success h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-success h-100' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="text-muted mb-1">{{ 'analytics.forecast.kpi.appetite_compliance'|trans({}, 'analytics') }}</h6>
@@ -85,8 +85,8 @@
                         </div>
                         <i class="bi bi-shield-check display-6 text-success" aria-hidden="true"></i>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
@@ -111,7 +111,7 @@
             <button class="nav-link" data-bs-toggle="tab" data-bs-target="#anomalies-tab" type="button" role="tab">
                 <i class="bi bi-exclamation-diamond me-1" aria-hidden="true"></i> {{ 'analytics.forecast.tabs.anomalies'|trans({}, 'analytics') }}
                 {% if anomalies.total_count > 0 %}
-                <span class="badge bg-danger">{{ anomalies.total_count }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'danger', content: anomalies.total_count } %}
                 {% endif %}
             </button>
         </li>
@@ -123,34 +123,34 @@
         <div class="tab-pane fade show active" id="forecast-tab" role="tabpanel">
             <div class="row">
                 <div class="col-lg-8 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h5 class="mb-0">{{ 'analytics.forecast.chart.risk_forecast'|trans({}, 'analytics') }}</h5>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_header %}
+                            <div class="card-header">
+                                <h5 class="mb-0">{{ 'analytics.forecast.chart.risk_forecast'|trans({}, 'analytics') }}</h5>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div style="height: 300px; position: relative;">
                                 <canvas id="forecastChart"></canvas>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 <div class="col-lg-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h5 class="mb-0">{{ 'analytics.forecast.predictions.title'|trans({}, 'analytics') }}</h5>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_header %}
+                            <div class="card-header">
+                                <h5 class="mb-0">{{ 'analytics.forecast.predictions.title'|trans({}, 'analytics') }}</h5>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
                                 <span class="text-muted">{{ 'analytics.forecast.predictions.trend'|trans({}, 'analytics') }}</span>
-                                <span class="badge bg-{% if forecast.trend.direction == 'increasing' %}danger{% elseif forecast.trend.direction == 'decreasing' %}success{% else %}secondary{% endif %}">
-                                    {% if forecast.trend.direction == 'increasing' %}
-                                        <i class="bi bi-arrow-up" aria-hidden="true"></i> {{ 'analytics.forecast.predictions.increasing'|trans({}, 'analytics') }}
-                                    {% elseif forecast.trend.direction == 'decreasing' %}
-                                        <i class="bi bi-arrow-down" aria-hidden="true"></i> {{ 'analytics.forecast.predictions.decreasing'|trans({}, 'analytics') }}
-                                    {% else %}
-                                        <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'analytics.forecast.predictions.stable'|trans({}, 'analytics') }}
-                                    {% endif %}
-                                </span>
+                                {% include '_components/_badge.html.twig' with {
+                                    variant: forecast.trend.direction == 'increasing' ? 'danger' : (forecast.trend.direction == 'decreasing' ? 'success' : 'secondary'),
+                                    icon: forecast.trend.direction == 'increasing' ? 'bi-arrow-up' : (forecast.trend.direction == 'decreasing' ? 'bi-arrow-down' : 'bi-arrow-right'),
+                                    content: forecast.trend.direction == 'increasing' ? 'analytics.forecast.predictions.increasing'|trans({}, 'analytics') : (forecast.trend.direction == 'decreasing' ? 'analytics.forecast.predictions.decreasing'|trans({}, 'analytics') : 'analytics.forecast.predictions.stable'|trans({}, 'analytics'))
+                                } %}
                             </div>
                             <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
                                 <span class="text-muted">{{ 'analytics.forecast.predictions.change'|trans({}, 'analytics') }}</span>
@@ -165,15 +165,13 @@
                             {% if last_hist and last_forecast %}
                             {% for level in ['critical', 'high', 'medium', 'low'] %}
                             <div class="d-flex justify-content-between mb-2">
-                                <span class="badge bg-{% if level == 'critical' %}danger{% elseif level == 'high' %}warning{% elseif level == 'medium' %}info{% else %}success{% endif %}">
-                                    {{ level|title }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: level == 'critical' ? 'danger' : (level == 'high' ? 'warning' : (level == 'medium' ? 'info' : 'success')), content: level|title } %}
                                 <span>{{ attribute(last_hist, level)|default(0) }} <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ attribute(last_forecast, level)|default(0) }}</span>
                             </div>
                             {% endfor %}
                             {% endif %}
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </div>
         </div>
@@ -182,23 +180,27 @@
         <div class="tab-pane fade" id="velocity-tab" role="tabpanel">
             <div class="row">
                 <div class="col-lg-8 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h5 class="mb-0">{{ 'analytics.forecast.velocity.chart_title'|trans({}, 'analytics') }}</h5>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_header %}
+                            <div class="card-header">
+                                <h5 class="mb-0">{{ 'analytics.forecast.velocity.chart_title'|trans({}, 'analytics') }}</h5>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div style="height: 300px; position: relative;">
                                 <canvas id="velocityChart"></canvas>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 <div class="col-lg-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h5 class="mb-0">{{ 'analytics.forecast.velocity.summary'|trans({}, 'analytics') }}</h5>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_header %}
+                            <div class="card-header">
+                                <h5 class="mb-0">{{ 'analytics.forecast.velocity.summary'|trans({}, 'analytics') }}</h5>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div class="row text-center mb-4">
                                 <div class="col-6">
                                     <div class="bg-danger bg-opacity-10 rounded p-3">
@@ -228,17 +230,19 @@
                                 <span class="text-muted">{{ 'analytics.forecast.velocity.period'|trans({}, 'analytics') }}</span>
                                 <span>30 {{ 'common.days'|trans({}, 'messages') }}</span>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </div>
 
             {# 90-Day Summary Card #}
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">{{ 'analytics.forecast.velocity.monthly_breakdown'|trans({}, 'analytics') }} (90 {{ 'common.days'|trans({}, 'messages') }})</h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ 'analytics.forecast.velocity.monthly_breakdown'|trans({}, 'analytics') }} (90 {{ 'common.days'|trans({}, 'messages') }})</h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row text-center">
                         <div class="col-md-3">
                             <div class="p-3 bg-light rounded">
@@ -267,44 +271,48 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Risk Appetite Tab #}
         <div class="tab-pane fade" id="appetite-tab" role="tabpanel">
             <div class="row">
                 <div class="col-lg-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h5 class="mb-0">{{ 'analytics.forecast.appetite.compliance_score'|trans({}, 'analytics') }}</h5>
-                        </div>
-                        <div class="card-body text-center">
-                            <div class="display-1 mb-3 {% if appetite.compliance_score >= 80 %}text-success{% elseif appetite.compliance_score >= 50 %}text-warning{% else %}text-danger{% endif %}">
-                                {{ appetite.compliance_score }}%
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_header %}
+                            <div class="card-header">
+                                <h5 class="mb-0">{{ 'analytics.forecast.appetite.compliance_score'|trans({}, 'analytics') }}</h5>
                             </div>
-                            <p class="text-muted">{{ 'analytics.forecast.appetite.score_description'|trans({}, 'analytics') }}</p>
-                            <div style="height: 150px; position: relative;">
-                                <canvas id="appetiteGauge"></canvas>
+                        {% endblock %}
+                        {% block card_body %}
+                            <div class="text-center">
+                                <div class="display-1 mb-3 {% if appetite.compliance_score >= 80 %}text-success{% elseif appetite.compliance_score >= 50 %}text-warning{% else %}text-danger{% endif %}">
+                                    {{ appetite.compliance_score }}%
+                                </div>
+                                <p class="text-muted">{{ 'analytics.forecast.appetite.score_description'|trans({}, 'analytics') }}</p>
+                                <div style="height: 150px; position: relative;">
+                                    <canvas id="appetiteGauge"></canvas>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 <div class="col-lg-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h5 class="mb-0">{{ 'analytics.forecast.appetite.by_level'|trans({}, 'analytics') }}</h5>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_header %}
+                            <div class="card-header">
+                                <h5 class="mb-0">{{ 'analytics.forecast.appetite.by_level'|trans({}, 'analytics') }}</h5>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             {% for level in ['critical', 'high', 'medium', 'low'] %}
                             {% set actual_val = attribute(appetite.actual, level)|default(0) %}
                             {% set threshold_val = attribute(appetite.appetite, level ~ '_max')|default(10) %}
                             {% set is_compliant = actual_val <= threshold_val %}
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span class="badge bg-{% if level == 'critical' %}danger{% elseif level == 'high' %}warning{% elseif level == 'medium' %}info{% else %}success{% endif %}">
-                                        {{ level|title }}
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: level == 'critical' ? 'danger' : (level == 'high' ? 'warning' : (level == 'medium' ? 'info' : 'success')), content: level|title } %}
                                     <span>{{ actual_val }} / {{ threshold_val }} {{ 'analytics.forecast.appetite.threshold'|trans({}, 'analytics') }}</span>
                                 </div>
                                 <div class="progress" style="height: 25px;">
@@ -323,20 +331,22 @@
                                 </small>
                             </div>
                             {% endfor %}
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </div>
 
             {% if appetite.breaches|length > 0 %}
-            <div class="card">
-                <div class="card-header bg-danger text-white">
-                    <h5 class="mb-0">
-                        <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
-                        {{ 'analytics.forecast.appetite.recommendations'|trans({}, 'analytics') }}
-                    </h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+                            {{ 'analytics.forecast.appetite.recommendations'|trans({}, 'analytics') }}
+                        </h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="list-group list-group-flush">
                         {% for breach in appetite.breaches %}
                         <div class="list-group-item">
@@ -345,9 +355,7 @@
                                     <i class="bi bi-exclamation-diamond text-danger me-2" aria-hidden="true"></i>
                                     {{ breach.level|title }} Risk Threshold Exceeded
                                 </h6>
-                                <span class="badge bg-{{ breach.severity == 'high' ? 'danger' : 'warning' }}">
-                                    {{ breach.severity|title }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: breach.severity == 'high' ? 'danger' : 'warning', content: breach.severity|title } %}
                             </div>
                             <p class="mb-0 text-muted">
                                 Current: {{ breach.actual }} | Threshold: {{ breach.threshold }} | Excess: {{ breach.excess }}
@@ -355,8 +363,8 @@
                         </div>
                         {% endfor %}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
         </div>
 
@@ -366,17 +374,19 @@
             <div class="row">
                 {% for anomaly in anomalies.anomalies %}
                 <div class="col-md-6 mb-4">
-                    <div class="card border-{{ anomaly.severity == 'critical' ? 'danger' : (anomaly.severity == 'warning' ? 'warning' : 'info') }}">
-                        <div class="card-header bg-{{ anomaly.severity == 'critical' ? 'danger' : (anomaly.severity == 'warning' ? 'warning' : 'info') }} text-{{ anomaly.severity == 'warning' ? 'dark' : 'white' }}">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">
-                                    <i class="bi bi-exclamation-diamond me-2" aria-hidden="true"></i>
-                                    {{ anomaly.type|replace({'_': ' '})|title }}
-                                </h5>
-                                <span class="badge bg-light text-dark">{{ anomaly.severity|title }}</span>
+                    {% embed '_components/_card.html.twig' with { 'class': 'border-' ~ (anomaly.severity == 'critical' ? 'danger' : (anomaly.severity == 'warning' ? 'warning' : 'info')) } %}
+                        {% block card_header %}
+                            <div class="card-header bg-{{ anomaly.severity == 'critical' ? 'danger' : (anomaly.severity == 'warning' ? 'warning' : 'info') }} text-{{ anomaly.severity == 'warning' ? 'dark' : 'white' }}">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">
+                                        <i class="bi bi-exclamation-diamond me-2" aria-hidden="true"></i>
+                                        {{ anomaly.type|replace({'_': ' '})|title }}
+                                    </h5>
+                                    {% include '_components/_badge.html.twig' with { variant: 'light', class: 'text-dark', content: anomaly.severity|title } %}
+                                </div>
                             </div>
-                        </div>
-                        <div class="card-body">
+                        {% endblock %}
+                        {% block card_body %}
                             <p>{{ anomaly.message }}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 <small class="text-muted">
@@ -384,31 +394,35 @@
                                     Score: {{ anomaly.severity_score|round }}
                                 </small>
                                 {% if anomaly.week is defined %}
-                                <span class="badge bg-secondary">{{ anomaly.week }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: anomaly.week } %}
                                 {% endif %}
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 {% endfor %}
             </div>
             {% else %}
-            <div class="card">
-                <div class="card-body text-center py-5">
-                    <i class="bi bi-check-circle display-1 text-success" aria-hidden="true"></i>
-                    <h4 class="mt-3">{{ 'analytics.forecast.anomalies.none_detected'|trans({}, 'analytics') }}</h4>
-                    <p class="text-muted">{{ 'analytics.forecast.anomalies.all_normal'|trans({}, 'analytics') }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-check-circle display-1 text-success" aria-hidden="true"></i>
+                        <h4 class="mt-3">{{ 'analytics.forecast.anomalies.none_detected'|trans({}, 'analytics') }}</h4>
+                        <p class="text-muted">{{ 'analytics.forecast.anomalies.all_normal'|trans({}, 'analytics') }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
 
             {# Anomaly Type Breakdown #}
             {% if anomalies.total_count > 0 %}
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h5 class="mb-0">{{ 'analytics.forecast.anomalies.historical_patterns'|trans({}, 'analytics') }}</h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ 'analytics.forecast.anomalies.historical_patterns'|trans({}, 'analytics') }}</h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row text-center">
                         <div class="col-md-4">
                             <div class="p-3 bg-light rounded">
@@ -429,8 +443,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
         </div>
     </div>
