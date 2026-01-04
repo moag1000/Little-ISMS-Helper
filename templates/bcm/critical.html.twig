@@ -77,22 +77,20 @@
                     </td>
                     <td>
                         {% set critColors = {'critical': 'danger', 'high': 'warning', 'medium': 'info', 'low': 'secondary'} %}
-                        <span class="badge bg-{{ critColors[process.criticality]|default('secondary') }}">
-                            {{ ('bcm.criticality.' ~ process.criticality)|trans({}, 'bcm') }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: critColors[process.criticality]|default('secondary'), content: ('bcm.criticality.' ~ process.criticality)|trans({}, 'bcm') } %}
                     </td>
                     <td>
                         <strong>{{ process.rto|default('-') }}h</strong>
                         {% if process.rto|default(24) <= 1 %}
-                            <span class="badge bg-danger ms-1">{{ 'bcm.badge.immediate'|trans({}, 'bcm') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'bcm.badge.immediate'|trans({}, 'bcm'), class: 'ms-1' } %}
                         {% elseif process.rto|default(24) <= 4 %}
-                            <span class="badge bg-warning ms-1">{{ 'bcm.badge.urgent'|trans({}, 'bcm') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'bcm.badge.urgent'|trans({}, 'bcm'), class: 'ms-1' } %}
                         {% endif %}
                     </td>
                     <td>{{ process.rpo|default('-') }}h</td>
                     <td>{{ process.mtpd|default('-') }}h</td>
                     <td class="text-center">
-                        <span class="badge bg-info">{{ process.supportingAssets|length }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'info', content: process.supportingAssets|length } %}
                     </td>
                     <td class="text-center">
                         <a href="{{ path('app_business_process_show', {id: process.id}) }}" class="btn btn-sm btn-outline-primary">
@@ -125,25 +123,25 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="d-flex align-items-center">
-                    <span class="badge bg-danger me-2">{{ 'bcm.badge.immediate'|trans({}, 'bcm') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'bcm.badge.immediate'|trans({}, 'bcm'), class: 'me-2' } %}
                     <span>RTO ≤ 1h</span>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="d-flex align-items-center">
-                    <span class="badge bg-warning me-2">{{ 'bcm.badge.urgent'|trans({}, 'bcm') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'bcm.badge.urgent'|trans({}, 'bcm'), class: 'me-2' } %}
                     <span>RTO ≤ 4h</span>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="d-flex align-items-center">
-                    <span class="badge bg-info me-2">{{ 'bcm.rto.standard'|trans({}, 'bcm') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'info', content: 'bcm.rto.standard'|trans({}, 'bcm'), class: 'me-2' } %}
                     <span>RTO ≤ 24h</span>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="d-flex align-items-center">
-                    <span class="badge bg-secondary me-2">{{ 'bcm.rto.flexible'|trans({}, 'bcm') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'bcm.rto.flexible'|trans({}, 'bcm'), class: 'me-2' } %}
                     <span>RTO > 24h</span>
                 </div>
             </div>
