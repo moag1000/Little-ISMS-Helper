@@ -82,11 +82,13 @@
     {# Average Scores #}
     <div class="row mb-4">
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="mb-0">⭐ Durchschnittliche Qualität</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0">⭐ Durchschnittliche Qualität</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="progress mb-2" style="height: 30px;">
                         <div class="progress-bar {% if quality_stats.avg_quality_score >= 75 %}bg-success{% elseif quality_stats.avg_quality_score >= 50 %}bg-warning{% else %}bg-danger{% endif %}"
                              role="progressbar"
@@ -97,15 +99,17 @@
                             <strong>{{ quality_stats.avg_quality_score }}%</strong>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="mb-0"><i class="bi bi-bullseye" aria-hidden="true"></i> Durchschnittliches Confidence</h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="mb-0"><i class="bi bi-bullseye" aria-hidden="true"></i> Durchschnittliches Confidence</h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="progress mb-2" style="height: 30px;">
                         <div class="progress-bar {% if quality_stats.avg_confidence >= 80 %}bg-success{% elseif quality_stats.avg_confidence >= 60 %}bg-warning{% else %}bg-danger{% endif %}"
                              role="progressbar"
@@ -116,20 +120,20 @@
                             <strong>{{ quality_stats.avg_confidence }}%</strong>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Batch Analysis UI - Always visible #}
-    <div class="card mb-4" id="batchAnalysisCard"
-         data-controller="batch-analysis"
-         data-batch-analysis-url-value="{{ path('app_mapping_quality_batch_analyze') }}"
-         data-total-unanalyzed="{{ quality_stats.unanalyzed_mappings }}">
-        <div class="card-header {% if quality_stats.unanalyzed_mappings > 0 %}bg-info{% else %}bg-secondary{% endif %} text-white">
-            <h3 class="mb-0">🚀 Mapping-Analyse</h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_attrs %}id="batchAnalysisCard" data-controller="batch-analysis" data-batch-analysis-url-value="{{ path('app_mapping_quality_batch_analyze') }}" data-total-unanalyzed="{{ quality_stats.unanalyzed_mappings }}"{% endblock %}
+        {% block card_header %}
+            <div class="card-header {% if quality_stats.unanalyzed_mappings > 0 %}bg-info{% else %}bg-secondary{% endif %} text-white">
+                <h3 class="mb-0">🚀 Mapping-Analyse</h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if quality_stats.unanalyzed_mappings > 0 %}
             <p class="mb-3">
                 <strong>{{ quality_stats.unanalyzed_mappings }} Mappings</strong> warten auf Analyse.
@@ -137,7 +141,7 @@
             </p>
             {% else %}
             <p class="mb-3">
-                <span class="badge bg-success me-2">✓ Alle Mappings analysiert</span>
+                {% include '_components/_badge.html.twig' with { variant: 'success', class: 'me-2', content: '✓ Alle Mappings analysiert' } %}
                 Sie können eine Re-Analyse starten um die Qualitätswerte mit dem neuesten Algorithmus neu zu berechnen.
             </p>
             {% endif %}
@@ -240,30 +244,34 @@
                     </button>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Charts Row #}
     <div class="row mb-4">
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="mb-0">📊 Confidence-Verteilung</h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="mb-0">📊 Confidence-Verteilung</h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="chart-container">
                         <canvas id="confidenceChart"></canvas>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="mb-0">🔍 Gap-Statistiken nach Priorität</h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="mb-0">🔍 Gap-Statistiken nach Priorität</h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if gap_stats is empty %}
                         <p class="text-muted text-center">Keine Gap-Daten verfügbar</p>
                     {% else %}
@@ -271,18 +279,20 @@
                             <canvas id="gapStatsChart"></canvas>
                         </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Framework Comparison #}
     {% if framework_comparison is not empty %}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h3 class="mb-0">🌍 Framework-Qualitätsvergleich (Top 10)</h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h3 class="mb-0">🌍 Framework-Qualitätsvergleich (Top 10)</h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover',
                 'noMargin': true,
@@ -306,23 +316,26 @@
                         <td>{{ comparison.target_framework }}</td>
                         <td class="text-center">{{ comparison.mapping_count }}</td>
                         <td class="text-center">
-                            <span class="badge {% if comparison.avg_percentage >= 70 %}bg-success{% elseif comparison.avg_percentage >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
-                                {{ comparison.avg_percentage|round }}%
-                            </span>
+                            {% include '_components/_badge.html.twig' with {
+                                variant: comparison.avg_percentage >= 70 ? 'success' : (comparison.avg_percentage >= 50 ? 'warning' : 'danger'),
+                                content: comparison.avg_percentage|round ~ '%'
+                            } %}
                         </td>
                         <td class="text-center">
-                            <span class="badge {% if comparison.avg_quality >= 70 %}bg-success{% elseif comparison.avg_quality >= 50 %}badge-warning{% else %}bg-danger{% endif %}">
-                                {{ comparison.avg_quality|round }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with {
+                                variant: comparison.avg_quality >= 70 ? 'success' : (comparison.avg_quality >= 50 ? 'warning' : 'danger'),
+                                content: comparison.avg_quality|round
+                            } %}
                         </td>
                         <td class="text-center">
-                            <span class="badge {% if comparison.avg_confidence >= 80 %}bg-success{% elseif comparison.avg_confidence >= 60 %}badge-warning{% else %}bg-danger{% endif %}">
-                                {{ comparison.avg_confidence|round }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with {
+                                variant: comparison.avg_confidence >= 80 ? 'success' : (comparison.avg_confidence >= 60 ? 'warning' : 'danger'),
+                                content: comparison.avg_confidence|round
+                            } %}
                         </td>
                         <td class="text-center">
                             {% if comparison.review_count > 0 %}
-                                <span class="badge bg-warning">{{ comparison.review_count }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: comparison.review_count } %}
                             {% else %}
                                 <span class="text-success">✓</span>
                             {% endif %}
@@ -331,16 +344,18 @@
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Help Box #}
-    <div class="card mb-4">
-        <div class="card-header bg-light">
-            <h2 class="mb-0"><i class="bi bi-info-circle text-info" aria-hidden="true"></i> Wie funktioniert die Qualitätsanalyse?</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-light">
+                <h2 class="mb-0"><i class="bi bi-info-circle text-info" aria-hidden="true"></i> Wie funktioniert die Qualitätsanalyse?</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row">
                 <div class="col-md-4">
                     <p class="fw-bold fs-5"><i class="bi bi-bullseye" aria-hidden="true"></i> Confidence Score</p>
@@ -371,8 +386,8 @@
                     </ul>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Quick Actions - Show only if mappings exist #}
