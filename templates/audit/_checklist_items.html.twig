@@ -62,13 +62,18 @@
                     </div>
                 {% endif %}
 
-                <div class="detail-section" data-controller="ui-actions">
-                    <label for="compliance-score-{{ item.id }}">{{ 'checklist.compliance_score'|trans({}, 'audit') }} (0-100):</label>
-                    <input type="range" min="0" max="100" value="{{ item.complianceScore }}"
-                           id="compliance-score-{{ item.id }}" class="score-slider" data-item-id="{{ item.id }}"
-                           data-action="input->ui-actions#updateRangeDisplay"
-                           aria-label="{{ 'checklist.compliance_score'|trans({}, 'audit') }}">
-                    <span class="score-value">{{ item.complianceScore }}%</span>
+                <div class="detail-section">
+                    {% include '_components/_slider.html.twig' with {
+                        name: 'compliance_score[' ~ item.id ~ ']',
+                        id: 'compliance-score-' ~ item.id,
+                        value: item.complianceScore,
+                        min: 0,
+                        max: 100,
+                        label: 'checklist.compliance_score'|trans({}, 'audit'),
+                        value_suffix: '%',
+                        dynamic_variant: true,
+                        thresholds: { danger: 25, warning: 50, success: 75 }
+                    } %}
                 </div>
 
                 {% if item.requirement.hasDetailedRequirements() %}

@@ -1,0 +1,138 @@
+{#
+ # Generic Slider Component
+ #
+ # A reusable range slider with value display and optional color variants.
+ # For specialized risk scoring (probability × impact), use _risk_slider.html.twig instead.
+ #
+ # Parameters:
+ # - name: Form field name (required)
+ # - value: Current value (default: min)
+ # - min: Minimum value (default: 0)
+ # - max: Maximum value (default: 100)
+ # - step: Step increment (default: 1)
+ # - label: Label text (optional)
+ # - label_icon: Bootstrap icon class without 'bi-' prefix (optional)
+ # - show_value: Show value display badge (default: true)
+ # - value_suffix: Suffix for value display, e.g., '%' (default: '')
+ # - value_prefix: Prefix for value display, e.g., '€' (default: '')
+ # - variant: Bootstrap color variant for value badge (default: 'primary')
+ # - dynamic_variant: Enable auto-coloring based on value thresholds (default: false)
+ # - thresholds: Custom thresholds for dynamic_variant { danger: 25, warning: 50, success: 75 }
+ # - id: Custom element ID (default: auto-generated from name)
+ # - class: Additional CSS classes for wrapper
+ # - disabled: Disable the slider (default: false)
+ # - aria_label: Accessibility label (default: uses label)
+ # - controller: Stimulus controller name (default: 'slider')
+ # - target_value: Stimulus target for value display (default: 'value')
+ # - target_input: Stimulus target for hidden input (default: 'input')
+ #
+ # Examples:
+ #
+ # Basic percentage slider:
+ # {% include '_components/_slider.html.twig' with {
+ #     name: 'compliance_score',
+ #     value: 75,
+ #     label: 'Compliance Score',
+ #     value_suffix: '%'
+ # } %}
+ #
+ # Rating slider (1-5):
+ # {% include '_components/_slider.html.twig' with {
+ #     name: 'rating',
+ #     value: 3,
+ #     min: 1,
+ #     max: 5,
+ #     label: 'Rating',
+ #     variant: 'warning'
+ # } %}
+ #
+ # Dynamic color based on value:
+ # {% include '_components/_slider.html.twig' with {
+ #     name: 'health_score',
+ #     value: 80,
+ #     dynamic_variant: true,
+ #     thresholds: { danger: 30, warning: 60, success: 80 }
+ # } %}
+ #}
+
+{% set name = name|default('slider') %}
+{% set value = value|default(min|default(0)) %}
+{% set min = min|default(0) %}
+{% set max = max|default(100) %}
+{% set step = step|default(1) %}
+{% set show_value = show_value is defined ? show_value : true %}
+{% set value_suffix = value_suffix|default('') %}
+{% set value_prefix = value_prefix|default('') %}
+{% set variant = variant|default('primary') %}
+{% set dynamic_variant = dynamic_variant|default(false) %}
+{% set thresholds = thresholds|default({ danger: 25, warning: 50, success: 75 }) %}
+{% set id = id|default(name|replace({'[': '_', ']': '_', ' ': '_'})) %}
+{% set disabled = disabled|default(false) %}
+{% set controller = controller|default('slider') %}
+{% set target_value = target_value|default('value') %}
+{% set target_input = target_input|default('input') %}
+
+{# Calculate dynamic variant based on value and thresholds #}
+{% if dynamic_variant %}
+    {% if value >= thresholds.success %}
+        {% set computed_variant = 'success' %}
+    {% elseif value >= thresholds.warning %}
+        {% set computed_variant = 'warning' %}
+    {% elseif value >= thresholds.danger %}
+        {% set computed_variant = 'info' %}
+    {% else %}
+        {% set computed_variant = 'danger' %}
+    {% endif %}
+{% else %}
+    {% set computed_variant = variant %}
+{% endif %}
+
+<div class="slider-component {{ class|default('') }}"
+     {% if controller %}data-controller="{{ controller }}"{% endif %}
+     {% if dynamic_variant %}
+     data-{{ controller }}-thresholds-value="{{ thresholds|json_encode }}"
+     {% endif %}>
+
+    {% if label is defined and label %}
+    <label for="{{ id }}" class="form-label fw-semibold">
+        {% if label_icon is defined and label_icon %}
+            <i class="bi bi-{{ label_icon }} me-1" aria-hidden="true"></i>
+        {% endif %}
+        {{ label }}
+    </label>
+    {% endif %}
+
+    <div class="d-flex align-items-center gap-3">
+        <input type="range"
+               id="{{ id }}"
+               class="form-range flex-grow-1"
+               min="{{ min }}"
+               max="{{ max }}"
+               step="{{ step }}"
+               value="{{ value }}"
+               {% if disabled %}disabled{% endif %}
+               {% if controller %}
+               data-{{ controller }}-target="range"
+               data-action="input->{{ controller }}#update"
+               {% endif %}
+               aria-label="{{ aria_label|default(label|default(name)) }}"
+               aria-valuemin="{{ min }}"
+               aria-valuemax="{{ max }}"
+               aria-valuenow="{{ value }}">
+
+        {% if show_value %}
+        <div class="slider-value text-center" style="min-width: 60px;">
+            <span class="badge bg-{{ computed_variant }} fs-6"
+                  {% if controller %}data-{{ controller }}-target="{{ target_value }}"{% endif %}>
+                {{ value_prefix }}{{ value }}{{ value_suffix }}
+            </span>
+        </div>
+        {% endif %}
+    </div>
+
+    {# Hidden input for form submission #}
+    <input type="hidden"
+           name="{{ name }}"
+           value="{{ value }}"
+           {% if controller %}data-{{ controller }}-target="{{ target_input }}"{% endif %}>
+</div>
