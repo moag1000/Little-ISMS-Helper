@@ -47,24 +47,28 @@
             <div class="row">
                 {# Comparison Chart #}
                 <div class="col-lg-8 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h5 class="mb-0">{{ 'analytics.compliance.comparison.chart_title'|trans({}, 'analytics') }}</h5>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_header %}
+                            <div class="card-header">
+                                <h5 class="mb-0">{{ 'analytics.compliance.comparison.chart_title'|trans({}, 'analytics') }}</h5>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div style="height: 300px; position: relative;">
                                 <canvas id="frameworkComparisonChart"></canvas>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 {# Summary Cards #}
                 <div class="col-lg-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h5 class="mb-0">{{ 'analytics.compliance.comparison.summary'|trans({}, 'analytics') }}</h5>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_header %}
+                            <div class="card-header">
+                                <h5 class="mb-0">{{ 'analytics.compliance.comparison.summary'|trans({}, 'analytics') }}</h5>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             {% for framework in comparison.frameworks %}
                             <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
                                 <div>
@@ -83,17 +87,19 @@
                             {% else %}
                             <p class="text-muted text-center">{{ 'analytics.compliance.comparison.no_data'|trans({}, 'analytics') }}</p>
                             {% endfor %}
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </div>
 
             {# Detailed Table #}
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">{{ 'analytics.compliance.comparison.detailed_breakdown'|trans({}, 'analytics') }}</h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ 'analytics.compliance.comparison.detailed_breakdown'|trans({}, 'analytics') }}</h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
@@ -116,11 +122,10 @@
                                     <td class="text-center text-warning">{{ framework.in_progress }}</td>
                                     <td class="text-center text-danger">{{ framework.not_started }}</td>
                                     <td class="text-center">
-                                        <span class="badge
-                                            {% if framework.compliance_percentage >= 80 %}bg-success
-                                            {% elseif framework.compliance_percentage >= 50 %}bg-warning
-                                            {% else %}bg-danger{% endif %}
-                                        ">{{ framework.compliance_percentage }}%</span>
+                                        {% include '_components/_badge.html.twig' with {
+                                            variant: framework.compliance_percentage >= 80 ? 'success' : (framework.compliance_percentage >= 50 ? 'warning' : 'danger'),
+                                            content: framework.compliance_percentage ~ '%'
+                                        } %}
                                     </td>
                                     <td>
                                         {% if framework.applicable > 0 %}
@@ -138,19 +143,21 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Framework Overlap Tab #}
         <div class="tab-pane fade" id="overlap-tab" role="tabpanel">
             <div class="row">
                 <div class="col-lg-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h5 class="mb-0">{{ 'analytics.compliance.overlap.title'|trans({}, 'analytics') }}</h5>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_header %}
+                            <div class="card-header">
+                                <h5 class="mb-0">{{ 'analytics.compliance.overlap.title'|trans({}, 'analytics') }}</h5>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             <div class="text-center mb-4">
                                 <h2 class="text-primary">{{ overlap.frameworks|length }}</h2>
                                 <p class="text-muted">{{ 'analytics.compliance.overlap.unique_controls'|trans({}, 'analytics') }}</p>
@@ -169,15 +176,17 @@
                                     <p class="text-muted small">{{ 'analytics.compliance.overlap.overlap_rate'|trans({}, 'analytics') }}</p>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
                 <div class="col-lg-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-header">
-                            <h5 class="mb-0">{{ 'analytics.compliance.overlap.efficiency'|trans({}, 'analytics') }}</h5>
-                        </div>
-                        <div class="card-body">
+                    {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                        {% block card_header %}
+                            <div class="card-header">
+                                <h5 class="mb-0">{{ 'analytics.compliance.overlap.efficiency'|trans({}, 'analytics') }}</h5>
+                            </div>
+                        {% endblock %}
+                        {% block card_body %}
                             {% if overlap.overlaps|length > 0 %}
                             <div class="alert alert-success">
                                 <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
@@ -193,18 +202,20 @@
                             <div style="height: 200px; position: relative;">
                                 <canvas id="overlapChart"></canvas>
                             </div>
-                        </div>
-                    </div>
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </div>
 
             {# Framework Overlaps List #}
             {% if overlap.overlaps|length > 0 %}
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">{{ 'analytics.compliance.overlap.matrix_title'|trans({}, 'analytics') }}</h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ 'analytics.compliance.overlap.matrix_title'|trans({}, 'analytics') }}</h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>
@@ -222,53 +233,62 @@
                                     <td>{{ o.framework2_name }}</td>
                                     <td class="text-center">{{ o.shared_controls }}</td>
                                     <td class="text-center">
-                                        <span class="badge {% if o.overlap_percentage > 50 %}bg-success{% elseif o.overlap_percentage > 20 %}bg-warning{% else %}bg-secondary{% endif %}">
-                                            {{ o.overlap_percentage }}%
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with {
+                                            variant: o.overlap_percentage > 50 ? 'success' : (o.overlap_percentage > 20 ? 'warning' : 'secondary'),
+                                            content: o.overlap_percentage ~ '%'
+                                        } %}
                                     </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
         </div>
 
         {# Compliance Roadmap Tab #}
         <div class="tab-pane fade" id="roadmap-tab" role="tabpanel">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">{{ 'analytics.compliance.roadmap.title'|trans({}, 'analytics') }}</h5>
-                    <span class="badge bg-primary">{{ roadmap.roadmap|length }} {{ 'analytics.compliance.tabs.frameworks'|trans({}, 'analytics') }}</span>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">{{ 'analytics.compliance.roadmap.title'|trans({}, 'analytics') }}</h5>
+                        {% include '_components/_badge.html.twig' with { variant: 'primary', content: roadmap.roadmap|length ~ ' ' ~ 'analytics.compliance.tabs.frameworks'|trans({}, 'analytics') } %}
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if roadmap.roadmap|length > 0 %}
                     <div class="row mb-4">
                         <div class="col-md-4">
-                            <div class="card bg-success bg-opacity-10 border-success">
-                                <div class="card-body text-center">
-                                    <h3 class="text-success">{{ roadmap.summary.frameworks_compliant }}</h3>
-                                    <p class="mb-0">{{ 'analytics.compliance.table.compliant'|trans({}, 'analytics') }}</p>
-                                </div>
-                            </div>
+                            {% embed '_components/_card.html.twig' with { 'class': 'bg-success bg-opacity-10 border-success' } %}
+                                {% block card_body %}
+                                    <div class="text-center">
+                                        <h3 class="text-success">{{ roadmap.summary.frameworks_compliant }}</h3>
+                                        <p class="mb-0">{{ 'analytics.compliance.table.compliant'|trans({}, 'analytics') }}</p>
+                                    </div>
+                                {% endblock %}
+                            {% endembed %}
                         </div>
                         <div class="col-md-4">
-                            <div class="card bg-warning bg-opacity-10 border-warning">
-                                <div class="card-body text-center">
-                                    <h3 class="text-warning">{{ roadmap.summary.frameworks_in_progress }}</h3>
-                                    <p class="mb-0">{{ 'analytics.compliance.table.partial'|trans({}, 'analytics') }}</p>
-                                </div>
-                            </div>
+                            {% embed '_components/_card.html.twig' with { 'class': 'bg-warning bg-opacity-10 border-warning' } %}
+                                {% block card_body %}
+                                    <div class="text-center">
+                                        <h3 class="text-warning">{{ roadmap.summary.frameworks_in_progress }}</h3>
+                                        <p class="mb-0">{{ 'analytics.compliance.table.partial'|trans({}, 'analytics') }}</p>
+                                    </div>
+                                {% endblock %}
+                            {% endembed %}
                         </div>
                         <div class="col-md-4">
-                            <div class="card bg-secondary bg-opacity-10 border-secondary">
-                                <div class="card-body text-center">
-                                    <h3 class="text-secondary">{{ roadmap.summary.frameworks_not_started }}</h3>
-                                    <p class="mb-0">{{ 'analytics.compliance.table.non_compliant'|trans({}, 'analytics') }}</p>
-                                </div>
-                            </div>
+                            {% embed '_components/_card.html.twig' with { 'class': 'bg-secondary bg-opacity-10 border-secondary' } %}
+                                {% block card_body %}
+                                    <div class="text-center">
+                                        <h3 class="text-secondary">{{ roadmap.summary.frameworks_not_started }}</h3>
+                                        <p class="mb-0">{{ 'analytics.compliance.table.non_compliant'|trans({}, 'analytics') }}</p>
+                                    </div>
+                                {% endblock %}
+                            {% endembed %}
                         </div>
                     </div>
 
@@ -290,27 +310,20 @@
                                     <td>
                                         <strong>{{ item.framework }}</strong>
                                         {% if item.mandatory %}
-                                        <span class="badge bg-danger ms-1">Mandatory</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-1', content: 'Mandatory' } %}
                                         {% endif %}
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge
-                                            {% if item.current_compliance >= 80 %}bg-success
-                                            {% elseif item.current_compliance >= 50 %}bg-warning
-                                            {% else %}bg-danger{% endif %}
-                                        ">{{ item.current_compliance }}%</span>
+                                        {% include '_components/_badge.html.twig' with {
+                                            variant: item.current_compliance >= 80 ? 'success' : (item.current_compliance >= 50 ? 'warning' : 'danger'),
+                                            content: item.current_compliance ~ '%'
+                                        } %}
                                     </td>
                                     <td class="text-center">{{ item.gaps_remaining }}</td>
                                     <td class="text-center">{{ item.estimated_weeks }}</td>
                                     <td>
-                                        <span class="badge bg-
-                                            {% if item.status == 'completed' %}success
-                                            {% elseif item.status == 'on_track' %}info
-                                            {% elseif item.status == 'in_progress' %}warning
-                                            {% elseif item.status == 'at_risk' %}warning
-                                            {% elseif item.status == 'critical' %}danger
-                                            {% else %}secondary{% endif %}
-                                        ">{{ item.status|replace({'_': ' '})|title }}</span>
+                                        {% set status_variant = item.status == 'completed' ? 'success' : (item.status == 'on_track' ? 'info' : (item.status in ['in_progress', 'at_risk'] ? 'warning' : (item.status == 'critical' ? 'danger' : 'secondary'))) %}
+                                        {% include '_components/_badge.html.twig' with { variant: status_variant, content: item.status|replace({'_': ' '})|title } %}
                                     </td>
                                     <td>
                                         <div class="progress" style="height: 20px;">
@@ -335,8 +348,8 @@
                         <p class="text-muted">{{ 'analytics.compliance.roadmap.fully_compliant'|trans({}, 'analytics') }}</p>
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>
