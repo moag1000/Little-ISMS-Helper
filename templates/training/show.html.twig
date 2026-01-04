@@ -19,16 +19,18 @@
     <div class="row">
         <div class="col-lg-8">
             {# Main Training Information #}
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h1 class="mb-0 h2">
-                        <i class="bi bi-mortarboard" aria-hidden="true"></i> {{ training.title }}
-                    </h1>
-                    <span class="{{ badge_status(training.status) }} fs-6">
-                        {{ ('training.status.' ~ training.status)|trans }}
-                    </span>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <h1 class="mb-0 h2">
+                            <i class="bi bi-mortarboard" aria-hidden="true"></i> {{ training.title }}
+                        </h1>
+                        <span class="{{ badge_status(training.status) }} fs-6">
+                            {{ ('training.status.' ~ training.status)|trans }}
+                        </span>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {# Mandatory Warning Banner #}
                     {% if training.mandatory %}
                     <div class="alert alert-warning mb-4" role="alert">
@@ -53,18 +55,14 @@
                         <div class="col-md-6">
                             <div class="text-muted mb-2 fw-semibold">{{ 'training.type_label'|trans({}, 'training')}}</div>
                             <p>
-                                <span class="badge bg-secondary fs-6">
-                                    {{ ('training.type.' ~ training.trainingType)|trans }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', class: 'fs-6', content: ('training.type.' ~ training.trainingType)|trans } %}
                             </p>
                         </div>
                         <div class="col-md-6">
                             <div class="text-muted mb-2 fw-semibold">{{ 'training.delivery_method'|trans({}, 'training')}}</div>
                             <p>
                                 {% if training.deliveryMethod %}
-                                <span class="badge bg-info fs-6">
-                                    {{ ('training.delivery.' ~ training.deliveryMethod)|trans }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: 'info', class: 'fs-6', content: ('training.delivery.' ~ training.deliveryMethod)|trans } %}
                                 {% else %}
                                 <span class="text-muted">-</span>
                                 {% endif %}
@@ -104,18 +102,20 @@
                         <p>{{ training.trainer }}</p>
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Participants Section #}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h2 class="mb-0">
-                        <i class="bi bi-people" aria-hidden="true"></i> {{ 'training.participants'|trans({}, 'training')}}
-                        <span class="badge bg-primary">{{ training.attendeeCount ?? 0 }}</span>
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="mb-0">
+                            <i class="bi bi-people" aria-hidden="true"></i> {{ 'training.participants'|trans({}, 'training')}}
+                            {% include '_components/_badge.html.twig' with { variant: 'primary', content: training.attendeeCount ?? 0 } %}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if training.participants %}
                     <p>{{ training.participants|nl2br }}</p>
                     {% else %}
@@ -123,45 +123,51 @@
                         <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'training.no_participants'|trans({}, 'training')}}
                     </p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Materials Section #}
             {% if training.materials %}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h2 class="mb-0">
-                        <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'training.materials'|trans({}, 'training')}}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="mb-0">
+                            <i class="bi bi-file-earmark-text" aria-hidden="true"></i> {{ 'training.materials'|trans({}, 'training')}}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p>{{ training.materials|nl2br }}</p>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
 
             {# Feedback Section #}
             {% if training.feedback %}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h2 class="mb-0">
-                        <i class="bi bi-chat-left-text" aria-hidden="true"></i> {{ 'training.feedback'|trans({}, 'training')}}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="mb-0">
+                            <i class="bi bi-chat-left-text" aria-hidden="true"></i> {{ 'training.feedback'|trans({}, 'training')}}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p>{{ training.feedback|nl2br }}</p>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
         </div>
 
         <div class="col-lg-4">
             {# Action Buttons #}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h2 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="mb-0"><i class="bi bi-tools" aria-hidden="true"></i> {{ 'common.actions'|trans({}, 'messages') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="d-grid gap-2">
                         {% if is_granted('ROLE_USER') %}
                         <a href="{{ path('app_training_edit', {id: training.id}) }}"
@@ -187,19 +193,21 @@
                         </button>
                         {% endif %}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Data Reuse: Covered Controls #}
             {% if training.coveredControls is defined and training.coveredControls|length > 0 %}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h2 class="mb-0">
-                        <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'training.covered_controls'|trans({}, 'training')}}
-                        <span class="badge bg-primary">{{ training.coveredControls|length }}</span>
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="mb-0">
+                            <i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'training.covered_controls'|trans({}, 'training')}}
+                            {% include '_components/_badge.html.twig' with { variant: 'primary', content: training.coveredControls|length } %}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="list-group list-group-flush">
                         {% for control in training.coveredControls %}
                         <div class="list-group-item px-0">
@@ -215,42 +223,43 @@
                         </div>
                         {% endfor %}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
 
             {# Data Reuse: Compliance Coverage #}
             {% if training.complianceRequirements is defined and training.complianceRequirements|length > 0 %}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h2 class="mb-0">
-                        <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'training.compliance_coverage'|trans({}, 'training') }}
-                        <span class="badge bg-success">{{ training.complianceRequirements|length }}</span>
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="mb-0">
+                            <i class="bi bi-clipboard-check" aria-hidden="true"></i> {{ 'training.compliance_coverage'|trans({}, 'training') }}
+                            {% include '_components/_badge.html.twig' with { variant: 'success', content: training.complianceRequirements|length } %}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p class="small text-muted mb-2">{{ 'training.compliance_coverage_info'|trans({}, 'training') }}</p>
                     <div class="d-flex flex-wrap gap-2">
                         {% for requirement in training.complianceRequirements %}
-                            <span class="badge bg-info">
-                                {{ requirement.framework ? requirement.framework.name : 'N/A' }}
-                                {{ requirement.requirementId }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: 'info', content: (requirement.framework ? requirement.framework.name : 'N/A') ~ ' ' ~ requirement.requirementId } %}
                         {% endfor %}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
 
             {# Data Reuse: Training Statistics #}
             {% if training.status == 'completed' %}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h2 class="mb-0">
-                        <i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'training.statistics'|trans({}, 'training') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="mb-0">
+                            <i class="bi bi-graph-up" aria-hidden="true"></i> {{ 'training.statistics'|trans({}, 'training') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
                             <span class="small text-muted">{{ 'training.completion_rate'|trans({}, 'training') }}</span>
@@ -270,16 +279,18 @@
                         <span class="fw-bold">{{ training.completionDate|date('d.m.Y') }}</span>
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
             {% endif %}
 
             {# Metadata #}
-            <div class="card mb-4">
-                <div class="card-header bg-light">
-                    <h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'common.metadata'|trans({}, 'messages') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="row mb-0 small">
                         <dt class="col-sm-5 text-muted">{{ 'common.created_at'|trans({}, 'messages') }}</dt>
                         <dd class="col-sm-7">{{ training.createdAt|date('d.m.Y H:i') }}</dd>
@@ -289,8 +300,8 @@
                         <dd class="col-sm-7">{{ training.updatedAt|date('d.m.Y H:i') }}</dd>
                         {% endif %}
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>
