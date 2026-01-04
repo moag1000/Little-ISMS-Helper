@@ -19,9 +19,9 @@
             <div class="d-flex justify-content-end align-items-center">
                 <div>
                     {% if is_active %}
-                        <span class="badge bg-success fs-5">Aktiv</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Aktiv', class: 'fs-5' } %}
                     {% else %}
-                        <span class="badge bg-secondary fs-5">Inaktiv</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Inaktiv', class: 'fs-5' } %}
                     {% endif %}
                 </div>
             </div>
@@ -46,21 +46,21 @@
                         <dt class="col-sm-3">Status</dt>
                         <dd class="col-sm-9">
                             {% if module.required %}
-                                <span class="badge bg-warning text-dark">Erforderlich</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'Erforderlich' } %}
                             {% else %}
-                                <span class="badge bg-info">Optional</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'info', content: 'Optional' } %}
                             {% endif %}
                             {% if is_active %}
-                                <span class="badge bg-success">Aktiv</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Aktiv' } %}
                             {% else %}
-                                <span class="badge bg-secondary">Inaktiv</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Inaktiv' } %}
                             {% endif %}
                         </dd>
 
                         <dt class="col-sm-3">Entities</dt>
                         <dd class="col-sm-9">
                             {% for entity in module.entities %}
-                                <span class="badge bg-secondary me-1">{{ entity }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: entity, class: 'me-1' } %}
                             {% endfor %}
                         </dd>
 
@@ -91,7 +91,7 @@
                             </h3>
                             <div class="mb-4">
                                 {% for dep in graph.dependencies %}
-                                    <span class="badge bg-warning text-dark fs-6 me-2 mb-2">{{ dep }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: dep, class: 'fs-6 me-2 mb-2' } %}
                                 {% endfor %}
                             </div>
                         {% endif %}
@@ -103,7 +103,7 @@
                             </h3>
                             <div>
                                 {% for dep in graph.dependents %}
-                                    <span class="badge bg-info fs-6 me-2 mb-2">{{ dep }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'info', content: dep, class: 'fs-6 me-2 mb-2' } %}
                                 {% endfor %}
                             </div>
                         {% endif %}

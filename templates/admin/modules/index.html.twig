@@ -89,7 +89,7 @@
                                             <i class="bi bi-{{ module.icon }} text-{{ module.required ? 'warning' : 'success' }}" aria-hidden="true"></i>
                                             {{ module.name }}
                                         </h3>
-                                        <span class="badge bg-success">{{ 'admin.modules.status.active'|trans({}, 'admin') }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'admin.modules.status.active'|trans({}, 'admin') } %}
                                     </div>
                                     <p class="text-muted small">{{ module.description }}</p>
 
@@ -100,7 +100,7 @@
                                                 <strong>{{ 'admin.modules.dependencies'|trans({}, 'admin') }}:</strong>
                                             </small><br>
                                             {% for dep in dependency_graph[key].dependencies %}
-                                                <span class="badge bg-warning text-dark me-1 mb-1">{{ all_modules[dep].name }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: all_modules[dep].name, class: 'me-1 mb-1' } %}
                                             {% endfor %}
                                         </div>
                                     {% endif %}
@@ -112,7 +112,7 @@
                                                 <strong>{{ 'admin.modules.required_by'|trans({}, 'admin') }}:</strong>
                                             </small><br>
                                             {% for dep in dependency_graph[key].dependents %}
-                                                <span class="badge bg-info me-1 mb-1">{{ all_modules[dep].name }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'info', content: all_modules[dep].name, class: 'me-1 mb-1' } %}
                                             {% endfor %}
                                         </div>
                                     {% endif %}
@@ -178,7 +178,7 @@
                                             <i class="bi bi-{{ module.icon }}" aria-hidden="true"></i>
                                             {{ module.name }}
                                         </h3>
-                                        <span class="badge bg-secondary">{{ 'admin.modules.status.inactive'|trans({}, 'admin') }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'admin.modules.status.inactive'|trans({}, 'admin') } %}
                                     </div>
                                     <p class="text-muted small">{{ module.description }}</p>
 
@@ -189,7 +189,7 @@
                                                 <strong>{{ 'admin.modules.dependencies'|trans({}, 'admin') }}:</strong>
                                             </small><br>
                                             {% for dep in dependency_graph[key].dependencies %}
-                                                <span class="badge bg-warning text-dark me-1 mb-1">{{ all_modules[dep].name }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: all_modules[dep].name, class: 'me-1 mb-1' } %}
                                             {% endfor %}
                                         </div>
                                     {% endif %}

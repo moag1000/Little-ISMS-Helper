@@ -121,23 +121,23 @@
                 {% block card_body %}
                     <div class="row">
                         <div class="col-md-6 mb-2">
-                            <span class="badge bg-success me-2"><i class="bi bi-check-circle" aria-hidden="true"></i> Erlaubt</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'Erlaubt', class: 'me-2' } %}
                             <small>Permissive Lizenzen (MIT, BSD, Apache-2.0)</small>
                         </div>
                         <div class="col-md-6 mb-2">
-                            <span class="badge bg-warning me-2"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Eingeschränkt</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'Eingeschränkt', class: 'me-2' } %}
                             <small>Weak copyleft (MPL-2.0, EPL, CC-BY)</small>
                         </div>
                         <div class="col-md-6 mb-2">
-                            <span class="badge bg-info me-2"><i class="bi bi-arrow-repeat" aria-hidden="true"></i> Copyleft</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'info', icon: 'bi-arrow-repeat', content: 'Copyleft', class: 'me-2' } %}
                             <small>Strong copyleft (GPL/LGPL/AGPL)</small>
                         </div>
                         <div class="col-md-6 mb-2">
-                            <span class="badge bg-danger me-2"><i class="bi bi-x-circle" aria-hidden="true"></i> Nicht erlaubt</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle', content: 'Nicht erlaubt', class: 'me-2' } %}
                             <small>Non-commercial licenses</small>
                         </div>
                         <div class="col-md-6 mb-2">
-                            <span class="badge bg-secondary me-2">❓ Unbekannt</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: '❓ Unbekannt', class: 'me-2' } %}
                             <small>Manuelle Prüfung erforderlich</small>
                         </div>
                     </div>

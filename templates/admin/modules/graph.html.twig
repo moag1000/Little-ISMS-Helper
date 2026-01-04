@@ -26,11 +26,13 @@
 
     <div class="row">
         <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="mb-0">Abhängigkeits-Graph</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0">Abhängigkeits-Graph</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% embed '_components/_table.html.twig' with {
                         'class': 'table-hover',
                         'noMargin': true,
@@ -53,22 +55,22 @@
                                     </td>
                                     <td>
                                         {% if key in active_modules %}
-                                            <span class="badge bg-success">Aktiv</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'Aktiv' } %}
                                         {% else %}
-                                            <span class="badge bg-secondary">Inaktiv</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Inaktiv' } %}
                                         {% endif %}
                                     </td>
                                     <td>
                                         {% if graph.required %}
-                                            <span class="badge bg-warning text-dark">Erforderlich</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'Erforderlich' } %}
                                         {% else %}
-                                            <span class="badge bg-info">Optional</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'info', content: 'Optional' } %}
                                         {% endif %}
                                     </td>
                                     <td>
                                         {% if graph.dependencies|length > 0 %}
                                             {% for dep in graph.dependencies %}
-                                                <span class="badge bg-warning text-dark me-1">{{ dependency_graph[dep].name }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: dependency_graph[dep].name, class: 'me-1' } %}
                                             {% endfor %}
                                         {% else %}
                                             <span class="text-muted">-</span>
@@ -77,7 +79,7 @@
                                     <td>
                                         {% if graph.dependents|length > 0 %}
                                             {% for dep in graph.dependents %}
-                                                <span class="badge bg-info me-1">{{ dependency_graph[dep].name }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'info', content: dependency_graph[dep].name, class: 'me-1' } %}
                                             {% endfor %}
                                         {% else %}
                                             <span class="text-muted">-</span>
@@ -87,27 +89,29 @@
                             {% endfor %}
                         {% endblock %}
                     {% endembed %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-lg-4">
-            <div class="card mb-3">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0">Legende</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="mb-0">Legende</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="mb-0">
-                        <dt><span class="badge bg-success">Aktiv</span></dt>
+                        <dt>{% include '_components/_badge.html.twig' with { variant: 'success', content: 'Aktiv' } %}</dt>
                         <dd>Modul ist derzeit aktiviert</dd>
 
-                        <dt><span class="badge bg-secondary">Inaktiv</span></dt>
+                        <dt>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Inaktiv' } %}</dt>
                         <dd>Modul ist derzeit deaktiviert</dd>
 
-                        <dt><span class="badge bg-warning text-dark">Erforderlich</span></dt>
+                        <dt>{% include '_components/_badge.html.twig' with { variant: 'warning', content: 'Erforderlich' } %}</dt>
                         <dd>Modul ist Pflicht und kann nicht deaktiviert werden</dd>
 
-                        <dt><span class="badge bg-info">Optional</span></dt>
+                        <dt>{% include '_components/_badge.html.twig' with { variant: 'info', content: 'Optional' } %}</dt>
                         <dd>Modul kann aktiviert/deaktiviert werden</dd>
 
                         <dt>Benötigt</dt>
@@ -116,25 +120,27 @@
                         <dt>Benötigt von</dt>
                         <dd>Module, die dieses Modul benötigen</dd>
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
-            <div class="card border-info">
-                <div class="card-header bg-info text-white">
-                    <h2 class="mb-0">
-                        <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
-                        Hinweise
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-info' } %}
+                {% block card_header %}
+                    <div class="card-header bg-info text-white">
+                        <h2 class="mb-0">
+                            <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
+                            Hinweise
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <ul class="mb-0 small">
                         <li>{{ 'admin.modules.hint.auto_dependencies'|trans({}, 'admin') }}</li>
                         <li>{{ 'admin.modules.hint.activate_required'|trans({}, 'admin') }}</li>
                         <li>{{ 'admin.modules.hint.deactivate_dependency'|trans({}, 'admin') }}</li>
                         <li>{{ 'admin.modules.hint.required_always_active'|trans({}, 'admin') }}</li>
                     </ul>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>
