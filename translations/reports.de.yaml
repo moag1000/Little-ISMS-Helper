@@ -64,6 +64,45 @@ reports:
             items: { item_1: 'Dashboard‑Zusammenfassung für Executive‑Overviews verwenden', item_2: 'Hochrisiko‑Einträge aus dem Risikoregister hervorheben', item_3: 'Umsetzungsfortschritt der Maßnahmen zeigen', item_4: 'Abschlussraten für Pflichtschulungen berichten' }
     overview: 'Berichtsübersicht'
     integrate_ci_cd: 'In CI/CD-Pipeline integrieren'
+    compliance:
+        title: 'Reports & Compliance'
+        subtitle: 'Übersicht aller verfügbaren Compliance- und Sicherheitsberichte'
+    license_report:
+        title: 'Lizenzreport'
+        description: 'Vollständige Übersicht aller verwendeten Third-Party-Lizenzen und deren Compliance-Status für kommerzielle Nutzung.'
+        available: 'Verfügbare Reports:'
+        notice_md: 'NOTICE.md'
+        notice_md_desc: 'Third-Party Attributions'
+        detailed_report: 'Detaillierter Bericht'
+        detailed_report_desc: 'Compliance-Analyse'
+        summary: 'Zusammenfassung'
+        summary_desc: 'Dashboard & Statistiken'
+        last_updated: 'Letzte Aktualisierung:'
+        open: 'Lizenzreport öffnen'
+        update_title: 'Lizenzreport aktualisieren'
+        update_description: 'Führen Sie das folgende Skript aus, um den Lizenzreport neu zu generieren:'
+    security_report:
+        title: 'Security Audit Report'
+        description: 'Automatisierte Sicherheitsanalyse basierend auf OWASP Top 10 Security Risks mit detaillierten Findings und Empfehlungen.'
+        available: 'Verfügbare Reports:'
+        owasp_2025: 'OWASP Top 10:2025 RC1'
+        owasp_2025_label: '(Primary)'
+        owasp_2021: 'OWASP Top 10:2021'
+        owasp_2021_label: '(Legacy)'
+        updated: 'Aktualisiert:'
+        open: 'Security Reports öffnen'
+        update_title: 'Security Report aktualisieren'
+        update_description: 'Führen Sie das folgende Skript aus, um die Security Reports neu zu generieren:'
+    generation:
+        title: 'Report-Generierung'
+        best_practices:
+            title: 'Best Practices'
+            license_report: 'Aktualisieren Sie den <strong>Lizenzreport</strong> nach jeder Änderung an den Dependencies (composer.json, package.json)'
+            security_report: 'Generieren Sie den <strong>Security Report</strong> regelmäßig (mindestens monatlich) und vor jedem Release'
+            document_findings: 'Dokumentieren Sie alle Findings und deren Behebung für Compliance-Nachweise'
+    status:
+        available: 'Verfügbar'
+        not_generated: 'Nicht generiert'
 security_reports:
     page:
         title: 'Sicherheitsberichte'
