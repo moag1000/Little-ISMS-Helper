@@ -153,12 +153,10 @@
                                     <td class="text-center">{{ cat.total_controls }}</td>
                                     <td class="text-center text-success">{{ cat.implemented }}</td>
                                     <td class="text-center">
-                                        <span class="badge {% if cat.implementation_rate >= 80 %}bg-success{% elseif cat.implementation_rate >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
-                                            {{ cat.implementation_rate }}%
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: (cat.implementation_rate >= 80) ? 'success' : ((cat.implementation_rate >= 50) ? 'warning' : 'danger'), content: cat.implementation_rate ~ '%' } %}
                                     </td>
                                     <td class="text-center">
-                                        <span class="badge bg-info">{{ cat.average_effectiveness }}%</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'info', content: cat.average_effectiveness ~ '%' } %}
                                     </td>
                                     <td>
                                         <div class="progress" style="height: 20px;">
@@ -208,7 +206,7 @@
                                                 <small class="text-muted">{{ control.name|u.truncate(30) }}</small>
                                             </td>
                                             <td class="text-center">
-                                                <span class="badge bg-success">{{ control.effectiveness_score|round }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'success', content: control.effectiveness_score|round } %}
                                             </td>
                                             <td class="text-center">{{ control.linked_risks }}</td>
                                         </tr>
@@ -248,7 +246,7 @@
                                                 <small class="text-muted">{{ control.name|u.truncate(30) }}</small>
                                             </td>
                                             <td class="text-center">
-                                                <span class="badge bg-danger">{{ control.effectiveness_score|round }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'danger', content: control.effectiveness_score|round } %}
                                             </td>
                                             <td class="text-center">
                                                 <small>{{ control.implementation_status|replace({'_': ' '})|title }}</small>
@@ -298,9 +296,7 @@
                                     <td class="text-center text-success">-{{ item.total_reduction }}</td>
                                     <td class="text-center">{{ item.average_reduction_percentage }}%</td>
                                     <td class="text-center">
-                                        <span class="badge {% if item.effectiveness_score >= 70 %}bg-success{% elseif item.effectiveness_score >= 40 %}bg-warning{% else %}bg-danger{% endif %}">
-                                            {{ item.effectiveness_score|round }}
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: (item.effectiveness_score >= 70) ? 'success' : ((item.effectiveness_score >= 40) ? 'warning' : 'danger'), content: item.effectiveness_score|round } %}
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -460,7 +456,7 @@
                             <i class="bi bi-exclamation-triangle text-warning me-2" aria-hidden="true"></i>
                             {{ 'analytics.controls.orphans.title'|trans({}, 'analytics') }}
                         </h5>
-                        <span class="badge bg-warning">{{ dashboard.orphaned_controls.count }} {{ 'analytics.controls.orphans.found'|trans({}, 'analytics') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: dashboard.orphaned_controls.count ~ ' ' ~ 'analytics.controls.orphans.found'|trans({}, 'analytics') } %}
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -489,7 +485,7 @@
                                     </td>
                                     <td>{{ control.category }}</td>
                                     <td>
-                                        <span class="badge bg-secondary">{{ control.implementation_status|replace({'_': ' '})|title }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: control.implementation_status|replace({'_': ' '})|title } %}
                                     </td>
                                     <td><small class="text-muted">{{ control.reason }}</small></td>
                                     <td><small>{{ control.recommendation }}</small></td>

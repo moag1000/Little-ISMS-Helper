@@ -32,13 +32,13 @@
             <div class="row mb-3">
                 <div class="col-md-3"><strong>{{ 'permission.category'|trans({}, 'messages') }}:</strong></div>
                 <div class="col-md-9">
-                    <span class="badge bg-primary">{{ permission.category|title }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'primary', content: permission.category|title } %}
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col-md-3"><strong>{{ 'permission.action'|trans({}, 'messages') }}:</strong></div>
                 <div class="col-md-9">
-                    <span class="badge bg-info">{{ permission.action|title }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'info', content: permission.action|title } %}
                 </div>
             </div>
             <div class="row mb-3">
@@ -49,9 +49,9 @@
                 <div class="col-md-3"><strong>Typ:</strong></div>
                 <div class="col-md-9">
                     {% if permission.isSystemPermission %}
-                        <span class="badge bg-success">System-Berechtigung</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'System-Berechtigung' } %}
                     {% else %}
-                        <span class="badge bg-secondary">Benutzerdefiniert</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Benutzerdefiniert' } %}
                     {% endif %}
                 </div>
             </div>
@@ -67,7 +67,7 @@
         <div class="card-header bg-info text-white">
             <h2 class="mb-0">
                 <i class="bi bi-people-fill" aria-hidden="true"></i> {{ 'permission.roles_using'|trans({}, 'messages') }}
-                <span class="badge bg-light text-dark">{{ roles|length }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'light', content: roles|length, class: 'text-dark' } %}
             </h2>
         </div>
         <div class="card-body">
@@ -91,12 +91,12 @@
                                 <td>
                                     <strong>{{ role.name }}</strong>
                                     {% if role.isSystemRole %}
-                                        <span class="badge bg-warning text-dark">System</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'System' } %}
                                     {% endif %}
                                 </td>
                                 <td>{{ role.description }}</td>
                                 <td>
-                                    <span class="badge bg-secondary">{{ role.users|length }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: role.users|length } %}
                                 </td>
                                 <td class="text-end">
                                     <a href="{{ path('role_management_show', {id: role.id}) }}"

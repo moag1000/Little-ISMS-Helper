@@ -127,14 +127,10 @@
             <td>
                 <strong>{{ document.title }}</strong>
                 {% if document.isControlledDocument %}
-                    <span class="badge bg-info ml-xs">
-                        {{ 'document.badge.controlled'|trans({}, 'document') }}
-                    </span>
+                    {% include '_components/_badge.html.twig' with { variant: 'info', content: 'document.badge.controlled'|trans({}, 'document'), class: 'ml-xs' } %}
                 {% endif %}
                 {% if document.isConfidential %}
-                    <span class="badge bg-danger ml-xs">
-                        {{ 'document.badge.confidential'|trans({}, 'document') }}
-                    </span>
+                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'document.badge.confidential'|trans({}, 'document'), class: 'ml-xs' } %}
                 {% endif %}
             </td>
             <td>
@@ -151,13 +147,9 @@
                 {% if document.reviewDate %}
                     {{ document.reviewDate|date('d.m.Y') }}
                     {% if document.reviewDate < date() %}
-                        <span class="badge bg-danger ml-xs">
-                            {{ 'document.badge.overdue'|trans({}, 'document') }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'document.badge.overdue'|trans({}, 'document'), class: 'ml-xs' } %}
                     {% elseif document.reviewDate < date('+30 days') %}
-                        <span class="badge bg-warning ml-xs">
-                            {{ 'document.badge.due_soon'|trans({}, 'document') }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'document.badge.due_soon'|trans({}, 'document'), class: 'ml-xs' } %}
                     {% endif %}
                 {% else %}
                     <span class="text-muted">-</span>
@@ -275,19 +267,19 @@
                 </small>
             </td>
             <td class="text-center">
-                <span class="badge bg-info">{{ type.documentCount }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: type.documentCount } %}
             </td>
             <td class="text-center">
-                <span class="badge bg-success">{{ type.activeDocuments }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'success', content: type.activeDocuments } %}
             </td>
             <td class="text-center">
-                <span class="badge bg-secondary">{{ type.draftDocuments }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: type.draftDocuments } %}
             </td>
             <td class="text-center">
                 {% if type.overdueReviews > 0 %}
-                    <span class="badge bg-danger">{{ type.overdueReviews }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: type.overdueReviews } %}
                 {% else %}
-                    <span class="badge bg-success">0</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'success', content: '0' } %}
                 {% endif %}
             </td>
             <td class="text-center">
