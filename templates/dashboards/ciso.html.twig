@@ -29,8 +29,8 @@
     {# Executive Summary Cards #}
     <div class="row g-3 mb-4">
         <div class="col-md-3">
-            <div class="card h-100 border-primary">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-primary' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <h6 class="text-muted mb-1">{{ 'ciso.kpi.overall_compliance'|trans({}, 'dashboards') }}</h6>
@@ -42,12 +42,12 @@
                             <i class="bi bi-shield-check fs-4 text-primary" aria-hidden="true"></i>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card h-100 border-success">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-success' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <h6 class="text-muted mb-1">{{ 'ciso.kpi.control_implementation'|trans({}, 'dashboards') }}</h6>
@@ -57,12 +57,12 @@
                             <i class="bi bi-toggles fs-4 text-success" aria-hidden="true"></i>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card h-100 border-danger">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-danger' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <h6 class="text-muted mb-1">{{ 'ciso.kpi.high_risks'|trans({}, 'dashboards') }}</h6>
@@ -74,12 +74,12 @@
                             <i class="bi bi-exclamation-triangle fs-4 text-danger" aria-hidden="true"></i>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card h-100 border-warning">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-warning' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <h6 class="text-muted mb-1">{{ 'ciso.kpi.risk_trend'|trans({}, 'dashboards') }}</h6>
@@ -97,25 +97,27 @@
                             <i class="bi bi-graph-up fs-4 text-warning" aria-hidden="true"></i>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     <div class="row g-4">
         {# Framework Compliance #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="bi bi-diagram-3 me-2" aria-hidden="true"></i>
-                        {{ 'ciso.section.framework_compliance'|trans({}, 'dashboards') }}
-                    </h5>
-                    <a href="{{ path('app_analytics_compliance_frameworks') }}" class="btn btn-sm btn-outline-primary">
-                        {{ 'action.view_details'|trans({}, 'dashboards') }}
-                    </a>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-diagram-3 me-2" aria-hidden="true"></i>
+                            {{ 'ciso.section.framework_compliance'|trans({}, 'dashboards') }}
+                        </h5>
+                        <a href="{{ path('app_analytics_compliance_frameworks') }}" class="btn btn-sm btn-outline-primary">
+                            {{ 'action.view_details'|trans({}, 'dashboards') }}
+                        </a>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if dashboard.compliance.frameworks|length > 0 %}
                         {% for framework in dashboard.compliance.frameworks %}
                         <div class="mb-3">
@@ -134,27 +136,26 @@
                     {% else %}
                         <p class="text-muted text-center py-3">{{ 'ciso.no_frameworks'|trans({}, 'dashboards') }}</p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Risk Appetite Status #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>
-                        {{ 'ciso.section.risk_appetite'|trans({}, 'dashboards') }}
-                    </h5>
-                    <span class="badge bg-{% if dashboard.risk_posture.appetite_compliant %}success{% else %}danger{% endif %}">
-                        {% if dashboard.risk_posture.appetite_compliant %}
-                            {{ 'status.compliant'|trans({}, 'dashboards') }}
-                        {% else %}
-                            {{ 'status.breach'|trans({}, 'dashboards') }}
-                        {% endif %}
-                    </span>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-speedometer2 me-2" aria-hidden="true"></i>
+                            {{ 'ciso.section.risk_appetite'|trans({}, 'dashboards') }}
+                        </h5>
+                        {% include '_components/_badge.html.twig' with {
+                            variant: dashboard.risk_posture.appetite_compliant ? 'success' : 'danger',
+                            content: dashboard.risk_posture.appetite_compliant ? 'status.compliant'|trans({}, 'dashboards') : 'status.breach'|trans({}, 'dashboards')
+                        } %}
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="text-center mb-3">
                         <div class="display-4 {% if dashboard.risk_posture.compliance_score >= 80 %}text-success{% elseif dashboard.risk_posture.compliance_score >= 60 %}text-warning{% else %}text-danger{% endif %}">
                             {{ dashboard.risk_posture.compliance_score }}%
@@ -171,25 +172,27 @@
                             </ul>
                         </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     <div class="row g-4 mt-2">
         {# Critical Risks #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="bi bi-exclamation-octagon text-danger me-2" aria-hidden="true"></i>
-                        {{ 'ciso.section.critical_risks'|trans({}, 'dashboards') }}
-                    </h5>
-                    <a href="{{ path('app_risk_index') }}" class="btn btn-sm btn-outline-danger">
-                        {{ 'action.view_all'|trans({}, 'dashboards') }}
-                    </a>
-                </div>
-                <div class="card-body p-0">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100', 'noPadding': true } %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-exclamation-octagon text-danger me-2" aria-hidden="true"></i>
+                            {{ 'ciso.section.critical_risks'|trans({}, 'dashboards') }}
+                        </h5>
+                        <a href="{{ path('app_risk_index') }}" class="btn btn-sm btn-outline-danger">
+                            {{ 'action.view_all'|trans({}, 'dashboards') }}
+                        </a>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if dashboard.critical_risks|length > 0 %}
                         <div class="list-group list-group-flush">
                             {% for risk in dashboard.critical_risks %}
@@ -199,9 +202,10 @@
                                         <h6 class="mb-1">{{ risk.title }}</h6>
                                         <small class="text-muted">{{ 'risk.level'|trans({}, 'dashboards') }}: {{ risk.level }}</small>
                                     </div>
-                                    <span class="badge bg-{% if risk.treatment %}success{% else %}warning{% endif %}">
-                                        {{ risk.treatment ?: 'untreated'|trans({}, 'dashboards') }}
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with {
+                                        variant: risk.treatment ? 'success' : 'warning',
+                                        content: risk.treatment ?: 'untreated'|trans({}, 'dashboards')
+                                    } %}
                                 </div>
                             </a>
                             {% endfor %}
@@ -209,21 +213,23 @@
                     {% else %}
                         <p class="text-muted text-center py-4 mb-0">{{ 'ciso.no_critical_risks'|trans({}, 'dashboards') }}</p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Pending Approvals #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="bi bi-clipboard-check me-2" aria-hidden="true"></i>
-                        {{ 'ciso.section.pending_approvals'|trans({}, 'dashboards') }}
-                    </h5>
-                    <span class="badge bg-primary">{{ dashboard.pending_approvals|length }}</span>
-                </div>
-                <div class="card-body p-0">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100', 'noPadding': true } %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clipboard-check me-2" aria-hidden="true"></i>
+                            {{ 'ciso.section.pending_approvals'|trans({}, 'dashboards') }}
+                        </h5>
+                        {% include '_components/_badge.html.twig' with { variant: 'primary', content: dashboard.pending_approvals|length } %}
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if dashboard.pending_approvals|length > 0 %}
                         <div class="list-group list-group-flush">
                             {% for approval in dashboard.pending_approvals %}
@@ -241,25 +247,27 @@
                     {% else %}
                         <p class="text-muted text-center py-4 mb-0">{{ 'ciso.no_pending_approvals'|trans({}, 'dashboards') }}</p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Control Effectiveness Summary #}
     <div class="row g-4 mt-2">
         <div class="col-12">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="bi bi-toggles me-2" aria-hidden="true"></i>
-                        {{ 'ciso.section.control_effectiveness'|trans({}, 'dashboards') }}
-                    </h5>
-                    <a href="{{ path('app_analytics_control_effectiveness') }}" class="btn btn-sm btn-outline-primary">
-                        {{ 'action.view_details'|trans({}, 'dashboards') }}
-                    </a>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-toggles me-2" aria-hidden="true"></i>
+                            {{ 'ciso.section.control_effectiveness'|trans({}, 'dashboards') }}
+                        </h5>
+                        <a href="{{ path('app_analytics_control_effectiveness') }}" class="btn btn-sm btn-outline-primary">
+                            {{ 'action.view_details'|trans({}, 'dashboards') }}
+                        </a>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row text-center">
                         <div class="col-md-3">
                             <h3>{{ dashboard.controls.total }}</h3>
@@ -280,8 +288,8 @@
                             <small class="text-muted">{{ 'ciso.controls.overdue_reviews'|trans({}, 'dashboards') }}</small>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>
