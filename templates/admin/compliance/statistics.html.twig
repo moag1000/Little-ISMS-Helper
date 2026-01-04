@@ -15,52 +15,62 @@
     {# Overall Statistics #}
     <div class="row g-3 mb-4">
         <div class="col-md-3">
-            <div class="card border-primary">
-                <div class="card-body text-center">
-                    <h2 class="text-muted mb-1 h6">{{ 'admin.compliance.total_available'|trans({}, 'admin') }}</h2>
-                    <p class="mb-0 h2">{{ statistics.total_available }}</p>
-                    <i class="bi bi-box fs-3 text-primary opacity-25" aria-hidden="true"></i>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'border-primary' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="text-muted mb-1 h6">{{ 'admin.compliance.total_available'|trans({}, 'admin') }}</h2>
+                        <p class="mb-0 h2">{{ statistics.total_available }}</p>
+                        <i class="bi bi-box fs-3 text-primary opacity-25" aria-hidden="true"></i>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-success">
-                <div class="card-body text-center">
-                    <h2 class="text-muted mb-1 h6">{{ 'admin.compliance.loaded'|trans({}, 'admin') }}</h2>
-                    <p class="mb-0 text-success h2">{{ statistics.total_loaded }}</p>
-                    <i class="bi bi-check-circle fs-3 text-success opacity-25" aria-hidden="true"></i>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'border-success' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="text-muted mb-1 h6">{{ 'admin.compliance.loaded'|trans({}, 'admin') }}</h2>
+                        <p class="mb-0 text-success h2">{{ statistics.total_loaded }}</p>
+                        <i class="bi bi-check-circle fs-3 text-success opacity-25" aria-hidden="true"></i>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-secondary">
-                <div class="card-body text-center">
-                    <h2 class="text-muted mb-1 h6">{{ 'admin.compliance.not_loaded'|trans({}, 'admin') }}</h2>
-                    <p class="mb-0 text-secondary h2">{{ statistics.total_not_loaded }}</p>
-                    <i class="bi bi-x-circle fs-3 text-secondary opacity-25" aria-hidden="true"></i>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'border-secondary' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="text-muted mb-1 h6">{{ 'admin.compliance.not_loaded'|trans({}, 'admin') }}</h2>
+                        <p class="mb-0 text-secondary h2">{{ statistics.total_not_loaded }}</p>
+                        <i class="bi bi-x-circle fs-3 text-secondary opacity-25" aria-hidden="true"></i>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-danger">
-                <div class="card-body text-center">
-                    <h2 class="text-muted mb-1 h6">{{ 'admin.compliance.mandatory_missing'|trans({}, 'admin') }}</h2>
-                    <p class="mb-0 text-danger h2">{{ statistics.mandatory_not_loaded }}</p>
-                    <i class="bi bi-exclamation-triangle fs-3 text-danger opacity-25" aria-hidden="true"></i>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'border-danger' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="text-muted mb-1 h6">{{ 'admin.compliance.mandatory_missing'|trans({}, 'admin') }}</h2>
+                        <p class="mb-0 text-danger h2">{{ statistics.mandatory_not_loaded }}</p>
+                        <i class="bi bi-exclamation-triangle fs-3 text-danger opacity-25" aria-hidden="true"></i>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Compliance per Framework #}
     {% if compliance_data|length > 0 %}
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">
-                    <i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'admin.compliance.compliance_overview'|trans({}, 'admin') }}
-                </h2>
-            </div>
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' %}
+            {% block card_header %}
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="bi bi-bar-chart" aria-hidden="true"></i> {{ 'admin.compliance.compliance_overview'|trans({}, 'admin') }}
+                    </h2>
+                </div>
+            {% endblock %}
+            {% block card_body %}
                 {% embed '_components/_table.html.twig' with {
                     'class': 'table-hover',
                     'noMargin': true,
@@ -84,13 +94,13 @@
                                     <small class="text-muted">{{ data.framework.code }}</small>
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge bg-secondary">{{ data.total_requirements }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: data.total_requirements } %}
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge bg-info">{{ data.assessed_requirements }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'info', content: data.assessed_requirements } %}
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge bg-success">{{ data.compliant_requirements }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', content: data.compliant_requirements } %}
                                 </td>
                                 <td class="text-center">
                                     <strong class="{% if data.compliance_percentage >= 75 %}text-success{% elseif data.compliance_percentage >= 50 %}text-warning{% else %}text-danger{% endif %}">
@@ -113,8 +123,8 @@
                         {% endfor %}
                     {% endblock %}
                 {% endembed %}
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% else %}
         <div class="alert alert-info">
             <i class="bi bi-info-circle" aria-hidden="true"></i>
