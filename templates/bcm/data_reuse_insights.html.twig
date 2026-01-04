@@ -52,19 +52,19 @@
             <div class="info-grid">
                 <div class="info-item">
                     <strong>RTO ≤ 1 hour</strong>
-                    <p>Suggests Availability: <span class="badge bg-danger">5 - Very High</span></p>
+                    <p>Suggests Availability: {% include '_components/_badge.html.twig' with { variant: 'danger', content: '5 - Very High' } %}</p>
                 </div>
                 <div class="info-item">
                     <strong>RTO ≤ 4 hours</strong>
-                    <p>Suggests Availability: <span class="badge bg-warning">4 - High</span></p>
+                    <p>Suggests Availability: {% include '_components/_badge.html.twig' with { variant: 'warning', content: '4 - High' } %}</p>
                 </div>
                 <div class="info-item">
                     <strong>RTO ≤ 24 hours</strong>
-                    <p>Suggests Availability: <span class="badge bg-info">3 - Medium</span></p>
+                    <p>Suggests Availability: {% include '_components/_badge.html.twig' with { variant: 'info', content: '3 - Medium' } %}</p>
                 </div>
                 <div class="info-item">
                     <strong>RTO ≤ 72 hours</strong>
-                    <p>Suggests Availability: <span class="badge bg-success">2 - Low</span></p>
+                    <p>Suggests Availability: {% include '_components/_badge.html.twig' with { variant: 'success', content: '2 - Low' } %}</p>
                 </div>
             </div>
         {% endblock %}
@@ -107,9 +107,7 @@
                                 'medium': 'info',
                                 'low': 'success'
                             } %}
-                            <span class="badge bg-{{ criticality_colors[insight.process.criticality] ?? 'secondary' }}">
-                                {{ ('bcm.criticality.' ~ insight.process.criticality)|trans({}, 'bcm') }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: criticality_colors[insight.process.criticality] ?? 'secondary', content: ('bcm.criticality.' ~ insight.process.criticality)|trans({}, 'bcm') } %}
                         </td>
                         <td>
                             <strong>{{ insight.asset.name }}</strong>
@@ -137,14 +135,10 @@
                                 4: 'warning',
                                 5: 'danger'
                             } %}
-                            <span class="badge bg-{{ availability_colors[insight.current_availability] ?? 'secondary' }}">
-                                {{ insight.current_availability }} - {{ availability_labels[insight.current_availability] ?? 'N/A' }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: availability_colors[insight.current_availability] ?? 'secondary', content: insight.current_availability ~ ' - ' ~ (availability_labels[insight.current_availability] ?? 'N/A') } %}
                         </td>
                         <td class="text-center">
-                            <span class="badge bg-{{ availability_colors[availability.value] ?? 'secondary' }}">
-                                {{ availability.value }} - {{ availability_labels[availability.value] ?? 'N/A' }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: availability_colors[availability.value] ?? 'secondary', content: availability.value ~ ' - ' ~ (availability_labels[availability.value] ?? 'N/A') } %}
                         </td>
                         <td>
                             {% if matchStatus == 'match' %}
@@ -165,9 +159,7 @@
                                 'medium': 'warning',
                                 'low': 'secondary'
                             } %}
-                            <span class="badge bg-{{ confidence_colors[availability.confidence] ?? 'secondary' }}">
-                                {{ availability.confidence|upper }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: confidence_colors[availability.confidence] ?? 'secondary', content: availability.confidence|upper } %}
                         </td>
                     </tr>
                 {% else %}
