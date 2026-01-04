@@ -1,20 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Reports & Compliance{% endblock %}
+{% block title %}{{ 'reports.compliance.title'|trans({}, 'reports') }}{% endblock %}
 
 {% block body %}
 <div class="container-fluid">
     {# Breadcrumb Navigation #}
     {% include '_components/_breadcrumb.html.twig' with {
         breadcrumbs: [
-            { label: 'Reports & Compliance' }
+            { label: 'reports.compliance.title'|trans({}, 'reports') }
         ]
     } %}
 
     {# Page Header #}
     {% include '_components/_page_header.html.twig' with {
-        title: 'Reports & Compliance',
-        subtitle: 'Übersicht aller verfügbaren Compliance- und Sicherheitsberichte',
+        title: 'reports.compliance.title'|trans({}, 'reports'),
+        subtitle: 'reports.compliance.subtitle'|trans({}, 'reports'),
         icon: 'bi-file-earmark-bar-graph'
     } %}
 
@@ -25,39 +25,39 @@
                 {% block card_header %}
                     <div class="card-header bg-primary text-white">
                         <h2 class="card-title mb-0">
-                            <i class="bi bi-file-text me-2" aria-hidden="true"></i>Lizenzreport
+                            <i class="bi bi-file-text me-2" aria-hidden="true"></i>{{ 'reports.license_report.title'|trans({}, 'reports') }}
                         </h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
                     <p class="card-text">
-                        Vollständige Übersicht aller verwendeten Third-Party-Lizenzen und deren Compliance-Status für kommerzielle Nutzung.
+                        {{ 'reports.license_report.description'|trans({}, 'reports') }}
                     </p>
                     <div class="mb-3">
-                        <div class="text-muted small mb-2 fw-bold">Verfügbare Reports:</div>
+                        <div class="text-muted small mb-2 fw-bold">{{ 'reports.license_report.available'|trans({}, 'reports') }}</div>
                         <ul class="list-unstyled mb-0">
                             <li class="mb-2">
                                 <i class="bi bi-file-earmark-text text-primary me-2" aria-hidden="true"></i>
-                                <strong>NOTICE.md</strong> - Third-Party Attributions
+                                <strong>{{ 'reports.license_report.notice_md'|trans({}, 'reports') }}</strong> - {{ 'reports.license_report.notice_md_desc'|trans({}, 'reports') }}
                             </li>
                             <li class="mb-2">
                                 <i class="bi bi-file-earmark-bar-graph text-primary me-2" aria-hidden="true"></i>
-                                <strong>Detaillierter Bericht</strong> - Compliance-Analyse
+                                <strong>{{ 'reports.license_report.detailed_report'|trans({}, 'reports') }}</strong> - {{ 'reports.license_report.detailed_report_desc'|trans({}, 'reports') }}
                                 {% if license_stats.exists %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'Verfügbar', class: 'ms-2' } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'reports.status.available'|trans({}, 'reports'), class: 'ms-2' } %}
                                 {% else %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'Nicht generiert', class: 'ms-2' } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'reports.status.not_generated'|trans({}, 'reports'), class: 'ms-2' } %}
                                 {% endif %}
                             </li>
                             <li>
                                 <i class="bi bi-bar-chart text-primary me-2" aria-hidden="true"></i>
-                                <strong>Zusammenfassung</strong> - Dashboard & Statistiken
+                                <strong>{{ 'reports.license_report.summary'|trans({}, 'reports') }}</strong> - {{ 'reports.license_report.summary_desc'|trans({}, 'reports') }}
                             </li>
                         </ul>
                     </div>
                     {% if license_stats.exists %}
                         <small class="text-muted">
-                            <i class="bi bi-calendar me-1" aria-hidden="true"></i>Letzte Aktualisierung: {{ license_stats.updated_at }}
+                            <i class="bi bi-calendar me-1" aria-hidden="true"></i>{{ 'reports.license_report.last_updated'|trans({}, 'reports') }} {{ license_stats.updated_at }}
                         </small>
                     {% endif %}
                 {% endblock %}
@@ -65,7 +65,7 @@
                     <div class="card-footer bg-light">
                         <div class="d-grid gap-2">
                             <a href="{{ path('app_licenses') }}" class="btn btn-primary">
-                                <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>Lizenzreport öffnen
+                                <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>{{ 'reports.license_report.open'|trans({}, 'reports') }}
                             </a>
                         </div>
                     </div>
@@ -79,41 +79,41 @@
                 {% block card_header %}
                     <div class="card-header bg-danger text-white">
                         <h2 class="card-title mb-0">
-                            <i class="bi bi-shield-lock me-2" aria-hidden="true"></i>Security Audit Report
+                            <i class="bi bi-shield-lock me-2" aria-hidden="true"></i>{{ 'reports.security_report.title'|trans({}, 'reports') }}
                         </h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
                     <p class="card-text">
-                        Automatisierte Sicherheitsanalyse basierend auf OWASP Top 10 Security Risks mit detaillierten Findings und Empfehlungen.
+                        {{ 'reports.security_report.description'|trans({}, 'reports') }}
                     </p>
                     <div class="mb-3">
-                        <div class="text-muted small mb-2 fw-bold">Verfügbare Reports:</div>
+                        <div class="text-muted small mb-2 fw-bold">{{ 'reports.security_report.available'|trans({}, 'reports') }}</div>
                         <ul class="list-unstyled mb-0">
                             <li class="mb-2">
                                 <i class="bi bi-shield-lock text-danger me-2" aria-hidden="true"></i>
-                                <strong>OWASP Top 10:2025 RC1</strong> (Primary)
+                                <strong>{{ 'reports.security_report.owasp_2025'|trans({}, 'reports') }}</strong> {{ 'reports.security_report.owasp_2025_label'|trans({}, 'reports') }}
                                 {% if security_stats.owasp_2025.exists %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'Verfügbar', class: 'ms-2' } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'reports.status.available'|trans({}, 'reports'), class: 'ms-2' } %}
                                 {% else %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'Nicht generiert', class: 'ms-2' } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'reports.status.not_generated'|trans({}, 'reports'), class: 'ms-2' } %}
                                 {% endif %}
                                 {% if security_stats.owasp_2025.updated_at %}
                                     <br>
-                                    <small class="text-muted ms-4">Aktualisiert: {{ security_stats.owasp_2025.updated_at }}</small>
+                                    <small class="text-muted ms-4">{{ 'reports.security_report.updated'|trans({}, 'reports') }} {{ security_stats.owasp_2025.updated_at }}</small>
                                 {% endif %}
                             </li>
                             <li>
                                 <i class="bi bi-shield-check text-danger me-2" aria-hidden="true"></i>
-                                <strong>OWASP Top 10:2021</strong> (Legacy)
+                                <strong>{{ 'reports.security_report.owasp_2021'|trans({}, 'reports') }}</strong> {{ 'reports.security_report.owasp_2021_label'|trans({}, 'reports') }}
                                 {% if security_stats.owasp_2021.exists %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'Verfügbar', class: 'ms-2' } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'reports.status.available'|trans({}, 'reports'), class: 'ms-2' } %}
                                 {% else %}
-                                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'Nicht generiert', class: 'ms-2' } %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'reports.status.not_generated'|trans({}, 'reports'), class: 'ms-2' } %}
                                 {% endif %}
                                 {% if security_stats.owasp_2021.updated_at %}
                                     <br>
-                                    <small class="text-muted ms-4">Aktualisiert: {{ security_stats.owasp_2021.updated_at }}</small>
+                                    <small class="text-muted ms-4">{{ 'reports.security_report.updated'|trans({}, 'reports') }} {{ security_stats.owasp_2021.updated_at }}</small>
                                 {% endif %}
                             </li>
                         </ul>
@@ -123,7 +123,7 @@
                     <div class="card-footer bg-light">
                         <div class="d-grid gap-2">
                             <a href="{{ path('app_security_report') }}" class="btn btn-danger">
-                                <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>Security Reports öffnen
+                                <i class="bi bi-arrow-right-circle me-1" aria-hidden="true"></i>{{ 'reports.security_report.open'|trans({}, 'reports') }}
                             </a>
                         </div>
                     </div>
@@ -139,25 +139,25 @@
                 {% block card_header %}
                     <div class="card-header">
                         <h2 class="card-title mb-0">
-                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>Report-Generierung
+                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>{{ 'reports.generation.title'|trans({}, 'reports') }}
                         </h2>
                     </div>
                 {% endblock %}
                 {% block card_body %}
                     <div class="row">
                         <div class="col-md-6 mb-3 mb-md-0">
-                            <h3><i class="bi bi-file-text me-2" aria-hidden="true"></i>Lizenzreport aktualisieren</h3>
+                            <h3><i class="bi bi-file-text me-2" aria-hidden="true"></i>{{ 'reports.license_report.update_title'|trans({}, 'reports') }}</h3>
                             <p class="text-muted small mb-2">
-                                Führen Sie das folgende Skript aus, um den Lizenzreport neu zu generieren:
+                                {{ 'reports.license_report.update_description'|trans({}, 'reports') }}
                             </p>
                             <div class="bg-light p-3 rounded">
                                 <code>./license-report.sh</code>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <h3><i class="bi bi-shield-lock me-2" aria-hidden="true"></i>Security Report aktualisieren</h3>
+                            <h3><i class="bi bi-shield-lock me-2" aria-hidden="true"></i>{{ 'reports.security_report.update_title'|trans({}, 'reports') }}</h3>
                             <p class="text-muted small mb-2">
-                                Führen Sie das folgende Skript aus, um die Security Reports neu zu generieren:
+                                {{ 'reports.security_report.update_description'|trans({}, 'reports') }}
                             </p>
                             <div class="bg-light p-3 rounded">
                                 <code>php scripts/generate-security-audit.php</code>
@@ -176,11 +176,11 @@
                 <div class="d-flex align-items-start">
                     <i class="bi bi-lightbulb fs-4 me-3" aria-hidden="true"></i>
                     <div>
-                        <h2 class="alert-heading mb-2">Best Practices</h2>
+                        <h2 class="alert-heading mb-2">{{ 'reports.generation.best_practices.title'|trans({}, 'reports') }}</h2>
                         <ul class="mb-0">
-                            <li>Aktualisieren Sie den <strong>Lizenzreport</strong> nach jeder Änderung an den Dependencies (composer.json, package.json)</li>
-                            <li>Generieren Sie den <strong>Security Report</strong> regelmäßig (mindestens monatlich) und vor jedem Release</li>
-                            <li>Dokumentieren Sie alle Findings und deren Behebung für Compliance-Nachweise</li>
+                            <li>{{ 'reports.generation.best_practices.license_report'|trans({}, 'reports')|raw }}</li>
+                            <li>{{ 'reports.generation.best_practices.security_report'|trans({}, 'reports')|raw }}</li>
+                            <li>{{ 'reports.generation.best_practices.document_findings'|trans({}, 'reports') }}</li>
                             <li>{{ 'reports.integrate_ci_cd'|trans({}, 'reports') }}</li>
                         </ul>
                     </div>

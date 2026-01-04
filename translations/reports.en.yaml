@@ -64,6 +64,45 @@ reports:
             items: { item_1: 'Use Dashboard Summary for executive overviews', item_2: 'Highlight high‑risk items from Risk Register', item_3: 'Show control implementation progress', item_4: 'Report on mandatory training completion' }
     overview: 'Reports Overview'
     integrate_ci_cd: 'Integrate into CI/CD Pipeline'
+    compliance:
+        title: 'Reports & Compliance'
+        subtitle: 'Overview of all available compliance and security reports'
+    license_report:
+        title: 'License Report'
+        description: 'Complete overview of all third-party licenses used and their compliance status for commercial use.'
+        available: 'Available Reports:'
+        notice_md: 'NOTICE.md'
+        notice_md_desc: 'Third-Party Attributions'
+        detailed_report: 'Detailed Report'
+        detailed_report_desc: 'Compliance Analysis'
+        summary: 'Summary'
+        summary_desc: 'Dashboard & Statistics'
+        last_updated: 'Last Updated:'
+        open: 'Open License Report'
+        update_title: 'Update License Report'
+        update_description: 'Run the following script to regenerate the license report:'
+    security_report:
+        title: 'Security Audit Report'
+        description: 'Automated security analysis based on OWASP Top 10 Security Risks with detailed findings and recommendations.'
+        available: 'Available Reports:'
+        owasp_2025: 'OWASP Top 10:2025 RC1'
+        owasp_2025_label: '(Primary)'
+        owasp_2021: 'OWASP Top 10:2021'
+        owasp_2021_label: '(Legacy)'
+        updated: 'Updated:'
+        open: 'Open Security Reports'
+        update_title: 'Update Security Report'
+        update_description: 'Run the following script to regenerate the security reports:'
+    generation:
+        title: 'Report Generation'
+        best_practices:
+            title: 'Best Practices'
+            license_report: 'Update the <strong>License Report</strong> after any changes to dependencies (composer.json, package.json)'
+            security_report: 'Generate the <strong>Security Report</strong> regularly (at least monthly) and before each release'
+            document_findings: 'Document all findings and their remediation for compliance evidence'
+    status:
+        available: 'Available'
+        not_generated: 'Not Generated'
 security_reports:
     page:
         title: 'Security Reports'
