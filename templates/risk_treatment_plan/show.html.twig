@@ -20,9 +20,7 @@
         <p class="text-muted">
             {{ 'risk_treatment_plan.show.subtitle'|trans({}, 'risk_treatment_plan') }}
             {% if plan.isOverdue() %}
-                <span class="badge bg-danger ms-2">
-                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_treatment_plan.overdue'|trans({}, 'risk_treatment_plan') }}
-                </span>
+                {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-exclamation-triangle', class: 'ms-2', content: 'risk_treatment_plan.overdue'|trans({}, 'risk_treatment_plan') } %}
             {% endif %}
         </p>
     </div>
@@ -42,9 +40,8 @@
         <div class="info-card">
             <div class="info-label">{{ 'risk_treatment_plan.field.status'|trans({}, 'risk_treatment_plan') }}</div>
             <div class="info-value">
-                <span class="badge bg-{{ plan.status == 'completed' ? 'success' : (plan.status == 'in_progress' ? 'primary' : (plan.status == 'cancelled' ? 'secondary' : (plan.status == 'on_hold' ? 'warning' : 'info'))) }} fs-6">
-                    {{ ('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan') }}
-                </span>
+                {% set status_variant = plan.status == 'completed' ? 'success' : (plan.status == 'in_progress' ? 'primary' : (plan.status == 'cancelled' ? 'secondary' : (plan.status == 'on_hold' ? 'warning' : 'info'))) %}
+                {% include '_components/_badge.html.twig' with { variant: status_variant, class: 'fs-6', content: ('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan') } %}
             </div>
         </div>
     </div>
@@ -52,9 +49,8 @@
         <div class="info-card">
             <div class="info-label">{{ 'risk_treatment_plan.field.priority'|trans({}, 'risk_treatment_plan') }}</div>
             <div class="info-value">
-                <span class="badge bg-{{ plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : (plan.priority == 'medium' ? 'info' : 'secondary')) }} fs-6">
-                    {{ ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan')|upper }}
-                </span>
+                {% set priority_variant = plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : (plan.priority == 'medium' ? 'info' : 'secondary')) %}
+                {% include '_components/_badge.html.twig' with { variant: priority_variant, class: 'fs-6', content: ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan')|upper } %}
             </div>
         </div>
     </div>
@@ -93,18 +89,20 @@
 </div>
 
 {# Main Details #}
-<div class="card mb-4">
-    <div class="card-header">
-        <h2><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.details'|trans({}, 'risk_treatment_plan') }}</h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.details'|trans({}, 'risk_treatment_plan') }}</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         <div class="row">
             <div class="col-md-6">
                 <div class="detail-item">
                     <strong>{{ 'risk_treatment_plan.field.risk'|trans({}, 'risk_treatment_plan') }}:</strong>
                     {% if plan.risk %}
                         <a href="{{ path('app_risk_show', {id: plan.risk.id}) }}">{{ plan.risk.title }}</a>
-                        <span class="badge bg-danger ms-2">Score: {{ plan.risk.riskScore }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-2', content: 'Score: ' ~ plan.risk.riskScore } %}
                     {% else %}
                         <span class="text-muted">-</span>
                     {% endif %}
@@ -169,16 +167,18 @@
             <div class="mt-2">{{ plan.implementationNotes|nl2br }}</div>
         </div>
         {% endif %}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Linked Controls #}
 {% if plan.controls|length > 0 %}
-<div class="card mb-4">
-    <div class="card-header">
-        <h2><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.controls'|trans({}, 'risk_treatment_plan') }} ({{ plan.controls|length }})</h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.controls'|trans({}, 'risk_treatment_plan') }} ({{ plan.controls|length }})</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         {% embed '_components/_table.html.twig' with {
             'class': 'table-sm',
             'responsive': true,
@@ -199,32 +199,31 @@
                     </td>
                     <td>{{ control.title }}</td>
                     <td>
-                        <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : (control.implementationStatus == 'not_started' ? 'secondary' : 'dark')) }}">
-                            {{ ('control.status.' ~ control.implementationStatus)|trans({}, 'control') }}
-                        </span>
+                        {% set ctrl_variant = control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : (control.implementationStatus == 'not_started' ? 'secondary' : 'dark')) %}
+                        {% include '_components/_badge.html.twig' with { variant: ctrl_variant, content: ('control.status.' ~ control.implementationStatus)|trans({}, 'control') } %}
                     </td>
                 </tr>
                 {% endfor %}
             {% endblock %}
         {% endembed %}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Audit Log History #}
 {% if auditLogs is defined and auditLogs|length > 0 %}
-<div class="card mb-4">
-    <div class="card-header">
-        <h2><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.history'|trans({}, 'risk_treatment_plan') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'risk_treatment_plan.section.history'|trans({}, 'risk_treatment_plan') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         <div class="audit-log-list">
             {% for log in auditLogs %}
             <div class="audit-log-entry">
                 <div class="audit-log-header">
-                    <span class="badge bg-{{ log.action == 'create' ? 'success' : (log.action == 'update' ? 'info' : 'danger') }}">
-                        {{ log.action|upper }}
-                    </span>
+                    {% include '_components/_badge.html.twig' with { variant: log.action == 'create' ? 'success' : (log.action == 'update' ? 'info' : 'danger'), content: log.action|upper } %}
                     <span class="text-muted">
                         {{ log.userName|default('System') }}
                         &bull; {{ log.createdAt|date('Y-m-d H:i:s') }}
@@ -256,17 +255,19 @@
             <small class="text-muted">{{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs}, 'audit_log') }}</small>
         </div>
         {% endif %}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Delete Section - Admin Only #}
 {% if is_granted('ROLE_ADMIN') %}
-<div class="card border-danger">
-    <div class="card-header bg-danger text-white">
-        <h2><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with { 'class': 'border-danger' } %}
+    {% block card_header %}
+        <div class="card-header bg-danger text-white">
+            <h2><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         <p>{{ 'risk_treatment_plan.delete.warning'|trans({}, 'risk_treatment_plan') }}</p>
         <form method="post" action="{{ path('app_risk_treatment_plan_delete', {id: plan.id}) }}"
               data-controller="ui-actions"
@@ -277,8 +278,8 @@
                 <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
             </button>
         </form>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 <style>
