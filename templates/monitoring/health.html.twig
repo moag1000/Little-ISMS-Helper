@@ -576,13 +576,15 @@
     </div>
 
     {# Quick Actions #}
-    <div class="card mt-4">
-        <div class="card-header bg-primary text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-link-45deg" aria-hidden="true"></i> Related Monitoring
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-link-45deg" aria-hidden="true"></i> Related Monitoring
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row">
                 <div class="col-md-3 mb-2">
                     <a href="{{ path('monitoring_performance') }}" class="btn btn-outline-primary w-100">
@@ -605,8 +607,8 @@
                     </button>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 {% endblock %}
 
 {% block javascripts %}

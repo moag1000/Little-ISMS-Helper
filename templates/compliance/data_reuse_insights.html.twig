@@ -45,88 +45,93 @@
 
 <div class="module-grid mb-4">
     {% for opportunity in reuseOpportunities %}
-    <div class="card">
-        <h2 class="fs-11-mb-sm">{{ opportunity.name }}</h2>
-        <p class="text-muted-mb-md">
-            {{ opportunity.description }}
-        </p>
+    {% embed '_components/_card.html.twig' %}
+        {% block card_body %}
+            <h2 class="fs-11-mb-sm">{{ opportunity.name }}</h2>
+            <p class="text-muted-mb-md">
+                {{ opportunity.description }}
+            </p>
 
-        <div class="stats-grid grid-col-2">
-            <div class="stat-item">
-                <strong>{{ opportunity.applicableFrameworks|length }}</strong>
-                <span>{{ 'compliance.field.frameworks'|trans({}, 'compliance') }}</span>
+            <div class="stats-grid grid-col-2">
+                <div class="stat-item">
+                    <strong>{{ opportunity.applicableFrameworks|length }}</strong>
+                    <span>{{ 'compliance.field.frameworks'|trans({}, 'compliance') }}</span>
+                </div>
+                <div class="stat-item">
+                    <strong>{{ opportunity.potentialSavings }}h</strong>
+                    <span>{{ 'compliance.field.time_savings'|trans({}, 'compliance') }}</span>
+                </div>
             </div>
-            <div class="stat-item">
-                <strong>{{ opportunity.potentialSavings }}h</strong>
-                <span>{{ 'compliance.field.time_savings'|trans({}, 'compliance') }}</span>
+
+            <div class="mt-2">
+                {% include '_components/_badge.html.twig' with { variant: 'success', content: opportunity.reusePercentage ~ '% ' ~ ('compliance.badge.reusable'|trans({}, 'compliance')) } %}
             </div>
-        </div>
-
-        <div class="mt-2">
-            {% include '_components/_badge.html.twig' with { variant: 'success', content: opportunity.reusePercentage ~ '% ' ~ ('compliance.badge.reusable'|trans({}, 'compliance')) } %}
-        </div>
-
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% else %}
-    <div class="card grid-full">
-        <p class="text-center-muted">
-            {{ 'compliance.message.no_opportunities'|trans({}, 'compliance') }}
-        </p>
-    </div>
+    {% embed '_components/_card.html.twig' with { 'class': 'grid-full' } %}
+        {% block card_body %}
+            <p class="text-center-muted">
+                {{ 'compliance.message.no_opportunities'|trans({}, 'compliance') }}
+            </p>
+        {% endblock %}
+    {% endembed %}
     {% endfor %}
 </div>
 
 {# Data Reuse Matrix #}
 <h2>{{ 'compliance.section.reuse_matrix'|trans({}, 'compliance') }}</h2>
 
-<div class="card mb-4">
-    <p class="text-muted-mb-md">
-        {{ 'compliance.description.reuse_matrix'|trans({}, 'compliance') }}
-    </p>
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_body %}
+        <p class="text-muted-mb-md">
+            {{ 'compliance.description.reuse_matrix'|trans({}, 'compliance') }}
+        </p>
 
-    {% embed '_components/_table.html.twig' with {
-        'class': 'table-container',
-        'noMargin': true
-    } %}
-        {% block table_head %}
-            <tr>
-                <th scope="col">{{ 'compliance.field.data_element'|trans({}, 'compliance') }}</th>
-                <th scope="col">{{ 'compliance.field.source'|trans({}, 'compliance') }}</th>
-                <th scope="col" class="text-center">{{ 'compliance.field.reuse_count'|trans({}, 'compliance') }}</th>
-                <th scope="col">{{ 'compliance.field.used_in_frameworks'|trans({}, 'compliance') }}</th>
-                <th scope="col" class="text-center">{{ 'compliance.field.quality_score'|trans({}, 'compliance') }}</th>
-            </tr>
-        {% endblock %}
-        {% block table_body %}
-            {% for element in dataElements %}
-            <tr>
-                <td>
-                    <strong>{{ element.name }}</strong>
-                    <br><small class="text-muted">{{ element.type }}</small>
-                </td>
-                <td>{{ element.source }}</td>
-                <td class="text-center">
-                    {% include '_components/_badge.html.twig' with { variant: 'info', content: element.reuseCount } %}
-                </td>
-                <td>
-                    {% for framework in element.frameworks %}
-                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: framework.name, class: 'mr-xs' } %}
-                    {% endfor %}
-                </td>
-                <td class="text-center">
-                    <span class="{{ badge_score(element.qualityScore, 80, 60) }}">{{ element.qualityScore }}%</span>
-                </td>
-            </tr>
-            {% else %}
-            <tr>
-                <td colspan="5" class="text-center-p-xl-muted">
-                    {{ 'compliance.message.no_data_elements'|trans({}, 'compliance') }}
-                </td>
-            </tr>
-            {% endfor %}
-        {% endblock %}
-    {% endembed %}
-</div>
+        {% embed '_components/_table.html.twig' with {
+            'class': 'table-container',
+            'noMargin': true
+        } %}
+            {% block table_head %}
+                <tr>
+                    <th scope="col">{{ 'compliance.field.data_element'|trans({}, 'compliance') }}</th>
+                    <th scope="col">{{ 'compliance.field.source'|trans({}, 'compliance') }}</th>
+                    <th scope="col" class="text-center">{{ 'compliance.field.reuse_count'|trans({}, 'compliance') }}</th>
+                    <th scope="col">{{ 'compliance.field.used_in_frameworks'|trans({}, 'compliance') }}</th>
+                    <th scope="col" class="text-center">{{ 'compliance.field.quality_score'|trans({}, 'compliance') }}</th>
+                </tr>
+            {% endblock %}
+            {% block table_body %}
+                {% for element in dataElements %}
+                <tr>
+                    <td>
+                        <strong>{{ element.name }}</strong>
+                        <br><small class="text-muted">{{ element.type }}</small>
+                    </td>
+                    <td>{{ element.source }}</td>
+                    <td class="text-center">
+                        {% include '_components/_badge.html.twig' with { variant: 'info', content: element.reuseCount } %}
+                    </td>
+                    <td>
+                        {% for framework in element.frameworks %}
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: framework.name, class: 'mr-xs' } %}
+                        {% endfor %}
+                    </td>
+                    <td class="text-center">
+                        <span class="{{ badge_score(element.qualityScore, 80, 60) }}">{{ element.qualityScore }}%</span>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center-p-xl-muted">
+                        {{ 'compliance.message.no_data_elements'|trans({}, 'compliance') }}
+                    </td>
+                </tr>
+                {% endfor %}
+            {% endblock %}
+        {% endembed %}
+    {% endblock %}
+{% endembed %}
 
 {# Framework Coverage Map #}
 <h2>{{ 'compliance.section.framework_coverage'|trans({}, 'compliance') }}</h2>

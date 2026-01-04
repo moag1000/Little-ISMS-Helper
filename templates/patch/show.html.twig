@@ -17,8 +17,8 @@
             <a href="{{ path('app_patch_index') }}" class="btn btn-outline-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
         </div>
     </div>
-    <div class="card">
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_body %}
             <dl class="row">
                 <dt class="col-sm-3">{{ 'patch.field.patch_id'|trans({}, 'patches') }}</dt>
                 <dd class="col-sm-9"><code>{{ patch.patchId }}</code></dd>
@@ -27,7 +27,7 @@
                 <dt class="col-sm-3">{{ 'patch.field.description'|trans({}, 'patches') }}</dt>
                 <dd class="col-sm-9">{{ patch.description|nl2br }}</dd>
             </dl>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

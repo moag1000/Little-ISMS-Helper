@@ -17,11 +17,13 @@
 
     <div class="row">
         <div class="col-md-8 offset-md-2">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0">{{ 'user.profile.title'|trans({}, 'user') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="mb-0">{{ 'user.profile.title'|trans({}, 'user') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {{ form_start(form) }}
                         {% include '_components/_auto_form.html.twig' with {
                             'form': form,
@@ -69,33 +71,37 @@
                             </button>
                         </div>
                     {{ form_end(form) }}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Current Avatar Display #}
             {% if user.profilePicture %}
-                <div class="card mt-4">
-                    <div class="card-header">
-                        <h2 class="mb-0">{{ 'user.profile.section.current_avatar'|trans({}, 'user') }}</h2>
-                    </div>
-                    <div class="card-body text-center">
-                        <img src="{{ asset(user.profilePicture) }}"
-                             alt="{{ user.fullName }}"
-                             class="rounded-circle mb-3"
-                             style="width: 120px; height: 120px; object-fit: cover;">
+                {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="mb-0">{{ 'user.profile.section.current_avatar'|trans({}, 'user') }}</h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
+                        <div class="text-center">
+                            <img src="{{ asset(user.profilePicture) }}"
+                                 alt="{{ user.fullName }}"
+                                 class="rounded-circle mb-3"
+                                 style="width: 120px; height: 120px; object-fit: cover;">
 
-                        <form method="post" action="{{ path('app_profile_avatar_delete') }}" class="d-inline"
-                              data-controller="ui-actions"
-                              data-action="submit->ui-actions#confirm"
-                              data-ui-actions-message-param="{{ 'user.profile.confirm.delete_avatar'|trans({}, 'user') }}">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete_avatar' ~ user.id) }}">
-                            <button type="submit" class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash" aria-hidden="true"></i>
-                                {{ 'user.profile.action.delete_avatar'|trans({}, 'user') }}
-                            </button>
-                        </form>
-                    </div>
-                </div>
+                            <form method="post" action="{{ path('app_profile_avatar_delete') }}" class="d-inline"
+                                  data-controller="ui-actions"
+                                  data-action="submit->ui-actions#confirm"
+                                  data-ui-actions-message-param="{{ 'user.profile.confirm.delete_avatar'|trans({}, 'user') }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_avatar' ~ user.id) }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                    {{ 'user.profile.action.delete_avatar'|trans({}, 'user') }}
+                                </button>
+                            </form>
+                        </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         </div>
     </div>

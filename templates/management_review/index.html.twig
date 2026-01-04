@@ -36,8 +36,8 @@
     <turbo-frame id="review-stats">
         <div class="row mb-4">
             <div class="col-md-3 mb-3">
-                <div class="card border-primary">
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'primary' } %}
+                    {% block card_body %}
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <i class="bi bi-collection text-primary icon-2rem" aria-hidden="true"></i>
@@ -47,13 +47,13 @@
                                 <div class="fs-2 fw-bold">{{ statistics.total }}</div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
 
             <div class="col-md-3 mb-3">
-                <div class="card border-warning">
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'warning' } %}
+                    {% block card_body %}
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <i class="bi bi-hourglass-split text-warning icon-2rem" aria-hidden="true"></i>
@@ -63,13 +63,13 @@
                                 <div class="fs-2 fw-bold">{{ statistics.planned }}</div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
 
             <div class="col-md-3 mb-3">
-                <div class="card border-success">
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'success' } %}
+                    {% block card_body %}
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <i class="bi bi-check-circle text-success icon-2rem" aria-hidden="true"></i>
@@ -79,13 +79,13 @@
                                 <div class="fs-2 fw-bold">{{ statistics.completed }}</div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
 
             <div class="col-md-3 mb-3">
-                <div class="card border-info">
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info' } %}
+                    {% block card_body %}
                         <div class="d-flex align-items-center">
                             <div class="flex-shrink-0">
                                 <i class="bi bi-calendar-event text-info icon-2rem" aria-hidden="true"></i>
@@ -95,18 +95,20 @@
                                 <div class="fs-2 fw-bold">{{ statistics.this_year }}</div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
         </div>
     </turbo-frame>
 
     {# Management Reviews List #}
-    <div class="card">
-        <div class="card-header bg-primary text-white">
-            <h2 class="h5 mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'management_review.all_reviews'|trans({}, 'management_review') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white">
+                <h2 class="h5 mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'management_review.all_reviews'|trans({}, 'management_review') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if reviews|length == 0 %}
             <div class="alert alert-info" role="alert">
                 <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'management_review.no_reviews'|trans({}, 'management_review') }}
@@ -184,8 +186,8 @@
                 {% endblock %}
             {% endembed %}
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 {# Delete Modals #}

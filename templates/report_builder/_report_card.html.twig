@@ -1,7 +1,7 @@
 {% trans_default_domain 'report_builder' %}
 
-<div class="card h-100 hover-lift">
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with { 'class': 'h-100 hover-lift' } %}
+    {% block card_body %}
         <div class="d-flex justify-content-between align-items-start mb-2">
             <h3 class="h6 mb-0">
                 {% if report.isFavorite %}<i class="bi bi-star-fill text-warning" aria-hidden="true"></i>{% endif %}
@@ -25,5 +25,5 @@
                 </a>
             </div>
         </div>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}

@@ -60,31 +60,30 @@
     <div class="row">
         <div class="col-lg-8">
             {# Main Builder Area #}
-            <div class="card"
-                 data-controller="workflow-builder"
+            {% embed '_components/_card.html.twig' %}
+                {% block card_attrs %}data-controller="workflow-builder"
                  data-workflow-builder-workflow-id-value="{{ workflow.id }}"
                  data-workflow-builder-api-url-value="{{ api_base_url }}"
                  data-workflow-builder-csrf-token-value="{{ csrf_token('workflow_api') }}"
                  data-workflow-builder-edit-title-value="{{ 'workflow.builder.action.edit'|trans({}, 'workflows') }}"
                  data-workflow-builder-duplicate-title-value="{{ 'workflow.builder.action.duplicate'|trans({}, 'workflows') }}"
-                 data-workflow-builder-delete-title-value="{{ 'workflow.builder.action.delete'|trans({}, 'workflows') }}">
-
-                {# Notifications #}
-                <div data-workflow-builder-target="notification"></div>
-
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h2 class="mb-0">
-                        <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'workflow.builder.steps'|trans({}, 'workflows') }}
-                    </h2>
-                    <div class="d-flex align-items-center">
-                        <span data-workflow-builder-target="loadingSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status">
-                            <span class="visually-hidden">{{ 'common.loading'|trans({}, 'messages') }}</span>
-                        </span>
-                        {% include '_components/_badge.html.twig' with { variant: 'primary', pill: true, content: workflow.steps is defined and workflow.steps ? workflow.steps|length : 0 } %}
+                 data-workflow-builder-delete-title-value="{{ 'workflow.builder.action.delete'|trans({}, 'workflows') }}"{% endblock %}
+                {% block card_header %}
+                    {# Notifications #}
+                    <div data-workflow-builder-target="notification"></div>
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h2 class="mb-0">
+                            <i class="bi bi-list-check" aria-hidden="true"></i> {{ 'workflow.builder.steps'|trans({}, 'workflows') }}
+                        </h2>
+                        <div class="d-flex align-items-center">
+                            <span data-workflow-builder-target="loadingSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status">
+                                <span class="visually-hidden">{{ 'common.loading'|trans({}, 'messages') }}</span>
+                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: 'primary', pill: true, content: workflow.steps is defined and workflow.steps ? workflow.steps|length : 0 } %}
+                        </div>
                     </div>
-                </div>
-
-                <div class="card-body">
+                {% endblock %}
+                {% block card_body %}
                     <div class="mb-3">
                         <div class="alert alert-info alert-dismissible fade show" role="alert">
                             <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
@@ -97,24 +96,27 @@
                     <div data-workflow-builder-target="stepsList" class="steps-container">
                         {# Steps will be loaded dynamically #}
                     </div>
-                </div>
-
-                <div class="card-footer">
-                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#addStepForm">
-                        <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'workflow.builder.add_step'|trans({}, 'workflows') }}
-                    </button>
-                </div>
-            </div>
+                {% endblock %}
+                {% block card_footer %}
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#addStepForm">
+                            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'workflow.builder.add_step'|trans({}, 'workflows') }}
+                        </button>
+                    </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Add Step Form (collapsible) #}
             <div class="collapse mt-3" id="addStepForm">
-                <div class="card">
-                    <div class="card-header bg-success text-white">
-                        <h2 class="mb-0">
-                            <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'workflow.builder.new_step'|trans({}, 'workflows') }}
-                        </h2>
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' %}
+                    {% block card_header %}
+                        <div class="card-header bg-success text-white">
+                            <h2 class="mb-0">
+                                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'workflow.builder.new_step'|trans({}, 'workflows') }}
+                            </h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         <form data-action="submit->workflow-builder#addStep" data-workflow-builder-target="stepForm">
                             <div class="row">
                                 <div class="col-md-6 mb-3">
@@ -174,20 +176,22 @@
                                 </button>
                             </div>
                         </form>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
         </div>
 
         <div class="col-lg-4">
             {# Templates #}
-            <div class="card mb-4">
-                <div class="card-header bg-info text-white">
-                    <h2 class="mb-0">
-                        <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'workflow.builder.templates'|trans({}, 'workflows') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-info text-white">
+                        <h2 class="mb-0">
+                            <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'workflow.builder.templates'|trans({}, 'workflows') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p class="text-muted small">{{ 'workflow.builder.templates_help'|trans({}, 'workflows') }}</p>
                     <div class="d-grid gap-2">
                         <button class="btn btn-outline-primary text-start"
@@ -231,17 +235,19 @@
                             <small class="text-muted">{{ 'workflow.template.change_request_desc'|trans({}, 'workflows') }}</small>
                         </button>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Workflow Info #}
-            <div class="card mb-4">
-                <div class="card-header bg-secondary text-white">
-                    <h2 class="mb-0">
-                        <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.builder.info'|trans({}, 'workflows') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-secondary text-white">
+                        <h2 class="mb-0">
+                            <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'workflow.builder.info'|trans({}, 'workflows') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="row mb-0">
                         <dt class="col-sm-5">{{ 'workflow.field.name'|trans({}, 'workflows') }}</dt>
                         <dd class="col-sm-7">{{ workflow.name }}</dd>
@@ -261,17 +267,19 @@
                         <dt class="col-sm-5">{{ 'workflow.field.created_at'|trans({}, 'workflows') }}</dt>
                         <dd class="col-sm-7">{{ workflow.createdAt ? workflow.createdAt|date('d.m.Y') : 'N/A' }}</dd>
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Help #}
-            <div class="card">
-                <div class="card-header bg-light">
-                    <h2 class="mb-0">
-                        <i class="bi bi-question-circle" aria-hidden="true"></i> {{ 'workflow.builder.help'|trans({}, 'workflows') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h2 class="mb-0">
+                            <i class="bi bi-question-circle" aria-hidden="true"></i> {{ 'workflow.builder.help'|trans({}, 'workflows') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <ul class="list-unstyled mb-0 small">
                         <li class="mb-2">
                             <i class="bi bi-grip-vertical text-muted me-1" aria-hidden="true"></i>
@@ -294,8 +302,8 @@
                             {{ 'workflow.builder.help_template'|trans({}, 'workflows') }}
                         </li>
                     </ul>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

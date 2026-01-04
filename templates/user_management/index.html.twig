@@ -26,59 +26,69 @@
     <turbo-frame id="user-stats">
         <div class="row mb-4">
             <div class="col-md-3">
-                <div class="card border-primary">
-                    <div class="card-body text-center">
-                        <h2 class="card-title text-muted">{{ 'user.stats.total'|trans({}, 'user') }}</h2>
-                        <p class="display-6 text-primary">
-                            <span id="user-total-count">{{ statistics.total ?? users|length }}</span>
-                        </p>
-                        <small>{{ 'user.stats.users'|trans({}, 'user') }}</small>
-                    </div>
-                </div>
+                {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'primary' } %}
+                    {% block card_body %}
+                        <div class="text-center">
+                            <h2 class="card-title text-muted">{{ 'user.stats.total'|trans({}, 'user') }}</h2>
+                            <p class="display-6 text-primary">
+                                <span id="user-total-count">{{ statistics.total ?? users|length }}</span>
+                            </p>
+                            <small>{{ 'user.stats.users'|trans({}, 'user') }}</small>
+                        </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
             <div class="col-md-3">
-                <div class="card border-success">
-                    <div class="card-body text-center">
-                        <h2 class="card-title text-muted">{{ 'user.stats.active'|trans({}, 'user') }}</h2>
-                        <p class="display-6 text-success">
-                            <span id="user-active-count">{{ statistics.active ?? 0 }}</span>
-                        </p>
-                        <small>{{ 'user.stats.active_users'|trans({}, 'user') }}</small>
-                    </div>
-                </div>
+                {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'success' } %}
+                    {% block card_body %}
+                        <div class="text-center">
+                            <h2 class="card-title text-muted">{{ 'user.stats.active'|trans({}, 'user') }}</h2>
+                            <p class="display-6 text-success">
+                                <span id="user-active-count">{{ statistics.active ?? 0 }}</span>
+                            </p>
+                            <small>{{ 'user.stats.active_users'|trans({}, 'user') }}</small>
+                        </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
             <div class="col-md-3">
-                <div class="card border-warning">
-                    <div class="card-body text-center">
-                        <h2 class="card-title text-muted">{{ 'user.stats.admins'|trans({}, 'user') }}</h2>
-                        <p class="display-6 text-warning">
-                            <span id="user-admin-count">{{ statistics.admins ?? 0 }}</span>
-                        </p>
-                        <small>{{ 'user.stats.administrators'|trans({}, 'user') }}</small>
-                    </div>
-                </div>
+                {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'warning' } %}
+                    {% block card_body %}
+                        <div class="text-center">
+                            <h2 class="card-title text-muted">{{ 'user.stats.admins'|trans({}, 'user') }}</h2>
+                            <p class="display-6 text-warning">
+                                <span id="user-admin-count">{{ statistics.admins ?? 0 }}</span>
+                            </p>
+                            <small>{{ 'user.stats.administrators'|trans({}, 'user') }}</small>
+                        </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
             <div class="col-md-3">
-                <div class="card border-info">
-                    <div class="card-body text-center">
-                        <h2 class="card-title text-muted">{{ 'user.stats.today_active'|trans({}, 'user') }}</h2>
-                        <p class="display-6 text-info">{{ statistics.today_active ?? 0 }}</p>
-                        <small>{{ 'user.stats.logins_today'|trans({}, 'user') }}</small>
-                    </div>
-                </div>
+                {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info' } %}
+                    {% block card_body %}
+                        <div class="text-center">
+                            <h2 class="card-title text-muted">{{ 'user.stats.today_active'|trans({}, 'user') }}</h2>
+                            <p class="display-6 text-info">{{ statistics.today_active ?? 0 }}</p>
+                            <small>{{ 'user.stats.logins_today'|trans({}, 'user') }}</small>
+                        </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
         </div>
     </turbo-frame>
 
     {# User List #}
     <turbo-frame id="users-list">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">
-                    <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'user.message.all_users'|trans({}, 'user') }}
-                </h2>
-            </div>
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' %}
+            {% block card_header %}
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'user.message.all_users'|trans({}, 'user') }}
+                    </h2>
+                </div>
+            {% endblock %}
+            {% block card_body %}
                 {% if users|length > 0 %}
                     {% embed '_components/_table.html.twig' with {
                         'noMargin': true
@@ -209,8 +219,8 @@
                         action: { label: 'user.action.new_user'|trans({}, 'user'), url: path('user_management_new'), icon: 'bi-person-plus' }
                     } %}
                 {% endif %}
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     </turbo-frame>
 </div>
 

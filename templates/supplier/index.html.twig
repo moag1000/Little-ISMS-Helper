@@ -19,33 +19,35 @@
     </div>
 
     {% if currentTenant %}
-    <div class="card mb-3">
-        <div class="card-body py-2">
-            <form method="get" action="{{ path('app_supplier_index') }}" class="d-flex align-items-center gap-2">
-                <label for="view-filter" class="mb-0 fw-bold">
-                    <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
-                </label>
-                <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
-                    <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
-                        {{ 'corporate.view.own_only'|trans({}, 'messages') }}
-                    </option>
-                    {% if inheritanceInfo.hasParent %}
-                    <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
-                        {{ 'corporate.view.including_inherited'|trans({}, 'messages') }}
-                    </option>
-                    {% endif %}
-                    {% if inheritanceInfo.hasSubsidiaries %}
-                    <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
-                        {{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}
-                    </option>
-                    {% endif %}
-                </select>
-                <noscript>
-                    <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
-                </noscript>
-            </form>
-        </div>
-    </div>
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } %}
+        {% block card_body %}
+            <div class="py-2">
+                <form method="get" action="{{ path('app_supplier_index') }}" class="d-flex align-items-center gap-2">
+                    <label for="view-filter" class="mb-0 fw-bold">
+                        <i class="bi bi-eye" aria-hidden="true"></i> {{ 'common.view'|trans({}, 'messages') }}:
+                    </label>
+                    <select class="form-select form-select-sm" style="width: auto;" id="view-filter" name="view" data-controller="ui-actions" data-action="change->ui-actions#autoSubmit">
+                        <option value="own" {{ inheritanceInfo.currentView == 'own' ? 'selected' : '' }}>
+                            {{ 'corporate.view.own_only'|trans({}, 'messages') }}
+                        </option>
+                        {% if inheritanceInfo.hasParent %}
+                        <option value="inherited" {{ inheritanceInfo.currentView == 'inherited' ? 'selected' : '' }}>
+                            {{ 'corporate.view.including_inherited'|trans({}, 'messages') }}
+                        </option>
+                        {% endif %}
+                        {% if inheritanceInfo.hasSubsidiaries %}
+                        <option value="subsidiaries" {{ inheritanceInfo.currentView == 'subsidiaries' ? 'selected' : '' }}>
+                            {{ 'corporate.view.including_subsidiaries'|trans({}, 'messages') }}
+                        </option>
+                        {% endif %}
+                    </select>
+                    <noscript>
+                        <button type="submit" class="btn btn-sm btn-secondary">{{ 'common.apply'|trans({}, 'messages') }}</button>
+                    </noscript>
+                </form>
+            </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {% if statistics %}
@@ -98,12 +100,15 @@
     </div>
     {% endif %}
 
-    <div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/supplier">
-        <div class="card-header">
-            {%- set supplierCount = suppliers|length -%}
-            <h2>{{ 'supplier.list.title'|trans({'count': supplierCount}, 'suppliers') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/supplier"{% endblock %}
+        {% block card_header %}
+            <div class="card-header">
+                {%- set supplierCount = suppliers|length -%}
+                <h2>{{ 'supplier.list.title'|trans({'count': supplierCount}, 'suppliers') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if suppliers|length > 0 %}
             {% embed '_components/_table.html.twig' with {
                 'wrapperClass': 'card-body',
@@ -162,15 +167,15 @@
             {% else %}
             <p>{{ 'supplier.empty.message'|trans({}, 'suppliers') }} <a href="{{ path('app_supplier_new') }}">{{ 'supplier.empty.add_first'|trans({}, 'suppliers') }}</a>.</p>
             {% endif %}
-        </div>
 
-        {# Bulk Action Bar #}
-        {% if suppliers|length > 0 %}
-        {% include '_components/_bulk_action_bar.html.twig' with {
-            actions: ['export', 'delete']
-        } %}
-        {% endif %}
-    </div>
+            {# Bulk Action Bar #}
+            {% if suppliers|length > 0 %}
+            {% include '_components/_bulk_action_bar.html.twig' with {
+                actions: ['export', 'delete']
+            } %}
+            {% endif %}
+        {% endblock %}
+    {% endembed %}
 </div>
 
 <style>

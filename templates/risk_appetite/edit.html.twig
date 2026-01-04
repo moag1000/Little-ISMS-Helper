@@ -18,8 +18,8 @@
         <a href="{{ path('app_risk_appetite_show', {id: appetite.id}) }}" class="btn btn-secondary">{{ 'common.back'|trans({}, 'messages') }}</a>
     </div>
 
-    <div class="card">
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_body %}
             {{ form_start(form) }}
                 {% include '_components/_auto_form.html.twig' with {
                     'form': form,
@@ -63,7 +63,7 @@
                     </button>
                 </div>
             {{ form_end(form) }}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

@@ -61,36 +61,45 @@
     {# Statistics Row #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card bg-primary text-white">
-                <div class="card-body text-center">
-                    <h2>{{ total_requirements }}</h2>
-                    <p class="mb-0">{{ 'compliance.framework.stats.total_requirements'|trans({}, 'compliance') }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'bg-primary text-white' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2>{{ total_requirements }}</h2>
+                        <p class="mb-0">{{ 'compliance.framework.stats.total_requirements'|trans({}, 'compliance') }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card bg-info text-white">
-                <div class="card-body text-center">
-                    <h2>{{ applicable_requirements }}</h2>
-                    <p class="mb-0">{{ 'compliance.framework.stats.applicable'|trans({}, 'compliance') }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'bg-info text-white' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2>{{ applicable_requirements }}</h2>
+                        <p class="mb-0">{{ 'compliance.framework.stats.applicable'|trans({}, 'compliance') }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card bg-success text-white">
-                <div class="card-body text-center">
-                    <h2>{{ fulfilled_requirements }}</h2>
-                    <p class="mb-0">{{ 'compliance.framework.stats.fulfilled'|trans({}, 'compliance') }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'bg-success text-white' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2>{{ fulfilled_requirements }}</h2>
+                        <p class="mb-0">{{ 'compliance.framework.stats.fulfilled'|trans({}, 'compliance') }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card {% if compliance_percentage >= 80 %}bg-success{% elseif compliance_percentage >= 50 %}bg-warning{% else %}bg-danger{% endif %} text-white">
-                <div class="card-body text-center">
-                    <h2>{{ compliance_percentage|round }}%</h2>
-                    <p class="mb-0">{{ 'compliance.framework.stats.compliance'|trans({}, 'compliance') }}</p>
-                </div>
-            </div>
+            {% set complianceColorClass = compliance_percentage >= 80 ? 'bg-success' : (compliance_percentage >= 50 ? 'bg-warning' : 'bg-danger') %}
+            {% embed '_components/_card.html.twig' with { 'class': complianceColorClass ~ ' text-white' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2>{{ compliance_percentage|round }}%</h2>
+                        <p class="mb-0">{{ 'compliance.framework.stats.compliance'|trans({}, 'compliance') }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 

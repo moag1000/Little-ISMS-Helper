@@ -24,8 +24,8 @@
             {% endfor %}
 
             {# Progress Bar #}
-            <div class="card mb-4">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h4 class="mb-0">{{ 'setup.progress.title'|trans({}, 'setup') }}</h4>
                         <small class="text-muted">{{ 'setup.progress.step_of'|trans({'%current%': 6, '%total%': 11}, 'setup') }}</small>
@@ -33,99 +33,103 @@
                     <div class="progress" style="height: 10px;">
                         <div class="progress-bar" role="progressbar" style="width: 40%;" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
-            <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white">
-                    <h1 class="h3 mb-0">
-                        <i class="bi bi-building me-2" aria-hidden="true"></i>
-                        {{ 'setup.organisation.header'|trans({}, 'setup') }}
-                    </h1>
-                </div>
-                <div class="card-body p-4">
-                    <p class="text-muted mb-4">
-                        {{ 'setup.organisation.description'|trans({}, 'setup') }}
-                    </p>
+            {% embed '_components/_card.html.twig' with { 'class': 'shadow-lg' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="h3 mb-0">
+                            <i class="bi bi-building me-2" aria-hidden="true"></i>
+                            {{ 'setup.organisation.header'|trans({}, 'setup') }}
+                        </h1>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <div class="p-4">
+                        <p class="text-muted mb-4">
+                            {{ 'setup.organisation.description'|trans({}, 'setup') }}
+                        </p>
 
-                    {# Organisation Info Form #}
-                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                        {# Organisation Info Form #}
+                        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
-                    <div class="row">
-                        <div class="col-md-12">
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.name,
-                                'label': 'setup.organisation.name'|trans({}, 'setup'),
-                                'required': true
-                            } %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.name,
+                                    'label': 'setup.organisation.name'|trans({}, 'setup'),
+                                    'required': true
+                                } %}
+                            </div>
                         </div>
-                    </div>
 
-                    {# Multi-Industry Selection for Corporate Structures #}
-                    <div class="alert alert-light mb-2">
-                        <i class="bi bi-diagram-3 me-2 text-primary" aria-hidden="true"></i>
-                        <small>{{ 'setup.organisation.industries_help'|trans({}, 'setup') }}</small>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.industries,
-                                'label': 'setup.organisation.industries'|trans({}, 'setup')
-                            } %}
+                        {# Multi-Industry Selection for Corporate Structures #}
+                        <div class="alert alert-light mb-2">
+                            <i class="bi bi-diagram-3 me-2 text-primary" aria-hidden="true"></i>
+                            <small>{{ 'setup.organisation.industries_help'|trans({}, 'setup') }}</small>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.employee_count,
-                                'label': 'setup.organisation.employee_count'|trans({}, 'setup')
-                            } %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.industries,
+                                    'label': 'setup.organisation.industries'|trans({}, 'setup')
+                                } %}
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.country,
-                                'label': 'setup.organisation.country'|trans({}, 'setup')
-                            } %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.employee_count,
+                                    'label': 'setup.organisation.employee_count'|trans({}, 'setup')
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.country,
+                                    'label': 'setup.organisation.country'|trans({}, 'setup')
+                                } %}
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-12">
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.description,
-                                'label': 'setup.organisation.description'|trans({}, 'setup')
-                            } %}
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.description,
+                                    'label': 'setup.organisation.description'|trans({}, 'setup')
+                                } %}
+                            </div>
                         </div>
+
+                        {# Information Box #}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                            <strong>{{ 'setup.organisation.usage.title'|trans({}, 'setup') }}</strong>
+                            <p class="mb-0">{{ 'setup.organisation.usage.message'|trans({}, 'setup') }}</p>
+                        </div>
+
+                        {# Navigation #}
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ path('setup_step5_email_config') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
+                                {{ 'setup.navigation.back'|trans({}, 'setup') }}
+                            </a>
+
+                            <button type="submit" class="btn btn-primary">
+                                {{ 'setup.navigation.next'|trans({}, 'setup') }}
+                                <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+                            </button>
+                        </div>
+
+                        {{ form_end(form) }}
                     </div>
-
-                    {# Information Box #}
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                        <strong>{{ 'setup.organisation.usage.title'|trans({}, 'setup') }}</strong>
-                        <p class="mb-0">{{ 'setup.organisation.usage.message'|trans({}, 'setup') }}</p>
-                    </div>
-
-                    {# Navigation #}
-                    <div class="d-flex justify-content-between mt-4">
-                        <a href="{{ path('setup_step5_email_config') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
-                            {{ 'setup.navigation.back'|trans({}, 'setup') }}
-                        </a>
-
-                        <button type="submit" class="btn btn-primary">
-                            {{ 'setup.navigation.next'|trans({}, 'setup') }}
-                            <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
-                        </button>
-                    </div>
-
-                    {{ form_end(form) }}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Compliance Information Card #}
-            <div class="card mt-4 border-info">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mt-4 border-info' } %}
+                {% block card_body %}
                     <p class="h5 mb-3">
                         <i class="bi bi-shield text-info me-2" aria-hidden="true"></i>
                         {{ 'setup.organisation.compliance_info.title'|trans({}, 'setup') }}
@@ -138,8 +142,8 @@
                         <li>{{ 'setup.organisation.compliance_info.reporting'|trans({}, 'setup') }}</li>
                         <li>{{ 'setup.organisation.compliance_info.recommendations'|trans({}, 'setup') }}</li>
                     </ul>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

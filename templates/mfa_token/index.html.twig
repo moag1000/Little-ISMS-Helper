@@ -16,36 +16,44 @@
     {# Statistics Cards #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card border-success">
-                <div class="card-body text-center">
-                    <h3 class="text-success">{{ active_count }}</h3>
-                    <p class="mb-0"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.kpi.active'|trans({}, 'mfa') }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'success' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="text-success">{{ active_count }}</h3>
+                        <p class="mb-0"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'mfa_token.kpi.active'|trans({}, 'mfa') }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h3 class="text-primary">{{ totp_count }}</h3>
-                    <p class="mb-0"><i class="bi bi-phone" aria-hidden="true"></i> TOTP</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="text-primary">{{ totp_count }}</h3>
+                        <p class="mb-0"><i class="bi bi-phone" aria-hidden="true"></i> TOTP</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h3 class="text-info">{{ webauthn_count }}</h3>
-                    <p class="mb-0"><i class="bi bi-key" aria-hidden="true"></i> WebAuthn</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="text-info">{{ webauthn_count }}</h3>
+                        <p class="mb-0"><i class="bi bi-key" aria-hidden="true"></i> WebAuthn</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <h3 class="text-secondary">{{ tokens_by_user|length }}</h3>
-                    <p class="mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ 'mfa_token.kpi.users'|trans({}, 'mfa') }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="text-secondary">{{ tokens_by_user|length }}</h3>
+                        <p class="mb-0"><i class="bi bi-people" aria-hidden="true"></i> {{ 'mfa_token.kpi.users'|trans({}, 'mfa') }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
@@ -56,23 +64,25 @@
         </div>
     {% else %}
         {% for user_id, user_data in tokens_by_user %}
-            <div class="card mb-3">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h3 class="mb-0">
-                            <i class="bi bi-person-circle" aria-hidden="true"></i>
-                            {{ user_data.user.firstName }} {{ user_data.user.lastName }}
-                            <span class="text-muted">{{ user_data.user.email }}</span>
-                        </h3>
-                        <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-                            <a href="{{ path('admin_mfa_setup_totp', {id: user_data.user.id}) }}"
-                               class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_new'|trans({}, 'mfa') }}
-                            </a>
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h3 class="mb-0">
+                                <i class="bi bi-person-circle" aria-hidden="true"></i>
+                                {{ user_data.user.firstName }} {{ user_data.user.lastName }}
+                                <span class="text-muted">{{ user_data.user.email }}</span>
+                            </h3>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+                                <a href="{{ path('admin_mfa_setup_totp', {id: user_data.user.id}) }}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-plus-circle" aria-hidden="true"></i> {{ 'mfa_token.setup_new'|trans({}, 'mfa') }}
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-body">
+                {% endblock %}
+                {% block card_body %}
                     {% embed '_components/_table.html.twig' with {
                         'class': 'table-sm',
                         'theadClass': 'table-light',
@@ -166,8 +176,8 @@
                             {% endfor %}
                         {% endblock %}
                     {% endembed %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         {% endfor %}
     {% endif %}
 {% endblock %}

@@ -24,8 +24,8 @@
             {% endfor %}
 
             {# Progress Bar #}
-            <div class="card mb-4">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h4 class="mb-0">{{ 'setup.progress.title'|trans({}, 'setup') }}</h4>
                         <small class="text-muted">{{ 'setup.progress.step_of'|trans({'%current%': 2, '%total%': 11}, 'setup') }}</small>
@@ -33,201 +33,205 @@
                     <div class="progress" style="height: 10px;">
                         <div class="progress-bar" role="progressbar" style="width: 18%;" aria-valuenow="18" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
-            <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white">
-                    <h1 class="h3 mb-0">
-                        <i class="bi bi-database me-2" aria-hidden="true"></i>
-                        {{ 'setup.database.header'|trans({}, 'setup') }}
-                    </h1>
-                </div>
-                <div class="card-body p-4">
-                    <p class="text-muted mb-4">
-                        {{ 'setup.database.description'|trans({}, 'setup') }}
-                    </p>
-
-                    {# Docker Auto-Generated Password Display #}
-                    {% if is_docker_standalone and docker_password %}
-                        <div class="alert alert-success border-success">
-                            <p class="h5 mb-2">
-                                <i class="bi bi-key me-2" aria-hidden="true"></i>
-                                {{ 'setup.database.docker_password_title'|trans({}, 'setup') }}
-                            </p>
-                            <p class="mb-2">{{ 'setup.database.docker_password_info'|trans({}, 'setup') }}</p>
-                            <div class="p-3 bg-light border rounded">
-                                <code class="text-primary fw-bold" style="font-size: 1.1rem;">{{ docker_password }}</code>
-                                <button type="button" class="btn btn-sm btn-outline-primary ms-3"
-                                        data-controller="ui-actions"
-                                        data-action="click->ui-actions#copyToClipboard"
-                                        data-ui-actions-text-param="{{ docker_password }}">
-                                    <i class="bi bi-clipboard me-1" aria-hidden="true"></i>
-                                    {{ 'setup.common.copy'|trans({}, 'setup') }}
-                                </button>
-                            </div>
-                            <small class="text-muted mt-2 d-block">
-                                <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
-                                {{ 'setup.database.docker_password_location'|trans({}, 'setup') }}
-                            </small>
-                        </div>
-                    {% endif %}
-
-                    {# Database Configuration Form #}
-                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.type,
-                                'label': 'setup.database.type'|trans({}, 'setup'),
-                                'required': true
-                            } %}
-                        </div>
-                        <div class="col-md-6">
-                            {% include '_components/_form_field.html.twig' with {
-                                'field': form.name,
-                                'label': 'setup.database.name'|trans({}, 'setup'),
-                                'required': true
-                            } %}
-                        </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'shadow-lg' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="h3 mb-0">
+                            <i class="bi bi-database me-2" aria-hidden="true"></i>
+                            {{ 'setup.database.header'|trans({}, 'setup') }}
+                        </h1>
                     </div>
+                {% endblock %}
+                {% block card_body %}
+                    <div class="p-4">
+                        <p class="text-muted mb-4">
+                            {{ 'setup.database.description'|trans({}, 'setup') }}
+                        </p>
 
-                    {# MySQL/PostgreSQL specific fields (hidden for SQLite) #}
-                    <div id="server-fields">
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.host,
-                                    'label': 'setup.database.host'|trans({}, 'setup')
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.port,
-                                    'label': 'setup.database.port'|trans({}, 'setup')
-                                } %}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.user,
-                                    'label': 'setup.database.user'|trans({}, 'setup')
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.password,
-                                    'label': 'setup.database.password'|trans({}, 'setup')
-                                } %}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6" id="server-version-field">
-                                <label class="form-label" for="{{ form.serverVersion.vars.id }}">
-                                    {{ 'setup.database.server_version'|trans({}, 'setup') }}
-                                </label>
-                                <div class="input-group">
-                                    {{ form_widget(form.serverVersion, {'attr': {'class': 'form-control', 'id': 'serverVersionInput', 'readonly': false}}) }}
-                                    <select class="form-select" id="serverVersionSelect" style="max-width: 200px; display: none;">
-                                        <optgroup label="MariaDB" id="mariadb-versions">
-                                            <option value="mariadb-11.4.0">MariaDB 11.4</option>
-                                            <option value="mariadb-11.2.0">MariaDB 11.2</option>
-                                            <option value="mariadb-10.11.0">MariaDB 10.11 (LTS)</option>
-                                            <option value="mariadb-10.6.0">MariaDB 10.6 (LTS)</option>
-                                            <option value="mariadb-10.5.0">MariaDB 10.5</option>
-                                        </optgroup>
-                                        <optgroup label="MySQL" id="mysql-versions">
-                                            <option value="8.4">MySQL 8.4 (LTS)</option>
-                                            <option value="8.0">MySQL 8.0</option>
-                                            <option value="5.7">MySQL 5.7</option>
-                                        </optgroup>
-                                        <optgroup label="PostgreSQL" id="postgresql-versions">
-                                            <option value="17">PostgreSQL 17</option>
-                                            <option value="16">PostgreSQL 16</option>
-                                            <option value="15">PostgreSQL 15</option>
-                                            <option value="14">PostgreSQL 14</option>
-                                            <option value="13">PostgreSQL 13</option>
-                                        </optgroup>
-                                    </select>
+                        {# Docker Auto-Generated Password Display #}
+                        {% if is_docker_standalone and docker_password %}
+                            <div class="alert alert-success border-success">
+                                <p class="h5 mb-2">
+                                    <i class="bi bi-key me-2" aria-hidden="true"></i>
+                                    {{ 'setup.database.docker_password_title'|trans({}, 'setup') }}
+                                </p>
+                                <p class="mb-2">{{ 'setup.database.docker_password_info'|trans({}, 'setup') }}</p>
+                                <div class="p-3 bg-light border rounded">
+                                    <code class="text-primary fw-bold" style="font-size: 1.1rem;">{{ docker_password }}</code>
+                                    <button type="button" class="btn btn-sm btn-outline-primary ms-3"
+                                            data-controller="ui-actions"
+                                            data-action="click->ui-actions#copyToClipboard"
+                                            data-ui-actions-text-param="{{ docker_password }}">
+                                        <i class="bi bi-clipboard me-1" aria-hidden="true"></i>
+                                        {{ 'setup.common.copy'|trans({}, 'setup') }}
+                                    </button>
                                 </div>
-                                {% if test_result.detected_version is defined and test_result.detected_version %}
-                                    <div class="form-text text-success" id="detected-version-info">
-                                        <i class="bi bi-check-circle me-1" aria-hidden="true"></i>
-                                        {{ 'setup.database.version_detected'|trans({'%version%': test_result.detected_version.raw}, 'setup') }}
-                                    </div>
-                                {% else %}
-                                    <div class="form-text">
-                                        {{ 'setup.database.server_version_help'|trans({}, 'setup') }}
-                                    </div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6" id="unix-socket-field">
-                                {% include '_components/_form_field.html.twig' with {
-                                    'field': form.unixSocket,
-                                    'label': 'setup.database.unix_socket'|trans({}, 'setup')
-                                } %}
-                            </div>
-                        </div>
-                    </div>
-
-                    {# Info Box #}
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                        <strong>{{ 'setup.database.info.title'|trans({}, 'setup') }}</strong>
-                        <ul class="mb-0 mt-2">
-                            <li>{{ 'setup.database.info.mysql'|trans({}, 'setup') }}</li>
-                            <li>{{ 'setup.database.info.postgresql'|trans({}, 'setup') }}</li>
-                            <li>{{ 'setup.database.info.sqlite'|trans({}, 'setup') }}</li>
-                            <li>{{ 'setup.database.info.special_chars'|trans({}, 'setup') }}</li>
-                        </ul>
-                    </div>
-
-                    {# Test Result #}
-                    {% if test_result is defined and test_result is not null %}
-                        {% if test_result.success %}
-                            <div class="alert alert-success">
-                                <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
-                                <strong>{{ 'setup.database.test.success'|trans({}, 'setup') }}</strong>
-                                <p class="mb-0">{{ test_result.message }}</p>
-                                {% if test_result.create_needed is defined and test_result.create_needed %}
-                                    <p class="mb-0 mt-2"><small>{{ 'setup.database.test.create_needed'|trans({}, 'setup') }}</small></p>
-                                {% endif %}
-                            </div>
-                        {% else %}
-                            <div class="alert alert-danger">
-                                <i class="bi bi-x-circle me-2" aria-hidden="true"></i>
-                                <strong>{{ 'setup.database.test.failed'|trans({}, 'setup') }}</strong>
-                                <p class="mb-0">{{ test_result.message }}</p>
+                                <small class="text-muted mt-2 d-block">
+                                    <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
+                                    {{ 'setup.database.docker_password_location'|trans({}, 'setup') }}
+                                </small>
                             </div>
                         {% endif %}
-                    {% endif %}
 
-                    {# Navigation #}
-                    <div class="d-flex justify-content-between mt-4">
-                        <a href="{{ path('setup_step0_welcome') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
-                            {{ 'setup.navigation.back'|trans({}, 'setup') }}
-                        </a>
+                        {# Database Configuration Form #}
+                        {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
-                        <div>
-                            <button type="submit" name="test" value="1" class="btn btn-outline-primary me-2">
-                                <i class="bi bi-flask me-2" aria-hidden="true"></i>
-                                {{ 'setup.database.test_button'|trans({}, 'setup') }}
-                            </button>
-                            <button type="submit" name="save" value="1" class="btn btn-primary">
-                                {{ 'setup.navigation.next'|trans({}, 'setup') }}
-                                <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
-                            </button>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.type,
+                                    'label': 'setup.database.type'|trans({}, 'setup'),
+                                    'required': true
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include '_components/_form_field.html.twig' with {
+                                    'field': form.name,
+                                    'label': 'setup.database.name'|trans({}, 'setup'),
+                                    'required': true
+                                } %}
+                            </div>
                         </div>
-                    </div>
 
-                    {{ form_end(form) }}
-                </div>
-            </div>
+                        {# MySQL/PostgreSQL specific fields (hidden for SQLite) #}
+                        <div id="server-fields">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {% include '_components/_form_field.html.twig' with {
+                                        'field': form.host,
+                                        'label': 'setup.database.host'|trans({}, 'setup')
+                                    } %}
+                                </div>
+                                <div class="col-md-6">
+                                    {% include '_components/_form_field.html.twig' with {
+                                        'field': form.port,
+                                        'label': 'setup.database.port'|trans({}, 'setup')
+                                    } %}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {% include '_components/_form_field.html.twig' with {
+                                        'field': form.user,
+                                        'label': 'setup.database.user'|trans({}, 'setup')
+                                    } %}
+                                </div>
+                                <div class="col-md-6">
+                                    {% include '_components/_form_field.html.twig' with {
+                                        'field': form.password,
+                                        'label': 'setup.database.password'|trans({}, 'setup')
+                                    } %}
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6" id="server-version-field">
+                                    <label class="form-label" for="{{ form.serverVersion.vars.id }}">
+                                        {{ 'setup.database.server_version'|trans({}, 'setup') }}
+                                    </label>
+                                    <div class="input-group">
+                                        {{ form_widget(form.serverVersion, {'attr': {'class': 'form-control', 'id': 'serverVersionInput', 'readonly': false}}) }}
+                                        <select class="form-select" id="serverVersionSelect" style="max-width: 200px; display: none;">
+                                            <optgroup label="MariaDB" id="mariadb-versions">
+                                                <option value="mariadb-11.4.0">MariaDB 11.4</option>
+                                                <option value="mariadb-11.2.0">MariaDB 11.2</option>
+                                                <option value="mariadb-10.11.0">MariaDB 10.11 (LTS)</option>
+                                                <option value="mariadb-10.6.0">MariaDB 10.6 (LTS)</option>
+                                                <option value="mariadb-10.5.0">MariaDB 10.5</option>
+                                            </optgroup>
+                                            <optgroup label="MySQL" id="mysql-versions">
+                                                <option value="8.4">MySQL 8.4 (LTS)</option>
+                                                <option value="8.0">MySQL 8.0</option>
+                                                <option value="5.7">MySQL 5.7</option>
+                                            </optgroup>
+                                            <optgroup label="PostgreSQL" id="postgresql-versions">
+                                                <option value="17">PostgreSQL 17</option>
+                                                <option value="16">PostgreSQL 16</option>
+                                                <option value="15">PostgreSQL 15</option>
+                                                <option value="14">PostgreSQL 14</option>
+                                                <option value="13">PostgreSQL 13</option>
+                                            </optgroup>
+                                        </select>
+                                    </div>
+                                    {% if test_result.detected_version is defined and test_result.detected_version %}
+                                        <div class="form-text text-success" id="detected-version-info">
+                                            <i class="bi bi-check-circle me-1" aria-hidden="true"></i>
+                                            {{ 'setup.database.version_detected'|trans({'%version%': test_result.detected_version.raw}, 'setup') }}
+                                        </div>
+                                    {% else %}
+                                        <div class="form-text">
+                                            {{ 'setup.database.server_version_help'|trans({}, 'setup') }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6" id="unix-socket-field">
+                                    {% include '_components/_form_field.html.twig' with {
+                                        'field': form.unixSocket,
+                                        'label': 'setup.database.unix_socket'|trans({}, 'setup')
+                                    } %}
+                                </div>
+                            </div>
+                        </div>
+
+                        {# Info Box #}
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                            <strong>{{ 'setup.database.info.title'|trans({}, 'setup') }}</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>{{ 'setup.database.info.mysql'|trans({}, 'setup') }}</li>
+                                <li>{{ 'setup.database.info.postgresql'|trans({}, 'setup') }}</li>
+                                <li>{{ 'setup.database.info.sqlite'|trans({}, 'setup') }}</li>
+                                <li>{{ 'setup.database.info.special_chars'|trans({}, 'setup') }}</li>
+                            </ul>
+                        </div>
+
+                        {# Test Result #}
+                        {% if test_result is defined and test_result is not null %}
+                            {% if test_result.success %}
+                                <div class="alert alert-success">
+                                    <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
+                                    <strong>{{ 'setup.database.test.success'|trans({}, 'setup') }}</strong>
+                                    <p class="mb-0">{{ test_result.message }}</p>
+                                    {% if test_result.create_needed is defined and test_result.create_needed %}
+                                        <p class="mb-0 mt-2"><small>{{ 'setup.database.test.create_needed'|trans({}, 'setup') }}</small></p>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <div class="alert alert-danger">
+                                    <i class="bi bi-x-circle me-2" aria-hidden="true"></i>
+                                    <strong>{{ 'setup.database.test.failed'|trans({}, 'setup') }}</strong>
+                                    <p class="mb-0">{{ test_result.message }}</p>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+
+                        {# Navigation #}
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ path('setup_step0_welcome') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
+                                {{ 'setup.navigation.back'|trans({}, 'setup') }}
+                            </a>
+
+                            <div>
+                                <button type="submit" name="test" value="1" class="btn btn-outline-primary me-2">
+                                    <i class="bi bi-flask me-2" aria-hidden="true"></i>
+                                    {{ 'setup.database.test_button'|trans({}, 'setup') }}
+                                </button>
+                                <button type="submit" name="save" value="1" class="btn btn-primary">
+                                    {{ 'setup.navigation.next'|trans({}, 'setup') }}
+                                    <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        {{ form_end(form) }}
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

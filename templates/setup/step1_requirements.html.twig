@@ -8,8 +8,8 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
             {# Progress Bar #}
-            <div class="card mb-4">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h1 class="h4 mb-0">{{ 'setup.progress.title'|trans({}, 'setup') }}</h1>
                         <small class="text-muted">{{ 'setup.progress.step_of'|trans({'%current%': 1, '%total%': 11}, 'setup') }}</small>
@@ -17,176 +17,180 @@
                     <div class="progress" style="height: 10px;">
                         <div class="progress-bar" role="progressbar" style="width: 9%;" aria-valuenow="9" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
-            <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white">
-                    <h1 class="h3 mb-0">
-                        <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
-                        {{ 'setup.step1.header'|trans({}, 'setup') }}
-                    </h1>
-                </div>
-                <div class="card-body p-4">
-                    {# Overall Status #}
-                    <div class="alert {{ results.overall.can_proceed ? 'alert-success' : 'alert-danger' }} mb-4" role="alert">
-                        <p class="h5 mb-2">
-                            <i class="bi bi-{{ results.overall.can_proceed ? 'check-circle' : 'exclamation-circle' }} me-2" aria-hidden="true"></i>
-                            {{ results.overall.message }}
-                        </p>
-                        <div class="mt-2">
-                            {% include '_components/_badge.html.twig' with { variant: 'success', content: results.overall.success ~ ' ' ~ 'setup.step1.status.success'|trans({}, 'setup') } %}
-                            {% if results.overall.warnings > 0 %}
-                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: results.overall.warnings ~ ' ' ~ 'setup.step1.status.warnings'|trans({}, 'setup') } %}
-                            {% endif %}
-                            {% if results.overall.critical_errors > 0 %}
-                                {% include '_components/_badge.html.twig' with { variant: 'danger', content: results.overall.critical_errors ~ ' ' ~ 'setup.step1.status.critical_errors'|trans({}, 'setup') } %}
-                            {% endif %}
-                        </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'shadow-lg' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="h3 mb-0">
+                            <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
+                            {{ 'setup.step1.header'|trans({}, 'setup') }}
+                        </h1>
                     </div>
+                {% endblock %}
+                {% block card_body %}
+                    <div class="p-4">
+                        {# Overall Status #}
+                        <div class="alert {{ results.overall.can_proceed ? 'alert-success' : 'alert-danger' }} mb-4" role="alert">
+                            <p class="h5 mb-2">
+                                <i class="bi bi-{{ results.overall.can_proceed ? 'check-circle' : 'exclamation-circle' }} me-2" aria-hidden="true"></i>
+                                {{ results.overall.message }}
+                            </p>
+                            <div class="mt-2">
+                                {% include '_components/_badge.html.twig' with { variant: 'success', content: results.overall.success ~ ' ' ~ 'setup.step1.status.success'|trans({}, 'setup') } %}
+                                {% if results.overall.warnings > 0 %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: results.overall.warnings ~ ' ' ~ 'setup.step1.status.warnings'|trans({}, 'setup') } %}
+                                {% endif %}
+                                {% if results.overall.critical_errors > 0 %}
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: results.overall.critical_errors ~ ' ' ~ 'setup.step1.status.critical_errors'|trans({}, 'setup') } %}
+                                {% endif %}
+                            </div>
+                        </div>
 
-                    {# Individual Checks #}
-                    <h2 class="h5 mb-3">{{ 'setup.step1.detailed_checks'|trans({}, 'setup') }}</h2>
+                        {# Individual Checks #}
+                        <h2 class="h5 mb-3">{{ 'setup.step1.detailed_checks'|trans({}, 'setup') }}</h2>
 
-                    {# PHP Version #}
-                    <div class="card mb-3 border-{{ results.php.status == 'success' ? 'success' : 'danger' }}">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <h3 class="h6 mb-1">
-                                        <i class="bi bi-{{ results.php.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
-                                        {{ 'setup.step1.php.title'|trans({}, 'setup') }}
-                                    </h3>
-                                    <p class="mb-0 text-muted">{{ results.php.message }}</p>
-                                </div>
-                                <div class="text-end">
-                                    <div class="badge bg-{{ results.php.status == 'success' ? 'success' : 'danger' }}">
-                                        {{ results.php.current }}
+                        {# PHP Version #}
+                        {% embed '_components/_card.html.twig' with { 'class': 'mb-3 border-' ~ (results.php.status == 'success' ? 'success' : 'danger') } %}
+                            {% block card_body %}
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h3 class="h6 mb-1">
+                                            <i class="bi bi-{{ results.php.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
+                                            {{ 'setup.step1.php.title'|trans({}, 'setup') }}
+                                        </h3>
+                                        <p class="mb-0 text-muted">{{ results.php.message }}</p>
                                     </div>
-                                    <small class="d-block text-muted">{{ 'setup.step1.php.required'|trans({'%version%': results.php.required}, 'setup') }}</small>
+                                    <div class="text-end">
+                                        <div class="badge bg-{{ results.php.status == 'success' ? 'success' : 'danger' }}">
+                                            {{ results.php.current }}
+                                        </div>
+                                        <small class="d-block text-muted">{{ 'setup.step1.php.required'|trans({'%version%': results.php.required}, 'setup') }}</small>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
+                            {% endblock %}
+                        {% endembed %}
 
-                    {# PHP Extensions #}
-                    <div class="card mb-3 border-{{ results.extensions.status == 'success' ? 'success' : 'danger' }}">
-                        <div class="card-body">
-                            <h3 class="h6 mb-2">
-                                <i class="bi bi-{{ results.extensions.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
-                                {{ 'setup.step1.extensions.title'|trans({}, 'setup') }}
-                            </h3>
-                            <p class="mb-2 text-muted">{{ results.extensions.message }}</p>
-                            {% if results.extensions.missing|length > 0 %}
-                                <div class="alert alert-danger mb-0">
-                                    <strong>{{ 'setup.step1.extensions.missing'|trans({}, 'setup') }}</strong>
-                                    <ul class="mb-0 mt-2">
-                                        {% for ext in results.extensions.missing %}
-                                            <li><code>{{ ext }}</code></li>
+                        {# PHP Extensions #}
+                        {% embed '_components/_card.html.twig' with { 'class': 'mb-3 border-' ~ (results.extensions.status == 'success' ? 'success' : 'danger') } %}
+                            {% block card_body %}
+                                <h3 class="h6 mb-2">
+                                    <i class="bi bi-{{ results.extensions.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
+                                    {{ 'setup.step1.extensions.title'|trans({}, 'setup') }}
+                                </h3>
+                                <p class="mb-2 text-muted">{{ results.extensions.message }}</p>
+                                {% if results.extensions.missing|length > 0 %}
+                                    <div class="alert alert-danger mb-0">
+                                        <strong>{{ 'setup.step1.extensions.missing'|trans({}, 'setup') }}</strong>
+                                        <ul class="mb-0 mt-2">
+                                            {% for ext in results.extensions.missing %}
+                                                <li><code>{{ ext }}</code></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% else %}
+                                    <div class="text-muted small">
+                                        {% for ext in results.extensions.loaded %}
+                                            {% include '_components/_badge.html.twig' with { variant: 'success', content: ext, class: 'me-1' } %}
                                         {% endfor %}
-                                    </ul>
-                                </div>
-                            {% else %}
-                                <div class="text-muted small">
-                                    {% for ext in results.extensions.loaded %}
-                                        {% include '_components/_badge.html.twig' with { variant: 'success', content: ext, class: 'me-1' } %}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
+                                    </div>
+                                {% endif %}
+                            {% endblock %}
+                        {% endembed %}
 
-                    {# Database #}
-                    <div class="card mb-3 border-{{ results.database.status == 'success' ? 'success' : (results.database.status == 'warning' ? 'warning' : 'danger') }}">
-                        <div class="card-body">
-                            <h3 class="h6 mb-1">
-                                <i class="bi bi-database me-2 text-{{ results.database.status == 'success' ? 'success' : (results.database.status == 'warning' ? 'warning' : 'danger') }}" aria-hidden="true"></i>
-                                {{ 'setup.step1.database.title'|trans({}, 'setup') }}
-                            </h3>
-                            <p class="mb-0 text-muted">{{ results.database.message }}</p>
-                        </div>
-                    </div>
+                        {# Database #}
+                        {% embed '_components/_card.html.twig' with { 'class': 'mb-3 border-' ~ (results.database.status == 'success' ? 'success' : (results.database.status == 'warning' ? 'warning' : 'danger')) } %}
+                            {% block card_body %}
+                                <h3 class="h6 mb-1">
+                                    <i class="bi bi-database me-2 text-{{ results.database.status == 'success' ? 'success' : (results.database.status == 'warning' ? 'warning' : 'danger') }}" aria-hidden="true"></i>
+                                    {{ 'setup.step1.database.title'|trans({}, 'setup') }}
+                                </h3>
+                                <p class="mb-0 text-muted">{{ results.database.message }}</p>
+                            {% endblock %}
+                        {% endembed %}
 
-                    {# Permissions #}
-                    <div class="card mb-3 border-{{ results.permissions.status == 'success' ? 'success' : 'danger' }}">
-                        <div class="card-body">
-                            <h3 class="h6 mb-2">
-                                <i class="bi bi-{{ results.permissions.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
-                                {{ 'setup.step1.permissions.title'|trans({}, 'setup') }}
-                            </h3>
-                            <p class="mb-2 text-muted">{{ results.permissions.message }}</p>
-                            {% if results.permissions.not_writable|length > 0 %}
-                                <div class="alert alert-danger mb-0">
-                                    <strong>{{ 'setup.step1.permissions.not_writable'|trans({}, 'setup') }}</strong>
-                                    <ul class="mb-0 mt-2">
-                                        {% for dir in results.permissions.not_writable %}
-                                            <li><code>{{ dir }}</code></li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
+                        {# Permissions #}
+                        {% embed '_components/_card.html.twig' with { 'class': 'mb-3 border-' ~ (results.permissions.status == 'success' ? 'success' : 'danger') } %}
+                            {% block card_body %}
+                                <h3 class="h6 mb-2">
+                                    <i class="bi bi-{{ results.permissions.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
+                                    {{ 'setup.step1.permissions.title'|trans({}, 'setup') }}
+                                </h3>
+                                <p class="mb-2 text-muted">{{ results.permissions.message }}</p>
+                                {% if results.permissions.not_writable|length > 0 %}
+                                    <div class="alert alert-danger mb-0">
+                                        <strong>{{ 'setup.step1.permissions.not_writable'|trans({}, 'setup') }}</strong>
+                                        <ul class="mb-0 mt-2">
+                                            {% for dir in results.permissions.not_writable %}
+                                                <li><code>{{ dir }}</code></li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                {% endif %}
+                            {% endblock %}
+                        {% endembed %}
 
-                    {# Memory & Execution Time #}
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="card mb-3 border-{{ results.memory.status == 'success' ? 'success' : 'warning' }}">
-                                <div class="card-body">
-                                    <h3 class="h6 mb-1">
-                                        <i class="bi bi-memory me-2 text-{{ results.memory.status == 'success' ? 'success' : 'warning' }}" aria-hidden="true"></i>
-                                        {{ 'setup.step1.memory.title'|trans({}, 'setup') }}
-                                    </h3>
-                                    <p class="mb-0 text-muted">{{ results.memory.current }}</p>
-                                    <small class="text-muted">{{ 'setup.step1.memory.recommended'|trans({'%value%': results.memory.required}, 'setup') }}</small>
-                                </div>
+                        {# Memory & Execution Time #}
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% embed '_components/_card.html.twig' with { 'class': 'mb-3 border-' ~ (results.memory.status == 'success' ? 'success' : 'warning') } %}
+                                    {% block card_body %}
+                                        <h3 class="h6 mb-1">
+                                            <i class="bi bi-memory me-2 text-{{ results.memory.status == 'success' ? 'success' : 'warning' }}" aria-hidden="true"></i>
+                                            {{ 'setup.step1.memory.title'|trans({}, 'setup') }}
+                                        </h3>
+                                        <p class="mb-0 text-muted">{{ results.memory.current }}</p>
+                                        <small class="text-muted">{{ 'setup.step1.memory.recommended'|trans({'%value%': results.memory.required}, 'setup') }}</small>
+                                    {% endblock %}
+                                {% endembed %}
+                            </div>
+                            <div class="col-md-6">
+                                {% embed '_components/_card.html.twig' with { 'class': 'mb-3 border-' ~ (results.execution_time.status == 'success' ? 'success' : 'warning') } %}
+                                    {% block card_body %}
+                                        <h3 class="h6 mb-1">
+                                            <i class="bi bi-clock me-2 text-{{ results.execution_time.status == 'success' ? 'success' : 'warning' }}" aria-hidden="true"></i>
+                                            {{ 'setup.step1.execution_time.title'|trans({}, 'setup') }}
+                                        </h3>
+                                        <p class="mb-0 text-muted">{{ results.execution_time.current }}s</p>
+                                        <small class="text-muted">{{ 'setup.step1.execution_time.recommended'|trans({'%value%': results.execution_time.required}, 'setup') }}</small>
+                                    {% endblock %}
+                                {% endembed %}
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="card mb-3 border-{{ results.execution_time.status == 'success' ? 'success' : 'warning' }}">
-                                <div class="card-body">
-                                    <h3 class="h6 mb-1">
-                                        <i class="bi bi-clock me-2 text-{{ results.execution_time.status == 'success' ? 'success' : 'warning' }}" aria-hidden="true"></i>
-                                        {{ 'setup.step1.execution_time.title'|trans({}, 'setup') }}
-                                    </h3>
-                                    <p class="mb-0 text-muted">{{ results.execution_time.current }}s</p>
-                                    <small class="text-muted">{{ 'setup.step1.execution_time.recommended'|trans({'%value%': results.execution_time.required}, 'setup') }}</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    {# Symfony Version #}
-                    <div class="card mb-3 border-{{ results.symfony.status == 'success' ? 'success' : 'danger' }}">
-                        <div class="card-body">
-                            <h3 class="h6 mb-1">
-                                <i class="bi bi-{{ results.symfony.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
-                                {{ 'setup.step1.symfony.title'|trans({}, 'setup') }}
-                            </h3>
-                            <p class="mb-0 text-muted">{{ results.symfony.message }}</p>
-                        </div>
-                    </div>
+                        {# Symfony Version #}
+                        {% embed '_components/_card.html.twig' with { 'class': 'mb-3 border-' ~ (results.symfony.status == 'success' ? 'success' : 'danger') } %}
+                            {% block card_body %}
+                                <h3 class="h6 mb-1">
+                                    <i class="bi bi-{{ results.symfony.status == 'success' ? 'check-circle text-success' : 'times-circle text-danger' }} me-2" aria-hidden="true"></i>
+                                    {{ 'setup.step1.symfony.title'|trans({}, 'setup') }}
+                                </h3>
+                                <p class="mb-0 text-muted">{{ results.symfony.message }}</p>
+                            {% endblock %}
+                        {% endembed %}
 
-                    {# Navigation #}
-                    <div class="d-flex justify-content-between mt-4">
-                        <a href="{{ path('setup_step0_welcome') }}" class="btn btn-outline-secondary">
-                            <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
-                            {{ 'setup.common.back'|trans({}, 'setup') }}
-                        </a>
-
-                        {% if can_proceed %}
-                            <a href="{{ path('setup_step2_database_config') }}" class="btn btn-primary">
-                                {{ 'setup.next_step'|trans({'%step%': 2, '%name%': 'setup.steps.database'|trans({}, 'setup')}, 'messages') }}
-                                <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+                        {# Navigation #}
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ path('setup_step0_welcome') }}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
+                                {{ 'setup.common.back'|trans({}, 'setup') }}
                             </a>
-                        {% else %}
-                            <button type="button" class="btn btn-secondary" disabled>
-                                {{ 'setup.fix_errors_first'|trans({}, 'setup') }}
-                            </button>
-                        {% endif %}
+
+                            {% if can_proceed %}
+                                <a href="{{ path('setup_step2_database_config') }}" class="btn btn-primary">
+                                    {{ 'setup.next_step'|trans({'%step%': 2, '%name%': 'setup.steps.database'|trans({}, 'setup')}, 'messages') }}
+                                    <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+                                </a>
+                            {% else %}
+                                <button type="button" class="btn btn-secondary" disabled>
+                                    {{ 'setup.fix_errors_first'|trans({}, 'setup') }}
+                                </button>
+                            {% endif %}
+                        </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

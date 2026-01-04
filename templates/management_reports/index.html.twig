@@ -27,8 +27,8 @@
     {# Quick Stats Row #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card bg-primary text-white h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'bg-primary text-white h-100' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h3 class="mb-0">{{ summary.summary.total_assets }}</h3>
@@ -36,12 +36,12 @@
                         </div>
                         <i class="bi bi-server fs-1 opacity-50" aria-hidden="true"></i>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card bg-danger text-white h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'bg-danger text-white h-100' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h3 class="mb-0">{{ summary.risk_distribution.critical + summary.risk_distribution.high }}</h3>
@@ -49,12 +49,12 @@
                         </div>
                         <i class="bi bi-exclamation-triangle fs-1 opacity-50" aria-hidden="true"></i>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card bg-success text-white h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'bg-success text-white h-100' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h3 class="mb-0">{{ summary.summary.compliance_percentage }}%</h3>
@@ -62,12 +62,12 @@
                         </div>
                         <i class="bi bi-shield-check fs-1 opacity-50" aria-hidden="true"></i>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card bg-warning text-dark h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'bg-warning text-dark h-100' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h3 class="mb-0">{{ summary.incident_summary.open }}</h3>
@@ -75,8 +75,8 @@
                         </div>
                         <i class="bi bi-bell fs-1 opacity-50" aria-hidden="true"></i>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
@@ -88,14 +88,16 @@
     <div class="row">
         {% for category in categories %}
         <div class="col-md-6 col-lg-4 mb-4">
-            <div class="card h-100 shadow-sm border-{{ category.color }}">
-                <div class="card-header bg-{{ category.color }} {% if category.color in ['warning', 'light'] %}text-dark{% else %}text-white{% endif %}">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-{{ category.icon }}" aria-hidden="true"></i>
-                        {{ ('management_reports.category.' ~ category.key ~ '.title')|trans({}, 'management_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm border-' ~ category.color } %}
+                {% block card_header %}
+                    <div class="card-header bg-{{ category.color }} {% if category.color in ['warning', 'light'] %}text-dark{% else %}text-white{% endif %}">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-{{ category.icon }}" aria-hidden="true"></i>
+                            {{ ('management_reports.category.' ~ category.key ~ '.title')|trans({}, 'management_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <p class="text-muted small mb-3">{{ ('management_reports.category.' ~ category.key ~ '.description')|trans({}, 'management_reports') }}</p>
                     <ul class="list-unstyled small mb-0">
                         {% for report in category.reports %}
@@ -105,14 +107,16 @@
                         </li>
                         {% endfor %}
                     </ul>
-                </div>
-                <div class="card-footer bg-light">
-                    {% set route_name = 'app_management_reports_' ~ category.key %}
-                    <a href="{{ path(route_name) }}" class="btn btn-sm btn-outline-{{ category.color }}">
-                        <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'management_reports.action.view_reports'|trans({}, 'management_reports') }}
-                    </a>
-                </div>
-            </div>
+                {% endblock %}
+                {% block card_footer %}
+                    <div class="card-footer bg-light">
+                        {% set route_name = 'app_management_reports_' ~ category.key %}
+                        <a href="{{ path(route_name) }}" class="btn btn-sm btn-outline-{{ category.color }}">
+                            <i class="bi bi-arrow-right" aria-hidden="true"></i> {{ 'management_reports.action.view_reports'|trans({}, 'management_reports') }}
+                        </a>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         {% endfor %}
     </div>
@@ -120,13 +124,15 @@
     {# Quick Access Section #}
     <div class="row mt-4">
         <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-light">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'management_reports.quick_access.title'|trans({}, 'management_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm' } %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-lightning" aria-hidden="true"></i> {{ 'management_reports.quick_access.title'|trans({}, 'management_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row">
                         <div class="col-md-6">
                             <h4 class="h6">{{ 'management_reports.quick_access.pdf_exports'|trans({}, 'management_reports') }}</h4>
@@ -157,8 +163,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

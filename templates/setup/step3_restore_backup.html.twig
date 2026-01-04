@@ -8,8 +8,8 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
             {# Progress Bar #}
-            <div class="card mb-4">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h4 class="mb-0">{{ 'setup.progress.title'|trans({}, 'setup') }}</h4>
                         <small class="text-muted">{{ 'setup.progress.step_of'|trans({'%current%': 3, '%total%': 11}, 'setup') }}</small>
@@ -17,272 +17,282 @@
                     <div class="progress" style="height: 10px;">
                         <div class="progress-bar" role="progressbar" style="width: 27%;" aria-valuenow="27" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
-            <div class="card shadow-lg">
-                <div class="card-header bg-info text-white">
-                    <h1 class="h3 mb-0">
-                        <i class="bi bi-cloud-upload-alt me-2" aria-hidden="true"></i>
-                        {{ 'setup.step3.header'|trans({}, 'setup') }}
-                    </h1>
-                </div>
-                <div class="card-body p-4">
-                    <p class="lead mb-4">
-                        {{ 'setup.step3.intro'|trans({}, 'setup') }}
-                    </p>
-
-                    <div class="alert alert-info" role="alert">
-                        <p class="h5 mb-2">
-                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                            {{ 'setup.step3.info.title'|trans({}, 'setup') }}
-                        </p>
-                        <ul class="mb-0">
-                            <li><strong>{{ 'setup.step3.info.restore'|trans({}, 'setup') }}</strong> {{ 'setup.step3.info.restore_desc'|trans({}, 'setup') }}</li>
-                            <li><strong>{{ 'setup.step3.info.new_install'|trans({}, 'setup') }}</strong> {{ 'setup.step3.info.new_install_desc'|trans({}, 'setup') }}</li>
-                        </ul>
+            {% embed '_components/_card.html.twig' with { 'class': 'shadow-lg' } %}
+                {% block card_header %}
+                    <div class="card-header bg-info text-white">
+                        <h1 class="h3 mb-0">
+                            <i class="bi bi-cloud-upload-alt me-2" aria-hidden="true"></i>
+                            {{ 'setup.step3.header'|trans({}, 'setup') }}
+                        </h1>
                     </div>
+                {% endblock %}
+                {% block card_body %}
+                    <div class="p-4">
+                        <p class="lead mb-4">
+                            {{ 'setup.step3.intro'|trans({}, 'setup') }}
+                        </p>
 
-                    {# Backup Restore Result #}
-                    {% if backup_restore_result is defined and backup_restore_result %}
-                        <div class="mt-3 mb-4">
-                            {% if backup_restore_result.success %}
-                                <div class="alert alert-success">
-                                    <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
-                                    <strong>{{ 'setup.step3.restore_result.success'|trans({}, 'setup') }}</strong>
-                                    <ul class="mb-0 mt-2">
-                                        {% for entity, stats in backup_restore_result.statistics %}
-                                            <li>
-                                                {{ entity }}:
-                                                {% if stats is iterable and stats.created is defined %}
-                                                    {{ stats.created }} {{ 'setup.step3.restore_result.created'|trans({}, 'setup') }}, {{ stats.updated }} {{ 'setup.step3.restore_result.updated'|trans({}, 'setup') }}
-                                                {% else %}
-                                                    {{ stats }} {{ 'setup.step3.restore_result.entries'|trans({}, 'setup') }}
-                                                {% endif %}
-                                            </li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
+                        <div class="alert alert-info" role="alert">
+                            <p class="h5 mb-2">
+                                <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                                {{ 'setup.step3.info.title'|trans({}, 'setup') }}
+                            </p>
+                            <ul class="mb-0">
+                                <li><strong>{{ 'setup.step3.info.restore'|trans({}, 'setup') }}</strong> {{ 'setup.step3.info.restore_desc'|trans({}, 'setup') }}</li>
+                                <li><strong>{{ 'setup.step3.info.new_install'|trans({}, 'setup') }}</strong> {{ 'setup.step3.info.new_install_desc'|trans({}, 'setup') }}</li>
+                            </ul>
+                        </div>
 
-                                {# Orphaned Entities Detection and Repair #}
-                                {% if backup_restore_result.orphaned_entities is defined and backup_restore_result.orphaned_entities.total > 0 %}
-                                    <div class="alert alert-warning mt-3">
-                                        <p class="h5 mb-2">
-                                            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
-                                            {{ 'setup.step3.orphaned.title'|trans({}, 'setup') }}
-                                        </p>
-                                        <p>
-                                            {{ 'setup.step3.orphaned.description'|trans({'%count%': backup_restore_result.orphaned_entities.total}, 'setup')|raw }}
-                                        </p>
-                                        <ul class="mb-3">
-                                            {% if backup_restore_result.orphaned_entities.assets > 0 %}
-                                                <li><strong>{{ backup_restore_result.orphaned_entities.assets }}</strong> {{ 'setup.step3.orphaned.assets'|trans({}, 'setup') }}</li>
-                                            {% endif %}
-                                            {% if backup_restore_result.orphaned_entities.risks > 0 %}
-                                                <li><strong>{{ backup_restore_result.orphaned_entities.risks }}</strong> {{ 'setup.step3.orphaned.risks'|trans({}, 'setup') }}</li>
-                                            {% endif %}
-                                            {% if backup_restore_result.orphaned_entities.incidents > 0 %}
-                                                <li><strong>{{ backup_restore_result.orphaned_entities.incidents }}</strong> {{ 'setup.step3.orphaned.incidents'|trans({}, 'setup') }}</li>
-                                            {% endif %}
+                        {# Backup Restore Result #}
+                        {% if backup_restore_result is defined and backup_restore_result %}
+                            <div class="mt-3 mb-4">
+                                {% if backup_restore_result.success %}
+                                    <div class="alert alert-success">
+                                        <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
+                                        <strong>{{ 'setup.step3.restore_result.success'|trans({}, 'setup') }}</strong>
+                                        <ul class="mb-0 mt-2">
+                                            {% for entity, stats in backup_restore_result.statistics %}
+                                                <li>
+                                                    {{ entity }}:
+                                                    {% if stats is iterable and stats.created is defined %}
+                                                        {{ stats.created }} {{ 'setup.step3.restore_result.created'|trans({}, 'setup') }}, {{ stats.updated }} {{ 'setup.step3.restore_result.updated'|trans({}, 'setup') }}
+                                                    {% else %}
+                                                        {{ stats }} {{ 'setup.step3.restore_result.entries'|trans({}, 'setup') }}
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
                                         </ul>
+                                    </div>
 
-                                        <div class="card border-warning">
-                                            <div class="card-body">
-                                                <p class="h5 mb-3">
-                                                    <i class="bi bi-tools me-2" aria-hidden="true"></i>
-                                                    {{ 'setup.step3.orphaned.repair.title'|trans({}, 'setup') }}
-                                                </p>
-                                                <p class="card-text text-muted">
-                                                    {{ 'setup.step3.orphaned.repair.description'|trans({}, 'setup') }}
-                                                </p>
-                                                <form method="post" action="{{ path('setup_step3_repair_orphans') }}">
-                                                    <input type="hidden" name="_token" value="{{ csrf_token('setup_repair_orphans') }}">
-                                                    <div class="row g-3 align-items-end">
-                                                        <div class="col-md-8">
-                                                            <label for="targetTenant" class="form-label">{{ 'setup.step3.orphaned.repair.target_tenant'|trans({}, 'setup') }}</label>
-                                                            <select class="form-select" id="targetTenant" name="target_tenant_id" required>
-                                                                <option value="">{{ 'setup.step3.orphaned.repair.select_tenant'|trans({}, 'setup') }}</option>
-                                                                {% if backup_restore_result.tenants is defined %}
-                                                                    {% for tenant in backup_restore_result.tenants %}
-                                                                        <option value="{{ tenant.id }}">
-                                                                            {{ tenant.name }}
-                                                                            {% if tenant.identifier is defined and tenant.identifier %}
-                                                                                ({{ tenant.identifier }})
-                                                                            {% endif %}
-                                                                        </option>
-                                                                    {% endfor %}
-                                                                {% endif %}
-                                                            </select>
+                                    {# Orphaned Entities Detection and Repair #}
+                                    {% if backup_restore_result.orphaned_entities is defined and backup_restore_result.orphaned_entities.total > 0 %}
+                                        <div class="alert alert-warning mt-3">
+                                            <p class="h5 mb-2">
+                                                <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+                                                {{ 'setup.step3.orphaned.title'|trans({}, 'setup') }}
+                                            </p>
+                                            <p>
+                                                {{ 'setup.step3.orphaned.description'|trans({'%count%': backup_restore_result.orphaned_entities.total}, 'setup')|raw }}
+                                            </p>
+                                            <ul class="mb-3">
+                                                {% if backup_restore_result.orphaned_entities.assets > 0 %}
+                                                    <li><strong>{{ backup_restore_result.orphaned_entities.assets }}</strong> {{ 'setup.step3.orphaned.assets'|trans({}, 'setup') }}</li>
+                                                {% endif %}
+                                                {% if backup_restore_result.orphaned_entities.risks > 0 %}
+                                                    <li><strong>{{ backup_restore_result.orphaned_entities.risks }}</strong> {{ 'setup.step3.orphaned.risks'|trans({}, 'setup') }}</li>
+                                                {% endif %}
+                                                {% if backup_restore_result.orphaned_entities.incidents > 0 %}
+                                                    <li><strong>{{ backup_restore_result.orphaned_entities.incidents }}</strong> {{ 'setup.step3.orphaned.incidents'|trans({}, 'setup') }}</li>
+                                                {% endif %}
+                                            </ul>
+
+                                            {% embed '_components/_card.html.twig' with { 'class': 'border-warning' } %}
+                                                {% block card_body %}
+                                                    <p class="h5 mb-3">
+                                                        <i class="bi bi-tools me-2" aria-hidden="true"></i>
+                                                        {{ 'setup.step3.orphaned.repair.title'|trans({}, 'setup') }}
+                                                    </p>
+                                                    <p class="card-text text-muted">
+                                                        {{ 'setup.step3.orphaned.repair.description'|trans({}, 'setup') }}
+                                                    </p>
+                                                    <form method="post" action="{{ path('setup_step3_repair_orphans') }}">
+                                                        <input type="hidden" name="_token" value="{{ csrf_token('setup_repair_orphans') }}">
+                                                        <div class="row g-3 align-items-end">
+                                                            <div class="col-md-8">
+                                                                <label for="targetTenant" class="form-label">{{ 'setup.step3.orphaned.repair.target_tenant'|trans({}, 'setup') }}</label>
+                                                                <select class="form-select" id="targetTenant" name="target_tenant_id" required>
+                                                                    <option value="">{{ 'setup.step3.orphaned.repair.select_tenant'|trans({}, 'setup') }}</option>
+                                                                    {% if backup_restore_result.tenants is defined %}
+                                                                        {% for tenant in backup_restore_result.tenants %}
+                                                                            <option value="{{ tenant.id }}">
+                                                                                {{ tenant.name }}
+                                                                                {% if tenant.identifier is defined and tenant.identifier %}
+                                                                                    ({{ tenant.identifier }})
+                                                                                {% endif %}
+                                                                            </option>
+                                                                        {% endfor %}
+                                                                    {% endif %}
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <button type="submit" class="btn btn-warning w-100">
+                                                                    <i class="bi bi-wrench me-2" aria-hidden="true"></i>
+                                                                    {{ 'setup.step3.orphaned.repair.submit'|trans({}, 'setup') }}
+                                                                </button>
+                                                            </div>
                                                         </div>
-                                                        <div class="col-md-4">
-                                                            <button type="submit" class="btn btn-warning w-100">
-                                                                <i class="bi bi-wrench me-2" aria-hidden="true"></i>
-                                                                {{ 'setup.step3.orphaned.repair.submit'|trans({}, 'setup') }}
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
+                                                    </form>
+                                                {% endblock %}
+                                            {% endembed %}
+                                        </div>
+                                    {% endif %}
+
+                                    {# Risk-Asset and Incident-Asset Repair #}
+                                    {% if backup_restore_result.risks_without_assets is defined and backup_restore_result.risks_without_assets > 0 %}
+                                        <div class="alert alert-info mt-3">
+                                            <p class="h5 mb-2">
+                                                <i class="bi bi-link me-2" aria-hidden="true"></i>
+                                                {{ 'setup.step3.asset_links.title'|trans({}, 'setup') }}
+                                            </p>
+                                            <p>
+                                                {{ 'setup.step3.asset_links.description'|trans({'%count%': backup_restore_result.risks_without_assets}, 'setup')|raw }}
+                                                <a href="{{ path('admin_data_repair_index') }}" class="alert-link">{{ 'setup.step3.asset_links.link_text'|trans({}, 'setup') }}</a>
+                                                {{ 'setup.step3.asset_links.suffix'|trans({}, 'setup') }}
+                                            </p>
+                                        </div>
+                                    {% endif %}
+
+                                    {# Continue to Completion Button #}
+                                    {% if backup_restore_result.orphaned_entities is not defined or backup_restore_result.orphaned_entities.total == 0 %}
+                                        <div class="mt-4">
+                                            <a href="{{ path('setup_step11_complete') }}" class="btn btn-success btn-lg">
+                                                <i class="bi bi-check me-2" aria-hidden="true"></i>
+                                                {{ 'setup.step3.complete_setup'|trans({}, 'setup') }}
+                                            </a>
+                                        </div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="alert alert-danger">
+                                        <i class="bi bi-exclamation-circle me-2" aria-hidden="true"></i>
+                                        <strong>{{ 'setup.step3.restore_result.error'|trans({}, 'setup') }}</strong>
+                                        <p class="mb-0 mt-2">{{ backup_restore_result.message }}</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        {# Phase 1: Create Database Schema #}
+                        {% if not schema_created %}
+                        {% embed '_components/_card.html.twig' with { 'class': 'border-warning mb-4' } %}
+                            {% block card_header %}
+                                <div class="card-header bg-warning text-dark">
+                                    <h2 class="h5 mb-0">
+                                        <i class="bi bi-database me-2" aria-hidden="true"></i>
+                                        {{ 'setup.step3.schema.title'|trans({}, 'setup') }}
+                                    </h2>
+                                </div>
+                            {% endblock %}
+                            {% block card_body %}
+                                <p class="text-muted mb-3">
+                                    {{ 'setup.step3.schema.description'|trans({}, 'setup') }}
+                                </p>
+                                <div class="alert alert-info" role="alert">
+                                    <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                                    <strong>{{ 'setup.common.note'|trans({}, 'setup') }}:</strong> {{ 'setup.step3.schema.hint'|trans({}, 'setup') }}
+                                </div>
+                                <form method="post" action="{{ path('setup_step3_create_schema') }}" class="setup-form-loading" data-turbo="false">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('setup_create_schema') }}">
+                                    <button type="submit" class="btn btn-warning btn-lg">
+                                        <span class="btn-text">
+                                            <i class="bi bi-gears me-2" aria-hidden="true"></i>
+                                            {{ 'setup.step3.schema.submit'|trans({}, 'setup') }}
+                                        </span>
+                                        <span class="btn-loading d-none">
+                                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            {{ 'setup.step3.loading.creating_schema'|trans({}, 'setup') }}
+                                        </span>
+                                    </button>
+                                </form>
+                            {% endblock %}
+                        {% endembed %}
+                        {% endif %}
+
+                        {# Phase 2: Backup Restore Form (only shown after schema is created) #}
+                        {% if schema_created %}
+                        {% embed '_components/_card.html.twig' with { 'class': 'border-info mb-4' } %}
+                            {% block card_header %}
+                                <div class="card-header bg-info text-white">
+                                    <h2 class="h5 mb-0">
+                                        <i class="bi bi-cloud-upload-alt me-2" aria-hidden="true"></i>
+                                        {{ 'setup.step3.restore.title'|trans({}, 'setup') }}
+                                    </h2>
+                                </div>
+                            {% endblock %}
+                            {% block card_body %}
+                                <div class="alert alert-success mb-3" role="alert">
+                                    <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
+                                    <strong>{{ 'setup.step3.restore.schema_success'|trans({}, 'setup') }}</strong> {{ 'setup.step3.restore.schema_success_msg'|trans({}, 'setup') }}
+                                </div>
+                                <p class="text-muted">
+                                    {{ 'setup.step3.restore.description'|trans({}, 'setup') }}
+                                </p>
+                                <form method="post" action="{{ path('setup_step3_restore_backup_upload') }}" enctype="multipart/form-data" class="setup-form-loading" data-turbo="false">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('setup_restore_backup') }}">
+
+                                    <div class="mb-3">
+                                        <label for="backupFile" class="form-label">{{ 'setup.step3.restore.file_label'|trans({}, 'setup') }}</label>
+                                        <input type="file" class="form-control" id="backupFile" name="backup_file" accept=".json,.gz" required>
+                                        <div class="form-text">{{ 'setup.step3.restore.file_formats'|trans({}, 'setup') }}</div>
+                                    </div>
+
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" id="clearBeforeRestore" name="clear_before_restore" checked>
+                                        <label class="form-check-label" for="clearBeforeRestore">
+                                            {{ 'setup.step3.restore.clear_before'|trans({}, 'setup') }}
+                                        </label>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="adminPassword" class="form-label">
+                                            <strong>{{ 'setup.restore.set_admin_password'|trans({}, 'setup') }}</strong>
+                                        </label>
+                                        <input type="password" class="form-control" id="adminPassword" name="admin_password" placeholder="{{ 'setup.restore.password_placeholder'|trans({}, 'setup') }}" required>
+                                        <div class="form-text">
+                                            <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
+                                            {{ 'setup.restore.password_hint'|trans({}, 'setup') }}
                                         </div>
                                     </div>
-                                {% endif %}
 
-                                {# Risk-Asset and Incident-Asset Repair #}
-                                {% if backup_restore_result.risks_without_assets is defined and backup_restore_result.risks_without_assets > 0 %}
-                                    <div class="alert alert-info mt-3">
-                                        <p class="h5 mb-2">
-                                            <i class="bi bi-link me-2" aria-hidden="true"></i>
-                                            {{ 'setup.step3.asset_links.title'|trans({}, 'setup') }}
-                                        </p>
-                                        <p>
-                                            {{ 'setup.step3.asset_links.description'|trans({'%count%': backup_restore_result.risks_without_assets}, 'setup')|raw }}
-                                            <a href="{{ path('admin_data_repair_index') }}" class="alert-link">{{ 'setup.step3.asset_links.link_text'|trans({}, 'setup') }}</a>
-                                            {{ 'setup.step3.asset_links.suffix'|trans({}, 'setup') }}
-                                        </p>
-                                    </div>
-                                {% endif %}
+                                    <button type="submit" class="btn btn-info btn-lg">
+                                        <span class="btn-text">
+                                            <i class="bi bi-upload me-2" aria-hidden="true"></i>
+                                            {{ 'setup.restore.upload_and_restore'|trans({}, 'setup') }}
+                                        </span>
+                                        <span class="btn-loading d-none">
+                                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            {{ 'setup.step3.loading.restoring_backup'|trans({}, 'setup') }}
+                                        </span>
+                                    </button>
+                                </form>
+                            {% endblock %}
+                        {% endembed %}
+                        {% endif %}
 
-                                {# Continue to Completion Button #}
-                                {% if backup_restore_result.orphaned_entities is not defined or backup_restore_result.orphaned_entities.total == 0 %}
-                                    <div class="mt-4">
-                                        <a href="{{ path('setup_step11_complete') }}" class="btn btn-success btn-lg">
-                                            <i class="bi bi-check me-2" aria-hidden="true"></i>
-                                            {{ 'setup.step3.complete_setup'|trans({}, 'setup') }}
-                                        </a>
-                                    </div>
-                                {% endif %}
-                            {% else %}
-                                <div class="alert alert-danger">
-                                    <i class="bi bi-exclamation-circle me-2" aria-hidden="true"></i>
-                                    <strong>{{ 'setup.step3.restore_result.error'|trans({}, 'setup') }}</strong>
-                                    <p class="mb-0 mt-2">{{ backup_restore_result.message }}</p>
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-
-                    {# Phase 1: Create Database Schema #}
-                    {% if not schema_created %}
-                    <div class="card border-warning mb-4">
-                        <div class="card-header bg-warning text-dark">
-                            <h2 class="h5 mb-0">
-                                <i class="bi bi-database me-2" aria-hidden="true"></i>
-                                {{ 'setup.step3.schema.title'|trans({}, 'setup') }}
-                            </h2>
-                        </div>
-                        <div class="card-body">
-                            <p class="text-muted mb-3">
-                                {{ 'setup.step3.schema.description'|trans({}, 'setup') }}
-                            </p>
-                            <div class="alert alert-info" role="alert">
-                                <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                                <strong>{{ 'setup.common.note'|trans({}, 'setup') }}:</strong> {{ 'setup.step3.schema.hint'|trans({}, 'setup') }}
-                            </div>
-                            <form method="post" action="{{ path('setup_step3_create_schema') }}" class="setup-form-loading" data-turbo="false">
-                                <input type="hidden" name="_token" value="{{ csrf_token('setup_create_schema') }}">
-                                <button type="submit" class="btn btn-warning btn-lg">
-                                    <span class="btn-text">
-                                        <i class="bi bi-gears me-2" aria-hidden="true"></i>
-                                        {{ 'setup.step3.schema.submit'|trans({}, 'setup') }}
-                                    </span>
-                                    <span class="btn-loading d-none">
-                                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                        {{ 'setup.step3.loading.creating_schema'|trans({}, 'setup') }}
-                                    </span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    {# Phase 2: Backup Restore Form (only shown after schema is created) #}
-                    {% if schema_created %}
-                    <div class="card border-info mb-4">
-                        <div class="card-header bg-info text-white">
-                            <h2 class="h5 mb-0">
-                                <i class="bi bi-cloud-upload-alt me-2" aria-hidden="true"></i>
-                                {{ 'setup.step3.restore.title'|trans({}, 'setup') }}
-                            </h2>
-                        </div>
-                        <div class="card-body">
-                            <div class="alert alert-success mb-3" role="alert">
-                                <i class="bi bi-check-circle me-2" aria-hidden="true"></i>
-                                <strong>{{ 'setup.step3.restore.schema_success'|trans({}, 'setup') }}</strong> {{ 'setup.step3.restore.schema_success_msg'|trans({}, 'setup') }}
-                            </div>
-                            <p class="text-muted">
-                                {{ 'setup.step3.restore.description'|trans({}, 'setup') }}
-                            </p>
-                            <form method="post" action="{{ path('setup_step3_restore_backup_upload') }}" enctype="multipart/form-data" class="setup-form-loading" data-turbo="false">
-                                <input type="hidden" name="_token" value="{{ csrf_token('setup_restore_backup') }}">
-
-                                <div class="mb-3">
-                                    <label for="backupFile" class="form-label">{{ 'setup.step3.restore.file_label'|trans({}, 'setup') }}</label>
-                                    <input type="file" class="form-control" id="backupFile" name="backup_file" accept=".json,.gz" required>
-                                    <div class="form-text">{{ 'setup.step3.restore.file_formats'|trans({}, 'setup') }}</div>
-                                </div>
-
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" id="clearBeforeRestore" name="clear_before_restore" checked>
-                                    <label class="form-check-label" for="clearBeforeRestore">
-                                        {{ 'setup.step3.restore.clear_before'|trans({}, 'setup') }}
-                                    </label>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="adminPassword" class="form-label">
-                                        <strong>{{ 'setup.restore.set_admin_password'|trans({}, 'setup') }}</strong>
-                                    </label>
-                                    <input type="password" class="form-control" id="adminPassword" name="admin_password" placeholder="{{ 'setup.restore.password_placeholder'|trans({}, 'setup') }}" required>
-                                    <div class="form-text">
-                                        <i class="bi bi-info-circle me-1" aria-hidden="true"></i>
-                                        {{ 'setup.restore.password_hint'|trans({}, 'setup') }}
-                                    </div>
-                                </div>
-
-                                <button type="submit" class="btn btn-info btn-lg">
-                                    <span class="btn-text">
-                                        <i class="bi bi-upload me-2" aria-hidden="true"></i>
-                                        {{ 'setup.restore.upload_and_restore'|trans({}, 'setup') }}
-                                    </span>
-                                    <span class="btn-loading d-none">
-                                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                        {{ 'setup.step3.loading.restoring_backup'|trans({}, 'setup') }}
-                                    </span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    {# Skip Option #}
-                    <div class="card border-secondary">
-                        <div class="card-header bg-secondary text-white">
-                            <h2 class="h5 mb-0">
-                                <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
-                                {{ 'setup.restore.option_new_install'|trans({}, 'setup') }}
-                            </h2>
-                        </div>
-                        <div class="card-body">
-                            <p class="text-muted">
-                                {{ 'setup.restore.new_install_description'|trans({}, 'setup') }}
-                            </p>
-                            <form method="post" action="{{ path('setup_step3_restore_backup_skip') }}" class="setup-form-loading" data-turbo="false">
-                                <input type="hidden" name="_token" value="{{ csrf_token('setup_skip_restore') }}">
-                                <button type="submit" class="btn btn-secondary btn-lg">
-                                    <span class="btn-text">
+                        {# Skip Option #}
+                        {% embed '_components/_card.html.twig' with { 'class': 'border-secondary' } %}
+                            {% block card_header %}
+                                <div class="card-header bg-secondary text-white">
+                                    <h2 class="h5 mb-0">
                                         <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
-                                        {{ 'setup.restore.skip_new_install'|trans({}, 'setup') }}
-                                    </span>
-                                    <span class="btn-loading d-none">
-                                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                        {{ 'setup.step3.loading.skipping'|trans({}, 'setup') }}
-                                    </span>
-                                </button>
-                            </form>
-                        </div>
+                                        {{ 'setup.restore.option_new_install'|trans({}, 'setup') }}
+                                    </h2>
+                                </div>
+                            {% endblock %}
+                            {% block card_body %}
+                                <p class="text-muted">
+                                    {{ 'setup.restore.new_install_description'|trans({}, 'setup') }}
+                                </p>
+                                <form method="post" action="{{ path('setup_step3_restore_backup_skip') }}" class="setup-form-loading" data-turbo="false">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('setup_skip_restore') }}">
+                                    <button type="submit" class="btn btn-secondary btn-lg">
+                                        <span class="btn-text">
+                                            <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
+                                            {{ 'setup.restore.skip_new_install'|trans({}, 'setup') }}
+                                        </span>
+                                        <span class="btn-loading d-none">
+                                            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            {{ 'setup.step3.loading.skipping'|trans({}, 'setup') }}
+                                        </span>
+                                    </button>
+                                </form>
+                            {% endblock %}
+                        {% endembed %}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

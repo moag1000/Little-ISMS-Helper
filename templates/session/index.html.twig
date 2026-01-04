@@ -13,46 +13,54 @@
     {# Statistics Cards #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card border-primary">
-                <div class="card-body text-center">
-                    <div class="card-title text-muted fw-semibold">{{ 'session.statistics.total'|trans({}, 'session') }}</div>
-                    <p class="display-6 text-primary">{{ statistics.total_active }}</p>
-                    <small>{{ 'session.statistics.active_sessions'|trans({}, 'session') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'primary' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="card-title text-muted fw-semibold">{{ 'session.statistics.total'|trans({}, 'session') }}</div>
+                        <p class="display-6 text-primary">{{ statistics.total_active }}</p>
+                        <small>{{ 'session.statistics.active_sessions'|trans({}, 'session') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-success">
-                <div class="card-body text-center">
-                    <div class="card-title text-muted fw-semibold">{{ 'session.statistics.today'|trans({}, 'session') }}</div>
-                    <p class="display-6 text-success">{{ statistics.total_last_24h }}</p>
-                    <small>{{ 'session.statistics.last_24h'|trans({}, 'session') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'success' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="card-title text-muted fw-semibold">{{ 'session.statistics.today'|trans({}, 'session') }}</div>
+                        <p class="display-6 text-success">{{ statistics.total_last_24h }}</p>
+                        <small>{{ 'session.statistics.last_24h'|trans({}, 'session') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-info">
-                <div class="card-body text-center">
-                    <div class="card-title text-muted fw-semibold">{{ 'session.statistics.unique_users'|trans({}, 'session') }}</div>
-                    <p class="display-6 text-info">{{ statistics.unique_users }}</p>
-                    <small>{{ 'session.statistics.active_users'|trans({}, 'session') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="card-title text-muted fw-semibold">{{ 'session.statistics.unique_users'|trans({}, 'session') }}</div>
+                        <p class="display-6 text-info">{{ statistics.unique_users }}</p>
+                        <small>{{ 'session.statistics.active_users'|trans({}, 'session') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-warning">
-                <div class="card-body text-center">
-                    <div class="card-title text-muted fw-semibold">{{ 'session.statistics.limit_per_user'|trans({}, 'session') }}</div>
-                    <p class="display-6 text-warning">{{ statistics.max_concurrent }}</p>
-                    <small>{{ 'session.statistics.max_concurrent'|trans({}, 'session') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'warning' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="card-title text-muted fw-semibold">{{ 'session.statistics.limit_per_user'|trans({}, 'session') }}</div>
+                        <p class="display-6 text-warning">{{ statistics.max_concurrent }}</p>
+                        <small>{{ 'session.statistics.max_concurrent'|trans({}, 'session') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# User Filter #}
-    <div class="card mb-4">
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_body %}
             <form method="get" class="row g-3">
                 <div class="col-auto">
                     <label for="email" class="col-form-label">{{ 'session.filter.by_user'|trans({}, 'session') }}</label>
@@ -76,17 +84,19 @@
                     {% endif %}
                 </div>
             </form>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Active Sessions Table #}
-    <div class="card">
-        <div class="card-header bg-primary text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'session.active_sessions'|trans({}, 'session') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'session.active_sessions'|trans({}, 'session') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if sessions|length > 0 %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover',
@@ -187,8 +197,8 @@
                     {{ 'session.no_sessions_found'|trans({}, 'session') }}
                 </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Info Box #}
     <div class="alert alert-success mt-4">

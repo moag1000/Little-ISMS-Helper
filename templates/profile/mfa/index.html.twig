@@ -49,24 +49,28 @@
     {# MFA Statistics #}
     <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card border-primary">
-                <div class="card-body text-center">
-                    <p class="card-title text-muted fw-semibold">{{ 'mfa.statistics.active_tokens'|trans({}, 'mfa') }}</p>
-                    <p class="display-6 text-primary">{{ active_tokens_count }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'primary' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <p class="card-title text-muted fw-semibold">{{ 'mfa.statistics.active_tokens'|trans({}, 'mfa') }}</p>
+                        <p class="display-6 text-primary">{{ active_tokens_count }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4">
-            <div class="card border-info">
-                <div class="card-body text-center">
-                    <p class="card-title text-muted fw-semibold">{{ 'mfa.statistics.total_tokens'|trans({}, 'mfa') }}</p>
-                    <p class="display-6 text-info">{{ mfa_tokens|length }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <p class="card-title text-muted fw-semibold">{{ 'mfa.statistics.total_tokens'|trans({}, 'mfa') }}</p>
+                        <p class="display-6 text-info">{{ mfa_tokens|length }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4">
-            <div class="card border-success">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'success' } %}
+                {% block card_body %}
                     <p class="card-title text-muted fw-semibold">{{ 'mfa.statistics.by_type'|trans({}, 'mfa') }}</p>
                     {% if tokens_by_type|length > 0 %}
                         {% for type, count in tokens_by_type %}
@@ -78,26 +82,28 @@
                     {% else %}
                         <p class="text-muted mb-0">{{ 'mfa.no_tokens'|trans({}, 'mfa') }}</p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# MFA Tokens List #}
-    <div class="card">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <h2 class="mb-0">
-                <i class="bi bi-key" aria-hidden="true"></i>
-                {{ 'mfa.my_tokens'|trans({}, 'mfa') }}
-            </h2>
-            {% if mfa_enabled %}
-                <a href="{{ path('app_profile_mfa_setup_totp') }}" class="btn btn-light btn-sm">
-                    <i class="bi bi-plus-circle" aria-hidden="true"></i>
-                    {{ 'mfa.action.add_token'|trans({}, 'mfa') }}
-                </a>
-            {% endif %}
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">
+                    <i class="bi bi-key" aria-hidden="true"></i>
+                    {{ 'mfa.my_tokens'|trans({}, 'mfa') }}
+                </h2>
+                {% if mfa_enabled %}
+                    <a href="{{ path('app_profile_mfa_setup_totp') }}" class="btn btn-light btn-sm">
+                        <i class="bi bi-plus-circle" aria-hidden="true"></i>
+                        {{ 'mfa.action.add_token'|trans({}, 'mfa') }}
+                    </a>
+                {% endif %}
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if mfa_tokens|length > 0 %}
                 {% embed '_components/_table.html.twig' with {
                     'class': 'table-hover',
@@ -213,8 +219,8 @@
                     </a>
                 </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Security Recommendations #}
     <div class="alert alert-info mt-4">

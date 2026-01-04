@@ -58,11 +58,13 @@
 </div>
 
 {# Status Overview #}
-<div class="card mb-4">
-    <div class="card-header">
-        <h2 class="mb-0"><i class="bi bi-kanban" aria-hidden="true"></i> {{ 'consent.status.overview'|trans({}, 'consent') }}</h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2 class="mb-0"><i class="bi bi-kanban" aria-hidden="true"></i> {{ 'consent.status.overview'|trans({}, 'consent') }}</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         <div class="row">
             {% set statuses = {
                 'pending_verification': { label: 'consent.status.pending_verification'|trans({}, 'consent'), icon: 'bi-hourglass', color: 'warning' },
@@ -90,8 +92,8 @@
                 </div>
             {% endfor %}
         </div>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Consents Table or Empty State #}
 {% if consents|length == 0 %}
@@ -102,28 +104,32 @@
         action: { label: 'consent.header.action.new'|trans({}, 'consent'), url: path('app_consent_new'), icon: 'bi-plus-circle' }
     } %}
 {% else %}
-<div class="card" data-controller="bulk-actions" data-bulk-actions-endpoint-value="/consent">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h2 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'consent.list.all_consents'|trans({'%count%': consents|length}, 'consent') }}</h2>
-        <div class="d-flex gap-2">
-            <select class="form-select form-select-sm w-150px" id="consent-status-filter">
-                <option value="">{{ 'consent.filter.all_status'|trans({}, 'consent') }}</option>
-                <option value="pending_verification">{{ 'consent.status.pending_verification'|trans({}, 'consent') }}</option>
-                <option value="active">{{ 'consent.status.active'|trans({}, 'consent') }}</option>
-                <option value="revoked">{{ 'consent.status.revoked'|trans({}, 'consent') }}</option>
-            </select>
-            <select class="form-select form-select-sm w-150px" id="consent-verified-filter">
-                <option value="">{{ 'consent.filter.all_verified'|trans({}, 'consent') }}</option>
-                <option value="verified">{{ 'consent.filter.verified'|trans({}, 'consent') }}</option>
-                <option value="unverified">{{ 'consent.filter.unverified'|trans({}, 'consent') }}</option>
-            </select>
-            <label for="consent-search" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
-            <input type="search"
-                   class="form-control form-control-sm w-200px"
-                   id="consent-search"
-                   placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
+{% embed '_components/_card.html.twig' %}
+    {% block card_attrs %}data-controller="bulk-actions" data-bulk-actions-endpoint-value="/consent"{% endblock %}
+    {% block card_header %}
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h2 class="mb-0"><i class="bi bi-list" aria-hidden="true"></i> {{ 'consent.list.all_consents'|trans({'%count%': consents|length}, 'consent') }}</h2>
+            <div class="d-flex gap-2">
+                <select class="form-select form-select-sm w-150px" id="consent-status-filter">
+                    <option value="">{{ 'consent.filter.all_status'|trans({}, 'consent') }}</option>
+                    <option value="pending_verification">{{ 'consent.status.pending_verification'|trans({}, 'consent') }}</option>
+                    <option value="active">{{ 'consent.status.active'|trans({}, 'consent') }}</option>
+                    <option value="revoked">{{ 'consent.status.revoked'|trans({}, 'consent') }}</option>
+                </select>
+                <select class="form-select form-select-sm w-150px" id="consent-verified-filter">
+                    <option value="">{{ 'consent.filter.all_verified'|trans({}, 'consent') }}</option>
+                    <option value="verified">{{ 'consent.filter.verified'|trans({}, 'consent') }}</option>
+                    <option value="unverified">{{ 'consent.filter.unverified'|trans({}, 'consent') }}</option>
+                </select>
+                <label for="consent-search" class="visually-hidden">{{ 'common.search'|trans({}, 'messages') }}</label>
+                <input type="search"
+                       class="form-control form-control-sm w-200px"
+                       id="consent-search"
+                       placeholder="{{ 'common.search'|trans({}, 'messages') }}...">
+            </div>
         </div>
-    </div>
+    {% endblock %}
+    {% block card_body %}
     {% embed '_components/_table.html.twig' with {
         'class': 'table-hover mb-0',
         'noMargin': true,
@@ -239,7 +245,8 @@
     {% include '_components/_bulk_action_bar.html.twig' with {
         actions: ['export', 'delete']
     } %}
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 <style>

@@ -75,46 +75,48 @@
             <i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'patch.empty'|trans({}, 'patches') }}
         </div>
     {% else %}
-        <div class="card">
-            {% embed '_components/_table.html.twig' with {
-                'noMargin': true
-            } %}
-                {% import '_macros/inheritance_badge.html.twig' as inheritance %}
-                {% block table_head %}
-                    <tr>
-                        <th scope="col">{{ 'patch.field.patch_id'|trans({}, 'patches') }}</th>
-                        <th scope="col">{{ 'patch.field.title'|trans({}, 'patches') }}</th>
-                        <th scope="col">{{ 'patch.field.patch_type'|trans({}, 'patches') }}</th>
-                        <th scope="col">{{ 'patch.field.status'|trans({}, 'patches') }}</th>
-                        <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
-                    </tr>
-                {% endblock %}
-                {% block table_body %}
+        {% embed '_components/_card.html.twig' %}
+            {% block card_body %}
+                {% embed '_components/_table.html.twig' with {
+                    'noMargin': true
+                } %}
                     {% import '_macros/inheritance_badge.html.twig' as inheritance %}
-                    {% for patch in patches %}
+                    {% block table_head %}
                         <tr>
-                            <td><code>{{ patch.patchId }}</code></td>
-                            <td>
-                                <strong>{{ patch.title }}</strong>
-                                {{ inheritance.small_badge(patch, currentTenant) }}
-                            </td>
-                            <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('patch.type.' ~ patch.patchType)|trans({}, 'patches') } %}</td>
-                            <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: ('patch.status.' ~ patch.status)|trans({}, 'patches') } %}</td>
-                            <td>
-                                <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
-                                    <a href="{{ path('app_patch_show', {id: patch.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
-                                        <i class="bi bi-eye" aria-hidden="true"></i>
-                                    </a>
-                                    <a href="{{ path('app_patch_edit', {id: patch.id}) }}" class="btn btn-outline-secondary" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
-                                        <i class="bi bi-pencil" aria-hidden="true"></i>
-                                    </a>
-                                </div>
-                            </td>
+                            <th scope="col">{{ 'patch.field.patch_id'|trans({}, 'patches') }}</th>
+                            <th scope="col">{{ 'patch.field.title'|trans({}, 'patches') }}</th>
+                            <th scope="col">{{ 'patch.field.patch_type'|trans({}, 'patches') }}</th>
+                            <th scope="col">{{ 'patch.field.status'|trans({}, 'patches') }}</th>
+                            <th scope="col">{{ 'common.actions'|trans({}, 'messages') }}</th>
                         </tr>
-                    {% endfor %}
-                {% endblock %}
-            {% endembed %}
-        </div>
+                    {% endblock %}
+                    {% block table_body %}
+                        {% import '_macros/inheritance_badge.html.twig' as inheritance %}
+                        {% for patch in patches %}
+                            <tr>
+                                <td><code>{{ patch.patchId }}</code></td>
+                                <td>
+                                    <strong>{{ patch.title }}</strong>
+                                    {{ inheritance.small_badge(patch, currentTenant) }}
+                                </td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('patch.type.' ~ patch.patchType)|trans({}, 'patches') } %}</td>
+                                <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: ('patch.status.' ~ patch.status)|trans({}, 'patches') } %}</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
+                                        <a href="{{ path('app_patch_show', {id: patch.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }}">
+                                            <i class="bi bi-eye" aria-hidden="true"></i>
+                                        </a>
+                                        <a href="{{ path('app_patch_edit', {id: patch.id}) }}" class="btn btn-outline-secondary" aria-label="{{ 'common.edit'|trans({}, 'messages') }}">
+                                            <i class="bi bi-pencil" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endblock %}
+                {% endembed %}
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 </div>
 {% endblock %}

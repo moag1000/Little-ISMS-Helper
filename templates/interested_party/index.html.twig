@@ -48,12 +48,14 @@
     </div>
     {% endif %}
 
-    <div class="card">
-        <div class="card-header">
-            {%- set partyCount = interested_parties|length -%}
-            <h2>{{ 'interested_party.list.title'|trans({'count': partyCount}, 'interested_parties') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header">
+                {%- set partyCount = interested_parties|length -%}
+                <h2>{{ 'interested_party.list.title'|trans({'count': partyCount}, 'interested_parties') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if interested_parties|length > 0 %}
             {% embed '_components/_table.html.twig' with {
                 'wrapperClass': 'card-body',
@@ -88,7 +90,7 @@
             {% else %}
             <p>{{ 'interested_party.empty.message'|trans({}, 'interested_parties') }} <a href="{{ path('app_interested_party_new') }}">{{ 'interested_party.empty.add_first'|trans({}, 'interested_parties') }}</a>.</p>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

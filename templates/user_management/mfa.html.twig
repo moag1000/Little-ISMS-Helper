@@ -40,24 +40,28 @@
     {# MFA Statistics #}
     <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card border-primary">
-                <div class="card-body text-center">
-                    <h2 class="card-title text-muted">{{ 'mfa.statistics.active_tokens'|trans({}, 'mfa') }}</h2>
-                    <p class="display-6 text-primary">{{ active_tokens_count }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'primary' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="card-title text-muted">{{ 'mfa.statistics.active_tokens'|trans({}, 'mfa') }}</h2>
+                        <p class="display-6 text-primary">{{ active_tokens_count }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4">
-            <div class="card border-info">
-                <div class="card-body text-center">
-                    <h2 class="card-title text-muted">{{ 'mfa.statistics.total_tokens'|trans({}, 'mfa') }}</h2>
-                    <p class="display-6 text-info">{{ mfa_tokens|length }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="card-title text-muted">{{ 'mfa.statistics.total_tokens'|trans({}, 'mfa') }}</h2>
+                        <p class="display-6 text-info">{{ mfa_tokens|length }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4">
-            <div class="card border-success">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'success' } %}
+                {% block card_body %}
                     <h2 class="card-title text-muted">{{ 'mfa.statistics.by_type'|trans({}, 'mfa') }}</h2>
                     {% for type, count in tokens_by_type %}
                         <div class="d-flex justify-content-between">
@@ -65,19 +69,21 @@
                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: count } %}
                         </div>
                     {% endfor %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# MFA Tokens List #}
-    <div class="card">
-        <div class="card-header bg-primary text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-key" aria-hidden="true"></i> {{ 'mfa.tokens'|trans({}, 'mfa') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-key" aria-hidden="true"></i> {{ 'mfa.tokens'|trans({}, 'mfa') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if mfa_tokens|length > 0 %}
                 {% embed '_components/_table.html.twig' with {
                     'class': 'table-hover',
@@ -169,8 +175,8 @@
                     {{ 'mfa.no_tokens_registered'|trans({}, 'mfa') }}
                 </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Info Box for Super Admins #}
     {% if is_granted('ROLE_SUPER_ADMIN') %}

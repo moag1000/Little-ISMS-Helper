@@ -6,14 +6,16 @@
 <div class="container py-4">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h1 class="h5 mb-0">
-                        <i class="bi bi-share me-2" aria-hidden="true"></i>
-                        {{ 'share.title'|trans({}, 'messages') }}
-                    </h1>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="h5 mb-0">
+                            <i class="bi bi-share me-2" aria-hidden="true"></i>
+                            {{ 'share.title'|trans({}, 'messages') }}
+                        </h1>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {# Shared Content Preview #}
                     <div class="mb-4">
                         <h2 class="h6 text-muted mb-3">{{ 'share.content_preview'|trans({}, 'messages') }}</h2>
@@ -101,14 +103,16 @@
                             {% endfor %}
                         </div>
                     </form>
-                </div>
-                <div class="card-footer">
-                    <a href="{{ path('app_dashboard', {'_locale': app.request.locale}) }}" class="btn btn-outline-secondary">
-                        <i class="bi bi-x-circle me-1" aria-hidden="true"></i>
-                        {{ 'common.cancel'|trans({}, 'messages') }}
-                    </a>
-                </div>
-            </div>
+                {% endblock %}
+                {% block card_footer %}
+                    <div class="card-footer">
+                        <a href="{{ path('app_dashboard', {'_locale': app.request.locale}) }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1" aria-hidden="true"></i>
+                            {{ 'common.cancel'|trans({}, 'messages') }}
+                        </a>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

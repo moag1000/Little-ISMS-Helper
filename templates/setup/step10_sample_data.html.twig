@@ -7,8 +7,8 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
             {# Progress Bar #}
-            <div class="card mb-4">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h4 class="mb-0">{{ 'setup.progress.title'|trans({}, 'setup') }}</h4>
                         <small class="text-muted">{{ 'setup.progress.step_of'|trans({'%current%': 10, '%total%': 11}, 'setup') }}</small>
@@ -16,129 +16,133 @@
                     <div class="progress" style="height: 10px;">
                         <div class="progress-bar" role="progressbar" style="width: 91%;" aria-valuenow="91" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
-            <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white">
-                    <h1 class="h3 mb-0">
-                        <i class="bi bi-file-earmark-code me-2" aria-hidden="true"></i>
-                        {{ 'setup.step10.header'|trans({}, 'setup') }}
-                    </h1>
-                </div>
-                <div class="card-body p-4">
-                    <p class="lead mb-4">
-                        {{ 'setup.step10.description'|trans({}, 'setup') }}
-                    </p>
-
-                    <div class="alert alert-warning" role="alert">
-                        <p class="h5 mb-2">
-                            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
-                            {{ 'setup.step10.warning.title'|trans({}, 'setup') }}
-                        </p>
-                        <ul class="mb-0">
-                            <li>{{ 'setup.step10.warning.optional'|trans({}, 'setup') }}</li>
-                            <li>{{ 'setup.can_delete_later'|trans({}, 'setup')}}</li>
-                            <li>{{ 'setup.step10.warning.selection'|trans({}, 'setup') }}</li>
-                        </ul>
+            {% embed '_components/_card.html.twig' with { 'class': 'shadow-lg' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="h3 mb-0">
+                            <i class="bi bi-file-earmark-code me-2" aria-hidden="true"></i>
+                            {{ 'setup.step10.header'|trans({}, 'setup') }}
+                        </h1>
                     </div>
+                {% endblock %}
+                {% block card_body %}
+                    <div class="p-4">
+                        <p class="lead mb-4">
+                            {{ 'setup.step10.description'|trans({}, 'setup') }}
+                        </p>
 
-                    <h2 class="h5 mb-3">
-                        <i class="bi bi-database me-2" aria-hidden="true"></i>
-                        {{ 'setup.step10.import_title'|trans({}, 'setup') }}
-                    </h2>
+                        <div class="alert alert-warning" role="alert">
+                            <p class="h5 mb-2">
+                                <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+                                {{ 'setup.step10.warning.title'|trans({}, 'setup') }}
+                            </p>
+                            <ul class="mb-0">
+                                <li>{{ 'setup.step10.warning.optional'|trans({}, 'setup') }}</li>
+                                <li>{{ 'setup.can_delete_later'|trans({}, 'setup')}}</li>
+                                <li>{{ 'setup.step10.warning.selection'|trans({}, 'setup') }}</li>
+                            </ul>
+                        </div>
 
-                    {% if sample_data|length > 0 %}
-                        <form method="post" action="{{ path('setup_step10_sample_data_import') }}">
-                            <input type="hidden" name="_token" value="{{ csrf_token('setup_sample_data') }}">
-                            <h3 class="h5 mb-3 mt-4">
-                                <i class="bi bi-toggle-on me-2" aria-hidden="true"></i>
-                                {{ 'setup.step10.available_title'|trans({}, 'setup') }}
-                            </h3>
+                        <h2 class="h5 mb-3">
+                            <i class="bi bi-database me-2" aria-hidden="true"></i>
+                            {{ 'setup.step10.import_title'|trans({}, 'setup') }}
+                        </h2>
 
-                            {% for key, data in sample_data %}
-                                <div class="card mb-3">
-                                    <div class="card-body">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="samples[{{ key }}]" value="1" id="sample_{{ key }}">
-                                            <label class="form-check-label w-100" for="sample_{{ key }}">
-                                                <div class="d-flex align-items-start">
-                                                    <div class="flex-grow-1">
-                                                        <p class="h6 mb-1">{{ data.name }}</p>
-                                                        <p class="text-muted mb-2">{{ data.description }}</p>
-                                                        {% if data.command is defined %}
-                                                            <small class="text-muted">
-                                                                <i class="bi bi-terminal me-1" aria-hidden="true"></i>
-                                                                {{ 'setup.step10.command'|trans({}, 'setup') }}: <code>{{ data.command }}</code>
-                                                            </small>
-                                                        {% elseif data.file is defined %}
-                                                            <small class="text-muted">
-                                                                <i class="bi bi-file-earmark me-1" aria-hidden="true"></i>
-                                                                {{ 'setup.step10.file'|trans({}, 'setup') }}: <code>{{ data.file }}</code>
-                                                            </small>
-                                                        {% endif %}
-                                                        {% if data.required_modules is defined %}
-                                                            <div class="mt-2">
+                        {% if sample_data|length > 0 %}
+                            <form method="post" action="{{ path('setup_step10_sample_data_import') }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('setup_sample_data') }}">
+                                <h3 class="h5 mb-3 mt-4">
+                                    <i class="bi bi-toggle-on me-2" aria-hidden="true"></i>
+                                    {{ 'setup.step10.available_title'|trans({}, 'setup') }}
+                                </h3>
+
+                                {% for key, data in sample_data %}
+                                    {% embed '_components/_card.html.twig' with { 'class': 'mb-3' } %}
+                                        {% block card_body %}
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="samples[{{ key }}]" value="1" id="sample_{{ key }}">
+                                                <label class="form-check-label w-100" for="sample_{{ key }}">
+                                                    <div class="d-flex align-items-start">
+                                                        <div class="flex-grow-1">
+                                                            <p class="h6 mb-1">{{ data.name }}</p>
+                                                            <p class="text-muted mb-2">{{ data.description }}</p>
+                                                            {% if data.command is defined %}
                                                                 <small class="text-muted">
-                                                                    <i class="bi bi-puzzle me-1" aria-hidden="true"></i>
-                                                                    {{ 'setup.step10.modules'|trans({}, 'setup') }}:
-                                                                    {% for module in data.required_modules %}
-                                                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: module } %}
-                                                                    {% endfor %}
+                                                                    <i class="bi bi-terminal me-1" aria-hidden="true"></i>
+                                                                    {{ 'setup.step10.command'|trans({}, 'setup') }}: <code>{{ data.command }}</code>
                                                                 </small>
-                                                            </div>
-                                                        {% endif %}
+                                                            {% elseif data.file is defined %}
+                                                                <small class="text-muted">
+                                                                    <i class="bi bi-file-earmark me-1" aria-hidden="true"></i>
+                                                                    {{ 'setup.step10.file'|trans({}, 'setup') }}: <code>{{ data.file }}</code>
+                                                                </small>
+                                                            {% endif %}
+                                                            {% if data.required_modules is defined %}
+                                                                <div class="mt-2">
+                                                                    <small class="text-muted">
+                                                                        <i class="bi bi-puzzle me-1" aria-hidden="true"></i>
+                                                                        {{ 'setup.step10.modules'|trans({}, 'setup') }}:
+                                                                        {% for module in data.required_modules %}
+                                                                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: module } %}
+                                                                        {% endfor %}
+                                                                    </small>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </label>
-                                        </div>
+                                                </label>
+                                            </div>
+                                        {% endblock %}
+                                    {% endembed %}
+                                {% endfor %}
+
+                                <div class="d-flex justify-content-between mt-4">
+                                    <a href="{{ path('setup_step9_base_data') }}" class="btn btn-outline-secondary">
+                                        <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
+                                        {{ 'setup.navigation.back'|trans({}, 'setup') }}
+                                    </a>
+                                    <div>
+                                        <button type="button" class="btn btn-outline-secondary me-2"
+                                                data-controller="ui-actions"
+                                                data-action="click->ui-actions#submitForm"
+                                                data-ui-actions-form-id-param="skip-form">
+                                            <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
+                                            {{ 'setup.common.skip'|trans({}, 'setup') }}
+                                        </button>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-download me-2" aria-hidden="true"></i>
+                                            {{ 'setup.sample_data.import_selected'|trans({}, 'setup') }}
+                                        </button>
                                     </div>
                                 </div>
-                            {% endfor %}
+                            </form>
+
+                            <form id="skip-form" method="post" action="{{ path('setup_step10_sample_data_skip') }}" style="display: none;">
+                                <input type="hidden" name="_token" value="{{ csrf_token('setup_sample_skip') }}">
+                            </form>
+                        {% else %}
+                            <div class="alert alert-info" role="alert">
+                                <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                                {{ 'setup.sample_data.no_data_available'|trans({}, 'setup') }}
+                            </div>
 
                             <div class="d-flex justify-content-between mt-4">
                                 <a href="{{ path('setup_step9_base_data') }}" class="btn btn-outline-secondary">
                                     <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
                                     {{ 'setup.navigation.back'|trans({}, 'setup') }}
                                 </a>
-                                <div>
-                                    <button type="button" class="btn btn-outline-secondary me-2"
-                                            data-controller="ui-actions"
-                                            data-action="click->ui-actions#submitForm"
-                                            data-ui-actions-form-id-param="skip-form">
-                                        <i class="bi bi-skip-forward me-2" aria-hidden="true"></i>
-                                        {{ 'setup.common.skip'|trans({}, 'setup') }}
-                                    </button>
-                                    <button type="submit" class="btn btn-primary">
-                                        <i class="bi bi-download me-2" aria-hidden="true"></i>
-                                        {{ 'setup.sample_data.import_selected'|trans({}, 'setup') }}
-                                    </button>
-                                </div>
+                                <a href="{{ path('setup_step11_complete') }}" class="btn btn-primary">
+                                    {{ 'setup.step10.next_button'|trans({}, 'setup') }}
+                                    <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+                                </a>
                             </div>
-                        </form>
-
-                        <form id="skip-form" method="post" action="{{ path('setup_step10_sample_data_skip') }}" style="display: none;">
-                            <input type="hidden" name="_token" value="{{ csrf_token('setup_sample_skip') }}">
-                        </form>
-                    {% else %}
-                        <div class="alert alert-info" role="alert">
-                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                            {{ 'setup.sample_data.no_data_available'|trans({}, 'setup') }}
-                        </div>
-
-                        <div class="d-flex justify-content-between mt-4">
-                            <a href="{{ path('setup_step9_base_data') }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
-                                {{ 'setup.navigation.back'|trans({}, 'setup') }}
-                            </a>
-                            <a href="{{ path('setup_step11_complete') }}" class="btn btn-primary">
-                                {{ 'setup.step10.next_button'|trans({}, 'setup') }}
-                                <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
+                        {% endif %}
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

@@ -31,14 +31,16 @@
     <div class="row">
         <div class="col-lg-8">
             {# Module Info #}
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h2 class="mb-0">
-                        <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
-                        Modul-Informationen
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="mb-0">
+                            <i class="bi bi-info-circle me-2" aria-hidden="true"></i>
+                            Modul-Informationen
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="row mb-0">
                         <dt class="col-sm-3">Beschreibung</dt>
                         <dd class="col-sm-9">{{ module.description }}</dd>
@@ -71,19 +73,21 @@
                             {% endfor %}
                         </dd>
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Dependencies #}
             {% if graph.dependencies|length > 0 or graph.dependents|length > 0 %}
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h2 class="mb-0">
-                            <i class="bi bi-diagram-3 me-2" aria-hidden="true"></i>
-                            Abhängigkeiten
-                        </h2>
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="mb-0">
+                                <i class="bi bi-diagram-3 me-2" aria-hidden="true"></i>
+                                Abhängigkeiten
+                            </h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         {% if graph.dependencies|length > 0 %}
                             <h3 class="mb-2">
                                 <i class="bi bi-link text-warning me-2" aria-hidden="true"></i>
@@ -114,20 +118,22 @@
                                 Dieses Modul hat keine Abhängigkeiten.
                             </p>
                         {% endif %}
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
 
             {# Sample Data #}
             {% if sample_data|length > 0 and is_active %}
-                <div class="card mb-4">
-                    <div class="card-header">
-                        <h2 class="mb-0">
-                            <i class="bi bi-file-earmark-code me-2" aria-hidden="true"></i>
-                            Verfügbare Beispiel-Daten
-                        </h2>
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                    {% block card_header %}
+                        <div class="card-header">
+                            <h2 class="mb-0">
+                                <i class="bi bi-file-earmark-code me-2" aria-hidden="true"></i>
+                                Verfügbare Beispiel-Daten
+                            </h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         <form method="post" action="{{ path('admin_modules_import_data', {moduleKey: module_key}) }}">
                             {% for key, data in sample_data %}
                                 <div class="form-check mb-3">
@@ -144,21 +150,23 @@
                                 Ausgewählte Daten importieren
                             </button>
                         </form>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         </div>
 
         <div class="col-lg-4">
             {# Actions #}
-            <div class="card mb-4 border-primary">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0">
-                        <i class="bi bi-gears me-2" aria-hidden="true"></i>
-                        Aktionen
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4 border-primary' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="mb-0">
+                            <i class="bi bi-gears me-2" aria-hidden="true"></i>
+                            Aktionen
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="d-grid gap-2">
                         {% if is_active %}
                             {% if not module.required %}
@@ -196,18 +204,20 @@
                             Dependency-Graph
                         </a>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Quick Info #}
-            <div class="card border-info">
-                <div class="card-header bg-info text-white">
-                    <h2 class="mb-0">
-                        <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
-                        Hinweise
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-info' } %}
+                {% block card_header %}
+                    <div class="card-header bg-info text-white">
+                        <h2 class="mb-0">
+                            <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
+                            Hinweise
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <ul class="mb-0 small">
                         {% if module.required %}
                             <li>Dieses Modul ist erforderlich und kann nicht deaktiviert werden</li>
@@ -218,8 +228,8 @@
                         <li>Beim Deaktivieren werden keine Daten gelöscht</li>
                         <li>Sie können das Modul jederzeit wieder aktivieren</li>
                     </ul>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

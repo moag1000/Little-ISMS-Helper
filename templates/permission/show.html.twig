@@ -18,13 +18,15 @@
     </div>
 
     {# Permission Details #}
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-info-circle" aria-hidden="true"></i> Berechtigungsdetails
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-info-circle" aria-hidden="true"></i> Berechtigungsdetails
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row mb-3">
                 <div class="col-md-3"><strong>Name:</strong></div>
                 <div class="col-md-9"><code>{{ permission.name }}</code></div>
@@ -59,18 +61,20 @@
                 <div class="col-md-3"><strong>Erstellt am:</strong></div>
                 <div class="col-md-9">{{ permission.createdAt|date('d.m.Y H:i') }}</div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Roles using this permission #}
-    <div class="card mb-4">
-        <div class="card-header bg-info text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-people-fill" aria-hidden="true"></i> {{ 'permission.roles_using'|trans({}, 'messages') }}
-                {% include '_components/_badge.html.twig' with { variant: 'light', content: roles|length, class: 'text-dark' } %}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-info text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-people-fill" aria-hidden="true"></i> {{ 'permission.roles_using'|trans({}, 'messages') }}
+                    {% include '_components/_badge.html.twig' with { variant: 'light', content: roles|length, class: 'text-dark' } %}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if roles|length > 0 %}
                 {% embed '_components/_table.html.twig' with {
                     'class': 'table-hover',
@@ -120,6 +124,6 @@
                     Diese Berechtigung wird derzeit von keiner Rolle verwendet.
                 </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 {% endblock %}

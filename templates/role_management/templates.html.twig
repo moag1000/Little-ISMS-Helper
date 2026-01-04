@@ -25,26 +25,28 @@
     <div class="row">
         {% for key, template in templates %}
             <div class="col-md-6 col-lg-4 mb-4">
-                <div class="card h-100 border-primary">
-                    <div class="card-header bg-primary text-white">
-                        <h2 class="mb-0 h3">
-                            {% if key == 'auditor' %}
-                                <i class="bi bi-search" aria-hidden="true"></i>
-                            {% elseif key == 'risk_manager' %}
-                                <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                            {% elseif key == 'compliance_officer' %}
-                                <i class="bi bi-clipboard-check" aria-hidden="true"></i>
-                            {% elseif key == 'incident_manager' %}
-                                <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
-                            {% elseif key == 'asset_manager' %}
-                                <i class="bi bi-hdd-stack" aria-hidden="true"></i>
-                            {% elseif key == 'readonly' %}
-                                <i class="bi bi-eye" aria-hidden="true"></i>
-                            {% endif %}
-                            {{ template.name }}
-                        </h3>
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-primary' } %}
+                    {% block card_header %}
+                        <div class="card-header bg-primary text-white">
+                            <h2 class="mb-0 h3">
+                                {% if key == 'auditor' %}
+                                    <i class="bi bi-search" aria-hidden="true"></i>
+                                {% elseif key == 'risk_manager' %}
+                                    <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                                {% elseif key == 'compliance_officer' %}
+                                    <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                                {% elseif key == 'incident_manager' %}
+                                    <i class="bi bi-shield-exclamation" aria-hidden="true"></i>
+                                {% elseif key == 'asset_manager' %}
+                                    <i class="bi bi-hdd-stack" aria-hidden="true"></i>
+                                {% elseif key == 'readonly' %}
+                                    <i class="bi bi-eye" aria-hidden="true"></i>
+                                {% endif %}
+                                {{ template.name }}
+                            </h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         <p class="card-text">{{ template.description }}</p>
 
                         <h3 class="mt-3 mb-2 h4">Berechtigungen:</h3>
@@ -59,16 +61,18 @@
                         <div class="mt-3">
                             {% include '_components/_badge.html.twig' with { variant: 'secondary', content: template.permissions|length ~ ' Berechtigungen' } %}
                         </div>
-                    </div>
-                    <div class="card-footer">
-                        <button type="button"
-                                class="btn btn-primary w-100"
-                                data-bs-toggle="modal"
-                                data-bs-target="#templateModal{{ key }}">
-                            <i class="bi bi-plus-circle" aria-hidden="true"></i> Vorlage verwenden
-                        </button>
-                    </div>
-                </div>
+                    {% endblock %}
+                    {% block card_footer %}
+                        <div class="card-footer">
+                            <button type="button"
+                                    class="btn btn-primary w-100"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#templateModal{{ key }}">
+                                <i class="bi bi-plus-circle" aria-hidden="true"></i> Vorlage verwenden
+                            </button>
+                        </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
 
             {# Modal for template application #}

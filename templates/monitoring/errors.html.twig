@@ -16,26 +16,30 @@
         {# Statistics #}
         <div class="row mb-4">
             <div class="col-md-3">
-                <div class="card border-danger">
-                    <div class="card-body text-center">
-                        <div class="card-title text-muted fw-bold">{{ 'monitoring.errors.total'|trans({}, 'monitoring') }}</div>
-                        <p class="display-6 text-danger">{{ error_stats.total }}</p>
-                        <small>{{ 'monitoring.errors.shown'|trans({'%count%': errors|length}, 'monitoring') }}</small>
-                    </div>
-                </div>
+                {% embed '_components/_card.html.twig' with { 'class': 'border-danger' } %}
+                    {% block card_body %}
+                        <div class="text-center">
+                            <div class="card-title text-muted fw-bold">{{ 'monitoring.errors.total'|trans({}, 'monitoring') }}</div>
+                            <p class="display-6 text-danger">{{ error_stats.total }}</p>
+                            <small>{{ 'monitoring.errors.shown'|trans({'%count%': errors|length}, 'monitoring') }}</small>
+                        </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
             <div class="col-md-3">
-                <div class="card border-warning">
-                    <div class="card-body text-center">
-                        <div class="card-title text-muted fw-bold">{{ 'monitoring.errors.file_size'|trans({}, 'monitoring') }}</div>
-                        <p class="display-6 text-warning small">{{ error_stats.file_size }}</p>
-                        <small>{{ 'monitoring.errors.log_file_size'|trans({}, 'monitoring') }}</small>
-                    </div>
-                </div>
+                {% embed '_components/_card.html.twig' with { 'class': 'border-warning' } %}
+                    {% block card_body %}
+                        <div class="text-center">
+                            <div class="card-title text-muted fw-bold">{{ 'monitoring.errors.file_size'|trans({}, 'monitoring') }}</div>
+                            <p class="display-6 text-warning small">{{ error_stats.file_size }}</p>
+                            <small>{{ 'monitoring.errors.log_file_size'|trans({}, 'monitoring') }}</small>
+                        </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
             <div class="col-md-6">
-                <div class="card border-info">
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { 'class': 'border-info' } %}
+                    {% block card_body %}
                         <div class="card-title text-muted fw-bold">{{ 'monitoring.by_level'|trans({}, 'monitoring')}}</div>
                         {% for level, count in error_stats.by_level %}
                             <div class="d-flex justify-content-between mb-2">
@@ -43,8 +47,8 @@
                                 <span>{{ count }}</span>
                             </div>
                         {% endfor %}
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             </div>
         </div>
 
@@ -55,8 +59,8 @@
         </div>
 
         {# Filter Options #}
-        <div class="card mb-4">
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+            {% block card_body %}
                 <form method="get" class="row g-3">
                     <div class="col-auto">
                         <label for="limit" class="col-form-label">{{ 'monitoring.show_entries'|trans({}, 'monitoring')}}</label>
@@ -70,17 +74,19 @@
                         </select>
                     </div>
                 </form>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
 
         {# Error List #}
-        <div class="card">
-            <div class="card-header bg-danger text-white">
-                <h2 class="mb-0">
-                    <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'monitoring.errors.recent'|trans({}, 'monitoring') }}
-                </h2>
-            </div>
-            <div class="card-body p-0">
+        {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
+            {% block card_header %}
+                <div class="card-header bg-danger text-white">
+                    <h2 class="mb-0">
+                        <i class="bi bi-list-ul" aria-hidden="true"></i> {{ 'monitoring.errors.recent'|trans({}, 'monitoring') }}
+                    </h2>
+                </div>
+            {% endblock %}
+            {% block card_body %}
                 {% if errors|length > 0 %}
                     <div class="list-group list-group-flush">
                         {% for error in errors %}
@@ -112,8 +118,8 @@
                         <p class="mt-2">{{ 'monitoring.no_errors_found'|trans({}, 'monitoring')}}</p>
                     </div>
                 {% endif %}
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
 
         {# Warning Box #}
         <div class="alert alert-warning mt-4">

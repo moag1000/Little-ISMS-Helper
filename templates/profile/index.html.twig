@@ -22,48 +22,52 @@
     <div class="row">
         <div class="col-md-4 mb-4">
             {# Profile Picture Card #}
-            <div class="card">
-                <div class="card-body text-center">
-                    <h2 class="h5 card-title">{{ 'user.profile.section.avatar'|trans({}, 'user') }}</h2>
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h2 class="h5 card-title">{{ 'user.profile.section.avatar'|trans({}, 'user') }}</h2>
 
-                    {% if user.profilePicture %}
-                        <img src="{{ asset(user.profilePicture) }}"
-                             alt="{{ user.fullName }}"
-                             class="rounded-circle mb-3"
-                             style="width: 150px; height: 150px; object-fit: cover;">
-                    {% else %}
-                        <div class="bg-secondary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
-                             style="width: 150px; height: 150px; font-size: 3rem;">
-                            {{ user.firstName|first|upper }}{{ user.lastName|first|upper }}
-                        </div>
-                    {% endif %}
+                        {% if user.profilePicture %}
+                            <img src="{{ asset(user.profilePicture) }}"
+                                 alt="{{ user.fullName }}"
+                                 class="rounded-circle mb-3"
+                                 style="width: 150px; height: 150px; object-fit: cover;">
+                        {% else %}
+                            <div class="bg-secondary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                                 style="width: 150px; height: 150px; font-size: 3rem;">
+                                {{ user.firstName|first|upper }}{{ user.lastName|first|upper }}
+                            </div>
+                        {% endif %}
 
-                    <p class="fs-5 fw-semibold mb-0">{{ user.fullName }}</p>
-                    <p class="text-muted">{{ user.email }}</p>
+                        <p class="fs-5 fw-semibold mb-0">{{ user.fullName }}</p>
+                        <p class="text-muted">{{ user.email }}</p>
 
-                    {% if user.profilePicture %}
-                        <form method="post" action="{{ path('app_profile_avatar_delete') }}" class="mt-3"
-                              data-controller="ui-actions"
-                              data-action="submit->ui-actions#confirm"
-                              data-ui-actions-message-param="{{ 'user.profile.confirm.delete_avatar'|trans({}, 'user') }}">
-                            <input type="hidden" name="_token" value="{{ csrf_token('delete_avatar' ~ user.id) }}">
-                            <button type="submit" class="btn btn-sm btn-outline-danger">
-                                <i class="bi bi-trash" aria-hidden="true"></i>
-                                {{ 'user.profile.action.delete_avatar'|trans({}, 'user') }}
-                            </button>
-                        </form>
-                    {% endif %}
-                </div>
-            </div>
+                        {% if user.profilePicture %}
+                            <form method="post" action="{{ path('app_profile_avatar_delete') }}" class="mt-3"
+                                  data-controller="ui-actions"
+                                  data-action="submit->ui-actions#confirm"
+                                  data-ui-actions-message-param="{{ 'user.profile.confirm.delete_avatar'|trans({}, 'user') }}">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete_avatar' ~ user.id) }}">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                    <i class="bi bi-trash" aria-hidden="true"></i>
+                                    {{ 'user.profile.action.delete_avatar'|trans({}, 'user') }}
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-md-8">
             {# Basic Information Card #}
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="h5 mb-0">{{ 'user.section.basic_info'|trans({}, 'user') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="h5 mb-0">{{ 'user.section.basic_info'|trans({}, 'user') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="row mb-0">
                         <dt class="col-sm-4">{{ 'user.field.first_name'|trans({}, 'user') }}</dt>
                         <dd class="col-sm-8">{{ user.firstName }}</dd>
@@ -89,15 +93,17 @@
                             <dd class="col-sm-8">{{ user.phoneNumber }}</dd>
                         {% endif %}
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Account Information Card #}
-            <div class="card mb-4">
-                <div class="card-header bg-info text-white">
-                    <h2 class="h5 mb-0">{{ 'user.profile.section.account'|trans({}, 'user') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-info text-white">
+                        <h2 class="h5 mb-0">{{ 'user.profile.section.account'|trans({}, 'user') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <dl class="row mb-0">
                         <dt class="col-sm-4">{{ 'user.field.roles'|trans({}, 'user') }}</dt>
                         <dd class="col-sm-8">
@@ -125,18 +131,20 @@
                             <dd class="col-sm-8">{{ user.lastLoginAt|date('d.m.Y H:i') }}</dd>
                         {% endif %}
                     </dl>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {# MFA Status Card #}
-            <div class="card mt-4">
-                <div class="card-header {% if user.hasMfaEnabled %}bg-success{% else %}bg-warning{% endif %} text-white">
-                    <h2 class="h5 mb-0">
-                        <i class="bi bi-shield{% if user.hasMfaEnabled %}-check{% else %}-exclamation{% endif %}" aria-hidden="true"></i>
-                        {{ 'user.profile.section.mfa'|trans({}, 'user') }}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+                {% block card_header %}
+                    <div class="card-header {% if user.hasMfaEnabled %}bg-success{% else %}bg-warning{% endif %} text-white">
+                        <h2 class="h5 mb-0">
+                            <i class="bi bi-shield{% if user.hasMfaEnabled %}-check{% else %}-exclamation{% endif %}" aria-hidden="true"></i>
+                            {{ 'user.profile.section.mfa'|trans({}, 'user') }}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if user.hasMfaEnabled %}
                         <p class="mb-2">
                             {% include '_components/_badge.html.twig' with { variant: 'success', content: 'user.profile.mfa.enabled'|trans({}, 'user') } %}
@@ -162,8 +170,8 @@
                             </a>
                         </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

@@ -29,11 +29,13 @@
 </div>
 
 {# Instance Overview #}
-<div class="card mb-4">
-    <div class="card-header">
-        <h2 class="mb-0">{{ 'workflow.section.overview'|trans({}, 'workflows') }}</h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2 class="mb-0">{{ 'workflow.section.overview'|trans({}, 'workflows') }}</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         <div class="row">
             <div class="col-md-3 mb-3">
                 <strong class="d-block text-muted">{{ 'workflow.field.workflow'|trans({}, 'workflows') }}</strong>
@@ -86,8 +88,8 @@
             </div>
         </div>
         {% endif %}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Warning: No eligible approvers for current step #}
 {% if instance.status == 'in_progress' and not has_eligible_approvers %}
@@ -125,11 +127,13 @@
 
 {# Workflow Steps #}
 {% if instance.workflow and instance.workflow.steps|length > 0 %}
-<div class="card mb-4">
-    <div class="card-header">
-        <h2 class="mb-0">{{ 'workflow.section.steps'|trans({}, 'workflows') }}</h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2 class="mb-0">{{ 'workflow.section.steps'|trans({}, 'workflows') }}</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         {% for step in instance.workflow.steps %}
         {% set isCurrentStep = instance.currentStep and step.id == instance.currentStep.id %}
         {% set isCompleted = step.id in instance.completedSteps %}
@@ -164,17 +168,19 @@
             </div>
         </div>
         {% endfor %}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Approval History #}
 {% if instance.approvalHistory|length > 0 %}
-<div class="card mb-4">
-    <div class="card-header">
-        <h2 class="mb-0">{{ 'workflow.section.activity_log'|trans({}, 'workflows') }}</h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2 class="mb-0">{{ 'workflow.section.activity_log'|trans({}, 'workflows') }}</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         <div class="table-responsive">
         <table class="table table-sm">
             <thead>
@@ -224,8 +230,8 @@
             </tbody>
         </table>
         </div>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Action Buttons #}

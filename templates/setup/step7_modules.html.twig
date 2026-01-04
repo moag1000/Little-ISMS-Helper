@@ -8,8 +8,8 @@
     <div class="row justify-content-center">
         <div class="col-md-10">
             {# Progress Bar #}
-            <div class="card mb-4">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center mb-2">
                         <h4 class="mb-0">{{ 'setup.progress.title'|trans({}, 'setup') }}</h4>
                         <small class="text-muted">{{ 'setup.progress.step_of'|trans({'%current%': 7, '%total%': 11}, 'setup') }}</small>
@@ -17,95 +17,59 @@
                     <div class="progress" style="height: 10px;">
                         <div class="progress-bar" role="progressbar" style="width: 64%;" aria-valuenow="64" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
-            <div class="card shadow-lg">
-                <div class="card-header bg-primary text-white">
-                    <h1 class="h3 mb-0">
-                        <i class="bi bi-puzzle me-2" aria-hidden="true"></i>
-                        {{ 'setup.step7.header'|trans({}, 'setup') }}
-                    </h1>
-                </div>
-                <div class="card-body p-4">
-                    <p class="lead mb-4">
-                        {{ 'setup.step7.intro'|trans({}, 'setup') }}
-                    </p>
-
-                    {% if recommended_modules is defined and recommended_modules|length > 0 %}
-                    <div class="alert alert-info mb-4">
-                        <p class="h5 mb-2">
-                            <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
-                            {{ 'setup.step7.recommendations.title'|trans({}, 'setup') }}
-                        </p>
-                        <p class="mb-0">
-                            {{ 'setup.step7.recommendations.description'|trans({}, 'setup')|raw }}
-                        </p>
+            {% embed '_components/_card.html.twig' with { 'class': 'shadow-lg' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h1 class="h3 mb-0">
+                            <i class="bi bi-puzzle me-2" aria-hidden="true"></i>
+                            {{ 'setup.step7.header'|trans({}, 'setup') }}
+                        </h1>
                     </div>
-                    {% endif %}
+                {% endblock %}
+                {% block card_body %}
+                    <div class="p-4">
+                        <p class="lead mb-4">
+                            {{ 'setup.step7.intro'|trans({}, 'setup') }}
+                        </p>
 
-                    <form method="post" action="{{ path('setup_step7_modules_save') }}">
-                        <input type="hidden" name="_token" value="{{ csrf_token('setup_modules') }}">
+                        {% if recommended_modules is defined and recommended_modules|length > 0 %}
+                        <div class="alert alert-info mb-4">
+                            <p class="h5 mb-2">
+                                <i class="bi bi-lightbulb me-2" aria-hidden="true"></i>
+                                {{ 'setup.step7.recommendations.title'|trans({}, 'setup') }}
+                            </p>
+                            <p class="mb-0">
+                                {{ 'setup.step7.recommendations.description'|trans({}, 'setup')|raw }}
+                            </p>
+                        </div>
+                        {% endif %}
 
-                        {# Required Modules #}
-                        <h2 class="h5 mb-3">
-                            <i class="bi bi-star text-warning me-2" aria-hidden="true"></i>
-                            {{ 'setup.step7.required_modules'|trans({}, 'setup') }}
-                        </h2>
+                        <form method="post" action="{{ path('setup_step7_modules_save') }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('setup_modules') }}">
 
-                        {% for key, module in all_modules %}
-                            {% if module.required %}
-                            <div class="card mb-3 border-primary bg-light">
-                                <div class="card-body">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="modules[]" value="{{ key }}" id="module_{{ key }}" checked disabled>
-                                        <input type="hidden" name="modules[]" value="{{ key }}">
-                                        <label class="form-check-label w-100" for="module_{{ key }}">
-                                            <div class="d-flex justify-content-between align-items-start">
-                                                <div>
-                                                    <p class="h6 mb-1">
-                                                        <i class="bi bi-{{ module.icon }} me-2" aria-hidden="true"></i>
-                                                        {{ module.name }}
-                                                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'setup.step7.badge.required'|trans({}, 'setup'), class: 'text-dark ms-2' } %}
-                                                    </p>
-                                                    <p class="text-muted mb-1">{{ module.description }}</p>
-                                                    <small class="text-muted">
-                                                        <strong>{{ 'setup.step7.entities'|trans({}, 'setup') }}</strong>
-                                                        {% for entity in module.entities %}
-                                                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: entity } %}
-                                                        {% endfor %}
-                                                    </small>
-                                                </div>
-                                            </div>
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endif %}
-                        {% endfor %}
+                            {# Required Modules #}
+                            <h2 class="h5 mb-3">
+                                <i class="bi bi-star text-warning me-2" aria-hidden="true"></i>
+                                {{ 'setup.step7.required_modules'|trans({}, 'setup') }}
+                            </h2>
 
-                        {# Optional Modules #}
-                        <h2 class="h5 mb-3 mt-4">
-                            <i class="bi bi-toggle-on text-info me-2" aria-hidden="true"></i>
-                            {{ 'setup.step7.optional_modules'|trans({}, 'setup') }}
-                        </h2>
-
-                        <div id="optional-modules">
-                            {% for key, module in optional_modules %}
-                                <div class="card mb-3 module-card {% if recommended_modules is defined and key in recommended_modules %}border-info{% endif %}" data-module="{{ key }}" data-dependencies="{{ module.dependencies|json_encode }}">
-                                    <div class="card-body">
+                            {% for key, module in all_modules %}
+                                {% if module.required %}
+                                {% embed '_components/_card.html.twig' with { 'class': 'mb-3 border-primary bg-light' } %}
+                                    {% block card_body %}
                                         <div class="form-check">
-                                            <input class="form-check-input module-checkbox" type="checkbox" name="modules[]" value="{{ key }}" id="module_{{ key }}"
-                                                {{ key in selected_modules ? 'checked' : '' }}>
+                                            <input class="form-check-input" type="checkbox" name="modules[]" value="{{ key }}" id="module_{{ key }}" checked disabled>
+                                            <input type="hidden" name="modules[]" value="{{ key }}">
                                             <label class="form-check-label w-100" for="module_{{ key }}">
                                                 <div class="d-flex justify-content-between align-items-start">
-                                                    <div class="flex-grow-1">
+                                                    <div>
                                                         <p class="h6 mb-1">
                                                             <i class="bi bi-{{ module.icon }} me-2" aria-hidden="true"></i>
                                                             {{ module.name }}
-                                                            {% if recommended_modules is defined and key in recommended_modules %}
-                                                                {% include '_components/_badge.html.twig' with { variant: 'info', content: 'setup.step7.badge.recommended'|trans({}, 'setup'), class: 'ms-2' } %}
-                                                            {% endif %}
+                                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'setup.step7.badge.required'|trans({}, 'setup'), class: 'text-dark ms-2' } %}
                                                         </p>
                                                         <p class="text-muted mb-1">{{ module.description }}</p>
                                                         <small class="text-muted">
@@ -114,66 +78,107 @@
                                                                 {% include '_components/_badge.html.twig' with { variant: 'secondary', content: entity } %}
                                                             {% endfor %}
                                                         </small>
-                                                        {% if module.dependencies|length > 0 %}
-                                                            <div class="mt-2">
-                                                                <small class="text-warning">
-                                                                    <i class="bi bi-link me-1" aria-hidden="true"></i>
-                                                                    <strong>{{ 'setup.step7.dependencies'|trans({}, 'setup') }}</strong>
-                                                                    {% for dep in module.dependencies %}
-                                                                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: all_modules[dep].name, class: 'text-dark' } %}
-                                                                    {% endfor %}
-                                                                </small>
-                                                            </div>
-                                                        {% endif %}
-                                                        {% if dependency_graph[key].dependents|length > 0 %}
-                                                            <div class="mt-1">
-                                                                <small class="text-info">
-                                                                    <i class="bi bi-arrow-right me-1" aria-hidden="true"></i>
-                                                                    <strong>{{ 'setup.step7.required_by'|trans({}, 'setup') }}</strong>
-                                                                    {% for dep in dependency_graph[key].dependents %}
-                                                                        {% include '_components/_badge.html.twig' with { variant: 'info', content: all_modules[dep].name } %}
-                                                                    {% endfor %}
-                                                                </small>
-                                                            </div>
-                                                        {% endif %}
                                                     </div>
                                                 </div>
                                             </label>
                                         </div>
-                                    </div>
-                                </div>
+                                    {% endblock %}
+                                {% endembed %}
+                                {% endif %}
                             {% endfor %}
-                        </div>
 
-                        {# Summary #}
-                        <div class="card bg-light mt-4 mb-4">
-                            <div class="card-body">
-                                <p class="h5 mb-2">
-                                    <i class="bi bi-pie-chart me-2" aria-hidden="true"></i>
-                                    {{ 'setup.step7.summary.title'|trans({}, 'setup') }}
-                                </p>
-                                <div id="module-summary">
-                                    <p class="mb-0">
-                                        {{ 'setup.step7.summary.selected'|trans({'%selected%': '<span id="selected-count">0</span>', '%total%': all_modules|length}, 'setup')|raw }}
-                                    </p>
-                                </div>
+                            {# Optional Modules #}
+                            <h2 class="h5 mb-3 mt-4">
+                                <i class="bi bi-toggle-on text-info me-2" aria-hidden="true"></i>
+                                {{ 'setup.step7.optional_modules'|trans({}, 'setup') }}
+                            </h2>
+
+                            <div id="optional-modules">
+                                {% for key, module in optional_modules %}
+                                    {% embed '_components/_card.html.twig' with { 'class': 'mb-3 module-card ' ~ (recommended_modules is defined and key in recommended_modules ? 'border-info' : '') } %}
+                                        {% block card_attrs %}data-module="{{ key }}" data-dependencies="{{ module.dependencies|json_encode }}"{% endblock %}
+                                        {% block card_body %}
+                                            <div class="form-check">
+                                                <input class="form-check-input module-checkbox" type="checkbox" name="modules[]" value="{{ key }}" id="module_{{ key }}"
+                                                    {{ key in selected_modules ? 'checked' : '' }}>
+                                                <label class="form-check-label w-100" for="module_{{ key }}">
+                                                    <div class="d-flex justify-content-between align-items-start">
+                                                        <div class="flex-grow-1">
+                                                            <p class="h6 mb-1">
+                                                                <i class="bi bi-{{ module.icon }} me-2" aria-hidden="true"></i>
+                                                                {{ module.name }}
+                                                                {% if recommended_modules is defined and key in recommended_modules %}
+                                                                    {% include '_components/_badge.html.twig' with { variant: 'info', content: 'setup.step7.badge.recommended'|trans({}, 'setup'), class: 'ms-2' } %}
+                                                                {% endif %}
+                                                            </p>
+                                                            <p class="text-muted mb-1">{{ module.description }}</p>
+                                                            <small class="text-muted">
+                                                                <strong>{{ 'setup.step7.entities'|trans({}, 'setup') }}</strong>
+                                                                {% for entity in module.entities %}
+                                                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: entity } %}
+                                                                {% endfor %}
+                                                            </small>
+                                                            {% if module.dependencies|length > 0 %}
+                                                                <div class="mt-2">
+                                                                    <small class="text-warning">
+                                                                        <i class="bi bi-link me-1" aria-hidden="true"></i>
+                                                                        <strong>{{ 'setup.step7.dependencies'|trans({}, 'setup') }}</strong>
+                                                                        {% for dep in module.dependencies %}
+                                                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: all_modules[dep].name, class: 'text-dark' } %}
+                                                                        {% endfor %}
+                                                                    </small>
+                                                                </div>
+                                                            {% endif %}
+                                                            {% if dependency_graph[key].dependents|length > 0 %}
+                                                                <div class="mt-1">
+                                                                    <small class="text-info">
+                                                                        <i class="bi bi-arrow-right me-1" aria-hidden="true"></i>
+                                                                        <strong>{{ 'setup.step7.required_by'|trans({}, 'setup') }}</strong>
+                                                                        {% for dep in dependency_graph[key].dependents %}
+                                                                            {% include '_components/_badge.html.twig' with { variant: 'info', content: all_modules[dep].name } %}
+                                                                        {% endfor %}
+                                                                    </small>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        {% endblock %}
+                                    {% endembed %}
+                                {% endfor %}
                             </div>
-                        </div>
 
-                        {# Navigation #}
-                        <div class="d-flex justify-content-between">
-                            <a href="{{ path('setup_step6_organisation_info') }}" class="btn btn-outline-secondary">
-                                <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
-                                {{ 'setup.common.back'|trans({}, 'setup') }}
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                {{ 'setup.next_step'|trans({'%step%': 8, '%name%': 'setup.steps.compliance_frameworks'|trans({}, 'setup')}, 'messages') }}
-                                <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+                            {# Summary #}
+                            {% embed '_components/_card.html.twig' with { 'class': 'bg-light mt-4 mb-4' } %}
+                                {% block card_body %}
+                                    <p class="h5 mb-2">
+                                        <i class="bi bi-pie-chart me-2" aria-hidden="true"></i>
+                                        {{ 'setup.step7.summary.title'|trans({}, 'setup') }}
+                                    </p>
+                                    <div id="module-summary">
+                                        <p class="mb-0">
+                                            {{ 'setup.step7.summary.selected'|trans({'%selected%': '<span id="selected-count">0</span>', '%total%': all_modules|length}, 'setup')|raw }}
+                                        </p>
+                                    </div>
+                                {% endblock %}
+                            {% endembed %}
+
+                            {# Navigation #}
+                            <div class="d-flex justify-content-between">
+                                <a href="{{ path('setup_step6_organisation_info') }}" class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
+                                    {{ 'setup.common.back'|trans({}, 'setup') }}
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    {{ 'setup.next_step'|trans({'%step%': 8, '%name%': 'setup.steps.compliance_frameworks'|trans({}, 'setup')}, 'messages') }}
+                                    <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

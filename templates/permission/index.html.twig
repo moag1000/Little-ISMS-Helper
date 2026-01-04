@@ -13,42 +13,50 @@
     {# Statistics Cards #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card border-primary">
-                <div class="card-body text-center">
-                    <div class="card-title text-muted fw-bold small text-uppercase">{{ 'permission.statistics.total'|trans({}, 'messages') }}</div>
-                    <p class="display-6 text-primary">{{ statistics.total }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'primary' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="card-title text-muted fw-bold small text-uppercase">{{ 'permission.statistics.total'|trans({}, 'messages') }}</div>
+                        <p class="display-6 text-primary">{{ statistics.total }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-success">
-                <div class="card-body text-center">
-                    <div class="card-title text-muted fw-bold small text-uppercase">{{ 'permission.statistics.system'|trans({}, 'messages') }}</div>
-                    <p class="display-6 text-success">{{ statistics.system }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'success' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="card-title text-muted fw-bold small text-uppercase">{{ 'permission.statistics.system'|trans({}, 'messages') }}</div>
+                        <p class="display-6 text-success">{{ statistics.system }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-info">
-                <div class="card-body text-center">
-                    <div class="card-title text-muted fw-bold small text-uppercase">{{ 'permission.statistics.custom'|trans({}, 'messages') }}</div>
-                    <p class="display-6 text-info">{{ statistics.custom }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="card-title text-muted fw-bold small text-uppercase">{{ 'permission.statistics.custom'|trans({}, 'messages') }}</div>
+                        <p class="display-6 text-info">{{ statistics.custom }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-warning">
-                <div class="card-body text-center">
-                    <div class="card-title text-muted fw-bold small text-uppercase">{{ 'permission.statistics.categories'|trans({}, 'messages') }}</div>
-                    <p class="display-6 text-warning">{{ statistics.categories_count }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'warning' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="card-title text-muted fw-bold small text-uppercase">{{ 'permission.statistics.categories'|trans({}, 'messages') }}</div>
+                        <p class="display-6 text-warning">{{ statistics.categories_count }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Category Filter #}
-    <div class="card mb-4">
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_body %}
             <div class="btn-group btn-group-sm" role="group">
                 <a href="{{ path('permission_index') }}"
                    class="btn btn-sm {{ currentCategory is null ? 'btn-primary' : 'btn-outline-primary' }}">
@@ -61,19 +69,21 @@
                     </a>
                 {% endfor %}
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Permissions by Category #}
     {% for category, permissions in groupedPermissions %}
-        <div class="card mb-4">
-            <div class="card-header bg-primary text-white">
-                <h2 class="mb-0">
-                    <i class="bi bi-folder" aria-hidden="true"></i> {{ category|title }}
-                    {% include '_components/_badge.html.twig' with { variant: 'light', content: permissions|length, class: 'text-dark' } %}
-                </h2>
-            </div>
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+            {% block card_header %}
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="bi bi-folder" aria-hidden="true"></i> {{ category|title }}
+                        {% include '_components/_badge.html.twig' with { variant: 'light', content: permissions|length, class: 'text-dark' } %}
+                    </h2>
+                </div>
+            {% endblock %}
+            {% block card_body %}
                 {% embed '_components/_table.html.twig' %}
                     {% block table_head %}
                         <tr>
@@ -107,8 +117,8 @@
                         {% endfor %}
                     {% endblock %}
                 {% endembed %}
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endfor %}
 
     {% if groupedPermissions|length == 0 %}

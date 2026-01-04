@@ -29,63 +29,75 @@
     {# Summary Cards #}
     <div class="row g-3 mb-4">
         <div class="col-md-2">
-            <div class="card h-100 border-success">
-                <div class="card-body text-center">
-                    <h3 class="mb-0 text-success">{{ dashboard.summary.audits_this_year }}</h3>
-                    <small class="text-muted">{{ 'auditor.kpi.audits_ytd'|trans({}, 'dashboards') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-success' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="mb-0 text-success">{{ dashboard.summary.audits_this_year }}</h3>
+                        <small class="text-muted">{{ 'auditor.kpi.audits_ytd'|trans({}, 'dashboards') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-2">
-            <div class="card h-100 border-primary">
-                <div class="card-body text-center">
-                    <h3 class="mb-0">{{ dashboard.summary.upcoming_audits }}</h3>
-                    <small class="text-muted">{{ 'auditor.kpi.upcoming'|trans({}, 'dashboards') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-primary' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="mb-0">{{ dashboard.summary.upcoming_audits }}</h3>
+                        <small class="text-muted">{{ 'auditor.kpi.upcoming'|trans({}, 'dashboards') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-2">
-            <div class="card h-100 border-warning">
-                <div class="card-body text-center">
-                    <h3 class="mb-0 {% if dashboard.summary.open_findings > 0 %}text-warning{% endif %}">{{ dashboard.summary.open_findings }}</h3>
-                    <small class="text-muted">{{ 'auditor.kpi.open_findings'|trans({}, 'dashboards') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-warning' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="mb-0 {% if dashboard.summary.open_findings > 0 %}text-warning{% endif %}">{{ dashboard.summary.open_findings }}</h3>
+                        <small class="text-muted">{{ 'auditor.kpi.open_findings'|trans({}, 'dashboards') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-2">
-            <div class="card h-100 border-danger">
-                <div class="card-body text-center">
-                    <h3 class="mb-0 {% if dashboard.summary.overdue_actions > 0 %}text-danger{% endif %}">{{ dashboard.summary.overdue_actions }}</h3>
-                    <small class="text-muted">{{ 'auditor.kpi.overdue_actions'|trans({}, 'dashboards') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-danger' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="mb-0 {% if dashboard.summary.overdue_actions > 0 %}text-danger{% endif %}">{{ dashboard.summary.overdue_actions }}</h3>
+                        <small class="text-muted">{{ 'auditor.kpi.overdue_actions'|trans({}, 'dashboards') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4">
-            <div class="card h-100 border-info">
-                <div class="card-body text-center">
-                    <h3 class="mb-0 {% if dashboard.summary.evidence_coverage >= 80 %}text-success{% elseif dashboard.summary.evidence_coverage >= 60 %}text-warning{% else %}text-danger{% endif %}">
-                        {{ dashboard.summary.evidence_coverage }}%
-                    </h3>
-                    <small class="text-muted">{{ 'auditor.kpi.evidence_coverage'|trans({}, 'dashboards') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-info' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <h3 class="mb-0 {% if dashboard.summary.evidence_coverage >= 80 %}text-success{% elseif dashboard.summary.evidence_coverage >= 60 %}text-warning{% else %}text-danger{% endif %}">
+                            {{ dashboard.summary.evidence_coverage }}%
+                        </h3>
+                        <small class="text-muted">{{ 'auditor.kpi.evidence_coverage'|trans({}, 'dashboards') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     <div class="row g-4">
         {# Audit Schedule #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="bi bi-calendar-event me-2" aria-hidden="true"></i>
-                        {{ 'auditor.section.audit_schedule'|trans({}, 'dashboards') }}
-                    </h5>
-                    <a href="{{ path('app_audit_index') }}" class="btn btn-sm btn-outline-primary">
-                        {{ 'action.view_all'|trans({}, 'dashboards') }}
-                    </a>
-                </div>
-                <div class="card-body p-0">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100', 'noPadding': true } %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-calendar-event me-2" aria-hidden="true"></i>
+                            {{ 'auditor.section.audit_schedule'|trans({}, 'dashboards') }}
+                        </h5>
+                        <a href="{{ path('app_audit_index') }}" class="btn btn-sm btn-outline-primary">
+                            {{ 'action.view_all'|trans({}, 'dashboards') }}
+                        </a>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if dashboard.audit_status.upcoming|length > 0 %}
                     <div class="list-group list-group-flush">
                         {% for audit in dashboard.audit_status.upcoming %}
@@ -103,20 +115,22 @@
                     {% else %}
                     <p class="text-muted text-center py-4 mb-0">{{ 'auditor.no_upcoming_audits'|trans({}, 'dashboards') }}</p>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Evidence Collection Status #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-file-earmark-check me-2" aria-hidden="true"></i>
-                        {{ 'auditor.section.evidence_status'|trans({}, 'dashboards') }}
-                    </h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-file-earmark-check me-2" aria-hidden="true"></i>
+                            {{ 'auditor.section.evidence_status'|trans({}, 'dashboards') }}
+                        </h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="text-center mb-3">
                         <div class="display-5 {% if dashboard.evidence_status.coverage_percentage >= 80 %}text-success{% elseif dashboard.evidence_status.coverage_percentage >= 60 %}text-warning{% else %}text-danger{% endif %}">
                             {{ dashboard.evidence_status.coverage_percentage }}%
@@ -138,25 +152,27 @@
                             <small class="text-muted">{{ 'auditor.needs_evidence'|trans({}, 'dashboards') }}</small>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     <div class="row g-4 mt-2">
         {# Compliance Gaps #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
-                        {{ 'auditor.section.compliance_gaps'|trans({}, 'dashboards') }}
-                    </h5>
-                    <a href="{{ path('app_compliance_gap_analysis') }}" class="btn btn-sm btn-outline-warning">
-                        {{ 'action.view_details'|trans({}, 'dashboards') }}
-                    </a>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="bi bi-exclamation-triangle me-2" aria-hidden="true"></i>
+                            {{ 'auditor.section.compliance_gaps'|trans({}, 'dashboards') }}
+                        </h5>
+                        <a href="{{ path('app_compliance_gap_analysis') }}" class="btn btn-sm btn-outline-warning">
+                            {{ 'action.view_details'|trans({}, 'dashboards') }}
+                        </a>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row text-center">
                         <div class="col-4">
                             <div class="p-3 bg-danger bg-opacity-10 rounded">
@@ -177,20 +193,22 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Control Implementation Status #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-toggles me-2" aria-hidden="true"></i>
-                        {{ 'auditor.section.control_status'|trans({}, 'dashboards') }}
-                    </h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-toggles me-2" aria-hidden="true"></i>
+                            {{ 'auditor.section.control_status'|trans({}, 'dashboards') }}
+                        </h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row text-center">
                         <div class="col-4">
                             <div class="p-3 bg-success bg-opacity-10 rounded">
@@ -211,22 +229,24 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     <div class="row g-4 mt-2">
         {# Non-Conformities Summary #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-x-octagon me-2" aria-hidden="true"></i>
-                        {{ 'auditor.section.non_conformities'|trans({}, 'dashboards') }}
-                    </h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-x-octagon me-2" aria-hidden="true"></i>
+                            {{ 'auditor.section.non_conformities'|trans({}, 'dashboards') }}
+                        </h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row text-center">
                         <div class="col-4">
                             <div class="p-3 bg-danger bg-opacity-10 rounded">
@@ -247,20 +267,22 @@
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Corrective Actions #}
         <div class="col-lg-6">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="bi bi-wrench me-2" aria-hidden="true"></i>
-                        {{ 'auditor.section.corrective_actions'|trans({}, 'dashboards') }}
-                    </h5>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-wrench me-2" aria-hidden="true"></i>
+                            {{ 'auditor.section.corrective_actions'|trans({}, 'dashboards') }}
+                        </h5>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row text-center">
                         <div class="col-4">
                             <h3 class="mb-0">{{ dashboard.corrective_actions.total }}</h3>
@@ -277,8 +299,8 @@
                             <small class="text-muted">{{ 'auditor.ca.overdue'|trans({}, 'dashboards') }}</small>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

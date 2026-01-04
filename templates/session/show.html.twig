@@ -20,53 +20,63 @@
     {# Session Overview #}
     <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card border-primary">
-                <div class="card-body text-center">
-                    <div class="card-title text-muted fw-semibold">Aktivitäten (7 Tage)</div>
-                    <p class="display-6 text-primary">{{ total_activities }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'primary' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="card-title text-muted fw-semibold">Aktivitäten (7 Tage)</div>
+                        <p class="display-6 text-primary">{{ total_activities }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4">
-            <div class="card border-info">
-                <div class="card-body text-center">
-                    <div class="card-title text-muted fw-semibold">{{ 'session.unique_ips'|trans({}, 'session') }}</div>
-                    <p class="display-6 text-info">{{ ip_addresses|length }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'info' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="card-title text-muted fw-semibold">{{ 'session.unique_ips'|trans({}, 'session') }}</div>
+                        <p class="display-6 text-info">{{ ip_addresses|length }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4">
-            <div class="card border-success">
-                <div class="card-body text-center">
-                    <div class="card-title text-muted fw-semibold">{{ 'session.unique_devices'|trans({}, 'session') }}</div>
-                    <p class="display-6 text-success">{{ user_agents|length }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'variant': 'bordered', 'borderColor': 'success' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="card-title text-muted fw-semibold">{{ 'session.unique_devices'|trans({}, 'session') }}</div>
+                        <p class="display-6 text-success">{{ user_agents|length }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# IP Addresses #}
-    <div class="card mb-4">
-        <div class="card-header bg-info text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-geo-alt" aria-hidden="true"></i> IP-Adressen
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-info text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-geo-alt" aria-hidden="true"></i> IP-Adressen
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% for ip in ip_addresses %}
                 <code class="me-2">{{ ip }}</code>
             {% endfor %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Activity Timeline #}
-    <div class="card">
-        <div class="card-header bg-primary text-white">
-            <h2 class="mb-0">
-                <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'session.activity_timeline'|trans({}, 'session') }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header bg-primary text-white">
+                <h2 class="mb-0">
+                    <i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'session.activity_timeline'|trans({}, 'session') }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if activity_timeline|length > 0 %}
                 {% for date, daily_activities in activity_timeline|reverse %}
                     <div class="mb-4">
@@ -109,6 +119,6 @@
                     Keine Aktivitäten in den letzten 7 Tagen gefunden.
                 </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 {% endblock %}

@@ -41,11 +41,13 @@
     <div class="row">
         {# Basic Information #}
         <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'user.section.basic_info'|trans({}, 'user') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'user.section.basic_info'|trans({}, 'user') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% embed '_components/_table.html.twig' with {
                         'class': 'table-sm',
                         'noMargin': true
@@ -89,17 +91,19 @@
                             </tr>
                         {% endblock %}
                     {% endembed %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Security & Status #}
         <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header bg-success text-white">
-                    <h2 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'user.section.security_status'|trans({}, 'user') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-success text-white">
+                        <h2 class="mb-0"><i class="bi bi-shield-check" aria-hidden="true"></i> {{ 'user.section.security_status'|trans({}, 'user') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% embed '_components/_table.html.twig' with {
                         'class': 'table-sm',
                         'noMargin': true
@@ -159,19 +163,21 @@
                             </tr>
                         {% endblock %}
                     {% endembed %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Roles & Permissions #}
     <div class="row">
         <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header bg-warning text-dark">
-                    <h2 class="mb-0"><i class="bi bi-shield" aria-hidden="true"></i> {{ 'user.section.system_roles'|trans({}, 'user') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-warning text-dark">
+                        <h2 class="mb-0"><i class="bi bi-shield" aria-hidden="true"></i> {{ 'user.section.system_roles'|trans({}, 'user') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if user.roles|length > 0 %}
                         <ul class="list-group">
                             {% for role in user.roles %}
@@ -201,16 +207,18 @@
                             {{ 'user.message.no_system_roles'|trans({}, 'user') }}
                         </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header bg-info text-white">
-                    <h2 class="mb-0"><i class="bi bi-key" aria-hidden="true"></i> {{ 'user.section.custom_roles'|trans({}, 'user') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-info text-white">
+                        <h2 class="mb-0"><i class="bi bi-key" aria-hidden="true"></i> {{ 'user.section.custom_roles'|trans({}, 'user') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if user.customRoles|length > 0 %}
                         <ul class="list-group">
                             {% for customRole in user.customRoles %}
@@ -233,19 +241,21 @@
                             {{ 'user.message.no_custom_roles_assigned'|trans({}, 'user') }}
                         </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# All Permissions #}
     <div class="row">
         <div class="col-md-12">
-            <div class="card mb-4">
-                <div class="card-header bg-secondary text-white">
-                    <h2 class="mb-0"><i class="bi bi-unlock" aria-hidden="true"></i> {{ 'user.section.all_permissions'|trans({}, 'user') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+                {% block card_header %}
+                    <div class="card-header bg-secondary text-white">
+                        <h2 class="mb-0"><i class="bi bi-unlock" aria-hidden="true"></i> {{ 'user.section.all_permissions'|trans({}, 'user') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% set allPermissions = [] %}
                     {% for customRole in user.customRoles %}
                         {% for permission in customRole.permissions %}
@@ -266,17 +276,19 @@
                             {{ 'user.message.no_specific_permissions'|trans({}, 'user') }}
                         </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Actions #}
-    <div class="card mb-4">
-        <div class="card-header bg-dark text-white">
-            <h2 class="mb-0"><i class="bi bi-gear" aria-hidden="true"></i> {{ 'user.section.actions'|trans({}, 'user') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-dark text-white">
+                <h2 class="mb-0"><i class="bi bi-gear" aria-hidden="true"></i> {{ 'user.section.actions'|trans({}, 'user') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="btn-group" role="group">
                 <a href="{{ path('user_management_edit', {'id': user.id}) }}" class="btn btn-primary">
                     <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'common.edit'|trans({}, 'messages') }}
@@ -302,8 +314,8 @@
                     </button>
                 {% endif %}
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 {# Delete Confirmation Modal #}

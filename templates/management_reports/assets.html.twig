@@ -30,23 +30,25 @@
     {# Total Assets #}
     <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card text-center h-100 bg-primary text-white">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 bg-primary text-white' } %}
+                {% block card_body %}
                     <i class="bi bi-server fs-1" aria-hidden="true"></i>
                     <h3 class="display-3">{{ report.total_assets }}</h3>
                     <p class="mb-0">{{ 'management_reports.assets.total'|trans({}, 'management_reports') }}</p>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-8">
-            <div class="card h-100">
-                <div class="card-header">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-bar-chart" aria-hidden="true"></i>
-                        {{ 'management_reports.assets.by_type'|trans({}, 'management_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-bar-chart" aria-hidden="true"></i>
+                            {{ 'management_reports.assets.by_type'|trans({}, 'management_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {% if report.by_type|length > 0 %}
                     <div class="row">
                         {% for type, count in report.by_type %}
@@ -66,20 +68,22 @@
                         {{ 'management_reports.assets.no_assets'|trans({}, 'management_reports') }}
                     </div>
                     {% endif %}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Classification Breakdown #}
-    <div class="card shadow-sm mb-4">
-        <div class="card-header">
-            <h3 class="h5 mb-0">
-                <i class="bi bi-shield-lock" aria-hidden="true"></i>
-                {{ 'management_reports.assets.by_classification'|trans({}, 'management_reports') }}
-            </h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h3 class="h5 mb-0">
+                    <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                    {{ 'management_reports.assets.by_classification'|trans({}, 'management_reports') }}
+                </h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if report.by_classification|length > 0 %}
             <div class="row">
                 {% for classification, count in report.by_classification %}
@@ -98,19 +102,21 @@
                 {{ 'management_reports.assets.no_classification'|trans({}, 'management_reports') }}
             </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Asset Table #}
     {% if report.assets|length > 0 %}
-    <div class="card shadow-sm mb-4">
-        <div class="card-header">
-            <h3 class="h5 mb-0">
-                <i class="bi bi-list" aria-hidden="true"></i>
-                {{ 'management_reports.assets.inventory'|trans({}, 'management_reports') }}
-            </h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h3 class="h5 mb-0">
+                    <i class="bi bi-list" aria-hidden="true"></i>
+                    {{ 'management_reports.assets.inventory'|trans({}, 'management_reports') }}
+                </h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="table-responsive">
                 <table class="table table-sm table-hover">
                     <thead>
@@ -149,13 +155,13 @@
                 {{ 'management_reports.assets.showing_first'|trans({'%count%': 50, '%total%': report.assets|length}, 'management_reports') }}
             </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Quick Links #}
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4' } %}
+        {% block card_body %}
             <div class="row">
                 <div class="col-md-6">
                     <a href="{{ path('app_asset_index') }}" class="btn btn-outline-primary btn-lg w-100">
@@ -168,8 +174,8 @@
                     </a>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Report Generated Info #}
     <div class="text-muted small text-end">

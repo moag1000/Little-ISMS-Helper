@@ -91,11 +91,13 @@
 </div>
 
 {# Appetite Details #}
-<div class="card mb-4">
-    <div class="card-header">
-        <h2><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_appetite.section.details'|trans({}, 'risk_appetite') }}</h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'risk_appetite.section.details'|trans({}, 'risk_appetite') }}</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         <div class="row">
             <div class="col-md-6">
                 <div class="detail-item">
@@ -140,16 +142,18 @@
             <strong>{{ 'risk_appetite.field.description'|trans({}, 'risk_appetite') }}:</strong>
             <div class="mt-2">{{ appetite.description|nl2br }}</div>
         </div>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 
 {# Risks Exceeding Appetite #}
 {% if risksExceedingAppetite|length > 0 %}
-<div class="card border-danger mb-4">
-    <div class="card-header bg-danger text-white">
-        <h2><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_appetite.risks_exceeding_title'|trans({}, 'risk_appetite') }} ({{ risksExceedingAppetite|length }})</h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with { 'class': 'border-danger mb-4' } %}
+    {% block card_header %}
+        <div class="card-header bg-danger text-white">
+            <h2><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_appetite.risks_exceeding_title'|trans({}, 'risk_appetite') }} ({{ risksExceedingAppetite|length }})</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         <p>{{ 'risk_appetite.risks_exceeding_description'|trans({}, 'risk_appetite') }}</p>
         {% embed '_components/_table.html.twig' with {
             'class': 'table-sm',
@@ -191,17 +195,19 @@
                 {% endfor %}
             {% endblock %}
         {% endembed %}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Risks Within Appetite #}
 {% if risksWithinAppetite|length > 0 %}
-<div class="card border-success mb-4">
-    <div class="card-header bg-success text-white">
-        <h2><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'risk_appetite.risks_within_title'|trans({}, 'risk_appetite') }} ({{ risksWithinAppetite|length }})</h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with { 'class': 'border-success mb-4' } %}
+    {% block card_header %}
+        <div class="card-header bg-success text-white">
+            <h2><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'risk_appetite.risks_within_title'|trans({}, 'risk_appetite') }} ({{ risksWithinAppetite|length }})</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         <p>{{ 'risk_appetite.risks_within_description'|trans({}, 'risk_appetite') }}</p>
         {% embed '_components/_table.html.twig' with {
             'class': 'table-sm',
@@ -259,17 +265,19 @@
                 {% endif %}
             {% endblock %}
         {% endembed %}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Audit Log History #}
 {% if auditLogs is defined and auditLogs|length > 0 %}
-<div class="card mb-4">
-    <div class="card-header">
-        <h2><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'risk_appetite.section.history'|trans({}, 'risk_appetite') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+    {% block card_header %}
+        <div class="card-header">
+            <h2><i class="bi bi-clock-history" aria-hidden="true"></i> {{ 'risk_appetite.section.history'|trans({}, 'risk_appetite') }} ({{ totalAuditLogs }} {{ 'audit_log.entries'|trans({}, 'audit_log') }})</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         <div class="audit-log-list">
             {% for log in auditLogs %}
             <div class="audit-log-entry">
@@ -309,17 +317,19 @@
             <small class="text-muted">{{ 'audit_log.showing_recent'|trans({'%count%': 10, '%total%': totalAuditLogs}, 'audit') }}</small>
         </div>
         {% endif %}
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 {# Delete Section - Admin Only #}
 {% if is_granted('ROLE_ADMIN') %}
-<div class="card border-danger">
-    <div class="card-header bg-danger text-white">
-        <h2><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h2>
-    </div>
-    <div class="card-body">
+{% embed '_components/_card.html.twig' with { 'class': 'border-danger' } %}
+    {% block card_header %}
+        <div class="card-header bg-danger text-white">
+            <h2><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'common.danger_zone'|trans({}, 'messages') }}</h2>
+        </div>
+    {% endblock %}
+    {% block card_body %}
         <p>{{ 'risk_appetite.delete.warning'|trans({}, 'risk_appetite') }}</p>
         <form method="post" action="{{ path('app_risk_appetite_delete', {id: appetite.id}) }}"
               data-controller="ui-actions"
@@ -330,8 +340,8 @@
                 <i class="bi bi-trash" aria-hidden="true"></i> {{ 'common.delete'|trans({}, 'messages') }}
             </button>
         </form>
-    </div>
-</div>
+    {% endblock %}
+{% endembed %}
 {% endif %}
 
 <style>

@@ -30,66 +30,68 @@
     {# Summary Stats #}
     <div class="row mb-4">
         <div class="col-md-2">
-            <div class="card text-center h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100' } %}
+                {% block card_body %}
                     <h3 class="display-5 text-primary">{{ report.total_risks }}</h3>
                     <small class="text-muted">{{ 'management_reports.risk.total_risks'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-2">
-            <div class="card text-center h-100 border-danger">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 border-danger' } %}
+                {% block card_body %}
                     <h3 class="display-5 text-danger">{{ report.level_counts.critical }}</h3>
                     <small class="text-muted">{{ 'management_reports.risk_level.critical'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-2">
-            <div class="card text-center h-100 border-warning">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 border-warning' } %}
+                {% block card_body %}
                     <h3 class="display-5 text-warning">{{ report.level_counts.high }}</h3>
                     <small class="text-muted">{{ 'management_reports.risk_level.high'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-2">
-            <div class="card text-center h-100 border-info">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 border-info' } %}
+                {% block card_body %}
                     <h3 class="display-5 text-info">{{ report.level_counts.medium }}</h3>
                     <small class="text-muted">{{ 'management_reports.risk_level.medium'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-2">
-            <div class="card text-center h-100 border-success">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100 border-success' } %}
+                {% block card_body %}
                     <h3 class="display-5 text-success">{{ report.level_counts.low }}</h3>
                     <small class="text-muted">{{ 'management_reports.risk_level.low'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-2">
-            <div class="card text-center h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'text-center h-100' } %}
+                {% block card_body %}
                     <h3 class="display-5 text-secondary">{{ report.average_risk_score }}</h3>
                     <small class="text-muted">{{ 'management_reports.risk.avg_score'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     <div class="row">
         {# Treatment Plans Summary #}
         <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-clipboard-check" aria-hidden="true"></i>
-                        {{ 'management_reports.risk.treatment_plans'|trans({}, 'management_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm' } %}
+                {% block card_header %}
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-clipboard-check" aria-hidden="true"></i>
+                            {{ 'management_reports.risk.treatment_plans'|trans({}, 'management_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row text-center">
                         <div class="col-4">
                             <h4 class="text-primary">{{ report.treatment_plans.total }}</h4>
@@ -104,20 +106,22 @@
                             <small class="text-muted">{{ 'management_reports.treatment_status.overdue'|trans({}, 'management_reports') }}</small>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Risk by Category #}
         <div class="col-md-8 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-header">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-pie-chart" aria-hidden="true"></i>
-                        {{ 'management_reports.risk.by_category'|trans({}, 'management_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-pie-chart" aria-hidden="true"></i>
+                            {{ 'management_reports.risk.by_category'|trans({}, 'management_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row">
                         {% for category, risks in report.by_category %}
                         <div class="col-md-4 mb-2">
@@ -128,20 +132,22 @@
                         </div>
                         {% endfor %}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Critical and High Risks Table #}
-    <div class="card shadow-sm mb-4">
-        <div class="card-header bg-danger text-white">
-            <h3 class="h5 mb-0">
-                <i class="bi bi-exclamation-octagon" aria-hidden="true"></i>
-                {{ 'management_reports.risk.critical_high'|trans({}, 'management_reports') }}
-            </h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-danger text-white">
+                <h3 class="h5 mb-0">
+                    <i class="bi bi-exclamation-octagon" aria-hidden="true"></i>
+                    {{ 'management_reports.risk.critical_high'|trans({}, 'management_reports') }}
+                </h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% set critical_high_risks = report.by_level.critical|merge(report.by_level.high) %}
             {% if critical_high_risks|length > 0 %}
             <div class="table-responsive">
@@ -184,18 +190,20 @@
                 {{ 'management_reports.risk.no_critical_high'|trans({}, 'management_reports') }}
             </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Risk Trends #}
-    <div class="card shadow-sm mb-4">
-        <div class="card-header">
-            <h3 class="h5 mb-0">
-                <i class="bi bi-graph-up" aria-hidden="true"></i>
-                {{ 'management_reports.risk.trends_12m'|trans({}, 'management_reports') }}
-            </h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm mb-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h3 class="h5 mb-0">
+                    <i class="bi bi-graph-up" aria-hidden="true"></i>
+                    {{ 'management_reports.risk.trends_12m'|trans({}, 'management_reports') }}
+                </h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="table-responsive">
                 <table class="table table-sm">
                     <thead>
@@ -218,8 +226,8 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Report Generated Info #}
     <div class="text-muted small text-end">

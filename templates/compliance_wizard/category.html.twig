@@ -21,8 +21,8 @@
     {# Header #}
     <div class="row mb-4">
         <div class="col-lg-8">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-0 shadow-sm' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-start">
                         <div>
                             <h1 class="h3 mb-2">
@@ -48,12 +48,12 @@
                             {% include '_components/_badge.html.twig' with { variant: status_variant, content: ('wizard.status.' ~ category.status)|trans } %}
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-lg-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-0 shadow-sm h-100' } %}
+                {% block card_body %}
                     <h2 class="h6 mb-3">{{ 'wizard.category_summary'|trans }}</h2>
                     <ul class="list-unstyled mb-0">
                         <li class="mb-2">
@@ -65,17 +65,19 @@
                             {{ category.gap_count }} {{ 'wizard.gaps_identified'|trans }}
                         </li>
                     </ul>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Checks List #}
-    <div class="card">
-        <div class="card-header">
-            <h2 class="card-title h5 mb-0">{{ 'wizard.detailed_checks'|trans }}</h2>
-        </div>
-        <div class="card-body p-0">
+    {% embed '_components/_card.html.twig' with { 'noPadding': true } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="card-title h5 mb-0">{{ 'wizard.detailed_checks'|trans }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
@@ -160,18 +162,20 @@
                     </tbody>
                 </table>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Gaps Summary #}
     {% if category.gaps|length > 0 %}
-    <div class="card mt-4">
-        <div class="card-header bg-danger bg-opacity-10">
-            <h2 class="card-title h5 mb-0 text-danger">
-                <i class="bi bi-flag me-2" aria-hidden="true"></i>{{ 'wizard.gaps_to_address'|trans }}
-            </h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-danger bg-opacity-10">
+                <h2 class="card-title h5 mb-0 text-danger">
+                    <i class="bi bi-flag me-2" aria-hidden="true"></i>{{ 'wizard.gaps_to_address'|trans }}
+                </h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row">
                 {% for gap in category.gaps %}
                 <div class="col-md-6 mb-3">
@@ -202,8 +206,8 @@
                 </div>
                 {% endfor %}
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Navigation #}
