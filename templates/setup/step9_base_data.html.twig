@@ -59,7 +59,7 @@
                                                     <i class="bi bi-puzzle me-1" aria-hidden="true"></i>
                                                     {{ 'setup.step9.modules'|trans({}, 'setup') }}:
                                                     {% for module in data.required_modules %}
-                                                        <span class="badge bg-secondary">{{ module }}</span>
+                                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: module } %}
                                                     {% endfor %}
                                                 </small>
                                             </div>

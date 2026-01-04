@@ -66,13 +66,13 @@
                                                     <p class="h6 mb-1">
                                                         <i class="bi bi-{{ module.icon }} me-2" aria-hidden="true"></i>
                                                         {{ module.name }}
-                                                        <span class="badge bg-warning text-dark ms-2">{{ 'setup.step7.badge.required'|trans({}, 'setup') }}</span>
+                                                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'setup.step7.badge.required'|trans({}, 'setup'), class: 'text-dark ms-2' } %}
                                                     </p>
                                                     <p class="text-muted mb-1">{{ module.description }}</p>
                                                     <small class="text-muted">
                                                         <strong>{{ 'setup.step7.entities'|trans({}, 'setup') }}</strong>
                                                         {% for entity in module.entities %}
-                                                            <span class="badge bg-secondary">{{ entity }}</span>
+                                                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: entity } %}
                                                         {% endfor %}
                                                     </small>
                                                 </div>
@@ -104,14 +104,14 @@
                                                             <i class="bi bi-{{ module.icon }} me-2" aria-hidden="true"></i>
                                                             {{ module.name }}
                                                             {% if recommended_modules is defined and key in recommended_modules %}
-                                                                <span class="badge bg-info ms-2">{{ 'setup.step7.badge.recommended'|trans({}, 'setup') }}</span>
+                                                                {% include '_components/_badge.html.twig' with { variant: 'info', content: 'setup.step7.badge.recommended'|trans({}, 'setup'), class: 'ms-2' } %}
                                                             {% endif %}
                                                         </p>
                                                         <p class="text-muted mb-1">{{ module.description }}</p>
                                                         <small class="text-muted">
                                                             <strong>{{ 'setup.step7.entities'|trans({}, 'setup') }}</strong>
                                                             {% for entity in module.entities %}
-                                                                <span class="badge bg-secondary">{{ entity }}</span>
+                                                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: entity } %}
                                                             {% endfor %}
                                                         </small>
                                                         {% if module.dependencies|length > 0 %}
@@ -120,7 +120,7 @@
                                                                     <i class="bi bi-link me-1" aria-hidden="true"></i>
                                                                     <strong>{{ 'setup.step7.dependencies'|trans({}, 'setup') }}</strong>
                                                                     {% for dep in module.dependencies %}
-                                                                        <span class="badge bg-warning text-dark">{{ all_modules[dep].name }}</span>
+                                                                        {% include '_components/_badge.html.twig' with { variant: 'warning', content: all_modules[dep].name, class: 'text-dark' } %}
                                                                     {% endfor %}
                                                                 </small>
                                                             </div>
@@ -131,7 +131,7 @@
                                                                     <i class="bi bi-arrow-right me-1" aria-hidden="true"></i>
                                                                     <strong>{{ 'setup.step7.required_by'|trans({}, 'setup') }}</strong>
                                                                     {% for dep in dependency_graph[key].dependents %}
-                                                                        <span class="badge bg-info">{{ all_modules[dep].name }}</span>
+                                                                        {% include '_components/_badge.html.twig' with { variant: 'info', content: all_modules[dep].name } %}
                                                                     {% endfor %}
                                                                 </small>
                                                             </div>

@@ -35,7 +35,7 @@
                 {% block card_body %}
                     {# Audit Number #}
                     <div class="mb-3">
-                        <span class="badge bg-dark fs-6">{{ audit.auditNumber }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'dark', size: 'lg', content: audit.auditNumber } %}
                     </div>
 
                     {# Scope #}
@@ -43,9 +43,7 @@
                         <h3><i class="bi bi-bullseye" aria-hidden="true"></i> {{ 'audit.scope'|trans({}, 'audit') }}</h3>
                         <p class="text-muted">{{ audit.scope ? audit.scope|nl2br : '-' }}</p>
                         <div class="mt-2">
-                            <span class="badge bg-secondary">
-                                {{ ('audit.scope_type.' ~ audit.scopeType)|trans({}, 'audit') }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('audit.scope_type.' ~ audit.scopeType)|trans({}, 'audit') } %}
                         </div>
 
                         {# Corporate Audit Subsidiaries #}
@@ -56,9 +54,7 @@
                             </div>
                             <div class="d-flex flex-wrap gap-2">
                                 {% for subsidiary in audit.auditedSubsidiaries %}
-                                <span class="badge bg-primary">
-                                    {{ subsidiary.name }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: 'primary', content: subsidiary.name } %}
                                 {% endfor %}
                             </div>
                             <small class="text-muted d-block mt-2">
@@ -76,9 +72,7 @@
                             </div>
                             <div class="d-flex flex-wrap gap-2">
                                 {% for asset in audit.scopedAssets %}
-                                <span class="badge bg-info">
-                                    {{ asset.name }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: 'info', content: asset.name } %}
                                 {% endfor %}
                             </div>
                         </div>
@@ -94,9 +88,7 @@
                             </div>
                             <p>
                                 {% if audit.scopedFramework %}
-                                    <span class="badge bg-primary fs-6">
-                                        {{ audit.scopedFramework.name }}
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'primary', size: 'lg', content: audit.scopedFramework.name } %}
                                 {% else %}
                                     <span class="text-muted">-</span>
                                 {% endif %}
@@ -271,7 +263,7 @@
                         <dt class="col-sm-6 text-muted">{{ 'audit.field.scoped_framework'|trans({}, 'audit') }}</dt>
                         <dd class="col-sm-6 text-end">
                             {% if audit.scopedFramework %}
-                                <span class="badge bg-primary">{{ audit.scopedFramework.name }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'primary', content: audit.scopedFramework.name } %}
                             {% else %}
                                 <span class="text-muted">-</span>
                             {% endif %}
@@ -279,7 +271,7 @@
 
                         <dt class="col-sm-6 text-muted">{{ 'audit.field.scope_type'|trans({}, 'audit') }}</dt>
                         <dd class="col-sm-6 text-end">
-                            <span class="badge bg-secondary">{{ ('audit.scope_type.' ~ audit.scopeType)|trans({}, 'audit') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('audit.scope_type.' ~ audit.scopeType)|trans({}, 'audit') } %}
                         </dd>
 
                         {% if audit.reportDate %}

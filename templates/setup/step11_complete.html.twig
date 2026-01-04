@@ -83,7 +83,7 @@
                             <div class="row g-2">
                                 {% for moduleKey in selected_modules %}
                                     <div class="col-md-4">
-                                        <span class="badge bg-primary">{{ moduleKey }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'primary', content: moduleKey } %}
                                     </div>
                                 {% endfor %}
                             </div>

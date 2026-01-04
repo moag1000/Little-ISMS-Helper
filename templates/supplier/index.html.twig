@@ -144,13 +144,11 @@
                             {{ inheritance.small_badge(supplier, currentTenant) }}
                         </td>
                         <td>{{ supplier.serviceProvided|slice(0, 50) }}...</td>
-                        <td><span class="badge badge-{{ supplier.criticality }}">{{ supplier.criticality|upper }}</span></td>
+                        <td>{% include '_components/_badge.html.twig' with { variant: supplier.criticality == 'critical' ? 'danger' : (supplier.criticality == 'high' ? 'warning' : (supplier.criticality == 'medium' ? 'info' : 'secondary')), content: supplier.criticality|upper } %}</td>
                         <td><span class="{{ badge_status(supplier.status) }}">{{ supplier.status }}</span></td>
                         <td>
                             {% set riskScore = supplier.calculateRiskScore() %}
-                            <span class="badge badge-{{ riskScore > 70 ? 'critical' : (riskScore > 50 ? 'high' : (riskScore > 30 ? 'medium' : 'low')) }}">
-                                {{ riskScore }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: riskScore > 70 ? 'danger' : (riskScore > 50 ? 'warning' : (riskScore > 30 ? 'info' : 'secondary')), content: riskScore } %}
                         </td>
                         <td>{{ supplier.hasISO27001 ? '✓' : '✗' }}</td>
                         <td>

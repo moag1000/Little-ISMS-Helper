@@ -16,9 +16,7 @@
         <h1>
             {{ asset.name }}
             {% if isInherited is defined and isInherited %}
-                <span class="badge bg-info ms-2">
-                    <i class="bi bi-building" aria-hidden="true"></i> {{ 'corporate.inherited'|trans({}, 'messages') }}
-                </span>
+                {% include '_components/_badge.html.twig' with { variant: 'info', class: 'ms-2', icon: 'bi-building', content: 'corporate.inherited'|trans({}, 'messages') } %}
             {% endif %}
         </h1>
         <div class="actions">
@@ -212,9 +210,7 @@
                                         {{ 'asset.label.confidentiality'|trans({}, 'asset') }}
                                     </div>
                                     <div class="protection-level">
-                                        <span class="badge bg-{{ levelColors[analysis.confidentiality.level]|default('secondary') }}">
-                                            {{ ('bcm.level.' ~ analysis.confidentiality.level)|trans({}, 'bcm') }}
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: levelColors[analysis.confidentiality.level]|default('secondary'), content: ('bcm.level.' ~ analysis.confidentiality.level)|trans({}, 'bcm') } %}
                                         <span class="value-display">{{ analysis.confidentiality.value }}/5</span>
                                     </div>
                                     {% if analysis.confidentiality.recommendation %}
@@ -240,9 +236,7 @@
                                         {{ 'asset.label.integrity'|trans({}, 'asset') }}
                                     </div>
                                     <div class="protection-level">
-                                        <span class="badge bg-{{ levelColors[analysis.integrity.level]|default('secondary') }}">
-                                            {{ ('bcm.level.' ~ analysis.integrity.level)|trans({}, 'bcm') }}
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: levelColors[analysis.integrity.level]|default('secondary'), content: ('bcm.level.' ~ analysis.integrity.level)|trans({}, 'bcm') } %}
                                         <span class="value-display">{{ analysis.integrity.value }}/5</span>
                                     </div>
                                     {% if analysis.integrity.recommendation %}
@@ -268,9 +262,7 @@
                                         {{ 'asset.label.availability'|trans({}, 'asset') }}
                                     </div>
                                     <div class="protection-level">
-                                        <span class="badge bg-{{ levelColors[analysis.availability.level]|default('secondary') }}">
-                                            {{ ('bcm.level.' ~ analysis.availability.level)|trans({}, 'bcm') }}
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: levelColors[analysis.availability.level]|default('secondary'), content: ('bcm.level.' ~ analysis.availability.level)|trans({}, 'bcm') } %}
                                         <span class="value-display">{{ analysis.availability.value }}/5</span>
                                     </div>
                                     {% if analysis.availability.recommendation %}
@@ -293,9 +285,7 @@
                         {% if analysis.overallLevel is defined %}
                             <div class="overall-protection">
                                 <strong>{{ 'asset.protection.overall_level'|trans({}, 'asset') }}:</strong>
-                                <span class="badge bg-{{ levelColors[analysis.overallLevel]|default('secondary') }} ms-2">
-                                    {{ ('bcm.level.' ~ analysis.overallLevel)|trans({}, 'bcm') }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: levelColors[analysis.overallLevel]|default('secondary'), class: 'ms-2', content: ('bcm.level.' ~ analysis.overallLevel)|trans({}, 'bcm') } %}
                             </div>
                         {% endif %}
 

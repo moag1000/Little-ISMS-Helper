@@ -38,11 +38,13 @@
 
     {# Mappings Requiring Review #}
     {% if mappings_requiring_review is not empty %}
-    <div class="card mb-4">
-        <div class="card-header bg-warning">
-            <h2 class="mb-0"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Benötigt dringend Review ({{ mappings_requiring_review|length }})</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-warning">
+                <h2 class="mb-0"><i class="bi bi-exclamation-triangle text-warning" aria-hidden="true"></i> Benötigt dringend Review ({{ mappings_requiring_review|length }})</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover',
                 'noMargin': true,
@@ -72,38 +74,32 @@
                             <small class="text-muted d-block">{{ mapping.targetRequirement.framework.code }}</small>
                         </td>
                         <td class="text-center">
-                            <span class="badge bg-secondary">{{ mapping.mappingPercentage }}%</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: mapping.mappingPercentage ~ '%' } %}
                         </td>
                         <td class="text-center">
                             {% if mapping.calculatedPercentage is not null %}
-                                <span class="badge {% if mapping.calculatedPercentage >= 70 %}bg-success{% elseif mapping.calculatedPercentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
-                                    {{ mapping.calculatedPercentage }}%
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: mapping.calculatedPercentage >= 70 ? 'success' : (mapping.calculatedPercentage >= 50 ? 'warning' : 'danger'), content: mapping.calculatedPercentage ~ '%' } %}
                             {% else %}
                                 <span class="text-muted">-</span>
                             {% endif %}
                         </td>
                         <td class="text-center">
                             {% if mapping.analysisConfidence is not null %}
-                                <span class="badge {% if mapping.analysisConfidence >= 80 %}bg-success{% elseif mapping.analysisConfidence >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
-                                    {{ mapping.analysisConfidence }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: mapping.analysisConfidence >= 80 ? 'success' : (mapping.analysisConfidence >= 60 ? 'warning' : 'danger'), content: mapping.analysisConfidence } %}
                             {% else %}
                                 <span class="text-muted">-</span>
                             {% endif %}
                         </td>
                         <td class="text-center">
                             {% if mapping.qualityScore is not null %}
-                                <span class="badge {% if mapping.qualityScore >= 75 %}bg-success{% elseif mapping.qualityScore >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
-                                    {{ mapping.qualityScore }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: mapping.qualityScore >= 75 ? 'success' : (mapping.qualityScore >= 50 ? 'warning' : 'danger'), content: mapping.qualityScore } %}
                             {% else %}
                                 <span class="text-muted">-</span>
                             {% endif %}
                         </td>
                         <td class="text-center">
                             {% if mapping.unresolvedGapCount > 0 %}
-                                <span class="badge bg-warning">{{ mapping.unresolvedGapCount }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: mapping.unresolvedGapCount } %}
                             {% else %}
                                 <span class="text-success">✓</span>
                             {% endif %}
@@ -117,17 +113,19 @@
                     {% endfor %}
                 {% endblock %}
             {% endembed %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Low Confidence Mappings #}
     {% if low_confidence_mappings is not empty %}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h3 class="mb-0"><i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i> Niedriges Confidence (<70) ({{ low_confidence_mappings|length }})</h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h3 class="mb-0"><i class="bi bi-exclamation-circle text-danger" aria-hidden="true"></i> Niedriges Confidence (<70) ({{ low_confidence_mappings|length }})</h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover',
                 'noMargin': true,
@@ -154,10 +152,10 @@
                             {{ mapping.targetRequirement.requirementId }}
                         </td>
                         <td class="text-center">
-                            <span class="badge bg-warning">{{ mapping.calculatedPercentage }}%</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: mapping.calculatedPercentage ~ '%' } %}
                         </td>
                         <td class="text-center">
-                            <span class="badge bg-danger">{{ mapping.analysisConfidence }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: mapping.analysisConfidence } %}
                         </td>
                         <td class="text-center">
                             {% if mapping.textualSimilarity is not null %}
@@ -167,9 +165,7 @@
                             {% endif %}
                         </td>
                         <td class="text-center">
-                            <span class="badge bg-{{ mapping.reviewStatusBadgeClass }}">
-                                {{ mapping.reviewStatus }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: mapping.reviewStatusBadgeClass, content: mapping.reviewStatus } %}
                         </td>
                         <td>
                             <a href="{{ path('app_mapping_quality_review', {id: mapping.id}) }}" class="btn btn-sm btn-primary">
@@ -183,17 +179,19 @@
             {% if low_confidence_mappings|length > 20 %}
                 <p class="text-muted text-center mb-0">... und {{ low_confidence_mappings|length - 20 }} weitere</p>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Discrepancies (Large differences between old and calculated) #}
     {% if discrepancies is not empty %}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h3 class="mb-0">🔍 Große Diskrepanzen (≥20% Unterschied) ({{ discrepancies|length }})</h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h3 class="mb-0">🔍 Große Diskrepanzen (≥20% Unterschied) ({{ discrepancies|length }})</h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <p class="text-muted">Mappings wo der neu berechnete Prozentsatz stark vom ursprünglichen abweicht</p>
             {% embed '_components/_table.html.twig' with {
                 'class': 'table-hover',
@@ -222,12 +220,10 @@
                             {{ mapping.targetRequirement.requirementId }}
                         </td>
                         <td class="text-center">
-                            <span class="badge bg-secondary">{{ mapping.mappingPercentage }}%</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: mapping.mappingPercentage ~ '%' } %}
                         </td>
                         <td class="text-center">
-                            <span class="badge {% if mapping.qualityScore >= 75 %}bg-success{% elseif mapping.calculatedPercentage >= 50 %}bg-warning{% else %}bg-danger{% endif %}">
-                                {{ mapping.calculatedPercentage }}%
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: mapping.qualityScore >= 75 ? 'success' : (mapping.calculatedPercentage >= 50 ? 'warning' : 'danger'), content: mapping.calculatedPercentage ~ '%' } %}
                         </td>
                         <td class="text-center">
                             <strong class="{% if diff > 0 %}text-success{% else %}text-danger{% endif %}">
@@ -235,9 +231,7 @@
                             </strong>
                         </td>
                         <td class="text-center">
-                            <span class="badge {% if mapping.qualityScore >= 75 %}bg-success{% elseif mapping.analysisConfidence >= 60 %}bg-warning{% else %}bg-danger{% endif %}">
-                                {{ mapping.analysisConfidence }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: mapping.qualityScore >= 75 ? 'success' : (mapping.analysisConfidence >= 60 ? 'warning' : 'danger'), content: mapping.analysisConfidence } %}
                         </td>
                         <td>
                             <a href="{{ path('app_mapping_quality_review', {id: mapping.id}) }}" class="btn btn-sm btn-primary">
@@ -251,8 +245,8 @@
             {% if discrepancies|length > 15 %}
                 <p class="text-muted text-center mb-0">... und {{ discrepancies|length - 15 }} weitere</p>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
     {% endif %}
 
     {# Empty State #}

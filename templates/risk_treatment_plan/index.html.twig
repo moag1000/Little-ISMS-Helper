@@ -135,9 +135,7 @@
                 <td>
                     <strong>{{ plan.title }}</strong>
                     {% if plan.isOverdue() %}
-                        <span class="badge bg-danger ms-2">
-                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i> {{ 'risk_treatment_plan.overdue'|trans({}, 'risk_treatment_plan') }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-2', icon: 'bi-exclamation-triangle', content: 'risk_treatment_plan.overdue'|trans({}, 'risk_treatment_plan') } %}
                     {% endif %}
                 </td>
                 <td>
@@ -148,14 +146,10 @@
                     {% endif %}
                 </td>
                 <td class="text-center">
-                    <span class="badge bg-{{ plan.status == 'completed' ? 'success' : (plan.status == 'in_progress' ? 'primary' : (plan.status == 'cancelled' ? 'secondary' : (plan.status == 'on_hold' ? 'warning' : 'info'))) }}">
-                        {{ ('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan')|upper }}
-                    </span>
+                    {% include '_components/_badge.html.twig' with { variant: plan.status == 'completed' ? 'success' : (plan.status == 'in_progress' ? 'primary' : (plan.status == 'cancelled' ? 'secondary' : (plan.status == 'on_hold' ? 'warning' : 'info'))), content: ('risk_treatment_plan.status.' ~ plan.status)|trans({}, 'risk_treatment_plan')|upper } %}
                 </td>
                 <td class="text-center">
-                    <span class="badge bg-{{ plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : (plan.priority == 'medium' ? 'info' : 'secondary')) }}">
-                        {{ ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan')|upper }}
-                    </span>
+                    {% include '_components/_badge.html.twig' with { variant: plan.priority == 'critical' ? 'danger' : (plan.priority == 'high' ? 'warning' : (plan.priority == 'medium' ? 'info' : 'secondary')), content: ('risk_treatment_plan.priority.' ~ plan.priority)|trans({}, 'risk_treatment_plan')|upper } %}
                 </td>
                 <td>
                     {% if plan.responsiblePerson %}

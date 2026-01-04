@@ -11,7 +11,7 @@
 
             <dt class="col-sm-4">{{ 'asset.field.type'|trans({}, 'asset') }}:</dt>
             <dd class="col-sm-8">
-                <span class="badge bg-secondary">{{ asset.assetType }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: asset.assetType } %}
             </dd>
 
             <dt class="col-sm-4">{{ 'asset.field.owner'|trans({}, 'asset') }}:</dt>
@@ -24,9 +24,10 @@
 
             <dt class="col-sm-4">{{ 'asset.field.status'|trans({}, 'asset') }}:</dt>
             <dd class="col-sm-8">
-                <span class="badge bg-{{ asset.status == 'active' ? 'success' : 'secondary' }}">
-                    {{ ('asset.status.' ~ asset.status)|trans({}, 'asset') }}
-                </span>
+                {% include '_components/_badge.html.twig' with {
+                    variant: asset.status == 'active' ? 'success' : 'secondary',
+                    content: ('asset.status.' ~ asset.status)|trans({}, 'asset')
+                } %}
             </dd>
         </dl>
     </div>

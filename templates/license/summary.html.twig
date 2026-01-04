@@ -175,7 +175,7 @@
                             {% endblock %}
                             {% block table_body %}
                                 <tr>
-                                    <td><span class="badge bg-success"<><i class="bi bi-check-circle" aria-hidden="true"></i> Erlaubt</span></td>
+                                    <td>{% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle', content: 'Erlaubt' } %}</td>
                                     <td><small>Permissive Lizenzen (MIT, BSD, Apache)</small></td>
                                     <td class="text-end"><strong>{{ stats.allowed }}</strong></td>
                                     <td class="text-end">{{ (stats.allowed / stats.total * 100)|round(1) }}%</td>
@@ -189,7 +189,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><span class="badge bg-warning"<><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Eingeschränkt</span></td>
+                                    <td>{% include '_components/_badge.html.twig' with { variant: 'warning', icon: 'bi-exclamation-triangle', content: 'Eingeschränkt' } %}</td>
                                     <td><small>Weak copyleft (MPL, EPL, CC-BY)</small></td>
                                     <td class="text-end"><strong>{{ stats.restricted }}</strong></td>
                                     <td class="text-end">{{ (stats.restricted / stats.total * 100)|round(1) }}%</td>
@@ -203,7 +203,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><span class="badge bg-info"<><i class="bi bi-arrow-repeat" aria-hidden="true"></i> Copyleft</span></td>
+                                    <td>{% include '_components/_badge.html.twig' with { variant: 'info', icon: 'bi-arrow-repeat', content: 'Copyleft' } %}</td>
                                     <td><small>Strong copyleft (GPL, LGPL, AGPL)</small></td>
                                     <td class="text-end"><strong>{{ stats.copyleft }}</strong></td>
                                     <td class="text-end">{{ (stats.copyleft / stats.total * 100)|round(1) }}%</td>
@@ -217,7 +217,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><span class="badge bg-danger"<><i class="bi bi-x-circle" aria-hidden="true"></i> Nicht erlaubt</span></td>
+                                    <td>{% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle', content: 'Nicht erlaubt' } %}</td>
                                     <td><small>Non-commercial Lizenzen</small></td>
                                     <td class="text-end"><strong>{{ stats.not_allowed }}</strong></td>
                                     <td class="text-end">{{ (stats.not_allowed / stats.total * 100)|round(1) }}%</td>
@@ -231,7 +231,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><span class="badge bg-secondary">❓ Unbekannt</span></td>
+                                    <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'Unbekannt' } %}</td>
                                     <td><small>Manuelle Prüfung erforderlich</small></td>
                                     <td class="text-end"><strong>{{ stats.unknown }}</strong></td>
                                     <td class="text-end">{{ (stats.unknown / stats.total * 100)|round(1) }}%</td>

@@ -49,9 +49,7 @@
                                 <div class="fw-bold fs-6 mb-2">{{ 'bcm.field.confidentiality'|trans({}, 'bcm') }}</div>
                                 {% set confLevel = analysis.confidentiality.level|default('normal') %}
                                 {% set levelColors = {'very_high': 'danger', 'high': 'warning', 'normal': 'info', 'low': 'secondary'} %}
-                                <span class="badge bg-{{ levelColors[confLevel]|default('secondary') }} fs-5">
-                                    {{ ('bcm.level.' ~ confLevel)|trans({}, 'bcm') }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: levelColors[confLevel]|default('secondary'), class: 'fs-5', content: ('bcm.level.' ~ confLevel)|trans({}, 'bcm') } %}
                             </div>
                         {% endblock %}
                     {% endembed %}
@@ -65,9 +63,7 @@
                             <div class="text-center">
                                 <div class="fw-bold fs-6 mb-2">{{ 'bcm.field.integrity'|trans({}, 'bcm') }}</div>
                                 {% set intLevel = analysis.integrity.level|default('normal') %}
-                                <span class="badge bg-{{ levelColors[intLevel]|default('secondary') }} fs-5">
-                                    {{ ('bcm.level.' ~ intLevel)|trans({}, 'bcm') }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: levelColors[intLevel]|default('secondary'), class: 'fs-5', content: ('bcm.level.' ~ intLevel)|trans({}, 'bcm') } %}
                             </div>
                         {% endblock %}
                     {% endembed %}
@@ -81,9 +77,7 @@
                             <div class="text-center">
                                 <div class="fw-bold fs-6 mb-2">{{ 'bcm.field.availability'|trans({}, 'bcm') }}</div>
                                 {% set availLevel = analysis.availability.level|default('normal') %}
-                                <span class="badge bg-{{ levelColors[availLevel]|default('secondary') }} fs-5">
-                                    {{ ('bcm.level.' ~ availLevel)|trans({}, 'bcm') }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: levelColors[availLevel]|default('secondary'), class: 'fs-5', content: ('bcm.level.' ~ availLevel)|trans({}, 'bcm') } %}
                             </div>
                         {% endblock %}
                     {% endembed %}
@@ -132,9 +126,7 @@
                         </td>
                         <td>
                             {% set critColors = {'critical': 'danger', 'high': 'warning', 'medium': 'info', 'low': 'secondary'} %}
-                            <span class="badge bg-{{ critColors[process.criticality]|default('secondary') }}">
-                                {{ ('bcm.criticality.' ~ process.criticality)|trans({}, 'bcm') }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: critColors[process.criticality]|default('secondary'), content: ('bcm.criticality.' ~ process.criticality)|trans({}, 'bcm') } %}
                         </td>
                         <td>{{ process.rto|default('-') }}h</td>
                         <td>{{ process.rpo|default('-') }}h</td>
@@ -190,9 +182,7 @@
                         <dd class="col-sm-8">
                             {% if asset.availabilityValue %}
                                 {% set availColors = {1: 'secondary', 2: 'success', 3: 'info', 4: 'warning', 5: 'danger'} %}
-                                <span class="badge bg-{{ availColors[asset.availabilityValue]|default('secondary') }}">
-                                    {{ asset.availabilityValue }}/5
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: availColors[asset.availabilityValue]|default('secondary'), content: asset.availabilityValue ~ '/5' } %}
                             {% else %}
                                 -
                             {% endif %}

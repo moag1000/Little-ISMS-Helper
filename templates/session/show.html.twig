@@ -73,14 +73,14 @@
                         <div class="text-muted fw-semibold">
                             <i class="bi bi-calendar" aria-hidden="true"></i>
                             {{ date|date('d.m.Y') }}
-                            <span class="badge bg-secondary">{{ daily_activities|length }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: daily_activities|length } %}
                         </div>
                         <ul class="list-group">
                             {% for activity in daily_activities %}
                                 <li class="list-group-item">
                                     <div class="d-flex w-100 justify-content-between align-items-start">
                                         <div>
-                                            <span class="badge bg-primary">{{ activity.action }}</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'primary', content: activity.action } %}
                                             {% if activity.entityType %}
                                                 <span class="text-muted">
                                                     {{ activity.entityType }}

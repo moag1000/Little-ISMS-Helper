@@ -102,7 +102,7 @@
                         <dt class="col-sm-4">{{ 'user.field.roles'|trans({}, 'user') }}</dt>
                         <dd class="col-sm-8">
                             {% for role in user.roles %}
-                                <span class="badge bg-secondary me-1">{{ role }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: role, class: 'me-1' } %}
                             {% endfor %}
                         </dd>
 
@@ -139,7 +139,7 @@
                 <div class="card-body">
                     {% if user.hasMfaEnabled %}
                         <p class="mb-2">
-                            <span class="badge bg-success">{{ 'user.profile.mfa.enabled'|trans({}, 'user') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'user.profile.mfa.enabled'|trans({}, 'user') } %}
                         </p>
                         <p class="text-muted mb-2">
                             {{ 'user.profile.mfa.active_tokens'|trans({'%count%': user.activeMfaTokenCount}, 'user') }}

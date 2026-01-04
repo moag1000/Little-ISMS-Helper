@@ -121,9 +121,7 @@
                     </strong>
                 </td>
                 <td class="text-center">
-                    <span class="badge bg-{{ appetite.maxAcceptableRisk <= 6 ? 'success' : (appetite.maxAcceptableRisk <= 12 ? 'warning' : 'danger') }} fs-6">
-                        {{ appetite.maxAcceptableRisk }}
-                    </span>
+                    {% include '_components/_badge.html.twig' with { variant: appetite.maxAcceptableRisk <= 6 ? 'success' : (appetite.maxAcceptableRisk <= 12 ? 'warning' : 'danger'), content: appetite.maxAcceptableRisk, class: 'fs-6' } %}
                     <br>
                     <small class="text-muted">({{ 'risk_appetite.scale'|trans({}, 'risk_appetite') }}: 1-25)</small>
                 </td>
@@ -132,12 +130,12 @@
                 </td>
                 <td class="text-center">
                     {% if appetite.isActive() %}
-                        <span class="badge bg-success">{{ 'risk_appetite.status.active'|trans({}, 'risk_appetite') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'risk_appetite.status.active'|trans({}, 'risk_appetite') } %}
                     {% else %}
-                        <span class="badge bg-secondary">{{ 'risk_appetite.status.inactive'|trans({}, 'risk_appetite') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'risk_appetite.status.inactive'|trans({}, 'risk_appetite') } %}
                     {% endif %}
                     {% if appetite.isApproved() %}
-                        <br><span class="badge bg-info mt-1">{{ 'risk_appetite.approved'|trans({}, 'risk_appetite') }}</span>
+                        <br>{% include '_components/_badge.html.twig' with { variant: 'info', content: 'risk_appetite.approved'|trans({}, 'risk_appetite'), class: 'mt-1' } %}
                     {% endif %}
                 </td>
                 <td>

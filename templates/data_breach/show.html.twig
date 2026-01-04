@@ -74,7 +74,7 @@
                             'subjects_notified': 'success',
                             'closed': 'dark'
                         }[breach.status] %}
-                        <span class="badge bg-{{ status_class }}">{{ ('privacy.data_breach.status.' ~ breach.status)|trans({}, 'privacy') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: status_class, content: ('privacy.data_breach.status.' ~ breach.status)|trans({}, 'privacy') } %}
                     </p>
                     <p><strong>{{ 'privacy.data_breach.field.completeness'|trans({}, 'privacy') }}:</strong> {{ breach.completenessPercentage }}%</p>
                     {% if breach.assessor %}
@@ -88,7 +88,7 @@
                     {% if breach.riskLevel %}
                         <p><strong>{{ 'privacy.data_breach.field.risk_level'|trans({}, 'privacy') }}:</strong>
                             {% set risk_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.riskLevel] %}
-                            <span class="badge bg-{{ risk_class }}">{{ ('privacy.data_breach.risk.' ~ breach.riskLevel)|trans({}, 'privacy') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: risk_class, content: ('privacy.data_breach.risk.' ~ breach.riskLevel)|trans({}, 'privacy') } %}
                         </p>
                     {% endif %}
                     <p><strong>{{ 'privacy.data_breach.field.created'|trans({}, 'privacy') }}:</strong> {{ breach.createdAt|date('Y-m-d H:i') }}</p>
@@ -169,7 +169,7 @@
             <p><strong>{{ 'privacy.data_breach.field.detected'|trans({}, 'privacy') }}:</strong> {{ breach.detectedAt|date('Y-m-d H:i') }}</p>
             <p><strong>{{ 'privacy.data_breach.field.severity'|trans({}, 'privacy') }}:</strong>
                 {% set sev_class = {'low': 'success', 'medium': 'info', 'high': 'warning', 'critical': 'danger'}[breach.severity] %}
-                <span class="badge bg-{{ sev_class }}">{{ ('privacy.data_breach.severity.' ~ breach.severity)|trans({}, 'privacy') }}</span>
+                {% include '_components/_badge.html.twig' with { variant: sev_class, content: ('privacy.data_breach.severity.' ~ breach.severity)|trans({}, 'privacy') } %}
             </p>
 
             {% if breach.incident %}

@@ -32,11 +32,14 @@
     <a href="#filter-section" class="skip-link">{{ 'accessibility.skip_to_filters'|trans({}, 'messages') }}</a>
 
     {# Filters #}
-    <div class="card mb-4">
-        <div class="card-header">
-            <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans({}, 'messages') }}
-        </div>
-        <div class="card-body" id="filter-section" tabindex="-1">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <i class="bi bi-funnel" aria-hidden="true"></i> {{ 'common.filters'|trans({}, 'messages') }}
+            </div>
+        {% endblock %}
+        {% block card_body %}
+            <div id="filter-section" tabindex="-1">
             <form method="get" class="row g-3" role="search" aria-label="{{ 'common.filters'|trans({}, 'messages') }}">
                 <div class="col-md-3">
                     <label class="form-label" for="filter-active">{{ 'compliance.framework.field.active'|trans({}, 'compliance') }}</label>
@@ -72,16 +75,19 @@
                     </a>
                 </div>
             </form>
-        </div>
-    </div>
+            </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Frameworks List #}
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <span><i class="bi bi-list" aria-hidden="true"></i> {{ 'compliance.framework.list'|trans({}, 'compliance') }}</span>
-            <span class="badge bg-primary">{{ frameworks|length }} {{ 'common.items'|trans({}, 'messages') }}</span>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-list" aria-hidden="true"></i> {{ 'compliance.framework.list'|trans({}, 'compliance') }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'primary', content: frameworks|length ~ ' ' ~ ('common.items'|trans({}, 'messages')) } %}
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if frameworks|length > 0 %}
                 {% embed '_components/_table.html.twig' with {
                     'noMargin': true
@@ -112,20 +118,20 @@
                                 <td>{{ framework.applicableIndustry }}</td>
                                 <td>
                                     {% if framework.mandatory %}
-                                        <span class="badge bg-danger">{{ 'common.yes'|trans({}, 'messages') }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'common.yes'|trans({}, 'messages') } %}
                                     {% else %}
-                                        <span class="badge bg-secondary">{{ 'common.no'|trans({}, 'messages') }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.no'|trans({}, 'messages') } %}
                                     {% endif %}
                                 </td>
                                 <td>
                                     {% if framework.active %}
-                                        <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.active'|trans({}, 'messages') } %}
                                     {% else %}
-                                        <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.inactive'|trans({}, 'messages') } %}
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <span class="badge bg-info">{{ framework.requirements|length }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'info', content: framework.requirements|length } %}
                                 </td>
                                 <td>
                                     {% set percentage = framework.compliancePercentage %}
@@ -173,7 +179,7 @@
                     {% endif %}
                 </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}

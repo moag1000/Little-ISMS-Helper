@@ -95,7 +95,7 @@
                                     <h6 class="mb-1">{{ audit.title }}</h6>
                                     <small class="text-muted">{{ audit.type }}</small>
                                 </div>
-                                <span class="badge bg-info">{{ audit.planned_date|date('d.m.Y') }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'info', content: audit.planned_date|date('d.m.Y') } %}
                             </div>
                         </a>
                         {% endfor %}

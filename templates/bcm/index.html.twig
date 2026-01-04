@@ -106,9 +106,7 @@
                                 'medium': 'info',
                                 'low': 'success'
                             } %}
-                            <span class="badge bg-{{ criticality_colors[process.criticality] ?? 'secondary' }}">
-                                {{ process.criticality|upper }}
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: criticality_colors[process.criticality] ?? 'secondary', content: process.criticality|upper } %}
                         </td>
                         <td>
                             <span class="metric-value">{{ process.rto }}h</span>
@@ -127,9 +125,7 @@
                             </div>
                         </td>
                         <td>
-                            <span class="badge bg-info">
-                                {{ process.supportingAssets|length }} Assets
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: 'info', content: process.supportingAssets|length ~ ' Assets' } %}
                         </td>
                         <td class="actions-column">
                             <a href="{{ path('app_business_process_show', {id: process.id}) }}" class="btn btn-sm btn-outline-primary" title="{{ 'common.view'|trans({}, 'messages') }}">

@@ -61,7 +61,7 @@
                     {% for objective in objectives %}
                     <tr>
                         <td><strong>{{ objective.title }}</strong></td>
-                        <td><span class="badge bg-secondary">{{ objective.category }}</span></td>
+                        <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: objective.category } %}</td>
                         <td>{{ objective.targetDate|date('d.m.Y') }}</td>
                         <td>
                             <div class="progress" style="height: 20px;">
@@ -69,7 +69,7 @@
                                      style="width: {{ objective.progressPercentage }}%">{{ objective.progressPercentage }}%</div>
                             </div>
                         </td>
-                        <td><span class="badge bg-{{ objective.status == 'achieved' ? 'success' : (objective.status == 'in_progress' ? 'info' : 'warning') }}">{{ ('objective.status.' ~ objective.status)|trans({}, 'objective') }}</span></td>
+                        <td>{% include '_components/_badge.html.twig' with { variant: objective.status == 'achieved' ? 'success' : (objective.status == 'in_progress' ? 'info' : 'warning'), content: ('objective.status.' ~ objective.status)|trans({}, 'objective') } %}</td>
                         <td>
                             <a href="{{ path('app_objective_show', {id: objective.id}) }}" class="btn btn-sm btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }}" title="{{ 'common.view'|trans({}, 'messages') }}"><i class="bi bi-eye" aria-hidden="true"></i></a>
                             {% if is_granted('ROLE_ADMIN') %}

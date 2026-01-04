@@ -89,13 +89,11 @@
             <td>
                 <strong>{{ instance.entityType|split('\\')|last }} #{{ instance.entityId }}</strong>
                 {% if daysOverdue > 7 %}
-                    <span class="badge bg-danger ms-1">
-                        {{ 'workflow.badge.critical'|trans({}, 'workflows') }}
-                    </span>
+                    {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-1', content: 'workflow.badge.critical'|trans({}, 'workflows') } %}
                 {% endif %}
             </td>
             <td>
-                <span class="badge bg-info">{{ instance.workflow ? instance.workflow.name : '-' }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: instance.workflow ? instance.workflow.name : '-' } %}
             </td>
             <td>{{ instance.currentStep ? instance.currentStep.name : '-' }}</td>
             <td>
@@ -106,17 +104,13 @@
                     'rejected': 'danger',
                     'cancelled': 'secondary'
                 } %}
-                <span class="badge bg-{{ statusColors[instance.status] ?? 'secondary' }}">
-                    {{ ('workflow.status.' ~ instance.status)|trans({}, 'workflows') }}
-                </span>
+                {% include '_components/_badge.html.twig' with { variant: statusColors[instance.status] ?? 'secondary', content: ('workflow.status.' ~ instance.status)|trans({}, 'workflows') } %}
             </td>
             <td>
                 {% if instance.initiatedBy %}
                     {{ instance.initiatedBy.firstName ~ ' ' ~ instance.initiatedBy.lastName }}
                     {% if instance.initiatedBy.id == app.user.id %}
-                        <span class="badge bg-success ms-1">
-                            {{ 'workflow.badge.my_task'|trans({}, 'workflows') }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: 'success', class: 'ms-1', content: 'workflow.badge.my_task'|trans({}, 'workflows') } %}
                     {% endif %}
                 {% else %}
                     <span class="text-muted">{{ 'workflow.message.unassigned'|trans({}, 'workflows') }}</span>
@@ -130,9 +124,7 @@
                 {% endif %}
             </td>
             <td class="text-center">
-                <span class="badge bg-danger fw-bold">
-                    {{ daysOverdue }} {{ 'workflow.days'|trans({}, 'workflows') }}
-                </span>
+                {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'fw-bold', content: daysOverdue ~ ' ' ~ 'workflow.days'|trans({}, 'workflows') } %}
             </td>
             <td class="text-center">
                 <div class="btn-group" role="group">

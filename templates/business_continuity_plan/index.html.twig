@@ -81,9 +81,7 @@
                         <td><span class="{{ badge_status(plan.status) }}">{{ plan.status|upper }}</span></td>
                         <td>
                             {% set readiness = plan.getReadinessScore() %}
-                            <span class="badge bg-{{ readiness >= 80 ? 'success' : (readiness >= 60 ? 'warning' : 'danger') }}">
-                                {{ readiness }}%
-                            </span>
+                            {% include '_components/_badge.html.twig' with { variant: readiness >= 80 ? 'success' : (readiness >= 60 ? 'warning' : 'danger'), content: readiness ~ '%' } %}
                         </td>
                         <td>{{ plan.lastTested ? plan.lastTested|date('Y-m-d') : ('bc_plans.message.never'|trans({}, 'bc_plans')) }}</td>
                         <td>

@@ -171,9 +171,7 @@
                                         'rejected': 'danger',
                                         'requires_revision': 'warning'
                                     }[dpia.status] %}
-                                    <span class="badge bg-{{ status_class }}">
-                                        {{ dpia.status|replace({'_': ' '})|upper }}
-                                    </span>
+                                    {% include '_components/_badge.html.twig' with { variant: status_class, content: dpia.status|replace({'_': ' '})|upper } %}
                                 </td>
                                 <td>
                                     {% if dpia.riskLevel %}
@@ -183,9 +181,7 @@
                                             'high': 'warning',
                                             'critical': 'danger'
                                         }[dpia.riskLevel] %}
-                                        <span class="badge bg-{{ risk_class }}">
-                                            {{ dpia.riskLevel|upper }}
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: risk_class, content: dpia.riskLevel|upper } %}
                                     {% else %}
                                         <span class="text-muted">-</span>
                                     {% endif %}
@@ -198,9 +194,7 @@
                                             'high': 'warning',
                                             'critical': 'danger'
                                         }[dpia.residualRiskLevel] %}
-                                        <span class="badge bg-{{ risk_class }}">
-                                            {{ dpia.residualRiskLevel|upper }}
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: risk_class, content: dpia.residualRiskLevel|upper } %}
                                     {% else %}
                                         <span class="text-muted">-</span>
                                     {% endif %}

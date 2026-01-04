@@ -317,28 +317,28 @@
         </thead>
         <tbody>
             <tr>
-                <td><span class="badge bg-success">Excellent</span></td>
+                <td><span class="badge badge-success">Excellent</span></td>
                 <td class="text-center">90-100%</td>
                 <td class="text-center"><strong>{{ quality_distribution.excellent }}</strong></td>
                 <td class="text-center">{{ mapped_count > 0 ? ((quality_distribution.excellent / mapped_count * 100)|round(1)) : 0 }}%</td>
                 <td>Precise mappings, high reliability</td>
             </tr>
             <tr>
-                <td><span class="badge bg-info">Good</span></td>
+                <td><span class="badge badge-info">Good</span></td>
                 <td class="text-center">70-89%</td>
                 <td class="text-center"><strong>{{ quality_distribution.good }}</strong></td>
                 <td class="text-center">{{ mapped_count > 0 ? ((quality_distribution.good / mapped_count * 100)|round(1)) : 0 }}%</td>
                 <td>{{ 'pdf.framework_comparison.solid_mappings_minor'|trans({}, 'messages')}}</td>
             </tr>
             <tr>
-                <td><span class="badge bg-warning">Medium</span></td>
+                <td><span class="badge badge-warning">Medium</span></td>
                 <td class="text-center">50-69%</td>
                 <td class="text-center"><strong>{{ quality_distribution.medium }}</strong></td>
                 <td class="text-center">{{ mapped_count > 0 ? ((quality_distribution.medium / mapped_count * 100)|round(1)) : 0 }}%</td>
                 <td>Partial alignment, review recommended</td>
             </tr>
             <tr>
-                <td><span class="badge bg-danger">Weak</span></td>
+                <td><span class="badge badge-danger">Weak</span></td>
                 <td class="text-center">&lt;50%</td>
                 <td class="text-center"><strong>{{ quality_distribution.weak }}</strong></td>
                 <td class="text-center">{{ mapped_count > 0 ? ((quality_distribution.weak / mapped_count * 100)|round(1)) : 0 }}%</td>
@@ -445,9 +445,9 @@
                 <td>{{ (detail.framework1Requirement.description ?? '')|slice(0, 60) }}{% if (detail.framework1Requirement.description ?? '')|length > 60 %}...{% endif %}</td>
                 <td class="text-center">
                     {% if detail.mapped %}
-                        <span class="badge bg-success">Mapped</span>
+                        <span class="badge badge-success">Mapped</span>
                     {% else %}
-                        <span class="badge bg-secondary">Not Mapped</span>
+                        <span class="badge badge-secondary">Not Mapped</span>
                     {% endif %}
                 </td>
                 <td class="text-center">

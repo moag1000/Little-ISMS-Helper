@@ -98,8 +98,8 @@
                                 <strong>{{ patch.title }}</strong>
                                 {{ inheritance.small_badge(patch, currentTenant) }}
                             </td>
-                            <td><span class="badge bg-secondary">{{ ('patch.type.' ~ patch.patchType)|trans({}, 'patches') }}</span></td>
-                            <td><span class="badge bg-info">{{ ('patch.status.' ~ patch.status)|trans({}, 'patches') }}</span></td>
+                            <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: ('patch.type.' ~ patch.patchType)|trans({}, 'patches') } %}</td>
+                            <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: ('patch.status.' ~ patch.status)|trans({}, 'patches') } %}</td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group" aria-label="{{ 'common.actions'|trans({}, 'messages') }}">
                                     <a href="{{ path('app_patch_show', {id: patch.id}) }}" class="btn btn-outline-primary" aria-label="{{ 'common.view'|trans({}, 'messages') }}">

@@ -61,9 +61,7 @@
                         {% endif %}
                     </strong>
                 </div>
-                <span class="badge bg-{{ alertClass }}">
-                    {{ ('incident.workflow.escalation.' ~ escalationLevel)|trans({}, 'incident') }}
-                </span>
+                {% include '_components/_badge.html.twig' with { variant: alertClass, content: ('incident.workflow.escalation.' ~ escalationLevel)|trans({}, 'incident') } %}
             </div>
 
             <div class="workflow-status-content">
@@ -105,22 +103,24 @@
         </div>
     {% endif %}
 
-    <div class="card">
-        <div class="card-header">
-            <h2 class="h5">Incident #{{ incident.incidentNumber }}</h2>
-            <div class="badges">
-                <span class="{{ badge_severity(incident.severity) }}">{{ incident.severity|upper }}</span>
-                <span class="{{ badge_status(incident.status) }}">{{ incident.status|upper|replace({'_': ' '}) }}</span>
-                {% if is_nis2_active() and incident.requiresNis2Reporting %}
-                    {% set nis2Status = incident.nis2ComplianceStatus %}
-                    <span class="{{ badge_nis2(nis2Status) }}">
-                        <i class="bi bi-shield-check" aria-hidden="true"></i>
-                        {{ ('incident.nis2_compliance.' ~ nis2Status)|trans({}, 'incident') }}
-                    </span>
-                {% endif %}
+    {% embed '_components/_card.html.twig' %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2 class="h5">Incident #{{ incident.incidentNumber }}</h2>
+                <div class="badges">
+                    <span class="{{ badge_severity(incident.severity) }}">{{ incident.severity|upper }}</span>
+                    <span class="{{ badge_status(incident.status) }}">{{ incident.status|upper|replace({'_': ' '}) }}</span>
+                    {% if is_nis2_active() and incident.requiresNis2Reporting %}
+                        {% set nis2Status = incident.nis2ComplianceStatus %}
+                        <span class="{{ badge_nis2(nis2Status) }}">
+                            <i class="bi bi-shield-check" aria-hidden="true"></i>
+                            {{ ('incident.nis2_compliance.' ~ nis2Status)|trans({}, 'incident') }}
+                        </span>
+                    {% endif %}
+                </div>
             </div>
-        </div>
-        <div class="card-body">
+        {% endblock %}
+        {% block card_body %}
             <div class="detail-grid">
                 <div class="detail-item">
                     <span class="label">{{ 'incident.field.category'|trans({}, 'incident') }}:</span>
@@ -426,39 +426,45 @@
                 {% if incident.affectedBusinessProcesses|length > 0 %}
                     <div class="row mb-3">
                         <div class="col-md-4">
-                            <div class="card bg-light">
-                                <div class="card-body text-center">
-                                    <div class="fs-5 fw-bold">{{ incident.affectedProcessCount }}</div>
-                                    <small class="text-muted">Affected Processes</small>
-                                    {% if incident.hasCriticalProcessesAffected %}
-                                        <br>{% include '_components/_badge.html.twig' with { variant: 'danger', class: 'mt-1', content: 'Critical' } %}
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card bg-light">
-                                <div class="card-body text-center">
-                                    <div class="fs-5">
-                                        {% set priority_class = {
-                                            'immediate': 'danger',
-                                            'high': 'warning',
-                                            'medium': 'info',
-                                            'low': 'secondary'
-                                        }[incident.suggestedRecoveryPriority] %}
-                                        <span class="badge bg-{{ priority_class }}">{{ incident.suggestedRecoveryPriority|upper }}</span>
+                            {% embed '_components/_card.html.twig' with { 'class': 'bg-light' } %}
+                                {% block card_body %}
+                                    <div class="text-center">
+                                        <div class="fs-5 fw-bold">{{ incident.affectedProcessCount }}</div>
+                                        <small class="text-muted">Affected Processes</small>
+                                        {% if incident.hasCriticalProcessesAffected %}
+                                            <br>{% include '_components/_badge.html.twig' with { variant: 'danger', class: 'mt-1', content: 'Critical' } %}
+                                        {% endif %}
                                     </div>
-                                    <small class="text-muted">Recovery Priority</small>
-                                </div>
-                            </div>
+                                {% endblock %}
+                            {% endembed %}
                         </div>
                         <div class="col-md-4">
-                            <div class="card bg-light">
-                                <div class="card-body text-center">
-                                    <div class="fs-5 fw-bold">€{{ incident.calculateEstimatedFinancialImpact(24)|number_format(0) }}</div>
-                                    <small class="text-muted">Est. Impact (24h)</small>
-                                </div>
-                            </div>
+                            {% embed '_components/_card.html.twig' with { 'class': 'bg-light' } %}
+                                {% block card_body %}
+                                    <div class="text-center">
+                                        <div class="fs-5">
+                                            {% set priority_class = {
+                                                'immediate': 'danger',
+                                                'high': 'warning',
+                                                'medium': 'info',
+                                                'low': 'secondary'
+                                            }[incident.suggestedRecoveryPriority] %}
+                                            {% include '_components/_badge.html.twig' with { variant: priority_class, content: incident.suggestedRecoveryPriority|upper } %}
+                                        </div>
+                                        <small class="text-muted">Recovery Priority</small>
+                                    </div>
+                                {% endblock %}
+                            {% endembed %}
+                        </div>
+                        <div class="col-md-4">
+                            {% embed '_components/_card.html.twig' with { 'class': 'bg-light' } %}
+                                {% block card_body %}
+                                    <div class="text-center">
+                                        <div class="fs-5 fw-bold">€{{ incident.calculateEstimatedFinancialImpact(24)|number_format(0) }}</div>
+                                        <small class="text-muted">Est. Impact (24h)</small>
+                                    </div>
+                                {% endblock %}
+                            {% endembed %}
                         </div>
                     </div>
 
@@ -472,7 +478,7 @@
                                     'medium': 'info',
                                     'low': 'secondary'
                                 }[process.criticality] %}
-                                <span class="badge bg-{{ crit_class }}">{{ process.criticality|upper }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: crit_class, content: process.criticality|upper } %}
                                 <small>RTO: {{ process.rto }}h | Owner: {{ process.processOwner }}</small>
                             </div>
                         {% endfor %}
@@ -516,9 +522,8 @@
                         {% for risk in incident.realizedRisks %}
                             <div class="data-reuse-item">
                                 <strong>{{ risk.title }}</strong>
-                                <span class="badge badge-risk-{{ risk.inherentRiskLevel >= 16 ? 'high' : (risk.inherentRiskLevel >= 9 ? 'medium' : 'low') }}">
-                                    Risk Level: {{ risk.inherentRiskLevel }}
-                                </span>
+                                {% set riskClass = risk.inherentRiskLevel >= 16 ? 'danger' : (risk.inherentRiskLevel >= 9 ? 'warning' : 'success') %}
+                                {% include '_components/_badge.html.twig' with { variant: riskClass, content: 'Risk Level: ' ~ risk.inherentRiskLevel } %}
                                 <small>Probability: {{ risk.probability }}/5</small>
                             </div>
                         {% endfor %}
@@ -535,9 +540,7 @@
                         {% for control in incident.relatedControls %}
                             <div class="data-reuse-item">
                                 <strong>{{ control.controlId }}</strong>: {{ control.name }}
-                                <span class="badge bg-{{ control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'danger') }}">
-                                    {{ control.implementationStatus|upper }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: control.implementationStatus == 'implemented' ? 'success' : (control.implementationStatus == 'in_progress' ? 'warning' : 'danger'), content: control.implementationStatus|upper } %}
                                 {% if control.implementationStatus != 'implemented' %}
                                     <small class="text-warning"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i> Control not fully implemented</small>
                                 {% endif %}
@@ -546,8 +549,8 @@
                     </div>
                 </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 <style>

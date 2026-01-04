@@ -132,7 +132,7 @@
                         <dt class="col-sm-3">Purposes (Art. 30(1)(a)):</dt>
                         <dd class="col-sm-9">
                             {% for purpose in processing_activity.purposes %}
-                                <span class="badge bg-primary">{{ purpose }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'primary', content: purpose } %}
                             {% endfor %}
                         </dd>
 
@@ -166,7 +166,7 @@
                         <dt class="col-sm-3">Categories:</dt>
                         <dd class="col-sm-9">
                             {% for category in processing_activity.dataSubjectCategories %}
-                                <span class="badge bg-info">{{ category }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'info', content: category } %}
                             {% endfor %}
                         </dd>
                         <dt class="col-sm-3">Estimated Count:</dt>
@@ -180,16 +180,16 @@
                         <dt class="col-sm-3">Categories:</dt>
                         <dd class="col-sm-9">
                             {% for category in processing_activity.personalDataCategories %}
-                                <span class="badge bg-secondary">{{ category }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: category } %}
                             {% endfor %}
                         </dd>
 
                         {% if processing_activity.processesSpecialCategories %}
                             <dt class="col-sm-3">Special Categories (Art. 9):</dt>
                             <dd class="col-sm-9">
-                                <span class="badge bg-danger">YES</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'YES' } %}
                                 {% for detail in processing_activity.specialCategoriesDetails ?? [] %}
-                                    <span class="badge bg-danger">{{ detail }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: detail } %}
                                 {% endfor %}
                                 {% if processing_activity.legalBasisSpecialCategories %}
                                     <br><small>Legal basis: {{ processing_activity.legalBasisSpecialCategories }}</small>
@@ -199,7 +199,7 @@
 
                         {% if processing_activity.processesCriminalData %}
                             <dt class="col-sm-3">Criminal Data (Art. 10):</dt>
-                            <dd class="col-sm-9"><span class="badge bg-warning">YES</span></dd>
+                            <dd class="col-sm-9">{% include '_components/_badge.html.twig' with { variant: 'warning', content: 'YES' } %}</dd>
                         {% endif %}
                     </dl>
 
@@ -242,9 +242,9 @@
                                     <td>{{ check|replace({'_': ' '})|title }}</td>
                                     <td>
                                         {% if passed %}
-                                            <span class="badge bg-success"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Pass</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-check-circle-fill', content: 'Pass' } %}
                                         {% else %}
-                                            <span class="badge bg-danger"><i class="bi bi-x-circle-fill" aria-hidden="true"></i> Fail</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-x-circle-fill', content: 'Fail' } %}
                                         {% endif %}
                                     </td>
                                 </tr>

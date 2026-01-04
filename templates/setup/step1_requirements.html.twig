@@ -35,12 +35,12 @@
                             {{ results.overall.message }}
                         </p>
                         <div class="mt-2">
-                            <span class="badge bg-success">{{ results.overall.success }} {{ 'setup.step1.status.success'|trans({}, 'setup') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'success', content: results.overall.success ~ ' ' ~ 'setup.step1.status.success'|trans({}, 'setup') } %}
                             {% if results.overall.warnings > 0 %}
-                                <span class="badge bg-warning">{{ results.overall.warnings }} {{ 'setup.step1.status.warnings'|trans({}, 'setup') }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'warning', content: results.overall.warnings ~ ' ' ~ 'setup.step1.status.warnings'|trans({}, 'setup') } %}
                             {% endif %}
                             {% if results.overall.critical_errors > 0 %}
-                                <span class="badge bg-danger">{{ results.overall.critical_errors }} {{ 'setup.step1.status.critical_errors'|trans({}, 'setup') }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'danger', content: results.overall.critical_errors ~ ' ' ~ 'setup.step1.status.critical_errors'|trans({}, 'setup') } %}
                             {% endif %}
                         </div>
                     </div>
@@ -89,7 +89,7 @@
                             {% else %}
                                 <div class="text-muted small">
                                     {% for ext in results.extensions.loaded %}
-                                        <span class="badge bg-success me-1">{{ ext }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'success', content: ext, class: 'me-1' } %}
                                     {% endfor %}
                                 </div>
                             {% endif %}

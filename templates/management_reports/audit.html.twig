@@ -77,7 +77,7 @@
                 <div class="card-body">
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-secondary">{{ 'management_reports.audit_status.planned'|trans({}, 'management_reports') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'management_reports.audit_status.planned'|trans({}, 'management_reports') } %}
                             <span>{{ report.audits.by_status.planned }}</span>
                         </div>
                         <div class="progress" style="height: 20px;">
@@ -86,7 +86,7 @@
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-primary">{{ 'management_reports.audit_status.in_progress'|trans({}, 'management_reports') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'primary', content: 'management_reports.audit_status.in_progress'|trans({}, 'management_reports') } %}
                             <span>{{ report.audits.by_status.in_progress }}</span>
                         </div>
                         <div class="progress" style="height: 20px;">
@@ -95,7 +95,7 @@
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-success">{{ 'management_reports.audit_status.completed'|trans({}, 'management_reports') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'management_reports.audit_status.completed'|trans({}, 'management_reports') } %}
                             <span>{{ report.audits.by_status.completed }}</span>
                         </div>
                         <div class="progress" style="height: 20px;">
@@ -104,7 +104,7 @@
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-danger">{{ 'management_reports.audit_status.cancelled'|trans({}, 'management_reports') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'management_reports.audit_status.cancelled'|trans({}, 'management_reports') } %}
                             <span>{{ report.audits.by_status.cancelled }}</span>
                         </div>
                         <div class="progress" style="height: 20px;">
@@ -131,19 +131,11 @@
                     <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             {{ 'management_reports.audit.internal_audits'|trans({}, 'management_reports') }}
-                            {% if report.audits.this_year >= 1 %}
-                            <span class="badge bg-success">{{ 'management_reports.audit.compliant'|trans({}, 'management_reports') }}</span>
-                            {% else %}
-                            <span class="badge bg-warning text-dark">{{ 'management_reports.audit.pending'|trans({}, 'management_reports') }}</span>
-                            {% endif %}
+                            {% include '_components/_badge.html.twig' with { variant: report.audits.this_year >= 1 ? 'success' : 'warning', content: report.audits.this_year >= 1 ? 'management_reports.audit.compliant'|trans({}, 'management_reports') : 'management_reports.audit.pending'|trans({}, 'management_reports') } %}
                         </li>
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             {{ 'management_reports.audit.management_review'|trans({}, 'management_reports') }}
-                            {% if report.management_reviews.this_year >= 1 %}
-                            <span class="badge bg-success">{{ 'management_reports.audit.compliant'|trans({}, 'management_reports') }}</span>
-                            {% else %}
-                            <span class="badge bg-warning text-dark">{{ 'management_reports.audit.pending'|trans({}, 'management_reports') }}</span>
-                            {% endif %}
+                            {% include '_components/_badge.html.twig' with { variant: report.management_reviews.this_year >= 1 ? 'success' : 'warning', content: report.management_reviews.this_year >= 1 ? 'management_reports.audit.compliant'|trans({}, 'management_reports') : 'management_reports.audit.pending'|trans({}, 'management_reports') } %}
                         </li>
                     </ul>
                 </div>

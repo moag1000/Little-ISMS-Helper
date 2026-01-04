@@ -317,7 +317,7 @@
                 </td>
                 <td>
                     {% if risk.treatmentStrategy %}
-                        <span class="badge bg-info">
+                        <span class="badge badge-info">
                             {% if risk.treatmentStrategy == 'mitigate' %}Mitigate
                             {% elseif risk.treatmentStrategy == 'accept' %}Accept
                             {% elseif risk.treatmentStrategy == 'transfer' %}Transfer
@@ -380,7 +380,7 @@
                 </td>
                 <td>
                     {% if risk.treatmentStrategy %}
-                        <span class="badge bg-info">
+                        <span class="badge badge-info">
                             {% if risk.treatmentStrategy == 'mitigate' %}Mitigate
                             {% elseif risk.treatmentStrategy == 'accept' %}Accept
                             {% elseif risk.treatmentStrategy == 'transfer' %}Transfer
@@ -394,7 +394,7 @@
                 </td>
                 <td>
                     {% if risk.status %}
-                        <span class="badge {% if risk.status == 'identified' %}bg-warning{% elseif risk.status == 'assessed' %}badge-info{% elseif risk.status == 'treated' %}badge-success{% else %}bg-secondary{% endif %}">
+                        <span class="badge {% if risk.status == 'identified' %}badge-warning{% elseif risk.status == 'assessed' %}badge-info{% elseif risk.status == 'treated' %}badge-success{% else %}badge-secondary{% endif %}">
                             {% if risk.status == 'identified' %}Identified
                             {% elseif risk.status == 'assessed' %}Assessed
                             {% elseif risk.status == 'treated' %}Treated
@@ -476,13 +476,13 @@
             <tr>
                 <td>
                     {% if status == 'identified' %}
-                        <span class="badge bg-warning">Identified</span>
+                        <span class="badge badge-warning">Identified</span>
                     {% elseif status == 'assessed' %}
-                        <span class="badge bg-info">Assessed</span>
+                        <span class="badge badge-info">Assessed</span>
                     {% elseif status == 'treated' %}
-                        <span class="badge bg-success">Treated</span>
+                        <span class="badge badge-success">Treated</span>
                     {% elseif status == 'monitored' %}
-                        <span class="badge bg-secondary">Monitored</span>
+                        <span class="badge badge-secondary">Monitored</span>
                     {% else %}
                         {{ status }}
                     {% endif %}

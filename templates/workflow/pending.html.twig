@@ -58,22 +58,18 @@
             <td>
                 <strong>{{ instance.workflow ? instance.workflow.name : '-' }}</strong>
                 {% if instance.overdue %}
-                    <span class="badge bg-danger ml-xs">
-                        {{ 'workflow.badge.overdue'|trans({}, 'workflows') }}
-                    </span>
+                    {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ml-xs', content: 'workflow.badge.overdue'|trans({}, 'workflows') } %}
                 {% endif %}
             </td>
             <td>
-                <span class="badge bg-info">{{ instance.workflow ? instance.workflow.name : '-' }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: instance.workflow ? instance.workflow.name : '-' } %}
             </td>
             <td>{{ instance.currentStep ? instance.currentStep.name : '-' }}</td>
             <td>
                 {% if instance.initiatedBy %}
                     {{ instance.initiatedBy.fullName }}
                     {% if instance.initiatedBy.id == app.user.id %}
-                        <span class="badge bg-success ml-xs">
-                            {{ 'workflow.badge.my_task'|trans({}, 'workflows') }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: 'success', class: 'ml-xs', content: 'workflow.badge.my_task'|trans({}, 'workflows') } %}
                     {% endif %}
                 {% else %}
                     <span class="text-muted-color">{{ 'workflow.message.unassigned'|trans({}, 'workflows') }}</span>
@@ -94,9 +90,7 @@
                     'rejected': 'danger',
                     'cancelled': 'secondary'
                 } %}
-                <span class="badge bg-{{ statusColors[instance.status] ?? 'secondary' }}">
-                    {{ ('workflow.status.' ~ instance.status)|trans({}, 'workflows') }}
-                </span>
+                {% include '_components/_badge.html.twig' with { variant: statusColors[instance.status] ?? 'secondary', content: ('workflow.status.' ~ instance.status)|trans({}, 'workflows') } %}
             </td>
             <td class="text-center">
                 <a href="{{ path('app_workflow_instance_show', {id: instance.id}) }}" class="btn btn-sm">

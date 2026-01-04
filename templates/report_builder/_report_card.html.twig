@@ -7,7 +7,7 @@
                 {% if report.isFavorite %}<i class="bi bi-star-fill text-warning" aria-hidden="true"></i>{% endif %}
                 {{ report.name }}
             </h3>
-            <span class="badge bg-secondary">{{ report.category }}</span>
+            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: report.category } %}
         </div>
         {% if report.description %}
         <p class="text-muted small mb-2">{{ report.description|slice(0, 80) }}{% if report.description|length > 80 %}...{% endif %}</p>

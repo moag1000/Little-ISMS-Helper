@@ -46,9 +46,7 @@
                             'medium': 'info',
                             'low': 'success'
                         } %}
-                        <span class="badge bg-{{ criticality_badge[business_process.criticality] ?? 'secondary' }}">
-                            {{ business_process.criticality|capitalize }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: criticality_badge[business_process.criticality] ?? 'secondary', content: business_process.criticality|capitalize } %}
                     </p>
                 {% endblock %}
             {% endembed %}
@@ -74,9 +72,7 @@
                             'low': 'success',
                             'unknown': 'secondary'
                         } %}
-                        <span class="badge bg-{{ risk_badge[metrics.process_risk_level] ?? 'secondary' }}">
-                            {{ metrics.process_risk_level|capitalize }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: risk_badge[metrics.process_risk_level] ?? 'secondary', content: metrics.process_risk_level|capitalize } %}
                     </p>
                     <small class="text-muted">{{ metrics.active_risks }} aktive Risiken</small>
                 {% endblock %}
@@ -182,7 +178,7 @@
                                     <td>
                                         {{ metrics.suggested_rto }} Stunden
                                         {% if metrics.suggested_rto != business_process.rto %}
-                                            <span class="badge bg-warning">Abweichung</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'Abweichung' } %}
                                         {% endif %}
                                     </td>
                                 </tr>

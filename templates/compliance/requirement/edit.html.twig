@@ -26,8 +26,8 @@
 
     <div class="row">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
                     {{ form_start(form) }}
 
                     {% include '_components/_auto_form.html.twig' with {
@@ -72,32 +72,34 @@
                     </div>
 
                     {{ form_end(form) }}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-header"><h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'compliance.requirement.info.title'|trans({}, 'compliance') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header"><h2 class="mb-0"><i class="bi bi-info-circle" aria-hidden="true"></i> {{ 'compliance.requirement.info.title'|trans({}, 'compliance') }}</h2></div>
+                {% endblock %}
+                {% block card_body %}
                     <ul class="list-unstyled small">
                         <li><i class="bi bi-link-45deg" aria-hidden="true"></i> {{ requirement.mappedControls|length }} {{ 'compliance.requirement.info.mapped_controls'|trans({}, 'compliance') }}</li>
                         <li><i class="bi bi-diagram-3" aria-hidden="true"></i> {{ requirement.detailedRequirements|length }} {{ 'compliance.requirement.info.sub_requirements'|trans({}, 'compliance') }}</li>
                         <li><i class="bi bi-calendar" aria-hidden="true"></i> {{ 'common.created'|trans({}, 'messages') }} {{ requirement.createdAt|date('Y-m-d') }}</li>
                     </ul>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
-            <div class="card mt-3 bg-light">
-                <div class="card-header"><h2 class="mb-0"><i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'common.note'|trans({}, 'messages') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mt-3 bg-light' } %}
+                {% block card_header %}
+                    <div class="card-header"><h2 class="mb-0"><i class="bi bi-lightbulb" aria-hidden="true"></i> {{ 'common.note'|trans({}, 'messages') }}</h2></div>
+                {% endblock %}
+                {% block card_body %}
                     <p class="small mb-0">
                         {{ 'compliance.requirement.edit.note'|trans({}, 'compliance') }} <a href="{{ path('app_compliance_requirement_show', {id: requirement.id}) }}">{{ 'compliance.requirement.view_page_note'|trans({}, 'compliance') }}</a>.
                     </p>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

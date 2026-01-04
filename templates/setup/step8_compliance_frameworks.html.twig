@@ -57,9 +57,7 @@
                             <div class="d-flex flex-wrap gap-2">
                                 {% for code in recommended_frameworks %}
                                     {% for framework in available_frameworks|filter(f => f.code == code) %}
-                                        <span class="badge bg-success">
-                                            {{ framework.icon }} {{ framework.name }}
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'success', content: framework.icon ~ ' ' ~ framework.name } %}
                                     {% endfor %}
                                 {% endfor %}
                             </div>
@@ -106,18 +104,12 @@
 
                                             {# Show recommended badge #}
                                             {% if framework_code in recommended_frameworks %}
-                                                <span class="badge bg-success mt-2">
-                                                    <i class="bi bi-star me-1" aria-hidden="true"></i>
-                                                    {{ 'setup.compliance.recommended_badge'|trans({}, 'setup') }}
-                                                </span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-star', content: 'setup.compliance.recommended_badge'|trans({}, 'setup'), class: 'mt-2' } %}
                                             {% endif %}
 
                                             {# Show mandatory badge for ISO 27001 #}
                                             {% if framework_code == 'ISO27001' %}
-                                                <span class="badge bg-primary mt-2">
-                                                    <i class="bi bi-lock me-1" aria-hidden="true"></i>
-                                                    {{ 'setup.compliance.mandatory_badge'|trans({}, 'setup') }}
-                                                </span>
+                                                {% include '_components/_badge.html.twig' with { variant: 'primary', icon: 'bi-lock', content: 'setup.compliance.mandatory_badge'|trans({}, 'setup'), class: 'mt-2' } %}
                                             {% endif %}
                                         {% endfor %}
                                     </div>

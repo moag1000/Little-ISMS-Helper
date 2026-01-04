@@ -75,16 +75,16 @@
                 </small>
             </td>
             <td class="text-center">
-                <span class="badge bg-info">{{ workflow.steps|length }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: workflow.steps|length } %}
             </td>
             <td class="text-center">
-                <span class="badge bg-secondary">—</span>
+                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: '—' } %}
             </td>
             <td class="text-center">
                 {% if workflow.isActive %}
-                    <span class="badge bg-success">✓</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'success', content: '✓' } %}
                 {% else %}
-                    <span class="badge bg-secondary">✗</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: '✗' } %}
                 {% endif %}
             </td>
             <td class="text-center">

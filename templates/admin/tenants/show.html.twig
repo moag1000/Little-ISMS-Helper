@@ -227,9 +227,8 @@
                                         <tr>
                                             <th scope="row">{{ 'corporate.field.governance_model'|trans({}, 'tenant') }}</th>
                                             <td>
-                                                <span class="badge bg-{{ defaultGovernance.governanceModel.value == 'hierarchical' ? 'primary' : (defaultGovernance.governanceModel.value == 'shared' ? 'warning' : 'secondary') }}">
-                                                    {{ defaultGovernance.governanceModel.label }}
-                                                </span>
+                                                {% set governance_variant = {'hierarchical': 'primary', 'shared': 'warning'}[defaultGovernance.governanceModel.value]|default('secondary') %}
+                                                {% include '_components/_badge.html.twig' with { variant: governance_variant, content: defaultGovernance.governanceModel.label } %}
                                                 <br><small class="text-muted">{{ defaultGovernance.governanceModel.description }}</small>
                                             </td>
                                         </tr>

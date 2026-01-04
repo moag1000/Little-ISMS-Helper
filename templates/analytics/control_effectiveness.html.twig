@@ -418,17 +418,13 @@
                                             </td>
                                             <td class="text-center">
                                                 {% if control.days_overdue %}
-                                                    <span class="badge bg-{{ control.status == 'critical' ? 'danger' : 'warning' }}">
-                                                        {{ control.days_overdue }} {{ 'common.days'|trans({}, 'messages') }}
-                                                    </span>
+                                                    {% include '_components/_badge.html.twig' with { variant: control.status == 'critical' ? 'danger' : 'warning', content: control.days_overdue ~ ' ' ~ 'common.days'|trans({}, 'messages') } %}
                                                 {% else %}
-                                                    <span class="badge bg-secondary">{{ 'analytics.controls.aging.never'|trans({}, 'analytics') }}</span>
+                                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'analytics.controls.aging.never'|trans({}, 'analytics') } %}
                                                 {% endif %}
                                             </td>
                                             <td class="text-center">
-                                                <span class="badge bg-{{ control.status == 'critical' ? 'danger' : (control.status == 'overdue' ? 'warning' : 'secondary') }}">
-                                                    {{ control.status|replace({'_': ' '})|title }}
-                                                </span>
+                                                {% include '_components/_badge.html.twig' with { variant: control.status == 'critical' ? 'danger' : (control.status == 'overdue' ? 'warning' : 'secondary'), content: control.status|replace({'_': ' '})|title } %}
                                             </td>
                                         </tr>
                                         {% endfor %}

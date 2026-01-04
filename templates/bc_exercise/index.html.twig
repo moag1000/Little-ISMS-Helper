@@ -83,7 +83,7 @@
                     {% for exercise in bc_exercises %}
                     <tr>
                         <td><a href="{{ path('app_bc_exercise_show', {id: exercise.id}) }}">{{ exercise.name }}</a></td>
-                        <td><span class="badge bg-info">{{ exercise.exerciseType }}</span></td>
+                        <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: exercise.exerciseType } %}</td>
                         <td>{{ exercise.exerciseDate|date('Y-m-d') }}</td>
                         <td><span class="{{ badge_status(exercise.status) }}">{{ exercise.status }}</span></td>
                         <td>

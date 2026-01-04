@@ -80,7 +80,7 @@
                         <span data-workflow-builder-target="loadingSpinner" class="spinner-border spinner-border-sm me-2 d-none" role="status">
                             <span class="visually-hidden">{{ 'common.loading'|trans({}, 'messages') }}</span>
                         </span>
-                        <span class="badge bg-primary rounded-pill" id="stepCount">{{ workflow.steps is defined and workflow.steps ? workflow.steps|length : 0 }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'primary', pill: true, content: workflow.steps is defined and workflow.steps ? workflow.steps|length : 0 } %}
                     </div>
                 </div>
 
@@ -247,14 +247,14 @@
                         <dd class="col-sm-7">{{ workflow.name }}</dd>
 
                         <dt class="col-sm-5">{{ 'workflow.field.entity_type'|trans({}, 'workflows') }}</dt>
-                        <dd class="col-sm-7"><span class="badge bg-info">{{ workflow.entityType }}</span></dd>
+                        <dd class="col-sm-7">{% include '_components/_badge.html.twig' with { variant: 'info', content: workflow.entityType } %}</dd>
 
                         <dt class="col-sm-5">{{ 'workflow.field.status'|trans({}, 'workflows') }}</dt>
                         <dd class="col-sm-7">
                             {% if workflow.isActive %}
-                                <span class="badge bg-success">{{ 'workflow.status.active'|trans({}, 'workflows') }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'success', content: 'workflow.status.active'|trans({}, 'workflows') } %}
                             {% else %}
-                                <span class="badge bg-secondary">{{ 'workflow.status.inactive'|trans({}, 'workflows') }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'workflow.status.inactive'|trans({}, 'workflows') } %}
                             {% endif %}
                         </dd>
 

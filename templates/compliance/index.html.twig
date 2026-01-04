@@ -84,7 +84,7 @@
                         <p class="framework-subtitle">{{ item.name|length > 40 ? item.name|slice(0, 40) ~ '...' : item.name }}</p>
                     </div>
                     {% if framework and framework.mandatory %}
-                        <span class="badge bg-light">{{ 'compliance.mandatory'|trans({}, 'compliance') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'light', content: 'compliance.mandatory'|trans({}, 'compliance') } %}
                     {% endif %}
                 </div>
 
@@ -139,11 +139,13 @@
 
     {# Cross-Framework Mapping Statistics #}
     {% if mapping_stats.total_mappings > 0 %}
-        <div class="card mt-lg">
-            <div class="card-header">
-                <h2>🔗 {{ 'compliance.cross_framework.title'|trans({}, 'compliance') }}</h2>
-            </div>
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' with { 'class': 'mt-lg' } %}
+            {% block card_header %}
+                <div class="card-header">
+                    <h2>🔗 {{ 'compliance.cross_framework.title'|trans({}, 'compliance') }}</h2>
+                </div>
+            {% endblock %}
+            {% block card_body %}
                 <div class="stats-grid">
                     <div class="stat-box">
                         <div class="stat-icon">📊</div>
@@ -171,16 +173,18 @@
                         {{ 'compliance.button.explore_mappings'|trans({}, 'compliance') }} →
                     </a>
                 </p>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 
     {# Benefits Explanation #}
-    <div class="card mt-lg">
-        <div class="card-header">
-            <h3>{{ 'compliance.benefits.title'|trans({}, 'compliance') }}</h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-lg' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h3>{{ 'compliance.benefits.title'|trans({}, 'compliance') }}</h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="benefits-grid">
                 <div class="benefit-item">
                     <div class="benefit-icon"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></div>
@@ -203,8 +207,8 @@
                     <p>{{ 'compliance.benefits.strategic.description'|trans({}, 'compliance') }}</p>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 <style>

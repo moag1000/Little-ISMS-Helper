@@ -92,7 +92,7 @@
                             {% for pa in incomplete|slice(0, 5) %}
                                 <li class="mb-2">
                                     <a href="{{ path('app_processing_activity_edit', {id: pa.id}) }}">{{ pa.name }}</a>
-                                    <span class="badge bg-warning">{{ pa.completenessPercentage }}%</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'warning', content: pa.completenessPercentage ~ '%' } %}
                                 </li>
                             {% endfor %}
                         </ul>
@@ -104,7 +104,7 @@
                             {% for pa in requiring_dpia|slice(0, 5) %}
                                 <li class="mb-2">
                                     <a href="{{ path('app_processing_activity_edit', {id: pa.id}) }}">{{ pa.name }}</a>
-                                    <span class="badge bg-danger">DPIA Required</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'DPIA Required' } %}
                                 </li>
                             {% endfor %}
                         </ul>
@@ -141,7 +141,7 @@
                         <ul class="list-unstyled">
                             {% for basis, count in statistics.by_legal_basis %}
                                 <li class="mb-2">
-                                    <span class="badge bg-primary">{{ count }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'primary', content: count } %}
                                     {{ basis|replace({'_': ' '})|title }}
                                 </li>
                             {% endfor %}
@@ -159,7 +159,7 @@
                                     'critical': 'danger'
                                 }[level] %}
                                 <li class="mb-2">
-                                    <span class="badge bg-{{ risk_color }}">{{ count }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: risk_color, content: count } %}
                                     {{ level|upper }}
                                 </li>
                             {% endfor %}
@@ -169,11 +169,11 @@
                     <h3 class="h6 mt-4">Special Processing</h3>
                     <ul class="list-unstyled">
                         <li class="mb-2">
-                            <span class="badge bg-danger">{{ statistics.special_categories }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: statistics.special_categories } %}
                             Special Categories (Art. 9)
                         </li>
                         <li class="mb-2">
-                            <span class="badge bg-warning">{{ statistics.third_country_transfers }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: statistics.third_country_transfers } %}
                             Third Country Transfers
                         </li>
                     </ul>

@@ -19,9 +19,9 @@
         <h1>{{ role.name }}</h1>
         <div class="mt-2">
             {% if role.systemRole %}
-                <span class="badge bg-info">{{ 'role_management.badge.system'|trans({}, 'role_management') }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: 'role_management.badge.system'|trans({}, 'role_management') } %}
             {% else %}
-                <span class="badge bg-secondary">{{ 'role_management.badge.custom'|trans({}, 'role_management') }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'role_management.badge.custom'|trans({}, 'role_management') } %}
             {% endif %}
         </div>
     </div>
@@ -84,8 +84,8 @@
                 {% for permission in role.permissions %}
                 <tr>
                     <td><strong>{{ permission.name }}</strong></td>
-                    <td><span class="badge bg-info">{{ permission.resource }}</span></td>
-                    <td><span class="badge bg-secondary">{{ permission.action }}</span></td>
+                    <td>{% include '_components/_badge.html.twig' with { variant: 'info', content: permission.resource } %}</td>
+                    <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: permission.action } %}</td>
                 </tr>
                 {% endfor %}
             {% endblock %}

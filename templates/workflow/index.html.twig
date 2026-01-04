@@ -114,7 +114,7 @@
         <tr>
             <td><strong>{{ instance.entityType|split('\\')|last }} #{{ instance.entityId }}</strong></td>
             <td>
-                <span class="badge bg-info">{{ instance.workflow ? instance.workflow.name : '-' }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'info', content: instance.workflow ? instance.workflow.name : '-' } %}
             </td>
             <td>{{ instance.currentStep ? instance.currentStep.name : '-' }}</td>
             <td>
@@ -125,13 +125,9 @@
                     'rejected': 'danger',
                     'cancelled': 'secondary'
                 } %}
-                <span class="badge bg-{{ statusColors[instance.status] ?? 'secondary' }}">
-                    {{ ('workflow.status.' ~ instance.status)|trans({}, 'workflows') }}
-                </span>
+                {% include '_components/_badge.html.twig' with { variant: statusColors[instance.status] ?? 'secondary', content: ('workflow.status.' ~ instance.status)|trans({}, 'workflows') } %}
                 {% if instance.status == 'in_progress' and hasEligibleApprovers[instance.id] is defined and not hasEligibleApprovers[instance.id] %}
-                    <span class="badge bg-danger ms-1" title="{{ 'workflow.warning.no_eligible_approvers'|trans({}, 'workflows') }}" data-bs-toggle="tooltip">
-                        <i class="bi bi-person-exclamation" aria-hidden="true"></i>
-                    </span>
+                    {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-1', title: 'workflow.warning.no_eligible_approvers'|trans({}, 'workflows'), icon: 'bi-person-exclamation' } %}
                 {% endif %}
             </td>
             <td>{{ instance.initiatedBy ? (instance.initiatedBy.firstName ~ ' ' ~ instance.initiatedBy.lastName) : '-' }}</td>
@@ -139,9 +135,7 @@
                 {% if instance.dueDate %}
                     {{ instance.dueDate|date('d.m.Y') }}
                     {% if instance.dueDate < date() and instance.status not in ['approved', 'rejected', 'cancelled'] %}
-                        <span class="badge bg-danger ms-1">
-                            {{ 'workflow.badge.overdue'|trans({}, 'workflows') }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'ms-1', content: 'workflow.badge.overdue'|trans({}, 'workflows') } %}
                     {% endif %}
                 {% else %}
                     <span class="text-muted">-</span>

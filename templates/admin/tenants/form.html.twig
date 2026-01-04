@@ -21,18 +21,20 @@
 {% block admin_content %}
     <div class="row">
         <div class="col-lg-8">
-            <div class="card">
-                <div class="card-header bg-white">
-                    <h2 class="card-title mb-0 h3">
-                        <i class="bi bi-building text-primary" aria-hidden="true"></i>
-                        {% if isEdit %}
-                            {{ 'tenant.form.edit_title'|trans({}, 'tenant') }}
-                        {% else %}
-                            {{ 'tenant.form.create_title'|trans({}, 'tenant') }}
-                        {% endif %}
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-white">
+                        <h2 class="card-title mb-0 h3">
+                            <i class="bi bi-building text-primary" aria-hidden="true"></i>
+                            {% if isEdit %}
+                                {{ 'tenant.form.edit_title'|trans({}, 'tenant') }}
+                            {% else %}
+                                {{ 'tenant.form.create_title'|trans({}, 'tenant') }}
+                            {% endif %}
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     {{ form_start(form) }}
                         {# Basic Information #}
                         <fieldset class="mb-4">
@@ -152,17 +154,19 @@
                             </button>
                         </div>
                     {{ form_end(form) }}
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Help Sidebar #}
         <div class="col-lg-4">
-            <div class="card">
-                <div class="card-header bg-white">
-                    <h2 class="card-title mb-0 h5">{{ 'tenant.help.title'|trans({}, 'tenant') }}</h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-white">
+                        <h2 class="card-title mb-0 h5">{{ 'tenant.help.title'|trans({}, 'tenant') }}</h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <h3 class="text-muted small mb-2 fw-semibold">{{ 'tenant.help.code_title'|trans({}, 'tenant') }}</h3>
                     <p class="small">{{ 'tenant.help.code_text'|trans({}, 'tenant') }}</p>
 
@@ -175,15 +179,17 @@
 
                     <h3 class="text-muted small mb-2 fw-semibold">{{ 'tenant.help.settings_title'|trans({}, 'tenant') }}</h3>
                     <p class="small">{{ 'tenant.help.settings_text'|trans({}, 'tenant') }}</p>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
 
             {% if isEdit %}
-                <div class="card mt-3">
-                    <div class="card-header bg-white">
-                        <h2 class="card-title mb-0 h5">{{ 'tenant.info.metadata'|trans({}, 'tenant') }}</h2>
-                    </div>
-                    <div class="card-body">
+                {% embed '_components/_card.html.twig' with { 'class': 'mt-3' } %}
+                    {% block card_header %}
+                        <div class="card-header bg-white">
+                            <h2 class="card-title mb-0 h5">{{ 'tenant.info.metadata'|trans({}, 'tenant') }}</h2>
+                        </div>
+                    {% endblock %}
+                    {% block card_body %}
                         {% embed '_components/_table.html.twig' with {
                             'class': 'table-sm',
                             'noMargin': true
@@ -202,14 +208,13 @@
                                 <tr>
                                     <th scope="row" class="text-muted small">{{ 'tenant.field.users'|trans({}, 'tenant') }}</th>
                                     <td class="small">
-                                        <span class="badge bg-info">{{ tenant.users|length }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'info', content: tenant.users|length } %}
                                     </td>
                                 </tr>
                             {% endblock %}
                         {% endembed %}
-                    </div>
-                    </div>
-                </div>
+                    {% endblock %}
+                {% endembed %}
             {% endif %}
         </div>
     </div>

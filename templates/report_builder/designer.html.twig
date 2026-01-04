@@ -15,7 +15,7 @@
                 <input type="text" class="form-control form-control-sm bg-dark text-white border-secondary"
                        value="{{ report.name }}" data-report-designer-target="nameInput" style="max-width: 300px;">
             </div>
-            <span class="badge bg-secondary">v{{ report.version }}</span>
+            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'v' ~ report.version } %}
         </div>
         <div class="d-flex align-items-center gap-2">
             <button type="button" class="btn btn-sm btn-outline-light" data-action="click->report-designer#save">

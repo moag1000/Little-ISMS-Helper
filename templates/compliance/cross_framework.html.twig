@@ -18,12 +18,14 @@
 
     {# Coverage Matrix #}
     {% if coverage_matrix is not empty %}
-        <div class="card">
-            <div class="card-header">
-                <h2>📊 {{ 'compliance.cross_framework.coverage_matrix'|trans({}, 'compliance') }}</h2>
-                <p class="text-muted">{{ 'compliance.cross_framework.coverage_description'|trans({}, 'compliance') }}</p>
-            </div>
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' %}
+            {% block card_header %}
+                <div class="card-header">
+                    <h2>📊 {{ 'compliance.cross_framework.coverage_matrix'|trans({}, 'compliance') }}</h2>
+                    <p class="text-muted">{{ 'compliance.cross_framework.coverage_description'|trans({}, 'compliance') }}</p>
+                </div>
+            {% endblock %}
+            {% block card_body %}
                 <div class="coverage-matrix">
                     {% embed '_components/_table.html.twig' with {
                         'class': 'matrix-table',
@@ -87,24 +89,26 @@
                         <span>{{ 'compliance.cross_framework.coverage_low'|trans({}, 'compliance') }}</span>
                     </div>
                 </div>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 
     {# Detailed Mappings #}
     {% for mapping_group in cross_mappings %}
-        <div class="card mt-lg">
-            <div class="card-header">
-                <h2>
-                    {{ mapping_group.source.code }} → {{ mapping_group.target.code }}
-                </h2>
-                <p class="text-muted">
-                    {{ mapping_group.coverage.covered_requirements }} of {{ mapping_group.coverage.total_target_requirements }}
-                    requirements covered ({{ mapping_group.coverage.coverage_percentage }}%)
-                </p>
-            </div>
-
-            <div class="mapping-summary">
+        {% embed '_components/_card.html.twig' with { 'class': 'mt-lg' } %}
+            {% block card_header %}
+                <div class="card-header">
+                    <h2>
+                        {{ mapping_group.source.code }} → {{ mapping_group.target.code }}
+                    </h2>
+                    <p class="text-muted">
+                        {{ mapping_group.coverage.covered_requirements }} of {{ mapping_group.coverage.total_target_requirements }}
+                        requirements covered ({{ mapping_group.coverage.coverage_percentage }}%)
+                    </p>
+                </div>
+            {% endblock %}
+            {% block card_body %}
+                <div class="mapping-summary">
                 <div class="summary-stat">
                     <div class="summary-icon bg-color-success">✓</div>
                     <div class="summary-content">
@@ -153,9 +157,7 @@
                                 <small>{{ mapping.targetRequirement.title|length > 60 ? mapping.targetRequirement.title|slice(0, 60) ~ '...' : mapping.targetRequirement.title }}</small>
                             </td>
                             <td>
-                                <span class="badge bg-{{ mapping.mappingBadgeClass }}">
-                                    {{ mapping.mappingType|upper }}
-                                </span>
+                                {% include '_components/_badge.html.twig' with { variant: mapping.mappingBadgeClass, content: mapping.mappingType|upper } %}
                             </td>
                             <td>
                                 <div class="mapping-strength">
@@ -167,9 +169,9 @@
                             </td>
                             <td class="text-center">
                                 {% if mapping.bidirectional %}
-                                    <span class="badge bg-success">{{ 'compliance.cross_framework.yes_bidirectional'|trans({}, 'compliance') }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'compliance.cross_framework.yes_bidirectional'|trans({}, 'compliance') } %}
                                 {% else %}
-                                    <span class="badge bg-secondary">→</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: '->' } %}
                                 {% endif %}
                             </td>
                         </tr>
@@ -177,20 +179,25 @@
                 {% endblock %}
             {% endembed %}
 
-            {% if mapping_group.mappings|length > 20 %}
-                <div class="card-footer text-center">
-                    {{ 'compliance.cross_framework.showing_of'|trans({'%total%': mapping_group.mappings|length}, 'compliance') }}
-                </div>
-            {% endif %}
-        </div>
+            {% endblock %}
+            {% block card_footer %}
+                {% if mapping_group.mappings|length > 20 %}
+                    <div class="card-footer text-center">
+                        {{ 'compliance.cross_framework.showing_of'|trans({'%total%': mapping_group.mappings|length}, 'compliance') }}
+                    </div>
+                {% endif %}
+            {% endblock %}
+        {% endembed %}
     {% endfor %}
 
     {# Explanation #}
-    <div class="card mt-lg">
-        <div class="card-header">
-            <h3>{{ 'compliance.cross_framework.understanding_title'|trans({}, 'compliance') }}</h3>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-lg' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h3>{{ 'compliance.cross_framework.understanding_title'|trans({}, 'compliance') }}</h3>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="explanation-grid">
                 <div class="explanation-item">
                     <h4>{{ 'compliance.cross_framework.what_title'|trans({}, 'compliance') }}</h4>
@@ -214,8 +221,8 @@
                     <p>{{ 'compliance.cross_framework.strategic_description'|trans({}, 'compliance') }}</p>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 
 <style>

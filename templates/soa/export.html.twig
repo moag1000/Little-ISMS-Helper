@@ -333,25 +333,25 @@
             <tr>
                 <td><strong>{{ control.controlId }}</strong></td>
                 <td>{{ control.name }}</td>
-                <td><span class="badge bg-info">{{ control.category }}</span></td>
+                <td><span class="badge badge-info">{{ control.category }}</span></td>
                 <td class="text-center">
                     {% if control.applicable %}
-                        <span class="badge bg-success">✓</span>
+                        <span class="badge badge-success">✓</span>
                     {% else %}
-                        <span class="badge bg-secondary">✗</span>
+                        <span class="badge badge-secondary">✗</span>
                     {% endif %}
                 </td>
                 <td>
                     {% if control.applicable %}
                         {% if control.implementationStatus == 'implemented' %}
-                            <span class="badge bg-success">Implementiert</span>
+                            <span class="badge badge-success">Implementiert</span>
                         {% elseif control.implementationStatus == 'in_progress' %}
-                            <span class="badge bg-warning">{{ 'soa.in_progress_badge'|trans({}, 'soa')}}</span>
+                            <span class="badge badge-warning">{{ 'soa.in_progress_badge'|trans({}, 'soa')}}</span>
                         {% elseif control.implementationStatus == 'not_started' %}
-                            <span class="badge bg-danger">Nicht begonnen</span>
+                            <span class="badge badge-danger">Nicht begonnen</span>
                         {% endif %}
                     {% else %}
-                        <span class="badge bg-secondary">N/A</span>
+                        <span class="badge badge-secondary">N/A</span>
                     {% endif %}
                 </td>
                 <td class="text-center">
@@ -373,11 +373,11 @@
     <div class="control-detail">
         <div class="control-header">
             <h2>{{ control.controlId }}: {{ control.name }}</h2>
-            <span class="badge bg-info">{{ control.category }}</span>
+            <span class="badge badge-info">{{ control.category }}</span>
             {% if control.applicable %}
-                <span class="badge bg-success">Anwendbar</span>
+                <span class="badge badge-success">Anwendbar</span>
             {% else %}
-                <span class="badge bg-secondary">Nicht anwendbar</span>
+                <span class="badge badge-secondary">Nicht anwendbar</span>
             {% endif %}
         </div>
 
@@ -402,11 +402,11 @@
                 <div class="detail-label">Implementierungsstatus:</div>
                 <div class="detail-value">
                     {% if control.implementationStatus == 'implemented' %}
-                        <span class="badge bg-success"><i class="bi bi-check-circle" aria-hidden="true"></i> {{ 'soa.status.implemented'|trans({}, 'soa') }}</span> - {{ control.implementationPercentage }}%
+                        <span class="badge badge-success">✓ {{ 'soa.status.implemented'|trans({}, 'soa') }}</span> - {{ control.implementationPercentage }}%
                     {% elseif control.implementationStatus == 'in_progress' %}
-                        <span class="badge bg-warning">{{ 'soa.in_progress_badge_emoji'|trans({}, 'soa') }}</span> - {{ control.implementationPercentage }}%
+                        <span class="badge badge-warning">{{ 'soa.in_progress_badge_emoji'|trans({}, 'soa') }}</span> - {{ control.implementationPercentage }}%
                     {% elseif control.implementationStatus == 'not_started' %}
-                        <span class="badge bg-danger"><i class="bi bi-pause-circle" aria-hidden="true"></i> {{ 'soa.status.not_started'|trans({}, 'soa') }}</span> - {{ control.implementationPercentage }}%
+                        <span class="badge badge-danger">⏸ {{ 'soa.status.not_started'|trans({}, 'soa') }}</span> - {{ control.implementationPercentage }}%
                     {% endif %}
                 </div>
             </div>

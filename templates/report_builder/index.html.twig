@@ -78,7 +78,7 @@
                 {% block card_header %}
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h2 class="h5 mb-0"><i class="bi bi-collection" aria-hidden="true"></i> {{ 'section.my_reports'|trans }}</h2>
-                        <span class="badge bg-secondary">{{ reports|length }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: reports|length } %}
                     </div>
                 {% endblock %}
                 {% block card_body %}
@@ -106,7 +106,7 @@
                                         <br><small class="text-muted">{{ report.description|slice(0, 50) }}{% if report.description|length > 50 %}...{% endif %}</small>
                                         {% endif %}
                                     </td>
-                                    <td><span class="badge bg-secondary">{{ categories[report.category]|default(report.category) }}</span></td>
+                                    <td>{% include '_components/_badge.html.twig' with { variant: 'secondary', content: categories[report.category]|default(report.category) } %}</td>
                                     <td>{{ report.layout }}</td>
                                     <td>{{ report.updatedAt ? report.updatedAt|date('d.m.Y H:i') : report.createdAt|date('d.m.Y H:i') }}</td>
                                     <td class="text-end">

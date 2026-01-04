@@ -18,12 +18,12 @@
             <h1>
                 <i class="bi bi-shield-check" aria-hidden="true"></i> {{ framework.name }}
                 {% if framework.active %}
-                    <span class="badge bg-success">{{ 'common.active'|trans({}, 'messages') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 'common.active'|trans({}, 'messages') } %}
                 {% else %}
-                    <span class="badge bg-secondary">{{ 'common.inactive'|trans({}, 'messages') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.inactive'|trans({}, 'messages') } %}
                 {% endif %}
                 {% if framework.mandatory %}
-                    <span class="badge bg-danger">{{ 'compliance.framework.badge.mandatory'|trans({}, 'compliance') }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'compliance.framework.badge.mandatory'|trans({}, 'compliance') } %}
                 {% endif %}
             </h1>
             <p class="text-muted">
@@ -153,7 +153,7 @@
                                                 data-bs-toggle="collapse"
                                                 data-bs-target="#category{{ loop.index }}">
                                             {{ category }}
-                                            <span class="badge bg-secondary ms-2">{{ requirements|length }}</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: requirements|length, class: 'ms-2' } %}
                                         </button>
                                     </h2>
                                     <div id="category{{ loop.index }}" class="accordion-collapse collapse"
@@ -208,7 +208,7 @@
                 {% block card_body %}
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-danger">{{ 'compliance.requirement.priority.critical'|trans({}, 'compliance') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'compliance.requirement.priority.critical'|trans({}, 'compliance') } %}
                             <span>{{ priority_distribution.critical }}</span>
                         </div>
                         <div class="progress" style="height: 10px;">
@@ -217,7 +217,7 @@
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-warning text-dark">{{ 'compliance.requirement.priority.high'|trans({}, 'compliance') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'compliance.requirement.priority.high'|trans({}, 'compliance') } %}
                             <span>{{ priority_distribution.high }}</span>
                         </div>
                         <div class="progress" style="height: 10px;">
@@ -226,7 +226,7 @@
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-info">{{ 'compliance.requirement.priority.medium'|trans({}, 'compliance') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'info', content: 'compliance.requirement.priority.medium'|trans({}, 'compliance') } %}
                             <span>{{ priority_distribution.medium }}</span>
                         </div>
                         <div class="progress" style="height: 10px;">
@@ -235,7 +235,7 @@
                     </div>
                     <div>
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-secondary">{{ 'compliance.requirement.priority.low'|trans({}, 'compliance') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'compliance.requirement.priority.low'|trans({}, 'compliance') } %}
                             <span>{{ priority_distribution.low }}</span>
                         </div>
                         <div class="progress" style="height: 10px;">

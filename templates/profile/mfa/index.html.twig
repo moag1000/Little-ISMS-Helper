@@ -72,7 +72,7 @@
                         {% for type, count in tokens_by_type %}
                             <div class="d-flex justify-content-between">
                                 <span>{{ ('mfa.token_type.' ~ type)|trans({}, 'mfa') }}</span>
-                                <span class="badge bg-secondary">{{ count }}</span>
+                                {% include '_components/_badge.html.twig' with { variant: 'secondary', content: count } %}
                             </div>
                         {% endfor %}
                     {% else %}
@@ -136,7 +136,7 @@
                                 <td>
                                     {{ token.deviceName ?? '-' }}
                                     {% if token.isPrimary %}
-                                        <span class="badge bg-primary">{{ 'mfa.is_primary'|trans({}, 'mfa') }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'primary', content: 'mfa.is_primary'|trans({}, 'mfa') } %}
                                     {% endif %}
                                 </td>
                                 <td>{{ token.enrolledAt|date('d.m.Y H:i') }}</td>
@@ -148,17 +148,17 @@
                                     {% endif %}
                                 </td>
                                 <td class="text-center">
-                                    <span class="badge bg-info">{{ token.usageCount }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'info', content: token.usageCount } %}
                                 </td>
                                 <td class="text-center">
                                     {% if token.isActive %}
                                         {% if token.isExpired %}
-                                            <span class="badge bg-danger">{{ 'mfa.status.expired'|trans({}, 'mfa') }}</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'mfa.status.expired'|trans({}, 'mfa') } %}
                                         {% else %}
-                                            <span class="badge bg-success">{{ 'mfa.status.active'|trans({}, 'mfa') }}</span>
+                                            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'mfa.status.active'|trans({}, 'mfa') } %}
                                         {% endif %}
                                     {% else %}
-                                        <span class="badge bg-secondary">{{ 'mfa.status.inactive'|trans({}, 'mfa') }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'mfa.status.inactive'|trans({}, 'mfa') } %}
                                     {% endif %}
                                 </td>
                                 <td class="text-end">

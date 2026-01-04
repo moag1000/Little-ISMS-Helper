@@ -12,16 +12,22 @@
 
 {% macro badge(item, currentTenant) %}
     {% if item.tenant is defined and currentTenant is not null and item.tenant.id != currentTenant.id %}
-        <span class="badge bg-info" title="{{ 'corporate.inheritance.inherited_from'|trans({}, 'tenant') }}: {{ item.tenant.name }}">
-            <i class="bi bi-building" aria-hidden="true"></i> {{ 'corporate.inherited'|trans({}, 'tenant') }}
-        </span>
+        {% include '_components/_badge.html.twig' with {
+            variant: 'info',
+            icon: 'bi-building',
+            title: 'corporate.inheritance.inherited_from'|trans({}, 'tenant') ~ ': ' ~ item.tenant.name,
+            content: 'corporate.inherited'|trans({}, 'tenant')
+        } %}
     {% endif %}
 {% endmacro %}
 
 {% macro small_badge(item, currentTenant) %}
     {% if item.tenant is defined and currentTenant is not null and item.tenant.id != currentTenant.id %}
-        <span class="badge bg-info badge-sm" title="{{ 'corporate.inheritance.inherited_from'|trans({}, 'tenant') }}: {{ item.tenant.name }}">
-            <i class="bi bi-building" aria-hidden="true"></i>
-        </span>
+        {% include '_components/_badge.html.twig' with {
+            variant: 'info',
+            size: 'sm',
+            icon: 'bi-building',
+            title: 'corporate.inheritance.inherited_from'|trans({}, 'tenant') ~ ': ' ~ item.tenant.name
+        } %}
     {% endif %}
 {% endmacro %}

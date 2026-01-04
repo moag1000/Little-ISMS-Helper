@@ -40,7 +40,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <strong>{{ 'scheduled_report.form.report_type'|trans({}, 'scheduled_reports') }}:</strong><br>
-                            <span class="badge bg-info fs-6">{{ ('scheduled_report.type.' ~ report.reportType)|trans({}, 'scheduled_reports') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'info', size: 'lg', content: ('scheduled_report.type.' ~ report.reportType)|trans({}, 'scheduled_reports') } %}
                         </div>
                         <div class="col-md-6 mb-3">
                             <strong>{{ 'scheduled_report.form.schedule'|trans({}, 'scheduled_reports') }}:</strong><br>
@@ -49,9 +49,9 @@
                         <div class="col-md-6 mb-3">
                             <strong>{{ 'scheduled_report.form.format'|trans({}, 'scheduled_reports') }}:</strong><br>
                             {% if report.format == 'pdf' %}
-                            <span class="badge bg-danger"><i class="bi bi-file-pdf" aria-hidden="true"></i> PDF</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', icon: 'bi-file-pdf', content: 'PDF' } %}
                             {% else %}
-                            <span class="badge bg-success"><i class="bi bi-file-excel" aria-hidden="true"></i> Excel</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'success', icon: 'bi-file-excel', content: 'Excel' } %}
                             {% endif %}
                         </div>
                         <div class="col-md-6 mb-3">
@@ -124,9 +124,9 @@
                         <div class="col-md-4">
                             <strong>{{ 'scheduled_report.last_run.status'|trans({}, 'scheduled_reports') }}:</strong><br>
                             {% if report.lastRunStatus == 1 %}
-                            <span class="badge bg-success">{{ 'scheduled_report.last_run.success'|trans({}, 'scheduled_reports') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'scheduled_report.last_run.success'|trans({}, 'scheduled_reports') } %}
                             {% else %}
-                            <span class="badge bg-danger">{{ 'scheduled_report.last_run.failed'|trans({}, 'scheduled_reports') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'scheduled_report.last_run.failed'|trans({}, 'scheduled_reports') } %}
                             {% endif %}
                         </div>
                         <div class="col-md-4">
@@ -163,7 +163,7 @@
                         <strong>{{ 'scheduled_report.next_run'|trans({}, 'scheduled_reports') }}:</strong><br>
                         {{ report.nextRunAt|date('Y-m-d H:i') }}
                         {% if report.isDue() %}
-                        <span class="badge bg-warning text-dark">{{ 'scheduled_report.status.due'|trans({}, 'scheduled_reports') }}</span>
+                        {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark', content: 'scheduled_report.status.due'|trans({}, 'scheduled_reports') } %}
                         {% endif %}
                     </p>
                     {% endif %}

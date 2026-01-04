@@ -25,9 +25,10 @@
             {{ 'dashboard.widget.overdue_reviews.title'|trans({}, 'dashboard') }}
         </h3>
         {% if total_overdue > 0 or urgent_breaches > 0 %}
-            <span class="badge {% if urgent_breaches > 0 %}bg-danger{% else %}bg-warning{% endif %}">
-                {{ total_overdue + urgent_breaches }}
-            </span>
+            {% include '_components/_badge.html.twig' with {
+                variant: urgent_breaches > 0 ? 'danger' : 'warning',
+                content: total_overdue + urgent_breaches
+            } %}
         {% endif %}
     </div>
 
@@ -105,9 +106,10 @@
                             </div>
                             {% set days_overdue = "now"|date('U') - risk.reviewDate|date('U') %}
                             {% set days_overdue = (days_overdue / 86400)|round %}
-                            <span class="badge {% if days_overdue > 30 %}bg-danger{% elseif days_overdue > 7 %}bg-warning{% else %}bg-secondary{% endif %}">
-                                {{ days_overdue }}d
-                            </span>
+                            {% include '_components/_badge.html.twig' with {
+                                variant: days_overdue > 30 ? 'danger' : (days_overdue > 7 ? 'warning' : 'secondary'),
+                                content: days_overdue ~ 'd'
+                            } %}
                         </div>
                     </li>
                 {% endfor %}
@@ -131,7 +133,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <span class="badge bg-warning">BC</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'BC' } %}
                         </div>
                     </li>
                 {% endfor %}
@@ -156,7 +158,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <span class="badge {% if hours < 0 %}bg-danger{% else %}bg-warning{% endif %}">72h</span>
+                            {% include '_components/_badge.html.twig' with { variant: hours < 0 ? 'danger' : 'warning', content: '72h' } %}
                         </div>
                     </li>
                 {% endfor %}

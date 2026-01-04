@@ -63,7 +63,7 @@
         </div>
 
         <div class="mt-2">
-            <span class="badge bg-success">{{ opportunity.reusePercentage }}% {{ 'compliance.badge.reusable'|trans({}, 'compliance') }}</span>
+            {% include '_components/_badge.html.twig' with { variant: 'success', content: opportunity.reusePercentage ~ '% ' ~ ('compliance.badge.reusable'|trans({}, 'compliance')) } %}
         </div>
 
     </div>
@@ -106,13 +106,11 @@
                 </td>
                 <td>{{ element.source }}</td>
                 <td class="text-center">
-                    <span class="badge bg-info">{{ element.reuseCount }}</span>
+                    {% include '_components/_badge.html.twig' with { variant: 'info', content: element.reuseCount } %}
                 </td>
                 <td>
                     {% for framework in element.frameworks %}
-                        <span class="badge bg-secondary mr-xs">
-                            {{ framework.name }}
-                        </span>
+                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: framework.name, class: 'mr-xs' } %}
                     {% endfor %}
                 </td>
                 <td class="text-center">
@@ -152,10 +150,10 @@
             <td><strong>{{ framework.name }}</strong></td>
             <td class="text-center">{{ framework.totalRequirements }}</td>
             <td class="text-center">
-                <span class="badge bg-success">{{ framework.reusedData }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'success', content: framework.reusedData } %}
             </td>
             <td class="text-center">
-                <span class="badge bg-warning">{{ framework.newDataNeeded }}</span>
+                {% include '_components/_badge.html.twig' with { variant: 'warning', content: framework.newDataNeeded } %}
             </td>
             <td>
                 {% set coverage = (framework.reusedData / framework.totalRequirements * 100)|round %}

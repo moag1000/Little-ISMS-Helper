@@ -45,7 +45,7 @@
                         <div class="card-header bg-warning-subtle d-flex align-items-center">
                             <i class="bi bi-bell-fill text-warning me-2" aria-hidden="true"></i>
                             <h2 class="h5 mb-0">{{ 'welcome.urgent_tasks.title'|trans({}, 'welcome') }}</h2>
-                            <span class="badge bg-warning text-dark ms-auto">{{ total_urgent_count }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark ms-auto', content: total_urgent_count } %}
                         </div>
                     {% endblock %}
                     {% block card_body %}
@@ -55,9 +55,12 @@
                                     <a href="{{ path(task.route) }}" class="text-decoration-none">
                                         <div class="d-flex align-items-center p-3 rounded border border-{{ task.color }}-subtle bg-{{ task.color }}-subtle hover-lift">
                                             <div class="flex-shrink-0 me-3">
-                                                <span class="badge bg-{{ task.color }} rounded-circle p-2">
-                                                    <i class="{{ task.icon }}" aria-hidden="true" style="font-size: 1.2rem;"></i>
-                                                </span>
+                                                {% include '_components/_badge.html.twig' with {
+                                                    variant: task.color,
+                                                    icon: task.icon,
+                                                    pill: true,
+                                                    class: 'p-2'
+                                                } %}
                                             </div>
                                             <div class="flex-grow-1">
                                                 <div class="fw-semibold text-dark">
@@ -68,7 +71,7 @@
                                                 </small>
                                             </div>
                                             <div class="flex-shrink-0">
-                                                <span class="badge bg-{{ task.color }} fs-6">{{ task.count }}</span>
+                                                {% include '_components/_badge.html.twig' with { variant: task.color, class: 'fs-6', content: task.count } %}
                                             </div>
                                         </div>
                                     </a>
@@ -118,9 +121,12 @@
                                                 <div class="d-flex justify-content-between align-items-center">
                                                     <small class="text-muted">{{ wizard.score }}% {{ 'welcome.wizards.complete'|trans({}, 'welcome') }}</small>
                                                     {% if wizard.critical_gaps > 0 %}
-                                                        <span class="badge bg-danger-subtle text-danger">
-                                                            <i class="bi bi-exclamation-circle" aria-hidden="true"></i> {{ wizard.critical_gaps }}
-                                                        </span>
+                                                        {% include '_components/_badge.html.twig' with {
+                                                            variant: 'danger-subtle',
+                                                            class: 'text-danger',
+                                                            icon: 'bi-exclamation-circle',
+                                                            content: wizard.critical_gaps
+                                                        } %}
                                                     {% endif %}
                                                 </div>
                                             </div>
@@ -149,13 +155,15 @@
                             <div class="card h-100 text-center module-card hover-lift border-0 shadow-sm">
                                 <div class="card-body py-4">
                                     <div class="module-icon mb-3">
-                                        <span class="badge bg-{{ module.color }}-subtle text-{{ module.color }} rounded-circle p-3">
-                                            <i class="{{ module.icon }}" aria-hidden="true" style="font-size: 1.8rem;"></i>
-                                        </span>
+                                        {% include '_components/_badge.html.twig' with {
+                                            variant: module.color ~ '-subtle',
+                                            class: 'text-' ~ module.color ~ ' rounded-circle p-3',
+                                            icon: module.icon
+                                        } %}
                                     </div>
                                     <h3 class="h6 mb-2 text-dark">{{ module.name }}</h3>
                                     {% if module.count is not null %}
-                                        <span class="badge bg-{{ module.color }}">{{ module.count }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: module.color, content: module.count } %}
                                     {% endif %}
                                 </div>
                             </div>
