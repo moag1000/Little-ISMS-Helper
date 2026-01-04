@@ -27,71 +27,80 @@
     {# Executive Summary #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <div class="text-muted mb-2 fw-bold">Affected Processes</div>
-                    <div class="fs-2 mb-0">{{ analysis.affected_processes.total_count }}</div>
-                    {% if analysis.affected_processes.critical_count > 0 %}
-                        <span class="badge bg-danger mt-2">{{ analysis.affected_processes.critical_count }} Critical</span>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <div class="text-muted mb-2 fw-bold">Financial Impact</div>
-                    <div class="fs-2 mb-0">€{{ analysis.financial_impact.total_eur|number_format(0, '.', ',') }}</div>
-                    <small class="text-muted">€{{ analysis.financial_impact.per_hour_eur|number_format(2) }}/hour</small>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <div class="text-muted mb-2 fw-bold">Recovery Priority</div>
-                    <div class="fs-3 mb-0">
-                        {% set priority_class = {
-                            'immediate': 'danger',
-                            'high': 'warning',
-                            'medium': 'info',
-                            'low': 'secondary'
-                        }[analysis.recovery_priority.level] %}
-                        <span class="badge bg-{{ priority_class }}">{{ analysis.recovery_priority.level|upper }}</span>
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="text-muted mb-2 fw-bold">Affected Processes</div>
+                        <div class="fs-2 mb-0">{{ analysis.affected_processes.total_count }}</div>
+                        {% if analysis.affected_processes.critical_count > 0 %}
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', class: 'mt-2', content: analysis.affected_processes.critical_count ~ ' Critical' } %}
+                        {% endif %}
                     </div>
-                    <small class="text-muted">{{ analysis.recovery_priority.most_critical_process }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-md-3">
-            <div class="card">
-                <div class="card-body text-center">
-                    <div class="text-muted mb-2 fw-bold">RTO Compliance</div>
-                    {% if analysis.rto_compliance.is_compliant %}
-                        <div class="fs-3 mb-0 text-success"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Compliant</div>
-                    {% else %}
-                        <div class="fs-3 mb-0 text-danger"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ analysis.rto_compliance.violations_count }} Violations</div>
-                    {% endif %}
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="text-muted mb-2 fw-bold">Financial Impact</div>
+                        <div class="fs-2 mb-0">€{{ analysis.financial_impact.total_eur|number_format(0, '.', ',') }}</div>
+                        <small class="text-muted">€{{ analysis.financial_impact.per_hour_eur|number_format(2) }}/hour</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+
+        <div class="col-md-3">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="text-muted mb-2 fw-bold">Recovery Priority</div>
+                        <div class="fs-3 mb-0">
+                            {% set priority_class = {
+                                'immediate': 'danger',
+                                'high': 'warning',
+                                'medium': 'info',
+                                'low': 'secondary'
+                            }[analysis.recovery_priority.level] %}
+                            {% include '_components/_badge.html.twig' with { variant: priority_class, content: analysis.recovery_priority.level|upper } %}
+                        </div>
+                        <small class="text-muted">{{ analysis.recovery_priority.most_critical_process }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
+        </div>
+
+        <div class="col-md-3">
+            {% embed '_components/_card.html.twig' %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <div class="text-muted mb-2 fw-bold">RTO Compliance</div>
+                        {% if analysis.rto_compliance.is_compliant %}
+                            <div class="fs-3 mb-0 text-success"><i class="bi bi-check-circle-fill" aria-hidden="true"></i> Compliant</div>
+                        {% else %}
+                            <div class="fs-3 mb-0 text-danger"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i> {{ analysis.rto_compliance.violations_count }} Violations</div>
+                        {% endif %}
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Downtime Information #}
-    <div class="card mb-4">
-        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-clock" aria-hidden="true"></i> Downtime Analysis</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-clock" aria-hidden="true"></i> Downtime Analysis</h2></div>
+        {% endblock %}
+        {% block card_body %}
             <div class="row">
                 <div class="col-md-6">
                     <p><strong>Detected:</strong> {{ analysis.downtime.detected_at|date('Y-m-d H:i') }}</p>
                     {% if analysis.downtime.resolved_at %}
                         <p><strong>Resolved:</strong> {{ analysis.downtime.resolved_at|date('Y-m-d H:i') }}</p>
                     {% else %}
-                        <p><strong>Status:</strong> <span class="badge bg-warning">Ongoing</span></p>
+                        <p><strong>Status:</strong> {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'Ongoing' } %}</p>
                     {% endif %}
                 </div>
                 <div class="col-md-6">
@@ -101,14 +110,15 @@
                     {% endif %}
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Affected Processes Detail #}
-    <div class="card mb-4">
-        <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-diagram-3" aria-hidden="true"></i> Affected Business Processes</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-diagram-3" aria-hidden="true"></i> Affected Business Processes</h2></div>
+        {% endblock %}
+        {% block card_body %}
             {% if analysis.affected_processes.processes|length > 0 %}
                 {% embed '_components/_table.html.twig' with {
                     'class': 'table-hover',
@@ -139,12 +149,12 @@
                                         'medium': 'info',
                                         'low': 'secondary'
                                     }[process.criticality] %}
-                                    <span class="badge bg-{{ crit_class }}">{{ process.criticality|upper }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: crit_class, content: process.criticality|upper } %}
                                 </td>
                                 <td>
                                     {{ process.bia_data.rto_hours }}h
                                     {% if process.rto_violated %}
-                                        <br><span class="badge bg-danger">Violated (+{{ process.rto_compliance.excess_hours }}h)</span>
+                                        <br>{% include '_components/_badge.html.twig' with { variant: 'danger', content: 'Violated (+' ~ process.rto_compliance.excess_hours ~ 'h)' } %}
                                     {% endif %}
                                 </td>
                                 <td>€{{ process.financial_impact|number_format(2) }}</td>
@@ -155,7 +165,7 @@
                                         'medium': 'info',
                                         'low': 'secondary'
                                     }[process.impact_severity] %}
-                                    <span class="badge bg-{{ sev_class }}">{{ process.impact_severity|upper }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: sev_class, content: process.impact_severity|upper } %}
                                 </td>
                                 <td>
                                     {% if process.rto_violated %}
@@ -174,14 +184,15 @@
                     Use the "Auto-Detect Processes" feature on the incident details page.
                 </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Recovery Priority Recommendations #}
-    <div class="card mb-4">
-        <div class="card-header bg-{{ priority_class }}"><h2 class="h5 mb-0 text-white"><i class="bi bi-lightbulb" aria-hidden="true"></i> Recovery Priority: {{ analysis.recovery_priority.level|upper }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header bg-{{ priority_class }}"><h2 class="h5 mb-0 text-white"><i class="bi bi-lightbulb" aria-hidden="true"></i> Recovery Priority: {{ analysis.recovery_priority.level|upper }}</h2></div>
+        {% endblock %}
+        {% block card_body %}
             <p><strong>Reasoning:</strong> {{ analysis.recovery_priority.reasoning }}</p>
 
             <h3 class="h6 mt-3">Recommended Actions:</h3>
@@ -190,15 +201,16 @@
                     <li>{{ action }}</li>
                 {% endfor %}
             </ul>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Recommendations #}
     {% if analysis.recommendations|length > 0 %}
-        <div class="card mb-4">
-            <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> Recommendations</h2>
-            </div>
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+            {% block card_header %}
+                <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-list-check" aria-hidden="true"></i> Recommendations</h2></div>
+            {% endblock %}
+            {% block card_body %}
                 {% for recommendation in analysis.recommendations %}
                     <div class="alert alert-{{ {
                         'high': 'danger',
@@ -210,16 +222,17 @@
                         <p class="mb-0"><strong>Action:</strong> {{ recommendation.action }}</p>
                     </div>
                 {% endfor %}
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 
     {# Historical Context #}
     {% if analysis.historical_context.total_past_incidents > 0 %}
-        <div class="card mb-4">
-            <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> Historical Context</h2>
-            </div>
-            <div class="card-body">
+        {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+            {% block card_header %}
+                <div class="card-header"><h2 class="h5 mb-0"><i class="bi bi-clock-history" aria-hidden="true"></i> Historical Context</h2></div>
+            {% endblock %}
+            {% block card_body %}
                 <div class="row">
                     <div class="col-md-3">
                         <p><strong>Past Incidents:</strong> {{ analysis.historical_context.total_past_incidents }}</p>
@@ -234,8 +247,8 @@
                         <p><strong>RTO Violations:</strong> {{ analysis.historical_context.processes_with_rto_violations }} processes</p>
                     </div>
                 </div>
-            </div>
-        </div>
+            {% endblock %}
+        {% endembed %}
     {% endif %}
 </div>
 {% endblock %}
