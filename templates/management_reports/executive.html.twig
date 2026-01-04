@@ -27,57 +27,67 @@
     {# Key Metrics #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card bg-primary text-white h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-server fs-1" aria-hidden="true"></i>
-                    <h2 class="display-4 mb-0">{{ summary.summary.total_assets }}</h2>
-                    <small>{{ 'management_reports.executive.assets'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'bg-primary text-white h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <i class="bi bi-server fs-1" aria-hidden="true"></i>
+                        <h2 class="display-4 mb-0">{{ summary.summary.total_assets }}</h2>
+                        <small>{{ 'management_reports.executive.assets'|trans({}, 'management_reports') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card bg-danger text-white h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-exclamation-triangle fs-1" aria-hidden="true"></i>
-                    <h2 class="display-4 mb-0">{{ summary.summary.total_risks }}</h2>
-                    <small>{{ 'management_reports.executive.risks'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'bg-danger text-white h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <i class="bi bi-exclamation-triangle fs-1" aria-hidden="true"></i>
+                        <h2 class="display-4 mb-0">{{ summary.summary.total_risks }}</h2>
+                        <small>{{ 'management_reports.executive.risks'|trans({}, 'management_reports') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card bg-success text-white h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-shield-check fs-1" aria-hidden="true"></i>
-                    <h2 class="display-4 mb-0">{{ summary.summary.compliance_percentage }}%</h2>
-                    <small>{{ 'management_reports.executive.compliance'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'bg-success text-white h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <i class="bi bi-shield-check fs-1" aria-hidden="true"></i>
+                        <h2 class="display-4 mb-0">{{ summary.summary.compliance_percentage }}%</h2>
+                        <small>{{ 'management_reports.executive.compliance'|trans({}, 'management_reports') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card bg-info text-white h-100">
-                <div class="card-body text-center">
-                    <i class="bi bi-shield fs-1" aria-hidden="true"></i>
-                    <h2 class="display-4 mb-0">{{ summary.summary.total_controls }}</h2>
-                    <small>{{ 'management_reports.executive.controls'|trans({}, 'management_reports') }}</small>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' with { 'class': 'bg-info text-white h-100' } %}
+                {% block card_body %}
+                    <div class="text-center">
+                        <i class="bi bi-shield fs-1" aria-hidden="true"></i>
+                        <h2 class="display-4 mb-0">{{ summary.summary.total_controls }}</h2>
+                        <small>{{ 'management_reports.executive.controls'|trans({}, 'management_reports') }}</small>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     <div class="row">
         {# Risk Distribution #}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-header bg-danger text-white">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
-                        {{ 'management_reports.executive.risk_distribution'|trans({}, 'management_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm' } %}
+                {% block card_header %}
+                    <div class="card-header bg-danger text-white">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-exclamation-triangle" aria-hidden="true"></i>
+                            {{ 'management_reports.executive.risk_distribution'|trans({}, 'management_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-danger">{{ 'management_reports.risk_level.critical'|trans({}, 'management_reports') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'management_reports.risk_level.critical'|trans({}, 'management_reports') } %}
                             <span>{{ summary.risk_distribution.critical }}</span>
                         </div>
                         <div class="progress" style="height: 20px;">
@@ -86,7 +96,7 @@
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-warning text-dark">{{ 'management_reports.risk_level.high'|trans({}, 'management_reports') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark', content: 'management_reports.risk_level.high'|trans({}, 'management_reports') } %}
                             <span>{{ summary.risk_distribution.high }}</span>
                         </div>
                         <div class="progress" style="height: 20px;">
@@ -95,7 +105,7 @@
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-info">{{ 'management_reports.risk_level.medium'|trans({}, 'management_reports') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'info', content: 'management_reports.risk_level.medium'|trans({}, 'management_reports') } %}
                             <span>{{ summary.risk_distribution.medium }}</span>
                         </div>
                         <div class="progress" style="height: 20px;">
@@ -104,30 +114,32 @@
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-success">{{ 'management_reports.risk_level.low'|trans({}, 'management_reports') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'management_reports.risk_level.low'|trans({}, 'management_reports') } %}
                             <span>{{ summary.risk_distribution.low }}</span>
                         </div>
                         <div class="progress" style="height: 20px;">
                             <div class="progress-bar bg-success" style="width: {{ summary.summary.total_risks > 0 ? (summary.risk_distribution.low / summary.summary.total_risks * 100) : 0 }}%"></div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Control Implementation Status #}
         <div class="col-md-6 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-header bg-success text-white">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-shield-check" aria-hidden="true"></i>
-                        {{ 'management_reports.executive.control_status'|trans({}, 'management_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm' } %}
+                {% block card_header %}
+                    <div class="card-header bg-success text-white">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-shield-check" aria-hidden="true"></i>
+                            {{ 'management_reports.executive.control_status'|trans({}, 'management_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-success">{{ 'management_reports.control_status.implemented'|trans({}, 'management_reports') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'management_reports.control_status.implemented'|trans({}, 'management_reports') } %}
                             <span>{{ summary.control_status.implemented }}</span>
                         </div>
                         <div class="progress" style="height: 20px;">
@@ -136,7 +148,7 @@
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-warning text-dark">{{ 'management_reports.control_status.in_progress'|trans({}, 'management_reports') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', class: 'text-dark', content: 'management_reports.control_status.in_progress'|trans({}, 'management_reports') } %}
                             <span>{{ summary.control_status.in_progress }}</span>
                         </div>
                         <div class="progress" style="height: 20px;">
@@ -145,29 +157,31 @@
                     </div>
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <span class="badge bg-secondary">{{ 'management_reports.control_status.not_started'|trans({}, 'management_reports') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'management_reports.control_status.not_started'|trans({}, 'management_reports') } %}
                             <span>{{ summary.control_status.not_started }}</span>
                         </div>
                         <div class="progress" style="height: 20px;">
                             <div class="progress-bar bg-secondary" style="width: {{ summary.summary.total_controls > 0 ? (summary.control_status.not_started / summary.summary.total_controls * 100) : 0 }}%"></div>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     <div class="row">
         {# Incident Summary #}
         <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-header bg-warning text-dark">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-bell" aria-hidden="true"></i>
-                        {{ 'management_reports.executive.incidents_12m'|trans({}, 'management_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm' } %}
+                {% block card_header %}
+                    <div class="card-header bg-warning text-dark">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-bell" aria-hidden="true"></i>
+                            {{ 'management_reports.executive.incidents_12m'|trans({}, 'management_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row text-center">
                         <div class="col-4">
                             <h3 class="text-primary">{{ summary.incident_summary.total_12_months }}</h3>
@@ -182,20 +196,22 @@
                             <small class="text-muted">{{ 'management_reports.incident_status.resolved'|trans({}, 'management_reports') }}</small>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Audit Summary #}
         <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-header bg-info text-white">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-search" aria-hidden="true"></i>
-                        {{ 'management_reports.executive.audits'|trans({}, 'management_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm' } %}
+                {% block card_header %}
+                    <div class="card-header bg-info text-white">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-search" aria-hidden="true"></i>
+                            {{ 'management_reports.executive.audits'|trans({}, 'management_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="row text-center">
                         <div class="col-6">
                             <h3 class="text-primary">{{ summary.audit_summary.total_audits }}</h3>
@@ -206,40 +222,44 @@
                             <small class="text-muted">{{ 'management_reports.audit_status.this_year'|trans({}, 'management_reports') }}</small>
                         </div>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Training Summary #}
         <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <div class="card-header bg-secondary text-white">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-mortarboard" aria-hidden="true"></i>
-                        {{ 'management_reports.executive.trainings'|trans({}, 'management_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 shadow-sm' } %}
+                {% block card_header %}
+                    <div class="card-header bg-secondary text-white">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-mortarboard" aria-hidden="true"></i>
+                            {{ 'management_reports.executive.trainings'|trans({}, 'management_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="text-center">
                         <h3 class="text-primary">{{ summary.training_summary.total_trainings }}</h3>
                         <small class="text-muted">{{ 'management_reports.training_status.total'|trans({}, 'management_reports') }}</small>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Trend Charts Placeholder #}
     <div class="row mt-4">
         <div class="col-md-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-graph-up" aria-hidden="true"></i>
-                        {{ 'management_reports.executive.risk_trends'|trans({}, 'management_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-graph-up" aria-hidden="true"></i>
+                            {{ 'management_reports.executive.risk_trends'|trans({}, 'management_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <table class="table table-sm">
                         <thead>
                             <tr>
@@ -255,28 +275,30 @@
                                 <td>{{ trend.new_risks }}</td>
                                 <td>
                                     {% if trend.high_critical > 0 %}
-                                    <span class="badge bg-danger">{{ trend.high_critical }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: trend.high_critical } %}
                                     {% else %}
-                                    <span class="badge bg-success">0</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 0 } %}
                                     {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-md-6 mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header">
-                    <h3 class="h5 mb-0">
-                        <i class="bi bi-graph-up" aria-hidden="true"></i>
-                        {{ 'management_reports.executive.incident_trends'|trans({}, 'management_reports') }}
-                    </h3>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'shadow-sm' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h3 class="h5 mb-0">
+                            <i class="bi bi-graph-up" aria-hidden="true"></i>
+                            {{ 'management_reports.executive.incident_trends'|trans({}, 'management_reports') }}
+                        </h3>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <table class="table table-sm">
                         <thead>
                             <tr>
@@ -292,17 +314,17 @@
                                 <td>{{ trend.total }}</td>
                                 <td>
                                     {% if trend.high_critical > 0 %}
-                                    <span class="badge bg-danger">{{ trend.high_critical }}</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'danger', content: trend.high_critical } %}
                                     {% else %}
-                                    <span class="badge bg-success">0</span>
+                                    {% include '_components/_badge.html.twig' with { variant: 'success', content: 0 } %}
                                     {% endif %}
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
