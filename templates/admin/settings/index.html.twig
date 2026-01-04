@@ -13,8 +13,8 @@
     <div class="row g-4">
         {# Application Settings Card #}
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_body %}
                     <div class="d-flex align-items-start mb-3">
                         <div class="bg-primary bg-opacity-10 p-3 rounded me-3">
                             <i class="bi bi-gear-fill text-primary fs-2" aria-hidden="true"></i>
@@ -33,19 +33,21 @@
                             <li><strong>{{ 'admin.settings.application.items_per_page'|trans({}, 'admin') }}:</strong> {{ settings.application.items_per_page ?? 25 }}</li>
                         </ul>
                     {% endif %}
-                </div>
-                <div class="card-footer bg-transparent">
-                    <a href="{{ path('admin_settings_application') }}" class="btn btn-sm btn-primary w-100">
-                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
-                    </a>
-                </div>
-            </div>
+                {% endblock %}
+                {% block card_footer %}
+                    <div class="card-footer bg-transparent">
+                        <a href="{{ path('admin_settings_application') }}" class="btn btn-sm btn-primary w-100">
+                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                        </a>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Security Settings Card #}
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_body %}
                     <div class="d-flex align-items-start mb-3">
                         <div class="bg-danger bg-opacity-10 p-3 rounded me-3">
                             <i class="bi bi-shield-lock-fill text-danger fs-2" aria-hidden="true"></i>
@@ -64,19 +66,21 @@
                             <li><strong>{{ 'admin.settings.security.require_2fa'|trans({}, 'admin') }}:</strong> {{ settings.security.require_2fa ? 'Yes' : 'No' }}</li>
                         </ul>
                     {% endif %}
-                </div>
-                <div class="card-footer bg-transparent">
-                    <a href="{{ path('admin_settings_security') }}" class="btn btn-sm btn-danger w-100">
-                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
-                    </a>
-                </div>
-            </div>
+                {% endblock %}
+                {% block card_footer %}
+                    <div class="card-footer bg-transparent">
+                        <a href="{{ path('admin_settings_security') }}" class="btn btn-sm btn-danger w-100">
+                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                        </a>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         {# Feature Flags Card #}
         <div class="col-md-6 col-lg-4">
-            <div class="card h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_body %}
                     <div class="d-flex align-items-start mb-3">
                         <div class="bg-success bg-opacity-10 p-3 rounded me-3">
                             <i class="bi bi-toggles2 text-success fs-2" aria-hidden="true"></i>
@@ -116,13 +120,15 @@
                             </li>
                         </ul>
                     {% endif %}
-                </div>
-                <div class="card-footer bg-transparent">
-                    <a href="{{ path('admin_settings_features') }}" class="btn btn-sm btn-success w-100">
-                        <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
-                    </a>
-                </div>
-            </div>
+                {% endblock %}
+                {% block card_footer %}
+                    <div class="card-footer bg-transparent">
+                        <a href="{{ path('admin_settings_features') }}" class="btn btn-sm btn-success w-100">
+                            <i class="bi bi-pencil" aria-hidden="true"></i> {{ 'admin.settings.configure'|trans({}, 'admin') }}
+                        </a>
+                    </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 

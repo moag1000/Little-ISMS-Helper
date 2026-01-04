@@ -22,38 +22,44 @@
     <div class="row">
         <div class="col-lg-3 mb-4">
             {# Navigation Sidebar #}
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title mb-0">
-                        <i class="bi bi-list-ul me-2" aria-hidden="true"></i>Navigation
-                    </h2>
-                </div>
-                <div class="list-group list-group-flush">
-                    <a href="{{ path('admin_licensing_index') }}" class="list-group-item list-group-item-action active">
-                        <i class="bi bi-file-earmark-text me-2" aria-hidden="true"></i>NOTICE
-                    </a>
-                    <a href="{{ path('admin_licensing_report') }}" class="list-group-item list-group-item-action">
-                        <i class="bi bi-file-earmark-bar-graph me-2" aria-hidden="true"></i>Detaillierter Bericht
-                    </a>
-                    <a href="{{ path('admin_licensing_summary') }}" class="list-group-item list-group-item-action">
-                        <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>Zusammenfassung
-                    </a>
-                </div>
-                <div class="card-body">
-                    <p class="fw-semibold text-muted small text-uppercase mb-2">Projekt</p>
-                    <p class="small mb-2"><strong>{{ project_name }}</strong></p>
-                    <p class="small text-muted mb-0">Lizenz: {{ project_license }}</p>
-                </div>
-            </div>
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="card-title mb-0">
+                            <i class="bi bi-list-ul me-2" aria-hidden="true"></i>Navigation
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
+                    <div class="list-group list-group-flush mx-n3 mt-n3">
+                        <a href="{{ path('admin_licensing_index') }}" class="list-group-item list-group-item-action active">
+                            <i class="bi bi-file-earmark-text me-2" aria-hidden="true"></i>NOTICE
+                        </a>
+                        <a href="{{ path('admin_licensing_report') }}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-file-earmark-bar-graph me-2" aria-hidden="true"></i>Detaillierter Bericht
+                        </a>
+                        <a href="{{ path('admin_licensing_summary') }}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-bar-chart me-2" aria-hidden="true"></i>Zusammenfassung
+                        </a>
+                    </div>
+                    <div class="mt-3">
+                        <p class="fw-semibold text-muted small text-uppercase mb-2">Projekt</p>
+                        <p class="small mb-2"><strong>{{ project_name }}</strong></p>
+                        <p class="small text-muted mb-0">Lizenz: {{ project_license }}</p>
+                    </div>
+                {% endblock %}
+            {% endembed %}
 
             {# Quick Actions #}
-            <div class="card mt-3">
-                <div class="card-header">
-                    <h2 class="card-title mb-0">
-                        <i class="bi bi-tools me-2" aria-hidden="true"></i>Aktionen
-                    </h2>
-                </div>
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'mt-3' } %}
+                {% block card_header %}
+                    <div class="card-header">
+                        <h2 class="card-title mb-0">
+                            <i class="bi bi-tools me-2" aria-hidden="true"></i>Aktionen
+                        </h2>
+                    </div>
+                {% endblock %}
+                {% block card_body %}
                     <div class="d-grid gap-2">
                         <button data-controller="ui-actions" data-action="ui-actions#print" class="btn btn-outline-primary btn-sm">
                             <i class="bi bi-printer me-1" aria-hidden="true"></i>Drucken
@@ -62,8 +68,8 @@
                             <i class="bi bi-download me-1" aria-hidden="true"></i>NOTICE.md
                         </a>
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
 
         <div class="col-lg-9">
@@ -84,28 +90,30 @@
             </div>
 
             {# NOTICE Content #}
-            <div class="card">
-                <div class="card-header bg-light">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h2 class="card-title mb-0">
-                            <i class="bi bi-file-earmark-text me-2" aria-hidden="true"></i>NOTICE - Third-Party Software Attributions
-                        </h2>
-                        <div class="btn-group btn-group-sm" role="group" data-controller="ui-actions">
-                            <button type="button" class="btn btn-outline-secondary" data-action="ui-actions#setFontSize" data-ui-actions-size-param="14px" data-ui-actions-target-param="#license-content">
-                                <i class="bi bi-zoom-out" aria-hidden="true"></i>
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary" data-action="ui-actions#setFontSize" data-ui-actions-size-param="16px" data-ui-actions-target-param="#license-content">
-                                <i class="bi bi-zoom-in" aria-hidden="true"></i>
-                            </button>
+            {% embed '_components/_card.html.twig' %}
+                {% block card_header %}
+                    <div class="card-header bg-light">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h2 class="card-title mb-0">
+                                <i class="bi bi-file-earmark-text me-2" aria-hidden="true"></i>NOTICE - Third-Party Software Attributions
+                            </h2>
+                            <div class="btn-group btn-group-sm" role="group" data-controller="ui-actions">
+                                <button type="button" class="btn btn-outline-secondary" data-action="ui-actions#setFontSize" data-ui-actions-size-param="14px" data-ui-actions-target-param="#license-content">
+                                    <i class="bi bi-zoom-out" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" data-action="ui-actions#setFontSize" data-ui-actions-size-param="16px" data-ui-actions-target-param="#license-content">
+                                    <i class="bi bi-zoom-in" aria-hidden="true"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-body">
+                {% endblock %}
+                {% block card_body %}
                     <div id="license-content" class="markdown-content" style="font-size: 14px;">
                         {{ notice_content|raw|nl2br }}
                     </div>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 </div>

@@ -24,8 +24,8 @@
     {# KPI Summary Cards #}
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card border-primary h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-primary h-100' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="card-subtitle mb-1 text-muted">{{ 'analytics.advanced.kpi.overall_compliance'|trans({}, 'analytics') }}</h6>
@@ -36,12 +36,12 @@
                         </div>
                     </div>
                     <small class="text-muted">{{ 'analytics.advanced.kpi.frameworks_count'|trans({'%count%': compliance_summary.frameworks.total}, 'analytics') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-success h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-success h-100' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="card-subtitle mb-1 text-muted">{{ 'analytics.advanced.kpi.control_effectiveness'|trans({}, 'analytics') }}</h6>
@@ -52,12 +52,12 @@
                         </div>
                     </div>
                     <small class="text-muted">{{ 'analytics.advanced.kpi.controls_count'|trans({'%count%': control_metrics.total_controls}, 'analytics') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-warning h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-warning h-100' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="card-subtitle mb-1 text-muted">{{ 'analytics.advanced.kpi.implementation_rate'|trans({}, 'analytics') }}</h6>
@@ -68,12 +68,12 @@
                         </div>
                     </div>
                     <small class="text-muted">{{ control_metrics.implemented }} / {{ control_metrics.total_controls }} {{ 'analytics.advanced.kpi.implemented'|trans({}, 'analytics') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-3">
-            <div class="card border-info h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'border-info h-100' } %}
+                {% block card_body %}
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h6 class="card-subtitle mb-1 text-muted">{{ 'analytics.advanced.kpi.risk_velocity'|trans({}, 'analytics') }}</h6>
@@ -93,16 +93,16 @@
                         </div>
                     </div>
                     <small class="text-muted">{{ 'analytics.advanced.kpi.velocity_period'|trans({'%days%': 30}, 'analytics') }}</small>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Advanced Analytics Navigation #}
     <div class="row">
         <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_body %}
                     <div class="d-flex align-items-center mb-3">
                         <div class="bg-primary bg-opacity-10 rounded-3 p-3 me-3">
                             <i class="bi bi-diagram-3 fs-3 text-primary" aria-hidden="true"></i>
@@ -121,12 +121,12 @@
                     <a href="{{ path('app_analytics_compliance_frameworks') }}" class="btn btn-primary">
                         <i class="bi bi-arrow-right me-1" aria-hidden="true"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
                     </a>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_body %}
                     <div class="d-flex align-items-center mb-3">
                         <div class="bg-success bg-opacity-10 rounded-3 p-3 me-3">
                             <i class="bi bi-toggles fs-3 text-success" aria-hidden="true"></i>
@@ -145,12 +145,12 @@
                     <a href="{{ path('app_analytics_control_effectiveness') }}" class="btn btn-success">
                         <i class="bi bi-arrow-right me-1" aria-hidden="true"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
                     </a>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-4 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_body %}
                     <div class="d-flex align-items-center mb-3">
                         <div class="bg-warning bg-opacity-10 rounded-3 p-3 me-3">
                             <i class="bi bi-graph-up-arrow fs-3 text-warning" aria-hidden="true"></i>
@@ -169,16 +169,16 @@
                     <a href="{{ path('app_analytics_risk_forecast') }}" class="btn btn-warning">
                         <i class="bi bi-arrow-right me-1" aria-hidden="true"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
                     </a>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Additional Navigation #}
     <div class="row">
         <div class="col-md-6 mb-4">
-            <div class="card h-100">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100' } %}
+                {% block card_body %}
                     <div class="d-flex align-items-center mb-3">
                         <div class="bg-info bg-opacity-10 rounded-3 p-3 me-3">
                             <i class="bi bi-server fs-3 text-info" aria-hidden="true"></i>
@@ -192,12 +192,12 @@
                     <a href="{{ path('app_analytics_asset_criticality') }}" class="btn btn-info">
                         <i class="bi bi-arrow-right me-1" aria-hidden="true"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
                     </a>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
         <div class="col-md-6 mb-4">
-            <div class="card h-100 border-secondary">
-                <div class="card-body">
+            {% embed '_components/_card.html.twig' with { 'class': 'h-100 border-secondary' } %}
+                {% block card_body %}
                     <div class="d-flex align-items-center mb-3">
                         <div class="bg-secondary bg-opacity-10 rounded-3 p-3 me-3">
                             <i class="bi bi-bar-chart fs-3 text-secondary" aria-hidden="true"></i>
@@ -211,20 +211,22 @@
                     <a href="{{ path('app_analytics_dashboard') }}" class="btn btn-outline-secondary">
                         <i class="bi bi-arrow-right me-1" aria-hidden="true"></i> {{ 'analytics.action.view_dashboard'|trans({}, 'analytics') }}
                     </a>
-                </div>
-            </div>
+                {% endblock %}
+            {% endembed %}
         </div>
     </div>
 
     {# Executive Summary Section #}
-    <div class="card mt-4">
-        <div class="card-header">
-            <h5 class="mb-0">
-                <i class="bi bi-file-earmark-bar-graph me-2" aria-hidden="true"></i>
-                {{ 'analytics.advanced.executive_summary.title'|trans({}, 'analytics') }}
-            </h5>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mt-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-file-earmark-bar-graph me-2" aria-hidden="true"></i>
+                    {{ 'analytics.advanced.executive_summary.title'|trans({}, 'analytics') }}
+                </h5>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             {% if compliance_summary.frameworks.total > 0 %}
             <div class="row">
                 <div class="col-md-4 mb-3">
@@ -270,8 +272,8 @@
                 <p class="text-muted">{{ 'analytics.advanced.executive_summary.no_frameworks'|trans({}, 'analytics') }}</p>
             </div>
             {% endif %}
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 </div>
 {% endblock %}
 
