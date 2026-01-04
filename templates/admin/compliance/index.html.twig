@@ -25,11 +25,13 @@
     </div>
 
     {# Statistics Card #}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h2>📊 {{ 'compliance.framework_statistics'|trans({}, 'compliance') }}</h2>
-        </div>
-        <div class="card-body">
+    {% embed '_components/_card.html.twig' with { 'class': 'mb-4' } %}
+        {% block card_header %}
+            <div class="card-header">
+                <h2>📊 {{ 'compliance.framework_statistics'|trans({}, 'compliance') }}</h2>
+            </div>
+        {% endblock %}
+        {% block card_body %}
             <div class="stats-grid">
                 <div class="stat-box">
                     <div class="stat-icon">📦</div>
@@ -52,8 +54,8 @@
                     <div class="stat-text">{{ 'compliance.mandatory_missing'|trans({}, 'compliance') }}</div>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endblock %}
+    {% endembed %}
 
     {# Available Frameworks #}
     <div class="frameworks-container">
@@ -69,9 +71,9 @@
                             <p>{{ framework.name }}</p>
                         </div>
                         {% if framework.loaded %}
-                            <span class="badge bg-success">{{ 'compliance.loaded'|trans({}, 'compliance') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'success', content: 'compliance.loaded'|trans({}, 'compliance') } %}
                         {% else %}
-                            <span class="badge bg-warning">{{ 'compliance.not_loaded'|trans({}, 'compliance') }}</span>
+                            {% include '_components/_badge.html.twig' with { variant: 'warning', content: 'compliance.not_loaded'|trans({}, 'compliance') } %}
                         {% endif %}
                     </div>
 
@@ -93,9 +95,9 @@
                                 <span class="label">{{ 'compliance.mandatory'|trans({}, 'compliance') }}:</span>
                                 <span class="value">
                                     {% if framework.mandatory %}
-                                        <span class="badge bg-danger">{{ 'common.yes'|trans({}, 'messages') }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'danger', content: 'common.yes'|trans({}, 'messages') } %}
                                     {% else %}
-                                        <span class="badge bg-secondary">{{ 'common.no'|trans({}, 'messages') }}</span>
+                                        {% include '_components/_badge.html.twig' with { variant: 'secondary', content: 'common.no'|trans({}, 'messages') } %}
                                     {% endif %}
                                 </span>
                             </div>
